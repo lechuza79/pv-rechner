@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test --project=smoke",
     "test:flows": "E2E_BUILD=1 playwright test --project=flows --workers=1",
+    "test:telefon": "E2E_BUILD=1 playwright test --project=telefon --workers=1",
     "test:e2e:ui": "playwright test --project=smoke --ui",
     "typecheck": "tsc --noEmit",
     "mastr:refresh": "tsx scripts/mastr-refresh.ts",
@@ -47,6 +48,8 @@
     "release:plan": "tsx scripts/release-plan.ts",
     "release:messen": "tsx scripts/release-messen.ts",
     "kommunen:veroeffentlicht": "tsx scripts/kommunen-veroeffentlicht.ts",
+    "social:zahlen": "tsx --conditions react-server --env-file=.env.local scripts/social-zahlen.ts",
+    "social:formen": "tsx --tsconfig scripts/tsconfig.werkbank.json scripts/social-formen-werkbank.tsx",
     "claude-md:verify": "tsx scripts/claude-md-verify.ts",
     "kommunen:stand": "tsx scripts/kommunen-stand.ts",
     "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",
@@ -57,7 +60,8 @@
     "auth:mailvorlagen": "tsx scripts/auth-mailvorlagen.ts",
     "umstellung:versand": "NODE_OPTIONS=--conditions=react-server tsx scripts/umstellungs-versand.ts",
     "presse": "tsx scripts/presse-refresh.ts",
-    "temperatur:tage": "tsx scripts/dwd-temperatur-tage-sync.ts"
+    "temperatur:tage": "tsx scripts/dwd-temperatur-tage-sync.ts",
+    "flows:matrix": "tsx scripts/flow-matrix.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
@@ -77,6 +81,7 @@
     "cheerio": "^1.2.0",
     "d3-array": "^3.2.4",
     "d3-shape": "^3.2.0",
+    "embla-carousel-react": "^8.6.0",
     "modern-screenshot": "^4.7.0",
     "next": "^15.5.22",
     "react": "^19.2.8",

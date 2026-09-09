@@ -24,7 +24,8 @@ describe("Amortisations-Rennen — glattes Referenzjahr", () => {
   it("die Stromrechnung ohne Anlage wächst jedes Jahr um Verbrauch × Preispfad", () => {
     expect(ohne.verbrauchKwh).toBe(PERSONEN[2].verbrauch);
     for (let i = 1; i <= YEARS; i++) {
-      const erwartet = ohne.verbrauchKwh * DEFAULT_PRICES.electricityPrice * Math.pow(1 + DEFAULT_PRICES.electricityIncrease, i);
+      // Jahr 1 zu heutigen Preisen (Konvention des Rechners seit 05.09.2026).
+      const erwartet = ohne.verbrauchKwh * DEFAULT_PRICES.electricityPrice * Math.pow(1 + DEFAULT_PRICES.electricityIncrease, i - 1);
       expect(Math.abs(ohne.kumuliert[i] - ohne.kumuliert[i - 1] - erwartet)).toBeLessThan(1.5);
     }
   });

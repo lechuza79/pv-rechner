@@ -31,6 +31,7 @@
  * aufgeklappt ist, welche Gebäudefrage im Ergebnis bearbeitet wird. Das ist
  * kein Ergebnis, das ist eine Sitzung.
  */
+import { WP_M2_MAX, WP_M2_MIN } from "./constants";
 
 export type WpFuelId = string;
 export type WpAltheizung = "oel_kohle" | "gas_alt" | "gas_neu" | "andere";
@@ -224,7 +225,10 @@ export function wpAusParametern(params: URLSearchParams): WpZustand {
     situation: ausListe(g(FELD.situation), ["bestand", "neubau"] as const, WP_STANDARD.situation),
     // Die Grenzen sind dieselben wie im Frageweg — ein Link darf nicht
     // durchlassen, was die Eingabe ablehnt.
-    wohnflaeche: Math.min(1000, Math.max(30, Math.round(zahl(g(FELD.wohnflaeche), WP_STANDARD.wohnflaeche)))),
+    // Bis 05.09.2026 stand hier 30–1000 — die Grenzen des ALTEN Ergebnisfelds,
+    // die lib/constants.ts längst auf eine Quelle gezogen hatte. Der Test dazu
+    // erwartete die 1000 ausdrücklich: Er verglich den Fehler mit sich selbst.
+    wohnflaeche: Math.min(WP_M2_MAX, Math.max(WP_M2_MIN, Math.round(zahl(g(FELD.wohnflaeche), WP_STANDARD.wohnflaeche)))),
     haustyp: g(FELD.haustyp) ?? WP_STANDARD.haustyp,
     // Die Obergrenze ist die längere der beiden Stufenlisten; welche gilt,
     // hängt an Bestand oder Neubau und entscheidet die Oberfläche.

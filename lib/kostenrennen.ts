@@ -156,7 +156,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
   const steigerung = p.stromSteigerung ?? prices.electricityIncrease;
   const strompreis = prices.electricityPrice;
   const wetter = p.wetter ?? "dwd";
-  const preisImJahr = (i: number) => p.verlauf?.strompreisImJahr?.(i) ?? strompreis * Math.pow(1 + steigerung, i);
+  const preisImJahr = (i: number) => p.verlauf?.strompreisImJahr?.(i) ?? strompreis * Math.pow(1 + steigerung, i - 1);
 
   const referenz = haushalte.find((h) => h.kwp <= 0);
   if (!referenz) throw new Error("Kostenrennen braucht einen Haushalt ohne Anlage als Referenz");
@@ -174,7 +174,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
   const laeufer: RennLaeufer[] = haushalte.map((h) => {
     const verbrauchKwh = jahresverbrauch(h);
     // Stromrechnung ohne Anlage, Monat für Monat — derselbe Preispfad wie in
-    // calc(): Jahr i zahlt strompreis × (1 + steigerung)^i.
+    // calc(): Jahr i zahlt strompreis × (1 + steigerung)^(i − 1) — Jahr 1 zu heutigen Preisen.
     const ohneMonat: number[] = [0];
     for (let k = 1; k <= M; k++) {
       const i = Math.ceil(k / 12);

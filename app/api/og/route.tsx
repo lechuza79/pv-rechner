@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, DACHARTEN, NATIONAL_AVG_YIELD } from "../../../lib/constants";
+import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, DACHARTEN, NATIONAL_AVG_YIELD, SCENARIOS, YEARS } from "../../../lib/constants";
 import { dachErtragKwp } from "../../../lib/dach-ertrag";
 import { type TiltOrientation } from "../../../lib/tilt-config";
 import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
@@ -81,12 +81,32 @@ async function loadEnergyRadial(origin: string, bars: number): Promise<RadialDat
   }
 }
 
+/**
+ * Die Schrift des Bildes — aus dem BUNDLE, nie über die eigene Adresse geholt.
+ *
+ * Sie lag bis zum 09.09.2026 in `public/` und wurde von dieser Funktion per
+ * HTTP von der eigenen Domain zurückgeholt. Das ist eine Abhängigkeit von der
+ * öffentlichen Auslieferung, und sie ist gerissen, als am 08.09.2026 der
+ * Bot-Schutz scharf gestellt wurde: Eine Serverless-Function verhält sich nicht
+ * wie ein Browser, bekam die Prüfaufgabe als HTML zurück, und der Schriftleser
+ * scheiterte an deren ersten vier Zeichen („Unsupported OpenType signature
+ * <!DO"). Ausnahmen im Bot-Schutz wären die schlechtere Antwort gewesen — dann
+ * müsste jeder Pfad, den eine Funktion je selbst abruft, in einer Liste stehen,
+ * die beim nächsten Pfad still veraltet.
+ *
+ * `import.meta.url` löst gegen die gebaute Datei auf; die Schrift liegt deshalb
+ * NEBEN dieser Route und nicht mehr im öffentlichen Ordner (dort wurde sie von
+ * nichts anderem gebraucht). Auf der Edge-Laufzeit ist das der vorgesehene Weg —
+ * `fs` gibt es dort nicht.
+ */
+async function ladeSchrift(): Promise<ArrayBuffer> {
+  return fetch(new URL("./JetBrainsMono-Bold.ttf", import.meta.url)).then(r => r.arrayBuffer());
+}
+
 export async function GET(req: NextRequest) {
   const params = Object.fromEntries(req.nextUrl.searchParams.entries());
 
-  const jetBrainsMono = await fetch(
-    new URL("/fonts/JetBrainsMono-Bold.ttf", req.nextUrl.origin)
-  ).then(r => r.arrayBuffer());
+  const jetBrainsMono = await ladeSchrift();
   const fonts = [
     { name: "JetBrains Mono", data: jetBrainsMono, weight: 700 as const },
   ];
@@ -290,13 +310,20 @@ export async function GET(req: NextRequest) {
 
   const result = calc({
     kwp, kosten, strompreis, eigenverbrauch: effEv, einspeisung: einsp,
-    stromSteigerung: 0.03, ertragKwp, monthly: null,
+    // Dasselbe Szenario wie die Seite ohne Reiterwahl (realistisch). Hier stand
+    // 0,03 — das Bild im Chat zeigte 13.241 € Gewinn, die Seite 11.485 €.
+    // Was strukturell bleibt: Das Bild läuft ohne Datenbank, also ohne Live-
+    // Preise und ohne Monatsprofil; die Formeln sind dieselben, die Eingaben
+    // nicht vollständig.
+    stromSteigerung: SCENARIOS.find((s) => s.id === "realistic")!.strom, ertragKwp, monthly: null,
     batteryReplace: batteryReplaceCost(spKwh),
   });
 
   const amortYears = result.be ? result.be.i : null;
   const rendite25j = result.total;
-  const avgSavings = Math.round(rendite25j / 25);
+  // Dieselbe Formel wie „⌀ Ersparnis / Jahr" auf der Seite: mittlerer
+  // Jahresnutzen, nicht Gewinn durch 25 (das war um die Investition zu klein).
+  const avgSavings = Math.round((rendite25j + kosten) / YEARS);
 
   const amortColor = amortYears !== null ? C_ACCENT : C_NEGATIVE;
   const amortText = amortYears !== null ? `${amortYears}` : ">25";
@@ -360,7 +387,7 @@ export async function GET(req: NextRequest) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
           <div style={{ display: "flex", gap: 40 }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>RENDITE 25 J.</span>
+              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>GEWINN 25 J.</span>
               <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: rendite25j > 0 ? C_POSITIVE : C_NEGATIVE }}>
                 {`${renditeStr} \u20AC`}
               </span>

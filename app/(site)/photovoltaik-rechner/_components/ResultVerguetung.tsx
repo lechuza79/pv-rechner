@@ -21,7 +21,8 @@ export type EinspeisungModus = "aus" | "teil" | "voll";
 export interface ResultVerguetungProps extends ResultRegimeProps {
   modus: EinspeisungModus;
   setModus: (m: EinspeisungModus) => void;
-  /** Volleinspeisung nicht wählbar (z. B. weil ein Speicher gewählt ist). */
+  /** Volleinspeisung nicht wählbar — Speicher, Wärmepumpe oder E-Auto gewählt
+   *  (Regel: vollEinspeisungGesperrt in lib/calc.ts). */
   vollDisabled: boolean;
   /** Der heute geltende Satz in ct/kWh, editierbar. */
   effEinsp: number;
@@ -68,6 +69,8 @@ export default function ResultVerguetung(props: ResultVerguetungProps) {
                 key={m}
                 onClick={() => { if (!isDisabled) { setModus(m); setOEinsp(null); } }}
                 aria-pressed={isActive}
+                aria-disabled={isDisabled || undefined}
+                title={isDisabled ? "Volleinspeisung nur ohne Speicher und ohne Wärmepumpe oder E-Auto — sonst würde Strom selbst verbraucht." : undefined}
                 style={{
                   padding: "4px 10px", borderRadius: 6, fontSize: v("--font-size-small"), fontWeight: 600,
                   cursor: isDisabled ? "not-allowed" : "pointer",

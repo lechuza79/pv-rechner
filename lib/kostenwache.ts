@@ -389,7 +389,15 @@ export function menge(n: number): string {
   return n.toLocaleString("de-DE");
 }
 
-/** Der Tag, der beim Lauf am Stichtag beurteilt wird: der letzte VOLLSTÄNDIGE. */
+/**
+ * Der Tag, der beim Lauf am Stichtag beurteilt wird: der letzte VOLLSTÄNDIGE.
+ *
+ * HIER IST DIE WELTZEIT RICHTIG, anders als bei jedem Stichtag im Projekt
+ * (siehe lib/zeit.ts): Die Protokolle der Plattform sind nach UTC-Tagen
+ * abgelegt, und der beurteilte Tag muss derselbe sein, den sie liefert. Ein
+ * deutscher Kalendertag träfe dort zwei Stunden lang den falschen Eimer und
+ * erzeugte einen Mengensprung, den es nicht gibt.
+ */
 export function zuBeurteilenderTag(jetzt: Date): string {
   return new Date(jetzt.getTime() - 86_400_000).toISOString().slice(0, 10);
 }

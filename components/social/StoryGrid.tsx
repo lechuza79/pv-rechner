@@ -10,8 +10,7 @@ import { v, space, pad } from "../../lib/theme";
 import type { Pruefung } from "../../lib/social-pruefung-kern";
 import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
 import { urteil } from "../../lib/social-pruefung-kern";
-import { BILDFORM_NAME, templateVon, type SocialPost } from "../../lib/social-posts";
-import { KARTEN_STIL_NAME } from "../../lib/social-karten-stil";
+import { templateVon, type SocialPost } from "../../lib/social-posts";
 
 // Alle Beiträge als Raster — der Einstieg in die Entwicklung.
 //
@@ -139,30 +138,15 @@ export function StoryGrid({ eintraege }: { eintraege: GridEintrag[] }) {
       >
         {gezeigt.map(({ post, pruefungen, kategorie, abdruck }) => {
           const stand = urteil(abdruck, pruefungen);
+          // KEINE KOPFZEILE ÜBER DER KARTE. Kategorie, interner Titel und
+          // Bildform standen über jeder Kachel — drei Zeilen, die alle dasselbe
+          // beschreiben wie das Bild darunter, nur schlechter. Die Karte trägt
+          // ihre Aussage als Überschrift; wer wissen will, wovon sie handelt,
+          // liest sie. Wer die Bildform ändern will, ist ohnehin im Tisch, und
+          // dort steht sie. Der Titel bleibt als Beschriftung des
+          // Tisch-Fensters erhalten.
           return (
             <div key={post.id} style={{ display: "flex", flexDirection: "column", gap: space.sm }}>
-              <Link
-                href={`/admin/redaktion?k=${kategorie.schluessel}`}
-                style={{
-                  fontSize: v("--font-size-caption"),
-                  textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  color: v("--color-accent"),
-                  textDecoration: "none",
-                }}
-              >
-                {kategorie.name}
-              </Link>
-              <div style={{ fontSize: v("--font-size-body"), fontWeight: 600, lineHeight: 1.3 }}>{post.titel}</div>
-              {/* Die Design-Identität: welches Template, welche Variante. Der
-                  Titel sagt, WOVON eine Story handelt; hier steht, WIE sie
-                  aussieht — und das ist die Frage, die beim Gestalten zählt. */}
-              {post.bild && (
-                <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
-                  {templateVon(post.bild)?.name ??
-                    `${BILDFORM_NAME[post.bild.art]} · ${KARTEN_STIL_NAME[post.bild.stil]} — kein abgenommenes Template`}
-                </div>
-              )}
 
               {/* Die Karte im Raster ist dieselbe Vorschau, nur schmaler. Ein
                   eigenes Kachelbild wäre eine zweite Darstellung derselben

@@ -20,6 +20,7 @@ import { verbrauchSpecKwh } from "../../../lib/heatpump-core";
 import { preboundAnteil } from "../../../lib/heat-consumption";
 import { DEFAULT_BALKON_CONFIG as BK } from "../../../lib/balkon-config";
 import { referenceYearKwh } from "../../../lib/solar-year";
+import { heuteInBerlin } from "../../../lib/zeit";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS, FUEL } from "../../../lib/constants";
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
@@ -134,6 +135,10 @@ const S = {
     color: v("--color-text-faint"),
     marginTop: 8,
     lineHeight: 1.5,
+    // Quellenzeilen tragen Lizenzkürzel und Adressen ohne Leerzeichen; auf
+    // Telefonbreite lief die MaStR-Zeile 100 px über den Rand (Überlauf-Test,
+    // 05.09.2026). Ein langes Token darf innerhalb brechen.
+    overflowWrap: "anywhere" as const,
   },
   caveat: {
     fontSize: v("--font-size-caption"),
@@ -196,7 +201,7 @@ async function fetchPrices(): Promise<PriceConfig> {
       .select("*")
       .neq("source", "SCRAPE_ERROR")
       .gt("pv_price_small", 0)
-      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .lte("valid_from", heuteInBerlin())
       .order("valid_from", { ascending: false })
       // Tiebreaker on created_at must match /api/prices exactly — otherwise this
       // transparency page can read a different (older) duplicate row than the
@@ -227,7 +232,7 @@ async function fetchFeedIn(): Promise<FeedInRates> {
     const { data } = await supabase
       .from("feed_in_rates")
       .select("*")
-      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .lte("valid_from", heuteInBerlin())
       .order("valid_from", { ascending: false })
       .limit(1)
       .single();
@@ -543,7 +548,7 @@ export default async function DatenstandPage() {
           stand="Modell (HTW Berlin · BDEW)"
           intro="Diese Werte beruhen auf wissenschaftlichen Lastprofilen, nicht auf tagesaktuellen Marktdaten — daher ein Modellstand statt eines Datums."
           rows={[
-            { label: "Eigenverbrauchs-Modell", value: "Power-Law, HTW Berlin" },
+            { label: "Eigenverbrauchs-Modell", value: "Power-Law, HTW Berlin — nach oben begrenzt durch das HTW-Autarkie-Kennfeld (dieselbe Quelle)" },
             { label: "Grundverbrauch 1 / 2 / 3–4 / 5+ Personen", value: PERSONEN.map((p) => nf(p.verbrauch)).join(" / ") + " kWh/a" },
             { label: "Tag-Anteil je Nutzungsprofil", value: NUTZUNG.map((n) => `${nf(n.tagQuote * 100)}`).join(" / ") + " %" },
             { label: "Saisonaler Verbrauchsfaktor", value: `${nf(Math.min(...CONSUMPTION_MONTHLY))}–${nf(Math.max(...CONSUMPTION_MONTHLY))} (BDEW H0)` },

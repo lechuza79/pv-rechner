@@ -36,6 +36,7 @@
  */
 
 import { resolve } from "node:path";
+import { heuteInBerlin } from "../lib/zeit";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { FUNDING_PROGRAMS } from "../lib/funding-programs";
@@ -299,7 +300,7 @@ async function gelesen(): Promise<void> {
   const { error } = await sb
     .from("funding_coverage")
     .update({
-      gelesen_am: new Date().toISOString().slice(0, 10),
+      gelesen_am: heuteInBerlin(),
       gelesen_ergebnis: ergebnis,
       gelesen_notiz: wert("notiz"),
     })

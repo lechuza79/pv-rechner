@@ -13,6 +13,7 @@ import { calcEigenverbrauch, calcWeightedFeedIn } from "../../../lib/calc";
 import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor } from "../../../lib/dach-ertrag";
 import { DACHARTEN, DEGRAD, FEED_IN_YEARS, NATIONAL_AVG_YIELD, PERSONEN } from "../../../lib/constants";
 import { eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
+import { heuteInBerlin } from "../../../lib/zeit";
 import {
   FEED_IN_BASIS,
   feedInEndIso,
@@ -132,7 +133,9 @@ export default function EinspeiseRechner() {
   // Datum-Schritt noch nichts gewählt ist (kein Vorauswahl-Standard).
   const datumGesetzt = ibMonat !== null && ibJahr !== null;
   const ibIso = datumGesetzt ? `${ibJahr}-${String(ibMonat).padStart(2, "0")}-15` : null;
-  const inZukunft = anlage === "bestand" && ibIso !== null && ibIso > heute.toISOString().slice(0, 10);
+  // Deutscher Kalendertag, nicht Weltzeit: Ob eine Inbetriebnahme in der Zukunft
+  // liegt, entscheidet über den angesetzten Vergütungssatz (siehe lib/zeit.ts).
+  const inZukunft = anlage === "bestand" && ibIso !== null && ibIso > heuteInBerlin(heute);
 
   const rates: FeedInRates | null =
     anlage !== "bestand" || inZukunft
@@ -599,7 +602,7 @@ export default function EinspeiseRechner() {
 
           <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.7, color: v("--color-text-muted"), marginBottom: space.lg }}>
             Annahmen: Standort-Ertrag {nf(ertragKwp)} kWh je kWp
-            {standortYield !== null ? " (dein Standort)" : " (konservativer Deutschland-Durchschnitt)"}
+            {standortYield !== null ? " (dein Standort)" : " (Deutschland-Durchschnitt bei optimaler Ausrichtung)"}
             {neigungsFaktor < 1 ? ", inklusive Dachneigung und Ausrichtung" : ""}, Nutzungsprofil „teils zuhause",{" "}
             {(DEGRAD * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} % Moduldegradation
             pro Jahr, gerechnet in ganzen Anlagenjahren. Die Vergütung ist nur die halbe Wahrheit:

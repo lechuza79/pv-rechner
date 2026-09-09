@@ -248,8 +248,19 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
     const wpAnteil = wpAnnual / gesamt;
     evBoost *= (1 - wpAnteil * 0.30);
   }
-  // Physikalische Grenze: max. Eigenverbrauch = Gesamtverbrauch / Jahresertrag
-  const evMax = gesamt / jahresertrag;
+  // Obergrenze aus zwei Schranken. Die Jahresbilanz (Verbrauch / Ertrag) ist
+  // die harte physikalische Grenze — sie unterstellt aber, dass JEDE erzeugte
+  // Kilowattstunde bis zur Verbrauchsmenge selbst genutzt wird, also 100 %
+  // Autarkie. Real deckt ein Haushalt dieser Größe nach dem HTW-Kennfeld nur
+  // 71–91 % seines Verbrauchs aus der Anlage (calcAutarkie, dieselbe Quelle wie
+  // das Power-Law). Bis 05.09.2026 galt nur die Bilanz: Mit Speicher lief das
+  // Power-Law in die Kappe und rechnete 99–101 % Autarkie ins Geld — 10 kWp /
+  // 10 kWh / 3–4 Personen: EV 36 % statt 31 %, 5.648 € über 25 Jahre
+  // (Rechenmodell-Council, Betreiber-Entscheidung 05.09.2026: HTW gegen HTW).
+  // Identität: selbst genutzte kWh = Autarkie × Verbrauch = EV × Ertrag.
+  const evMaxBilanz = gesamt / jahresertrag;
+  const autarkieHtw = calcAutarkie({ kwp, speicherKwh, gesamtVerbrauch: gesamt, ertragKwp }) / 100;
+  const evMax = autarkieHtw > 0 ? Math.min(evMaxBilanz, autarkieHtw * evMaxBilanz) : evMaxBilanz;
   const ev = Math.round(Math.min(evBase + evBoost, evMax, 0.90) * 100);
   // 10 %-Untergrenze als Sanity-Floor — aber NIE über das physikalische Maximum:
   // bei kleinem Haushalt auf großem Dach (evMax < 10 %) kann man nicht 10 %
@@ -401,12 +412,17 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
   for (let i = 0; i <= YEARS; i++) {
     let j = 0;
     if (i > 0) {
+      // Jahr 1 ist das erste Betriebsjahr: Module neu, Strompreis von heute.
+      // Bis 05.09.2026 zählte dieser Rechner ab Jahr 1 hoch (×1,02 und ×0,995
+      // schon im ersten Jahr), Balkon- und Wärmepumpen-Rechner ab Jahr 0 —
+      // rund 1 % Gewinnunterschied für dieselbe kWh auf derselben Ergebnisseite.
+      // Angeglichen auf die Mehrheitskonvention (Betreiber-Entscheidung 05.09.2026).
       const profilJahr = verlauf?.monatsprofilImJahr?.(i);
       const profilSumme = profilJahr ? profilJahr.reduce((a, b) => a + b, 0) : 0;
       // Mit Jahresprofil ist die Menge des Jahres die Summe seiner Monate; die
       // Alterung der Module kommt obendrauf.
-      const deg = Math.pow(1 - DEGRAD, i) * (verlauf?.ertragsfaktorImJahr?.(i) ?? 1) * (profilJahr && ertragKwp > 0 ? profilSumme / ertragKwp : 1);
-      const sp = verlauf?.strompreisImJahr?.(i) ?? strompreis * Math.pow(1 + stromSteigerung, i);
+      const deg = Math.pow(1 - DEGRAD, i - 1) * (verlauf?.ertragsfaktorImJahr?.(i) ?? 1) * (profilJahr && ertragKwp > 0 ? profilSumme / ertragKwp : 1);
+      const sp = verlauf?.strompreisImJahr?.(i) ?? strompreis * Math.pow(1 + stromSteigerung, i - 1);
       const fracsJahr = profilJahr && profilSumme > 0 ? profilJahr.map((m) => m / profilSumme) : fracs;
       const monthlyEvJahr = profilJahr && fracsJahr ? buildMonthlyEv(eigenverbrauch / 100, fracsJahr) : monthlyEv;
       // EEG-Einspeisevergütung nur die ersten 20 Jahre; danach fällt die Anlage
@@ -486,6 +502,35 @@ export function paramFloat(params: Record<string, string | string[] | undefined>
   const v = params?.[key];
   if (typeof v === "string") { const n = parseFloat(v); if (!isNaN(n) && isFinite(n) && n >= min && n <= max) return n; }
   return fallback;
+}
+
+/**
+ * Wie paramFloat, aber mit zwei Unterschieden, die für „von Hand gesetzt"
+ * zählen: Fehlt der Parameter, bleibt es null (es gilt die Vorgabe) — und eine
+ * eingetragene 0 bleibt 0. Bis 05.09.2026 stand im Rechner
+ * `paramFloat(..., "sk", 0, 0, 30) || null`: Wer den Speicher im Ergebnis auf
+ * 0 kWh setzte und teilte, dessen Empfänger bekam die Flow-Vorgabe (10 kWh),
+ * 4.000 € mehr Investition und 11.000 € mehr Gewinn — auf demselben Link.
+ */
+export function paramFloatOrNull(params: Record<string, string | string[] | undefined> | undefined, key: string, min = 0, max = 99999): number | null {
+  const v = params?.[key];
+  if (typeof v !== "string") return null;
+  const n = parseFloat(v);
+  return !isNaN(n) && isFinite(n) && n >= min && n <= max ? n : null;
+}
+
+/**
+ * Volleinspeisung ist nur wählbar, wenn nichts an der Anlage hängt, das den
+ * Strom selbst verbraucht — kein Großverbraucher UND kein Speicher. Ein
+ * Speicher bei Volleinspeisung ist ein halber Fall: Der Rechner setzte den
+ * Eigenverbrauch auf 0, rechnete aber Kaufpreis und Akkutausch mit und zeigte
+ * die Autarkie eines Teileinspeisers (81 % bei 10 kWh). Gemessen 05.09.2026:
+ * 6.363 € weniger Gewinn für ein Gerät, das bei 0 % Eigenverbrauch nichts tut.
+ * Die Prop-Doku des Umschalters sagte diese Regel seit jeher, der Code kannte
+ * nur die Großverbraucher.
+ */
+export function vollEinspeisungGesperrt(a: { wp: string; ea: string; speicherKwh: number }): boolean {
+  return a.wp !== "nein" || a.ea !== "nein" || a.speicherKwh > 0;
 }
 
 export function paramStr(params: Record<string, string | string[] | undefined> | undefined, key: string, fallback: string, allowed: string[]): string {

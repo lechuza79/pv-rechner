@@ -31,12 +31,17 @@ interface ResultStatsProps {
   exampleDays: ExampleDayEntry[];
   /** Strompreis-Anstieg des GEWÄHLTEN Szenarios (±1/3/5 %) — Kachel folgt der Wahl oben. */
   stromSteigerung: number;
+  /** Gaspreis-Anstieg des GEWÄHLTEN Szenarios — gegenläufig zum Strom gekoppelt
+   *  wie im Wärmepumpen-Rechner (heatPumpScenarioAdj). Mit festen 2 % zeigte der
+   *  Reiter „Optimistisch" die SCHLECHTESTE Wärmepumpen-Ersparnis (Council
+   *  05.09.2026: 34.635 € optimistisch gegen 45.772 € pessimistisch). */
+  gasSteigerung: number;
   fuelType: "gas" | "oil";
   setFuelType: (v: "gas" | "oil") => void;
 }
 
 export default function ResultStats({
-  total, kosten, wp, wpKwh, jaz, effEv, autarkie, wpAutarky, jahresertrag, gesamtVerbrauch, speicherKwh, monthly, exampleDays, stromSteigerung, fuelType, setFuelType,
+  total, kosten, wp, wpKwh, jaz, effEv, autarkie, wpAutarky, jahresertrag, gesamtVerbrauch, speicherKwh, monthly, exampleDays, stromSteigerung, gasSteigerung, fuelType, setFuelType,
 }: ResultStatsProps) {
   const [flowOpen, setFlowOpen] = useState(false);
   return (
@@ -131,7 +136,7 @@ export default function ResultStats({
           years: HEATING_YEARS,
           pricePerKwh: FUEL[fuelType].price,
           co2PerKwh: FUEL[fuelType].co2PerKwh,
-          inflation: 0.02,
+          inflation: gasSteigerung,
           fossilInvest: 0,
           greenGas: true,
         });

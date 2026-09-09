@@ -27,6 +27,7 @@
  */
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { heuteInBerlin } from "../lib/zeit";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
@@ -144,6 +145,186 @@ async function probe(label: string, path: string): Promise<Probe> {
     cache = e instanceof Error ? e.name : "fetch failed";
   }
   return { label, url, status, seconds: (Date.now() - started) / 1000, cache, region };
+}
+
+export type FirewallBefund = {
+  /** Kommt unsere eigene Automatik durch? */
+  eigeneDurch: boolean;
+  /** Wird eine fremde Kennung abgewiesen? */
+  fremdeAbgewiesen: boolean;
+  /** Antworten Crawler-Anweisungen weiterhin jedem? */
+  anweisungenOffen: boolean;
+  statusEigen: number;
+  statusFremd: number;
+  statusRobots: number;
+};
+
+/**
+ * Steht der Bot-Schutz noch scharf — und kommen wir selbst noch durch?
+ *
+ * WARUM DAS HIER GEPRÜFT WIRD UND NICHT IN EINEM TEST: Die Firewall-Regeln
+ * liegen in der Vercel-Projektkonfiguration, nicht im Repo. Sie sind in keinem
+ * Vergleich der Änderungen sichtbar, und jeder mit Projektrechten kann sie
+ * still zurückstellen — dieselbe Klasse wie die Build-Maschine und die
+ * Function-Region. Ein Test im Code kann darüber gar nichts aussagen.
+ *
+ * GEMESSEN WIRD DIE WIRKUNG, NICHT DIE EINSTELLUNG: drei echte Abrufe gegen
+ * die Produktion. Eine Konfiguration zu lesen sagt nur, was dort steht; diese
+ * drei sagen, was ein Besucher, unsere Automatik und ein fremder Crawler
+ * tatsächlich bekommen.
+ *
+ * Scharf gestellt am 08.09.2026, nachdem ein Crawler seit dem 01.09. den
+ * Adressraum ablief und die Crawler-Anweisung ignorierte: 14.000 maschinelle
+ * Seitenaufbauten am Tag gegen rund 94 menschliche.
+ *
+ * DIE DRITTE PRÜFUNG IST DIE UNSCHEINBARSTE UND DIE WICHTIGSTE: Wer robots.txt
+ * und Sitemap nicht mehr lesen kann, crawlt gar nicht mehr richtig — eine
+ * Ausnahme, die dort wegfällt, kostet Sichtbarkeit statt Geld und fällt sonst
+ * erst Wochen später auf.
+ */
+async function messeFirewall(): Promise<FirewallBefund | null> {
+  const ziel = `${BASE_URL}/solar-atlas/hessen/landkreis-schwalm-eder-kreis/melsungen`;
+  const hole = async (url: string, ua: string): Promise<number> => {
+    try {
+      const res = await fetch(url, {
+        redirect: "manual",
+        headers: { "user-agent": ua },
+        signal: AbortSignal.timeout(30000),
+      });
+      await res.arrayBuffer();
+      return res.status;
+    } catch {
+      return 0;
+    }
+  };
+
+  const [statusEigen, statusFremd, statusRobots] = await Promise.all([
+    hole(ziel, "solar-check-health-check"),
+    // Eine Kennung, die weder verifiziert noch bei uns ausgenommen ist.
+    hole(ziel, "fremder-crawler-pruefung/1.0"),
+    hole(`${BASE_URL}/robots.txt`, "fremder-crawler-pruefung/1.0"),
+  ]);
+
+  return firewallUrteil(statusEigen, statusFremd, statusRobots);
+}
+
+/**
+ * Aus drei Antwortcodes wird der Befund. Bewusst als eigene Funktion, damit die
+ * ABLEITUNG prüfbar ist und nicht nur das fertige Ergebnis: Beim Bauen dieses
+ * Wächters (08.09.2026) hat eine Sabotage genau hier — „gilt immer als
+ * abgewiesen" — den Test unberührt gelassen, weil die Prüfungen den Befund
+ * fertig hereinreichten. Ein Wächter, der nichts sieht und trotzdem grün
+ * meldet, ist schlimmer als keiner.
+ */
+export function firewallUrteil(
+  statusEigen: number,
+  statusFremd: number,
+  statusRobots: number,
+): FirewallBefund | null {
+  // Kam gar nichts durch, ist die Produktion das Problem, nicht die Firewall —
+  // das meldet der übrige Gesundheitscheck, und ein Befund hier wäre erfunden.
+  if (statusEigen === 0 && statusFremd === 0 && statusRobots === 0) return null;
+
+  return {
+    statusEigen,
+    statusFremd,
+    statusRobots,
+    eigeneDurch: statusEigen === 200,
+    // 429 ist die Prüfaufgabe. 403 wäre eine harte Abweisung — beides zählt.
+    fremdeAbgewiesen: statusFremd === 429 || statusFremd === 403,
+    anweisungenOffen: statusRobots === 200,
+  };
+}
+
+/** Urteil über den Firewall-Befund. Leer heißt: alles wie gewollt. */
+export function firewallBefund(b: FirewallBefund | null): string[] {
+  if (!b) return [];
+  const raus: string[] = [];
+  if (!b.eigeneDurch) {
+    raus.push(
+      `Unsere eigene Automatik kommt nicht mehr durch die Firewall (Antwort ${b.statusEigen} statt 200). ` +
+        `Damit laufen Gesundheitscheck, Atlas-Aufwärmer und Wächter ins Leere. Ausnahmeregeln prüfen.`,
+    );
+  }
+  if (!b.anweisungenOffen) {
+    raus.push(
+      `Die Crawler-Anweisungen antworten nicht mehr jedem (Antwort ${b.statusRobots} statt 200). ` +
+        `Wer sie nicht lesen kann, crawlt gar nicht mehr richtig — das kostet Sichtbarkeit.`,
+    );
+  }
+  if (!b.fremdeAbgewiesen) {
+    raus.push(
+      `Der Bot-Schutz greift nicht mehr: eine fremde Kennung bekommt ${b.statusFremd} statt einer Prüfaufgabe. ` +
+        `Vermutlich steht er wieder auf Beobachten — die Einstellung liegt bei Vercel, nicht im Code.`,
+    );
+  }
+  return raus;
+}
+
+type VorschaubildBefund = { status: number; bytes: number; png: boolean; breite: number | null };
+
+/** Die ersten Bytes einer PNG-Datei — Signatur, dann Breite aus dem IHDR-Kopf. */
+export function pngMasse(bytes: Uint8Array): { png: boolean; breite: number | null } {
+  const sig = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+  const png = bytes.length >= 24 && sig.every((b, i) => bytes[i] === b);
+  if (!png) return { png: false, breite: null };
+  const breite = (bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19];
+  return { png: true, breite };
+}
+
+/**
+ * Kommt aus dem Vorschaubild wirklich ein BILD heraus?
+ *
+ * Der Statuscode beantwortet das nicht, und genau daran ist es am 08.09.2026
+ * durchgerutscht: Nach dem Scharfstellen des Bot-Schutzes holte sich die
+ * Bild-Funktion ihre Schrift nicht mehr (sie lag im öffentlichen Ordner und
+ * wurde über die eigene Adresse abgerufen, wo nun die Prüfaufgabe stand). Die
+ * Antwort blieb HTTP 200 mit Bildtyp — und war NULL Byte lang, ein Jahr lang
+ * zwischengespeichert. Vierzehn Stunden lang zeigte jede geteilte Adresse in
+ * Chat, Netzwerk und Vorschau eine leere Fläche, ohne dass irgendetwas rot war.
+ *
+ * Deshalb wird die WIRKUNG gemessen, nicht der Code: Signatur und Breite aus dem
+ * Dateikopf, wie es der Browser-Test für die herunterladbaren Widget-Bilder
+ * schon tut. Ein zusammengefallenes Bild ist wenige Byte groß und fällt sonst
+ * niemandem auf.
+ */
+async function messeVorschaubild(): Promise<VorschaubildBefund | null> {
+  try {
+    // Mit Zufallszahl, damit die Antwort nicht aus dem CDN kommt: Ein einmal
+    // zwischengespeichertes leeres Bild bliebe sonst ein Jahr lang „in Ordnung".
+    const res = await fetch(`${BASE_URL}/api/og?hc=${Date.now()}`, {
+      headers: { "user-agent": "solar-check-health-check" },
+      signal: AbortSignal.timeout(30000),
+    });
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    const { png, breite } = pngMasse(bytes);
+    return { status: res.status, bytes: bytes.length, png, breite };
+  } catch {
+    return null;
+  }
+}
+
+/** Urteil über das Vorschaubild. Leer heißt: es kommt ein Bild heraus. */
+export function vorschaubildBefund(b: VorschaubildBefund | null): string[] {
+  if (!b) return [];
+  if (b.status !== 200) {
+    return [
+      `Das Vorschaubild antwortet mit ${b.status} statt 200. Geteilte Adressen zeigen dann in Chat und ` +
+        `Netzwerken keine Vorschau.`,
+    ];
+  }
+  if (!b.png) {
+    return [
+      `Das Vorschaubild ist kein Bild: ${b.bytes} Byte, aber keine PNG-Signatur — bei HTTP 200 und Bildtyp. ` +
+        `Von außen sieht nichts kaputt aus, geteilte Adressen zeigen aber eine leere Fläche, und die Antwort ` +
+        `wird ein Jahr zwischengespeichert. Zuerst prüfen, ob die Bild-Funktion an eine eigene Datei kommt ` +
+        `(Schrift, Logo) — der bekannte Fall war der Bot-Schutz vor der eigenen Schrift.`,
+    ];
+  }
+  if (b.breite !== 1200) {
+    return [`Das Vorschaubild ist ${b.breite} statt 1200 Punkte breit — die Netzwerke schneiden es dann zu.`];
+  }
+  return [];
 }
 
 /** Zufällige Atlas-Pfade aus der DB — ein leichter Read, kein Aggregat.
@@ -683,6 +864,66 @@ async function messeAboBereit(): Promise<AboBereit | null> {
   } catch {
     return null;
   }
+}
+
+/**
+ * Ist die Datenbank-Sicherheitsgrenze noch dicht?
+ *
+ * DER ANLASS (05.09.2026): Die Selbstauskunft (`sc_security_posture`) und ihr
+ * Urteil (`auditPosture`) gibt es seit dem 29.07.2026 — aufgerufen hat sie
+ * seitdem niemand. Kein Waechter, keine Action, kein Auftrag nennt die Route.
+ * In den fuenf Wochen dazwischen kamen rund 40 Tabellen und 40 Routen dazu;
+ * ob eine davon ohne Zeilenschutz angelegt wurde, haette sich in keiner
+ * Anzeige gezeigt: Die Seite laeuft, die Tests sind gruen, und mit dem
+ * Anon-Key aus dem Browser-Bundle waere die Tabelle trotzdem lesbar.
+ *
+ * Dieselbe Klasse wie das Rechtstexte-Runbook, das drei Tage im Repo lag,
+ * ohne dass ein Auftrag es ausfuehrte: Eine Pruefung, die existiert und nie
+ * laeuft, ist von keiner Pruefung nicht zu unterscheiden. Deshalb haengt sie
+ * hier — der Gesundheitscheck ist die einzige Pruefung, die auch dann laeuft,
+ * wenn der Rechner des Betreibers aus ist.
+ *
+ * Gefragt wird die Produktion selbst (`?verify=1` misst nur, spielt nichts
+ * ein). Zurueck kommt das Urteil samt Problemliste; die Rohdaten bleiben dort.
+ */
+async function messeSicherheitsPosture(): Promise<SicherheitsPosture | null> {
+  const geheim = process.env.CRON_SECRET;
+  if (!geheim) return null; // Ohne Betriebsgeheimnis keine Auskunft — kein Befund.
+  try {
+    const r = await fetch(`${BASE_URL}/api/security/setup?verify=1`, {
+      headers: { Authorization: `Bearer ${geheim}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    // Die Route antwortet bei Befund absichtlich mit 500 — das ist die
+    // Auskunft, nicht ein gescheiterter Abruf. Nur was gar nicht als Urteil
+    // lesbar ist, gilt als „konnte nicht nachsehen".
+    const d = (await r.json().catch(() => null)) as { ok?: unknown; problems?: unknown } | null;
+    if (typeof d?.ok !== "boolean") return null;
+    return { ok: d.ok, problems: Array.isArray(d.problems) ? d.problems.map(String) : [] };
+  } catch {
+    return null;
+  }
+}
+
+export type SicherheitsPosture = { ok: boolean; problems: string[] };
+
+/**
+ * Was aus der Selbstauskunft ein Befund fuer Claude wird.
+ *
+ * Jedes Problem ist eine offene Tuer, keine Warnung: Eine Tabelle ohne
+ * Zeilenschutz ist JETZT lesbar, nicht irgendwann. Deshalb gibt es hier kein
+ * Gelb. „Nicht gemessen" (null) bleibt stumm — dieselbe Trennung wie ueberall
+ * sonst zwischen „ist kaputt" und „Abruf kam nicht durch".
+ */
+export function sicherheitsBefund(p: SicherheitsPosture | null): string[] {
+  if (!p || p.ok) return [];
+  const liste = p.problems.length ? p.problems.join(" · ") : "Urteil rot, aber ohne Problemliste.";
+  return [
+    `Die Datenbank-Sicherheitsgrenze ist nicht dicht: ${liste} Der Anon-Key steht im ` +
+      `Browser-Bundle, was hier offen ist, ist oeffentlich. Zu tun: Ursache in lib/security-sql.ts ` +
+      `beheben (neue Tabelle ohne RLS → Setup-Route der Tabelle), danach /api/security/setup ohne ` +
+      `verify aufrufen und den Lauf gruen sehen.`,
+  ];
 }
 
 interface AboBereit {
@@ -1742,6 +1983,37 @@ async function main() {
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
   }
 
+  // ── Ist die Datenbank-Sicherheitsgrenze noch dicht? ───────────────────────
+  const posture = await messeSicherheitsPosture();
+  lines.push(
+    posture === null
+      ? "Sicherheitsgrenze: nicht messbar (Selbstauskunft nicht erreichbar)."
+      : posture.ok
+        ? "Sicherheitsgrenze: dicht (Zeilenschutz auf jeder Tabelle, SQL-Funktion nur fuer den Dienst)."
+        : `Sicherheitsgrenze: ${posture.problems.length} Problem(e).`,
+  );
+  forClaude.push(...sicherheitsBefund(posture));
+
+  // ── Steht der Bot-Schutz noch scharf, und kommen wir selbst durch? ────────
+  const firewall = await messeFirewall();
+  lines.push(
+    firewall === null
+      ? "Firewall: nicht messbar (Produktion antwortete gar nicht)."
+      : `Firewall: eigene Abrufe ${firewall.statusEigen}, fremde Kennung ${firewall.statusFremd}, Crawler-Anweisungen ${firewall.statusRobots}.`,
+  );
+  forClaude.push(...firewallBefund(firewall));
+
+  // ── Kommt aus dem Vorschaubild wirklich ein Bild heraus? ──────────────────
+  const vorschau = await messeVorschaubild();
+  lines.push(
+    vorschau === null
+      ? "Vorschaubild: nicht messbar (Produktion antwortete gar nicht)."
+      : vorschau.png
+        ? `Vorschaubild: echtes PNG, ${vorschau.breite} Punkte breit, ${Math.round(vorschau.bytes / 1024)} kB.`
+        : `Vorschaubild: kein Bild (HTTP ${vorschau.status}, ${vorschau.bytes} Byte).`,
+  );
+  forClaude.push(...vorschaubildBefund(vorschau));
+
   // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
   const aboBereit = await messeAboBereit();
   if (aboBereit) {
@@ -1894,7 +2166,7 @@ async function main() {
   //
   // Der Aufruf braucht weder Netz noch Datenbank — er liest nur Konstanten aus
   // dem Code. Er kann diesen Lauf also nicht zum Kippen bringen.
-  const heuteIso = new Date().toISOString().slice(0, 10);
+  const heuteIso = heuteInBerlin();
   const offen = faelligkeiten(heuteIso);
   lines.push(
     `Prüfstand: ${PRUEFSTAND.length} Werte, ${offen.length} überfällig` +

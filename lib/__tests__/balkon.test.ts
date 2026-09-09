@@ -364,7 +364,7 @@ describe("recommendBalkon", () => {
   it("a recommended storage always amortises within the recommend threshold", () => {
     // Invariante: wenn ein Speicher empfohlen wird, rechnet er sich unter der
     // Schwelle — der ehrliche Gate.
-    for (const presenceId of ["weg", "teils", "home"] as const) {
+    for (const presenceId of ["weg", "teils", "home", "immer"] as const) {
       for (const kwh of [1500, 2800, 4500]) {
         const rec = recommendBalkon({ ...base, presenceId, haushaltKwh: kwh });
         if (rec.best.storageId !== "none") {

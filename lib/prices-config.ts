@@ -7,7 +7,7 @@ export interface PriceConfig {
   batteryBase: number;           // € fixed cost for battery
   batteryPerKwh: number;         // €/kWh battery
   electricityPrice: number;      // €/kWh — Haushaltsstrom (Arbeitspreis)
-  electricityIncrease: number;   // p.a. as decimal (0.03 = 3 %/Jahr)
+  electricityIncrease: number;   // p.a. as decimal (0.02 = 2 %/Jahr)
   validFrom: string;             // ISO date string
   source: string | null;         // Data source description
 }

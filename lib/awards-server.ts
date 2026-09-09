@@ -1,8 +1,13 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase-server";
+import { ATLAS_DATEN_TAG } from "./atlas-revalidate-routen";
 import { withDbTimeout } from "./db-timeout";
 import { AWARD_CATEGORY_BY_KEY, dedupFreiflaeche, formatAwardValue, type GemeindeStats } from "./awards";
 import { bundeslandByAgs } from "./mastr-regions";
+import { getRegionById } from "./atlas";
+import { ortPhrase } from "./atlas-orte";
+import type { VergleichsPlatz } from "./orts-stories";
 import {
   LEVEL_LABEL,
   scopeIn,
@@ -11,18 +16,29 @@ import {
   selectHook,
   type HookExample,
   type HookKind,
+  type HookLevel,
   type HookSettings,
   type Placement,
+  DEFAULT_HOOK_SETTINGS,
 } from "./award-hook";
 
 // Geteilter Server-Loader für die Award-Ansichten. Die breite Grundtabelle
 // mastr_gemeinde_award (~11k Zeilen) + Name/Bezeichnung aus mastr_regions — ms
 // statt Sekunden, NIE live über die 562k-Rohzeilen.
 //
-// Bewusst KEIN unstable_cache: dessen Datencache deckelt bei 2 MB, und die
-// Grundtabelle + der Hook-Index liegen darüber (→ Cache scheitert je Request und
-// wirft, die Ansicht rechnet jedes Mal neu → „Suche dauert ewig"). Stattdessen
-// ein prozess-lokales Memo mit Ablauf: die Zahlen ändern sich nur im Monatslauf.
+// Bewusst KEIN unstable_cache FÜR DIE GROSSEN WERTE: dessen Datencache deckelt
+// bei 2 MB, und die Grundtabelle + der Hook-Index liegen darüber (gemessen:
+// 7,11 MB) → Cache scheitert je Request und wirft, die Ansicht rechnet jedes Mal
+// neu → „Suche dauert ewig". Stattdessen ein prozess-lokales Memo mit Ablauf:
+// die Zahlen ändern sich nur im Monatslauf.
+//
+// DER SATZ GILT DER GRÖSSE, NICHT DEM WERKZEUG — und das ist der Unterschied,
+// den er bis zum 08.09.2026 verwischt hat. Ein prozess-lokales Memo spart den
+// zweiten Aufruf, nie den ersten; wo ein Wert im SEITENAUFBAU gebraucht wird,
+// zahlt ihn jede frisch gestartete Function noch einmal. Ein kleines
+// Ergebnis gehört deshalb sehr wohl in den geteilten Cache (siehe
+// `auszeichnungsOrte`: 49 kB). Wer hier etwas Neues cachen will, misst zuerst,
+// wie groß es ist.
 
 const TTL_MS = 60 * 60 * 1000;
 
@@ -139,6 +155,170 @@ const hookIndexMemo = new Map<string, { at: number; val: HookIndex }>();
 /** Für ALLE Gemeinden den fertigen Aufhänger (Betreff/Einstieg) vorberechnen.
  *  Danach ist die Suche in der Ansicht nur ein Filter über dieses Array, nicht
  *  33 Sortierläufe pro Request. */
+/**
+ * Hat DIESE Gemeinde überhaupt eine Auszeichnung?
+ *
+ * Die Gemeindeseite lädt ihre Platzierung weiterhin im Browser nach — der
+ * Rechenkern zieht rund 11.000 Zeilen, und das gehört nicht in den
+ * Seitenaufbau (die Fehlerklasse, die am 27.07.2026 eine Index-Welle gekippt
+ * hat). Was die Seite VORHER wissen muss, ist nur eine Ja/Nein-Frage: Soll der
+ * Platz für die Kachel reserviert werden?
+ *
+ * Ohne diese Frage gibt es nur zwei schlechte Antworten — kein Platzhalter
+ * (dann springt der Inhalt, sobald die Rangdaten eintreffen) oder immer einer
+ * (dann springt er bei den rund zwei Dritteln der Orte OHNE Auszeichnung, nur
+ * andersherum).
+ *
+ * DAS PROZESS-LOKALE MEMO REICHTE DAFÜR NICHT — gemessen am 08.09.2026. Es
+ * spart den zweiten Aufruf im selben Prozess, nicht den ERSTEN: Eine frisch
+ * gestartete Function baut den vollen Index einmal auf, und das kostet 3,70 s
+ * für 10.742 Zeilen. Genau dieses Muster stand in den Gesundheitsläufen —
+ * erste Stichprobe 5,5 bis 7,9 s, jede folgende 0,6 bis 1,8 s, sechsmal in
+ * zwei Tagen, einmal 0,1 s vor der Notbremse bei 8 s. Die frühere Begründung
+ * an dieser Stelle („die Kosten fallen im Aufwärmlauf an, nicht bei
+ * Besuchern") war die Annahme, die das widerlegt hat.
+ *
+ * GECACHT WIRD NUR DIE LISTE DER AUSGEZEICHNETEN ORTE, nicht der Index. Am
+ * Kopf dieser Datei steht mit Grund „bewusst kein unstable_cache": Der
+ * Datencache deckelt bei 2 MB, und der volle Index misst 7,11 MB — der
+ * Versuch scheiterte je Anfrage und rechnete jedes Mal neu. Die bloßen
+ * Kennungen sind 49 kB (4.596 von 10.742 Orten) und liegen damit sicher
+ * darunter. Der Deckel ist der Grund, warum hier NUR die Kennungen stehen und
+ * niemals ein Feld mehr: Wer dieser Liste den Namen oder die Kategorie
+ * beilegt, führt sie zurück über den Deckel, und der Cache fällt still aus.
+ *
+ * Ablauf und Marke wie bei den übrigen Atlas-Lesevorgängen: eine Stunde —
+ * dieselbe Frist wie das bisherige Memo, die Frische ändert sich also nicht —
+ * und die Marke des Datenlaufs, damit der Monatslauf sie mitnimmt.
+ *
+ * Fällt die Datenbank aus, lautet die Antwort „nein": kein Platzhalter ist der
+ * harmlosere Fehler.
+ */
+const auszeichnungsOrteUncached = async (): Promise<string[]> =>
+  (await buildHookIndex(DEFAULT_HOOK_SETTINGS)).rows
+    .filter((r) => r.kind !== "neutral")
+    .map((r) => r.regionId);
+
+export const auszeichnungsOrte = unstable_cache(auszeichnungsOrteUncached, ["auszeichnungs-orte-v1"], {
+  revalidate: 3600,
+  tags: [ATLAS_DATEN_TAG],
+});
+
+export async function hatAuszeichnung(regionId: string): Promise<boolean> {
+  try {
+    return (await auszeichnungsOrte()).includes(regionId);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Die Platzierungen EINES Orts — alle, nicht nur die beste.
+ *
+ * WOFÜR: Der Auszeichnungs-Kasten zeigt genau eine, und nur wo der Ort vorn
+ * liegt. Für den Vergleich innerhalb der eigenen Größenklasse („wo stehen wir
+ * unter den kleinen Gemeinden im Landkreis") ist auch ein Platz im Mittelfeld
+ * eine Aussage — und die gibt es für JEDEN Ort, während die gespeicherten
+ * Funde des Suchlaufs naturgemäß nur das Auffällige treffen (gemessen: 313
+ * Funde auf 197 von 11.000 Gemeinden).
+ *
+ * Gerechnet wird nichts Neues: dieselbe Rechnung, aus der Aufhänger, Kasten
+ * und Rangliste kommen. Prozess-lokal gemerkt wie der Index selbst.
+ */
+export async function platzierungenFuer(regionId: string): Promise<Placement[]> {
+  try {
+    const stats = await loadAwardStats();
+    return computePlacements(stats).get(regionId) ?? [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Die Platzierungen eines Orts, fertig für den Story-Feed.
+ *
+ * Die Auswahl steht HIER und nicht in der Oberfläche: Sie hängt an den
+ * Merkern des Award-Kerns (Verdachtsfall, dünner Bestand) und an der
+ * Kategorie-Tabelle — beides Server-Wissen. Eine Client-Komponente, die auch
+ * nur einen Wert von hier importiert, zieht die halbe Rechenkette in das
+ * Browser-Bündel jeder der 11.000 Ortsseiten.
+ *
+ * `ohneKategorie` ist die, die der Auszeichnungs-Kasten oben schon zeigt —
+ * zweimal dieselbe Aussage auf einer Seite ist der Fehler, gegen den jener
+ * Kasten selbst gebaut wurde.
+ */
+export async function vergleichsPlaetze(
+  regionId: string,
+  opts: { ohneKategorie?: string | null; hoechstens?: number } = {},
+): Promise<VergleichsPlatz[]> {
+  const alle = await platzierungenFuer(regionId);
+  // Die Gebietsnamen NACHSCHLAGEN, nicht aus dem Schlüssel bauen: Für den
+  // Landkreis stand sonst der rohe Gemeindeschlüssel im Satz („im 06632").
+  const gebietsNamen = new Map<string, string>();
+  for (const sid of new Set(alle.filter((p) => p.level === "kreis").map((p) => p.scopeId))) {
+    const r = await getRegionById(sid);
+    if (r) gebietsNamen.set(sid, ortPhrase({ name: r.name, level: "kreis" }));
+  }
+  return alle
+    .filter((p) => !p.spike && !p.duenn)
+    // Eine Gruppe unter zehn trägt keinen Rang: „Platz 2 von 3" ist keine
+    // Einordnung, sondern eine Aufzählung.
+    .filter((p) => p.total >= MIN_GRUPPE_FUER_RANG)
+    .filter((p) => p.categoryKey !== opts.ohneKategorie)
+    // Nur was WEIT genug vorn steht, um eine Aussage zu sein: das obere
+    // Drittel. Weiter hinten sagt der Rang über den Ort wenig und liest sich
+    // als Mängelliste — auf der eigenen Seite genauso.
+    .filter((p) => p.rank / p.total <= 0.34)
+    .sort((a, b) => a.rank / a.total - b.rank / b.total)
+    // HÖCHSTENS EINE PLATZIERUNG JE MESSGRÖSSE. Ohne das stand dieselbe Größe
+    // dreimal auf der Seite — im Auszeichnungs-Kasten für den Landkreis, im
+    // Feed für das Land und noch einmal bundesweit. Drei Karten über
+    // Balkonkraftwerke sind kein Feed, sondern eine Wiederholung; die stärkste
+    // Ebene genügt.
+    .filter((p, _i, arr) => arr.find((q) => q.categoryKey === p.categoryKey) === p)
+    .slice(0, opts.hoechstens ?? 2)
+    .map((p) => {
+      const cat = AWARD_CATEGORY_BY_KEY[p.categoryKey];
+      const gebiet = gebietsNamen.get(p.scopeId) ?? gebietsName(p.level, p.scopeId);
+      return {
+        kategorie: p.categoryKey,
+        ebene: p.level,
+        klasseSlug: p.klasseSlug,
+        klasseLabel: p.klasseLabel,
+        gruppe: `${p.klasseLabel} ${gebiet}`.trim(),
+        gebiet,
+        messgroesse: cat?.themaDativ ?? p.categoryKey,
+        rang: p.rank,
+        ausN: p.total,
+        wert: cat ? formatAwardValue(p.value, cat.format) : String(p.value),
+        rohwert: Math.round(p.value * 10) / 10,
+        einheit: cat ? einheitVon(cat.format) : "",
+      };
+    });
+}
+
+/** Ab so vielen Orten trägt ein Rang eine Aussage. */
+const MIN_GRUPPE_FUER_RANG = 10;
+
+/** „im Landkreis Fulda", „in Hessen", „bundesweit". */
+function gebietsName(level: HookLevel, scopeId: string): string {
+  if (level === "bund") return "bundesweit";
+  const bl = bundeslandByAgs(scopeId.slice(0, 2));
+  if (level === "land") return bl ? ortPhrase({ name: bl.name, level: "bundesland" }) : "im Bundesland";
+  // Kreis ohne aufgelösten Namen: lieber die Ebene benennen als eine Kennzahl
+  // in den Satz schreiben.
+  return "im Landkreis";
+}
+
+/** Die Einheit, die neben der Zahl steht — nie an sie geklebt. */
+function einheitVon(format: string): string {
+  if (format === "wattProKopf") return "Wp je Einwohner";
+  if (format === "je1000") return "je 1.000 Einwohner";
+  if (format === "je100Dach") return "je 100 Dächer";
+  if (format === "kwhProKopf") return "kWh je Einwohner";
+  return "";
+}
+
 export async function buildHookIndex(settings: HookSettings): Promise<HookIndex> {
   const key = JSON.stringify(settings);
   const hit = hookIndexMemo.get(key);

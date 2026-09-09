@@ -22,6 +22,7 @@
 import { writeFileSync } from "fs";
 import { join } from "path";
 import { Open } from "unzipper";
+import { heuteInBerlin } from "../lib/zeit";
 
 const BASIS_KL = "https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/daily/kl/historical";
 const BASIS_ST = "https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/daily/solar";
@@ -107,7 +108,7 @@ async function main() {
   }
   if (reihe.length === 0) throw new Error("Keine Jahre gelesen");
 
-  const heute = new Date().toISOString().slice(0, 10);
+  const heute = heuteInBerlin();
   const datei = `// AUTO-generiert aus den DWD-Stationstageswerten der Lufttemperatur (CC BY 4.0) —
 // erzeugt von scripts/dwd-temperatur-tage-sync.ts, nicht von Hand pflegen.
 //

@@ -29,6 +29,7 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 import { Open } from "unzipper";
+import { heuteInBerlin } from "../lib/zeit";
 
 const BASIS = "https://opendata.dwd.de/climate_environment/CDC/grids_germany/monthly/radiation_global";
 const ERSTES_JAHR = 1991;
@@ -119,7 +120,7 @@ async function main() {
   const zellen = new Set(reihe.map((r) => r.zellen));
   if (zellen.size !== 1) throw new Error(`Zellenzahl schwankt (${[...zellen].join(", ")}) — die Raster sind nicht deckungsgleich`);
 
-  const heute = new Date().toISOString().slice(0, 10);
+  const heute = heuteInBerlin();
   const datei = `// AUTO-generiert aus den DWD-Monatsrastern der Globalstrahlung (CC BY 4.0) —
 // erzeugt von scripts/dwd-strahlung-sync.ts, nicht von Hand pflegen.
 //

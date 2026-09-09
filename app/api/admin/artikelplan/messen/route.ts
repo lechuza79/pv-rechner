@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { heuteInBerlin } from "../../../../../lib/zeit";
 import { isAdminSession } from "../../../../../lib/admin-guard";
 import { ARTIKELPLAN } from "../../../../../lib/artikelplan";
 
@@ -112,7 +113,7 @@ export async function POST(req: Request) {
     gespeichertAm: vorhaben.messung.gemessenAm,
     // Das Datum der neuen Messung setzt der Server, nicht der Browser: Ein
     // Prüfdatum darf nur die Stelle stempeln, die wirklich geprüft hat.
-    gemessenAm: new Date().toISOString().slice(0, 10),
+    gemessenAm: heuteInBerlin(),
     alt,
     neu,
   });

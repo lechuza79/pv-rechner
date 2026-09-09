@@ -182,6 +182,18 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // nicht: Die Kumulierungsgrenze deckelt die SUMME aller öffentlichen Mittel
   // auf 50 % der Gesamtkosten, nicht unseren Betrag allein.
   "wetter-ruhr-balkonsolar",
+  // Aufgenommen am 06.09.2026, ausgeschöpft — Förderkulisse und Programmseite
+  // im Volltext gelesen. Die Prüfformen fehlen noch, und zwei davon kennt das
+  // Modell nicht: der Gesamtdeckel von 4.900 € je Liegenschaft über alle
+  // Maßnahmen hinweg und der Bonus für Wohngeld-, Bürgergeld-,
+  // Grundsicherungs- oder BAföG-Bezug.
+  "braunschweig-regenerative-energien",
+  // Aufgenommen am 07.09.2026, Förderübersicht der Stadt im Rohtext gelesen.
+  // Die Prüfformen fehlen noch: Der Stichtag „vor dem 1. Januar 2024 im
+  // Marktstammdatenregister angemeldet" hängt an einer Angabe, die der Rechner
+  // nicht erhebt, und die Deckelung auf 100 % des Kaufpreises ist eine Form,
+  // die das Modell nicht ausdrückt.
+  "gelsenkirchen-steckersolar",
 ];
 
 /**

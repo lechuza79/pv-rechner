@@ -62,3 +62,31 @@ export function wochentagInBerlin(jetzt: Date = new Date()): number {
   const kurz = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Berlin", weekday: "short" }).format(jetzt);
   return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(kurz);
 }
+
+/**
+ * Der GEMEINTE Kalendertag eines Arguments, das gegen einen deutschen Stichtag
+ * gehalten wird — die Unterscheidung, an der die naive Fassung scheitert.
+ *
+ * Ein Aufrufer übergibt eines von zwei Dingen, und sie brauchen verschiedene
+ * Behandlung:
+ *   • einen ZEITPUNKT (`new Date()`): Er meint „jetzt". Welcher Kalendertag das
+ *     ist, entscheidet die deutsche Uhr, nicht die Weltzeit — deshalb umrechnen.
+ *   • einen gemeinten TAG (`"2026-08-01"`): Er meint diesen Tag bereits. Ihn
+ *     noch einmal zu verschieben wäre der Fehler in der Gegenrichtung.
+ *
+ * Genau diese Vermischung stand hinter zwei gemessenen Fehlern. Der
+ * Einspeise-Plan und der BEG-Fahrplan bildeten ihren Vergleichstag mit
+ * `toISOString().slice(0, 10)` und lieferten deshalb zwischen 00:00 und 02:00
+ * deutscher Zeit AM Stichtag noch den überholten Satz — es geht um Geld, und
+ * von außen ist nichts zu sehen. Und `lib/stand.ts` reichte einen gemeinten Tag
+ * als `new Date("2026-08-01T00:00:00")` herein: ohne Zeitzone im String wird das
+ * in ORTSZEIT gelesen, in Deutschland kam dabei der 31.07. heraus und damit die
+ * VORIGE Vergütungsperiode, auf einem UTC-Server der 01.08. und die richtige.
+ * Derselbe Code, zwei Ergebnisse, je nach Uhr der Maschine (gemessen 08.09.2026).
+ *
+ * Die Faustregel dahinter: Ein deutscher Stichtag wird gegen eine deutsche Uhr
+ * gehalten. Ein ZEITSTEMPEL („wann ist etwas passiert") bleibt dagegen UTC.
+ */
+export function tagInBerlin(wann: Date | string): string {
+  return typeof wann === "string" ? wann.slice(0, 10) : heuteInBerlin(wann);
+}

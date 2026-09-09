@@ -4,6 +4,14 @@
 // set. Curated by hand (no machine-readable source exists), each entry carries
 // a `stand` (as-of), `source`, `status` and a `verified` flag. Programs change
 // and budgets run dry mid-year — treat `status` as a point-in-time snapshot.
+//
+// GEFUNDEN, ABER NOCH NICHT HIER: docs/foerder-gefunden-nicht-aufgenommen.md.
+// Dort stehen Programme, die ein Lauf an der Amtsseite selbst gelesen hat und
+// die trotzdem fehlen — jeweils mit dem Grund und dem, was zur Aufnahme fehlt.
+// Wer den Katalog erweitert, sieht zuerst dort nach: Der Wortlaut liegt schon
+// vor, und ein Lauf, der bei null anfängt, sucht dieselben Seiten wieder.
+
+import { heuteInBerlin } from "./zeit";
 
 export type Eligibility = "privat" | "gewerblich";
 
@@ -289,6 +297,18 @@ export interface FundingProgram {
    * kommen (Mühlhausen), greift die Grenze ohnehin für beides.
    */
   pvMin?: number;
+  /**
+   * Die Dachanlage wird NUR zusammen mit einem Speicher gefördert — der
+   * PV-Betrag entfällt ohne Speicher (Mühlhausen an der Sulz: „Die Dachanlage
+   * wird nur zusammen mit einem Stromspeicher gefördert").
+   *
+   * Vorher stand dafür `speicherMin: 1` am Programm, mit dem Kommentar, ohne
+   * Speicher greife keine Stufe. Das stimmte nicht: `speicherMin` wird nur im
+   * SPEICHER-Zweig geprüft, und dieses Programm hat keinen — die Dach-Staffel
+   * zahlte 1.000–1.500 € auch bei 0 kWh. Gefunden vom Rechenmodell-Council am
+   * 05.09.2026; der Mindestleistungs-Test kannte nur `pvMin`.
+   */
+  pvNurMitSpeicher?: boolean;
 
   // ── Technik ──────────────────────────────────────────────────────────────────
   /**
@@ -442,7 +462,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "berlin-solarplus": {
     id: "berlin-solarplus", name: "SolarPLUS", traeger: "IBB / Land Berlin",
     level: "land", region: "Berlin", bundesland: "Berlin", agsCode: "11",
-    url: "https://www.berlin.de/solarcity/", stand: "Juni 2026",
+    url: "https://www.berlin.de/solarcity/", stand: "September 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Pauschalen für Speicher, Zählerschrank, Denkmal-PV",
@@ -451,10 +471,36 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Zählerschrank", value: "750 € pauschal" },
       { label: "Denkmalgerechte PV", value: "600 – 5.700 €" },
     ],
+    // Am 09.09.2026 an der Förderrichtlinie selbst gelesen (Stand ab 02.01.2026,
+    // Tabelle auf S. 8/9 sowie Nr. 2.2 und 3.2) — Auszug in
+    // `docs/quellen/berlin-solarplus-richtlinie-2026.txt`. Die drei Pauschalen
+    // sind zellgleich mit dem, was hier steht.
+    //
+    // DIE ERSTE BEDINGUNG WAR FALSCH und ist ersetzt. Sie lautete „Projektstart
+    // erst nach Förderzusage" und behauptete damit einen Förderausschluss, den
+    // die Richtlinie nicht kennt — dieselbe Fehlerklasse wie die verbreitete
+    // Verschärfung bei der Bundesförderung („nichts kaufen, bevor die KfW
+    // bewilligt hat"). Die Richtlinie trennt zwei Fälle, und keiner davon ist
+    // die Förderzusage:
+    //   * SolarPLUS S (Ein-/Zweifamilien- und Reihenhaus, unser Normalfall),
+    //     Nr. 2.2: „Das Projekt darf nicht vor dem Inkrafttreten dieser
+    //     Förderrichtlinie begonnen worden sein." Und weiter: „Aus einem
+    //     Projektbeginn vor der Antragstellung können Antragstellende keinen
+    //     Anspruch herleiten, dass eine Zuwendung gewährt wird. Mit dem Vorhaben
+    //     wird in diesen Fällen auf eigenes finanzielles Risiko begonnen." Ein
+    //     früher Start ist dort also ausdrücklich ZULÄSSIG, nur ohne Anspruch.
+    //   * SolarPLUS L (Mehrfamilienhaus, Gewerbe), Nr. 3.2: hier ist der Start
+    //     vor der EINGANGSBESTÄTIGUNG förderschädlich („ist eine Förderung
+    //     ausgeschlossen") — die Eingangsbestätigung ist aber die Bestätigung
+    //     des Antragseingangs, nicht die Zusage; nach ihr darf man beginnen,
+    //     „auf eigenes Risiko" und weiterhin ohne Anspruch.
+    // Wer den alten Satz las, verschob seinen Kauf auf einen Bescheid, auf den
+    // er gar nicht warten musste. Der Abzug ändert sich dadurch nicht.
     conditions: [
-      "Projektstart erst nach Förderzusage",
+      "Beim Ein- und Zweifamilienhaus darf vor dem Antrag begonnen werden — allerdings auf eigenes Risiko und ohne Anspruch auf die Förderung",
+      "Beim Mehrfamilienhaus und im Gewerbe muss die Eingangsbestätigung des Antrags vorliegen, bevor bestellt, beauftragt oder angezahlt wird",
       "Recycling-Zusage beim Speicher",
-      "Balkonkraftwerke 2026 nicht mehr gefördert",
+      "Balkonkraftwerke 2026 nicht mehr gefördert — für Steckersolargeräte nimmt das Land keine neuen Anträge mehr an",
     ],
     combinableWith: BUND,
   },
@@ -2293,6 +2339,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Der Antrag wird nach Installation und Registrierung gestellt",
       "Gefördert wird höchstens ein Balkonkraftwerk je Haushalt",
       "Die Anlage muss ab dem 01.01.2024 neu angeschafft worden sein; der Wechselrichter darf höchstens 800 W leisten",
+      // Am 08.09.2026 an der Amtsseite nachgetragen: „Nicht gefördert werden
+      // PV-Anlagen mit einer Modulleistung von mehr als 2.000 Wattpeak."
+      // Die Grenze stand nur beim Wechselrichter, nicht bei den Modulen — wer
+      // drei Module rechnet, überschreitet sie, ohne dass es hier stand.
+      "Die Module leisten zusammen höchstens 2.000 Wp",
       "Die Anlage ist fünf Jahre lang zu betreiben",
     ],
     combinableWith: BUND,
@@ -2426,15 +2477,15 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
-    // Die Dach-Staffel gilt NUR mit Speicher — das ist im Modell nicht als
-    // Bedingung ausdrückbar. `speicherMin: 1` erzwingt sie über die einzige
-    // Größe, die der Rechner kennt: Ohne Speicher greift keine Stufe.
+    // Die Dach-Staffel gilt NUR mit Speicher. Bis 05.09.2026 sollte das
+    // `speicherMin: 1` erzwingen — das Feld wirkt aber nur im Speicher-Zweig,
+    // und dieses Programm hat keinen; die Staffel zahlte bei 0 kWh trotzdem.
     // Die Staffel beginnt „ab 5 kWp bis einschl. 10 kWp" — am 27.08.2026 auf der
     // Gemeindeseite gelesen. Ohne `pvMin` zahlte die unterste Stufe auch bei
     // 3 kWp, wo die Gemeinde nichts zahlt.
     pvTiers: [{ upTo: 10, amount: 1000 }, { upTo: 20, amount: 1250 }, { upTo: 30, amount: 1500 }],
     pvMin: 5,
-    speicherMin: 1,
+    pvNurMitSpeicher: true,
     balkonTiers: [{ upTo: 680, amount: 100 }, { upTo: 1020, amount: 150 }, { upTo: 999999, amount: 200 }],
   },
 
@@ -2544,13 +2595,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Pauschale beim Wechsel auf Wärmepumpe oder Pelletheizung — Förderplätze vergeben",
     rates: [{ label: "Heizungstausch", value: "1.000 € je Wohngebäude" }],
     conditions: [
-      "Die Förderplätze des laufenden Programms sind bereits vergeben",
+      "Die Förderplätze des laufenden Programms sind bereits vergeben; eine Bewerbung ist nur noch für einen Wartelistenplatz möglich",
       "Antragsberechtigt sind Eigentümerinnen und Eigentümer von Wohngebäuden in der Gemeinde Wenden",
       "Der Antrag wird online gestellt",
     ],
     combinableWith: BUND,
     foerdert: ["waermepumpe"],
     // 1.000 € Pauschale — ohne Rechenwert, solange die Plätze vergeben sind.
+    //
+    // WARTELISTE ERGÄNZT (07.09.2026, an der Amtsseite gelesen). Die Gemeinde
+    // schreibt: „Die verfügbaren Förderplätze für das aktuelle Förderprogramm
+    // sind bereits vergeben. Eine Bewerbung ist derzeit nur noch für
+    // Wartelistenplätze möglich." Unser Satz sagte nur die erste Hälfte — für
+    // sich richtig, als Auskunft aber zu eng: Wer ihn liest, gibt auf, obwohl
+    // die Gemeinde ausdrücklich noch etwas anbietet. Am Rechenwert ändert das
+    // nichts: Ein Wartelistenplatz ist keine Zusage.
   },
 
   // ── Kommune – übergeben von der Prüfmechanik-Session, gelesen 18.08.2026 ────
@@ -4169,6 +4228,129 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // einem falschen Abzug geführt.
   },
 
+  "braunschweig-regenerative-energien": {
+    id: "braunschweig-regenerative-energien",
+    name: "Förderprogramm für regenerative Energien und Energieeffizienzmaßnahmen",
+    traeger: "Stadt Braunschweig", level: "kommune", region: "Braunschweig",
+    bundesland: "Niedersachsen", agsCode: "03101",
+    url: "https://www.braunschweig.de/vv/produkte/VI/68/68_3/foerderprogramm-fuer-regenerative-energien-und-effizienzmassnahmen.php",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    endetIso: "2026-09-06",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschalen für Balkonkraftwerk, Speicher und Wärmepumpe — Topf für 2026 leer",
+    maxFoerderung: "insgesamt max. 4.900 € je Liegenschaft",
+    rates: [
+      { label: "Balkonkraftwerk", value: "200 € pauschal" },
+      { label: "Balkonkraftwerk (Wohngeld, Bürgergeld, Grundsicherung oder BAföG)", value: "zusätzlich 150 €" },
+      { label: "Speicher fürs Balkonkraftwerk", value: "150 € pauschal" },
+      { label: "Luft/Wasser-Wärmepumpe", value: "1.000 € pauschal" },
+      { label: "Sole/Wasser-Wärmepumpe", value: "4.000 € pauschal" },
+      { label: "Wärmepumpe mit klimafreundlichem Kältemittel (GWP ≤ 150)", value: "zusätzlich 500 €" },
+    ],
+    conditions: [
+      "Keine Antragsannahme: Der Topf für 2026 ist ausgeschöpft; über eine Förderung 2027 will die Stadt zum Jahresende informieren",
+      "Anträge waren seit dem 15. April 2026, 8 Uhr über das Service-Portal möglich",
+      "Das Balkonkraftwerk hat einen Wechselrichter von 0,35 bis 0,8 kVA und höchstens 960 Wp Modulleistung",
+      "Je Liegenschaft werden insgesamt höchstens 4.900 € ausgezahlt",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon", "waermepumpe"],
+    balkonPauschale: 200,
+    // AUFGENOMMEN 06.09.2026, ausgeschöpft — und das ist der Grund, es überhaupt
+    // aufzunehmen: „gab es, ist beendet" ist auf der Stadtseite eine echte
+    // Auskunft, während „keine kommunale Förderung" dort schlicht falsch wäre.
+    // Wortlaut der Stadt, heute im Rohtext gelesen: „Das Förderprogramm der Stadt
+    // Braunschweig für regenerative Energien und Energieeffizienzmaßnahmen ist
+    // bereits ausgeschöpft. Eine Antragstellung ist leider nicht mehr möglich."
+    // Die Seite kündigt an, über eine Förderung 2027 zum Jahresende zu
+    // informieren; die Beträge stammen aus der FÖRDERKULISSE 2026 (PDF der Stadt,
+    // heute im Volltext gelesen).
+    //
+    // NUR DER BALKON-SATZ IST GERECHNET — dieselbe Abwägung wie bei Ulm:
+    //   * Die Wärmepumpe hat ZWEI Pauschalen, und welche gilt, hängt an der
+    //     Wärmequelle (Luft/Wasser 1.000 €, Sole/Wasser 4.000 €), dazu ein
+    //     Kältemittel-Bonus, den unser Modell nicht kennt. `wpPauschale` kennt
+    //     nur eine Zahl; jede Wahl wäre für die andere Hälfte der Antragsteller
+    //     falsch — beim Sole/Wasser-Fall um 3.000 €.
+    //   * Die 100 €/kWp sind KEIN Dach-Satz. Die Förderkulisse führt sie unter
+    //     „Stromerzeugende Fassade/Zäune (vertikale PV-Anlage, 3 - 20 kWp)";
+    //     als `pvPerKwp` versprächen sie jedem Schrägdach einen Zuschuss, den es
+    //     dafür nicht gibt. Ein erster Entwurf schrieb das als Bedingung mit
+    //     `nur: ["pv"]` hin — der Technik-Test hat es zu Recht abgewiesen: Eine
+    //     Bedingung, die auf eine Technik zeigt, die das Programm gar nicht
+    //     fördert, wird nirgends angezeigt und ist toter Text. Dass das Dach
+    //     leer ausgeht, sagt bereits `foerdert`.
+    //   * Der 150-€-Bonus für Wohngeld-, Bürgergeld-, Grundsicherungs- oder
+    //     BAföG-Bezug hängt an einer Angabe, die der Rechner nicht erhebt, und
+    //     der Speicherzuschuss an einem Balkonspeicher, den der Katalog nicht
+    //     getrennt führt. Beide informieren, beide rechnen nicht.
+    //
+    // `endetIso` ist der Tag, an dem wir den Antragsstopp gelesen haben, nicht
+    // der Tag, an dem die Stadt ihn ausgesprochen hat — den nennt sie nicht.
+    // Gemeindeschlüssel aus dem Melderegister: 03101, kreisfreie Stadt,
+    // 252.962 Einwohner. Fünfstellig ist hier richtig, weil Braunschweig
+    // kreisfrei ist.
+    //
+    // Es entsteht KEINE Förder-Stadtseite: `foerderseiteTraegt` verlangt Status
+    // „aktiv" und Dach-Photovoltaik, und beides trifft nicht zu.
+  },
+
+  "gelsenkirchen-steckersolar": {
+    id: "gelsenkirchen-steckersolar", name: "Förderung von Stecker-Solargeräten",
+    traeger: "Stadt Gelsenkirchen", level: "kommune", region: "Gelsenkirchen",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05513",
+    url: "https://www.gelsenkirchen.de/de/infrastruktur/umwelt/klima/foerderprogramme.aspx",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss je Balkonkraftwerk — keine Dach-Photovoltaik, kein Speicher",
+    maxFoerderung: "100 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € je Anlage" }],
+    conditions: [
+      "Gefördert werden Geräte bis 800 W Wechselrichterleistung",
+      "Je Wohneinheit wird höchstens ein Gerät gefördert",
+      "Der Zuschuss beträgt höchstens 100 % des Kaufpreises",
+      "Anlagen, die vor dem 1. Januar 2024 im Marktstammdatenregister angemeldet wurden, sind ausgeschlossen",
+      "Der Antrag wird erst nach Installation und Inbetriebnahme gestellt",
+      "Die Förderrichtlinie ist bis zum 13. Dezember 2026 befristet",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 100,
+    // AUFGENOMMEN 07.09.2026. Eine Stadt mit 267.930 Einwohnern, deren
+    // Balkon-Zuschuss uns bislang komplett gefehlt hat — auf der Stadtseite
+    // stand damit „keine kommunale Förderung", während es eine gibt. Wortlaut
+    // der Stadt, heute im Rohtext ihrer Förderübersicht gelesen: „Die Stadt
+    // Gelsenkirchen fördert die Anschaffung und Installation von
+    // Stecker-Solargeräten (sogenannten Balkonkraftwerken) bis 800 Watt
+    // Wechselrichterleistung mit einem Zuschuss von 100 Euro pro Anlage. […] Es
+    // wird maximal ein Gerät je Wohneinheit gefördert. Der Förderhöchstsatz
+    // beträgt maximal 100 Prozent des Kaufpreises." und „Die Förderrichtlinie
+    // ist befristet bis zum 13.12.2026."
+    //
+    // ANLASS WAR EIN WIDERSPRUCH ZWEIER SEKUNDÄRQUELLEN — 100 € gegen 200 € —,
+    // und genau deshalb ist keine davon die Quelle geworden. Beide Zahlen
+    // standen in Portalen; die Stadt selbst sagt 100 €.
+    //
+    // KEIN `endetIso`: Die Stadt befristet ihre RICHTLINIE, nicht das
+    // Antragsfenster — dieselbe Unterscheidung wie bei Limburgerhof, wo das
+    // Datum drinsteht, weil es dort wirklich das Antragsfenster ist. Die
+    // Befristung steht als Bedingung, wo sie hingehört.
+    //
+    // ZUR DACHANLAGE SAGEN WIR NICHTS. Die Förderübersicht der Stadt führt
+    // heute nur Stecker-Solargeräte und die Gebäudehülle; die frühere Seite zum
+    // PV-Förderprogramm antwortet mit 404, und ein Ansprechpartner „Förderung
+    // von Photovoltaik-Anlagen" steht weiter dort. Sekundärquellen sagen, das
+    // Dachprogramm sei Ende Januar 2026 mangels Mitteln ausgelaufen — belegt
+    // ist das nicht, und ein gescheiterter Abruf ist kein Beleg dafür, dass es
+    // etwas nicht gibt. `foerdert` nennt deshalb nur den Balkon; ein Status für
+    // die Dachanlage wird nicht behauptet.
+    //
+    // Es entsteht KEINE Förder-Stadtseite: `foerderseiteTraegt` verlangt
+    // Dach-Photovoltaik, und die fördert die Stadt nach eigener Übersicht
+    // nicht. Gemeindeschlüssel aus dem Melderegister: 05513, kreisfrei,
+    // 267.930 Einwohner — fünfstellig ist hier richtig.
+  },
+
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
@@ -4262,8 +4444,11 @@ export const FOERDER_BESTAETIGUNG_MAX_TAGE = 14;
 /** So lange darf ein Programm nach einer Seitenänderung ungeprüft mitrechnen. */
 export const FOERDER_NACHPRUEF_FRIST_TAGE = 14;
 
+// Deutscher Kalendertag, nicht Weltzeit: Von hier hängen die 14-Tage-Fristen ab,
+// nach denen ein Programm aufhört mitzurechnen — also Geld. Mit der Weltzeit
+// verfiele ein Beleg zwischen 00:00 und 02:00 deutscher Zeit einen Tag zu spät.
 function heuteIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return heuteInBerlin();
 }
 
 function tageSeit(iso: string | undefined | null, heute: string): number {
@@ -4521,7 +4706,11 @@ export function fundingAmount(
   // Programm bleibt `computable` — der Betrag ist bekannt, er ist null. „Lässt
   // sich nicht berechnen" wäre eine andere Aussage und stünde als solche auf der
   // Karte (dieselbe Unterscheidung wie bei der Kumulierungsgrenze im WP-Rechner).
-  const unterMindestleistung = f.pvMin !== undefined && anlage.kwp < f.pvMin;
+  // Beides ist dieselbe Aussage: Für DIESE Anlage zahlt das Programm nichts,
+  // der Betrag ist bekannt und null.
+  const unterMindestleistung =
+    (f.pvMin !== undefined && anlage.kwp < f.pvMin) ||
+    (f.pvNurMitSpeicher === true && !(anlage.speicherKwh > 0));
 
   if (f.percentOfCost) {
     if (unterMindestleistung) return { total: 0, computable: true, active };
