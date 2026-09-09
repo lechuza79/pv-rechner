@@ -32,8 +32,9 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
     const block = page.locator("div").filter({ hasText: /^Passende Sets zu kaufen/ }).first();
     await expect(block).toBeVisible();
 
-    // Mindestens eine Angebotszeile mit einem echten Euro-Betrag.
-    await expect(page.getByRole("button", { name: /Zum Shop/ }).first()).toBeVisible();
+    // Mindestens eine Angebotszeile mit einem Kaufweg. Es ist ein LINK, kein
+    // Knopf — siehe den eigenen Test dazu weiter unten.
+    await expect(page.getByRole("link", { name: /Zum Shop/ }).first()).toBeVisible();
 
     // Die erste Zeile trägt die Begründung, warum sie oben steht.
     await expect(page.getByText("rechnet sich am besten")).toBeVisible();
@@ -86,8 +87,14 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
     // Zahl, die im Shop niemand wiederfindet — und die Amortisation als
     // „bezahlt nach 4.0 Jahre", mit englischem Punkt und falschem Fall.
     await bisZumErgebnis(page);
-    const block = page.locator("text=Passende Sets zu kaufen").locator("xpath=ancestor::div[1]");
+    // Der ganze Kaufblock, nicht nur seine Überschrift: Ein zu enger Ausschnitt
+    // enthält gar keine Preiszeile, und dann prüfen die Verbote unten nichts —
+    // genau daran war die erste Fassung rot (sie griff über die Elternkette nur
+    // die Überschrift, 52 Zeichen statt 920). Der äußere Container kommt
+    // zuerst; die Zusicherung darunter hält das fest, falls es je kippt.
+    const block = page.locator("div").filter({ hasText: /^Passende Sets zu kaufen/ }).first();
     const text = await block.innerText();
+    expect(text).toContain("Zum Shop");
 
     // Kein gestaffelter Preis im Kaufblock.
     expect(text).not.toMatch(/Tsd\.\s*€/);
@@ -103,8 +110,25 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
     // jedes Besuchers dorthin, bevor er irgendetwas angeklickt hat. Der Fehler
     // wäre unsichtbar — das Bild sähe genauso aus.
     await bisZumErgebnis(page);
-    const bilder = page.locator('img[src*="cdn.shopify.com"]');
-    expect(await bilder.count()).toBe(0);
+
+    // GEPRÜFT WIRD DER URSPRUNG, NICHT DIE ZEICHENKETTE. Die erste Fassung
+    // suchte den Shop-Hostnamen irgendwo in der Bildadresse — und der steht
+    // auch im optimierten Pfad über unseren Server, dort als Parameter
+    // (`/_next/image?url=https%3A%2F%2Fcdn.shopify.com%2F…`, der Hostname bleibt
+    // in der Kodierung lesbar). Der Test war deshalb rot, obwohl kein einziges
+    // Bild vom Shop kam: Er verglich das Falsche.
+    const fremde = await page.evaluate(() =>
+      [...document.querySelectorAll("img")]
+        .map(i => i.currentSrc || i.src)
+        .filter(Boolean)
+        .filter(src => !src.startsWith("data:"))
+        .filter(src => new URL(src, location.href).origin !== location.origin),
+    );
+    expect(fremde).toEqual([]);
+
+    // Und die Bilder sind wirklich da — sonst belegt der Test oben nichts.
+    const eigene = await page.locator('img[src*="/_next/image"]').count();
+    expect(eigene).toBeGreaterThan(0);
   });
 
   test("läuft auf 375 px nicht aus der Seite", async ({ page }) => {
