@@ -13,6 +13,7 @@ import { calcEigenverbrauch, calcWeightedFeedIn } from "../../../lib/calc";
 import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor } from "../../../lib/dach-ertrag";
 import { DACHARTEN, DEGRAD, FEED_IN_YEARS, NATIONAL_AVG_YIELD, PERSONEN } from "../../../lib/constants";
 import { eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
+import { heuteInBerlin } from "../../../lib/zeit";
 import {
   FEED_IN_BASIS,
   feedInEndIso,
@@ -132,7 +133,9 @@ export default function EinspeiseRechner() {
   // Datum-Schritt noch nichts gewählt ist (kein Vorauswahl-Standard).
   const datumGesetzt = ibMonat !== null && ibJahr !== null;
   const ibIso = datumGesetzt ? `${ibJahr}-${String(ibMonat).padStart(2, "0")}-15` : null;
-  const inZukunft = anlage === "bestand" && ibIso !== null && ibIso > heute.toISOString().slice(0, 10);
+  // Deutscher Kalendertag, nicht Weltzeit: Ob eine Inbetriebnahme in der Zukunft
+  // liegt, entscheidet über den angesetzten Vergütungssatz (siehe lib/zeit.ts).
+  const inZukunft = anlage === "bestand" && ibIso !== null && ibIso > heuteInBerlin(heute);
 
   const rates: FeedInRates | null =
     anlage !== "bestand" || inZukunft

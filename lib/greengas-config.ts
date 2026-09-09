@@ -428,53 +428,71 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Lücken-Hinweis im Öl-Ergebnis bleibt bestehen, und mit ihm die benannte
   // Fehlerrichtung: Öl wird zu günstig gerechnet.
   //
-  // 04.09.2026: unverändert, erneut am Gesetzestext. § 43 Abs. 1 zellgleich mit
-  // `quoteStops` und `BIO_TREPPE_STUFEN`; die Pflicht knüpft weiterhin an den
-  // Neueinbau „nach dem 29. Juli 2026 in ein bestehendes Gebäude" an. § 42a
-  // wörtlich unverändert — das Quotengesetz ist nach wie vor nur eine Pflicht
-  // der Bundesregierung, bis zum 01.12.2026 eines vorzulegen; es existiert
-  // nicht. Damit ist auch der Regelungs-Strang der Bioheizöl-Frage weiterhin
-  // ohne Befund.
+  // 04.–06.09.2026: an drei Tagen unverändert, jedes Mal am Gesetzestext statt
+  // am Infoportal — § 43 Abs. 1 zellgleich mit `quoteStops` und
+  // `BIO_TREPPE_STUFEN`, § 42a wörtlich ohne eigenen Prozentsatz. Die
+  // Bioheizöl-Gegensuche (vierzehnte bis sechzehnte) blieb in beiden Strängen
+  // leer; die Treffer waren durchweg Heizölpreis-Charts der Händler, der
+  // CO2-Aufschlag je Liter und Produktversprechen („mindestens 10 % biogener
+  // Anteil“) — keine fortgeschriebene Preisreihe eines Trägers.
   //
-  // VIERZEHNTE Bioheizöl-Gegensuche, Preis-Strang ebenfalls ohne Ergebnis: Die
-  // Treffer sind wieder Heizölpreis-Charts der Händler, der CO2-Aufschlag je
-  // Liter und Angebote „Bioheizöl mit mindestens 10 % biogenem Anteil" — ein
-  // Produktversprechen, keine fortgeschriebene Preisreihe. Es bleibt dabei, dass
-  // die Beimischung für Öl NICHT gerechnet wird und der Hinweis im Öl-Ergebnis
-  // die Lücke samt ihrer Richtung benennt.
+  // (Bis zum 07.09.2026 stand jeder dieser Tage als eigener Absatz hier. Sie
+  // sagten dasselbe in anderen Worten; zusammengefasst, weil siebzehn fast
+  // wortgleiche Absätze niemand mehr liest — und was niemand liest, driftet.)
   //
-  // 05.09.2026: unverändert, wieder am Gesetzestext statt am Infoportal. § 43
-  // Abs. 1 im Volltext gelesen — „ab dem 1. Januar 2029 mindestens 10 Prozent,
-  // ab dem 1. Januar 2030 mindestens 15 Prozent, ab dem 1. Januar 2035
-  // mindestens 30 Prozent und ab dem 1. Januar 2040 mindestens 60 Prozent",
-  // zellgleich mit `quoteStops` und `BIO_TREPPE_STUFEN`, und weiterhin für Gas,
-  // Heizöl UND Flüssiggas gleichermaßen, geknüpft an den Neueinbau „nach dem
-  // 29. Juli 2026 in ein bestehendes Gebäude". § 42a wörtlich unverändert: eine
-  // Pflicht der Bundesregierung, bis zum 1. Dezember 2026 ein Gesetz vorzulegen,
-  // das die Inverkehrbringer ab 2045 vollständig auf klimaneutrale Brennstoffe
-  // verpflichtet — ohne eigenen Prozentsatz. Ein Quotengesetz gibt es nicht.
+  // 07.09.2026: unverändert, wieder am Gesetzestext. § 43 Abs. 1 Wort für Wort
+  // gelesen — „ab dem 1. Januar 2029 mindestens 10 Prozent, ab dem 1. Januar
+  // 2030 mindestens 15 Prozent, ab dem 1. Januar 2035 mindestens 30 Prozent und
+  // ab dem 1. Januar 2040 mindestens 60 Prozent", geknüpft an eine Heizung „die
+  // mit Gas, Heizöl oder Flüssiggas beschickt wird" und nach dem 29. Juli 2026
+  // in ein bestehendes Gebäude neu eingebaut wird; zellgleich mit
+  // `quoteStops` und `BIO_TREPPE_STUFEN`. § 42a ebenso unverändert: nur die
+  // Vorlagepflicht bis zum 1. Dezember 2026 und die vollständige Umstellung ab
+  // 2045, kein eigener Prozentsatz. Das Quotengesetz gibt es nicht.
   //
-  // FÜNFZEHNTE Bioheizöl-Gegensuche, Preis-Strang unverändert leer. Dieselben
-  // drei Trefferklassen wie beim letzten Mal: Heizölpreis-Charts der Händler,
-  // der CO2-Aufschlag je Liter (rund 20 ct bei 65 €/t) und Produktversprechen
-  // („Premium-Bioheizöl mit mindestens 10 % aus nachhaltig angebauten
-  // Rohstoffen"). Keine davon ist eine fortgeschriebene Preisreihe eines
-  // Trägers. Der Lücken-Hinweis im Öl-Ergebnis bleibt, samt Fehlerrichtung.
+  // SIEBZEHNTE Bioheizöl-Gegensuche, beide Stränge weiter leer — und diesmal
+  // mit einem Fund, der KEINER ist: Das Eckpunktepapier des Ministeriums vom
+  // 24.02.2026 kündigt die Quote „ab 2028 mit 1 Prozent" an. Ein
+  // Eckpunktepapier steht UNTERHALB eines Referentenentwurfs; daraus einen
+  // Prozentsatz zu übernehmen wäre genau der Zustandssprung, den das
+  // Wächter-Gate verbietet. Beim Preis wurde gezielt bei Statistischem
+  // Bundesamt und beim Branchenverband gesucht: Was es gibt, ist HVO100 als
+  // KRAFTSTOFF (Argus-Monatsdurchschnitte, Dieselpreis-Reihen der
+  // Speditionsverbände) — ein anderes Produkt für einen anderen Markt, und
+  // kostenpflichtig dazu. Für Heizöl liefert die amtliche Statistik nur den
+  // Gesamtpreis, nicht die Beimischung. Der Lücken-Hinweis im Öl-Ergebnis
+  // bleibt, samt Fehlerrichtung.
   //
-  // 06.09.2026: unverändert, am Gesetzestext. § 43 Abs. 1 und § 42a im
-  // Volltext gelesen und wortgleich mit dem Stand von gestern — die Stufen
-  // 10 / 15 / 30 / 60 Prozent zu 2029, 2030, 2035 und 2040, für Gas, Heizöl und
-  // Flüssiggas gleichermaßen, geknüpft an den Neueinbau nach dem 29. Juli 2026
-  // in ein bestehendes Gebäude; § 42a weiterhin nur die Vorlagepflicht bis zum
-  // 1. Dezember 2026 mit vollständiger Umstellung ab 2045 und ohne eigenen
-  // Prozentsatz.
+  // 08.09.2026: unverändert, am Gesetzestext. § 43 Abs. 1 Wort für Wort gelesen
+  // — „ab dem 1. Januar 2029 mindestens 10 Prozent, ab dem 1. Januar 2030
+  // mindestens 15 Prozent, ab dem 1. Januar 2035 mindestens 30 Prozent und ab
+  // dem 1. Januar 2040 mindestens 60 Prozent", für eine Heizung, „die mit Gas,
+  // Heizöl oder Flüssiggas beschickt wird" und „nach dem 29. Juli 2026 in ein
+  // bestehendes Gebäude neu eingebaut" wird; zellgleich mit `quoteStops` und
+  // `BIO_TREPPE_STUFEN`. § 42a ebenso: „In einem bis zum 1. Dezember 2026 durch
+  // die Bundesregierung vorzulegenden Gesetz wird eine Grüngas-/Grünheizölquote
+  // eingeführt" — Vorlagepflicht und vollständige Umstellung ab 2045, kein
+  // eigener Prozentsatz. Das Quotengesetz gibt es nicht.
   //
-  // SECHZEHNTE Bioheizöl-Gegensuche, Preis-Strang weiter leer. Gesucht wurde
-  // diesmal ausdrücklich nach einer amtlichen oder verbandsseitigen Preisreihe;
-  // zurück kamen der Verbraucherpreisindex für Heizöl insgesamt und
-  // Händler-Charts — beides misst das fossile Produkt, nicht die Beimischung.
-  // Der Lücken-Hinweis im Öl-Ergebnis bleibt, samt Fehlerrichtung.
-  geprueftRechtIso: "2026-09-06",
+  // ACHTZEHNTE Bioheizöl-Gegensuche, beide Stränge leer. Der Regelungs-Strang
+  // bringt dieselbe Auskunft wie der Gesetzestext selbst: Die Quote soll „ab
+  // 2028" greifen und die Inverkehrbringer — nicht die Gebäudeeigentümer —
+  // verpflichten; ein Entwurf existiert nicht, nur die Frist. Beim Preis nichts
+  // Neues gegenüber dem 07.09.: HVO100 gibt es als Kraftstoffreihe, für Heizöl
+  // nur den Gesamtpreis. Der Lücken-Hinweis im Öl-Ergebnis bleibt, samt
+  // Fehlerrichtung (Öl wird zu günstig gerechnet).
+  // 09.09.2026: Beide Leitquellen erreicht und unverändert. Die amtliche
+  // Chronologie des Bundes endet weiterhin am 28.07.2026 (Verkündung im
+  // Bundesgesetzblatt), kein Eintrag danach. Zum Quotengesetz steht dort nach
+  // wie vor nur die Ankündigung — wörtlich: „Neu aufgenommen wurde insbesondere
+  // § 42a zur Grüngas-/Grünheizölquote, der bis zum 01.12.2026 ein Gesetz
+  // ankündigt, das Inverkehrbringer von Gas, Öl und Flüssiggas für die
+  // Gebäudeheizung dazu verpflichtet, ab dem Jahr 2045 vollständig auf
+  // klimaneutrale Brennstoffe umzustellen." Der Gesetzestext selbst sagt
+  // dasselbe; ein Entwurf existiert weiterhin NICHT, nur die Frist. Damit
+  // bleibt auch für Bioheizöl alles beim Alten: keine Preisreihe, keine
+  // Regelung — der Lücken-Hinweis im Öl-Ergebnis bleibt samt Fehlerrichtung.
+  geprueftRechtIso: "2026-09-09",
   reviewBy: "2027-07-25",
 };
 

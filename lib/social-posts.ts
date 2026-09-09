@@ -12,6 +12,7 @@
 // lib/social-kennzahlen.ts (server-only) und werden hereingereicht.
 
 import { fmtPvLeistung } from "./atlas-format";
+import { heuteInBerlin } from "./zeit";
 import { zeitraumSeitStichtag } from "./anlagenbestand";
 import { sourceLabel } from "./data-sources";
 import { feedInRatesFor, naechsteDegressionIso } from "./feedin-config";
@@ -1497,7 +1498,9 @@ export function postAusland(_k: SocialKennzahlen): SocialPost {
  */
 export function postDegression(k: SocialKennzahlen, _vorlage?: string, heuteIso?: string): SocialPost {
   const heute = heuteIso ?? k.standIso.slice(0, 10);
-  const satz = feedInRatesFor(new Date(heute));
+  // `heute` ist bereits ein gemeinter Kalendertag (Datenstand oder Vorgabe) und
+  // wird als solcher übergeben — nicht als Zeitpunkt, der noch umgerechnet wird.
+  const satz = feedInRatesFor(heute);
   const termin = naechsteDegressionIso(heute);
   const terminText = new Date(termin).toLocaleDateString("de-DE", {
     day: "numeric",
@@ -1585,7 +1588,7 @@ export function baueAllePosts(
   // Der Tag wird HEREINGEREICHT, nie aus der Uhr einer Rechenfunktion gezogen —
   // sonst lässt sich ein Stichtags-Beitrag nicht gegen einen Stichtag prüfen.
   // Nur dieser Rand darf die Uhr lesen.
-  heuteIso: string = new Date().toISOString().slice(0, 10),
+  heuteIso: string = heuteInBerlin(),
 ): SocialPost[] {
   return ALLE_POSTS.map((f) => {
     const roh = f(k, undefined, heuteIso);

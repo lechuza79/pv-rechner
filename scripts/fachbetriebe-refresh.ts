@@ -78,6 +78,7 @@
  */
 
 import { resolve } from "node:path";
+import { heuteInBerlin } from "../lib/zeit";
 import { readFileSync, existsSync } from "node:fs";
 import {
   FELDER,
@@ -252,7 +253,7 @@ async function upsertGleichfoermig(
 }
 
 function heute(): string {
-  return new Date().toISOString().slice(0, 10);
+  return heuteInBerlin();
 }
 
 // ─── Setup ───────────────────────────────────────────────────────────────────

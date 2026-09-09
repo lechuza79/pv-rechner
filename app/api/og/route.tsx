@@ -81,12 +81,32 @@ async function loadEnergyRadial(origin: string, bars: number): Promise<RadialDat
   }
 }
 
+/**
+ * Die Schrift des Bildes — aus dem BUNDLE, nie über die eigene Adresse geholt.
+ *
+ * Sie lag bis zum 09.09.2026 in `public/` und wurde von dieser Funktion per
+ * HTTP von der eigenen Domain zurückgeholt. Das ist eine Abhängigkeit von der
+ * öffentlichen Auslieferung, und sie ist gerissen, als am 08.09.2026 der
+ * Bot-Schutz scharf gestellt wurde: Eine Serverless-Function verhält sich nicht
+ * wie ein Browser, bekam die Prüfaufgabe als HTML zurück, und der Schriftleser
+ * scheiterte an deren ersten vier Zeichen („Unsupported OpenType signature
+ * <!DO"). Ausnahmen im Bot-Schutz wären die schlechtere Antwort gewesen — dann
+ * müsste jeder Pfad, den eine Funktion je selbst abruft, in einer Liste stehen,
+ * die beim nächsten Pfad still veraltet.
+ *
+ * `import.meta.url` löst gegen die gebaute Datei auf; die Schrift liegt deshalb
+ * NEBEN dieser Route und nicht mehr im öffentlichen Ordner (dort wurde sie von
+ * nichts anderem gebraucht). Auf der Edge-Laufzeit ist das der vorgesehene Weg —
+ * `fs` gibt es dort nicht.
+ */
+async function ladeSchrift(): Promise<ArrayBuffer> {
+  return fetch(new URL("./JetBrainsMono-Bold.ttf", import.meta.url)).then(r => r.arrayBuffer());
+}
+
 export async function GET(req: NextRequest) {
   const params = Object.fromEntries(req.nextUrl.searchParams.entries());
 
-  const jetBrainsMono = await fetch(
-    new URL("/fonts/JetBrainsMono-Bold.ttf", req.nextUrl.origin)
-  ).then(r => r.arrayBuffer());
+  const jetBrainsMono = await ladeSchrift();
   const fonts = [
     { name: "JetBrains Mono", data: jetBrainsMono, weight: 700 as const },
   ];

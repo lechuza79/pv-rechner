@@ -2,6 +2,7 @@
 // All Energy-Charts, SMARD, and Eurostat API interactions go through these helpers.
 
 import { supabase } from "./supabase-server";
+import { heuteInBerlin } from "./zeit";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -276,7 +277,12 @@ export function clampAbsoluteRange(
   if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) return null;
 
   const floorMs = Date.UTC(ENERGY_DATA_FLOOR_YEAR, 0, 1);
-  const todayMs = Date.now();
+  // Die Obergrenze ist der laufende DEUTSCHE Kalendertag, nicht der der
+  // Weltzeit: Zwischen 00:00 und 02:00 deutscher Zeit endete der Bereich sonst
+  // gestern, und die letzten Stunden deutscher Erzeugungsdaten fehlten
+  // stillschweigend (siehe lib/zeit.ts). Die Formatierung darunter bleibt UTC —
+  // die Eingaben sind ebenfalls UTC-verankerte Tagesangaben.
+  const todayMs = Date.parse(`${heuteInBerlin()}T00:00:00Z`);
   const clampedStart = Math.max(startMs, floorMs);
   const clampedEnd = Math.min(endMs, todayMs);
   if (clampedEnd < clampedStart) return null;

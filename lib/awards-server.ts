@@ -1,5 +1,7 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase-server";
+import { ATLAS_DATEN_TAG } from "./atlas-revalidate-routen";
 import { withDbTimeout } from "./db-timeout";
 import { AWARD_CATEGORY_BY_KEY, dedupFreiflaeche, formatAwardValue, type GemeindeStats } from "./awards";
 import { bundeslandByAgs } from "./mastr-regions";
@@ -24,10 +26,19 @@ import {
 // mastr_gemeinde_award (~11k Zeilen) + Name/Bezeichnung aus mastr_regions — ms
 // statt Sekunden, NIE live über die 562k-Rohzeilen.
 //
-// Bewusst KEIN unstable_cache: dessen Datencache deckelt bei 2 MB, und die
-// Grundtabelle + der Hook-Index liegen darüber (→ Cache scheitert je Request und
-// wirft, die Ansicht rechnet jedes Mal neu → „Suche dauert ewig"). Stattdessen
-// ein prozess-lokales Memo mit Ablauf: die Zahlen ändern sich nur im Monatslauf.
+// Bewusst KEIN unstable_cache FÜR DIE GROSSEN WERTE: dessen Datencache deckelt
+// bei 2 MB, und die Grundtabelle + der Hook-Index liegen darüber (gemessen:
+// 7,11 MB) → Cache scheitert je Request und wirft, die Ansicht rechnet jedes Mal
+// neu → „Suche dauert ewig". Stattdessen ein prozess-lokales Memo mit Ablauf:
+// die Zahlen ändern sich nur im Monatslauf.
+//
+// DER SATZ GILT DER GRÖSSE, NICHT DEM WERKZEUG — und das ist der Unterschied,
+// den er bis zum 08.09.2026 verwischt hat. Ein prozess-lokales Memo spart den
+// zweiten Aufruf, nie den ersten; wo ein Wert im SEITENAUFBAU gebraucht wird,
+// zahlt ihn jede frisch gestartete Function noch einmal. Ein kleines
+// Ergebnis gehört deshalb sehr wohl in den geteilten Cache (siehe
+// `auszeichnungsOrte`: 49 kB). Wer hier etwas Neues cachen will, misst zuerst,
+// wie groß es ist.
 
 const TTL_MS = 60 * 60 * 1000;
 
@@ -158,17 +169,44 @@ const hookIndexMemo = new Map<string, { at: number; val: HookIndex }>();
  * (dann springt er bei den rund zwei Dritteln der Orte OHNE Auszeichnung, nur
  * andersherum).
  *
- * Der Index dahinter ist prozess-lokal gemerkt, und die Gemeindeseite liegt
- * sieben Tage im Zwischenspeicher und wird nach jedem Datenlauf vorgewärmt —
- * die Kosten fallen also im Aufwärmlauf an, nicht bei Besuchern. Fällt die
- * Datenbank aus, lautet die Antwort „nein": kein Platzhalter ist der
+ * DAS PROZESS-LOKALE MEMO REICHTE DAFÜR NICHT — gemessen am 08.09.2026. Es
+ * spart den zweiten Aufruf im selben Prozess, nicht den ERSTEN: Eine frisch
+ * gestartete Function baut den vollen Index einmal auf, und das kostet 3,70 s
+ * für 10.742 Zeilen. Genau dieses Muster stand in den Gesundheitsläufen —
+ * erste Stichprobe 5,5 bis 7,9 s, jede folgende 0,6 bis 1,8 s, sechsmal in
+ * zwei Tagen, einmal 0,1 s vor der Notbremse bei 8 s. Die frühere Begründung
+ * an dieser Stelle („die Kosten fallen im Aufwärmlauf an, nicht bei
+ * Besuchern") war die Annahme, die das widerlegt hat.
+ *
+ * GECACHT WIRD NUR DIE LISTE DER AUSGEZEICHNETEN ORTE, nicht der Index. Am
+ * Kopf dieser Datei steht mit Grund „bewusst kein unstable_cache": Der
+ * Datencache deckelt bei 2 MB, und der volle Index misst 7,11 MB — der
+ * Versuch scheiterte je Anfrage und rechnete jedes Mal neu. Die bloßen
+ * Kennungen sind 49 kB (4.596 von 10.742 Orten) und liegen damit sicher
+ * darunter. Der Deckel ist der Grund, warum hier NUR die Kennungen stehen und
+ * niemals ein Feld mehr: Wer dieser Liste den Namen oder die Kategorie
+ * beilegt, führt sie zurück über den Deckel, und der Cache fällt still aus.
+ *
+ * Ablauf und Marke wie bei den übrigen Atlas-Lesevorgängen: eine Stunde —
+ * dieselbe Frist wie das bisherige Memo, die Frische ändert sich also nicht —
+ * und die Marke des Datenlaufs, damit der Monatslauf sie mitnimmt.
+ *
+ * Fällt die Datenbank aus, lautet die Antwort „nein": kein Platzhalter ist der
  * harmlosere Fehler.
  */
+const auszeichnungsOrteUncached = async (): Promise<string[]> =>
+  (await buildHookIndex(DEFAULT_HOOK_SETTINGS)).rows
+    .filter((r) => r.kind !== "neutral")
+    .map((r) => r.regionId);
+
+export const auszeichnungsOrte = unstable_cache(auszeichnungsOrteUncached, ["auszeichnungs-orte-v1"], {
+  revalidate: 3600,
+  tags: [ATLAS_DATEN_TAG],
+});
+
 export async function hatAuszeichnung(regionId: string): Promise<boolean> {
   try {
-    const index = await buildHookIndex(DEFAULT_HOOK_SETTINGS);
-    const row = index.rows.find((r) => r.regionId === regionId);
-    return !!row && row.kind !== "neutral";
+    return (await auszeichnungsOrte()).includes(regionId);
   } catch {
     return false;
   }

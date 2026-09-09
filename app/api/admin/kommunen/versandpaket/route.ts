@@ -8,6 +8,7 @@ import { versandfenster } from "../../../../../lib/schulferien";
 import { empfaengerFuerBrief } from "../../../../../lib/kommunen-presse";
 import { postfachBefund } from "../../../../../lib/outreach-mail";
 import { heuteInBerlin } from "../../../../../lib/zeit";
+import { darfOutreachEmpfangen } from "../../../../../lib/kommunen-ebene";
 
 // Das fertige Versandpaket einer Charge: je Gemeinde Empfänger, Betreff und
 // Brieftext — gebaut aus DERSELBEN Funktion wie der Entwurf im Cockpit
@@ -98,6 +99,16 @@ export async function GET(req: NextRequest) {
     // erzeugen (siehe lib/kommunen-brief.ts) — hier steht die Prüfung ein
     // zweites Mal, weil eine Sicherheitsgrenze keine zweite Kopie ist, sondern
     // die Stelle, an der sie eines Tages fehlt.
+    // Die Kontakttabelle führt seit dem 09.09.2026 auch Landkreise — sie sind
+    // der Suchraum der Förder-Erhebung, nicht der Adressbestand des Outreach.
+    // Der Brief behauptet einen Rang unter GLEICH GROSSEN GEMEINDEN; an einen
+    // Landkreis geschickt wäre sein Aufhänger frei erfunden. Dass ein Kreis
+    // heute ohnehin keine Kampagne zugewiesen bekommt, ist eine Beobachtung
+    // über den Zustand, keine Grenze — deshalb steht sie hier.
+    if (!darfOutreachEmpfangen(z.region_id)) {
+      skip("Landkreis — der Kommunen-Brief geht nur an Gemeinden");
+      continue;
+    }
     if (z.outreach_status === "gesperrt") {
       skip("gesperrt — Widerspruch liegt vor");
       continue;

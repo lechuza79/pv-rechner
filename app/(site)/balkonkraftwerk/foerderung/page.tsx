@@ -67,7 +67,22 @@ const S = {
  * auszuwerten wäre die Sorte Kopie, an der im Projekt schon Einheiten und
  * Rechtssätze auseinandergelaufen sind.
  */
+/** Erster Buchstabe groß — die Phrasen des Status-Registers sind für die
+ *  Satzmitte geschrieben und beginnen hier einen Satz. */
+function grossAmAnfang(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 function betragText(p: FundingProgram): { zahl: string | null; text: string } {
+  // Programme, die den Speicher voraussetzen, zahlen für das Referenz-Set (ohne
+  // Speicher) nichts — und „0 €" wäre hier die falsche Auskunft, denn der Betrag
+  // ist ja bekannt, er hängt nur an einer anderen Anlage. Die Übersicht nennt
+  // deshalb die Bedingung statt einer Zahl. Dieselbe Unterscheidung wie bei der
+  // Kumulierungsgrenze im Wärmepumpen-Rechner: „lässt sich hier nicht berechnen"
+  // ist etwas anderes als „es gibt nichts".
+  if (p.balkonNurMitSpeicher) {
+    return { zahl: null, text: "nur zusammen mit einem Speicher — Satz siehe unten" };
+  }
   const a = fundingAmount(p, { technik: "balkon", wattPeak: REFERENZ.moduleWp, kosten: REFERENZ.price });
   if (!a.computable) {
     // Kein strukturierter Satz: Das Programm fördert Steckersolar, aber die Höhe
@@ -193,10 +208,18 @@ export default async function BalkonFoerderungPage() {
                           ) : zaehlt ? (
                             b.text
                           ) : (
-                            /* Der Baustein bringt sein „aktuell" selbst mit („aktuell ausgeschöpft
-                                 (Fördertopf leer)") und ist auf „… ist {phrase}" gebaut. Ein
-                                 eigenes „Aktuell" davor ergab „Aktuell aktuell ausgeschöpft". */
-                            <>Programm ist {FUNDING_STATUS_NOTE[p.status]} — die Konditionen stehen hier zum Nachschlagen.</>
+                            /* OHNE KOPULA — die Phrasen des Registers stehen in zwei
+                                 Formen nebeneinander: „nimmt aktuell Anträge an" ist ein
+                                 Prädikat, „aktuell ausgeschöpft (Fördertopf leer)" eine
+                                 Ergänzung. „Programm ist" davorzusetzen passte auf vier
+                                 von fünf und ergab beim fünften „Programm ist nimmt
+                                 aktuell Anträge an" — sichtbar bei jedem aktiven, aber
+                                 gerade unbestätigten Programm, also genau bei einem frisch
+                                 aufgenommenen. Ein zweites Register mit satzfähigen
+                                 Fassungen wäre die zweite Wahrheit, gegen die dieses
+                                 Projekt gebaut ist; der Satz beginnt deshalb mit der
+                                 Phrase selbst. Das „aktuell" bringt sie mit. */
+                            <>{grossAmAnfang(FUNDING_STATUS_NOTE[p.status])} — die Konditionen stehen hier zum Nachschlagen.</>
                           )}{" "}
                           <a
                             href={p.url}
