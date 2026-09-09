@@ -82,6 +82,18 @@ describe("Der Datenlauf baut die Liste", () => {
 });
 
 describe("Ein stiller Ausfall wird bemerkt", () => {
+  it("liest den Stand über die Schnittstelle, nicht über das server-only-Modul", () => {
+    // Der erste Anlauf importierte den Lesecode direkt. Der trägt server-only,
+    // was aus einem Kommandozeilen-Prozess nicht auflösbar ist — der Prüfpunkt
+    // scheiterte bei JEDEM Lauf und gab trotzdem eine beruhigende Zeile aus
+    // („Auszeichnungen: nicht abrufbar"), im ersten echten Lauf am 09.09.2026
+    // gemessen. Ein Prüfpunkt, der nichts sieht und nicht anschlägt, ist
+    // schlimmer als keiner.
+    const hc = readFileSync(resolve(process.cwd(), "scripts", "health-check.ts"), "utf8");
+    expect(hc).toMatch(/rest\/v1\/atlas_auszeichnungen/);
+    expect(hc).not.toMatch(/await import\("\.\.\/lib\/awards-server"\)/);
+  });
+
   it("meldet eine leere Liste als Befund", () => {
     const u = auszeichnungsUrteil({ orte: 0, erneuertAm: null });
     expect(u.befund).toBeTruthy();

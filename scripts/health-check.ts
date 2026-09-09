@@ -2104,12 +2104,37 @@ async function main() {
 
   // ── Steht die vorberechnete Auszeichnungs-Liste? ─────────────────────────
   {
+    // ÜBER DIE SCHNITTSTELLE, NICHT ÜBER DAS MODUL. Der Lesecode trägt
+    // `server-only`, und das ist aus einem Kommandozeilen-Prozess nicht
+    // auflösbar — der erste Versuch scheiterte deshalb bei JEDEM Lauf und gab
+    // trotzdem eine beruhigende Zeile aus („nicht abrufbar"). Ein Prüfpunkt,
+    // der nichts sieht und nicht anschlägt, ist schlimmer als keiner; dieselbe
+    // Falle wie beim ersten Versandlauf der Umstellungs-Mail.
     let stand: { orte: number; erneuertAm: string | null } | null = null;
-    try {
-      const { auszeichnungsStand } = await import("../lib/awards-server");
-      stand = await auszeichnungsStand();
-    } catch {
-      stand = null;
+    const zugang = supabaseZugang();
+    if (zugang) {
+      try {
+        const r = await fetch(
+          `${zugang.url}/rest/v1/atlas_auszeichnungen?select=erneuert_am&order=erneuert_am.desc&limit=1`,
+          {
+            headers: {
+              apikey: zugang.key,
+              Authorization: `Bearer ${zugang.key}`,
+              Prefer: "count=exact",
+              Range: "0-0",
+            },
+            signal: AbortSignal.timeout(15000),
+          },
+        );
+        if (r.ok) {
+          const zeilen = (await r.json()) as { erneuert_am?: string }[];
+          const bereich = r.headers.get("content-range") ?? "";
+          const orte = Number(bereich.split("/")[1] ?? "0");
+          stand = { orte: Number.isFinite(orte) ? orte : 0, erneuertAm: zeilen[0]?.erneuert_am ?? null };
+        }
+      } catch {
+        stand = null;
+      }
     }
     const urteil = auszeichnungsUrteil(stand);
     lines.push(urteil.text);
