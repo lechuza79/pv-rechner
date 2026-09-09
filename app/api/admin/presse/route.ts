@@ -3,6 +3,7 @@ import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { isAdminSession } from "../../../../lib/admin-guard";
 import { istStand } from "../../../../lib/presse-stand";
 import { alsCsv, type KontaktZeile, type MediumZeile } from "../../../../lib/presse-katalog";
+import { heuteInBerlin } from "../../../../lib/zeit";
 
 // Ansicht für den Presse- und Creator-Katalog. Liest die internen Tabellen ohne
 // öffentlichen Lesezugriff über den Dienst-Client — deshalb nie der
@@ -170,7 +171,7 @@ export async function GET(req: NextRequest) {
         // Byte-Reihenfolge-Marke voran, sonst zeigt Excel unter Windows aus
         // „Förderung" ein „FÃ¶rderung". Kostet nichts und spart die Rückfrage.
         "Content-Type": "text/csv; charset=utf-8",
-        "Content-Disposition": `attachment; filename="presse-katalog-${new Date().toISOString().slice(0, 10)}.csv"`,
+        "Content-Disposition": `attachment; filename="presse-katalog-${heuteInBerlin()}.csv"`,
       },
     });
   }
