@@ -129,6 +129,75 @@ type Befund = {
   text: string;
 };
 
+/**
+ * Antworten auf die Sachfragen an Förderstellen nachtragen.
+ *
+ * WARUM HIER UND NICHT IN EINEM EIGENEN LAUF: Es gibt genau ein Postfach und
+ * genau einen Weg, es zu lesen. Ein zweiter Abruf wäre eine zweite Fassung
+ * derselben Mechanik — und die läuft irgendwann auseinander, während beide
+ * behaupten, vollständig zu sein.
+ *
+ * Ohne diesen Schritt bliebe im Protokoll JEDE Anfrage für immer „ohne
+ * Antwort". Das ist schlimmer als keine Auswertung: Es sähe aus wie eine
+ * Messung und wäre eine Konstante.
+ */
+async function foerderAnfragenZuordnen(
+  db: Awaited<ReturnType<typeof makeClient>>,
+  mails: { von: string; betreff: string; roh: string; datum: string; text: string }[],
+  schreiben: boolean,
+): Promise<void> {
+  const { ordneAnfrageZu } = await import("../lib/funding-anfragen");
+  const { data, error } = await db
+    .from("funding_anfragen")
+    .select("program_id, empfaenger, betreff, gesendet_am, antwort_am, antwort_art")
+    .is("antwort_am", null);
+  if (error) {
+    // Kein Abbruch: Der Kommunen-Rücklauf ist der Hauptzweck dieses Laufs und
+    // darf nicht an einer Tabelle scheitern, die es womöglich noch nicht gibt.
+    log(`Förder-Anfragen nicht lesbar (${error.message}) — übersprungen.`, "warn");
+    return;
+  }
+  const offene = (data ?? []).map((z) => ({
+    programId: z.program_id as string,
+    empfaenger: z.empfaenger as string,
+    gesendetAm: z.gesendet_am as string,
+    antwortAm: null,
+    antwortArt: null,
+  }));
+  if (!offene.length) return;
+  const betreffe = new Map((data ?? []).map((z) => [z.program_id as string, z.betreff as string]));
+
+  const treffer: { programId: string; datum: string; von: string; text: string }[] = [];
+  for (const m of mails) {
+    const id = ordneAnfrageZu(m, offene, betreffe);
+    if (id) treffer.push({ programId: id, datum: m.datum, von: m.von, text: m.text });
+  }
+
+  log();
+  log(`Offene Sachfragen an Förderstellen: ${offene.length}, davon beantwortet in diesem Zeitraum: ${treffer.length}`);
+  for (const t of treffer) log(`${t.programId} — Antwort von ${t.von} am ${t.datum}`);
+  if (!schreiben || !treffer.length) return;
+
+  for (const t of treffer) {
+    const { error: e } = await db
+      .from("funding_anfragen")
+      .update({
+        // Der Tag der ANTWORT, nicht der des Abrufs — dieselbe Trennung wie
+        // beim Kommunen-Rücklauf.
+        antwort_am: new Date(`${t.datum}T12:00:00Z`).toISOString(),
+        antwort_art: "antwort",
+        // Der eigene Teil ohne Zitat: Was die Stelle wirklich geschrieben hat,
+        // ist die Auskunft, wegen der gefragt wurde. Sie später nur als „hat
+        // geantwortet" vorzufinden wäre derselbe Verlust wie bei Nidda.
+        antwort_notiz: t.text.slice(0, 2000),
+      })
+      .eq("program_id", t.programId)
+      .is("antwort_am", null);
+    if (e) log(`${t.programId}: ${e.message}`, "err");
+  }
+  log(`${treffer.length} ${treffer.length === 1 ? "Antwort" : "Antworten"} an Förder-Anfragen nachgetragen`, "ok");
+}
+
 async function main(): Promise<void> {
   loadEnvFile();
   const host = process.env.OUTREACH_IMAP_HOST;
@@ -170,6 +239,8 @@ async function main(): Promise<void> {
   const befunde: Befund[] = [];
   const unklar: Befund[] = [];
   const fremd: Befund[] = [];
+  /** Jede gelesene Mail — Grundlage für die Zuordnung zu Förder-Sachfragen. */
+  const alleMails: { von: string; betreff: string; roh: string; datum: string; text: string }[] = [];
   for (const name of ordner) {
     let lock;
     try {
@@ -203,6 +274,14 @@ async function main(): Promise<void> {
         const gefunden = ziele.filter((z) => roh.toLowerCase().includes(z.email));
         treffer = gefunden.map((z) => ({ region_id: z.region_id, name: z.name }));
       }
+      // DASSELBE POSTFACH TRÄGT ZWEI GESPRÄCHE: die Antworten auf den
+      // Kommunen-Brief und die auf die Sachfragen an Förderstellen
+      // (scripts/funding-anfrage.ts). Letztere kommen oft von Orten, die nie
+      // einen Brief bekommen haben — sie landen hier also in „nicht
+      // zuzuordnen", wenn niemand sie mitliest. Deshalb wird JEDE Mail
+      // aufgehoben, nicht nur die zuordenbaren.
+      alleMails.push({ von, betreff, roh, datum: heuteInBerlin(msg.envelope?.date ?? new Date()), text });
+
       const b: Befund = {
         art,
         von,
@@ -241,6 +320,8 @@ async function main(): Promise<void> {
     log();
     log(`${fremd.length} Mails gehören nicht zum Outreach (${FREMD_ABSENDER.join(", ")}) — ausgeblendet.`);
   }
+
+  await foerderAnfragenZuordnen(db, alleMails, hat("schreiben"));
 
   if (!hat("schreiben")) {
     log();

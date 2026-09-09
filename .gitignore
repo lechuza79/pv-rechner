@@ -34,3 +34,8 @@ scratch/
 # `npm run presse -- --csv`.
 docs/presse/
 .werkbank/
+
+# Protokoll der verschickten Sachfragen an Förderstellen. Enthält die
+# Empfängeradresse und den Wortlaut — der Nachweis, was wann hinausging, gehört
+# nicht in ein öffentliches Repo.
+.foerder-anfragen/

@@ -24,6 +24,7 @@
     "atlas:verify": "tsx scripts/atlas-verify.ts",
     "atlas:warm": "tsx scripts/atlas-warm.ts",
     "health-check": "tsx scripts/health-check.ts",
+    "foerder:anfrage": "tsx scripts/funding-anfrage.ts",
     "foerder:probe": "tsx scripts/funding-probe.ts",
     "foerder:watch": "tsx scripts/funding-watch.ts",
     "foerder:abdeckung": "tsx scripts/funding-coverage.ts",
