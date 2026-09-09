@@ -225,10 +225,23 @@ export async function hatAuszeichnung(regionId: string): Promise<boolean> {
  * Gerechnet wird nichts Neues: dieselbe Rechnung, aus der Aufhänger, Kasten
  * und Rangliste kommen. Prozess-lokal gemerkt wie der Index selbst.
  */
+/**
+ * Die Platzierungen ALLER Gemeinden — einmal je Prozess gerechnet.
+ *
+ * Die Rechnung läuft über alle 11.000 Gemeinden und hängt allein an den
+ * Statistiken, die selbst memoisiert sind. Ein Aufruf je Ort war richtig,
+ * solange nur eine Gemeindeseite fragte; seit die Templates-Ansicht die
+ * Geschichten mehrerer Orte auf einmal baut (lib/orts-beitraege-server.ts),
+ * wäre es dieselbe Rechnung sechsmal hintereinander — die Kopplung „teurer mit
+ * den Daten", gegen die dieses Projekt seine Regeln hat.
+ */
+const platzierungsKarte = memoize(async (): Promise<Map<string, Placement[]>> =>
+  computePlacements(await loadAwardStats()),
+);
+
 export async function platzierungenFuer(regionId: string): Promise<Placement[]> {
   try {
-    const stats = await loadAwardStats();
-    return computePlacements(stats).get(regionId) ?? [];
+    return (await platzierungsKarte()).get(regionId) ?? [];
   } catch {
     return [];
   }

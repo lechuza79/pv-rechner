@@ -180,45 +180,79 @@ damit keine Freigabe für das, was heute rausginge. Sie verfallen, und das ist d
 Story und rechnet ihn bei jeder Änderung neu, damit sichtbar ist, dass die Sperre wirkt. Das
 Erteilen gehört zur Kette „planen → senden", die der Betreiber als nächsten Schritt genannt hat.
 
-## OFFEN: das quadratische Story-Visual für die Ortsseiten (05.09.2026)
+## ERLEDIGT: das quadratische Story-Visual (06.09.2026)
 
-**Die Aufgabe:** Eine quadratische Bildkachel, die dieselben Formen zeigt wie die
-Beitrags-Karte, aber (a) eine **beliebige Breite** annimmt statt einer festen und
-(b) ihre Farben aus den **Seiten-Tokens** nimmt, statt sie mit einer eigenen
-Palette zu überschreiben. Sie trägt dann Teaser und Fenster auf den
-Gemeindeseiten — und bleibt für den Beitrag, was sie ist.
+**Die Karte hat eine dritte Stufe.** `quadrat` ist dieselbe Zeichnung wie im
+Feed-Bild — 1:1 statt 4:5, und mit der Möglichkeit, die Farben der SEITE zu
+erben statt eine eigene Palette mitzubringen. Beides zusammen ist der Grund,
+warum die Ortsseiten sie jetzt zeigen können; an genau diesen zwei Punkten sind
+die drei Anläufe vom 05.09.2026 gescheitert.
 
-**Warum das hierher gehört und nicht auf die Ortsseite:** Dort sind am
-05.09.2026 drei Anläufe gescheitert, jeder am selben Punkt.
+**Keine eigene Schriftskala und keine eigene Zeichnung.** Die Größen skalieren
+wie in der vollen Stufe; der Teaser bleibt, was er ist (er LÄSST WEG statt zu
+schrumpfen — auf 240 Pixeln wären zwei Ringe zwei graue Kringel, und die
+Formenwahl wirkt im FENSTER, wo die Karte quadratisch steht).
 
-1. Die Beitrags-Karte ist fest **1080 Pixel** breit. In einen 300 Pixel breiten
-   Teaser skaliert lief sie über und schnitt die Überschrift ab. Die kleine
-   Stufe wiederum lässt Ring und Säule bewusst weg und fällt auf Balken zurück
-   („zwei Ringe auf 240 Pixeln wären zwei graue Kringel") — damit ist die
-   Formenwahl der Geschichte wirkungslos.
-2. Sie **überschreibt die Farb-Tokens** mit ihrer eigenen Palette. Für ein Bild
-   in einem fremden Feed ist das genau richtig; auf einer Seite mit
-   Tageslicht-Theme stand sie als weißer Block auf dunklem Grund.
-3. Eine dritte, auf der Ortsseite selbst gezeichnete Fassung wäre die **zweite
-   Wahrheit** neben den vier abgenommenen Templates — sie war kurz da und ist
-   wieder heraus.
+**Vier Befunde, jeder nur am gerenderten Bild sichtbar:**
 
-**Was schon steht und benutzt werden kann:** Die Gemeindeseiten rechnen sieben
-Geschichten je Ort und geben sie in derselben Form heraus wie ein Fund des
-Suchlaufs — Schlagzeile, benannte Werte mit Einheit, Grundlage, dazu die
-gewählte Bildform und, bei Anteilen, das Ganze. Die Zuordnung Geschichte →
-Form folgt den Regeln des Registers, nicht dem Geschmack: Balken nur bei
-deutlich verschiedenen Längen, Ring nur mit einem Ganzen, Säule für zwei Werte
-ohne eines, sonst die Einzelkennzahl.
+1. **Der Höhenfaktor gehört an die AUSGABEGRÖSSE, nie an das
+   Koordinatensystem.** In die viewBox gerechnet standen die Ringradien (232,
+   152) außerhalb, und der Ring wurde an seiner eigenen Zeichenfläche
+   abgeschnitten — im Bild ein blaues Quadrat dahinter. Dieselbe Falle beim
+   Verlauf, wo die y-Achse gegen ein anderes System gezeichnet hätte als ihre
+   Marken.
+2. **Der Fuß gibt nie nach.** Die zweizeilige Quellenzeile (Zensus plus
+   Anlagenregister) brach unten aus der Karte und nahm das Logo halb mit. Ein
+   beschnittener Lizenzvermerk ist schlimmer als eine zu kleine Zeichnung.
+3. **Der Inhaltsbereich braucht `min-height: 0`.** Ein Flex-Kind hält sonst
+   seine Inhaltshöhe — so wurde die Quellenzeile hinausgedrückt, obwohl der Fuß
+   nicht nachgab.
+4. **Drei Werte in der Einzelkennzahl** überlappten die Trennlinie: Diese Form
+   setzt EINE Zahl sehr groß und braucht im Quadrat dieselbe Zurücknahme wie die
+   Zeichnungen.
 
-**Bis dahin:** Der Story-Block auf den Gemeindeseiten ist ausgeblendet. Eine
-schmucklose Kartenreihe auf einer Seite, die im Kommunen-Outreach verlinkt wird,
-ist schlechter als keine.
+**Der Maßstab wird GEMESSEN, nicht angenommen** (`ResizeObserver` in der
+Ortsseiten-Komponente). Ein fester Faktor müsste auf die schmalste Breite
+ausgelegt sein und ließe die Karte auf dem Schreibtisch kleiner als nötig; auf
+die breiteste ausgelegt läuft sie auf dem Telefon aus dem Fenster. Beim ersten
+Anlauf stand sie in voller Größe im Dialog, links und rechts abgeschnitten.
 
-**Eine Regel des Betreibers, die dabei gilt:** Zahlen sind farblich **neutral**.
-Farbe bekommt nur eine Tendenz — ein Zuwachs, ein Rückgang, ein Abstand. Eine
-Größe wie „12,6 Mio €" ist weder positiv noch negativ, und ein Akzent darauf
-entwertet die Stellen, an denen Farbe wirklich etwas sagt.
+**Ansehen:** `npm run orts:visual` rendert die Geschichten eines Referenzorts in
+allen drei Farbschemata und in beiden Seiten-Paletten (hell und dunkel), in den
+Ablageordner — nie nach `public/`, dieselbe Grenze wie bei der Formen-Werkbank.
+`NUR=<Teil der Kennung>` zeigt eine einzelne. Im Browser hält
+`e2e/ortsgeschichte-karte.spec.ts` die Skalierung auf Telefon- und
+Schreibtischbreite fest.
+
+## Die Ortsgeschichten sind Beiträge (06.09.2026)
+
+**Sie waren es an den Daten immer.** Dieselben Familien des Katalogs, eine
+Schlagzeile, benannte Werte mit Einheit, eine Grundlage — die Form eines Fundes.
+Was fehlte, waren vier Angaben: Farbschema, Quellenzeile, Messzeile und die
+Frage, welche Formen ihre Zahlen hergeben. `lib/orts-posts.ts` ergänzt sie.
+
+**Der ORT ist eine zweite Dimension, keine Kategorie.** Eine 21. Familie
+„Kommune" hätte die sieben Familien, aus denen eine Ortsgeschichte kommen kann,
+unter einen Reiter geworfen. Er steht am Beitrag; die Kennung trägt den
+Gemeindeschlüssel, und daran hängt die redaktionelle Fassung — deshalb bleibt
+eine Einstellung an ihrem Ort.
+
+**Der Tisch der Versandschübe:** `/admin/redaktion/kommunen`. Ein Ort auf
+einmal, weil die Kette je Ort ein halbes Dutzend Abfragen kostet.
+
+**Zwei Fehler, die dabei aufgefallen sind und schon ausgeliefert waren:**
+- Ein Fund reichte den Kategorie-SCHLÜSSEL als Beschriftung durch — auf der
+  Ortsseite stand wörtlich „g10". Unsichtbar geblieben, weil der Block
+  ausgeblendet war.
+- Die Flächen-Geschichte zeigte drei Anteile ohne Ganzes; der Balken normierte
+  am größten Wert statt an hundert — genau der Fehler, den der bundesweite
+  Segment-Beitrag schon einmal bezahlt hat.
+
+**Und eine Lizenzangabe, die nicht stimmte:** Der Zensus steht NICHT unter
+dl-de/by-2-0. Auf zensus2022.de trägt allein das Shapefile der
+Verwaltungsgrenzen die Datenlizenz (Quellenvermerk „© GeoBasis-DE / BKG 2023"),
+bei Destatis gilt sie ausdrücklich nur für GENESIS-Online. Für die
+Regionaltabelle gilt der allgemeine Quellennachweis-Vorbehalt.
 
 ## Das Template-System (27.08.2026)
 

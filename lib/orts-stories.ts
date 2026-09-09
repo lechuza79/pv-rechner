@@ -40,6 +40,8 @@
 // die Zahlen herein, die die Gemeindeseite ohnehin lädt.
 
 import { FEED_IN_YEARS } from "./constants";
+import { KATEGORIEN, type KategorieSchluessel } from "./redaktions-kategorien";
+import type { PostBild } from "./social-posts";
 import { fmtPvLeistung } from "./atlas-format";
 import { eigenverbrauchAnteilRegion, einspeiseCt, erzeugungKwh } from "./atlas-impact";
 import type { VorratsFund } from "./social-fundvorrat";
@@ -80,32 +82,76 @@ export type StoryDaten = {
 
 // ─── Was herauskommt ─────────────────────────────────────────────────────────
 
-/** Die Familie aus dem Katalog, aus der die Geschichte kommt. */
-export type StoryKategorie =
-  | "G2.zubau"
-  | "G3.vergleich"
-  | "G4.1"
-  | "G4.2"
-  | "G10"
-  | "G14"
-  | "G15"
-  | "G16"
+/**
+ * Welche Sorte Geschichte das ist — die Kennung der Familie IN DIESER DATEI.
+ *
+ * Nicht zu verwechseln mit der Redaktions-Kategorie: Die kommt aus dem
+ * Katalog (lib/redaktionsplan.ts) und wird hier NICHT ein zweites Mal
+ * aufgezählt. Bis zum 06.09.2026 tat diese Datei genau das — sie führte
+ * „G4.1", „G3.vergleich", „G10" als eigene Union, während derselbe Katalog
+ * daneben als `FAMILIEN` lag. Zwei Ordnungen für dieselbe Sache, und die
+ * erfundene stand in der Ortsansicht.
+ *
+ * Was hier bleibt, ist die Sorte: Zwei Geschichten können aus DERSELBEN
+ * Familie kommen und trotzdem verschieden heißen — „Was der Ort eingespielt
+ * hat" und „Stichtag" sind beide G4.
+ */
+export type StoryArt =
+  | "eingespielt"
+  | "auslauf"
+  | "vergleich"
+  | "anomalie"
+  | "monat"
+  | "wohnform"
+  | "kohorte"
+  | "flaeche"
   | "fund";
 
-/** Was die Kategorie dem Leser sagt — nie das Kürzel. */
-export const KATEGORIE_LABEL: Record<StoryKategorie, string> = {
-  "G4.1": "Was der Ort eingespielt hat",
-  "G4.2": "Stichtag",
-  "G2.zubau": "Was sich bewegt",
-  G10: "Auffällig",
-  G15: "Wo noch nichts steht",
-  "G3.vergleich": "Im Vergleich",
-  G14: "Wo der Strom herkommt",
-  G16: "Wie sich die Anlagen verändert haben",
-  // Ein Fund bringt seine eigene Kategorie mit (der Suchlauf setzt sie je
-  // Muster) — dieses Label greift nur, wo sie fehlt.
-  fund: "Aus den Daten",
+/**
+ * Quellen, aus denen eine Geschichte rechnet — als Schlüssel des
+ * Quellenregisters (lib/data-sources.ts).
+ *
+ * WARUM DAS AN DER GESCHICHTE HÄNGT und nicht am Ort: Die Wohnform-Geschichte
+ * rechnet auf dem Zensus, alle übrigen auf dem Anlagenregister. Eine
+ * gemeinsame Quellenzeile über allen wäre für eine von ihnen falsch — und die
+ * Zeile reist im Bild mit, also genau dort, wo die Lizenz sie verlangt.
+ */
+export type StoryQuelle = "mastr" | "zensus";
+
+/** Was der Leser über der Geschichte liest, und in welche Familie sie gehört. */
+type Familienzuordnung = { kategorie: KategorieSchluessel; label: string };
+
+/**
+ * Sorte → Familie des Katalogs plus Beschriftung.
+ *
+ * Der Fund fehlt hier bewusst: Er bringt seine Kategorie aus dem Suchlauf mit
+ * (der setzt sie je Muster), und die Beschriftung ist dann die des Katalogs.
+ */
+export const STORY_FAMILIE: Record<Exclude<StoryArt, "fund">, Familienzuordnung> = {
+  eingespielt: { kategorie: "g4", label: "Was der Ort eingespielt hat" },
+  auslauf: { kategorie: "g4", label: "Stichtag" },
+  monat: { kategorie: "g2", label: "Was sich bewegt" },
+  anomalie: { kategorie: "g10", label: "Auffällig" },
+  wohnform: { kategorie: "g15", label: "Wo noch nichts steht" },
+  vergleich: { kategorie: "g3", label: "Im Vergleich" },
+  flaeche: { kategorie: "g14", label: "Wo der Strom herkommt" },
+  kohorte: { kategorie: "g16", label: "Wie sich die Anlagen verändert haben" },
 };
+
+/**
+ * Die Beschriftung zu einer Katalog-Kategorie.
+ *
+ * Für Funde: Sie tragen den Schlüssel der Familie, nicht ihren Namen — und
+ * genau der stand bis zum 06.09.2026 als Beschriftung auf der Ortsseite, also
+ * wörtlich „g10". Unsichtbar geblieben, weil der Block ausgeblendet war.
+ *
+ * Ein unbekannter Schlüssel wirft NICHT: Er kommt aus einer Datenbankzeile,
+ * die älter sein kann als der Code, und eine Fehlerseite wäre dafür die
+ * falsche Antwort.
+ */
+function familienLabel(schluessel: string): string {
+  return KATEGORIEN.find((k) => k.schluessel === schluessel)?.kurz ?? "Aus den Daten";
+}
 
 export type StoryWert = {
   name: string;
@@ -116,33 +162,30 @@ export type StoryWert = {
   haupt?: boolean;
 };
 
-/**
- * Die Bildform, in der diese Geschichte gezeigt wird.
- *
- * Nicht frei gewählt, sondern aus den fünf abgenommenen Formen des
- * Beitrags-Registers (lib/social-bildformen.ts) — und nach DEREN Regeln:
- *
- *  · „Balken" trägt nur, wenn die Längen wirklich auseinandergehen.
- *  · „Ringpaar" braucht ein Ganzes; ohne eines behauptet der leere Rest etwas,
- *    das es nicht gibt.
- *  · „Säule" ist der Fall ZWEI Werte OHNE Ganzes — der Unterschied ist die
- *    überragende Fläche.
- *  · „Einzelkennzahl" für alles, wo ein Vergleich nichts zeigt.
- *
- * Die Form steht an der Geschichte und nicht in der Oberfläche: Wer eine
- * Familie ergänzt, entscheidet damit auch, wie sie aussieht — sonst rät die
- * Karte, und Raten heißt hier, eine Aussage über die Daten zu treffen.
- */
-export type StoryBildform = "vergleich" | "kennzahl" | "donut" | "saeule";
-
 export type OrtsStory = {
   /**
    * Stabile Kennung OHNE Zahl: Zahlen folgen dem Datenstand, und eine wandernde
    * Kennung verlöre die Zuordnung zwischen zwei Läufen — dieselbe Regel wie beim
    * Fund aus dem Story-Suchlauf.
+   *
+   * Sie wird zugleich Teil der Beitrags-Kennung („ort-06632012-eingespielt"),
+   * und daran hängt die redaktionelle Fassung: Wer die Kennung ändert, verliert
+   * jeden umformulierten Text und jedes gewählte Farbschema zu dieser
+   * Geschichte.
    */
   kennung: string;
-  kategorie: StoryKategorie;
+  /** Welche Sorte — siehe {@link StoryArt}. */
+  art: StoryArt;
+  /**
+   * Die Redaktions-Kategorie aus dem Katalog (`g4`, `g10`, …).
+   *
+   * DERSELBE Schlüsselraum wie bei den bundesweiten Beiträgen, damit eine
+   * Ortsgeschichte im Redaktionstisch unter demselben Reiter steht wie eine
+   * bundesweite derselben Familie. Der Ort ist keine Kategorie, sondern eine
+   * zweite Dimension — sonst stünden sieben Familien unter einem Reiter und
+   * wären dort nicht mehr auseinanderzuhalten.
+   */
+  kategorie: KategorieSchluessel;
   /**
    * Die Beschriftung der Kategorie, FERTIG AUFGELÖST.
    *
@@ -159,16 +202,44 @@ export type OrtsStory = {
   kategorieLabel: string;
   /** Eine Zeile, die für sich steht. */
   titel: string;
+  /**
+   * Was gemessen wurde — EINE Zeile, klein unter der Schlagzeile im Bild.
+   *
+   * Nicht die Grundlage (die ist ein Absatz) und nicht die Schlagzeile
+   * (die ist die Aussage). Sie beantwortet „woran ist das gemessen", damit die
+   * Zahl im Bild ohne den Beitragstext daneben lesbar bleibt — der reist beim
+   * Weiterteilen nicht mit.
+   *
+   * Leer ist erlaubt, wo die Schlagzeile den Bezug schon vollständig nennt.
+   */
+  gemessen: string;
   /** Zwei bis drei Sätze. Enthält den Nenner und, wo nötig, den Vorbehalt. */
   text: string;
   /** Benannte Werte mit Einheit — daraus zeichnet die Karte ihr Bild. */
   werte: StoryWert[];
   /** Woran die Geschichte hängt: Grundmenge, Nenner, Annahmen. Im Klartext. */
   grundlage: string;
+  /**
+   * Woraus gerechnet wurde — siehe {@link StoryQuelle}.
+   *
+   * Pflicht und je Geschichte, nicht je Ort: Aus ihr entsteht die Quellenzeile
+   * im Bild, und die ist Lizenzpflicht.
+   */
+  quellen: StoryQuelle[];
   /** Höher ist stärker. Wer eine Geschichte ergänzt, entscheidet, wo sie steht. */
   gewicht: number;
-  /** Wie sie gezeigt wird — siehe {@link StoryBildform}. */
-  bildform: StoryBildform;
+  /**
+   * Womit die Geschichte STARTET — die Form, die ihr Autor für richtig hält.
+   *
+   * Es ist ein Startwert, keine Festlegung: Ob eine Form wirklich trägt,
+   * entscheidet das Formen-Register an den Zahlen (lib/social-bildformen.ts),
+   * und der Redaktionstisch bietet jede an, die durchkommt. Die Union ist
+   * deshalb die volle des Registers — die frühere Beschränkung auf vier Formen
+   * war eine zweite, engere Formenlehre neben der eigentlichen und hätte
+   * Rangliste, Aufteilung und Verlauf für Ortsgeschichten für immer
+   * ausgeschlossen.
+   */
+  bildform: PostBild["art"];
   /**
    * Das Ganze, auf das sich die Werte beziehen — nur bei Anteilen.
    *
@@ -202,6 +273,22 @@ export const MIN_ANLAGEN_FUER_GELD = 5;
 // ─── Hilfsgrößen ─────────────────────────────────────────────────────────────
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
+
+/**
+ * Sorte, Katalog-Kategorie und Beschriftung in einem Zug.
+ *
+ * Als Spread an der Geschichte, damit die drei nicht auseinanderlaufen können:
+ * Vorher standen Kategorie und Beschriftung als zwei getippte Zeilen
+ * nebeneinander, und eine davon durfte man vergessen.
+ */
+function familie(art: Exclude<StoryArt, "fund">): {
+  art: StoryArt;
+  kategorie: KategorieSchluessel;
+  kategorieLabel: string;
+} {
+  const f = STORY_FAMILIE[art];
+  return { art, kategorie: f.kategorie, kategorieLabel: f.label };
+}
 
 /** Auf so viele Nachkommastellen runden — EINMAL, damit Text und Kachel
  *  dieselbe Zahl lesen. */
@@ -315,8 +402,9 @@ function storyEingespielt(d: StoryDaten, heuteJahr: number): OrtsStory | null {
   return {
     kennung: "eingespielt",
     bildform: "kennzahl",
-    kategorie: "G4.1",
-    kategorieLabel: KATEGORIE_LABEL["G4.1"],
+    ...familie("eingespielt"),
+    quellen: ["mastr"],
+    gemessen: "Einspeisevergütung seit 2000, je Baujahr gerechnet",
     titel:
       `${mio >= 1 ? `${mio.toLocaleString("de-DE", { maximumFractionDigits: 1 })} Mio €` : `${nf(summe)} €`} ` +
       `Einspeisevergütung sind seit 2000 nach ${d.name} geflossen`,
@@ -362,8 +450,9 @@ function storyAuslauf(d: StoryDaten, heuteJahr: number): OrtsStory | null {
   return {
     kennung: "auslauf",
     bildform: "kennzahl",
-    kategorie: "G4.2",
-    kategorieLabel: KATEGORIE_LABEL["G4.2"],
+    ...familie("auslauf"),
+    quellen: ["mastr"],
+    gemessen: `Private Dachanlagen des Baujahrs ${jahrgang}`,
     titel: `${anlagenWort(betroffen)} in ${d.name} verlieren Ende ${heuteJahr} die Einspeisevergütung`,
     text:
       `Sie gingen ${jahrgang} ans Netz und bekamen seither ${altCt.toLocaleString("de-DE")} Cent ` +
@@ -436,8 +525,9 @@ function storyKohorte(d: StoryDaten): OrtsStory | null {
   return {
     kennung: "kohorte",
     bildform: "saeule",
-    kategorie: "G16",
-    kategorieLabel: KATEGORIE_LABEL.G16,
+    ...familie("kohorte"),
+    quellen: ["mastr"],
+    gemessen: `Mittlere Größe neuer privater Dachanlagen, ${frueh} gegen ${spaet}`,
     titel: `Die typische Dachanlage in ${d.name} ist ${faktor.toLocaleString("de-DE")}-mal so groß wie ${frueh}`,
     text:
       `${frueh} hatte eine neue private Dachanlage in ${d.name} im Schnitt ${alt.toLocaleString("de-DE")} kWp, ` +
@@ -483,10 +573,15 @@ function storyFlaeche(d: StoryDaten): OrtsStory | null {
   const summe = frei + gewerbe + privat;
   if (summe <= 0 || d.solar.total_count < MIN_ANLAGEN_FUER_GELD) return null;
 
+  // JEDE FORM TRÄGT IHRE DATIVFORM. Der Satz lautet „stehen auf …", und ein
+  // Sonderfall nur für die privaten Dächer ließ „stehen auf Gewerbedächer"
+  // stehen — im Browser-Test aufgefallen, nicht im Diff. Grammatik ist Teil der
+  // Richtigkeit, und ein falscher Kasus ist im Fließtext dieselbe Sorte Fehler
+  // wie „1 neue Anlagen".
   const anteile = [
-    { name: "Freifläche", wert: frei },
-    { name: "Gewerbedächer", wert: gewerbe },
-    { name: "private Dächer", wert: privat },
+    { name: "Freifläche", auf: "Freiflächen", wert: frei },
+    { name: "Gewerbedächer", auf: "Gewerbedächern", wert: gewerbe },
+    { name: "private Dächer", auf: "privaten Dächern", wert: privat },
   ].sort((a, b) => b.wert - a.wert);
   const top = anteile[0];
   const anteil = Math.round((top.wert / summe) * 100);
@@ -495,9 +590,10 @@ function storyFlaeche(d: StoryDaten): OrtsStory | null {
   return {
     kennung: "flaeche",
     bildform: "vergleich",
-    kategorie: "G14",
-    kategorieLabel: KATEGORIE_LABEL.G14,
-    titel: `${anteil} % der Solarleistung in ${d.name} stehen auf ${top.name === "private Dächer" ? "privaten Dächern" : top.name}`,
+    ...familie("flaeche"),
+    quellen: ["mastr"],
+    gemessen: `Anteile an ${fmtPvLeistung(summe)} installierter Leistung`,
+    titel: `${anteil} % der Solarleistung in ${d.name} stehen auf ${top.auf}`,
     text:
       `Von ${fmtPvLeistung(summe)} installierter Leistung entfallen ${anteil} % auf ${top.name}. ` +
       `Die drei Formen sagen Verschiedenes: Ein privates Dach gehört jemandem im Ort, eine Freifläche ` +
@@ -514,6 +610,12 @@ function storyFlaeche(d: StoryDaten): OrtsStory | null {
       `Anteile an der installierten Leistung, nicht an der Zahl der Anlagen — nach Stückzahl ` +
       `dominieren immer die kleinen. Balkonkraftwerke bleiben draußen; sie zählen zur Leistung ` +
       `kaum und verschöben nur die Prozentzahlen.`,
+    // Drei ANTEILE — also mit Ganzem. Ohne es normiert der Balken am größten
+    // gezeigten Wert: Bei 47/33/20 bekäme die kleinste Form 43 Prozent der
+    // Länge, obwohl sie ein Fünftel ist. Genau diesen Fehler hat das Projekt
+    // bei den drei Bundes-Segmenten schon einmal bezahlt („Die Überschrift
+    // sagte nur gut ein Viertel, der Balken zeigte vier Fünftel").
+    ganzes: 100,
     gewicht: 65,
   };
 }
@@ -546,8 +648,11 @@ function storyWohnform(d: StoryDaten): OrtsStory | null {
   return {
     kennung: "wohnform",
     bildform: "donut",
-    kategorie: "G15",
-    kategorieLabel: KATEGORIE_LABEL.G15,
+    ...familie("wohnform"),
+    // Der Zensus liefert die Wohnungen, das Anlagenregister die Anlagen im
+    // Text daneben — beide Quellen gehören deshalb in die Zeile im Bild.
+    quellen: ["zensus", "mastr"],
+    gemessen: `Wohnungen nach Gebäudegröße, Zensus 2022`,
     titel: `${anteil} % der Wohnungen in ${d.name} liegen in Häusern mit ein oder zwei Wohnungen`,
     text:
       `Das sind ${nf(w.einZwei)} von ${nf(w.gesamt)} Wohnungen — dort ist ein eigenes Dach die Regel. ` +
@@ -597,8 +702,9 @@ function storyMonat(d: StoryDaten): OrtsStory | null {
   return {
     kennung: `monat-${letzter.monat}`,
     bildform: "kennzahl",
-    kategorie: "G2.zubau",
-    kategorieLabel: KATEGORIE_LABEL["G2.zubau"],
+    ...familie("monat"),
+    quellen: ["mastr"],
+    gemessen: `Netzanschlüsse im ${monatsName(letzter.monat)}`,
     titel: `${anlagenWort(letzter.count)} gingen in ${d.name} im ${monatsName(letzter.monat)} ans Netz`,
     text:
       `Das ist der jüngste Monat, für den die Meldungen weitgehend vollständig sind — Anlagen ` +
@@ -661,8 +767,9 @@ function storyAnomalie(d: StoryDaten): OrtsStory | null {
   return {
     kennung: `anomalie-${m.monat}`,
     bildform: "saeule",
-    kategorie: "G10",
-    kategorieLabel: KATEGORIE_LABEL.G10,
+    ...familie("anomalie"),
+    quellen: ["mastr"],
+    gemessen: `${monatsName(m.monat)} gegen den Median der übrigen Monate desselben Orts`,
     titel: `Im ${monatsName(m.monat)} gingen in ${d.name} ${faktor.toLocaleString("de-DE")}-mal so viele Anlagen ans Netz wie sonst`,
     text:
       `${anlagenWort(m.count)} in einem Monat, während es in den übrigen Monaten dieses Zeitraums ` +
@@ -753,8 +860,9 @@ function storyVergleich(d: StoryDaten, p: VergleichsPlatz): OrtsStory {
   return {
     kennung: `vergleich-${p.kategorie}-${p.ebene}-${p.klasseSlug}`,
     bildform: "kennzahl",
-    kategorie: "G3.vergleich",
-    kategorieLabel: KATEGORIE_LABEL["G3.vergleich"],
+    ...familie("vergleich"),
+    quellen: ["mastr"],
+    gemessen: `${p.messgroesse} — ${p.gruppe}`,
     titel: spitze
       ? `${d.name} steht bei ${p.messgroesse} an der Spitze — ${p.gruppe}`
       : `${d.name} steht bei ${p.messgroesse} auf Platz ${nf(p.rang)} von ${nf(p.ausN)} — ${p.gruppe}`,
@@ -762,7 +870,9 @@ function storyVergleich(d: StoryDaten, p: VergleichsPlatz): OrtsStory {
       `Verglichen wird innerhalb der eigenen Größenklasse: ${p.gruppe}. ` +
       `Der Wert liegt bei ${p.wert}.`,
     werte: [
-      { name: `von ${nf(p.ausN)}`, wert: p.rang, einheit: "Platz", haupt: true },
+      // Einheit LEER und der Bezug im Namen: Die Karte setzt die Einheit direkt
+      // hinter die Zahl, „11 Platz" liest sich falsch herum.
+      { name: `von ${nf(p.ausN)} Plätzen`, wert: p.rang, einheit: "", haupt: true },
       { name: p.messgroesse, wert: p.rohwert, einheit: p.einheit },
     ],
     grundlage:
@@ -807,11 +917,22 @@ export type VergleichsPlatz = {
 function ausFund(f: VorratsFund): OrtsStory {
   return {
     kennung: f.kennung,
-    kategorie: "fund",
+    art: "fund",
+    // Der Suchlauf setzt die Katalog-Kategorie je Muster — sie wird hier
+    // durchgereicht, nicht neu bestimmt.
+    kategorie: f.kategorie,
+    // AUS DEM KATALOG, nicht der Schlüssel selbst. Bis zum 06.09.2026 stand
+    // hier `f.kategorie`, also wörtlich „g10" als Beschriftung auf der
+    // Ortsseite. Unsichtbar geblieben, weil der Block ausgeblendet war.
+    kategorieLabel: familienLabel(f.kategorie),
     // Ein Fund bringt zwei Werte ohne Ganzes mit — das ist der Säulen-Fall.
     // Trägt er nur einen, fällt die Karte auf die Einzelkennzahl zurück.
     bildform: (f.werte?.length ?? 0) >= 2 ? "saeule" : "kennzahl",
-    kategorieLabel: f.kategorie,
+    quellen: ["mastr"],
+    // Ein Fund trägt keine getrennte Messzeile. Eine hier erfundene wäre nicht
+    // gerechnet — dieselbe Regel, aus der er auch keine eigene Schlagzeile
+    // bekommt.
+    gemessen: "",
     titel: f.satz,
     text: f.grundlage,
     werte: f.werte.map((w, i) => ({ ...w, haupt: i === 0 })),

@@ -1,11 +1,12 @@
 import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../lib/admin-guard";
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
-import { baueAllePosts, templateVon, type SocialPost } from "../../../../lib/social-posts";
+import { templateVon, type SocialPost } from "../../../../lib/social-posts";
+import { quellenstand, ORTE_STANDARD } from "../../../../lib/redaktions-quelle";
+import { QuellenLeiste } from "../../../../components/social/QuellenLeiste";
 import { KATEGORIEN, kategorieAusAdresse } from "../../../../lib/redaktions-kategorien";
 import { BEREICHE } from "../../../../lib/redaktionsplan";
 import { KategorieNav } from "../../../../components/social/KategorieNav";
-import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 import { fassungsAbdruck, ladeAllePruefungen } from "../../../../lib/social-pruefung";
 import { pruefeMechanisch } from "../../../../lib/social-mechanik";
 import { ladeVersand } from "../../../../lib/social-versand-log";
@@ -37,25 +38,40 @@ export const dynamic = "force-dynamic";
 export default async function RedaktionEntwicklung({
   searchParams,
 }: {
-  searchParams: Promise<{ k?: string }>;
+  searchParams: Promise<{ k?: string; quelle?: string; schub?: string; orte?: string }>;
 }) {
   if (!(await isAdminSession())) redirect("/login?next=/admin/redaktion");
 
-  const gewaehlt = (await searchParams).k;
+  const params = await searchParams;
+  const gewaehlt = params.k;
   // Ohne Kategorie in der Adresse: das Raster über alles. Das ist der Einstieg —
   // erst sehen, was es gibt, dann in eine Kategorie gehen, um daran zu arbeiten.
   const uebersicht = !gewaehlt;
   const kat = kategorieAusAdresse(gewaehlt);
 
-  let posts: SocialPost[] | undefined;
+  // WORAUS die Beiträge kommen — dieselbe Wahl wie in der Templates-Ansicht,
+  // aus derselben Quelle. Die Ortsgeschichten gehören hierher, weil sie
+  // dieselben Katalog-Familien tragen wie die bundesweiten Beiträge: Sie
+  // stehen damit unter denselben Reitern, statt in einer eigenen Ansicht
+  // daneben (Betreiber, 06.09.2026).
+  const stand = await quellenstand({
+    art: params.quelle === "kommunen" ? "kommunen" : "bund",
+    schub: params.schub,
+    hoechstensOrte: Math.max(1, Math.min(Number(params.orte) || ORTE_STANDARD, 24)),
+  });
+  const posts: SocialPost[] | undefined = stand.posts;
+  let fehler: string | null = stand.fehler ?? null;
+
+  // Die Bundeskennzahlen NUR für die mechanische Prüfung — und nur, wo es sie
+  // gibt. Zwei ihrer neun Regeln messen gegen den bundesweiten Bestand; bei
+  // Ortsgeschichten laufen sie nicht, und die Prüfung sagt das selbst.
   let kennzahlen: Awaited<ReturnType<typeof socialKennzahlen>> | undefined;
-  let fehler: string | null = null;
-  try {
-    const [k, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
-    kennzahlen = k;
-    posts = baueAllePosts(k, fassungen);
-  } catch (e) {
-    fehler = (e as Error).message;
+  if (stand.art === "bund" && !fehler) {
+    try {
+      kennzahlen = await socialKennzahlen();
+    } catch (e) {
+      fehler = (e as Error).message;
+    }
   }
 
   // Die mechanische Prüfung läuft SERVERSEITIG und bei jedem Aufruf, nicht auf
@@ -63,7 +79,7 @@ export default async function RedaktionEntwicklung({
   // stehen, wo gearbeitet wird — ein Befund, den man erst beim Senden erfährt,
   // kommt zwei Schritte zu spät.
   const befundeJePost = new Map<string, ReturnType<typeof pruefeMechanisch>>();
-  if (posts && kennzahlen) {
+  if (posts) {
     for (const p of posts) befundeJePost.set(p.id, pruefeMechanisch(p, kennzahlen));
   }
 
@@ -89,11 +105,22 @@ export default async function RedaktionEntwicklung({
     return treffer;
   };
 
+  /** Eine Adresse dieser Seite mit geänderten Angaben — der Rest bleibt stehen. */
+  const adresse = (aenderung: Record<string, string | undefined>): string => {
+    const q = new URLSearchParams();
+    for (const k of ["k", "quelle", "schub", "orte"] as const) {
+      const w = k in aenderung ? aenderung[k] : params[k];
+      if (typeof w === "string" && w) q.set(k, w);
+    }
+    return `/admin/redaktion${q.toString() ? `?${q}` : ""}`;
+  };
+
   return (
     <div style={{ maxWidth: 1240, margin: "0 auto" }}>
       <KategorieNav
         aktiv={kat.schluessel}
         uebersicht={uebersicht}
+        behalte={{ quelle: params.quelle, schub: params.schub, orte: params.orte }}
         bereiche={BEREICHE.map((b) => ({
           schluessel: b.schluessel,
           name: b.name,
@@ -104,6 +131,8 @@ export default async function RedaktionEntwicklung({
           })),
         })).filter((b) => b.eintraege.length > 0)}
       />
+
+      <QuellenLeiste stand={stand} adresse={adresse} />
 
       {/* Keine Überschrift und in der Übersicht auch kein Einleitungssatz: Die
           Leiste darüber sagt, wo man ist, und die Zahl steht dort schon. „Alle
@@ -150,6 +179,7 @@ export default async function RedaktionEntwicklung({
               abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
               befunde: befundeJePost.get(p.id) ?? [],
               gesendetAm: gesendetAm(p.id, fassungsAbdruck({ text: p.text, bild: p.bild })),
+              orts: stand.seitenform?.[p.id],
               kategorie: { name: k.name, schluessel: k.schluessel },
               // Gestaltet heißt: Der Beitrag verwendet ein abgenommenes Template.
               bearbeitet: !!p.bild && !!templateVon(p.bild),
@@ -164,6 +194,7 @@ export default async function RedaktionEntwicklung({
             abdruck: fassungsAbdruck({ text: p.text, bild: p.bild }),
             befunde: befundeJePost.get(p.id) ?? [],
             gesendetAm: gesendetAm(p.id, fassungsAbdruck({ text: p.text, bild: p.bild })),
+            orts: stand.seitenform?.[p.id],
           }))}
         />
       )}

@@ -33,3 +33,4 @@ scratch/
 # liegen (RLS an, keine Policy). Erzeugt wird der Katalog mit
 # `npm run presse -- --csv`.
 docs/presse/
+.werkbank/

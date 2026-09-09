@@ -146,13 +146,20 @@ describe("Schübe", () => {
     expect(s.kanal).toBe("rollen-postfach");
   });
 
-  it("kein Schub zielt in ein Land, das gerade Ferien hat (Stichtag: Freigabe des Schubs)", () => {
-    // Der 19.08.2026 ist der Tag, an dem dieser Schub festgelegt wurde. Er
-    // steht hier als Anker, nicht als „heute": Ein Test mit `new Date()` würde
-    // im Oktober rot, obwohl sich nichts geändert hat.
-    const stichtag = "2026-08-19";
-    for (const bl of SCHUEBE[AKTUELLER_SCHUB].bl) {
-      expect(versandfenster(bl, stichtag), `${bl} am ${stichtag}`).toEqual({ frei: true });
+  it("kein Schub zielt in ein Land, das an seinem eigenen Starttag Ferien hat", () => {
+    // DAS DATUM KOMMT VOM SCHUB, nicht aus dem Test. Vorher stand hier ein
+    // fester Stichtag — der Tag, an dem der DAMALIGE Schub festgelegt wurde.
+    // Der nächste Schub wurde damit gegen ein fremdes Datum geprüft und
+    // scheiterte, obwohl an ihm nichts falsch war: Mecklenburg-Vorpommern
+    // hatte am 19.08.2026 noch Ferien, an seinem Starttag im September nicht.
+    //
+    // Ein Test mit „heute" wäre die andere Falle: Er würde irgendwann rot,
+    // ohne dass sich etwas geändert hat.
+    for (const [key, s] of Object.entries(SCHUEBE)) {
+      expect(s.abIso, `${key} hat kein Startdatum`).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      for (const bl of s.bl) {
+        expect(versandfenster(bl, s.abIso), `${key}: ${bl} am ${s.abIso}`).toEqual({ frei: true });
+      }
     }
   });
 

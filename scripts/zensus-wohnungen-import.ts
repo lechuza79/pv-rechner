@@ -12,9 +12,15 @@
  * Gebäuden mit vielen Wohnungen steht praktisch nichts, und in einer Stadt
  * liegt die Mehrheit der Wohnungen genau dort.
  *
- * LIZENZ: dl-de/by-2-0 (Datenlizenz Deutschland Namensnennung 2.0) — dieselbe
- * offene Behördenlizenz wie beim Anlagenregister. Sie verlangt die
- * Quellenangabe, sonst nichts.
+ * LIZENZ: NICHT dl-de/by-2-0. Das stand hier bis zum 06.09.2026 und ist am
+ * Original widerlegt — auf zensus2022.de trägt allein das Shapefile der
+ * Verwaltungsgrenzen die Datenlizenz ("© GeoBasis-DE / BKG 2023", also die
+ * BKG-Karte), bei Destatis gilt sie ausdrücklich nur für GENESIS-Online. Was
+ * für diese Regionaltabelle gilt, ist der allgemeine Destatis-Vorbehalt:
+ * Vervielfältigung und Verbreitung, auch auszugsweise, mit Quellennachweis
+ * gestattet, gewerblich wie nicht gewerblich; Abwandlungen sind im
+ * Quellennachweis kenntlich zu machen. Der Vermerk steht als Eintrag `zensus`
+ * in lib/data-sources.ts — von dort, nie hier getippt.
  *
  *   npx tsx scripts/zensus-wohnungen-import.ts            # laden und schreiben
  *   npx tsx scripts/zensus-wohnungen-import.ts --trocken  # nur rechnen

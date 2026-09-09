@@ -24,6 +24,11 @@ import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTi
 import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
 import GemeindeMeldungen from "../../../../../../components/atlas/GemeindeMeldungen";
 import { ortsStories } from "../../../../../../lib/orts-stories";
+// Aus den Geschichten werden Beiträge des Redaktionssystems: Farbschema,
+// Bildform und Quellenzeile kommen von dort, die redaktionelle Fassung je Ort
+// aus der Ablage.
+import { ortsPosts } from "../../../../../../lib/orts-posts";
+import { ladeFassungen } from "../../../../../../lib/social-vorlagen-db";
 import { fundeFuerOrt } from "../../../../../../lib/social-fundvorrat";
 import { hatAuszeichnung, vergleichsPlaetze } from "../../../../../../lib/awards-server";
 import { monatsZubau, wohnungsBestand } from "../../../../../../lib/orts-daten";
@@ -558,25 +563,19 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           OHNE PLATZIERUNG: steht als eigene Karte direkt darüber (siehe dort).
         */}
         {/*
-          AUSGEBLENDET bis das Story-Visual steht (Betreiber, 05.09.2026).
-
-          Die Geschichten selbst sind fertig und laufen für jeden Ort; was fehlt,
-          ist das Bild. Drei Anläufe auf dieser Seite sind am selben Punkt
-          gescheitert: Die Beitrags-Karte der Redaktion ist fest 1080 Pixel breit
-          und überschreibt die Farb-Tokens mit ihrer eigenen Palette — richtig
-          für ein Bild in einem fremden Feed, falsch auf einer Seite mit
-          Tageslicht-Theme (weißer Block im Dunkeln, Überlauf im schmalen
-          Teaser). Eine dritte, hier gezeichnete Fassung wäre die zweite Wahrheit
-          neben den vier abgenommenen Templates.
-
-          Das quadratische Story-Visual entsteht deshalb dort, wo die Formenlehre
-          und die Templates wohnen; diese Seite konsumiert es danach. Bis dahin
-          steht hier nichts — eine schmucklose Kartenreihe auf einer Seite, die
-          im Outreach verlinkt wird, ist schlechter als keine.
+          Das Story-Visual steht seit dem 06.09.2026: dieselbe Karte wie im
+          Redaktionstisch, in der quadratischen Stufe und mit den Farben dieser
+          Seite. Die Geschichten sind damit Beiträge des Redaktionssystems —
+          sie greifen auf dieselben Templates zu, und ihre Fassung (Text,
+          Farbschema, Bildform) lässt sich vor einem Kommunen-Schub je ORT
+          einstellen; die Beitrags-Kennung trägt dafür den Gemeindeschlüssel.
         */}
-        {false && (
         <GemeindeMeldungen
-          stories={ortsStories({
+          beitraege={ortsPosts({
+            ort: { regionId: region.region_id, name: region.name },
+            standIso: atlas.data_as_of,
+            fassungen: await ladeFassungen(),
+            stories: ortsStories({
             daten: {
               name: region.name,
               regionId: region.region_id,
@@ -610,12 +609,12 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
               land: bl?.name ?? null,
               stand: "vorgemerkt",
             }),
+            }),
           })}
           name={region.name}
           liveUrl={`${BASE_URL}${atlasPath}`}
           standIso={atlas.data_as_of}
         />
-        )}
 
         {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
