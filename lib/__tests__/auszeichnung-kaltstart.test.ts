@@ -74,3 +74,17 @@ describe("Auszeichnungs-Platzhalter: der Kaltstart zahlt ihn nicht", () => {
     expect(seite).toMatch(/erwartet=\{await hatAuszeichnung\(/);
   });
 });
+
+describe("Frist des geteilten Caches", () => {
+  it("hält die Liste einen Tag, nicht eine Stunde", () => {
+    // Läuft die Frist ab, zahlt der nächste Besucher den vollen Aufbau (3,7 s)
+    // im Seitenaufbau. Bei einer Stunde traf das am 09.09.2026 drei
+    // Gesundheitschecks hintereinander, jedes Mal die erste Stichprobe bei
+    // 7,2–7,6 s und 0,8 s vor der Notbremse. Die Frischequelle ist die Marke
+    // des Datenlaufs, nicht die Frist.
+    const quelle = readFileSync(resolve(process.cwd(), "lib", "awards-server.ts"), "utf8");
+    const block = quelle.slice(quelle.indexOf("auszeichnungs-orte-v1"));
+    expect(block).toMatch(/revalidate: 86400/);
+    expect(block.slice(0, block.indexOf("});"))).not.toMatch(/revalidate: 3600/);
+  });
+});

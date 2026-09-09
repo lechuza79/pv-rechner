@@ -200,7 +200,24 @@ const auszeichnungsOrteUncached = async (): Promise<string[]> =>
     .map((r) => r.regionId);
 
 export const auszeichnungsOrte = unstable_cache(auszeichnungsOrteUncached, ["auszeichnungs-orte-v1"], {
-  revalidate: 3600,
+  // EINEN TAG, NICHT EINE STUNDE — und das ist gemessen, nicht geschätzt.
+  //
+  // Der Aufbau kostet 3,7 s (10.742 Zeilen). Läuft die Frist ab, zahlt der
+  // NÄCHSTE Besucher diese Sekunden im Seitenaufbau. Bei einer Stunde traf das
+  // den Gesundheitscheck reihenweise: Am 09.09.2026 drei rote Läufe, jedes Mal
+  // die ERSTE Stichprobe bei 7,2 / 7,2 / 7,6 s und jede folgende bei 1,5–2,8 s,
+  // an drei verschiedenen Orten in drei Bundesländern. 0,8 s vor der Notbremse
+  // bei 8 s, ab der die Seite einen Fehler zeigt.
+  //
+  // Die Stundenfrist war nie die Frischequelle: Die Auszeichnungen ändern sich
+  // mit dem monatlichen Datenlauf, und der räumt den Cache über die Marke
+  // ohnehin. Die drei anderen teuren Atlas-Leser stehen aus demselben Grund
+  // längst auf einem Tag; diese Liste war die einzige Ausnahme.
+  //
+  // Die vollständige Lösung wäre, die Liste beim Datenlauf abzulegen, statt sie
+  // im Anfrageweg zu bauen — dann kostet sie eine kleine Abfrage statt 10.742
+  // Zeilen. Bis dahin senkt der Tag die Häufigkeit auf ein Vierundzwanzigstel.
+  revalidate: 86400,
   tags: [ATLAS_DATEN_TAG],
 });
 
