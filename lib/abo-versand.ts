@@ -28,7 +28,7 @@ import "server-only";
 // sind Zustellbarkeits- und Rechtsfragen und gelten unabhängig davon, ob jemand
 // gefragt hat.
 
-import { leseSmtpKonfig, anmeldeBefundAus, type AnmeldeBefund, type SmtpKonfiguration } from "./outreach-mail";
+import { leseSmtpKonfig, anmeldeBefundAus, adresseAus, type AnmeldeBefund, type SmtpKonfiguration } from "./outreach-mail";
 import { aboMailKopfzeilen, fehlendeAboPflichtangaben, type AboMailArt } from "./abo-mail";
 
 /**
@@ -67,6 +67,15 @@ export async function sendeAboMail(o: {
    * die Prüfung sie ab (siehe lib/abo-mail.ts).
    */
   art: AboMailArt;
+  /**
+   * Abweichender Absender, z. B. für die einmalige persönliche Nachricht.
+   *
+   * NUR auf derselben Domain — sonst brechen SPF und DKIM, und die Mail landet
+   * genau dort, wo die Vorgänger schon lagen. Ein fremder Absender wird
+   * abgewiesen statt stillschweigend durch den Standard ersetzt: Wer eine
+   * Absenderadresse angibt und eine andere verschickt bekommt, merkt es nie.
+   */
+  absender?: string;
 }): Promise<VersandErgebnis> {
   const befund = leseSmtpKonfig(process.env);
   if (!befund.ok) {
@@ -81,11 +90,19 @@ export async function sendeAboMail(o: {
     return { ok: false, fehler: `Pflichtangaben fehlen: ${fehlend.join(", ")}` };
   }
 
+  const standardDomain = adresseAus(befund.konfig.from).split("@")[1] ?? "";
+  if (o.absender && adresseAus(o.absender).split("@")[1] !== standardDomain) {
+    return {
+      ok: false,
+      fehler: `Absender ${adresseAus(o.absender)} liegt nicht auf ${standardDomain} — SPF und DKIM würden brechen.`,
+    };
+  }
+
   const transport = await baueTransport(befund.konfig);
 
   try {
     const quittung = await transport.sendMail({
-      from: befund.konfig.from,
+      from: o.absender ?? befund.konfig.from,
       to: o.an,
       subject: o.subject,
       text: o.text,

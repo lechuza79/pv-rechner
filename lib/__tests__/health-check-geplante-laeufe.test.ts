@@ -141,13 +141,23 @@ describe("Geplante Läufe, die nicht mehr durchkommen", () => {
     });
 
     it("liest das Job-Limit aus der Datei und verwechselt es nicht mit einem Schritt-Limit", () => {
-      // Die Flow-Datei trägt drei Angaben: 300 für den Job, 10 und 5 für zwei
-      // Schritte. Wer die erste nimmt, die er findet, misst gegen 5 Minuten.
+      // Die Flow-Datei trägt mehrere Angaben: eine je Job und kleinere für
+      // einzelne Schritte. Wer die erste nimmt, die er findet, misst gegen
+      // 5 Minuten.
+      //
+      // Die erwartete Zahl steht hier NICHT — sie hat sich am 07.09.2026 mit
+      // der Aufteilung des Laufs von 300 auf 220 geändert, und eine getippte
+      // Kopie wäre beim nächsten Mal wieder falsch. Geprüft wird die REGEL:
+      // gelesen wird der größte Wert der Datei, und der ist echt größer als
+      // jeder andere darin.
       const text = readFileSync(
         resolve(__dirname, "..", "..", ".github", "workflows", "flows-nightly.yml"),
         "utf8",
       );
-      expect(jobZeitlimitMinuten(text)).toBe(300);
+      const alle = [...text.matchAll(/^\s*timeout-minutes:\s*(\d+)/gm)].map((m) => Number(m[1]));
+      expect(alle.length).toBeGreaterThan(1);
+      expect(jobZeitlimitMinuten(text)).toBe(Math.max(...alle));
+      expect(jobZeitlimitMinuten(text)).toBeGreaterThan(Math.min(...alle));
       // Ohne Angabe gilt GitHubs Vorgabe — nicht 0 und nicht „unbegrenzt".
       expect(jobZeitlimitMinuten("jobs:\n  x:\n    runs-on: ubuntu-latest\n")).toBe(360);
     });

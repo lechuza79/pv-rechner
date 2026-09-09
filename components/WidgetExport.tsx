@@ -12,7 +12,7 @@ import { OWN_WORK_LICENSE } from "../lib/license";
 import { brandLabel, type WidgetDef } from "../lib/widget-registry";
 import { parseHostPfad } from "../lib/widget-settings";
 import type { useChartExport } from "../lib/useChartExport";
-import { v } from "../lib/theme";
+import { v, fsPx } from "../lib/theme";
 
 // Export layer for widgets: everything the website explains INTERACTIVELY has to
 // be spelled out in the downloaded/shared image, because a PNG has no hover, no
@@ -154,6 +154,7 @@ export function WidgetFooter({
   share = true,
   showCta = true,
   showEmbed = false,
+  onEmbed,
   narrow = false,
   compact = false,
 }: {
@@ -161,7 +162,12 @@ export function WidgetFooter({
   chartExport: Pick<
     ReturnType<typeof useChartExport>,
     "downloadPng" | "sharePng" | "shareWhatsApp" | "shareTwitter" | "isExporting" | "canNativeShare"
-  >;
+  > & {
+    /** Animierte Widgets: die Animation als Video aufnehmen. Nur wo der Browser
+     *  aufnehmen kann — sonst weglassen, dann gibt es den Knopf nicht. */
+    downloadVideo?: () => void;
+    isRecording?: boolean;
+  };
   onCopyLink?: () => void;
   /** First-party embed on our own pages: no brand line (the page carries it). */
   onsite?: boolean;
@@ -173,6 +179,17 @@ export function WidgetFooter({
    * button pointing at the page you are already reading is noise, not a step. */
   showCta?: boolean;
   showEmbed?: boolean;
+  /**
+   * Eigene Einbett-Aktion des Aufrufers.
+   *
+   * Ohne sie springt der Knopf in die Widget-Galerie — richtig für ein Widget,
+   * das irgendwo eingebettet ist, falsch auf einer Seite, die einen KONKRETEN
+   * Ort zeigt: Dort gehört der fertige Code für diesen Ort hin, nicht ein Sprung
+   * in eine Liste, in der er an neunter Stelle steht. Wird sie übergeben, gilt
+   * sie AUCH auf eigenen Seiten (`onsite`) — sonst bliebe der Knopf genau dort
+   * aus, wo er gebraucht wird.
+   */
+  onEmbed?: () => void;
   narrow?: boolean;
   /**
    * Ganz kleine Karten (Einzel-Kennzahl, Ampel, Mini-Ring): dort sprengt eine
@@ -263,6 +280,8 @@ export function WidgetFooter({
               size={compact ? 26 : 28}
               showDownload={widget.exportable !== false}
               onDownload={chartExport.downloadPng}
+              onDownloadVideo={chartExport.downloadVideo}
+              isRecording={chartExport.isRecording}
               // Kein Bild, kein Bild-Teilen: Wo nichts aufzunehmen ist, wäre
               // „Als Bild teilen" ein Knopf, der nichts tut.
               onShareImage={
@@ -277,9 +296,10 @@ export function WidgetFooter({
               onTwitter={chartExport.shareTwitter}
               onCite={() => setCiteOpen(true)}
               onEmbed={
-                showEmbed && !onsite
+                onEmbed ??
+                (showEmbed && !onsite
                   ? () => window.open(`/energie-widgets#${widget.id}`, "_blank", "noopener")
-                  : undefined
+                  : undefined)
               }
             />
           </div>
@@ -304,17 +324,25 @@ export function WidgetFooter({
  * (licence), on our own pages it fades in on hover — there the page credits.
  */
 export const SOURCE_EDGE_WIDTH = 14;
-/** Ausgangsgröße der Kanten-Schrift und die Grenze, unter die sie nicht fällt. */
-const SOURCE_EDGE_FONT = 9;
+/** Ausgangsgröße der Kanten-Schrift (das kleinste Text-Token) und die Grenze,
+ *  unter die sie nur fällt, wenn der Vermerk sonst abgeschnitten würde —
+ *  dann ist die Quelle zu lang und gehört in lib/data-sources.ts gekürzt. */
+const SOURCE_EDGE_FONT = fsPx("--font-size-micro");
 const SOURCE_EDGE_FONT_MIN = 6;
 
 export function WidgetSourceEdge({
   widget,
   visible = true,
   stand,
+  spalten = 1,
 }: {
   widget: WidgetDef;
   visible?: boolean;
+  /** Zahl der senkrechten Textspalten. Ein Chart mit ZWEI Quellen bekommt an
+   *  einer Kante von Chart-Höhe den Vermerk sonst nur in 6 px unter — zwei
+   *  Spalten halten die Schrift auf dem kleinsten Token. Der Wirt legt dann
+   *  `SOURCE_EDGE_WIDTH * spalten` Platz an; die Kante wächst nie von selbst. */
+  spalten?: 1 | 2;
   /** Datenstand, hinten angehängt. Ein weitergereichtes Bild ohne Datum lässt
    *  nicht erkennen, ob die Zahlen von heute oder von vorletztem Jahr sind.
    *  Ohne Angabe steht das Abrufdatum da — die ehrlichere Aussage bei
@@ -373,12 +401,15 @@ export function WidgetSourceEdge({
       // trifft eine Dreisatz-Rechnung knapp daneben und der Vermerk bleibt um
       // ein, zwei Pixel abgeschnitten — unsichtbar im Bild, aber es fehlt hinten
       // ein Stück, und hinten steht der Änderungshinweis.
-      while (el.scrollHeight > el.clientHeight && groesse > SOURCE_EDGE_FONT_MIN) {
+      // Bei zwei Spalten läuft der Überhang in eine dritte Spalte (Breite),
+      // bei einer Spalte über die Höhe — beides zählt als „passt nicht".
+      const zuLang = () => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1;
+      while (zuLang() && groesse > SOURCE_EDGE_FONT_MIN) {
         groesse = Math.round((groesse - 0.2) * 10) / 10;
         el.style.fontSize = `${groesse}px`;
       }
       // Untergrenze erreicht und immer noch zu lang: Datum weg, dann neu messen.
-      if (el.scrollHeight > el.clientHeight) setOhneDatum(true);
+      if (zuLang()) setOhneDatum(true);
     };
     passeAn();
     // Noch einmal, sobald die echte Schrift da ist: Beim ersten Lauf misst der
@@ -389,7 +420,7 @@ export function WidgetSourceEdge({
     const ro = new ResizeObserver(passeAn);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [label]);
+  }, [label, spalten]);
 
   return (
     <div
@@ -409,13 +440,13 @@ export function WidgetSourceEdge({
         // das passierte vorher — ohne Breitenangabe ist der Kasten so breit wie
         // sein Inhalt, und bei zu geringer Höhe waren das zwei bis drei Spalten,
         // die quer über die Kennzahlen liefen.
-        width: SOURCE_EDGE_WIDTH,
+        width: SOURCE_EDGE_WIDTH * spalten,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         writingMode: "vertical-rl",
         transform: "rotate(180deg)",
-        whiteSpace: "nowrap",
+        whiteSpace: spalten > 1 ? "normal" : "nowrap",
         overflow: "hidden",
         fontSize: SOURCE_EDGE_FONT,
         lineHeight: 1.4,

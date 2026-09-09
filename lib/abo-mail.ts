@@ -63,20 +63,38 @@ export const ABO_PFLICHTANGABEN: {
   was: string;
   /** Nur für Meldungsmails — die Bestätigung trägt diese Angabe nicht. */
   nurMeldung?: boolean;
+  /**
+   * Nicht für die einmalige Umstellungs-Nachricht.
+   *
+   * Sie ist als Mail eines Menschen geschrieben, und ein Satz wie „Diese
+   * E-Mail bekommst du, weil …" ist genau der Systemton, gegen den sie gebaut
+   * ist (Betreiber, 03.09.2026). Rechtlich verlangt ihn hier nichts: Der
+   * Empfänger hat sich selbst eingetragen, es gibt keinen Verteiler und keine
+   * Werbeeinwilligung, auf die zu verweisen wäre. Impressum und Datenschutz
+   * bleiben Pflicht und bleiben drin.
+   */
+  nichtBeiUmstellung?: boolean;
   pruefe: (text: string) => boolean;
 }[] = [
   { was: "Abmeldelink", nurMeldung: true, pruefe: (t) => t.includes("/abo/abmelden") },
   { was: "Impressum-Link", pruefe: (t) => t.includes("solar-check.io/impressum") },
   { was: "Datenschutz-Link", pruefe: (t) => t.includes("solar-check.io/datenschutz") },
-  { was: "Grund der Zusendung", pruefe: (t) => /Diese E-Mail bekommst du, weil/.test(t) },
+  {
+    was: "Grund der Zusendung",
+    nichtBeiUmstellung: true,
+    pruefe: (t) => /Diese E-Mail bekommst du, weil/.test(t),
+  },
 ];
 
-export type AboMailArt = "bestaetigung" | "meldung";
+export type AboMailArt = "bestaetigung" | "meldung" | "umstellung";
 
 export function fehlendeAboPflichtangaben(html: string, art: AboMailArt = "meldung"): string[] {
-  return ABO_PFLICHTANGABEN.filter((p) => (art === "meldung" || !p.nurMeldung) && !p.pruefe(html)).map(
-    (p) => p.was,
-  );
+  return ABO_PFLICHTANGABEN.filter(
+    (p) =>
+      (art === "meldung" || !p.nurMeldung) &&
+      !(art === "umstellung" && p.nichtBeiUmstellung) &&
+      !p.pruefe(html),
+  ).map((p) => p.was);
 }
 
 // ─── Farben und Maße ────────────────────────────────────────────────────────

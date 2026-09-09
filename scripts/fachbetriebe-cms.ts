@@ -23,6 +23,7 @@
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { heuteInBerlin } from "../lib/zeit";
 
 // ─── Zugang ──────────────────────────────────────────────────────────────────
 // Gleiche Bauform wie scripts/fachbetriebe-refresh.ts: die Datei wird vom
@@ -220,7 +221,7 @@ async function main(): Promise<void> {
       jsonPfad,
       JSON.stringify(
         {
-          erhoben_am: new Date().toISOString().slice(0, 10),
+          erhoben_am: heuteInBerlin(),
           bestand: alle.length,
           stichprobe: probe.length,
           erreicht,

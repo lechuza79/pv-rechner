@@ -188,6 +188,20 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["SelectField"],
   },
   {
+    datei: "components/Auswahl.tsx",
+    name: "Auswahl",
+    zweck:
+      "Das Multitool: Pfeile zum Durchsteppen, Menü zum Springen — für Listen, die man sowohl durchgehen als auch anspringen will.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    // Im Aufbau, nicht verbindlich: Drei ältere Fassungen desselben Elements
+    // stehen noch in den öffentlichen Widgets (Länderwähler im Zubau, Zeitraum
+    // im Strommix als Embed und als Seite). Solange die nicht nachgezogen sind,
+    // wäre „verbindlich" eine Zusage, die das Repo nicht einhält.
+    stand: "im-aufbau",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/Switch.tsx",
     name: "Switch",
     zweck: "Ein/Aus für eine Annahme — „rechnet mit“ oder „rechnet nicht mit“.",
@@ -329,6 +343,41 @@ export const BAUSTEINE: Baustein[] = [
     ebene: "baustein",
     stand: "verbindlich",
     bestehtAus: ["Icons", "Switch"],
+  },
+  {
+    datei: "components/EinbettenDialog.tsx",
+    name: "EinbettenDialog",
+    zweck:
+      "Der fertige Einbettungs-Code für genau das, was gerade auf dem Schirm steht — statt eines Sprungs in die Widget-Galerie.",
+    gruppe: "widget",
+    ebene: "zusammensetzung",
+    stand: "im-aufbau",
+    bestehtAus: ["Modal"],
+  },
+  {
+    datei: "components/StorySlider.tsx",
+    name: "StorySlider",
+    zweck:
+      "Eine Reihe Teaser, die man wischt — mit Pfeilen, die nur erscheinen, wenn es etwas zu blättern gibt.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons"],
+    gegenprobe: {
+      // Der Browser rastet selbst ein; wer das zweite Mal von Hand baut,
+      // entscheidet Wischverhalten, Schrittweite und Pfeil-Zustand neu — und
+      // dann sieht dieselbe Reihe auf zwei Seiten verschieden aus.
+      muster: "scrollSnapType",
+      bedeutet:
+        "Hier entsteht eine zweite Teaser-Reihe von Hand. Wischen, Einrasten, Schrittweite und der Zustand der Pfeile gehören an eine Stelle — sonst blättert dieselbe Reihe auf der Ortsseite anders als auf der Startseite.",
+      ausser: [
+        {
+          datei: "components/atlas/RankingTable.tsx",
+          grund:
+            "Dort rasten SPALTEN einer breiten Tabelle ein, keine Teaser — hinter einer festgehaltenen ersten Spalte, weshalb die Einrastkante um deren Breite verschoben ist. Eine Teaser-Reihe kennt weder feste Spalte noch verschobene Kante; die beiden zusammenzulegen hieße, einer von beiden ihr Verhalten zu nehmen.",
+        },
+      ],
+    },
   },
   {
     datei: "components/StickyCta.tsx",

@@ -13,6 +13,7 @@ import { DEFAULT_AIRCON_CONFIG } from "../../../lib/aircon-config";
 import { FUEL } from "../../../lib/constants";
 import { eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import { pageMetadata } from "../../../lib/seo";
+import { heuteInBerlin } from "../../../lib/zeit";
 
 export const metadata: Metadata = pageMetadata({
   path: "/methodik",
@@ -103,7 +104,7 @@ async function fetchPrices(): Promise<PriceConfig> {
       .select("*")
       .neq("source", "SCRAPE_ERROR")
       .gt("pv_price_small", 0)
-      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .lte("valid_from", heuteInBerlin())
       .order("valid_from", { ascending: false })
       .limit(1)
       .single();
@@ -164,6 +165,14 @@ export default async function MethodikPage() {
           von Anlagengröße zu Jahresverbrauch. Je größer die Anlage relativ zum
           Verbrauch, desto geringer der Eigenverbrauchsanteil — weil mehr
           überschüssiger Strom ins Netz fließt.
+        </p>
+        <p style={S.p}>
+          Nach oben ist der Eigenverbrauch doppelt begrenzt: durch die Jahresbilanz (mehr als
+          deinen Verbrauch kannst du nicht selbst nutzen) und durch das Autarkie-Kennfeld der HTW
+          Berlin — es sagt, welchen Teil seines Verbrauchs ein Haushalt deiner Größe mit dieser
+          Anlage und diesem Speicher überhaupt selbst decken kann (meist 70–90 %, nie 100 %). Ohne
+          diese zweite Schranke rechnete das Modell bei Anlagen mit Speicher so, als würde jede
+          Kilowattstunde bis zur Verbrauchsmenge selbst genutzt.
         </p>
         <p style={S.p}>
           Wichtig: Der Eigenverbrauchsanteil ist eine <strong style={S.strong}>Jahresgröße</strong>.
@@ -529,8 +538,8 @@ export default async function MethodikPage() {
           <span style={S.accent}>Verschattung</span> — Bäume, Nachbargebäude oder
           Gauben kann nur ein Fachbetrieb vor Ort bewerten
           <br />
-          <span style={S.accent}>Förderung</span> — regionale Zuschüsse fließen nicht
-          in die Amortisation ein; passende Programme zeigen wir im Ergebnis an
+          <span style={S.accent}>Förderung</span> — regionale Zuschüsse fließen erst
+          in die Amortisation ein, wenn du sie im Ergebnis anrechnest oder von einer Förderseite kommst; passende Programme zeigen wir im Ergebnis an
           <br />
           <br />
           <span style={S.muted}>

@@ -1,14 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  DEFAULT_FEED_IN,
-  FEED_IN_SCHEDULE,
-  feedInDegressionSteps,
-  feedInEndIso,
-  feedInPeriodsSince2022,
-  feedInRatesFor,
-  feedInRatesForCommissioning,
-  naechsteDegressionIso,
-} from "../feedin-config";
+import { DEFAULT_FEED_IN, FEED_IN_SCHEDULE, feedInDegressionSteps, feedInEndIso, feedInPeriodsSince2022, feedInRatesFor, feedInRatesForCommissioning, naechsteDegressionIso, halbjahresBeginnIso } from "../feedin-config";
+import { berlinUhr, mitternachtsRand, vortag } from "./stichtag-rand";
 
 /**
  * Realitäts-Anker für die EEG-Einspeisevergütung (Wächter-Gate, Regel 7).
@@ -150,6 +142,51 @@ describe("EEG-Vergütung – Realitäts-Anker", () => {
   });
 });
 
+describe("Der Stichtags-Plan läuft nicht aus (Council 05.09.2026)", () => {
+  // Der Plan endete mit dem Halbjahr 08/2026–01/2027. Ab dem 01.02.2027 lieferte
+  // feedInRatesFor() den alten Satz weiter (7,70 ct), während die Nachschlage-
+  // Tabelle aus der Gesetzeskette schon 7,62 ct zeigte — zwei Sätze für denselben
+  // Tag auf zwei Seiten, und der Rechner mit dem falschen. Gefangen wird das nur
+  // mit Datums-Injektion: Am Tag der Prüfung stimmen beide immer überein.
+  const letzter = FEED_IN_SCHEDULE[FEED_IN_SCHEDULE.length - 1];
+
+  it("am letzten Tag des geplanten Halbjahrs gilt der Plan-Satz ohne Vorbehalt", () => {
+    const tag = new Date(naechsteDegressionIso(letzter.validFrom) + "T11:00:00Z");
+    tag.setUTCDate(tag.getUTCDate() - 1);
+    const satz = feedInRatesFor(tag);
+    expect(satz).toBe(letzter);
+    expect(satz.note ?? null).toBeNull();
+  });
+
+  it("nach dem Ende des Plans fällt der Rechner auf die Gesetzeskette zurück — mit Vorbehalt, ohne Behörde", () => {
+    const stichtag = naechsteDegressionIso(letzter.validFrom);
+    for (const tagIso of [stichtag, naechsteDegressionIso(stichtag), "2029-03-15"]) {
+      const satz = feedInRatesFor(new Date(tagIso + "T11:00:00Z"));
+      const kette = feedInRatesForCommissioning(tagIso)!;
+      expect(satz.teilUnder10).toBe(kette.teilUnder10);
+      expect(satz.vollOver10).toBe(kette.vollOver10);
+      expect(satz.teilUnder10).toBeLessThan(letzter.teilUnder10);
+      expect(satz.validFrom).toBe(halbjahresBeginnIso(tagIso));
+      expect(satz.note).toBeTruthy();
+      expect(satz.source ?? "").not.toMatch(/Bundesnetzagentur,/);
+    }
+  });
+
+  it("die Ableitung kennt die konkrete Zelle: 01.02.2027 = 7,62 / 12,09 ct", () => {
+    // n = 7 Halbjahresschritte: 8,60 × 0,99^7 = 8,019 → 8,02 − 0,40 = 7,62.
+    const satz = feedInRatesFor(new Date("2027-02-01T11:00:00Z"));
+    expect(satz.teilUnder10).toBe(7.62);
+    expect(satz.vollUnder10).toBe(12.09);
+  });
+
+  it("Halbjahresbeginn folgt der 1.2./1.8.-Regel, Januar gehört zum Vorjahr", () => {
+    expect(halbjahresBeginnIso("2027-02-01")).toBe("2027-02-01");
+    expect(halbjahresBeginnIso("2027-07-31")).toBe("2027-02-01");
+    expect(halbjahresBeginnIso("2027-08-01")).toBe("2027-08-01");
+    expect(halbjahresBeginnIso("2028-01-15")).toBe("2027-08-01");
+  });
+});
+
 describe("Sätze nach Inbetriebnahme (Bestandsanlagen-Ableitung)", () => {
   // Ein Datum mitten in jedem amtlich veröffentlichten Halbjahr — die
   // Ableitung aus der Config muss jede BNetzA-Zelle treffen (gleiche Quelle
@@ -262,5 +299,87 @@ describe("Sätze nach Inbetriebnahme (Bestandsanlagen-Ableitung)", () => {
     expect(feedInEndIso("2023-03-15")).toBe("2043-12-31");
     expect(feedInEndIso("2010-01-01")).toBe("2030-12-31");
     expect(feedInEndIso("2026-08-04")).toBe("2046-12-31");
+  });
+});
+
+describe("Ein deutscher Stichtag wird gegen eine deutsche Uhr gehalten", () => {
+  // BEFUND (gemeldet 02.09.2026, behoben 08.09.2026): feedInRatesFor() bildete
+  // seinen Vergleichstag mit `toISOString().slice(0, 10)` — das ist Weltzeit.
+  // Die Stichtage in `validFrom` sind deutsche Kalendertage. Zwischen 00:00 und
+  // 02:00 deutscher Zeit AM Stichtag stand in der Weltzeit noch der Vortag, der
+  // Rechner lieferte also den ÜBERHOLTEN Vergütungssatz. Es geht um Geld, und
+  // von außen war nichts zu sehen: kein Absturz, kein roter Test, kein kaputtes
+  // Aussehen. Gefangen wird das ausschließlich mit injiziertem Zeitpunkt.
+  //
+  // Geprüft werden BEIDE Ränder jedes Stichtags und BEIDE Zeitregime: Der 01.02.
+  // liegt in der Winterzeit (+1 h), der 01.08. in der Sommerzeit (+2 h). Ein
+  // Test, der nur eines kennt, lässt die halbe Fehlerklasse durch.
+  //
+  // Geprüft werden die Stichtage des Plans UND die der Gesetzeskette dahinter
+  // (der Plan endet, die Degression läuft weiter). Der ALLERERSTE Eintrag des
+  // Plans bleibt außen vor: Vor ihm gibt es keinen Vorgänger, feedInRatesFor()
+  // fällt dort bewusst auf ihn selbst zurück (ein Rechner ohne Satz wäre
+  // schlimmer als einer mit dem ersten). Ein „davor"-Test auf ihn prüfte diesen
+  // Rückfall, nicht die Zeitzone — der erste Anlauf ist genau daran gescheitert.
+  const stichtage = [
+    ...FEED_IN_SCHEDULE.map((p) => p.validFrom).slice(1),
+    "2027-02-01", // Winterzeit, jenseits des Plans: Rückfall auf die Gesetzeskette
+    "2027-08-01", // Sommerzeit, dito
+    "2028-02-01",
+  ];
+  /** Der Halbjahres-Beginn, der VOR diesem Stichtag galt. */
+  const vorperiode = (iso: string) => halbjahresBeginnIso(vortag(iso));
+
+  it("deckt beide Zeitregime ab — sonst prüft er nur die halbe Fehlerklasse", () => {
+    expect(stichtage.some((iso) => iso.slice(5, 7) === "02")).toBe(true);
+    expect(stichtage.some((iso) => iso.slice(5, 7) === "08")).toBe(true);
+  });
+
+  it("um 00:30 deutscher Zeit AM Stichtag gilt bereits der neue Satz", () => {
+    for (const iso of stichtage) {
+      const { danach } = mitternachtsRand(iso);
+      // Gegenprobe, dass der Helfer wirklich den gemeinten Moment liefert —
+      // ohne sie belegte der Test sich selbst.
+      expect(berlinUhr(danach)).toBe(`${iso} 00:30`);
+      expect(danach.toISOString().slice(0, 10)).toBe(vortag(iso)); // in der Weltzeit noch gestern
+      expect(feedInRatesFor(danach).validFrom).toBe(iso);
+    }
+  });
+
+  it("um 23:30 deutscher Zeit am Vortag gilt noch der alte Satz", () => {
+    // Die Gegenrichtung: Eine Umrechnung, die zu weit greift, wäre derselbe
+    // Fehler mit umgekehrtem Vorzeichen.
+    for (const iso of stichtage) {
+      const { davor } = mitternachtsRand(iso);
+      expect(berlinUhr(davor)).toBe(`${vortag(iso)} 23:30`);
+      expect(feedInRatesFor(davor).validFrom).toBe(vorperiode(iso));
+    }
+  });
+
+  it("ein als TAG übergebener Stichtag wird nicht noch einmal verschoben", () => {
+    // Der zweite Fall, an dem eine unvorsichtige Fassung scheitert: Ein
+    // Aufrufer, der einen gemeinten Kalendertag hereinreicht (lib/stand.ts mit
+    // dem Prüfdatum, lib/social-posts.ts mit dem Datenstand), meint diesen Tag
+    // bereits. Ihn wie einen Zeitpunkt zu behandeln wäre der Fehler in der
+    // Gegenrichtung.
+    for (const iso of stichtage) {
+      expect(feedInRatesFor(iso).validFrom).toBe(iso);
+      expect(feedInRatesFor(vortag(iso)).validFrom).toBe(vorperiode(iso));
+    }
+  });
+
+  it("die Perioden-Tabelle wechselt im selben Moment wie der Rechner", () => {
+    // Zwei Oberflächen, ein Stichtag: Liefe eine davon auf der Weltzeit, stünden
+    // zwei Stunden lang zwei verschiedene Sätze für denselben Tag auf zwei
+    // Seiten — genau der Widerspruch, den der Rückfall auf die Gesetzeskette
+    // (Council 05.09.2026) schon einmal beseitigt hat.
+    for (const iso of stichtage) {
+      const { danach, davor } = mitternachtsRand(iso);
+      const nach = feedInPeriodsSince2022(danach);
+      expect(nach[nach.length - 1].fromIso).toBe(iso);
+      const vor = feedInPeriodsSince2022(davor);
+      expect(vor[vor.length - 1].fromIso).not.toBe(iso);
+      expect(vor[vor.length - 1].fromIso! <= vorperiode(iso)).toBe(true);
+    }
   });
 });

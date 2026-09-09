@@ -753,9 +753,8 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           ]}
         />
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
-          Zuletzt aktualisiert: {new Date().toLocaleDateString("de-DE", { month: "long", year: "numeric" })} —
-          die Zahlen auf dieser Seite werden automatisch aus den aktuellen Marktpreisen
-          berechnet ({year}). Angaben zur geplanten EEG-Reform: Stand {REFORM_STAND}, ohne
+          Preisstand {formatPriceDate(prices.validFrom)} — die Zahlen auf dieser Seite werden
+          automatisch aus den aktuellen Marktpreisen berechnet ({year}). Angaben zur geplanten EEG-Reform: Stand {REFORM_STAND}, ohne
           Gewähr; verbindlich ist die offizielle Gesetzeslage.
         </p>
       </div>

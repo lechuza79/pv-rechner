@@ -332,6 +332,21 @@ Quelle: Bestand nach Monat **M** · Takt: laufend, viele Kandidaten · Für: KOM
 Kanal: LinkedIn · Schranken: Mindestgröße · nur bei positivem Ausschlag (ein negativer
 Ausschlag wäre eine Bloßstellung) · die Antwort aus den Kommentaren wird der nächste Post.
 
+Quelle liegt seit 02.09.2026 vor (Monatsauflösung, eigener Lauf neben dem Jahresbestand).
+Gemessen dabei: Nach 30 Tagen stehen erst 82 Prozent eines Monats im Register, nach 90 Tagen
+92 — daher drei Monate Karenz, und die genannte Menge ist eine Untergrenze. Orte mit einem
+bekannten Balkon-Förderprogramm fallen raus: Wer die Antwort kennt, darf nicht fragen.
+
+**OFFEN (Betreiber, 02.09.2026): Wie erzählt man einen Ort, den niemand kennt?** Der Ausschlag
+ist strukturell dort am größten, wo die Grundmenge am kleinsten ist — die ersten fünf Funde
+waren Gemeinden mit ein- bis zweitausend Einwohnern (Fürfeld, Feilbingert, Frittlingen). Die
+Zahl stimmt, aber „In Fürfeld gingen 39 Balkonkraftwerke ans Netz" trägt für ein
+überregionales Publikum keinen Anker. Drei Richtungen, keine davon geprüft: den Ort in eine
+bekannte Bezugsgröße setzen („so viele wie in einer Stadt mit 200.000 Einwohnern"), mehrere
+Fälle zu einem Muster bündeln statt einen einzelnen zu erzählen, oder die Mindestgröße anheben
+und damit genau die Fälle verlieren, die das Muster ausmachen. Zu entscheiden, bevor der erste
+Anomalie-Post rausgeht.
+
 ### G11 — Der eigene Fehler
 
 **G11.1**

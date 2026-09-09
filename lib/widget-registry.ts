@@ -112,6 +112,29 @@ const BEISPIEL_GEMEINDE = "09679147";
 const BEISPIEL_BUNDESLAND = "13";
 
 export const WIDGETS = {
+  kostenrennen: {
+    id: "pv-kostenrennen",
+    title: "Stromkosten mit und ohne Solaranlage",
+    kind: "chart",
+    shareUrl: `${SITE}/ratgeber/lohnt-sich-pv-mit-speicher#kostenrennen`,
+    shareText: "Mit oder ohne Solaranlage: Wer hat wann mehr für Strom bezahlt? 25 Jahre mit echtem Wetter – Solar Check",
+    // Der Standort-Ertrag ist der PVGIS-Bundesschnitt; Preise und Vergütung
+    // sind unsere gepflegten Stichtagswerte (siehe /datenstand). Das Wetter
+    // Tag für Tag kommt aus den DWD-Strahlungsreihen (Monatsraster + Stationstage).
+    sources: [DATA_SOURCES.pvgis, DATA_SOURCES.dwd],
+    cta: { label: "Für dein Haus durchrechnen", href: "/photovoltaik-rechner" },
+  },
+  heizkostenrennen: {
+    id: "heizkostenrennen",
+    title: "Heizkosten mit Gasheizung und Wärmepumpe",
+    kind: "chart",
+    shareUrl: `${SITE}/ratgeber/gasheizung-oder-waermepumpe#heizkostenrennen`,
+    shareText: "Neue Gasheizung oder Wärmepumpe: Wer hat wann mehr fürs Heizen bezahlt? 20 Jahre mit echtem Wetter – Solar Check",
+    // Menge aus dem Wärmepumpen-Rechner (Gaspreispfad nach dem IW-Report),
+    // Form aus den DWD-Tagestemperaturen (Gradtage je Tag).
+    sources: [DATA_SOURCES.iw, DATA_SOURCES.dwd],
+    cta: { label: "Für dein Haus durchrechnen", href: "/waermepumpe-rechner" },
+  },
   gruengasHeizkosten: {
     id: "gruengas-heizkosten",
     title: "Die Rechnung über 20 Jahre",
@@ -287,6 +310,31 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.openMeteo, DATA_SOURCES.mastr],
     cta: { label: "Eigene Anlage simulieren", href: "/pv-simulation" },
   },
+  gemeindeMeldung: {
+    id: "gemeinde-meldung",
+    title: "Eine Meldung über eine Gemeinde",
+    kind: "chart",
+    exampleParams: { ags: BEISPIEL_GEMEINDE },
+    place: {
+      // Der Ort steht in der Unterzeile, die Schlagzeile kommt aus der
+      // gerechneten Meldung — siehe widgetFuerMeldung. Diese Vorlage greift
+      // nur, wo eine Oberfläche die Gattung ohne konkrete Meldung zeigt
+      // (Galerie, Presseliste); ohne sie stünde dort ein Titel ohne Ort.
+      title: "Aktuelles aus {ort}",
+      shareText: "Aktuelles aus {ort}: was die Anlagendaten gerade hergeben – Solar Check",
+    },
+    shareUrl: `${SITE}/solar-atlas`,
+    shareText: "Was die Anlagendaten über eine Gemeinde gerade hergeben – Solar Check",
+    // Förderung steht in einer der fünf Meldungen; die Quellenzeile nennt
+    // deshalb beide Bestände, nicht nur das Anlagenregister.
+    sources: [DATA_SOURCES.mastr],
+    cta: { label: "Eigenes Dach durchrechnen", href: "/photovoltaik-rechner" },
+    // NOCH KEINE EMBED-ROUTE. Der Eintrag existiert für die Bild-Fußzeile der
+    // Karte auf der Ortsseite; ihn als einbettbar auszuweisen hieße, einen
+    // Link auf eine 404 anzubieten — genau das, wogegen das Feld da ist.
+    // Fällt weg, sobald die Route steht.
+    embeddable: false,
+  },
   regionAnlagentyp: {
     id: "region-anlagentyp",
     title: "Solarleistung eines Bundeslands nach Anlagentyp",
@@ -377,6 +425,39 @@ export function widgetForPlace(widget: WidgetDef, ort: string, liveUrl?: string)
     title: widget.place ? fill(widget.place.title) : `${widget.title} — ${ort}`,
     shareText: widget.place ? fill(widget.place.shareText) : `${widget.title} — ${ort}`,
     shareUrl: liveUrl || widget.shareUrl,
+  };
+}
+
+/**
+ * Ortsbezogene Fassung für EINE gerechnete Meldung.
+ *
+ * Der Unterschied zu {@link widgetForPlace}: Dort ist der Titel der Gattung mit
+ * eingesetztem Ort („Solaranlagen in Heringen") und über die Lebensdauer des
+ * Widgets derselbe. Eine Meldung ist eine Nachricht — ihre Schlagzeile IST der
+ * Inhalt, und sie wechselt mit den Daten. Ein Bild, das „Aktuelles aus
+ * Heringen" als Überschrift trägt und die Nachricht nur im Fließtext, verliert
+ * beim Teilen genau das, was es teilenswert macht.
+ *
+ * Die Identität bleibt trotzdem im Register: Quellen, Lizenz, Marke, nächster
+ * Schritt und Teilen-Ziel kommen unverändert aus dem Eintrag. Ersetzt wird nur
+ * die Schlagzeile — und die ist selbst gerechnet (lib/gemeinde-meldungen.ts),
+ * nicht getippt. Damit gilt die Registerregel weiter: kein Widget formuliert
+ * seinen Titel selbst.
+ */
+export function widgetFuerMeldung(
+  widget: WidgetDef,
+  ort: string,
+  meldungTitel: string,
+  liveUrl?: string,
+): WidgetDef {
+  const basis = widgetForPlace(widget, ort, liveUrl);
+  return {
+    ...basis,
+    title: meldungTitel,
+    // Der Teilen-Text trägt die Schlagzeile und den Ort — der Ort steckt in der
+    // Schlagzeile zwar meistens, aber nicht in jeder (eine Förder-Meldung nennt
+    // das Programm). Ohne ihn wäre ein geteilter Beitrag ortlos.
+    shareText: `${meldungTitel} – Solar Check`,
   };
 }
 

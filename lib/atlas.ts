@@ -1150,3 +1150,78 @@ export const getGemeindePfad = unstable_cache(getGemeindePfadUncached, ["gemeind
   revalidate: STAMMDATEN_TTL,
   tags: [ATLAS_DATEN_TAG],
 });
+
+/**
+ * Dieselben Pfade für VIELE Gemeinden — drei Abfragen statt drei je Ort.
+ *
+ * DER ANLASS IST EIN ABGEBROCHENER PRODUKTIONSBAU (05.09.2026). Die Sitemap
+ * löst jede angeschriebene Gemeinde einzeln auf, und `getGemeindePfad` braucht
+ * dafür drei Abfragen nacheinander (Gemeinde → Kreis → Bundesland). Gemessen an
+ * diesem Tag: 289 Gemeinden, also **867 Abfragen in Reihe**. Von hier aus
+ * kostet eine 73 ms, macht gut eine Minute; auf dem Prüf-Rechner mit seiner
+ * höheren Laufzeit reißt das die Zeitgrenze, die der Baulauf je Seite hat — und
+ * dann bricht der GANZE Bau ab, mit der Meldung „Export encountered an error"
+ * und ohne jeden Hinweis worauf. Zweimal an einem Tag passiert, an
+ * verschiedenen Ständen, und niemand hätte es dem Code angesehen.
+ *
+ * DIE ZAHL WÄCHST MIT JEDEM BRIEF. Das ist der eigentliche Punkt: Eine Sitemap,
+ * deren Kosten an der Zahl der Anschreiben hängen, kippt irgendwann sicher —
+ * die Frage war nie ob, sondern wann. Drei Abfragen für alle Orte zusammen
+ * hängen dagegen an gar nichts.
+ *
+ * Der Rückgabewert ist eine Zuordnung Schlüssel → Pfad; wer keinen Pfad hat
+ * (unbekannt, keine Gemeinde, Kette unvollständig), fehlt darin — dasselbe
+ * ehrliche „lieber nichts als geraten" wie in der Einzelabfrage.
+ */
+async function getGemeindePfadeUncached(
+  ags: string[],
+): Promise<Record<string, { bundesland: string; kreis: string; gemeinde: string }>> {
+  const raus: Record<string, { bundesland: string; kreis: string; gemeinde: string }> = {};
+  const gesucht = [...new Set(ags)].filter((a) => a.length === 8);
+  if (!gesucht.length) return raus;
+
+  const supabase = await db();
+  const hole = async (ids: string[], stufe: string) => {
+    if (!ids.length) return [] as Pick<AtlasRegion, "region_id" | "level" | "slug" | "parent_region_id">[];
+    const { data, error } = await withDbTimeout(
+      supabase
+        .from("mastr_regions")
+        .select("region_id, level, slug, parent_region_id")
+        .in("region_id", ids),
+      `getGemeindePfade/${stufe}`,
+    );
+    if (error) throw new Error(`getGemeindePfade failed: ${error.message}`);
+    return (data ?? []) as Pick<AtlasRegion, "region_id" | "level" | "slug" | "parent_region_id">[];
+  };
+
+  const gemeinden = (await hole(gesucht, "gemeinde")).filter(
+    (g) => g.level === "gemeinde" && g.slug && g.parent_region_id,
+  );
+  const kreise = new Map(
+    (await hole([...new Set(gemeinden.map((g) => g.parent_region_id as string))], "kreis"))
+      .filter((k) => k.slug && k.parent_region_id)
+      .map((k) => [k.region_id, k] as const),
+  );
+  const laender = new Map(
+    (await hole([...new Set([...kreise.values()].map((k) => k.parent_region_id as string))], "bundesland"))
+      .filter((b) => b.slug)
+      .map((b) => [b.region_id, b] as const),
+  );
+
+  for (const g of gemeinden) {
+    const kreis = kreise.get(g.parent_region_id as string);
+    const land = kreis && laender.get(kreis.parent_region_id as string);
+    if (!kreis || !land) continue;
+    raus[g.region_id] = {
+      bundesland: land.slug as string,
+      kreis: kreis.slug as string,
+      gemeinde: g.slug as string,
+    };
+  }
+  return raus;
+}
+
+export const getGemeindePfade = unstable_cache(getGemeindePfadeUncached, ["gemeinde-pfade-v1"], {
+  revalidate: STAMMDATEN_TTL,
+  tags: [ATLAS_DATEN_TAG],
+});

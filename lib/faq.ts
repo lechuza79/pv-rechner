@@ -10,11 +10,11 @@
 // Cost/feed-in figures are derived from the same models the calculators use and
 // the year is evaluated at render time — nothing here goes stale on rollover.
 // Never hardcode a year or a euro figure below.
-import { estimateCost, BATTERY_LIFETIME_YEARS } from "./calc";
+import { estimateCost, BATTERY_LIFETIME_YEARS, calc, calcEigenverbrauch, calcWeightedFeedIn } from "./calc";
 import { calcBalkon, type BalkonInputs } from "./balkon";
 import { BALKON_RECHT, DEFAULT_BALKON_CONFIG, type BalkonSetId } from "./balkon-config";
 import { MASTR_KATEGORIE, SOLARPAKET_ENTFALLEN } from "./balkon-anmeldung";
-import { FEED_IN_YEARS, PERSONEN } from "./constants";
+import { FEED_IN_YEARS, PERSONEN, NATIONAL_AVG_YIELD, SPEICHER } from "./constants";
 import { DEFAULT_FEED_IN, fmtCt, type FeedInRates } from "./feedin-config";
 import { DEFAULT_PRICES } from "./prices-config";
 import { TILT_OPTIMUM, tiltPct } from "./tilt-config";
@@ -51,20 +51,48 @@ export interface FaqEntry {
 
 const round1k = (n: number) => Math.round(n / 1000) * 1000;
 
+/**
+ * Amortisation einer Anlage nach demselben Modell wie der Rechner (Bundes-
+ * schnitt, Teileinspeisung, Standardpreise). Die FAQ nannte bis 05.09.2026
+ * getippte Spannen („9–12 Jahre", „8 und 14 Jahren"), und beide verfehlten
+ * den eigenen Standardfall des Rechners drei Absätze tiefer (13 Jahre).
+ */
+export function faqAmortisationJahre(kwp: number, speicherKwh: number, personenIdx: number, nutzungIdx: number): number | null {
+  const ev = calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp: "nein", ea: "nein", eaKm: 15000, kwp, ertragKwp: NATIONAL_AVG_YIELD });
+  const r = calc({
+    kwp, kosten: estimateCost(kwp, speicherKwh), strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev,
+    einspeisung: calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10),
+    stromSteigerung: DEFAULT_PRICES.electricityIncrease, ertragKwp: NATIONAL_AVG_YIELD, monthly: null,
+  });
+  return r.be ? r.be.i : null;
+}
+
+/** Spanne der Amortisation über alle Haushaltsgrößen und Speicherstufen einer
+ *  10-kWp-Anlage — das ist die Streuung, die „je nach Haushalt" wirklich meint. */
+export function faqAmortisationSpanne(kwp = 10): { min: number; max: number; standard: number } {
+  const jahre: number[] = [];
+  for (let p = 0; p < PERSONEN.length; p++) for (const s of SPEICHER) {
+    const j = faqAmortisationJahre(kwp, s.kwh, p, 1);
+    if (j !== null) jahre.push(j);
+  }
+  return { min: Math.min(...jahre), max: Math.max(...jahre), standard: faqAmortisationJahre(kwp, 0, 1, 1) ?? Math.max(...jahre) };
+}
+
 /** FAQ for the homepage — the four PV basics that match the site title/intent. */
 export function homeFaq(): FaqEntry[] {
   const year = new Date().getFullYear();
+  const spanne = faqAmortisationSpanne(10);
   const pvOnlyCost = round1k(estimateCost(10, 0));
   const storageAddon = round1k(estimateCost(10, 10) - estimateCost(10, 0));
   return [
     {
       q: `Lohnt sich Photovoltaik ${year}?`,
-      a: "In den meisten Fällen ja. Eine typische 10-kWp-Anlage amortisiert sich bei aktuellen Strompreisen in etwa 9–12 Jahren und erwirtschaftet über 25 Jahre deutliche Rendite. Der genaue Zeitraum hängt von Eigenverbrauch, Strompreis und Anlagenkosten ab.",
+      a: `In den meisten Fällen ja. Eine typische 10-kWp-Anlage ohne Speicher amortisiert sich bei aktuellen Strompreisen in etwa ${spanne.standard} Jahren und bringt danach über die restliche Laufzeit von 25 Jahren einen deutlichen Gewinn. Der genaue Zeitraum hängt von Eigenverbrauch, Strompreis und Anlagenkosten ab.`,
       cta: { label: "Meine Anlage durchrechnen", href: "/photovoltaik-rechner" },
     },
     {
       q: "Wie lange dauert die Amortisation einer PV-Anlage?",
-      a: "Je nach Anlagengröße, Speicher und Eigenverbrauchsquote liegt die Amortisation zwischen 8 und 14 Jahren. Höherer Eigenverbrauch verkürzt den Zeitraum deutlich — etwa durch einen Speicher, ein E-Auto oder eine Wärmepumpe, die den selbst erzeugten Strom im Haus hält.",
+      a: `Je nach Anlagengröße, Speicher und Eigenverbrauchsquote liegt die Amortisation einer 10-kWp-Anlage zwischen ${spanne.min} und ${spanne.max} Jahren. Höherer Eigenverbrauch verkürzt den Zeitraum deutlich — etwa durch einen Speicher, ein E-Auto oder eine Wärmepumpe, die den selbst erzeugten Strom im Haus hält.`,
       links: [{ phrase: "Wärmepumpe", href: "/waermepumpe-rechner" }],
       cta: { label: "Amortisation berechnen", href: "/photovoltaik-rechner" },
     },

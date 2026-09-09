@@ -1,6 +1,7 @@
 import "server-only";
+import { darfOutreachEmpfangen } from "./kommunen-ebene";
 import { supabase as serviceDb } from "./supabase-server";
-import { renderOutreachDraft, type OutreachDraft } from "./kommunen-outreach-draft";
+import { renderOutreachDraft, type OutreachDraft, type Adressherkunft } from "./kommunen-outreach-draft";
 import { mitHerkunft } from "./brief-herkunft";
 import { buildHookIndex, loadElternSlugs } from "./awards-server";
 import { AWARD_CATEGORY_BY_KEY } from "./awards";
@@ -38,7 +39,7 @@ export type BriefErgebnis = {
   draft: OutreachDraft;
 };
 
-export type BriefFehler = { grund: "keine-db" | "unbekannt" | "gesperrt" };
+export type BriefFehler = { grund: "keine-db" | "unbekannt" | "gesperrt" | "keine-gemeinde" };
 
 /**
  * Anschreiben für EINE Gemeinde bauen.
@@ -52,6 +53,11 @@ export async function briefFuerGemeinde(
   /** Empfängeradresse, falls bekannt — sie entscheidet allein, welche Quelle
    *  die Herkunftsangabe nach Art. 14 nennt (siehe kommunen-outreach-draft). */
   empfaenger?: string | null,
+  /** Geht der Brief an ein Presse-/Redaktionspostfach? Dann entfällt die Bitte
+   *  um Weiterleitung — wir schreiben bereits an die Stelle, die sie nennt.
+   *  `herkunft` sagt, WO die Adresse stand; sie steht so in der Pflichtangabe
+   *  nach Art. 14. */
+  opt?: { anPresse?: boolean; herkunft?: Adressherkunft },
 ): Promise<BriefErgebnis | BriefFehler> {
   if (!serviceDb) return { grund: "keine-db" };
 
@@ -67,6 +73,13 @@ export async function briefFuerGemeinde(
     loadElternSlugs(),
   ]);
   if (!reg) return { grund: "unbekannt" };
+  // Kein Brief an einen Landkreis. Die Kontakttabelle führt sie seit dem
+  // 09.09.2026 als Suchraum der Förder-Erhebung; der Aufhänger dieses Briefes
+  // ist aber ein Rang unter GLEICH GROSSEN GEMEINDEN, den es für einen Kreis
+  // nicht gibt. Die Prüfung steht auch im Versandpaket — hier ein zweites Mal,
+  // weil eine Sicherheitsgrenze keine Kopie ist, sondern die Stelle, an der
+  // sie eines Tages fehlt.
+  if (!darfOutreachEmpfangen(regionId)) return { grund: "keine-gemeinde" };
   if (leadRow?.outreach_status === "gesperrt") return { grund: "gesperrt" };
 
   //
@@ -162,6 +175,8 @@ export async function briefFuerGemeinde(
     vergleich,
     vergleichBezug,
     empfaenger: empfaenger ?? null,
+    anPresse: !!opt?.anPresse,
+    adressherkunft: opt?.herkunft,
     rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
     weitere: hook?.weitere ?? [],
     ranglisteUrl: liste,

@@ -60,7 +60,10 @@ describe("Kein doppelter Versand", () => {
     // blieb grün, während der Lauf jeden Empfänger mehrfach am Tag
     // angeschrieben hätte. Vierter Fall derselben Klasse in diesem Bereich:
     // Ein Wächter, der Vorhandensein prüft statt Verwendung, prüft nichts.
-    expect(lauf).toMatch(/if \(schonHeuteGeschrieben\(abo, o\.jetzt\)\) continue;/);
+    // Geprüft wird der Aufruf OHNE die Definition — die Schreibweise darf sich
+    // ändern (heute ein Filter, vorher ein `continue`), das Benutzen nicht.
+    const ohneDefinition = lauf.slice(0, lauf.indexOf("function schonHeuteGeschrieben"));
+    expect(ohneDefinition).toMatch(/schonHeuteGeschrieben\(abo, o\.jetzt\)/);
 
     // Am KALENDERTAG, nicht an einem Zeitabstand: Zwei Läufe am selben Tag
     // sollen sich nicht überholen, der nächste Tag aber schreiben dürfen.

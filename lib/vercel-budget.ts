@@ -127,6 +127,39 @@ function zahl(v: unknown): number | undefined {
 }
 
 /**
+ * Schält die Hülle ab, in die Vercel jede Webhook-Meldung packt.
+ *
+ * WARUM ES DIESE FUNKTION GIBT — der Fehler ist real eingetreten (05.09.2026):
+ * Die Ausgaben-Doku zeigt nur den INHALT einer Meldung
+ * (`{budgetAmount, currentSpend, teamId, thresholdPercent}`), die Webhook-Doku
+ * beschreibt an ganz anderer Stelle die Hülle darum
+ * (`{id, type, createdAt, payload, region}`). Wir hatten nur die erste gelesen
+ * und die Felder deshalb auf oberster Ebene gesucht — dort stehen sie nie.
+ * Ergebnis: Die 50-%-Meldung kam mit gültiger Signatur an, wurde als „nicht
+ * einzuordnen" abgelegt, und die Bremse hätte bei 100 % genauso danebengegriffen.
+ *
+ * Von außen war das UNSICHTBAR: kein Fehler, kein roter Test, keine kaputte
+ * Seite — nur ein Sicherheitsnetz, das nicht hält. Sichtbar wurde es allein
+ * dadurch, dass die Vorwarnung bei 50 % überhaupt ankam. Genau dafür ist sie da.
+ *
+ * Gearbeitet wird ab hier AUSSCHLIESSLICH mit dem Inhalt, nie mit der Hülle:
+ * Deren `type` trägt den Ereignisnamen (`budget.reached`), der Inhalt trägt bei
+ * Zyklusende sein eigenes `type: "endOfBillingCycle"`. Wer beide Ebenen
+ * zusammenwirft, lässt den äußeren Namen den inneren verdecken — und dann
+ * entpaust die Bremse nie wieder.
+ *
+ * Ohne Hülle wird die Meldung unverändert durchgereicht: Die Ausgaben-Doku zeigt
+ * sie so, und ein Test darf sie so schreiben dürfen.
+ */
+export function inhaltDerMeldung(nachricht: unknown): unknown {
+  if (typeof nachricht !== "object" || nachricht === null) return nachricht;
+  const h = nachricht as Record<string, unknown>;
+  const inhalt = h.payload;
+  if (typeof inhalt === "object" && inhalt !== null && !Array.isArray(inhalt)) return inhalt;
+  return nachricht;
+}
+
+/**
  * Ordnet die Nutzdaten einer Aktion zu.
  *
  * Vercel meldet bei 50, 75 und 100 Prozent des Betrags sowie am Ende des
@@ -137,7 +170,8 @@ function zahl(v: unknown): number | undefined {
  * Schwelle ein, ist Abschalten die sichere Richtung. Umgekehrt wäre ein
  * exakter Vergleich eine Bremse, die bei 110 Prozent nichts tut.
  */
-export function deuteMeldung(nutzdaten: unknown): Entscheidung {
+export function deuteMeldung(nachricht: unknown): Entscheidung {
+  const nutzdaten = inhaltDerMeldung(nachricht);
   if (typeof nutzdaten !== "object" || nutzdaten === null) {
     return { aktion: "unklar", grund: "Nutzdaten sind kein Objekt" };
   }

@@ -36,6 +36,7 @@
  */
 
 import { resolve } from "node:path";
+import { heuteInBerlin } from "../lib/zeit";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { FUNDING_PROGRAMS } from "../lib/funding-programs";
@@ -278,33 +279,48 @@ async function zeileVersion(regionId: string): Promise<number | null> {
  * Eine Fundstelle als gelesen abhaken.
  *
  *   npm run foerder:screen -- --gelesen 05370020 --ergebnis aufgenommen --notiz "150 € je Anlage"
- *   npm run foerder:screen -- --gelesen 05158016 --ergebnis verworfen --notiz "nur Beratung, keine Förderung"
+ *   npm run foerder:screen -- --gelesen 05158016,05158017 --ergebnis verworfen --notiz "nur Beratung"
  *
  * `ergebnis` ist bewusst frei und nicht auf eine Auswahl festgelegt: Was beim
  * Lesen herauskommt, ist mehr als aufgenommen/verworfen — „Betrag nur im PDF"
  * und „Träger antwortet nicht" sind eigene Zustände, und eine zu enge Liste
  * drängt sie in die falsche Schublade.
+ *
+ * ABGEHAKT WERDEN BEIDE TABELLEN — und dass das bis zum 09.09.2026 nicht so war,
+ * ist die Ursache des größten Rückstaus im Katalog. Die Seiten-Tabelle führt seit
+ * ihrer Einführung ein Feld „gelesen am"; geschrieben hat es kein einziges
+ * Werkzeug. Gemessen an diesem Tag: 275 als Treffer eingestufte Seiten, keine
+ * davon je abgehakt, 144 als Balkonkraftwerk eingeordnet. Konstanz lag drei
+ * Wochen darunter, während wir sein Programm über eine fremde Liste fanden.
+ *
+ * Ein Vorrat, aus dem nichts herausgenommen werden kann, wächst nur — und sieht
+ * dabei aus wie ein Vorrat, an dem gearbeitet wird.
+ *
+ * MEHRERE SCHLÜSSEL AUF EINMAL, weil eine Verbandsgemeinde für ein Dutzend
+ * Ortsgemeinden zahlt: Wer sie einzeln abhaken muss, hakt sie nicht ab.
  */
 async function gelesen(): Promise<void> {
   const wert = (name: string) => {
     const i = process.argv.indexOf(`--${name}`);
     return i >= 0 ? process.argv[i + 1] : null;
   };
-  const regionId = wert("gelesen");
+  const roh = wert("gelesen");
   const ergebnis = wert("ergebnis");
-  if (!regionId || !ergebnis) {
-    console.error("Aufruf: --gelesen <region_id> --ergebnis <text> [--notiz <text>]");
+  if (!roh || !ergebnis) {
+    console.error("Aufruf: --gelesen <region_id[,region_id…]> --ergebnis <text> [--notiz <text>]");
     process.exit(1);
   }
-  const { error } = await sb
-    .from("funding_coverage")
-    .update({
-      gelesen_am: new Date().toISOString().slice(0, 10),
-      gelesen_ergebnis: ergebnis,
-      gelesen_notiz: wert("notiz"),
-    })
-    .eq("region_id", regionId);
-  console.log(error ? `FEHLER: ${error.message}` : `${regionId} als gelesen vermerkt (${ergebnis}).`);
+  const ids = roh.split(",").map((x) => x.trim()).filter(Boolean);
+  const eintrag = {
+    gelesen_am: heuteInBerlin(),
+    gelesen_ergebnis: ergebnis,
+    gelesen_notiz: wert("notiz"),
+  };
+  for (const tabelle of ["funding_coverage", "funding_seiten"]) {
+    const { error, count } = await sb.from(tabelle).update(eintrag, { count: "exact" }).in("region_id", ids);
+    console.log(error ? `FEHLER (${tabelle}): ${error.message}` : `${tabelle}: ${count ?? 0} Zeilen vermerkt`);
+  }
+  console.log(`${ids.length} Orte als gelesen vermerkt (${ergebnis}).`);
 }
 
 async function main(): Promise<void> {

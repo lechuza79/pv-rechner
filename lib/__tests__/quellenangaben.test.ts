@@ -73,6 +73,7 @@ describe("Quellenangaben", () => {
       energyCharts: "Viertelstunden zu Wochenwerten gemittelt; nuclear-import.ts leitet eine Größe ab, die so nicht geliefert wird",
       ember: "Länderreihen werden bei jedem Sync neu gerechnet",
       openMeteo: "cdhFromDailyMinMax bildet aus Tages-Min/Max einen synthetischen Tagesgang",
+      dwd: "scripts/dwd-strahlung-sync.ts mittelt das 1-km-Raster zu einem Jahreswert für Deutschland",
     };
     for (const [schluessel, grund] of Object.entries(veraendert)) {
       const quelle = DATA_SOURCES[schluessel as keyof typeof DATA_SOURCES] as { note?: string };
@@ -155,7 +156,13 @@ describe("Quellenangaben", () => {
     // Ohne Ort begrüßt das Widget den Leser mit „Keine gültige Gemeinde
     // angegeben." — auf der Presseseite also vor genau dem Publikum, das wir
     // gewinnen wollen.
-    for (const w of allWidgets().filter((x) => x.place)) {
+    // Nur Einträge, die WIRKLICH eine Einbett-Route haben. Ein ortsbezogener
+    // Eintrag ohne Route (die Ortsmeldung: sie existiert für die Bild-Fußzeile
+    // der Karte auf der Ortsseite) erzeugt gar keinen Link — die Regel greift
+    // dort ins Leere. Dieselbe Ausnahme steht schon in der zweiten Schleife
+    // unten; sie fehlte hier nur, weil bis 09/2026 jeder ortsbezogene Eintrag
+    // zugleich einbettbar war.
+    for (const w of allWidgets().filter((x) => x.place && x.embeddable !== false)) {
       expect(w.exampleParams, `${w.id}: Beispiel-Ort fehlt`).toBeTruthy();
       const pfad = embedExamplePath(w);
       expect(pfad, `${w.id}: Beispiel-Pfad fehlt`).toBeTruthy();

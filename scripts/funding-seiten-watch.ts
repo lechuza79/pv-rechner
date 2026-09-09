@@ -143,7 +143,15 @@ async function main(): Promise<void> {
     }
 
     // Nur ein LIVE gelesener Abruf bestätigt eine Seite.
-    const fp = markiert("live", fingerprintOf(html));
+    const abdruck = fingerprintOf(html);
+    if (!abdruck) {
+      // Antwort ohne Substanz zählt wie ein gescheiterter Abruf — ein Abdruck
+      // über nichts wäre stabil und meldete für immer „unverändert".
+      unerreichbar++;
+      await schreibe(z, { zustand: "unerreichbar" });
+      return;
+    }
+    const fp = markiert("live", abdruck);
     if (z.zustand === "unerreichbar") wiederDa++;
 
     if (!z.fingerprint) {

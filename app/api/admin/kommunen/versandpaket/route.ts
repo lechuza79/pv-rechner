@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../../lib/supabase-server";
 import { briefFuerGemeinde, istBriefFehler } from "../../../../../lib/kommunen-brief";
+import type { Adressherkunft } from "../../../../../lib/kommunen-outreach-draft";
 import { istAdminOderCron } from "../../../../../lib/admin-guard";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../../../../../lib/kommunen-testballon";
 import { versandfenster } from "../../../../../lib/schulferien";
+import { empfaengerFuerBrief } from "../../../../../lib/kommunen-presse";
 import { postfachBefund } from "../../../../../lib/outreach-mail";
 import { heuteInBerlin } from "../../../../../lib/zeit";
+import { darfOutreachEmpfangen } from "../../../../../lib/kommunen-ebene";
 
 // Das fertige Versandpaket einer Charge: je Gemeinde Empfänger, Betreff und
 // Brieftext — gebaut aus DERSELBEN Funktion wie der Entwurf im Cockpit
@@ -49,7 +52,7 @@ export async function GET(req: NextRequest) {
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
     .select(
-      "region_id, rollen_email, kontakt_url, outreach_status, contacted_at, charge, ask_variante, verwaltung_domain, mastr_regions!inner(name)",
+      "region_id, rollen_email, rollen_email_quelle, presse_email, presse_email_quelle, kontakt_url, outreach_status, contacted_at, charge, ask_variante, verwaltung_domain, mastr_regions!inner(name)",
     )
     .eq("kampagne", schub.kampagne)
     .eq("charge", charge)
@@ -59,6 +62,9 @@ export async function GET(req: NextRequest) {
   type Zeile = {
     region_id: string;
     rollen_email: string | null;
+    rollen_email_quelle: string | null;
+    presse_email: string | null;
+    presse_email_quelle: string | null;
     verwaltung_domain: string | null;
     outreach_status: string;
     contacted_at: string | null;
@@ -72,6 +78,7 @@ export async function GET(req: NextRequest) {
     region_id: string;
     name: string;
     empfaenger: string;
+    an_presse: boolean;
     subject: string;
     body: string;
     body_html: string;
@@ -92,6 +99,16 @@ export async function GET(req: NextRequest) {
     // erzeugen (siehe lib/kommunen-brief.ts) — hier steht die Prüfung ein
     // zweites Mal, weil eine Sicherheitsgrenze keine zweite Kopie ist, sondern
     // die Stelle, an der sie eines Tages fehlt.
+    // Die Kontakttabelle führt seit dem 09.09.2026 auch Landkreise — sie sind
+    // der Suchraum der Förder-Erhebung, nicht der Adressbestand des Outreach.
+    // Der Brief behauptet einen Rang unter GLEICH GROSSEN GEMEINDEN; an einen
+    // Landkreis geschickt wäre sein Aufhänger frei erfunden. Dass ein Kreis
+    // heute ohnehin keine Kampagne zugewiesen bekommt, ist eine Beobachtung
+    // über den Zustand, keine Grenze — deshalb steht sie hier.
+    if (!darfOutreachEmpfangen(z.region_id)) {
+      skip("Landkreis — der Kommunen-Brief geht nur an Gemeinden");
+      continue;
+    }
     if (z.outreach_status === "gesperrt") {
       skip("gesperrt — Widerspruch liegt vor");
       continue;
@@ -100,7 +117,13 @@ export async function GET(req: NextRequest) {
       skip(`schon angeschrieben am ${z.contacted_at?.slice(0, 10) ?? "?"}`);
       continue;
     }
-    if (!z.rollen_email) {
+    // WOHIN GEHT DER BRIEF? Die Presseadresse hat Vorrang — der Brief bietet
+    // eine fertige Meldung an und gehört an die Stelle, die Meldungen
+    // veröffentlicht. Gemessen am 03.09.2026: In 227 verschickten Briefen war
+    // genau EINE Presseadresse; im offenen NRW-Schub führen 17 der 63 Städte
+    // eine, und wir hätten 16 davon an info@ oder stadt@ geschickt.
+    const ziel = empfaengerFuerBrief({ rollenEmail: z.rollen_email, presseEmail: z.presse_email });
+    if (!ziel.email) {
       skip("kein Rollen-Postfach");
       continue;
     }
@@ -114,13 +137,24 @@ export async function GET(req: NextRequest) {
     // Kommune, und mehrere an Adressen mit dem Nachnamen eines ehrenamtlichen
     // Ortsbürgermeisters. Beides ist beim Einsammeln entstanden; hier wird es
     // abgefangen, statt den Datenbestand rückwirkend umzuschreiben.
-    const postfach = postfachBefund(z.rollen_email, name ?? "", z.verwaltung_domain);
+    // Eine Presseadresse ist per Bauart ein Funktionspostfach — die Prüfung
+    // auf Personennamen greift dort nicht, die Domain-Prüfung schon.
+    const postfach = postfachBefund(ziel.email, name ?? "", z.verwaltung_domain);
     if (!postfach.ok) {
       skip(postfach.grund);
       continue;
     }
 
-    const gebaut = await briefFuerGemeinde(z.region_id, z.rollen_email);
+    // WOHER DIE ADRESSE STAMMT, steht in der Pflichtangabe nach Art. 14. Sie
+    // pauschal „Impressum" zu nennen war bei einer Presseadresse falsch —
+    // Düsseldorfs steht auf der Kontaktseite des Medienportals.
+    const herkunft = (
+      ziel.anPresse ? z.presse_email_quelle : z.rollen_email_quelle
+    ) as Adressherkunft | null;
+    const gebaut = await briefFuerGemeinde(z.region_id, ziel.email, {
+      anPresse: ziel.anPresse,
+      herkunft: herkunft ?? undefined,
+    });
     if (istBriefFehler(gebaut)) {
       skip(`Brief nicht erzeugbar (${gebaut.grund})`);
       continue;
@@ -136,7 +170,8 @@ export async function GET(req: NextRequest) {
     paket.push({
       region_id: gebaut.regionId,
       name: gebaut.name,
-      empfaenger: z.rollen_email,
+      empfaenger: ziel.email,
+      an_presse: ziel.anPresse,
       subject: gebaut.draft.subject,
       body: gebaut.draft.body,
       body_html: gebaut.draft.bodyHtml,

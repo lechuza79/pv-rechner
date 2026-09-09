@@ -1,5 +1,6 @@
 // ─── Feed-In Tariff Configuration (shared between server + client) ───────────
 import { feedInArchivRates } from "./feedin-archiv";
+import { tagInBerlin } from "./zeit";
 
 export interface FeedInRates {
   teilUnder10: number;   // ct/kWh, Teileinspeisung ≤10 kWp
@@ -87,17 +88,54 @@ export const FEED_IN_GEPRUEFT_ISO = "2026-08-01";
  * reached. Server surfaces that must flip at the cutoff without waiting for a
  * deploy (the /api/feedin route the calculator reads) call this per request;
  * everything else uses DEFAULT_FEED_IN below.
+ *
+ * Das Argument ist entweder ein ZEITPUNKT (`new Date()` — „jetzt", wird in den
+ * deutschen Kalendertag umgerechnet) oder ein gemeinter TAG als ISO-String
+ * (`"2026-08-01"` — gilt unverändert). Die Stichtage in `validFrom` sind
+ * deutsche Kalendertage; sie gegen die Weltzeit zu halten lieferte zwischen
+ * 00:00 und 02:00 deutscher Zeit am Stichtag noch den alten Satz. Siehe
+ * `tagInBerlin` in lib/zeit.ts.
  */
-export function feedInRatesFor(now: Date = new Date()): FeedInRates {
-  const today = now.toISOString().slice(0, 10);
+export function feedInRatesFor(now: Date | string = new Date()): FeedInRates {
+  const today = tagInBerlin(now);
   let current = FEED_IN_SCHEDULE[0];
   for (const period of FEED_IN_SCHEDULE) {
     if (period.validFrom <= today) current = period;
   }
+  // Der Plan endet mit dem letzten von Hand eingetragenen Halbjahr. Liegt der
+  // Tag schon im nächsten, gilt der Plan-Satz nicht mehr — die Degression nach
+  // § 49 EEG ist am Stichtag von selbst eingetreten, ob jemand die Tabelle
+  // ergänzt hat oder nicht. Bis 05.09.2026 lieferte diese Funktion dann den
+  // alten Satz weiter (7,70 statt 7,62 ct ab 01.02.2027), während die
+  // Nachschlage-Tabelle auf /einspeiseverguetung-tabelle aus der Gesetzeskette
+  // bereits den neuen zeigte: zwei Sätze für denselben Tag auf zwei Seiten.
+  // Deshalb der Rückfall auf dieselbe Kette — mit Herkunfts-Vorbehalt, denn
+  // die Bundesnetzagentur hat ihre Liste dann noch nicht veröffentlicht, und
+  // ohne Nennung der Behörde (siehe `note` am Typ).
+  if (feedInDegressionSteps(today) > feedInDegressionSteps(current.validFrom)) {
+    const abgeleitet = feedInRatesForCommissioning(today);
+    if (abgeleitet) {
+      return {
+        ...abgeleitet,
+        validFrom: halbjahresBeginnIso(today),
+        source: "§§ 48/49/53 EEG, aus dem Gesetz abgeleitet (Liste der Bundesnetzagentur noch nicht geprüft)",
+        note: "Aus dem Gesetz abgeleitet — die Bundesnetzagentur hat die Sätze für dieses Halbjahr noch nicht veröffentlicht.",
+      };
+    }
+  }
   return current;
 }
 
-export const DEFAULT_FEED_IN: FeedInRates = feedInRatesFor();
+/** Erster Tag des Vergütungs-Halbjahres, in dem `dateIso` liegt (1.2. / 1.8.;
+ *  Januar gehört zum August-Halbjahr des Vorjahres — dieselbe Regel wie
+ *  feedInDegressionSteps). */
+export function halbjahresBeginnIso(dateIso: string): string {
+  const [y, m] = dateIso.split("-").map(Number);
+  if (m >= 8) return `${y}-08-01`;
+  if (m >= 2) return `${y}-02-01`;
+  return `${y - 1}-08-01`;
+}
+
 
 // ─── Sätze nach Inbetriebnahme-Halbjahr (für Bestandsanlagen) ────────────────
 //
@@ -168,6 +206,11 @@ export function feedInRatesForCommissioning(dateIso: string): FeedInRates | null
  * Jahresmarktwert Solar 4,508 — behalten ihre Präzision). Eine Quelle statt
  * der vier Inline-Kopien, die der Konventions-Check am 06.08.2026 fand.
  */
+// Steht bewusst HINTER der Gesetzeskette: Sobald der Stichtags-Plan ausläuft,
+// rechnet feedInRatesFor() beim Laden des Moduls über FEED_IN_BASIS und round2 —
+// weiter oben wären beide zu diesem Zeitpunkt noch nicht initialisiert.
+export const DEFAULT_FEED_IN: FeedInRates = feedInRatesFor();
+
 export const fmtCt = (n: number) =>
   n.toLocaleString("de-DE", { minimumFractionDigits: 2 });
 
@@ -190,9 +233,11 @@ export interface FeedInPeriod {
  * Sätzen werden zusammengefasst — bis zum 31.01.2024 setzte die Degression aus
  * (siehe feedInDegressionSteps), die Basiswerte galten durchgehend.
  * Zukünftige Stichtage erscheinen bewusst NICHT (kein Blick über heute hinaus).
+ * „Heute" ist dabei der deutsche Kalendertag — sonst erschiene die Periode, die
+ * am Stichtag beginnt, erst zwei Stunden später (siehe `tagInBerlin`).
  */
-export function feedInPeriodsSince2022(now: Date = new Date()): FeedInPeriod[] {
-  const today = now.toISOString().slice(0, 10);
+export function feedInPeriodsSince2022(now: Date | string = new Date()): FeedInPeriod[] {
+  const today = tagInBerlin(now);
   const starts: string[] = [FEED_IN_BASIS.validFromIso];
   outer: for (let y = 2023; ; y++) {
     for (const md of ["02-01", "08-01"]) {

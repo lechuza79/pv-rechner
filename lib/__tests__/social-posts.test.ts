@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { DATA_SOURCES, sourceLabel } from "../data-sources";
 import {
   FEED_ABSCHNITT_ZEICHEN,
   baueAllePosts,
@@ -37,6 +38,7 @@ const basis: SocialKennzahlen = {
     privatDachKwp: 36_200_000,
     gewerbeDachKwp: 44_500_000,
     freiflaecheKwp: 44_900_000,
+    steckersolarKwp: 1_500_000,
     solarGesamtKwp: 127_100_000,
   },
   ueberEinwohner: { mindestEinwohner: 500, betrachtet: 10_000, darueber: 6_848 },
@@ -132,12 +134,33 @@ describe("Alle Posts", () => {
       expect(p.text, p.id).toMatch(quellen);
       expect(p.bild?.quelle, p.id).toMatch(quellen);
       expect(p.bild?.quelle, p.id).toMatch(/Eigene Berechnung/);
-      // Eine Quelle ohne ihre Lizenz ist keine Quellenangabe.
-      expect(p.bild?.quelle, p.id).toMatch(/dl-de\/by-2-0|CC BY 4\.0|Bundesnetzagentur/);
+      // Eine Quelle ohne ihre Lizenz ist keine Quellenangabe — und zwar OHNE
+      // Ersatzbedingung. Die erste Fassung ließ „dl-de/by-2-0 ODER CC BY 4.0
+      // ODER Bundesnetzagentur" gelten und nahm damit den Behördennamen als
+      // Lizenz an. Genau darüber ist die fehlende Lizenz im Anlagenregister-Zweig
+      // durchgerutscht: Der Name stand da, die Lizenz nicht, der Test war grün.
+      // Gefunden hat es eine parallele Sitzung, kein Test.
+      expect(p.bild?.quelle, `${p.id}: Quellenvermerk ohne Lizenz`).toMatch(/dl-de\/by-2-0|CC BY 4\.0/);
       // Der Markenname muss wörtlich im Text stehen, sonst findet die
       // Erwähnung der Unternehmensseite ihn nicht und der Verweis entfällt
       // stillschweigend.
       expect(p.text, p.id).toContain("Solar Check");
+    }
+  });
+
+  it("bauen den Quellenvermerk aus dem Register, statt ihn zu tippen", () => {
+    // Der eigentliche Fehler war nicht die fehlende Lizenz, sondern die zweite
+    // Fassung: Beide Quellenzeilen waren getippt, und sie wichen VERSCHIEDEN ab
+    // — die eine ließ die Lizenz ganz weg, die andere schrieb einen anderen
+    // Änderungshinweis als das Register. Welche stimmte, hing daran, wer die
+    // Zeile gerade schrieb. Dieselbe Systematik wie bei den Einheiten: eine
+    // zweite Kopie ist ein Fehler, kein Duplikat.
+    for (const p of baueAllePosts(basis)) {
+      const passend = [DATA_SOURCES.mastr, DATA_SOURCES.ember].map((q) => sourceLabel(q));
+      expect(
+        passend.some((l) => p.bild!.quelle.startsWith(l)),
+        `${p.id}: Quellenvermerk stimmt mit keinem Registereintrag überein — „${p.bild!.quelle}"`,
+      ).toBe(true);
     }
   });
 

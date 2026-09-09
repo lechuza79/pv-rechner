@@ -189,14 +189,28 @@ export function FundingRates({
           <div
             key={r.label}
             style={{
-              display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, paddingTop: 4,
+              // flexWrap: Passt der Wert nicht mehr neben die Beschriftung (schmale
+              // Spalte, langes Label), rutscht er darunter statt über den Rand —
+              // dritter Fund des Überlauf-Tests (05.09.2026, 14 px bei „120 €/kWp").
+              display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "baseline", gap: 16, paddingTop: 4,
               fontSize: "var(--font-size-body)",
               ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 12 } : {}),
             }}
           >
             <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
-            <span style={{ textAlign: "right", flexShrink: 0 }}>
-              <span style={{ whiteSpace: "nowrap" }}>
+            {/* Zahl und Einheit bleiben zusammen (nowrap) — ein SATZ als Wert
+                („Betrag nur in der Richtlinie, Jahrestopf 4.000 €") darf das
+                nicht erben: Er lief auf Telefonbreite 160 px über den Rand,
+                gefunden vom Überlauf-Test am 05.09.2026. Ohne Einheit ist der
+                Wert Fließtext und bricht um. */}
+            {/* Der Wert-Kasten darf IMMER schrumpfen: Als starres Flex-Kind nahm
+                er die Breite seiner längsten Zeile — und ein Zusatz wie „für
+                Leistung über 8 kWp — höchstens …" ist als Fließtext gedacht,
+                wurde aber nie umgebrochen (zweiter Fund des Überlauf-Tests,
+                481 px). Zusammen bleiben nur Zahl und kurze Einheit, und die
+                schützt das nowrap darunter. */}
+            <span style={{ textAlign: "right", flexShrink: 1, minWidth: 0 }}>
+              <span style={{ whiteSpace: einheit ? "nowrap" : "normal", overflowWrap: "anywhere" }}>
                 <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{zahl}</span>
                 {einheit && kurzeEinheit && (
                   <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), fontWeight: 400, marginLeft: 4 }}>

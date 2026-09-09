@@ -17,7 +17,9 @@ const basis: SocialKennzahlen = {
   stichtagJahr: 2025,
   stadtLand: { stadtAb: 100_000, landUnter: 20_000, stadtAnzahl: 80, landAnzahl: 10_037, stadtJeTausend: 9.9, landJeTausend: 22.8 },
   wachstum: { balkonJetzt: 1_454_592, balkonVorJahr: 1_203_761, solarKwpJetzt: 127_400_000, solarKwpVorJahr: 117_890_000 },
-  segmente: { privatDachKwp: 36_250_000, gewerbeDachKwp: 44_650_000, freiflaecheKwp: 44_940_000, solarGesamtKwp: 127_400_000 },
+  // Die vier Segmente ergeben die Gesamtleistung — wie im echten Bestand
+  // gemessen. Wer hier eine Lücke lässt, prüft eine Aufteilung, die es nicht gibt.
+  segmente: { privatDachKwp: 36_250_000, gewerbeDachKwp: 44_650_000, freiflaecheKwp: 44_940_000, steckersolarKwp: 1_560_000, solarGesamtKwp: 127_400_000 },
   ueberEinwohner: { mindestEinwohner: 500, betrachtet: 10_000, darueber: 6_848 },
   foerderung: { programme: 108, gemeinden: 97, nurBalkon: 12, ohneHoechstbetrag: 61, mitAntragVorher: 74 },
   kohorte: { privatAnlagen: 3_120_000, mittlereKwp: 9.4, speicherEinheiten: 1_180_000, speicherJe100: 37.8 },

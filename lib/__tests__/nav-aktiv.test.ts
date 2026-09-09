@@ -141,6 +141,9 @@ describe("Interne Links zeigen nie auf eine Weiterleitung", () => {
     expect(weitergeleitet.length).toBeGreaterThan(10);
   });
 
+  // 20 Sekunden statt fünf — siehe analytics-ereignisse.test.ts: Diese Prüfung
+  // liest den ganzen Quellbaum und wird unter paralleler Last langsam, ohne
+  // dass am Code etwas falsch wäre.
   it("keine Seite und kein Baustein verlinkt eine weitergeleitete Adresse", () => {
     const wurzeln = [resolve(__dirname, "../../app"), resolve(__dirname, "../../components"), resolve(__dirname, "../../lib")];
     const treffer: string[] = [];
@@ -162,7 +165,7 @@ describe("Interne Links zeigen nie auf eine Weiterleitung", () => {
     };
     wurzeln.forEach(suchen);
     expect(treffer, `interne Links auf weitergeleitete Adressen: ${treffer.join(", ")}`).toEqual([]);
-  });
+  }, 20_000);
 });
 
 describe("Themen-Cluster: jede Seite ist auch verlinkt", () => {

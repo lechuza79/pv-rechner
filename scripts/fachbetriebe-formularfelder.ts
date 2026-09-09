@@ -29,6 +29,7 @@
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { heuteInBerlin } from "../lib/zeit";
 
 function loadEnvFile(): void {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -231,7 +232,7 @@ async function main(): Promise<void> {
   if (jsonPfad) {
     writeFileSync(
       jsonPfad,
-      JSON.stringify({ erhoben_am: new Date().toISOString().slice(0, 10), stichprobe: probe.length, erreicht, mitFormular, merkmale: Object.fromEntries(sortiert) }, null, 2),
+      JSON.stringify({ erhoben_am: heuteInBerlin(), stichprobe: probe.length, erreicht, mitFormular, merkmale: Object.fromEntries(sortiert) }, null, 2),
       "utf8",
     );
     console.log(`\nAbgelegt: ${jsonPfad}`);

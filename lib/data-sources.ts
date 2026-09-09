@@ -128,6 +128,20 @@ export const DATA_SOURCES = {
     // Kühlgradstunden — das ist eine Ableitung, keine Weitergabe.
     note: "abgeleitet",
   },
+  /**
+   * Jahresraster der Globalstrahlung, Deutscher Wetterdienst (CDC-OpenData).
+   * CC BY 4.0 laut Nutzungsbedingungen des CDC-OpenData-Bereichs (Stand Mai
+   * 2024, https://opendata.dwd.de/climate_environment/CDC/Nutzungsbedingungen_German.pdf).
+   * Wir rechnen aus dem 1-km-Raster ein Gebietsmittel je Jahr
+   * (scripts/dwd-strahlung-sync.ts) — eine Ableitung, daher der Hinweis.
+   */
+  dwd: {
+    name: "Deutscher Wetterdienst (CDC)",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://opendata.dwd.de/climate_environment/CDC/",
+    note: "Gebietsmittel abgeleitet",
+  },
   /** Location-based PV yield model. */
   pvgis: {
     name: "PVGIS (Europäische Kommission)",
@@ -177,8 +191,11 @@ export const DATA_SOURCES = {
   /** GModG gas-price scenarios (Bio-Treppe, Biomethan/Netzentgelt/CO₂ paths). */
   iw: {
     name: "Institut der deutschen Wirtschaft (IW-Report 36/2026)",
+    // Kurzform für die senkrechte Kante: An einem Chart mit zwei Quellen wäre
+    // der volle Name sonst nur noch in 6 px unterzubringen.
+    shortName: "IW Köln (Report 36/2026)",
     url: "https://www.iwkoeln.de/studien/ralph-henger-malte-kueper-laurens-wuensch-wie-hoch-sind-die-mehrkostenrisiken-durch-das-gebaeudemodernisierungsgesetz.html",
-    note: "Preisszenarien Gebäudemodernisierungsgesetz",
+    note: "Preisszenarien zum GModG",
   },
   /**
    * Administrative boundaries for the Solar-Atlas map (Bundesländer, Kreise, Gemeinden).
@@ -221,6 +238,41 @@ export const DATA_SOURCES = {
    * fallen also unter das zweite Regime; die Produktseite weist keine
    * abweichende Angabe aus.
    */
+  /**
+   * Wohnungsbestand je Gemeinde aus dem Zensus 2022 (Stichtag 15.05.2022).
+   *
+   * Der Nenner, den das Anlagenregister nicht kennt: wie viele Dächer es
+   * überhaupt gibt. Ohne ihn ist „hier wurde wenig gebaut" nicht von „hier gibt
+   * es kaum eigene Dächer" zu unterscheiden.
+   *
+   * KEIN dl-de/by-2-0 — die Angabe stand bis zum 06.09.2026 so im Importlauf
+   * und ist am Original widerlegt. Auf zensus2022.de trägt genau EIN Angebot
+   * die Datenlizenz: das Shapefile der Verwaltungsgrenzen, und dessen
+   * Quellenvermerk lautet „© GeoBasis-DE / BKG 2023" — es ist also die
+   * BKG-Karte, nicht die Statistik. Bei Destatis selbst gilt die Datenlizenz
+   * ausdrücklich nur für GENESIS-Online (eigene Copyright-Seite dafür); unsere
+   * Regionaltabelle ist ein statisches Download-Produkt. Dieselbe Abgrenzung,
+   * aus der `destatis` unten schon nicht unter der Datenlizenz steht.
+   *
+   * Was WIRKLICH gilt, im Volltext am 06.09.2026 gelesen (Destatis, Copyright
+   * allgemein): „Vervielfältigung und Verbreitung, auch auszugsweise, mit
+   * Quellennachweis gestattet … sowohl für nicht gewerbliche als auch
+   * gewerbliche Zwecke". Und der Grund für `note`: „Änderungen … neue
+   * Gestaltungen oder sonstige Abwandlungen sind als solche kenntlich zu machen
+   * bzw. im Quellennachweis mit dem Hinweis zu versehen, dass die Daten
+   * geändert, nur als Berechnungsgrundlage verwendet oder verändert dargestellt
+   * wurden." Wir rechnen aus den fünf Größenklassen der Quelle zwei Gruppen —
+   * also geschuldet, nicht Höflichkeit.
+   *
+   * Eigener Eintrag neben `destatis`, obwohl dieselben Bedingungen gelten: Der
+   * Quellennachweis verlangt die genaue Fundstelle, und „Statistisches
+   * Bundesamt" allein benennt weder den Zensus noch seinen Stichtag.
+   */
+  zensus: {
+    name: "Zensus 2022 (Statistisches Bundesamt)",
+    url: "https://www.zensus2022.de",
+    note: "als Berechnungsgrundlage verwendet",
+  },
   destatis: {
     name: "Statistisches Bundesamt (Destatis)",
     url: "https://www.destatis.de",
