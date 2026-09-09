@@ -51,6 +51,7 @@
     "kommunen:veroeffentlicht": "tsx scripts/kommunen-veroeffentlicht.ts",
     "social:zahlen": "tsx --conditions react-server --env-file=.env.local scripts/social-zahlen.ts",
     "social:formen": "tsx --tsconfig scripts/tsconfig.werkbank.json scripts/social-formen-werkbank.tsx",
+    "orts:visual": "tsx --tsconfig scripts/tsconfig.werkbank.json scripts/orts-visual-werkbank.tsx",
     "claude-md:verify": "tsx scripts/claude-md-verify.ts",
     "kommunen:stand": "tsx scripts/kommunen-stand.ts",
     "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",

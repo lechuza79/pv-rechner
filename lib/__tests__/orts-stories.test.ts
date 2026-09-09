@@ -100,7 +100,7 @@ describe("Mindestgrößen", () => {
         ],
       },
     });
-    expect(stories(knapp).some((s) => s.kategorie === "G4.2")).toBe(false);
+    expect(stories(knapp).some((s) => s.art === "auslauf")).toBe(false);
 
     const genug = daten({
       solar: {
@@ -114,7 +114,7 @@ describe("Mindestgrößen", () => {
         ],
       },
     });
-    expect(stories(genug).some((s) => s.kategorie === "G4.2")).toBe(true);
+    expect(stories(genug).some((s) => s.art === "auslauf")).toBe(true);
   });
 
   it("zählt für den Auslauf NUR private Dächer", () => {
@@ -127,7 +127,7 @@ describe("Mindestgrößen", () => {
         ],
       },
     });
-    expect(stories(gewerbe).some((s) => s.kategorie === "G4.2")).toBe(false);
+    expect(stories(gewerbe).some((s) => s.art === "auslauf")).toBe(false);
   });
 
   it("rechnet kein Geld über eine Handvoll Anlagen", () => {
@@ -171,7 +171,7 @@ describe("Der Nenner und der Vorbehalt stehen dabei", () => {
     // Bei Gewerbe und Freifläche ist der Eigenverbrauch nicht belegt; dort
     // fällt die Summe zu hoch aus. Eine Unschärfe, die nur wir kennen, gehört
     // an die Zahl — nicht in einen Code-Kommentar.
-    const geld = stories().find((s) => s.kategorie === "G4.1");
+    const geld = stories().find((s) => s.art === "eingespielt");
     expect(geld).toBeTruthy();
     expect(geld!.grundlage).toMatch(/zu hoch/);
   });

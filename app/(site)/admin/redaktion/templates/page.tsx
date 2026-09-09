@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAdminSession } from "../../../../../lib/admin-guard";
-import { socialKennzahlen } from "../../../../../lib/social-kennzahlen";
-import { baueAllePosts, moeglicheFormen, templateVon, type PostBild, type SocialPost } from "../../../../../lib/social-posts";
+import { moeglicheFormen, templateVon, type PostBild, type SocialPost } from "../../../../../lib/social-posts";
 import { BILDFORMEN, TEMPLATES } from "../../../../../lib/social-bildformen";
 import { TemplateGalerie, type GalerieZeile } from "../../../../../components/social/TemplateGalerie";
-import { ladeFassungen } from "../../../../../lib/social-vorlagen-db";
+import { quellenstand, ORTE_STANDARD } from "../../../../../lib/redaktions-quelle";
+import { QuellenLeiste } from "../../../../../components/social/QuellenLeiste";
 import { v, space, pad } from "../../../../../lib/theme";
 
 // Die Templates als eigener Bereich der Redaktion — vorher lag diese Ansicht als
@@ -23,6 +23,18 @@ import { v, space, pad } from "../../../../../lib/theme";
 // „Abgenommen" ist dabei kein Häkchen, sondern folgt aus der Template-Liste im
 // Code: Ein Beitrag ist gestaltet, wenn seine Kombination aus Bildform und
 // Farbschema dort steht.
+//
+// ZWEI QUELLEN FÜR DIE FÜLLUNG (Betreiber, 06.09.2026): die vierzehn
+// bundesweiten Beiträge — oder die Geschichten des nächsten KOMMUNEN-SCHUBS.
+// Das ist der Arbeitsrhythmus, den er gesetzt hat: pro Woche ein Batch planen
+// und dabei die Templates fertigmachen, die dieser Batch braucht. Welche Form
+// eine Ortsgeschichte bekommt, entscheiden ihre Zahlen; man muss also die
+// echten Orte ansehen, statt am bundesweiten Bestand zu üben.
+//
+// MIT DECKEL, und er steht sichtbar an der Ansicht: Ein Schub sind hundert
+// Gemeinden, und die Kette je Ort kostet ein halbes Dutzend Abfragen. Eine
+// Ansicht, die einen Ausschnitt zeigt und wie das Ganze aussieht, behauptet
+// eine Vollständigkeit, die sie nicht hat.
 
 export const metadata = {
   title: "Redaktion – Templates",
@@ -30,6 +42,18 @@ export const metadata = {
 };
 
 export const dynamic = "force-dynamic";
+
+/**
+ * Wie ein Ortsbeitrag im Wähler heißt — die Typbezeichnung ohne den Ort.
+ *
+ * Der Beitragstitel lautet „Musterdorf — Stichtag"; im Wähler steht der Ort
+ * ohnehin dahinter, und zweimal derselbe Name in einer Zeile liest sich wie
+ * ein Fehler.
+ */
+function beschriftung(p: SocialPost): string {
+  const teil = p.titel.split(" — ");
+  return teil.length > 1 ? teil.slice(1).join(" — ") : p.titel;
+}
 
 /**
  * Welcher Beitrag füllt eine Form?
@@ -66,6 +90,13 @@ export default async function RedaktionTemplates({
   const adresseMit = (art: string, postId: string): string => {
     const q = new URLSearchParams();
     if (neu) q.set("ansicht", "neu");
+    // Quelle, Schub und Ortszahl bleiben stehen: Sonst springt die Ansicht beim
+    // Durchschalten einer Zeile zurück auf die bundesweiten Beiträge, und man
+    // beurteilt plötzlich ein anderes Design als das, das man ansehen wollte.
+    for (const k of ["quelle", "schub", "orte"]) {
+      const w = params[k];
+      if (typeof w === "string") q.set(k, w);
+    }
     // Die Wahl der ANDEREN Formen bleibt stehen — sonst springt die halbe Seite
     // zurück, sobald man eine Zeile umschaltet.
     for (const [k, w] of Object.entries(params)) {
@@ -75,14 +106,15 @@ export default async function RedaktionTemplates({
     return `/admin/redaktion/templates?${q.toString()}#${art}`;
   };
 
-  let posts: SocialPost[] = [];
-  let fehler: string | null = null;
-  try {
-    const [kennzahlen, fassungen] = await Promise.all([socialKennzahlen(), ladeFassungen()]);
-    posts = baueAllePosts(kennzahlen, fassungen);
-  } catch (e) {
-    fehler = (e as Error).message;
-  }
+  // Woraus die Formen gefüllt werden — dieselbe Wahl und dieselbe Quelle wie in
+  // der Entwicklungs-Ansicht.
+  const stand = await quellenstand({
+    art: params.quelle === "kommunen" ? "kommunen" : "bund",
+    schub: typeof params.schub === "string" ? params.schub : undefined,
+    hoechstensOrte: Math.max(1, Math.min(Number(params.orte) || ORTE_STANDARD, 24)),
+  });
+  const posts: SocialPost[] = stand.posts;
+  const fehler: string | null = stand.fehler ?? null;
 
   // Die Bibliothek zeigt die Formen, von denen mindestens eine Variante
   // abgenommen ist. Die übrigen sind Entwicklungsstand.
@@ -95,6 +127,13 @@ export default async function RedaktionTemplates({
         // im Umschalter des Redaktionstischs. Hier etwas anbieten, das dort
         // verboten wäre, hieße ein Design an einem Fall abzunehmen, den es nie
         // geben wird.
+        // JE TYP EIN EINTRAG, auch im Wähler. `posts` ist bereits auf ein
+        // Beispiel je Typ zusammengefasst — dieselbe Liste hier zu benutzen ist
+        // der ganze Punkt: Eine Gemeinde mit vier Einzelkennzahl-Geschichten
+        // stand sonst viermal untereinander, jedes Mal mit demselben Namen,
+        // weil die Beschriftung nur den Ort trug. Die Zusammenfassung galt für
+        // die Zeilen und nicht für den Wähler — halb umgestellt ist schlimmer
+        // als gar nicht, weil es aussieht, als wäre etwas doppelt gerechnet.
         const traeger = posts.filter((p) => p.bild && moeglicheFormen(p.bild).includes(art));
         const wunsch = traeger.find((p) => p.id === gewaehlt(art));
         const post = wunsch ?? fuellung(posts, art);
@@ -104,7 +143,9 @@ export default async function RedaktionTemplates({
           post,
           auswahl: traeger.map((p) => ({
             id: p.id,
-            titel: p.titel,
+            // Der TYP ist die Beschriftung, der Beispielort steht dahinter:
+            // Gewählt wird zwischen Aussagen, nicht zwischen Gemeinden.
+            titel: p.ort ? `${beschriftung(p)} · ${p.ort.name}` : p.titel,
             href: adresseMit(art, p.id),
             aktiv: p.id === post.id,
           })),
@@ -122,9 +163,19 @@ export default async function RedaktionTemplates({
   // und das entsteht an der Form, nicht am einzelnen Beitrag.
   const ohneDesign = posts.filter((p) => p.bild && !templateVon(p.bild));
 
+  /** Eine Adresse dieser Seite mit geänderten Angaben — der Rest bleibt stehen. */
+  const adresse = (aenderung: Record<string, string | undefined>): string => {
+    const q = new URLSearchParams();
+    for (const k of ["ansicht", "quelle", "schub", "orte"]) {
+      const w = k in aenderung ? aenderung[k] : params[k];
+      if (typeof w === "string" && w) q.set(k, w);
+    }
+    return `/admin/redaktion/templates${q.toString() ? `?${q}` : ""}`;
+  };
+
   const reiter = [
-    { text: "Bibliothek", href: "/admin/redaktion/templates", aktiv: !neu, zahl: bibliothek.length },
-    { text: "Neu entwickeln", href: "/admin/redaktion/templates?ansicht=neu", aktiv: neu, zahl: inArbeit.length },
+    { text: "Bibliothek", href: adresse({ ansicht: undefined }), aktiv: !neu, zahl: bibliothek.length },
+    { text: "Neu entwickeln", href: adresse({ ansicht: "neu" }), aktiv: neu, zahl: inArbeit.length },
   ];
 
   return (
@@ -158,6 +209,8 @@ export default async function RedaktionTemplates({
           </Link>
         ))}
       </nav>
+
+      <QuellenLeiste stand={stand} adresse={adresse} />
 
       <p style={{ color: v("--color-text-secondary"), maxWidth: 760, marginTop: 0, marginBottom: space.xxl }}>
         {neu

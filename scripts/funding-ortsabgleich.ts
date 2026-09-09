@@ -36,7 +36,7 @@
 
 import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { allFundingPrograms } from "../lib/funding-programs";
 
 function loadEnvFile(): void {
@@ -47,15 +47,29 @@ function loadEnvFile(): void {
     if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
   }
 }
-loadEnvFile();
-
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
-const key = process.env.SUPABASE_SERVICE_KEY;
-if (!url || !key) {
-  console.error("NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_KEY fehlen.");
-  process.exit(1);
+/**
+ * Der Zugang zur Datenbank — erst wenn er WIRKLICH gebraucht wird.
+ *
+ * Beim Laden des Moduls aufgebaut hat dieser Lauf am 09.09.2026 die gesamte
+ * Testprüfung umgeworfen: Die Namensauflösung wird von einem Test geprüft, der
+ * sie hier importiert, und der Prüfrechner hat keine Zugangsdaten — der
+ * Abbruch beim Import riss die ganze Datei mit. Lokal fällt das nicht auf,
+ * weil dort eine Zugangsdatei liegt. Dieselbe Klasse wie beim Spalten-Abgleich
+ * und der Kostenwache: Was nur lokal läuft, ist nicht geprüft.
+ *
+ * Ein Modul, das jemand für eine reine Rechenfunktion importiert, darf beim
+ * Laden nichts tun, was fehlschlagen kann.
+ */
+function verbindung(): SupabaseClient {
+  loadEnvFile();
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) {
+    console.error("NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_KEY fehlen.");
+    process.exit(1);
+  }
+  return createClient(url, key);
 }
-const sb = createClient(url, key);
 
 /**
  * Vergleichsform eines Ortsnamens.
@@ -92,6 +106,7 @@ type Befund = {
 };
 
 async function alleZeilen<T>(tabelle: string, spalten: string): Promise<T[]> {
+  const sb = verbindung();
   const out: T[] = [];
   for (let von = 0; ; von += 1000) {
     const { data, error } = await sb.from(tabelle).select(spalten).order("region_id").range(von, von + 999);

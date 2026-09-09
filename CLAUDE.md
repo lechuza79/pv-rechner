@@ -59,7 +59,7 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 
 **Ab der dritten Seite zu einem Thema wird verschachtelt — und zwar BEVOR die zweite live geht (Entscheidung 18.08.2026).** Ein Cluster bekommt einen Hub und hängt seine Seiten darunter (`/balkonkraftwerk` + `/rechner` + `/anmelden`); Einzelthemen ohne Cluster bleiben flach (`/photovoltaik-neigungswinkel`, `/einspeiseverguetung-tabelle` — ein Ordner mit einer Datei ist Zeremonie). Der Bestand mit gewachsenem Ranking zieht **nicht** um.
 - **Der Grund ist nicht SEO, sondern Betrieb.** Verzeichnistiefe kommt in Googles URL-Empfehlung **überhaupt nicht vor**: Sie verlangt Adressen, die logisch und für Menschen möglichst verständlich aufgebaut sind, und lesbare Wörter statt Kennnummern — mehr nicht (Search Central, URL structure, am 19.08.2026 im Original gelesen). `/balkonkraftwerk/rechner` trägt dieselben zwei Wörter wie `/balkonkraftwerk-rechner`. **Was hier NICHT als Beleg gilt** (Faktenprüfungs-Regel 6): die kursierenden Zuspitzungen „Tiefe ist kein Rankingfaktor“ und „Hierarchie wegen Crawl-Segmentierung“ — nur über Sekundärberichte bekannt, nie am Original geprüft, standen hier trotzdem zweieinhalb Wochen als Google-Aussage. Wer sie braucht, beschafft zuerst die Fundstelle. „Verzeichnisse erzeugen thematische Autorität" ist SEO-Blog-Literatur ohne Google-Aussage.
-- **Die Asymmetrie ist der Punkt:** Verschachtelt kostet ein späterer Umzug **eine** Weiterleitung für den Bereich, flach **eine pro Seite** — und man zahlt sie später, mit mehr Seiten und mehr eingehenden Links. Das Repo hat diese Rechnung schon einmal bezahlt: 182 der 203 Weiterleitungen in `next.config.js` sind Förderseiten, die ohne Bundesland-Ebene starteten.
+- **Die Asymmetrie ist der Punkt:** Verschachtelt kostet ein späterer Umzug **eine** Weiterleitung für den Bereich, flach **eine pro Seite** — und man zahlt sie später, mit mehr Seiten und mehr eingehenden Links. Das Repo hat diese Rechnung schon einmal bezahlt: 184 der 205 Weiterleitungen in `next.config.js` sind Förderseiten, die ohne Bundesland-Ebene starteten.
 - **Ein Präfix ist die einzige Steuerungseinheit, die die Plattform kennt** — Header, Middleware-Matcher, robots, gestaffelte Index-Freischaltung arbeiten alle darauf. Die Namenskonvention „Themenwort zuerst" trägt das nicht: `photovoltaik-rechner`, `-foerderung`, `-neigungswinkel` und `-zubau-deutschland` gehören zu **vier** Themen, und derselbe PV-Bereich benutzt zusätzlich `pv-simulation` und `pv-bedarf-berechnen`.
 - **`/ratgeber` ist eine ANSICHT, kein Ordner.** Die Registry (`lib/ratgeber.ts`) akzeptiert jeden Pfad und speist Übersicht, Krümelspur und Sitemap — ein Ratgeber im Themen-Cluster bleibt Registry-Eintrag. Seine Krümelspur nennt aber das **Thema** als Elternteil, nicht die Ratgeber-Liste: Eine BreadcrumbList, die eine Hierarchie behauptet, die die Adresse nicht hat, ist die schwächste Form davon.
 
@@ -1570,17 +1570,55 @@ aus dem Zensus, ohne den sich „hier wurde wenig gebaut" nicht von „hier gibt
 kaum eigene Dächer" unterscheiden lässt. Fällt eine aus, entfallen genau ihre
 Geschichten.
 
-**AUSGEBLENDET, bis das Bild steht (Betreiber, 05.09.2026).** Die Geschichten
-sind fertig, das Visual fehlt. Drei Anläufe auf der Ortsseite sind am selben
-Punkt gescheitert: Die Beitrags-Karte der Redaktion ist fest 1080 Pixel breit
-und überschreibt die Farb-Tokens mit ihrer eigenen Palette — richtig für ein
-Bild in einem fremden Feed, falsch auf einer Seite mit Tageslicht-Theme (weißer
-Block im Dunkeln, Überlauf im schmalen Teaser); und ihre kleine Stufe lässt Ring
-und Säule bewusst weg, womit die Formenwahl wirkungslos wird. Eine dritte, hier
-gezeichnete Fassung wäre die zweite Wahrheit neben den vier abgenommenen
-Templates — der Einheiten-Wächter hat sie binnen einer Minute erwischt. Das
-quadratische Story-Visual entsteht dort, wo die Formenlehre wohnt; die Aufgabe
-steht in `docs/redaktionssystem-uebergabe.md` und an den Bildformen selbst.
+**LIVE seit 06.09.2026 — und eine Ortsgeschichte IST seitdem ein Beitrag des
+Redaktionssystems.** Sie war es an den Daten immer: dieselben Familien des
+Katalogs (G2, G3, G4, G10, G14, G15, G16), eine Schlagzeile, benannte Werte mit
+Einheit, eine Grundlage. Was fehlte, waren vier Angaben — Farbschema,
+Quellenzeile, Messzeile und die Frage, welche Formen ihre Zahlen hergeben.
+`lib/orts-posts.ts` ergänzt sie; damit gelten Templates, Formenlehre,
+Rundungsregeln und Freigabe ohne eine eigene Zeile Zeichnung.
+- **Die Kategorie ist die des Katalogs, keine zweite Aufzählung.** Die Datei
+  führte „G4.1", „G3.vergleich", „G10" als eigene Union, während derselbe
+  Katalog daneben lag — und die erfundene Ordnung stand in der Ortsansicht. Ein
+  Fund reichte sogar den Schlüssel als Beschriftung durch: Auf der Ortsseite
+  stand wörtlich „g10", unsichtbar geblieben, weil der Block ausgeblendet war.
+- **Der ORT ist eine zweite Dimension, nie eine Kategorie.** Eine 21. Familie
+  „Kommune" hätte sieben Familien unter einen Reiter geworfen. Er steht am
+  Beitrag; die Kennung trägt den Gemeindeschlüssel, und daran hängt die
+  redaktionelle Fassung — deshalb lässt sich vor einem Versandschub JE ORT
+  einstellen, ohne dass die Einstellung zu allen anderen wandert.
+- **Das Visual ist die dritte Stufe derselben Karte** (`quadrat` in
+  `components/social/SocialKarte.tsx`): 1:1 statt 4:5, und mit der Möglichkeit,
+  die Farben der SEITE zu erben statt eine eigene Palette mitzubringen. Genau
+  daran waren die drei Anläufe vom 05.09.2026 gescheitert. Keine eigene
+  Schriftskala und keine eigene Zeichnung — eine dritte wäre die zweite Wahrheit
+  neben den abgenommenen Templates.
+- **Der Höhenfaktor gehört an die AUSGABEGRÖSSE, nie an das Koordinatensystem.**
+  In die viewBox gerechnet standen die Ringradien außerhalb, und der Ring wurde
+  an seiner eigenen Zeichenfläche abgeschnitten — im Bild ein blaues Quadrat
+  dahinter. Dieselbe Falle beim Verlauf, wo die y-Achse dann gegen ein anderes
+  System zeichnet als ihre Beschriftung.
+- **Der Fuß gibt nie nach** (`flexShrink: 0`), der Inhaltsbereich schon
+  (`minHeight: 0`). Die zweizeilige Quellenzeile (Zensus plus Register) brach
+  sonst unten aus der Karte und nahm das Logo halb mit. Ein beschnittener
+  Lizenzvermerk ist schlimmer als eine zu kleine Zeichnung.
+- **Beurteilt wird am gerenderten Bild** (`npm run orts:visual`), nicht am Code:
+  Alle vier Befunde waren nur dort sichtbar. Im Browser hält
+  `e2e/ortsgeschichte-karte.spec.ts` die Skalierung fest — der Maßstab kommt aus
+  einer Messung, nicht aus einer Zahl, weil ein fester Faktor entweder auf dem
+  Telefon überläuft oder auf dem Schreibtisch zu klein bleibt.
+- **Der Redaktionstisch der Schübe:** `/admin/redaktion/kommunen`, ein Ort auf
+  einmal. Die Kette je Ort kostet ein halbes Dutzend Abfragen; fünfundzwanzig
+  auf einer Seite wären die Kopplung „teurer mit den Daten". Beide Seiten holen
+  ihre Beiträge aus `lib/orts-beitraege-server.ts`; ein Test verbietet dem Tisch
+  die eigene Zusammenstellung, denn seine Auswahl an Funden und Platzierungen
+  entscheidet, welche Geschichten es überhaupt gibt.
+- **Der Zensus steht NICHT unter dl-de/by-2-0** — die Angabe stand seit dem
+  Importlauf so da und ist am Original widerlegt: Auf zensus2022.de trägt allein
+  das Shapefile der Verwaltungsgrenzen die Datenlizenz (Quellenvermerk „© GeoBasis-DE
+  / BKG 2023", also die BKG-Karte), bei Destatis gilt sie ausdrücklich nur für
+  GENESIS-Online. Es gilt der allgemeine Quellennachweis-Vorbehalt, im Register
+  im Wortlaut.
 
 **Was diese Arbeit gekostet hat, steht in `docs/lehren/ortsgeschichten-2026-09.md`**
 — darunter zwei Fehler, die bereits ausgeliefert waren (eine doppelte Präposition
