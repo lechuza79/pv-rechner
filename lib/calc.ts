@@ -376,8 +376,34 @@ export interface EinspeiseModell {
   einspeiseAnteil?: number;
 }
 
-export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly, batteryReplace = 0, einspeiseModell }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null; batteryReplace?: number; einspeiseModell?: EinspeiseModell }) {
+/**
+ * Jahresweise Abweichungen vom glatten Modell — beide optional, beide nur für
+ * Szenarien, die einen VERLAUF nachzeichnen (Stromkosten-Rennen: historischer
+ * Preispfad, Wetterjahre). Ohne sie rechnet calc() wie immer.
+ */
+export interface JahresVerlauf {
+  /** Strompreis €/kWh im Jahr i (1-basiert); ersetzt strompreis × (1 + Steigerung)^i. */
+  strompreisImJahr?: (i: number) => number;
+  /** Faktor auf den Ertrag im Jahr i (1-basiert), z. B. 1,08 für ein sonniges Jahr; multipliziert die Degradation. */
+  ertragsfaktorImJahr?: (i: number) => number;
+  /**
+   * Monatsprofil des Jahres i (1-basiert): 12 Werte kWh/kWp, wie der Ertrag in
+   * DIESEM Jahr über die Monate fiel. Ersetzt für das Jahr sowohl die Form
+   * (`monthly`) als auch die Menge (`ertragKwp`, die Summe der zwölf Werte gilt).
+   * Damit läuft echtes Wetter durch die Rechnung: ein trüber Mai, ein
+   * Rekord-April, ein kurzer Winter — kein Jahr gleicht dem anderen.
+   */
+  monatsprofilImJahr?: (i: number) => number[];
+}
+
+export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly, batteryReplace = 0, einspeiseModell, verlauf }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null; batteryReplace?: number; einspeiseModell?: EinspeiseModell; verlauf?: JahresVerlauf }) {
   const years: { year: number; i: number; kum: number; j: number }[] = [];
+  // Monatlicher Nutzen (Jahr 1 Monat 1 … Jahr YEARS Monat 12), nur wenn ein
+  // Monatsprofil vorliegt — sonst gäbe es nichts, was einen Monat vom anderen
+  // unterscheidet. Summiert je Jahr exakt auf `j`; der Akku-Tausch fällt in den
+  // ersten Monat seines Jahres. Gebaut für das Stromkosten-Rennen
+  // (lib/kostenrennen.ts), das die Kurve in Monatsschritten zeichnet.
+  const monate: number[] | null = monthly || verlauf?.monatsprofilImJahr ? [] : null;
   let kum = -kosten;
   // Monatliche Berechnung wenn PVGIS-Profil vorhanden
   const fracs = monthly ? monthly.map(m => m / monthly.reduce((a, b) => a + b, 0)) : null;
@@ -391,8 +417,14 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
       // schon im ersten Jahr), Balkon- und Wärmepumpen-Rechner ab Jahr 0 —
       // rund 1 % Gewinnunterschied für dieselbe kWh auf derselben Ergebnisseite.
       // Angeglichen auf die Mehrheitskonvention (Betreiber-Entscheidung 05.09.2026).
-      const deg = Math.pow(1 - DEGRAD, i - 1);
-      const sp = strompreis * Math.pow(1 + stromSteigerung, i - 1);
+      const profilJahr = verlauf?.monatsprofilImJahr?.(i);
+      const profilSumme = profilJahr ? profilJahr.reduce((a, b) => a + b, 0) : 0;
+      // Mit Jahresprofil ist die Menge des Jahres die Summe seiner Monate; die
+      // Alterung der Module kommt obendrauf.
+      const deg = Math.pow(1 - DEGRAD, i - 1) * (verlauf?.ertragsfaktorImJahr?.(i) ?? 1) * (profilJahr && ertragKwp > 0 ? profilSumme / ertragKwp : 1);
+      const sp = verlauf?.strompreisImJahr?.(i) ?? strompreis * Math.pow(1 + stromSteigerung, i - 1);
+      const fracsJahr = profilJahr && profilSumme > 0 ? profilJahr.map((m) => m / profilSumme) : fracs;
+      const monthlyEvJahr = profilJahr && fracsJahr ? buildMonthlyEv(eigenverbrauch / 100, fracsJahr) : monthlyEv;
       // EEG-Einspeisevergütung nur die ersten 20 Jahre; danach fällt die Anlage
       // aus dem EEG (Marktwert konservativ nicht angesetzt). Der Eigenverbrauch
       // spart den Strompreis auch danach weiter. Liegt ein Einspeisemodell vor,
@@ -405,14 +437,18 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
       // Vermarkters gegen ihn abgewogen wird (siehe unten) — nicht gegen den
       // gesamten Jahresnutzen, in dem die Eigenverbrauchs-Ersparnis steckt.
       let einspeiseErloes = 0;
-      if (fracs && monthlyEv) {
+      const mErsparnis: number[] = [];
+      const mEinspeise: number[] = [];
+      if (fracsJahr && monthlyEvJahr) {
         // Monatlich: EV% variiert saisonal (Winter höher, Sommer niedriger),
         // bleibt aber jahresgewichtet auf dem eingegebenen Eigenverbrauch.
         for (let m = 0; m < 12; m++) {
-          const mProd = kwp * ertragKwp * fracs[m] * deg;
-          const mEv = monthlyEv[m];
-          j += mProd * mEv * sp;
-          einspeiseErloes += mProd * (1 - mEv) * anteil * (feedIn / 100);
+          const mProd = kwp * ertragKwp * fracsJahr[m] * deg;
+          const mEv = monthlyEvJahr[m];
+          mErsparnis.push(mProd * mEv * sp);
+          mEinspeise.push(mProd * (1 - mEv) * anteil * (feedIn / 100));
+          j += mErsparnis[m];
+          einspeiseErloes += mEinspeise[m];
         }
       } else {
         // Jährlich (Fallback ohne Monatsprofil)
@@ -429,8 +465,16 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
       // Eine 3-kWp-Anlage verlor dadurch über die Laufzeit 222 €, sobald man den
       // Börsenerlös EINSCHALTETE (Council 18.08.2026) — ein Schalter, der das
       // Ergebnis verschlechtert, obwohl er einen Erlös hinzufügt.
-      if (vermarktungLohnt(einspeiseErloes, fixkosten)) {
+      const lohnt = vermarktungLohnt(einspeiseErloes, fixkosten);
+      if (lohnt) {
         j += einspeiseErloes - fixkosten;
+      }
+      if (monate && mErsparnis.length === 12) {
+        for (let m = 0; m < 12; m++) {
+          let mj = mErsparnis[m] + (lohnt ? mEinspeise[m] - fixkosten / 12 : 0);
+          if (i === BATTERY_LIFETIME_YEARS && m === 0) mj -= batteryReplace;
+          monate.push(mj);
+        }
       }
     }
     // Akku-Tausch nach Ablauf der Speicher-Lebensdauer (einmalig im Horizont)
@@ -444,7 +488,7 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
   const be = years.find(
     (y, idx) => idx > 0 && y.kum >= 0 && years.slice(idx).every((z) => z.kum >= 0),
   );
-  return { years, be, total: years[YEARS].kum };
+  return { years, be, total: years[YEARS].kum, monate };
 }
 
 // ─── URL-Parameter-Helpers ───────────────────────────────────────────────────

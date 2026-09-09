@@ -34,6 +34,8 @@
     "geo:umrisse": "tsx scripts/bundesland-umrisse.ts",
     "ratgeber:livedatum": "tsx scripts/ratgeber-livedatum.ts",
     "laender:sync": "tsx scripts/ember-laender-sync.ts",
+    "strahlung:sync": "tsx scripts/dwd-strahlung-sync.ts",
+    "strahlung:tage": "tsx scripts/dwd-strahlung-tage-sync.ts",
     "foerder:serp": "tsx scripts/funding-serp-test.ts",
     "fachbetriebe": "tsx scripts/fachbetriebe-refresh.ts",
     "foerder:verlauf-bereinigen": "tsx scripts/funding-history-bereinigen.ts",
@@ -58,6 +60,7 @@
     "auth:mailvorlagen": "tsx scripts/auth-mailvorlagen.ts",
     "umstellung:versand": "NODE_OPTIONS=--conditions=react-server tsx scripts/umstellungs-versand.ts",
     "presse": "tsx scripts/presse-refresh.ts",
+    "temperatur:tage": "tsx scripts/dwd-temperatur-tage-sync.ts",
     "flows:matrix": "tsx scripts/flow-matrix.ts"
   },
   "dependencies": {

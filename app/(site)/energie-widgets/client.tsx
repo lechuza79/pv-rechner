@@ -123,6 +123,30 @@ const SECTIONS: WidgetSection[] = [
     ],
   },
   {
+    id: "pv-kostenrennen",
+    label: "Stromkosten mit und ohne Solaranlage",
+    intro:
+      "Ein Haushalt, mit und ohne Solaranlage, 25 Jahre lang: Die Linien zeichnen Tag für Tag, was jeder Haushalt bis dahin für Strom ausgegeben hat – die Anlage startet mit ihrer Anschaffung vorn und wird überholt, sobald sie bezahlt ist. Das Wetter ist das echte der letzten 25 Jahre (Deutscher Wetterdienst, Monatsraster und Stationstage), sodass kein Jahr und keine Woche der anderen gleicht. Gerechnet mit denselben Annahmen und Marktpreisen wie unser PV-Rechner.",
+    attribution: {
+      path: "/ratgeber/lohnt-sich-pv-mit-speicher",
+      text: "Stromkosten mit und ohne Solaranlage: 25 Jahre mit echtem Wetter – Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [{ id: "pv-kostenrennen", label: "Amortisations-Rennen", src: "/embed/pv-kostenrennen", height: 600, fixedWidth: 560 }],
+  },
+  {
+    id: "heizkostenrennen",
+    label: "Heizkosten mit Gasheizung und Wärmepumpe",
+    intro:
+      "Ein unsaniertes Einfamilienhaus, neue Gasheizung gegen Wärmepumpe, 20 Jahre lang: Die Linien zeichnen Tag für Tag, was das Haus bis dahin fürs Heizen ausgegeben hat – die Wärmepumpe startet mit ihrer Anschaffung vorn und wird überholt, sobald der Mehrpreis zurück ist. Geheizt wird nach den Gradtagen der letzten 20 Winter (Deutscher Wetterdienst, Tagesmittel der Stationen), sodass kein Winter dem anderen gleicht. Gerechnet mit denselben Annahmen wie unser Wärmepumpen-Rechner, Gaspreis mit Grüngas-Pflicht nach dem IW-Report.",
+    attribution: {
+      path: "/ratgeber/gasheizung-oder-waermepumpe",
+      text: "Heizkosten mit Gasheizung und Wärmepumpe: 20 Jahre mit echtem Wetter – Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [{ id: "heizkostenrennen", label: "Heizkosten-Rennen", src: "/embed/heizkostenrennen", height: 600, fixedWidth: 560 }],
+  },
+  {
     id: "strommix-anteil",
     label: "Kernenergie im Strommix",
     intro:
