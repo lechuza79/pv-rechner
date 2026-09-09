@@ -4,6 +4,7 @@ import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/n
 import Link from "next/link";
 import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, INSULATION_BESTAND, NATIONAL_AVG_YIELD, SCENARIOS, type Heizsystem } from "../../../lib/constants";
 import { recommend, economicsForScenario } from "../../../lib/recommend";
+import { pvCapacityParams } from "../../../lib/pv-capacity-params";
 import ScenarioTabs from "../../../components/ScenarioTabs";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
 import { AccordionField } from "../../../components/AccordionField";
@@ -476,10 +477,7 @@ export default function Empfehlung({
   // Die Adress-Parameter des Ergebnisses — getrennt vom Sprung dorthin, weil
   // der Rückkanal an den Fachbetrieb dieselbe Adresse als LINK braucht.
   const ergebnisParams = (kwp: number, speicherIdx: number) => {
-    const anlageIdx = kwp <= 5 ? 0 : kwp <= 8 ? 1 : kwp <= 10 ? 2 : kwp <= 15 ? 3 : 4;
-    const p = new URLSearchParams();
-    p.set("a", String(anlageIdx));
-    if (anlageIdx === 4) p.set("ck", String(kwp));
+    const p = pvCapacityParams(kwp);
     p.set("s", String(speicherIdx));
     p.set("p", String(personen));
     p.set("n", String(nutzung));
