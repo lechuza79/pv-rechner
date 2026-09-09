@@ -236,6 +236,42 @@ export const fmtEuro = (euro: number): string => zusammen(euroTeile(euro));
 export const fmtEuroVoll = (euro: number): string => `${nf(euro)} €`;
 
 /**
+ * Ein zu ZAHLENDER Preis, als Zahl und Einheit getrennt — auf den Cent genau.
+ *
+ * Zwei Fehler, die beide am selben Tag live standen (09.09.2026) und beide
+ * denselben Kern haben: Ein Preis ist keine Größenangabe, sondern der Betrag,
+ * den jemand gleich an der Kasse sieht.
+ *
+ * 1. NIE STAFFELN. `euroTeile` macht aus 1.499,99 € ein „1,5 Tsd. €" — für eine
+ *    Regions-Summe richtig, hier eine Zahl, die im Shop niemand wiederfindet.
+ * 2. NIE AUF EURO RUNDEN. Alle 294 Preise des Shops enden auf ,99; gerundet
+ *    zeigten wir durchgehend einen Preis, den der Händler gar nicht verlangt —
+ *    und ausgerechnet nach oben. Cent stehen deshalb da, wo es welche gibt, und
+ *    fallen bei glatten Beträgen weg (also „950 €", nicht „950,00 €").
+ *
+ * Für gerundete Beispielrechnungen bleibt `fmtEuroVoll` zuständig; dort IST die
+ * Rundung die Aussage.
+ */
+export const preisTeile = (euro: number): Messwert => ({
+  value: euro.toLocaleString("de-DE", {
+    minimumFractionDigits: Number.isInteger(euro) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }),
+  unit: "€",
+});
+
+/**
+ * Eine Jahresangabe im Dativ, mit deutschem Dezimalkomma: „4,0 Jahren".
+ *
+ * Die Ersetzung stand im Balkon-Rechner dreimal handgeschrieben, im
+ * Angebotsblock fehlte sie — dort erschien „bezahlt nach 4.0 Jahre", also
+ * englischer Dezimalpunkt UND falscher Fall. Eine Zahl, die anders aussieht als
+ * die Zahl daneben, liest sich wie eine andere Größe.
+ */
+export const jahreDativ = (jahre: number): string =>
+  `${jahre.toFixed(1).replace(".", ",")} Jahren`;
+
+/**
  * Euro in Tausend, eine Nachkommastelle — für dichte Achsen und Marken, wo
  * „14.200 €" zu breit ist: 14.200 → „14,2 k€", 14.000 → „14 k€".
  */
