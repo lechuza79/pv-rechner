@@ -25,6 +25,7 @@ import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import { IconArrowRight, IconChevronDown, IconRefresh } from "../../../components/Icons";
 import FlowNav from "../../../components/FlowNav";
+import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN } from "../../../components/KlebenderKnopf";
 
 // ─── URL slug mappings (sprechende Werte statt Indizes) ─────────────────────
 // Reihenfolge MUSS mit den Arrays in lib/constants.ts übereinstimmen
@@ -78,7 +79,38 @@ const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS];
 
 // `stand` kommt fertig aufgelöst von der Server-Seite (page.tsx) — siehe dort,
 // warum der Flow ihn nicht selbst aus `lib/stand.ts` liest.
-export default function Empfehlung({ stand }: { stand?: StandSeite }) {
+//
+// `zielPfad` ist die Adresse, auf der das Ergebnis gerechnet wird. Voreinstellung
+// ist unser eigener Rechner; auf der Seite eines Fachbetriebs ist es dessen
+// Adresse, damit der Flow dort NICHT herausführt. Ohne diesen Parameter hätte
+// der Empfehlungsweg den Besucher mitten im Vorgang auf solar-check.io
+// abgesetzt — mit dem Ergebnis, aber ohne den Betrieb, der ihn geschickt hat.
+//
+// `heimPfad` ist das Ziel des Zurück-Knopfes im ERSTEN Schritt — dort führt er
+// aus dem Flow heraus. Auf unserer Seite ist das die Startseite. Auf der Seite
+// eines Fachbetriebs gibt es keine: `null` lässt den Knopf dort ganz weg,
+// statt den Besucher auf solar-check.io abzusetzen.
+export default function Empfehlung({
+  stand,
+  zielPfad = "/photovoltaik-rechner",
+  heimPfad = "/",
+  eigenerPfad = "/pv-bedarf-berechnen",
+  ohneZwischenansicht = false,
+}: {
+  stand?: StandSeite;
+  zielPfad?: string;
+  heimPfad?: string | null;
+  /** Die Adresse, unter der dieser Flow gerade läuft. Er schreibt seinen
+   *  Zustand dorthin zurück. */
+  eigenerPfad?: string;
+  /** Den letzten Schritt direkt ins Ergebnis führen, ohne die
+   *  Empfehlungs-Zwischenansicht. Auf der Seite eines Fachbetriebs gewollt: Das
+   *  Ergebnis trägt dieselbe Empfehlung samt „Warum diese Anlage?", und ein
+   *  Zwischenschritt mehr kostet dort Abbrüche, ohne etwas zu zeigen, was
+   *  danach nicht auch dasteht. Auf unserer eigenen Seite bleibt die
+   *  Zwischenansicht — sie ist dort eine eigene, verlinkbare Seite. */
+  ohneZwischenansicht?: boolean;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const prices = usePrices();
@@ -237,8 +269,11 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
       }
     }
     geschriebeneParams.current = next.toString();
-    router.replace(`/pv-bedarf-berechnen?${next.toString()}`, { scroll: false });
-  }, [router]);
+    // Auf DIESE Adresse schreiben, nicht auf eine feste: Der Flow läuft auch
+    // auf der Seite eines Fachbetriebs, und ein fester Pfad hätte den
+    // Besucher beim ersten Klick dorthin zurückgeworfen, wo er nicht ist.
+    router.replace(`${eigenerPfad}?${next.toString()}`, { scroll: false });
+  }, [router, eigenerPfad]);
 
   // Setters — each writes back to the URL with speaking slugs
   // Defaults werden weggelassen → kurze URLs
@@ -333,6 +368,11 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
     const target = wizardStep + 1;
     trackFunnelStep(FUNNEL, target);
     if (target < STEPS.length) setWizardStep(target);
+    // Ohne Zwischenansicht führt der letzte Schritt direkt ins Ergebnis. `rec`
+    // ist dann bereits gerechnet (siehe dort); fehlt es wider Erwarten, bleibt
+    // die Zwischenansicht als Rückfall — lieber ein Schritt zu viel als eine
+    // Schaltfläche, die nichts tut.
+    else if (ohneZwischenansicht && rec) goToResult(rec.kwp, rec.speicherIdx);
     else showRecommendation();
   };
   const back = () => wizardStep > 0 && setWizardStep(wizardStep - 1);
@@ -403,7 +443,10 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
   };
   // Die Empfehlung selbst bleibt am realistischen Szenario verankert — sonst
   // würde die empfohlene Anlagengröße beim Szenario-Umschalten springen.
-  const rec = isRecommendation ? recommend(recInput, prices, feedIn) : null;
+  // Auch OHNE die Zwischenansicht berechnen, wenn der letzte Schritt direkt
+  // ins Ergebnis führt (Partnerseite) — dort braucht der Sprung die
+  // empfohlene Größe, ohne dass die Empfehlung je gezeigt wurde.
+  const rec = (isRecommendation || ohneZwischenansicht) ? recommend(recInput, prices, feedIn) : null;
   // Rendite/Amortisation der empfohlenen Anlage je Strompreis-Szenario.
   const recScenarios = useMemo(() => (rec
     ? SCENARIOS.map(s => ({ ...s, eco: economicsForScenario(recInput, rec.kwp, rec.speicherKwh, { strom: s.strom, evDelta: s.evDelta }, prices, feedIn) }))
@@ -430,7 +473,9 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
     ? fundingStack.applied[fundingStack.applied.length - 1].program.id
     : null;
 
-  const goToResult = (kwp: number, speicherIdx: number) => {
+  // Die Adress-Parameter des Ergebnisses — getrennt vom Sprung dorthin, weil
+  // der Rückkanal an den Fachbetrieb dieselbe Adresse als LINK braucht.
+  const ergebnisParams = (kwp: number, speicherIdx: number) => {
     const anlageIdx = kwp <= 5 ? 0 : kwp <= 8 ? 1 : kwp <= 10 ? 2 : kwp <= 15 ? 3 : 4;
     const p = new URLSearchParams();
     p.set("a", String(anlageIdx));
@@ -463,8 +508,11 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
     // Lokale Förderung scharf ans Ergebnis durchreichen, damit die Amortisation
     // sie einrechnet (wie bei einem Link von einer Förder-Stadtseite).
     if (armedFoeId) p.set("foe", armedFoeId);
-    router.push(`/photovoltaik-rechner?${p.toString()}`);
+    return p;
   };
+
+  const goToResult = (kwp: number, speicherIdx: number) =>
+    router.push(`${zielPfad}?${ergebnisParams(kwp, speicherIdx).toString()}`);
 
   const findSpeicherIdx = (kwh: number) => {
     const idx = SPEICHER.findIndex(s => s.kwh === kwh);
@@ -678,12 +726,25 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
             <div style={{ marginTop: 24 }}>
               <FlowNav
                 weiterAktiv={stepBeantwortet}
-                weiterLabel={step === STEPS.length - 1 ? "Empfehlung anzeigen" : "Weiter"}
+                // Ohne Zwischenansicht führt der Knopf direkt ins Ergebnis — dann muss
+                // er das auch sagen.
+                weiterLabel={
+                  step === STEPS.length - 1
+                    ? (ohneZwischenansicht ? "Ergebnis anzeigen" : "Empfehlung anzeigen")
+                    : "Weiter"
+                }
                 onWeiter={next}
                 // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
                 // Startseite — dieselbe Wirkung wie vorher, nur im gemeinsamen
-                // Baustein statt als eigener Link daneben.
-                onZurueck={step > 0 ? back : () => router.push("/")}
+                // Baustein statt als eigener Link daneben. Ohne Heimatadresse
+                // (Partnerseite) entfällt der Knopf dort.
+                onZurueck={
+                  step > 0
+                    ? back
+                    : heimPfad
+                      ? () => router.push(heimPfad)
+                      : undefined
+                }
                 inaktivHinweis={stepHinweis}
               />
             </div>
@@ -877,14 +938,49 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
               </div>
             )}
 
-            {/* CTA */}
-            <button onClick={() => goToResult(rec.kwp, rec.speicherIdx)} style={{
-              width: "100%", padding: "14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
-              background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
-              fontFamily: v('--font-text'), marginBottom: 12,
-            }}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Ergebnis anzeigen <IconArrowRight size={iconSizes.md} /></span>
-            </button>
+            {/* Der Weg nach vorn — im Fluss und noch einmal als klebende
+                Leiste, sobald er aus dem Bild ist. Unter ihm stehen
+                Alternativen, Annahmen und die Stand-Zeile; wer dort liest,
+                hätte den einzigen Weg nach vorn sonst über sich.
+
+                KEIN Anfrage-Knopf an einen Fachbetrieb: Auf dessen Seite wird
+                diese Zwischenansicht übersprungen, der Rückkanal steht dort im
+                Ergebnis. Bis zum 05.09.2026 stand er hier trotzdem — als Code,
+                der beim Lesen nach einer Funktion aussah und nie gerendert
+                wurde. */}
+            <KlebenderKnopf
+              kinder={(ref) => (
+                <div ref={ref} style={{ marginBottom: 12 }}>
+                  <ErgebnisKnopf onClick={() => goToResult(rec.kwp, rec.speicherIdx)} />
+                </div>
+              )}
+              leiste={
+                <>
+                  <button onClick={hideRecommendation} style={LEISTE_NEBEN} aria-label="Eingaben ändern">
+                    <IconRefresh size={iconSizes.md} />
+                  </button>
+                  {/* In der Leiste kürzer, einzeilig und in der Zweitfarbe.
+                      Zweizeilig sprengte „Ergebnis anzeigen" auf 375 px die
+                      Leistenhöhe; zwei blaue Knöpfe nebeneinander ließen offen,
+                      welcher der Hauptweg ist. Dieselbe Aufteilung wie im
+                      Ergebnis des Rechners: verschicken trägt die Farbe. Der
+                      Knopf im Fließtext behält den vollen Wortlaut — dort ist
+                      Platz, und dort steht er ohne Nachbarn. */}
+                  <button
+                    onClick={() => goToResult(rec.kwp, rec.speicherIdx)}
+                    style={{
+                      ...LEISTE_BASIS, flex: 1, minWidth: 0, padding: "0 12px",
+                      background: v("--color-bg"), color: v("--color-accent"),
+                      border: `1px solid ${v("--color-border-accent")}`,
+                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                      display: "block", lineHeight: "42px",
+                    }}
+                  >
+                    Zum Ergebnis
+                  </button>
+                </>
+              }
+            />
 
             {/* Share + Eingaben ändern */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
@@ -947,5 +1043,30 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
         <StandNoteView seite={stand} />
       </div>
     </div>
+  );
+}
+
+/**
+ * Der Weg von der Empfehlung ins Ergebnis. Steht als eigene Komponente da,
+ * weil er zweimal gerendert wird — einmal im Seitenfluss und einmal in der
+ * klebenden Leiste. Zwei getippte Fassungen desselben Knopfes laufen
+ * auseinander, sobald jemand eine davon anfasst.
+ */
+function ErgebnisKnopf({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        width: "100%", padding: "14px", borderRadius: v("--radius-md"),
+        fontSize: v("--font-size-body"), fontWeight: 700,
+        background: v("--color-accent"), border: "none",
+        color: v("--color-text-on-accent"), cursor: "pointer",
+        fontFamily: v("--font-text"),
+      }}
+    >
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>
+        Ergebnis anzeigen <IconArrowRight size={iconSizes.md} />
+      </span>
+    </button>
   );
 }

@@ -44,6 +44,22 @@ function importierteSkripte(): string[] {
   return [...treffer].sort();
 }
 
+/**
+ * 30 Sekunden statt der voreingestellten fünf.
+ *
+ * Diese Prüfungen lesen den halben Bestand ein — den Förderkatalog, das
+ * Ortsverzeichnis, jede Datei des Repos. Auf einer ruhigen Maschine kosten sie
+ * Sekundenbruchteile; auf einer belegten reißen sie das Vorgabelimit, und zwar
+ * ohne dass irgendetwas am Code falsch wäre. Genau dafür gibt es im Projekt
+ * schon das Vorbild in `energy-api.test.ts` („generous headroom so CPU load
+ * can't trip the 5s default").
+ *
+ * Das Limit misst NICHTS Fachliches — es schützt vor einem hängenden Test.
+ * Es anzuheben schwächt die Prüfung also nicht; ein Fehlschlag daran kostet
+ * dagegen eine Stunde Suche nach einer Ursache, die es nicht gibt.
+ */
+const REPO_WEIT_MS = 30_000;
+
 describe("Skripte, die ein Test importiert", () => {
   const skripte = importierteSkripte();
 
@@ -52,7 +68,13 @@ describe("Skripte, die ein Test importiert", () => {
     expect(skripte.length).toBeGreaterThan(0);
   });
 
-  it.each(skripte)("%s lädt ohne Zugangsdaten", async (pfad) => {
+  // EIGENES ZEITBUDGET, und das ist keine aufgeweichte Schwelle: Gemessen wird,
+  // ob das Modul beim Laden etwas TUT — nicht, wie schnell es lädt. Ein Skript
+  // durch die Übersetzung zu ziehen kostet auf einer ruhigen Maschine 2 bis 3
+  // Sekunden, und der Standard liegt bei fünf. Unter Last (gemessen: 186 auf
+  // acht Kernen) reißt das, und dann meldet der Lauf einen Fehler, den es nicht
+  // gibt — genau die Sorte Rot, an die man sich gewöhnt.
+  it.each(skripte)("%s lädt ohne Zugangsdaten", { timeout: 30_000 }, async (pfad) => {
     const gesichert: Record<string, string | undefined> = {};
     for (const name of ZUGANG) {
       gesichert[name] = process.env[name];
@@ -72,4 +94,4 @@ describe("Skripte, die ein Test importiert", () => {
       }
     }
   });
-});
+}, REPO_WEIT_MS);

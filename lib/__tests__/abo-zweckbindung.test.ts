@@ -27,6 +27,31 @@ import { NACHWEIS_JAHRE, nachweisLoeschbarAb } from "../gemeinde-abo";
 
 const lies = (p: string) => readFileSync(resolve(process.cwd(), p), "utf8");
 
+/**
+ * Die Spaltenauswahlen, die auf der ABO-Tabelle stehen — und nur die.
+ *
+ * Eine Datei fragt oft mehrere Tabellen ab; die Übersicht des Outreach liest
+ * neben den Abos die Amtsadresse der Gemeinde. Wer stumpf jede Auswahl der
+ * Datei auf „email" prüft, meldet genau das als Verstoß und zwingt dazu, die
+ * Prüfung wieder aufzuweichen. Gesucht wird deshalb das Fenster hinter jedem
+ * Zugriff auf die Abo-Tabelle.
+ */
+function abfragenAufAbos(inhalt: string): string[] {
+  const treffer: string[] = [];
+  const marke = 'from("gemeinde_abos")';
+  let i = inhalt.indexOf(marke);
+  while (i !== -1) {
+    // Bis zum nächsten Tabellenzugriff, höchstens 400 Zeichen: Die Auswahl
+    // steht bei Supabase unmittelbar hinter dem Tabellennamen, notfalls über
+    // mehrere Zeilen umgebrochen.
+    const rest = inhalt.slice(i + marke.length, i + marke.length + 400);
+    const naechste = rest.indexOf('.from("');
+    treffer.push(naechste === -1 ? rest : rest.slice(0, naechste));
+    i = inhalt.indexOf(marke, i + marke.length);
+  }
+  return treffer;
+}
+
 describe("Der Versand liest nur bestätigte Abos", () => {
   const schicht = lies("lib/gemeinde-abo.ts");
 
@@ -49,6 +74,11 @@ describe("Der Versand liest nur bestätigte Abos", () => {
         "Bereitschaftsmeldung: fragt EINE Zeile ab, um zu prüfen, ob die Spalten " +
         "angelegt sind — liest keine Empfänger und verschickt nichts. Der Status " +
         "ist dafür bedeutungslos, ein Filter darauf wäre irreführend.",
+      "scripts/kommunen-stand.ts":
+        "Auskunft über den Outreach: ZÄHLT bestätigte und offene Anmeldungen, um " +
+        "die Wirkung der Anschreiben neben Antworten und Veröffentlichungen zu " +
+        "stellen. Verschickt nichts und liest keine Adresse — die Gegenprobe " +
+        "unten hält das fest.",
     };
 
     const treffer: string[] = [];
@@ -80,6 +110,44 @@ describe("Der Versand liest nur bestätigte Abos", () => {
       treffer,
       `Diese Dateien fragen die Abo-Tabelle direkt ab. Nimm die Empfängerliste aus der Datenschicht, oder trag die Datei mit Grund in die Ausnahmeliste ein: ${treffer.join(", ")}`,
     ).toEqual([]);
+  });
+
+  // EINE AUSNAHME IST NUR SO VIEL WERT WIE IHRE GEGENPROBE.
+  //
+  // Drei der vier erlaubten Stellen sind es, weil sie KEINE Empfänger lesen —
+  // das steht bisher nur in ihrem Begründungstext, und ein Begründungstext
+  // altert lautlos. Wer dort später eine Adressspalte dazunimmt, hat einen
+  // zweiten Lesepfad gebaut, ohne die Liste anzufassen: Der Wächter bliebe
+  // grün, weil die Datei ja eingetragen ist. Dieselbe Fehlerklasse wie eine
+  // Prüfung, die sich selbst belegt.
+  //
+  // Die Datenschicht ist ausgenommen — sie IST die Tür und muss Adressen lesen.
+  it("die Nicht-Versand-Ausnahmen lesen keine Adresse", () => {
+    // Die Anlege-Route steht bewusst NICHT hier: Sie nennt die Tabelle nur in
+    // SQL-Anweisungen und fragt sie nie ab. Eine Prüfung, die dort etwas sucht,
+    // fände nichts und müsste dafür aufgeweicht werden.
+    const ohneAdresse = ["app/api/abo/bereit/route.ts", "scripts/kommunen-stand.ts"];
+    for (const pfad of ohneAdresse) {
+      expect(abfragenAufAbos(lies(pfad)), `${pfad}: keine Abfrage gefunden`).not.toHaveLength(0);
+      for (const a of abfragenAufAbos(lies(pfad))) {
+        expect(a, `${pfad} liest eine Adresse aus der Abo-Tabelle: ${a}`).not.toMatch(/email/i);
+      }
+    }
+  });
+
+  // Der Wächter muss seine eigene Gegenprobe bestehen: einer, der nichts sieht,
+  // meldet Grün. Geprüft wird an gestellten Fassungen beider Richtungen — und
+  // ausdrücklich daran, dass eine Adresse in einer FREMDEN Tabelle derselben
+  // Datei ihn nicht auslöst (genau daran ist die erste Fassung gescheitert: Sie
+  // las die Amtsadresse der Gemeinde als Abonnenten-Adresse).
+  it("die Gegenprobe erkennt eine dazugenommene Adresse", () => {
+    const harmlos = `db.from("gemeinde_abos").select("region_id, status")`;
+    const schlimm = `db.from("gemeinde_abos").select("region_id, email, status")`;
+    const fremd = `db.from("kommunen_kontakt").select("rollen_email")\ndb.from("gemeinde_abos").select("status")`;
+    expect(abfragenAufAbos(harmlos).join()).not.toMatch(/email/i);
+    expect(abfragenAufAbos(schlimm).join()).toMatch(/email/i);
+    expect(abfragenAufAbos(fremd).join()).not.toMatch(/email/i);
+    expect(abfragenAufAbos(fremd)).toHaveLength(1);
   });
 
   it("findet die Aufrufe überhaupt — Gegenprobe des Wächters", () => {

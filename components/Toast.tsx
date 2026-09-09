@@ -10,7 +10,7 @@
 // Vorher stand die Mechanik inline im PV-Rechner. Ein zweiter Toast wäre eine
 // zweite Fassung von Position, Farbe, Schließen und Auto-Ausblenden geworden.
 import { useEffect, useRef } from "react";
-import { v } from "../lib/theme";
+import { v, KLEBELEISTE_VAR } from "../lib/theme";
 
 export default function Toast({
   open,
@@ -60,7 +60,12 @@ export default function Toast({
       aria-live="polite"
       onClick={onClick}
       style={{
-        position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
+        // Über der klebenden Aktionsleiste, wenn eine da ist: Sie meldet ihre
+        // gemessene Höhe am Wurzelelement (siehe KlebenderKnopf). Ohne das lag
+        // die PLZ-Aufforderung genau darunter und war nicht mehr lesbar.
+        position: "fixed", bottom: `calc(20px + var(${KLEBELEISTE_VAR}, 0px))`,
+        left: "50%", transform: "translateX(-50%)",
+        transition: "bottom 0.28s ease",
         zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)",
         cursor: onClick ? "pointer" : "default",
         background: accent ? v("--color-accent") : v("--color-text-primary"),
