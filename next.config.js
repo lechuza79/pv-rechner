@@ -5,18 +5,6 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_BASE_URL: "https://solar-check.io",
   },
-  images: {
-    // Produktbilder des Shop-Partners für den Angebotsblock im Balkonrechner.
-    //
-    // ÜBER UNSEREN SERVER, NICHT DIREKT EINGEBUNDEN: Ein <img> auf die fremde
-    // Adresse ließe den Browser jedes Besuchers beim Shop anklopfen — dessen
-    // IP-Adresse ginge dorthin, ohne dass er etwas angeklickt hat. Die
-    // Bildoptimierung von Next holt das Bild serverseitig und liefert es von
-    // unserer Domain aus; damit erfährt der Shop erst vom Klick auf den Link.
-    remotePatterns: [
-      { protocol: "https", hostname: "cdn.shopify.com", pathname: "/s/files/**" },
-    ],
-  },
   async headers() {
     return [
       {

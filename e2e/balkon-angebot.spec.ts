@@ -105,6 +105,15 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
     expect(text).toMatch(/bezahlt nach \d+,\d Jahren|rechnet sich nicht/);
   });
 
+  test("nennt die Teilnahme am Partnerprogramm", async ({ page }) => {
+    // VERTRAGLICHE PFLICHT, nicht Höflichkeit: Abschnitt 10 der
+    // Programmbedingungen verlangt die Angabe auf der Seite. Die
+    // UWG-Kennzeichnung „Anzeige · Provision bei Kauf" erfüllt sie NICHT — sie
+    // nennt die Provision, nicht das Programm.
+    await bisZumErgebnis(page);
+    await expect(page.getByText(/nimmt am Partnerprogramm von .+ teil/)).toBeVisible();
+  });
+
   test("Produktbilder laufen über unseren Server, nie direkt vom Shop", async ({ page }) => {
     // Ein Bild direkt von der Shop-Adresse zu laden schickt die IP-Adresse
     // jedes Besuchers dorthin, bevor er irgendetwas angeklickt hat. Der Fehler
@@ -126,9 +135,16 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
     );
     expect(fremde).toEqual([]);
 
-    // Und die Bilder sind wirklich da — sonst belegt der Test oben nichts.
-    const eigene = await page.locator('img[src*="/_next/image"]').count();
-    expect(eigene).toBeGreaterThan(0);
+    // Und ein Bild ist wirklich da UND geladen — sonst belegt der Test oben
+    // nichts. Geprüft wird über das GELADENE Bild, nicht über die Zeichenkette
+    // im src: Der Pfad steht dort kodiert (`%2Fshop%2Fsolakon%2F`), ein
+    // Selektor auf „/shop/solakon/" findet ihn nie und wäre still rot.
+    const geladen = await page.evaluate(() =>
+      [...document.querySelectorAll("img")]
+        .filter(i => decodeURIComponent(i.currentSrc || i.src).includes("/shop/solakon/"))
+        .filter(i => i.complete && i.naturalWidth > 0).length,
+    );
+    expect(geladen).toBeGreaterThan(0);
   });
 
   test("läuft auf 375 px nicht aus der Seite", async ({ page }) => {

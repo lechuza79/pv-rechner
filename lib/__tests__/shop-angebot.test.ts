@@ -13,6 +13,7 @@ import { besteAngebote, bewerteAngebot, empfiehlAngebot, guenstigsteJeKombinatio
 import { calcBalkon } from "../balkon";
 import { DEFAULT_BALKON_CONFIG as CFG } from "../balkon-config";
 import { preisTeile, jahreDativ, produktSpeicherTeile } from "../atlas-format";
+import { readFileSync } from "node:fs";
 
 /**
  * Die Fehlerklasse, gegen die diese Tests gebaut sind, ist von außen unsichtbar:
@@ -315,5 +316,32 @@ describe("Speichergröße als Produktangabe", () => {
 
   it("lässt bei glatten Größen die Nullen weg", () => {
     expect(produktSpeicherTeile(5).value).toBe("5");
+  });
+});
+
+describe("Produktbild", () => {
+  /**
+   * DIE BILDER DER SHOP-SCHNITTSTELLE TRAGEN DREI FREMDE TESTSIEGEL und standen
+   * damit am 09.09.2026 in einem Block, der wie unsere eigene Rechnung aussieht.
+   * Eines davon beruht auf einer Kundenbefragung — eine Verbraucherbewertung,
+   * die ungeprüft als echt darzustellen per se unlauter ist. Gezeigt wird
+   * deshalb die freigestellte Aufnahme aus unserem eigenen Ordner.
+   */
+  it("nutzt nicht die Bildadresse der Shop-Schnittstelle", () => {
+    const quelle = readFileSync(
+      new URL("../../components/BalkonAngebot.tsx", import.meta.url),
+      "utf8",
+    );
+    expect(quelle).not.toMatch(/src=\{[^}]*bildUrl/);
+    expect(quelle).toContain("/shop/solakon/");
+  });
+
+  it("gibt für ein unbekanntes Modell lieber kein Bild als ein falsches", () => {
+    const quelle = readFileSync(
+      new URL("../../components/BalkonAngebot.tsx", import.meta.url),
+      "utf8",
+    );
+    // Die Zuordnung fällt auf null zurück, nicht auf ein Standardbild.
+    expect(quelle).toMatch(/MODELL_BILD\[a\.moduleWp\] \?\? null/);
   });
 });

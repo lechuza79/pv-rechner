@@ -190,11 +190,44 @@ export default function Balkon() {
   useEffect(() => {
     if (adresseGelesen.current) return;
     adresseGelesen.current = true;
-    const ausAdresse = new URLSearchParams(window.location.search).get("plz");
+    const q = new URLSearchParams(window.location.search);
+
+    const ausAdresse = q.get("plz");
     if (ausAdresse && /^\d{5}$/.test(ausAdresse)) {
       setPlz(ausAdresse);
       fetchPvgis(ausAdresse);
     }
+
+    // Die drei Antworten der Fragestrecke — damit ein Ergebnis teilbar ist,
+    // statt dass der Empfänger dreimal klickt. Angenommen wird nur, was es
+    // wirklich gibt: eine unbekannte Kennung wird ignoriert, nie geraten.
+    const gesetzt: string[] = [];
+
+    const pe = Number(q.get("pe"));
+    if (Number.isInteger(pe) && pe >= 0 && pe < PERSONEN.length) {
+      setPersonen(pe);
+      gesetzt.push("personen");
+    }
+
+    const an = q.get("an");
+    if (an && CFG.presence.some(p => p.id === an)) {
+      setPresenceId(an as BalkonInputs["presenceId"]);
+      gesetzt.push("anwesenheit");
+    }
+
+    const au = q.get("au");
+    if (au && CFG.orientations.some(o => o.id === au)) {
+      setOrientationId(au as BalkonInputs["orientationId"]);
+      gesetzt.push("ausrichtung");
+    }
+
+    if (gesetzt.length > 0) {
+      setBeantwortet(prev => new Set([...prev, ...gesetzt]));
+    }
+    // Nur ein VOLLSTÄNDIGER Satz springt ins Ergebnis. Mit einer halben Angabe
+    // stünde der Empfänger vor einem Ergebnis, das zur Hälfte auf unseren
+    // Startwerten beruht, ohne dass er es sieht.
+    if (gesetzt.length === 3) setStep(STEPS.length);
   }, [fetchPvgis]);
 
   // Gemerkten Standort übernehmen und direkt anwenden — sonst stünde die PLZ
