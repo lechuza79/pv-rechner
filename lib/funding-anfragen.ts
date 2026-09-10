@@ -50,6 +50,24 @@ export const OHNE_ANTWORT_AB_TAGEN = 14;
 export const MAX_JE_LAUF = 3;
 
 /**
+ * Abstand zum Kommunen-Anschreiben an dieselbe Stelle.
+ *
+ * ZWEI MAILS VON UNS BINNEN TAGEN sind für die Empfängerin eine Sache, für uns
+ * aber zwei verschiedene: ein Werbebrief und eine Sachfrage. Kommen sie dicht
+ * hintereinander, ist die Reaktion auf den Brief nicht mehr die Reaktion auf
+ * den Brief — und das ist die einzige Kennzahl, an der der Erfolg des
+ * Anschreibens gemessen wird. Gemessen (10.09.2026): 64 der 289 angeschriebenen
+ * Gemeinden haben ein Programm im Katalog, 19 der 175 im offenen Versandtopf.
+ *
+ * VIERZEHN TAGE, dieselbe Größenordnung wie die Antwortfrist: lang genug, dass
+ * die eine Mail nicht mehr auf die andere abfärbt, kurz genug, dass eine
+ * Korrektur nicht wochenlang liegen bleibt. Die Sperre wirkt nur in EINE
+ * Richtung — sie hält die Sachfrage zurück, nie den Brief. Der Brief ist der
+ * Zeitplan des Betreibers; die Sachfrage kann warten.
+ */
+export const ABSTAND_ZUM_BRIEF_TAGE = 14;
+
+/**
  * Welche Programme dürfen eine Anfrage bekommen?
  *
  * DREI BEDINGUNGEN, und die dritte ist die, die man vergisst: Es muss ein
@@ -59,7 +77,13 @@ export const MAX_JE_LAUF = 3;
  * nicht.
  */
 export function faelligeAnfragen(
-  kandidaten: { programId: string; eskaliert: boolean; empfaenger: string | null }[],
+  kandidaten: {
+    programId: string;
+    eskaliert: boolean;
+    empfaenger: string | null;
+    /** Tage seit dem Kommunen-Anschreiben an dieselbe Stelle; null = keins. */
+    tageSeitBrief?: number | null;
+  }[],
   schonGefragt: Set<string>,
   max = MAX_JE_LAUF,
 ): { senden: string[]; uebersprungen: { programId: string; grund: string }[] } {
@@ -73,6 +97,13 @@ export function faelligeAnfragen(
     }
     if (!k.empfaenger) {
       uebersprungen.push({ programId: k.programId, grund: "kein Rollen-Postfach hinterlegt" });
+      continue;
+    }
+    if (k.tageSeitBrief !== null && k.tageSeitBrief !== undefined && k.tageSeitBrief < ABSTAND_ZUM_BRIEF_TAGE) {
+      uebersprungen.push({
+        programId: k.programId,
+        grund: `vor ${k.tageSeitBrief} Tagen ging schon das Kommunen-Anschreiben dorthin`,
+      });
       continue;
     }
     if (senden.length >= max) {

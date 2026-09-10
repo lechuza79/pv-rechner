@@ -22,7 +22,10 @@ import {
  * unterscheiden.
  */
 describe("Wer eine Anfrage bekommt", () => {
-  const kandidat = (id: string, extra: Partial<{ eskaliert: boolean; empfaenger: string | null }> = {}) => ({
+  const kandidat = (
+    id: string,
+    extra: Partial<{ eskaliert: boolean; empfaenger: string | null; tageSeitBrief: number | null }> = {},
+  ) => ({
     programId: id,
     eskaliert: true,
     empfaenger: `info@${id}.de`,
@@ -56,6 +59,24 @@ describe("Wer eine Anfrage bekommt", () => {
     const { senden, uebersprungen } = faelligeAnfragen(viele, new Set());
     expect(senden).toHaveLength(MAX_JE_LAUF);
     expect(uebersprungen.filter((u) => u.grund.includes("Höchstzahl"))).toHaveLength(5 - MAX_JE_LAUF);
+  });
+
+  it("nicht, wenn dort gerade erst der Kommunen-Brief ankam", () => {
+    // Zwei Mails von uns binnen Tagen sind für die Empfängerin eine Sache, für
+    // uns zwei — und danach ist die Reaktion auf den Brief nicht mehr die
+    // Reaktion auf den Brief.
+    const { senden, uebersprungen } = faelligeAnfragen([kandidat("a", { tageSeitBrief: 3 })], new Set());
+    expect(senden).toEqual([]);
+    expect(uebersprungen[0].grund).toContain("Kommunen-Anschreiben");
+  });
+
+  it("nach der Frist wieder", () => {
+    expect(faelligeAnfragen([kandidat("a", { tageSeitBrief: 20 })], new Set()).senden).toEqual(["a"]);
+  });
+
+  it("wer nie einen Brief bekam, wird davon nicht gebremst", () => {
+    // Der Normalfall: Von 192 Fördergebieten haben 64 ein Anschreiben bekommen.
+    expect(faelligeAnfragen([kandidat("a", { tageSeitBrief: null })], new Set()).senden).toEqual(["a"]);
   });
 
   it("eine leere Lage ist ein Ergebnis, kein Fehler", () => {

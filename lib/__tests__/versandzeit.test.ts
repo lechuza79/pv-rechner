@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { versandzeitOk, AB_EMPFAENGERN, GUTE_WOCHENTAGE, FENSTER } from "../versandzeit";
+import { versandzeitOk, AB_EMPFAENGERN, GUTE_WOCHENTAGE, FENSTER, amtsVersandzeitOk, pauseZwischenMails } from "../versandzeit";
 
 // Das Versandfenster — und die vier Arten, auf die so eine Bremse falsch wird.
 //
@@ -145,5 +145,65 @@ describe("Der Lauf benutzt es richtig", () => {
     // einem Abonnenten seine bestellte Meldung vor, weil in seinem Bundesland
     // Ferien sind.
     expect(lauf).not.toMatch(/schulferien|ferienAm|versandfenster\(/);
+  });
+});
+
+describe("Sachfragen an Ämter gehen tagsüber und zu unrunden Zeiten raus", () => {
+  // Die Zeiten stehen als deutsche Ortszeit da und werden über den gemessenen
+  // Versatz gebildet — im September gilt Sommerzeit (+2 h). Eine fest getippte
+  // Weltzeit träfe im Winter eine andere Stunde, und genau daran ist im Projekt
+  // schon einmal eine Stichtagsprüfung vorbeigelaufen.
+  const berlin = (tag: string, stunde: number, minute: number) =>
+    new Date(`${tag}T${String(stunde).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00+02:00`);
+
+  it("mitten in der Nacht nicht — dann tippt niemand eine Sachfrage", () => {
+    const nachts = amtsVersandzeitOk(berlin("2026-09-10", 3, 14));
+    expect(nachts.ok).toBe(false);
+    if (!nachts.ok) expect(nachts.grund).toContain("Bürozeit");
+  });
+
+  it("am Wochenende nicht", () => {
+    const samstag = amtsVersandzeitOk(berlin("2026-09-12", 11, 13));
+    expect(samstag.ok).toBe(false);
+    if (!samstag.ok) expect(samstag.grund).toContain("Samstag");
+  });
+
+  it("nicht zur vollen Stunde — das ist die Signatur eines Zeitplans", () => {
+    const punkt = amtsVersandzeitOk(berlin("2026-09-10", 9, 0));
+    expect(punkt.ok).toBe(false);
+    if (!punkt.ok) expect(punkt.grund).toContain("Zeitplan");
+  });
+
+  it("auch nicht zur halben oder viertel Stunde", () => {
+    for (const m of [15, 30, 45]) {
+      expect(amtsVersandzeitOk(berlin("2026-09-10", 14, m)).ok, `Minute ${m}`).toBe(false);
+    }
+  });
+
+  it("an einem gewöhnlichen Donnerstagvormittag schon", () => {
+    expect(amtsVersandzeitOk(berlin("2026-09-10", 9, 7)).ok).toBe(true);
+    expect(amtsVersandzeitOk(berlin("2026-09-10", 16, 43)).ok).toBe(true);
+  });
+
+  it("die Grenzen sind Bürozeit, nicht Kulanz", () => {
+    // 8:53 ist noch zu früh, 17:03 schon zu spät — beide Male eine unrunde
+    // Minute, damit wirklich die Stunde geprüft wird und nicht die Minute.
+    expect(amtsVersandzeitOk(berlin("2026-09-10", 8, 53)).ok).toBe(false);
+    expect(amtsVersandzeitOk(berlin("2026-09-10", 17, 3)).ok).toBe(false);
+  });
+
+  it("keine Mengenschwelle — auch eine einzelne Mail wartet", () => {
+    // Beim Abo-Fenster geht ein kleiner Lauf immer durch, weil der erwartete
+    // Unterschied dort kein ganzer Mensch ist. Hier geht es um die Wirkung
+    // beim Empfänger, und die hängt nicht an der Menge.
+    expect(amtsVersandzeitOk(berlin("2026-09-10", 2, 11)).ok).toBe(false);
+  });
+
+  it("der Abstand zwischen zwei Mails liegt in der genannten Spanne", () => {
+    expect(pauseZwischenMails(0) / 60_000).toBe(4);
+    expect(pauseZwischenMails(1) / 60_000).toBe(19);
+    const mitte = pauseZwischenMails(0.5) / 60_000;
+    expect(mitte).toBeGreaterThan(4);
+    expect(mitte).toBeLessThan(19);
   });
 });

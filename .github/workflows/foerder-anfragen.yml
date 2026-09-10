@@ -1,0 +1,85 @@
+name: Sachfragen an blockierte Förderstellen
+
+# Fragt bei Förderstellen nach, an deren Amtsseite wir seit drei Läufen nicht
+# mehr herankommen — die letzte Stufe der Eskalationsleiter.
+#
+# WARUM EIN EIGENER LAUF UND NICHT IM NÄCHTLICHEN FÖRDER-WÄCHTER: Der läuft um
+# 3:40 Uhr. Eine Sachfrage, die um diese Zeit im Postfach einer Ortsgemeinde
+# liegt, ist als Nachricht von einem Menschen nicht mehr glaubhaft — niemand
+# tippt nachts um vier eine Rückfrage zu einem Förderbetrag. Der Betreiber hat
+# es am 10.09.2026 so entschieden: „so eine Mail sollte nicht automatisiert
+# aussehen, also tagsüber zu unrunden Zeiten versenden."
+#
+# DIE UHRZEITEN HIER SIND NUR DIE HALBE MIETE. GitHub startet geplante Läufe mit
+# unvorhersehbarer Verzögerung (Minuten bis über eine Stunde), und der Zeitplan
+# steht in Weltzeit — im Winter verschiebt sich alles um eine Stunde. Deshalb
+# entscheidet nicht der Zeitplan, ob gesendet wird, sondern eine Prüfung im Lauf
+# selbst (lib/versandzeit.ts → amtsVersandzeitOk): Werktags, 9 bis 17 Uhr
+# deutscher Zeit, und nie zu einer Minute, die durch fünf teilbar ist. Passt es
+# nicht, wird nichts verschickt und der nächste Lauf übernimmt.
+#
+# Die drei Startzeiten sind selbst unrund und über den Tag verteilt, damit nicht
+# jede Mail aus demselben Zeitfenster kommt.
+
+on:
+  schedule:
+    # Weltzeit. Im Sommer (+2 h) sind das 10:07, 13:23 und 15:41 deutscher Zeit,
+    # im Winter (+1 h) eine Stunde früher — beides liegt in der Bürozeit, die
+    # der Lauf selbst noch einmal prüft.
+    - cron: "7 8 * * 1-5"
+    - cron: "23 11 * * 1-5"
+    - cron: "41 13 * * 1-5"
+  workflow_dispatch: {}
+
+concurrency:
+  group: foerder-anfragen
+  cancel-in-progress: false
+
+jobs:
+  fragen:
+    runs-on: ubuntu-latest
+    # Der Lauf legt Pausen von 4 bis 19 Minuten zwischen die Mails; bei höchstens
+    # drei Mails sind das im ungünstigsten Fall 38 Minuten plus Setup.
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # OHNE POSTFACH-ZUGANG WIRD NUR GEZEIGT, NICHT VERSCHICKT. Ein Lauf, der
+      # ohne Zugangsdaten trotzdem „gesendet" meldete, wäre die gefährlichere
+      # Variante: Er sähe grün aus und hätte nie gefragt.
+      - name: Fällige Sachfragen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          OUTREACH_SMTP_HOST: ${{ secrets.OUTREACH_SMTP_HOST }}
+          OUTREACH_SMTP_PORT: ${{ secrets.OUTREACH_SMTP_PORT }}
+          OUTREACH_SMTP_USER: ${{ secrets.OUTREACH_SMTP_USER }}
+          OUTREACH_SMTP_PASS: ${{ secrets.OUTREACH_SMTP_PASS }}
+          OUTREACH_MAIL_FROM: ${{ secrets.OUTREACH_MAIL_FROM }}
+        run: |
+          if [ -n "$OUTREACH_SMTP_PASS" ]; then
+            npm run foerder:anfrage -- --auto --senden
+          else
+            echo "Postfach-Zugang fehlt — es wird nur angezeigt, was fällig wäre."
+            npm run foerder:anfrage -- --auto
+          fi
+
+      # Was offen ist, gehört in dasselbe Protokoll wie das, was rausging.
+      # Ohne diese Zeile stünde die Liste der unbeantworteten Fragen nur dort,
+      # wo jemand sie von Hand abruft — also nirgends.
+      - name: Verschickt und ohne Antwort
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run foerder:anfrage -- --liste
