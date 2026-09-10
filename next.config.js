@@ -222,6 +222,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/nidda", destination: "/photovoltaik-foerderung/hessen/nidda", permanent: true },
       { source: "/photovoltaik-foerderung/konstanz", destination: "/photovoltaik-foerderung/baden-wuerttemberg/konstanz", permanent: true },
       { source: "/photovoltaik-foerderung/landkreis-oldenburg", destination: "/photovoltaik-foerderung/niedersachsen/landkreis-oldenburg", permanent: true },
+      { source: "/photovoltaik-foerderung/staedteregion-aachen", destination: "/photovoltaik-foerderung/nordrhein-westfalen/staedteregion-aachen", permanent: true },
       { source: "/photovoltaik-foerderung/delbrueck", destination: "/photovoltaik-foerderung/nordrhein-westfalen/delbrueck", permanent: true },
       { source: "/photovoltaik-foerderung/denzlingen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/denzlingen", permanent: true },
       { source: "/photovoltaik-foerderung/kenzingen", destination: "/photovoltaik-foerderung/baden-wuerttemberg/kenzingen", permanent: true },

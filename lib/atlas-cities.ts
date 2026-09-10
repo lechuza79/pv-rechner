@@ -315,6 +315,13 @@ export const ATLAS_CITIES: AtlasCity[] = [
   // 09.09.2026): ein Landkreis hat keinen Punkt, an dem man messen könnte, und
   // 1.000 fügt sich zwischen Delmenhorst (1.003) und der Stadt Oldenburg (989).
   { slug: "landkreis-oldenburg", name: "Landkreis Oldenburg", ags: "03458", bundesland: "Niedersachsen", yieldKwhKwp: 1000, fundingId: "landkreis-oldenburg-steckersolar" },
+  // Die StädteRegion Aachen fördert Balkonkraftwerke und Speicher in ihren neun
+  // Gemeinden OHNE die Stadt Aachen (aufgenommen 11.09.2026, für 2026 gestoppt).
+  // Das Programm trägt die neun Gemeindeschlüssel, deshalb die feste
+  // Verknüpfung: Ohne sie fände der Kreisschlüssel kein Programm. Ertrag als
+  // Handwert in Eschweiler gemessen (50,817 / 6,264, 11.09.2026: 1.071),
+  // zwischen der Stadt Aachen (1.054) und dem Kreis Düren.
+  { slug: "staedteregion-aachen", name: "StädteRegion Aachen", ags: "05334", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1071, fundingId: "staedteregion-aachen-ee" },
   // Nidda kam am 26.08.2026 über den Rücklauf einer Outreach-Mail herein: Die
   // Klimaschutz-Beauftragte der Stadt hat uns ihre Förderseite selbst geschickt.
   // Achtstelliger Schlüssel mit Kreis, weil kreisangehörig — 06440016 ist Nidda,

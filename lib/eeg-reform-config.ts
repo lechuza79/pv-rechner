@@ -462,7 +462,15 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Nächster Lauf: die Bundesratssitzung am 25.09.2026 (Stellungnahme?) und
   // parallel weiter die Bundestags-Tagesordnung — der Entwurf ist als besonders
   // eilbedürftig eingebracht und läuft dort unabhängig vom Bundesrat.
-  geprueftIso: "2026-09-10",
+  //
+  // 11.09.2026: unverändert. Tagesordnung der 94. Sitzung (Freitag, Stand
+  // 10.09.2026, 13.00 Uhr) gelesen: allein Haushaltsgesetz 2027 und Finanzplan,
+  // kein EEG-Punkt; „Nächste Plenarsitzung: Mittwoch, den 23. September 2026".
+  // Für diese Woche ist auf bundestag.de noch keine Tagesordnung verlinkt. Die
+  // Presse kündigt die erste Lesung „voraussichtlich in der Woche ab dem
+  // 21. September" an — eine Ankündigung, kein Termin, und die erste Lesung
+  // wäre ohnehin kein Zustandswechsel.
+  geprueftIso: "2026-09-11",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

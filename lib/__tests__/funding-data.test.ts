@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { ATLAS_CITIES } from "../atlas-cities";
-import { FUNDING_PROGRAMS, allFundingPrograms, getFundingProgram, fundingForAgs, fundingAmount, stackFunding, fundingStandLabel, type FundingProgram } from "../funding-programs";
+import { FUNDING_PROGRAMS, allFundingPrograms, getFundingProgram, fundingForAgs, fundingAmount, stackFunding, fundingStandLabel, foerdergebiete, type FundingProgram } from "../funding-programs";
 
 // Integrity checks for the regional funding dataset. These are cheap insurance:
 // as cities/programs are added by hand, a typo in a fundingId or combinableWith
@@ -52,11 +52,21 @@ describe("funding-programs dataset", () => {
   it("every non-bund program has a valid AGS prefix (2/5/8 digits)", () => {
     for (const p of allFundingPrograms()) {
       if (p.level === "bund") continue;
-      expect(p.agsCode, `${p.id} needs an agsCode for geo-matching`).toBeDefined();
-      expect(p.agsCode!).toMatch(/^\d{2}$|^\d{5}$|^\d{8}$/);
+      // Geo-matching runs over foerdergebiete(), i.e. agsCode AND agsCodes. A
+      // programme may carry only agsCodes: the StädteRegion Aachen funds its
+      // nine member municipalities but explicitly NOT the city of Aachen, so
+      // its district key 05334 would be wrong and one of the nine as agsCode
+      // would be arbitrary.
+      const gebiete = foerdergebiete(p);
+      expect(gebiete.length, `${p.id} needs an agsCode or agsCodes for geo-matching`).toBeGreaterThan(0);
+      for (const g of gebiete) expect(g, p.id).toMatch(/^\d{2}$|^\d{5}$|^\d{8}$/);
       // prefix length must fit the level: Land=2, Kreis=5, Kommune=8 (or 5 for kreisfreie Städte)
       if (p.level === "land") expect(p.agsCode!.length).toBe(2);
-      if (p.level === "landkreis") expect(p.agsCode!.length).toBe(5);
+      // A district programme covers its whole district (5 digits) — unless it
+      // lists the municipalities it covers, and then ONLY municipalities.
+      if (p.level === "landkreis") {
+        for (const g of gebiete) expect(g.length, p.id).toBe((p.agsCodes ?? []).length ? 8 : 5);
+      }
     }
   });
 });
@@ -512,6 +522,39 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
         expect(r.value, `${p.id} → "${r.label}": ${r.value}`).not.toMatch(floskel);
       }
     }
+  });
+});
+
+// Förder-Wächter 11.09.2026, jeweils an der Amtsquelle gelesen.
+describe("Wächter-Lauf 11.09.2026", () => {
+  // Parkstein stellte am 10.09.2026 seine Richtlinie (Stand 01.07.2026) online:
+  // „PV-Anlagen mit 100€ pro installiertem kWp (max. 20 kWp) · Hausspeicher mit
+  // 50€ pro installierter kWh (max. 25 kWh)", einzeln oder zusammen.
+  it("Parkstein rechnet 100 €/kWp bis 20 kWp und 50 €/kWh bis 25 kWh", () => {
+    const p = getFundingProgram("parkstein-nachhaltigkeitszuschuss")!;
+    expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).total).toBe(1000 + 500);
+    // Oberhalb der Grenzen gedeckelt, nicht ausgeschlossen.
+    expect(fundingAmount(p, { technik: "pv", kwp: 30, speicherKwh: 40, kosten: 60000 }).total).toBe(2000 + 1250);
+    // Der Speicher ist auch allein zuschussfähig.
+    expect(fundingAmount(p, { technik: "pv", kwp: 0, speicherKwh: 10, kosten: 8000 }).total).toBe(500);
+  });
+
+  // Stadt Aachen: „eine Förderung von Balkonkraftwerken sowie von
+  // Photovoltaikanlagen auf Ein- und Zweifamilienhäusern ist nicht vorgesehen".
+  // Der Katalog kennt keine Gebäudeart — ein Satz zöge jedem Einfamilienhaus
+  // bis zu 10.000 € ab.
+  it("Aachen informiert, zieht aber nichts ab", () => {
+    const stadt = getFundingProgram("aachen-solar")!;
+    expect(fundingAmount(stadt, { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).computable).toBe(false);
+    expect(stackFunding(fundingForAgs("05334002"), { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).total).toBe(0);
+  });
+
+  // StädteRegion: gilt in den neun Gemeinden, ausdrücklich NICHT in der Stadt
+  // Aachen (Nr. 3.2 beider Richtlinien).
+  it("die StädteRegion deckt Eschweiler, aber nicht die Stadt Aachen", () => {
+    expect(fundingForAgs("05334012").map((p) => p.id)).toContain("staedteregion-aachen-ee");
+    expect(fundingForAgs("05334002").map((p) => p.id)).not.toContain("staedteregion-aachen-ee");
+    expect(fundingForAgs("05334002").map((p) => p.id)).toContain("aachen-solar");
   });
 });
 

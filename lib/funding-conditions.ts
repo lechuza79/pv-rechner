@@ -225,6 +225,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "roggenburg-pv-kleinstanlagen", "altdorf-landshut-balkonkraftwerk", "feldkirchen-westerham-klimaschutz",
   "roedinghausen-sonnenenergie", "leipzig-stecker-solar", "emsdetten-proklima",
   "westerkappeln-balkonkraftwerke", "sprendlingen-gensingen-balkonsolar",
+  // Aufgenommen am 11.09.2026, Amtsseiten und beide Richtlinien der StädteRegion
+  // im Volltext gelesen. Die Prüfformen fehlen noch; die tragende Bedingung der
+  // Stadt Aachen (nur Mehrfamilienhaus oder Betriebsgebäude) kennt das Modell
+  // als GEBÄUDEART bereits, aber nicht als Ausschluss des Einfamilienhauses.
+  "aachen-solar", "staedteregion-aachen-ee",
 ];
 
 /**

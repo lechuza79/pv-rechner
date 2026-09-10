@@ -481,7 +481,10 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   //     (DIN SPEC 51603-6, „Bio10") beschreiben die Ware, nicht ihren Preis.
   //   Der Lücken-Hinweis im Öl-Ergebnis bleibt, samt Fehlerrichtung: Öl wird zu
   //   günstig gerechnet, also zuungunsten der Wärmepumpe.
-  geprueftRechtIso: "2026-09-10",
+  // 11.09.2026: gmodg.bund.de (Chronologie) unverändert, letzter Eintrag
+  // 28.07.2026 mit der Verkündung; § 42a kündigt weiter nur an. Kein
+  // Referentenentwurf für die Quote gefunden, keine Bioheizöl-Preisreihe.
+  geprueftRechtIso: "2026-09-11",
   reviewBy: "2027-07-25",
 };
 

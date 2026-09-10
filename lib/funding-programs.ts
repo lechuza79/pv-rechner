@@ -617,7 +617,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Fördertopf 2026 ausgeschöpft — Neustart 2027 mit ggf. geänderten Sätzen",
       "Kein Speicher gefördert",
-      "Antrag nach Installation, Fachbetrieb-Pflicht",
+      "Antrag innerhalb eines Jahres nach der Installation; ein Fachbetrieb muss installieren",
+      "Zuschüsse gibt es erst ab 500 € Förderung, also ab 2 kWp",
     ],
     combinableWith: BUND,
     pvPerKwp: 250, pvCap: 2500,
@@ -888,6 +889,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Bewilligt wird im Rahmen der verfügbaren Haushaltsmittel; einen Rechtsanspruch gibt es nicht",
       "Nur Bestandsgebäude: die Baufertigstellung liegt bei Antragstellung mindestens fünf Jahre zurück",
+      { text: "Der Zuschuss für Dachanlage und Speicher beträgt höchstens 60 % der förderfähigen Kosten", nur: ["pv"] },
       { text: "Speicher ab 3 kWh", nur: ["pv"] },
       {
         text: "Die Dachanlage muss mindestens 2 kWp leisten — die unterste Förderstufe beginnt dort",
@@ -1868,8 +1870,19 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Der Fördertopf 2026 ist ausgeschöpft; die Stadt bittet ausdrücklich darum, keine Anträge mehr zu stellen",
       "Reine Dach-PV wird nicht bezuschusst — nur Speicher, Balkonkraftwerk, Wallbox",
-      "Installation durch Fachbetrieb; Antrag online (Windhundverfahren)",
+      "Begonnen werden darf erst nach der Bewilligung; der Antrag geht mit Angebot per E-Mail an das Amt für Umwelt und Klima",
+      "Vollständige Anträge werden in der Reihenfolge ihres Eingangs bearbeitet; Antragsschluss ist der 1. Dezember 2026",
+      { text: "Speicher und Wallbox müssen von einem Fachunternehmen eingebaut werden", nur: ["pv"] },
     ],
+    // KORRIGIERT 11.09.2026 an der Förderrichtlinie Klimaschutz 2026 (in Kraft
+    // 10.06.2026). Hier stand „Installation durch Fachbetrieb; Antrag online
+    // (Windhundverfahren)" — die Richtlinie sagt „per Mail einzureichen
+    // (klimaschutz@memmingen.de)" und verlangt das Fachunternehmen nur beim
+    // Eigenstromspeicher und bei der Wallbox, nicht beim Balkonkraftwerk. Es
+    // fehlte die teuerste Bedingung, Nr. 5 a: „Mit der Ausführung der
+    // Baumaßnahmen darf erst nach Bewilligung der Fördermittel, bzw. nach
+    // Genehmigung des vorzeitigen Maßnahmenbeginns begonnen werden", dazu
+    // „Anträge sind bis zum 01.12.2026 einzureichen."
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
   },
@@ -2045,10 +2058,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     conditions: [
       "Nur für selbstgenutztes Eigentum; Balkonkraftwerke auch für Mieter",
-      "Die Anlage darf bei Antragstellung weder beauftragt noch erworben oder installiert sein",
-      "Fördertopf von 50.000 €",
+      "Beauftragt und begonnen werden darf erst nach dem Bewilligungsbescheid des Marktes",
+      { text: "Die Dachanlage muss ein Fachbetrieb ausführen; Eigenleistung wird nicht gefördert", nur: ["pv"] },
+      "Je Antragsteller wird ein Gebäude gefördert; der Verwendungsnachweis folgt spätestens 24 Monate nach der Bewilligung",
+      "Für 2025 standen 50.000 € bereit; für 2026 nennt die Gemeinde keinen Betrag, die Richtlinie gilt unbefristet im Rahmen der Haushaltsmittel",
       "Mit anderen Förderungen kombinierbar",
     ],
+    // NACHGESCHÄRFT 11.09.2026 an der Richtlinie (gültig ab 28.09.2023, ohne
+    // Enddatum). Hier stand „weder beauftragt noch erworben oder installiert" —
+    // zu weich: „Auftragsvergabe und Maßnahmenbeginn darf erst nach Erhalt des
+    // Bewilligungsbescheides durch den Markt Dietmannsried erfolgen." Wer nach
+    // dem Antrag, aber vor dem Bescheid bestellt, verliert den Zuschuss.
+    // Die 50.000 € sind der Beschluss für 2025 („Weiterführung … auch für das
+    // Jahr 2025 beschlossen"); für 2026 steht auf der Seite nichts. Status
+    // bleibt `aktiv`: Die Richtlinie ist unbefristet, ein Stopp ist nicht
+    // bekanntgegeben, und ein fehlender Satz ist kein Beleg für ein Ende.
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
     // 500 € Sockel deckt die ersten 7 kWp ab, darüber 150 €/kWp — im Modell als
@@ -2201,21 +2225,32 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "krefeld-klimafreundlich": {
     id: "krefeld-klimafreundlich", name: "Klimafreundliches Wohnen in Krefeld",
     traeger: "Stadt Krefeld", level: "kommune", region: "Krefeld", bundesland: "Nordrhein-Westfalen", agsCode: "05114",
-    url: "https://www.krefeld.de/de/umwelt/foerderprogramm-klimafreundliches-wohnen-in-krefeld/",
-    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: false,
+    url: "https://www.krefeld.de/klimafreundlicheswohnen",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWp + je kWh Speicher (allgemeiner Topf seit 12/2024 leer)",
+    coveredCosts: "Zuschuss je kWp, je kWh Speicher und für Balkonkraftwerke — beide Fördertöpfe derzeit leer",
     rates: [
-      { label: "PV-Anlage", value: "100 €/kWp, max. 1.000 €" },
-      { label: "Batteriespeicher", value: "200 €/kWh, max. 2.000 €" },
+      { label: "PV-Anlage", value: "100 €/kWp, max. 1.000 €", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "200 €/kWh, max. 2.000 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "400 €, höchstens 50 % der Kosten", nur: ["balkon"] },
     ],
     conditions: [
-      "Allgemeine Förderung seit 04.12.2024 ausgeschöpft — Überarbeitung für 2026 angekündigt",
-      "offen nur für Balkonkraftwerke + einkommensschwache Haushalte",
+      "Beide Töpfe sind ausgeschöpft — der allgemeine seit dem 4. Dezember 2024, und auch der Topf für soziale Förderung",
+      { text: "Batteriespeicher zu einem Balkonkraftwerk werden nicht gefördert", nur: ["balkon"] },
     ],
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
     pvPerKwp: 100, pvCap: 1000, speicherPerKwh: 200, speicherCap: 2000,
+    // KORRIGIERT 11.09.2026, an der Amtsseite gelesen (die alte Adresse leitet
+    // auf /klimafreundlicheswohnen um): „Beide Förderprogramme, der Topf für
+    // allgemeine Förderung und der Topf für soziale Förderung, sind derzeit
+    // ausgeschöpft." Hier stand „offen nur für Balkonkraftwerke +
+    // einkommensschwache Haushalte" — das Gegenteil, und laut Archiv schon seit
+    // mindestens 21.06.2026 überholt. Die „Überarbeitung für 2026" stand
+    // nirgends auf der Seite und ist gestrichen. Der Balkon-Satz fehlte ganz:
+    // „Balkon-PV-Anlagen, Förderung 400 €, beachte die maximale Fördergrenze in
+    // Höhe von 50% der Kosten" — als Text, weil der Topf leer ist und nichts
+    // abziehen darf.
   },
 
   // ── Landkreise (eigenes, wiederkehrendes Programm; aktuell ausgeschöpft) ──────
@@ -2582,8 +2617,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [{ label: "Alle Bausteine", value: "derzeit nicht aufgelegt" }],
     conditions: [
       "Die Gemeinde hat zuletzt für 2025 mitgeteilt, dass keine Förderprogramme vorgesehen sind; für 2026 steht nichts Neues auf der Seite",
-      "Zuletzt gefördert wurden 2024 Stecker-Solar-Anlagen bis 600 W mit 50 % des Kaufpreises, höchstens 200 € je Anlage und eine Anlage je Wohneinheit",
-      "Ebenfalls gefördert: Erdwärmesonden mit 15 € je Bohrmeter, höchstens 1.500 € je Grundstück",
+      "2022 wurden Balkonkraftwerke bis 600 W mit 50 % des Kaufpreises gefördert, höchstens 200 € je Anlage und eine Anlage je Wohneinheit; für 2024 nennt die Seite nur die Schwerpunkte, keine Sätze",
+      "2022 ebenfalls gefördert: Erdwärmesonden mit 15 € je Bohrmeter, höchstens 1.500 € je Grundstück",
       "Der Topf 2024 war am 16.09.2024 ausgeschöpft, also nach vier Wochen",
     ],
     combinableWith: BUND,
@@ -2787,14 +2822,33 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.stadt-helmstedt.de/wirtschaft-bauen/klimaschutz-und-umwelt/foerderrichtlinie-fuer-umwelt-und-klimaschutzmassnahmen.html",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss für Balkonkraftwerk, dazu Dachbegrünung und Regenwasser — keine Dach-PV, kein Speicher",
+    coveredCosts: "Zuschuss für Balkonkraftwerk, dazu Dachbegrünung und Regenwasser — Dachanlagen nur als Mieterstromprojekt",
     maxFoerderung: "max. 100 € je Balkonkraftwerk",
     rates: [{ label: "Balkonkraftwerk", value: "max. 100 € je Anlage" }],
     conditions: [
-      "Für Balkonkraftwerke stehen höchstens 20 % der jährlichen Gesamtfördersumme bereit",
+      "Der Antrag für das laufende Jahr ist bis zum 31. August zu stellen; spätere Anträge werden nur bedient, wenn nach den fristgerechten noch Geld übrig ist",
+      "Gefördert werden Balkonkraftwerke mit mindestens 500 W und höchstens 1.000 W",
+      "Für Balkonkraftwerke sind bis zum 31. August höchstens 20 % der Gesamtfördersumme reserviert, danach gehen Restmittel an andere Maßnahmen",
       "Für das laufende Haushaltsjahr sind insgesamt 40.000 € eingeplant",
-      "Dach-Photovoltaik und Batteriespeicher sind nicht Teil des Programms",
+      "Dachanlagen fördert die Stadt nur als Mieterstromprojekt mit mindestens zwei Mietparteien, bis 2.000 € je Anlage; Batteriespeicher gar nicht",
     ],
+    // KORRIGIERT 11.09.2026, Richtlinie (in Kraft 13.01.2025) im Volltext
+    // gelesen. Hier stand „Dach-Photovoltaik und Batteriespeicher sind nicht
+    // Teil des Programms" — zu absolut: Nr. 2.3.9 fördert „Projekte mit
+    // mindestens zwei beteiligten Mietparteien mit Mieterstromzuschlag-
+    // berechtigung", die Seite nennt „Mieterstromprojekte / Max. 2.000 € /
+    // Anlage". Bewusst KEIN „pv" in `foerdert`: Ein Mieterstrom-Baustein ist
+    // keine Förderung, die ein Hausbesitzer im PV-Rechner bekommt, und würde
+    // eine Förder-Stadtseite „Photovoltaik-Förderung" tragen, die für fast
+    // niemanden gilt.
+    //
+    // FEHLTE GANZ, und ist die teuerste Bedingung: die Antragsfrist. Nr. 5.1:
+    // „Der Antrag für im laufenden Jahr geplante Maßnahmen ist bis zum
+    // 31. August eines Jahres bei der Stadt Helmstedt zu stellen. Später
+    // eingehende Anträge werden als Nachanträge behandelt und können nur
+    // berücksichtigt werden, wenn nach Bearbeitung der fristgemäß eingereichten
+    // Anträge noch Restfördermittel vorhanden sind." Status bleibt `aktiv` —
+    // ein Nachantrag ist möglich, ein leerer Topf ist nicht belegt.
     combinableWith: BUND,
     foerdert: ["balkon"],
     // Rechenwert ergänzt am 19.08.2026, nachdem die Richtlinie gelesen war:
@@ -3030,6 +3084,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Gefördert werden Geräte bis 2.000 W Modulleistung und 800 W Wechselrichterleistung",
       "Die Anlage muss mindestens fünf Jahre betrieben werden",
       "Je Wohneinheit ist nur ein Antrag möglich; Antrag in Papierform mit Kaufbeleg",
+      "Die Wohnung braucht einen eigenen Stromzähler, der Gebäudeeigentümer muss zustimmen, und das Gerät wird im Marktstammdatenregister angemeldet",
       "Dach-Photovoltaik ist nicht Teil des Programms",
     ],
     combinableWith: BUND,
@@ -3148,10 +3203,25 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Gefördert werden nur Anlagen, die ab dem 1. Juli 2024 gekauft wurden",
       "Der Antrag wird nach Installation und Registrierung gestellt",
       "Mietende sollten vor der Anschaffung mit der Vermieterseite sprechen",
+      "Gefördert werden Anlagen mit höchstens 800 W Wechselrichterleistung",
+      "Die Anlage muss zehn Jahre im Stadtgebiet genutzt werden",
+      "Eine Anlage, die schon anderweitig mit öffentlichen Mitteln gefördert wird, ist ausgeschlossen",
       "Das Programm ist mit 126.000 € ausgestattet; danach werden keine Anträge mehr bewilligt",
+      "Der Förderzeitraum endet spätestens am 28. Februar 2027",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
+    // LAUFZEIT UND DREI BEDINGUNGEN ergänzt am 11.09.2026 aus der verlinkten
+    // Richtlinie (Fassung mit Laufzeitverlängerung): Nr. 12 „Der
+    // Förderzeitraum beginnt am 01.07.2024 und endet nach dem Beschluss des
+    // Stadtrats vom 28.01.2026 spätestens am 28.02.2027", Nr. 8 „Haltedauer von
+    // 10 Jahren", Nr. 3 „maximalen Wechselrichterleistung von 800 Watt".
+    // Nr. 9 schließt Anlagen aus, „die bereits anderweitig mit öffentlichen
+    // Mitteln gefördert werden" — steht als Bedingung da. `combinableWith`
+    // bleibt BUND: Ob der Nullsteuersatz „öffentliche Mittel" im Sinne der
+    // Richtlinie sind, sagt sie nicht, und das ist eine Auslegungsfrage, keine
+    // Abschrift.
+    beginntIso: "2024-07-01", endetIso: "2027-02-28", beschlossenIso: "2026-01-28",
     // Die Staffel läuft über die MODULZAHL, der Rechner kennt die Modulleistung
     // — 300 W je Modul ist die Umrechnung, die die Stadt selbst in ihre Tabelle
     // geschrieben hat. Ein typisches Set mit 800 Wp landet damit in der zweiten
@@ -3546,7 +3616,14 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Die Maßnahme darf nicht anderweitig mit öffentlichen Mitteln gefördert werden",
       "Anlagen im Neubau und bei ohnehin verpflichtender Dacherneuerung sind ausgeschlossen",
       "Im Haushaltsjahr 2026 stehen 50.000 € für alle neun Fördertatbestände zusammen bereit",
+      "Antragsschluss ist der 30. September; der Förderzeitraum endet am 31. Dezember 2026",
     ],
+    // Laufzeit am 11.09.2026 aus der Richtlinie 2026 übernommen, Nr. 7: „Diese
+    // Richtlinie tritt am 11.03.2026, 8 Uhr in Kraft. Der Förderzeitraum
+    // beginnt mit dem Inkrafttreten dieser Richtlinie und endet am
+    // 31. Dezember 2026", Nr. 3: Anträge „spätestens aber bis zum
+    // 30. September". Der Topf ist ohnehin leer.
+    beginntIso: "2026-03-11", endetIso: "2026-12-31",
     // `combinableWith: []` statt BUND (30.08.2026): Die Richtlinie 2026 schreibt
     // in Nr. 1 wörtlich „Mit Ausnahme des Zuschusses zu Energieberatungen, dürfen
     // die Fördermittel nicht mit Fördermitteln von anderen Stellen kumuliert
@@ -4084,7 +4161,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     bundesland: "Hessen", agsCode: "06633017",
     url: "https://www.lohfelden.de/de/klima-und-umwelt/klima-energie/angebote-foerderungen/",
     stand: "August 2026", status: "aktiv", capped: true, verified: true,
-    eligibility: ["privat"],
+    // Firmen zählen mit — „Die Besitzer können Privatpersonen oder Firmen sein"
+    // (Seite), „natürliche und juristische Personen" (Richtlinie Nr. 511),
+    // beides am 11.09.2026 gelesen. Vorher stand hier nur „privat".
+    eligibility: ["privat", "gewerblich"],
     coveredCosts: "Anteil der Gesamtkosten inklusive Montage für Dachanlage und Speicher zusammen",
     maxFoerderung: "max. 1.000 € je Gebäude",
     rates: [{ label: "Photovoltaikanlage und Batteriespeicher", value: "10 % der Gesamtkosten inkl. Montage, max. 1.000 €" }],
@@ -4208,27 +4288,57 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Markt Parkstein", level: "kommune", region: "Parkstein",
     bundesland: "Bayern", agsCode: "09374144",
     url: "https://www.parkstein.de/zuschuesse",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Pauschale je Balkonkraftwerk; für Dachanlagen und Hausspeicher nennt die Gemeinde den Satz nicht öffentlich",
-    maxFoerderung: "100 € je Balkonkraftwerk",
-    rates: [{ label: "Balkonkraftwerk", value: "100 € einmalig" }],
+    coveredCosts: "Zuschuss je kWp für die Dachanlage, je kWh für den Hausspeicher und eine Pauschale je Balkonkraftwerk",
+    maxFoerderung: "max. 2.000 € für die Dachanlage, 1.250 € für den Speicher",
+    rates: [
+      { label: "Dachanlage", value: "100 € je kWp, gefördert bis 20 kWp", nur: ["pv"] },
+      { label: "Hausspeicher", value: "50 € je kWh, gefördert bis 25 kWh", nur: ["pv"] },
+      { label: "Balkonkraftwerk bis 2.000 Wp", value: "100 € einmalig", nur: ["balkon"] },
+    ],
     conditions: [
-      "Zuerst wird die geplante Anlage angemeldet, nach der Fertigstellung folgt der Antrag mit Rechnung und Registrierungsbestätigung",
-      "Auch Mieterinnen und Mieter können den Zuschuss beantragen",
-      "Für Dachanlagen und Hausspeicher gibt es eigene Zuschüsse; die Sätze dazu erfragt man im Rathaus",
+      "Die Anlage wird der Gemeinde vor Beginn der Maßnahme gemeldet; bereits installierte Anlagen sind ausgeschlossen",
+      "Der Antrag folgt spätestens sechs Monate nach der Inbetriebnahme",
+      "Antragsberechtigt sind Grundstückseigentümer und Erbbauberechtigte; Mieter mit Genehmigung des Eigentümers",
+      { text: "Dachanlage und Speicher baut ein Fachbetrieb ein; Eigenleistung wird nicht gefördert", nur: ["pv"] },
+      { text: "Die Richtlinie verlangt allgemein einen Fachbetrieb und nimmt Balkonkraftwerke davon nicht ausdrücklich aus — vor dem Kauf im Rathaus nachfragen", nur: ["balkon"] },
+      "Gefördert wird je Flurnummer; Erweiterungen zählen bis zur Obergrenze mit",
+      "Fünf Jahre Bindungsfrist — bei Verkauf ist der Zuschuss zurückzuzahlen",
+      "Nur solange Haushaltsmittel da sind; über die Weiterführung wird jährlich entschieden",
     ],
     combinableWith: BUND,
     foerdert: ["balkon", "pv"],
     balkonPauschale: 100,
-    // Der Balkon-Satz ist am Träger belegt, die Sätze für Dachanlage und
-    // Speicher sind es NICHT: Die Richtlinie steht auf parkstein.de nirgends,
-    // die beiden verlinkten PDFs sind reine Formulare ohne Beträge. Eine
-    // Sekundärfundstelle nennt 100 €/kWp und 50 €/kWh — sie liegt auf einem
-    // fremden Portal und war nicht lesbar, also wird sie nicht übernommen.
-    // Deshalb `foerdert` mit "pv" (das Programm fördert Dachanlagen wirklich),
-    // aber ohne `pvPerKwp`: Die Seite informiert darüber, der Rechner zieht
-    // dafür nichts ab. Sobald die Richtlinie vorliegt, gehört der Satz nach.
+    pvPerKwp: 100, pvCap: 2000, speicherPerKwh: 50, speicherCap: 1250,
+    // SÄTZE ERGÄNZT 11.09.2026 — die Richtlinie liegt jetzt vor. Die Gemeinde
+    // hat sie am 10.09.2026 auf parkstein.de/zuschuesse gestellt
+    // („Richtlinie für den Parksteiner Nachhaltigkeitszuschuss für Solarstrom,
+    // BKW u. Hausspeicher", Stand 01.07.2026). Dort wörtlich:
+    // „PV-Anlagen mit 100€ pro installiertem kWp (max. 20 kWp) · Hausspeicher
+    // mit 50€ pro installierter kWh (max. 25 kWh)", „sowohl einzeln als auch
+    // als Gesamtanlage (PV plus Hausspeicher) zuschussfähig", „Balkonkraftwerke
+    // bis 2000 Wp mit 100 € generell". Die frühere Sekundärfundstelle
+    // (100 €/kWp, 50 €/kWh) ist damit an der Amtsquelle bestätigt; neu sind die
+    // Obergrenzen (Gemeindeblatt Juni 2024: 10 kWp und 10 kWh).
+    // Gegengeprüft von drei unabhängigen Prüfern, einer adversarial: 3 von 3.
+    //
+    // DECKEL, NICHT AUSSCHLUSS: „max. 20 kWp" als Obergrenze gelesen — eine
+    // größere Anlage bekommt 2.000 € —, weil „Auch Erweiterungen sind bis zur
+    // o.g. Grenze zuschussfähig" die Grenze je Grundstück meint.
+    //
+    // BEKANNTE ABWEICHUNG, benannt statt verschwiegen: „Gerechnet wird der
+    // Ausbau mit einer Stelle nach dem Komma (9,95 kWp ergibt 990 €)" — die
+    // Gemeinde schneidet nach der ersten Nachkommastelle ab, der Rechner nicht.
+    // Bei Größen mit zwei Nachkommastellen liegt er um weniger als 10 € zu hoch,
+    // bei den üblichen Größen gar nicht. Ein eigenes Feld dafür wäre mehr Modell
+    // als die Abweichung wert ist.
+    //
+    // KEIN `beginntIso`: Der 01.07.2026 ist der Beginn dieser FASSUNG, nicht des
+    // Programms („Der Parksteiner Zuschuss soll nun auf das Doppelte erweitert
+    // werden"; Formulare stehen seit 2022). Ihn als Programmstart einzutragen,
+    // ließe Parkstein in der Zubau-Auswertung vor Juli 2026 als Ort ohne
+    // Förderung erscheinen.
   },
 
   "marburg-balkonkraftwerke": {
@@ -5760,6 +5870,123 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["balkon"],
     balkonPercentOfCost: 0.4, balkonCap: 400,
+  },
+
+  // ─── Aufgenommen am 11.09.2026: Aachen ───────────────────────────────────
+  //
+  // Aachen stand seit August im Ortsverzeichnis, ohne ein einziges Programm —
+  // obwohl dort ZWEI Träger fördern: die Stadt selbst und die StädteRegion für
+  // die übrigen neun Gemeinden. Gefunden über eine breite Nachrichtensuche des
+  // Förder-Wächters, beide Amtsseiten im Rohtext gelesen.
+
+  "aachen-solar": {
+    id: "aachen-solar", name: "Solarförderprogramm der Stadt Aachen",
+    traeger: "Stadt Aachen", level: "kommune", region: "Aachen",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05334002",
+    url: "https://www.aachen.de/solar",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Photovoltaik und Speicher an Mehrfamilienhäusern, Photovoltaik und Dachgutachten an Betriebsgebäuden kleiner und mittlerer Unternehmen",
+    maxFoerderung: "max. 10.000 € je Photovoltaikanlage, 5.000 € je Speicher",
+    rates: [
+      { label: "Photovoltaik am Mehrfamilienhaus", value: "200 € je vollendetem kWp, max. 10.000 €" },
+      { label: "Speicher am Mehrfamilienhaus", value: "100 € je kWh nutzbarer Kapazität, max. 5.000 €" },
+      { label: "Photovoltaik an Betriebsgebäuden kleiner und mittlerer Unternehmen", value: "100 € je kWp, max. 10.000 €" },
+      { label: "Dachgutachten für Betriebsgebäude", value: "90 % der Kosten, max. 4.000 €" },
+    ],
+    conditions: [
+      "Gefördert werden nur Mehrfamilienhäuser mit gemeinschaftlicher Gebäudeversorgung oder Mieterstrom und Betriebsgebäude kleiner und mittlerer Unternehmen",
+      "Anlagen auf Ein- und Zweifamilienhäusern und Balkonkraftwerke werden nicht gefördert",
+      "Der Antrag wird vor der Beauftragung gestellt; beauftragt werden darf erst nach dem Zuwendungsbescheid",
+      "Die Arbeiten müssen innerhalb von 18 Monaten ausgeführt werden",
+      "Das Budget 2026 ist auf ein Drittel gekürzt; neue Anträge werden bearbeitet, solange Restmittel verfügbar sind",
+      "Gefördert werden nur Vorhaben im Aachener Stadtgebiet",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // NEU AUFGENOMMEN 11.09.2026, www.aachen.de/solar im Rohtext gelesen:
+    // „Die Haushaltsmittel für das Solarförderprogramm wurden für das Jahr 2026
+    // freigegeben. Allerdings wurde das Gesamtbudget auf ein Drittel gekürzt. …
+    // Neue Anträge können weiterhin eingereicht werden. Diese werden bearbeitet,
+    // solange ausreichend Restmittel verfügbar sind." Die Sätze stehen dort
+    // wörtlich: „Photovoltaikanlagen mit 200 Euro pro vollendetem Kilowatt-Peak
+    // (maximal 10.000 Euro) sowie Batteriespeicher mit 100 Euro pro
+    // Kilowattstunde nutzbarer Speicherkapazität (maximal 5.000 Euro)" für
+    // Mehrfamilienhäuser, „Dachgutachten mit 90 Prozent (max. 4.000 Euro) und
+    // Photovoltaikanlagen mit 100 Euro pro Kilowattpeak (max. 10.000 Euro)"
+    // für Betriebsgebäude.
+    //
+    // BEWUSST OHNE RECHENWERT. Die Stadt schreibt ausdrücklich: „eine Förderung
+    // von Balkonkraftwerken sowie von Photovoltaikanlagen auf Ein- und
+    // Zweifamilienhäusern ist nicht vorgesehen". Der Katalog kennt keine
+    // Gebäudeart am Programm; ein strukturierter Satz zöge also jedem
+    // Einfamilienhaus in Aachen bis zu 10.000 € ab, die es nachweislich nicht
+    // gibt. Das Programm informiert, es rechnet nicht.
+    //
+    // DER ANTRAGSZEITPUNKT IST HIER DIE TEURE BEDINGUNG: „Anlagen, die vor der
+    // Antragstellung im Förderprogramm beauftragt werden, [können] nicht
+    // gefördert werden" und „erst nach dem Erhalt des Zuwendungsbescheids können
+    // Sie den/die Installateur*in … beauftragen".
+    //
+    // Nicht aufgenommen: der Zuschuss von 50 € für Solarnachbarschaftsfeste —
+    // keine Anlagenförderung.
+  },
+
+  "staedteregion-aachen-ee": {
+    id: "staedteregion-aachen-ee", name: "Förderprogramme Steckersolargeräte und Batteriespeicher",
+    traeger: "StädteRegion Aachen", level: "landkreis", region: "StädteRegion Aachen",
+    bundesland: "Nordrhein-Westfalen",
+    // Die neun Gemeinden der StädteRegion OHNE die Stadt Aachen, Schlüssel aus
+    // dem Melderegister. Bewusst NICHT der Kreisschlüssel 05334: Beide
+    // Richtlinien nehmen das Gebiet der Stadt Aachen ausdrücklich aus (Nr. 3.2),
+    // und über den Kreisschlüssel läge dieses Programm auch über Aachen.
+    agsCodes: [
+      "05334004", "05334008", "05334012", "05334016", "05334020",
+      "05334024", "05334028", "05334032", "05334036",
+    ],
+    url: "https://bportal.staedteregion-aachen.de/detail/-/vr-bis-detail/dienstleistung/690240/show",
+    stand: "September 2026", status: "pausiert", capped: true, verified: true,
+    beschlossenIso: "2026-07-16",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Pauschale für Balkonkraftwerke von Mieterhaushalten, Zuschuss für Batteriespeicher an Bestandsgebäuden — 2026 keine neuen Anträge",
+    rates: [
+      { label: "Balkonkraftwerk (nur Mieterinnen und Mieter)", value: "80 € pauschal", nur: ["balkon"] },
+      { label: "Speicher am Einfamilienhaus", value: "150 € je Person im Haushalt, ab der dritten 200 €, max. 1.100 €", nur: ["pv"] },
+      { label: "Speicher am Mehrfamilienhaus ab drei Wohneinheiten", value: "300 € je Wohneinheit, max. 1.500 €", nur: ["pv"] },
+      { label: "Ersatzstromfähiger Wechselrichter zum Speicher", value: "200 € zusätzlich", nur: ["pv"] },
+    ],
+    conditions: [
+      "Keine neuen Anträge: Der Städteregionstag hat am 16. Juli 2026 beschlossen, dass wegen der Haushaltslage in diesem Jahr keine weiteren Anträge angenommen werden",
+      "Gilt in der StädteRegion ohne die Stadt Aachen",
+      "Anträge werden nach Kauf und Inbetriebnahme gestellt; die Anlage muss ab dem 1. Januar 2025 in Betrieb gegangen sein",
+      "Neben einem Zuschuss einer Stadt oder Gemeinde der StädteRegion ist diese Förderung ausgeschlossen",
+      { text: "Balkonkraftwerke fördert die StädteRegion nur für Mieterinnen, Mieter und Vereine — ein Gerät je Wohneinheit, fünf Jahre Betrieb", nur: ["balkon"] },
+      { text: "Speicher werden nur an Gebäuden gefördert, die vor 2016 genehmigt wurden, mit mindestens 5 kWh im Einfamilienhaus und 10 kWh sonst", nur: ["pv"] },
+      { text: "Der Speicher muss zehn Jahre betrieben werden; Speicher für Balkonkraftwerke sind ausgeschlossen", nur: ["pv"] },
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // NEU AUFGENOMMEN 11.09.2026. Beide Serviceseiten der StädteRegion im
+    // Rohtext gelesen und beide Richtlinien im Volltext:
+    //   · Steckersolar (Richtlinie vom 18.05.2026): „Anträge können nicht mehr
+    //     gestellt werden. Der Städteregionstag hat am 16. Juli 2026 beschlossen,
+    //     dass aufgrund der aktuellen Haushaltssituation in diesem Jahr keine
+    //     weiteren Anträge gestellt werden können." Nr. 5.2: „pauschal 80 €",
+    //     Nr. 3.1: antragsberechtigt sind Mieterinnen und Mieter sowie
+    //     gemeinnützige Vereine.
+    //   · Batteriespeicher (Richtlinie vom 20.05.2026, Dienstleistung 290450):
+    //     derselbe Beschluss, „Nur die bereits vorliegenden Anträge (ohne
+    //     Warteliste) werden bearbeitet." Sätze Nr. 5.2.1–5.2.5 wie oben;
+    //     Vereins- und KMU-Gebäude pauschal 1.500 € sind nicht aufgeführt, weil
+    //     sie keine Privatanlage beschreiben.
+    //
+    // PAUSIERT, NICHT EINGESTELLT: „in diesem Jahr" — wie Kiel. Der Status sagt
+    // „keine neuen Anträge", nicht „gibt es nicht mehr".
+    //
+    // BEWUSST OHNE RECHENWERT, auch wenn es wieder läuft: Der Balkonzuschuss
+    // gilt nur Mietern, der Speicherzuschuss nur Eigentümern — eine
+    // Wohnform-Einschränkung am Programm träfe eine der beiden Hälften falsch.
+    // Der Speichersatz hängt zudem an der Personenzahl im Haushalt.
   },
 };
 
