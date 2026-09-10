@@ -116,9 +116,27 @@ describe("Empfehlungslink", () => {
     expect(url).toContain(`ref=${SOLAKON_REF}`);
   });
 
-  it("hängt an eine Adresse mit Abfrageteil richtig an", () => {
+  it("hängt an eine Adresse mit Abfrageteil an, ohne deren Parameter zu verlieren", () => {
     const a = { ...angeboteAusShopify(ROH)[0], url: "https://x.de/products/y?a=1" } as ShopAngebot;
-    expect(angebotUrl(a)).toBe("https://x.de/products/y?a=1&ref=" + SOLAKON_REF);
+    const url = new URL(angebotUrl(a));
+    expect(url.searchParams.get("a")).toBe("1");
+    expect(url.searchParams.get("ref")).toBe(SOLAKON_REF);
+  });
+
+  it("trägt die Kampagnen-Parameter des Händlers", () => {
+    // Vom Händler selbst genannt (Mail 10.09.2026), damit er in seinem eigenen
+    // Werkzeug gegenprüfen kann, ob unsere Klicks ankommen — die Gegenprobe zu
+    // dem Befund, dass sein Partnernetz sie nicht zählt.
+    const url = new URL(angebotUrl(angeboteAusShopify(ROH)[0]));
+    expect(url.searchParams.get("utm_source")).toBe("affiliate");
+    expect(url.searchParams.get("utm_medium")).toBe("cpo");
+  });
+
+  it("bleibt auf der PRODUKTadresse, nie auf der Startseite", () => {
+    // Der Händler schlug einen Link auf seine Startseite vor. Wer auf ein
+    // durchgerechnetes Set klickt und dort landet, muss es erst wiederfinden —
+    // bei 24 Stunden Zuordnungsfenster ist jeder Zwischenschritt teuer.
+    expect(new URL(angebotUrl(angeboteAusShopify(ROH)[0])).pathname).toContain("/products/");
   });
 });
 

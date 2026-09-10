@@ -144,10 +144,33 @@ export function istB2b(titel: string): boolean {
   return /\bB2B\b/i.test(titel);
 }
 
-/** Produktadresse mit Empfehlungscode. */
+/**
+ * Kampagnen-Parameter des Händlers, von ihm selbst genannt (Mail 10.09.2026).
+ *
+ * WARUM SIE MIT MÜSSEN: Der Händler wertet damit in seinem eigenen Werkzeug
+ * aus, was von uns kommt — und genau das ist die Gegenprobe zu dem Befund,
+ * dass sein Partnernetz unsere Klicks nicht zählt. Kommen Klicks in seinem
+ * Werkzeug an, aber nicht im Partnerkonto, liegt es am Netz; kommt nirgends
+ * etwas an, liegt es am Weg dorthin.
+ */
+const SOLAKON_KAMPAGNE: Record<string, string> = {
+  utm_source: "affiliate",
+  utm_medium: "cpo",
+};
+
+/**
+ * Produktadresse mit Empfehlungscode und Kampagnen-Parametern.
+ *
+ * DER HÄNDLER SCHLUG EINEN LINK AUF SEINE STARTSEITE VOR — wir hängen seine
+ * Parameter stattdessen an die PRODUKTadresse. Wer auf ein durchgerechnetes Set
+ * klickt und auf der Startseite landet, muss es dort erst wiederfinden; bei
+ * einem Zuordnungsfenster von 24 Stunden ist jeder Zwischenschritt teuer.
+ */
 export function angebotUrl(angebot: ShopAngebot, ref: string = SOLAKON_REF): string {
-  const trenner = angebot.url.includes("?") ? "&" : "?";
-  return `${angebot.url}${trenner}ref=${encodeURIComponent(ref)}`;
+  const url = new URL(angebot.url);
+  for (const [k, v] of Object.entries(SOLAKON_KAMPAGNE)) url.searchParams.set(k, v);
+  url.searchParams.set("ref", ref);
+  return url.toString();
 }
 
 /**
