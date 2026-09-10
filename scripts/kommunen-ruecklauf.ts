@@ -38,6 +38,7 @@ import { ordneEin, notizZeile, notizMitText, STATUS_ZU_ART, type Ruecklaufart, t
 import { berichtAblegen } from "../lib/alert-senden";
 import { ruecklaufBericht } from "../lib/outreach-ruecklauf-bericht";
 import { heuteInBerlin } from "../lib/zeit";
+import { istAntwortAufSachfrage } from "../lib/outreach-sachfrage";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -253,6 +254,8 @@ async function main(): Promise<void> {
   const befunde: Befund[] = [];
   const unklar: Befund[] = [];
   const fremd: Befund[] = [];
+  /** Antworten auf die Sachfragen an Förderstellen — nicht auf unseren Brief. */
+  const sachfragen: Befund[] = [];
   /** Jede gelesene Mail — Grundlage für die Zuordnung zu Förder-Sachfragen. */
   const alleMails: { von: string; betreff: string; roh: string; datum: string; text: string }[] = [];
   for (const name of ordner) {
@@ -307,7 +310,23 @@ async function main(): Promise<void> {
         name: treffer.length === 1 ? treffer[0].name : null,
         text,
       };
-      if (b.region_id) befunde.push(b);
+      // EINE ANTWORT AUF EINE SACHFRAGE IST KEINE ANTWORT AUF DEN BRIEF.
+      //
+      // Beide Gespräche laufen über dasselbe Postfach UND dieselben
+      // Amtsadressen: Gemessen am 10.09.2026 tragen 64 der 289 angeschriebenen
+      // Gemeinden ein Förderprogramm im Katalog, im offenen Topf 19 von 175.
+      // Ohne diese Weiche verbucht der Lauf die Antwort einer Förderstelle als
+      // Reaktion auf unser Anschreiben — setzt den Status, schreibt den
+      // Zeitstempel und meldet eine ENTSCHEIDUNG, die es nicht gibt. Damit wäre
+      // ausgerechnet die einzige Kennzahl verdorben, an der wir den Erfolg des
+      // Briefes ablesen.
+      //
+      // Sie fliegt NICHT aus der Liste, sondern wird eigens gezählt: Eine
+      // stumme Ausblendung wäre von einem leeren Postfach nicht zu
+      // unterscheiden. Der nachgelagerte Schritt trägt sie ihrer Sachfrage
+      // nach; ihm wird jede Mail gereicht, auch diese.
+      if (istAntwortAufSachfrage({ betreff, roh })) sachfragen.push(b);
+      else if (b.region_id) befunde.push(b);
       else if (istFremdverkehr(von)) fremd.push(b);
       else unklar.push(b);
     }
@@ -333,6 +352,17 @@ async function main(): Promise<void> {
   if (fremd.length) {
     log();
     log(`${fremd.length} Mails gehören nicht zum Outreach (${FREMD_ABSENDER.join(", ")}) — ausgeblendet.`);
+  }
+  // Gezählt statt stumm übergangen: Eine ausgeblendete Antwort und ein leeres
+  // Postfach sähen sonst gleich aus. Der nachgelagerte Schritt trägt sie ihrer
+  // Sachfrage nach — hier steht nur, dass sie nicht zum Brief gehören.
+  if (sachfragen.length) {
+    log();
+    log(
+      `${sachfragen.length} ${sachfragen.length === 1 ? "Antwort" : "Antworten"} auf eine Sachfrage an eine Förderstelle — ` +
+        `nicht als Brief-Rückmeldung gewertet:`,
+    );
+    for (const b of sachfragen) log(`    ${b.name ?? b.von} — „${b.betreff}"`);
   }
 
   await foerderAnfragenZuordnen(db, alleMails, hat("schreiben"));
