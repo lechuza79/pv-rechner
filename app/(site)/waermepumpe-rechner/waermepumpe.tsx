@@ -211,7 +211,11 @@ export default function Waermepumpe({
   const greenGas = effScenario === "gruengas";
   // "Mehr erfahren"-Modal: sammelt alle erklärenden Texte zum Grüngas-Szenario.
   const [showGasInfo, setShowGasInfo] = useState(false);
-  // Secondary-Block "Marktübliche Preissteigerung" (die 3 Preis-Modelle) auf-/zugeklappt.
+  // Secondary-Block "Angenommene Energiepreise" (die 3 Preis-Modelle) auf-/zugeklappt.
+  // Hieß bis 10.09.2026 "Marktübliche Preissteigerung" — das behauptet einen
+  // Marktdurchschnitt. Seit dem 06.09.2026 ist jeder der sechs Pfade ein
+  // Studienwert aus zwei benannten Quellen; "marktüblich" wäre dafür das
+  // falsche Wort und zugleich die schwächere Aussage.
   const [preisExpanded, setPreisExpanded] = useState(false);
   // Ziel des Verweises unter der großen Zahl — dort steht die Erklärung der
   // Preismodelle samt Umschalter.
@@ -554,6 +558,32 @@ export default function Waermepumpe({
   // erscheinen/verschwinden Wege + Konklusion beim kleinsten Wertwechsel). Die
   // Konklusion rahmt das Ergebnis adaptiv (unwirtschaftlich / kaum / rechnet sich).
   const zeigeWege = situation === "bestand" && wege.length > 1;
+
+  /**
+   * Bringen die weiteren Schritte überhaupt etwas?
+   *
+   * Der Satz über den Wegen endete bis zum 10.09.2026 immer gleich: „So wirken
+   * sich weitere Schritte auf die Wirtschaftlichkeit aus" — eine Einladung
+   * weiterzulesen, unabhängig davon, was die Reiter darunter zeigen. Am
+   * unsanierten Altbau stehen dort +22k / +26k / +25k / +22k: Die
+   * Vollsanierung ist genauso gut wie gar nichts zu tun, die Teil-Sanierung
+   * schlechter als der bloße Heizkörpertausch. Wer den Satz liest und dann die
+   * Zahlen, findet einen Widerspruch, den es nicht geben müsste.
+   *
+   * DIE RICHTUNG WIRD DESHALB GERECHNET, NICHT BEHAUPTET — dieselbe Regel wie
+   * bei den Datengeschichten: Kippt das Verhältnis, kippt der Satz. Die
+   * Schwelle ist bewusst grob (500 € über zwanzig Jahre): Ein Unterschied
+   * darunter ist gegen die Unsicherheit der Preispfade kein Unterschied, und
+   * ihn als Verbesserung anzupreisen wäre erfundene Genauigkeit.
+   */
+  const WEG_MERKLICH_EUR = 500;
+  const wegeLage = useMemo(() => {
+    const andere = wegeResults.filter(w => w.id !== "ist");
+    if (andere.length === 0) return null;
+    const beste = andere.reduce((a, b) => (b.r.tcoEinsparung > a.r.tcoEinsparung ? b : a));
+    const gewinn = beste.r.tcoEinsparung - istResult.tcoEinsparung;
+    return { beste, gewinn, lohnt: gewinn >= WEG_MERKLICH_EUR };
+  }, [wegeResults, istResult]);
 
   const activeWeg = (zeigeWege ? wegeResults.find(w => w.id === wegId) : null) ?? wegeResults.find(w => w.id === "ist");
   const activeInputs = useMemo(() => ({ ...inputs, ...(activeWeg?.patch ?? {}) }), [inputs, activeWeg]);
@@ -1134,7 +1164,7 @@ export default function Waermepumpe({
                 <button ref={preisBlockRef as unknown as React.RefObject<HTMLButtonElement>} onClick={() => setPreisExpanded(p => !p)} aria-expanded={preisExpanded}
                   style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, padding: "10px 14px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
                   <span style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: !greenGas ? v('--color-text-primary') : v('--color-text-secondary') }}>
-                    Marktübliche Preissteigerung{!greenGas ? ` · ${sel.label}` : ""}
+                    Angenommene Energiepreise{!greenGas ? ` · ${sel.label}` : ""}
                   </span>
                   <span style={{ display: "inline-flex", transform: preisExpanded ? "rotate(180deg)" : "none", transition: "transform .15s", color: v('--color-text-muted') }}><IconChevronDown size={iconSizes.sm} /></span>
                 </button>
@@ -1214,7 +1244,14 @@ export default function Waermepumpe({
                       : <>rechnet sich eine Wärmepumpe schon: <span style={{ fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>+{istResult.tcoEinsparung.toLocaleString("de-DE")} €</span>{istMehrkosten <= 0
                         ? ", und sie kostet nach Förderung nicht mehr als eine neue Heizung"
                         : istResult.amortisationsJahre !== null ? `, die Mehrkosten sind nach ${istResult.amortisationsJahre} ${istResult.amortisationsJahre === 1 ? "Jahr" : "Jahren"} wieder drin` : ""}.</>}
-                  {" "}So wirken sich weitere Schritte auf die Wirtschaftlichkeit aus:
+                  {" "}{wegeLage === null
+                    ? null
+                    : wegeLage.lohnt
+                      ? <>Am meisten bringt „{wegeLage.beste.titel}": noch einmal{" "}
+                          <span style={{ fontWeight: 700, fontFamily: v('--font-mono') }}>+{wegeLage.gewinn.toLocaleString("de-DE")} €</span>{" "}
+                          über die Laufzeit. Die anderen Wege im Vergleich:</>
+                      : <>Weitere Schritte am Gebäude ändern daran wenig — was sie kosten,
+                          sparen sie über zwanzig Jahre nicht wieder ein. Zum Vergleich:</>}
                 </div>
               </div>
             )}
