@@ -20,6 +20,7 @@
     "kommunen:kontakt": "tsx scripts/kommunen-kontakt-refresh.ts",
     "kommunen:versand": "tsx scripts/kommunen-versand.ts",
     "kommunen:ruecklauf": "tsx scripts/kommunen-ruecklauf.ts",
+    "kommunen:bounce": "tsx scripts/kommunen-bounce-fix.ts",
     "postinstall": "node -e \"if(!process.env.VERCEL && !process.env.CI){require('child_process').execSync('git config core.hooksPath .githooks',{stdio:'inherit'})}\"",
     "atlas:verify": "tsx scripts/atlas-verify.ts",
     "atlas:warm": "tsx scripts/atlas-warm.ts",
