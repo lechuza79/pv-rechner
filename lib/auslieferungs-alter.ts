@@ -28,6 +28,14 @@
 // dominierende Anteil des ersten Abrufs ist also nicht die Liste, sondern der
 // Kaltstart selbst.
 //
+// DIE UMKEHRUNG GILT NICHT, und das ist im selben Lauf gemessen worden: Der
+// erste Lauf NACH dieser Änderung startete ebenfalls vier Minuten nach einer
+// Auslieferung und maß 1,8 / 1,3 / 2,0 s — flach, kein Ausreißer. Eine frische
+// Auslieferung macht den ersten Aufbau also nicht zwangsläufig teuer; ob es
+// eine wirklich kalte Function trifft, ist Zufall. Genau deshalb ist das Alter
+// ein HINWEIS und kein Urteil, und genau deshalb darf hier nie eine Bedingung
+// „frisch, also egal" entstehen: Sie wäre in der Hälfte der Fälle falsch.
+//
 // OFFEN UND HIER AUSDRÜCKLICH NICHT BEHAUPTET: Woraus die verbleibenden rund
 // 4,5 s bestehen, ist NICHT gemessen. Der Schluss „Kaltstart" stützt sich auf
 // die Lage des Ausreißers (immer die erste Stichprobe) und auf das Alter der
