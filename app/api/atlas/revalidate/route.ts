@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { baueAuszeichnungen } from "../../../../lib/awards-server";
 import { ATLAS_REVALIDATE_ROUTEN, ATLAS_DATEN_TAG } from "../../../../lib/atlas-revalidate-routen";
 
 /**
@@ -104,6 +105,19 @@ export async function POST(req: NextRequest) {
     erledigt.push(`tag:${ATLAS_DATEN_TAG}`);
   } catch (e) {
     fehler.push({ schritt: `tag:${ATLAS_DATEN_TAG}`, grund: e instanceof Error ? e.message : String(e) });
+  }
+
+  // Die Liste der ausgezeichneten Orte NEU BERECHNEN — hier und nirgends sonst.
+  // Sie kostet 3,7 s über 10.742 Zeilen; im Seitenaufbau hat sie nichts zu
+  // suchen (zwei Anläufe mit Memo und Cache haben die Häufigkeit gesenkt und
+  // den Rest gelassen — siehe lib/awards-server.ts). Schlägt sie fehl, ist das
+  // ein gemeldeter Schritt, kein Abbruch: Die Seiten funktionieren weiter, nur
+  // ohne Platzhalter für die Kachel.
+  try {
+    const { orte } = await baueAuszeichnungen();
+    erledigt.push(`auszeichnungen:${orte}`);
+  } catch (e) {
+    fehler.push({ schritt: "auszeichnungen", grund: e instanceof Error ? e.message : String(e) });
   }
 
   // Zusätzlich die Routenmuster. Sie kosten nichts und schaden nicht; verlassen

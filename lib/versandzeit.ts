@@ -128,3 +128,98 @@ export function versandzeitOk(jetzt: Date, empfaenger: number): Versandfenster {
     naechstes: "Dienstag bis Donnerstag 17\u201320 Uhr oder Samstag 13\u201316 Uhr deutscher Zeit",
   };
 }
+
+// ─── Wann eine Sachfrage an ein AMT rausgeht ─────────────────────────────────
+//
+// EIN ANDERER EMPFÄNGER, ALSO EIN ANDERES FENSTER — und die Begründung ist
+// nicht die Öffnungsrate, sondern wie die Mail wirkt.
+//
+// Eine Rückfrage zu einem Förderprogramm ist als Nachricht von einem Menschen
+// an einen anderen gemeint. Um 03:14 nachts im Postfach der Ortsgemeinde ist
+// sie das erkennbar nicht: Niemand tippt um diese Zeit eine Sachfrage. Der
+// Betreiber hat es am 10.09.2026 so entschieden — „so eine Mail sollte nicht
+// automatisiert aussehen, also tagsüber zu unrunden Zeiten versenden."
+//
+// DIE VOLLE STUNDE IST DAS VERRÄTERISCHE, nicht die Uhrzeit an sich. Ein
+// Zeitstempel auf 09:00:00 kommt aus einem Zeitplan, 09:07 aus einem
+// Schreibtisch. Deshalb zwei Bedingungen statt einer: Bürozeit UND eine
+// Minute, die nicht durch fünf teilbar ist. Das schließt genau die zwanzig
+// Prozent aus, die nach Kalendereintrag aussehen (00, 05, 10 …) — der Rest
+// des Tages bleibt nutzbar, und der Lauf muss nicht auf einen Termin warten.
+//
+// WAS DIESES FENSTER NICHT IST: die Ferienbremse der Kommunen-Anschreiben.
+// Die bremst Kaltakquise. Hier geht es um eine Auskunft, die die Stelle
+// ohnehin öffentlich gibt; sie wochenlang zurückzuhalten hieße, eine falsche
+// Zahl so lange auf unserer eigenen Seite stehen zu lassen.
+
+/** Bürozeit in deutscher Ortszeit — beide Grenzen als volle Stunde. */
+export const AMT_VON_STUNDE = 9;
+export const AMT_BIS_STUNDE = 17;
+
+/**
+ * Eine Minute sieht nach Zeitplan aus, wenn sie durch fünf teilbar ist.
+ *
+ * Getrennt herausgezogen, weil genau das die Aussage ist, die geprüft werden
+ * muss — und weil „unrund" sonst ein Gefühl bliebe statt einer Bedingung.
+ */
+export function minuteWirktGeplant(minute: number): boolean {
+  return minute % 5 === 0;
+}
+
+/** Deutsche Ortszeit samt Minute. */
+function deutscheZeitGenau(jetzt: Date): { wochentag: number; stunde: number; minute: number } {
+  const teile = new Intl.DateTimeFormat("de-DE", {
+    timeZone: "Europe/Berlin",
+    weekday: "short",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+  }).formatToParts(jetzt);
+  const tage: Record<string, number> = { So: 0, Mo: 1, Di: 2, Mi: 3, Do: 4, Fr: 5, Sa: 6 };
+  const kurz = (teile.find((t) => t.type === "weekday")?.value ?? "").slice(0, 2);
+  return {
+    wochentag: tage[kurz] ?? -1,
+    stunde: Number(teile.find((t) => t.type === "hour")?.value ?? -1),
+    minute: Number(teile.find((t) => t.type === "minute")?.value ?? -1),
+  };
+}
+
+/**
+ * Darf jetzt eine Sachfrage an eine Behörde hinausgehen?
+ *
+ * Werktags, während der Bürozeit, und nicht zur vollen oder halben Stunde.
+ * Anders als beim Abo-Fenster gibt es KEINE Mengenschwelle: Auch eine einzelne
+ * Mail soll nicht mitten in der Nacht ankommen — der Grund ist die Wirkung
+ * beim Empfänger, nicht die Statistik über viele.
+ */
+export function amtsVersandzeitOk(jetzt: Date): Versandfenster {
+  const { wochentag, stunde, minute } = deutscheZeitGenau(jetzt);
+  const naechstes = `Montag bis Freitag ${AMT_VON_STUNDE}–${AMT_BIS_STUNDE} Uhr deutscher Zeit, zu einer unrunden Minute`;
+  if (wochentag < 1 || wochentag > 5) {
+    const namen = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+    return { ok: false, grund: `${namen[wochentag] ?? "?"} ist kein Arbeitstag`, naechstes };
+  }
+  if (stunde < AMT_VON_STUNDE || stunde >= AMT_BIS_STUNDE) {
+    return { ok: false, grund: `${stunde} Uhr liegt außerhalb der Bürozeit`, naechstes };
+  }
+  if (minuteWirktGeplant(minute)) {
+    return { ok: false, grund: `Minute ${minute} sieht nach Zeitplan aus`, naechstes };
+  }
+  return { ok: true };
+}
+
+/**
+ * Abstand zwischen zwei Mails desselben Laufs, in Millisekunden.
+ *
+ * DREI MAILS IM SEKUNDENABSTAND SIND EIN VERSAND, drei über eine Stunde
+ * verteilt sind drei Vorgänge. Sie gehen ohnehin an verschiedene Ämter, die
+ * einander nicht sehen — der Abstand wirkt also nicht beim Empfänger, sondern
+ * an den Zeitstempeln, die im eigenen Protokoll und beim Mailanbieter stehen.
+ *
+ * Die Spanne wird hereingereicht statt gewürfelt, damit sie prüfbar bleibt;
+ * der Zufall kommt vom Aufrufer.
+ */
+export function pauseZwischenMails(zufall: number, minMinuten = 4, maxMinuten = 19): number {
+  const spanne = maxMinuten - minMinuten;
+  return Math.round((minMinuten + zufall * spanne) * 60_000);
+}

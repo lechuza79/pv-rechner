@@ -164,7 +164,36 @@ const EINGANGSBESTAETIGUNG_TEXT = [
   "automatisch erzeugte nachricht",
   "do not reply to this email",
   "this is an automated",
+  // Porta Westfalica, 03.09.2026: „Wir werden Ihre Nachricht an die zuständige
+  // Stelle im Hause weiterleiten, damit Sie schnellstmöglich von dort eine
+  // Rückmeldung erhalten." Unterschrieben mit „Ihre Stadtverwaltung", ohne
+  // Namen — der Textbaustein einer Poststelle.
+  //
+  // ABGEGRENZT GEGEN DEN MENSCHEN, der dasselbe tut: „ich leite das an unsere
+  // Pressestelle weiter" IST eine echte Reaktion und soll gemeldet werden.
+  // Erkannt wird deshalb nur die unpersönliche Bausteinform („wir werden Ihre
+  // Nachricht"), nie ein bloßes „weiterleiten" oder „zuständige Stelle".
+  "wir werden ihre nachricht an die zuständige stelle",
+  "wir werden ihre nachricht an die zustaendige stelle",
+  "ihre nachricht wird an die zuständige stelle",
+  "ihre nachricht wird an die zustaendige stelle",
 ];
+
+/**
+ * Betreffzeilen, die eine Maschine verraten, ohne ein Wort über Abwesenheit zu
+ * sagen.
+ *
+ * WOZU (10.09.2026): Porta Westfalicas Eingangsbestätigung trug den Betreff
+ * „noreply" — kein Abwesenheitswort, kein maschineller Kopf, Absender das
+ * gewöhnliche Amtspostfach. Sie wurde deshalb als ECHTE Antwort verbucht, und
+ * der Betreiber hat sie in der Auswertung ein ums andere Mal erklärt bekommen.
+ *
+ * `noreply` als BETREFF ist ein technisches Merkmal, keine Sprachdeutung: Kein
+ * Mensch tippt das in die Betreffzeile. Im ABSENDER wäre es kein taugliches
+ * Signal — es steht dort auch über Systemmails, die inhaltlich etwas Neues
+ * sagen; geprüft wird deshalb nur der Betreff.
+ */
+const MASCHINELL_BETREFF = ["noreply", "no-reply", "no reply", "kein absender"];
 
 /**
  * Einordnung einer eingegangenen Mail.
@@ -209,6 +238,7 @@ export function ordneEin(mail: RohMail): Ruecklaufart {
   if (
     autoSubmitted.includes("auto-replied") ||
     enthaelt(betreff, ABWESENHEIT_BETREFF) ||
+    enthaelt(betreff, MASCHINELL_BETREFF) ||
     enthaelt(eigen, EINGANGSBESTAETIGUNG_TEXT)
   ) {
     return "abwesenheit";

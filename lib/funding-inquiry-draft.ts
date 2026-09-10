@@ -86,8 +86,28 @@ function datumDe(iso: string): string {
  * Der Betreff nennt Programm und Anliegen — keine Marke, kein Aufhänger.
  * Ein Rollen-Postfach sortiert nach Sachthema, nicht nach Absender.
  */
+/**
+ * Der feste Anfang jedes Anfrage-Betreffs — und das Merkmal, an dem sich eine
+ * Antwort darauf von einer Antwort auf den Kommunen-Brief unterscheiden lässt.
+ *
+ * WARUM DAS NÖTIG IST (10.09.2026, gemessen von der Outreach-Sitzung): Beide
+ * Mails gehen an dasselbe Rollen-Postfach derselben Gemeinde, und der
+ * Rücklauf-Lauf ordnet über die Absender-DOMAIN zu. Ohne ein Merkmal verbucht
+ * er die Antwort auf eine Förder-Sachfrage als Antwort auf den Werbebrief —
+ * bei 64 angeschriebenen Gemeinden mit Förderprogramm im Katalog ist das kein
+ * Randfall, und es zerstört genau die Kennzahl, an der der Erfolg des
+ * Anschreibens gemessen wird.
+ *
+ * KEIN PRÄFIX IN ECKIGEN KLAMMERN. Ein „[Förderdaten]" vor dem Betreff ist das
+ * Kennzeichen einer Maschine, und die Mail ist als Nachricht von einem Menschen
+ * gemeint (Betreiber, 10.09.2026). Der Betreff war ohnehin unverwechselbar; er
+ * steht jetzt nur als Konstante da, damit beide Seiten dieselbe Zeichenkette
+ * benutzen statt sie zu tippen.
+ */
+export const INQUIRY_BETREFF_ANFANG = "Aktueller Stand des Förderprogramms";
+
 export function inquirySubject(c: InquiryContext): string {
-  return `Aktueller Stand des Förderprogramms „${c.programName}"`;
+  return `${INQUIRY_BETREFF_ANFANG} „${c.programName}"`;
 }
 
 /**

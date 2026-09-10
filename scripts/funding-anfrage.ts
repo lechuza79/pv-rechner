@@ -206,6 +206,25 @@ async function baueAnfrage(d: Db, id: string): Promise<Fertig> {
  * Geraten wird nichts — eine erfundene Amtsadresse kommt als Unzustellbarkeit
  * zurück, im besten Fall.
  */
+/**
+ * Wie lange ist das Kommunen-Anschreiben an dieselbe Stelle her?
+ *
+ * `null` heißt „nie angeschrieben" — und das ist der Normalfall, nicht die
+ * Ausnahme: Von 192 Fördergebieten im Katalog haben 64 einen Brief bekommen.
+ */
+async function tageSeitAnschreiben(d: Db, id: string): Promise<number | null> {
+  const { FUNDING_PROGRAMS } = await import("../lib/funding-programs");
+  const ags = FUNDING_PROGRAMS[id]?.agsCode;
+  if (!ags) return null;
+  const zeilen = await hole<{ contacted_at: string | null }>(
+    d,
+    `kommunen_kontakt?region_id=eq.${ags}&select=contacted_at`,
+  );
+  const wann = zeilen[0]?.contacted_at;
+  if (!wann) return null;
+  return Math.floor((Date.now() - Date.parse(wann)) / 86_400_000);
+}
+
 async function empfaengerFuer(d: Db, id: string): Promise<string | null> {
   const { FUNDING_PROGRAMS } = await import("../lib/funding-programs");
   const ags = FUNDING_PROGRAMS[id]?.agsCode;
@@ -272,10 +291,42 @@ async function baueTransport() {
   return { transport, konfig: smtp.konfig };
 }
 
-async function verschicke(d: Db, fertige: Fertig[]) {
+/**
+ * Verschicken — und zwar so, dass es nicht nach Maschine aussieht.
+ *
+ * `automatisch` trennt die beiden Wege: Der Lauf aus dem Zeitplan hält sich an
+ * Bürozeit und unrunde Minuten und legt Pausen zwischen die Mails. Ein von Hand
+ * ausgelöster Versand tut das NICHT — dort sitzt ein Mensch davor, der weiß,
+ * wann er schreibt, und eine Sperre wäre dort nur Schikane.
+ */
+async function verschicke(d: Db, fertige: Fertig[], automatisch = false) {
+  const { amtsVersandzeitOk, pauseZwischenMails } = await import("../lib/versandzeit");
+
+  if (automatisch) {
+    const fenster = amtsVersandzeitOk(new Date());
+    if (!fenster.ok) {
+      console.log(`Nicht verschickt: ${fenster.grund}. Nächstes Fenster: ${fenster.naechstes}`);
+      return;
+    }
+  }
+
   const { transport, konfig } = await baueTransport();
   try {
-    for (const f of fertige) {
+    for (const [i, f] of fertige.entries()) {
+      // Die Pause liegt VOR der Mail, nicht dahinter: Nach der letzten zu
+      // warten kostet Laufzeit und ändert an keinem Zeitstempel etwas.
+      if (automatisch && i > 0) {
+        const ms = pauseZwischenMails(Math.random());
+        console.log(`  … ${Math.round(ms / 60_000)} Minuten Pause`);
+        await new Promise((r) => setTimeout(r, ms));
+        // Das Fenster kann während der Pause zugehen — dann bleibt der Rest
+        // liegen, statt um 17:04 doch noch hinauszugehen.
+        const nochOk = amtsVersandzeitOk(new Date());
+        if (!nochOk.ok) {
+          console.log(`  abgebrochen: ${nochOk.grund}. Der Rest kommt beim nächsten Lauf.`);
+          return;
+        }
+      }
       const eintragId = await merkeAnfrage(d, f);
       const info = await transport.sendMail({
         from: konfig.from,
@@ -383,6 +434,7 @@ async function autoLauf(d: Db, senden: boolean) {
       programId: s.programId,
       eskaliert: true,
       empfaenger: await empfaengerFuer(d, s.programId),
+      tageSeitBrief: await tageSeitAnschreiben(d, s.programId),
     });
   }
 
@@ -404,7 +456,7 @@ async function autoLauf(d: Db, senden: boolean) {
     console.log("\n— nur angesehen. Zum Abschicken: --senden");
     return;
   }
-  await verschicke(d, fertige);
+  await verschicke(d, fertige, true);
 }
 
 async function main() {

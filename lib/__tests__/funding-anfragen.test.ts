@@ -22,7 +22,10 @@ import {
  * unterscheiden.
  */
 describe("Wer eine Anfrage bekommt", () => {
-  const kandidat = (id: string, extra: Partial<{ eskaliert: boolean; empfaenger: string | null }> = {}) => ({
+  const kandidat = (
+    id: string,
+    extra: Partial<{ eskaliert: boolean; empfaenger: string | null; tageSeitBrief: number | null }> = {},
+  ) => ({
     programId: id,
     eskaliert: true,
     empfaenger: `info@${id}.de`,
@@ -56,6 +59,24 @@ describe("Wer eine Anfrage bekommt", () => {
     const { senden, uebersprungen } = faelligeAnfragen(viele, new Set());
     expect(senden).toHaveLength(MAX_JE_LAUF);
     expect(uebersprungen.filter((u) => u.grund.includes("Höchstzahl"))).toHaveLength(5 - MAX_JE_LAUF);
+  });
+
+  it("nicht, wenn dort gerade erst der Kommunen-Brief ankam", () => {
+    // Zwei Mails von uns binnen Tagen sind für die Empfängerin eine Sache, für
+    // uns zwei — und danach ist die Reaktion auf den Brief nicht mehr die
+    // Reaktion auf den Brief.
+    const { senden, uebersprungen } = faelligeAnfragen([kandidat("a", { tageSeitBrief: 3 })], new Set());
+    expect(senden).toEqual([]);
+    expect(uebersprungen[0].grund).toContain("Kommunen-Anschreiben");
+  });
+
+  it("nach der Frist wieder", () => {
+    expect(faelligeAnfragen([kandidat("a", { tageSeitBrief: 20 })], new Set()).senden).toEqual(["a"]);
+  });
+
+  it("wer nie einen Brief bekam, wird davon nicht gebremst", () => {
+    // Der Normalfall: Von 192 Fördergebieten haben 64 ein Anschreiben bekommen.
+    expect(faelligeAnfragen([kandidat("a", { tageSeitBrief: null })], new Set()).senden).toEqual(["a"]);
   });
 
   it("eine leere Lage ist ein Ergebnis, kein Fehler", () => {
@@ -146,6 +167,37 @@ describe("Eine Antwort der richtigen Anfrage zuordnen", () => {
       von: "verwaltung@waldalgesheim.de",
       betreff: "AW: Waldalgesheim auf Platz 1 von 53",
       roh: "Vielen Dank für Ihre Nachricht, wir prüfen das.",
+    };
+    expect(ordneAnfrageZu(mail, offen, betreffe)).toBeNull();
+  });
+
+  it("erkennt den Betreff auch, wenn das Mailprogramm ihn umgebrochen hat", () => {
+    // GEMESSEN VON DER OUTREACH-SITZUNG (10.09.2026): Bricht ein Mailprogramm
+    // den zitierten Betreff um, steht mitten darin eine neue Zeile mit „> ".
+    // Wörtlich gesucht bleibt die Antwort unerkannt — und hier ist das teurer
+    // als in der Gegenrichtung: Die Frage stünde für immer als „ohne Antwort"
+    // da, und der nächste Lauf schriebe die Stelle womöglich noch einmal an.
+    const mail = {
+      von: "verwaltung@waldalgesheim.de",
+      betreff: "AW: Ihre Anfrage",
+      roh: [
+        "Guten Tag, es gilt der Betrag aus der Richtlinie.",
+        "",
+        "> Am 09.09.2026 schrieben Sie:",
+        "> Aktueller Stand des",
+        "> Förderprogramms „Installation von Balkon-Photovoltaik-Anlagen\"",
+      ].join("\r\n"),
+    };
+    expect(ordneAnfrageZu(mail, offen, betreffe)).toBe("waldalgesheim-balkon-pv");
+  });
+
+  it("ein Größerzeichen MITTEN im Text bleibt Inhalt, nicht Zitatzeichen", () => {
+    // Eine Marke, die über beliebige Zeichen hinwegliest, erkennt irgendwann
+    // etwas, das keine Antwort auf unsere Frage ist.
+    const mail = {
+      von: "verwaltung@waldalgesheim.de",
+      betreff: "Aktueller > Stand des Förderprogramms „Installation von Balkon-Photovoltaik-Anlagen\"",
+      roh: "",
     };
     expect(ordneAnfrageZu(mail, offen, betreffe)).toBeNull();
   });

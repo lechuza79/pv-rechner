@@ -260,47 +260,6 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: npm run foerder:technik -- --limit 800
 
-      # Bei Programmen, an die wir seit drei Läufen nicht mehr herankommen, wird
-      # gefragt — bei der Stelle selbst.
-      #
-      # DAS IST DIE LETZTE STUFE DER ESKALATIONSLEITER und der einzige Fall, den
-      # eine Maschine auslösen darf: „drei Versuche ohne Amtsquelle" ist
-      # gemessen, nicht geurteilt. Der andere Anlass — die Seite ist erreichbar
-      # und sagt zwei verschiedene Dinge — bleibt beim Modell-Lauf: Der
-      # Seiten-Wächter weiß, DASS sich etwas bewegt hat, nie WAS dort steht.
-      #
-      # Die Bremsen liegen im Code (lib/funding-anfragen.ts), nicht hier: je
-      # Programm genau eine Frage, nie eine zweite, höchstens drei je Lauf, nur
-      # an Funktionspostfächer. Was hinausging, steht in `funding_anfragen`
-      # samt Wortlaut; ohne dieses Protokoll wäre „kein Nachfassen" ein Vorsatz
-      # statt einer Bedingung.
-      #
-      # `continue-on-error`, weil ein hängender Mailserver nicht den Bericht
-      # darunter verhindern soll — und weil dieser Schritt nichts repariert,
-      # sondern nur fragt.
-      - name: Sachfragen an blockierte Förderstellen
-        continue-on-error: true
-        timeout-minutes: 5
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-          OUTREACH_SMTP_HOST: ${{ secrets.OUTREACH_SMTP_HOST }}
-          OUTREACH_SMTP_PORT: ${{ secrets.OUTREACH_SMTP_PORT }}
-          OUTREACH_SMTP_USER: ${{ secrets.OUTREACH_SMTP_USER }}
-          OUTREACH_SMTP_PASS: ${{ secrets.OUTREACH_SMTP_PASS }}
-          OUTREACH_MAIL_FROM: ${{ secrets.OUTREACH_MAIL_FROM }}
-        # OHNE POSTFACH-ZUGANG WIRD NUR GEZEIGT, NICHT VERSCHICKT. Ein Lauf, der
-        # ohne Zugangsdaten trotzdem „gesendet" meldete, wäre die gefährlichere
-        # Variante: Er sähe grün aus und hätte nie gefragt.
-        run: |
-          if [ -n "$OUTREACH_SMTP_PASS" ]; then
-            npm run foerder:anfrage -- --auto --senden
-          else
-            echo "Postfach-Zugang fehlt — es wird nur angezeigt, was fällig wäre."
-            npm run foerder:anfrage -- --auto
-          fi
-
       # Zum Schluss ein Bericht — sonst stehen die Zahlen der vier Läufe nur im
       # Protokoll dieses Workflows, und das liest niemand. Ein Automatismus,
       # dessen Ergebnis nirgends ankommt, ist von einem stillstehenden nicht zu
