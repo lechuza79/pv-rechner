@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { bounceArt, ersatzAdresseTaugt, toteAdressen, MAX_DAUERHAFTE_BOUNCER } from "../outreach-bounce";
+import {
+  bounceArt,
+  ersatzAdresseTaugt,
+  toteAdressen,
+  MAX_DAUERHAFTE_BOUNCER,
+  STATUS_BOUNCE_BEHOBEN,
+} from "../outreach-bounce";
 
 /**
  * DIE EINE UNTERSCHEIDUNG, AN DER DER GANZE AUTOFIX HÄNGT.
@@ -111,6 +117,14 @@ describe("Taugt die neu gefundene Adresse?", () => {
 
   it("ohne Notiz gibt es keine Geschichte, aber auch keinen Fehler", () => {
     expect(toteAdressen(null)).toEqual([]);
+  });
+
+  it("der Zustand der Übergabe hat einen Namen, den beide Seiten importieren", () => {
+    // Nicht zurück auf „offen": Dort heißt offen „nie angeschrieben", und das
+    // stimmt nach einem gescheiterten Versuch nicht mehr. Getippt stünde der
+    // Name auf zwei Seiten, und die eine ändert sich irgendwann ohne die
+    // andere — dann bleibt die Gemeinde für immer liegen.
+    expect(STATUS_BOUNCE_BEHOBEN).toBe("bounce-behoben");
   });
 
   it("nach zwei dauerhaften Bouncern ist Schluss", () => {

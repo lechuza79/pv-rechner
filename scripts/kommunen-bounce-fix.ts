@@ -77,7 +77,14 @@ async function main() {
   }
   const kopf = { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" };
 
-  const { bounceArt, ersatzAdresseTaugt, toteAdressen, MAX_DAUERHAFTE_BOUNCER, WIEDERVORLAGE_TAGE } = await import(
+  const {
+    bounceArt,
+    ersatzAdresseTaugt,
+    toteAdressen,
+    MAX_DAUERHAFTE_BOUNCER,
+    WIEDERVORLAGE_TAGE,
+    STATUS_BOUNCE_BEHOBEN,
+  } = await import(
     "../lib/outreach-bounce"
   );
   const { postfachBefund } = await import("../lib/outreach-mail");
@@ -106,6 +113,7 @@ async function main() {
   log(`${zeilen.length} unzustellbare Anschreiben\n`);
 
   let ersetzt = 0;
+  let uebergeben = 0;
   for (const z of zeilen) {
     const reg = Array.isArray(z.mastr_regions) ? z.mastr_regions[0] : z.mastr_regions;
     const ort = reg?.name ?? z.region_id;
@@ -131,7 +139,19 @@ async function main() {
     // eingetragene Adresse sei tot; das ist die Sorte Falschaussage, die man
     // einem grünen Lauf nicht ansieht.
     if (tot && !toteAdressen(z.notes).includes(tot.toLowerCase())) {
-      log(`${ort}: Adresse steht schon (${tot}) — es fehlt nur der Neuversand`);
+      // SCHON BEHOBEN HEISST NICHT ERLEDIGT: Solange der Zustand „bounce"
+      // bleibt, nimmt der Versandlauf die Gemeinde nie wieder auf, und der
+      // Brief kommt nie an. Die Übergabe fehlt also noch — sie ist das
+      // Einzige, was hier zu tun ist.
+      log(`${ort}: Adresse steht schon (${tot}) — zur Wiedervorlage übergeben`);
+      uebergeben++;
+      if (hat("schreiben")) {
+        await fetch(`${url}/rest/v1/kommunen_kontakt?region_id=eq.${z.region_id}`, {
+          method: "PATCH",
+          headers: kopf,
+          body: JSON.stringify({ outreach_status: STATUS_BOUNCE_BEHOBEN, updated_at: new Date().toISOString() }),
+        });
+      }
       continue;
     }
     if (bouncerBisher(z.notes) >= MAX_DAUERHAFTE_BOUNCER) {
@@ -183,13 +203,26 @@ async function main() {
     ersetzt++;
     if (!hat("schreiben")) continue;
 
-    const zeile = `[${heuteInBerlin()}] Postfach nach Unzustellbarkeit ersetzt: ${tot} → ${neu}. Beleg: ${woher}`;
+    // WOHER DIE ADRESSE STAMMT, GEHÖRT AN SIE — und die wichtigste Herkunft ist
+    // „Verwaltung": Liegt die neue Adresse auf einer anderen Domain als die
+    // Website der Gemeinde, schreiben wir NICHT mehr an die Gemeinde selbst,
+    // sondern an das Amt, das sie verwaltet. Das muss ablesbar bleiben, ohne
+    // dass jemand die Adresse deuten muss (Schashagen ist genau dieser Fall).
+    const neuDomain = neu.split("@")[1] ?? "";
+    const quelle = eigene && neuDomain !== eigene ? "verwaltung" : woher === z.impressum_url ? "impressum" : "kontaktseite";
+
+    const zeile = `[${heuteInBerlin()}] Postfach nach Unzustellbarkeit ersetzt: ${tot} → ${neu} (${quelle}). Beleg: ${woher}`;
     await fetch(`${url}/rest/v1/kommunen_kontakt?region_id=eq.${z.region_id}`, {
       method: "PATCH",
       headers: kopf,
       body: JSON.stringify({
         rollen_email: neu,
-        rollen_email_quelle: "bounce-recherche",
+        rollen_email_quelle: quelle,
+        // DER ZUSTAND IST DIE ÜBERGABE AN DEN VERSANDLAUF, und mehr fasst
+        // dieser Lauf nicht an: Das Kontaktdatum bleibt stehen (daran hängt die
+        // Tagesmengen-Zählung des Anschreibens, und der Zeitpunkt des ersten,
+        // gescheiterten Versuchs wäre sonst für immer weg).
+        outreach_status: STATUS_BOUNCE_BEHOBEN,
         notes: z.notes ? `${z.notes}\n${zeile}` : zeile,
         updated_at: new Date().toISOString(),
       }),
@@ -197,11 +230,14 @@ async function main() {
   }
 
   log();
-  log(hat("schreiben") ? `${ersetzt} Adressen ersetzt.` : `${ersetzt} Adressen wären zu ersetzen. Zum Eintragen: --schreiben`);
-  // DER STATUS BLEIBT AUF „BOUNCE", und das ist kein Versäumnis: Ob eine
-  // Gemeinde wieder in den Versandtopf kommt, ist eine Entscheidung über die
-  // Kampagne und gehört in den Anschreiben-Lauf, nicht hierher.
-  log("Der Kampagnen-Status bleibt unverändert — den Neuversand löst der Anschreiben-Lauf aus.");
+  const bilanz = `${ersetzt} Adressen ersetzt, ${uebergeben} bereits gute Adressen übergeben`;
+  log(hat("schreiben") ? `${bilanz}.` : `${bilanz} — zum Eintragen: --schreiben`);
+  // VERSCHICKT WIRD HIER NICHT. Dieser Lauf macht die Gemeinde wieder
+  // erreichbar und übergibt sie; ob und wann ein Brief hinausgeht, entscheidet
+  // der Anschreiben-Lauf mit seinen Bremsen (Ferien, Wochentag, Tagespensum).
+  // Ein zweiter Versandweg hier wäre eine zweite Fassung dieser Bremsen, und
+  // eine davon veraltet.
+  log(`Ersetzte Orte stehen auf „${STATUS_BOUNCE_BEHOBEN}" — den Neuversand löst der Anschreiben-Lauf aus.`);
 }
 
 const direktAufgerufen = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);

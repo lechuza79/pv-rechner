@@ -106,6 +106,22 @@ export const WIEDERVORLAGE_TAGE = 5;
 export const MAX_DAUERHAFTE_BOUNCER = 2;
 
 /**
+ * Der Zustand einer Gemeinde, deren Adresse nach einer Unzustellbarkeit
+ * ersetzt wurde und die deshalb WIEDER angeschrieben werden soll.
+ *
+ * EIN EIGENER ZUSTAND, NICHT ZURÜCK AUF „OFFEN": Dort heißt offen „nie
+ * angeschrieben", und das stimmt nach einem gescheiterten Versuch nicht mehr.
+ *
+ * UND ER REICHT ALLEIN NICHT — gemessen von der Outreach-Sitzung: Deren
+ * Empfängerauswahl überspringt jeden Ort mit gesetztem Kontaktdatum,
+ * unabhängig vom Zustand. Das Datum zurückzusetzen wäre die falsche Reparatur
+ * (daran hängt die Tagesmengen-Zählung, und der Zeitpunkt des ersten Versuchs
+ * wäre für immer weg). Die Ausnahme baut deshalb der Versandlauf; hier steht
+ * nur der Name, damit ihn keine Seite tippt.
+ */
+export const STATUS_BOUNCE_BEHOBEN = "bounce-behoben";
+
+/**
  * Taugt die neu gefundene Adresse als Ersatz?
  *
  * DREI BEDINGUNGEN, und jede hat ihren Grund:
