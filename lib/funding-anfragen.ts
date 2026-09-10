@@ -17,6 +17,8 @@
 // entscheiden Funktionen ohne Datenbank — nur so lassen sie sich prüfen. Der
 // Zugriff liegt daneben und wird von den Läufen hereingereicht.
 
+import { normalisiert } from "./outreach-sachfrage";
+
 /** Eine verschickte Anfrage, so wie sie im Protokoll steht. */
 export type Anfrage = {
   programId: string;
@@ -155,14 +157,26 @@ export function ordneAnfrageZu(
 ): string | null {
   const vonDomain = mail.von.split("@")[1]?.toLowerCase() ?? "";
   if (!vonDomain) return null;
+  // DIESELBE NORMALISIERUNG WIE DIE WEICHE IM RÜCKLAUF, und zwar importiert
+  // statt nachgebaut: Beide beantworten dieselbe Frage an demselben Text, und
+  // zwei Fassungen davon liefen beim ersten abweichenden Mailprogramm
+  // auseinander — die eine ordnete zu, die andere nicht.
+  //
+  // Der Grund, warum es überhaupt eine Normalisierung braucht, ist gemessen
+  // (Outreach-Sitzung, 10.09.2026): Bricht ein Mailprogramm den zitierten
+  // Betreff um, steht mitten darin eine Zeile mit „> " — „Aktueller Stand >
+  // des Förderprogramms". Wörtlich gesucht bleibt genau diese Antwort
+  // unerkannt, und hier ist das teurer als in der Gegenrichtung: Die Frage
+  // stünde für immer als „ohne Antwort" da.
+  const nadelBar = (s: string) => normalisiert(s);
   const treffer = offene.filter((a) => {
     if ((a.empfaenger.split("@")[1] ?? "").toLowerCase() !== vonDomain) return false;
     const betreff = betreffZu.get(a.programId);
     if (!betreff) return false;
     // Der zitierte Betreff steht mal im Betreff der Antwort („AW: …"), mal nur
     // im zitierten Text darunter — beides zählt.
-    const nadel = betreff.toLowerCase();
-    return mail.betreff.toLowerCase().includes(nadel) || mail.roh.toLowerCase().includes(nadel);
+    const nadel = nadelBar(betreff);
+    return nadelBar(mail.betreff).includes(nadel) || nadelBar(mail.roh).includes(nadel);
   });
   return treffer.length === 1 ? treffer[0].programId : null;
 }

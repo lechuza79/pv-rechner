@@ -45,7 +45,7 @@ export type EingegangeneMail = {
  * Inhalt, und eine Marke, die über beliebige Zeichen hinwegliest, erkennt
  * irgendwann etwas, das keine Sachfrage ist.
  */
-function normalisiert(s: string): string {
+export function normalisiert(s: string): string {
   return s
     .toLowerCase()
     .replace(/^[>\s]+/gm, " ")

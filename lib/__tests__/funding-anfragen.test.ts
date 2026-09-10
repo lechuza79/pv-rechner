@@ -171,6 +171,37 @@ describe("Eine Antwort der richtigen Anfrage zuordnen", () => {
     expect(ordneAnfrageZu(mail, offen, betreffe)).toBeNull();
   });
 
+  it("erkennt den Betreff auch, wenn das Mailprogramm ihn umgebrochen hat", () => {
+    // GEMESSEN VON DER OUTREACH-SITZUNG (10.09.2026): Bricht ein Mailprogramm
+    // den zitierten Betreff um, steht mitten darin eine neue Zeile mit „> ".
+    // Wörtlich gesucht bleibt die Antwort unerkannt — und hier ist das teurer
+    // als in der Gegenrichtung: Die Frage stünde für immer als „ohne Antwort"
+    // da, und der nächste Lauf schriebe die Stelle womöglich noch einmal an.
+    const mail = {
+      von: "verwaltung@waldalgesheim.de",
+      betreff: "AW: Ihre Anfrage",
+      roh: [
+        "Guten Tag, es gilt der Betrag aus der Richtlinie.",
+        "",
+        "> Am 09.09.2026 schrieben Sie:",
+        "> Aktueller Stand des",
+        "> Förderprogramms „Installation von Balkon-Photovoltaik-Anlagen\"",
+      ].join("\r\n"),
+    };
+    expect(ordneAnfrageZu(mail, offen, betreffe)).toBe("waldalgesheim-balkon-pv");
+  });
+
+  it("ein Größerzeichen MITTEN im Text bleibt Inhalt, nicht Zitatzeichen", () => {
+    // Eine Marke, die über beliebige Zeichen hinwegliest, erkennt irgendwann
+    // etwas, das keine Antwort auf unsere Frage ist.
+    const mail = {
+      von: "verwaltung@waldalgesheim.de",
+      betreff: "Aktueller > Stand des Förderprogramms „Installation von Balkon-Photovoltaik-Anlagen\"",
+      roh: "",
+    };
+    expect(ordneAnfrageZu(mail, offen, betreffe)).toBeNull();
+  });
+
   it("eine fremde Domain zählt nie", () => {
     const mail = {
       von: "info@irgendwo.de",
