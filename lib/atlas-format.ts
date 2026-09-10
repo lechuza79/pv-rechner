@@ -130,6 +130,21 @@ export const batterieMittelTeile = (kwh: number): Messwert => ({ value: dez(kwh,
 export const fmtBatterieMittel = (kwh: number): string => zusammen(batterieMittelTeile(kwh));
 
 /**
+ * Die Speichergröße EINES KONKRETEN PRODUKTS — mit Nachkommastelle, weil sie
+ * Teil der Produktbezeichnung ist.
+ *
+ * `speicherKwhTeile` rundet auf ganze kWh; das ist für Regions-Summen richtig
+ * und für ein Kaufangebot falsch. Der Shop führt Stufen von 2,11 kWh: gerundet
+ * standen bei uns „2" und „4" — und aus 10,55 wurde „11", eine Größe, die es
+ * dort gar nicht gibt. Dieselbe Klasse wie ein gerundeter Kaufpreis: Der Leser
+ * findet die Zahl im Shop nicht wieder.
+ */
+export const produktSpeicherTeile = (kwh: number): Messwert => ({
+  value: Number.isInteger(kwh) ? nf(kwh) : dez(kwh, 2),
+  unit: "kWh",
+});
+
+/**
  * Speicherdichte: Batteriekapazität je installiertem kWp DACHLEISTUNG.
  *
  * Der Nenner lässt Freiflächen-Parks bewusst weg (ein Solarpark ohne Batterie
