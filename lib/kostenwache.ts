@@ -242,6 +242,50 @@ export const BASIS_TAGE = 14;
  */
 export const SPRUNG_FAKTOR = 2.5;
 
+// EIN GEMESSENER FEHLALARM, DER JEDEN MONAT WIEDERKOMMT — und der Grund, warum
+// er hier steht statt in einer höheren Schwelle.
+//
+// Am 09.09.2026 meldete die Wache für solar-check.io einen Sprung in der FLÄCHE
+// auf das 4,44-fache: 11.912 verschiedene Adressen gegen ein Vortagesniveau von
+// 2.683. Nachgesehen, nicht vermutet — die Aufteilung nach Route für diesen Tag:
+//
+//   • 13.275 der 20.867 Aufbauten entfielen auf Atlas-Gemeindeseiten.
+//   • 11.606 davon fielen in DREI Stunden (16:00–19:00 UTC). In den fünf
+//     Stunden danach waren es 208.
+//   • Genau in diesem Fenster lief der monatliche MaStR-Datenlauf
+//     (16:11–18:54 UTC, erfolgreich) — und mit ihm sein Aufwärm-Crawl, der
+//     bauartbedingt ALLE rund 11.000 Gemeindeseiten einmal abruft.
+//
+// Das ist also unsere eigene Wartung, und sie ist gewollt: Der Crawl bezahlt die
+// Kaltaufbauten einmal, damit der erste echte Besucher nach dem Datenlauf eine
+// gecachte Seite bekommt. Die Wache hat dabei nichts falsch gemessen — sie hat
+// genau das gefunden, wofür es sie gibt (viele neue Adressen), und die Ursache
+// war beim Nachsehen harmlos.
+//
+// WARUM TROTZDEM NICHTS AN DER SCHWELLE GEÄNDERT WIRD: Sie hochzusetzen ließe
+// den Befund verschwinden, statt ihn zu erklären — und nähme uns die Empfindlich-
+// keit für den echten Fall an jedem anderen Tag. Der Aufwärm-Crawl liegt mit rund
+// 11.400 Adressen ohnehin über jeder Schwelle, die noch etwas fängt.
+//
+// WARUM ER SO SELTEN AUFFÄLLT: Der Datenlauf ist monatlich, und der vorige
+// (05.09.2026) ist nach 26 Sekunden gescheitert. Der letzte erfolgreiche davor
+// war der 05.08.2026 — außerhalb des 14-Tage-Fensters, aus dem das Vergleichs-
+// niveau entsteht. Deshalb sieht ein Datenlauf-Tag IMMER wie ein Sprung aus, und
+// zwar in der Fläche, nicht in der Last.
+//
+// FÜR DEN NÄCHSTEN LAUF: Meldet die Wache einen Flächensprung, ist die erste
+// Frage, ob an diesem Tag der Datenlauf lief (`gh run list --workflow=mastr-
+// refresh.yml`). Passen Fenster und Menge zusammen, ist der Befund erledigt.
+// Passen sie NICHT zusammen — Sprung an einem Tag ohne Datenlauf, oder deutlich
+// mehr Adressen als der Atlas hergibt —, dann ist es ein Fremder, und dann gilt
+// die Anleitung in der Meldung: nachsehen, wer ruft und ob es aus dem Cache kommt.
+//
+// NICHT GEBAUT, mit Absicht: Die Wache könnte den Datenlauf-Tag selbst benennen.
+// Dafür bräuchte sie ein Signal, wann der Crawl lief — der BNetzA-Datenstand ist
+// es nicht (das ist das Veröffentlichungsdatum der Behörde, nicht unser Lauf).
+// Ein neues Signal dafür ist eine eigene Entscheidung mit mehreren vertretbaren
+// Antworten, keine Reparatur; sie gehört nicht in einen Auto-Fix.
+
 /**
  * Unterhalb dieser Tagesmengen wird kein Sprung gemeldet.
  *

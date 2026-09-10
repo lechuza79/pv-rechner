@@ -1023,23 +1023,29 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "bonn-solares", name: "Solares Bonn", traeger: "Bundesstadt Bonn",
     level: "kommune", region: "Bonn", bundesland: "Nordrhein-Westfalen", agsCode: "05314",
     url: "https://www.bonn.de/themen-entdecken/klima/klima-foerderprogramme/foerderprogramm-solares-bonn.php",
-    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
+    foerdert: ["pv", "balkon"],
     coveredCosts: "Zuschuss je kWp (Budget 2026 erschöpft)",
     maxFoerderung: "max. 25.000 € je Objekt (Denkmal 27.500 €)",
     rates: [
-      { label: "Dach-PV Wohngebäude bis 3 Wohneinheiten (Vollbelegung)", value: "100 €/kWp" },
-      { label: "Mehrfamilienhaus ab 4 Wohneinheiten / Fassade", value: "300 €/kWp" },
-      { label: "Denkmal / Nicht-Wohngebäude / Freifläche", value: "200 €/kWp" },
+      { label: "Dach-PV Wohngebäude bis 3 Wohneinheiten (Vollbelegung)", value: "100 €/kWp", nur: ["pv"] },
+      { label: "Mehrfamilienhaus ab 4 Wohneinheiten / Fassade", value: "300 €/kWp", nur: ["pv"] },
+      { label: "Denkmal / Nicht-Wohngebäude / Freifläche", value: "200 €/kWp", nur: ["pv"] },
+      { label: "Balkonkraftwerk — Eigentum", value: "100 € je kWp Modulleistung, höchstens 30 % des Rechnungspreises", nur: ["balkon"] },
+      { label: "Balkonkraftwerk — Miete oder geförderter Wohnraum", value: "200 € je kWp Modulleistung, höchstens 60 % des Rechnungspreises", nur: ["balkon"] },
+      { label: "Balkonkraftwerk — mit Bonn-Ausweis", value: "800 € je kWp Modulleistung, höchstens 90 % des Rechnungspreises", nur: ["balkon"] },
     ],
     conditions: [
-      "Mittel 2026 ausgeschöpft — Wiedereröffnung üblicherweise zum Jahresbeginn",
+      "Mittel 2026 ausgeschöpft — die Stadt nennt keinen Termin, ab wann wieder beantragt werden kann, und informiert auf ihrer Programmseite darüber",
       "Der Antrag darf vor oder nach dem Kauf gestellt werden, spätestens drei Monate nach der Schlussrechnung",
       "Bis zum Bewilligungsbescheid geht der Kauf auf eigenes Risiko; die Stadt empfiehlt deshalb, vorher zu beantragen",
       "Nur Bestandsgebäude (fertiggestellt bis 31.12.2021)",
       "Standardsatz nur bei voller Belegung der geeigneten Dachfläche",
-      "Der städtische Zuschuss darf 30 % der Gesamtkosten nicht überschreiten",
+      { text: "Der städtische Zuschuss darf 30 % der Gesamtkosten nicht überschreiten", nur: ["pv"] },
       "Mit anderen Förderprogrammen kombinierbar, zusammen höchstens 90 % der Gesamtkosten",
+      { text: "Der Wechselrichter hält die gesetzliche Bagatellgrenze für die Einspeiseleistung ein (derzeit 800 Watt)", nur: ["balkon"] },
+      { text: "Zum Rechnungspreis zählen Module, Wechselrichter, Kabel, Stecker sowie Befestigung und Speicher — Versand- und Speditionskosten nicht", nur: ["balkon"] },
     ],
     combinableWith: BUND,
     // ANTRAGSZEITPUNKT KORRIGIERT (01.09.2026, an Seite und Richtlinie gelesen).
@@ -1073,6 +1079,35 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // bei uns fehlten: der 30-%-Deckel auf die Gesamtkosten (Nr. 9) und die
     // Kumulierungsgrenze von 90 % (Nr. 6). Kein Rechenwert im Katalog, also kein
     // Geldeffekt — aber zwei Angaben, nach denen jemand seine Rechnung aufstellt.
+    //
+    // ── 10.09.2026, an der Programmseite gelesen ───────────────────────────────
+    // DIE WIEDERERÖFFNUNG WAR UNSERE ERFINDUNG. Hier stand „Wiedereröffnung
+    // üblicherweise zum Jahresbeginn" — die Stadt sagt das nirgends. Sie schreibt:
+    // „Wir informieren an dieser Stelle, wenn eine Antragstellung wieder möglich
+    // ist", ohne Termin, und daneben inzwischen in der VERGANGENHEITSFORM: „Das
+    // Förderprogramm Solares Bonn lief von September 2021 bis Juni 2026. In diesem
+    // Zeitraum konnten 6.600 Anträge bewilligt und so ein Ausbau von bis zu 33.500
+    // Kilowatt peak an Solarstrom ermöglicht werden." Wer unseren alten Satz las,
+    // wartete auf einen Januar, den niemand zugesagt hat. Dieselbe Fehlerklasse wie
+    // Berlins „Projektstart erst nach Förderzusage" einen Tag zuvor: eine Aussage,
+    // die auf unserer Seite entstanden ist und die die Quelle nicht trägt.
+    // Der Status bleibt „ausgeschoepft" — die Vergangenheitsform allein macht das
+    // Programm nicht zum eingestellten, und die Stadt kündigt weiter an zu
+    // informieren. Beides zieht ohnehin kein Geld ab.
+    //
+    // BALKONKRAFTWERKE FEHLTEN GANZ. Die Programmseite führt sie als Fördermodul
+    // M13 mit einer SOZIALEN STAFFELUNG: 100 €/kWp Modulleistung für Eigentum
+    // (höchstens 30 % des Rechnungspreises), 200 €/kWp für Mietende und
+    // geförderten Wohnraum (60 %), 800 €/kWp mit gültigem Bonn-Ausweis (90 %).
+    // Der Eintrag war ein reiner Dach-Katalogeintrag und behauptete damit auf der
+    // Bonner Stadtseite und im Balkon-Rechner, Bonn fördere keine
+    // Balkonkraftwerke — dieselbe Falschauskunft wie ein zu hoher Betrag, nur
+    // andersherum.
+    // BEWUSST OHNE RECHENWERT: Der Satz hängt am Bonn-Ausweis, also am Einkommen,
+    // und ist zusätzlich am Rechnungspreis gedeckelt. Beides kann das Modell nicht
+    // ausdrücken, und „was das Modell nicht ausdrücken kann, bekommt keinen
+    // strukturierten Satz". Das Programm informiert also, zieht aber nichts ab —
+    // was es als ausgeschöpftes ohnehin nicht dürfte.
   },
   "goettingen-klimafonds": {
     id: "goettingen-klimafonds", name: "KlimaFonds Göttingen",
@@ -1959,6 +1994,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Haushaltsmittel auf 20.000 € pro Jahr begrenzt",
       "Vorerst befristet bis zum 31.12.2026, vorbehaltlich der Haushaltslage",
       "Contracting, Leasing und Pacht sind ausdrücklich nicht förderfähig",
+      // 10.09.2026 an der Amtsseite ergänzt, dort hervorgehoben: „Die Maßnahme
+      // muss VOR BEGINN bei der Samtgemeindeverwaltung / Gemeinde Wietzen
+      // beantragt werden". Die teuerste Sorte fehlender Bedingung — wer erst
+      // baut und dann beantragt, bekommt nichts, und das stand bei uns nirgends.
+      "Der Antrag muss vor Beginn der Maßnahme gestellt werden — wer zuerst baut, bekommt nichts",
     ],
     combinableWith: BUND,
     pvPerKwp: 100, pvCap: 1000, speicherPerKwh: 200, speicherCap: 1000,

@@ -102,7 +102,17 @@ export const CO2_PRICE: Co2PriceConfig = {
   // CO2-Preis. Wie beim EEG-Entwurf trägt die Drucksache quer den Vermerk
   // „Vorabfassung – wird durch die lektorierte Fassung ersetzt"; wer daraus eine
   // Absatznummer abschreibt, prüft sie an der endgültigen Fassung nach.
-  geprueftIso: "2026-09-09",
+  // 10.09.2026: unverändert, kein Wert und kein Zustand bewegt. Auch am
+  // Donnerstag dieser Sitzungswoche kein Punkt zum BEHG oder zum CO2-Preis —
+  // nachgesehen in der tagesaktuellen Tagesordnung (Stand 09.09.2026, 12.45 Uhr)
+  // und in der kompletten (Stand 08.09.2026, 14.15 Uhr). Neu ist ein amtlicher
+  // Termin auf der ANDEREN Seite: Die Bundesrats-Drucksache 462/26 steht als
+  // TOP 47 auf dem Tagesordnungs-ENTWURF der 1068. Sitzung am 25.09.2026
+  // (Entwurfsstand 08.09.2026) — das ist die noch ausstehende Stellungnahme des
+  // ersten Durchgangs, kein Beschluss. Nicht in einen sichtbaren Text übernommen:
+  // Der Bundesrat nennt seine Liste selbst „Entwurf Tagesordnung", sie kann sich
+  // bis zur Sitzung ändern.
+  geprueftIso: "2026-09-10",
   // Bewusst VOR dem erwarteten Bundestagsbeschluss (Herbst 2026): Ein Satz, der
   // "Bundestag steht aus" sagt, wird am Tag des Beschlusses von selbst falsch.
   reviewBy: "2026-11-30",
