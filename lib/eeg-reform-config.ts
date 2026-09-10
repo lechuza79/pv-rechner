@@ -423,10 +423,46 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // KEINEN einzigen Punkt zum EEG, zur Photovoltaik oder zur Einspeisung. Der
   // Zustand bleibt damit „regierungsentwurf"; eingebracht ist nicht beschlossen.
   //
-  // Nächster Lauf: die Sondersitzung des Wirtschaftsausschusses vom 08.09.2026
-  // — hat sie diesen Entwurf behandelt? Ihre Tagesordnung wird nicht
-  // veröffentlicht, aber ein Ausschussbericht wäre eine Drucksache.
-  geprueftIso: "2026-09-09",
+  // 10.09.2026: unverändert — und die beiden offenen Spuren von gestern sind
+  // beide zu Ende verfolgt.
+  //
+  //   SPUR 1 ERLEDIGT, die Sondersitzung war es NICHT. Der Wirtschaftsausschuss
+  //   hat am 08.09.2026 keinen EEG-Punkt behandelt: einziger Tagesordnungspunkt
+  //   waren „Berichte des Bundesministeriums für Wirtschaft und Energie" zu
+  //   Gasspeicherständen, den volkswirtschaftlichen Kosten des Hitzesommers, der
+  //   Krise bei Volkswagen und dem Antragsstopp des Mittelstandsprogramms ZIM.
+  //   NEBENBEFUND, und deshalb steht er hier: Die Vermutung von gestern, die
+  //   Tagesordnung einer nicht öffentlichen Ausschusssitzung werde „nicht
+  //   veröffentlicht", ist FALSCH. Sie liegt als PDF auf bundestag.de
+  //   (Mitteilung vom 31.08.2026 zur 45. Sitzung) und ist frei abrufbar. Eine
+  //   Annahme über das Verhalten einer fremden Stelle, ungeprüft in eine
+  //   Arbeitsnotiz geschrieben — genau die Klasse, gegen die Gate-Regel 3 steht,
+  //   nur über fremdes Verfahren statt über unseren Code. Wer künftig eine
+  //   Ausschusssitzung einordnen will, holt ihre Tagesordnung, statt sie für
+  //   geheim zu halten.
+  //
+  //   SPUR 2: auch am Donnerstag der Sitzungswoche kein EEG-Punkt. Nachgesehen
+  //   in der tagesaktuellen Tagesordnung (Stand 9. September 2026, 12.45 Uhr)
+  //   und noch einmal in der kompletten (Stand 8. September, 14.15 Uhr): kein
+  //   Treffer auf EEG, Erneuerbare, Einspeisung, Photovoltaik oder Solar — die
+  //   einzigen Energie-Fundstellen sind der Haushalts-Einzelplan 09 und eine
+  //   Ausschussüberweisung.
+  //
+  // ERSTMALS EIN AMTLICHER BERATUNGSTERMIN, und er gehört dem BUNDESRAT: Die
+  // Drucksache 470/26 steht als TOP 55 auf dem TAGESORDNUNGS-ENTWURF der 1068.
+  // Sitzung am 25.09.2026 (Entwurfsstand 08.09.2026). Das ist der erste
+  // Durchgang nach Art. 76 Abs. 2 GG, also die Stellungnahme — KEIN Beschluss
+  // und kein Zustandswechsel. Bewusst NICHT in einen sichtbaren Text übernommen:
+  // Der Bundesrat nennt seine eigene Liste „Entwurf Tagesordnung", sie kann sich
+  // bis zur Sitzung ändern, und ein Datum in einer Nutzer-Auskunft wäre dann
+  // eine Behauptung über die Zukunft. Die Vorgangsseite zu 470/26 selbst ist
+  // heute unverändert: Titel, Eingang 14.08.2026, Eilbedürftigkeitsvermerk,
+  // Ausschusszuweisung — kein Plenarabschnitt, keine Stellungnahme.
+  //
+  // Nächster Lauf: die Bundesratssitzung am 25.09.2026 (Stellungnahme?) und
+  // parallel weiter die Bundestags-Tagesordnung — der Entwurf ist als besonders
+  // eilbedürftig eingebracht und läuft dort unabhängig vom Bundesrat.
+  geprueftIso: "2026-09-10",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

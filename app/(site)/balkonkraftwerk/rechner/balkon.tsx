@@ -18,6 +18,7 @@ import { referenceYearKwh } from "../../../../lib/solar-year";
 import { trackFunnelStep, type Funnel } from "../../../../lib/analytics";
 import { useSharedPlz, readLocation } from "../../../../lib/location";
 import ResultFunding from "../../../../components/ResultFunding";
+import BalkonAngebot from "../../../../components/BalkonAngebot";
 import { useFoerderung } from "../../../../lib/use-foerderung";
 import { stackFunding, type Wohnform } from "../../../../lib/funding-programs";
 import { DataSourceNote } from "../../../../components/PoweredBy";
@@ -215,6 +216,15 @@ export default function Balkon() {
   // Aktive Konfiguration: gewählte Alternative oder — Default — die Empfehlung.
   const active = override ?? { setId: recommendation.best.setId, storageId: recommendation.best.storageId };
   const activeIsBest = active.setId === recommendation.best.setId && active.storageId === recommendation.best.storageId;
+
+  // Dieselben Haushaltsangaben, mit denen die Empfehlung oben gerechnet wurde —
+  // damit ein Kaufangebot nie auf anderen Annahmen steht als das Ergebnis, über
+  // dem es erscheint. Der Speicherpreis steckt beim Angebot im Setpreis, deshalb
+  // wird `invest` bewusst NICHT durchgereicht.
+  const angebotBasis = useMemo(
+    () => ({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease }),
+    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, priceIncrease],
+  );
 
   // Kartenzahlen im gewählten Szenario (die Empfehlung oben bleibt am Basiswert).
   const scenarioRec = useMemo(
@@ -648,6 +658,11 @@ export default function Balkon() {
                 </div>
               ) : undefined}
             />
+
+            {/* Kaufbare Sets, mit denselben Angaben durchgerechnet.
+                Sitzt direkt unter dem Fördercheck: erst was es kostet und was
+                davon der Staat trägt, dann wo man es bekommt. */}
+            <BalkonAngebot basis={angebotBasis} />
 
             {/* Stats 2×2 */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>

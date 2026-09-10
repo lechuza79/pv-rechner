@@ -1,8 +1,6 @@
 import "server-only";
-import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase-server";
-import { ATLAS_DATEN_TAG } from "./atlas-revalidate-routen";
-import { withDbTimeout } from "./db-timeout";
+import { withDbTimeout, DB_SOFT_READ_TIMEOUT_MS } from "./db-timeout";
 import { AWARD_CATEGORY_BY_KEY, dedupFreiflaeche, formatAwardValue, type GemeindeStats } from "./awards";
 import { bundeslandByAgs } from "./mastr-regions";
 import { getRegionById } from "./atlas";
@@ -169,47 +167,110 @@ const hookIndexMemo = new Map<string, { at: number; val: HookIndex }>();
  * (dann springt er bei den rund zwei Dritteln der Orte OHNE Auszeichnung, nur
  * andersherum).
  *
- * DAS PROZESS-LOKALE MEMO REICHTE DAFÜR NICHT — gemessen am 08.09.2026. Es
- * spart den zweiten Aufruf im selben Prozess, nicht den ERSTEN: Eine frisch
- * gestartete Function baut den vollen Index einmal auf, und das kostet 3,70 s
- * für 10.742 Zeilen. Genau dieses Muster stand in den Gesundheitsläufen —
- * erste Stichprobe 5,5 bis 7,9 s, jede folgende 0,6 bis 1,8 s, sechsmal in
- * zwei Tagen, einmal 0,1 s vor der Notbremse bei 8 s. Die frühere Begründung
- * an dieser Stelle („die Kosten fallen im Aufwärmlauf an, nicht bei
- * Besuchern") war die Annahme, die das widerlegt hat.
+ * ─── DREI ANLÄUFE, UND WARUM ERST DER DRITTE TRÄGT ──────────────────────────
  *
- * GECACHT WIRD NUR DIE LISTE DER AUSGEZEICHNETEN ORTE, nicht der Index. Am
- * Kopf dieser Datei steht mit Grund „bewusst kein unstable_cache": Der
- * Datencache deckelt bei 2 MB, und der volle Index misst 7,11 MB — der
- * Versuch scheiterte je Anfrage und rechnete jedes Mal neu. Die bloßen
- * Kennungen sind 49 kB (4.596 von 10.742 Orten) und liegen damit sicher
- * darunter. Der Deckel ist der Grund, warum hier NUR die Kennungen stehen und
- * niemals ein Feld mehr: Wer dieser Liste den Namen oder die Kategorie
- * beilegt, führt sie zurück über den Deckel, und der Cache fällt still aus.
+ * 1. PROZESS-LOKALES MEMO (bis 08.09.2026). Es spart den zweiten Aufruf im
+ *    selben Prozess, nie den ERSTEN: Eine frisch gestartete Function baute den
+ *    vollen Index einmal auf, 3,70 s für 10.742 Zeilen. In den Gesundheitsläufen
+ *    stand genau dieses Muster — erste Stichprobe 5,5 bis 7,9 s, jede folgende
+ *    0,6 bis 1,8 s, sechsmal in zwei Tagen, einmal 0,1 s vor der Notbremse.
  *
- * Ablauf und Marke wie bei den übrigen Atlas-Lesevorgängen: eine Stunde —
- * dieselbe Frist wie das bisherige Memo, die Frische ändert sich also nicht —
- * und die Marke des Datenlaufs, damit der Monatslauf sie mitnimmt.
+ * 2. GETEILTER CACHE MIT FRIST (08. bis 09.09.2026). Er löst den Kaltstart und
+ *    verschiebt das Problem auf den Fristablauf: Läuft die Frist ab, zahlt der
+ *    NÄCHSTE Besucher die 3,7 s im Seitenaufbau. Bei einer Stunde traf das
+ *    reihenweise den Gesundheitscheck — am 09.09.2026 drei rote Läufe, jedes
+ *    Mal die erste Stichprobe bei 7,2 / 7,2 / 7,6 s, an drei Orten in drei
+ *    Bundesländern, 0,8 s vor der Notbremse. Ein Tag statt einer Stunde senkt
+ *    die Häufigkeit auf ein Vierundzwanzigstel und beseitigt sie nicht.
  *
- * Fällt die Datenbank aus, lautet die Antwort „nein": kein Platzhalter ist der
- * harmlosere Fehler.
+ * 3. VORBERECHNET, WIE JETZT. Die Liste entsteht im DATENLAUF und liegt als
+ *    Tabelle; der Seitenaufbau liest EINE Zeile über den Primärschlüssel. Die
+ *    teure Arbeit ist damit vollständig aus dem Anfrageweg heraus — nicht
+ *    seltener, sondern gar nicht mehr darin. Das ist der Unterschied zwischen
+ *    „meistens schnell" und „zuverlässig schnell", und für einen
+ *    Outreach-Schub zählt nur das zweite.
+ *
+ * DIE ERSTEN BEIDEN ANLÄUFE WAREN NICHT FALSCH, SONDERN ZU KLEIN. Beide haben
+ * die Häufigkeit gesenkt und beide haben denselben Rest gelassen: teure Arbeit
+ * im Anfrageweg. Wer hier wieder etwas cacht statt es vorzuberechnen, baut den
+ * dritten Anlauf desselben Fehlers.
+ *
+ * Fällt die Datenbank aus oder ist die Tabelle leer, lautet die Antwort „nein":
+ * kein Platzhalter ist der harmlosere Fehler. Damit ein stiller Ausfall nicht
+ * unbemerkt bleibt, prüft der Gesundheitscheck Bestand und Alter der Tabelle.
  */
+export const AUSZEICHNUNGEN_DDL = `
+  create table if not exists atlas_auszeichnungen (
+    region_id text primary key,
+    erneuert_am timestamptz not null default now()
+  );
+  alter table atlas_auszeichnungen enable row level security;
+`;
+
 const auszeichnungsOrteUncached = async (): Promise<string[]> =>
   (await buildHookIndex(DEFAULT_HOOK_SETTINGS)).rows
     .filter((r) => r.kind !== "neutral")
     .map((r) => r.regionId);
 
-export const auszeichnungsOrte = unstable_cache(auszeichnungsOrteUncached, ["auszeichnungs-orte-v1"], {
-  revalidate: 3600,
-  tags: [ATLAS_DATEN_TAG],
-});
+/**
+ * Die Liste im Datenlauf neu aufbauen — NICHT im Seitenaufbau.
+ *
+ * Aufgerufen vom Atlas-Datenlauf, direkt nachdem die Zahlen neu stehen. Erst
+ * schreiben, dann die alten Zeilen entfernen: Bricht der Lauf dazwischen ab,
+ * stehen zu viele Orte in der Tabelle statt zu wenige — ein Platzhalter zu viel
+ * ist der harmlosere Fehler gegenüber einer halb leeren Liste.
+ */
+export async function baueAuszeichnungen(): Promise<{ orte: number }> {
+  if (!supabase) throw new Error("Datenbank nicht eingerichtet");
+  await supabase.rpc("exec_sql", { sql: AUSZEICHNUNGEN_DDL });
+
+  const orte = await auszeichnungsOrteUncached();
+  const jetzt = new Date().toISOString();
+  // Alle Zeilen tragen dieselbe Feldmenge — sonst setzt ein Batch die fehlenden
+  // Felder der übrigen Zeilen auf NULL (siehe upsert-spaltenmenge.test.ts).
+  for (let i = 0; i < orte.length; i += 500) {
+    const teil = orte.slice(i, i + 500).map((region_id) => ({ region_id, erneuert_am: jetzt }));
+    const { error } = await supabase.from("atlas_auszeichnungen").upsert(teil);
+    if (error) throw new Error(`Auszeichnungen schreiben: ${error.message}`);
+  }
+  const { error } = await supabase.from("atlas_auszeichnungen").delete().lt("erneuert_am", jetzt);
+  if (error) throw new Error(`Auszeichnungen aufräumen: ${error.message}`);
+  return { orte: orte.length };
+}
 
 export async function hatAuszeichnung(regionId: string): Promise<boolean> {
+  if (!supabase) return false;
   try {
-    return (await auszeichnungsOrte()).includes(regionId);
+    // EINE Zeile über den Primärschlüssel. Weiches Zeitbudget, weil es einen
+    // vollwertigen Rückfall gibt: keine Antwort heißt „kein Platzhalter".
+    const { data } = await withDbTimeout(
+      supabase.from("atlas_auszeichnungen").select("region_id").eq("region_id", regionId).maybeSingle(),
+      "atlas_auszeichnungen",
+      DB_SOFT_READ_TIMEOUT_MS,
+    );
+    return !!data;
   } catch {
     return false;
   }
+}
+
+/** Bestand und Stand der Liste — für den Gesundheitscheck. */
+export async function auszeichnungsStand(): Promise<{ orte: number; erneuertAm: string | null }> {
+  if (!supabase) return { orte: 0, erneuertAm: null };
+  const { count } = await withDbTimeout(
+    supabase.from("atlas_auszeichnungen").select("region_id", { count: "exact", head: true }),
+    "atlas_auszeichnungen_count",
+  );
+  const { data } = await withDbTimeout(
+    supabase
+      .from("atlas_auszeichnungen")
+      .select("erneuert_am")
+      .order("erneuert_am", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    "atlas_auszeichnungen_stand",
+  );
+  return { orte: count ?? 0, erneuertAm: (data as { erneuert_am?: string } | null)?.erneuert_am ?? null };
 }
 
 /**

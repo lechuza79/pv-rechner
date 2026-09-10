@@ -27,6 +27,7 @@ import { fileURLToPath } from "node:url";
 import * as unzipper from "unzipper";
 import iconv from "iconv-lite";
 import sax from "sax";
+import { importNoetig, importTageAusZeitplan } from "../lib/mastr-import-plan";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -147,31 +148,79 @@ type ResolvedUrl = {
   dataAsOf: string; // YYYY-MM-DD
 };
 
+/**
+ * Ein Netzwerkfehler ist kein 404 — und das ist hier der ganze Unterschied.
+ *
+ * DER ANLASS (05.09.2026): Alle acht Versuche brachen auf Netzwerkebene ab
+ * ("fetch failed"), der Lauf war nach 26 Sekunden rot, und die Fehlermeldung
+ * schob es auf eine veraltete Schema-Version. Die war in Ordnung: Die Datei lag
+ * unter genau diesem Namen da, der Server der Behörde war vom Läufer aus in
+ * diesem Moment nur nicht erreichbar. Ein Monat Daten fiel aus, weil niemand
+ * es noch einmal versucht hat.
+ *
+ * Deshalb zwei getrennte Behandlungen: Eine 404 ist eine ANTWORT ("diesen Tag
+ * gibt es nicht") und gehört zum normalen Rückwärtslaufen durch die Tage — sie
+ * zu wiederholen wäre sinnlos. Ein abgebrochener Verbindungsversuch ist gar
+ * keine Antwort und wird wiederholt.
+ */
+const NETZ_VERSUCHE = 4;
+const NETZ_PAUSE_MS = 15_000;
+
+type HeadErgebnis = { res: Response } | { netzfehler: string };
+
+async function headMitWiederholung(url: string): Promise<HeadErgebnis> {
+  let letzter = "";
+  for (let versuch = 1; versuch <= NETZ_VERSUCHE; versuch++) {
+    try {
+      // Ohne Zeitgrenze wartet ein hängender Verbindungsversuch bis zum
+      // Job-Limit — dann ist der Lauf abgebrochen statt rot, und ein Lauf ohne
+      // Urteil ist schlimmer als ein roter.
+      return { res: await fetch(url, { method: "HEAD", signal: AbortSignal.timeout(60_000) }) };
+    } catch (err) {
+      letzter = (err as Error).message;
+      if (versuch < NETZ_VERSUCHE) {
+        log(`Server nicht erreichbar (${letzter}) — Versuch ${versuch}/${NETZ_VERSUCHE}, neuer Anlauf...`, "warn");
+        await new Promise((r) => setTimeout(r, NETZ_PAUSE_MS * versuch));
+      }
+    }
+  }
+  return { netzfehler: letzter };
+}
+
 async function resolveLatestUrl(schemaVersion: string): Promise<ResolvedUrl> {
   const today = new Date();
   const errors: string[] = [];
+  let netzfehler = 0;
   for (let offset = 0; offset <= URL_LOOKBACK_DAYS; offset++) {
     const d = new Date(today.getTime() - offset * 86400_000);
     const stamp = dateStamp(d);
     const filename = `Gesamtdatenexport_${stamp}_${schemaVersion}.zip`;
     const url = `${BNETZA_BASE}/${filename}`;
-    try {
-      const res = await fetch(url, { method: "HEAD" });
-      if (res.ok) {
-        const size = Number(res.headers.get("content-length") ?? 0);
-        const lastModified = res.headers.get("last-modified") ?? "";
-        const dataAsOf = `${d.getUTCFullYear()}-${pad2(d.getUTCMonth() + 1)}-${pad2(d.getUTCDate())}`;
-        return { url, filename, size, lastModified, dataAsOf };
-      }
-      errors.push(`${stamp}: ${res.status}`);
-    } catch (err) {
-      errors.push(`${stamp}: ${(err as Error).message}`);
+    const ergebnis = await headMitWiederholung(url);
+    if ("netzfehler" in ergebnis) {
+      netzfehler++;
+      errors.push(`${stamp}: ${ergebnis.netzfehler}`);
+      continue;
     }
+    const res = ergebnis.res;
+    if (res.ok) {
+      const size = Number(res.headers.get("content-length") ?? 0);
+      const lastModified = res.headers.get("last-modified") ?? "";
+      const dataAsOf = `${d.getUTCFullYear()}-${pad2(d.getUTCMonth() + 1)}-${pad2(d.getUTCDate())}`;
+      return { url, filename, size, lastModified, dataAsOf };
+    }
+    errors.push(`${stamp}: ${res.status}`);
   }
+  // Die Diagnose muss zum Symptom passen. Kam auf keinen einzigen Versuch eine
+  // Antwort, ist die Schema-Version die falsche Fährte — sie wurde nie geprüft.
+  const diagnose =
+    netzfehler === URL_LOOKBACK_DAYS + 1
+      ? `Der Server der Bundesnetzagentur war über ${NETZ_VERSUCHE} Anläufe hinweg nicht erreichbar — keine ` +
+        `einzige Antwort. Das sagt NICHTS über die Schema-Version aus; die Datei kann durchaus da sein. ` +
+        `Erneut anstoßen (der Lauf ist auf mehrere Tage im Monat gelegt und holt sich das von selbst).`
+      : `Schema version "${schemaVersion}" may be outdated — set BNETZA_SCHEMA_VERSION env var.`;
   throw new Error(
-    `No BNetzA dump found in the last ${URL_LOOKBACK_DAYS + 1} days. ` +
-      `Schema version "${schemaVersion}" may be outdated — set BNETZA_SCHEMA_VERSION env var. ` +
-      `Tried: ${errors.join(", ")}`,
+    `No BNetzA dump found in the last ${URL_LOOKBACK_DAYS + 1} days. ${diagnose} Tried: ${errors.join(", ")}`,
   );
 }
 
@@ -186,9 +235,25 @@ async function downloadZip(target: ResolvedUrl): Promise<string> {
     return destPath;
   }
 
-  log(`Downloading ${target.filename} (${formatBytes(target.size)})...`);
-  const res = await fetch(target.url);
-  if (!res.ok || !res.body) throw new Error(`Download failed: ${res.status}`);
+  // Der Download selbst bekommt dieselbe Behandlung wie die Suche: 3,2 GB über
+  // eine Viertelstunde sind reichlich Gelegenheit für einen abgebrochenen
+  // Verbindungsversuch, und ein Abbruch bei 80 % kostete bisher den ganzen
+  // Monat. Wiederholt wird von vorn — der Server unterstützt kein Fortsetzen,
+  // und das zu unterstellen wäre eine ungeprüfte Annahme.
+  let res: Response | null = null;
+  for (let versuch = 1; versuch <= NETZ_VERSUCHE && !res; versuch++) {
+    log(`Downloading ${target.filename} (${formatBytes(target.size)})...`);
+    try {
+      const antwort = await fetch(target.url);
+      if (!antwort.ok || !antwort.body) throw new Error(`Download failed: ${antwort.status}`);
+      res = antwort;
+    } catch (err) {
+      if (versuch === NETZ_VERSUCHE) throw err;
+      log(`Download abgebrochen (${(err as Error).message}) — Versuch ${versuch}/${NETZ_VERSUCHE}...`, "warn");
+      await new Promise((r) => setTimeout(r, NETZ_PAUSE_MS * versuch));
+    }
+  }
+  if (!res || !res.body) throw new Error("Download failed: keine Antwort");
 
   let received = 0;
   const total = target.size;
@@ -997,12 +1062,66 @@ function loadEnvFile(): void {
 
 // ─── Entry point ──────────────────────────────────────────────────────────────
 
+/**
+ * Steht in der Datenbank schon ein Bestand aus diesem Import-Zyklus?
+ *
+ * Nur so werden mehrere Termine im Monat zur Absicherung statt zur dreifachen
+ * Arbeit: Der Lauf am zweiten und dritten Termin sieht, dass der erste geglückt
+ * ist, und hört auf, bevor er 3,2 GB lädt.
+ *
+ * Bei jedem Zweifel wird GEARBEITET, nicht übersprungen — keine Datenbank
+ * erreichbar, keine Zeile, kein lesbarer Zeitplan: Ein überflüssiger Lauf
+ * kostet eine halbe Stunde Rechenzeit, ein fälschlich übersprungener kostet
+ * einen Monat Daten auf 11.000 Seiten.
+ */
+async function importFaellig(): Promise<boolean> {
+  loadEnvFile();
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) {
+    log("Kein Datenbank-Zugang — im Zweifel wird importiert.", "warn");
+    return true;
+  }
+  const workflow = resolve(SCRIPT_DIR, "..", ".github", "workflows", "mastr-refresh.yml");
+  const tage = existsSync(workflow) ? importTageAusZeitplan(readFileSync(workflow, "utf8")) : null;
+  if (!tage) {
+    log("Zeitplan der Action nicht lesbar — im Zweifel wird importiert.", "warn");
+    return true;
+  }
+  try {
+    const r = await fetch(`${url}/rest/v1/mastr_meta?select=imported_at&id=eq.1`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(20_000),
+    });
+    if (!r.ok) throw new Error(String(r.status));
+    const rows = (await r.json()) as { imported_at?: string }[];
+    const stand = rows?.[0]?.imported_at;
+    if (!stand) return true;
+    const noetig = importNoetig(stand.slice(0, 10), tage, new Date());
+    if (!noetig) log(`Bestand ist bereits vom ${stand.slice(0, 10)} — nichts zu tun.`, "ok");
+    return noetig;
+  } catch (err) {
+    log(`Datenstand nicht lesbar (${(err as Error).message}) — im Zweifel wird importiert.`, "warn");
+    return true;
+  }
+}
+
 async function main() {
   const args = new Set(process.argv.slice(2));
   const doDownload = args.has("--download");
   const doInspect = args.has("--inspect");
   const doAggregate = args.has("--aggregate");
   const doUpload = args.has("--upload");
+
+  // Eigene Frage, eigener Lauf: Der Zeitplan hat mehrere Termine im Monat, und
+  // der zweite und dritte sollen nur arbeiten, wenn der erste nicht geglückt
+  // ist. Die Antwort geht als "ja"/"nein" auf die Standardausgabe, damit die
+  // Action daraus einen Schalter machen kann, ohne dass dieses Skript etwas
+  // über GitHub wissen muss.
+  if (args.has("--faellig-pruefen")) {
+    process.stdout.write((await importFaellig()) ? "ja\n" : "nein\n");
+    return;
+  }
 
   if (!doDownload && !doInspect && !doAggregate && !doUpload) {
     log("No phase selected. Use --download | --inspect | --aggregate | --upload", "warn");

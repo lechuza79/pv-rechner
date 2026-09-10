@@ -31,6 +31,19 @@ import { heuteInBerlin } from "../lib/zeit";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
+import {
+  importPlanBefund,
+  importTageAusZeitplan,
+  importlaufMeldung,
+  type ImportPlanBefund,
+} from "../lib/mastr-import-plan";
+import {
+  type Auslieferung,
+  auslieferungsAlterText,
+  kaltaufbauHerkunft,
+  neuesteProduktionsAuslieferung,
+} from "../lib/auslieferungs-alter";
+import { SOLAR_CHECK_PROJEKT_ID } from "../lib/vercel-budget";
 import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
 import { sollWarnen, warnstufe } from "../lib/social-ablauf";
@@ -665,33 +678,50 @@ export function healRegionConfig(
 // kostet einen Punkt-Zugriff, läuft alle drei Stunden in GitHub Actions mit,
 // braucht kein Modell und damit kein Geld.
 //
-// Die Schwellen kommen aus dem Rhythmus, nicht aus dem Bauch: Der Import läuft
-// monatlich. 45 Tage sind ein Zyklus plus Luft — darunter ist alles normal.
-// 70 Tage heißen, dass zwei Läufe ausgefallen sind; dann ist es kein Zufall
-// mehr, sondern eine stehengebliebene Pipeline.
-export const MASTR_FRISCHE_WARN_TAGE = 45;
-export const MASTR_FRISCHE_FAIL_TAGE = 70;
+/** Die Action, deren Zeitplan den Import-Rhythmus festlegt. */
+export const MASTR_WORKFLOW = "mastr-refresh.yml";
 
 /**
- * Wie alt darf der Anlagenbestand sein?
- *
- * Bewusst gegen einen HEREINGEREICHTEN Stichtag gerechnet, nicht gegen
- * `new Date()` — eine Bewertungsfunktion mit eigener Uhr lässt sich nicht
- * prüfen, und genau daran ist im Projekt schon ein Prüfdatum falsch geworden.
+ * Liest eine Workflow-Datei aus dem Arbeitsverzeichnis. Leerer String, wenn sie
+ * fehlt — die Aufrufer machen daraus „konnte nicht nachsehen", nie „in Ordnung".
  */
-export function mastrFrischeVerdict(alterTage: number): "gruen" | "gelb" | "rot" {
-  if (alterTage >= MASTR_FRISCHE_FAIL_TAGE) return "rot";
-  if (alterTage >= MASTR_FRISCHE_WARN_TAGE) return "gelb";
-  return "gruen";
+function leseWorkflow(datei: string): string {
+  const wurzel = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+  const pfad = resolve(wurzel, ".github", "workflows", datei);
+  return existsSync(pfad) ? readFileSync(pfad, "utf8") : "";
 }
 
-/** Ganze Tage zwischen dem Importzeitpunkt und dem Stichtag. */
+// GEURTEILT WIRD GEGEN DEN TERMIN, NICHT GEGEN EIN ALTER (09.09.2026).
+//
+// Hier standen bis dahin zwei Tagesschwellen: ab 45 Tagen gelb, ab 70 rot. Sie
+// haben den einzigen Ausfall, den es je gab, vollständig verschlafen. Der
+// Import vom 05.09.2026 schlug fehl (der Server der Behörde war vom Läufer aus
+// nicht erreichbar); der Bestand war an diesem Tag 31 Tage alt, also grün. Gelb
+// wäre er am 19.09. geworden — und Gelb erzeugt keine Nachricht —, rot am
+// 14.10., als der Oktober-Lauf die Lücke längst stillschweigend geschlossen
+// hätte. Bemerkt hat es am 09.09. ein Mensch, zufällig.
+//
+// Eine Tagesschwelle KANN das nicht: Sie misst den Abstand zum letzten Erfolg,
+// nicht den zum letzten Termin. „Ein Lauf ist ausgefallen" ist aber genau eine
+// Aussage über den Termin. Das Urteil kommt deshalb aus dem Zeitplan der Action
+// selbst (lib/mastr-import-plan.ts) — dieselbe Quelle, aus der auch der
+// Importlauf entscheidet, ob er noch etwas zu tun hat.
+//
+// Das ALTER in Tagen bleibt, aber nur noch als Auskunft in der Protokollzeile:
+// Es ist gut zu lesen und beurteilt nichts mehr.
+
+/** Ganze Tage zwischen dem Importzeitpunkt und dem Stichtag — reine Auskunft. */
 export function mastrAlterTage(importedAt: string, heute: Date): number {
   const ms = heute.getTime() - Date.parse(importedAt);
   return Math.floor(ms / (24 * 60 * 60 * 1000));
 }
 
-export type MastrFrische = { importedAt: string; alterTage: number; urteil: "gruen" | "gelb" | "rot" };
+export type MastrFrische = {
+  importedAt: string;
+  alterTage: number;
+  /** `null` = Zeitplan der Action nicht lesbar, also kein Urteil möglich. */
+  befund: ImportPlanBefund | null;
+};
 
 // ─── Schreibt der Code Felder, die die Tabelle gar nicht hat? ────────────────
 //
@@ -718,6 +748,51 @@ export type MastrFrische = { importedAt: string; alterTage: number; urteil: "gru
 //                   sichtbar geworden, also beim nächsten Lauf noch einmal.
 //
 // Reine Funktion mit hereingereichten Listen — sie soll ohne Netz prüfbar sein.
+
+/** Wie alt darf die vorberechnete Auszeichnungs-Liste sein? Der Datenlauf ist
+ *  monatlich; 45 Tage lassen einen verspäteten Lauf durch und schlagen an,
+ *  wenn zwei ausgefallen sind. */
+export const AUSZEICHNUNGEN_MAX_ALTER_TAGE = 45;
+
+/**
+ * Urteil über die vorberechnete Auszeichnungs-Liste.
+ *
+ * Sie ersetzt seit 09.09.2026 eine Berechnung, die 3,7 s im Seitenaufbau
+ * gekostet hat. Fällt sie aus, ist NICHTS kaputt — die Seiten funktionieren
+ * weiter, nur ohne Platzhalter für die Auszeichnungs-Kachel, und der Inhalt
+ * springt dann beim Nachladen. Genau deshalb muss jemand hinsehen: Ein Ausfall
+ * ist von außen unsichtbar.
+ */
+export function auszeichnungsUrteil(
+  stand: { orte: number; erneuertAm: string | null } | null,
+  jetzt: Date = new Date(),
+): { text: string; befund: string | null } {
+  if (!stand) return { text: "Auszeichnungen: nicht abrufbar.", befund: null };
+  if (stand.orte === 0) {
+    return {
+      text: "Auszeichnungen: Liste LEER.",
+      befund:
+        "Die vorberechnete Liste der ausgezeichneten Orte ist leer. Damit zeigt keine Gemeindeseite mehr einen " +
+        "Platzhalter für die Auszeichnungs-Kachel, und der Inhalt springt beim Nachladen. Von außen ist das " +
+        "unsichtbar — die Seiten antworten normal. Neu aufbauen lässt sie der Atlas-Datenlauf.",
+    };
+  }
+  const alterTage = stand.erneuertAm
+    ? Math.floor((jetzt.getTime() - Date.parse(stand.erneuertAm)) / 86400000)
+    : null;
+  const text = `Auszeichnungen: ${stand.orte} Orte vorberechnet${alterTage === null ? "" : `, ${alterTage} Tage alt`}.`;
+  if (alterTage !== null && alterTage > AUSZEICHNUNGEN_MAX_ALTER_TAGE) {
+    return {
+      text,
+      befund:
+        `Die vorberechnete Liste der ausgezeichneten Orte ist ${alterTage} Tage alt (erlaubt: ` +
+        `${AUSZEICHNUNGEN_MAX_ALTER_TAGE}). Der Atlas-Datenlauf baut sie monatlich neu — sind zwei ausgefallen, ` +
+        "stehen dort Auszeichnungen von vorletztem Monat. Nachsehen, ob der Datenlauf noch läuft.",
+    };
+  }
+  return { text, befund: null };
+}
+
 export function spaltenAbgleich(
   geschrieben: Record<string, unknown>,
   vorhandeneSpalten: readonly string[],
@@ -996,8 +1071,16 @@ async function messeMastrFrische(): Promise<MastrFrische | null> {
     const rows = (await r.json()) as { imported_at?: string }[];
     const importedAt = rows?.[0]?.imported_at;
     if (!importedAt || Number.isNaN(Date.parse(importedAt))) return null;
-    const alterTage = mastrAlterTage(importedAt, new Date());
-    return { importedAt, alterTage, urteil: mastrFrischeVerdict(alterTage) };
+    const jetzt = new Date();
+    const plan = importTageAusZeitplan(leseWorkflow(MASTR_WORKFLOW));
+    return {
+      importedAt,
+      alterTage: mastrAlterTage(importedAt, jetzt),
+      // Der Datenstand ist ein Kalendertag in Weltzeit (er kommt aus dem
+      // Tagesstempel im Dateinamen der Behörde), deshalb genügt hier das
+      // Abschneiden des hereingereichten Zeitstempels.
+      befund: plan ? importPlanBefund(importedAt.slice(0, 10), plan, jetzt) : null,
+    };
   } catch {
     return null;
   }
@@ -1085,6 +1168,44 @@ function vercelToken(): string | null {
   try {
     const t = (JSON.parse(readFileSync(pfad, "utf8")) as { token?: string }).token;
     return typeof t === "string" && t ? t : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Alter der laufenden Produktions-Auslieferung in Minuten, oder `null`.
+ *
+ * Reiner Kontext fuer den Kaltaufbau-Befund (siehe lib/auslieferungs-alter.ts).
+ * Faellt der Abruf aus, wird das BENANNT statt auf einen Wert geraten — ein
+ * erfundenes Alter waere hier dieselbe Fehlerklasse wie ein erfundenes
+ * Pruefdatum. Kein Urteil haengt daran, der Lauf geht ohne weiter.
+ */
+async function auslieferungsAlterMinuten(): Promise<number | null> {
+  const token = vercelToken();
+  if (!token) return null;
+  try {
+    // Gefiltert wird IN DER ANTWORT, nicht ueber Suchparameter: Welche Filter
+    // die Plattform an diesem Endpunkt akzeptiert, ist nicht geprueft — ein
+    // abgewiesener Parameter wuerde hier zu „nicht abrufbar" fuehren, ohne dass
+    // jemand den Grund saehe. Die FORM der Antwort ist dagegen an echten Daten
+    // gesehen (10.09.2026): neueste zuerst, je Eintrag `state`, `target` und
+    // `created` als Millisekunden-Zeitstempel.
+    const url =
+      `https://api.vercel.com/v6/deployments?projectId=${SOLAR_CHECK_PROJEKT_ID}` +
+      `&teamId=${KOSTEN_TEAM_ID}`;
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) return null;
+    const daten = (await res.json()) as { deployments?: Auslieferung[] };
+    const erstellt = neuesteProduktionsAuslieferung(daten.deployments ?? []);
+    if (erstellt === null) return null;
+    const minuten = (Date.now() - erstellt) / 60000;
+    // Eine negative Spanne kann nur aus abweichenden Uhren kommen und ist keine
+    // Aussage — dann lieber „nicht abrufbar" als ein Alter, das es nicht gibt.
+    return minuten < 0 ? null : minuten;
   } catch {
     return null;
   }
@@ -1881,6 +2002,7 @@ async function main() {
   }
 
   // ── Zeiten ────────────────────────────────────────────────────────────────
+  const auslieferungsAlter = await auslieferungsAlterMinuten();
   const slowest = pageProbes.reduce((a, b) => (b.seconds > a.seconds ? b : a), pageProbes[0]);
   lines.push(
     `Normale Seiten: langsamste ${slowest.seconds.toFixed(2)} s (${slowest.label}), ` +
@@ -1915,12 +2037,19 @@ async function main() {
         `${luft.toFixed(1)} s Luft bis zur Notbremse bei ${NOTBREMSE_S} s`,
     );
     lines.push(`Langsamste Seite: ${cold.url}`);
+    // Kontext, kein Urteil: Der Lauf startet nach JEDEM inhaltlichen Push, also
+    // regelmaessig Minuten nach einer neuen Auslieferung — und dann ist der
+    // erste Aufbau strukturell teurer. Ohne diese Zeile ist ein Kaltstart von
+    // einer langsam gewordenen Seite nicht zu unterscheiden; genau daran sind am
+    // 09.09.2026 drei Commits auf eine halb richtige Diagnose gelaufen.
+    lines.push(auslieferungsAlterText(auslieferungsAlter));
     const coldVerdict = verdict(cold.seconds, SLOW.atlasCold);
     if (coldVerdict === "rot") {
       forClaude.push(
         `Eine frisch aufgebaute Atlas-Seite braucht ${cold.seconds.toFixed(2)} s. Nur noch ${luft.toFixed(1)} s ` +
           `bis zur Notbremse (${NOTBREMSE_S} s), ab der die Seite einen Fehler zeigt. Das ist die Vorstufe zum ` +
-          `Ausfall — auch wenn gerade noch alles mit 200 antwortet.`,
+          `Ausfall — auch wenn gerade noch alles mit 200 antwortet. ` +
+          kaltaufbauHerkunft(auslieferungsAlter),
       );
     } else if (coldVerdict === "gelb") {
       warnings.push(`Atlas-Kaltaufbau bei ${cold.seconds.toFixed(2)} s (Luft: ${luft.toFixed(1)} s).`);
@@ -1964,22 +2093,34 @@ async function main() {
   // bemerkt.
   const mastr = await messeMastrFrische();
   if (mastr) {
-    lines.push(`MaStR-Datenstand: ${mastr.importedAt.slice(0, 10)} (${mastr.alterTage} Tage alt).`);
-    if (mastr.urteil === "rot") {
-      forClaude.push(
-        `Der Anlagenbestand im Atlas ist ${mastr.alterTage} Tage alt (Stand ${mastr.importedAt.slice(0, 10)}), ` +
-          `damit sind mindestens zwei monatliche Importe ausgefallen. Über 11.000 Gemeindeseiten zeigen ` +
-          `Zahlen von vorletztem Monat — sichtbar am Datenstand, aber sonst völlig unauffällig. ` +
-          `Zu tun: den MaStR-Lauf lokal nachholen (scripts/mastr-refresh.ts, danach den Rollup auffrischen — ` +
-          `ohne das bleibt der Atlas auf den alten Aggregaten). Der Autofix in GitHub Actions kann das NICHT: ` +
-          `Er darf die Datenbank nicht anfassen, und der Gesamtdatenexport wird dort auch nicht geladen. ` +
-          `Er soll deshalb berichten statt es zu versuchen.`,
-      );
-    } else if (mastr.urteil === "gelb") {
+    const stand = mastr.importedAt.slice(0, 10);
+    lines.push(`MaStR-Datenstand: ${stand} (${mastr.alterTage} Tage alt).`);
+    if (!mastr.befund) {
+      // Kein Zeitplan, kein Termin, kein Urteil. Das MUSS auffallen: Eine
+      // Aufsicht, die sich bei einem unlesbaren Zeitplan lautlos abschaltet,
+      // ist von keiner Aufsicht nicht zu unterscheiden.
       warnings.push(
-        `MaStR-Daten sind ${mastr.alterTage} Tage alt (Stand ${mastr.importedAt.slice(0, 10)}) — ` +
-          `ein monatlicher Import fehlt.`,
+        `MaStR-Import: Der Zeitplan der Action (${MASTR_WORKFLOW}) ist nicht lesbar — ohne Termin gibt es ` +
+          `kein Urteil darüber, ob ein Import ausgefallen ist. Nachsehen, ob die Datei noch existiert und ` +
+          `ihr Zeitplan noch als fester Tag des Monats geschrieben ist.`,
       );
+    } else {
+      // Zwei Signale, eine Meldung: der Termin (spät, aber beweiskräftig) und
+      // der Ausgang des letzten Laufs (sofort, aber allein kein Beweis).
+      const akten = await letzteLaeufe(MASTR_WORKFLOW);
+      const meldung = importlaufMeldung(mastr.befund, akten[0]?.conclusion ?? null);
+      if (meldung?.stufe === "claude") {
+        forClaude.push(
+          `Der monatliche Import des Anlagenbestands ist ausgefallen (${meldung.text}); in der Datenbank ` +
+            `steht weiterhin ${stand}. Über 11.000 Gemeindeseiten zeigen damit die Zahlen des Vormonats — ` +
+            `sie antworten normal, sind schnell und sehen richtig aus. ` +
+            `Zu tun: den Lauf „MaStR Refresh" ansehen (gh run list --workflow=${MASTR_WORKFLOW}) und neu ` +
+            `anstoßen. Der Autofix in GitHub Actions soll das NICHT selbst versuchen: Er darf die Datenbank ` +
+            `nicht anfassen, und der Gesamtdatenexport wird dort auch nicht geladen — berichten genügt.`,
+        );
+      } else if (meldung) {
+        warnings.push(`MaStR-Import: ${meldung.text}`);
+      }
     }
   } else {
     // Kein Urteil über die Frische, sondern über den Abruf. Beides zu vermengen
@@ -2055,6 +2196,45 @@ async function main() {
           `steht, welcher der beiden Fälle vorliegt.`,
       );
     }
+  }
+
+  // ── Steht die vorberechnete Auszeichnungs-Liste? ─────────────────────────
+  {
+    // ÜBER DIE SCHNITTSTELLE, NICHT ÜBER DAS MODUL. Der Lesecode trägt
+    // `server-only`, und das ist aus einem Kommandozeilen-Prozess nicht
+    // auflösbar — der erste Versuch scheiterte deshalb bei JEDEM Lauf und gab
+    // trotzdem eine beruhigende Zeile aus („nicht abrufbar"). Ein Prüfpunkt,
+    // der nichts sieht und nicht anschlägt, ist schlimmer als keiner; dieselbe
+    // Falle wie beim ersten Versandlauf der Umstellungs-Mail.
+    let stand: { orte: number; erneuertAm: string | null } | null = null;
+    const zugang = supabaseZugang();
+    if (zugang) {
+      try {
+        const r = await fetch(
+          `${zugang.url}/rest/v1/atlas_auszeichnungen?select=erneuert_am&order=erneuert_am.desc&limit=1`,
+          {
+            headers: {
+              apikey: zugang.key,
+              Authorization: `Bearer ${zugang.key}`,
+              Prefer: "count=exact",
+              Range: "0-0",
+            },
+            signal: AbortSignal.timeout(15000),
+          },
+        );
+        if (r.ok) {
+          const zeilen = (await r.json()) as { erneuert_am?: string }[];
+          const bereich = r.headers.get("content-range") ?? "";
+          const orte = Number(bereich.split("/")[1] ?? "0");
+          stand = { orte: Number.isFinite(orte) ? orte : 0, erneuertAm: zeilen[0]?.erneuert_am ?? null };
+        }
+      } catch {
+        stand = null;
+      }
+    }
+    const urteil = auszeichnungsUrteil(stand);
+    lines.push(urteil.text);
+    if (urteil.befund) forClaude.push(urteil.befund);
   }
 
   // ── Schreibt der Code in Spalten, die es gibt? ────────────────────────────

@@ -869,6 +869,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["FundingProgramParts"],
   },
   {
+    datei: "components/BalkonAngebot.tsx",
+    name: "BalkonAngebot",
+    zweck:
+      "Kaufbare Balkonkraftwerk-Sets am Ende des Rechners, mit den Angaben des Nutzers durchgerechnet und nach seinem Gewinn sortiert.",
+    gruppe: "rueckmeldung",
+    ebene: "zusammensetzung",
+    stand: "im-aufbau",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/ResultFunding.tsx",
     name: "ResultFunding",
     zweck:
