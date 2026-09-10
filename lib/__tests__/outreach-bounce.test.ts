@@ -120,6 +120,37 @@ describe("Taugt die neu gefundene Adresse?", () => {
     expect(toteAdressen(null)).toEqual([]);
   });
 
+  it("EINE Meldung kann zwei Adressen hinterlassen — und die zweite entsteht erst mit der Reparatur", () => {
+    // LASSANS ECHTE NOTIZ, am 10.09.2026 aus der Produktion gemessen. Der
+    // Fehlversuch ist einer; Adressen stehen zwei darin, weil unser Empfänger
+    // auf ein gelöschtes Personenpostfach weiterleitete — und weil die
+    // Handkorrektur die Pfeilzeile hinzugefügt hat.
+    //
+    // GENAU DAS IST DIE FALLE: Vor der Reparatur trug die Notiz eine Adresse,
+    // danach zwei. Eine Grenze, die Adressen zählt, hätte den Ort in dem
+    // Moment gesperrt, in dem jemand ihn instand gesetzt hat — sie träfe die
+    // geheilten Fälle und ließe die unreparierten laufen.
+    //
+    // Der Test steht hier mit der ECHTEN Notiz, weil eine selbst getippte
+    // genau diese Zeile nicht hatte: Daran ist eine Aussage von mir über
+    // dieselbe Funktion gescheitert, und Fixtures, die den realen Fall nicht
+    // kennen, sind grün und wertlos.
+    const echt = [
+      '[2026-09-02] unzustellbar aus Postfach: „Undelivered Mail Returned to Sender" (mailer-daemon@mailfwd03.agenturserver.de)',
+      "    <anne.terwitte@wolgast.eu>: host wolgast.kasserver.com[85.13.164.44] said: 550",
+      "        5.1.1 <anne.terwitte@wolgast.eu>: Recipient address rejected: User unknown",
+      "    Final-Recipient: rfc822; anne.terwitte@wolgast.eu",
+      "    Original-Recipient: rfc822;info@lassan.de",
+      "[2026-09-10] Postfach neu recherchiert: info@lassan.de → info@lassan.eu (impressum)",
+    ].join("\n");
+    expect(toteAdressen(echt).sort()).toEqual(["anne.terwitte@wolgast.eu", "info@lassan.de"]);
+    // Ein Fehlversuch bleibt ein Fehlversuch, egal wie viele Adressen er nennt.
+    expect(dauerhafteBouncer(echt)).toBe(1);
+    expect(dauerhafteBouncer(echt) >= MAX_DAUERHAFTE_BOUNCER).toBe(false);
+    // Und die reparierte Adresse darf nicht in der Sperrliste stehen.
+    expect(toteAdressen(echt)).not.toContain("info@lassan.eu");
+  });
+
   it("der Zustand der Übergabe hat einen Namen, den beide Seiten importieren", () => {
     // Nicht zurück auf „offen": Dort heißt offen „nie angeschrieben", und das
     // stimmt nach einem gescheiterten Versuch nicht mehr. Getippt stünde der
