@@ -28,6 +28,21 @@ export interface KatalogStand {
   abgerufenIso: string | null;
   /** false, wenn der Bestand zu alt ist — dann wird nichts angezeigt. */
   frisch: boolean;
+  /**
+   * Konnten wir den Katalog überhaupt lesen?
+   *
+   * DIE UNTERSCHEIDUNG IST EINE AUSSAGE ÜBER EINEN DRITTEN, und deshalb steht
+   * sie hier. Ohne sie ergaben drei verschiedene Lagen dieselbe Anzeige: „für
+   * diese Anlagengröße ist gerade kein passendes Gerät im Sortiment von
+   * Heizungsdiscount24" — auch dann, wenn wir die Tabelle gar nicht erreicht
+   * haben. Das ist eine Behauptung über das Sortiment eines Händlers, die wir
+   * in diesem Moment nicht belegen können; dieselbe Trennlinie wie beim
+   * Förder-Wächter zwischen „hat sich geändert" und „Abruf kam nicht durch".
+   *
+   * Aufgefallen in einem Arbeitsstand ohne Datenbankzugang (10.09.2026): Die
+   * Seite sah vollkommen normal aus und sagte etwas Falsches.
+   */
+  erreichbar: boolean;
 }
 
 interface Zeile {
@@ -72,7 +87,11 @@ function ausZeile(z: Zeile): WpGeraet {
   };
 }
 
-const LEER: KatalogStand = { geraete: [], abgerufenIso: null, frisch: false };
+/** Der Katalog wurde gelesen und ist leer — eine echte Auskunft. */
+const LEER: KatalogStand = { geraete: [], abgerufenIso: null, frisch: false, erreichbar: true };
+
+/** Wir kamen an den Katalog nicht heran — gar keine Auskunft. */
+const UNERREICHBAR: KatalogStand = { ...LEER, erreichbar: false };
 
 /**
  * Alle Geräte einer Wärmequelle.
@@ -82,7 +101,7 @@ const LEER: KatalogStand = { geraete: [], abgerufenIso: null, frisch: false };
  * jedem Seitenaufbau durch die Leitung.
  */
 export async function ladeKatalog(bauart: "luft-wasser" | "sole-wasser"): Promise<KatalogStand> {
-  if (!supabase) return LEER;
+  if (!supabase) return UNERREICHBAR;
 
   // Weiches Zeitbudget: Fällt der Katalog aus, zeigt die Seite eben keine
   // Geräte — das Ergebnis des Rechners steht davon unberührt. Auf acht Sekunden
@@ -99,7 +118,10 @@ export async function ladeKatalog(bauart: "luft-wasser" | "sole-wasser"): Promis
     DB_SOFT_READ_TIMEOUT_MS,
   ).catch(() => null);
 
-  const zeilen = (antwort?.data ?? null) as Zeile[] | null;
+  // Kein Ergebnisobjekt heißt: Zeitbudget gerissen oder Fehler — wir haben den
+  // Katalog nicht gesehen. Ein Ergebnis mit null Zeilen heißt: gesehen, leer.
+  if (!antwort) return UNERREICHBAR;
+  const zeilen = (antwort.data ?? null) as Zeile[] | null;
   if (!zeilen || zeilen.length === 0) return LEER;
 
   /**
@@ -130,5 +152,6 @@ export async function ladeKatalog(bauart: "luft-wasser" | "sole-wasser"): Promis
     geraete: zeilen.map(ausZeile),
     abgerufenIso,
     frisch: alterTage <= KATALOG_MAX_ALTER_TAGE,
+    erreichbar: true,
   };
 }

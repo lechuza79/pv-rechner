@@ -590,12 +590,32 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
 
   const treffer = antwort?.empfehlungen ?? [];
   if (treffer.length === 0) {
-    // Kein Grund zur Beschönigung: Wenn nichts passt, ist das die Auskunft.
+    /**
+     * DREI LAGEN, DREI SÄTZE — und bis zum 10.09.2026 stand hier für alle drei
+     * derselbe.
+     *
+     * „Für diese Anlagengröße ist gerade kein passendes Gerät im Sortiment von
+     * Heizungsdiscount24" ist eine Aussage über das Sortiment eines DRITTEN.
+     * Sie stimmt genau dann, wenn wir den Katalog gelesen und nichts Passendes
+     * gefunden haben. Kamen wir gar nicht an ihn heran, oder ist der Bestand zu
+     * alt zum Anzeigen, behauptet derselbe Satz etwas, das wir nicht belegen
+     * können — dieselbe Trennlinie wie beim Förder-Wächter zwischen „hat sich
+     * geändert" und „Abruf kam nicht durch".
+     *
+     * Die Route benennt den Grund seit demselben Tag; das Feld gab es hier
+     * schon, es wurde nur nie gelesen. Aufgefallen ist es in einem
+     * Arbeitsstand ohne Datenbankzugang: Die Seite sah normal aus.
+     */
+    const grund = antwort?.grund;
+    const text =
+      grund === "katalog-unerreichbar"
+        ? "Die Geräteliste lässt sich gerade nicht abrufen. Das sagt nichts über das Sortiment — bitte später noch einmal versuchen."
+        : grund === "katalog-veraltet"
+          ? `Unsere Geräteliste ist nicht aktuell genug, um Preise daneben zu stellen. Wir zeigen sie deshalb lieber nicht, als mit Preisen von vorletzter Woche zu werben.`
+          : `Für diese Anlagengröße und Vorlauftemperatur ist gerade kein passendes Gerät im Sortiment von ${WP_HAENDLER.kurz}. Das heißt nicht, dass es keins gibt — nur, dass wir keins belegen können.`;
     return (
       <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.5 }}>
-        Für diese Anlagengröße und Vorlauftemperatur ist gerade kein passendes Gerät im
-        Sortiment von {WP_HAENDLER.kurz}. Das heißt nicht, dass es keins gibt — nur, dass wir
-        keins belegen können.
+        {text}
       </div>
     );
   }

@@ -41,6 +41,16 @@ export async function GET(req: NextRequest) {
   const fall: WpFall = { auslegungKw, vorlaufC, wpType: typ };
   const stand = await ladeKatalog(typ === "swwp" ? "sole-wasser" : "luft-wasser");
 
+  // Wir kamen an den Katalog nicht heran — das ist etwas anderes als „nichts
+  // passt" und wird auch anders gemeldet. Wer beides gleich behandelt, sagt dem
+  // Nutzer etwas über das Sortiment eines Händlers, das er nicht belegen kann.
+  if (!stand.erreichbar) {
+    return NextResponse.json(
+      { empfehlungen: [], grund: "katalog-unerreichbar" },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  }
+
   // Ein veralteter Katalog wird nicht angezeigt, sondern als solcher gemeldet.
   // Ein Preis neben einem Kaufknopf ist die Angabe, die am schnellsten falsch
   // wird — lieber keine Geräte als solche von vorletzter Woche.
