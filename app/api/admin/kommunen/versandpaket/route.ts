@@ -9,6 +9,7 @@ import { empfaengerFuerBrief } from "../../../../../lib/kommunen-presse";
 import { postfachBefund } from "../../../../../lib/outreach-mail";
 import { heuteInBerlin } from "../../../../../lib/zeit";
 import { darfOutreachEmpfangen } from "../../../../../lib/kommunen-ebene";
+import { darfInDenVersand } from "../../../../../lib/outreach-wiedervorlage";
 
 // Das fertige Versandpaket einer Charge: je Gemeinde Empfänger, Betreff und
 // Brieftext — gebaut aus DERSELBEN Funktion wie der Entwurf im Cockpit
@@ -52,7 +53,7 @@ export async function GET(req: NextRequest) {
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
     .select(
-      "region_id, rollen_email, rollen_email_quelle, presse_email, presse_email_quelle, kontakt_url, outreach_status, contacted_at, charge, ask_variante, verwaltung_domain, mastr_regions!inner(name)",
+      "region_id, rollen_email, rollen_email_quelle, presse_email, presse_email_quelle, kontakt_url, outreach_status, contacted_at, notes, charge, ask_variante, verwaltung_domain, mastr_regions!inner(name)",
     )
     .eq("kampagne", schub.kampagne)
     .eq("charge", charge)
@@ -68,6 +69,7 @@ export async function GET(req: NextRequest) {
     verwaltung_domain: string | null;
     outreach_status: string;
     contacted_at: string | null;
+    notes: string | null;
     mastr_regions: { name: string } | { name: string }[];
   };
   const zeilen = (data ?? []) as unknown as Zeile[];
@@ -113,8 +115,15 @@ export async function GET(req: NextRequest) {
       skip("gesperrt — Widerspruch liegt vor");
       continue;
     }
-    if (z.contacted_at || z.outreach_status === "kontaktiert" || z.outreach_status === "geantwortet") {
-      skip(`schon angeschrieben am ${z.contacted_at?.slice(0, 10) ?? "?"}`);
+    // EIN BRIEF, DER NIE ANKAM, IST KEIN ANGESCHRIEBENER ORT.
+    //
+    // Die Entscheidung steht als reine Funktion daneben (lib/outreach-wiedervorlage.ts)
+    // und nicht hier als Bedingung: Eingebaut wäre sie nur über die Reihenfolge
+    // der Zeilen prüfbar, also gar nicht — dieselbe Sorte Test, die grün meldet,
+    // ohne etwas zu sehen.
+    const wieder = darfInDenVersand(z);
+    if (!wieder.nimm) {
+      skip(wieder.grund);
       continue;
     }
     // WOHIN GEHT DER BRIEF? Die Presseadresse hat Vorrang — der Brief bietet

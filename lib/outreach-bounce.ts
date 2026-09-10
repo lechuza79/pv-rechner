@@ -175,3 +175,48 @@ export function toteAdressen(notes: string | null): string[] {
   for (const m of text.matchAll(/([^\s]+@[^\s]+)\s*(?:→|->)/g)) gefunden.add(m[1].toLowerCase());
   return [...gefunden];
 }
+
+/**
+ * Woran ein Notizeintrag als Zustellmeldung zu erkennen ist — dieselbe
+ * Formulierung, die der Rücklauf-Lauf schreibt.
+ */
+export const BOUNCE_VERMERK = "unzustellbar aus Postfach";
+
+/**
+ * Die Zustellmeldungen einer Notiz, jede als ganzer Text.
+ *
+ * Die Notiz ist eine Kette von Einträgen, die mit „[JJJJ-MM-TT] " beginnen; nur
+ * die mit dem Vermerk des Rücklauf-Laufs sind Zustellmeldungen. Alles andere
+ * (Handkorrekturen, Recherchevermerke) steht in derselben Form daneben und
+ * enthält oft dieselben Wörter — „existiert nicht mehr (No such mailbox)" steht
+ * wörtlich in Dennheritz' Korrekturvermerk.
+ */
+export function zustellmeldungen(notes: string | null): string[] {
+  const text = notes ?? "";
+  if (!text.trim()) return [];
+  const eintraege = text.split(/\n(?=\[\d{4}-\d{2}-\d{2}\])/);
+  return eintraege.filter((e) => e.split("\n")[0]?.includes(BOUNCE_VERMERK));
+}
+
+/**
+ * Wie oft ein Brief an diese Gemeinde schon DAUERHAFT gescheitert ist.
+ *
+ * NICHT die Zahl der toten Adressen — die ist etwas anderes, und die
+ * Verwechslung hat den ersten Probelauf gekostet (10.09.2026): Lassans einzige
+ * Unzustellbarkeit nennt ZWEI Adressen, weil unser Empfänger info@lassan.de auf
+ * ein gelöschtes Personenpostfach in Wolgast weiterleitete und der Server beide
+ * meldet. Ein Fehlversuch, zwei Adressen, Obergrenze gerissen — die Gemeinde
+ * wäre mit frisch belegter Adresse für immer aus dem Versand gefallen, und der
+ * Lauf hätte dabei grün gemeldet. Dieselbe Verdopplung entsteht bei jeder
+ * Alias-Erweiterung (Selzen: info@ und webmaster@ aus einer Meldung).
+ *
+ * GEZÄHLT WIRD DER EINTRAG, NICHT DIE ADRESSE, und nur der dauerhafte: Ein
+ * volles Postfach ist kein Grund, eine Gemeinde aufzugeben.
+ *
+ * Eine Handkorrektur zählt NICHT mit. Sie ist die Reparatur eines
+ * Fehlversuchs, nicht ein zweiter — sie einzurechnen wäre dieselbe Verdopplung,
+ * nur eine Zeile tiefer.
+ */
+export function dauerhafteBouncer(notes: string | null): number {
+  return zustellmeldungen(notes).filter((m) => bounceArt(m) === "dauerhaft").length;
+}
