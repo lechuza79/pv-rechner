@@ -45,6 +45,14 @@ export type EingegangeneMail = {
  * Inhalt, und eine Marke, die über beliebige Zeichen hinwegliest, erkennt
  * irgendwann etwas, das keine Sachfrage ist.
  */
+/*
+ * GETEILT, SEIT 10.09.2026: Die Zuordnung der Anfrage-Antworten
+ * (`lib/funding-anfragen.ts`) ruft dieselbe Funktion auf. Beide Seiten
+ * beantworten dieselbe Frage über denselben Text — ordnete die eine zu und die
+ * andere nicht, wäre das ein Widerspruch, den niemand bemerkt: Eine Antwort
+ * gälte gleichzeitig als Reaktion auf den Brief und als unbeantwortete
+ * Sachfrage. Wer hier etwas ändert, ändert die Zuordnung dort mit.
+ */
 export function normalisiert(s: string): string {
   return s
     .toLowerCase()
