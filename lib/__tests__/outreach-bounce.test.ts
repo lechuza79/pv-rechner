@@ -5,6 +5,7 @@ import {
   toteAdressen,
   MAX_DAUERHAFTE_BOUNCER,
   STATUS_BOUNCE_BEHOBEN,
+  dauerhafteBouncer,
 } from "../outreach-bounce";
 
 /**
@@ -125,6 +126,21 @@ describe("Taugt die neu gefundene Adresse?", () => {
     // Name auf zwei Seiten, und die eine ändert sich irgendwann ohne die
     // andere — dann bleibt die Gemeinde für immer liegen.
     expect(STATUS_BOUNCE_BEHOBEN).toBe("bounce-behoben");
+  });
+
+  it("zweimal volles Postfach gibt eine Gemeinde NICHT auf", () => {
+    // GEMESSEN AM EIGENEN FEHLER (10.09.2026): Die erste Zählung nahm jede
+    // Notizzeile mit dem Vermerk. Damit wäre eine Gemeinde, deren Postfach
+    // zweimal volllief, endgültig aufgegeben worden — mit einer Adresse, die
+    // nie falsch war. Zählt werden Fehlversuche, und zwar nur die dauerhaften.
+    const zweimalVoll = [
+      '[2026-08-26] unzustellbar aus Postfach: „Undelivered Mail Returned to Sender"',
+      "    <info@selzen.de>: Quota exceeded (mailbox for user is full)",
+      '[2026-09-02] unzustellbar aus Postfach: „Undelivered Mail Returned to Sender"',
+      "    <info@selzen.de>: Quota exceeded (mailbox for user is full)",
+    ].join("\n");
+    expect(dauerhafteBouncer(zweimalVoll)).toBe(0);
+    expect(dauerhafteBouncer(zweimalVoll) >= MAX_DAUERHAFTE_BOUNCER).toBe(false);
   });
 
   it("nach zwei dauerhaften Bouncern ist Schluss", () => {

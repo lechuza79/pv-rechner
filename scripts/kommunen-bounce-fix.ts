@@ -38,11 +38,6 @@ function ladeEnv() {
 const hat = (n: string) => process.argv.includes(`--${n}`);
 const log = (s = "") => console.log(s);
 
-/** Wie oft eine Notiz schon eine Unzustellbarkeit vermerkt hat. */
-function bouncerBisher(notes: string | null): number {
-  return (notes ?? "").split("\n").filter((z) => z.includes("unzustellbar aus Postfach")).length;
-}
-
 /** Der Text der JÜNGSTEN Zustellmeldung aus der Notiz. */
 function letzteMeldung(notes: string | null): string {
   const zeilen = (notes ?? "").split("\n");
@@ -81,6 +76,7 @@ async function main() {
     bounceArt,
     ersatzAdresseTaugt,
     toteAdressen,
+    dauerhafteBouncer,
     MAX_DAUERHAFTE_BOUNCER,
     WIEDERVORLAGE_TAGE,
     STATUS_BOUNCE_BEHOBEN,
@@ -154,8 +150,17 @@ async function main() {
       }
       continue;
     }
-    if (bouncerBisher(z.notes) >= MAX_DAUERHAFTE_BOUNCER) {
-      log(`${ort}: schon ${bouncerBisher(z.notes)} Unzustellbarkeiten — hier stimmt mehr als die Adresse nicht`);
+    // GEZÄHLT WERDEN FEHLVERSUCHE, NICHT ADRESSEN — und nur die dauerhaften.
+    //
+    // Die erste Fassung zählte jede Notizzeile mit dem Vermerk. Damit hätte eine
+    // Gemeinde, deren Postfach zweimal volllief, endgültig aufgegeben, obwohl
+    // ihre Adresse nie falsch war (Befund der Outreach-Sitzung, 10.09.2026, an
+    // den echten Notizen gemessen). Und eine EINZELNE Meldung nennt oft zwei
+    // Adressen: Lassans Postfach leitete auf ein gelöschtes Personenpostfach
+    // weiter, der Server nennt beide — ein Fehlversuch, zwei Adressen.
+    const bisher = dauerhafteBouncer(z.notes);
+    if (bisher >= MAX_DAUERHAFTE_BOUNCER) {
+      log(`${ort}: schon ${bisher} dauerhafte Unzustellbarkeiten — hier stimmt mehr als die Adresse nicht`);
       continue;
     }
 
