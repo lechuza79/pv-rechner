@@ -37,6 +37,13 @@ import {
   importlaufMeldung,
   type ImportPlanBefund,
 } from "../lib/mastr-import-plan";
+import {
+  type Auslieferung,
+  auslieferungsAlterText,
+  kaltaufbauHerkunft,
+  neuesteProduktionsAuslieferung,
+} from "../lib/auslieferungs-alter";
+import { SOLAR_CHECK_PROJEKT_ID } from "../lib/vercel-budget";
 import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
 import { sollWarnen, warnstufe } from "../lib/social-ablauf";
@@ -1167,6 +1174,44 @@ function vercelToken(): string | null {
 }
 
 /**
+ * Alter der laufenden Produktions-Auslieferung in Minuten, oder `null`.
+ *
+ * Reiner Kontext fuer den Kaltaufbau-Befund (siehe lib/auslieferungs-alter.ts).
+ * Faellt der Abruf aus, wird das BENANNT statt auf einen Wert geraten — ein
+ * erfundenes Alter waere hier dieselbe Fehlerklasse wie ein erfundenes
+ * Pruefdatum. Kein Urteil haengt daran, der Lauf geht ohne weiter.
+ */
+async function auslieferungsAlterMinuten(): Promise<number | null> {
+  const token = vercelToken();
+  if (!token) return null;
+  try {
+    // Gefiltert wird IN DER ANTWORT, nicht ueber Suchparameter: Welche Filter
+    // die Plattform an diesem Endpunkt akzeptiert, ist nicht geprueft — ein
+    // abgewiesener Parameter wuerde hier zu „nicht abrufbar" fuehren, ohne dass
+    // jemand den Grund saehe. Die FORM der Antwort ist dagegen an echten Daten
+    // gesehen (10.09.2026): neueste zuerst, je Eintrag `state`, `target` und
+    // `created` als Millisekunden-Zeitstempel.
+    const url =
+      `https://api.vercel.com/v6/deployments?projectId=${SOLAR_CHECK_PROJEKT_ID}` +
+      `&teamId=${KOSTEN_TEAM_ID}`;
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) return null;
+    const daten = (await res.json()) as { deployments?: Auslieferung[] };
+    const erstellt = neuesteProduktionsAuslieferung(daten.deployments ?? []);
+    if (erstellt === null) return null;
+    const minuten = (Date.now() - erstellt) / 60000;
+    // Eine negative Spanne kann nur aus abweichenden Uhren kommen und ist keine
+    // Aussage — dann lieber „nicht abrufbar" als ein Alter, das es nicht gibt.
+    return minuten < 0 ? null : minuten;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Fragt die Laufzeitprotokolle nach Gruppen ab.
  *
  * Der Ausgang wird BENANNT, nicht auf „null" zusammengeworfen. Drei Fälle sehen
@@ -1957,6 +2002,7 @@ async function main() {
   }
 
   // ── Zeiten ────────────────────────────────────────────────────────────────
+  const auslieferungsAlter = await auslieferungsAlterMinuten();
   const slowest = pageProbes.reduce((a, b) => (b.seconds > a.seconds ? b : a), pageProbes[0]);
   lines.push(
     `Normale Seiten: langsamste ${slowest.seconds.toFixed(2)} s (${slowest.label}), ` +
@@ -1991,12 +2037,19 @@ async function main() {
         `${luft.toFixed(1)} s Luft bis zur Notbremse bei ${NOTBREMSE_S} s`,
     );
     lines.push(`Langsamste Seite: ${cold.url}`);
+    // Kontext, kein Urteil: Der Lauf startet nach JEDEM inhaltlichen Push, also
+    // regelmaessig Minuten nach einer neuen Auslieferung — und dann ist der
+    // erste Aufbau strukturell teurer. Ohne diese Zeile ist ein Kaltstart von
+    // einer langsam gewordenen Seite nicht zu unterscheiden; genau daran sind am
+    // 09.09.2026 drei Commits auf eine halb richtige Diagnose gelaufen.
+    lines.push(auslieferungsAlterText(auslieferungsAlter));
     const coldVerdict = verdict(cold.seconds, SLOW.atlasCold);
     if (coldVerdict === "rot") {
       forClaude.push(
         `Eine frisch aufgebaute Atlas-Seite braucht ${cold.seconds.toFixed(2)} s. Nur noch ${luft.toFixed(1)} s ` +
           `bis zur Notbremse (${NOTBREMSE_S} s), ab der die Seite einen Fehler zeigt. Das ist die Vorstufe zum ` +
-          `Ausfall — auch wenn gerade noch alles mit 200 antwortet.`,
+          `Ausfall — auch wenn gerade noch alles mit 200 antwortet. ` +
+          kaltaufbauHerkunft(auslieferungsAlter),
       );
     } else if (coldVerdict === "gelb") {
       warnings.push(`Atlas-Kaltaufbau bei ${cold.seconds.toFixed(2)} s (Luft: ${luft.toFixed(1)} s).`);
