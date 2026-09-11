@@ -47,6 +47,11 @@ const LESEPFADE = [
   // einzige kränkelnde Abfrage die ganze Schleife bis zum Function-Limit.
   "lib/awards-server.ts",
   "lib/utilities-server.ts",
+  // Seit den Ortsgeschichten (06.09.2026) im Aufbau JEDER Gemeindeseite
+  // (`fundeFuerOrt`) — vorher nur Redaktionsansicht, deshalb stand es nicht
+  // hier und las ohne Budget. Am 10.09.2026 warf genau dieser Read bei einem
+  // kurzen Datenbankausfall eine Ortsseite in einen 500er.
+  "lib/social-fundvorrat.ts",
 ];
 
 /**
@@ -70,6 +75,13 @@ const OHNE_BUDGET_MIT_GRUND: { muster: RegExp; grund: string }[] = [
     // Reihenfolge „erst schreiben, dann aufräumen" verhindern soll.
     muster: /from\("atlas_auszeichnungen"\)\.(upsert|delete)\(/,
     grund: "Aufbau im Datenlauf, nicht im Seitenaufbau",
+  },
+  {
+    // Der Story-Suchlauf schreibt seine Funde (wöchentliche Action, in Blöcken
+    // zu 500). Kein Seitenaufbau, kein Besucher wartet; ein Budget bräche den
+    // Lauf zwischen zwei Blöcken ab.
+    muster: /from\("social_funde"\)\.upsert\(/,
+    grund: "Suchlauf der Datenstories, nicht im Seitenaufbau",
   },
 ];
 

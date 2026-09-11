@@ -1,5 +1,6 @@
 import "server-only";
 import { supabase } from "./supabase-server";
+import { withDbTimeout, DB_SOFT_READ_TIMEOUT_MS } from "./db-timeout";
 import { type Fund } from "./social-funde";
 
 /**
@@ -141,6 +142,11 @@ export async function leseFunde(opts: {
   grenze?: number;
   /** Wie viele Funde je Muster in der Liste stehen. */
   jeMuster?: number;
+  /**
+   * Zeitbudget des Reads. Ohne Angabe das lange; nur wer einen vollwertigen
+   * Rückfall hat (die Ortsseite: dann eben ohne Geschichten), setzt das kurze.
+   */
+  budgetMs?: number;
 }): Promise<VorratsFund[]> {
   if (!supabase) return [];
   let q = supabase
@@ -161,7 +167,7 @@ export async function leseFunde(opts: {
     const wort = opts.suche.trim().replace(/[%,()]/g, " ");
     q = q.or(`satz.ilike.%${wort}%,grundlage.ilike.%${wort}%`);
   }
-  const { data, error } = await q;
+  const { data, error } = await withDbTimeout(q, "social_funde/lesen", opts.budgetMs);
   if (error) throw new Error(`Vorrat lesen fehlgeschlagen: ${error.message}`);
   const funde = (data ?? []).map((z) => ausZeile(z as Zeile));
 
@@ -189,13 +195,16 @@ export async function leseFunde(opts: {
 /** Einen einzelnen Fund holen — der Weg für einen Zuruf mit Kennung. */
 export async function leseFund(kennung: string): Promise<VorratsFund | null> {
   if (!supabase) return null;
-  const { data, error } = await supabase
-    .from("social_funde")
-    .select(
-      "kennung, muster, kategorie, satz, staerke, werte, grundlage, orte, laender, evergreen, stand, notiz, zuletzt_gesehen, erstmals_gesehen",
-    )
-    .eq("kennung", kennung)
-    .maybeSingle();
+  const { data, error } = await withDbTimeout(
+    supabase
+      .from("social_funde")
+      .select(
+        "kennung, muster, kategorie, satz, staerke, werte, grundlage, orte, laender, evergreen, stand, notiz, zuletzt_gesehen, erstmals_gesehen",
+      )
+      .eq("kennung", kennung)
+      .maybeSingle(),
+    "social_funde/fund",
+  );
   if (error) throw new Error(`Fund lesen fehlgeschlagen: ${error.message}`);
   return data ? ausZeile(data as Zeile) : null;
 }
@@ -203,7 +212,10 @@ export async function leseFund(kennung: string): Promise<VorratsFund | null> {
 /** Wie viele je Muster und Stand — für die Übersicht. */
 export async function zaehleFunde(): Promise<{ muster: string; stand: string; zahl: number }[]> {
   if (!supabase) return [];
-  const { data, error } = await supabase.from("social_funde").select("muster, stand");
+  const { data, error } = await withDbTimeout(
+    supabase.from("social_funde").select("muster, stand"),
+    "social_funde/zaehlen",
+  );
   if (error) throw new Error(`Vorrat zählen fehlgeschlagen: ${error.message}`);
   const zaehler = new Map<string, number>();
   for (const z of data ?? []) {
@@ -225,7 +237,10 @@ export async function setzeStand(
   if (!supabase) throw new Error("Datenbank nicht verfügbar");
   const feld: { stand: FundStand; notiz?: string } = { stand };
   if (notiz !== undefined) feld.notiz = notiz;
-  const { error } = await supabase.from("social_funde").update(feld).eq("kennung", kennung);
+  const { error } = await withDbTimeout(
+    supabase.from("social_funde").update(feld).eq("kennung", kennung),
+    "social_funde/stand",
+  );
   if (error) throw new Error(`Stand setzen fehlgeschlagen: ${error.message}`);
 }
 
@@ -240,7 +255,10 @@ export async function orteImVorrat(): Promise<{
   laender: { name: string; zahl: number }[];
 }> {
   if (!supabase) return { kommunen: [], laender: [] };
-  const { data, error } = await supabase.from("social_funde").select("orte, laender");
+  const { data, error } = await withDbTimeout(
+    supabase.from("social_funde").select("orte, laender"),
+    "social_funde/orte",
+  );
   if (error) throw new Error(`Orte lesen fehlgeschlagen: ${error.message}`);
 
   const zaehle = (feld: "orte" | "laender") => {
@@ -282,7 +300,18 @@ export async function fundeFuerOrt(opts: {
   stand?: FundStand;
   grenze?: number;
 }): Promise<VorratsFund[]> {
-  const alle = await leseFunde({ stand: opts.stand, grenze: 1000 });
+  // DIE ORTSSEITE HÄNGT NICHT AN DIESEM READ. Die Geschichten sind eine
+  // Zugabe; ohne sie ist die Seite vollständig. Am 10.09.2026 war die
+  // Datenbank eine Minute lang weg (521 vom Anbieter), und genau dieser Read
+  // warf eine Gemeindeseite in einen 500er — ohne Zeitbudget hätte er bei
+  // einer bloß langsamen Datenbank zusätzlich bis zum Function-Limit gewartet.
+  // Deshalb das kurze Budget und ein leerer Feed als Rückfall.
+  let alle: VorratsFund[];
+  try {
+    alle = await leseFunde({ stand: opts.stand, grenze: 1000, budgetMs: DB_SOFT_READ_TIMEOUT_MS });
+  } catch {
+    return [];
+  }
   const kreis = new Set((opts.kreisOrte ?? []).filter((n) => n !== opts.ort));
   const naehe = (f: VorratsFund): number => {
     // Beide Listen sind am Typ optional: Ein bundesweiter Fund nennt bewusst
