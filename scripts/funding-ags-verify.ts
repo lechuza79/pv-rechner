@@ -21,14 +21,21 @@
  * Deshalb läuft sie täglich mit, statt auf die nächste Handkontrolle zu warten.
  *
  * Beendet mit Code 1, wenn etwas nicht passt — der Cloud-Lauf wird davon rot.
+ *
+ * DIESES SKRIPT HOLT NUR DIE DATEN. Das Urteil steht in
+ * `lib/funding-ags-urteil.ts` und ist von dort aus einzeln prüfbar; hier wäre
+ * es nur zusammen mit einer Datenbankverbindung zu testen, also gar nicht.
  */
 import { resolve } from "node:path"; import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
-import { FUNDING_PROGRAMS } from "../lib/funding-programs";
+import { FUNDING_PROGRAMS, foerdergebiete } from "../lib/funding-programs";
+import { pruefeProgramm, pruefeVerzeichnis } from "../lib/funding-ags-urteil";
 import { ATLAS_CITIES } from "../lib/atlas-cities";
 const e = resolve(process.cwd(), ".env.local");
 if (existsSync(e)) for (const l of readFileSync(e,"utf8").split("\n")) { const m=l.match(/^([A-Z0-9_]+)=(.*)$/); if(m&&!process.env[m[1]])process.env[m[1]]=m[2].replace(/^["']|["']$/g,""); }
-function norm(s:string){return s.toLowerCase().replace(/[^a-zäöüß]/g,"");}
+// Der Namensvergleich ist seit dem 12.09.2026 in `lib/funding-ags-urteil.ts`
+// zu Hause — er war die einzige Stelle hier, die ein Urteil fällte, und ein
+// Urteil im Abrufskript ist ohne Datenbank nicht prüfbar.
 
 /**
  * Nachschlagen statt raten: `npm run foerder:ags -- --suche Nidda`
@@ -64,17 +71,30 @@ async function main(){
   const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
   const i = process.argv.indexOf("--suche");
   if (i >= 0) { await suche(sb, process.argv.slice(i + 1).join(" ")); return; }
-  const alle = Object.values(FUNDING_PROGRAMS).filter((p:any)=>p.agsCode && p.agsCode.length===8);
-  const { data } = await sb.from("mastr_regions").select("region_id, name").in("region_id", alle.map((p:any)=>p.agsCode));
+  // JEDES Fördergebiet wird geprüft, nicht nur das erste (12.09.2026).
+  //
+  // Bis heute sah die Prüfung allein `agsCode` an. Seit dem 09.09.2026 kann ein
+  // Programm MEHRERE Gebiete haben (`agsCodes`) — und die waren damit sämtlich
+  // ungeprüft: 32 Schlüssel, darunter die neun Mitgliedsgemeinden der
+  // StädteRegion Aachen, deren Programm überhaupt kein `agsCode` trägt und
+  // deshalb durch den Filter fiel. Ein vertippter Schlüssel dort ist genau der
+  // stille Fehler, gegen den es diese Prüfung gibt.
+  //
+  // Gelesen wird über `foerdergebiete()` — dieselbe Funktion, die auch Rechner
+  // und Stadtseite benutzen. Eine zweite Veroderung der beiden Felder hier wäre
+  // die Kopie, gegen die es diese Funktion gibt.
+  const mitGebiet = Object.values(FUNDING_PROGRAMS)
+    .map((p:any)=>({ p, gebiete: foerdergebiete(p).filter((g:string)=>g.length===8) }))
+    .filter(({ gebiete }) => gebiete.length > 0);
+  const schluessel = [...new Set(mitGebiet.flatMap(({ gebiete }) => gebiete))];
+  const { data } = await sb.from("mastr_regions").select("region_id, name").in("region_id", schluessel);
   const name = new Map((data??[]).map((r:any)=>[r.region_id, r.name]));
   let falsch=0;
-  for (const p of alle as any[]) {
-    const echt = name.get(p.agsCode);
-    if (!echt || !norm(echt).startsWith(norm(p.region).slice(0,5))) {
-      falsch++; console.log(`FALSCH  ${p.id}: ${p.agsCode} → "${echt ?? "existiert nicht"}" statt "${p.region}"`);
-    }
+  for (const { p } of mitGebiet as any[]) {
+    for (const b of pruefeProgramm(p, name)) { falsch++; console.log(`FALSCH  ${b.id}: ${b.text}`); }
   }
-  console.log(falsch ? `\n${falsch} Programme zeigen auf die falsche Gemeinde.` : `\nAlle ${alle.length} achtstelligen Schlüssel stimmen.`);
+  const geprueft = schluessel.length;
+  console.log(falsch ? `\n${falsch} Befunde bei ${geprueft} Fördergebiet-Schlüsseln.` : `\nAlle ${geprueft} achtstelligen Fördergebiet-Schlüssel stimmen.`);
 
   // Dasselbe für das Städte-Verzeichnis. Seit dem 19.08.2026 trägt es
   // achtstellige Gemeindeschlüssel, und ein vertippter zeigt genauso stumm auf
@@ -86,10 +106,7 @@ async function main(){
   const sname = new Map((sd ?? []).map((r: any) => [r.region_id, r.name]));
   let sFalsch = 0;
   for (const c of staedte) {
-    const echt = sname.get(c.ags);
-    if (!echt || !norm(echt).startsWith(norm(c.name).slice(0, 5))) {
-      sFalsch++; console.log(`FALSCH  Verzeichnis ${c.slug}: ${c.ags} → "${echt ?? "existiert nicht"}" statt "${c.name}"`);
-    }
+    for (const b of pruefeVerzeichnis(c, sname)) { sFalsch++; console.log(`FALSCH  ${b.id}: ${b.text}`); }
   }
   console.log(sFalsch ? `${sFalsch} Verzeichnis-Einträge zeigen auf die falsche Gemeinde.` : `Alle ${staedte.length} Verzeichnis-Schlüssel stimmen.`);
 

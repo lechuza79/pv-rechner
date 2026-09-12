@@ -484,7 +484,23 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // 11.09.2026: gmodg.bund.de (Chronologie) unverändert, letzter Eintrag
   // 28.07.2026 mit der Verkündung; § 42a kündigt weiter nur an. Kein
   // Referentenentwurf für die Quote gefunden, keine Bioheizöl-Preisreihe.
-  geprueftRechtIso: "2026-09-11",
+  //
+  // 12.09.2026: unverändert, am Infoportal des Ministeriums gelesen. Die
+  // Chronologie endet weiterhin am 28.07.2026 (Verkündung im
+  // Bundesgesetzblatt, Heizungsteil in Kraft seit 29.07.2026); danach steht
+  // kein Eintrag. Die Stufen 10 / 15 / 30 / 60 Prozent zu 2029, 2030, 2035 und
+  // 2040 stehen zellgleich mit `quoteStops`, § 42a kündigt unverändert nur das
+  // bis zum 01.12.2026 vorzulegende Gesetz an — knapp elf Wochen vor der Frist
+  // gibt es davon weiterhin keinen Entwurf, nur die Pflicht, einen vorzulegen.
+  //   ZWANZIGSTE BIOHEIZÖL-GEGENSUCHE, weiter ohne Trägerquelle mit einer
+  //   Preisreihe. Die Treffer sind dieselben zwei Sorten wie an den neunzehn
+  //   Tagen davor: Händler-Charts für den GESAMTpreis von Heizöl (158,20 € je
+  //   100 Liter am 11.09.2026) und der CO2-Aufschlag je Liter. Was darin an
+  //   Beimischung steckt, weist keine Reihe getrennt aus — bei der amtlichen
+  //   Statistik steckt es seit Januar 2007 unaufgeschlüsselt im Deckungsbeitrag.
+  //   Der Lücken-Hinweis im Öl-Ergebnis bleibt samt Fehlerrichtung: Öl wird zu
+  //   günstig gerechnet, also zuungunsten der Wärmepumpe.
+  geprueftRechtIso: "2026-09-12",
   reviewBy: "2027-07-25",
 };
 

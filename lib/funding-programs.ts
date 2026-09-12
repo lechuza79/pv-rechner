@@ -1320,6 +1320,22 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "mainz-kipki-speicher": {
     id: "mainz-kipki-speicher", name: "Photovoltaik-Batteriespeicher (KIPKI)",
     traeger: "Mainzer Stiftung für Klimaschutz / Stadt Mainz", level: "kommune", region: "Mainz", bundesland: "Rheinland-Pfalz", agsCode: "07315",
+    // DIE PROGRAMMSEITE GIBT ES NICHT MEHR (12.09.2026, am Server gemessen).
+    // Die Stiftung baut ihre Website um: JEDER Pfad der Domain — auch die Wurzel
+    // und die Übersicht der Förderprogramme — antwortet mit HTTP 200 und leitet
+    // auf „Über uns" um, wo im Seitenkopf „Diese Seite befindet sich im Umbau"
+    // steht. Über das Programm steht dort kein Wort.
+    //   DIE ADRESSE BLEIBT TROTZDEM STEHEN, und zwar mit Absicht: Es gibt keine
+    //   bessere. Sie auf die Wurzel zu setzen wäre kein Gewinn (dieselbe
+    //   Umleitung, dasselbe Ziel) und würde nur verbergen, dass die belegte
+    //   Fundstelle weg ist. Eine geratene neue Adresse wäre schlimmer als eine
+    //   tote — der Umbau kann die Seite unter neuem Pfad zurückbringen, und
+    //   welcher das ist, weiß heute niemand.
+    //   KEIN GELD BEWEGT SICH: Der Eintrag steht auf „ausgeschöpft" und trägt
+    //   keinen strukturierten Satz, zieht also nichts ab. Was eine Umleitung auf
+    //   HTTP 200 gefährlich macht, ist der Normalfall daneben — bei einem aktiven
+    //   Programm sähe der Seiten-Wächter eine erreichbare Seite und bestätigte
+    //   einen Stand, den die Quelle gar nicht mehr trägt.
     url: "https://www.mainzer-stiftung.de/foerderprogramme/photovoltaik-batteriespeicher/", stand: "Juni 2026",
     status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
