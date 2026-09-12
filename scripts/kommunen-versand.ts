@@ -436,6 +436,8 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
           outreach_status: "kontaktiert",
           contacted_at: new Date().toISOString(),
           channel: "mail",
+          sent_to: b.empfaenger,
+          sent_message_id: info.messageId,
           versendet_variante: b.variante,
           // DEN VERSCHICKTEN TEXT AUFHEBEN.
           //

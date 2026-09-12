@@ -98,11 +98,11 @@ describe("Adressen", () => {
     expect(a.verwaltungDomain).toBeNull();
   });
 
-  it("erkennt die fremde Gemeinde-Domain als gemeinsame Verwaltung", () => {
+  it("does not infer shared administration merely from a foreign municipal address", () => {
     // Witzmannsberg: die redaktionell verantwortliche Person sitzt bei der VG.
     const t = "Redaktionell verantwortlich Andreas Fenzl, E-Mail: fenzl@vg-tittling.de";
     const a = extractAdressen(t, "witzmannsberg.de", istGemeindeDomain);
-    expect(a.verwaltungDomain).toBe("vg-tittling.de");
+    expect(a.verwaltungDomain).toBeNull();
     expect(a.rollenEmail).toBeNull();
   });
 

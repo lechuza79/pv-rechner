@@ -1,3 +1,4 @@
+import { readMail } from "./lib/read-mail";
 /**
  * Rückläufer aus dem Anschreiben-Postfach abholen und zuordnen.
  *
@@ -101,17 +102,21 @@ async function angeschriebene(db: Awaited<ReturnType<typeof makeClient>>) {
   for (let from = 0; ; from += 1000) {
     const { data, error } = await db
       .from("kommunen_kontakt")
-      .select("region_id, rollen_email, mastr_regions!inner(name)")
+      .select("region_id, sent_to, rollen_email, presse_email, notes, mastr_regions!inner(name)")
       .not("contacted_at", "is", null)
-      .not("rollen_email", "is", null)
       .order("region_id")
       .range(from, from + 999);
     if (error) throw new Error(error.message);
     if (!data?.length) break;
-    for (const r of data as unknown as { region_id: string; rollen_email: string; mastr_regions: { name: string } | { name: string }[] }[]) {
+    for (const r of data as unknown as { region_id: string; sent_to: string | null; rollen_email: string | null; presse_email: string | null; notes: string | null; mastr_regions: { name: string } | { name: string }[] }[]) {
       const reg = Array.isArray(r.mastr_regions) ? r.mastr_regions[0] : r.mastr_regions;
-      const email = r.rollen_email.toLowerCase();
-      out.push({ region_id: r.region_id, name: reg?.name ?? r.region_id, email, domain: email.split("@")[1] ?? "" });
+      // New sends have an immutable recipient. Legacy notes can retain repaired bounce addresses.
+      const addresses = r.sent_to ? [r.sent_to] : [r.rollen_email, r.presse_email, ...((r.notes ?? "").match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g) ?? [])];
+      for (const address of new Set(addresses.filter((x): x is string => !!x))) {
+        const email = address.toLowerCase();
+        if (email.endsWith("@solar-check.io")) continue;
+        out.push({ region_id: r.region_id, name: reg?.name ?? r.region_id, email, domain: email.split("@")[1] ?? "" });
+      }
     }
     if (data.length < 1000) break;
   }
@@ -236,7 +241,7 @@ async function main(): Promise<void> {
     if (arr) arr.push({ region_id: z.region_id, name: z.name });
     else perDomain.set(z.domain, [{ region_id: z.region_id, name: z.name }]);
   }
-  log(`${ziele.length} angeschriebene Gemeinden als Zuordnungsbasis`);
+  log(`${new Set(ziele.map(z => z.region_id)).size} angeschriebene Gemeinden als Zuordnungsbasis`);
 
   const { ImapFlow } = await import("imapflow");
   const client = new ImapFlow({ host, port, secure: port === 993, auth: { user, pass }, logger: false });
@@ -270,26 +275,18 @@ async function main(): Promise<void> {
       const roh = String(msg.source ?? "");
       const von = msg.envelope?.from?.[0]?.address?.toLowerCase() ?? "";
       const betreff = msg.envelope?.subject ?? "";
-      // Kopfzeilen und Text grob trennen — für die Einordnung reicht das; ein
-      // vollständiger MIME-Parser wäre eine zweite Abhängigkeit für nichts.
-      const trenner = roh.indexOf("\r\n\r\n");
-      const kopfRoh = trenner > 0 ? roh.slice(0, trenner) : roh.slice(0, 4000);
-      const text = trenner > 0 ? roh.slice(trenner + 4) : "";
-      const kopf: Record<string, string> = {};
-      for (const zeile of kopfRoh.split(/\r?\n/)) {
-        const m = zeile.match(/^([A-Za-z-]+):\s*(.*)$/);
-        if (m) kopf[m[1].toLowerCase()] = m[2];
-      }
-      const mail: RohMail = { von, betreff, text, kopf };
+      const parsed = await readMail(msg.source ?? Buffer.from(roh));
+      const text = parsed.text;
+      const mail: RohMail = { ...parsed, von, betreff };
       const art = ordneEin(mail);
 
       // Zuordnung: erst über die Absender-Domain, sonst über eine im Text
       // zitierte Empfängeradresse (Unzustellbarkeiten kommen vom eigenen
       // Mailserver, nicht von der Gemeinde).
-      let treffer = perDomain.get(von.split("@")[1] ?? "") ?? [];
+      let treffer = [...new Map((perDomain.get(von.split("@")[1] ?? "") ?? []).map(x => [x.region_id, x])).values()];
       if (treffer.length !== 1) {
-        const gefunden = ziele.filter((z) => roh.toLowerCase().includes(z.email));
-        treffer = gefunden.map((z) => ({ region_id: z.region_id, name: z.name }));
+        const gefunden = ziele.filter((z) => (roh + "\n" + text).toLowerCase().includes(z.email));
+        treffer = [...new Map(gefunden.map(z => [z.region_id, { region_id: z.region_id, name: z.name }])).values()];
       }
       // DASSELBE POSTFACH TRÄGT ZWEI GESPRÄCHE: die Antworten auf den
       // Kommunen-Brief und die auf die Sachfragen an Förderstellen
