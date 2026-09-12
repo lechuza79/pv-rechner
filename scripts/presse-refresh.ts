@@ -1,3 +1,5 @@
+import { observedFields } from "../lib/contact-evidence";
+import { fetchContactPage, recordContactPage } from "./lib/contact-fetch";
 /**
  * Presse- und Creator-Katalog — Erhebung in Phasen, jede mit Gedächtnis.
  *
@@ -28,7 +30,7 @@
  *    Unzustellbarkeit zurück; schlimmer, sie kann bei jemand anderem ankommen.
  *
  * 3. „NICHT GEFUNDEN" UND „NICHT ANGESEHEN" BLEIBEN UNTERSCHEIDBAR. Auch der
- *    erfolglose Abruf bekommt sein Datum (`profil_at`) und seinen Grund
+ *    erfolglose Abruf behält den bisherigen Prüfstand und bekommt seinen Grund
  *    (`fehler`). Ohne das beginnt der nächste Lauf wieder bei denselben.
  */
 
@@ -428,20 +430,9 @@ async function saat(): Promise<void> {
     paket: s.paket,
     notiz: s.notiz ?? null,
   }));
-  await upsert(sb, "presse_medien", zeilen, "domain");
-  // Was aus der Saat verschwunden ist, verschwindet auch aus dem Bestand.
-  // Sonst bleibt eine falsch geratene Domain für immer als „nicht erreichbar"
-  // stehen und sieht aus wie ein Befund über ein Medium — dabei ist sie nur ein
-  // Tippfehler von uns. Gemessen: stadtundwerk.de und gebaeudeenergieberater.de
-  // heißen in Wirklichkeit anders.
-  const bestand = await alleZeilen<{ domain: string }>(sb, "presse_medien", "domain");
-  const gewollt = new Set(SAAT.map((s) => s.domain));
-  const weg = bestand.map((b) => b.domain).filter((d) => !gewollt.has(d));
-  if (weg.length) {
-    const { error } = await sb.from("presse_medien").delete().in("domain", weg);
-    if (error) throw new Error(`Aufräumen: ${error.message}`);
-    log(`${weg.length} nicht mehr in der Saat, entfernt: ${weg.join(", ")}`);
-  }
+  const { error: seedError } = await sb.from("presse_medien").upsert(zeilen, { onConflict: "domain", ignoreDuplicates: true });
+  if (seedError) throw new Error(seedError.message);
+  // The seed only adds organizations; discovery and human work are never removed by a seed refresh.
   log(`${zeilen.length} Medien in der Saat`, "ok");
 }
 
@@ -458,29 +449,9 @@ async function holeText(url: string): Promise<{ html: string; url: string } | nu
 }
 
 async function holeMit(url: string, ua: string): Promise<{ html: string; url: string } | null> {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
-  try {
-    const res = await fetch(url, {
-      headers: {
-        "User-Agent": ua,
-        Accept: "text/html,application/xhtml+xml",
-        "Accept-Language": "de-DE,de;q=0.9",
-      },
-      signal: ctrl.signal,
-      redirect: "follow",
-    });
-    if (!res.ok) return null;
-    if (!(res.headers.get("content-type") ?? "").includes("html")) return null;
-    // EINMAL entschlüsseln, direkt beim Abruf: Danach sehen Rollen-, Personen-
-    // und Postfachsuche dieselbe Seite wie ein Mensch im Browser. Es je Sucher
-    // zu tun wäre dreimal dieselbe Arbeit — und die vierte Stelle vergisst es.
-    return { html: ohneAdressVerschleierung(await res.text()), url: res.url };
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
+  const result = await fetchContactPage(url, { timeoutMs: FETCH_TIMEOUT_MS, userAgent: ua,
+    record: o => recordContactPage("presse", o) });
+  return result.html === null ? null : { html: ohneAdressVerschleierung(result.html), url: result.observation.finalUrl! };
 }
 
 /** Startseite über beide Schreibweisen. Ein `www`-Zwang ist bei Verlagen
@@ -840,7 +811,10 @@ function hinweisZu(seiten: Seite[], anzahlKontakte: number): string | null {
 }
 
 /** Startseite plus die Unterseiten, die etwas tragen können. */
-async function holeMedium(domain: string): Promise<Seite[] | { fehler: string }> {
+type ReadPages = Seite[] & { incomplete?: boolean };
+
+async function holeMedium(domain: string): Promise<ReadPages | { fehler: string }> {
+  let incomplete = false;
   const start = await holeStart(domain);
   // EINE GESPERRTE STARTSEITE IST KEIN GESPERRTES MEDIUM. Gemessen am
   // 03.09.2026 an sechs Madsack-Titeln: haz.de antwortet der Startseite mit 403
@@ -867,6 +841,7 @@ async function holeMedium(domain: string): Promise<Seite[] | { fehler: string }>
   for (const [art, url] of arten.slice(0, MAX_SEITEN - 1)) {
     const r = await holeText(url);
     if (r) seiten.push({ url: r.url, html: r.html, art });
+    else incomplete = true;
   }
 
   // Rückfallebene: Was über die Links nicht gefunden wurde, wird an den üblichen
@@ -907,24 +882,25 @@ async function holeMedium(domain: string): Promise<Seite[] | { fehler: string }>
         if (!url || seiten.some((x) => x.url === url)) continue;
         const r = await holeText(url);
         if (r) seiten.push({ url: r.url, html: r.html, art });
+        else incomplete = true;
       }
     }
   }
   if (!seiten.length) return { fehler: "weder Startseite noch Impressum erreichbar" };
-  return seiten;
+  return Object.assign(seiten, { incomplete: incomplete || !start });
 }
 
 // ─── Phase: Profil ───────────────────────────────────────────────────────────
 
 async function profil(paket: Paket | null, limit: number, refetch: boolean): Promise<void> {
   const sb = await makeClient();
-  const alle = await alleZeilen<{ domain: string; paket: number; profil_at: string | null }>(
+  const alle = await alleZeilen<{ domain: string; paket: number; profil_at: string | null; fehler: string | null }>(
     sb,
     "presse_medien",
-    "domain, paket, profil_at",
+    "domain, paket, profil_at, fehler",
   );
   const offen = alle
-    .filter((m) => (paket === null || m.paket === paket) && (refetch || !m.profil_at))
+    .filter((m) => (paket === null || m.paket === paket) && (refetch || !m.profil_at || !!m.fehler))
     .slice(0, limit);
   if (!offen.length) {
     log("nichts offen — mit --refetch noch einmal", "ok");
@@ -949,48 +925,21 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
    * geschrieben wird, existiert bis dahin nicht.
    */
   const STAPEL = 50;
-  async function ablegen(): Promise<void> {
-    if (!medienZeilen.length) return;
-    await upsert(sb, "presse_medien", medienZeilen, "domain");
-    const angefasst = medienZeilen.map((z) => String(z.domain));
-    const gemerkt = new Map<string, { stand: string; notiz: string | null; stand_at: string | null }>();
-    for (let i = 0; i < angefasst.length; i += 200) {
-      const teil = angefasst.slice(i, i + 200);
-      const { data, error: leseFehler } = await sb
-        .from("presse_kontakte")
-        .select("domain, schluessel, stand, notiz, stand_at")
-        .in("domain", teil);
-      if (leseFehler) throw new Error(`Arbeitsstand sichern: ${leseFehler.message}`);
-      for (const r of (data ?? []) as {
-        domain: string;
-        schluessel: string;
-        stand: string | null;
-        notiz: string | null;
-        stand_at: string | null;
-      }[]) {
-        if ((!r.stand || r.stand === "offen") && !r.notiz) continue;
-        gemerkt.set(`${r.domain}|${r.schluessel}`, {
-          stand: r.stand ?? "offen",
-          notiz: r.notiz,
-          stand_at: r.stand_at,
-        });
-      }
-      const { error } = await sb.from("presse_kontakte").delete().in("domain", teil);
-      if (error) throw new Error(`alte Kontakte entfernen: ${error.message}`);
-    }
-    for (const z of kontaktZeilen) {
-      const alt = gemerkt.get(`${z.domain}|${z.schluessel}`);
-      if (!alt) continue;
-      z.stand = alt.stand;
-      z.notiz = alt.notiz;
-      z.stand_at = alt.stand_at;
-    }
-    await upsert(sb, "presse_kontakte", kontaktZeilen, "domain,schluessel");
-    await upsert(sb, "presse_belege", belegZeilen, "domain,merkmal,quelle_url");
-    kontakteGesamt += kontaktZeilen.length;
-    medienZeilen = [];
-    kontaktZeilen = [];
-    belegZeilen = [];
+  let pendingWrite = Promise.resolve();
+  function ablegen(): Promise<void> {
+    // Detach synchronously before yielding: concurrent workers cannot flush the same batch twice.
+    const media = medienZeilen.splice(0);
+    const contacts = kontaktZeilen.splice(0);
+    const evidence = belegZeilen.splice(0);
+    pendingWrite = pendingWrite.then(async () => {
+      if (!media.length) return;
+      await upsert(sb, "presse_medien", media, "domain");
+      // No delete/reinsert window. Omitted workflow columns survive an upsert.
+      await upsert(sb, "presse_kontakte", contacts, "domain,schluessel");
+      await upsert(sb, "presse_belege", evidence, "domain,merkmal,quelle_url");
+      kontakteGesamt += contacts.length;
+    });
+    return pendingWrite;
   }
 
   await pool(offen, 6, async (m) => {
@@ -999,48 +948,23 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
     // mit einer Typmeldung stehen — die Arbeit war weg, die Abrufe bezahlt.
     // Dieselbe Lehre wie beim Fachbetriebe-Lauf, den zweimal eine einzige
     // kaputte Adresse abgerissen hat.
-    let res: Seite[] | { fehler: string };
+    let res: ReadPages | { fehler: string };
     try {
       res = await holeMedium(m.domain);
     } catch (e) {
       res = { fehler: `Abruf abgebrochen: ${e instanceof Error ? e.message : String(e)}` };
     }
     if ("fehler" in res) {
-      // GEMESSENE FELDER LÖSCHEN, WENN DER ABRUF SCHEITERT.
-      // Sonst bleibt die Einstufung des letzten geglückten Laufs stehen und
-      // behauptet eine Messung, die es diesmal nicht gab. Real gemessen:
-      // energieverbraucher.de stand mit Priorität A im Katalog, ohne einen
-      // einzigen Kontakt — die A kam aus einem Lauf, dessen Abruf noch geklappt
-      // hatte. Dieselbe Fehlerklasse wie ein Prüfdatum ohne Prüfung.
-      medienZeilen.push({
-        domain: m.domain,
-        profil_at: new Date().toISOString(),
-        fehler: res.fehler,
-        titel: null,
-        medientyp: null,
-        themen: null,
-        geschichten: null,
-        reichweite: null,
-        reichweite_quelle: null,
-        ist_medium: null,
-        medium_grund: null,
-        medium_merkmale: null,
-        seiten: null,
-        formular_url: null,
-        impressum_url: null,
-        prioritaet: null,
-        gattung: null,
-        woerter: null,
-        aufhaenger: null,
-        hinweis: null,
-        updated_at: new Date().toISOString(),
-      });
+      // Preserve prior facts and their verification date; record only this failed attempt.
+      medienZeilen.push({ domain: m.domain, fehler: res.fehler, updated_at: new Date().toISOString() });
       leer++;
       log(`${m.domain}: ${res.fehler}`, "err");
       return;
     }
     const a = werteAus(m.domain, res);
+    const partial = !!res.incomplete;
     medienZeilen.push({
+      ...observedFields({
       domain: a.domain,
       start_url: a.start_url,
       titel: a.titel,
@@ -1049,22 +973,23 @@ async function profil(paket: Paket | null, limit: number, refetch: boolean): Pro
       geschichten: a.geschichten,
       reichweite: a.reichweite,
       reichweite_quelle: a.reichweite_quelle,
-      ist_medium: a.ist_medium,
-      medium_grund: a.medium_grund,
+      ist_medium: partial ? null : a.ist_medium,
+      medium_grund: partial ? null : a.medium_grund,
       medium_merkmale: a.medium_merkmale,
       seiten: a.seiten,
       formular_url: a.formular_url,
       impressum_url: a.impressum_url,
-      prioritaet: a.prioritaet,
+      prioritaet: partial ? null : a.prioritaet,
       gattung: a.gattung,
       woerter: a.woerter,
       aufhaenger: a.aufhaenger,
       hinweis: a.hinweis,
-      profil_at: new Date().toISOString(),
+      profil_at: partial ? null : new Date().toISOString(),
       fehler: null,
       updated_at: new Date().toISOString(),
+      }), fehler: partial ? "Teilabruf: mindestens eine bekannte Seite nicht gelesen" : null,
     });
-    kontaktZeilen.push(...a.kontakte);
+    kontaktZeilen.push(...a.kontakte.map(k => observedFields(k)));
     belegZeilen.push(...a.belege);
     ok++;
     const personen = a.kontakte.filter((k) => k.name).length;

@@ -1,3 +1,5 @@
+import { entschluesseltOderRoh } from "./uri-sicher";
+import { load } from "cheerio";
 // Personen von einer Organisations-Website: Name, Funktion, Abschnitt, Adresse,
 // Durchwahl.
 //
@@ -155,7 +157,7 @@ const FENSTER = 400;
  * Die Funktion ist das, was zwischen dem Namen und der Durchwahl steht — auch
  * das ohne Wortliste, weil die Wörter ja gerade eingesammelt werden sollen.
  */
-export function personenAus(html: string): Person[] {
+function legacyPersonenAus(html: string): Person[] {
   const text = textMitAbschnitten(html);
   const gefunden = new Map<string, Person>();
 
@@ -207,6 +209,27 @@ export function personenAus(html: string): Person[] {
     });
   }
   return [...gefunden.values()];
+}
+
+/** Bind fields inside a single contact card regardless of their visual order. */
+export function personenAus(html: string): Person[] {
+  const found = new Map(legacyPersonenAus(html).map(p => [p.mail, p]));
+  const $ = load(html);
+  $("script,style,noscript").remove();
+  $("a[href^='mailto:']").each((_, el) => {
+    try { $(el).append(" " + entschluesseltOderRoh(($(el).attr("href") ?? "").slice(7).split("?")[0])); } catch { /* Invalid source. */ }
+  });
+  $("p,li,td,div,article,section").each((_, el) => {
+    const text = entwirreAdressen($(el).text()).replace(/\s+/g, " ").trim();
+    const emails = [...new Set(text.match(MAIL) ?? [])];
+    // Never pair fields across two people. The legacy path handles split sibling cards.
+    if (emails.length !== 1 || text.length > 600 || found.has(emails[0].toLowerCase())) return;
+    const email = emails[0];
+    if (!istPersonenAdresse(email)) return;
+    const withoutEmail = text.replaceAll(email, " ");
+    for (const person of legacyPersonenAus(`<div>${withoutEmail} ${email}</div>`)) found.set(person.mail, person);
+  });
+  return [...found.values()];
 }
 
 /**

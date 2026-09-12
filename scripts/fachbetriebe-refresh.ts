@@ -1,3 +1,5 @@
+import { observedFields } from "../lib/contact-evidence";
+import { fetchContactPage, recordContactPage } from "./lib/contact-fetch";
 /**
  * PV-Fachbetriebe — Erhebung in Phasen, jede mit Gedächtnis.
  *
@@ -697,22 +699,9 @@ async function einordnen(dry: boolean): Promise<void> {
 // ─── Phase: Profil (Impressum + Startseite) ──────────────────────────────────
 
 async function holeText(url: string): Promise<{ html: string; url: string } | null> {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
-  try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": UA, Accept: "text/html,application/xhtml+xml" },
-      signal: ctrl.signal,
-      redirect: "follow",
-    });
-    if (!res.ok) return null;
-    if (!(res.headers.get("content-type") ?? "").includes("html")) return null;
-    return { html: await res.text(), url: res.url };
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
+  const result = await fetchContactPage(url, { timeoutMs: FETCH_TIMEOUT_MS, userAgent: UA,
+    record: o => recordContactPage("fachbetriebe", o) });
+  return result.html === null ? null : { html: result.html, url: result.observation.finalUrl! };
 }
 
 async function pool<T>(items: T[], n: number, fn: (x: T) => Promise<void>): Promise<void> {
@@ -735,11 +724,12 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
     art: string;
     art_grund: string | null;
     profil_at: string | null;
+    profil_fehler: string | null;
     kontakt_at: string | null;
-  }>(sb, "fachbetriebe", "domain, art, art_grund, profil_at, kontakt_at");
+  }>(sb, "fachbetriebe", "domain, art, art_grund, profil_at, kontakt_at, profil_fehler");
   // Überregionale gar nicht erst anfassen — wir wollen ihre Impressen nicht.
   const offen = alle
-    .filter((r) => r.art !== "ueberregional" && (refetch || !r.profil_at))
+    .filter((r) => r.art !== "ueberregional" && (refetch || !r.profil_at || !!r.profil_fehler))
     .sort((a, b) => a.domain.localeCompare(b.domain))
     .slice(0, limit);
 
@@ -789,7 +779,6 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
         // art/art_grund MÜSSEN mit, siehe Hinweis unten am Upsert.
         art: r.art,
         art_grund: r.art_grund,
-        profil_at: new Date().toISOString(),
         profil_fehler: "Startseite nicht erreichbar",
         updated_at: new Date().toISOString(),
       });
@@ -797,14 +786,21 @@ async function profil(limit: number, dry: boolean, refetch: boolean): Promise<vo
     }
     const impUrl = impressumUrl(start.html, start.url);
     const imp = impUrl ? await holeText(impUrl) : null;
-    if (!imp) ohneImpressum++;
+    if (!imp) {
+      ohneImpressum++;
+      zeilen.push({ domain: r.domain, art: r.art, art_grund: r.art_grund,
+        profil_fehler: "Impressum nicht vollständig gelesen", updated_at: new Date().toISOString() });
+      await wegschreiben(false);
+      return;
+    }
 
     const p = profilAus(r.domain, start, imp, new Date().getFullYear());
-    const { belege: bl, ...rest } = p;
+    const { belege: bl, ...unfiltered } = p;
+    const rest = observedFields(unfiltered);
     zeilen.push({
       ...rest,
       profil_at: new Date().toISOString(),
-      profil_fehler: null,
+      profil_fehler: imp ? null : "Impressum nicht vollständig gelesen",
       updated_at: new Date().toISOString(),
       // Die Profil-Phase darf nur ZURÜCKSTUFEN ('kein-betrieb'), nie die
       // gemessene Einordnung aus --art überschreiben. Hat sie nichts
