@@ -112,6 +112,7 @@ daraus heute nicht; die Zeile gehört beobachtet, nicht repariert.
 | 18.08.2026 | 18.07.–15.08. | 108 | 33 (Zählweise nicht dokumentiert) | 0 von 149 | 7 |
 | 24.08.2026 | 24.07.–21.08. (28 T.) | 55 | 10 (18 %) | 0 von 170 | 1 |
 | 24.08.2026 | 13.07.–21.08. (39 T.) | 147 | 33 (22 %) | 0 von 171 | 9 |
+| 12.09.2026 | 12.08.–09.09. (28 T.) | 193 | 29 (15 %) | 1 von 211 | 1 (Rauschen) |
 
 **Die Zeile vom 18.08. ist mit den beiden anderen nicht vergleichbar** — wie
 damals gezählt wurde, lässt sich nicht mehr rekonstruieren, und die Rohdaten
@@ -124,3 +125,44 @@ Der Rückgang von 108 auf 55 sichtbare Anfragen im 28-Tage-Fenster ist **kein**
 Nachfragerückgang: Die Search Console zeigt nur Anfragen oberhalb ihrer
 Anonymisierungsschwelle. Die Gesamtnachfrage der Förderfamilie lag im
 28-Tage-Fenster bis 21.08. bei 1.568 Einblendungen und 8 Klicks.
+
+## Lauf vom 12.09.2026
+
+**Die Rollentrennung hat sich nicht verschlechtert, sondern leicht verbessert**
+(15 % gegen 18 % am selben Fenstertyp), und das bei einer Nachfrage, die sich
+verdoppelt hat: 3.184 Einblendungen und 8 Klicks in der Förderfamilie gegen
+1.568 und 8 drei Wochen zuvor. Die sichtbaren Anfragen stiegen von 55 auf 193 —
+das ist die Anonymisierungsschwelle, die bei mehr Nachfrage mehr durchlässt,
+kein Sprung der Rollenverletzungen.
+
+**Neu, und deshalb benannt statt übergangen: eine Atlas-Anfrage trägt erstmals
+ein Geld-Wort** („photovoltaik förderung mecklenburg-vorpommern", Position 65,
+eine Einblendung). Bei 211 sichtbaren Atlas-Anfragen ist das eine einzelne
+Zeile weit außerhalb jeder Sichtbarkeit — die Reihe stand bisher dreimal auf
+null, und ein Wert, der zum ersten Mal nicht null ist, gehört in die nächste
+Messung geschaut, nicht heute repariert.
+
+**Doppelbelegung faktisch bei null:** Der einzige Treffer ist „ja", also
+Eingabe-Rauschen. Die neun Bundesland-Paarungen vom 24.08. sind aus dem
+sichtbaren Bereich verschwunden; das ist kein Erfolg, sondern die
+Anonymisierungsschwelle in der anderen Richtung — sie lagen alle jenseits von
+Position 80.
+
+### Was das für Welle 1 heißt — präziser als bisher
+
+Die Förder-Stadtseiten stehen auf reinen Ortsanfragen **weit vorn**, nicht
+irgendwo: „balkonkraftwerk osnabrück" Position 2, „photovoltaik osnabrück" 3,
+„photovoltaik krefeld" 4, „pv anlage osnabrück" 4,5, „solaranlage krefeld" 6,
+„hannover" 1, „stadt bottrop" 9. Die Aussage dieser Datei vom 24.08. — die
+Frage sei „vertagt, sie stellt sich am Tag von Welle 1" — gilt unverändert und
+ist heute mit besseren Positionen belegt.
+
+**Die Kollision hängt an der Ortsauswahl, und das ist neu gemessen:** Von den
+289 einzeln freigegebenen Atlas-Ortsseiten haben **4** auch eine Förder-Stadtseite
+(Darmstadt, Düsseldorf, Hohenahr, Nidda). Die beiden Familien überlappen also
+heute kaum — die Förderseiten sitzen auf größeren Städten, die Einzelfreigaben
+auf den angeschriebenen Gemeinden. Eine Ortswelle über kleine Orte kollidiert
+fast nicht; eine über die 63 Städte mit Förderseite kollidiert frontal. Wer den
+Freigabe-Nachweis für die Gemeinde-Ebene erbringt, beantwortet die Frage
+deshalb **für die Orte der geplanten Charge**, nicht pauschal — genau so, wie
+es in `lib/atlas-index.ts` schon steht.
