@@ -7,9 +7,13 @@ import { gscConfigured, querySearchAnalyticsByPage, querySearchAnalyticsByQuery 
 //
 // GET /api/seo/gsc?prefix=/solar-atlas&days=28
 //   { configured, siteHint, range, totals, pages: [{url, impressions, clicks, position}] }
-// GET /api/seo/gsc?dim=query&days=90[&page=/strommix-deutschland]
-//   { configured, range, queries: [{query, page, impressions, clicks, position}] }
-//   — je Suchanfrage (mit rankender Seite), optional auf EINE Seite gefiltert.
+// GET /api/seo/gsc?dim=query&days=90[&page=/strommix-deutschland][&prefix=/solar-atlas]
+//   { configured, range, page, prefix, queries: [{query, page, impressions, clicks, position}] }
+//   — je Suchanfrage (mit rankender Seite), optional auf EINE Seite (page, exakter
+//     Pfad) oder eine ganze Familie (prefix) gefiltert. Ohne beides: ganze Domain.
+//   ACHTUNG: Diese Sicht beantwortet, WONACH gesucht wurde — nicht WIE VIEL ankam.
+//   GSC unterdrückt seltene Anfragen; über alle Flächen fehlen hier 61 % der
+//   Einblendungen und 90 % der Klicks (gemessen 09/2026). Mengen: prefix ohne dim.
 // Ist GOOGLE_SERVICE_ACCOUNT_JSON nicht gesetzt → { configured:false } (kein Fehler).
 
 export const runtime = "nodejs";
@@ -33,7 +37,11 @@ export async function GET(req: Request) {
   }
 
   const url = new URL(req.url);
-  const prefixPath = url.searchParams.get("prefix") || "/solar-atlas";
+  // Rohwert getrennt halten: bei dim=query darf NUR ein ausdrücklich gesetztes
+  // prefix filtern. Der Default würde sonst zwei bestehende Läufe (Release- und
+  // Kreisfrei-Messung, beide ohne prefix) still auf den Atlas verengen.
+  const prefixRaw = url.searchParams.get("prefix");
+  const prefixPath = prefixRaw || "/solar-atlas";
   const days = Math.min(Math.max(parseInt(url.searchParams.get("days") || "28", 10) || 28, 1), 180);
 
   // GSC hat 2–3 Tage Lag: Ende = heute − 3, Start = Ende − days.
@@ -47,11 +55,15 @@ export async function GET(req: Request) {
         startDate: ymd(start),
         endDate: ymd(end),
         pageUrl: pagePath ? `${BASE}${pagePath}` : undefined,
+        urlPrefixFilter: prefixRaw
+          ? [`${BASE}${prefixRaw}`, `https://www.solar-check.io${prefixRaw}`]
+          : undefined,
       });
       return NextResponse.json({
         configured: true,
         range: { start: ymd(start), end: ymd(end), days },
         page: pagePath ?? null,
+        prefix: prefixRaw ?? null,
         queries: rows
           .sort((a, b) => b.impressions - a.impressions)
           .map((r) => ({

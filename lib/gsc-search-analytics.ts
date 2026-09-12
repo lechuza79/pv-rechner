@@ -81,6 +81,16 @@ export async function querySearchAnalyticsByQuery(opts: {
   endDate: string;
   /** Exakte Seiten-URL (voll qualifiziert) — filtert serverseitig via GSC-Filter. */
   pageUrl?: string;
+  /** URL-Präfixe (voll qualifiziert) — filtert eine ganze Seitenfamilie. GSC
+   *  kennt keinen Präfix-Filter, deshalb wird die Seiten-Dimension ohnehin
+   *  mitgezogen und hier nachgefiltert (wie in den beiden Schwesterfunktionen).
+   *
+   *  ACHTUNG, die Zahlen sind NICHT die Reichweite der Familie: Auf der
+   *  Anfragen-Ebene unterdrückt GSC seltene Suchanfragen, über alle Flächen
+   *  fehlen dort 61 % der Einblendungen und 90 % der Klicks (gemessen 09/2026,
+   *  docs/seo/rankings-2026-09.md). Für MENGEN gilt querySearchAnalyticsByPage;
+   *  diese Sicht beantwortet, WONACH gesucht wurde. */
+  urlPrefixFilter?: string[];
   rowLimit?: number;
 }): Promise<QueryRow[]> {
   const creds = getServiceAccountCredentials();
@@ -109,16 +119,19 @@ export async function querySearchAnalyticsByQuery(opts: {
   }
 
   const data = (await res.json()) as { rows?: GscRow[] };
-  return (data.rows ?? []).map(
-    (r): QueryRow => ({
-      query: r.keys[0],
-      page: r.keys[1],
-      impressions: r.impressions,
-      clicks: r.clicks,
-      ctr: r.ctr,
-      position: r.position,
-    }),
-  );
+  const prefixes = opts.urlPrefixFilter;
+  return (data.rows ?? [])
+    .map(
+      (r): QueryRow => ({
+        query: r.keys[0],
+        page: r.keys[1],
+        impressions: r.impressions,
+        clicks: r.clicks,
+        ctr: r.ctr,
+        position: r.position,
+      }),
+    )
+    .filter((r) => !prefixes?.length || prefixes.some((p) => r.page.startsWith(p)));
 }
 
 export type DayRow = { date: string; impressions: number; clicks: number };
