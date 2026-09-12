@@ -12,8 +12,10 @@ import { gscConfigured, querySearchAnalyticsByPage, querySearchAnalyticsByQuery 
 //   — je Suchanfrage (mit rankender Seite), optional auf EINE Seite (page, exakter
 //     Pfad) oder eine ganze Familie (prefix) gefiltert. Ohne beides: ganze Domain.
 //   ACHTUNG: Diese Sicht beantwortet, WONACH gesucht wurde — nicht WIE VIEL ankam.
-//   GSC unterdrückt seltene Anfragen; über alle Flächen fehlen hier 61 % der
-//   Einblendungen und 90 % der Klicks (gemessen 09/2026). Mengen: prefix ohne dim.
+//   GSC unterdrückt seltene Anfragen, und wie stark hängt an der Familie: 09/2026
+//   waren auf Förder-Stadtseiten 0–7 % der Anfragen sichtbar, auf Atlas-Landes-
+//   seiten 58–81 % (docs/seo/rankings-2026-09.md). Einen pauschalen
+//   Korrekturfaktor gibt es deshalb nicht. Mengen: prefix ohne dim.
 // Ist GOOGLE_SERVICE_ACCOUNT_JSON nicht gesetzt → { configured:false } (kein Fehler).
 
 export const runtime = "nodejs";

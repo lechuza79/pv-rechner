@@ -85,7 +85,12 @@ export async function GET(req: Request) {
       const seiten = await querySearchAnalyticsByPage({
         startDate: ymd(start),
         endDate: ymd(ende),
-        urlPrefixFilter: [vorhaben.slug],
+        // VOLLE Adresse, nicht der Pfad: Der Filter vergleicht gegen die URLs,
+        // die GSC liefert (die Property ist eine Domain-Property). Mit dem
+        // nackten Slug traf er nie, `seiten` blieb leer, und die Ansicht meldete
+        // für JEDEN Ratgeber 0 Einblendungen — als gemessene Tatsache, weil
+        // `sucheGemessen` daneben true blieb. Gefunden am 12.09.2026.
+        urlPrefixFilter: [seite],
       });
       seitenZeile = seiten.find((p) => p.url === seite) ?? null;
       // Die Anfragen sind Beiwerk: Sie sagen, WONACH gesucht wurde, wenn Google

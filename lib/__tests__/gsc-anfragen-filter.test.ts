@@ -1,6 +1,4 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 
 // Der Auslöser (12.09.2026): Der Wellen-Monitor sollte die Rollentrennung
 // zwischen Atlas- und Förderseiten messen — "wie viele Förder-Anfragen tragen
@@ -94,37 +92,79 @@ describe("Anfragen-Sicht: Präfix-Filter", () => {
     expect(await anfragen({ urlPrefixFilter: [] })).toHaveLength(4);
   });
 
-  it("der Präfix wird NICHT an GSC geschickt — GSC kennt keinen Präfix-Filter", async () => {
+  // GSC KÖNNTE das serverseitig (INCLUDING_REGEX auf der PAGE-Dimension) — der
+  // frühere Kommentar im Modul behauptete das Gegenteil und war widerlegt. Wir
+  // filtern trotzdem hier, weil EIN Abruf mehrere Präfixe bedient. Der Test
+  // hält also eine ENTSCHEIDUNG fest, keine Unmöglichkeit: Wer umstellt, muss
+  // ihn bewusst anfassen und kann es nicht nebenbei tun.
+  it("filtert im Code, nicht serverseitig — und zieht dafür die Seiten-Dimension mit", async () => {
     await anfragen({ urlPrefixFilter: ["https://solar-check.io/solar-atlas"] });
     expect(gesendet.dimensionFilterGroups).toBeUndefined();
-    // Die Seiten-Dimension muss dabei sein, sonst gibt es nichts zu filtern.
+    // Ohne die Seiten-Dimension gäbe es nichts zu filtern.
     expect(gesendet.dimensions).toEqual(["query", "page"]);
   });
 });
 
+// Die Route wird BEDIENT, nicht gelesen. Die erste Fassung dieses Blocks
+// verglich den Quelltext als Text und prüfte, ob im Anfragen-Zweig `prefixRaw`
+// statt `prefixPath` steht. Ein adversarialer Prüfer hat sie gegen zehn
+// Fassungen laufen lassen: Sie blieb GRÜN, wenn man die beiden Variablen wieder
+// zu einer mit Vorgabewert zusammenzieht — also unter genau der Regression,
+// gegen die sie geschrieben war — und wurde ROT bei vier folgenlosen
+// Umformatierungen (einfache Anführungszeichen, ein Prettier-Umbruch, ein
+// Kommentar mit dem Wort darin, eine Umbenennung). Ein Wächter, der das
+// Gegenteil von dem tut, was er soll, ist schlimmer als keiner.
 describe("Die Route reicht nur ein AUSDRÜCKLICH gesetztes Präfix durch", () => {
-  const quelle = () => readFileSync(join(__dirname, "..", "..", "app", "api", "seo", "gsc", "route.ts"), "utf8");
+  const uebergeben: Record<string, unknown>[] = [];
 
-  it("benutzt den Rohwert, nicht den mit Vorgabewert belegten", () => {
-    const s = quelle();
-    // Der Zweig wird an seinen SYNTAKTISCHEN Enden abgegrenzt, nicht über ein
-    // Zeilen- oder Zeichenfenster: Ein Fenster reicht in den Mengen-Zweig
-    // hinein, wo prefixPath zu Recht steht, und der Test wird dann rot, ohne
-    // dass etwas kaputt ist.
-    const ab = s.indexOf('=== "query"');
-    const bis = s.indexOf("querySearchAnalyticsByPage(", ab);
-    expect(ab).toBeGreaterThan(-1);
-    expect(bis).toBeGreaterThan(ab);
-    const zweig = s.slice(ab, bis);
+  async function ruf(qs: string) {
+    uebergeben.length = 0;
+    vi.resetModules();
+    process.env.CRON_SECRET = "geheim";
+    vi.doMock("../../lib/gsc-search-analytics", () => ({
+      gscConfigured: () => true,
+      querySearchAnalyticsByQuery: async (o: Record<string, unknown>) => {
+        uebergeben.push(o);
+        return [];
+      },
+      querySearchAnalyticsByPage: async (o: Record<string, unknown>) => {
+        uebergeben.push(o);
+        return [];
+      },
+    }));
+    const { GET } = await import("../../app/api/seo/gsc/route");
+    const res = await GET(
+      new Request(`https://solar-check.io/api/seo/gsc?${qs}`, {
+        headers: { authorization: "Bearer geheim" },
+      }),
+    );
+    expect(res.status).toBe(200);
+    return uebergeben[0] ?? {};
+  }
 
-    expect(zweig).toMatch(/urlPrefixFilter:\s*prefixRaw/);
-    // prefixPath trägt den Vorgabewert /solar-atlas und darf hier NICHT stehen.
-    expect(zweig).not.toContain("prefixPath");
+  it("ohne prefix filtert die Anfragen-Sicht NICHT — sonst verengt der Vorgabewert zwei bestehende Läufe", async () => {
+    const o = await ruf("dim=query&days=90");
+    expect(o.urlPrefixFilter).toBeUndefined();
   });
 
-  it("der Vorgabewert bleibt der Mengen-Sicht vorbehalten", () => {
-    const s = quelle();
-    expect(s).toMatch(/const prefixPath = prefixRaw \|\| "\/solar-atlas"/);
-    expect(s).toMatch(/urlPrefixFilter: \[`\$\{BASE\}\$\{prefixPath\}`/);
+  it("mit prefix filtert sie auf genau diese Familie", async () => {
+    const o = await ruf("dim=query&days=28&prefix=/photovoltaik-foerderung");
+    expect(o.urlPrefixFilter).toEqual([
+      "https://solar-check.io/photovoltaik-foerderung",
+      "https://www.solar-check.io/photovoltaik-foerderung",
+    ]);
+  });
+
+  it("ein leeres prefix zählt als nicht gesetzt", async () => {
+    const o = await ruf("dim=query&days=28&prefix=");
+    expect(o.urlPrefixFilter).toBeUndefined();
+  });
+
+  it("die MENGEN-Sicht behält ihren Vorgabewert /solar-atlas", async () => {
+    const o = await ruf("days=28");
+    expect(o.urlPrefixFilter).toEqual([
+      "https://solar-check.io/solar-atlas",
+      "https://www.solar-check.io/solar-atlas",
+    ]);
   });
 });
