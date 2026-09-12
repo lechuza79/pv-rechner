@@ -14,7 +14,7 @@ const runId = randomUUID();
 
 /** The timeout covers headers AND body. A 200 challenge is not a readable page. */
 export async function fetchContactPage(url: string, options: {
-  fetcher?: typeof fetch; timeoutMs?: number; userAgent?: string;
+  fetcher?: typeof fetch; timeoutMs?: number; userAgent?: string; organizationDomain?: string;
   record?: (observation: PageObservation) => void;
 } = {}): Promise<PageResult> {
   const observation: PageObservation = { requestedUrl: url, finalUrl: null, observedAt: new Date().toISOString(), status: "failed", error: null, candidates: [] };
@@ -35,7 +35,7 @@ export async function fetchContactPage(url: string, options: {
         observation.status = "blocked"; observation.error = "Challenge page"; html = null;
       } else {
         observation.status = "read";
-        observation.candidates = contactCandidates(html, observation.finalUrl, new URL(observation.finalUrl).hostname.replace(/^www\./, ""));
+        observation.candidates = contactCandidates(html, observation.finalUrl, options.organizationDomain ?? new URL(url).hostname.replace(/^www\./, ""));
       }
     }
   } catch (e) { observation.error = controller.signal.aborted ? "Timeout" : String(e).slice(0, 200); }

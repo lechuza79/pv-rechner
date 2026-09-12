@@ -75,7 +75,7 @@ Die private Verlaufstabelle und die Versandfelder wurden eingerichtet. Je ein ec
 
 Adressbeobachtungen können dieselbe Adresse auf mehreren Seiten enthalten. Die vier Piloten prüfen den laufenden Datenweg, keine repräsentative Trefferquote. Gerade die vielen offenen Links zeigen, warum ein kleiner Abruf bisher nicht als vollständige Prüfung gelten durfte.
 
-Abschlussprüfung: 3.818 Tests in 264 Testdateien sowie Typprüfung und Produktionsbuild erfolgreich. Zwei gezielt wieder eingebaute Fehler (leere Presse-Mail überschreibt Bestand; fehlgeschlagene Versorgersuche wird verschwiegen) ließen die Gegenproben erwartungsgemäß fehlschlagen. Nach Wiederherstellung sind sie wieder grün.
+Abschlussprüfung: 3.819 Tests in 264 Testdateien sowie Typprüfung und Produktionsbuild erfolgreich. Zwei gezielt wieder eingebaute Fehler (leere Presse-Mail überschreibt Bestand; fehlgeschlagene Versorgersuche wird verschwiegen) ließen die Gegenproben erwartungsgemäß fehlschlagen. Nach Wiederherstellung sind sie wieder grün.
 
 Gegenproben decken unter anderem kaputte/gesperrte Seiten, leere Wiederholungsfunde, erhaltene Notizen, Teilabrufe ohne Datumsänderung, fremde Postfächer, vertauschte Personenfelder, Schein-Kontaktseiten und eine fehlgeschlagene interne Versorgersuche ab. Rohmails und personenbezogene Abrufdaten liegen ausschließlich im privaten, nicht eingecheckten Prüfbestand.
 

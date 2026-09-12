@@ -21,6 +21,12 @@ describe("contact evidence counterexamples", () => {
     expect(chooseOwnedMailbox(['info@agentur.de','info@betrieb-agentur.de'], 'betrieb.de')).toBeNull();
     expect(chooseOwnedMailbox(['datenschutz@betrieb.de','info@betrieb.de'], 'betrieb.de')).toBe('info@betrieb.de');
   });
+  it("does not confirm a different organization after a redirect", async () => {
+    const response = new Response('<p>info@parking.de</p>', { headers: { 'content-type': 'text/html' } });
+    Object.defineProperty(response, 'url', {value:'https://parking.de/'});
+    const r = await fetchContactPage('https://ort.de/', {fetcher:async()=>response});
+    expect(r.observation.candidates[0].relation).toBe('unconfirmed');
+  });
   it("preserves old facts on empty observations", () => {
     expect({...{email:'info@ort.de', notes:'keep'}, ...observedFields({email:null, notes:undefined})}).toEqual({email:'info@ort.de',notes:'keep'});
   });

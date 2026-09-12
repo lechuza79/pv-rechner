@@ -61,7 +61,7 @@ async function main() {
     while (pending.size && pages.length < pageBudget) {
       const [url] = [...pending].sort((a,b)=>b[1]-a[1] || a[0].localeCompare(b[0]))[0];
       pending.delete(url); visited.add(url);
-      const result = await fetchContactPage(url, { record: o => recordContactPage(dataset, o) });
+      const result = await fetchContactPage(url, { organizationDomain: host, record: o => recordContactPage(dataset, o) });
       pages.push(result.observation);
       if (!result.html) continue;
       const base = result.observation.finalUrl!;
