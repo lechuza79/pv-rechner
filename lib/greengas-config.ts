@@ -500,7 +500,12 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   //   Statistik steckt es seit Januar 2007 unaufgeschlüsselt im Deckungsbeitrag.
   //   Der Lücken-Hinweis im Öl-Ergebnis bleibt samt Fehlerrichtung: Öl wird zu
   //   günstig gerechnet, also zuungunsten der Wärmepumpe.
-  geprueftRechtIso: "2026-09-12",
+  //
+  // 13.09.2026: Infoportal im Rohtext gelesen — jüngstes Chronologie-Datum
+  // weiter der 29.07.2026, § 42a kündigt unverändert nur an. Einundzwanzigste
+  // Bioheizöl-Gegensuche: wieder nur Gesamtpreis-Charts, keine Reihe für die
+  // Beimischung.
+  geprueftRechtIso: "2026-09-13",
   reviewBy: "2027-07-25",
 };
 

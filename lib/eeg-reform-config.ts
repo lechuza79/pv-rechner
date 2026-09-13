@@ -506,7 +506,13 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   ausgewiesen. Nächster Lauf: Bundesrat am 25.09.2026 (Stellungnahme?) und
   //   die Tagesordnung der Woche ab dem 21.09.2026 (erste Lesung?) — beides
   //   wäre ein Verfahrensschritt, keiner davon ein Zustandswechsel.
-  geprueftIso: "2026-09-12",
+  // 13.09.2026: Drucksache 21/7867 erneut im Volltext gelesen (Deckblatt
+  //   „Entwurf eines Gesetzes …", 07.09.2026) — „6,2 Cent", „1,5 Cent",
+  //   „maximal 36 Monate" und „vor dem 1. Januar 2031" stehen weiter so da.
+  //   Die Tagesordnungsseite zeigt noch die 95.–97. Sitzung (10.–11.09.), ohne
+  //   EEG-Punkt; die erste Lesung ist nur aus der Fachpresse für die Woche ab
+  //   21.09. angekündigt. Zustand unverändert: Regierungsentwurf, eingebracht.
+  geprueftIso: "2026-09-13",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
