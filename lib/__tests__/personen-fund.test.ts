@@ -1,7 +1,23 @@
 import { describe, expect, it } from "vitest";
+import { execFileSync } from "node:child_process";
 import { entwirreAdressen, istPersonenAdresse, personenAus, saeubereFunktion, umschrift } from "../personen-fund";
 
 describe("Verfremdete Adressen", () => {
+  it("finishes long whitespace and domain runs without blocking the crawler", () => {
+    // A child-process deadline stays effective even if a regex blocks its event loop.
+    const script = `
+      const {entwirreAdressen}=require('./lib/personen-fund.ts');
+      const {strict:assert}=require('node:assert');
+      const gap=' '.repeat(650000);
+      const plain='Kontakt'+gap+'Ende';
+      assert.equal(entwirreAdressen(plain),plain);
+      assert.equal(entwirreAdressen('info'+gap+'(at)'+gap+'example (dot) de'),'info@example.de');
+      assert.equal(entwirreAdressen('info'+gap+'@'+gap+'example.de'),'info@example.de');
+      assert.equal(entwirreAdressen('info@'+'a'.repeat(650000)+' . de'),'info@'+'a'.repeat(650000)+'.de');
+    `;
+    expect(() => execFileSync(process.execPath, ['--import','tsx','-e',script], {timeout:4000,stdio:'pipe'})).not.toThrow();
+  });
+
   it("repariert das Leerzeichen vor dem @", () => {
     // Wörtlich von stadtwerke-lingen.de/kontakt, 23.08.2026.
     expect(entwirreAdressen("E-Mail: kundenservice @stadtwerke-lingen.de")).toContain(

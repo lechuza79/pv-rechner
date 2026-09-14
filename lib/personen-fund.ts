@@ -40,24 +40,27 @@ import { decodeEntities } from "./kommunen-profil";
  * abdecken will, baut eine Liste, die nie fertig wird — und fängt sich dabei
  * falsche Treffer ein.
  */
+// Match whitespace only at the start of a run, never retry at every suffix.
+// A real municipal page contained 632,890 consecutive whitespace characters;
+// unanchored greedy prefixes blocked all concurrent crawls in one event loop.
 export function entwirreAdressen(text: string): string {
   return (
     text
       // (at) [at] {at}
-      .replace(/\s*[([{]\s*at\s*[)\]}]\s*/gi, "@")
+      .replace(/(?<!\s)\s*[([{]\s*at\s*[)\]}]\s*/gi, "@")
       // " at " zwischen Wort und Domain
-      .replace(/\s+at\s+(?=[\w-]+\.[a-z]{2,})/gi, "@")
+      .replace(/(?<!\s)\s+at\s+(?=[\w-]+\.[a-z]{2,})/gi, "@")
       // (punkt) [dot]
-      .replace(/\s*[([{]\s*(?:punkt|dot)\s*[)\]}]\s*/gi, ".")
+      .replace(/(?<!\s)\s*[([{]\s*(?:punkt|dot)\s*[)\]}]\s*/gi, ".")
       // Ein Füllzeichen ZWISCHEN zwei @ — gemessen am 05.09.2026 bei
       // informatik-aktuell.de: `name@~@domain.de` lieferte damit auf einmal
       // zwei Adressen statt keiner.
       .replace(/@[~*#|]+@/g, "@")
       // Leerzeichen um den Punkt der Domain: `info (at) bodensee-news . de`.
       // Ohne das bricht jedes Adressmuster, obwohl die Adresse dasteht.
-      .replace(/(?<=@[\w-]+)\s+\.\s+(?=[\w-]{2,})/g, ".")
+      .replace(/(@[\w-]+)\s+\.\s+(?=[\w-]{2,})/g, "$1.")
       // Leerzeichen unmittelbar um das @ — der häufigste Fall, inkl. geschütztem
-      .replace(/[ \t ]*@[ \t ]*/g, "@")
+      .replace(/(?<![ \t ])[ \t ]*@[ \t ]*/g, "@")
   );
 }
 
