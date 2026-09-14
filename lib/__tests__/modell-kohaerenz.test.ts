@@ -4,8 +4,9 @@ import { join } from "node:path";
 import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs } from "../heatpump";
 import { recommend } from "../recommend";
 import { DEFAULT_HEATPUMP_CONFIG as CFG } from "../heatpump-config";
-import { greenGasApplies } from "../fossil-reference";
-import { INSULATION_BESTAND, WP_FUEL_OPTIONS, SCENARIOS, DEGRAD, DACHARTEN, NATIONAL_AVG_YIELD } from "../constants";
+import { greenGasApplies, kesselDerAblesung, referenzFuerEinheit } from "../fossil-reference";
+import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../heat-consumption";
+import { INSULATION_BESTAND, WP_FUEL_OPTIONS, FUEL, SCENARIOS, DEGRAD, DACHARTEN, NATIONAL_AVG_YIELD } from "../constants";
 import { dachErtragKwp } from "../dach-ertrag";
 import { calc, calcEigenverbrauch } from "../calc";
 import { einspeiseVerlauf } from "../einspeise-regime";
@@ -605,5 +606,57 @@ describe("Modell-Kohärenz: eine Eingabe, eine Zahl", () => {
       klima: "ja", klimaKwh, kwp: mit.kwp, ertragKwp: NATIONAL_AVG_YIELD,
     });
     expect(mit.reasoning.eigenverbrauch).toBe(ev(ausgewiesen));
+  });
+});
+
+describe("Modell-Kohärenz: eine Ablesung, ein Kessel", () => {
+  // Gefunden 12.09.2026: Die Umrechnung Zählerstand → Heizwärme rechnete fest mit
+  // der vorhandenen Therme (90 %), die Referenzrechnung danach mit dem gewählten
+  // Kessel. Bei „Alter Gaskessel" (80 %) wurden aus 24.000 abgelesenen kWh
+  // 27.000 gerechnete — derselbe Kessel mit zwei Nutzungsgraden.
+  const ABGELESEN_KWH = 24000;
+  const ABGELESEN_LITER = 2400;
+
+  it("eine vorhandene Heizung verbrennt in der Rechnung genau, was abgelesen wurde — über alle Bestandseinträge", () => {
+    const bestand = WP_FUEL_OPTIONS.filter(f => f.bestandsanlage);
+    expect(bestand.length).toBeGreaterThan(0);
+    for (const f of bestand) {
+      const einheit = f.kind === "oil" ? "oel" : "gas";
+      const endenergie = einheit === "oel" ? ABGELESEN_LITER * OEL_KWH_PRO_LITER : ABGELESEN_KWH;
+      const waerme = waermeAusEndenergie(endenergie, kesselDerAblesung(einheit, f));
+      // Die Referenzrechnung teilt durch den Nutzungsgrad des gewählten Kessels.
+      expect(waerme / f.efficiency, f.id).toBeCloseTo(endenergie, 6);
+    }
+  });
+
+  it("beim Ersatz durch ein Neugerät bleibt der Effizienzgewinn stehen", () => {
+    // Die Umrechnung darf NICHT pauschal den gewählten Nutzungsgrad nehmen — beim
+    // Ersatz beschreibt er das neue Gerät, und die Rechnung verbrennte dann exakt
+    // die Ablesung, als würde der alte Kessel weiterlaufen.
+    for (const f of WP_FUEL_OPTIONS.filter(o => !o.bestandsanlage)) {
+      const einheit = f.kind === "oil" ? "oel" : "gas";
+      expect(kesselDerAblesung(einheit, f), f.id).toBe(FUEL[f.kind].efficiency);
+    }
+  });
+
+  it("die Einheit der Ablesung setzt den Energieträger der Referenz, der Fall bleibt", () => {
+    for (const f of WP_FUEL_OPTIONS) {
+      for (const einheit of ["gas", "oel"] as const) {
+        const ziel = WP_FUEL_OPTIONS.find(o => o.id === referenzFuerEinheit(f.id, einheit))!;
+        expect(ziel.kind, `${f.id} → ${einheit}`).toBe(einheit === "oel" ? "oil" : "gas");
+        expect(!!ziel.bestandsanlage, `${f.id} → ${einheit}`).toBe(!!f.bestandsanlage);
+        if (f.kind === ziel.kind) expect(ziel.id).toBe(f.id);
+      }
+    }
+  });
+
+  it("der Rechner benutzt beide Regeln, statt den Nutzungsgrad selbst zu wählen", () => {
+    // Geprüft wird die Verwendung, nicht das Vorhandensein im Modul.
+    const quelle = readFileSync(join(ROOT, "app/(site)/waermepumpe-rechner/waermepumpe.tsx"), "utf8");
+    expect(quelle).not.toMatch(/FUEL\.(gas|oil)\.efficiency/);
+    const umrechnung = quelle.match(/waermeAusEndenergie\([^;]*\)/g) ?? [];
+    expect(umrechnung.length).toBeGreaterThan(0);
+    for (const u of umrechnung) expect(u).toMatch(/kesselDerAblesung\(/);
+    expect(quelle).toMatch(/referenzFuerEinheit\(/);
   });
 });

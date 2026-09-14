@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import FlowNav from "../../../components/FlowNav";
 import {
   SITUATION, WOHNFLAECHEN, WP_M2_MIN, WP_M2_MAX, INSULATION_BESTAND, INSULATION_NEUBAU,
-  PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP, YEAR, FUEL,
+  PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP, YEAR,
 } from "../../../lib/constants";
 import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../../../lib/heat-consumption";
 import { verbrauchSpecKwh } from "../../../lib/heatpump-core";
@@ -18,7 +18,7 @@ import {
 } from "../../../lib/heatpump-config";
 import BegStandSchalter from "./_components/BegStandSchalter";
 import { BEG_ANTRAG_KURZ, BEG_ANTRAG_HREF } from "../../../lib/beg-antrag";
-import { greenGasApplies } from "../../../lib/fossil-reference";
+import { greenGasApplies, kesselDerAblesung, referenzFuerEinheit } from "../../../lib/fossil-reference";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
 import OptionCard from "../../../components/OptionCard";
@@ -402,16 +402,29 @@ export default function Waermepumpe({
   // Abgelesener Brennstoffverbrauch → Heizwärme. Was der Zähler zählt, ist
   // Endenergie; was das Gebäude braucht, ist das abzüglich der Kesselverluste
   // (lib/heat-consumption.ts). Heizöl kommt in Litern von der Rechnung.
-  const applyVerbrauch = (raw: string, einheit: VerbrauchEinheit) => {
+  // Der Nutzungsgrad ist der der VORHANDENEN Heizung — und das ist die gewählte
+  // Referenz, wenn sie eine Bestandsanlage ist (lib/fossil-reference.ts). Fest die
+  // typische Therme zu nehmen, ließ „Alter Gaskessel" 12,5 % mehr verbrennen, als
+  // auf der Abrechnung stand (Rechenmodell-Council 12.09.2026).
+  const applyVerbrauch = (raw: string, einheit: VerbrauchEinheit, referenz: typeof fuel = fuel) => {
     const n = parseInt(raw);
     if (raw === "" || isNaN(n) || n <= 0) { setVerbrauchKwh(null); setOQges(null); return; }
     const endenergie = einheit === "oel" ? n * OEL_KWH_PRO_LITER : n;
     // Unplausibles gar nicht erst übernehmen (Tippfehler, Monats- statt Jahreswert).
     if (endenergie < 2000 || endenergie > 120000) { setVerbrauchKwh(null); setOQges(null); return; }
-    const waerme = Math.round(waermeAusEndenergie(endenergie, einheit === "oel" ? FUEL.oil.efficiency : FUEL.gas.efficiency));
+    const waerme = Math.round(waermeAusEndenergie(endenergie, kesselDerAblesung(einheit, referenz)));
     setVerbrauchKwh(waerme);
     setOQges(waerme);
   };
+  // Wechselt die Referenzheizung (Auswahlfeld, oder Anschaffung auf 0 und zurück),
+  // gehört die Ablesung neu umgerechnet — sie beschreibt dann womöglich einen anderen
+  // Kessel. Nur solange der Wert noch aus der Ablesung stammt: eine im Ergebnis von
+  // Hand gesetzte Heizwärme bleibt stehen.
+  useEffect(() => {
+    if (verbrauchKwh === null || oQges !== verbrauchKwh) return;
+    applyVerbrauch(verbrauchDraft, verbrauchEinheit, fuel);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fuel.id]);
 
   // ── Rechen-Config ────────────────────────────────────────────
   // Der geprüfte Config-Snapshot (lib/heatpump-config.ts). Die Investition kommt
@@ -832,7 +845,11 @@ export default function Waermepumpe({
                         onChange={e => {
                           const next = e.target.value as VerbrauchEinheit;
                           setVerbrauchEinheit(next);
-                          applyVerbrauch(verbrauchDraft, next);
+                          // Wer Liter Heizöl abliest, heizt mit Öl — die Referenz folgt
+                          // (sonst Gaspreis, Gas-CO₂ und Gas-Grundgebühr am Öltank).
+                          const naechste = WP_FUEL_OPTIONS.find(f => f.id === referenzFuerEinheit(fuel.id, next)) ?? fuel;
+                          if (naechste.id !== fuel.id) { setOFuel(naechste.id); setOGasPrice(null); }
+                          applyVerbrauch(verbrauchDraft, next, naechste);
                         }}
                         ariaLabel="Einheit des Verbrauchs"
                         size="sm"
@@ -854,7 +871,7 @@ export default function Waermepumpe({
                         Gerechnet wird mit <strong>{Math.round(verbrauchKwh).toLocaleString("de-DE")} kWh</strong> Wärme im Jahr
                         {" "}(<span style={{ fontFamily: v('--font-mono') }}>{Math.round(verbrauchKwh / Math.max(1, wohnflaeche))}</span> kWh je m²).
                         {" "}Das ist weniger als dein Zählerstand, weil ein Teil als Abgasverlust verloren geht — bei deiner Heizung rund{" "}
-                        {Math.round((1 - (verbrauchEinheit === "oel" ? FUEL.oil.efficiency : FUEL.gas.efficiency)) * 100)} %.
+                        {Math.round((1 - kesselDerAblesung(verbrauchEinheit, fuel)) * 100)} %.
                         {" "}Den Dämmstandard brauchen wir trotzdem — er bestimmt die Größe der Wärmepumpe, nicht die Kosten.
                       </div>
                     )}
@@ -1351,7 +1368,7 @@ export default function Waermepumpe({
                   Heizwärme pro Jahr: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} />
                   <InfoTooltip title="Woher diese Menge kommt" ariaLabel="Woher kommt der Jahres-Heizwärmebedarf?">
                     Geschätzt aus Wohnfläche, Dämmzustand und Personenzahl — und zwar als <strong>erwarteter Verbrauch</strong>, nicht als Norm-Bedarf. Der Unterschied ist groß: Die Norm rechnet ein Gebäude durch, in dem alle Räume auf Solltemperatur stehen. Real wird weniger geheizt (Räume bleiben kühl, nachts wird abgesenkt), im Altbau rund 30 % weniger.<br /><br />
-                    <strong>Du kennst deinen Gas- oder Ölverbrauch? Trag ihn im Schritt „Dämmstandard" ein</strong> — oder rechne hier direkt: Jahresverbrauch in kWh × {Math.round(FUEL.gas.efficiency * 100)} % (Nutzungsgrad deiner vorhandenen Gastherme; bei Öl {Math.round(FUEL.oil.efficiency * 100)} %) — derselbe Faktor, mit dem der Schritt „Dämmstandard" rechnet. Ein gemessener Wert schlägt jede Schätzung.<br /><br />
+                    <strong>Du kennst deinen Gas- oder Ölverbrauch? Trag ihn im Schritt „Dämmstandard" ein</strong> — oder rechne hier direkt: Jahresverbrauch in kWh × {Math.round(kesselDerAblesung("gas", fuel) * 100)} % (Nutzungsgrad deiner vorhandenen Gasheizung; bei Öl {Math.round(kesselDerAblesung("oel", fuel) * 100)} %) — derselbe Faktor, mit dem der Schritt „Dämmstandard" rechnet. Ein gemessener Wert schlägt jede Schätzung.<br /><br />
                     Diese Menge steht auf beiden Seiten der Rechnung — sie bestimmt den Gasverbrauch genauso wie den Strom der Wärmepumpe. <strong>Wenn nach dem Wechsel wärmer oder in mehr Räumen geheizt wird, steigt sie</strong>, und die Ersparnis fällt kleiner aus als hier gezeigt. Nach Sanierungen wird dieser Effekt mit 10 bis 30 % beziffert; wie stark er bei einem reinen Heizungstausch auftritt, ist nicht belastbar gemessen — deshalb rechnen wir ihn nicht ein, sondern nennen ihn.
                   </InfoTooltip>
                 </div>
