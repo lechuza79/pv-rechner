@@ -45,6 +45,7 @@ import type { PostBild } from "./social-posts";
 import { fmtPvLeistung } from "./atlas-format";
 import { eigenverbrauchAnteilRegion, einspeiseCt, erzeugungKwh } from "./atlas-impact";
 import type { VorratsFund } from "./social-fundvorrat";
+import { jahrInBerlin } from "./zeit";
 
 // ─── Was hereingereicht wird ─────────────────────────────────────────────────
 
@@ -305,7 +306,7 @@ function anlagenWort(n: number): string {
 /** Das letzte Jahr, für das der Datenstand vollständig ist. */
 function letztesVollesJahr(standIso: string): number {
   const jahr = Number(standIso.slice(0, 4));
-  if (!Number.isFinite(jahr)) return new Date().getUTCFullYear() - 1;
+  if (!Number.isFinite(jahr)) return jahrInBerlin() - 1;
   // Anlagen werden verspätet gemeldet; das laufende Jahr ist per Bauart
   // unvollständig.
   return jahr - 1;

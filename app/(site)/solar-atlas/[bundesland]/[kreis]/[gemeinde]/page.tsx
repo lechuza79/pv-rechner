@@ -72,6 +72,7 @@ import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
 import { landProgramBundeslaender } from "../../../../../../lib/funding-programs";
 import { DATA_SOURCES } from "../../../../../../lib/data-sources";
+import { jahrInBerlin } from "../../../../../../lib/zeit";
 
 // Haltbarkeit: sieben Tage, NICHT ein Tag (Umstellung 26.08.2026).
 //
@@ -590,7 +591,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
               monate: await monatsZubau(region.region_id),
               wohnungen: await wohnungsBestand(region.region_id),
             },
-            heuteJahr: new Date().getUTCFullYear(),
+            heuteJahr: jahrInBerlin(),
             // Nur redaktionell VORGEMERKTE Funde. „offen" heißt, dass den
             // Fund noch niemand angesehen hat — ein Kandidat, keine
             // veröffentlichte Aussage; der Suchlauf legt ausdrücklich nur ab

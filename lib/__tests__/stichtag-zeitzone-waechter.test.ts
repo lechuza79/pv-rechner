@@ -62,6 +62,12 @@ const JETZT_ALS_TAG = [
   /new Date\(\)\s*\.toISOString\(\)\s*\.split\("T"\)\[0\]/,
   /new Date\(\s*Date\.now\(\)[^)]*\)\s*\.toISOString\(\)\s*\.slice\(\s*0\s*,\s*10\s*\)/,
   /new Date\(\s*Date\.now\(\)[^)]*\)\s*\.toISOString\(\)\s*\.split\("T"\)\[0\]/,
+  // Dieselbe Klasse eine Einheit größer: „jetzt" als Kalenderjahr aus der
+  // Weltzeit. Zwischen 00:00 und 01:00 am 1. Januar ist das das Vorjahr; auf den
+  // Gemeindeseiten hielt es sich eine Woche lang (Council 12.09.2026). Für das
+  // deutsche Jahr gibt es `jahrInBerlin()`.
+  /new Date\(\)\s*\.getUTCFullYear\(\)/,
+  /new Date\(\s*Date\.now\(\)[^)]*\)\s*\.getUTCFullYear\(\)/,
 ];
 
 /**

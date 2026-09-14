@@ -19,6 +19,7 @@
  *   npx tsx scripts/mastr-monat-refresh.ts --verzug   # Meldeverzug messen
  */
 import { createClient } from "@supabase/supabase-js";
+import { jahrInBerlin } from "../lib/zeit";
 import {
   UNIT_SPECS,
   buildActorMap,
@@ -79,7 +80,7 @@ async function messeVerzug(zipPath: string): Promise<void> {
   const abstaende: number[] = [];
   let ohneRegistrierung = 0;
   let gesehen = 0;
-  const seit = Date.UTC(new Date().getUTCFullYear() - 2, 0, 1);
+  const seit = Date.UTC(jahrInBerlin() - 2, 0, 1);
 
   for (const eintrag of eintraege) {
     await streamXmlRecords(zipPath, eintrag, spec.recordTag, (row) => {

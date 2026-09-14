@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { heuteInBerlin, berlinOffset, wochentagInBerlin, tagInBerlin } from "../zeit";
+import { heuteInBerlin, berlinOffset, wochentagInBerlin, tagInBerlin, jahrInBerlin } from "../zeit";
 
 // Ein Kalendertag ist nicht dasselbe wie ein UTC-Tag. Zwischen Mitternacht und
 // zwei Uhr deutscher Sommerzeit liegt das UTC-Datum einen Tag zurück — und
@@ -59,5 +59,17 @@ describe("Zeitpunkt oder gemeinter Tag — tagInBerlin unterscheidet beides", ()
     // aber der 01.08., er steht im String.
     expect(tagInBerlin("2026-08-01T23:30:00Z")).toBe("2026-08-01");
     expect(tagInBerlin("2026-01-31T23:30:00Z")).toBe("2026-01-31"); // Winterzeit
+  });
+});
+
+describe("Deutsches Kalenderjahr", () => {
+  it("am 1. Januar kurz nach Mitternacht ist schon das neue Jahr", () => {
+    // 01.01.2027, 00:30 deutscher Winterzeit = 31.12.2026, 23:30 UTC.
+    const silvesternacht = new Date("2026-12-31T23:30:00Z");
+    expect(jahrInBerlin(silvesternacht)).toBe(2027);
+    expect(silvesternacht.getUTCFullYear()).toBe(2026);
+  });
+  it("am 31. Dezember abends ist es noch das alte", () => {
+    expect(jahrInBerlin(new Date("2026-12-31T22:30:00Z"))).toBe(2026);
   });
 });

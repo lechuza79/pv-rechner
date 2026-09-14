@@ -68,6 +68,7 @@ export const MIN_BATTERIEN_FUER_MELDUNG = 5;
  */
 export { FEED_IN_YEARS } from "./constants";
 import { FEED_IN_YEARS } from "./constants";
+import { jahrInBerlin } from "./zeit";
 
 // ─── Was hereingereicht wird ─────────────────────────────────────────────────
 
@@ -195,7 +196,7 @@ function batterien(d: MeldungsDaten): number {
 /** Das letzte Jahr, für das der Datenstand vollständig ist. */
 function letztesVollesJahr(standIso: string): number {
   const jahr = Number(standIso.slice(0, 4));
-  if (!Number.isFinite(jahr)) return new Date().getUTCFullYear() - 1;
+  if (!Number.isFinite(jahr)) return jahrInBerlin() - 1;
   // Der Datenstand des laufenden Jahres ist per Bauart unvollständig: Anlagen
   // werden verspätet gemeldet. Das volle Jahr ist deshalb das vorige.
   return jahr - 1;
