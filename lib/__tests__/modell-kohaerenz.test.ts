@@ -721,3 +721,16 @@ describe("Modell-Kohärenz: eine größere Anlage rechnet nie schlechter, weil g
     expect(bewertung).not.toMatch(/calcEigenverbrauch\(/);
   });
 });
+
+describe("Modell-Kohärenz: der Kaufblock sagt, wovor er rechnet", () => {
+  it("der Balkonrechner reicht den Zuschuss an den Kaufblock, und der nennt ihn", () => {
+    // Gefunden 12.09.2026: Oben zieht der Rechner den kommunalen Zuschuss ab, der
+    // Kaufblock rechnet mit dem Kassenpreis — unter „dieselbe Rechnung wie oben"
+    // stand „bezahlt nach 3,0 Jahren" neben einer Kachel mit 1,8.
+    const rechner = readFileSync(join(ROOT, "app/(site)/balkonkraftwerk/rechner/balkon.tsx"), "utf8");
+    expect(rechner).toMatch(/<BalkonAngebot[^>]*foerderungEuro=\{foerderung\}/);
+    const block = readFileSync(join(ROOT, "components/BalkonAngebot.tsx"), "utf8");
+    expect(block).toMatch(/foerderungEuro > 0 \?/);
+    expect(block).toMatch(/vor der Förderung/);
+  });
+});

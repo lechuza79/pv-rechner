@@ -695,7 +695,7 @@ export default function Balkon() {
             {/* Kaufbare Sets, mit denselben Angaben durchgerechnet.
                 Sitzt direkt unter dem Fördercheck: erst was es kostet und was
                 davon der Staat trägt, dann wo man es bekommt. */}
-            <BalkonAngebot basis={angebotBasis} />
+            <BalkonAngebot basis={angebotBasis} foerderungEuro={foerderung} />
 
             {/* Stats 2×2 */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
