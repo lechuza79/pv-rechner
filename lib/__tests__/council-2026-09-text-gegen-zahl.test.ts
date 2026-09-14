@@ -22,14 +22,18 @@ const lies = (p: string) => readFileSync(join(ROOT, p), "utf8");
 
 describe("Das Teilen-Vorschaubild rechnet wie die Seite", () => {
   const og = lies("app/api/og/route.tsx");
-  it("nimmt das realistische Szenario, nicht getippte 3 %", () => {
-    expect(og).not.toMatch(/stromSteigerung:\s*0\.03/);
-    expect(og).toMatch(/SCENARIOS\.find\(\(s\) => s\.id === "realistic"\)!\.strom/);
+  // Seit 12.09.2026 steht die Rechnung des Bildes in lib/og-rechnung.ts, und sie
+  // folgt dem Szenario-Reiter des Links statt fest „realistisch" (Council
+  // 12.09.2026; Verhalten geprüft in og-rechnung.test.ts).
+  const ogRechnungQuelle = lies("lib/og-rechnung.ts");
+  it("nimmt den Strompreis-Anstieg aus dem Szenario, nicht getippt", () => {
+    expect(og + ogRechnungQuelle).not.toMatch(/stromSteigerung:\s*0\.0\d/);
+    expect(ogRechnungQuelle).toMatch(/stromSteigerung: szenario\.strom/);
   });
   it("„⌀ Ersparnis / Jahr“ ist dieselbe Formel wie auf der Seite", () => {
     // Seite: (total + kosten) / YEARS. Im Bild stand total / 25 — um die
     // Investition zu klein, Faktor 2 im Standardfall.
-    expect(og).toMatch(/\(rendite25j \+ kosten\) \/ YEARS/);
+    expect(ogRechnungQuelle).toMatch(/\(result\.total \+ kosten\) \/ YEARS/);
     expect(lies("app/(site)/photovoltaik-rechner/_components/ResultStats.tsx")).toMatch(/\(total \+ kosten\) \/ YEARS/);
   });
   it("beschriftet den Euro-Betrag als Gewinn", () => {
