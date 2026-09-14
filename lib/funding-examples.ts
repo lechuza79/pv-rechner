@@ -1,4 +1,4 @@
-import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn, batteryReplaceCost } from "./calc";
+import { calc, calcEigenverbrauchExakt, estimateCost, calcWeightedFeedIn, batteryReplaceCost } from "./calc";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { DEFAULT_PRICES } from "./prices-config";
 import { fundingAmount, type FundingProgram } from "./funding-programs";
@@ -38,7 +38,7 @@ const EXAMPLE_CONFIGS = [
  */
 export function buildFundingExamples(yieldKwhKwp: number, f?: FundingProgram): FundingExample[] {
   return EXAMPLE_CONFIGS.map(({ kwp, spKwh }) => {
-    const ev = calcEigenverbrauch({
+    const ev = calcEigenverbrauchExakt({
       personenIdx: 2, nutzungIdx: 1, speicherKwh: spKwh,
       wp: "nein", ea: "nein", eaKm: 15000, kwp, ertragKwp: yieldKwhKwp,
     });

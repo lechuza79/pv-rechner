@@ -8,7 +8,7 @@ import { greenGasApplies, kesselDerAblesung, referenzFuerEinheit } from "../foss
 import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../heat-consumption";
 import { INSULATION_BESTAND, WP_FUEL_OPTIONS, FUEL, SCENARIOS, DEGRAD, DACHARTEN, NATIONAL_AVG_YIELD } from "../constants";
 import { dachErtragKwp } from "../dach-ertrag";
-import { calc, calcEigenverbrauch } from "../calc";
+import { calc, calcEigenverbrauch, calcEigenverbrauchExakt, estimateCost, calcWeightedFeedIn } from "../calc";
 import { einspeiseVerlauf } from "../einspeise-regime";
 
 /**
@@ -658,5 +658,66 @@ describe("Modell-Kohärenz: eine Ablesung, ein Kessel", () => {
     expect(umrechnung.length).toBeGreaterThan(0);
     for (const u of umrechnung) expect(u).toMatch(/kesselDerAblesung\(/);
     expect(quelle).toMatch(/referenzFuerEinheit\(/);
+  });
+});
+
+describe("Modell-Kohärenz: eine größere Anlage rechnet nie schlechter, weil gerundet wurde", () => {
+  // Gefunden 12.09.2026: Der Eigenverbrauch ging auf ganze Prozent gerundet in
+  // die Geldrechnung. An jeder Stufe wies eine GRÖSSERE Anlage weniger Gewinn aus
+  // als eine kleinere — 3–4 Personen ohne Speicher bei 11,5 kWp 797 € weniger als
+  // bei 11,0, andere Haushalte bis 1.418 €. Die Empfehlung wählte an solchen
+  // Stellen ein Rundungsartefakt.
+  const haushalte = [0, 1, 2, 3].flatMap(p => [0, 1, 2, 3].flatMap(n => [0, 5, 10].map(sp => ({ p, n, sp }))));
+  const kwps = Array.from({ length: 35 }, (_, i) => 3 + i * 0.5);
+
+  it("die selbst genutzte Energie wächst mit der Anlage — über alle Haushalte", () => {
+    for (const h of haushalte) {
+      let vorher = -Infinity;
+      for (const kwp of kwps) {
+        const ev = calcEigenverbrauchExakt({ personenIdx: h.p, nutzungIdx: h.n, speicherKwh: h.sp, wp: "nein", ea: "nein", eaKm: 0, kwp, ertragKwp: NATIONAL_AVG_YIELD });
+        const selbst = (ev / 100) * kwp * NATIONAL_AVG_YIELD;
+        expect(selbst, `P${h.p} N${h.n} S${h.sp} bei ${kwp} kWp`).toBeGreaterThanOrEqual(vorher - 1e-6);
+        vorher = selbst;
+        // Gezeigt wird dieselbe Rechnung, nur gerundet.
+        expect(calcEigenverbrauch({ personenIdx: h.p, nutzungIdx: h.n, speicherKwh: h.sp, wp: "nein", ea: "nein", eaKm: 0, kwp, ertragKwp: NATIONAL_AVG_YIELD })).toBe(Math.round(ev));
+      }
+    }
+  });
+
+  it("ein halbes kWp mehr kostet höchstens den Preissprung, nie einen Rundungssprung", () => {
+    // Die Anschaffung ist auf 500 € gerundet; ein Rückschritt bis zu diesem Betrag
+    // ist die Kostenstufe und legitim. Alles darüber kam aus dem Eigenverbrauch.
+    for (const h of haushalte) {
+      let vorher: number | null = null;
+      for (const kwp of kwps) {
+        const ev = calcEigenverbrauchExakt({ personenIdx: h.p, nutzungIdx: h.n, speicherKwh: h.sp, wp: "nein", ea: "nein", eaKm: 0, kwp, ertragKwp: NATIONAL_AVG_YIELD });
+        const gewinn = calc({ kwp, kosten: estimateCost(kwp, h.sp), strompreis: 0.35, eigenverbrauch: ev, einspeisung: calcWeightedFeedIn(kwp, 7.78, 6.73), stromSteigerung: 0.02, ertragKwp: NATIONAL_AVG_YIELD, monthly: null }).total;
+        if (vorher !== null) expect(vorher - gewinn, `P${h.p} N${h.n} S${h.sp} bei ${kwp} kWp`).toBeLessThan(500);
+        vorher = gewinn;
+      }
+    }
+  });
+
+  it("jede Geldrechnung nimmt den ungerundeten Eigenverbrauch", () => {
+    // Geprüft wird die Verwendung: Wer den gerundeten Wert in eine Rechnung
+    // steckt, weicht vom Rechner ab — und ein Teaser, der den Rechner vorbelegt,
+    // zeigte dann eine andere Zahl als das Ziel.
+    const geldPfade = [
+      "lib/faq.ts", "lib/funding-examples.ts", "lib/gemeinde-potential.ts", "lib/funding-scenarios.ts",
+      "lib/atlas-impact.ts", "lib/kostenrennen.ts", "app/api/og/route.tsx",
+      "app/(site)/ratgeber/lohnt-sich-pv-mit-speicher/page.tsx",
+      "app/(site)/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung/page.tsx",
+      "app/(site)/einspeiseverguetung-rechner/rechner.tsx",
+    ];
+    for (const datei of geldPfade) {
+      expect(readFileSync(join(ROOT, datei), "utf8"), datei).not.toMatch(/calcEigenverbrauch\(/);
+    }
+    const rechner = readFileSync(join(ROOT, "app/(site)/photovoltaik-rechner/rechner.tsx"), "utf8");
+    expect(rechner).not.toMatch(/Math\.min\(effEv \+ s\.evDelta/);
+    expect(rechner).toMatch(/Math\.min\(effEvRechnung \+ s\.evDelta/);
+    const empfehlung = readFileSync(join(ROOT, "lib/recommend.ts"), "utf8");
+    const bewertung = empfehlung.slice(empfehlung.indexOf("function evalConfig"), empfehlung.indexOf("export function economicsForScenario"));
+    expect(bewertung).toMatch(/calcEigenverbrauchExakt\(/);
+    expect(bewertung).not.toMatch(/calcEigenverbrauch\(/);
   });
 });

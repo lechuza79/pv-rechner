@@ -252,7 +252,9 @@ Empirisches Power-Law (kalibriert an HTW Berlin Simulationsdaten, ±2pp):
                    (HTW-Kennfeld calcAutarkie — seit 05.09.2026; die Bilanz allein
                    unterstellte 100 % Autarkie und rechnete mit Speicher ~5 pp zu viel)
   Eigenverbrauch = min(EV_Basis + EV_Speicher, EV_Max, 90%)
-Ergebnis: 10–90%, gerundet
+Ergebnis: 10–90 %; angezeigt ganzzahlig (calcEigenverbrauch), gerechnet UNGERUNDET
+(calcEigenverbrauchExakt) — die ganzen Prozent kippten im Geld stufenweise, eine
+größere Anlage wies bis 1.418 € weniger Gewinn aus (Council 12.09.2026)
 
 Quelle: HTW Berlin, Quaschning/Weniger (25.000 Konfigurationen, 1-Min-Auflösung, VDI 4655)
 tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
@@ -333,7 +335,7 @@ tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 | **Stundenlast Haushalt** | `calcHourlyConsumption(household, hour, month)` + `HouseholdProfile` (`lib/consumption.ts`, BDEW H0 / VDI 4655) | Eigenes Lastprofil bauen |
 | **Stunden-Jahressimulation** | `simulateSolarYear` (`lib/balkon-sim.ts`): Erzeugung/Verbrauch/Speicher Stunde für Stunde; Balkon + Dach-PV teilen sie | Eigene Dispatch-Schleife bauen |
 | **Autarkie** | aus der Stundensimulation (`lib/pv-sim.ts → simulatePvYear`), NICHT aus dem Eigenverbrauch × Jahresbilanz zurückrechnen | Jahresbilanz → 100 % bei großen Anlagen; Wärmepumpen-Winter fehlt. Gegen HTW-Kennfeld validiert (`lib/__tests__/pv-sim.test.ts`, ±3 pp) |
-| **Eigenverbrauch fürs GELD** | `calcEigenverbrauch` (HTW-Power-Law, `lib/calc.ts`) — bewusst NICHT die Simulation | Die frühere Begründung „die Simulation ist zu optimistisch" ist **widerlegt** (Council 05.09.2026, 108 Fälle): Die Simulation ist die pessimistischere von beiden. Die großen Abweichungen entstehen nicht im Power-Law-Kern, sondern an seiner Kappe (`gesamt / jahresertrag` unterstellt 100 % Autarkie; das HTW-Kennfeld liegt bei 71–91 %) und am 10-%-Boden bei stark überdimensionierten Anlagen. **Seit 05.09.2026 (Betreiber-Entscheidung) ist die Kappe das HTW-Kennfeld** (`calcAutarkie`): HTW gegen HTW, kein neues Fundament; Referenzfall 10 kWp / 10 kWh / 3–4 Personen 36 → 31 % EV. Erklärt auf /methodik, /datenstand und im Glossar. Nicht pauschal auf die Simulation umstellen, das verschöbe jedes Ergebnis um 20–50 % |
+| **Eigenverbrauch fürs GELD** | `calcEigenverbrauchExakt` (HTW-Power-Law, `lib/calc.ts`; `calcEigenverbrauch` ist dieselbe Zahl gerundet und nur für die Anzeige) — bewusst NICHT die Simulation | Die frühere Begründung „die Simulation ist zu optimistisch" ist **widerlegt** (Council 05.09.2026, 108 Fälle): Die Simulation ist die pessimistischere von beiden. Die großen Abweichungen entstehen nicht im Power-Law-Kern, sondern an seiner Kappe (`gesamt / jahresertrag` unterstellt 100 % Autarkie; das HTW-Kennfeld liegt bei 71–91 %) und am 10-%-Boden bei stark überdimensionierten Anlagen. **Seit 05.09.2026 (Betreiber-Entscheidung) ist die Kappe das HTW-Kennfeld** (`calcAutarkie`): HTW gegen HTW, kein neues Fundament; Referenzfall 10 kWp / 10 kWh / 3–4 Personen 36 → 31 % EV. Erklärt auf /methodik, /datenstand und im Glossar. Nicht pauschal auf die Simulation umstellen, das verschöbe jedes Ergebnis um 20–50 % |
 | **Tag/Nacht-Verhalten** | `tagQuote` (`NUTZUNG` in `lib/constants.ts`) | Eine eigene „Anwesenheits"-Größe erfinden |
 | **Jahresverbrauch je Haushalt** | `PERSONEN` (`lib/constants.ts`) | Eigene kWh-Tabelle |
 | **Gebäude der Wärmepumpe** (Haustyp, Fläche, Dämmung, Heizsystem) | UI immer `components/GebaeudeField.tsx`, Feldliste `GEBAEUDE_FIELDS` | Den **Haustyp** weglassen. Der Empfehlungs-Flow tat das bis 07.08.2026 und rechnete jedes Haus als freistehend — beim Reihenmittelhaus 22 % zu viel Heizwärme. Der Haustyp der Dach-Frage (`HAUSTYPEN`, Ein-/Mehrfamilienhaus für die Dachfläche) ist eine ANDERE Größe als `HAUSTYP_WP` (geteilte Wände) und taugt nicht als Ersatz |

@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, DACHARTEN, NATIONAL_AVG_YIELD, SCENARIOS, YEARS } from "../../../lib/constants";
 import { dachErtragKwp } from "../../../lib/dach-ertrag";
 import { type TiltOrientation } from "../../../lib/tilt-config";
-import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
+import { calcEigenverbrauchExakt, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { calcWpAnnualElectricity } from "../../../lib/heatpump";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
@@ -297,7 +297,7 @@ export async function GET(req: NextRequest) {
       })
     : null;
 
-  const ev = oEv ?? calcEigenverbrauch({
+  const ev = oEv ?? calcEigenverbrauchExakt({
     personenIdx, nutzungIdx, speicherKwh: spKwh, wp, ea, eaKm, wpKwh, kwp, ertragKwp,
   });
   const kosten = oKosten ?? estimateCost(kwp, spKwh);
@@ -333,7 +333,7 @@ export async function GET(req: NextRequest) {
   const cards = [
     { value: `${kwp} kWp`, label: "ANLAGE" },
     { value: spKwh > 0 ? `${spKwh} kWh` : "Ohne", label: "SPEICHER" },
-    { value: `${ev}%`, label: "EIGENVERBR." },
+    { value: `${Math.round(ev)}%`, label: "EIGENVERBR." },
   ];
   if (plz) cards.push({ value: plz, label: "STANDORT" });
 

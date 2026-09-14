@@ -1,5 +1,5 @@
 import { PERSONEN, NUTZUNG, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, NATIONAL_AVG_YIELD } from "./constants";
-import { calcEigenverbrauch, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
+import { calcEigenverbrauch, calcEigenverbrauchExakt, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
 import { simulatePvYear } from "./pv-sim";
 import { calcEaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "./consumption";
 import { klimaSchnellschaetzungKwh } from "./aircon";
@@ -225,7 +225,10 @@ function autarkyFor(ctx: EvalCtx, kwp: number, speicherKwh: number): number {
  *  physikalischen Maximum (man kann nie mehr nutzen als man verbraucht). */
 function evalConfig(ctx: EvalCtx, kwpRounded: number, speicherKwh: number, evDelta = 0): Candidate {
   const feedInCt = effectiveFeedInCtPerKwh(kwpRounded, ctx.f);
-  const evBase = calcEigenverbrauch({
+  // Ungerundet: Die Auswahl der Anlagengröße vergleicht Gewinne, und die ganzen
+  // Prozent kippten dort stufenweise (Rechenmodell-Council 12.09.2026). Gezeigt
+  // wird unten der gerundete Wert.
+  const evBase = calcEigenverbrauchExakt({
     personenIdx: ctx.input.personen, nutzungIdx: ctx.input.nutzung,
     speicherKwh, wp: ctx.input.wp, ea: ctx.input.ea, eaKm: ctx.input.eaKm,
     // klimaKwh: dieselbe Raum-Schnellschätzung, die auch im ausgewiesenen
@@ -247,7 +250,7 @@ function evalConfig(ctx: EvalCtx, kwpRounded: number, speicherKwh: number, evDel
     batteryReplace: batteryReplaceCost(speicherKwh, ctx.p),
   });
   return {
-    kwp: kwpRounded, speicherKwh, ev, investition,
+    kwp: kwpRounded, speicherKwh, ev: Math.round(ev), investition,
     npv25: result.total,
     paybackYears: result.be?.i ?? null,
   };
@@ -367,7 +370,7 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
   const evOhneSpeicher = calcEigenverbrauch({
     personenIdx: input.personen, nutzungIdx: input.nutzung,
     speicherKwh: 0, wp: input.wp, ea: input.ea, eaKm: input.eaKm, wpKwh,
-    klima: ctx.klima, klimaM2: ctx.klimaM2,
+    klima: ctx.klima, klimaM2: ctx.klimaM2, klimaKwh: ctx.klimaKwh,
     kwp: best.kwp, ertragKwp,
   });
 

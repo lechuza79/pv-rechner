@@ -219,7 +219,31 @@ export function selectByMarginalReturn<T extends { investition: number; npv25: n
 // Für WP-Haushalte korrigieren wir den Speicher-Boost saisonal nach unten, weil
 // ~80 % des WP-Verbrauchs Okt–Apr anfällt — genau wenn der Speicher mangels Sonne
 // kaum gefüllt werden kann (PV-Ertrag in diesen Monaten: ~30 % des Jahres).
-export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm, klima = "nein", klimaM2 = KLIMA_DEFAULT_M2, klimaKwh = null, wpKwh = null, kwp, ertragKwp, baseKwh }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; eaKm: number; klima?: string; klimaM2?: number; klimaKwh?: number | null; wpKwh?: number | null; kwp: number; ertragKwp: number; baseKwh?: number | null }): number {
+export type EigenverbrauchEingaben = { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; eaKm: number; klima?: string; klimaM2?: number; klimaKwh?: number | null; wpKwh?: number | null; kwp: number; ertragKwp: number; baseKwh?: number | null };
+
+/**
+ * Eigenverbrauch in GANZEN Prozent — für die ANZEIGE und das Eingabefeld.
+ *
+ * Nicht in eine Geldrechnung stecken: Die Rundung auf ganze Prozent kippt dort
+ * stufenweise. Ein Prozentpunkt auf 10 kWp sind rund 105 kWh im Jahr und etwa
+ * 800 € über 25 Jahre, und an jeder Stufe weist eine GRÖSSERE Anlage weniger
+ * Gewinn aus als eine kleinere (3–4 Personen ohne Speicher: 11,5 kWp −797 €
+ * gegen 11,0 kWp; bis −1.418 € in anderen Haushalten). Die Empfehlung wählte
+ * damit an solchen Stellen ein Rundungsartefakt (Rechenmodell-Council
+ * 12.09.2026). Für Geld gilt `calcEigenverbrauchExakt`; beide sind dieselbe
+ * Rechnung, diese hier ist nur gerundet.
+ */
+export function calcEigenverbrauch(e: EigenverbrauchEingaben): number {
+  return Math.round(calcEigenverbrauchExakt(e));
+}
+
+/**
+ * Eigenverbrauch in Prozent, UNGERUNDET — für jede Rechnung, die daraus Geld
+ * macht. `Math.round(calcEigenverbrauchExakt(e)) === calcEigenverbrauch(e)` gilt
+ * exakt: Runden ist monoton und vertauscht deshalb mit min und max, und alle
+ * festen Grenzen (10 %, 90 %) sind ganze Zahlen.
+ */
+export function calcEigenverbrauchExakt({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm, klima = "nein", klimaM2 = KLIMA_DEFAULT_M2, klimaKwh = null, wpKwh = null, kwp, ertragKwp, baseKwh }: EigenverbrauchEingaben): number {
   const jahresertrag = kwp * ertragKwp;
   // baseKwh = direkt eingegebener Haushaltsverbrauch (ohne WP/E-Auto). Fällt
   // auf die personenbasierte Schätzung zurück, wenn nicht gesetzt.
@@ -261,12 +285,12 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
   const evMaxBilanz = gesamt / jahresertrag;
   const autarkieHtw = calcAutarkie({ kwp, speicherKwh, gesamtVerbrauch: gesamt, ertragKwp }) / 100;
   const evMax = autarkieHtw > 0 ? Math.min(evMaxBilanz, autarkieHtw * evMaxBilanz) : evMaxBilanz;
-  const ev = Math.round(Math.min(evBase + evBoost, evMax, 0.90) * 100);
+  const ev = Math.min(evBase + evBoost, evMax, 0.90) * 100;
   // 10 %-Untergrenze als Sanity-Floor — aber NIE über das physikalische Maximum:
   // bei kleinem Haushalt auf großem Dach (evMax < 10 %) kann man nicht 10 %
   // selbst verbrauchen. Sonst würden überdimensionierte Anlagen künstlich
   // schöngerechnet und die Empfehlung zu groß dimensioniert.
-  const floorPct = Math.min(10, Math.round(evMax * 100));
+  const floorPct = Math.min(10, evMax * 100);
   return Math.max(floorPct, Math.min(ev, 90));
 }
 

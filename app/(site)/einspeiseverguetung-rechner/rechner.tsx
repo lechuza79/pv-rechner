@@ -9,7 +9,7 @@ import SelectField from "../../../components/SelectField";
 import StandortField from "../../../components/StandortField";
 import DachField from "../../../components/DachField";
 import ResultSection from "../../../components/ResultSection";
-import { calcEigenverbrauch, calcWeightedFeedIn } from "../../../lib/calc";
+import { calcEigenverbrauchExakt, calcWeightedFeedIn } from "../../../lib/calc";
 import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor } from "../../../lib/dach-ertrag";
 import { DACHARTEN, DEGRAD, FEED_IN_YEARS, NATIONAL_AVG_YIELD, PERSONEN } from "../../../lib/constants";
 import { eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
@@ -186,7 +186,7 @@ export default function EinspeiseRechner() {
   // the whole yield is exported by definition.
   const evPct = useMemo(
     () =>
-      calcEigenverbrauch({
+      calcEigenverbrauchExakt({
         personenIdx: personenVal,
         nutzungIdx: 1, // "Teils zuhause" — HTW-Standardprofil, same default as the PV calculator
         speicherKwh: speicherVal,
@@ -561,7 +561,7 @@ export default function EinspeiseRechner() {
                 <div>
                   <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Eigenverbrauch (geschätzt)</div>
                   <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary") }}>
-                    {evPct} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>%</span>
+                    {Math.round(evPct)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>%</span>
                   </div>
                 </div>
               )}

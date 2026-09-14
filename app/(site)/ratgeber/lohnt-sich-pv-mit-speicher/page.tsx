@@ -14,7 +14,7 @@ import { type PriceConfig } from "../../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
 import {
   calc,
-  calcEigenverbrauch,
+  calcEigenverbrauchExakt,
   calcWeightedFeedIn,
   estimateCost,
   batteryReplaceCost,
@@ -220,7 +220,7 @@ const SPEICHER_IDX: Record<number, number> = Object.fromEntries(
 
 function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
   const baseKwh = PERSONEN[EX.personenIdx].verbrauch;
-  const ev = calcEigenverbrauch({
+  const evExakt = calcEigenverbrauchExakt({
     personenIdx: EX.personenIdx,
     nutzungIdx: EX.nutzungIdx,
     speicherKwh,
@@ -236,7 +236,7 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
     kwp: EX.kwp,
     kosten,
     strompreis: prices.electricityPrice,
-    eigenverbrauch: ev,
+    eigenverbrauch: evExakt,
     einspeisung: feedIn,
     stromSteigerung: prices.electricityIncrease,
     ertragKwp: EX.ertragKwp,
@@ -263,7 +263,7 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
       kwp: EX.kwp,
       kosten,
       strompreis: prices.electricityPrice,
-      eigenverbrauch: Math.min(ev + s.evDelta, 95, (baseKwh / jahresertrag) * 100),
+      eigenverbrauch: Math.min(evExakt + s.evDelta, 95, (baseKwh / jahresertrag) * 100),
       einspeisung: feedIn,
       stromSteigerung: s.strom,
       ertragKwp: EX.ertragKwp,
@@ -287,7 +287,8 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
   return {
     speicherKwh,
     kosten,
-    ev,
+    // Gezeigt in ganzen Prozent, gerechnet ungerundet — wie im Rechner.
+    ev: Math.round(evExakt),
     autarkie: sim.autarky,
     amortisation: result.be?.i ?? null,
     gewinn25: result.total,

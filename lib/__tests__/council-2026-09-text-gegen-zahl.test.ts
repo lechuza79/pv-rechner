@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { calc, calcEigenverbrauch, calcWeightedFeedIn, estimateCost, batteryReplaceCost } from "../calc";
+import { calc, calcEigenverbrauchExakt, calcWeightedFeedIn, estimateCost, batteryReplaceCost } from "../calc";
 import { DEFAULT_PRICES } from "../prices-config";
 import { DEFAULT_FEED_IN } from "../feedin-config";
 import { NATIONAL_AVG_YIELD, SCENARIOS, YEARS } from "../constants";
@@ -80,7 +80,7 @@ describe("Förderseiten-Beispiele rechnen wie der Rechner", () => {
   it("ziehen den Akkutausch ab", () => {
     const [, mitSpeicher] = buildFundingExamples(1050);
     expect(mitSpeicher.spKwh).toBeGreaterThan(0);
-    const ev = calcEigenverbrauch({ personenIdx: 2, nutzungIdx: 1, speicherKwh: mitSpeicher.spKwh, wp: "nein", ea: "nein", eaKm: 15000, kwp: mitSpeicher.kwp, ertragKwp: 1050 });
+    const ev = calcEigenverbrauchExakt({ personenIdx: 2, nutzungIdx: 1, speicherKwh: mitSpeicher.spKwh, wp: "nein", ea: "nein", eaKm: 15000, kwp: mitSpeicher.kwp, ertragKwp: 1050 });
     const einsp = calcWeightedFeedIn(mitSpeicher.kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
     const basis = { kwp: mitSpeicher.kwp, kosten: mitSpeicher.netto, strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev, einspeisung: einsp, stromSteigerung: DEFAULT_PRICES.electricityIncrease, ertragKwp: 1050, monthly: null };
     const ohne = calc(basis).total;
@@ -104,7 +104,7 @@ describe("Die FAQ-Spannen sind gerechnet", () => {
   });
   it("der Standardfall der FAQ ist der Standardfall des Rechners", () => {
     // 10 kWp, kein Speicher, 2 Personen (Index 1), „teils zuhause" (Index 1).
-    const ev = calcEigenverbrauch({ personenIdx: 1, nutzungIdx: 1, speicherKwh: 0, wp: "nein", ea: "nein", eaKm: 15000, kwp: 10, ertragKwp: NATIONAL_AVG_YIELD });
+    const ev = calcEigenverbrauchExakt({ personenIdx: 1, nutzungIdx: 1, speicherKwh: 0, wp: "nein", ea: "nein", eaKm: 15000, kwp: 10, ertragKwp: NATIONAL_AVG_YIELD });
     const r = calc({ kwp: 10, kosten: estimateCost(10, 0), strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev, einspeisung: calcWeightedFeedIn(10, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10), stromSteigerung: DEFAULT_PRICES.electricityIncrease, ertragKwp: NATIONAL_AVG_YIELD, monthly: null });
     expect(faqAmortisationSpanne(10).standard).toBe(r.be!.i);
   });

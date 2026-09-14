@@ -10,7 +10,7 @@
 // Cost/feed-in figures are derived from the same models the calculators use and
 // the year is evaluated at render time — nothing here goes stale on rollover.
 // Never hardcode a year or a euro figure below.
-import { estimateCost, BATTERY_LIFETIME_YEARS, calc, calcEigenverbrauch, calcWeightedFeedIn } from "./calc";
+import { estimateCost, BATTERY_LIFETIME_YEARS, calc, calcEigenverbrauchExakt, calcWeightedFeedIn } from "./calc";
 import { calcBalkon, type BalkonInputs } from "./balkon";
 import { BALKON_RECHT, DEFAULT_BALKON_CONFIG, type BalkonSetId } from "./balkon-config";
 import { MASTR_KATEGORIE, SOLARPAKET_ENTFALLEN } from "./balkon-anmeldung";
@@ -58,7 +58,7 @@ const round1k = (n: number) => Math.round(n / 1000) * 1000;
  * den eigenen Standardfall des Rechners drei Absätze tiefer (13 Jahre).
  */
 export function faqAmortisationJahre(kwp: number, speicherKwh: number, personenIdx: number, nutzungIdx: number): number | null {
-  const ev = calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp: "nein", ea: "nein", eaKm: 15000, kwp, ertragKwp: NATIONAL_AVG_YIELD });
+  const ev = calcEigenverbrauchExakt({ personenIdx, nutzungIdx, speicherKwh, wp: "nein", ea: "nein", eaKm: 15000, kwp, ertragKwp: NATIONAL_AVG_YIELD });
   const r = calc({
     kwp, kosten: estimateCost(kwp, speicherKwh), strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev,
     einspeisung: calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10),
