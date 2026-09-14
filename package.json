@@ -74,7 +74,8 @@
     "kontakte:quellen": "tsx scripts/contact-source-search.ts",
     "kontakte:vergleich": "tsx scripts/contact-compare.ts",
     "kontakte:recherche": "tsx scripts/contact-research.ts",
-    "versorger:erhebung": "tsx scripts/versorger-erhebung.ts"
+    "versorger:erhebung": "tsx scripts/versorger-erhebung.ts",
+    "kontakte:vollerhebung": "tsx scripts/contact-full-research.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",

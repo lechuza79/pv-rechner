@@ -1,5 +1,7 @@
+import { abortableContactRead } from "./contact-deadline";
 import { load } from "cheerio";
-import { contactBranch, contactLinks, contactLinkPriority, contactUrl, nextContactUrl, type ContactDataset } from "../../lib/contact-discovery";
+import { contactBranch, contactLinks, externalContactLinks, contactLinkPriority, contactUrl, nextContactUrl, type ContactDataset } from "../../lib/contact-discovery";
+import { contactQuality } from "../../lib/contact-quality";
 import { sameDomain } from "../../lib/contact-evidence";
 import { fetchContactPage, type PageObservation } from "./contact-fetch";
 
@@ -17,10 +19,15 @@ export async function crawlContacts(options: CrawlOptions) {
   const pending = new Map<string, number>();
   const visited = new Set<string>();
   const branches = new Map<string, number>();
+  const external = new Map<string, number>();
+  let externalReads = 0;
   const budget = options.pageBudget ?? 12;
   if (!Number.isInteger(budget) || budget < 1 || budget > 30) throw Error("pageBudget must be 1..30");
   const finish = (status: string) => ({ status, pages, discovery, candidates: pages.flatMap(p => p.candidates),
-    pending_urls: [...pending.keys()], requests: pages.length + discovery.length });
+    pending_urls: [...pending.keys()], external_sources: [...external.keys()], requests: pages.length + discovery.length,
+    quality: contactQuality(pages.flatMap(p => p.candidates), options.dataset,
+      [...(status !== "found" ? [status] : []), ...(pending.size ? ["unread-linked-pages"] : []),
+        ...(external.size ? ["external-sources-unread"] : []), ...(discovery.some(d => d.status === "failed") ? ["discovery-failed"] : [])]) });
   if (!options.website) return finish("missing-website");
   const start = contactUrl(/^[a-z][a-z0-9+.-]*:/i.test(options.website) ? options.website : `https://${options.website}`);
   if (!start) return finish("invalid-website");
@@ -43,11 +50,12 @@ export async function crawlContacts(options: CrawlOptions) {
     const observation: DiscoveryObservation = { url, status: "failed", error: null };
     discovery.push(observation);
     try {
-      const response = await (options.fetcher ?? fetch)(url, { signal: AbortSignal.timeout(12000),
-        headers: { "User-Agent": "solar-check.io contact-research/1.0 (+https://solar-check.io)" } });
+      const signal = AbortSignal.timeout(12000);
+      const response = await abortableContactRead((options.fetcher ?? fetch)(url, { signal,
+        headers: { "User-Agent": "solar-check.io contact-research/1.0 (+https://solar-check.io)" } }), signal);
       if (!response.ok) throw Error(`HTTP ${response.status}`);
       if (!sameDomain(new URL(response.url || url).hostname.replace(/^www\./, ""), scope)) throw Error("External discovery redirect requires review");
-      const text = await response.text();
+      const text = await abortableContactRead(response.text(), signal);
       if (text.length > 4_000_000) throw Error("Discovery document too large");
       observation.status = "read";
       return text;
@@ -82,9 +90,23 @@ export async function crawlContacts(options: CrawlOptions) {
     }
   };
   while (requests() < budget) {
+    // Reserve the last two reads for explicitly linked external contact leads;
+    // a long internal news queue must not hide the publisher indefinitely.
+    if (external.size && externalReads < 2 && requests() >= budget - 2) {
+      const entry = [...external].filter(([url]) => !visited.has(url)).sort((a,b) => b[1] - a[1])[0];
+      if (entry) { external.delete(entry[0]); queue(entry[0], 10000); externalReads++; }
+    }
+    if (!sitemapTried && pages.length >= Math.floor(budget / 2) && requests() < budget - 2) {
+      await discoverSitemap();
+    }
     if (!pending.size) {
       if (!visited.has(root)) { queue(root, 100); continue; }
       if (!sitemapTried && requests() < budget - 2) { await discoverSitemap(); if (pending.size) continue; }
+      if (external.size && externalReads < 2) {
+        const entry = [...external].sort((a,b) => b[1] - a[1])[0];
+        external.delete(entry[0]); queue(entry[0], entry[1]); externalReads++;
+        continue;
+      }
       break;
     }
     const url = nextContactUrl(pending, branches);
@@ -106,7 +128,13 @@ export async function crawlContacts(options: CrawlOptions) {
       if (pages.length === 1) { scope = new URL(final).hostname.replace(/^www\./, ""); root = new URL("/", final).href; }
     }
     if (!result.html || !final) continue;
-    for (const link of contactLinks(result.html, final, scope, options.dataset)) queue(link.url, link.priority);
+    const withinScope = sameDomain(new URL(final).hostname.replace(/^www\./, ""), scope);
+    if (withinScope) {
+      for (const link of contactLinks(result.html, final, scope, options.dataset)) queue(link.url, link.priority);
+      for (const link of externalContactLinks(result.html, final, scope, options.dataset)) {
+        if (!visited.has(link.url)) external.set(link.url, link.priority);
+      }
+    }
   }
   return finish(pages.some(p => p.status !== "read") ? "partial" : pending.size ? "budget-exhausted" :
     pages.some(p => p.candidates.length) ? "found" : "no-find-in-read-pages");

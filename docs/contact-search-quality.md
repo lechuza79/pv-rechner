@@ -92,3 +92,44 @@ Gemeinden. Diese Bezugsmenge enthält auch gemeindefreie Gebiete und historische
 Einheiten. Sie ist als technische Registerabdeckung verwendbar, nicht als Zahl
 aktueller kommunaler Outreach-Empfänger. Keine pauschale Bereinigung anhand von
 Namen oder einer aus wenigen Beispielen abgeleiteten Schlüsselheuristik.
+
+## Rollenhinweise und vollständige Bestandserhebung
+
+`kontakte:vollerhebung -- --directory=ABSOLUTE_PATH --pages=20` friert zunächst
+alle Bestandszeilen der vier Tabellen in einer privaten lokalen Arbeitsliste ein.
+Auch fehlende Websites und bisher negativ eingestufte Organisationen bleiben
+enthalten. Die Arbeitsliste ist kein amtlich bereinigtes Organisationsuniversum.
+Erst `--execute` liest die öffentlichen Websites; standardmäßig vier Organisationen
+parallel, höchstens eine pro Host. Der Lauf versendet nichts, schreibt nichts in
+die Datenbank und verwendet keinen kostenpflichtigen Suchdienst.
+
+Jede Zeile erhält ein eigenes atomar gespeichertes Ergebnis. Ein erneuter Start
+im selben Verzeichnis übernimmt abgeschlossene Ergebnisse, einschließlich
+Fehlerfällen. Fehler müssen anschließend in einem getrennten Wiederholungslauf
+geprüft werden. Beschädigte Ergebnisse oder geänderte Erfassungslogik stoppen
+den Lauf. Nach einem Prozessabsturz darf die Laufsperre erst nach Prüfung der
+laufenden Prozesse entfernt werden. Bei einem Speicherfehler wartet der Lauf
+auf bereits aktive Arbeiter, bevor er seine Sperre freigibt.
+
+Der Qualitätsbericht trennt deduplizierte Rollenhinweise, allgemeine Postfächer,
+abweichende Funktionen und ungeklärte Zuordnungen. Rollenwörter werden aus
+kleinen Kontaktblöcken gesammelt; widersprüchliche Belege bleiben erhalten.
+Navigation, Impressumsvertretung und Kommunikation mit Regulierungsbehörden
+dürfen nicht als Ansprechpartnernachweis verwendet werden. **Ein automatischer
+Rollenhinweis ist weiterhin keine bestätigte Zuständigkeit.** Auch eine einzige
+Adresse im Text kann neben mehreren Personen stehen. Die Ausgabe enthält deshalb
+immer `responsibilityVerification: review-required`; sie ist keine Versandliste.
+
+Explizit verlinkte externe Kontakt-/Verlagsseiten können innerhalb des
+Abrufbudgets gelesen werden, höchstens zwei pro Organisation. Ihre Kontakte
+bleiben organisatorisch unbestätigt. Nicht gelesene externe Quellen werden
+sichtbar aufgehoben. Sitemaps werden auch bei einer langen internen Warteschlange
+geprüft. Zusätzliches verschlüsseltes Kontakt-Markup löst die Browser-Erfassung
+aus; unaufgelöste Verschlüsselung bleibt ein Fehlerzustand.
+
+Die Zusammenfassung zählt bearbeitete Bestandszeilen und getrennte Ergebnisse,
+nicht vermeintlich vollständig erfasste Organisationen. Abrufzahlen gelten nur
+für protokollierte Rückgaben; nach einem ungefangenen Erfassungsfehler wird der
+Aufwand als unbekannt mitgezählt, nicht als null bestätigt. Zustellbarkeit,
+aktuelle Organisationsidentität und vollständige öffentliche Kontaktabdeckung
+werden durch einen erfolgreichen technischen Lauf nicht bewiesen.

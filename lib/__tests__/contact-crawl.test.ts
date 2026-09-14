@@ -68,6 +68,30 @@ describe("bounded contact recovery", () => {
     expect(result.pages).toHaveLength(2);
     expect(mock.calls).toEqual(["https://ort.de/", "https://www.ort.de/kontakt"]);
   });
+  it("reads an explicitly linked publisher contact without assigning its organization", async () => {
+    const mock = source({ "https://ort.de/": '<a href="https://publisher.de/kontakt">Verlag Kontakt</a>', "https://ort.de/robots.txt": '', "https://ort.de/sitemap.xml": '', "https://publisher.de/kontakt": '<p>Redaktion editor@publisher.de</p>' });
+    const result = await crawlContacts({website:"https://ort.de",dataset:"presse",pageBudget:8,fetcher:mock.fetcher});
+    expect(result.candidates[0]).toMatchObject({email:"editor@publisher.de",relation:"unconfirmed"});
+    expect(result.quality.contacts[0].suitability).toBe("needs-review");
+    expect(result.requests).toBeLessThanOrEqual(8);
+  });
+  it("recognizes additional encrypted contact markup instead of declaring an empty readable page", async () => {
+    const { fetchContactPage } = await import("../../scripts/lib/contact-fetch");
+    const result = await fetchContactPage("https://ort.de/kontakt", {fetcher:async()=>new Response('<a data-encrypted href="mailto:encoded"><hrencrypted>encoded</hrencrypted></a>',{headers:{'content-type':'text/html'}}),render:async()=>'<p>Leitung <a href="mailto:person@ort.de">person@ort.de</a></p>'});
+    expect(result.observation).toMatchObject({status:"read",rendered:true});
+    expect(result.observation.candidates[0].email).toBe("person@ort.de");
+  });
+  it("returns a recorded timeout when a transport ignores cancellation", async () => {
+    const { fetchContactPage } = await import("../../scripts/lib/contact-fetch");
+    const result = await fetchContactPage("https://ort.de/", {timeoutMs:10,fetcher:()=>new Promise(()=>{})});
+    expect(result.observation).toMatchObject({status:"failed",error:"Timeout"});
+  });
+  it("prioritizes inclusive directory labels over general communication pages", async () => {
+    const mock = source({"https://ort.de/": '<a href="/verwaltung/ansprechpersonen.html">Ansprechpersonen</a><a href="/kommunikation">Elektronische Kommunikation</a>',"https://ort.de/verwaltung/ansprechpersonen.html":'<p>Öffentlichkeitsarbeit info@ort.de</p>'});
+    const result = await crawlContacts({website:"https://ort.de",dataset:"kommunen",pageBudget:2,fetcher:mock.fetcher});
+    expect(result.candidates[0].email).toBe("info@ort.de");
+    expect(result.quality.status).toBe("role-indicated");
+  });
   it("keeps a missing website as an acquisition gap instead of a completed empty search", async () => {
     const mock = source({});
     const result = await crawlContacts({ website: null, dataset: "kommunen", fetcher: mock.fetcher });

@@ -7,6 +7,8 @@ export type ContactCandidate = {
   sourceUrl: string;
   context: string;
   departments?: string[];
+  roleEvidence?: { text: string; scope: "local-block"; exclusiveAddress: boolean };
+  additionalRoleEvidence?: { text: string; scope: "local-block"; exclusiveAddress: boolean }[];
   relation: "same-domain" | "unconfirmed";
   purpose: "press" | "website" | "sales" | "general" | "excluded" | "unknown";
 };
@@ -42,7 +44,7 @@ export function contactDepartments(context: string): string[] {
   const rules: [string, RegExp][] = [
     ["climate-environment", /klimaschutz|umweltschutz|klima[- und]+umwelt|nachhaltigkeit/iu],
     ["energy", /energieberatung|energiemanagement|erneuerbare energien/iu],
-    ["communications", /pressestelle|presse und kommunikation|öffentlichkeitsarbeit|oeffentlichkeitsarbeit|webredaktion/iu],
+    ["communications", /pressestelle|presse (?:und |& )?(?:kommunikation|marketing)|unternehmenskommunikation|öffentlichkeitsarbeit|oeffentlichkeitsarbeit|webredaktion/iu],
     ["editorial", /redaktion|newsroom/iu],
     ["customer-service", /kundenservice|kundenzentrum|kundencenter/iu],
     ["network-service", /netzservice|netzanschluss|einspeisung/iu],
@@ -75,24 +77,54 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
     $(el).before("\n"); $(el).after("\n");
   });
   const candidates = new Map<string, ContactCandidate>();
-  const add = (email: string, context: string) => {
+  const localEvidence = (el: Parameters<typeof $>[0], email: string) => {
+    let block = $(el).closest("p,li,td,address,article,section,div");
+    let best = "";
+    // Expand only through a single-contact card. Never borrow another person's
+    // heading, a navigation label or the page-wide department name.
+    for (let depth = 0; block.length && depth < 4; depth++, block = block.parent()) {
+      if (block.is("body,html,nav,header,footer,aside")) break;
+      const copy = block.clone();
+      copy.find("nav,header,footer,aside").remove();
+      const text = copy.text().replace(/\s+/g, " ").trim();
+      const addresses = new Set<string>();
+      copy.find("a[href^='mailto:']").each((_, link) => {
+        addresses.add(entschluesseltOderRoh(($(link).attr("href") ?? "").slice(7).split("?")[0]).toLowerCase());
+      });
+      for (const match of entwirreAdressen(text).replace(/\(ad\)/gi, "@").matchAll(/[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g)) addresses.add(match[0].toLowerCase());
+      if (text.length > 600 || [...addresses].some(a => a !== email)) break;
+      if (text && addresses.has(email)) best = text;
+      if (block.is("article,section,li,td,address")) break;
+    }
+    return best;
+  };
+  const add = (email: string, context: string, evidence = "") => {
     email = email.trim().toLowerCase();
     if (!/^[\w.+%-]+@[\w-]+(?:\.[\w-]+)+$/.test(email)) return;
-    if (candidates.has(email)) return;
+    if (candidates.has(email)) {
+      const prior = candidates.get(email)!;
+      if (evidence && !prior.roleEvidence) prior.roleEvidence = { text: evidence, scope: "local-block", exclusiveAddress: true };
+      else if (evidence && evidence !== prior.roleEvidence?.text && !prior.additionalRoleEvidence?.some(e => e.text === evidence)) {
+        (prior.additionalRoleEvidence ??= []).push({ text: evidence, scope: "local-block", exclusiveAddress: true });
+      }
+      return;
+    }
     candidates.set(email, { email, sourceUrl, context: context.replace(/\s+/g, " ").trim().slice(0, 600), departments: contactDepartments(context),
+      ...(evidence ? { roleEvidence: { text: evidence, scope: "local-block" as const, exclusiveAddress: true } } : {}),
       relation: sameDomain(email.split("@")[1], domain) ? "same-domain" : "unconfirmed", purpose: contactPurpose(email) });
   };
   $("a[href^='mailto:']").each((_, el) => {
     const raw = ($(el).attr("href") ?? "").slice(7).split("?")[0];
     try {
       const local = $(el).closest("p,li,td,address,article,section,div").text().replace(/\s+/g," ").trim();
-      add(entschluesseltOderRoh(raw), local.length <= 600 ? local : $(el).text());
+      const email = entschluesseltOderRoh(raw).trim().toLowerCase();
+      add(email, local.length <= 600 ? local : $(el).text(), localEvidence(el, email));
     } catch { /* Malformed source. */ }
   });
   $("p,li,td,div,article,section,body").each((_, el) => {
     // Prefer the smallest local block; ancestors only add addresses not seen yet.
     const text = entwirreAdressen($(el).clone().children("div,p,li,td,article,section").remove().end().text().replace(/\(ad\)/gi, "@"));
-    for (const m of text.matchAll(/[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g)) add(m[0], text.slice(Math.max(0, m.index! - 220), m.index! + 380));
+    for (const m of text.matchAll(/[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g)) add(m[0], text.slice(Math.max(0, m.index! - 220), m.index! + 380), localEvidence(el, m[0].toLowerCase()));
   });
   return [...candidates.values()];
 }

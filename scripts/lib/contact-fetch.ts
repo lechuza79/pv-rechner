@@ -1,3 +1,4 @@
+import { abortableContactRead } from "./contact-deadline";
 import { appendFileSync, mkdirSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -24,26 +25,26 @@ export async function fetchContactPage(url: string, options: {
   const timer = setTimeout(() => controller.abort(), options.timeoutMs ?? 12000);
   let html: string | null = null;
   try {
-    const response = await (options.fetcher ?? fetch)(url, { redirect: "follow", signal: controller.signal,
-      headers: { "User-Agent": options.userAgent ?? "solar-check.io contact-research/1.0 (+https://solar-check.io)", Accept: "text/html,application/xhtml+xml" } });
+    const response = await abortableContactRead((options.fetcher ?? fetch)(url, { redirect: "follow", signal: controller.signal,
+      headers: { "User-Agent": options.userAgent ?? "solar-check.io contact-research/1.0 (+https://solar-check.io)", Accept: "text/html,application/xhtml+xml" } }), controller.signal);
     observation.finalUrl = response.url || url;
     if (!response.ok) { observation.status = [403, 429].includes(response.status) ? "blocked" : "failed"; observation.error = `HTTP ${response.status}`; }
     else if (!/html/i.test(response.headers.get("content-type") ?? "")) { observation.status = "not-html"; observation.error = "Not HTML"; }
     else {
-      const bytes = await response.arrayBuffer();
+      const bytes = await abortableContactRead(response.arrayBuffer(), controller.signal);
       const charset = /charset=["']?([\w-]+)/i.exec(response.headers.get("content-type") ?? "")?.[1] ?? /<meta[^>]+charset=["']?([\w-]+)/i.exec(new TextDecoder("latin1").decode(bytes.slice(0, 4096)))?.[1] ?? "utf-8";
       try { html = new TextDecoder(charset).decode(bytes); } catch { html = new TextDecoder().decode(bytes); }
       if (/cf-chl-|<title>\s*(just a moment|access denied|attention required)/i.test(html)) {
         observation.status = "blocked"; observation.error = "Challenge page"; html = null;
       } else {
         observation.status = "read";
-        if (/email hidden; JavaScript is required|data-cfemail|hivelogic_enkoder/i.test(html)) {
+        if (/email hidden; JavaScript is required|data-cfemail|hivelogic_enkoder|<hrencrypted|data-encrypted/i.test(html)) {
           observation.status = "needs-rendering";
           observation.error = "Contact address requires browser rendering";
           if (options.render) {
             try {
               const rendered = await options.render(observation.finalUrl);
-              if (/email hidden; JavaScript is required/i.test(rendered)) throw new Error("Hidden contact remains unresolved");
+              if (/email hidden; JavaScript is required|<hrencrypted(?:\s|>)/i.test(rendered)) throw new Error("Hidden contact remains unresolved");
               html = rendered;
               observation.status = "read"; observation.error = null; observation.rendered = true;
             } catch (error) { observation.error = `Rendering incomplete: ${String(error).slice(0,180)}`; }

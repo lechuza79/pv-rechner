@@ -25,11 +25,12 @@ export function contactLinkPriority(url: string, label: string, dataset: Contact
   const parsed = new URL(url);
   const leaf = entschluesseltOderRoh(parsed.pathname.split("/").filter(Boolean).at(-1) ?? "");
   const text = `${label} ${leaf}`.replace(/[-_]/g, " ");
-  const directory = /\b(kontakt\w*|contact\w*|ansprechpartner\w*|mitarbeiter\w*|team|redaktion\w*|organigramm|dienststellen|abteilungen)\b|ämter|aemter/iu;
+  const directory = /\b(kontakt\w*|contact\w*|ansprechpartner\w*|ansprechperson\w*|mitarbeiter\w*|team|redaktion\w*|organigramm|dienststellen|abteilungen|rathaus|bürgerservice|buergerservice|verwaltung|mediadaten|verlag)\b|ämter|aemter/iu;
   const climate = /\b(klimaschutz\w*|umweltschutz\w*|klima|umwelt|energiemanagement|energieberatung|nachhaltigkeit|erneuerbare)\b/iu;
   const communications = /\b(presse\w*|kommunikation|öffentlichkeitsarbeit|oeffentlichkeitsarbeit|webredaktion)\b/iu;
   let score = directory.test(text) ? 80 : 0;
-  if (/\b(kontakt\w*|contact\w*|ansprechpartner\w*)\b/iu.test(text)) score = 110;
+  if (/\b(kontakt\w*|contact\w*|ansprechpartner\w*|ansprechperson\w*)\b/iu.test(text)) score = 110;
+  if (/\bansprechperson\w*\b|\bansprechpartner\w*\b/iu.test(text)) score = 140;
   if (communications.test(text)) score = Math.max(score, 120);
   if (/\b(impressum|imprint)\b/i.test(text)) score = Math.max(score, 70);
   if ((dataset === "kommunen" || dataset === "versorger") && climate.test(text)) score = Math.max(score, 125);
@@ -67,4 +68,19 @@ export function contactBranch(url: string): string {
 export function nextContactUrl(pending: Map<string,number>, branchVisits: Map<string,number>): string {
   const score = ([url,priority]:[string,number]) => priority - 15 * (branchVisits.get(contactBranch(url)) ?? 0);
   return [...pending].sort((a,b)=>score(b)-score(a) || a[0].localeCompare(b[0]))[0][0];
+}
+
+/** Explicit outbound contact/publisher links are research leads, not ownership. */
+export function externalContactLinks(html: string, base: string, domain: string, dataset: ContactDataset) {
+  const $ = load(html);
+  const links = new Map<string, number>();
+  $("a[href]").each((_, el) => {
+    const url = contactUrl($(el).attr("href") ?? "", base);
+    if (!url || sameDomain(new URL(url).hostname.replace(/^www\./, ""), domain)) return;
+    const label = $(el).text().replace(/\s+/g, " ").trim();
+    if (!/kontakt|ansprechpartner|ansprechperson|redaktion|mediadaten|verlag|verwaltungsgemeinschaft|verbandsgemeinde/iu.test(label)) return;
+    if (/facebook\.com|instagram\.com|linkedin\.com|youtube\.com/.test(new URL(url).hostname)) return;
+    links.set(url, contactLinkPriority(url, label, dataset));
+  });
+  return [...links].map(([url, priority]) => ({url, priority}));
 }
