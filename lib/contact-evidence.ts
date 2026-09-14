@@ -53,8 +53,27 @@ export function contactDepartments(context: string): string[] {
 
 /** Keep every observed address and its local evidence. A foreign address is not an attribution. */
 export function contactCandidates(html: string, sourceUrl: string, domain: string): ContactCandidate[] {
-  const $ = load(html);
-  $("script,style,noscript").remove();
+  // Read the publisher's no-script fallback too. Removing it made whole CMS
+  // families look contactless even though they supplied a plain-text address.
+  const $ = load(html, { scriptingEnabled: false });
+  // Publishers sometimes insert invisible anti-spam text inside an address.
+  // Remove only explicitly hidden elements, never the word "nospam" itself.
+  $("[hidden], [style]").each((_, el) => {
+    // Collapsed directory panels are ordinary discoverable content. Only strip
+    // inline hidden fragments, not entire accordion/contact containers.
+    if ($(el).is("span,b,i,em,strong,small") && ($(el).attr("hidden") !== undefined || /(?:^|;)\s*(?:display\s*:\s*none|visibility\s*:\s*hidden)\s*(?:!important)?\s*(?:;|$)/i.test($(el).attr("style") ?? ""))) $(el).remove();
+  });
+  $("joomla-hidden-mail[first][last]").each((_, el) => {
+    try { $(el).text(`${atob($(el).attr("first")!)}@${atob($(el).attr("last")!)}`); }
+    catch { /* Keep malformed encodings unresolved. */ }
+  });
+  $("script,style").remove();
+  // DOM textContent joins adjacent elements with no separator. Preserve their
+  // boundaries before extraction, so address + heading cannot become an email.
+  $("br").replaceWith("\n");
+  $("p,div,li,td,th,tr,section,article,address,h1,h2,h3,h4,h5,h6,nav,header,footer,ul,ol,dl,dt,dd,noscript").each((_, el) => {
+    $(el).before("\n"); $(el).after("\n");
+  });
   const candidates = new Map<string, ContactCandidate>();
   const add = (email: string, context: string) => {
     email = email.trim().toLowerCase();
@@ -72,7 +91,7 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
   });
   $("p,li,td,div,article,section,body").each((_, el) => {
     // Prefer the smallest local block; ancestors only add addresses not seen yet.
-    const text = entwirreAdressen($(el).clone().children("div,p,li,td,article,section").remove().end().text());
+    const text = entwirreAdressen($(el).clone().children("div,p,li,td,article,section").remove().end().text().replace(/\(ad\)/gi, "@"));
     for (const m of text.matchAll(/[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g)) add(m[0], text.slice(Math.max(0, m.index! - 220), m.index! + 380));
   });
   return [...candidates.values()];

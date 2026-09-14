@@ -4,6 +4,22 @@ import { entschluesseltOderRoh } from "./uri-sicher";
 
 export type ContactDataset = "kommunen" | "fachbetriebe" | "presse" | "versorger";
 
+/** Remove presentation/tracking variants, preserving identifiers and filters. */
+export function contactUrl(raw: string, base?: string): string | null {
+  try {
+    const url = new URL(raw, base);
+    if (!/^https?:$/.test(url.protocol)) return null;
+    if (/\.(?:jpe?g|png|gif|svg|webp|ico|mp4|mp3|zip|css|js|woff2?|ttf)$/i.test(url.pathname)) return null;
+    url.hash = "";
+    for (const key of [...url.searchParams.keys()]) {
+      if (/^utm_/i.test(key) || /^(fbclid|gclid)$/i.test(key) ||
+          (key === "modus" && url.searchParams.get(key) === "drucken")) url.searchParams.delete(key);
+    }
+    url.searchParams.sort();
+    return url.href;
+  } catch { return null; }
+}
+
 /** Score the destination label and leaf, never an inherited folder name such as /team/news/. */
 export function contactLinkPriority(url: string, label: string, dataset: ContactDataset): number {
   const parsed = new URL(url);
@@ -31,7 +47,9 @@ export function contactLinks(html: string, base: string, domain: string, dataset
     if (/^(mailto:|tel:|javascript:|#)/i.test(href)) return;
     let target: URL;
     try { target = new URL(href, base); } catch { return; }
-    target.hash = "";
+    const normalized = contactUrl(target.href);
+    if (!normalized) return;
+    target = new URL(normalized);
     if (!/^https?:$/.test(target.protocol) || !sameDomain(target.hostname.replace(/^www\./,""),domain)) return;
     const priority = contactLinkPriority(target.href, $(el).text().replace(/\s+/g," ").trim(),dataset);
     if (priority) result.set(target.href,Math.max(priority,result.get(target.href)??0));

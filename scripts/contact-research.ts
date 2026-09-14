@@ -3,9 +3,9 @@ import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
-import { fetchContactPage, recordContactPage, contactEvidenceDirectory, type PageObservation } from "./lib/contact-fetch";
+import { recordContactPage, contactEvidenceDirectory } from "./lib/contact-fetch";
+import { crawlContacts } from "./lib/contact-crawl";
 import { renderContactPage } from "./lib/contact-render";
-import { contactBranch, contactLinks, nextContactUrl } from "../lib/contact-discovery";
 
 const DATASETS = {
   kommunen: { table: "kommunen_kontakt", id: "region_id", url: "website" },
@@ -46,52 +46,34 @@ async function main() {
   const pageBudget = Number(arg("pages") ?? 12);
   if (!Number.isInteger(pageBudget) || pageBudget < 1 || pageBudget > 30) throw Error("pages must be 1..30");
   if (!Number.isInteger(limit) || limit < 1 || limit > 100) throw Error("limit must be 1..100");
-  let query = db.from(cfg.table).select(`${cfg.id},${cfg.url}`).not(cfg.url, "is", null).order(cfg.id).limit(limit);
-  if (arg("id")) query = query.eq(cfg.id, arg("id")!);
-  const { data, error } = await query;
-  if (error) throw error;
-  for (const raw of data ?? []) {
-    const row = raw as unknown as Record<string, string>;
-    const basis = /^https?:\/\//.test(row[cfg.url]) ? row[cfg.url] : `https://${row[cfg.url]}`;
-    const host = new URL(basis).hostname.replace(/^www\./, "");
-    const pending = new Map<string, number>([[basis, 200]]);
-    const visited = new Set<string>();
-    const branchVisits = new Map<string,number>();
-    const pages: PageObservation[] = [];
-    let renderBudget = 2;
-    const renderedPages = new Map<string,string>();
-    // Candidate discovery never stops at the first mailbox.
-    while (pending.size && pages.length < pageBudget) {
-      const url = nextContactUrl(pending, branchVisits);
-      const branch = contactBranch(url);
-      branchVisits.set(branch,(branchVisits.get(branch) ?? 0)+1);
-      pending.delete(url); visited.add(url);
-      const result = await fetchContactPage(url, { organizationDomain: host, render: async target => {
-        if (renderedPages.has(target)) return renderedPages.get(target)!;
-        if (renderBudget-- <= 0) throw new Error("Browser budget exhausted");
-        const html = await renderContactPage(target);
-        renderedPages.set(target, html);
-        return html;
-      }, record: o => recordContactPage(dataset, o) });
-      pages.push(result.observation);
-      if (!result.html) continue;
-      const base = result.observation.finalUrl!;
-      for (const link of contactLinks(result.html, base, host, dataset)) {
-        if (!visited.has(link.url)) pending.set(link.url, Math.max(link.priority, pending.get(link.url) ?? 0));
-      }
+  let rows: { organization_id: string; website: string | null; sourceUrl?: string; evidence?: string }[];
+  if (arg("manifest")) {
+    const input = JSON.parse(readFileSync(resolve(arg("manifest")!), "utf8"));
+    if (!Array.isArray(input.targets)) throw Error("Manifest requires targets");
+    rows = input.targets.filter((t: { dataset: string }) => t.dataset === dataset).slice(0, limit);
+    for (const row of rows) {
+      if (!row.organization_id || !row.website || !row.sourceUrl || !row.evidence) throw Error("A supplied website requires organization_id, sourceUrl and identity evidence");
     }
-    const candidates = pages.flatMap(p=>p.candidates);
-    const result = { id: randomUUID(), dataset, organization_id: row[cfg.id], observed_at: new Date().toISOString(),
-      status: pages.some(p=>p.status!=="read") ? "partial" : pending.size ? "budget-exhausted" : candidates.length ? "found" : "no-find-in-read-pages",
-      pages, candidates, pending_urls: [...pending.keys()] };
+  } else {
+    let query = db.from(cfg.table).select(`${cfg.id},${cfg.url}`).order(cfg.id).limit(limit);
+    if (arg("after")) query = query.gt(cfg.id, arg("after")!);
+    if (arg("id")) query = query.eq(cfg.id, arg("id")!);
+    const { data, error } = await query;
+    if (error) throw error;
+    rows = (data ?? []).map(raw => { const row = raw as unknown as Record<string, string | null>; return { organization_id: row[cfg.id]!, website: row[cfg.url] }; });
+  }
+  for (const row of rows) {
+    const crawl = await crawlContacts({ website: row.website, dataset, pageBudget,
+      render: renderContactPage, record: o => recordContactPage(dataset, o) });
+    const result = { id: randomUUID(), dataset, organization_id: row.organization_id, observed_at: new Date().toISOString(), source: row, ...crawl };
     const dir = resolve(contactEvidenceDirectory(), "organizations");
     mkdirSync(dir, { recursive:true, mode:0o700 });
     writeFileSync(resolve(dir, `${result.id}.json`), JSON.stringify(result,null,2), {mode:0o600});
     if (process.argv.includes("--write")) {
-      const { error: saveError } = await db.from("contact_research_runs").insert(result);
+      const { error: saveError } = await db.from("contact_research_runs").insert({ id: result.id, dataset, organization_id: result.organization_id, observed_at: result.observed_at, status: result.status, pages: result.pages, candidates: result.candidates, pending_urls: result.pending_urls });
       if (saveError) throw saveError;
     }
-    console.log(JSON.stringify({ dataset, id:row[cfg.id], status:result.status, pages:pages.length, candidates:candidates.length, pending:pending.size }));
+    console.log(JSON.stringify({ dataset, id:row.organization_id, status:result.status, pages:result.pages.length, candidates:result.candidates.length, pending:result.pending_urls.length }));
   }
 }
 main().catch(e=>{console.error(e.message);process.exitCode=1;});

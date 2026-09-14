@@ -71,6 +71,8 @@
     "presse": "tsx scripts/presse-refresh.ts",
     "temperatur:tage": "tsx scripts/dwd-temperatur-tage-sync.ts",
     "flows:matrix": "tsx scripts/flow-matrix.ts",
+    "kontakte:quellen": "tsx scripts/contact-source-search.ts",
+    "kontakte:vergleich": "tsx scripts/contact-compare.ts",
     "kontakte:recherche": "tsx scripts/contact-research.ts",
     "versorger:erhebung": "tsx scripts/versorger-erhebung.ts"
   },
