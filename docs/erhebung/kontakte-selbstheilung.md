@@ -21,7 +21,7 @@ python3 scripts/install-contact-supervisor.py --directory=/absolute/path/to/froz
 
 Die erste Zeile erzeugt nur lokale Dateien und die prüfbare Dienstdefinition. Die zweite registriert einen benutzereigenen macOS-Hintergrunddienst. Keine neuen Versandaktionen, Datenbankänderungen oder bezahlten Suchanfragen.
 
-macOS startet die Steuerung nach einem Fehler erneut, frühestens nach 30 Sekunden. Nach erfolgreichem Abschluss beendet sie sich. Der Dienst läuft unabhängig von der Codex-App und startet nach einer erneuten Benutzeranmeldung wieder; ein ausgeschalteter oder schlafender Mac erhebt keine Daten. Er ändert keine Energieeinstellungen.
+macOS startet die Steuerung nach einem Fehler erneut; wiederholte Starts werden mit einem Mindestabstand von 30 Sekunden gedrosselt. Nach erfolgreichem Abschluss beendet sie sich. Der Dienst läuft unabhängig von der Codex-App und startet nach einer erneuten Benutzeranmeldung wieder; ein ausgeschalteter oder schlafender Mac erhebt keine Daten. Er ändert keine Energieeinstellungen.
 
 `supervisor-state.json` enthält den aktuellen Lebensnachweis. `summary.json` wird erst nach Prüfung jedes Ziels geschrieben und enthält Fehler ausdrücklich. Die Plist im Laufverzeichnis enthält den konkreten Dienstnamen und die Startparameter. Mit `launchctl bootout gui/$(id -u)/DIENSTNAME` wird der Dienst angehalten; nicht während eines aktiven Laufs die Laufzeitdateien löschen.
 
