@@ -1,10 +1,12 @@
 import { entschluesseltOderRoh } from "./uri-sicher";
 import { load } from "cheerio";
+import { entwirreAdressen } from "./personen-fund";
 
 export type ContactCandidate = {
   email: string;
   sourceUrl: string;
   context: string;
+  departments?: string[];
   relation: "same-domain" | "unconfirmed";
   purpose: "press" | "website" | "sales" | "general" | "excluded" | "unknown";
 };
@@ -35,6 +37,20 @@ export function contactPurpose(email: string): ContactCandidate["purpose"] {
   return "unknown";
 }
 
+/** These are literal subject hints near the address, never inferred responsibility. */
+export function contactDepartments(context: string): string[] {
+  const rules: [string, RegExp][] = [
+    ["climate-environment", /klimaschutz|umweltschutz|klima[- und]+umwelt|nachhaltigkeit/iu],
+    ["energy", /energieberatung|energiemanagement|erneuerbare energien/iu],
+    ["communications", /pressestelle|presse und kommunikation|öffentlichkeitsarbeit|oeffentlichkeitsarbeit|webredaktion/iu],
+    ["editorial", /redaktion|newsroom/iu],
+    ["customer-service", /kundenservice|kundenzentrum|kundencenter/iu],
+    ["network-service", /netzservice|netzanschluss|einspeisung/iu],
+    ["management", /geschäftsführ|geschaeftsfuehr|betriebsleitung/iu],
+  ];
+  return rules.filter(([,pattern])=>pattern.test(context)).map(([name])=>name);
+}
+
 /** Keep every observed address and its local evidence. A foreign address is not an attribution. */
 export function contactCandidates(html: string, sourceUrl: string, domain: string): ContactCandidate[] {
   const $ = load(html);
@@ -44,16 +60,19 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
     email = email.trim().toLowerCase();
     if (!/^[\w.+%-]+@[\w-]+(?:\.[\w-]+)+$/.test(email)) return;
     if (candidates.has(email)) return;
-    candidates.set(email, { email, sourceUrl, context: context.replace(/\s+/g, " ").trim().slice(0, 600),
+    candidates.set(email, { email, sourceUrl, context: context.replace(/\s+/g, " ").trim().slice(0, 600), departments: contactDepartments(context),
       relation: sameDomain(email.split("@")[1], domain) ? "same-domain" : "unconfirmed", purpose: contactPurpose(email) });
   };
   $("a[href^='mailto:']").each((_, el) => {
     const raw = ($(el).attr("href") ?? "").slice(7).split("?")[0];
-    try { add(entschluesseltOderRoh(raw), $(el).closest("p,li,td,article,section,div").text()); } catch { /* Malformed source. */ }
+    try {
+      const local = $(el).closest("p,li,td,address,article,section,div").text().replace(/\s+/g," ").trim();
+      add(entschluesseltOderRoh(raw), local.length <= 600 ? local : $(el).text());
+    } catch { /* Malformed source. */ }
   });
   $("p,li,td,div,article,section,body").each((_, el) => {
     // Prefer the smallest local block; ancestors only add addresses not seen yet.
-    const text = $(el).clone().children("div,p,li,td,article,section").remove().end().text();
+    const text = entwirreAdressen($(el).clone().children("div,p,li,td,article,section").remove().end().text());
     for (const m of text.matchAll(/[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g)) add(m[0], text.slice(Math.max(0, m.index! - 220), m.index! + 380));
   });
   return [...candidates.values()];

@@ -1,11 +1,11 @@
 /** Shared, additive contact research. Never sends mail or overwrites campaign choices. */
-import { load } from "cheerio";
 import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import { fetchContactPage, recordContactPage, contactEvidenceDirectory, type PageObservation } from "./lib/contact-fetch";
-import { sameDomain } from "../lib/contact-evidence";
+import { renderContactPage } from "./lib/contact-render";
+import { contactBranch, contactLinks, nextContactUrl } from "../lib/contact-discovery";
 
 const DATASETS = {
   kommunen: { table: "kommunen_kontakt", id: "region_id", url: "website" },
@@ -56,27 +56,29 @@ async function main() {
     const host = new URL(basis).hostname.replace(/^www\./, "");
     const pending = new Map<string, number>([[basis, 200]]);
     const visited = new Set<string>();
+    const branchVisits = new Map<string,number>();
     const pages: PageObservation[] = [];
+    let renderBudget = 2;
+    const renderedPages = new Map<string,string>();
     // Candidate discovery never stops at the first mailbox.
     while (pending.size && pages.length < pageBudget) {
-      const [url] = [...pending].sort((a,b)=>b[1]-a[1] || a[0].localeCompare(b[0]))[0];
+      const url = nextContactUrl(pending, branchVisits);
+      const branch = contactBranch(url);
+      branchVisits.set(branch,(branchVisits.get(branch) ?? 0)+1);
       pending.delete(url); visited.add(url);
-      const result = await fetchContactPage(url, { organizationDomain: host, record: o => recordContactPage(dataset, o) });
+      const result = await fetchContactPage(url, { organizationDomain: host, render: async target => {
+        if (renderedPages.has(target)) return renderedPages.get(target)!;
+        if (renderBudget-- <= 0) throw new Error("Browser budget exhausted");
+        const html = await renderContactPage(target);
+        renderedPages.set(target, html);
+        return html;
+      }, record: o => recordContactPage(dataset, o) });
       pages.push(result.observation);
       if (!result.html) continue;
       const base = result.observation.finalUrl!;
-      const $ = load(result.html);
-      $("a[href]").each((_, el) => {
-        const href = $(el).attr("href")!;
-        if (/^(mailto:|tel:|javascript:|#)/i.test(href)) return;
-        let target: URL;
-        try { target = new URL(href, base); } catch { return; }
-        target.hash = "";
-        if (!/^https?:$/.test(target.protocol) || !sameDomain(target.hostname.replace(/^www\./,""), host)) return;
-        const text = `${target.pathname} ${$(el).text()}`.toLowerCase();
-        const rank = /presse|redaktion|ansprechpartner|team|mitarbeiter/.test(text) ? 100 : /impressum|imprint/.test(text) ? 90 : /kontakt|contact/.test(text) ? 80 : 0;
-        if (rank && !visited.has(target.href)) pending.set(target.href, rank);
-      });
+      for (const link of contactLinks(result.html, base, host, dataset)) {
+        if (!visited.has(link.url)) pending.set(link.url, Math.max(link.priority, pending.get(link.url) ?? 0));
+      }
     }
     const candidates = pages.flatMap(p=>p.candidates);
     const result = { id: randomUUID(), dataset, organization_id: row[cfg.id], observed_at: new Date().toISOString(),

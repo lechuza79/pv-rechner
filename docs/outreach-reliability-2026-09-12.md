@@ -52,7 +52,7 @@ Für 269 Kontakte ist ein Anschreibentext gespeichert; für die ersten 20 fehlt 
 
 Heute vorhandene Presseadressen beweisen ebenfalls nicht, dass damals nur das allgemeine Postfach angeschrieben wurde: Der Versand bevorzugt bereits eine vorhandene Presseadresse. Für 19 Adressen liegt eine Prüfung vor dem dokumentierten Versanddatum vor.
 
-Trier dokumentiert eine Weiterleitung vom Rathaus über Klimaschutz bis zur Antwort nach etwa zwei Wochen. Das allgemeine Postfach kann also funktionieren, braucht hier aber mehrere Schritte. Nidda fragte nach möglichen Kosten und interner Freigabe. Das sind konkrete Reibungen; sie beweisen nicht, dass Empfängerwahl oder Kostenunklarheit die geringe Resonanz insgesamt verursacht haben.
+Trier dokumentiert eine Weiterleitung vom Rathaus über Klimaschutz bis zur Antwort nach etwa zwei Wochen. Das allgemeine Postfach kann also funktionieren, braucht hier aber mehrere Schritte. Korrektur vom 14.09.: Niddas Rückfrage bezog sich auf das BKW-Förderprogramm, nicht auf Kosten unseres Angebots. Eine inhaltliche Rückfrage ist bereits ein Erfolg des Erstkontakts. Daraus wird keine Änderung des Anschreibens abgeleitet.
 
 Besucherzahlen aus E-Mail-Links sind weder Öffnungs- noch Zustellmessung. Besucher aus unterschiedlichen Linkvarianten lassen sich nicht einfach als eindeutige Personen aufsummieren. Vor dem 27. August ist die Zuordnung zusätzlich eingeschränkt.
 
@@ -81,6 +81,30 @@ Gegenproben decken unter anderem kaputte/gesperrte Seiten, leere Wiederholungsfu
 
 ## Empfehlung für den nächsten Versand
 
-Vor der nächsten Welle eine feste Liste mit tatsächlich verwendeten Empfängern einfrieren und die Zuständigkeit an der Quelle bestätigen. Im Anschreiben die Kostenfrage eindeutig beantworten und genau eine konkrete gewünschte Handlung nennen. Antwort, amtliche Veröffentlichung und persönliche Weiterempfehlung getrennt auswerten; Gruppen nach derselben Beobachtungsdauer vergleichen.
+Vor der nächsten Welle eine feste Liste mit tatsächlich verwendeten Empfängern einfrieren und die Zuständigkeit an der Quelle bestätigen. Fokus ist jetzt die bessere Kontakterfassung, nicht eine Überarbeitung der Anschreiben. Antwort, amtliche Veröffentlichung und persönliche Weiterempfehlung getrennt auswerten; Gruppen nach derselben Beobachtungsdauer vergleichen.
 
 Vor einer flächendeckenden Neu-Recherche zuerst eine gemischte, manuell geprüfte Referenzmenge je Zielgruppe aufbauen: bekannte Treffer, bisherige Leerfälle, weitergeleitete Verwaltungen und dynamische Kontaktseiten. Daran messen, wie viele richtige Ansprechpartner gefunden und wie viele falsche zugeordnet werden. Erst diese Gegenmenge erlaubt eine Aussage zur Vollständigkeit. Die neuen Schutzmechanismen sind eingebaut; eine deutschlandweite Neu-Erhebung wurde nicht durchgeführt.
+
+
+## Fortsetzung am 14.09.: fachlich passende Kontakte finden
+
+Der Fokus liegt auf besseren Kontaktdaten. Eine inhaltliche Rückfrage ist bereits ein Erfolg des Erstkontakts; Niddas Rückfrage betraf das BKW-Förderprogramm und ist kein Beleg für Unklarheit über die Kosten unseres Angebots.
+
+Trier antwortete über **Steve Utecht, Leiter der Stabsstelle Klima- und Umweltschutz**. Der erhaltene Mailverlauf führt vom Rathaus über das Klimaschutz-Team zu ihm. Die [offizielle Dienststellenübersicht](https://www.trier.de/service/dienstleistungen-a-z/15763.Aemter-und-Dienststellen.html?catID=2920) bestätigt die Funktion. Deshalb werden Klima-, Umwelt- und Energiestellen zusätzlich zu Presse und Kommunikation gezielt gesucht. Der Fund trägt die Quelle und fachliche Hinweise aus seinem lokalen Text; daraus entsteht noch keine automatische Versandfreigabe.
+
+Die Ausgangssuche verlor bei Trier fast das gesamte Zwölf-Seiten-Budget an Ausbildungsnachrichten unter „TeamTrier-News“. Die übergeordnete Adresse wurde fälschlich als Hinweis auf Ansprechpartner gewertet. Die Seitenauswahl bewertet jetzt den eigentlichen Link und verteilt das Budget über mehrere Bereiche. Verschleierte Textadressen werden normalisiert. Bei erkennbar per JavaScript versteckten Adressen liest ein isolierter Browser die öffentlich eingeblendete Fassung; maximal zwei neue Browserabrufe je Organisation. Nicht aufgelöste Fälle bleiben ausdrücklich unvollständig.
+
+Vier reale Vergleichsfälle, jeweils maximal zwölf Seiten, Quellen am 14.09. geprüft:
+
+| Prüffall | Fachlich kontrollierter Zielkontakt | Bisherige Suche | Verbesserte Suche |
+|---|---|---|---|
+| Trier | Klimaschutz-Team | Nicht erreicht | Erreicht, mit Dienststellenquelle |
+| 180 Grad Süd | Allgemeines Unternehmenspostfach | Gefunden | Weiterhin gefunden |
+| 100 Prozent Bamberg | Pressepostfach | Gefunden | Weiterhin gefunden |
+| Stadtwerke Hilden | Pressepostfach | Nicht gefunden | Durch Browserdarstellung gefunden |
+
+Quellen: [180 Grad Süd](https://180gradsued.de/), [100 Prozent Bamberg](https://www.100prozentbamberg.de/personal), [Stadtwerke Hilden](https://stadtwerke-hilden.de/presse/). In Hilden wurden zusätzlich Kunden- und Netzservice sichtbar; diese sind andere Zuständigkeiten als Presse. Fremde Adressen auf Branchen- oder Medienseiten bleiben unbestätigte Kandidaten und zählen nicht als Ansprechpartner der Organisation.
+
+Dies ist ein gezielter Vergleich an vier Beispielen, keine repräsentative Aussage zur Vollständigkeit aller vier Bestände. Für Handwerk und Presse wurde hier kein zusätzlicher organisationszugehöriger Mailkontakt nachgewiesen. Weitere Dokumente und nicht aufgelöste JavaScript-Adressen bleiben Recherchelücken. Keine Anschreiben geändert oder versendet.
+
+Prüfung: 3.827 Tests und Produktionsbuild erfolgreich. Die Gegenproben erkennen absichtlich wieder eingebaute Fehler bei verschleierten Adressen und geerbten Team-Verzeichnissen. Nach Wiederherstellung sind sie grün.

@@ -6,7 +6,8 @@ import { contactCandidates, type ContactCandidate } from "../../lib/contact-evid
 
 export type PageObservation = {
   requestedUrl: string; finalUrl: string | null; observedAt: string;
-  status: "read" | "blocked" | "failed" | "not-html";
+  status: "read" | "blocked" | "failed" | "not-html" | "needs-rendering";
+  rendered?: boolean;
   error: string | null; candidates: ContactCandidate[];
 };
 export type PageResult = { observation: PageObservation; html: string | null };
@@ -15,6 +16,7 @@ const runId = randomUUID();
 /** The timeout covers headers AND body. A 200 challenge is not a readable page. */
 export async function fetchContactPage(url: string, options: {
   fetcher?: typeof fetch; timeoutMs?: number; userAgent?: string; organizationDomain?: string;
+  render?: (url: string) => Promise<string>;
   record?: (observation: PageObservation) => void;
 } = {}): Promise<PageResult> {
   const observation: PageObservation = { requestedUrl: url, finalUrl: null, observedAt: new Date().toISOString(), status: "failed", error: null, candidates: [] };
@@ -35,6 +37,18 @@ export async function fetchContactPage(url: string, options: {
         observation.status = "blocked"; observation.error = "Challenge page"; html = null;
       } else {
         observation.status = "read";
+        if (/email hidden; JavaScript is required|data-cfemail|hivelogic_enkoder/i.test(html)) {
+          observation.status = "needs-rendering";
+          observation.error = "Contact address requires browser rendering";
+          if (options.render) {
+            try {
+              const rendered = await options.render(observation.finalUrl);
+              if (/email hidden; JavaScript is required/i.test(rendered)) throw new Error("Hidden contact remains unresolved");
+              html = rendered;
+              observation.status = "read"; observation.error = null; observation.rendered = true;
+            } catch (error) { observation.error = `Rendering incomplete: ${String(error).slice(0,180)}`; }
+          }
+        }
         observation.candidates = contactCandidates(html, observation.finalUrl, options.organizationDomain ?? new URL(url).hostname.replace(/^www\./, ""));
       }
     }
