@@ -7,7 +7,7 @@ import { DEFAULT_HEATPUMP_CONFIG as CFG } from "../heatpump-config";
 import { greenGasApplies } from "../fossil-reference";
 import { INSULATION_BESTAND, WP_FUEL_OPTIONS, SCENARIOS, DEGRAD, DACHARTEN, NATIONAL_AVG_YIELD } from "../constants";
 import { dachErtragKwp } from "../dach-ertrag";
-import { calc } from "../calc";
+import { calc, calcEigenverbrauch } from "../calc";
 import { einspeiseVerlauf } from "../einspeise-regime";
 
 /**
@@ -561,5 +561,49 @@ describe("Modell-Kohärenz: eine Aussage gilt über die ganze Laufzeit", () => {
       `Der Wärmepumpenstrom wird mit einem anderen Preis gerechnet als im ` +
       `Wärmepumpen-Rechner: ${zeile?.trim().slice(0, 120)}`,
     ).toBe(true);
+  });
+});
+
+// ─── Rechenmodell-Council 12.09.2026 ────────────────────────────────────────
+//
+// Drei Prüfer, ein Gegenprüfer. Jeder Fall hier hat die Form, gegen die es
+// diesen Test gibt: Eine Größe wird an zwei Stellen verschieden gerechnet, und
+// im Browser sieht keine der beiden falsch aus.
+
+describe("Modell-Kohärenz: eine Eingabe, eine Zahl", () => {
+  it("die Empfehlung rechnet mit derselben Klimaanlage, die sie ausweist", () => {
+    // Gefunden 12.09.2026: Der ausgewiesene Gesamtverbrauch nahm die
+    // Raum-Schnellschätzung (228 kWh), die Wirtschaftlichkeit dahinter die
+    // Flächen-Schätzung (361 kWh) — dieselbe Klimaanlage, +58 %. Das ist die
+    // zweite Hälfte des Fixes vom 05.09.2026, die damals übersehen wurde: die
+    // Bewertung einer Konfiguration reichte die Kühlmenge nicht durch.
+    //
+    // Geprüft wird die WIRKUNG, nicht das Vorkommen eines Funktionsnamens —
+    // der Test vom 05.09. prüfte nur, dass der Name in der Datei steht, und war
+    // deshalb gegen genau diesen Fall blind.
+    const basis = {
+      personen: 0, nutzung: 0, wp: "nein", ea: "nein", eaKm: 15000,
+      haustyp: 0, dachart: 0, budgetLimit: null, ertragKwp: NATIONAL_AVG_YIELD,
+    } as const;
+    const ohne = recommend({ ...basis, klima: "nein" });
+    const mit = recommend({ ...basis, klima: "ja" });
+
+    // Der Kühlstrom, den die Empfehlung ausweist …
+    const ausgewiesen = mit.reasoning.klimaConsumption;
+    expect(ausgewiesen).toBeGreaterThan(0);
+    // … muss auch der sein, der im ausgewiesenen Gesamtverbrauch steckt.
+    expect(mit.reasoning.totalConsumption - ohne.reasoning.totalConsumption)
+      .toBeCloseTo(ausgewiesen, 6);
+
+    // Und er muss in der Rechnung ankommen: Bei derselben Anlagengröße und
+    // demselben Speicher muss der Eigenverbrauch genau der sein, der aus dem
+    // ausgewiesenen Kühlstrom folgt. Rechnete die Rechnung mit 361 statt
+    // 228 kWh, misst die Beschriftung etwas anderes als die Zahl.
+    const ev = (klimaKwh: number | null) => calcEigenverbrauch({
+      personenIdx: basis.personen, nutzungIdx: basis.nutzung,
+      speicherKwh: mit.speicherKwh, wp: "nein", ea: "nein", eaKm: 15000,
+      klima: "ja", klimaKwh, kwp: mit.kwp, ertragKwp: NATIONAL_AVG_YIELD,
+    });
+    expect(mit.reasoning.eigenverbrauch).toBe(ev(ausgewiesen));
   });
 });
