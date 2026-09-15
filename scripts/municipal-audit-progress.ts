@@ -3,6 +3,7 @@ import { existsSync, readFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { createHash } from "node:crypto";
 import { atomicJson, targetFilename, type BatchTarget } from "./lib/contact-batch";
+import { reviewContactSupported, type ReviewContact } from "./lib/municipal-review-evidence";
 const arg=(key:string)=>process.argv.find(a=>a.startsWith(`--${key}=`))?.slice(key.length+3);
 export function municipalAuditProgress(directory:string){
  directory=resolve(directory);
@@ -17,7 +18,7 @@ export function municipalAuditProgress(directory:string){
   let reviewed=false;
   if(existsSync(reviewPath)){
    const review=JSON.parse(readFileSync(reviewPath,"utf8"));
-   const valid=review.organization_id===target.organization_id&&review.sourceDigest===sourceDigest&&typeof review.reviewedBy==="string"&&review.reviewedBy.trim()&&Number.isFinite(Date.parse(review.reviewedAt))&&["supported-contact","unresolved","no-suitable-contact-in-checked-sources"].includes(review.verdict)&&typeof review.reason==="string"&&review.reason.length>20&&Array.isArray(review.contacts)&&review.contacts.every((c:{email:string;url:string;quote:string})=>typeof c.quote==="string"&&c.quote.trim().length>10&&typeof c.url==="string"&&result.pages?.some((p:{finalUrl:string;url:string;candidates:{email:string;roleEvidence?:{text:string};additionalRoleEvidence?:{text:string}[]}[]})=>(p.finalUrl===c.url||p.url===c.url)&&p.candidates.some(x=>x.email===c.email&&[x.roleEvidence,...(x.additionalRoleEvidence??[])].some(e=>e?.text.includes(c.quote)))))&&(review.verdict!=="supported-contact"||review.contacts.length>0);
+   const valid=review.organization_id===target.organization_id&&review.sourceDigest===sourceDigest&&typeof review.reviewedBy==="string"&&review.reviewedBy.trim()&&Number.isFinite(Date.parse(review.reviewedAt))&&["supported-contact","unresolved","no-suitable-contact-in-checked-sources"].includes(review.verdict)&&typeof review.reason==="string"&&review.reason.length>20&&Array.isArray(review.contacts)&&review.contacts.every((contact: ReviewContact)=>reviewContactSupported(directory,target.organization_id,result.pages ?? [],contact))&&(review.verdict!=="supported-contact"||review.contacts.length>0);
    if(valid){reviewed=true;counts.municipalitiesReviewed++;if(review.verdict==="supported-contact")counts.reviewedWithSupportedContact++;else counts.reviewedUnresolved++;}else counts.invalidReviews++;
   }
   if(!reviewed)queue.push({organization_id:target.organization_id,resultPath:path,sourceDigest,reviewPath,sourceStatus:result.status});

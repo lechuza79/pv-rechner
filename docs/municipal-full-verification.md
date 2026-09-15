@@ -20,6 +20,8 @@ Save one private review under `reviews/<same filename as result>.json`:
 
 Every proposed contact needs its own source and quotation. A supported verdict needs at least one supported contact. An unresolved verdict can be a completed honest investigation but is never a contact approval. The progress report distinguishes individually reviewed municipalities, supported ones, unresolved ones, and remaining work. No reference sample can substitute for these individual records. Mechanical validation of the review record is not a substitute for reading the evidence.
 
+Additional original sources are append-only: save the exact HTML bytes as `supplemental/<organization_id>/<sha256>.html` and adjacent JSON metadata with `url`, `finalUrl`, `observedAt` and `htmlDigest`. Add `sourceHtmlDigest` to the reviewed contact. The register checks the bytes, final URL, observation timestamp and municipality directory, then extracts the quoted exclusive contact card itself. It ignores metadata paths and precomputed role assertions. Never rewrite the frozen source result to insert later evidence. Source authority and actual responsibility still require contextual review; a valid hash proves integrity, not truth.
+
 Do not stop at the end of the source pass. Continue individual reviews for the entire frozen population and targeted research on unresolved cases while meaningful source paths remain. Summarize concrete blockers when sources cannot resolve them; do not keep an infinite retry loop or describe unresolved contacts as verified.
 
 ## Before each later dispatch batch
