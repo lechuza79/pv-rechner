@@ -10,8 +10,22 @@ function employeeDirectorySource(raw: string): boolean {
   } catch { return false; }
 }
 
+/** A published PDF destination is a source lead, never extracted document evidence. */
+function embeddedPdf(raw: string, base = "https://relative-source.invalid/"): string | null {
+  try {
+    const viewer = new URL(raw, base);
+    if (!/^https?:$/.test(viewer.protocol)) return null;
+    if (/\.pdf$/i.test(viewer.pathname)) return viewer.href;
+    if (!/\/(?:pdfjs|pdf\.js)\/web\/viewer\.(?:html?|php)$/i.test(viewer.pathname)) return null;
+    const file = viewer.searchParams.get("file");
+    if (!file) return null;
+    const document = new URL(file, viewer);
+    return /^https?:$/.test(document.protocol) && /\.pdf$/i.test(document.pathname) ? document.href : null;
+  } catch { return null; }
+}
+
 /** Recognizable navigation/loading wrappers are not substantive negative evidence. */
-export function contactContentGap(html: string): "frameset" | "loading-shell" | "continuation-page" | "dynamic-directory" | null {
+export function contactContentGap(html: string): "frameset" | "loading-shell" | "continuation-page" | "dynamic-directory" | "embedded-document" | null {
   const $ = load(html);
   if ($("frameset frame[src]").length) return "frameset";
   // A populated article can still contain an unloaded staff directory. Its
@@ -23,6 +37,8 @@ export function contactContentGap(html: string): "frameset" | "loading-shell" | 
     const loading = $(el).siblings("[id]").filter((_, sibling) => $(sibling).attr("id") === `${id}-loading`);
     return !id || !result.text().trim() || loading.hasClass("is-active");
   })) return "dynamic-directory";
+  if ($("iframe[src],embed[src],object[data]").toArray().some(el =>
+    embeddedPdf($(el).attr("src") ?? $(el).attr("data") ?? ""))) return "embedded-document";
   $("script,style,nav,header,footer").remove();
   const text = $("body").text().replace(/\s+/g, " ").trim();
   if (text.length < 1200 && /(?:beitragsliste|inhalte?|content)\s+(?:wird|werden)\s+geladen|loading\s+(?:content|contacts)/iu.test(text)) return "loading-shell";
@@ -57,7 +73,8 @@ export function contactLinkPriority(url: string, label: string, dataset: Contact
   const climate = /\b(klimaschutz\w*|umweltschutz\w*|klima|umwelt|energiemanagement|energieberatung|nachhaltigkeit|erneuerbare)\b/iu;
   const communications = /\b(presse\w*|kommunikation|öffentlichkeitsarbeit|oeffentlichkeitsarbeit|webredaktion)\b/iu;
   let score = directory.test(text) ? 80 : 0;
-  if (/\b(gemeindevertretung|gemeinderat|b[üu]rgermeister\w*|buergermeister\w*|telefonliste|telefonverzeichnis)\b/iu.test(text)) score = 100;
+  if (/\b(gemeindevertretung|gemeindevertreter\w*|gemeinderat|b[üu]rgermeister\w*|buergermeister\w*|telefonliste|telefonverzeichnis)\b/iu.test(text)) score = 100;
+  if (dataset === "kommunen" && /(?:^|\s)(?:kümmer(?:er|in|stelle)\w*|kuemmer(?:er|in|stelle)\w*|ehrenamtskoordination)(?:\s|$)/iu.test(text)) score = Math.max(score, 100);
   if (continuationLabel.test(label.trim())) score = 160;
   if (/\b(kontakt\w*|contact\w*|ansprechpartner\w*|ansprechperson\w*)\b/iu.test(text)) score = 110;
   if (/\bansprechperson\w*\b|\bansprechpartner\w*\b/iu.test(text)) score = 140;
@@ -74,7 +91,8 @@ export function contactLinks(html: string, base: string, domain: string, dataset
   const $ = load(html);
   const result = new Map<string, number>();
   $("a[href]").each((_, el) => {
-    const href = $(el).attr("href")!;
+    const href = $(el).attr("href")!.trim();
+    if (!href) return;
     if (/^(mailto:|tel:|javascript:|#)/i.test(href)) return;
     let target: URL;
     try { target = new URL(href, base); } catch { return; }
@@ -104,6 +122,12 @@ export function contactLinks(html: string, base: string, domain: string, dataset
     if (!employeeDirectorySource(published)) return;
     const url = contactUrl(published, base);
     if (url && sameDomain(new URL(url).hostname.replace(/^www\./, ""), domain)) result.set(url, 150);
+  });
+  $("iframe[src],embed[src],object[data]").each((_, el) => {
+    const published = embeddedPdf($(el).attr("src") ?? $(el).attr("data") ?? "", base);
+    const url = published && contactUrl(published);
+    if (url && sameDomain(new URL(url).hostname.replace(/^www\./, ""), domain))
+      result.set(url, Math.max(90, result.get(url) ?? 0));
   });
   return [...result].map(([url,priority])=>({url,priority}));
 }

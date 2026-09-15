@@ -39,3 +39,12 @@ The frozen v3 source audit retains its original engine and URLs. Replaying saved
 
 ## Embedded staff directories
 A readable article may include an unloaded staff component. For published integration-bim employee-list URLs, the shared crawler queues the same-site original fragment as its own source, without evaluating scripts. An empty result container or active loading indicator remains incomplete even on a long page; the template text reporting no employees is not a substantive negative. Populated components are not marked incomplete. The fragment and its parent retain separate URLs and evidence; geographic responsibility still requires individual review. Other component types and external fragment destinations are not implicitly followed.
+
+Published embedded PDF sources are discovery leads, not HTML evidence. The shared
+crawler follows direct PDF embeds and PDF.js viewer file destinations on the same
+site; it keeps the containing page incomplete and does not clear that state by
+rendering the parent. PDF bytes, page/region quotations and observation metadata
+still require separate original-document review. Community representatives and
+coordinator pages are eligible municipal discovery paths; their labels confer no
+contact role. Empty link destinations do not create a contact source at the current
+page. The frozen v3 audit engine remains unchanged; replay its originals separately.
