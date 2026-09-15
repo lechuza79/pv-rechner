@@ -67,10 +67,24 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           heute=$(date -u +%Y-%m-%d)
-          # Alle heutigen Läufe dieses Workflows zählen, den laufenden abziehen.
-          laeufe=$(gh run list --workflow=claude-autofix.yml --limit 20 \
-            --json createdAt,databaseId --jq \
-            "[.[] | select(.createdAt | startswith(\"$heute\")) | select(.databaseId != ${{ github.run_id }})] | length")
+          # Count today's runs of this workflow, minus the current one.
+          #
+          # SKIPPED RUNS DO NOT COUNT. This workflow fires on EVERY finished
+          # health check; on a green one the job is skipped and the run still
+          # appears in the list with conclusion "skipped". Counted as analyses,
+          # they engaged the brake before any model ever ran: on 11.09. and
+          # 12.09.2026 not a single analysis happened despite nine red health
+          # checks ("Heutige Analyse-Läufe bisher: 1" at 08:36 with only a
+          # skipped run before it). A braked run is not skipped, but it can only
+          # exist after a non-skipped one — so the first non-skipped run of a
+          # day always analyzes, and the cap stays at one.
+          #
+          # The limit is 100, not 20: on 10.09.2026 there were 16 runs by 10:17,
+          # and a morning analysis pushed out of the window would release a
+          # second model run.
+          laeufe=$(gh run list --workflow=claude-autofix.yml --limit 100 \
+            --json createdAt,databaseId,conclusion --jq \
+            "[.[] | select(.createdAt | startswith(\"$heute\")) | select(.databaseId != ${{ github.run_id }}) | select(.conclusion != \"skipped\")] | length")
           echo "Heutige Analyse-Läufe bisher: $laeufe"
           if [ "$laeufe" -ge 1 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
             echo "Tagesbremse greift — heute lief schon eine Analyse. Kein weiterer Modell-Lauf."
