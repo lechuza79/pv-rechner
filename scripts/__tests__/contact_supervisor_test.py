@@ -48,6 +48,12 @@ class SupervisorTest(unittest.TestCase):
     def result(self, status="found"):
         return dict(self.target, engine="frozen", status=status, pages=[], candidates=[])
 
+    def test_source_unicode_surrogates_survive_checkpointing(self):
+        value = {"text": "broken \udc49 source"}
+        path = self.root / "unicode.json"
+        m.atomic(path, value)
+        self.assertEqual(m.read(path), value)
+
     def test_hard_timeout_terminates_a_busy_process(self):
         request = self.root / "request.json"
         m.atomic(request, {"logPath":str(self.root / "log")})

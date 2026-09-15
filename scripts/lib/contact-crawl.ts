@@ -7,13 +7,15 @@ import { fetchContactPage, type PageObservation } from "./contact-fetch";
 
 export type DiscoveryObservation = { url: string; status: "read" | "failed"; error: string | null };
 export type CrawlOptions = {
-  website: string | null; dataset: ContactDataset; pageBudget?: number;
+  website: string | null; dataset: ContactDataset; organizationName?: string; pageBudget?: number;
   fetcher?: typeof fetch; render?: (url: string) => Promise<string>;
   record?: (page: PageObservation) => void;
 };
 
 /** A single bounded crawl used by live research and replay evaluation. */
 export async function crawlContacts(options: CrawlOptions) {
+  let organizationDomain: string | undefined;
+  try { organizationDomain = options.website ? new URL(/^https?:/i.test(options.website) ? options.website : `https://${options.website}`).hostname.replace(/^www\./, "") : undefined; } catch { /* Invalid sites remain explicit crawl outcomes. */ }
   const pages: PageObservation[] = [];
   const discovery: DiscoveryObservation[] = [];
   const pending = new Map<string, number>();
@@ -27,7 +29,7 @@ export async function crawlContacts(options: CrawlOptions) {
     pending_urls: [...pending.keys()], external_sources: [...external.keys()], requests: pages.length + discovery.length,
     quality: contactQuality(pages.flatMap(p => p.candidates), options.dataset,
       [...(status !== "found" ? [status] : []), ...(pending.size ? ["unread-linked-pages"] : []),
-        ...(external.size ? ["external-sources-unread"] : []), ...(discovery.some(d => d.status === "failed") ? ["discovery-failed"] : [])]) });
+        ...(external.size ? ["external-sources-unread"] : []), ...(discovery.some(d => d.status === "failed") ? ["discovery-failed"] : [])], {organizationName:options.organizationName, organizationDomain}) });
   if (!options.website) return finish("missing-website");
   const start = contactUrl(/^[a-z][a-z0-9+.-]*:/i.test(options.website) ? options.website : `https://${options.website}`);
   if (!start) return finish("invalid-website");

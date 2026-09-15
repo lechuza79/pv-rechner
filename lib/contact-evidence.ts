@@ -6,6 +6,7 @@ export type ContactCandidate = {
   email: string;
   sourceUrl: string;
   context: string;
+  publishedAt?: string;
   departments?: string[];
   roleEvidence?: { text: string; scope: "local-block"; exclusiveAddress: boolean };
   additionalRoleEvidence?: { text: string; scope: "local-block"; exclusiveAddress: boolean }[];
@@ -42,9 +43,9 @@ export function contactPurpose(email: string): ContactCandidate["purpose"] {
 /** These are literal subject hints near the address, never inferred responsibility. */
 export function contactDepartments(context: string): string[] {
   const rules: [string, RegExp][] = [
-    ["climate-environment", /klimaschutz|umweltschutz|klima[- und]+umwelt|nachhaltigkeit/iu],
+    ["climate-environment", /klimaschutz|umweltschutz|klima[- und]+umwelt/iu],
     ["energy", /energieberatung|energiemanagement|erneuerbare energien/iu],
-    ["communications", /pressestelle|presse (?:und |& )?(?:kommunikation|marketing)|unternehmenskommunikation|öffentlichkeitsarbeit|oeffentlichkeitsarbeit|webredaktion/iu],
+    ["communications", /pressestelle|presse (?:und |& )?(?:kommunikation|marketing)|unternehmenskommunikation|öffentlichkeitsarbeit|oeffentlichkeitsarbeit|webredaktion|amtsblatt|(?:betreuung|administration|redaktion)\s+(?:der\s+)?(?:homepage|website)|social media/iu],
     ["editorial", /redaktion|newsroom/iu],
     ["customer-service", /kundenservice|kundenzentrum|kundencenter/iu],
     ["network-service", /netzservice|netzanschluss|einspeisung/iu],
@@ -69,6 +70,18 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
     try { $(el).text(`${atob($(el).attr("first")!)}@${atob($(el).attr("last")!)}`); }
     catch { /* Keep malformed encodings unresolved. */ }
   });
+  let structuredPublication: string | undefined;
+  const publication = (value: unknown): void => {
+    if (!value || typeof value !== "object") return;
+    if (Array.isArray(value)) { value.forEach(publication); return; }
+    const row = value as Record<string, unknown>;
+    const types = Array.isArray(row["@type"]) ? row["@type"] : [row["@type"]];
+    if (types.some(t=>["Article","NewsArticle","BlogPosting"].includes(String(t))) && typeof row.datePublished === "string") structuredPublication ??= row.datePublished;
+    if (row["@graph"]) publication(row["@graph"]);
+  };
+  $("script[type='application/ld+json']").each((_,el)=>{
+    try { publication(JSON.parse($(el).text())); } catch { /* Malformed metadata stays unknown. */ }
+  });
   $("script,style").remove();
   // DOM textContent joins adjacent elements with no separator. Preserve their
   // boundaries before extraction, so address + heading cannot become an email.
@@ -76,6 +89,13 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
   $("p,div,li,td,th,tr,section,article,address,h1,h2,h3,h4,h5,h6,nav,header,footer,ul,ol,dl,dt,dd,noscript").each((_, el) => {
     $(el).before("\n"); $(el).after("\n");
   });
+  $("a[href^='mailto:'],span,strong,b").each((_, el) => {
+    const text = entwirreAdressen($(el).text()).trim();
+    if ($(el).is("a") || /^[\w.+%-]+@[\w-]+(?:\.[\w-]+)+$/.test(text)) {
+      $(el).before("\n"); $(el).after("\n");
+    }
+  });
+  const publishedAt = structuredPublication ?? $("meta[property='article:published_time']").attr("content") ?? $("article time[datetime]").first().attr("datetime");
   const candidates = new Map<string, ContactCandidate>();
   const localEvidence = (el: Parameters<typeof $>[0], email: string) => {
     let block = $(el).closest("p,li,td,address,article,section,div");
@@ -109,7 +129,7 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
       }
       return;
     }
-    candidates.set(email, { email, sourceUrl, context: context.replace(/\s+/g, " ").trim().slice(0, 600), departments: contactDepartments(context),
+    candidates.set(email, { email, sourceUrl, ...(publishedAt ? {publishedAt} : {}), context: context.replace(/\s+/g, " ").trim().slice(0, 600), departments: contactDepartments(context),
       ...(evidence ? { roleEvidence: { text: evidence, scope: "local-block" as const, exclusiveAddress: true } } : {}),
       relation: sameDomain(email.split("@")[1], domain) ? "same-domain" : "unconfirmed", purpose: contactPurpose(email) });
   };

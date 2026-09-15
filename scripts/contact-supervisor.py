@@ -14,7 +14,7 @@ import time
 from urllib.parse import urlparse
 import uuid
 
-ENGINE_FILES = ["lib/contact-evidence.ts", "lib/contact-discovery.ts", "lib/contact-quality.ts", "scripts/lib/contact-fetch.ts", "scripts/lib/contact-crawl.ts", "scripts/lib/contact-render.ts", "scripts/lib/contact-batch.ts", "scripts/contact-full-research.ts", "scripts/lib/contact-deadline.ts", "lib/uri-sicher.ts", "lib/personen-fund.ts", "package-lock.json"]
+ENGINE_FILES = ["lib/contact-evidence.ts", "lib/contact-discovery.ts", "lib/contact-quality.ts", "lib/contact-quality-evidence.ts", "scripts/lib/contact-fetch.ts", "scripts/lib/contact-crawl.ts", "scripts/lib/contact-render.ts", "scripts/lib/contact-batch.ts", "scripts/contact-full-research.ts", "scripts/lib/contact-deadline.ts", "lib/uri-sicher.ts", "lib/personen-fund.ts", "package-lock.json"]
 
 
 def now():
@@ -26,7 +26,7 @@ def atomic(path, value):
     temporary = path.with_name(path.name + "." + uuid.uuid4().hex + ".tmp")
     with open(temporary, "x", encoding="utf8") as stream:
         os.chmod(temporary, 0o600)
-        json.dump(value, stream, ensure_ascii=False, indent=2)
+        json.dump(value, stream, ensure_ascii=True, indent=2)
         stream.flush()
         os.fsync(stream.fileno())
     os.replace(temporary, path)

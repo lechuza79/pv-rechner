@@ -1,10 +1,11 @@
+import { evidenceLimitations, officialMunicipalContact, type ContactAssessmentOptions } from "./contact-quality-evidence";
 import { contactDepartments, contactPurpose, type ContactCandidate } from "./contact-evidence";
 import type { ContactDataset } from "./contact-discovery";
 
 export type ContactRole = "climate-environment" | "energy" | "communications" | "editorial" | "management" | "commercial" | "general" | "network-service" | "customer-service" | "advertising" | "privacy" | "unknown";
 export type AssessedContact = {
   email: string; role: ContactRole; suitability: "role-indicated" | "general-fallback" | "not-target-role" | "needs-review";
-  attribution: "same-domain" | "unconfirmed"; evidence: { sourceUrl: string; text: string }[];
+  attribution: "same-domain" | "official-source" | "unconfirmed"; reviewReasons: string[]; evidence: { sourceUrl: string; text: string }[];
 };
 const wanted: Record<ContactDataset, ContactRole[]> = {
   kommunen: ["climate-environment", "energy", "communications"],
@@ -14,14 +15,17 @@ const wanted: Record<ContactDataset, ContactRole[]> = {
 };
 
 /** Relevance is separate from identity and reachability. No automatic sending. */
-export function assessContacts(candidates: ContactCandidate[], dataset: ContactDataset): AssessedContact[] {
+export function assessContacts(candidates: ContactCandidate[], dataset: ContactDataset, options: ContactAssessmentOptions = {}): AssessedContact[] {
   const grouped = new Map<string, ContactCandidate[]>();
   for (const c of candidates) grouped.set(c.email, [...(grouped.get(c.email) ?? []), c]);
   return [...grouped].map(([email, observations]) => {
     const evidence = observations.flatMap(c => [c.roleEvidence, ...(c.additionalRoleEvidence ?? [])]
-      .filter(e => e?.exclusiveAddress).map(e => ({sourceUrl:c.sourceUrl, text:e!.text})));
+      .filter(e => e?.exclusiveAddress).map(e => ({sourceUrl:c.sourceUrl, text:e!.text, publishedAt:c.publishedAt})));
+    const limitations = evidence.flatMap(e=>evidenceLimitations(e.text,e.sourceUrl,options,e.publishedAt));
+    const usableEvidence = evidence.filter(e=>!evidenceLimitations(e.text,e.sourceUrl,options,e.publishedAt).length);
+    const usableObservations = observations.filter(c=>!evidenceLimitations(c.roleEvidence?.text ?? c.context,c.sourceUrl,options,c.publishedAt).length);
     const roles = new Set<ContactRole>();
-    for (const e of evidence) {
+    for (const e of usableEvidence) {
       for (const department of contactDepartments(e.text)) {
         // Regulatory communication is not public relations. A statutory
         // representative in an imprint does not establish mailbox ownership.
@@ -36,22 +40,27 @@ export function assessContacts(candidates: ContactCandidate[], dataset: ContactD
     }
     // Mailbox names may establish a function, but never turn press relations
     // into a newsroom, or advertising sales into an editorial contact.
+    // Negative responsibilities remain visible even on old evidence.
+    for (const e of evidence) {
+      if (/datenschutzbeauftrag|data protection officer/iu.test(e.text)) roles.add("privacy");
+      if (/anzeigen(?:verkauf|beratung|leitung|abteilung)|ad sales/iu.test(e.text)) roles.add("advertising");
+    }
     const purpose = contactPurpose(email);
     if (purpose === "excluded") roles.add("privacy");
-    if (/^(redaktion|newsroom)([._-]|@)/i.test(email)) roles.add("editorial");
-    if (/^(presse|pressestelle|kommunikation)([._-]|@)/i.test(email)) roles.add("communications");
-    if (/^(klimaschutz|umwelt)([._-]|@)/i.test(email)) roles.add("climate-environment");
-    if (purpose === "sales") roles.add("commercial");
-    const attribution: AssessedContact["attribution"] = observations.some(c => c.relation === "same-domain") ? "same-domain" : "unconfirmed";
+    if (usableObservations.length && /^(redaktion|newsroom)([._-]|@)/i.test(email)) roles.add("editorial");
+    if (usableObservations.length && /^(presse|pressestelle|kommunikation)([._-]|@)/i.test(email)) roles.add("communications");
+    if (usableObservations.length && /^(klimaschutz|umwelt)([._-]|@)/i.test(email)) roles.add("climate-environment");
+    if (usableObservations.length && purpose === "sales") roles.add("commercial");
+    const attribution: AssessedContact["attribution"] = observations.some(c => c.relation === "same-domain") ? "same-domain" : dataset === "kommunen" && observations.some(c=>officialMunicipalContact(c,options)) ? "official-source" : "unconfirmed";
     const excluded = ["privacy", "advertising", "network-service", "customer-service"] as const;
     const negative = excluded.find(role => roles.has(role));
     const positive = wanted[dataset].find(role => roles.has(role));
     // Conflicting roles remain reviewable, including a shared contact card.
     const role: ContactRole = negative ?? positive ?? [...roles][0] ?? (purpose === "general" ? "general" : "unknown");
     const suitability: AssessedContact["suitability"] = negative && positive ? "needs-review" : negative ? "not-target-role" :
-      attribution !== "same-domain" ? "needs-review" : positive ? "role-indicated" : role === "general" ? "general-fallback" : "needs-review";
+      attribution === "unconfirmed" ? "needs-review" : positive ? "role-indicated" : (role === "general" || attribution === "official-source") ? "general-fallback" : "needs-review";
     const sources = evidence.length ? evidence : observations.map(c => ({ sourceUrl: c.sourceUrl, text: c.email }));
-    return { email, role, suitability, attribution, evidence: sources.filter((e, i) => sources.findIndex(other => other.sourceUrl === e.sourceUrl && other.text === e.text) === i) };
+    return { email, role, suitability, attribution, reviewReasons: [...new Set(limitations)], evidence: sources.filter((e, i) => sources.findIndex(other => other.sourceUrl === e.sourceUrl && other.text === e.text) === i) };
   }).sort((a,b) => {
     const rank = { "role-indicated": 0, "general-fallback": 1, "needs-review": 2, "not-target-role": 3 };
     return rank[a.suitability] - rank[b.suitability] ||
@@ -59,8 +68,8 @@ export function assessContacts(candidates: ContactCandidate[], dataset: ContactD
   });
 }
 
-export function contactQuality(candidates: ContactCandidate[], dataset: ContactDataset, gaps: string[] = []) {
-  const contacts = assessContacts(candidates, dataset);
+export function contactQuality(candidates: ContactCandidate[], dataset: ContactDataset, gaps: string[] = [], options: ContactAssessmentOptions = {}) {
+  const contacts = assessContacts(candidates, dataset, options);
   return {
     contacts,
     status: contacts.some(c => c.suitability === "role-indicated") ? "role-indicated" : contacts.some(c => c.suitability === "general-fallback") ? "general-only" : contacts.length ? "review-required" : "no-contact-observed",

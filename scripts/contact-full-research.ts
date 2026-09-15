@@ -22,7 +22,7 @@ async function main() {
   const concurrency = Number(arg("concurrency") ?? 4);
   if (!Number.isInteger(pageBudget) || pageBudget < 1 || pageBudget > 30) throw Error("pages must be 1..30");
   if (!Number.isInteger(concurrency) || concurrency < 1 || concurrency > 8) throw Error("concurrency must be 1..8");
-  const codeFiles = ["lib/contact-evidence.ts", "lib/contact-discovery.ts", "lib/contact-quality.ts", "scripts/lib/contact-fetch.ts", "scripts/lib/contact-crawl.ts", "scripts/lib/contact-render.ts", "scripts/lib/contact-batch.ts", "scripts/contact-full-research.ts", "scripts/lib/contact-deadline.ts", "lib/uri-sicher.ts", "lib/personen-fund.ts", "package-lock.json"];
+  const codeFiles = ["lib/contact-evidence.ts", "lib/contact-discovery.ts", "lib/contact-quality.ts", "lib/contact-quality-evidence.ts", "scripts/lib/contact-fetch.ts", "scripts/lib/contact-crawl.ts", "scripts/lib/contact-render.ts", "scripts/lib/contact-batch.ts", "scripts/contact-full-research.ts", "scripts/lib/contact-deadline.ts", "lib/uri-sicher.ts", "lib/personen-fund.ts", "package-lock.json"];
   const engine = createHash("sha256").update(codeFiles.map(path=>readFileSync(resolve(path),"utf8")).join("\n")).digest("hex");
   let inventory: {createdAt:string; engine:string; pageBudget:number; targets:BatchTarget[]};
   if (existsSync(manifestPath)) {
