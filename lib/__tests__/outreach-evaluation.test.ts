@@ -5,6 +5,12 @@ const target={organizationId:'ort',name:'Ort',contactedAt:'2026-09-01',campaign:
 const review:ActionReview={organizationId:'ort',sourceId:source.id,action:'material-prepared',quote:'Ich habe daraus eine Pressemitteilung gemacht.',reviewedBy:'primary-source-review',reviewedAt:'2026-09-14',scope:'own-message',actorMailbox:'person@amt.de'};
 const input=():OutreachEvaluationInput=>({targets:[target],sources:[source],actions:[review],recipients:[],analytics:[]});
 describe('outreach actions, not titles',()=>{
+ it('retains subscriptions independently of communication actions and rejects incomplete cohorts',()=>{
+   const i=input();i.actions=[];
+   i.subscriptions={status:"read",observedAt:"2026-09-15",current:{confirmed:1,pending:0},rows:[{organizationId:"ort",confirmed:1,pending:0,confirmedViaLetter:1,confirmedWithAdministrationClaim:null,confirmedViaLetterWithAdministrationClaim:null}]};
+   const r=evaluateOutreach(i);expect(r.summary.subscriptions.confirmed).toBe(1);expect(r.rows[0].observedActions).toEqual([]);expect(r.rows[0].mailboxCapabilities).toEqual([]);
+   i.subscriptions.rows=[];expect(()=>evaluateOutreach(i)).toThrow("exact cohort");
+ });
  it('does not turn preparation into distribution or publication, regardless of title',()=>{
    const r=evaluateOutreach(input());expect(r.rows[0].observedActions).toEqual(['material-prepared']);expect(r.summary.organizationsByObservedAction.publication).toBe(0);
    expect(r.rows[0].mailboxCapabilities[0].mailbox).toBe('person@amt.de');

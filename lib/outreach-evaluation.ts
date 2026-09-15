@@ -1,3 +1,4 @@
+import { subscriptionSummary, type SubscriptionFeedback } from "./outreach-subscriptions";
 import { ohneZitat, ordneEin } from "./outreach-ruecklauf";
 
 export type CommunicationAction = "response" | "internal-forward" | "material-prepared" | "press-distributed" | "publication";
@@ -29,6 +30,7 @@ export type PageAnalytics = {
   groups: {referrer: string; visitors: number; pageviews: number | null}[];
 };
 export type OutreachEvaluationInput = {
+  subscriptions?: SubscriptionFeedback;
   targets: EvaluationTarget[]; sources: EvidenceSource[]; actions: ActionReview[];
   recipients: RecipientReview[]; analytics: PageAnalytics[];
 };
@@ -41,6 +43,15 @@ const hasMailbox = (text: string, address: string) => (text.match(/[\w.!#$%&'*+/
 export function evaluateOutreach(input: OutreachEvaluationInput) {
   const targets = new Map(input.targets.map(t=>[t.organizationId,t]));
   if (targets.size !== input.targets.length) throw Error("Duplicate cohort identity");
+  if (input.subscriptions?.status === "read") {
+    const rows = input.subscriptions.rows;
+    if (rows.length !== targets.size || new Set(rows.map(r=>r.organizationId)).size !== rows.length || rows.some(r=>!targets.has(r.organizationId))) throw Error("Subscription feedback must cover the exact cohort");
+    for (const r of rows) {
+      if (r.confirmed < 5 && (r.confirmedWithAdministrationClaim !== null || r.confirmedViaLetterWithAdministrationClaim !== null)) throw Error("Small subscription groups must suppress administration counts");
+      const counts = [r.confirmed, r.pending, r.confirmedViaLetter, r.confirmedWithAdministrationClaim, r.confirmedViaLetterWithAdministrationClaim];
+      if (counts.some(n=>n!==null && (!Number.isSafeInteger(n)||n<0)) || r.confirmedViaLetter > r.confirmed || (r.confirmedWithAdministrationClaim !== null && r.confirmedWithAdministrationClaim > r.confirmed) || (r.confirmedViaLetterWithAdministrationClaim !== null && r.confirmedViaLetterWithAdministrationClaim > Math.min(r.confirmedViaLetter,r.confirmedWithAdministrationClaim ?? 0))) throw Error("Invalid subscription counts");
+    }
+  }
   const sources = new Map(input.sources.map(s=>[s.id,s]));
   if (sources.size !== input.sources.length) throw Error("Duplicate evidence source identity");
   const analytics = new Map(input.analytics.map(a=>[a.organizationId,a]));
@@ -105,6 +116,7 @@ export function evaluateOutreach(input: OutreachEvaluationInput) {
       originalRecipients,
       actions,
       mailboxCapabilities,
+      subscriptionFeedback: input.subscriptions?.status === "read" ? input.subscriptions.rows.find(r=>r.organizationId===target.organizationId) ?? null : null,
       analytics:analytics.get(target.organizationId) ?? null,
       observedActions:[...new Set(actions.map(a=>a.action))],
       outcome:actions.length ? "observed-communication-or-publication" : "no-verified-outcome-in-observed-sources",
@@ -112,6 +124,7 @@ export function evaluateOutreach(input: OutreachEvaluationInput) {
   });
   const counts = Object.fromEntries((["response","internal-forward","material-prepared","press-distributed","publication"] as CommunicationAction[]).map(action=>[action,rows.filter(r=>r.observedActions.includes(action)).length]));
   return { rows, summary:{
+    subscriptions: subscriptionSummary(input.subscriptions),
     recordedOrganizations:rows.length,
     organizationsByObservedAction:counts,
     uniqueReplyMessages:new Set(rows.flatMap(r=>r.actions.filter(a=>a.action==="response").map(a=>a.sourceId))).size,
@@ -122,6 +135,6 @@ export function evaluateOutreach(input: OutreachEvaluationInput) {
     analyticsFailedOrUnavailable:rows.filter(r=>r.analytics?.status!=="read").length,
     analyticsWithOverflow:rows.filter(r=>r.analytics?.groups.some(g=>g.referrer==="Others")).length,
     originalRecipientUnknown:rows.filter(r=>r.dispatchEvidence==="original-recipient-unknown").length,
-    limits:["Counts overlap; this is not a sequential funnel.","Visits do not prove email opens, delivery, actor identity or publication.","No response observed is not a failed contact.","Current profile mailbox is not the historical recipient.","Quoted mail history is not an independently verified sent envelope.","Title and department do not establish communication capability.","Unknown event dates do not establish timing after outreach.","No causal or population-wide role ranking is inferred.","The separately mentioned 202 sends are not identified by this recorded cohort."],
+    limits:["Counts overlap; this is not a sequential funnel.","Visits do not prove email opens, delivery, actor identity or publication.","No response observed is not a failed contact.","Current profile mailbox is not the historical recipient.","Quoted mail history is not an independently verified sent envelope.","Title and department do not establish communication capability.","Unknown event dates do not establish timing after outreach.","No causal or population-wide role ranking is inferred."],
   }};
 }

@@ -5,15 +5,34 @@ import { resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { aggregat, ereignisseJeName } from "../lib/web-analytics";
 import { evaluateOutreach, type EvaluationTarget, type PageAnalytics, type OutreachEvaluationInput } from "../lib/outreach-evaluation";
+import { subscriptionFeedback, type SubscriptionObservation } from "../lib/outreach-subscriptions";
 import { heuteInBerlin } from "../lib/zeit";
 const arg=(key:string)=>process.argv.find(a=>a.startsWith(`--${key}=`))?.slice(key.length+3);
 const read=(path:string)=>JSON.parse(readFileSync(resolve(path),"utf8"));
 const save=(path:string,value:unknown)=>writeFileSync(path,JSON.stringify(value,null,2),{mode:0o600});
-async function collect(directory:string) {
+function evaluationDb() {
   for(const line of readFileSync(resolve(".env.local"),"utf8").split("\n")){
     const m=line.match(/^([A-Z0-9_]+)=(.*)$/);if(m&&!process.env[m[1]])process.env[m[1]]=m[2].replace(/^["']|["']$/g,"");
   }
   const db=createClient(process.env.SUPABASE_URL??process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.SUPABASE_SERVICE_KEY!,{auth:{persistSession:false}});
+  return db;
+}
+async function collectSubscriptions(targets: EvaluationTarget[]) {
+  const observedAt = new Date().toISOString();
+  try {
+    const db = evaluationDb();
+    const rows: SubscriptionObservation[] = [];
+    for (let from = 0;; from += 1000) {
+      const { data, error } = await db.from("gemeinde_abos").select("region_id,status,aus_verwaltung,ueber_brief,erstellt_am,bestaetigt_am").neq("status", "abgemeldet").order("id").range(from, from + 999).abortSignal(AbortSignal.timeout(15000));
+      if (error) throw error;
+      rows.push(...(data ?? []));
+      if (!data || data.length < 1000) break;
+    }
+    return subscriptionFeedback(targets, rows, observedAt);
+  } catch (e) { return { status: "failed" as const, observedAt, error: String(e).slice(0,250), current: null, rows: [] }; }
+}
+async function collect(directory:string) {
+  const db = evaluationDb();
   type Region={region_id:string;name:string;slug:string|null;parent_region_id:string|null};
   const regions=new Map<string,Region>();
   for(let from=0;;from+=1000){
@@ -56,7 +75,8 @@ async function collect(directory:string) {
   }));
   let globalEvents:unknown=null;let eventError:string|null=null;
   try{globalEvents=await ereignisseJeName({seit:"2026-08-27",bis:until});}catch(e){eventError=String(e).slice(0,250);}
-  const snapshot={capturedAt,finishedAt:new Date().toISOString(),targets,analytics,globalEvents,eventError,
+  const subscriptions = await collectSubscriptions(targets);
+  const snapshot={subscriptions,capturedAt,finishedAt:new Date().toISOString(),targets,analytics,globalEvents,eventError,
     limits:["Per-page queries include the sending calendar day, not just time after sending.","Today's day is partial; until is an exclusive next-day boundary.","Referrer visitors can overlap; do not sum them into unique people.","Global email-origin events cannot be joined to individual municipalities."]};
   save(resolve(directory,"snapshot.json"),snapshot);return snapshot;
 }
@@ -67,8 +87,14 @@ async function main(){
   const snapshotPath=resolve(directory,"snapshot.json");
   if(process.argv.includes("--collect")&&existsSync(snapshotPath))throw Error("Preserve existing snapshot; use a new output directory for fresh collection");
   const snapshot=process.argv.includes("--collect")?await collect(directory):read(snapshotPath);
+  const subscriptionsPath = resolve(directory, "subscriptions.json");
+  if (process.argv.includes("--collect-subscriptions")) {
+    if (existsSync(subscriptionsPath)) throw Error("Preserve existing subscription snapshot; use a new output directory");
+    save(subscriptionsPath, await collectSubscriptions(snapshot.targets));
+  }
+  const subscriptions = existsSync(subscriptionsPath) ? read(subscriptionsPath) : snapshot.subscriptions;
   const reviews=read(arg("reviews")!);
-  const input:OutreachEvaluationInput={targets:snapshot.targets,analytics:snapshot.analytics,sources:reviews.sources,actions:reviews.actions,recipients:reviews.recipients??[]};
+  const input:OutreachEvaluationInput={subscriptions,targets:snapshot.targets,analytics:snapshot.analytics,sources:reviews.sources,actions:reviews.actions,recipients:reviews.recipients??[]};
   const evaluation=evaluateOutreach(input);
   save(resolve(directory,"reviewed-input.json"),input);
   const researchMatches:{organizationId:string;email:string;actions:string[];researchSourceUrls:string[]}[]=[];
@@ -95,7 +121,7 @@ async function main(){
   })));
   const output={...evaluation,research:{observedAt:new Date().toISOString(),observedFiles:observedResearchFiles,matches:researchMatches,checks:researchChecks,completeness:"Snapshot of saved results only; the full crawl may still be running"}};
   save(resolve(directory,"evaluation.json"),output);
-  const lines=["# Outreach: beobachtete Wirkung und Kontaktfunktion","",`Stand der Datenerfassung: ${snapshot.capturedAt}.`,"",`Bestand: ${evaluation.summary.recordedOrganizations} als angeschrieben dokumentierte Gemeinden. Das ist kein unabhängig bestätigter Versandnachweis und keine Abgrenzung der gesondert genannten 202 Aussendungen.`,"", "## Beobachtete Handlungen",""];
+  const lines=["# Outreach: beobachtete Wirkung und Kontaktfunktion","",`Stand der Datenerfassung: ${snapshot.capturedAt}.`,"",`Bestand: ${evaluation.summary.recordedOrganizations} als angeschrieben dokumentierte Gemeinden. Das ist kein unabhängig bestätigter Versandnachweis.`,"", "## Beobachtete Handlungen",""];
   for(const [key,label] of Object.entries(actionNames))lines.push(`- ${label}: ${evaluation.summary.organizationsByObservedAction[key]} Gemeinden.`);
   lines.push("",`Davon ${evaluation.summary.organizationsWithOfficialPublication} kommunale Veröffentlichungen und ${evaluation.summary.organizationsWithPersonalSocialPublication} persönlicher Social-Media-Beitrag. Die Handlungen können sich überschneiden. ${evaluation.summary.uniqueReplyMessages} echte Nachrichten stammen von ${evaluation.summary.organizationsByObservedAction.response} Gemeinden. Veröffentlichung und Antwort werden unabhängig gezählt; eine Veröffentlichung erfordert keine beobachtete Antwort.`,"", "## Fälle mit überprüfbaren Belegen","");
   for(const row of evaluation.rows.filter(r=>r.actions.length)){
@@ -112,6 +138,17 @@ async function main(){
     lines.push("");
   }
   lines.push("## Verwendung für die Kontaktsuche","","Ein Kontakt kann antworten, intern weiterleiten, Inhalte aufbereiten, Presse beliefern oder veröffentlichen. Keine Handlung wird aus Amtstitel oder Hierarchie abgeleitet. Belegte Handlungen werden einer Adresse nur bei passendem Quellenbeleg zugeordnet. Eine Veröffentlichung ohne belegte handelnde Adresse bleibt ein Organisationsbefund.","",`Bereits gespeicherte Erhebungsergebnisse gelesen: ${observedResearchFiles}. Exakte Übereinstimmungen mit durch Handlungen belegten Adressen: ${researchMatches.length}. Das sind noch keine Abdeckungs- oder Erfolgsquoten. Die Auswertung kann während und nach der Erhebung erneut ausgeführt werden.`,"", "## Grenzen", "", "Die Ausgangsdaten bleiben unverändert. Es wird nichts versendet und nichts in der Datenbank überschrieben. Geplante Weitergabe ist keine erfolgte Presseverteilung; Mailbehauptung ist keine verifizierte Veröffentlichung; Besucherherkunft ist nur ein Hinweis. Fehlende Antworten und fehlende Klicks beweisen keinen schlechten Kontakt. Die alten Rückläufe belegen keinen Effekt der heute verbesserten Suche. Globale Mail-Herkunftsereignisse bleiben ohne Gemeindezuordnung und werden nicht auf Empfänger verteilt.","",`Analytics: ${evaluation.summary.analyticsRead} Gemeinden gelesen, ${evaluation.summary.analyticsFailedOrUnavailable} fehlgeschlagen/nicht verfügbar, ${evaluation.summary.analyticsWithOverflow} mit nicht aufgeschlüsseltem Sammelposten. Herkunftsgruppen können sich überschneiden; ihre Besucher werden nicht zu eindeutigen Personen aufsummiert. Der Versandtag ist vollständig enthalten und der heutige Tag nur teilweise. Unterschiedlich lange Beobachtungsfenster ohne Vorhervergleich erlauben keinen Vergleich der Besuchswirkung. Eine kausale CR oder Überlegenheit einer Kontaktrolle wird daraus nicht berechnet.`);
+  const abo = evaluation.summary.subscriptions;
+  const disclosed = (n: number | null) => n === null ? "nicht ausgewiesen (kleine Grundmenge)" : String(n);
+  lines.push("", "## Abos als Interessenssignal", "", abo.status === "read"
+    ? `Nach dem jeweiligen Anschreiben angelegte, aktuell bestätigte Abos: ${abo.confirmed} in ${abo.organizationsWithConfirmed} Gemeinden. Davon ${abo.confirmedViaLetter} mit Brief-Herkunft, ${disclosed(abo.confirmedWithAdministrationClaim)} mit freiwilliger Angabe Verwaltung und ${disclosed(abo.confirmedViaLetterWithAdministrationClaim)} mit beiden Angaben. Noch unbestätigt: ${abo.pending}.`
+    : "Abo-Daten nicht gelesen oder Abruf fehlgeschlagen; das ist kein Nullwert.");
+  if (subscriptions) lines.push(`Erfasst am ${subscriptions.observedAt}.`);
+  lines.push("Gezählt werden Gemeinde-Abos, keine eindeutigen Menschen. Bestätigt bedeutet aktuell aktiv; abgemeldete Abos zählen nicht. Anmeldung vor dem Versand, fehlende oder unplausible Zeitangaben werden nicht als anschließendes Feedback gezählt. Eine spätere Wiederanmeldung kann am ursprünglichen Anlagedatum hängen und dadurch fehlen. Brief-Herkunft ist eine gemeinsame Linkkennung, kein Beweis für den ursprünglichen Empfänger oder diese Versandwelle. Verwaltung ist Selbstauskunft; Angaben dazu werden bei weniger als fünf bestätigten Abos je Gemeinde nicht ausgegeben. Summen mit solchen unterdrückten Teilwerten bleiben ebenfalls unbekannt. Ein Abo beweist weder Veröffentlichung noch die Eignung einer konkreten Kontaktadresse. Das globale Analytics-Ereignis abo_anmeldung zählt Anmeldeversuche, keine bestätigten Abos.");
+  for (const row of evaluation.rows.filter(r => r.subscriptionFeedback && (r.subscriptionFeedback.confirmed || r.subscriptionFeedback.pending))) {
+    const a = row.subscriptionFeedback!;
+    lines.push(`- ${row.name}: ${a.confirmed} bestätigt, ${a.pending} offen; bestätigt über Brief: ${a.confirmedViaLetter}, mit Angabe Verwaltung: ${disclosed(a.confirmedWithAdministrationClaim)}, beides: ${disclosed(a.confirmedViaLetterWithAdministrationClaim)}.`);
+  }
   lines.push("", "## Abgleich tatsächlich handelnder Adressen", "");
   for(const check of researchChecks)lines.push(`- ${check.name}: ${check.mailbox} – ${check.status==="found"?"gefunden":check.status==="not-yet-recorded"?"noch kein Erhebungsergebnis gespeichert":"im gespeicherten Ergebnis nicht gefunden; gezielter Prüfpunkt"}.`);
   writeFileSync(resolve(directory,"ergebnis.md"),lines.join("\n")+"\n",{mode:0o600});

@@ -16,10 +16,18 @@ Die Verbindung zu Suchergebnissen verlangt dieselbe Gemeinde und exakt dieselbe 
 
 Besuche werden pro Atlas-Seite ab dem Versandtag abgefragt. Der Versandtag ist vollständig enthalten, der aktuelle Tag teilweise. Herkunftsgruppen können dieselben Menschen enthalten und werden deshalb nicht zu eindeutigen Personen addiert. Direkte Besuche oder Referrer beweisen weder Mailöffnung noch Zustellung, Handlung oder Identität. Ein fehlgeschlagener Abruf ist kein Nullwert. Globale Herkunftsereignisse bleiben ohne Gemeindezuordnung.
 
-Der aktuelle Profilkontakt ist kein historischer Versandempfänger. Zitierte Versandkopfzeilen bleiben schwächer als unabhängig geprüfte Originalnachrichten. Der vollständige dokumentierte Kontaktbestand darf nicht stillschweigend als die separat genannten 202 Aussendungen ausgegeben werden. Die Fallprüfung ist keine vollständige Suche nach sämtlichen öffentlichen oder privaten Veröffentlichungen.
+Der aktuelle Profilkontakt ist kein historischer Versandempfänger. Zitierte Versandkopfzeilen bleiben schwächer als unabhängig geprüfte Originalnachrichten. Die früher genannten 202 bezeichneten Softwaretests und waren keine Versandkohorte. Die Fallprüfung ist keine vollständige Suche nach sämtlichen öffentlichen oder privaten Veröffentlichungen.
 
 ## Erhebungsabbruch durch lange Leerraumfolgen
 
 Am 14.09.2026 blockierte eine reale Seiteneingabe die synchrone Adressbereinigung. Netzwerk-Zeitlimits konnten den laufenden regulären Ausdruck nicht unterbrechen. Ein Leistungsprofil und die gesicherte Eingabe reproduzierten die Ursache: Die Suche setzte innerhalb einer langen Leerraumfolge an jeder Position erneut an. Die Reparatur sucht nur am Anfang jeder Folge; die Domainbereinigung sucht vorwärts statt mit einem variabel langen Rückblick. Der Gegencheck läuft in einem eigenen Prozess, damit sein Zeitlimit auch bei blockierter Verarbeitung wirksam bleibt; der alte Code scheitert daran.
 
 Ein unterbrochener Lauf bleibt mit seinen gespeicherten Ergebnissen erhalten. Bei geändertem Recherchecode wird ein neuer vollständiger Lauf mit neuer Herkunftskennung begonnen. Alte Ergebnisse werden nicht nachträglich als Ergebnisse der neuen Fassung ausgegeben.
+
+## Abo-Feedback
+
+Die Auswertung berücksichtigt aktuell bestätigte und noch offene Abos getrennt. Nur nach dem jeweiligen Anschreiben angelegte Abos mit plausiblen Zeitangaben zählen zum anschließenden Feedback. Brief-Herkunft und freiwillige Angabe Verwaltung werden einzeln und gemeinsam ausgewiesen. Die gemeinsame Briefkennung identifiziert weder den Empfänger noch die Versandwelle. Keine Adressen werden gelesen oder Kontaktrollen aus Abos abgeleitet. Abmeldungen zählen nicht zur aktuellen Reichweite. Wiederanmeldungen können wegen des ursprünglichen Anlagedatums fehlen; die Bestandsauswertung ist kein vollständiger historischer Abschluss-Trichter.
+
+Neue Datenerfassungen holen die Abo-Zahlen automatisch. Bei einem bestehenden Analytics-Snapshot kann `--collect-subscriptions` in einem neuen Ausgabeverzeichnis ergänzt werden; die getrennten Erfassungszeitpunkte bleiben sichtbar. Fehlgeschlagene oder fehlende Abo-Abfragen sind unbekannt, nicht null. `abo_anmeldung` aus Web Analytics zählt nur Anmeldeversuche und bleibt von bestätigten Abos getrennt.
+
+Verwaltungsangaben werden außerhalb des Cockpits erst ab fünf bestätigten Abos je Gemeinde ausgegeben. Unterdrückte Teilwerte werden nicht als null Abos summiert.
