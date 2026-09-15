@@ -48,3 +48,20 @@ still require separate original-document review. Community representatives and
 coordinator pages are eligible municipal discovery paths; their labels confer no
 contact role. Empty link destinations do not create a contact source at the current
 page. The frozen v3 audit engine remains unchanged; replay its originals separately.
+
+Supplemental acquisition uses `scripts/capture-contact-source.ts` with `--directory`,
+`--organization` and `--url`. Bytes remain keyed by content digest; each URL/time/type
+observation receives its own immutable `observations/<digest>.json`. Include the
+returned `observationDigest` in reviews. Identical bytes across URLs never overwrite
+prior provenance. Existing single-observation records remain supported unchanged.
+
+PDF review uses `evidenceKind: "pdf-region"`, `sourcePdfDigest`, `observationDigest`,
+`page` (one-based), `region: [x,y,width,height]` in 72-dpi PDF page coordinates, a
+literal `quote` covering the role and email, and an explicit `associationReason`.
+The reviewer must inspect the actual page and territorial responsibility. The
+validator re-extracts the region from hash-verified original bytes using Poppler
+`pdftotext`, rejects multiple email addresses, and checks the quotation. Missing
+Poppler, scanned/unextractable text or a mismatched region remains unresolved.
+No OCR inference or cached extracted text is accepted as original source proof.
+CI tests exercise validation/immutable observations with a controlled extractor;
+real document extraction must also be checked locally with Poppler.

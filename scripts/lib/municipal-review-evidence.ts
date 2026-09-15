@@ -1,30 +1,24 @@
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
-import { createHash } from "node:crypto";
+import { readSupplementalSource } from "./contact-source-record";
+import { pdfRegionSupported } from "./contact-pdf-region";
 import { load } from "cheerio";
 import { contactCandidates, type ContactCandidate } from "../../lib/contact-evidence";
 
-export type OriginalRoleQuote = { url: string; sourceHtmlDigest: string; quote: string };
+export type OriginalRoleQuote = { url: string; sourceHtmlDigest: string; observationDigest?: string; quote: string };
 export type ReviewContact = {
   email: string; url: string; quote: string; sourceHtmlDigest?: string;
-  evidenceKind?: "exclusive-card" | "separately-reviewed";
+  evidenceKind?: "exclusive-card" | "separately-reviewed" | "pdf-region";
+  observationDigest?: string;
+  sourcePdfDigest?: string;
+  page?: number;
+  region?: [number,number,number,number];
   roleSource?: OriginalRoleQuote;
   associationReason?: string;
 };
 type SourcePage = { url: string; finalUrl: string; candidates: ContactCandidate[] };
 
 /** Read only an integrity-checked original from this municipality's evidence store. */
-function original(directory: string, organizationId: string, url: string, digest: string): string | null {
-  if (!/^\d+$/.test(organizationId) || !/^[a-f0-9]{64}$/.test(digest)) return null;
-  try {
-    if (!["https:", "http:"].includes(new URL(url).protocol)) return null;
-    const stem = resolve(directory, "supplemental", organizationId, digest);
-    const metadata = JSON.parse(readFileSync(`${stem}.json`, "utf8"));
-    const raw = readFileSync(`${stem}.html`);
-    if (metadata.htmlDigest !== digest || createHash("sha256").update(raw).digest("hex") !== digest) return null;
-    if (metadata.finalUrl !== url || !Number.isFinite(Date.parse(metadata.observedAt))) return null;
-    return raw.toString("utf8");
-  } catch { return null; }
+function original(directory: string, organizationId: string, url: string, digest: string, observationDigest?: string): string | null {
+  return readSupplementalSource(directory, organizationId, url, digest, 'html', observationDigest)?.toString('utf8') ?? null;
 }
 
 /** Verify the separately cited text, not the reviewer's semantic association.
@@ -33,7 +27,7 @@ function original(directory: string, organizationId: string, url: string, digest
  */
 function roleQuoteSupported(directory: string, organizationId: string, source: OriginalRoleQuote): boolean {
   if (typeof source?.quote !== "string" || source.quote.trim().length < 20 || source.quote.length > 600) return false;
-  const html = original(directory, organizationId, source.url, source.sourceHtmlDigest);
+  const html = original(directory, organizationId, source.url, source.sourceHtmlDigest, source.observationDigest);
   if (html === null) return false;
   const $ = load(html, { scriptingEnabled: false });
   $("script,style,nav,header,footer,aside,[hidden],[aria-hidden='true']").remove();
@@ -57,6 +51,11 @@ function roleQuoteSupported(directory: string, organizationId: string, source: O
 export function reviewContactSupported(directory: string, organizationId: string, pages: SourcePage[], contact: ReviewContact): boolean {
   if (typeof contact?.quote !== "string" || contact.quote.trim().length <= 10 || typeof contact.url !== "string") return false;
   const mode = contact.evidenceKind ?? "exclusive-card";
+  if (mode === 'pdf-region') {
+    if (!contact.sourcePdfDigest || contact.page === undefined || !contact.region || contact.sourceHtmlDigest || contact.roleSource) return false;
+    return pdfRegionSupported(directory, organizationId, { ...contact, sourcePdfDigest: contact.sourcePdfDigest, page: contact.page, region: contact.region });
+  }
+  if (contact.sourcePdfDigest || contact.page !== undefined || contact.region !== undefined) return false;
   if (!["exclusive-card", "separately-reviewed"].includes(mode)) return false;
   if (contact.roleSource !== undefined && !roleQuoteSupported(directory, organizationId, contact.roleSource)) return false;
   if (mode === "separately-reviewed" && (!contact.sourceHtmlDigest || !contact.roleSource || contact.quote !== contact.email ||
@@ -67,6 +66,6 @@ export function reviewContactSupported(directory: string, organizationId: string
   if (contact.sourceHtmlDigest === undefined) {
     return pages.some(page => (page.url === contact.url || page.finalUrl === contact.url) && supports(page.candidates));
   }
-  const html = original(directory, organizationId, contact.url, contact.sourceHtmlDigest);
+  const html = original(directory, organizationId, contact.url, contact.sourceHtmlDigest, contact.observationDigest);
   return html !== null && supports(contactCandidates(html, contact.url, new URL(contact.url).hostname));
 }
