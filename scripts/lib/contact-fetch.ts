@@ -43,7 +43,7 @@ export async function fetchContactPage(url: string, options: {
         if (contentGap || /email hidden; JavaScript is required|data-cfemail|hivelogic_enkoder|<hrencrypted|data-encrypted/i.test(html)) {
           observation.status = "needs-rendering";
           observation.error = contentGap ? `Source content incomplete: ${contentGap}` : "Contact address requires browser rendering";
-          if (options.render && contentGap !== "frameset" && contentGap !== "continuation-page") {
+          if (options.render && contentGap !== "frameset" && contentGap !== "continuation-page" && contentGap !== "dynamic-directory") {
             try {
               const rendered = await options.render(observation.finalUrl);
               if (/email hidden; JavaScript is required|<hrencrypted(?:\s|>)/i.test(rendered)) throw new Error("Hidden contact remains unresolved");
