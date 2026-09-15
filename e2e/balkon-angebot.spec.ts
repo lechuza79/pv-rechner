@@ -69,7 +69,18 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
     await bisZumErgebnis(page);
 
     const links = page.locator('a[href*="solakon.de/products/"]');
-    expect(await links.count()).toBeGreaterThan(0);
+    expect(await links.count()).toBeGreaterThan(1);
+    const destinations = await links.evaluateAll(nodes => nodes.map(node => (node as HTMLAnchorElement).href));
+    for (const [index, destination] of destinations.entries()) {
+      const url = new URL(destination);
+      expect(url.searchParams.get("ref")).toBe("lsqpyrpl");
+      expect(url.searchParams.get("utm_source")).toBe("affiliate");
+      expect(url.searchParams.get("utm_medium")).toBe("cpo");
+      expect(url.searchParams.get("utm_campaign")).toBe("solar-check");
+      expect(url.searchParams.get("utm_content")).toBe(
+        index === 0 ? "bkw-rechner-empfehlung" : "bkw-rechner-alternative",
+      );
+    }
 
     const erster = links.first();
     await expect(erster).toBeVisible();

@@ -132,6 +132,21 @@ describe("Empfehlungslink", () => {
     expect(url.searchParams.get("utm_medium")).toBe("cpo");
   });
 
+  it.each(["bkw-rechner-empfehlung", "bkw-rechner-alternative"] as const)(
+    "preserves the product variant and affiliate attribution for %s",
+    (placement) => {
+      const offer = { ...angeboteAusShopify(ROH)[0], url: "https://www.solakon.de/products/onbasic?variant=123" };
+      const url = new URL(angebotUrl(offer, undefined, placement));
+      expect(url.pathname).toBe("/products/onbasic");
+      expect(url.searchParams.get("variant")).toBe("123");
+      expect(url.searchParams.get("ref")).toBe(SOLAKON_REF);
+      expect(url.searchParams.get("utm_source")).toBe("affiliate");
+      expect(url.searchParams.get("utm_medium")).toBe("cpo");
+      expect(url.searchParams.get("utm_campaign")).toBe("solar-check");
+      expect(url.searchParams.get("utm_content")).toBe(placement);
+    },
+  );
+
   it("bleibt auf der PRODUKTadresse, nie auf der Startseite", () => {
     // Der Händler schlug einen Link auf seine Startseite vor. Wer auf ein
     // durchgerechnetes Set klickt und dort landet, muss es erst wiederfinden —
