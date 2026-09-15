@@ -1,3 +1,5 @@
+import { discoveryDue, type DiscoveryRecord } from "../lib/funding-source-policy";
+import { FundingSourceReader, recordStage } from "./lib/funding-source-reader";
 /**
  * URL-Suche: auf den Verwaltungs-Websites die Förderseite überhaupt erst finden.
  *
@@ -59,6 +61,7 @@ if (!url || !key) {
   process.exit(1);
 }
 const sb = createClient(url, key);
+const sources = new FundingSourceReader(sb, "discovery", process.argv.includes("--dry"));
 
 /** Obergrenze je Gemeinde — darüber ist es Rauschen, keine Förderseite. */
 const MAX_SEITEN_JE_GEMEINDE = 6;
@@ -79,7 +82,8 @@ type SuchVerdikt =
    *  vermutlich keine eigene Förderseite. Das ist ein ERGEBNIS, kein Fehlschlag. */
   | "keine-seite"
   /** Website nicht abrufbar — kommt beim nächsten Lauf wieder dran. */
-  | "unerreichbar";
+  | "unerreichbar"
+  | "unvollstaendig";
 
 /** PostgREST liefert stumm höchstens 1.000 Zeilen — bei 11.219 Gemeinden fatal. */
 async function alleZeilen<T>(tabelle: string, spalten: string, filter?: (q: any) => any): Promise<T[]> {
@@ -117,7 +121,7 @@ async function alleZeilen<T>(tabelle: string, spalten: string, filter?: (q: any)
  */
 async function abrufenMitZiel(ziel: string, timeoutMs = 15_000): Promise<{ html: string; startseite: string } | null> {
   try {
-    const res = await fetch(ziel, {
+    const res = await sources.fetch(ziel, {
       headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
       redirect: "follow",
       signal: AbortSignal.timeout(timeoutMs),
@@ -133,7 +137,7 @@ async function abrufenMitZiel(ziel: string, timeoutMs = 15_000): Promise<{ html:
 
 async function abrufen(ziel: string, timeoutMs = 15_000): Promise<string | null> {
   try {
-    const res = await fetch(ziel, {
+    const res = await sources.fetch(ziel, {
       headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
       redirect: "follow",
       signal: AbortSignal.timeout(timeoutMs),
@@ -367,7 +371,7 @@ async function sucheFoerderseite(gemeldeteAdresse: string): Promise<{ beste: Lin
   return { beste: ergebnis, funde, abrufe, erreichbar: true };
 }
 
-type SuchZeile = { region_id: string; verdikt: string; such_version: number | null };
+type SuchZeile = DiscoveryRecord & { region_id: string };
 
 /**
  * Nur die Gemeinden EINES Schubs, die noch keinen Brief bekommen haben.
@@ -405,16 +409,10 @@ async function offeneKandidaten(limit: number, schub?: string) {
   // heraus — über den Versionsstempel, nicht über das Vorhandensein einer Adresse.
   const ohneSeite = nur ? kontakte.filter((k) => nur.has(k.region_id)) : kontakte;
 
-  const abgelegt = await alleZeilen<SuchZeile>("funding_url_suche", "region_id, verdikt, such_version");
+  const abgelegt = await alleZeilen<SuchZeile>("funding_url_suche", "region_id, website, verdikt, such_version, checked_at");
   const zeileVon = new Map(abgelegt.map((r) => [r.region_id, r]));
-  const erledigt = (id: string): boolean => {
-    const z = zeileVon.get(id);
-    if (!z) return false;
-    if (z.verdikt === "unerreichbar") return false;
-    return (z.such_version ?? 1) >= SUCH_VERSION;
-  };
-
-  const rest = ohneSeite.filter((k) => !erledigt(k.region_id));
+  const now = new Date().toISOString();
+  const rest = ohneSeite.filter(k => discoveryDue(zeileVon.get(k.region_id), k.website!, SUCH_VERSION, now) && sources.due(k.website!));
   // Wer beim letzten Mal schon nicht erreichbar war, ist ein Wiederholungsversuch
   // — sein Fehlschlag sagt nichts über unsere Verbindung.
   const schonUnerreichbar = new Set(abgelegt.filter((z) => z.verdikt === "unerreichbar").map((z) => z.region_id));
@@ -429,7 +427,7 @@ async function offeneKandidaten(limit: number, schub?: string) {
     gesamt: ohneSeite.length,
     erledigt: ohneSeite.length - rest.length,
     naechste: rest
-      .sort((a, b) => (pop.get(b.region_id) ?? 0) - (pop.get(a.region_id) ?? 0))
+      .sort((a, b) => (zeileVon.get(a.region_id)?.checked_at ?? "").localeCompare(zeileVon.get(b.region_id)?.checked_at ?? "") || (pop.get(b.region_id) ?? 0) - (pop.get(a.region_id) ?? 0))
       .slice(0, limit)
       .map((r) => ({ region_id: r.region_id, website: r.website! })),
     schonUnerreichbar,
@@ -438,11 +436,11 @@ async function offeneKandidaten(limit: number, schub?: string) {
 
 async function stand(): Promise<void> {
   const { gesamt, erledigt } = await offeneKandidaten(1);
-  const zeilen = await alleZeilen<SuchZeile>("funding_url_suche", "region_id, verdikt, such_version");
+  const zeilen = await alleZeilen<SuchZeile>("funding_url_suche", "region_id, website, verdikt, such_version, checked_at");
   const z = new Map<string, number>();
   for (const r of zeilen) z.set(r.verdikt, (z.get(r.verdikt) ?? 0) + 1);
   const prozent = gesamt ? Math.round((erledigt / gesamt) * 100) : 0;
-  console.log(`URL-Suche: ${erledigt} von ${gesamt} Gemeinden ohne erfasste Förderseite durchsucht (${prozent} %).`);
+  console.log(`URL-Suche: ${erledigt} von ${gesamt} Gemeinden derzeit nicht zur erneuten Suche fällig (${prozent} %).`);
   for (const [v, n] of [...z].sort((a, b) => b[1] - a[1])) console.log(`   ${v}: ${n}`);
 }
 
@@ -463,6 +461,7 @@ async function funde(): Promise<void> {
 }
 
 async function main(): Promise<void> {
+  await sources.ready();
   if (process.argv.includes("--stand")) return stand();
   if (process.argv.includes("--funde")) return funde();
 
@@ -482,8 +481,9 @@ async function main(): Promise<void> {
 
   await inSchueben(naechste, zahl("gleichzeitig", 6), async (k) => {
     if (abgebrochen) return;
-    const { beste, funde, erreichbar } = await sucheFoerderseite(k.website);
-    const verdikt: SuchVerdikt = !erreichbar ? "unerreichbar" : beste ? "gefunden" : "keine-seite";
+    const { value: { beste, funde, erreichbar }, unreadable } = await sources.withEvidence(() => sucheFoerderseite(k.website));
+    recordStage("discovery-result", { region_id: k.region_id, url: k.website, extracted: funde.length, unreadable, evaluated_at: new Date().toISOString() });
+    const verdikt: SuchVerdikt = !erreichbar ? "unerreichbar" : beste ? "gefunden" : unreadable.length ? "unvollstaendig" : "keine-seite";
     zaehler.set(verdikt, (zaehler.get(verdikt) ?? 0) + 1);
 
     // Reißleine: Häufen sich die Fehlschläge, liegt es fast nie an den Gemeinden,
@@ -504,7 +504,7 @@ async function main(): Promise<void> {
       return;
     }
 
-    await sb.from("funding_url_suche").upsert({
+    const { error: saveError } = await sb.from("funding_url_suche").upsert({
       region_id: k.region_id,
       website: k.website,
       verdikt,
@@ -516,6 +516,8 @@ async function main(): Promise<void> {
       such_version: erreichbar ? SUCH_VERSION : 1,
       checked_at: new Date().toISOString(),
     });
+
+    if (saveError) throw new Error(saveError.message);
 
     // Der Fund wandert ins Feld, aus dem sich das Screening bedient — aber nur,
     // wenn dort nichts steht. Eine von Hand erfasste Adresse ist immer besser

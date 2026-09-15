@@ -1,3 +1,5 @@
+import { seitenSchluessel } from "../lib/funding-seiten";
+import { FundingSourceReader, recordStage } from "./lib/funding-source-reader";
 /**
  * Abdeckungs-Screening: alle Gemeinden mit Förderseite systematisch durchsehen.
  *
@@ -63,6 +65,7 @@ if (!url || !key) {
   process.exit(1);
 }
 const sb = createClient(url, key);
+const sources = new FundingSourceReader(sb, "screen", process.argv.includes("--dry"));
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
@@ -145,7 +148,8 @@ async function offeneKandidaten(limit: number) {
     return (z.screen_version ?? 1) >= SCREEN_VERSION;
   };
 
-  const rest = offenIds.filter((id) => !erledigt(id));
+  const byId = new Map(kk.map(k => [k.region_id, k.thema_foerderung_url!]));
+  const rest = offenIds.filter((id) => !erledigt(id) && sources.due(byId.get(id)!));
   const pop = new Map<string, number>();
   for (let i = 0; i < rest.length; i += 500) {
     const { data: reg } = await sb.from("mastr_regions").select("region_id, population, name").in("region_id", rest.slice(i, i + 500));
@@ -278,8 +282,8 @@ async function zeileVersion(regionId: string): Promise<number | null> {
 /**
  * Eine Fundstelle als gelesen abhaken.
  *
- *   npm run foerder:screen -- --gelesen 05370020 --ergebnis aufgenommen --notiz "150 € je Anlage"
- *   npm run foerder:screen -- --gelesen 05158016,05158017 --ergebnis verworfen --notiz "nur Beratung"
+ *   npm run foerder:screen -- --gelesen 05370020 --url https://example.de/foerderung --ergebnis aufgenommen --beleg "150 € je Anlage"
+ *   Reviews require one municipality and one currently readable source.
  *
  * `ergebnis` ist bewusst frei und nicht auf eine Auswahl festgelegt: Was beim
  * Lesen herauskommt, ist mehr als aufgenommen/verworfen — „Betrag nur im PDF"
@@ -296,8 +300,7 @@ async function zeileVersion(regionId: string): Promise<number | null> {
  * Ein Vorrat, aus dem nichts herausgenommen werden kann, wächst nur — und sieht
  * dabei aus wie ein Vorrat, an dem gearbeitet wird.
  *
- * MEHRERE SCHLÜSSEL AUF EINMAL, weil eine Verbandsgemeinde für ein Dutzend
- * Ortsgemeinden zahlt: Wer sie einzeln abhaken muss, hakt sie nicht ab.
+ * Each review identifies one municipality and one source with a current quote.
  */
 async function gelesen(): Promise<void> {
   const wert = (name: string) => {
@@ -307,7 +310,7 @@ async function gelesen(): Promise<void> {
   const roh = wert("gelesen");
   const ergebnis = wert("ergebnis");
   if (!roh || !ergebnis) {
-    console.error("Aufruf: --gelesen <region_id[,region_id…]> --ergebnis <text> [--notiz <text>]");
+    console.error("Aufruf: --gelesen <region_id> --url <url> --beleg <quote> --ergebnis <text> [--notiz <text>]");
     process.exit(1);
   }
   const ids = roh.split(",").map((x) => x.trim()).filter(Boolean);
@@ -316,14 +319,29 @@ async function gelesen(): Promise<void> {
     gelesen_ergebnis: ergebnis,
     gelesen_notiz: wert("notiz"),
   };
-  for (const tabelle of ["funding_coverage", "funding_seiten"]) {
-    const { error, count } = await sb.from(tabelle).update(eintrag, { count: "exact" }).in("region_id", ids);
-    console.log(error ? `FEHLER (${tabelle}): ${error.message}` : `${tabelle}: ${count ?? 0} Zeilen vermerkt`);
+  const sourceUrl = wert("url");
+  const quote = wert("beleg");
+  if (ids.length !== 1 || !sourceUrl || !quote) throw new Error("Ein Ort, --url und --beleg sind für eine Quellenprüfung erforderlich.");
+  const normalized = seitenSchluessel(sourceUrl);
+  const { data: page, error: lookupError } = await sb.from("funding_seiten").select("url").eq("region_id", ids[0]).eq("url", normalized).maybeSingle();
+  if (lookupError || !page) throw new Error(lookupError?.message ?? "Die genaue Förderseite ist nicht erfasst.");
+  const response = await sources.fetch(sourceUrl, { signal: AbortSignal.timeout(25000) });
+  const original = await response.text();
+  if (!sichtbarerText(quote) || !sichtbarerText(original).includes(sichtbarerText(quote))) throw new Error("Der Beleg steht nicht im aktuell gelesenen Original.");
+  const { error } = await sb.from("funding_seiten").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote, note: wert("notiz") }) }).eq("region_id", ids[0]).eq("url", normalized);
+  if (error) throw new Error(error.message);
+  recordStage("review", { region_id: ids[0], url: sourceUrl, quote, reviewed_at: new Date().toISOString(), result: ergebnis });
+  // Preserve the legacy one-page view only when it refers to this exact URL.
+  const { data: coverage } = await sb.from("funding_coverage").select("url").eq("region_id", ids[0]).maybeSingle();
+  if (coverage?.url && seitenSchluessel(coverage.url) === normalized) {
+    const { error: coverageError } = await sb.from("funding_coverage").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote }) }).eq("region_id", ids[0]).eq("url", coverage.url);
+    if (coverageError) throw new Error(coverageError.message);
   }
-  console.log(`${ids.length} Orte als gelesen vermerkt (${ergebnis}).`);
+  console.log("Eine konkrete Quelle als gelesen vermerkt.");
 }
 
 async function main(): Promise<void> {
+  await sources.ready();
   if (process.argv.includes("--stand")) return stand();
   if (process.argv.includes("--gelesen")) return gelesen();
   if (process.argv.includes("--treffer")) return treffer();
@@ -341,7 +359,7 @@ async function main(): Promise<void> {
     let http = 0;
     for (const versuch of [0, 1]) {
       try {
-        const res = await fetch(k.url, {
+        const res = await sources.fetch(k.url, {
           headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
           redirect: "follow",
           signal: AbortSignal.timeout(15_000 + versuch * 10_000),
@@ -359,6 +377,7 @@ async function main(): Promise<void> {
     const befund = html
       ? einordnen(sichtbarerText(html))
       : { verdikt: "unerreichbar" as ScreenVerdikt, techniken: [] as ScreenTechnik[], beleg: "" };
+    recordStage("screen-result", { region_id: k.region_id, url: k.url, extracted: befund.techniken.length, verdict: befund.verdikt, evaluated_at: new Date().toISOString() });
     zaehler.set(befund.verdikt, (zaehler.get(befund.verdikt) ?? 0) + 1);
     for (const t of befund.techniken) jeTechnik.set(t, (jeTechnik.get(t) ?? 0) + 1);
 

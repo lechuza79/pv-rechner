@@ -1,3 +1,4 @@
+import { FundingSourceReader, recordStage } from "./lib/funding-source-reader";
 /**
  * Welche Technik trägt diese Förderseite? — die Einordnung je EINZELNER Seite.
  *
@@ -52,6 +53,7 @@ if (!url || !key) {
   process.exit(1);
 }
 const sb = createClient(url, key);
+const sources = new FundingSourceReader(sb, "technology", process.argv.includes("--dry"));
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
@@ -99,6 +101,7 @@ async function stand(): Promise<void> {
 }
 
 async function main(): Promise<void> {
+  await sources.ready();
   if (process.argv.includes("--stand")) return stand();
 
   const limit = zahl("limit", 400);
@@ -108,6 +111,7 @@ async function main(): Promise<void> {
   // Nie eingeordnete zuerst, danach die ältesten — dasselbe Reihum wie beim
   // Seiten-Wächter, damit kein Teil des Bestands liegen bleibt.
   const dran = zeilen
+    .filter(z => sources.due(z.url?.startsWith("http") ? z.url : `https://${z.url}`))
     .filter(offen)
     .sort((a, b) => (a.eingeordnet_am ?? "").localeCompare(b.eingeordnet_am ?? ""))
     .slice(0, limit);
@@ -122,7 +126,7 @@ async function main(): Promise<void> {
   await inSchueben(dran, zahl("gleichzeitig", 8), async (z) => {
     let html: string | null = null;
     try {
-      const res = await fetch(z.url.startsWith("http") ? z.url : `https://${z.url}`, {
+      const res = await sources.fetch(z.url.startsWith("http") ? z.url : `https://${z.url}`, {
         headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
         redirect: "follow",
         signal: AbortSignal.timeout(15_000),
@@ -143,6 +147,7 @@ async function main(): Promise<void> {
     }
 
     const befund = einordnen(sichtbarerText(html));
+    recordStage("technology-result", { url: z.url, region_id: z.region_id, extracted: befund.techniken.length, verdict: befund.verdikt, evaluated_at: new Date().toISOString() });
     zaehler[befund.verdikt] = (zaehler[befund.verdikt] ?? 0) + 1;
     for (const t of befund.techniken) technikZaehler[t]++;
 
