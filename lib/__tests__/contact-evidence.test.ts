@@ -6,6 +6,15 @@ import { readMail } from "../../scripts/lib/read-mail";
 import { ordneEin } from "../outreach-ruecklauf";
 
 describe("contact evidence counterexamples", () => {
+  it("reads published TYPO3 mail links and keeps responsibility within their table row", () => {
+    const html = '<h1>Kontakt</h1><table><tr><td>Klimaschutzmanagement Yunus Göksen</td><td><a href="#" data-mailto-token="ocknvq,awpwu0iqgmugpBpgwowgpuvgt0fg" data-mailto-vector="2">E-Mail</a></td></tr><tr><td>Stabsstellenleitung Julia Schirrmacher</td><td><a href="#" data-mailto-token="ocknvq,lwnkc0uejkttocejgtBpgwowgpuvgt0fg" data-mailto-vector="2">E-Mail</a></td></tr></table>';
+    expect(confirmedContactPage(html)).toBe(true);
+    const rows = contactCandidates(html, 'https://www.neumuenster.de/kontakt', 'neumuenster.de');
+    expect(rows.map(r => r.email)).toEqual(['yunus.goeksen@neumuenster.de', 'julia.schirrmacher@neumuenster.de']);
+    expect(rows[0].roleEvidence?.text).toContain('Klimaschutzmanagement Yunus Göksen');
+    expect(rows[0].roleEvidence?.text).not.toContain('Julia');
+    expect(contactCandidates('<a data-mailto-token="not-a-mail-link" data-mailto-vector="2">Mail</a><a data-mailto-token="ocknvq,awpwu0iqgmugpBpgwowgpuvgt0fg" data-mailto-vector="oops">Mail</a>', 'https://ort.de', 'ort.de')).toEqual([]);
+  });
   it("rejects a navigation-only contact hit and accepts an actual contact destination", () => {
     expect(confirmedContactPage('<title>Startseite</title><nav>Kontakt</nav><footer><a href="mailto:info@ort.de">Mail</a></footer>')).toBe(false);
     expect(confirmedContactPage('<title>Kontakt</title><h1>404 nicht gefunden</h1><a href="mailto:info@ort.de">Mail</a>')).toBe(false);

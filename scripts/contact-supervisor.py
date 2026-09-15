@@ -14,7 +14,7 @@ import time
 from urllib.parse import urlparse
 import uuid
 
-ENGINE_FILES = ["lib/contact-evidence.ts", "lib/contact-discovery.ts", "lib/contact-quality.ts", "lib/contact-quality-evidence.ts", "scripts/lib/contact-fetch.ts", "scripts/lib/contact-crawl.ts", "scripts/lib/contact-render.ts", "scripts/lib/contact-batch.ts", "scripts/contact-full-research.ts", "scripts/lib/contact-deadline.ts", "lib/uri-sicher.ts", "lib/personen-fund.ts", "package-lock.json"]
+ENGINE_FILES = ["lib/contact-evidence.ts", "lib/contact-discovery.ts", "lib/contact-quality.ts", "lib/contact-quality-evidence.ts", "scripts/lib/contact-fetch.ts", "scripts/lib/contact-crawl.ts", "scripts/lib/contact-render.ts", "scripts/lib/contact-batch.ts", "scripts/contact-full-research.ts", "scripts/lib/contact-deadline.ts", "lib/uri-sicher.ts", "lib/personen-fund.ts", "package-lock.json", "lib/municipal-contact-verification.ts", "scripts/lib/municipal-contact-audit.ts", "scripts/contact-supervised-worker.ts"]
 
 
 def now():
@@ -48,6 +48,8 @@ def valid_result(value, target, engine):
 
 
 def retryable(value):
+    if value.get("verificationMode") == "municipal-source-audit":
+        return value.get("retryRequired") is True
     if value["status"] == "run-failed":
         return True
     pages = value.get("pages", [])
@@ -185,7 +187,14 @@ class Supervisor:
                 except (OSError, ValueError, KeyError, TypeError):
                     pass
             last_attempt = max((int(p.name.split(".")[1]) for p in previous), default=0)
-            for attempt in range(last_attempt + 1, self.max_attempts + 1):
+            audit = target.get("audit")
+            # Large municipalities can span many process deadlines. Durable new
+            # source checkpoints extend work, but repeated no-progress failures stop.
+            audit_sources = len(read(audit["inputPath"])["urls"]) if audit else 0
+            attempt_limit = self.max_attempts + audit_sources
+            no_progress = 0
+            for attempt in range(last_attempt + 1, attempt_limit + 1):
+                prior_checkpoints = len(list(Path(audit["directory"]).glob("*.json"))) if audit else 0
                 if self.stopping.is_set():
                     raise RuntimeError("Supervisor stopping after infrastructure error")
                 dependency_digest = hashlib.sha256((self.runtime / "node_modules/.package-lock.json").read_bytes()).hexdigest()
@@ -219,16 +228,21 @@ class Supervisor:
                     # with a later transport failure.
                     if not existing or len(candidate["pages"]) > len(existing.get("pages", [])):
                         existing = candidate
-                if attempt < self.max_attempts:
-                    time.sleep(min(30, 2 ** attempt))
+                if audit:
+                    new_checkpoints = len(list(Path(audit["directory"]).glob("*.json")))
+                    no_progress = 0 if new_checkpoints > prior_checkpoints else no_progress + 1
+                    if no_progress >= self.max_attempts:
+                        break
+                if attempt < attempt_limit:
+                    time.sleep(min(30, 2 ** min(attempt, 5)))
             if existing:
-                existing["supervision"] = {"attemptsExhausted":True, "attempts":self.max_attempts}
+                existing["supervision"] = {"attemptsExhausted":True, "attempts":attempt if last_attempt < attempt_limit else last_attempt}
                 atomic(result_path, existing)
             else:
                 atomic(result_path, {"dataset":target["dataset"], "organization_id":target["organization_id"],
                     "source":target, "engine":self.engine, "observed_at":now(), "status":"run-failed",
                     "pages":[], "candidates":[], "pending_urls":[],
-                    "error":"Retries exhausted; per-attempt evidence retained", "supervision":{"attemptsExhausted":True,"attempts":self.max_attempts}})
+                    "error":"Retries exhausted; per-attempt evidence retained", "supervision":{"attemptsExhausted":True,"attempts":attempt if last_attempt < attempt_limit else last_attempt}})
 
     def run(self):
         lock = open(self.directory / "supervisor.lock", "a")
@@ -248,12 +262,20 @@ class Supervisor:
             with self.mutex:
                 self.completed += 1
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=self.concurrency)
-        pending = {pool.submit(job, target) for target in self.targets}
+        remaining = iter(self.targets)
+        pending = set()
+        for _ in range(self.concurrency):
+            target = next(remaining, None)
+            if target is not None:
+                pending.add(pool.submit(job, target))
         try:
             while pending:
                 done, pending = concurrent.futures.wait(pending, timeout=10, return_when=concurrent.futures.FIRST_COMPLETED)
                 for future in done:
                     future.result()
+                    target = next(remaining, None)
+                    if target is not None:
+                        pending.add(pool.submit(job, target))
                 with self.mutex:
                     self.state()
         except BaseException:

@@ -1,13 +1,42 @@
 import { describe, expect, it } from "vitest";
-import { execFileSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { entwirreAdressen, istPersonenAdresse, personenAus, saeubereFunktion, umschrift } from "../personen-fund";
 
+/** Keep the execution deadline outside the child event loop. Cold TypeScript
+ * startup has a separate bound and must not consume the parser's four seconds.
+ */
+function runWithExecutionDeadline(setup: string, body: string, milliseconds: number): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const script = `${setup}; process.once('message', () => { ${body}; process.exit(0); }); process.send('ready');`;
+    const child = spawn(process.execPath, ['--import', 'tsx', '-e', script], {stdio:['ignore','ignore','pipe','ipc']});
+    let settled = false;
+    let stderr = '';
+    const finish = (error?: Error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      if (error) { child.kill('SIGKILL'); reject(error); } else resolve();
+    };
+    let timer = setTimeout(() => finish(new Error('Child startup deadline exceeded')), 60000);
+    child.stderr?.on('data', data => { stderr = (stderr + data).slice(-8192); });
+    child.once('error', finish);
+    child.once('message', message => {
+      if (message !== 'ready') return finish(new Error('Invalid child readiness message'));
+      clearTimeout(timer);
+      timer = setTimeout(() => finish(new Error('Parser execution deadline exceeded')), milliseconds);
+      child.send('go');
+    });
+    child.once('exit', code => finish(code === 0 ? undefined : new Error(`Child failed (${code}): ${stderr}`)));
+  });
+}
+
 describe("Verfremdete Adressen", () => {
-  it("finishes long whitespace and domain runs without blocking the crawler", () => {
-    // A child-process deadline stays effective even if a regex blocks its event loop.
-    const script = `
+  it("finishes long whitespace and domain runs without blocking the crawler", async () => {
+    const setup = `
       const {entwirreAdressen}=require('./lib/personen-fund.ts');
       const {strict:assert}=require('node:assert');
+    `;
+    const script = `
       const gap=' '.repeat(650000);
       const plain='Kontakt'+gap+'Ende';
       assert.equal(entwirreAdressen(plain),plain);
@@ -15,8 +44,12 @@ describe("Verfremdete Adressen", () => {
       assert.equal(entwirreAdressen('info'+gap+'@'+gap+'example.de'),'info@example.de');
       assert.equal(entwirreAdressen('info@'+'a'.repeat(650000)+' . de'),'info@'+'a'.repeat(650000)+'.de');
     `;
-    expect(() => execFileSync(process.execPath, ['--import','tsx','-e',script], {timeout:4000,stdio:'pipe'})).not.toThrow();
-  });
+    await runWithExecutionDeadline(setup, script, 4000);
+  }, 70000);
+
+  it("still kills a child whose parser blocks the event loop", async () => {
+    await expect(runWithExecutionDeadline('', 'while (true) {}', 100)).rejects.toThrow('Parser execution deadline exceeded');
+  }, 70000);
 
   it("repariert das Leerzeichen vor dem @", () => {
     // Wörtlich von stadtwerke-lingen.de/kontakt, 23.08.2026.

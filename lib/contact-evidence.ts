@@ -18,9 +18,33 @@ export function sameDomain(host: string, domain: string): boolean {
   return host === domain || host.endsWith(`.${domain}`);
 }
 
+/** Decode only published TYPO3 link data, without executing page JavaScript.
+ * Character ranges match TYPO3's publisher-supplied mail link handler.
+ */
+function decodePublishedMailLinks($: ReturnType<typeof load>): void {
+  $("a[data-mailto-token][data-mailto-vector]").each((_, el) => {
+    const raw = $(el).attr("data-mailto-vector") ?? "";
+    if (!/^-?\d{1,2}$/.test(raw)) return;
+    const shift = -Number(raw);
+    if (Math.abs(shift) > 15) return;
+    const token = $(el).attr("data-mailto-token") ?? "";
+    if (token.length > 2048) return;
+    const decoded = [...token].map(char => {
+      const code = char.charCodeAt(0);
+      const range = [[43,58],[64,90],[97,122]].find(([lo,hi]) => code >= lo && code <= hi);
+      if (!range) return char;
+      const [lo,hi] = range;
+      const length = hi - lo + 1;
+      return String.fromCharCode(lo + ((code - lo + shift) % length + length) % length);
+    }).join("");
+    if (/^mailto:[\w.+%-]+@[\w-]+(?:\.[\w-]+)+(?:\?[^\r\n]*)?$/i.test(decoded)) $(el).attr("href", decoded);
+  });
+}
+
 /** A navigation label alone cannot validate a contact destination. */
 export function confirmedContactPage(html: string): boolean {
   const $ = load(html);
+  decodePublishedMailLinks($);
   $("nav,header,footer,script,style,aside").remove();
   const heading = $("h1,h2,title").text();
   if (!/kontakt|ansprechpartner|erreichbarkeit/i.test(heading)) return false;
@@ -59,6 +83,7 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
   // Read the publisher's no-script fallback too. Removing it made whole CMS
   // families look contactless even though they supplied a plain-text address.
   const $ = load(html, { scriptingEnabled: false });
+  decodePublishedMailLinks($);
   // Publishers sometimes insert invisible anti-spam text inside an address.
   // Remove only explicitly hidden elements, never the word "nospam" itself.
   $("[hidden], [style]").each((_, el) => {
@@ -114,7 +139,9 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
       for (const match of entwirreAdressen(text).replace(/\(ad\)/gi, "@").matchAll(/[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g)) addresses.add(match[0].toLowerCase());
       if (text.length > 600 || [...addresses].some(a => a !== email)) break;
       if (text && addresses.has(email)) best = text;
-      if (block.is("article,section,li,td,address")) break;
+      // A contact table commonly places the role and mail link in adjacent
+      // cells. Expand to this row only, never to the next person's row.
+      if (block.is("article,section,li,tr,address")) break;
     }
     return best;
   };

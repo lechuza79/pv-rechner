@@ -140,6 +140,59 @@ class SupervisorTest(unittest.TestCase):
             obj.one(self.target)
         self.assertEqual(m.read(obj.results / (m.key(self.target) + ".json"))["pages"], value["pages"])
 
+    def test_large_audit_continues_when_source_checkpoints_advance(self):
+        obj = self.supervisor()
+        directory = self.root / "audit-sources"
+        directory.mkdir()
+        inputs = self.root / "audit-input.json"
+        m.atomic(inputs, {"urls":["a", "b", "c", "d"]})
+        target = dict(self.target, audit={"directory":str(directory), "inputPath":str(inputs)})
+        count = 0
+        def execute(request_path, *_):
+            nonlocal count
+            count += 1
+            m.atomic(directory / (str(count) + ".json"), {"status":"read"})
+            if count < 4:
+                return None, "worker-timeout"
+            value = self.result("sources-checked")
+            value.update(verificationMode="municipal-source-audit", retryRequired=False)
+            m.atomic(m.read(request_path)["outputPath"], value)
+            return 0, None
+        with patch.object(m, "execute", side_effect=execute), patch.object(m.time, "sleep"):
+            obj.one(target)
+        self.assertEqual(count, 4)
+        self.assertEqual(m.read(obj.results / (m.key(target) + ".json"))["status"], "sources-checked")
+
+    def test_inventory_admission_is_bounded_by_worker_count(self):
+        obj = self.supervisor()
+        obj.concurrency = 2
+        obj.targets = [dict(self.target, organization_id=str(i)) for i in range(6)]
+        obj.completed = 0
+        obj.started_at = m.now()
+        pending_jobs = {}
+        class Pool:
+            def __init__(self, **kwargs):
+                pass
+            def submit(self, fn, target):
+                future = m.concurrent.futures.Future()
+                pending_jobs[future] = (fn, target)
+                self_test.assertLessEqual(len(pending_jobs), 2)
+                return future
+            def shutdown(self, **kwargs):
+                pass
+        self_test = self
+        def wait(pending, **kwargs):
+            future = next(iter(pending))
+            fn, target = pending_jobs.pop(future)
+            fn(target)
+            future.set_result(None)
+            return {future}, set(pending) - {future}
+        def one(target):
+            m.atomic(obj.results / (m.key(target) + ".json"), dict(target, engine="frozen", status="found", pages=[], candidates=[]))
+        with patch.object(obj, "recover"), patch.object(obj, "one", side_effect=one), patch.object(m.concurrent.futures, "ThreadPoolExecutor", Pool), patch.object(m.concurrent.futures, "wait", side_effect=wait):
+            obj.run()
+        self.assertEqual(obj.completed, 6)
+
     def test_pid_reuse_does_not_kill_unrelated_processes(self):
         request = self.root / "specific.request.json"
         rows = "111 111 node unrelated.ts\n222 222 node contact-supervised-worker.ts /different/request.json\n"

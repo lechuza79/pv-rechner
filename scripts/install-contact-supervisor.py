@@ -29,10 +29,10 @@ def prepare(directory, repo, node):
     label = "io.solar-check.contact-" + hashlib.sha256(str(directory).encode()).hexdigest()[:12]
     plist = {"Label":label, "ProgramArguments":[sys.executable, str(runtime / "scripts/contact-supervisor.py"),
         "--directory", str(directory), "--runtime", str(runtime), "--node", str(Path(node).resolve()),
-        "--concurrency", "8", "--timeout", "360", "--attempts", "3"],
+        "--concurrency", "4" if json.loads((directory / "inventory.json").read_text()).get("mode") == "municipal-source-audit" else "8", "--timeout", "1800" if json.loads((directory / "inventory.json").read_text()).get("mode") == "municipal-source-audit" else "360", "--attempts", "3"],
         "WorkingDirectory":str(runtime), "RunAtLoad":True,
         "KeepAlive":{"SuccessfulExit":False}, "ThrottleInterval":30,
-        "ProcessType":"Background", "EnvironmentVariables":{"PYTHONUNBUFFERED":"1"},
+        "ProcessType":"Standard" if json.loads((directory / "inventory.json").read_text()).get("mode") == "municipal-source-audit" else "Background", "EnvironmentVariables":{"PYTHONUNBUFFERED":"1"},
         "StandardOutPath":str(directory / "supervisor.log"),
         "StandardErrorPath":str(directory / "supervisor-error.log")}
     path = directory / "supervisor.plist"

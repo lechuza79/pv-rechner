@@ -3,6 +3,7 @@ import { readFileSync, appendFileSync } from "node:fs";
 import { createHash, randomUUID } from "node:crypto";
 import { crawlContacts } from "./lib/contact-crawl";
 import { renderContactPage } from "./lib/contact-render";
+import { auditMunicipality } from "./lib/municipal-contact-audit";
 import { atomicJson } from "./lib/contact-batch";
 async function main() {
   // No crawl starts before its durable lease exists. Parent death closes stdin.
@@ -12,8 +13,8 @@ async function main() {
   const request = JSON.parse(readFileSync(process.argv[2], "utf8"));
   const dependencyDigest = createHash("sha256").update(readFileSync("node_modules/.package-lock.json")).digest("hex");
   if (dependencyDigest !== readFileSync("dependency-lock.sha256", "utf8")) throw Error("Runtime dependencies changed");
-  const result = await crawlContacts({
-    website: request.target.website, dataset: request.target.dataset,
+  const result = request.target.audit ? await auditMunicipality({...request.target.audit,attempt:request.attempt}) : await crawlContacts({
+    website: request.target.website, dataset: request.target.dataset, organizationName:request.target.organizationName,
     pageBudget: request.pageBudget, render: renderContactPage,
     record: page => appendFileSync(request.pagesPath, JSON.stringify(page) + "\n", {mode:0o600}),
   });
