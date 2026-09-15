@@ -43,10 +43,10 @@ function roleQuoteSupported(directory: string, organizationId: string, source: O
   $("br").replaceWith(" ");
   $("h1,h2,h3,h4,h5,h6,p,li,td,address,article,section,div").each((_, el) => { $(el).before(" "); $(el).after(" "); });
   const quote = source.quote.replace(/\s+/g, " ").trim();
-  return $("h1,h2,h3,h4,h5,h6,p,li,td,address,article,section,div").toArray().some(el => {
-    const text = $(el).text().replace(/\s+/g, " ").trim();
-    return text.length <= 600 && text.includes(quote);
-  });
+  // Validate the cited publication, not the publisher's choice of HTML wrapper.
+  // Legacy CMS pages may place their entire imprint inside a span or body text.
+  // The association to the mailbox remains the explicit reviewer's decision.
+  return $("body").text().replace(/\s+/g, " ").trim().includes(quote);
 }
 
 /** Validate source integrity for an explicit contextual review, never suitability.

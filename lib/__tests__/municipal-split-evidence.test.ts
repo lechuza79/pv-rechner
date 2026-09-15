@@ -33,6 +33,10 @@ it("validates separately quoted originals without turning adjacency into an auto
   try {
     expect(contactCandidates(html, url, "gemeinde-dellstedt.de")[0].roleEvidence).toBeUndefined();
     expect(check()).toBe(true);
+    // Actual legacy frame pages publish an imprint in a span, not p/div.
+    for (const publication of [`<span>${role}</span>`, role]) {
+      expect(check({ roleSource: { url, sourceHtmlDigest: save(publication), quote: role } })).toBe(true);
+    }
     expect(check({ evidenceKind: undefined })).toBe(false);
     expect(check({ roleSource: undefined })).toBe(false);
     expect(check({ associationReason: "" })).toBe(false);
