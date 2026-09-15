@@ -505,7 +505,14 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // weiter der 29.07.2026, § 42a kündigt unverändert nur an. Einundzwanzigste
   // Bioheizöl-Gegensuche: wieder nur Gesamtpreis-Charts, keine Reihe für die
   // Beimischung.
-  geprueftRechtIso: "2026-09-13",
+  //
+  // 15.09.2026: Infoportal erneut gelesen — jüngster Eintrag weiter die
+  // Verkündung vom 28.07.2026, danach nichts; § 42a kündigt unverändert nur das
+  // bis 01.12.2026 vorzulegende Quotengesetz an, ein Entwurf ist nirgends
+  // amtlich veröffentlicht. Zweiundzwanzigste Bioheizöl-Gegensuche: nur
+  // Gesamtpreis-Statistik (Destatis, Beimischung unaufgeschlüsselt im
+  // Deckungsbeitrag), keine Reihe für den Bio-Anteil.
+  geprueftRechtIso: "2026-09-15",
   reviewBy: "2027-07-25",
 };
 

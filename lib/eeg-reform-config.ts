@@ -512,7 +512,17 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   Die Tagesordnungsseite zeigt noch die 95.–97. Sitzung (10.–11.09.), ohne
   //   EEG-Punkt; die erste Lesung ist nur aus der Fachpresse für die Woche ab
   //   21.09. angekündigt. Zustand unverändert: Regierungsentwurf, eingebracht.
-  geprueftIso: "2026-09-13",
+  // 15.09.2026: Drucksache 21/7867 erneut geladen und durchsucht — die vier
+  //   Werte stehen unverändert (Zeilen 120, 1464, 3004, 3139 der Textfassung).
+  //   NEU, und jetzt AMTLICH statt nur aus der Fachpresse: Das Textarchiv des
+  //   Bundestages (bundestag.de, kw39, „Grundlegende Reform des
+  //   Erneuerbare-Energien-Gesetzes geplant") setzt die erste Lesung auf
+  //   Donnerstag, 24.09.2026, mit Überweisung an den Ausschuss für Wirtschaft
+  //   und Energie. Eine erste Lesung ist kein Zustandswechsel; der Zustand
+  //   bleibt „regierungsentwurf", und der Verfahrenssatz nennt bewusst weiter
+  //   keinen Termin (ein Plenartermin verschiebt sich, der Satz stünde dann
+  //   still falsch da).
+  geprueftIso: "2026-09-15",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
@@ -542,7 +552,9 @@ export function eegReformStandLabel(stand: EegReformStand = EEG_REFORM_STAND): s
  *  und nicht sechsmal im Code. `kurz` für enge Stellen (Ergebnis-Notiz,
  *  Zeitleisten-Marke), Langform für FAQ und Ratgeber.
  *
- *  Kein Beratungstermin: Den hat keine amtliche Stelle genannt. */
+ *  Kein Beratungstermin, auch nicht, seit der Bundestag die erste Lesung für den
+ *  24.09.2026 angesetzt hat: Ein Plenartermin verschiebt sich, und eine erste
+ *  Lesung ändert den Zustand nicht. */
 export function eegVerfahrenSatz(
   opts: { kurz?: boolean } = {},
   stand: EegReformStand = EEG_REFORM_STAND,
