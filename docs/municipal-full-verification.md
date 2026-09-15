@@ -29,3 +29,9 @@ Do not stop at the end of the source pass. Continue individual reviews for the e
 ## Before each later dispatch batch
 
 Freeze the exact intended municipality/address pairs. Re-read every supporting source for every recipient and compare the saved content and contact quotations against the individual review. Changed or unreadable evidence invalidates that recipient's approval until re-reviewed. Check current stored exclusions, opt-outs, bounces, previous sends and duplicates, including shared administrative mailboxes, using the existing sending workflow. No successful global crawl or old review waives this per-batch requirement. This audit never sends mail and does not mutate the sending list.
+
+
+## Published onward navigation
+The shared contact crawler follows explicitly published same-site continuation links and frames, council/mayor routes, and contact-document links whose short single-link paragraph names the document. Query parameters come from the original link; none are guessed. Recognizable short loading/continuation wrappers and framesets remain incomplete source observations. A browser result containing the same wrapper cannot turn them into a successful read. Frame and continuation targets are queued separately, preserving parent evidence. These are research leads only: no automatic ownership, role, or dispatch approval.
+
+The frozen v3 source audit retains its original engine and URLs. Replaying saved originals with the revised discovery produces an additional source queue; it does not rewrite prior results or observation times. Original-PDF evidence validation, script-generated menu links, and general source completeness remain separate unfinished work.

@@ -6,7 +6,7 @@ export async function renderContactPage(url: string): Promise<string> {
     const page = await browser.newPage();
     await page.route('**/*', route => ['image','media','font'].includes(route.request().resourceType()) ? route.abort() : route.continue());
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: 12000 });
-    await page.waitForFunction(() => !/email hidden; JavaScript is required/i.test(document.body.innerText) && !document.querySelector("hrencrypted"), { }, { timeout: 4000 });
+    await page.waitForFunction(() => !/email hidden; JavaScript is required|(?:beitragsliste|inhalte?|content)\s+(?:wird|werden)\s+geladen|loading\s+(?:content|contacts)/i.test(document.body.innerText) && !document.querySelector("hrencrypted"), { }, { timeout: 4000 });
     return await page.content();
   } finally { await browser.close(); }
 }

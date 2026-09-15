@@ -2,6 +2,19 @@ import { load } from "cheerio";
 import { sameDomain } from "./contact-evidence";
 import { entschluesseltOderRoh } from "./uri-sicher";
 
+const continuationLabel = /^(?:zur aufgerufenen seite|weiter (?:zur|zum) (?:startseite|homepage|internetauftritt)|continue to (?:the )?(?:website|site))\s*[»›→.!]*$/iu;
+
+/** Recognizable navigation/loading wrappers are not substantive negative evidence. */
+export function contactContentGap(html: string): "frameset" | "loading-shell" | "continuation-page" | null {
+  const $ = load(html);
+  if ($("frameset frame[src]").length) return "frameset";
+  $("script,style,nav,header,footer").remove();
+  const text = $("body").text().replace(/\s+/g, " ").trim();
+  if (text.length < 1200 && /(?:beitragsliste|inhalte?|content)\s+(?:wird|werden)\s+geladen|loading\s+(?:content|contacts)/iu.test(text)) return "loading-shell";
+  if (text.length < 1200 && $("a[href]").toArray().some(el => continuationLabel.test($(el).text().trim()))) return "continuation-page";
+  return null;
+}
+
 export type ContactDataset = "kommunen" | "fachbetriebe" | "presse" | "versorger";
 
 /** Remove presentation/tracking variants, preserving identifiers and filters. */
@@ -29,6 +42,8 @@ export function contactLinkPriority(url: string, label: string, dataset: Contact
   const climate = /\b(klimaschutz\w*|umweltschutz\w*|klima|umwelt|energiemanagement|energieberatung|nachhaltigkeit|erneuerbare)\b/iu;
   const communications = /\b(presse\w*|kommunikation|öffentlichkeitsarbeit|oeffentlichkeitsarbeit|webredaktion)\b/iu;
   let score = directory.test(text) ? 80 : 0;
+  if (/\b(gemeindevertretung|gemeinderat|b[üu]rgermeister\w*|buergermeister\w*|telefonliste|telefonverzeichnis)\b/iu.test(text)) score = 100;
+  if (continuationLabel.test(label.trim())) score = 160;
   if (/\b(kontakt\w*|contact\w*|ansprechpartner\w*|ansprechperson\w*)\b/iu.test(text)) score = 110;
   if (/\bansprechperson\w*\b|\bansprechpartner\w*\b/iu.test(text)) score = 140;
   if (communications.test(text)) score = Math.max(score, 120);
@@ -52,8 +67,22 @@ export function contactLinks(html: string, base: string, domain: string, dataset
     if (!normalized) return;
     target = new URL(normalized);
     if (!/^https?:$/.test(target.protocol) || !sameDomain(target.hostname.replace(/^www\./,""),domain)) return;
-    const priority = contactLinkPriority(target.href, $(el).text().replace(/\s+/g," ").trim(),dataset);
+    let label = $(el).text().replace(/\s+/g," ").trim();
+    // A literal "here" document link needs its own short sentence, not the
+    // complete surrounding directory or unrelated navigation labels.
+    if (/^(?:hier|hier herunterladen|download|here)[.!]?$/iu.test(label)) {
+      const parent = $(el).parent();
+      const context = parent.text().replace(/\s+/g, " ").trim();
+      if (parent.is("p,li") && parent.find("a[href]").length === 1 && context.length <= 240) label = context;
+    }
+    const priority = contactLinkPriority(target.href, label,dataset);
     if (priority) result.set(target.href,Math.max(priority,result.get(target.href)??0));
+  });
+  // Follow only published frame destinations. Embedded third-party content
+  // does not establish municipal ownership and is not queued here.
+  $("frameset frame[src]").each((_, el) => {
+    const url = contactUrl($(el).attr("src") ?? "", base);
+    if (url && sameDomain(new URL(url).hostname.replace(/^www\./, ""), domain)) result.set(url, 150);
   });
   return [...result].map(([url,priority])=>({url,priority}));
 }

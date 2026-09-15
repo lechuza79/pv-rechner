@@ -4,6 +4,7 @@ import { resolve, dirname } from "node:path";
 import { execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { contactCandidates, type ContactCandidate } from "../../lib/contact-evidence";
+import { contactContentGap } from "../../lib/contact-discovery";
 
 export type PageObservation = {
   requestedUrl: string; finalUrl: string | null; observedAt: string;
@@ -38,13 +39,15 @@ export async function fetchContactPage(url: string, options: {
         observation.status = "blocked"; observation.error = "Challenge page"; html = null;
       } else {
         observation.status = "read";
-        if (/email hidden; JavaScript is required|data-cfemail|hivelogic_enkoder|<hrencrypted|data-encrypted/i.test(html)) {
+        const contentGap = contactContentGap(html);
+        if (contentGap || /email hidden; JavaScript is required|data-cfemail|hivelogic_enkoder|<hrencrypted|data-encrypted/i.test(html)) {
           observation.status = "needs-rendering";
-          observation.error = "Contact address requires browser rendering";
-          if (options.render) {
+          observation.error = contentGap ? `Source content incomplete: ${contentGap}` : "Contact address requires browser rendering";
+          if (options.render && contentGap !== "frameset" && contentGap !== "continuation-page") {
             try {
               const rendered = await options.render(observation.finalUrl);
               if (/email hidden; JavaScript is required|<hrencrypted(?:\s|>)/i.test(rendered)) throw new Error("Hidden contact remains unresolved");
+              if (contactContentGap(rendered)) throw new Error("Source content remains incomplete");
               html = rendered;
               observation.status = "read"; observation.error = null; observation.rendered = true;
             } catch (error) { observation.error = `Rendering incomplete: ${String(error).slice(0,180)}`; }
