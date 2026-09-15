@@ -48,6 +48,15 @@ class SupervisorTest(unittest.TestCase):
     def result(self, status="found"):
         return dict(self.target, engine="frozen", status=status, pages=[], candidates=[])
 
+    def test_inventory_builders_share_the_complete_runtime_fingerprint(self):
+        import re
+        root = Path(__file__).parents[1]
+        self.assertIn("lib/published-joomla-mail.ts", m.ENGINE_FILES)
+        for filename in ("municipal-contact-audit.ts", "contact-full-research.ts"):
+            source = (root / filename).read_text()
+            files = json.loads(re.search(r"const codeFiles\s*=\s*(\[[^;]+\]);", source).group(1))
+            self.assertEqual(files, m.ENGINE_FILES)
+
     def test_source_unicode_surrogates_survive_checkpointing(self):
         value = {"text": "broken \udc49 source"}
         path = self.root / "unicode.json"

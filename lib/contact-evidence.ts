@@ -1,6 +1,7 @@
 import { entschluesseltOderRoh } from "./uri-sicher";
 import { load } from "cheerio";
 import { entwirreAdressen } from "./personen-fund";
+import { publishedJoomlaMail } from "./published-joomla-mail";
 
 export type ContactCandidate = {
   email: string;
@@ -18,10 +19,16 @@ export function sameDomain(host: string, domain: string): boolean {
   return host === domain || host.endsWith(`.${domain}`);
 }
 
-/** Decode only published TYPO3 link data, without executing page JavaScript.
+/** Decode published Joomla/TYPO3 link data without executing page JavaScript.
  * Character ranges match TYPO3's publisher-supplied mail link handler.
  */
 function decodePublishedMailLinks($: ReturnType<typeof load>): void {
+  $("script").each((_, el) => {
+    const script = $(el).text();
+    if (!script.includes("addy") || !script.includes("document.write")) return;
+    const email = publishedJoomlaMail(script);
+    if (email) $(el).replaceWith($("<a>").attr("href", `mailto:${email}`).text(email));
+  });
   $("a[data-mailto-token][data-mailto-vector]").each((_, el) => {
     const raw = $(el).attr("data-mailto-vector") ?? "";
     if (!/^-?\d{1,2}$/.test(raw)) return;

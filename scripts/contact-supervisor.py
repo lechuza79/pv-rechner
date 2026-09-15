@@ -14,7 +14,7 @@ import time
 from urllib.parse import urlparse
 import uuid
 
-ENGINE_FILES = ["lib/contact-evidence.ts", "lib/contact-discovery.ts", "lib/contact-quality.ts", "lib/contact-quality-evidence.ts", "scripts/lib/contact-fetch.ts", "scripts/lib/contact-crawl.ts", "scripts/lib/contact-render.ts", "scripts/lib/contact-batch.ts", "scripts/contact-full-research.ts", "scripts/lib/contact-deadline.ts", "lib/uri-sicher.ts", "lib/personen-fund.ts", "package-lock.json", "lib/municipal-contact-verification.ts", "scripts/lib/municipal-contact-audit.ts", "scripts/contact-supervised-worker.ts"]
+ENGINE_FILES = ["lib/contact-evidence.ts", "lib/published-joomla-mail.ts", "lib/contact-discovery.ts", "lib/contact-quality.ts", "lib/contact-quality-evidence.ts", "scripts/lib/contact-fetch.ts", "scripts/lib/contact-crawl.ts", "scripts/lib/contact-render.ts", "scripts/lib/contact-batch.ts", "scripts/contact-full-research.ts", "scripts/lib/contact-deadline.ts", "lib/uri-sicher.ts", "lib/personen-fund.ts", "package-lock.json", "lib/municipal-contact-verification.ts", "scripts/lib/municipal-contact-audit.ts", "scripts/contact-supervised-worker.ts"]
 
 
 def now():
