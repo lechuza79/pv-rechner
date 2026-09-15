@@ -16,8 +16,11 @@
 //    12. August 2026)", BMUKN-Gesetzesseite; Volltext in docs/quellen/
 //    BEHG-3-AendG_Regierungsentwurf_Kabinett_2026-08-12.pdf), am 14.08.2026 ging
 //    er als besonders eilbedürftige Vorlage nach Art. 76 Abs. 2 S. 4 GG an den
-//    Bundesrat (BR-Drs. 462/26, Fristablauf 25.09.2026). Im Bundestag ist er
-//    weder eingebracht noch beschlossen, nicht verkündet, nicht in Kraft.
+//    Bundesrat (BR-Drs. 462/26, Fristablauf 25.09.2026). Seit dem 07.09.2026 ist
+//    er im Bundestag eingebracht (BT-Drs. 21/7869, hib-Meldung vom 08.09.2026),
+//    dort aber nicht beschlossen, nicht verkündet, nicht in Kraft. (Bis zum
+//    15.09.2026 stand in diesem Kommentar noch „im Bundestag weder eingebracht"
+//    — die `source`-Zeile unten trug die Drucksache da schon.)
 //    Bis zum 12.08.2026 stand hier "Referentenentwurf, ohne Kabinettsbeschluss" —
 //    das ist seit dem Beschluss falsch (Wächter-Gate Regel 1: der Zustand ist eine
 //    eigene Änderung mit eigener Fundstelle; Council 3/3 + Legal-Judge 14.08.2026).
