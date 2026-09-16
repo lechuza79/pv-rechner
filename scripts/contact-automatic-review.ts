@@ -12,7 +12,7 @@ import {decisionProblems,type ContactDecision} from '../lib/contact-workflow';
 const arg=(name:string)=>process.argv.find(x=>x.startsWith('--'+name+'='))?.slice(name.length+3);
 const read=(p:string)=>JSON.parse(readFileSync(p,'utf8'));
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
-const runtimeFiles=['scripts/contact-automatic-review.ts','scripts/lib/contact-workflow-store.ts','scripts/lib/contact-pdf-region.ts','scripts/lib/contact-source-record.ts','lib/contact-automatic-review.ts','lib/contact-evidence.ts','lib/contact-discovery.ts','lib/contact-quality-evidence.ts','lib/contact-workflow.ts','lib/uri-sicher.ts','lib/personen-fund.ts','lib/published-joomla-mail.ts'];
+const runtimeFiles=['scripts/contact-automatic-review.ts','scripts/lib/contact-workflow-store.ts','scripts/lib/contact-pdf-region.ts','scripts/lib/contact-source-record.ts','lib/contact-automatic-review.ts','lib/contact-evidence.ts','lib/contact-discovery.ts','lib/contact-quality-evidence.ts','lib/contact-workflow.ts','lib/uri-sicher.ts','lib/personen-fund.ts','lib/kommunen-profil.ts','lib/published-joomla-mail.ts'];
 const engine=hash(JSON.stringify(runtimeFiles.map(p=>[p,hash(readFileSync(resolve(root,p)))])));
 function decode(bytes:Buffer){const charset=/<meta[^>]+charset\s*=\s*["']?([\w-]+)/i.exec(bytes.subarray(0,8192).toString('latin1'))?.[1];try{return new TextDecoder(charset??'utf-8').decode(bytes);}catch{return bytes.toString('utf8');}}
 const findingsIndex=new Map<string,string[]>();
