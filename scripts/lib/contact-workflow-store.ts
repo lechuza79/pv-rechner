@@ -123,7 +123,7 @@ export function claimCase(output:string,worker:string,asOf:string,organizationId
     for(const row of read(resolve(output,'queue.json'))){
       if(organizationId&&row.organizationId!==organizationId)continue;
       const filename=hash(row.dataset+':'+row.organizationId)+'.json',p=resolve(root,filename),lease=existsSync(p)?read(p):null;
-      if(lease&&Date.parse(lease.expiresAt)>Date.parse(asOf))continue;
+      if(lease&&lease.revision===row.revision&&Date.parse(lease.expiresAt)>Date.parse(asOf))continue;
       const decisionPath=resolve(output,'decisions',filename);
       if(existsSync(decisionPath)){
         const inventory=read(resolve(output,'inventory.json'));

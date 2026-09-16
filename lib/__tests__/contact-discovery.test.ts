@@ -4,6 +4,18 @@ import { fetchContactPage } from "../../scripts/lib/contact-fetch";
 import { contactCandidates } from "../contact-evidence";
 
 describe("contact discovery priorities",()=>{
+  it("follows published numeric pagination within the same contact directory for every audience",()=>{
+    const html='<h1>Kontakt: Unsere Ämter</h1><a href="/kontakte/index.php?ofs_1=25&ModID=9#liste_1">2</a><a href="/kontakte/index.php?ofs_1=50&ModID=9#liste_1">3</a>';
+    for(const dataset of ['kommunen','fachbetriebe','presse','versorger'] as const){
+      const links=contactLinks(html,'https://ort.de/kontakte/','ort.de',dataset);
+      expect(links.filter(l=>l.priority>=120)).toHaveLength(2);
+    }
+  });
+  it("does not promote news pagination, another directory or a changed search filter",()=>{
+    expect(contactLinks('<h1>Nachrichten</h1><a href="/team/news/index.php?page=2">2</a>','https://ort.de/team/news/','ort.de','kommunen')).toEqual([]);
+    expect(contactLinks('<h1>Kontaktverzeichnis</h1><a href="/news/index.php?ofs_1=25">2</a><a href="https://agentur.de/kontakte/?page=2">2</a>','https://ort.de/kontakte/','ort.de','kommunen')).toEqual([]);
+    expect(contactLinks('<h1>Ansprechpartner</h1><a href="/index.php?category=jobs&page=2">2</a>','https://ort.de/index.php?category=contacts','ort.de','kommunen')).toEqual([]);
+  });
   it("marks hidden mail as incomplete and reads the rendered result when available",async()=>{
     const fetcher=async()=>new Response('<span>email hidden; JavaScript is required</span>',{headers:{'content-type':'text/html'}});
     expect((await fetchContactPage('https://ort.de/',{fetcher})).observation.status).toBe('needs-rendering');

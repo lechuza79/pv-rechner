@@ -99,6 +99,10 @@ function publishedLinkBase($: ReturnType<typeof load>, documentUrl: string): str
 
 export function contactLinks(html: string, base: string, domain: string, dataset: ContactDataset): {url:string; priority:number}[] {
   const $ = load(html);
+  const documentUrl = new URL(base);
+  const directoryPage = /kontakt|contact|ansprechpartner|ansprechperson|mitarbeiter|directory|ämter|aemter|dienststellen/iu.test($("h1").text());
+  const paginationKey = /^(?:ofs(?:_\d+)?|offset|page|seite|start|pageindex)$/i;
+  const directoryPath = (path:string) => path.replace(/\/(?:index\.(?:php|html?))?\/?$/i, "");
   base = publishedLinkBase($, base);
   const result = new Map<string, number>();
   $("a[href]").each((_, el) => {
@@ -119,7 +123,13 @@ export function contactLinks(html: string, base: string, domain: string, dataset
       const context = parent.text().replace(/\s+/g, " ").trim();
       if (parent.is("p,li") && parent.find("a[href]").length === 1 && context.length <= 240) label = context;
     }
-    const priority = contactLinkPriority(target.href, label,dataset);
+    let priority = contactLinkPriority(target.href, label,dataset);
+    // Numeric next-page controls belong to the current directory, not to every
+    // inherited contact folder or unrelated news/search category on the site.
+    const pageControl = /^(?:\d+|[»›>→]+|(?:nächste|naechste|next)(?: seite| page)?|weiter)$/iu.test(label);
+    const hasOffset = [...target.searchParams].some(([key,value]) => paginationKey.test(key) && /^\d+$/.test(value));
+    const sameFilter = [...documentUrl.searchParams].every(([key,value]) => paginationKey.test(key) || target.searchParams.get(key) === value);
+    if(directoryPage && pageControl && hasOffset && sameFilter && target.origin === documentUrl.origin && directoryPath(target.pathname) === directoryPath(documentUrl.pathname)) priority = Math.max(priority,130);
     if (priority) result.set(target.href,Math.max(priority,result.get(target.href)??0));
   });
   // Follow only published frame destinations. Embedded third-party content

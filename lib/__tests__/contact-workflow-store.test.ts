@@ -82,6 +82,11 @@ describe('Local source workflow and real sender gate',()=>{
   const d={...f.decision,revision:c.revision,reviewedAt:now,outcome:'unresolved' as const,contacts:[],checks:Object.fromEntries(CONTACT_CHECKS.map(k=>[k,{state:'blocked',reason:'No official source exists in the frozen input; discovery still required',proofIds:[c.proofs[0].id]}])) as ContactDecision['checks']};
   expect(()=>submitDecision(f.output,c,d,now)).not.toThrow();
  });
+ it('replaces an obsolete source-version lease without waiting for its expiry',()=>{
+  const f=fixture();const old=claimCase(f.output,'reviewer',now);const r=JSON.parse(readFileSync(f.result,'utf8'));r.pages[0].observedAt=now;writeFileSync(f.result,JSON.stringify(r));buildWorkflow(f.source,f.output,now);
+  const replacement=claimCase(f.output,'reviewer',now);expect(replacement.token).not.toBe(old.token);expect(replacement.revision).not.toBe(old.revision);
+  expect(()=>submitClaimedDecision(f.source,f.output,f.c,f.decision,old.token,now)).toThrow('exclusive case lease');
+ });
  it('does not claim population completeness when the independent roster has a missing municipality',()=>{
   const f=fixture();const path=join(f.source,'reference.json');const bytes=JSON.stringify({regions:[{region_id:f.id,level:'gemeinde'},{region_id:'01000002',level:'gemeinde'}]});writeFileSync(path,bytes);
   writeFileSync(join(f.output,'population-reference.json'),JSON.stringify({sourcePath:path,sourceDigest:hash(bytes),observedAt:now}));
