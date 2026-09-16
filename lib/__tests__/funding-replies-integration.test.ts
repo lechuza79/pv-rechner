@@ -7,7 +7,7 @@ function database(options: { readError?: string; writeError?: string; changed?: 
   const patch = vi.fn();
   const filters: unknown[] = [];
   const write = { eq: (...args: unknown[]) => { filters.push(args); return write; }, is: (...args: unknown[]) => { filters.push(args); return write; }, select: async () => ({ data: options.changed ? [] : [{ program_id: "town" }], error: options.writeError ? { message: options.writeError } : null }) };
-  const from = vi.fn((_table: string) => ({ select: async () => ({ data: [row], error: options.readError ? { message: options.readError } : null }), update: (value: unknown) => { patch(value); return write; } }));
+  const from = vi.fn((_table: string) => ({ select: () => ({ order: () => ({ range: async () => ({ data: [row], error: options.readError ? { message: options.readError } : null }) }) }), update: (value: unknown) => { patch(value); return write; } }));
   return { db: { from } as never, patch, filters, from };
 }
 describe("Funding mailbox handoff", () => {
@@ -18,6 +18,15 @@ describe("Funding mailbox handoff", () => {
     expect(patch).toHaveBeenCalledWith({ antwort_am: mail.receivedAt.replace("Z", ".000Z"), antwort_art: "antwort", antwort_notiz: mail.text });
     expect(from.mock.calls.every(([table]) => table === "funding_anfragen")).toBe(true);
     expect(filters).toContainEqual(["antwort_am", null]);
+  });
+  it("reads inquiries beyond the first database page", async () => {
+    const range = vi.fn().mockResolvedValueOnce({data: Array.from({length:1000},(_,i)=>({...row,program_id:`other-${i}`,empfaenger:"other@other.de"})),error:null}).mockResolvedValueOnce({data:[row],error:null});
+    const {db,patch} = database();
+    const original = (db as any).from;
+    (db as any).from = () => ({...original("funding_anfragen"),select:()=>({order:()=>({range})})});
+    await foerderAnfragenZuordnen(db,[mail],true);
+    expect(range).toHaveBeenNthCalledWith(2,1000,1999);
+    expect(patch).toHaveBeenCalledTimes(1);
   });
   it("does not write in read-only mode", async () => {
     const { db, patch } = database();

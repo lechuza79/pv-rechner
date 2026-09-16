@@ -203,3 +203,24 @@ export function renderInquiryDraft(c: InquiryContext): InquiryDraft {
 
   return { subject: inquirySubject(c), body: teile.join("\n") };
 }
+
+
+export const CLARIFICATION_SUBJECT_PREFIX = "Rückfrage zur kommunalen Förderung";
+
+/** No presumed programme or grant amount for an unresolved municipal search. */
+export function renderMunicipalInquiry(name: string, question: string, sources: string[], contactSource: string): InquiryDraft {
+  return {
+    subject: `${CLARIFICATION_SUBJECT_PREFIX} in ${name}`,
+    body: [
+      "Sehr geehrte Damen und Herren,", "",
+      "ich prüfe regionale Fördermöglichkeiten für private Haushalte, damit mein Photovoltaik-Rechner keine ungesicherten oder veralteten Zuschüsse ausweist.", "",
+      question, "", "Diese Seiten habe ich dazu geprüft:", ...sources.map(s => `- ${s}`), "",
+      "Ein Link zur aktuellen Richtlinie oder eine kurze Auskunft, dass es derzeit kein entsprechendes Programm gibt, genügt. Vielen Dank für Ihre Hilfe.", "",
+      "Viele Grüße", SIGNATURE, "",
+      "Impressum: https://solar-check.io/impressum",
+      "Datenschutz: https://solar-check.io/datenschutz",
+      `Ihre Kontaktadresse stammt von Ihrer amtlichen Seite (Herkunftshinweis nach Art. 14 DSGVO): ${contactSource}`,
+      "Wenn Sie keine weitere Nachricht wünschen, genügt eine kurze Antwort.",
+    ].join("\n"),
+  };
+}

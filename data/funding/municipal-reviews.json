@@ -1,0 +1,80 @@
+[
+  {
+    "regionId": "01001000",
+    "name": "Flensburg",
+    "checkedAt": "2026-09-16T14:48:49.499889+00:00",
+    "recheckAt": "2026-10-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen; lokale Regionalboni gesondert erfasst.",
+    "outcome": "klaerung",
+    "conclusion": "Manuelle Recherche und unabhängige Gegenprüfung: KlimaBonus bietet lokale Regionalboni für PV und Balkonkraftwerke. Kein Euro-Investitionsabzug. Städtische Solarinfo nennt Beratung; die Förderdienstleistung verweist auf das gestoppte Landesprogramm. Ein zusätzlicher aktuell beantragbarer städtischer Zuschuss ist nicht abschließend geklärt.",
+    "searches": [
+      "site:flensburg.de Balkonkraftwerk Förderung 2026",
+      "site:flensburg.de Solar Förderung Klimaschutz Kontakt",
+      "Flensburg lokale Förderung Klimabonus PV Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/",
+        "finding": "Städtische Solarenergienutzung beschreibt Solarkataster und Beratung, mit Klimaschutz-Kontakt; keine ausdrückliche Negativauskunft über alle kommunalen Zuschüsse."
+      },
+      {
+        "url": "https://www.flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?FID=2306.2280.1&ModID=10",
+        "finding": "Inhalt aus dem Zuständigkeitsfinder Schleswig-Holstein, Ansprechpartner Investitionsbank; Landesprogramm seit November 2023 gestoppt. Kein Beleg für einen städtischen Fördertopf."
+      },
+      {
+        "url": "https://www.hier-wirken.de/flensburg/klimabonus-fuer-privatpersonen/belohnungsaktionen",
+        "finding": "Träger nennt PV-Anlage 100 KlimaBoni und Balkonkraftwerk 60 KlimaBoni. Regionalwährung; nicht als Euro-Zuschuss verrechnet. Durch unabhängigen Gegenprüfer ebenfalls gelesen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "flensburg.de/Leben-Soziales/B%C3%BCrgerservice/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "open",
+        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
+        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+      },
+      {
+        "url": "flensburg.de/Leben-Soziales/B%C3%BCrgerservice/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "open",
+        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
+        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+      },
+      {
+        "url": "flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "open",
+        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
+        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+      },
+      {
+        "url": "flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "open",
+        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
+        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+      },
+      {
+        "url": "flensburg.de/Leben-Soziales/B%C3%BCrgerservice/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "open",
+        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
+        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+      },
+      {
+        "url": "flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Klimaanpassung/Bundes-F%C3%B6rderprogramm-Klimaanpassung",
+        "disposition": "open",
+        "reason": "Quelle aus dem gespeicherten Bestand; nicht einzeln als gelesen markiert. Handprüfung der oben dokumentierten Originalseiten und konkrete Rückfrage statt pauschalem Negativurteil.",
+        "evidenceUrl": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/"
+      }
+    ],
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-09-16T14:00:00Z",
+      "detail": "Bestehenden Versandlauf auf Zustellbeleg prüfen; Antwort im Original lesen und kommunale Zuschüsse abschließend einordnen. Nach 14 Tagen ohne Antwort manuelle Nachprüfung, kein automatisches Nachfassen."
+    },
+    "enquiry": {
+      "id": "klaerung-01001000",
+      "recipient": "klimaschutz@flensburg.de",
+      "recipientSource": "https://www.flensburg.de/Wohnen-Wirtschaft/Verkehr-Mobilit%C3%A4t-Klima/Klimaschutz-Klimaanpassung/Solarenergienutzung/",
+      "website": "https://www.flensburg.de",
+      "question": "Auf Ihrer Solarenergieseite finde ich Beratung und das Solarkataster; die Dienstleistungsseite für steckerfertige Photovoltaik verweist auf das gestoppte Landesprogramm. Daneben bietet KlimaBonus lokale Boni in Regionalwährung an. Gibt es darüber hinaus derzeit einen beantragbaren Zuschuss der Stadt Flensburg für private Photovoltaikanlagen, Batteriespeicher, Balkonkraftwerke oder Wärmepumpen? Falls ja: Wo finde ich die aktuelle Richtlinie und den Stand der Antragstellung? Falls nein, hilft mir auch diese kurze Auskunft."
+    }
+  }
+]
