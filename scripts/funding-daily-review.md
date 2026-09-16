@@ -9,7 +9,7 @@ This runbook is the funding procedure for the existing `foerder-news-waechter` a
 - `foerder-anfragen.yml`: the **only automatic authority sender**, using its existing eligibility, office-hour, spacing, maximum-volume and no-repeat protections.
 - `kommunen-ruecklauf.yml`: the **only mailbox reader**; funding replies remain separate from outreach response metrics.
 - Existing quarterly full review: broader audit using the same gates. Before edits run `npm run sessions`, inspect recent commits, and coordinate overlapping programme changes. Do not run two writers for the same entries.
-- The additional Codex automation `f-rderlauf-ergebnis-pr-fen` stays paused. Do not revive it or add another daily funding watcher.
+- The two existing task configurations are consolidated into one active worker: the existing Codex continuation `f-rderlauf-ergebnis-pr-fen` runs the complete canonical watcher task, while the old separate Claude schedule is disabled. Do not add another worker, sender or recurring task. Use the signed-in account, never additional paid model APIs/search services or purchased credits. Preserve complete source evidence locally; only necessary public excerpts enter the current review context.
 
 ## 1. Resume actual work, not just search
 
@@ -22,13 +22,15 @@ Read all three work queues:
 ```bash
 npm run foerder:probe -- --vorrat
 npm run foerder:screen -- --kommunen
-npm run foerder:screen -- --quellen
+npm run foerder:screen -- --quellen --gruppiert
 npm run foerder:suche -- --externe
 npm run foerder:anfrage -- --liste
 npm run foerder:anfrage -- --antworten
 ```
 
 Prioritize changed known programmes and fresh substantive replies, while reserving work in every run for unreviewed new sources. Save a concrete next item if the backlog exceeds a run. A repeatedly blocked item must not starve the rest. Record source decisions and unresolved items with reasons. Programme IDs and reply timestamps in the existing watcher report are the resume markers for reviewed replies; the reply command deliberately does not claim that a received message was resolved.
+
+Identical original URLs are grouped by `--quellen --gruppiert`: read one original once and retain every municipality association. Reuse a source-level exclusion only for that exact original and documented subject matter; never infer common eligibility or close whole municipalities from a shared page. Documents with different query parameters remain separate.
 
 The source queue reads **all municipality/URL associations** in `funding_seiten`, not the one-page-per-municipality `--treffer` summary. It retains unresolved outcomes and reopens changed reviewed sources. After substantive review, persist the exact source:
 
