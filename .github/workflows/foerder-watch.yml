@@ -83,6 +83,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install public-source readers
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils
+          npx playwright install --with-deps chromium
+
       - name: Source evidence schema
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -337,6 +343,7 @@ jobs:
           npm run foerder:screen -- --treffer --technik balkon
           npm run foerder:screen -- --treffer --technik waermepumpe
           npm run foerder:screen -- --treffer --technik pv
+          npm run foerder:suche -- --externe
 
       - name: Abschlussbericht der Erfassung
         if: always()

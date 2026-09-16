@@ -180,7 +180,7 @@ describe("Versionsstempel", () => {
     // Host-Filter gegen die erfasste statt die ausgelieferte Adresse). Ohne
     // neuen Stempel bliebe ihr Verdikt „keine-seite" für immer stehen — das
     // Hochzählen ist hier nicht Buchhaltung, sondern der Fix selbst.
-    expect(SUCH_VERSION).toBe(5);
+    expect(SUCH_VERSION).toBe(6);
   });
 });
 

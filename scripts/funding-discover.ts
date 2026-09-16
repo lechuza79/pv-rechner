@@ -1,3 +1,4 @@
+import { walkFundingSources, qualifiedFundingSources, type FundingLead } from "../lib/funding-navigation";
 import { discoveryDue, type DiscoveryRecord } from "../lib/funding-source-policy";
 import { FundingSourceReader, recordStage } from "./lib/funding-source-reader";
 /**
@@ -61,7 +62,7 @@ if (!url || !key) {
   process.exit(1);
 }
 const sb = createClient(url, key);
-const sources = new FundingSourceReader(sb, "discovery", process.argv.includes("--dry"));
+let sources = new FundingSourceReader(sb, "discovery", process.argv.includes("--dry"));
 
 /** Obergrenze je Gemeinde — darüber ist es Rauschen, keine Förderseite. */
 const MAX_SEITEN_JE_GEMEINDE = 6;
@@ -125,7 +126,7 @@ async function abrufenMitZiel(ziel: string, timeoutMs = 15_000): Promise<{ html:
       headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
       redirect: "follow",
       signal: AbortSignal.timeout(timeoutMs),
-    });
+    }, true);
     if (!res.ok) return null;
     const typ = res.headers.get("content-type") ?? "";
     if (!/text\/html|xml/i.test(typ)) return null;
@@ -135,13 +136,18 @@ async function abrufenMitZiel(ziel: string, timeoutMs = 15_000): Promise<{ html:
   }
 }
 
+async function abrufenMitZielAdapted(url: string) {
+  const result = await abrufenMitZiel(url);
+  return result ? { html: result.html, url: result.startseite } : null;
+}
+
 async function abrufen(ziel: string, timeoutMs = 15_000): Promise<string | null> {
   try {
     const res = await sources.fetch(ziel, {
       headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
       redirect: "follow",
       signal: AbortSignal.timeout(timeoutMs),
-    });
+    }, true);
     if (!res.ok) return null;
     const typ = res.headers.get("content-type") ?? "";
     if (!/text\/html|xml/i.test(typ)) return null;
@@ -247,7 +253,9 @@ const MAX_ABRUFE = 9;
  * darin steckte die Lücke — eine Stadt mit getrennter Photovoltaik- und
  * Balkonseite lieferte eine davon, die andere existierte für uns nie.
  */
-async function sucheFoerderseite(gemeldeteAdresse: string): Promise<{ beste: LinkKandidat | null; funde: LinkKandidat[]; abrufe: number; erreichbar: boolean }> {
+export function setDiscoveryReaderForAudit(reader: FundingSourceReader) { sources = reader; }
+
+export async function sucheFoerderseite(gemeldeteAdresse: string, mode: "legacy" | "improved" = "improved", priorLeads: FundingLead[] = []): Promise<{ beste: LinkKandidat | null; funde: LinkKandidat[]; abrufe: number; erreichbar: boolean; leads?: FundingLead[]; remaining?: number }> {
   let abrufe = 0;
   const erstAbruf = await abrufenMitZiel(gemeldeteAdresse);
   abrufe++;
@@ -291,7 +299,15 @@ async function sucheFoerderseite(gemeldeteAdresse: string): Promise<{ beste: Lin
   // was von Geld UND vom Thema spricht.
   let ergebnis: LinkKandidat | null = kandidaten.find((k) => istEndergebnis(k)) ?? null;
 
-  if (kandidaten.length) {
+  let leads: FundingLead[] = [];
+  let remaining = 0;
+  if (mode === "improved") {
+    const walk = await walkFundingSources({ html, root: startseite, seeds: kandidaten, priorLeads, budget: Math.max(0, MAX_ABRUFE - abrufe - (ergebnis ? 0 : 2)), read: abrufenMitZielAdapted });
+    abrufe += walk.requests; leads = walk.leads; remaining = walk.remaining;
+    for (const [key] of walk.aliases) alleFunde.delete(key);
+    for (const lead of walk.candidates) alleFunde.set(seitenSchluessel(lead.url), lead);
+    ergebnis = [...alleFunde.values()].find(k => !leads.some(l => l.url === k.url && (l.relation === "published-external" || l.kind !== "page"))) ?? null;
+  } else if (kandidaten.length) {
     let spur = kandidaten[0];
     for (let ebene = 1; ebene < TIEFE && abrufe < MAX_ABRUFE; ebene++) {
       if (gesehen.has(spur.url)) break;
@@ -359,6 +375,12 @@ async function sucheFoerderseite(gemeldeteAdresse: string): Promise<{ beste: Lin
           (k) => !gesehen.has(k.url) && k.url !== formular.action,
         );
         merken(treffer);
+        if (mode === "improved") for (const candidate of treffer) {
+          if (!leads.some(lead => lead.url === candidate.url)) {
+            leads.push({ ...candidate, referrer: suchAdresse(formular, begriff), relation: "same-site", kind: "page", depth: 1, via: "published-link" });
+            remaining++;
+          }
+        }
         const gut = treffer.find((k) => istEndergebnis(k));
         if (gut) { ergebnis = gut; break; }
       }
@@ -367,8 +389,10 @@ async function sucheFoerderseite(gemeldeteAdresse: string): Promise<{ beste: Lin
 
   // Gedeckelt: Mehr als eine Handvoll echter Förderseiten hat keine Gemeinde;
   // was darüber liegt, ist Rauschen aus einer Übersichtsseite.
-  const funde = [...alleFunde.values()].sort((a, b) => b.punkte - a.punkte).slice(0, MAX_SEITEN_JE_GEMEINDE);
-  return { beste: ergebnis, funde, abrufe, erreichbar: true };
+  const sorted = [...alleFunde.values()].sort((a, b) => b.punkte - a.punkte);
+  const funde = mode === "legacy" ? sorted.slice(0, MAX_SEITEN_JE_GEMEINDE) : qualifiedFundingSources(leads);
+  if (mode === "improved") ergebnis = funde.find(f => (f as FundingLead).kind === "page") ?? null;
+  return { beste: ergebnis, funde, abrufe, erreichbar: true, leads, remaining };
 }
 
 type SuchZeile = DiscoveryRecord & { region_id: string };
@@ -412,7 +436,10 @@ async function offeneKandidaten(limit: number, schub?: string) {
   const abgelegt = await alleZeilen<SuchZeile>("funding_url_suche", "region_id, website, verdikt, such_version, checked_at");
   const zeileVon = new Map(abgelegt.map((r) => [r.region_id, r]));
   const now = new Date().toISOString();
-  const rest = ohneSeite.filter(k => discoveryDue(zeileVon.get(k.region_id), k.website!, SUCH_VERSION, now) && sources.due(k.website!));
+  const regionArg = process.argv.indexOf("--region");
+  const selectedRegions = regionArg >= 0 ? new Set((process.argv[regionArg + 1] ?? "").split(",").filter(Boolean)) : null;
+  if (selectedRegions && !selectedRegions.size) throw new Error("--region requires at least one municipality identifier");
+  const rest = ohneSeite.filter(k => (!selectedRegions || selectedRegions.has(k.region_id)) && discoveryDue(zeileVon.get(k.region_id), k.website!, SUCH_VERSION, now) && sources.due(k.website!));
   // Wer beim letzten Mal schon nicht erreichbar war, ist ein Wiederholungsversuch
   // — sein Fehlschlag sagt nichts über unsere Verbindung.
   const schonUnerreichbar = new Set(abgelegt.filter((z) => z.verdikt === "unerreichbar").map((z) => z.region_id));
@@ -460,10 +487,22 @@ async function funde(): Promise<void> {
   }
 }
 
+async function externeFundstellen(): Promise<void> {
+  const { data, error, count } = await sb.from("funding_discovery_leads")
+    .select("region_id,url,evidence", { count: "exact" })
+    .eq("evidence->>relation", "published-external")
+    .eq("evidence->>substantiveSignal", "true")
+    .order("observed_at", { ascending: false }).limit(50);
+  if (error) throw new Error(error.message);
+  console.log(`${count ?? 0} externe Quellen-Zuordnungen mit Textsignal; keine bestätigten kommunalen Programme. Zeige höchstens 50.`);
+  for (const row of data ?? []) console.log(`${row.region_id} · ${row.url}\n  Veröffentlicht auf: ${row.evidence.referrer}`);
+}
+
 async function main(): Promise<void> {
   await sources.ready();
   if (process.argv.includes("--stand")) return stand();
   if (process.argv.includes("--funde")) return funde();
+  if (process.argv.includes("--externe")) return externeFundstellen();
 
   const limit = zahl("limit", 60);
   const iS = process.argv.indexOf("--schub");
@@ -481,9 +520,13 @@ async function main(): Promise<void> {
 
   await inSchueben(naechste, zahl("gleichzeitig", 6), async (k) => {
     if (abgebrochen) return;
-    const { value: { beste, funde, erreichbar }, unreadable } = await sources.withEvidence(() => sucheFoerderseite(k.website));
-    recordStage("discovery-result", { region_id: k.region_id, url: k.website, extracted: funde.length, unreadable, evaluated_at: new Date().toISOString() });
-    const verdikt: SuchVerdikt = !erreichbar ? "unerreichbar" : beste ? "gefunden" : unreadable.length ? "unvollstaendig" : "keine-seite";
+    const { data: carried, error: carriedError } = await sb.from("funding_discovery_leads")
+      .select("evidence").eq("region_id", k.region_id).is("searched_at", null);
+    if (carriedError) throw new Error(carriedError.message);
+    const priorLeads = (carried ?? []).map(row => row.evidence as FundingLead).filter(lead => !lead.duplicateOf && sources.due(lead.url));
+    const { value: { beste, funde, erreichbar, leads = [], remaining = 0 }, unreadable } = await sources.withEvidence(() => sucheFoerderseite(k.website, "improved", priorLeads));
+    recordStage("discovery-result", { region_id: k.region_id, url: k.website, extracted: funde.length, unreadable, remaining, leads, evaluated_at: new Date().toISOString() });
+    const verdikt: SuchVerdikt = !erreichbar ? "unerreichbar" : unreadable.length || remaining ? "unvollstaendig" : funde.length ? "gefunden" : "keine-seite";
     zaehler.set(verdikt, (zaehler.get(verdikt) ?? 0) + 1);
 
     // Reißleine: Häufen sich die Fehlschläge, liegt es fast nie an den Gemeinden,
@@ -530,20 +573,35 @@ async function main(): Promise<void> {
         .is("thema_foerderung_url", null);
     }
 
+    if (leads.length) {
+      const rows = leads.map(lead => ({ region_id: k.region_id, url: lead.url,
+        observed_at: new Date().toISOString(), evidence: lead,
+        searched_at: lead.attempted ? new Date().toISOString() : null }));
+      const { error } = await sb.from("funding_discovery_leads").upsert(rows,
+        { onConflict: "region_id,url", ignoreDuplicates: true });
+      if (error) throw new Error(error.message);
+      const attempted = rows.filter(row => row.searched_at);
+      if (attempted.length) {
+        const { error: attemptError } = await sb.from("funding_discovery_leads").upsert(attempted, { onConflict: "region_id,url" });
+        if (attemptError) throw new Error(attemptError.message);
+      }
+    }
+
     // Und ALLE Funde in die Seiten-Tabelle. Das ist die Stelle, an der die
     // Erfassung mehr als eine Seite je Gemeinde behalten kann — `upsert` mit
     // dem Schlüssel (Gemeinde × Adresse) macht den Lauf idempotent und
     // überschreibt kein Leseergebnis, weil nur die Fund-Spalten geschrieben werden.
     if (funde.length) {
-      await sb.from("funding_seiten").upsert(
+      const { error: pagesError } = await sb.from("funding_seiten").upsert(
         funde.map((f) => ({
           region_id: k.region_id,
           url: seitenSchluessel(f.url),
           quelle: "suche",
-          zustand: "erreichbar",
+          zustand: leads.find(l => l.url === f.url)?.observed ? "erreichbar" : "unbekannt",
         })),
         { onConflict: "region_id,url", ignoreDuplicates: true },
       );
+      if (pagesError) throw new Error(pagesError.message);
     }
 
     if (++fertig % 100 === 0) console.log(`   … ${fertig} von ${naechste.length}`);
@@ -557,7 +615,7 @@ async function main(): Promise<void> {
   console.log("Danach screenen: npm run foerder:screen");
 }
 
-main().catch((err) => {
+if (process.argv[1] && /funding-discover\.ts$/.test(process.argv[1])) main().catch((err) => {
   console.error(err instanceof Error ? err.message : String(err));
   process.exit(1);
 });

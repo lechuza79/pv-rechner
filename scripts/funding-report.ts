@@ -153,6 +153,11 @@ async function main(): Promise<void> {
     `${jetzt.unerreichbar} Seiten nicht erreichbar${delta(jetzt.unerreichbar, vorher?.unerreichbar)}`,
   ];
 
+  const { count: pendingSources, error: pendingError } = await sb.from("funding_discovery_leads")
+    .select("url", { count: "exact", head: true }).is("searched_at", null);
+  if (pendingError) throw new Error(pendingError.message);
+  done.push(`${pendingSources ?? 0} veröffentlichte Quellen-Zuordnungen warten auf Fortsetzung der Suche; keine zusätzlichen bestätigten Programme.`);
+
   const observations: RunObservation[] = existsSync(EVIDENCE_DIR) ? readdirSync(EVIDENCE_DIR).filter(f => f.endsWith(".jsonl")).flatMap(f =>
     readFileSync(resolve(EVIDENCE_DIR, f), "utf8").trim().split("\n").filter(Boolean).map(line => JSON.parse(line))) : [];
   const evidence = summarizeEvidence(observations);

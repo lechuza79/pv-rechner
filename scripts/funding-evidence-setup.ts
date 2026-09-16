@@ -11,6 +11,12 @@ async function main() {
       failure_reason text, next_retry_at timestamptz
     );
     ALTER TABLE funding_source_state ENABLE ROW LEVEL SECURITY;
+    CREATE TABLE IF NOT EXISTS funding_discovery_leads (
+      region_id text NOT NULL, url text NOT NULL, observed_at timestamptz NOT NULL,
+      evidence jsonb NOT NULL, searched_at timestamptz,
+      PRIMARY KEY (region_id,url)
+    );
+    ALTER TABLE funding_discovery_leads ENABLE ROW LEVEL SECURITY;
   ` });
   if (error) throw new Error(error.message);
   console.log("Funding source evidence schema ready");

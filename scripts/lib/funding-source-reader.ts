@@ -3,6 +3,7 @@ import { mkdirSync, appendFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { createHash } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { fundingPdfText, fundingContentGap, renderFundingSource, htmlText } from "./funding-document";
 import { sourceFailure, retryAt } from "../../lib/funding-source-policy";
 
 export const EVIDENCE_RUN = process.env.FUNDING_RUN_ID ?? `local-${new Date().toISOString().replace(/[:.]/g, "-")}`;
@@ -25,7 +26,7 @@ export class FundingSourceReader {
     return { value, unreadable: [...new Set(unreadable)] };
   }
   private inFlight = new Map<string, Promise<Response>>();
-  constructor(private db: SupabaseClient, private stage: string, private dry = false) {}
+  constructor(private db: SupabaseClient, private stage: string, private dry = false, private enhanced = true) {}
   async ready(): Promise<void> {
     if (this.loaded) return;
     for (let offset = 0; ; offset += 1000) {
@@ -37,19 +38,22 @@ export class FundingSourceReader {
     this.loaded = true;
   }
   due(url: string): boolean {
-    const until = this.state.get(url)?.next_retry_at;
+    const previous = this.state.get(url);
+    if (this.enhanced && previous?.failure_reason === "unsupported" && /\.pdf(?:$|\?)|[?&](?:ext|format)=pdf/i.test(url)) return true;
+    const until = previous?.next_retry_at;
     return !until || Date.parse(until) <= Date.now();
   }
-  async fetch(input: string, init?: RequestInit): Promise<Response> {
-    const existing = this.inFlight.get(input);
+  async fetch(input: string, init?: RequestInit, navigation = false): Promise<Response> {
+    const key = `${input}|${navigation}`;
+    const existing = this.inFlight.get(key);
     if (existing) {
       try { return (await existing).clone(); } catch (error) { this.context.getStore()?.push(input); throw error; }
     }
-    const pending = this.read(input, init);
-    this.inFlight.set(input, pending);
-    try { return (await pending).clone(); } catch (error) { this.context.getStore()?.push(input); throw error; } finally { this.inFlight.delete(input); }
+    const pending = this.read(input, init, navigation);
+    this.inFlight.set(key, pending);
+    try { return (await pending).clone(); } catch (error) { this.context.getStore()?.push(input); throw error; } finally { this.inFlight.delete(key); }
   }
-  private async read(input: string, init?: RequestInit): Promise<Response> {
+  private async read(input: string, init?: RequestInit, navigation = false): Promise<Response> {
     await this.ready();
     if (!this.due(input)) throw new Error("Source retry deferred; previous observation preserved");
     const attemptedAt = new Date().toISOString();
@@ -57,14 +61,33 @@ export class FundingSourceReader {
     let body = "";
     let bytes = new Uint8Array();
     try { response = await fetch(input, init); bytes = new Uint8Array(await response.clone().arrayBuffer()); body = new TextDecoder().decode(bytes); } catch { /* recorded as network failure */ }
-    const reason = sourceFailure(response?.status ?? 0, response?.headers.get("content-type") ?? "", body, input, response?.url || input);
+    let reason = sourceFailure(response?.status ?? 0, response?.headers.get("content-type") ?? "", body, input, response?.url || input);
     const hash = createHash("sha256").update(bytes).digest("hex");
     mkdirSync(resolve(EVIDENCE_DIR, "bodies"), { recursive: true });
     // Content-addressed originals, including unreadable responses, retained in
     // the run artifact. Identical bytes can share a file, observations cannot.
     writeFileSync(resolve(EVIDENCE_DIR, "bodies", hash), bytes, { flag: "w" });
+    let derived: { method: string; sha256: string; evaluated_at: string } | null = null;
+    let content = body;
+    if (this.enhanced && response?.ok) {
+      try {
+        let method = "";
+        if (/application\/pdf/i.test(response.headers.get("content-type") ?? "") || Buffer.from(bytes.slice(0, 5)).toString() === "%PDF-") {
+          content = htmlText(await fundingPdfText(bytes)); method = "pdf-text";
+        } else if (reason !== "blocked" && fundingContentGap(body) === "loading-shell") {
+          content = await renderFundingSource(response.url || input); method = "browser-dom";
+        }
+        if (method) {
+          reason = sourceFailure(response.status, "text/html", content, input, response.url || input);
+          const derivedHash = createHash("sha256").update(content).digest("hex");
+          writeFileSync(resolve(EVIDENCE_DIR, "bodies", derivedHash), content);
+          derived = { method, sha256: derivedHash, evaluated_at: new Date().toISOString() };
+        }
+        if (!reason && fundingContentGap(content)) reason = "shell";
+      } catch { reason = "shell"; }
+    }
     const observation = { url: input, final_url: response?.url || input, attempted_at: attemptedAt, status: response?.status ?? 0,
-      content_type: response?.headers.get("content-type") ?? null, sha256: hash, failure_reason: reason, readable: !reason };
+      content_type: response?.headers.get("content-type") ?? null, sha256: hash, failure_reason: reason, readable: !reason, derived };
     recordStage(this.stage, observation);
     const state = { url: input, next_retry_at: reason ? retryAt(reason, attemptedAt) : null, failure_reason: reason };
     this.state.set(input, state);
@@ -72,7 +95,18 @@ export class FundingSourceReader {
       const { error } = await this.db.from("funding_source_state").upsert({ ...state, attempted_at: attemptedAt, final_url: observation.final_url, sha256: hash });
       if (error) { process.exitCode = 1; throw new Error(`Source observation not saved: ${error.message}`); }
     }
+    if (this.enhanced && reason && navigation && reason === "shell" && response) {
+      this.context.getStore()?.push(input);
+      return response;
+    }
     if (reason || !response) throw new Error(`Source unreadable: ${reason}`);
+    if (derived) {
+      const result = new Response(content, { status: response.status, headers: { "content-type": "text/html; charset=utf-8" } });
+      Object.defineProperty(result, "url", { value: response.url || input });
+      // Response.clone does not preserve an overridden URL; retain it on clones.
+      Object.defineProperty(result, "clone", { value: () => { const copy = new Response(content, { headers: result.headers }); Object.defineProperty(copy, "url", { value: response.url || input }); return copy; } });
+      return result;
+    }
     return response;
   }
 }
