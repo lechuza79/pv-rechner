@@ -263,10 +263,16 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
   it("stellt sicher, dass der Zweig im Katalog gar nicht erst greift", () => {
     // Solange jedes Programm das Feld trägt, ist die Frage oben theoretisch.
     // Dieser Test hält sie theoretisch.
-    const ohneFeld = Object.values(FUNDING_PROGRAMS).filter(p => !Array.isArray(p.combinableWith));
+    const ohneFeld = Object.values(FUNDING_PROGRAMS).filter(p => p.combinableWith !== null && !Array.isArray(p.combinableWith));
     expect(ohneFeld.map(p => p.id)).toEqual([]);
   });
 
+
+  it("keeps unverified combinations explicit and out of the federal grant stack", () => {
+    const unknown = Object.values(FUNDING_PROGRAMS).filter(p => p.combinableWith === null);
+    expect(unknown.map(p => p.id).sort()).toEqual(["delmenhorst-balkon-solar", "eppelheim-balkonkraftwerke", "floersheim-photovoltaik", "kirchlengern-pv-kleinanlagen", "pfaffenhofen-balkon", "radolfzell-sonnige-zukunft", "wendelstein-pv", "wendlingen-energie"]);
+    expect(programmeNebenBundesfoerderung(unknown)).toEqual([]);
+  });
   it("führt jeden Ausschluss ausdrücklich", () => {
     // Kein Schnappschuss, sondern eine Quittung: Wer ein Programm aufnimmt, das
     // Bundesmittel ausschließt, trägt es hier ein und bestätigt damit, dass die
@@ -282,8 +288,9 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
     //   kumuliert werden" (Nr. 1 der Richtlinie 2026, am 29.08.2026 im
     //   Volltext gelesen). Der Ausschluss gilt allen fremden Mitteln, also
     //   auch den Bundesmitteln.
-    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "tegernheim-stecker-pv", "weyhe-klimaschutz"];
-    const ausschluss = Object.values(FUNDING_PROGRAMS).filter(schliesstBundesfoerderungAus);
+    // Official combination clauses reviewed on 2026-09-16; unknown is distinct from prohibition.
+    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "herzebrock-clarholz-batteriespeicher", "luedinghausen-klimaschutzfonds", "meschede-balkon-speicher", "neuwied-balkonkraftwerke", "tegernheim-stecker-pv", "vaterstetten-pv-begleitung", "weyhe-klimaschutz", "wolfratshausen-pv"];
+    const ausschluss = Object.values(FUNDING_PROGRAMS).filter(p => Array.isArray(p.combinableWith) && p.combinableWith.length === 0);
     expect(
       ausschluss.map(p => p.id).sort(),
       "Neuer Ausschluss im Katalog — Fundstelle prüfen und hier eintragen, oder das fehlende combinableWith nachtragen",
