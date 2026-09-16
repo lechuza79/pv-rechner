@@ -3728,6 +3728,62 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "rheinisch-bergisch-balkonsolar": {
+    id: "rheinisch-bergisch-balkonsolar", name: "Förderprogramm Balkonsolaranlagen",
+    traeger: "Rheinisch-Bergischer Kreis", level: "landkreis", region: "Rheinisch-Bergischer Kreis", bundesland: "Nordrhein-Westfalen", agsCode: "05378",
+    url: "https://www.rbk-direkt.de/foerderung-balkonsolaranlagen",
+    // Added 16.09.2026 from the source queue (foerder-news-waechter). Official
+    // page: "Der Fördertopf ist ausgeschöpft. Es ist keine Antragstellung mehr
+    // möglich. Derzeit ist keine weitere Förderung für Balkonsolaranlagen
+    // geplant." Guideline "Stand: Dezember 2024", section 7: valid until
+    // 31.12.2025. Council 3/3 on the facts; status word "ausgeschoepft" is the
+    // county's own (legal judge + adversarial reviewer), no end date invented.
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Historischer Pauschalzuschuss zur Anschaffung eines Balkonkraftwerks; Fördertopf ausgeschöpft",
+    maxFoerderung: "200 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "200 € pauschal je Anlage (Kaufpreis über 200 €)", nur: ["balkon"] }],
+    conditions: [
+      "Der Fördertopf ist ausgeschöpft, eine Antragstellung ist nicht mehr möglich; derzeit ist keine weitere Förderung geplant",
+      "Die Förderrichtlinie (Stand Dezember 2024) galt bis zum 31.12.2025",
+      "Für Mieter und Eigentümer im Kreisgebiet sowie Vereine und gemeinnützige Organisationen einschließlich Kirchen",
+      "Eine Anlage je Wohneinheit (Stromzähler); Gesamtleistung 300 bis 2.000 Wp, Wechselrichter höchstens 800 W",
+      "Kosten für einen Batteriespeicher waren nicht förderfähig; ausgeschlossen waren auch Anlagen auf Grundstücken von Unternehmen und an gewerblich genutzten Gebäuden",
+      "Kein Rechtsanspruch; Förderung nur im Rahmen der Haushaltsmittel",
+    ],
+    combinableWith: null,
+  },
+  "burbach-klimaschutz-privat": {
+    id: "burbach-klimaschutz-privat", name: "Förderung für private Maßnahmen zum Klimaschutz",
+    traeger: "Gemeinde Burbach", level: "kommune", region: "Burbach", bundesland: "Nordrhein-Westfalen", agsCode: "05970008",
+    url: "https://klima.burbach-siegerland.de/Bauen-Sanieren-Wohnen/F%C3%B6rderprogramme/",
+    // Added 16.09.2026 from the source queue (foerder-news-waechter). Official
+    // page: "Für das Jahr 2026 stehen keine weiteren Fördermittel mehr zur
+    // Verfügung." Guideline of 10.12.2024 (download fid=2765.110.1.PDF): 750 €
+    // flat for a battery only together with a newly built PV/renewable system
+    // (plug-in solar excluded), 50 € flat per plug-in device. Council:
+    // neutral + adversarial reviewers. No structured rate on purpose: the
+    // programme deducts nothing while the budget is exhausted.
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    foerdert: ["pv", "balkon"],
+    coveredCosts: "Pauschalzuschuss für einen Batteriespeicher mit neuer PV-Anlage und für ein Balkonkraftwerk; Mittel für 2026 ausgeschöpft",
+    maxFoerderung: "Speicher 750 €, Balkonkraftwerk 50 €",
+    rates: [
+      { label: "Batteriespeicher mit neuer PV-Anlage", value: "750 € pauschal", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "50 € pauschal", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Die Gemeinde weist auf ihrer Förderseite darauf hin, dass für das Jahr 2026 keine weiteren Fördermittel zur Verfügung stehen",
+      { text: "Der Speicher wird nur gefördert, wenn zeitgleich eine Photovoltaikanlage oder eine andere Anlage für erneuerbaren Strom neu gebaut wird", nur: ["pv"] },
+      { text: "Antragsberechtigt beim Speicher sind nur Eigentümer der Immobilie", nur: ["pv"] },
+      { text: "Ein Balkonkraftwerk je Haushalt; auch Mieter sind antragsberechtigt", nur: ["balkon"] },
+      "Mit der Maßnahme darf erst nach der Bewilligung begonnen werden; die Investition darf nicht unter der Fördersumme liegen",
+      "Die Richtlinie verlängert sich jährlich nur, wenn der Rat Haushaltsmittel beschließt; kein Rechtsanspruch",
+    ],
+    combinableWith: null,
+  },
   "viersen-klimaschutz": {
     id: "viersen-klimaschutz", name: "Förderprogramm Klimaschutz Kreis Viersen",
     traeger: "Kreis Viersen", level: "landkreis", region: "Kreis Viersen", bundesland: "Nordrhein-Westfalen", agsCode: "05166",

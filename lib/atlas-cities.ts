@@ -304,6 +304,8 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "zweibruecken", name: "Zweibrücken", ags: "07320", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1102 },
   // ── Landkreise mit eigenem (wiederkehrendem) Förderprogramm (Juni 2026) ──────
   { slug: "rhein-erft-kreis", name: "Rhein-Erft-Kreis", ags: "05362", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "rhein-erft-energieoffensive" },
+  // A county has no single point to measure; NRW state value from lib/bundesland-ertrag.ts (16.09.2026).
+  { slug: "rheinisch-bergischer-kreis", name: "Rheinisch-Bergischer Kreis", ags: "05378", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1035 },
   { slug: "kreis-viersen", name: "Kreis Viersen", ags: "05166", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "viersen-klimaschutz" },
   { slug: "kreis-bergstrasse", name: "Kreis Bergstraße", ags: "06431", bundesland: "Hessen", yieldKwhKwp: 1030, fundingId: "bergstrasse-speicher" },
   { slug: "mayen-koblenz", name: "Landkreis Mayen-Koblenz", ags: "07137", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1010, fundingId: "mayen-koblenz-speicher" },
@@ -518,6 +520,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   {"slug": "bergkamen", "name": "Bergkamen", "ags": "05978004", "bundesland": "Nordrhein-Westfalen", "kreis": "05978", "yieldKwhKwp": 1034},
   {"slug": "pfaffenhofen-a-d-ilm", "name": "Pfaffenhofen a.d.Ilm", "ags": "09186143", "bundesland": "Bayern", "kreis": "09186", "yieldKwhKwp": 1114},
   {"slug": "hiddenhausen", "name": "Hiddenhausen", "ags": "05758016", "bundesland": "Nordrhein-Westfalen", "kreis": "05758", "yieldKwhKwp": 1018},
+  {"slug": "burbach", "name": "Burbach", "ags": "05970008", "bundesland": "Nordrhein-Westfalen", "kreis": "05970", "yieldKwhKwp": 1013},
   {"slug": "herzebrock-clarholz", "name": "Herzebrock-Clarholz", "ags": "05754020", "bundesland": "Nordrhein-Westfalen", "kreis": "05754", "yieldKwhKwp": 1039},
 ];
 

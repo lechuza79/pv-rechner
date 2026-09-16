@@ -87,6 +87,8 @@ const nextConfig = {
       {"source": "/photovoltaik-foerderung/pfaffenhofen-a-d-ilm", "destination": "/photovoltaik-foerderung/bayern/pfaffenhofen-a-d-ilm", "permanent": true},
       {"source": "/photovoltaik-foerderung/hiddenhausen", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/hiddenhausen", "permanent": true},
       {"source": "/photovoltaik-foerderung/herzebrock-clarholz", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/herzebrock-clarholz", "permanent": true},
+      {"source": "/photovoltaik-foerderung/burbach", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/burbach", "permanent": true},
+      {"source": "/photovoltaik-foerderung/rheinisch-bergischer-kreis", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/rheinisch-bergischer-kreis", "permanent": true},
       {
         source: "/",
         has: [{ type: "query", key: "a" }],
