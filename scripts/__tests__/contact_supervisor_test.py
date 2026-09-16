@@ -202,6 +202,40 @@ class SupervisorTest(unittest.TestCase):
             obj.run()
         self.assertEqual(obj.completed, 6)
 
+    def test_shared_host_cannot_occupy_every_worker_slot(self):
+        obj = self.supervisor()
+        obj.concurrency = 2
+        obj.targets = [dict(self.target, organization_id=str(i)) for i in range(4)] + [dict(self.target, organization_id="other", website="https://other.example")]
+        obj.completed = 0
+        obj.started_at = m.now()
+        pending_jobs = {}
+        started = []
+        self_test = self
+        class Pool:
+            def __init__(self, **kwargs):
+                pass
+            def submit(self, fn, target):
+                hosts = [value[1]["website"] for value in pending_jobs.values()]
+                self_test.assertNotIn(target["website"], hosts, "A same-host wait must not consume a worker slot")
+                future = m.concurrent.futures.Future()
+                pending_jobs[future] = (fn, target)
+                started.append(target["organization_id"])
+                return future
+            def shutdown(self, **kwargs):
+                pass
+        def wait(pending, **kwargs):
+            future = next(iter(pending))
+            fn, target = pending_jobs.pop(future)
+            fn(target)
+            future.set_result(None)
+            return {future}, set(pending) - {future}
+        def one(target):
+            m.atomic(obj.results / (m.key(target) + ".json"), dict(target, engine="frozen", status="found", pages=[], candidates=[]))
+        with patch.object(obj, "recover"), patch.object(obj, "one", side_effect=one), patch.object(m.concurrent.futures, "ThreadPoolExecutor", Pool), patch.object(m.concurrent.futures, "wait", side_effect=wait):
+            obj.run()
+        self.assertEqual(started[:2], ["0", "other"])
+        self.assertEqual(obj.completed, 5)
+
     def test_pid_reuse_does_not_kill_unrelated_processes(self):
         request = self.root / "specific.request.json"
         rows = "111 111 node unrelated.ts\n222 222 node contact-supervised-worker.ts /different/request.json\n"

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Resumable, bounded contact crawling. No SMTP or database writes."""
 import argparse
+from collections import deque
 import concurrent.futures
 import fcntl
 import hashlib
@@ -34,6 +35,11 @@ def atomic(path, value):
 
 def key(target):
     return hashlib.sha256((target["dataset"] + ":" + target["organization_id"]).encode()).hexdigest()
+
+
+def target_host(target):
+    site = target.get("website") or ""
+    return urlparse(site if "://" in site else "https://" + site).hostname or key(target)
 
 
 def read(path):
@@ -168,8 +174,7 @@ class Supervisor:
                 return
         else:
             existing = None
-        site = target.get("website") or ""
-        host = urlparse(site if "://" in site else "https://" + site).hostname or identity
+        host = target_host(target)
         with self.mutex:
             lock = self.hosts.setdefault(host, threading.Lock())
         with lock:
@@ -262,20 +267,41 @@ class Supervisor:
             with self.mutex:
                 self.completed += 1
         pool = concurrent.futures.ThreadPoolExecutor(max_workers=self.concurrency)
-        remaining = iter(self.targets)
-        pending = set()
-        for _ in range(self.concurrency):
-            target = next(remaining, None)
-            if target is not None:
-                pending.add(pool.submit(job, target))
+        # Reserve host capacity before submission. Waiting on a shared host
+        # inside every worker previously starved unrelated municipalities.
+        queues = {}
+        for target in self.targets:
+            queues.setdefault(target_host(target), deque()).append(target)
+        host_order = deque(queues)
+        busy_hosts = set()
+        pending = {}
+        def fill_slots():
+            while len(pending) < self.concurrency:
+                admitted = False
+                for _ in range(len(host_order)):
+                    host = host_order.popleft()
+                    if host in busy_hosts:
+                        host_order.append(host)
+                        continue
+                    target = queues[host].popleft()
+                    if queues[host]:
+                        host_order.append(host)
+                    else:
+                        del queues[host]
+                    busy_hosts.add(host)
+                    pending[pool.submit(job, target)] = host
+                    admitted = True
+                    break
+                if not admitted:
+                    break
         try:
+            fill_slots()
             while pending:
-                done, pending = concurrent.futures.wait(pending, timeout=10, return_when=concurrent.futures.FIRST_COMPLETED)
+                done, _ = concurrent.futures.wait(pending, timeout=10, return_when=concurrent.futures.FIRST_COMPLETED)
                 for future in done:
+                    busy_hosts.remove(pending.pop(future))
                     future.result()
-                    target = next(remaining, None)
-                    if target is not None:
-                        pending.add(pool.submit(job, target))
+                fill_slots()
                 with self.mutex:
                     self.state()
         except BaseException:
