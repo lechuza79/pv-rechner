@@ -146,8 +146,20 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
         addresses.add(entschluesseltOderRoh(($(link).attr("href") ?? "").slice(7).split("?")[0]).toLowerCase());
       });
       for (const match of entwirreAdressen(text).replace(/\(ad\)/gi, "@").matchAll(/[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g)) addresses.add(match[0].toLowerCase());
-      if (text.length > 600 || [...addresses].some(a => a !== email)) break;
-      if (text && addresses.has(email)) best = text;
+      if (text.length > 4000 || [...addresses].some(a => a !== email)) break;
+      // Long personnel cards are bounded by their repeated sibling structure,
+      // not by the length of an employee's list of duties. A page containing
+      // just one address does not provide this independent boundary.
+      const repeatedCard = text.length > 600 && copy.find("h1,h2,h3,h4,h5,h6").length > 0
+        && block.siblings().toArray().some(sibling => {
+          const other = $(sibling);
+          if (other.prop("tagName") !== block.prop("tagName") || !other.find("h1,h2,h3,h4,h5,h6").length) return false;
+          const links = other.find("a[href^='mailto:']");
+          if (links.length !== 1) return false;
+          const address = entschluesseltOderRoh((links.attr("href") ?? "").slice(7).split("?")[0]).toLowerCase();
+          return address !== email && /^[\w.+%-]+@[\w-]+(?:\.[\w-]+)+$/.test(address);
+        });
+      if (text && addresses.has(email) && (text.length <= 600 || repeatedCard)) best = text;
       // A contact table commonly places the role and mail link in adjacent
       // cells. Expand to this row only, never to the next person's row.
       if (block.is("article,section,li,tr,address")) break;
