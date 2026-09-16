@@ -194,3 +194,10 @@ Fehlende, unvollständige, veraltete, ungeklärte oder verschlechterte Vergleich
 brechen vor Aufbau des Mailtransports ab. Eingangsdaten, Quellen, Entscheidungen,
 zusätzliche Beobachtungen und ausgewählte Empfänger werden erneut gebunden geprüft.
 Der Bericht erzeugt keine Versandfreigabe und aktiviert keinen Versand.
+
+
+### Vergleichsgrundlage und belegte Ausschlüsse
+
+Der Vergleich benötigt `--selection-baseline` mit dem ursprünglichen gespeicherten Kontaktbestand. Rollen-, Presse-, Personen- und allgemeine Adressen bleiben darin vom gesamten alten Kandidatenpool getrennt. Mit `--sent-baseline` werden zusätzlich tatsächliche Versandnachweise ausgewertet; eine gespeicherte Adresse allein beweist keinen Versand. Beide Ausgangsdateien sind im Bericht mit Prüfsumme gebunden und werden vor einem Versand erneut geprüft.
+
+Ein ausdrücklich belegter fachfremder Kontakt kann als ausgeschlossen abgeschlossen werden. Dafür sind unveränderte lesbare Originale, eine exklusive Zuordnung und eine eindeutige fremde Aufgabe nötig; fehlende Rollenbelege, Sperren und widersprüchliche Zuständigkeiten bleiben offen. Gute alte Kandidaten bleiben auch dann gegen Verlust geschützt, wenn sie noch nicht als Empfänger gespeichert waren. Veraltete Auswertungen tragen keine aktuellen Gewinn- oder Verlustzahlen bei.
