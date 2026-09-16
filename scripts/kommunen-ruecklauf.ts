@@ -1,3 +1,4 @@
+import { fundingReplyCandidates, type FundingReplyMail } from "../lib/funding-replies";
 import { readMail } from "./lib/read-mail";
 /**
  * Rückläufer aus dem Anschreiben-Postfach abholen und zuordnen.
@@ -161,61 +162,59 @@ type Befund = {
  * Antwort". Das ist schlimmer als keine Auswertung: Es sähe aus wie eine
  * Messung und wäre eine Konstante.
  */
-async function foerderAnfragenZuordnen(
+export async function foerderAnfragenZuordnen(
   db: Awaited<ReturnType<typeof makeClient>>,
-  mails: { von: string; betreff: string; roh: string; datum: string; text: string }[],
+  mails: FundingReplyMail[],
   schreiben: boolean,
 ): Promise<void> {
-  const { ordneAnfrageZu } = await import("../lib/funding-anfragen");
   const { data, error } = await db
     .from("funding_anfragen")
-    .select("program_id, empfaenger, betreff, gesendet_am, antwort_am, antwort_art")
-    .is("antwort_am", null);
+    .select("program_id, empfaenger, betreff, gesendet_am, antwort_am, antwort_art");
   if (error) {
-    // Kein Abbruch: Der Kommunen-Rücklauf ist der Hauptzweck dieses Laufs und
-    // darf nicht an einer Tabelle scheitern, die es womöglich noch nicht gibt.
-    log(`Förder-Anfragen nicht lesbar (${error.message}) — übersprungen.`, "warn");
-    return;
+    // The caller completes outreach processing but marks the whole run failed.
+    throw new Error(`Förder-Anfragen nicht lesbar: ${error.message}`);
   }
   const offene = (data ?? []).map((z) => ({
     programId: z.program_id as string,
     empfaenger: z.empfaenger as string,
     gesendetAm: z.gesendet_am as string,
-    antwortAm: null,
-    antwortArt: null,
+    antwortAm: z.antwort_am as string | null,
+    antwortArt: z.antwort_art as string | null,
   }));
   if (!offene.length) return;
   const betreffe = new Map((data ?? []).map((z) => [z.program_id as string, z.betreff as string]));
 
-  const treffer: { programId: string; datum: string; von: string; text: string }[] = [];
-  for (const m of mails) {
-    const id = ordneAnfrageZu(m, offene, betreffe);
-    if (id) treffer.push({ programId: id, datum: m.datum, von: m.von, text: m.text });
-  }
+  const treffer = fundingReplyCandidates(mails, offene, betreffe);
 
   log();
-  log(`Offene Sachfragen an Förderstellen: ${offene.length}, davon beantwortet in diesem Zeitraum: ${treffer.length}`);
-  for (const t of treffer) log(`${t.programId} — Antwort von ${t.von} am ${t.datum}`);
+  log(`Sachfragen an Förderstellen: ${offene.length}, neue Antworten zur fachlichen Prüfung: ${treffer.length}`);
+  for (const t of treffer) log(`${t.programId} — Antwort von ${t.von} am ${t.receivedAt}`);
   if (!schreiben || !treffer.length) return;
 
+  let saved = 0;
+  const failures: string[] = [];
   for (const t of treffer) {
-    const { error: e } = await db
+    let update = db
       .from("funding_anfragen")
       .update({
         // Der Tag der ANTWORT, nicht der des Abrufs — dieselbe Trennung wie
         // beim Kommunen-Rücklauf.
-        antwort_am: new Date(`${t.datum}T12:00:00Z`).toISOString(),
+        antwort_am: t.receivedAt,
         antwort_art: "antwort",
         // Der eigene Teil ohne Zitat: Was die Stelle wirklich geschrieben hat,
         // ist die Auskunft, wegen der gefragt wurde. Sie später nur als „hat
         // geantwortet" vorzufinden wäre derselbe Verlust wie bei Nidda.
-        antwort_notiz: t.text.slice(0, 2000),
+        antwort_notiz: t.text,
       })
-      .eq("program_id", t.programId)
-      .is("antwort_am", null);
-    if (e) log(`${t.programId}: ${e.message}`, "err");
+      .eq("program_id", t.programId);
+    // Compare against the observed state; a concurrent newer reply must survive.
+    update = t.previousReplyAt ? update.eq("antwort_am", t.previousReplyAt) : update.is("antwort_am", null);
+    const { data: written, error: e } = await update.select("program_id");
+    if (e || !written?.length) failures.push(`${t.programId}: ${e?.message ?? "reply state changed concurrently"}`);
+    else saved++;
   }
-  log(`${treffer.length} ${treffer.length === 1 ? "Antwort" : "Antworten"} an Förder-Anfragen nachgetragen`, "ok");
+  log(`${saved} Antworten an Förder-Anfragen nachgetragen`, "ok");
+  if (failures.length) throw new Error(`Förderantworten nicht vollständig gespeichert: ${failures.join("; ")}`);
 }
 
 async function main(): Promise<void> {
@@ -262,7 +261,7 @@ async function main(): Promise<void> {
   /** Antworten auf die Sachfragen an Förderstellen — nicht auf unseren Brief. */
   const sachfragen: Befund[] = [];
   /** Jede gelesene Mail — Grundlage für die Zuordnung zu Förder-Sachfragen. */
-  const alleMails: { von: string; betreff: string; roh: string; datum: string; text: string }[] = [];
+  const alleMails: FundingReplyMail[] = [];
   for (const name of ordner) {
     let lock;
     try {
@@ -294,7 +293,7 @@ async function main(): Promise<void> {
       // einen Brief bekommen haben — sie landen hier also in „nicht
       // zuzuordnen", wenn niemand sie mitliest. Deshalb wird JEDE Mail
       // aufgehoben, nicht nur die zuordenbaren.
-      alleMails.push({ von, betreff, roh, datum: heuteInBerlin(msg.envelope?.date ?? new Date()), text });
+      alleMails.push({ ...mail, roh, receivedAt: msg.envelope?.date?.toISOString() ?? "" });
 
       const b: Befund = {
         art,
@@ -362,7 +361,12 @@ async function main(): Promise<void> {
     for (const b of sachfragen) log(`    ${b.name ?? b.von} — „${b.betreff}"`);
   }
 
-  await foerderAnfragenZuordnen(db, alleMails, hat("schreiben"));
+  try {
+    await foerderAnfragenZuordnen(db, alleMails, hat("schreiben"));
+  } catch (error) {
+    log(String(error), "err");
+    process.exitCode = 1;
+  }
 
   if (!hat("schreiben")) {
     log();
@@ -487,7 +491,9 @@ async function main(): Promise<void> {
   );
 }
 
-main().catch((e) => {
-  log((e as Error).message, "err");
-  process.exit(1);
-});
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((e) => {
+    log((e as Error).message, "err");
+    process.exit(1);
+  });
+}

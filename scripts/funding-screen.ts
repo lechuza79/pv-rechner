@@ -1,3 +1,4 @@
+import { pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
 import { seitenSchluessel } from "../lib/funding-seiten";
 import { FundingSourceReader, recordStage } from "./lib/funding-source-reader";
 /**
@@ -279,6 +280,17 @@ async function zeileVersion(regionId: string): Promise<number | null> {
   return (data?.screen_version as number | undefined) ?? null;
 }
 
+/** Every municipality/URL association, including additional sources hidden by coverage summaries. */
+async function quellen(): Promise<void> {
+  const rows = await alleZeilen<ReviewSource & { techniken: string | null; zustand: string }>(
+    "funding_seiten",
+    "region_id,url,techniken,zustand,gelesen_am,gelesen_ergebnis,gelesen_notiz,seite_geaendert_am",
+    (q) => q.order("region_id").order("url"),
+  );
+  const pending = pendingFundingSources(rows);
+  console.log(JSON.stringify({ totalSources: rows.length, pendingSources: pending.length, sources: process.argv.includes("--alle") ? rows : pending }, null, 2));
+}
+
 /**
  * Eine Fundstelle als gelesen abhaken.
  *
@@ -328,7 +340,7 @@ async function gelesen(): Promise<void> {
   const response = await sources.fetch(sourceUrl, { signal: AbortSignal.timeout(25000) });
   const original = await response.text();
   if (!sichtbarerText(quote) || !sichtbarerText(original).includes(sichtbarerText(quote))) throw new Error("Der Beleg steht nicht im aktuell gelesenen Original.");
-  const { error } = await sb.from("funding_seiten").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote, note: wert("notiz") }) }).eq("region_id", ids[0]).eq("url", normalized);
+  const { error } = await sb.from("funding_seiten").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote, note: wert("notiz"), reviewed_at: new Date().toISOString() }) }).eq("region_id", ids[0]).eq("url", normalized);
   if (error) throw new Error(error.message);
   recordStage("review", { region_id: ids[0], url: sourceUrl, quote, reviewed_at: new Date().toISOString(), result: ergebnis });
   // Preserve the legacy one-page view only when it refers to this exact URL.
@@ -341,6 +353,7 @@ async function gelesen(): Promise<void> {
 }
 
 async function main(): Promise<void> {
+  if (process.argv.includes("--quellen")) return quellen();
   await sources.ready();
   if (process.argv.includes("--stand")) return stand();
   if (process.argv.includes("--gelesen")) return gelesen();

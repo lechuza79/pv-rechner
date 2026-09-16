@@ -1,4 +1,4 @@
-# Förder-Verifikation — Runbook (quartalsweise)
+# Förder-Verifikation — Runbook (täglich und quartalsweise)
 
 **Zweck:** Die Förderdaten in `lib/funding-programs.ts` gegen die offiziellen
 Quellen prüfen, ohne dass jemand sie von Hand durchgeht. Förderprogramme ändern
@@ -10,6 +10,8 @@ Cloudflare-/JS-gesperrt und jede Stadt nutzt ein anderes Format. Deshalb
 **Agent-Extraktion**: ein Recherche-Agent pro Programm liest die offizielle
 Quelle (oder, wenn gesperrt, das Richtlinien-PDF / seriöse Sekundärquellen),
 extrahiert Satz + Status und hält sie gegen den hinterlegten Wert.
+
+**Gemeinsamer Ablauf:** `scripts/funding-daily-review.md` verbindet den bestehenden Tageswächter mit neuen Quellen, Rückfragen, Antworten und Live-Prüfung. Das Wächter-Gate bleibt maßgeblich; es entsteht kein weiterer geplanter Auftrag.
 
 ## Schritt 0: Der Arbeitsvorrat — BLOCKER, vor jedem anderen Schritt
 
@@ -128,8 +130,7 @@ deckelt?").
     `verified: false`.
   - Jede inhaltliche Korrektur mit einem **Regressionstest** in
     `lib/__tests__/funding-data.test.ts` festschreiben.
-- **UNREACHABLE / CONFIDENCE low:** `verified: false` lassen/setzen, `status`
-  auf `unsicher`, im Changelog unten notieren, beim nächsten Lauf erneut prüfen.
+- **UNREACHABLE / CONFIDENCE low:** Fehlversuch protokollieren und beim nächsten Lauf fortsetzen; ein einzelner Abruffehler ändert weder Prüfdatum noch Status. Nach drei fehlgeschlagenen Läufen greift die dokumentierte Eskalation. Ein bestätigter inhaltlicher Fehler ist gesondert zu korrigieren.
 
 **Wichtig:** Nur `status: "aktiv"` UND ein strukturierter Satz
 (`pvPerKwp`/`pvTiers`/`speicherPerKwh`/`speicherTiers`/`percentOfCost`) führen
@@ -143,11 +144,7 @@ Stand und bekommt trotzdem `"success": true` zurück — der einzige Hinweis ist
 unscheinbare Zeile `history: skipped, keine Änderung gegenüber dem Bestand`. Genau
 das ist an diesem Tag zweimal passiert.
 
-Prüfen, ob der neue Stand wirklich draußen ist, und erst dann resyncen:
-
-```bash
-curl -s https://solar-check.io/api/funding?plz=<PLZ> | grep -c "<neuer Satz>"
-```
+Zuerst den exakten Commit und den Zustand der Produktivveröffentlichung über die Deployment-Metadaten prüfen. Erst danach resyncen und die öffentliche API sowie sichtbare Seiten kontrollieren. Die Förder-API liest die Datenbank: Vor dem Resync kann sie den neuen Code-Seed nicht nachweisen. Quellengebundene Einzelprüfung über `foerder:probe -- --ok … --wie traeger --url … --zitat …`; kein datumsgestütztes Massenstempeln.
 
 **Und rechne damit, dass der Deploy gar nicht läuft.** Der „Ignored Build Step"
 vergleicht nur `HEAD^..HEAD`. Bei einem **Merge-Commit** ist das der Vergleich
@@ -158,32 +155,11 @@ auf dem gemergten Zweig echte `.ts`-Änderungen liegen, wird der Build
 `errorLink` auf „ignored-build-step"). Das heilt sich mit dem nächsten Push, der
 Code anfasst; wer nicht warten will, prüft die Deployments und stößt neu an.
 
-## Automatisierung: zwei geplante Tasks
+## Automatisierung: vorhandene Aufgaben, gemeinsamer Ablauf
 
-Beide laufen über die App (scheduled-tasks, „läuft solange die App offen ist" —
-für Förderdaten ausreichend). Sie werden **nach dem Merge** scharf geschaltet,
-weil sie die Programmliste aus diesem Repo (main) lesen.
+Der **bestehende tägliche** `foerder-news-waechter` bearbeitet bekannte Programme, neue Quellen und eingegangene Förderantworten nach `scripts/funding-daily-review.md`. Er belässt es nicht bei Suchtreffern oder Verdachtsmeldungen. Die bestehende Quartalsprüfung bleibt die Vollprüfung und nutzt dieselben Schutzregeln; parallele Änderungen werden vorab über Sessions und Git abgeglichen.
 
-**1. News-Wächter — wöchentlich (billig, stößt nur an).** Cron z. B. `47 6 * * 1`
-(Montag früh). Prompt-Kern:
-
-> Lies `lib/funding-programs.ts` für die aktuelle Programmliste (Level ≠ bund).
-> Mach **wenige, breite** Web-Suchen (nicht eine pro Programm) nach Signalen, dass
-> sich etwas geändert hat — z. B. „[Stadt] Photovoltaik Förderung 2026 ausgeschöpft
-> / gestoppt / neu / geändert". Melde nur **Verdachtsfälle** mit Quelle + einem
-> Satz. Für jeden Verdachtsfall: Empfehlung „volle Prüfung für Programm X" (das ist
-> dann Task 2 für genau dieses eine Programm). Keine Datenänderung, nur Bericht.
-
-Begründung Cadence: Förderbudgets ändern sich nicht täglich; wöchentlich fängt
-„Topf leer" innerhalb von Tagen und ist deutlich billiger als täglich. (Täglich
-ist möglich — bei Bedarf Cron umstellen.)
-
-**2. Voll-Prüfung — quartalsweise.** Cron z. B. `23 4 1 */3 *` (alle 3 Monate),
-zusätzlich sinnvoll Anfang Januar (neue Jahres-Budgets). Prompt-Kern:
-
-> Führe die Förder-Prüfung gemäß `scripts/foerder-verify.md` aus (ein Agent pro
-> Programm), melde die Abweichungs-Liste. Bei klaren Befunden Korrekturen
-> vorschlagen, nicht automatisch in die Live-Daten schreiben.
+Die technischen GitHub-Läufe für Quellensuche, geregelten Anfrageversand und Postfachrücklauf bleiben bestehen. Sie sind unterschiedliche Stufen, keine konkurrierenden fachlichen Wächter. Die zusätzliche Codex-Nachkontrolle bleibt deaktiviert. Keine neue Zeitplanung einrichten.
 
 ## Die Namensfalle: „ausgelaufen" steht auf derselben Seite wie „läuft"
 
@@ -226,7 +202,7 @@ Regeln, die jeder Voll-Lauf erzwingt:
    offizielle Quelle bestätigt — nicht nur die Verdachtsfälle.
 2. Nach Bestätigung/Korrektur die Beleg-Spalte **`last_verified` auf das heutige
    Datum** setzen — über `npm run foerder:probe -- --ok <id> --wie traeger …`
-   (protokolliert den Versuch mit) oder `scripts/set-funding-verified.mjs`.
+   mit Original-URL und Zitat (protokolliert den Versuch mit); kein datumsgestütztes Massenstempeln.
    Dieses Datum wird auf den Seiten als „Zuletzt geprüft: …" angezeigt — es ist
    das Vertrauenssignal und muss echt sein.
    **`updated_at` ist KEIN Ersatz** (korrigiert 16.08.2026): Der Lader zog früher
@@ -237,11 +213,9 @@ Regeln, die jeder Voll-Lauf erzwingt:
    Das ist die Förder-Ausprägung von **Gate-Regel 9**: Bestätigung ohne Änderung
    ist der Normalfall und setzt das Datum trotzdem — ein gescheiterter Abruf
    nie.
-3. **Konservativ im Zweifel:** Quelle nicht erreichbar / widersprüchlich / Topf-Stand
-   unklar → NICHT „aktiv", sondern `unsicher` (kein Abzug). Lieber eine echte
-   Förderung als „unsicher" zeigen als eine tote als „aktiv".
+3. **Konservativ im Zweifel:** Ein einzelner Abruffehler wird protokolliert, nicht als Programmende interpretiert. Für drei fehlgeschlagene Läufe gilt die Eskalation unten. Ein neuer oder inhaltlich ungeklärter Befund darf kein ungesichertes „aktiv“ oder einen neuen Abzug erzeugen.
 4. Jahreswechsel ist der kritischste Drift-Punkt (Töpfe öffnen am 1.1., laufen
-   mitten im Jahr leer) → Anfang Januar zusätzlich voll prüfen; der wöchentliche
+   mitten im Jahr leer) → Anfang Januar zusätzlich voll prüfen; der tägliche
    News-Wächter fängt „leer/neu" dazwischen ab.
 
 Je mehr Regionen im Katalog (aktuell ~110 Städte + 4 Kreise), desto wichtiger,
@@ -294,15 +268,12 @@ den Arbeitsvorrat aus Schritt 0.
 **Nach drei Läufen ohne Amtsquelle: sichere Richtung + Entscheidung.** Der Vorrat
 weist das Programm dann als ESKALATION aus. Dann `status` im Seed auf `unsicher`
 (kein Abzug mehr in der Rechnung, bleibt mit Hinweis sichtbar) — das darf der
-Wächter selbst, Wiedereinschalten nie — **und** die ausgegebene Entscheidungszeile
+Wächter selbst; Wiedereinschalten nur nach aktuellem Träger-Beleg und dem
+Verfahren im Abschnitt „Council bei Abweichung“ — **und** die ausgegebene Entscheidungszeile
 als `decisions`-Eintrag melden. Erst drei, nicht einer: Die Prüfseite ist eine
 Laune; beim ersten Fehlversuch abzuschalten nähme Förderungen weg, die es gibt.
 
-**Letzte Stufe: bei der Stelle nachfragen.** Für Programme, die auch so nicht zu
-klären sind, erzeugt `lib/funding-inquiry-draft.ts` eine sachliche Anfrage an den
-Träger (Rollen-Postfach). **Entwurf, kein Versand** — abgeschickt wird er vom
-Betreiber. Der Text wirbt bewusst mit keinem Wort für uns: Sobald er das täte,
-wäre es keine Sachfrage mehr, sondern Kaltakquise (Legal-Checkliste 6).
+**Letzte Stufe: bestehender Anfrageprozess.** `foerder-anfragen.yml` verschickt die bereits beauftragten Sachfragen zu katalogisierten Programmen nach drei protokollierten Fehlversuchen. Der Tageswächter dokumentiert Versuche und liest `foerder:anfrage -- --liste` und `--antworten`; er startet keinen zweiten Versand. Die Schutzregeln für Rollenpostfach, Abstand zum Outreach, Bürozeit, Mengenbegrenzung und kein Nachfassen bleiben erhalten. Inhaltliche Widersprüche sowie nicht katalogisierte Neufunde werden nicht automatisch von dieser Auswahl erfasst; dafür gelten der vorhandene geprüfte Einzelfall-/Entscheidungsweg und ein dauerhafter offener Quellenbefund. Siehe `scripts/funding-daily-review.md`.
 
 **Sekundärquellen reichen nicht, um „geprüft" zu behaupten.** Belegt am
 Frankfurt-Lauf (26.07.2026): Suche und Aggregatoren bestätigten brav „Programm
@@ -323,9 +294,11 @@ Status anders), zuerst das **Council** laufen lassen (`scripts/council-verify.md
 — drei unabhängige Verifizierer, einer mit Widerlegungs-Auftrag, prüfen genau
 diesen einen Befund gegen. Förderung ist im Kern ein **Ermessensfall**
 (Kleingedrucktes, „aktiv vs. unsicher", strukturierter Satz vs. kein Abzug) →
-für alles, was den **Abzug erhöht** (Satz rauf, Deckel rauf, neuer
-strukturierter Satz): kein Auto-Fix, auch bei Konsens. Den bestätigten Befund als
-Vorschlag für `lib/funding-programs.ts` mailen; der Nutzer gibt frei.
+für eine Erhöhung **bereits geführter Abzüge** (Satz rauf, Deckel rauf, neuer
+strukturierter Satz in einem vorhandenen Programm): kein Auto-Fix, auch bei Konsens.
+Diesen bestätigten Erhöhungsbefund als Vorschlag für `lib/funding-programs.ts`
+mailen; der Nutzer gibt frei. Die belegte Neuaufnahme eines Programms folgt
+dagegen der besonderen Aufnahmebefugnis im Wächter-Gate und dem gemeinsamen Tagesverfahren.
 
 **Ein Programm EINSCHALTEN ist davon zu trennen** (Wächter-Gate, Teil 4:
 „Programm einschalten nach Träger-Beleg" steht in der Selbst-Ändern-Spalte, und
@@ -337,8 +310,7 @@ Abzug sind zwei Entscheidungen, nicht eine. Und: `status: "aktiv"` **veröffentl
 die Stadtseite** (`isCityLive` in `lib/atlas-cities.ts`); das gehört in den
 Bericht, weil damit eine neue indexierbare Seite live geht.
 
-**Auto-Fix ist dagegen Pflicht, wenn beides zutrifft** (kein Ermessen, also auch
-kein Council nötig):
+**Auto-Fix ist dagegen Pflicht, wenn beides zutrifft** (Gegenprüfung nach dem gemeinsamen Tagesverfahren bleibt erforderlich):
 - Die Tatsache wurde **wörtlich auf der Träger-Seite selbst** gelesen (Stufe 1–4
   der Eskalationsleiter, nicht Sekundärquelle), **und**
 - die Änderung erhöht den Abzug nicht: Status auf ausgeschöpft/pausiert/
