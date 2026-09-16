@@ -15,6 +15,39 @@ export function recordStage(stage: string, data: Record<string, unknown>): void 
   appendFileSync(resolve(EVIDENCE_DIR, `${stage}.jsonl`), JSON.stringify({ run: EVIDENCE_RUN, stage, ...data }) + "\n");
 }
 
+type PersistenceError = { message: string; code?: string; details?: string; hint?: string };
+export class FundingPersistenceError extends Error {}
+
+/** Retry only transient failures of idempotent database writes. */
+export async function persistFundingWrite(
+  work: () => PromiseLike<{ error: PersistenceError | null; status?: number }>,
+  context: { operation: string; url: string; source_stage?: string; observed_at?: string },
+): Promise<void> {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    let error: PersistenceError | null;
+    let status: number | undefined;
+    try { ({ error, status } = await work()); }
+    catch (caught) { error = { message: caught instanceof Error ? caught.message : String(caught) }; }
+    if (!error) {
+      if (attempt > 1) recordStage("persistence", { ...context, outcome: "recovered", attempts: attempt });
+      return;
+    }
+    const transient = status === 429 || (status !== undefined && status >= 500) ||
+      /^(40001|40P01|53300|57P01|57014)$/.test(error.code ?? "") ||
+      /fetch failed|failed to fetch|network|ECONN|ETIMEDOUT|socket|connection.*(?:closed|reset)|timeout|timed out/i.test(error.message);
+    const retry = transient && attempt < 3;
+    recordStage("persistence", { ...context, outcome: retry ? "retry" : "failed", attempt, status,
+      code: error.code ?? null, message: error.message, details: error.details ?? null });
+    if (!retry) {
+      process.exitCode = 1;
+      const message = `Funding persistence failed (${context.operation}, ${context.url}): ${error.code ?? ""} ${error.message}`;
+      console.error(message);
+      throw new FundingPersistenceError(message);
+    }
+    await new Promise(resolve => setTimeout(resolve, attempt * 250));
+  }
+}
+
 /** No evaluation is allowed to replace the timestamp or bytes of an observation. */
 export class FundingSourceReader {
   private state = new Map<string, State>();
@@ -90,11 +123,11 @@ export class FundingSourceReader {
       content_type: response?.headers.get("content-type") ?? null, sha256: hash, failure_reason: reason, readable: !reason, derived };
     recordStage(this.stage, observation);
     const state = { url: input, next_retry_at: reason ? retryAt(reason, attemptedAt) : null, failure_reason: reason };
-    this.state.set(input, state);
     if (!this.dry) {
-      const { error } = await this.db.from("funding_source_state").upsert({ ...state, attempted_at: attemptedAt, final_url: observation.final_url, sha256: hash });
-      if (error) { process.exitCode = 1; throw new Error(`Source observation not saved: ${error.message}`); }
+      await persistFundingWrite(() => this.db.from("funding_source_state").upsert({ ...state, attempted_at: attemptedAt, final_url: observation.final_url, sha256: hash }),
+        { operation: "source-state", url: input, source_stage: this.stage, observed_at: attemptedAt });
     }
+    this.state.set(input, state);
     const navigableShell = this.enhanced && reason === "shell" && navigation && response;
     if (navigableShell) this.context.getStore()?.push(input);
     if ((reason && !navigableShell) || !response) throw new Error(`Source unreadable: ${reason}`);

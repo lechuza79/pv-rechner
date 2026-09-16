@@ -1,4 +1,4 @@
-import { FundingSourceReader } from "./lib/funding-source-reader";
+import { FundingSourceReader, FundingPersistenceError, persistFundingWrite } from "./lib/funding-source-reader";
 /**
  * Seiten-Abgleich für die ABDECKUNG: Hat sich eine Förderseite bewegt, die wir
  * kennen, aber (noch) nicht führen?
@@ -116,8 +116,9 @@ async function main(): Promise<void> {
         signal: AbortSignal.timeout(15_000),
       });
       if (res.ok) html = await res.text();
-    } catch {
-      /* unerreichbar */
+    } catch (error) {
+      if (error instanceof FundingPersistenceError) throw error;
+      /* unreachable public source */
     }
 
     if (!html) {
@@ -138,22 +139,22 @@ async function main(): Promise<void> {
     }
     const fp = markiert("live", abdruck);
     if (!z.fingerprint) {
+      await persistFundingWrite(() => sb.from("funding_coverage").update({ fingerprint: fp, seite_gesehen_am: jetzt }).eq("region_id", z.region_id), { operation: "coverage-initial", url: z.url! });
       neu++;
-      await sb.from("funding_coverage").update({ fingerprint: fp, seite_gesehen_am: jetzt }).eq("region_id", z.region_id);
       return;
     }
     if (fp === z.fingerprint) {
+      await persistFundingWrite(() => sb.from("funding_coverage").update({ seite_gesehen_am: jetzt }).eq("region_id", z.region_id), { operation: "coverage-seen", url: z.url! });
       unveraendert++;
-      await sb.from("funding_coverage").update({ seite_gesehen_am: jetzt }).eq("region_id", z.region_id);
       return;
     }
 
-    geaendert++;
-    if (bewegt.length < 40) bewegt.push(z.region_id);
-    await sb
+    await persistFundingWrite(() => sb
       .from("funding_coverage")
       .update({ fingerprint: fp, seite_gesehen_am: jetzt, seite_geaendert_am: jetzt })
-      .eq("region_id", z.region_id);
+      .eq("region_id", z.region_id), { operation: "coverage-changed", url: z.url! });
+    geaendert++;
+    if (bewegt.length < 40) bewegt.push(z.region_id);
   });
 
   console.log("Ergebnis:");

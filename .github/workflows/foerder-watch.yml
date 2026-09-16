@@ -30,7 +30,13 @@ on:
     # Täglich früh, vor den scheduled tasks des Betreibers: Findet der Crawler
     # etwas, liegt es schon im Arbeitsvorrat, wenn dessen Lauf startet.
     - cron: "40 3 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      resume_after_discovery:
+        description: "Resume a failed run after its completed discovery stage"
+        type: boolean
+        required: false
+        default: false
 
 concurrency:
   group: foerder-watch
@@ -96,6 +102,7 @@ jobs:
         run: npx tsx scripts/funding-evidence-setup.ts
 
       - name: Amtsseiten abrufen und vergleichen
+        if: ${{ !inputs.resume_after_discovery }}
         id: programs
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -107,6 +114,7 @@ jobs:
         run: npm run foerder:watch
 
       - name: Arbeitsvorrat zeigen
+        if: ${{ !inputs.resume_after_discovery }}
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -167,6 +175,7 @@ jobs:
       # Job-Limit ist wirkungslos, dann reißt wieder der Job zuerst und der
       # Ausgang heißt erneut „abgebrochen" (CLAUDE.md, Monitoring).
       - name: Förderseiten auf den Amtsdomains suchen
+        if: ${{ !inputs.resume_after_discovery }}
         id: discovery
         timeout-minutes: 40
         continue-on-error: true
@@ -183,6 +192,7 @@ jobs:
       # Altbestand (Bad Homburg hing an Glashütten). Dieser Schritt DARF rot
       # werden; er braucht kein Urteil, sondern vergleicht nur Namen.
       - name: Gemeindeschlüssel der Programme prüfen
+        if: ${{ !inputs.resume_after_discovery }}
         id: ags
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
