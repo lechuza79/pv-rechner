@@ -45,6 +45,7 @@ describe('cause-specific incident lifecycle', () => {
     const first = next();
     const unmeasured = next(first.state, [], [a.key]);
     expect(unmeasured.recovered).toEqual([]);
+    expect(unmeasured.autofix).toBe(true);
     expect(unmeasured.state.incidents[a.key].count).toBe(1);
   });
   it('same-run samples cannot manufacture persistence', () => {
@@ -77,8 +78,31 @@ describe('workflow delivery contract', () => {
 
 import { selectHistory } from '../../scripts/health-history';
 it('restores the latest persisted main report, including failed runs, not branch/expired artifacts; a prior attempt of the current run is retained', () => {
-  const artifact = (id: number, branch = 'main', expired = false) => ({id,expired,workflow_run:{id,head_branch:branch,repository_id:1,head_repository_id:1}});
+  const artifact = (id: number, branch = 'main', expired = false) => ({id,created_at:new Date(id * 1000).toISOString(),expired,workflow_run:{id,head_branch:branch,repository_id:1,head_repository_id:1}});
   expect(selectHistory([artifact(3),artifact(4),artifact(7,'topic'),artifact(8,'main',true),artifact(9)])?.id).toBe(9);
   expect(selectHistory([{...artifact(99),workflow_run:{id:99,head_branch:'main',repository_id:1,head_repository_id:2}}])).toBeUndefined();
   expect(selectHistory([])).toBeUndefined();
+});
+
+import { pageLatencyAssessment } from '../../scripts/health-check';
+it('keeps both slow pages open when their speed ranking swaps, and cannot recover through a fast error', () => {
+  const measure = (home: number, calculator: number, status = 200) => pageLatencyAssessment([
+    { label: '/', seconds: home, status },
+    { label: '/calculator', seconds: calculator, status: 200 },
+  ]);
+  let state = emptyState();
+  for (const sample of [measure(7, 6), measure(5, 7), measure(6, 5)]) {
+    const result = next(state, sample.findings, sample.unknown);
+    expect(result.recovered).toEqual([]);
+    expect(Object.keys(result.state.incidents)).toHaveLength(2);
+    state = result.state;
+  }
+  expect(Object.values(state.incidents).every(i => i.count === 3 && i.escalated)).toBe(true);
+  const error = measure(0.1, 1, 503);
+  const uncertain = next(state, error.findings, error.unknown);
+  expect(uncertain.recovered.map(i => i.key)).toEqual(['page-latency:/calculator']);
+  expect(uncertain.state.incidents['page-latency:/'].count).toBe(3);
+  expect(uncertain.autofix).toBe(true);
+  const recovered = measure(1, 1);
+  expect(next(uncertain.state, recovered.findings, recovered.unknown).autofix).toBe(false);
 });

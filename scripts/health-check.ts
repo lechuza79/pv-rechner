@@ -133,6 +133,21 @@ const FALLBACK_KREISE = [
 
 type Probe = { label: string; url: string; status: number; seconds: number; cache: string; region: string };
 
+/** Track every page independently; failed responses cannot prove latency recovery. */
+export function pageLatencyAssessment(probes: Pick<Probe, "label" | "status" | "seconds">[]) {
+  const findings: Finding[] = [];
+  const unknown: string[] = [];
+  const warnings: string[] = [];
+  for (const p of probes) {
+    const key = `page-latency:${p.label}`;
+    if (![200, 301, 308].includes(p.status)) { unknown.push(key); continue; }
+    const result = verdict(p.seconds, SLOW.page);
+    if (result === "rot") findings.push({ key, text: `${p.label} braucht ${p.seconds.toFixed(2)} s — deutlich zu lang.` });
+    else if (result === "gelb") warnings.push(`${p.label} braucht ${p.seconds.toFixed(2)} s.`);
+  }
+  return { findings, unknown, warnings };
+}
+
 /** Ein Aufruf, gemessen wie ein Browser ihn erlebt (inkl. Verbindungsaufbau). */
 async function probe(label: string, path: string): Promise<Probe> {
   const url = `${BASE_URL}${path}`;
@@ -1835,7 +1850,7 @@ async function main() {
   }
   const coldVisited = new Set<string>();
   const coldResult = await measureColdAtlas(coldVisited);
-  const cold = coldResult?.worst ?? null;
+  const cold = coldResult?.all.filter(p => p.status === 200 && p.cache === "MISS").reduce<Probe | null>((worst, p) => !worst || p.seconds > worst.seconds ? p : worst, null) ?? null;
   const dbProbes = await measureAtlasQueries();
 
   // ── Function-Region ───────────────────────────────────────────────────────
@@ -1890,6 +1905,8 @@ async function main() {
       : `Server-Standort: nicht ermittelbar — alle Antworten kamen aus dem CDN, ohne dass eine Function lief.`,
   );
 
+  if (!regions.length) unknown.push("function-region");
+
   // ── Statuscodes ───────────────────────────────────────────────────────────
   for (const p of pageProbes) {
     if (![200, 301, 308].includes(p.status)) {
@@ -1931,9 +1948,11 @@ async function main() {
     `Normale Seiten: langsamste ${slowest.seconds.toFixed(2)} s (${slowest.label}), ` +
       `Rest ${pageProbes.map((p) => p.seconds.toFixed(1)).join(" / ")} s`,
   );
-  const pageVerdict = verdict(slowest.seconds, SLOW.page);
-  if (pageVerdict === "rot") technical(`page-latency:${slowest.label}`, false, `${slowest.label} braucht ${slowest.seconds.toFixed(2)} s — deutlich zu lang.`);
-  else if (pageVerdict === "gelb") warnings.push(`${slowest.label} braucht ${slowest.seconds.toFixed(2)} s.`);
+  const pageLatency = pageLatencyAssessment(pageProbes);
+  unknown.push(...pageLatency.unknown);
+  warnings.push(...pageLatency.warnings);
+  for (const finding of pageLatency.findings) technical(finding.key, false, finding.text);
+  if (coldResult?.all.some(p => p.status !== 200)) unknown.push("atlas-cold-latency");
 
   if (cold && coldResult) {
     const luft = NOTBREMSE_S - cold.seconds;
@@ -2009,6 +2028,7 @@ async function main() {
     );
     for (const d of dbProbes) {
       if (d.error) {
+        unknown.push(`db-latency:${d.label}`);
         technical(`db-error:${d.label}`, true, `Die Atlas-Abfrage „${d.label}" antwortet nicht sauber: ${d.error}`);
       } else if (dbProbeVerdictRelativ(d.ms, d.baselineMs) === "rot") {
         technical(`db-latency:${d.label}`, false,
@@ -2037,6 +2057,7 @@ async function main() {
     const stand = mastr.importedAt.slice(0, 10);
     lines.push(`MaStR-Datenstand: ${stand} (${mastr.alterTage} Tage alt).`);
     if (!mastr.befund) {
+      unknown.push("mastr-import");
       // Kein Zeitplan, kein Termin, kein Urteil. Das MUSS auffallen: Eine
       // Aufsicht, die sich bei einem unlesbaren Zeitplan lautlos abschaltet,
       // ist von keiner Aufsicht nicht zu unterscheiden.
@@ -2158,6 +2179,7 @@ async function main() {
       );
     }
     // Und die zweite Hälfte: hat es auch gewirkt?
+    if (aboBereit.ohneBeleg === null || !aboBereit.bereit) unknown.push("subscription-delivery");
     if (aboBereit.ohneBeleg !== null && aboBereit.bereit) {
       lines.push(
         aboBereit.ohneBeleg === 0
@@ -2447,7 +2469,7 @@ async function main() {
 
   // ── Bericht ───────────────────────────────────────────────────────────────
   const ampel =
-    forOperator.length || forClaude.length
+    Object.keys(incidents.state.incidents).length || forOperator.length || forClaude.length
       ? "ROT"
       : selfHealed.length
         ? "REPARIERT"

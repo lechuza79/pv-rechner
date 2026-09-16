@@ -34,5 +34,5 @@ export function advanceIncidents(previous: IncidentState, findings: Finding[], n
     if (unknown.some(prefix => key === prefix || (prefix.endsWith(":") && key.startsWith(prefix))) && !state.incidents[key]) state.incidents[key] = incident;
   }
   const recovered = Object.values(previous.incidents).filter(i => !state.incidents[i.key]);
-  return { state, escalations, opened, recovered, autofix: findings.some(f => !f.operator) };
+  return { state, escalations, opened, recovered, autofix: Object.values(state.incidents).some(f => !f.operator) };
 }
