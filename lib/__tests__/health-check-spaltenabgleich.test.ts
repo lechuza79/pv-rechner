@@ -127,7 +127,9 @@ describe("Gegenprobe: der Abgleich ist wirklich verdrahtet", () => {
     const bisNaechsterAbschnitt = abschnitt.slice(0, abschnitt.indexOf("── Ablauf der Social"));
     expect(bisNaechsterAbschnitt).toContain("spalten.fehlend.length");
     expect(bisNaechsterAbschnitt).toContain("spalten.nullKollision.length");
-    expect(bisNaechsterAbschnitt.match(/forClaude\.push/g)?.length).toBe(2);
+    expect(bisNaechsterAbschnitt).toContain('technical("calculation-columns", true,');
+    expect(bisNaechsterAbschnitt).toContain('technical("calculation-nullability", true,');
+    expect(bisNaechsterAbschnitt).toContain('technical("calculation-measurement", true,');
     expect(bisNaechsterAbschnitt).not.toContain("warnings.push");
   });
 

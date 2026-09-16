@@ -26,7 +26,10 @@
  *   CRON_SECRET            für --alert
  */
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { collectColdProbes } from "../lib/health-cold-probe";
+import { placementSnapshotProblems, readCoherentPlacementSnapshot } from "../lib/health-placement-snapshot";
+import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
+import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { heuteInBerlin } from "../lib/zeit";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -46,7 +49,7 @@ import {
 import { SOLAR_CHECK_PROJEKT_ID } from "../lib/vercel-budget";
 import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
-import { sollWarnen, warnstufe } from "../lib/social-ablauf";
+import { warnstufe } from "../lib/social-ablauf";
 import { paramsToRow } from "../lib/types";
 import {
   BASIS_TAGE,
@@ -601,24 +604,12 @@ async function measureAtlasQueries(): Promise<DbProbe[]> {
  * Rangliste aller ~52 Gemeinden des Kreises), also werden sie gemessen, BEVOR
  * die Welle kommt — nicht danach.
  */
-async function measureColdAtlas(): Promise<{ worst: Probe; all: Probe[] } | null> {
+async function measureColdAtlas(visited = new Set<string>(), excludedRegions = new Set<string>()): Promise<{ worst: Probe; all: Probe[] } | null> {
   const zufall = await randomAtlasPaths(COLD_SAMPLES + 2);
   const hits: Probe[] = [];
 
   const sammle = async (label: string, pfade: string[], ziel: number) => {
-    let gefunden = 0;
-    for (const path of pfade) {
-      if (gefunden >= ziel) break;
-      const p = await probe(label, path);
-      // NUR `MISS` ist ein echter Kaltaufbau. `HIT` und `STALE` liefern beide eine
-      // fertige Seite aus dem CDN aus (bei STALE wird nur im Hintergrund erneuert)
-      // — beides misst 0,05 s und sagt über den Aufbau nichts. Vorher zählte STALE
-      // mit und konnte einen Lauf grün melden, in dem gar nichts aufgebaut wurde.
-      if (p.cache === "MISS") {
-        hits.push(p);
-        gefunden++;
-      }
-    }
+    hits.push(...await collectColdProbes({label, paths: pfade, target: ziel, base: BASE_URL, visited, excludedRegions, measure: probe}));
   };
 
   await sammle("Atlas-Gemeinde (kalt)", [...zufall.gemeinde, ...FALLBACK_GEMEINDEN], COLD_SAMPLES);
@@ -1099,17 +1090,17 @@ async function messeMastrFrische(): Promise<MastrFrische | null> {
 
 type SocialAblauf = { plattform: string; tageBisAblauf: number; stufe: number; konto: string | null };
 
-async function messeSocialAblauf(): Promise<SocialAblauf[]> {
+export async function messeSocialAblauf(fetcher: typeof fetch = fetch): Promise<SocialAblauf[] | null> {
   const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
-  if (!url || !key) return [];
+  if (!url || !key) return null;
   const kopf = { apikey: key, Authorization: `Bearer ${key}` };
   try {
-    const r = await fetch(
+    const r = await fetcher(
       `${url}/rest/v1/social_konten?select=plattform,anzeigename,gueltig_bis,gewarnt_bei_stufe`,
       { headers: kopf, signal: AbortSignal.timeout(20000) },
     );
-    if (!r.ok) return [];
+    if (!r.ok) return null;
     const rows = (await r.json()) as {
       plattform: string;
       anzeigename: string | null;
@@ -1120,24 +1111,16 @@ async function messeSocialAblauf(): Promise<SocialAblauf[]> {
     const faellig: SocialAblauf[] = [];
     for (const row of rows) {
       const tage = Math.floor((Date.parse(row.gueltig_bis) - Date.now()) / 86_400_000);
-      if (!sollWarnen(tage, row.gewarnt_bei_stufe)) continue;
+      if (!Number.isFinite(tage)) throw new Error("Invalid account expiry");
       const stufe = warnstufe(tage);
       if (stufe === null) continue;
-      // Die Stufe wird sofort quittiert, nicht erst nach erfolgreicher Zustellung:
-      // Ein fehlgeschlagener Mailversand darf nicht dazu führen, dass beim
-      // nächsten Lauf drei Stunden später dieselbe Meldung noch einmal ansetzt.
-      // Der Befund steht ohnehin im Protokoll des Laufs.
-      await fetch(`${url}/rest/v1/social_konten?plattform=eq.${encodeURIComponent(row.plattform)}`, {
-        method: "PATCH",
-        headers: { ...kopf, "Content-Type": "application/json", Prefer: "return=minimal" },
-        body: JSON.stringify({ gewarnt_bei_stufe: stufe }),
-        signal: AbortSignal.timeout(20000),
-      }).catch(() => {});
+      // Return the observed state on EVERY run. Delivery is acknowledged only
+      // by the persisted incident ledger after a successful alert request.
       faellig.push({ plattform: row.plattform, tageBisAblauf: tage, stufe, konto: row.anzeigename });
     }
     return faellig;
   } catch {
-    return [];
+    return null;
   }
 }
 
@@ -1327,28 +1310,10 @@ async function kostenSchreiben(zeile: Record<string, unknown>): Promise<boolean>
   }
 }
 
-async function kostenGemeldet(projekt: string, tag: string): Promise<void> {
-  const z = supabaseZugang();
-  if (!z) return;
-  await fetch(
-    `${z.url}/rest/v1/kosten_tageswerte?projekt=eq.${encodeURIComponent(projekt)}&tag=eq.${tag}`,
-    {
-      method: "PATCH",
-      headers: {
-        apikey: z.key,
-        Authorization: `Bearer ${z.key}`,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal",
-      },
-      body: JSON.stringify({ gemeldet_am: new Date().toISOString() }),
-      signal: AbortSignal.timeout(20000),
-    },
-  ).catch(() => {});
-}
-
 export type KostenBefund = {
   zeilen: string[];
   fuerClaude: string[];
+  incidents: Finding[];
   warnungen: string[];
 };
 
@@ -1357,7 +1322,7 @@ export type KostenBefund = {
  * denselben Tag beurteilen kann, ohne von einer Uhr abzuhängen.
  */
 export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
-  const b: KostenBefund = { zeilen: [], fuerClaude: [], warnungen: [] };
+  const b: KostenBefund = { zeilen: [], fuerClaude: [], incidents: [], warnungen: [] };
   const token = vercelToken();
   const tag = zuBeurteilenderTag(jetzt);
 
@@ -1479,7 +1444,7 @@ export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
     );
 
     if (urteil.art === "sprung") {
-      if (heute.gemeldet_am) continue; // schon gemeldet, nicht achtmal am Tag
+      // Incident history, not the cost table, deduplicates delivery.
       const details = urteil.groessen
         .filter((g) => g.gesprungen)
         .map((g) => `${g.name} liegt bei ${menge(g.wert)} statt der üblichen ${menge(Math.round(g.basis))} ` +
@@ -1492,7 +1457,7 @@ export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
           `Nachsehen: welche Adressen dazugekommen sind, wer sie aufruft (Bot-Kennung, Netzbetreiber), ` +
           `und ob sie aus dem CDN kommen. Die Schwelle NICHT hochsetzen, damit der Befund verschwindet.`,
       );
-      await kostenGemeldet(p.schluessel, tag);
+      b.incidents.push({key: `cost:${p.schluessel}`, text: b.fuerClaude[b.fuerClaude.length - 1]});
     }
   }
 
@@ -1669,61 +1634,6 @@ async function pruefeCacheWirksamkeit(): Promise<CacheBefund[]> {
   return befunde;
 }
 
-/** Ab so vielen roten Läufen hintereinander kommt der Betreiber ins Spiel. */
-export const ESKALATION_AB_LAEUFEN = 3;
-
-/**
- * Kommt die automatische Reparatur nicht weiter?
- *
- * Ein roter Lauf ist KEINE Nachricht an den Betreiber: der Workflow wird rot,
- * die Autofix-Action springt an, und in aller Regel ist die Sache beim nächsten
- * Lauf erledigt. Erst wenn dieselbe Stelle mehrere Läufe hintereinander rot
- * bleibt, ist die Selbstheilung erkennbar gescheitert — und dann ist es eine
- * Entscheidung („soll ich das anders angehen?"), keine technische Aufgabe.
- *
- * Gezählt wird über die GitHub-API statt über eine Zustandsdatei: der Check
- * läuft in einer wegwerfbaren Umgebung, und eine Datei, die nur bei
- * Selbstheilung committet wird, würde genau im Fehlerfall nichts festhalten.
- *
- * Ohne Token (lokaler Lauf) wird NICHT eskaliert — im Zweifel keine Mail.
- *
- * EINMAL JE ROT-SERIE, NICHT JE LAUF (24.08.2026) — das ist der Kern dieser
- * Funktion, nicht die Schwelle. Die erste Fassung fragte nur „sind die letzten
- * zwei rot?", und das ist ab dem dritten roten Lauf für immer wahr: Der Check
- * läuft alle drei Stunden, also ging dieselbe Frage acht Mal am Tag hinaus.
- * Gemessen am 23./24.08.2026: sechs wortgleiche Mails in fünfzehn Stunden, alle
- * über denselben abgebrochenen Förder-Lauf — dessen Behebung schon gepusht war
- * und nur auf den nächsten Tageslauf wartete. Genau der Fall, der Teil 3 des
- * Wächter-Gates ausgelöst hat („sieben Mails in drei Tagen ... zu viel Text, zu
- * viel was irrelevant ist"): Ein Absender, der sich wiederholt, wird
- * weggefiltert — und dann fehlt die eine Mail, die zählt.
- *
- * Deshalb wird die FLANKE gemeldet, also nur der Lauf, mit dem die Serie die
- * Schwelle erreicht: davor muss ein Lauf stehen, der nicht rot war. Das ist
- * ausdrücklich kein Hochsetzen einer Schwelle, damit ein Befund verschwindet
- * (Gate, Teil 2) — der Befund bleibt unverändert sichtbar, der Workflow bleibt
- * rot, die Autofix-Action läuft weiter, und im Sonntagsbericht steht er auch.
- * Was wegfällt, ist allein die Wiederholung derselben Frage.
- *
- * Bekannte Grenze, bewusst nicht gelöst: Löst sich Befund A und tritt in
- * derselben Rot-Serie Befund B auf, meldet sich niemand ein zweites Mal. Dafür
- * müsste die Historie den Befundtext tragen, den die GitHub-API nicht kennt —
- * und der Preis wäre die Zustandsdatei, die oben aus gutem Grund verworfen ist.
- * Rot bleibt rot; gesehen wird B über den Workflow, nicht über das Postfach.
- */
-export function eskalationNoetig(vorherigeLaeufe: ("success" | "failure" | string)[]): boolean {
-  if (vorherigeLaeufe.length < ESKALATION_AB_LAEUFEN - 1) return false;
-  // -1, weil der laufende (rote) Durchgang selbst mitzählt.
-  const serie = vorherigeLaeufe.slice(0, ESKALATION_AB_LAEUFEN - 1);
-  if (!serie.every((c) => c === "failure")) return false;
-  // Der Lauf VOR der Serie entscheidet, ob wir gerade erst die Schwelle
-  // erreichen (melden) oder längst darüber hinaus sind (schweigen). Reicht die
-  // Historie nicht so weit zurück, fängt die Serie am Anfang des Bekannten an —
-  // dann ist es die Flanke.
-  const davor = vorherigeLaeufe[ESKALATION_AB_LAEUFEN - 1];
-  return davor === undefined || davor !== "failure";
-}
-
 /** Ein abgeschlossener Lauf, wie ihn die GitHub-API beschreibt. */
 export type LaufAkte = { conclusion: string; dauerMin: number | null };
 
@@ -1733,14 +1643,14 @@ async function letzteLaeufe(workflow = "health-check.yml"): Promise<LaufAkte[]> 
   if (!token || !repo) return [];
   try {
     const res = await fetch(
-      `https://api.github.com/repos/${repo}/actions/workflows/${workflow}/runs?status=completed&per_page=5`,
+      `https://api.github.com/repos/${repo}/actions/workflows/${workflow}/runs?status=completed&branch=main&per_page=20`,
       { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(10000) },
     );
-    if (!res.ok) return [];
+    if (!res.ok) throw new Error(`Workflow history unavailable: ${res.status}`);
     const data = (await res.json()) as {
       workflow_runs?: { conclusion: string; run_started_at?: string; created_at?: string; updated_at?: string }[];
     };
-    return (data.workflow_runs ?? []).map((r) => {
+    return (data.workflow_runs ?? []).filter(r => r.conclusion !== "skipped").sort((a,b) => Date.parse(b.created_at ?? "") - Date.parse(a.created_at ?? "")).slice(0, 5).map((r) => {
       // Gemessen wird ab `run_started_at`, nicht ab `created_at`: Sonst zählt die
       // Wartezeit auf einen freien Runner mit, und die hat mit dem Job-Zeitlimit
       // nichts zu tun. Bekannte Grenze der Näherung: Über den ganzen Lauf
@@ -1752,13 +1662,10 @@ async function letzteLaeufe(workflow = "health-check.yml"): Promise<LaufAkte[]> 
         start && ende ? Math.max(0, (new Date(ende).getTime() - new Date(start).getTime()) / 60000) : null;
       return { conclusion: r.conclusion, dauerMin: Number.isFinite(dauerMin) ? dauerMin : null };
     });
-  } catch {
+  } catch (error) {
+    if (process.env.HEALTH_INCIDENTS === "1") throw error;
     return [];
   }
-}
-
-async function letzteLaufErgebnisse(workflow = "health-check.yml"): Promise<string[]> {
-  return (await letzteLaeufe(workflow)).map((l) => l.conclusion);
 }
 
 /**
@@ -1877,6 +1784,11 @@ export function laufStumm(
 }
 
 async function main() {
+  if (process.env.HEALTH_INCIDENTS === "1") {
+    for (const name of ["SUPABASE_URL", "SUPABASE_SERVICE_KEY", "CRON_SECRET", "GITHUB_TOKEN", "GITHUB_REPOSITORY", "VERCEL_TOKEN"]) {
+      if (!process.env[name]) throw new Error(`Required monitoring credential missing: ${name}`);
+    }
+  }
   const lines: string[] = [];
   // Die drei Kategorien entscheiden, WER etwas tut — und der Betreiber ist
   // dabei ausdrücklich nicht vorgesehen. Er kann nicht programmieren; ihn auf
@@ -1886,7 +1798,7 @@ async function main() {
   // `selfHealed`  = hat sich schon repariert, reine Protokollzeile.
   // `warnings`    = auffällig, nichts zu tun, steht im Log.
   // `forClaude`   = braucht Analyse und einen Code-Fix → geht an Claude
-  //                 (Workflow rot + die Autofix-Action greift es auf).
+  //                 (structured report requests the autofix workflow).
   //                 SCHICKT KEINE MAIL. Bis zum 28.07.2026 tat es das doch, mit
   //                 dem Betreff „Handlungsbedarf" — sieben Mails in drei Tagen
   //                 über Dinge, die der Betreiber weder beheben kann noch soll.
@@ -1894,7 +1806,17 @@ async function main() {
   //                 nicht weiterkommt, wird daraus eine Frage an ihn.
   // `forOperator` = echte Entscheidung, die nur ihm gehört (Absicht ja/nein,
   //                 Geld, Produkt). Genau das und nur das rechtfertigt eine Mail.
+  const findings: Finding[] = [];
+  const unknown: string[] = [];
   const forClaude: string[] = [];
+  const technical = (key: string, urgent: boolean, ...texts: string[]) => {
+    forClaude.push(...texts);
+    findings.push(...texts.map(text => ({ key, urgent, text })));
+  };
+  const operator = (key: string, red: boolean, ...texts: string[]) => {
+    findings.push(...texts.map(text => ({ key, operator: true, text })));
+    (red ? forOperator : fuerBetreiberOhneRot).push(...texts);
+  };
   const forOperator: string[] = [];
   // Geht an den Betreiber wie `forOperator`, macht den Lauf aber NICHT rot:
   // für Dinge, die nur er erledigen kann und bei denen es nichts zu analysieren
@@ -1911,7 +1833,8 @@ async function main() {
     // einmal umgelegt).
     pageProbes.push(await probe(path, path));
   }
-  const coldResult = await measureColdAtlas();
+  const coldVisited = new Set<string>();
+  const coldResult = await measureColdAtlas(coldVisited);
   const cold = coldResult?.worst ?? null;
   const dbProbes = await measureAtlasQueries();
 
@@ -1939,14 +1862,14 @@ async function main() {
     // Die einzige Frage im ganzen Check, die wirklich nur der Betreiber
     // beantworten kann: War das Absicht? Beide Antworten sind vertretbar, und
     // eine davon eigenmächtig zu wählen wäre gefährlicher als das Problem.
-    forOperator.push(
+    operator("region-intent", true,
       `Die Server sollen laut Einstellung nicht mehr in Frankfurt laufen, sondern woanders. War das Absicht? ` +
         `Wenn ja, ziehe ich die Zeitgrenze für Datenbank-Abfragen mit hoch (aus der Ferne dauert jeder Zugriff ` +
         `länger). Wenn nein, setze ich Frankfurt zurück. Meine Empfehlung: zurück nach Frankfurt — dort steht ` +
         `die Datenbank, und genau daran ist der Atlas im Juli 2026 ausgefallen.`,
     );
   } else if (configState === "nicht-lesbar") {
-    forClaude.push(`vercel.json ist nicht lesbar oder kein gültiges JSON — jeder Deploy scheitert damit.`);
+    technical("configuration-unreadable", true, `vercel.json ist nicht lesbar oder kein gültiges JSON — jeder Deploy scheitert damit.`);
   }
 
   const wrongRegion = regions.filter((r) => r !== EXPECTED_REGION);
@@ -1955,7 +1878,7 @@ async function main() {
       configState === "repariert"
         ? `Die Einstellung war aus vercel.json verschwunden und ist wieder drin — der nächste Deploy holt die Server zurück.`
         : `In vercel.json steht ${EXPECTED_REGION}, live greift es trotzdem nicht: das deutet auf eine Region-Einstellung im Vercel-Projekt selbst hin, die die Datei übersteuert.`;
-    forClaude.push(
+    technical("function-region", true,
       `Function-Region ist live ${wrongRegion.join("/")} statt ${EXPECTED_REGION}. Die Datenbank steht in Frankfurt — ` +
         `aus einer anderen Region kostet jeder Datenbank-Zugriff Latenz über den Atlantik, und genau daran ist ` +
         `der Atlas im Juli 2026 gestorben. ${nachwirkung}`,
@@ -1970,11 +1893,11 @@ async function main() {
   // ── Statuscodes ───────────────────────────────────────────────────────────
   for (const p of pageProbes) {
     if (![200, 301, 308].includes(p.status)) {
-      forClaude.push(`${p.label} antwortet mit ${p.status || "keiner Antwort"} (${p.cache || "—"}).`);
+      technical(`http:${p.label}`, true, `${p.label} antwortet mit ${p.status || "keiner Antwort"} (${p.cache || "—"}).`);
     }
   }
-  if (cold && cold.status !== 200) {
-    forClaude.push(`Atlas-Gemeindeseite antwortet mit ${cold.status || "keiner Antwort"} — ${cold.url}`);
+  for (const failed of coldResult?.all.filter(p => p.status !== 200) ?? []) {
+    technical(`atlas-http:${failed.label}`, true, `Atlas-Seite antwortet mit ${failed.status || "keiner Antwort"} — ${failed.url}`);
   }
 
   // ── Soft-404 im Atlas ─────────────────────────────────────────────────────
@@ -1993,7 +1916,7 @@ async function main() {
   const soft404 = await probe("Atlas-Fantasieadresse", SOFT_404_PFAD);
   lines.push(`Erfundene Atlas-Adresse: HTTP ${soft404.status || "keine Antwort"} (erwartet 404)`);
   if (soft404.status !== 404) {
-    forClaude.push(
+    technical("atlas-soft404", false,
       `Soft-404: ${SOFT_404_PFAD} antwortet mit ${soft404.status || "keiner Antwort"} statt 404. ` +
         `Google behandelt damit erfundene Adressen als gültige Seiten. Zuerst prüfen, ob wieder ein ` +
         `loading.tsx unter app/(site)/solar-atlas/ liegt oder die Routing-Entscheidung hinter das ` +
@@ -2009,7 +1932,7 @@ async function main() {
       `Rest ${pageProbes.map((p) => p.seconds.toFixed(1)).join(" / ")} s`,
   );
   const pageVerdict = verdict(slowest.seconds, SLOW.page);
-  if (pageVerdict === "rot") forClaude.push(`${slowest.label} braucht ${slowest.seconds.toFixed(2)} s — deutlich zu lang.`);
+  if (pageVerdict === "rot") technical(`page-latency:${slowest.label}`, false, `${slowest.label} braucht ${slowest.seconds.toFixed(2)} s — deutlich zu lang.`);
   else if (pageVerdict === "gelb") warnings.push(`${slowest.label} braucht ${slowest.seconds.toFixed(2)} s.`);
 
   if (cold && coldResult) {
@@ -2045,16 +1968,32 @@ async function main() {
     lines.push(auslieferungsAlterText(auslieferungsAlter));
     const coldVerdict = verdict(cold.seconds, SLOW.atlasCold);
     if (coldVerdict === "rot") {
-      forClaude.push(
+      technical("atlas-cold-latency", false,
         `Eine frisch aufgebaute Atlas-Seite braucht ${cold.seconds.toFixed(2)} s. Nur noch ${luft.toFixed(1)} s ` +
           `bis zur Notbremse (${NOTBREMSE_S} s), ab der die Seite einen Fehler zeigt. Das ist die Vorstufe zum ` +
           `Ausfall — auch wenn gerade noch alles mit 200 antwortet. ` +
           kaltaufbauHerkunft(auslieferungsAlter),
       );
+      // Independent confirmation is outside the model budget. Never revisit
+      // the first URL or its district; HIT/STALE cannot clear a fresh slow build.
+      const excluded = new Set(coldResult.all.map(p => new URL(p.url).pathname.split("/").slice(0, 4).join("/")));
+      const confirmation = await measureColdAtlas(coldVisited, excluded);
+      const fresh = confirmation?.all.filter(p => p.cache === "MISS" && p.status === 200) ?? [];
+      lines.push(fresh.length
+        ? `Unabhängige Gegenprobe, andere Atlas-Regionen: ${fresh.map(p => p.seconds.toFixed(2)).join(" / ")} s. Der erste langsame Aufbau bleibt als Befund erhalten.`
+        : "Unabhängige Gegenprobe: kein frischer Aufbau messbar; keine Entwarnung.");
+      for (const failed of confirmation?.all.filter(p => p.status !== 200) ?? []) technical(`atlas-http:${failed.label}`, true, `Atlas-Gegenprobe: HTTP ${failed.status} — ${failed.url}`);
+      if (fresh.some(p => verdict(p.seconds, SLOW.atlasCold) === "rot")) {
+        const incident = findings.find(f => f.key === "atlas-cold-latency");
+        if (incident) incident.urgent = true;
+        lines.push("Langsamer frischer Aufbau unabhängig bestätigt: sofortige Eskalation.");
+      }
     } else if (coldVerdict === "gelb") {
       warnings.push(`Atlas-Kaltaufbau bei ${cold.seconds.toFixed(2)} s (Luft: ${luft.toFixed(1)} s).`);
     }
   } else {
+    unknown.push("atlas-cold-latency");
+    technical("atlas-cold-measurement", false, "Kein frischer Atlas-Aufbau messbar; keine Entwarnung möglich.");
     warnings.push("Kein echter Kaltaufbau messbar (alle geprüften Seiten lagen im Cache).");
   }
 
@@ -2070,9 +2009,9 @@ async function main() {
     );
     for (const d of dbProbes) {
       if (d.error) {
-        forClaude.push(`Die Atlas-Abfrage „${d.label}" antwortet nicht sauber: ${d.error}`);
+        technical(`db-error:${d.label}`, true, `Die Atlas-Abfrage „${d.label}" antwortet nicht sauber: ${d.error}`);
       } else if (dbProbeVerdictRelativ(d.ms, d.baselineMs) === "rot") {
-        forClaude.push(
+        technical(`db-latency:${d.label}`, false,
           `Die Atlas-Abfrage „${d.label}" braucht ${d.ms} ms bei einem Vergleichs-Read von ${d.baselineMs} ms — ` +
             `und zwar in ihrem SCHNELLSTEN von ${DB_PROBE_RUNS} Versuchen, es ist also kein Ausreißer. ` +
             `Die Differenz ist echte Datenbankarbeit und im gesunden Zustand nahe null. Sie heißt: die Abfrage läuft wieder über die ganze ` +
@@ -2085,6 +2024,8 @@ async function main() {
       }
     }
   }
+
+  if (!dbProbes.length) { unknown.push("db-error:", "db-latency:"); technical("db-measurement", true, "Datenbank-Prüfung liefert keine Messung."); }
 
   // ── Frische der MaStR-Daten ───────────────────────────────────────────────
   // Weder Statuscode noch Antwortzeit beantworten die Frage, ob die Zahlen im
@@ -2099,7 +2040,7 @@ async function main() {
       // Kein Zeitplan, kein Termin, kein Urteil. Das MUSS auffallen: Eine
       // Aufsicht, die sich bei einem unlesbaren Zeitplan lautlos abschaltet,
       // ist von keiner Aufsicht nicht zu unterscheiden.
-      warnings.push(
+      technical("mastr-schedule", true,
         `MaStR-Import: Der Zeitplan der Action (${MASTR_WORKFLOW}) ist nicht lesbar — ohne Termin gibt es ` +
           `kein Urteil darüber, ob ein Import ausgefallen ist. Nachsehen, ob die Datei noch existiert und ` +
           `ihr Zeitplan noch als fester Tag des Monats geschrieben ist.`,
@@ -2110,7 +2051,7 @@ async function main() {
       const akten = await letzteLaeufe(MASTR_WORKFLOW);
       const meldung = importlaufMeldung(mastr.befund, akten[0]?.conclusion ?? null);
       if (meldung?.stufe === "claude") {
-        forClaude.push(
+        technical("mastr-import", false,
           `Der monatliche Import des Anlagenbestands ist ausgefallen (${meldung.text}); in der Datenbank ` +
             `steht weiterhin ${stand}. Über 11.000 Gemeindeseiten zeigen damit die Zahlen des Vormonats — ` +
             `sie antworten normal, sind schnell und sehen richtig aus. ` +
@@ -2125,7 +2066,37 @@ async function main() {
   } else {
     // Kein Urteil über die Frische, sondern über den Abruf. Beides zu vermengen
     // hieße, eine Beobachtung zu behaupten, die es nicht gab.
+    unknown.push("mastr-import");
+    technical("mastr-measurement", false, "Anlagen-Datenstand nicht abrufbar.");
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
+  }
+
+  // Verify the complete active generation; never infer it from one fast page.
+  try {
+    const access = supabaseZugang();
+    if (!access) throw new Error("Database access missing");
+    const read = async (path: string, count = false) => {
+      const response = await fetch(`${access.url}/rest/v1/${path}`, {
+        method: count ? "HEAD" : "GET",
+        headers: { apikey: access.key, Authorization: `Bearer ${access.key}`, ...(count ? { Prefer: "count=exact" } : {}) },
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!response.ok) throw new Error(`Snapshot check HTTP ${response.status}`);
+      return response;
+    };
+    const count = (response: Response) => Number(response.headers.get("content-range")?.split("/")[1] ?? NaN);
+    const snapshot = await readCoherentPlacementSnapshot({
+      active: async () => (await read("atlas_platzierung_aktiv?select=lauf_id")).json(),
+      metadata: async id => (await read(`atlas_platzierung_laeufe?id=eq.${encodeURIComponent(id)}&select=orte,erneuert_am`)).json(),
+      actual: async () => count(await read("atlas_platzierungen?select=region_id", true)),
+      expected: async () => count(await read("mastr_gemeinde_award?select=region_id", true)),
+    }, mastr?.importedAt ?? null);
+    const problems = placementSnapshotProblems(snapshot, new Date());
+    lines.push(`Vorbereitete Ranglisten: ${snapshot.actual}/${snapshot.expected} Gemeinden, ${problems.length ? "Prüfung fehlgeschlagen" : "vollständig und aktuell"}.`);
+    technical("placement-snapshot", true, ...problems);
+  } catch (error) {
+    unknown.push("placement-snapshot");
+    technical("placement-snapshot-measurement", true, `Ranglisten-Prüfung fehlgeschlagen: ${String(error)}`);
   }
 
   // ── Ist die Datenbank-Sicherheitsgrenze noch dicht? ───────────────────────
@@ -2137,7 +2108,12 @@ async function main() {
         ? "Sicherheitsgrenze: dicht (Zeilenschutz auf jeder Tabelle, SQL-Funktion nur fuer den Dienst)."
         : `Sicherheitsgrenze: ${posture.problems.length} Problem(e).`,
   );
-  forClaude.push(...sicherheitsBefund(posture));
+  if (posture && !posture.ok) {
+    for (const problem of posture.problems.length ? posture.problems : ["missing-details"]) {
+      technical(`security:${problem}`, true, ...sicherheitsBefund({ ok: false, problems: [problem] }));
+    }
+  }
+  if (posture === null) { unknown.push("security:"); technical("security-measurement", true, "Sicherheitsprüfung nicht erreichbar."); }
 
   // ── Steht der Bot-Schutz noch scharf, und kommen wir selbst durch? ────────
   const firewall = await messeFirewall();
@@ -2146,7 +2122,11 @@ async function main() {
       ? "Firewall: nicht messbar (Produktion antwortete gar nicht)."
       : `Firewall: eigene Abrufe ${firewall.statusEigen}, fremde Kennung ${firewall.statusFremd}, Crawler-Anweisungen ${firewall.statusRobots}.`,
   );
-  forClaude.push(...firewallBefund(firewall));
+  if (firewall) {
+    for (const property of ["eigeneDurch", "anweisungenOffen", "fremdeAbgewiesen"] as const) {
+      if (!firewall[property]) technical(`firewall:${property}`, true, ...firewallBefund({ ...firewall, eigeneDurch: true, anweisungenOffen: true, fremdeAbgewiesen: true, [property]: false }));
+    }
+  } else { unknown.push("firewall:"); technical("firewall-measurement", true, "Firewall-Prüfung nicht erreichbar."); }
 
   // ── Kommt aus dem Vorschaubild wirklich ein Bild heraus? ──────────────────
   const vorschau = await messeVorschaubild();
@@ -2157,7 +2137,8 @@ async function main() {
         ? `Vorschaubild: echtes PNG, ${vorschau.breite} Punkte breit, ${Math.round(vorschau.bytes / 1024)} kB.`
         : `Vorschaubild: kein Bild (HTTP ${vorschau.status}, ${vorschau.bytes} Byte).`,
   );
-  forClaude.push(...vorschaubildBefund(vorschau));
+  technical("preview-image", false, ...vorschaubildBefund(vorschau));
+  if (!vorschau) { unknown.push("preview-image"); technical("preview-measurement", true, "Vorschaubild-Prüfung nicht erreichbar."); }
 
   // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
   const aboBereit = await messeAboBereit();
@@ -2168,7 +2149,7 @@ async function main() {
         : `Gemeinde-Abo: ${aboBereit.fehlt.length} Punkt(e) hindern den Versand in der Produktion.`,
     );
     if (!aboBereit.bereit) {
-      forClaude.push(
+      technical("subscription-config", true,
         `Das Gemeinde-Abo kann in der PRODUKTION nicht arbeiten: ${aboBereit.fehlt.join(", ")}. ` +
           `Jede Anmeldung endet damit für den Nutzer bei „Die Bestätigungsmail konnte gerade nicht verschickt ` +
           `werden", und niemand kommt ins Abo. Von außen ist das unsichtbar: Die Seite lädt, der Knopf ` +
@@ -2185,7 +2166,7 @@ async function main() {
       );
     }
     if (aboVersandStockt(aboBereit)) {
-      forClaude.push(
+      technical("subscription-delivery", true,
         `${aboBereit.ohneBeleg} frische Anmeldung(en) im Gemeinde-Abo tragen keinen Versandbeleg, während die ` +
           `Zugangsdaten des Postfachs vollständig gesetzt sind. Beides ist gemessen; der Schluss daraus nicht — ` +
           `deshalb steht hier keine Diagnose, sondern der nächste Schritt. Zwei Lesarten: entweder die Mail hat ` +
@@ -2197,6 +2178,8 @@ async function main() {
       );
     }
   }
+
+  if (!aboBereit) { unknown.push("subscription-config", "subscription-delivery"); technical("subscription-measurement", true, "Abo-Prüfung nicht erreichbar."); }
 
   // ── Steht die vorberechnete Auszeichnungs-Liste? ─────────────────────────
   {
@@ -2234,7 +2217,7 @@ async function main() {
     }
     const urteil = auszeichnungsUrteil(stand);
     lines.push(urteil.text);
-    if (urteil.befund) forClaude.push(urteil.befund);
+    if (urteil.befund) technical("atlas-awards", false, urteil.befund);
   }
 
   // ── Schreibt der Code in Spalten, die es gibt? ────────────────────────────
@@ -2247,7 +2230,7 @@ async function main() {
         : `Gespeicherte Berechnungen: ${summe} Abweichung(en) zwischen Code und Tabelle.`,
     );
     if (spalten.fehlend.length) {
-      forClaude.push(
+      technical("calculation-columns", true,
         `Beim Speichern einer Berechnung schreibt der Code ${spalten.fehlend.length === 1 ? "ein Feld" : "Felder"}, ` +
           `die es in der Tabelle nicht gibt: ${spalten.fehlend.join(", ")}. Damit scheitert JEDER Speicherversuch ` +
           `mit HTTP 500 — und zwar unsichtbar: kein Typfehler, kein roter Test, keine kaputte Seite, und bei drei ` +
@@ -2256,7 +2239,7 @@ async function main() {
       );
     }
     if (spalten.nullKollision.length) {
-      forClaude.push(
+      technical("calculation-nullability", true,
         `Beim Speichern einer Berechnung schreibt der Code NULL in Spalten, die einen Wert verlangen: ` +
           `${spalten.nullKollision.join(", ")}. Betroffen ist der Normalfall — der Nutzer hat dort nichts ` +
           `eigenes gesetzt. Auch das endet in HTTP 500 und ist von außen unsichtbar. Entweder darf die Spalte ` +
@@ -2266,8 +2249,12 @@ async function main() {
     }
   }
 
+  if (!spalten) { unknown.push("calculation-columns", "calculation-nullability"); technical("calculation-measurement", true, "Prüfung gespeicherter Berechnungen nicht erreichbar."); }
+
   // ── Ablauf der Social-Zugänge ─────────────────────────────────────────────
-  for (const s of await messeSocialAblauf()) {
+  const social = await messeSocialAblauf();
+  if (social === null) { unknown.push("social:"); technical("social-measurement", false, "Social-Zugänge konnten nicht geprüft werden."); }
+  for (const s of social ?? []) {
     const wer = s.konto ? ` (${s.konto})` : "";
     // DIE ADRESSE MUSS ZUR PLATTFORM PASSEN. Sie stand fest auf LinkedIn, weil
     // es lange nur die eine gab — mit einem zweiten Kanal wird daraus eine
@@ -2275,7 +2262,7 @@ async function main() {
     // an, und der Instagram-Zugang läuft weiter aus. Dieselbe Fehlerklasse wie
     // eine Beschriftung, die etwas anderes sagt, als die Zahl daneben misst.
     const start = `solar-check.io/api/${s.plattform}/start`;
-    fuerBetreiberOhneRot.push(
+    operator(`social:${s.plattform}:${s.konto ?? ""}`, false,
       s.tageBisAblauf < 0
         ? `Der ${s.plattform}-Zugang${wer} ist abgelaufen — seitdem wird nichts mehr veröffentlicht. ` +
           `Zum Erneuern einmal ${start} aufrufen (eingeloggt als Admin). ` +
@@ -2293,7 +2280,8 @@ async function main() {
   // angeschlagen hätte — es gab schlicht niemanden, der hinsah.
   const kosten = await messeKosten(new Date());
   lines.push(...kosten.zeilen);
-  forClaude.push(...kosten.fuerClaude);
+  for (const incident of kosten.incidents) technical(incident.key, false, incident.text);
+  if (kosten.warnungen.length) unknown.push("cost:");
   warnings.push(...kosten.warnungen);
 
   // ── Cache-Wirksamkeit ─────────────────────────────────────────────────────
@@ -2308,7 +2296,7 @@ async function main() {
       (ungecacht.length ? ` — daneben: ${ungecacht.map((c) => `${c.label} (${c.zweiterAbruf})`).join(", ")}` : ""),
   );
   for (const c of ungecacht) {
-    forClaude.push(
+    technical(`cache:${c.label}`, false,
       `„${c.label}" wird nicht mehr aus dem CDN ausgeliefert: der zweite Abruf derselben Adresse kam als ` +
         `${c.zweiterAbruf} zurück (erster: ${c.ersterAbruf}), müsste aber ein Cache-Treffer sein. ` +
         `Das heißt, JEDER Besucher zahlt den vollen Aufbau — die Seite ist dann noch schnell genug, kippt aber ` +
@@ -2323,7 +2311,7 @@ async function main() {
   const teilen = await pruefeGeteilteRechnungen();
   lines.push(`Geteilte Rechnungen: ${teilen.meldung}`);
   if (!teilen.ok) {
-    forClaude.push(
+    technical("shared-calculations", true,
       `Der Rechner trennt geteilte Ergebnisse nicht mehr sauber: ${teilen.meldung}. ` +
         `Das heisst im schlimmsten Fall, dass jemand mit seinem eigenen Link die Rechnung eines Fremden sieht — ` +
         `unter seiner Adresse, mit dem falschen Bild im Chat, und die Seite sieht dabei vollkommen normal aus. ` +
@@ -2363,7 +2351,7 @@ async function main() {
     // der LAUF selbst schweigt — und das ist der gefährlichere Fall, weil ein
     // Wächter, der nicht läuft, auch keinen Fehler meldet.
     if (f.grund === "stillstand" || f.grund === "beides") {
-      forClaude.push(
+      technical(`watcher-stalled:${f.feld}`, false,
         `Der Prüfwert „${f.was}" steht seit ${f.alterTage} Tagen unbewegt (erlaubt: ${f.maxAlterTage}). ` +
           `Zuständig ist der Wächter „${f.waechter}" (${f.rhythmus}), Runbook ${f.runbook}, Feld ${f.feld}. ` +
           `Das heißt NICHT, dass der Wert falsch ist — es heißt, dass niemand mehr nachsieht. ` +
@@ -2371,7 +2359,7 @@ async function main() {
           `Das Datum NICHT von Hand hochsetzen — das wäre eine behauptete Prüfung, die nie stattfand.`,
       );
     } else {
-      forClaude.push(
+      technical(`watcher-overdue:${f.feld}`, false,
         `Der Prüfwert „${f.was}" ist seit ${f.terminUeberzogen} Tagen über seinem Termin. ` +
           `Zuständig: „${f.waechter}" (${f.rhythmus}), Runbook ${f.runbook}. ` +
           `Der Wächter läuft, hat den Wert aber nicht nachgezogen.`,
@@ -2387,6 +2375,7 @@ async function main() {
   for (const lauf of GEPLANTE_LAEUFE) {
     const akten = await letzteLaeufe(lauf.datei);
     const ergebnisse = akten.map((a) => a.conclusion);
+    if (ergebnisse[0] === "success") lines.push(`Geplanter Lauf „${lauf.was}“: neuester abgeschlossener Lauf erfolgreich; ältere Fehlschläge sind überholt.`);
     if (!ergebnisse.length) continue; // kein Token / lokal — nichts behaupten
 
     // Frühindikator: nicht der Abbruch, sondern der Abstand zum Zeitlimit.
@@ -2413,7 +2402,7 @@ async function main() {
 
     const { stumm, wie } = laufStumm(ergebnisse);
     if (!stumm) continue;
-    forClaude.push(
+    technical(`workflow:${lauf.datei}`, false,
       `Der geplante Lauf „${lauf.was}" (${lauf.datei}) endete ${LAUF_STUMM_AB}× in Folge ohne Erfolg, zuletzt „${wie}". ` +
         (wie === "cancelled"
           ? `„Abgebrochen" heißt Zeitlimit, nicht Fehler — und es liest sich als „egal", ` +
@@ -2445,9 +2434,16 @@ async function main() {
   // Meldelogik in CLAUDE.md — die gelbe Schwelle sitzt aus demselben Grund bei
   // 4 s und nicht im Normalbereich.
   for (const p of planOffen) {
-    if (p.schwere === "fehler") forClaude.push(p.text);
+    if (p.schwere === "fehler") technical(`release-plan:${p.schub}`, false, p.text);
     else warnings.push(p.text);
   }
+
+  const managed = process.env.HEALTH_INCIDENTS === "1";
+  const previous = managed ? readState(JSON.parse(readFileSync(".health/previous.json", "utf8"))) : emptyState();
+  const incidents = advanceIncidents(previous, findings, new Date().toISOString(), unknown);
+  lines.push(...incidents.opened.map(i => `Neuer Vorfall: ${i.key}`));
+  lines.push(...Object.values(incidents.state.incidents).map(i => `Offener Vorfall (${i.count} Messungen${i.escalated ? ", bereits eskaliert" : ""}): ${i.text}`));
+  lines.push(...incidents.recovered.map(i => `Erholung: ${i.key} — in dieser Messung nicht mehr festgestellt.`));
 
   // ── Bericht ───────────────────────────────────────────────────────────────
   const ampel =
@@ -2474,32 +2470,16 @@ async function main() {
 
   console.log(report);
 
-  // BENACHRICHTIGUNG NUR, WENN DER BETREIBER SELBST ETWAS ENTSCHEIDEN MUSS.
-  // Nicht bei Gelb, nicht bei Selbstheilung — und ausdrücklich auch nicht bei
-  // einem roten Lauf, der an Claude geht: dafür ist der Workflow-Fehlschlag da,
-  // der die Autofix-Action startet. Wer für jede Regung eine Mail bekommt,
-  // filtert den Absender weg und verpasst dann die eine, die zählt.
-  //
-  // Die eine Ausnahme ist der Fall, in dem die Automatik erkennbar nicht
-  // weiterkommt: bleibt es mehrere Läufe hintereinander rot, wird aus dem
-  // technischen Befund eine Frage an den Betreiber.
-  const vorlaeufe = forClaude.length ? await letzteLaufErgebnisse() : [];
-  const festgefahren = forClaude.length > 0 && eskalationNoetig(vorlaeufe);
-  const entscheidungen = [
-    ...forOperator,
-    ...fuerBetreiberOhneRot,
-    ...(festgefahren
-      ? [
-          `Seit ${ESKALATION_AB_LAEUFEN} Prüfläufen in Folge komme ich an derselben Stelle nicht weiter: ` +
-            `${forClaude[0]} Soll ich das größer angehen (mehr Zeit dafür einplanen), oder lässt du es vorerst so?`,
-        ]
-      : []),
-  ];
+  // Operator decisions use /api/alert. Technical escalation uses GitHub's
+  // failure notification only, avoiding two emails for the same incident.
+  const entscheidungen = managed
+    ? incidents.escalations.filter(i => i.operator).map(i => i.text)
+    : [...forOperator, ...fuerBetreiberOhneRot];
 
   if (ALERT) {
     const secret = process.env.CRON_SECRET;
     if (!secret) {
-      console.error("\n--alert gesetzt, aber CRON_SECRET fehlt — keine Meldung verschickt.");
+      throw new Error("--alert gesetzt, aber CRON_SECRET fehlt");
     } else {
       const res = await fetch(`${BASE_URL}/api/alert`, {
         method: "POST",
@@ -2515,6 +2495,7 @@ async function main() {
           tag: "health-check",
         }),
       });
+      if (!res.ok) throw new Error(`Alert delivery failed: ${res.status}`);
       const info = (await res.json().catch(() => ({}))) as { skipped?: boolean; reason?: string };
       console.log(
         res.ok
@@ -2526,10 +2507,15 @@ async function main() {
     }
   }
 
-  // Exit-Codes steuern, was die GitHub-Action als Nächstes tut:
-  //   2 = selbst repariert → die Action committet die Korrektur und deployt
-  //   1 = braucht Analyse → Workflow rot, Claude-Autofix springt an
-  //   0 = alles im Rahmen
+  if (managed) {
+    mkdirSync(".health", { recursive: true });
+    writeFileSync(".health/state.json", JSON.stringify(incidents.state, null, 2));
+    writeFileSync(".health/result.json", JSON.stringify({ version: 1, ampel, autofix: incidents.autofix, escalations: incidents.escalations, recovered: incidents.recovered, findings, report }, null, 2));
+    if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Messbefund: ${ampel}\n\n${report}\n`);
+    if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `escalate=${incidents.escalations.some(i => !i.operator)}\nhealed=${selfHealed.length > 0}\n`);
+    return; // GitHub failure means NEW escalation, not every repeated finding.
+  }
+
   if (forClaude.length || forOperator.length) process.exit(1);
   if (selfHealed.length) process.exit(2);
 }

@@ -75,7 +75,12 @@ const JETZT_ALS_TAG = [
  * RICHTIGE ist. Jede braucht einen ausgeschriebenen Grund — „ist mir egal" ist
  * keiner, und die Regex aufzuweichen ist nie die Lösung.
  */
-const WELTZEIT_IST_RICHTIG: { datei: string; grund: string }[] = [];
+const WELTZEIT_IST_RICHTIG: { datei: string; grund: string }[] = [
+  {
+    datei: "scripts/autofix-budget.ts",
+    grund: "The existing model-spending cap uses a UTC day (previously date -u in Actions). GitHub created/started timestamps and the API date filter use that same UTC boundary; this is not a German product or funding deadline.",
+  },
+];
 
 /**
  * Vorübergehende Ausnahmen. Jede trägt eine Frist im Format JJJJ-MM-TT; läuft

@@ -73,7 +73,7 @@ describe("Der Gesundheitscheck fragt danach", () => {
     // Ab dem AUFRUF im Lauf gesucht, nicht ab der Funktionsdefinition — die
     // steht weiter oben in der Datei und enthält die Meldestelle gar nicht.
     const stelle = hc.slice(hc.indexOf("const aboBereit = await messeAboBereit()"));
-    expect(stelle.slice(0, 1500)).toMatch(/forClaude\.push/);
+    expect(stelle.slice(0, 1500)).toContain('technical("subscription-config", true,');
   });
 
   it("hält einen fehlgeschlagenen Abruf NICHT für einen Befund", () => {

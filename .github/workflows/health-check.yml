@@ -7,8 +7,8 @@ name: Health Check
 # Warum GitHub Actions und nicht ein Wächter in der App: Der Ausfall vom
 # 24.–26.07.2026 lief zwei Tage unbemerkt. Ein Monitoring, das nur läuft wenn
 # jemand ein Programm offen hat, hätte ihn genauso verpasst. Dieser Workflow
-# läuft, egal ob jemand am Rechner sitzt — und schlägt bei Fehlschlag über
-# GitHubs eigene Benachrichtigung UND per Mail (/api/alert) auf.
+# runs independently of the desktop. Only new escalations fail the job;
+# repeated findings remain visible in the summary and trigger the repair lane.
 #
 # Warum alle 3 Stunden und nicht öfter: Der Schaden wächst hier über Tage, nicht
 # über Minuten. Häufiger würde nur unnötig Last auf die Datenbank geben — jeder
@@ -29,7 +29,16 @@ on:
       - "components/**"
       - "vercel.json"
       - "next.config.js"
-  workflow_dispatch: {}
+      - "scripts/health-*.ts"
+      - "scripts/autofix-budget.ts"
+      - ".github/workflows/health-check.yml"
+      - ".github/workflows/claude-autofix.yml"
+  workflow_dispatch:
+    inputs:
+      bootstrap:
+        description: "Initialize incident history explicitly (first installation only)"
+        type: boolean
+        default: false
 
 # Schreibrecht, damit der Check die Function-Region selbst zurücksetzen kann —
 # der einzige Befund mit genau einer richtigen Antwort. Alles Mehrdeutige wird
@@ -41,7 +50,7 @@ permissions:
 
 concurrency:
   group: health-check
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   check:
@@ -62,6 +71,8 @@ jobs:
       # an ihn. Ohne Token wird nie eskaliert (im Zweifel keine Mail).
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_REPOSITORY: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+      HEALTH_INCIDENTS: "1"
     steps:
       - uses: actions/checkout@v4
 
@@ -79,21 +90,35 @@ jobs:
         if: github.event_name == 'push'
         run: sleep 180
 
-      # Exit 2 = der Check hat etwas selbst repariert (nur die Function-Region).
-      # Das ist kein Fehlschlag, sondern der Erfolgsfall der Selbstheilung — der
-      # Workflow bleibt grün und liefert die Korrektur im nächsten Schritt aus.
+      - name: Vorfallhistorie laden
+        env:
+          BOOTSTRAP: ${{ inputs.bootstrap }}
+        run: |
+          if [ "$BOOTSTRAP" = "true" ]; then
+            node --import tsx scripts/health-history.ts --bootstrap
+          else
+            node --import tsx scripts/health-history.ts
+          fi
+
       - name: Gesundheitscheck
         id: check
-        run: |
-          set +e
-          npm run health-check -- --alert
-          code=$?
-          echo "code=$code" >> "$GITHUB_OUTPUT"
-          [ "$code" = "2" ] && exit 0
-          exit $code
+        run: npm run health-check -- --alert
+
+      # Persist BEFORE failing the escalation step, including failed runs.
+      - name: Vorfälle und Messbefund sichern
+        uses: actions/upload-artifact@v4
+        with:
+          name: health-incidents
+          overwrite: true
+          path: |
+            .health/state.json
+            .health/result.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 90
 
       - name: Selbstheilung ausliefern
-        if: steps.check.outputs.code == '2'
+        if: steps.check.outputs.healed == 'true'
         run: |
           git config user.name "solar-check health-check"
           git config user.email "noreply@solar-check.io"
@@ -110,3 +135,9 @@ jobs:
           Automatisch erzeugt. Nur diese eine Einstellung wird selbst
           korrigiert — sie hat genau eine richtige Antwort."
           git push
+
+      - name: Neue Eskalation
+        if: steps.check.outputs.escalate == 'true'
+        run: |
+          echo "::error::Neuer oder anhaltender Vorfall eskaliert. Details und Erholungen im Messbericht."
+          exit 1

@@ -102,6 +102,6 @@ describe("Vorschaubild", () => {
       .map((z) => z.trim())
       .filter((z) => !z.startsWith("//") && !z.startsWith("*") && !z.startsWith("/*"));
     expect(codeZeilen).toContain("const vorschau = await messeVorschaubild();");
-    expect(codeZeilen).toContain("forClaude.push(...vorschaubildBefund(vorschau));");
+    expect(codeZeilen).toContain('technical("preview-image", false, ...vorschaubildBefund(vorschau));');
   });
 });

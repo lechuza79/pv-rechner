@@ -138,7 +138,7 @@ describe("Firewall-Wächter: der Gesundheitscheck ruft ihn wirklich auf", () => 
   });
 
   it("reicht das Urteil an Claude weiter, nicht nur ins Protokoll", () => {
-    expect(quelle).toMatch(/forClaude\.push\(\.\.\.firewallBefund\(firewall\)\)/);
+    expect(quelle).toMatch(/technical\(`firewall:\$\{property\}`, true, \.\.\.firewallBefund\(\{/);
   });
 
   it("prüft die SEITE mit einer fremden Kennung, nicht mit unserer eigenen", () => {

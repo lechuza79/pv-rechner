@@ -1,6 +1,8 @@
 name: Claude Autofix
 
-# Springt an, wenn der Gesundheitscheck rot wird, und lässt Claude den Befund
+# Reads the health report independently of the escalation exit code.
+# A new or repeated technical finding requests repair, subject to the daily budget.
+# Lässt Claude den Befund
 # analysieren und — wo möglich — selbst beheben.
 #
 # WARUM ES DAS GIBT: Der Ausfall vom 24.–26.07.2026 lief zwei Tage unbemerkt.
@@ -25,6 +27,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: read
   # Die Action tauscht ein OIDC-Token gegen ihre GitHub-Berechtigung ein. Ohne
   # id-token bricht sie beim Token-Setup ab, bevor das Modell überhaupt läuft
   # ("Could not fetch an OIDC token") — der Fehler sieht nach Schlüsselproblem
@@ -36,12 +39,38 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  incident:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    outputs:
+      repair: ${{ steps.result.outputs.repair }}
+    steps:
+      - name: Read health result
+        id: result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            echo "repair=true" >> "$GITHUB_OUTPUT"
+          elif gh run download "$RUN_ID" -n health-incidents -D /tmp/health; then
+            value=$(jq -er 'if .version == 1 and (.autofix | type) == "boolean" then .autofix | tostring else error("invalid health result") end' /tmp/health/result.json)
+            echo "repair=$value" >> "$GITHUB_OUTPUT"
+          elif [ "$CONCLUSION" = "failure" ] || [ "$CONCLUSION" = "timed_out" ]; then
+            # Broken checker still invokes repair, even without a report.
+            echo "repair=true" >> "$GITHUB_OUTPUT"
+          elif [ "$CONCLUSION" = "cancelled" ]; then
+            echo "repair=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::Health result missing; cannot determine repair request"
+            exit 1
+          fi
   autofix:
-    # Nur bei rotem Gesundheitscheck. Exit-Code 2 (Selbstheilung) lässt den
-    # Workflow grün und kommt hier gar nicht erst an.
-    if: >
-      github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'failure'
+    needs: incident
+    if: needs.incident.outputs.repair == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -57,41 +86,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # Kostenbremse: höchstens ein Analyse-Lauf pro Tag. Ein Befund, der über
-      # Tage besteht (weil er eine menschliche Entscheidung braucht), würde sonst
-      # alle 3 Stunden einen Modell-Lauf auslösen und Geld verbrennen, ohne dass
-      # sich etwas ändert.
+      # Count actual model steps, not successful gate/braked workflow runs.
       - name: Tagesbremse
         id: budget
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          heute=$(date -u +%Y-%m-%d)
-          # Count today's runs of this workflow, minus the current one.
-          #
-          # SKIPPED RUNS DO NOT COUNT. This workflow fires on EVERY finished
-          # health check; on a green one the job is skipped and the run still
-          # appears in the list with conclusion "skipped". Counted as analyses,
-          # they engaged the brake before any model ever ran: on 11.09. and
-          # 12.09.2026 not a single analysis happened despite nine red health
-          # checks ("Heutige Analyse-Läufe bisher: 1" at 08:36 with only a
-          # skipped run before it). A braked run is not skipped, but it can only
-          # exist after a non-skipped one — so the first non-skipped run of a
-          # day always analyzes, and the cap stays at one.
-          #
-          # The limit is 100, not 20: on 10.09.2026 there were 16 runs by 10:17,
-          # and a morning analysis pushed out of the window would release a
-          # second model run.
-          laeufe=$(gh run list --workflow=claude-autofix.yml --limit 100 \
-            --json createdAt,databaseId,conclusion --jq \
-            "[.[] | select(.createdAt | startswith(\"$heute\")) | select(.databaseId != ${{ github.run_id }}) | select(.conclusion != \"skipped\")] | length")
-          echo "Heutige Analyse-Läufe bisher: $laeufe"
-          if [ "$laeufe" -ge 1 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
-            echo "Tagesbremse greift — heute lief schon eine Analyse. Kein weiterer Modell-Lauf."
-            echo "weiter=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "weiter=true" >> "$GITHUB_OUTPUT"
-          fi
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node --import tsx scripts/autofix-budget.ts
 
       # Der auslösende Befund kommt aus dem Lauf, der rot wurde — NICHT aus einer
       # frischen Messung. Die Kaltrender-Zeiten streuen stark (1,6–5,4 s je nach
@@ -185,7 +186,7 @@ jobs:
             4. Verifiziere am lebenden System: `npm run health-check` erneut laufen lassen
                und zeigen, dass der Wert wirklich besser ist. Ein Fix ohne Nachmessung ist
                kein Fix, sondern eine Behauptung.
-            5. Committe auf main (deutsche Commit-Message, die den Befund und die Ursache
+            5. Committe auf main (englische Commit-Message, die den Befund und die Ursache
                erklärt) und pushe. Der Deploy läuft automatisch.
 
             WAS DU NICHT OHNE RÜCKFRAGE ÄNDERST:

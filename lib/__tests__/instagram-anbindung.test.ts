@@ -119,7 +119,7 @@ describe("Erneuerungs-Hinweis des Gesundheitschecks", () => {
     // einem zweiten Kanal wird daraus eine Anleitung ins Leere: Der Betreiber
     // klickt, meldet LinkedIn neu an, und der Instagram-Zugang läuft weiter aus.
     const quelle = readFileSync(join(WURZEL, "scripts", "health-check.ts"), "utf8");
-    const abschnitt = quelle.slice(quelle.indexOf("for (const s of await messeSocialAblauf())"));
+    const abschnitt = quelle.slice(quelle.indexOf("const social = await messeSocialAblauf()"));
     const bis = abschnitt.slice(0, abschnitt.indexOf("Kostenwache"));
     expect(bis).toContain("api/${s.plattform}/start");
     expect(bis).not.toContain("api/linkedin/start");
