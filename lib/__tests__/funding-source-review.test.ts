@@ -1,7 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { pendingFundingSources, type ReviewSource } from "../funding-source-review";
+import { groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../funding-source-review";
 const source = (url: string, extra: Partial<ReviewSource> = {}): ReviewSource => ({region_id:"12345678",url,gelesen_am:null,gelesen_ergebnis:null,gelesen_notiz:null,seite_geaendert_am:null,...extra});
 describe("Source-level review queue", () => {
+  it("shares identical originals while retaining every municipal association", () => {
+    const rows = [source("county.de/source"), source("county.de/source", {region_id:"87654321"}), source("town.de/other")];
+    const groups = groupedPendingFundingSources(rows);
+    expect(groups.map(g => g.associations)).toEqual([2, 1]);
+    expect(groups[0].sources.map(s => s.region_id)).toEqual(["12345678", "87654321"]);
+    expect(rows.every(s => s.gelesen_am === null)).toBe(true);
+  });
+  it("does not conflate documents or requeue resolved associations", () => {
+    const groups = groupedPendingFundingSources([source("town.de/page?id=1"), source("town.de/page?id=2"), source("town.de/page?id=1", {region_id:"87654321", gelesen_am:"2026-09-16", gelesen_ergebnis:"keine-foerderung"})]);
+    expect(groups).toHaveLength(2);
+    expect(groups.every(g => g.associations === 1)).toBe(true);
+  });
   it("keeps an unread second URL in an already reviewed municipality", () => {
     expect(pendingFundingSources([source("town.de/one", {gelesen_am:"2026-09-16",gelesen_ergebnis:"aufgenommen"}),source("town.de/two")]).map(x=>x.url)).toEqual(["town.de/two"]);
   });

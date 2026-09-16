@@ -22,13 +22,15 @@ Read all three work queues:
 ```bash
 npm run foerder:probe -- --vorrat
 npm run foerder:screen -- --kommunen
-npm run foerder:screen -- --quellen
+npm run foerder:screen -- --quellen --gruppiert
 npm run foerder:suche -- --externe
 npm run foerder:anfrage -- --liste
 npm run foerder:anfrage -- --antworten
 ```
 
 Prioritize changed known programmes and fresh substantive replies, while reserving work in every run for unreviewed new sources. Save a concrete next item if the backlog exceeds a run. A repeatedly blocked item must not starve the rest. Record source decisions and unresolved items with reasons. Programme IDs and reply timestamps in the existing watcher report are the resume markers for reviewed replies; the reply command deliberately does not claim that a received message was resolved.
+
+Identical original URLs are grouped by `--quellen --gruppiert`: read one original once and retain every municipality association. Reuse a source-level exclusion only for that exact original and documented subject matter; never infer common eligibility or close whole municipalities from a shared page. Documents with different query parameters remain separate.
 
 The source queue reads **all municipality/URL associations** in `funding_seiten`, not the one-page-per-municipality `--treffer` summary. It retains unresolved outcomes and reopens changed reviewed sources. After substantive review, persist the exact source:
 
