@@ -10,6 +10,10 @@ Der Einstieg erfolgt über einbettbare Rechner und lokale Datenstories. Langfris
 
 Eine fehlende Funktion auf der Website ist nur ein Suchhinweis. Sie belegt weder fehlende interne Werkzeuge noch Bedarf, Budget oder Kaufbereitschaft. Ein freier Slot kann ein Versorger ohne kommunales Informationsangebot, eine noch unversorgte Kommune oder ein zusätzliches Modul innerhalb eines vorhandenen Portals sein. Bestehende Produkte müssen dafür nicht ersetzt werden.
 
+## Vertiefende Recherche
+
+[Erste belegte Marktzugangsfälle vom 16.09.2026](kommunen-marktzugang-recherche-2026-09-16.md): EWE-WattMonitor (Hatten bereits offiziell gelistet), Netze-BW-Angebot im Konzessionsverhältnis, regionaler Vertrieb über 23 Gemeinden in Fürstenfeldbruck, Annahme/Ablehnung in Gars/Unterreit und konkreter Daten-/Verbandszugang. Anbieterlistung nicht mit geprüfter Nutzung oder Vertrag gleichsetzen. Diese Befunde konkretisieren Abschnitt 6.
+
 ## 1. Anlass, Kontakte und Pilot
 
 ### Meinersen
@@ -28,6 +32,8 @@ Pilotvorschlag:
 ### Hatten bei Oldenburg
 
 Gemeint ist 26209 Hatten. Der Betreiber kennt nach eigener Aussage einen Politiker dort, **Philipp Hennes**. Persönlicher Gesprächszugang für einen möglichen Rechner-/Datenstory-Piloten; Funktion/Partei nicht geprüft, Kontaktaufnahme nicht beauftragt.
+
+**Aktualisierung:** Hatten ist bereits in der offiziellen [EWE-WattMonitor-Liste](https://wattmonitor.ewe-netz.de/startseite) enthalten. Kein bestätigter freier Komplettmonitor-Slot; Rechner-/Story-Bedarf bleibt zu erfragen. Details in der vertiefenden Recherche.
 
 Anlass der Hatten-Recherche: Team Hatten zitierte im Juni 2022 eine E-Mail von tetraeder.solar mit voraussichtlich 4.000–8.000 EUR für die Erstellung eines Solarpotenzialkatasters. Historische Schätzung, kein belegter Auftrag; Betriebskosten unbekannt.
 
