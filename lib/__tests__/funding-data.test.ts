@@ -16,7 +16,7 @@ describe("funding-programs dataset", () => {
 
   it("every combinableWith reference resolves to a real program", () => {
     for (const p of allFundingPrograms()) {
-      for (const ref of p.combinableWith) {
+      for (const ref of p.combinableWith ?? []) {
         expect(getFundingProgram(ref), `${p.id} → combinableWith "${ref}"`).toBeDefined();
       }
     }
@@ -24,7 +24,7 @@ describe("funding-programs dataset", () => {
 
   it("no program references itself as combinable", () => {
     for (const p of allFundingPrograms()) {
-      expect(p.combinableWith).not.toContain(p.id);
+      expect(p.combinableWith ?? []).not.toContain(p.id);
     }
   });
 
