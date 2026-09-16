@@ -9,7 +9,7 @@ This runbook is the funding procedure for the existing `foerder-news-waechter` a
 - `foerder-anfragen.yml`: the **only automatic authority sender**, using its existing eligibility, office-hour, spacing, maximum-volume and no-repeat protections.
 - `kommunen-ruecklauf.yml`: the **only mailbox reader**; funding replies remain separate from outreach response metrics.
 - Existing quarterly full review: broader audit using the same gates. Before edits run `npm run sessions`, inspect recent commits, and coordinate overlapping programme changes. Do not run two writers for the same entries.
-- The additional Codex automation `f-rderlauf-ergebnis-pr-fen` stays paused. Do not revive it or add another daily funding watcher.
+- The two existing task configurations are consolidated into one active worker: the existing Codex continuation `f-rderlauf-ergebnis-pr-fen` runs the complete canonical watcher task, while the old separate Claude schedule is disabled. Do not add another worker, sender or recurring task. Use the signed-in account, never additional paid model APIs/search services or purchased credits. Preserve complete source evidence locally; only necessary public excerpts enter the current review context.
 
 ## 1. Resume actual work, not just search
 
