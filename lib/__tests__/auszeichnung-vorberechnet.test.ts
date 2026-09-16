@@ -66,11 +66,11 @@ describe("Der Datenlauf baut die Liste", () => {
     expect(REVALIDATE).toMatch(/await baueAuszeichnungen\(\)/);
   });
 
-  it("bricht den Datenlauf nicht ab, wenn der Aufbau scheitert", () => {
-    // Die Seiten funktionieren ohne die Liste weiter; ein Abbruch nähme dem
-    // Datenlauf seine übrigen Schritte.
+  it("reports failed preparation before exposing newly rendered pages", () => {
+    // The old complete generation and page caches remain available.
     const block = REVALIDATE.slice(REVALIDATE.indexOf("baueAuszeichnungen()"));
     expect(block.slice(0, 400)).toMatch(/catch \(e\)/);
+    expect(block.slice(0, 500)).toContain("{ status: 500 }");
   });
 
   it("schreibt erst neu und räumt danach auf", () => {

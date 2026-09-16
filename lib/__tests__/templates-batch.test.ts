@@ -125,7 +125,8 @@ describe("Templates aus dem Kommunen-Schub", () => {
     // Die Rechnung läuft über alle 11.000 Gemeinden. Sechs Orte hintereinander
     // hießen sie sechsmal.
     const awards = lies("lib", "awards-server.ts");
-    expect(awards).toContain("const platzierungsKarte = memoize");
+    expect(awards).toContain('from("atlas_platzierungen")');
+    expect(awards).not.toContain("const platzierungsKarte = memoize");
     expect(awards).not.toMatch(/computePlacements\(stats\)\.get/);
   });
 });

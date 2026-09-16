@@ -1,5 +1,6 @@
 import "server-only";
 import { supabase } from "./supabase-server";
+import { preparePlacementSnapshot, writePlacementSnapshot } from "./atlas-placement-snapshot";
 import { withDbTimeout, DB_SOFT_READ_TIMEOUT_MS } from "./db-timeout";
 import { AWARD_CATEGORY_BY_KEY, dedupFreiflaeche, formatAwardValue, type GemeindeStats } from "./awards";
 import { bundeslandByAgs } from "./mastr-regions";
@@ -75,7 +76,7 @@ async function pageAll(table: string, select: string, refine?: (q: any) => any):
   return out as any[];
 }
 
-export const loadAwardStats = memoize(async (): Promise<GemeindeStats[]> => {
+export async function loadAwardStatsFresh(): Promise<GemeindeStats[]> {
   if (!supabase) return [];
   const stats = await pageAll("mastr_gemeinde_award", "*");
   const regions = await pageAll("mastr_regions", "region_id, name, bezeichnung, slug", (q) => q.eq("level", "gemeinde"));
@@ -115,7 +116,9 @@ export const loadAwardStats = memoize(async (): Promise<GemeindeStats[]> => {
       windKwpLy: Number(r.wind_kwp_ly ?? 0),
     };
   });
-});
+}
+
+export const loadAwardStats = memoize(loadAwardStatsFresh);
 
 /**
  * Kreis-Namen (5-stelliger AGS → amtlicher Name) für die Anschreiben-Aufhänger.
@@ -207,11 +210,6 @@ export const AUSZEICHNUNGEN_DDL = `
   alter table atlas_auszeichnungen enable row level security;
 `;
 
-const auszeichnungsOrteUncached = async (): Promise<string[]> =>
-  (await buildHookIndex(DEFAULT_HOOK_SETTINGS)).rows
-    .filter((r) => r.kind !== "neutral")
-    .map((r) => r.regionId);
-
 /**
  * Die Liste im Datenlauf neu aufbauen — NICHT im Seitenaufbau.
  *
@@ -222,9 +220,15 @@ const auszeichnungsOrteUncached = async (): Promise<string[]> =>
  */
 export async function baueAuszeichnungen(): Promise<{ orte: number }> {
   if (!supabase) throw new Error("Datenbank nicht eingerichtet");
-  await supabase.rpc("exec_sql", { sql: AUSZEICHNUNGEN_DDL });
-
-  const orte = await auszeichnungsOrteUncached();
+  const { error: ddlError } = await supabase.rpc("exec_sql", { sql: AUSZEICHNUNGEN_DDL });
+  if (ddlError) throw new Error(`Award schema: ${ddlError.message}`);
+  // Register before reading: an older concurrent refresh cannot replace a newer one.
+  const generation = await preparePlacementSnapshot();
+  const stats = await loadAwardStatsFresh();
+  const placements = computePlacements(stats);
+  await writePlacementSnapshot(generation, stats, placements);
+  const orte = stats.filter((g) => selectHook(placements.get(g.regionId), DEFAULT_HOOK_SETTINGS).kind !== "neutral")
+    .map((g) => g.regionId);
   const jetzt = new Date().toISOString();
   // Alle Zeilen tragen dieselbe Feldmenge — sonst setzt ein Batch die fehlenden
   // Felder der übrigen Zeilen auf NULL (siehe upsert-spaltenmenge.test.ts).
@@ -273,37 +277,20 @@ export async function auszeichnungsStand(): Promise<{ orte: number; erneuertAm: 
   return { orte: count ?? 0, erneuertAm: (data as { erneuert_am?: string } | null)?.erneuert_am ?? null };
 }
 
-/**
- * Die Platzierungen EINES Orts — alle, nicht nur die beste.
- *
- * WOFÜR: Der Auszeichnungs-Kasten zeigt genau eine, und nur wo der Ort vorn
- * liegt. Für den Vergleich innerhalb der eigenen Größenklasse („wo stehen wir
- * unter den kleinen Gemeinden im Landkreis") ist auch ein Platz im Mittelfeld
- * eine Aussage — und die gibt es für JEDEN Ort, während die gespeicherten
- * Funde des Suchlaufs naturgemäß nur das Auffällige treffen (gemessen: 313
- * Funde auf 197 von 11.000 Gemeinden).
- *
- * Gerechnet wird nichts Neues: dieselbe Rechnung, aus der Aufhänger, Kasten
- * und Rangliste kommen. Prozess-lokal gemerkt wie der Index selbst.
- */
-/**
- * Die Platzierungen ALLER Gemeinden — einmal je Prozess gerechnet.
- *
- * Die Rechnung läuft über alle 11.000 Gemeinden und hängt allein an den
- * Statistiken, die selbst memoisiert sind. Ein Aufruf je Ort war richtig,
- * solange nur eine Gemeindeseite fragte; seit die Templates-Ansicht die
- * Geschichten mehrerer Orte auf einmal baut (lib/orts-beitraege-server.ts),
- * wäre es dieselbe Rechnung sechsmal hintereinander — die Kopplung „teurer mit
- * den Daten", gegen die dieses Projekt seine Regeln hat.
- */
-const platzierungsKarte = memoize(async (): Promise<Map<string, Placement[]>> =>
-  computePlacements(await loadAwardStats()),
-);
-
+/** Read one precomputed municipality row, including on a brand-new process. */
 export async function platzierungenFuer(regionId: string): Promise<Placement[]> {
+  if (!supabase) return [];
   try {
-    return (await platzierungsKarte()).get(regionId) ?? [];
-  } catch {
+    const { data, error } = await withDbTimeout(
+      supabase.from("atlas_platzierungen").select("platzierungen").eq("region_id", regionId).maybeSingle(),
+      "atlas_platzierungen",
+      DB_SOFT_READ_TIMEOUT_MS,
+    );
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error(`Missing placement snapshot for ${regionId}`);
+    return data.platzierungen as Placement[];
+  } catch (error) {
+    console.error("Municipality placements unavailable", error);
     return [];
   }
 }
