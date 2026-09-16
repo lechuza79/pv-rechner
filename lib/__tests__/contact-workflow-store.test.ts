@@ -76,6 +76,12 @@ describe('Local source workflow and real sender gate',()=>{
   writeFileSync(f.original,html);const result=JSON.parse(readFileSync(f.result,'utf8'));result.pages[0].htmlDigest=hash(html);writeFileSync(f.result,JSON.stringify(result));
   buildWorkflow(f.source,f.output,now);const c=f.load();expect(c.proofs[0]).toMatchObject({valid:true,readable:false,publishedEmails:[]});
  });
+ it('retains failed or empty source results as negative evidence, never as contact proof',()=>{
+  const f=fixture();writeFileSync(f.result,JSON.stringify({organization_id:f.id,engine:'frozen',observed_at:now,status:'no-known-source',pages:[]}));
+  buildWorkflow(f.source,f.output,now);const c=f.load();expect(c.proofs[0]).toMatchObject({kind:'failure',valid:true});expect(()=>assertCurrentCase(f.source,c)).not.toThrow();
+  const d={...f.decision,revision:c.revision,reviewedAt:now,outcome:'unresolved' as const,contacts:[],checks:Object.fromEntries(CONTACT_CHECKS.map(k=>[k,{state:'blocked',reason:'No official source exists in the frozen input; discovery still required',proofIds:[c.proofs[0].id]}])) as ContactDecision['checks']};
+  expect(()=>submitDecision(f.output,c,d,now)).not.toThrow();
+ });
  it('does not claim population completeness when the independent roster has a missing municipality',()=>{
   const f=fixture();const path=join(f.source,'reference.json');const bytes=JSON.stringify({regions:[{region_id:f.id,level:'gemeinde'},{region_id:'01000002',level:'gemeinde'}]});writeFileSync(path,bytes);
   writeFileSync(join(f.output,'population-reference.json'),JSON.stringify({sourcePath:path,sourceDigest:hash(bytes),observedAt:now}));

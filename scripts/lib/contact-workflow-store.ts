@@ -64,6 +64,7 @@ export function buildWorkflow(directory:string,output:string,asOf:string){
       const readable=p.status==='read'&&p.htmlDigest;
       proofs.push({id:hash(JSON.stringify([url,p.observedAt,p.htmlDigest,p.status])),url,observedAt:p.observedAt,digest:readable?p.htmlDigest:hash(raw!),kind:readable?'html':'failure',valid:false,...(readable?{originalPath}:{observationPath:resultPath})});
     }
+    if(result&&!(result.pages??[]).length)proofs.push({id:hash('empty-result:'+hash(raw!)),url:input.website??'urn:contact-audit:no-known-source',observedAt:result.observed_at,digest:hash(raw!),kind:'failure',valid:false,observationPath:resultPath});
     const supplemental=resolve(directory,'supplemental',t.organization_id),observations=resolve(supplemental,'observations');
     for(const f of files(observations)){
       const observationPath=resolve(observations,f),bytes=readFileSync(observationPath),p=JSON.parse(bytes.toString());
@@ -144,6 +145,7 @@ export function assertCurrentCase(directory:string,c:StoredCase){
   const raw=existsSync(resultPath)?readFileSync(resultPath):null,result=raw?JSON.parse(raw.toString()):null;
   const identities:(string[])[]=[];
   for(const p of result?.pages??[]){const url=p.finalUrl??p.url;identities.push([hash(JSON.stringify([url,p.observedAt,p.htmlDigest,p.status])),p.status==='read'&&p.htmlDigest?p.htmlDigest:hash(raw!)]);}
+  if(result&&!(result.pages??[]).length)identities.push([hash('empty-result:'+hash(raw!)),hash(raw!)]);
   const root=resolve(directory,'supplemental',c.organizationId,'observations');
   for(const f of files(root)){const bytes=readFileSync(resolve(root,f)),p=JSON.parse(bytes.toString());if(hash(bytes)+'.json'!==f)throw Error('Changed source observation');identities.push([f.slice(0,-5),p.sourceDigest]);}
   const historical=resolve(directory,'reviews',filename),findings=resolve(directory,'contextual/municipality-findings');
