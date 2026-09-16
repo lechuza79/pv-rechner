@@ -96,6 +96,16 @@ export async function POST(req: NextRequest) {
   const erledigt: string[] = [];
   const fehler: { schritt: string; grund: string }[] = [];
 
+  // Prepare a complete, fresh ranking generation before exposing new pages.
+  // A failed batch leaves the previous snapshot and page caches untouched.
+  try {
+    const { orte } = await baueAuszeichnungen();
+    erledigt.push(`auszeichnungen:${orte}`);
+  } catch (e) {
+    fehler.push({ schritt: "auszeichnungen", grund: e instanceof Error ? e.message : String(e) });
+    return NextResponse.json({ ok: false, erledigt, fehler }, { status: 500 });
+  }
+
   // DER WIRKSAME WEG: über den Marker an den Daten.
   // Am 26.08.2026 auf Produktion nachgemessen — das Ungültig-Erklären über
   // Routenmuster allein bewirkt nichts, weil die Atlas-Seiten erst beim Zugriff
@@ -105,19 +115,6 @@ export async function POST(req: NextRequest) {
     erledigt.push(`tag:${ATLAS_DATEN_TAG}`);
   } catch (e) {
     fehler.push({ schritt: `tag:${ATLAS_DATEN_TAG}`, grund: e instanceof Error ? e.message : String(e) });
-  }
-
-  // Die Liste der ausgezeichneten Orte NEU BERECHNEN — hier und nirgends sonst.
-  // Sie kostet 3,7 s über 10.742 Zeilen; im Seitenaufbau hat sie nichts zu
-  // suchen (zwei Anläufe mit Memo und Cache haben die Häufigkeit gesenkt und
-  // den Rest gelassen — siehe lib/awards-server.ts). Schlägt sie fehl, ist das
-  // ein gemeldeter Schritt, kein Abbruch: Die Seiten funktionieren weiter, nur
-  // ohne Platzhalter für die Kachel.
-  try {
-    const { orte } = await baueAuszeichnungen();
-    erledigt.push(`auszeichnungen:${orte}`);
-  } catch (e) {
-    fehler.push({ schritt: "auszeichnungen", grund: e instanceof Error ? e.message : String(e) });
   }
 
   // Zusätzlich die Routenmuster. Sie kosten nichts und schaden nicht; verlassen
