@@ -47,6 +47,7 @@ export function verifyMunicipalContacts(input: {
       if (!official) { reasons.add("source-outside-registered-municipal-domain"); continue; }
       const namedPage = name.length > 1 && (` ${cleanName(source.pageIdentity)} `).includes(` ${name} `);
       for (const candidate of candidates) {
+        if (candidate.sourceConflicts?.length) { reasons.add('mail-link-label-mismatch'); continue; }
         const blocks = [candidate.roleEvidence,...(candidate.additionalRoleEvidence ?? [])].filter(b=>b?.exclusiveAddress);
         if (!blocks.length) reasons.add("no-exclusive-contact-card");
         for (const block of blocks) {
@@ -69,7 +70,7 @@ export function verifyMunicipalContacts(input: {
       }
     }
     if (input.heldEmails?.includes(email)) reasons.add("documented-review-hold");
-    const conflict = reasons.has("documented-review-hold") || reasons.has("incompatible-contact-context") || reasons.has("old-source-or-project-period") || reasons.has("event-specific-context");
+    const conflict = reasons.has('mail-link-label-mismatch') || reasons.has("documented-review-hold") || reasons.has("incompatible-contact-context") || reasons.has("old-source-or-project-period") || reasons.has("event-specific-context");
     const status: MunicipalVerdict["status"] = !published ? "not-reconfirmed" : roles.size && !conflict ? "source-supported" : fallback && !conflict ? "published-fallback" : "needs-review";
     if (!published) reasons.add(input.sources.some(s=>s.status!=="read") ? "unread-sources-no-negative-conclusion" : "absent-from-checked-sources");
     return {email,status,reasons:[...reasons],role:roles.values().next().value ?? null,evidence};

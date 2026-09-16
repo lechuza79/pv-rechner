@@ -19,6 +19,7 @@ export function assessContacts(candidates: ContactCandidate[], dataset: ContactD
   const grouped = new Map<string, ContactCandidate[]>();
   for (const c of candidates) grouped.set(c.email, [...(grouped.get(c.email) ?? []), c]);
   return [...grouped].map(([email, observations]) => {
+    const sourceConflict = observations.some(c => c.sourceConflicts?.length);
     const evidence = observations.flatMap(c => [c.roleEvidence, ...(c.additionalRoleEvidence ?? [])]
       .filter(e => e?.exclusiveAddress).map(e => ({sourceUrl:c.sourceUrl, text:e!.text, publishedAt:c.publishedAt})));
     const limitations = evidence.flatMap(e=>evidenceLimitations(e.text,e.sourceUrl,options,e.publishedAt));
@@ -57,10 +58,10 @@ export function assessContacts(candidates: ContactCandidate[], dataset: ContactD
     const positive = wanted[dataset].find(role => roles.has(role));
     // Conflicting roles remain reviewable, including a shared contact card.
     const role: ContactRole = negative ?? positive ?? [...roles][0] ?? (purpose === "general" ? "general" : "unknown");
-    const suitability: AssessedContact["suitability"] = negative && positive ? "needs-review" : negative ? "not-target-role" :
+    const suitability: AssessedContact["suitability"] = sourceConflict ? "needs-review" : negative && positive ? "needs-review" : negative ? "not-target-role" :
       attribution === "unconfirmed" ? "needs-review" : positive ? "role-indicated" : (role === "general" || attribution === "official-source") ? "general-fallback" : "needs-review";
     const sources = evidence.length ? evidence : observations.map(c => ({ sourceUrl: c.sourceUrl, text: c.email }));
-    return { email, role, suitability, attribution, reviewReasons: [...new Set(limitations)], evidence: sources.filter((e, i) => sources.findIndex(other => other.sourceUrl === e.sourceUrl && other.text === e.text) === i) };
+    return { email, role, suitability, attribution, reviewReasons: [...new Set([...limitations, ...(sourceConflict ? ['mail-link-label-mismatch'] : [])])], evidence: sources.filter((e, i) => sources.findIndex(other => other.sourceUrl === e.sourceUrl && other.text === e.text) === i) };
   }).sort((a,b) => {
     const rank = { "role-indicated": 0, "general-fallback": 1, "needs-review": 2, "not-target-role": 3 };
     return rank[a.suitability] - rank[b.suitability] ||

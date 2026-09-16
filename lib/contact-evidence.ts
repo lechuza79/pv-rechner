@@ -11,6 +11,7 @@ export type ContactCandidate = {
   departments?: string[];
   roleEvidence?: { text: string; scope: "local-block"; exclusiveAddress: boolean };
   additionalRoleEvidence?: { text: string; scope: "local-block"; exclusiveAddress: boolean }[];
+  sourceConflicts?: { kind: "mail-link-label-mismatch"; linked: string; displayed: string }[];
   relation: "same-domain" | "unconfirmed";
   purpose: "press" | "website" | "sales" | "general" | "excluded" | "unknown";
 };
@@ -129,6 +130,7 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
   });
   const publishedAt = structuredPublication ?? $("meta[property='article:published_time']").attr("content") ?? $("article time[datetime]").first().attr("datetime");
   const candidates = new Map<string, ContactCandidate>();
+  const linkConflicts: NonNullable<ContactCandidate['sourceConflicts']> = [];
   const localEvidence = (el: Parameters<typeof $>[0], email: string) => {
     let block = $(el).closest("p,li,td,address,article,section,div");
     let best = "";
@@ -172,6 +174,18 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
     try {
       const local = $(el).closest("p,li,td,address,article,section,div").text().replace(/\s+/g," ").trim();
       const email = entschluesseltOderRoh(raw).trim().toLowerCase();
+      // Compare only an explicitly printed address in this link's label.
+      // Generic labels, neighboring contacts and subject parameters are not evidence.
+      if (/^[\w.+%-]+@[\w-]+(?:\.[\w-]+)+$/.test(email)) {
+        const labels = entwirreAdressen($(el).text()).replace(/\(ad\)/gi, '@').match(/[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g) ?? [];
+        for (const label of labels) {
+          const displayed = label.toLowerCase();
+          if (displayed !== email && !linkConflicts.some(c => c.linked === email && c.displayed === displayed)) {
+            linkConflicts.push({ kind: 'mail-link-label-mismatch', linked: email, displayed });
+            add(displayed, $(el).text());
+          }
+        }
+      }
       add(email, local.length <= 600 ? local : $(el).text(), localEvidence(el, email));
     } catch { /* Malformed source. */ }
   });
@@ -180,6 +194,10 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
     const text = entwirreAdressen($(el).clone().children("div,p,li,td,article,section").remove().end().text().replace(/\(ad\)/gi, "@"));
     for (const m of text.matchAll(/[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g)) add(m[0], text.slice(Math.max(0, m.index! - 220), m.index! + 380), localEvidence(el, m[0].toLowerCase()));
   });
+  for (const candidate of candidates.values()) {
+    const conflicts = linkConflicts.filter(c => c.linked === candidate.email || c.displayed === candidate.email);
+    if (conflicts.length) candidate.sourceConflicts = conflicts;
+  }
   return [...candidates.values()];
 }
 

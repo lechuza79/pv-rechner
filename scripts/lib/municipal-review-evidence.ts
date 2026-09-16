@@ -61,7 +61,7 @@ export function reviewContactSupported(directory: string, organizationId: string
   if (mode === "separately-reviewed" && (!contact.sourceHtmlDigest || !contact.roleSource || contact.quote !== contact.email ||
     typeof contact.associationReason !== "string" || contact.associationReason.trim().length < 40)) return false;
   const supports = (candidates: ContactCandidate[]) => candidates.some(candidate =>
-    candidate.email === contact.email && (mode === "separately-reviewed" || [candidate.roleEvidence, ...(candidate.additionalRoleEvidence ?? [])]
+    candidate.email === contact.email && !candidate.sourceConflicts?.length && (mode === "separately-reviewed" || [candidate.roleEvidence, ...(candidate.additionalRoleEvidence ?? [])]
       .some(evidence => evidence?.exclusiveAddress && evidence.text.includes(contact.quote))));
   if (contact.sourceHtmlDigest === undefined) {
     return pages.some(page => (page.url === contact.url || page.finalUrl === contact.url) && supports(page.candidates));
