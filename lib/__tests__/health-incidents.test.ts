@@ -78,7 +78,7 @@ describe('workflow delivery contract', () => {
 
 import { selectHistory } from '../../scripts/health-history';
 it('restores the latest persisted main report, including failed runs, not branch/expired artifacts; a prior attempt of the current run is retained', () => {
-  const artifact = (id: number, branch = 'main', expired = false) => ({id,expired,workflow_run:{id,head_branch:branch,repository_id:1,head_repository_id:1}});
+  const artifact = (id: number, branch = 'main', expired = false) => ({id,created_at:new Date(id * 1000).toISOString(),expired,workflow_run:{id,head_branch:branch,repository_id:1,head_repository_id:1}});
   expect(selectHistory([artifact(3),artifact(4),artifact(7,'topic'),artifact(8,'main',true),artifact(9)])?.id).toBe(9);
   expect(selectHistory([{...artifact(99),workflow_run:{id:99,head_branch:'main',repository_id:1,head_repository_id:2}}])).toBeUndefined();
   expect(selectHistory([])).toBeUndefined();
