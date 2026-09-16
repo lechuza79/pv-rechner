@@ -150,10 +150,17 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
       // Long personnel cards are bounded by their repeated sibling structure,
       // not by the length of an employee's list of duties. A page containing
       // just one address does not provide this independent boundary.
-      const repeatedCard = text.length > 600 && copy.find("h1,h2,h3,h4,h5,h6").length > 0
+      const fieldHeadings = new Set(copy.find("h3,h4,h5,h6").toArray()
+        .map(heading => $(heading).text().replace(/\s+/g, " ").trim().toLowerCase()).filter(Boolean));
+      // Repeated news/event headlines are not a personnel-record boundary.
+      // Require repeated field labels (for example office and duties), too.
+      const repeatedCard = text.length > 600 && fieldHeadings.size >= 2
         && block.siblings().toArray().some(sibling => {
           const other = $(sibling);
           if (other.prop("tagName") !== block.prop("tagName") || !other.find("h1,h2,h3,h4,h5,h6").length) return false;
+          const otherFields = new Set(other.find("h3,h4,h5,h6").toArray()
+            .map(heading => $(heading).text().replace(/\s+/g, " ").trim().toLowerCase()).filter(Boolean));
+          if ([...fieldHeadings].filter(heading => otherFields.has(heading)).length < 2) return false;
           const links = other.find("a[href^='mailto:']");
           if (links.length !== 1) return false;
           const address = entschluesseltOderRoh((links.attr("href") ?? "").slice(7).split("?")[0]).toLowerCase();
