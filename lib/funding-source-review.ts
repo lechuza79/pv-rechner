@@ -27,3 +27,13 @@ export function pendingFundingSources<T extends ReviewSource>(rows: T[]): T[] {
     return !Number.isFinite(changed) || !Number.isFinite(reviewed) || changed > reviewed;
   });
 }
+
+/** Share reading work, never infer shared eligibility or municipal completion. */
+export function groupedPendingFundingSources<T extends ReviewSource>(rows: T[]) {
+  const groups = new Map<string, T[]>();
+  for (const row of pendingFundingSources(rows)) {
+    groups.set(row.url, [...(groups.get(row.url) ?? []), row]);
+  }
+  return [...groups].map(([url, sources]) => ({ url, associations: sources.length, sources }))
+    .sort((a, b) => b.associations - a.associations || a.url.localeCompare(b.url));
+}

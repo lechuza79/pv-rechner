@@ -27,6 +27,9 @@ import { createClient } from "@supabase/supabase-js";
 import { technikenLesen, programmDecktSeite } from "../lib/funding-seiten";
 import { EVIDENCE_DIR } from "./lib/funding-source-reader";
 import { summarizeEvidence, type RunObservation } from "../lib/funding-run-evidence";
+import { pendingFundingSources, groupedPendingFundingSources } from "../lib/funding-source-review";
+import { municipalReviewQueue, validateMunicipalReviews, type InquiryReceipt } from "../lib/funding-municipal-review";
+import municipalReviews from "../data/funding/municipal-reviews.json";
 import type { FundingTechnik } from "../lib/funding-programs";
 
 function loadEnvFile(): void {
@@ -58,6 +61,11 @@ type Zaehler = {
   treffer: number;
   programme: number;
   zuLesen: number;
+  quellenOffen: number;
+  originaleOffen: number;
+  kommunenGesamt: number;
+  kommunenGeklaert: number;
+  kommunenStatus: Record<string, number>;
   jeTechnik: Record<string, number>;
 };
 
@@ -76,9 +84,11 @@ async function alleZeilen<T>(tabelle: string, spalten: string): Promise<T[]> {
 async function messen(): Promise<Zaehler> {
   const seiten = await alleZeilen<any>(
     "funding_seiten",
-    "region_id, techniken, screen_verdikt, screen_version, gelesen_ergebnis, zustand",
+    "region_id, url, techniken, screen_verdikt, screen_version, gelesen_am, gelesen_ergebnis, gelesen_notiz, seite_geaendert_am, zustand",
   );
   const prog = await alleZeilen<any>("funding_programs", "id, data");
+  const receipts = await alleZeilen<InquiryReceipt>("funding_anfragen", "program_id,gesendet_am,beleg,antwort_am");
+  const municipal = municipalReviewQueue(seiten, validateMunicipalReviews(municipalReviews), receipts, new Date().toISOString());
 
   const gefuehrt = (region: string, technik: string): boolean =>
     prog.some((p) => {
@@ -105,6 +115,11 @@ async function messen(): Promise<Zaehler> {
 
   return {
     seiten: seiten.length,
+    quellenOffen: pendingFundingSources(seiten).length,
+    originaleOffen: groupedPendingFundingSources(seiten).length,
+    kommunenGesamt: municipal.totalMunicipalities,
+    kommunenGeklaert: municipal.completedMunicipalities,
+    kommunenStatus: municipal.counts,
     eingeordnet: seiten.filter((s) => s.screen_version).length,
     unerreichbar: seiten.filter((s) => s.zustand === "unerreichbar").length,
     treffer: seiten.filter((s) => s.screen_verdikt === "treffer").length,
@@ -144,6 +159,8 @@ async function main(): Promise<void> {
   const vorher = await vorheriger();
 
   const done = [
+    `Fachliche Prüfung: ${jetzt.quellenOffen} offene Quellenzuordnungen${delta(jetzt.quellenOffen, vorher?.quellenOffen)} aus ${jetzt.originaleOffen} unterschiedlichen Originaladressen. Ein vorhandenes Katalogprogramm schließt weitere Quellen nicht ab.`,
+    `Kommunen mit erfassten Quellen oder Handprüfung: ${jetzt.kommunenGeklaert} von ${jetzt.kommunenGesamt} geklärt${delta(jetzt.kommunenGeklaert, vorher?.kommunenGeklaert)}; keine bundesweite Vollabdeckung. Zustände: ${JSON.stringify(jetzt.kommunenStatus)}.`,
     `${jetzt.seiten} Förderseiten erfasst${delta(jetzt.seiten, vorher?.seiten)}, davon ${jetzt.eingeordnet} eingeordnet${delta(jetzt.eingeordnet, vorher?.eingeordnet)}`,
     `Gemeinden mit Fundstelle — Photovoltaik ${jetzt.jeTechnik.pv}${delta(jetzt.jeTechnik.pv, vorher?.jeTechnik?.pv)}, ` +
       `Balkonkraftwerk ${jetzt.jeTechnik.balkon}${delta(jetzt.jeTechnik.balkon, vorher?.jeTechnik?.balkon)}, ` +
@@ -177,7 +194,7 @@ async function main(): Promise<void> {
   if (decisions.length) console.log(`\n  ENTSCHEIDUNG: ${decisions[0]}`);
   if (dry) return;
 
-  const { error } = await sb.from("waechter_reports").insert({ tag: TAG, subject: "Förder-Erfassung: Abschlussbericht", decisions, done, details, delivered: false, skip_reason: "evidence-only" });
+  const { error } = await sb.from("waechter_reports").insert({ tag: TAG, subject: jetzt.quellenOffen || jetzt.kommunenGeklaert < jetzt.kommunenGesamt ? "Förder-Erfassung: Lauf beendet, fachliche Prüfung offen" : "Förder-Erfassung: Laufbericht", decisions, done, details, delivered: false, skip_reason: "evidence-only" });
   if (error) throw new Error(`Abschlussbericht nicht gespeichert: ${error.message}`);
 }
 

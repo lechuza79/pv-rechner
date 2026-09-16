@@ -1,6 +1,6 @@
 import { municipalReviewQueue, validateMunicipalReviews, type InquiryReceipt } from "../lib/funding-municipal-review";
 import municipalReviews from "../data/funding/municipal-reviews.json";
-import { pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
+import { groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
 import { seitenSchluessel } from "../lib/funding-seiten";
 import { FundingSourceReader, recordStage } from "./lib/funding-source-reader";
 /**
@@ -295,6 +295,11 @@ async function quellen(): Promise<void> {
     return;
   }
   const pending = pendingFundingSources(rows);
+  if (process.argv.includes("--gruppiert")) {
+    const groups = groupedPendingFundingSources(rows);
+    console.log(JSON.stringify({ totalSources: rows.length, pendingSources: pending.length, uniquePendingSources: groups.length, groups }, null, 2));
+    return;
+  }
   console.log(JSON.stringify({ totalSources: rows.length, pendingSources: pending.length, sources: process.argv.includes("--alle") ? rows : pending }, null, 2));
 }
 
