@@ -8,6 +8,7 @@ The new crawler reuses the outreach URL normalization, branch scheduling and con
 
 ## Original documents and attribution
 
+- Relative URLs respect the published HTML base address, while retaining the actual referring page. Repeated path growth with unchanged visible content and unchanged raw link targets stops that branch; different content or links and genuine sibling pages survive.
 - Published frames, explicit fragment endpoints, continuation links and embedded PDF viewer destinations are navigation leads. No endpoint is inferred from arbitrary JavaScript.
 - PDF bytes are kept unchanged; local `pdftotext` creates a separately hashed extraction. Empty scans and extraction failures remain unresolved. The extraction is not an OCR guess or a substantive review.
 - Recognizable loading shells receive a bounded isolated Chromium render. The raw HTTP response and derived DOM have separate hashes; evaluation time does not replace original observation time. HTTP challenges are not bypassed.

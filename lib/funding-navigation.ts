@@ -1,3 +1,4 @@
+import { fundingNavigationSignature, repeatedFundingPath } from "./funding-source-loop";
 import { entschluesseltOderRoh } from "./uri-sicher";
 import { seitenSchluessel } from "./funding-seiten";
 import { load } from "cheerio";
@@ -17,12 +18,13 @@ const continuation = /^(?:zur aufgerufenen seite|weiter(?: zur| zum)? (?:startse
 /** Published links only. An outbound link proves provenance, not eligibility. */
 export function fundingLinks(html: string, base: string, root: string, depth = 1): FundingLead[] {
   const $ = load(html), result = new Map<string, FundingLead>();
+  const documentBase = contactUrl($("base[href]").first().attr("href") ?? base, base) ?? base;
   $("a[href],frameset frame[src],iframe[src],embed[src],object[data],integration-bim[result-url]").each((_, el) => {
     const node = $(el), tag = el.tagName.toLowerCase();
     let raw = node.attr("href") ?? node.attr("src") ?? node.attr("data") ?? node.attr("result-url") ?? "";
     // Resolve only the document explicitly named by a published PDF viewer.
-    try { const viewer = new URL(raw, base); if (/\/viewer\.(?:html?|php)$/i.test(viewer.pathname) && viewer.searchParams.get("file")) raw = new URL(viewer.searchParams.get("file")!, viewer).href; } catch { return; }
-    const url = contactUrl(raw, base);
+    try { const viewer = new URL(raw, documentBase); if (/\/viewer\.(?:html?|php)$/i.test(viewer.pathname) && viewer.searchParams.get("file")) raw = new URL(viewer.searchParams.get("file")!, viewer).href; } catch { return; }
+    const url = contactUrl(raw, documentBase);
     if (!url || /\{\{|\}\}|\$\{|%7b%7b|%7d%7d/i.test(entschluesseltOderRoh(url))) return;
     let label = node.text().replace(/\s+/g, " ").trim() || node.attr("title") || "";
     if (/^(?:hier|download|hier herunterladen)[.!]?$/i.test(label)) {
@@ -49,12 +51,13 @@ export function fundingLinks(html: string, base: string, root: string, depth = 1
 /** Collapse only equivalences declared by the publisher, never guessed locale paths. */
 export function publishedLanguageAliases(html: string, base: string): Map<string, string> {
   const $ = load(html), links = $("link[rel='alternate'][hreflang][href]").toArray();
+  const documentBase = contactUrl($("base[href]").first().attr("href") ?? base, base) ?? base;
   const preferred = links.find(el => /^de(?:-|$)/i.test($(el).attr("hreflang") ?? "")) ?? links.find(el => $(el).attr("hreflang") === "x-default");
-  const target = preferred && contactUrl($(preferred).attr("href")!, base);
+  const target = preferred && contactUrl($(preferred).attr("href")!, documentBase);
   const result = new Map<string, string>();
   if (!target || host(target) !== host(base)) return result;
   for (const el of links) {
-    const url = contactUrl($(el).attr("href")!, base);
+    const url = contactUrl($(el).attr("href")!, documentBase);
     if (url && host(url) === host(base) && seitenSchluessel(url) !== seitenSchluessel(target)) result.set(seitenSchluessel(url), target);
   }
   return result;
@@ -80,6 +83,7 @@ export async function walkFundingSources(options: {
   const previous = new Set((options.priorLeads ?? []).map(l => l.url));
   for (const lead of fundingLinks(options.html, options.root, options.root)) add(lead);
   for (const seed of options.seeds ?? []) add({ ...seed, referrer: new URL("/sitemap.xml", options.root).href, via: "sitemap", relation: "same-site", kind: "page", depth: 1 });
+  const signatures = new Map<string, string[]>([[fundingNavigationSignature(options.html), [options.root]]]);
   let requests = 0;
   const unreadable: string[] = [];
   while (pending.size && requests < options.budget) {
@@ -91,6 +95,11 @@ export async function walkFundingSources(options: {
     const page = await options.read(url);
     if (!page) { unreadable.push(url); continue; }
     seen.add(page.url);
+    const signature = fundingNavigationSignature(page.html);
+    const previousSources = signatures.get(signature) ?? [];
+    const loopOrigin = previousSources.find(previous => repeatedFundingPath(previous, page.url));
+    if (loopOrigin) { lead.duplicateOf = loopOrigin; lead.observed = true; continue; }
+    signatures.set(signature, [...previousSources, page.url]);
     for (const [key, canonical] of publishedLanguageAliases(page.html, page.url)) aliases.set(key, canonical);
     for (const existing of leads.values()) {
       const canonical = aliases.get(seitenSchluessel(existing.url));
@@ -103,7 +112,10 @@ export async function walkFundingSources(options: {
     lead.observed = !gap;
     lead.substantiveSignal = !gap && einordnen(sichtbarerText(page.html)).techniken.length > 0;
     // Keep the observed destination, without erasing the original link path.
-    if (page.url !== url) leads.set(page.url, { ...lead, url: page.url, referrer: url, relation: host(page.url) === host(options.root) ? "same-site" : "published-external" });
+    if (page.url !== url) {
+      lead.duplicateOf = page.url;
+      leads.set(page.url, { ...lead, url: page.url, referrer: url, duplicateOf: aliases.get(seitenSchluessel(page.url)), relation: host(page.url) === host(options.root) ? "same-site" : "published-external" });
+    }
     if (gap) unreadable.push(url);
     if (lead.depth < 5) for (const next of fundingLinks(page.html, page.url, options.root, lead.depth + 1)) {
       // Do not spread from one foreign portal into a web-wide crawl.
