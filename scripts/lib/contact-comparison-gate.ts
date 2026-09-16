@@ -15,6 +15,7 @@ export function requireContactComparison(workflow:string,reportPath:string,recip
  for(const item of scope.items){const row=rows.get(item.currentMunicipalityId),target=targets.get(item.inventoryOrganizationId);
   if(!row||!target||!['better','equivalent'].includes(row.verdict)||row.lost?.length||row.unresolvedBaseline?.length||row.unsupportedSelected?.length||!row.current||!row.sourceChecksComplete)throw Error('Ungeklärter Kontaktvergleich');
   if(hash(readFileSync(target.audit.inputPath))!==row.baselineDigest||hash(readFileSync(row.recordPath))!==row.recordDigest)throw Error('Kontaktvergleich ist veraltet');
+  if(row.originalAssessmentPath&&hash(readFileSync(row.originalAssessmentPath))!==row.originalAssessmentDigest)throw Error('Ursprüngliche Kontaktbewertung wurde verändert');
   const record=read(row.recordPath);if(record.stateDigest!==contactStateDigest(base,workflow,target,findings.get(target.organization_id)??[]))throw Error('Neue Kontaktbelege erfordern erneuten Vergleich');for(const source of record.sourceManifest)if(source.valid&&(!source.path||!existsSync(source.path)||hash(readFileSync(source.path))!==source.digest))throw Error('Kontaktquelle wurde verändert');
  }
  for(const recipient of recipients){const row=rows.get(recipient.organizationId);if(!row||![...(row.retained??[]),...(row.gained??[])].includes(recipient.email.toLowerCase()))throw Error('Empfänger ist nicht im geprüften Kontaktvergleich');}

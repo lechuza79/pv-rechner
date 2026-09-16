@@ -9,7 +9,7 @@ export function contactRoleContext(html:string,candidates:ContactCandidate[]){
  const $=load(html);const title=$('title').first().text().replace(/\s+/g,' ').trim();
  const heading=$('h1').first().text().replace(/\s+/g,' ').trim();
  const authority=/(?:^|[\/|–—])\s*((?:Samtgemeinde|Verbandsgemeinde|Amtsverwaltung|Amt|Landkreis|Kreis)\s+[^\/|–—]+)$/iu.exec(title)?.[1]?.trim();
- const department=/^(?:[^:]{0,50}:\s*)?(?:(?:Stabs?stelle|Fachbereich|Fachdienst)\s+)?(?:Energie[- &und]+Klimaschutz(?:management|managment)?|Klimaschutz(?:management|managment|manager(?:in)?)?|Energieberatung|Energiemanagement|Presse(?:stelle|arbeit)?(?:[- &und]+Öffentlichkeitsarbeit)?|Öffentlichkeitsarbeit)$/iu.test(heading);
+ const department=/^(?:[^:]{0,50}:\s*)?(?:(?:Stabs?stelle|Fachbereich|Fachdienst)\s+)?(?:Energie[- &und]+Klimaschutz(?:management|managment)?|Klimaschutz(?:management|managment|manager(?:in)?)?|Energieberatung|Energiemanagement|Presse(?:stelle|arbeit)?(?:[- &und]+Öffentlichkeitsarbeit)?|Öffentlichkeitsarbeit(?:[- /&]+Pressearbeit)?)$/iu.test(heading);
  return {authorityName:authority,candidates:candidates.map(c=>{
    const extra:NonNullable<ContactCandidate['additionalRoleEvidence']>=[];
    $('a').each((_,el)=>{

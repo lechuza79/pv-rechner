@@ -19,3 +19,10 @@ it('retains both named press contacts alongside the functional mailbox from the 
  expect(selected.map(c=>c.email).sort()).toEqual(['cvogelbein@northeim.de','moenkemeyer@northeim.de','pressestelle@northeim.de']);
  expect(selected.every(c=>c.channel==='publishing')).toBe(true);
 });
+
+it('keeps Meinersen press responsibility alongside its energy contact',()=>{
+ const press=readFileSync(new URL('./fixtures/meinersen-press-contact.html',import.meta.url),'utf8');
+ const selected=[...review(html),...review(press)].filter(c=>c.functionSupported);
+ expect(selected.map(c=>c.email).sort()).toEqual(['eduard.bayer@sg-meinersen.de','presse@sg-meinersen.de']);
+ expect(new Set(selected.flatMap(c=>c.channels))).toEqual(new Set(['energy','publishing']));
+});
