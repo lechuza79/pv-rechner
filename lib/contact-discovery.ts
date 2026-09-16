@@ -87,8 +87,19 @@ export function contactLinkPriority(url: string, label: string, dataset: Contact
   return score;
 }
 
+/** Relative published links use the first HTML base, just as in the browser. */
+function publishedLinkBase($: ReturnType<typeof load>, documentUrl: string): string {
+  const href = $("base[href]").first().attr("href");
+  if (href === undefined) return documentUrl;
+  try {
+    const resolved = new URL(href, documentUrl);
+    return /^https?:$/.test(resolved.protocol) ? resolved.href : documentUrl;
+  } catch { return documentUrl; }
+}
+
 export function contactLinks(html: string, base: string, domain: string, dataset: ContactDataset): {url:string; priority:number}[] {
   const $ = load(html);
+  base = publishedLinkBase($, base);
   const result = new Map<string, number>();
   $("a[href]").each((_, el) => {
     const href = $(el).attr("href")!.trim();
@@ -147,6 +158,7 @@ export function nextContactUrl(pending: Map<string,number>, branchVisits: Map<st
 /** Explicit outbound contact/publisher links are research leads, not ownership. */
 export function externalContactLinks(html: string, base: string, domain: string, dataset: ContactDataset) {
   const $ = load(html);
+  base = publishedLinkBase($, base);
   const links = new Map<string, number>();
   $("a[href]").each((_, el) => {
     const url = contactUrl($(el).attr("href") ?? "", base);
