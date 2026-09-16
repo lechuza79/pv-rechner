@@ -20,4 +20,20 @@ describe('Automatic source-bound contact checks',()=>{
   expect(checkAutomaticContact(candidate,source,{...context,heldEmails:[candidate.email]}).functionSupported).toBe(false);
   for(const change of [{valid:false},{readable:false}])expect(checkAutomaticContact(candidate,{...source,...change},context).originalSupported).toBe(false);
  });
+ it('accepts named personal climate and press contacts without mailbox-name requirements',()=>{
+  for(const [email,text,channel] of [['anna.mueller@town.example','Stadt Town Klimaschutzmanagerin Anna Müller','energy'],['max.schulz@town.example','Stadt Town Pressestelle Max Schulz','publishing']]){
+   expect(checkAutomaticContact({...candidate,email,roleEvidence:{...candidate.roleEvidence!,text}},source,context)).toMatchObject({functionSupported:true,channel});
+  }
+ });
+ it('keeps both responsibilities when the same person explicitly holds them',()=>{
+  expect(checkAutomaticContact({...candidate,email:'anna.mueller@town.example',roleEvidence:{...candidate.roleEvidence!,text:'Stadt Town Klimaschutzmanagement und Öffentlichkeitsarbeit Anna Müller'}},source,context).channels).toEqual(['energy','publishing']);
+ });
+ it('retains a proven shared-authority contact without pretending every member municipality is covered',()=>{
+  const result=checkAutomaticContact({...candidate,email:'anna.mueller@town.example',roleEvidence:{...candidate.roleEvidence!,text:'Samtgemeinde Example Klimaschutzmanagement Anna Müller'}},{...source,authorityName:'Samtgemeinde Example',identityText:'Energie- und Klimaschutzmanagement / Samtgemeinde Example'},context);
+  expect(result).toMatchObject({functionSupported:true,responsibilityScope:'shared-authority',organizationName:'Samtgemeinde Example',municipalityCoverageConfirmed:false});
+ });
+ it('does not use the function word inside an address as independent responsibility evidence',()=>{
+  expect(checkAutomaticContact({...candidate,roleEvidence:{...candidate.roleEvidence!,text:'Stadt Town presse@town.example'}},source,context).functionSupported).toBe(false);
+ });
+
 });

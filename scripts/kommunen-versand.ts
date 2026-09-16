@@ -1,3 +1,4 @@
+import {requireContactComparison} from './lib/contact-comparison-gate';
 /**
  * Kommunen-Anschreiben verschicken — gedrosselt, protokolliert, mit Bremsen.
  *
@@ -334,6 +335,9 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
   const workflow = process.argv.find(a => a.startsWith('--contact-workflow='))?.slice('--contact-workflow='.length);
   const contactBatch = process.argv.find(a => a.startsWith('--contact-batch='))?.slice('--contact-batch='.length);
   if (!workflow || !contactBatch) throw new Error('Vor dem Versand fehlen die vollständige Kontaktprüfung und der aktuelle Batch-Abgleich (--contact-workflow, --contact-batch).');
+  const comparison=process.argv.find(a=>a.startsWith('--contact-quality-comparison='))?.slice('--contact-quality-comparison='.length);
+  if(!comparison)throw new Error('Vor dem Versand fehlt der vollständige Vorher-nachher-Qualitätsvergleich (--contact-quality-comparison).');
+  requireContactComparison(resolve(workflow),resolve(comparison),p.paket.slice(0,limit).map(b=>({organizationId:b.region_id,email:b.empfaenger})));
   requireContactBatch(resolve(workflow), resolve(contactBatch), p.paket.slice(0, limit).map(b => ({ organizationId: b.region_id, email: b.empfaenger })), new Date().toISOString());
   const { transport, konfig } = await baueTransport();
   const absenderDomain = adresseAus(konfig.from).split("@")[1];

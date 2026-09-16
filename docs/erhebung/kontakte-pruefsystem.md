@@ -149,12 +149,16 @@ Quellenumfang passende Ergebnisse. Jeder Fall hat Originalbelege, einzeln geprü
 Kontakte und konkrete Nachrechercheaufträge. Originalbeleg, explizit belegte Funktion
 und abgeschlossene Suche sind unterschiedliche Aussagen.
 
-Automatisch positiv belegbar sind eng begrenzte veröffentlichte Funktionskarten:
-Originalhash und lesbare Quelle, eigene Quell- und Maildomain, ausdrücklich genannte
-Gemeinde und Funktion innerhalb derselben exklusiven Karte, keine widersprüchliche
-Adresse, ausgeschlossene Rolle oder zurückgestellte Adresse. Eine persönliche
-Adresse neben mehreren Rollen oder eine Amtsadresse ohne Gemeindegeltung bleibt
-unbestätigt. Bestehende revisionsfeste Einzelentscheidungen werden weiterverwendet.
+Persönliche dienstliche Adressen und Funktionspostfächer werden nach denselben
+Quellenbelegen geprüft. Ein Funktionswort im Postfachnamen genügt nicht. Explizite
+Kontaktkarten eines Fachbereichs dürfen dessen Zuständigkeit übernehmen; allgemeine
+Footer, Nachrichtenüberschriften und mehrdeutige Personenkarten nicht. Energie/Klima
+und Presse bleiben getrennte, gleichzeitig speicherbare Kontaktwege.
+
+Gemeinsame Verwaltungen sind reguläre Ansprechpartner. Der belegte Behördenname
+bleibt erhalten; die Zuständigkeit wird nicht ohne eigenen Nachweis auf alle
+Mitgliedsgemeinden übertragen. Vorhandene vollständige Einzelentscheidungen bleiben
+revisionsgebunden erhalten.
 
 Nicht gelesene veröffentlichte Kontaktlinks, dynamische Verzeichnisse, PDF-/Browser-
 Belege und fehlende Quellen bleiben konkrete Arbeitsaufträge. Auch bei offener Suche
@@ -170,3 +174,23 @@ Ausgaben liegen unter `workflow/automatic/`: `records/` je aktive Gemeinde,
 Partition sowie `summary.json` und `queue.json` nach Zusammenfassung. Wiederholungen
 prüfen Originalintegrität erneut; identische Quellen müssen nicht erneut geparst
 werden. Abgebrochene Läufe können mit derselben Partition wieder gestartet werden.
+
+
+## Verbindlicher Alt-neu-Vergleich vor Versand
+
+Die korrigierte Auswahl kann mit `--output=<separater Ordner>` und
+`--reuse-runtime=<eingefrorene Laufzeit>` unveränderte Extraktionen wiederverwenden.
+Parser-Dateien müssen dabei identisch sein; Rollen werden neu geprüft. `--ids=`
+erlaubt gezielte Wiederholung geänderter Fälle, ohne andere Fälle neu zu erheben.
+Nach der Zusammenfassung erzeugt `scripts/contact-selection-comparison.ts`
+(`--source=<Erhebung> --evaluation=<Ausgabe>`) den Vergleich für den amtlichen
+Gesamtbestand, einschließlich noch nicht geprüfter Gemeinden. Beide Auswahlen
+werden nach denselben Quellenurteilen bewertet. Verlorene belegte Altkontakte sind
+Verschlechterungen; nicht bestätigte alte Adressen bleiben ungeklärt, nicht falsch.
+Kontaktgewinne sind keine automatische Aussage über vollständige Suchabdeckung.
+
+Der echte Versender benötigt zusätzlich `--contact-quality-comparison=<Bericht>`.
+Fehlende, unvollständige, veraltete, ungeklärte oder verschlechterte Vergleiche
+brechen vor Aufbau des Mailtransports ab. Eingangsdaten, Quellen, Entscheidungen,
+zusätzliche Beobachtungen und ausgewählte Empfänger werden erneut gebunden geprüft.
+Der Bericht erzeugt keine Versandfreigabe und aktiviert keinen Versand.

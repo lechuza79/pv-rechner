@@ -1,7 +1,8 @@
-name: Sachfragen an blockierte Förderstellen
+name: Sachfragen an Förderstellen
 
 # Fragt bei Förderstellen nach, an deren Amtsseite wir seit drei Läufen nicht
-# mehr herankommen — die letzte Stufe der Eskalationsleiter.
+# mehr herankommen — sowie dokumentierte kommunale Sachfragen nach Handprüfung.
+# Beide verwenden denselben gedeckelten Sender und dasselbe Versandprotokoll.
 #
 # WARUM EIN EIGENER LAUF UND NICHT IM NÄCHTLICHEN FÖRDER-WÄCHTER: Der läuft um
 # 3:40 Uhr. Eine Sachfrage, die um diese Zeit im Postfach einer Ortsgemeinde
@@ -29,7 +30,12 @@ on:
     - cron: "7 8 * * 1-5"
     - cron: "23 11 * * 1-5"
     - cron: "41 13 * * 1-5"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      fall:
+        description: "Optional: genau eine geprüfte kommunale Rückfrage"
+        required: false
+        type: string
 
 concurrency:
   group: foerder-anfragen
@@ -65,12 +71,15 @@ jobs:
           OUTREACH_SMTP_USER: ${{ secrets.OUTREACH_SMTP_USER }}
           OUTREACH_SMTP_PASS: ${{ secrets.OUTREACH_SMTP_PASS }}
           OUTREACH_MAIL_FROM: ${{ secrets.OUTREACH_MAIL_FROM }}
+          REQUESTED_CASE: ${{ inputs.fall }}
         run: |
+          args=(--auto)
+          if [ -n "$REQUESTED_CASE" ]; then args+=("--fall=$REQUESTED_CASE"); fi
           if [ -n "$OUTREACH_SMTP_PASS" ]; then
-            npm run foerder:anfrage -- --auto --senden
+            npm run foerder:anfrage -- "${args[@]}" --senden
           else
             echo "Postfach-Zugang fehlt — es wird nur angezeigt, was fällig wäre."
-            npm run foerder:anfrage -- --auto
+            npm run foerder:anfrage -- "${args[@]}"
           fi
 
       # Was offen ist, gehört in dasselbe Protokoll wie das, was rausging.

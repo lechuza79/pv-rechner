@@ -167,14 +167,16 @@ export async function foerderAnfragenZuordnen(
   mails: FundingReplyMail[],
   schreiben: boolean,
 ): Promise<void> {
-  const { data, error } = await db
-    .from("funding_anfragen")
-    .select("program_id, empfaenger, betreff, gesendet_am, antwort_am, antwort_art");
-  if (error) {
-    // The caller completes outreach processing but marks the whole run failed.
-    throw new Error(`Förder-Anfragen nicht lesbar: ${error.message}`);
+  const data: { program_id: string; empfaenger: string; betreff: string; gesendet_am: string; antwort_am: string | null; antwort_art: string | null }[] = [];
+  for (let offset = 0; ; offset += 1000) {
+    const { data: page, error } = await db.from("funding_anfragen")
+      .select("program_id, empfaenger, betreff, gesendet_am, antwort_am, antwort_art")
+      .order("id").range(offset, offset + 999);
+    if (error) throw new Error(`Förder-Anfragen nicht lesbar: ${error.message}`);
+    data.push(...(page ?? []));
+    if ((page?.length ?? 0) < 1000) break;
   }
-  const offene = (data ?? []).map((z) => ({
+  const offene = data.map((z) => ({
     programId: z.program_id as string,
     empfaenger: z.empfaenger as string,
     gesendetAm: z.gesendet_am as string,

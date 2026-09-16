@@ -1,3 +1,9 @@
+import reviewsData from "../data/funding/municipal-reviews.json";
+import { validateMunicipalReviews } from "../lib/funding-municipal-review";
+
+const municipalReviews = validateMunicipalReviews(reviewsData);
+const clarification = (id: string) => municipalReviews.find(r => r.outcome === "klaerung" && r.nextAction?.kind === "enquiry" && r.enquiry?.id === id);
+
 /**
  * Sachfragen an Förderstellen — stellen, protokollieren, offene nachhalten.
  *
@@ -18,17 +24,10 @@
  * DER VERSAND IST IMMER EINE EIGENE ANSAGE. Ohne `--senden` wird nur gezeigt —
  * dieselbe Bauform wie beim Kommunen-Versand und bei der Umstellungs-Nachricht.
  *
- * WAS DER AUTOMATISMUS DARF UND WAS NICHT:
- *
- *   Er verschickt ausschließlich den Fall „wir kommen seit drei Läufen nicht an
- *   die Amtsseite". Den erkennt das System selbst (lib/funding-verify-state.ts),
- *   und die Zählung ist gemessen, nicht geurteilt.
- *
- *   Den zweiten Fall — die Seite ist erreichbar und sagt zwei verschiedene
- *   Dinge — kann er NICHT erkennen: Der Seiten-Wächter weiß, DASS sich eine
- *   Seite bewegt hat, nie WAS darauf steht. Widersprüche stehen deshalb in einer
- *   Liste, die ein Lauf mit Urteilsvermögen füllt (OFFENE_FRAGEN), und werden
- *   einzeln verschickt.
+ * Eligibility: three failed original-source checks, or a manually reviewed
+ * municipal clarification recorded in data/funding/municipal-reviews.json.
+ * Both use the existing office-hour, volume, spacing and no-repeat guards.
+ * Municipal cases have no catalogue grant and never create one to send mail.
  *
  * WAS VOM KOMMUNEN-ANSCHREIBEN NICHT ÜBERNOMMEN WIRD, und warum:
  *
@@ -98,9 +97,14 @@ function db(): Db {
 }
 
 async function hole<T>(d: Db, pfad: string): Promise<T[]> {
-  const r = await fetch(`${d.url}/rest/v1/${pfad}`, { headers: d.kopf });
-  if (!r.ok) abbruch(`Datenbank antwortet ${r.status} auf ${pfad}`);
-  return (await r.json()) as T[];
+  const rows: T[] = [];
+  for (let offset = 0; ; offset += 1000) {
+    const r = await fetch(`${d.url}/rest/v1/${pfad}&limit=1000&offset=${offset}`, { headers: d.kopf });
+    if (!r.ok) abbruch(`Datenbank antwortet ${r.status} auf ${pfad}`);
+    const page = await r.json() as T[];
+    rows.push(...page);
+    if (page.length < 1000) return rows;
+  }
 }
 
 // ─── Den Brief bauen ─────────────────────────────────────────────────────────
@@ -128,7 +132,7 @@ type Fertig = {
   id: string;
   traeger: string;
   an: string;
-  anlass: "widerspruch" | "unerreichbar";
+  anlass: "widerspruch" | "unerreichbar" | "klaerung";
   subject: string;
   body: string;
 };
@@ -138,6 +142,18 @@ async function baueAnfrage(d: Db, id: string): Promise<Fertig> {
   const { renderInquiryDraft } = await import("../lib/funding-inquiry-draft");
   const { fehlendePflichtangaben, postfachBefund } = await import("../lib/outreach-mail");
 
+  const review = clarification(id);
+  if (review?.enquiry) {
+    const { renderMunicipalInquiry } = await import("../lib/funding-inquiry-draft");
+    const q = review.enquiry;
+    const mailbox = postfachBefund(q.recipient, review.name, q.website);
+    if (!mailbox.ok) abbruch(`Postfach abgewiesen: ${mailbox.grund}`);
+    if (new URL(q.recipientSource).hostname.replace(/^www\./, "") !== new URL(q.website).hostname.replace(/^www\./, "")) abbruch("Kontaktquelle gehört nicht zur geprüften Amtswebsite.");
+    const draft = renderMunicipalInquiry(review.name, q.question, review.evidence.map(e => e.url), q.recipientSource);
+    const missing = fehlendePflichtangaben(draft.body);
+    if (missing.length) abbruch(`Pflichtangaben fehlen: ${missing.join(", ")}`);
+    return { id, traeger: review.name, an: q.recipient, anlass: "klaerung", subject: draft.subject, body: draft.body };
+  }
   const p = FUNDING_PROGRAMS[id];
   if (!p) abbruch(`Unbekanntes Programm: ${id}`);
 
@@ -214,7 +230,7 @@ async function baueAnfrage(d: Db, id: string): Promise<Fertig> {
  */
 async function tageSeitAnschreiben(d: Db, id: string): Promise<number | null> {
   const { FUNDING_PROGRAMS } = await import("../lib/funding-programs");
-  const ags = FUNDING_PROGRAMS[id]?.agsCode;
+  const ags = clarification(id)?.regionId ?? FUNDING_PROGRAMS[id]?.agsCode;
   if (!ags) return null;
   const zeilen = await hole<{ contacted_at: string | null }>(
     d,
@@ -226,8 +242,10 @@ async function tageSeitAnschreiben(d: Db, id: string): Promise<number | null> {
 }
 
 async function empfaengerFuer(d: Db, id: string): Promise<string | null> {
+  const review = clarification(id);
+  if (review?.enquiry) return review.enquiry.recipient;
   const { FUNDING_PROGRAMS } = await import("../lib/funding-programs");
-  const ags = FUNDING_PROGRAMS[id]?.agsCode;
+  const ags = clarification(id)?.regionId ?? FUNDING_PROGRAMS[id]?.agsCode;
   if (!ags) return null;
   const zeilen = await hole<{ rollen_email: string | null }>(
     d,
@@ -267,11 +285,12 @@ async function merkeAnfrage(d: Db, f: Fertig): Promise<number> {
 }
 
 async function belegNachtragen(d: Db, eintragId: number, beleg: string | undefined) {
-  await fetch(`${d.url}/rest/v1/funding_anfragen?id=eq.${eintragId}`, {
+  const response = await fetch(`${d.url}/rest/v1/funding_anfragen?id=eq.${eintragId}`, {
     method: "PATCH",
     headers: { ...d.kopf, "Content-Type": "application/json" },
     body: JSON.stringify({ beleg: beleg ?? null }),
   });
+  if (!response.ok || !beleg) abbruch("Versandbeleg nicht sicher gespeichert — nicht erneut senden, Protokoll prüfen.");
 }
 
 async function baueTransport() {
@@ -327,6 +346,22 @@ async function verschicke(d: Db, fertige: Fertig[], automatisch = false) {
           return;
         }
       }
+      // Recheck immediately before reservation, including changes during pauses.
+      const review = clarification(f.id);
+      if (review) {
+        const contact = await hole<{outreach_status: string; contacted_at: string | null}>(d, `kommunen_kontakt?region_id=eq.${review.regionId}&select=outreach_status,contacted_at`);
+        if (contact.length !== 1 || contact[0].outreach_status === "gesperrt") {
+          console.log(`Nicht verschickt: ${f.id} — Kontaktsperre oder fehlender Kontaktstatus.`);
+          continue;
+        }
+        const elapsed = contact[0].contacted_at ? (Date.now() - Date.parse(contact[0].contacted_at)) / 86400000 : null;
+        if (elapsed !== null && (!Number.isFinite(elapsed) || elapsed < 14)) {
+          console.log(`Nicht verschickt: ${f.id} — Abstand zum Kommunenanschreiben.`);
+          continue;
+        }
+      }
+      const previous = await hole<{id:number}>(d, `funding_anfragen?program_id=eq.${encodeURIComponent(f.id)}&select=id&order=id`);
+      if (previous.length) { console.log(`Nicht verschickt: ${f.id} — bereits im Versandprotokoll.`); continue; }
       const eintragId = await merkeAnfrage(d, f);
       const info = await transport.sendMail({
         from: konfig.from,
@@ -434,7 +469,7 @@ async function autoLauf(d: Db, senden: boolean) {
   );
 
   const gefragt = new Set(
-    (await hole<{ program_id: string }>(d, "funding_anfragen?select=program_id")).map((z) => z.program_id),
+    (await hole<{ program_id: string }>(d, "funding_anfragen?select=program_id&order=id")).map((z) => z.program_id),
   );
 
   const kandidaten = [];
@@ -447,9 +482,23 @@ async function autoLauf(d: Db, senden: boolean) {
     });
   }
 
-  const { senden: zuSenden, uebersprungen } = faelligeAnfragen(kandidaten, gefragt);
+  // Only explicitly reviewed questions enter the existing, capped sender.
+  for (const review of municipalReviews) {
+    if (review.outcome !== "klaerung" || review.nextAction?.kind !== "enquiry" || !review.enquiry) continue;
+    if (Date.parse(review.nextAction.dueAt) > Date.now() || Date.parse(review.recheckAt) <= Date.now()) continue;
+    const contact = await hole<{outreach_status: string}>(d, `kommunen_kontakt?region_id=eq.${review.regionId}&select=outreach_status`);
+    if (contact.length !== 1 || contact[0].outreach_status === "gesperrt") {
+      console.log(`Nicht ausgewählt: ${review.enquiry.id} — Kontaktsperre oder fehlender Kontaktstatus.`);
+      continue;
+    }
+    kandidaten.unshift({ programId: review.enquiry.id, eskaliert: true, empfaenger: review.enquiry.recipient, tageSeitBrief: await tageSeitAnschreiben(d, review.enquiry.id) });
+  }
+  const requestedCase = arg("fall");
+  if (requestedCase && !clarification(requestedCase)) abbruch("Unbekannte oder abgeschlossene kommunale Rückfrage.");
+  const selected = requestedCase ? kandidaten.filter(k => k.programId === requestedCase) : kandidaten;
+  const { senden: zuSenden, uebersprungen } = faelligeAnfragen(selected, gefragt);
 
-  console.log(`Eskaliert (drei Läufe ohne Amtsquelle): ${kandidaten.length}`);
+  console.log(`Prüffälle (Quellenausfall oder geprüfte Sachfrage): ${kandidaten.length}`);
   for (const u of uebersprungen) console.log(`  übersprungen: ${u.programId} — ${u.grund}`);
   if (!zuSenden.length) {
     console.log("Nichts zu fragen.");
@@ -501,6 +550,7 @@ async function main() {
     console.log("— nur angesehen. Zum Abschicken: --senden");
     return;
   }
+  if (clarification(id)) abbruch("Kommunale Rückfragen ausschließlich über den bestehenden --auto --senden-Lauf versenden.");
   await verschicke(d, [f]);
 }
 
