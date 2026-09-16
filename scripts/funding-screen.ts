@@ -1,3 +1,5 @@
+import { municipalReviewQueue, validateMunicipalReviews, type InquiryReceipt } from "../lib/funding-municipal-review";
+import municipalReviews from "../data/funding/municipal-reviews.json";
 import { pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
 import { seitenSchluessel } from "../lib/funding-seiten";
 import { FundingSourceReader, recordStage } from "./lib/funding-source-reader";
@@ -287,6 +289,11 @@ async function quellen(): Promise<void> {
     "region_id,url,techniken,zustand,gelesen_am,gelesen_ergebnis,gelesen_notiz,seite_geaendert_am",
     (q) => q.order("region_id").order("url"),
   );
+  if (process.argv.includes("--kommunen")) {
+    const receipts = await alleZeilen<InquiryReceipt>("funding_anfragen", "program_id,gesendet_am,beleg,antwort_am", q => q.order("id"));
+    console.log(JSON.stringify(municipalReviewQueue(rows, validateMunicipalReviews(municipalReviews), receipts, new Date().toISOString()), null, 2));
+    return;
+  }
   const pending = pendingFundingSources(rows);
   console.log(JSON.stringify({ totalSources: rows.length, pendingSources: pending.length, sources: process.argv.includes("--alle") ? rows : pending }, null, 2));
 }
@@ -353,7 +360,7 @@ async function gelesen(): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  if (process.argv.includes("--quellen")) return quellen();
+  if (process.argv.includes("--quellen") || process.argv.includes("--kommunen")) return quellen();
   await sources.ready();
   if (process.argv.includes("--stand")) return stand();
   if (process.argv.includes("--gelesen")) return gelesen();

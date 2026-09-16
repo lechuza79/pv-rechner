@@ -23,7 +23,7 @@
  * ursprünglichen Betreff im Text — manche Programme kürzen ihn in der
  * Betreffzeile, kaum eines im Zitat.
  */
-import { INQUIRY_BETREFF_ANFANG } from "./funding-inquiry-draft";
+import { INQUIRY_BETREFF_ANFANG, CLARIFICATION_SUBJECT_PREFIX } from "./funding-inquiry-draft";
 
 export type EingegangeneMail = {
   betreff: string;
@@ -61,6 +61,8 @@ export function normalisiert(s: string): string {
 }
 
 export function istAntwortAufSachfrage(mail: EingegangeneMail): boolean {
-  const marke = normalisiert(INQUIRY_BETREFF_ANFANG);
-  return normalisiert(mail.betreff).includes(marke) || normalisiert(mail.roh).includes(marke);
+  return [INQUIRY_BETREFF_ANFANG, CLARIFICATION_SUBJECT_PREFIX].some(prefix => {
+    const marke = normalisiert(prefix);
+    return normalisiert(mail.betreff).includes(marke) || normalisiert(mail.roh).includes(marke);
+  });
 }

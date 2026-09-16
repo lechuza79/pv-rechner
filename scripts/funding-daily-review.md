@@ -21,6 +21,7 @@ Read all three work queues:
 
 ```bash
 npm run foerder:probe -- --vorrat
+npm run foerder:screen -- --kommunen
 npm run foerder:screen -- --quellen
 npm run foerder:suche -- --externe
 npm run foerder:anfrage -- --liste
@@ -38,6 +39,20 @@ npm run foerder:screen -- --gelesen <region_id> --url <original-url> --beleg "<v
 Completed outcomes are `aufgenommen`, `vorhanden`, `keine-foerderung` and `ausgelaufen`. Use `unklar` for an actually read but unresolved source; it stays in the queue. An unreadable original must not receive a fake read mark. Retain its failure and next action in the run report. Each URL is separate; an official redirect must be matched to the existing stored document, not guessed.
 
 Before reply review, load previous reports tagged `foerder-news-waechter` from `waechter_reports` (schema and reader: `lib/waechter-reports.ts`) and compare programme ID plus reply timestamp. Preserve unresolved reply items until supported resolution; a later source check does not by itself mean the reply was reviewed.
+
+## 1a. Close municipalities, including a supported negative finding
+
+The unit of progress is a **municipality with a documented result**, not a URL or a new catalogue entry. `--kommunen` reads `data/funding/municipal-reviews.json` and the live source and inquiry tables. It reports the explicit denominator (towns with discovered sources or an audit), completed towns, manual work, queued questions, confirmed sends and replies awaiting review. It is not nationwide completeness. Existing page reviews alone do not prove a complete municipal search; migrate them only after reviewing their evidence.
+
+For every municipality worked on, save a reviewed record in that JSON file, validated by `lib/funding-municipal-review.ts`. Include the scope (private households, PV, storage, balcony and heat pumps), time, next review date, targeted searches, original evidence and a disposition for **each known source**. Group duplicate/irrelevant pages with an individually justified reference to the original that settles them; never bulk-mark unread pages as read.
+
+- `programme-geprueft`: applicable programmes and conditions have been checked through the existing release gates; document closed programmes and non-cash bonuses separately.
+- `keine-passende-foerderung`: a completed, scoped search found no applicable programme. This **counts as done**. Read the official climate/solar/funding service pages, perform targeted municipal and site searches, follow relevant guideline/service links and settle every contradictory lead. Record what was searched and why each apparent match is irrelevant. Do not claim that no grant can exist. A missing page or empty search alone is not sufficient.
+- `klaerung`: never a passive end state. In the **same run**, manually investigate the original, alternative official document, responsible body and jurisdiction. If this settles the case, record the supported positive or negative result. Otherwise save a concrete dated `nextAction`: `enquiry` with a checked role mailbox, official contact source and exact factual question; or `manual` with the named blocker and next step due by the next daily run. No repeated "unclear" without additional work. Overdue cases and fresh replies are processed first.
+
+A `replaced` source disposition needs an explicit explanation of how the read original resolves that exact lead. `open` sources prevent completion. New or changed sources and an expired recheck date reopen completed towns. Routine negative findings should be revisited within 90 days, earlier where a known budget/application date requires it.
+
+A queued question is not a sent question. Only a delivery receipt in `funding_anfragen` produces `rueckfrage-offen`. A reservation without a receipt is `versand-ungewiss`; investigate without resending. A substantive reply is `antwort-pruefen`, never automatically done. At 14 days without a reply, perform a fresh manual official-source check and document the next action; do not automatically send a reminder. A true access/permission blocker goes to the operator with the exact decision needed. Do not declare the coverage project complete while unreviewed municipalities remain.
 
 ## 2. Original evidence and jurisdiction
 
@@ -66,10 +81,10 @@ The proof-date guard is a final brake, not a substitute for substantive review: 
 
 Preserve the existing **two different mail routes**:
 
-1. **Authority enquiry:** `foerder-anfragen.yml` handles already catalogued programmes after three recorded unsuccessful source checks. It uses verified role mailboxes, no repeat enquiries, at least 14 days after municipal outreach, at most three per run, office hours and pauses. The daily review records attempts and checks `--liste`; it does **not** issue `--senden` or create a second sender. A send reservation without a delivery receipt is uncertain, not permission to resend. Investigate before any retry.
+1. **Authority enquiry:** `foerder-anfragen.yml` handles already catalogued programmes after three recorded unsuccessful source checks. It uses verified role mailboxes, no repeat enquiries, at least 14 days after municipal outreach, at most three per run, office hours and pauses. The daily review records attempts and checks `--liste`; it queues reviewed municipal questions in the existing JSON ledger and does **not** issue a separate `--senden` or create a second sender. A send reservation without a delivery receipt is uncertain, not permission to resend. Investigate before any retry.
 2. **Operator decision:** the existing `/api/alert` route receives unresolved factual/permission decisions with source evidence, a recommendation and work already completed. `decisions: []` archives routine success silently. Keep the exact `foerder-news-waechter` tag, weekly accountability, monthly heartbeat and delivery-result checks.
 
-Automatic enquiry eligibility is **not “anything unclear”**. Reachable conflicting sources use the existing separately reviewed question process; the fixed `OFFENE_FRAGEN` list alone does not make them auto-sendable. A new uncatalogued source is not eligible for the catalogue-based inquiry sender. Keep it in the source backlog or send the operator a concrete decision through the existing route. Never invent an active catalogue entry merely to obtain an email recipient.
+The operator explicitly authorized factual enquiries for unresolved contradictions and municipal cases on 16 September 2026. The same sender also consumes reviewed `klaerung` records with `nextAction.kind = enquiry`, including municipalities without a catalogue entry. The case must include manual-check evidence, the precise question and an officially verified role mailbox. It uses the same office hours, volume cap, outreach spacing, send ledger and no-repeat rules; expired reviews cannot send. Never invent a catalogue programme to obtain a recipient. Queue the question by merging the reviewed record, inspect the next existing sender run and confirm its receipt. A blocked send remains an actionable case with a due date, not a completed municipality. The new subject is recognized by the existing mailbox reader and stays out of outreach metrics.
 
 A reply, a lack of reply after 14 days, or an acknowledgement never starts an automatic follow-up. Check the send workflow and mailbox workflow for failures; do not interpret failed processing as an empty inbox.
 
@@ -85,6 +100,6 @@ Record active additions, historical additions, corrections and unresolved cases 
 
 ## 6. Close the loop in the existing report
 
-Each run records: discovery-run outcome; programme/source/reply items reviewed; official evidence and decisions; actually deployed changes and public checks; inquiry/mail failures; unresolved items and the exact next work. Use `details` for evidence and backlog, `done` for measured completed work, and `decisions` only for a real operator decision. Preserve the existing monthly heartbeat exception. A source count is not a grant count, and an increase in catalogue entries is not automatically an increase in active grants.
+Each run records municipality counts before/after (positive, supported negative, manual check, queued question, awaiting answer, reply to review), denominator, net resolved towns and oldest overdue case; source counts are supplementary. A completed run is not a completed backlog. Each run also records: discovery-run outcome; programme/source/reply items reviewed; official evidence and decisions; actually deployed changes and public checks; inquiry/mail failures; unresolved items and the exact next work. Use `details` for evidence and backlog, `done` for measured completed work, and `decisions` only for a real operator decision. Preserve the existing monthly heartbeat exception. A source count is not a grant count, and an increase in catalogue entries is not automatically an increase in active grants.
 
 This procedure is configured work, not proof of future execution. The local watcher still requires its existing app/host to run. The GitHub source, enquiry and mailbox jobs run independently and must be checked separately.
