@@ -17,7 +17,17 @@ export function contactRoleContext(html:string,candidates:ContactCandidate[]){
    (byEmail.get(c.email.toLowerCase())??[]).forEach(el=>{
     const href=$(el).attr('href')??'';
     if(!(href.startsWith('mailto:')&&href.slice(7).split('?')[0].toLowerCase()===c.email.toLowerCase())&&entwirreAdressen($(el).text()).trim().toLowerCase()!==c.email.toLowerCase())return;
-    if($(el).closest('footer,nav').length)return;
+    if($(el).closest('footer,header,nav').length)return;
+    // An immediately preceding label belongs only to this exclusive contact table.
+    const table=$(el).closest('table');
+    if(table.length&&!table.parents('table').length){
+      const label=table.prev();
+      const role=label.text().replace(/\s+/g,' ').trim();
+      const body=table.clone();body.find('br').replaceWith(' ');
+      const text=body.text().replace(/\s+/g,' ').trim();
+      const addresses=new Set((entwirreAdressen(text).match(/[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g)??[]).map(e=>e.toLowerCase()));
+      if(label.is('p,h2,h3,h4,h5,h6')&&/^(?:(?:Kommunales?|Städtisches?)\s+)?(?:Energiemanagement|Klimaschutzmanagement|Energieberatung|Pressestelle|Presse- und Öffentlichkeitsarbeit)$/iu.test(role)&&addresses.size===1&&addresses.has(c.email.toLowerCase()))extra.push({text:`${role} | ${text}`,scope:'local-block',exclusiveAddress:true});
+    }
     const frame=$(el).closest('.frame');
     if(frame.length){
       const wrapper=frame.parents('.frame').last();
