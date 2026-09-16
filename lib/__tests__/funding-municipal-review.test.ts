@@ -11,6 +11,9 @@ const source: ReviewSource = { region_id: "01001000", url: "town.de/solar", gele
 const review: MunicipalReview = { regionId: source.region_id, name: "Town", checkedAt: "2026-09-16T10:00:00Z", recheckAt: "2026-12-01T10:00:00Z", scope: "PV, Speicher, Balkon, WP für private Haushalte", outcome: "keine-passende-foerderung", conclusion: "Searched and reviewed, no applicable grant found", searches: ["official funding search"], evidence: [{ url: "https://town.de/solar", finding: "Reviewed original" }], sources: [{ url: source.url, disposition: "reviewed", reason: "No private household grant", evidenceUrl: "https://town.de/solar" }] };
 const state = (r = review, rows = [source], receipts: Parameters<typeof municipalReviewQueue>[2] = []) => municipalReviewQueue(rows, [r], receipts, now).municipalities[0];
 describe("Municipal completion and follow-through", () => {
+  it("validates the current dossiers without freezing their outcome", () => {
+    expect(() => validateMunicipalReviews(reviews)).not.toThrow();
+  });
   it("counts an evidenced negative finding as done, not an unread town", () => {
     expect(state().done).toBe(true);
     expect(municipalReviewQueue([source], [], [], now).completedMunicipalities).toBe(0);
@@ -30,7 +33,10 @@ describe("Municipal completion and follow-through", () => {
     expect(() => validateMunicipalReviews([{...review, outcome: "klaerung", nextAction: {kind: "enquiry", dueAt: now, detail: "ask"}}])).toThrow();
   });
   it("distinguishes queued, uncertain delivery, awaiting reply and unreviewed reply", () => {
-    const r = validateMunicipalReviews(reviews)[0];
+    const r: MunicipalReview = { ...review, outcome: "klaerung",
+      nextAction: {kind:"enquiry",dueAt:review.checkedAt,detail:"Read the response"},
+      enquiry: {id:"klaerung-01001000",recipient:"climate@town.de",recipientSource:"https://town.de/contact",website:"https://town.de",question:"Is there a grant?"},
+    };
     const row = { program_id: r.enquiry!.id, gesendet_am: "2026-09-16T10:00:00Z", beleg: null, antwort_am: null };
     expect(state(r, [], []).status).toBe("rueckfrage-vorgemerkt");
     expect(state(r, [], [row]).status).toBe("versand-ungewiss");
