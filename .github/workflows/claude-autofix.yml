@@ -106,8 +106,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh run view ${{ github.event.workflow_run.id }} --log 2>/dev/null \
-            | sed -n 's/.*Gesundheitscheck\t[0-9T:.-]*Z //p' > /tmp/ausloeser.txt || true
+          # Preserve setup/history/artifact failures as well as measurements.
+          gh run view ${{ github.event.workflow_run.id }} --log > /tmp/ausloeser.txt 2>&1 || true
           if [ ! -s /tmp/ausloeser.txt ]; then
             echo "(Log des auslösenden Laufs nicht lesbar)" > /tmp/ausloeser.txt
           fi
@@ -121,6 +121,10 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set +e
           npm run health-check > /tmp/jetzt.txt 2>&1
