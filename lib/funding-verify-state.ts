@@ -240,6 +240,6 @@ export function eskalationsVorschlag(
       `${program.name} (${program.region}) ist in ${stand.fehlversuche} Läufen nicht an der ` +
       `Amtsquelle prüfbar gewesen, ${seit}. Ich habe die Förderung aus der Berechnung genommen ` +
       `(Status „unsicher"), sie bleibt mit Hinweis sichtbar.${archiv} ` +
-      `Soll ich bei der Stelle nachfragen — Anfrage von mir vorbereitet, abgeschickt von dir?`,
+      `Den bestehenden Anfrageverlauf prüfen: Bei erfüllten Versandbedingungen übernimmt der geregelte Sachfragen-Lauf; fehlenden Empfänger oder ungelösten Befund konkret entscheiden.`,
   };
 }
