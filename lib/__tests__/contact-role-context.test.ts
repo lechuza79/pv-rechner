@@ -26,3 +26,26 @@ it('keeps Meinersen press responsibility alongside its energy contact',()=>{
  expect(selected.map(c=>c.email).sort()).toEqual(['eduard.bayer@sg-meinersen.de','presse@sg-meinersen.de']);
  expect(new Set(selected.flatMap(c=>c.channels))).toEqual(new Set(['energy','publishing']));
 });
+
+
+describe('Explicit department label immediately before a contact table',()=>{
+ const original=readFileSync(new URL('./fixtures/ebersbach-energy-tables.html',import.meta.url),'utf8');
+ const sourceUrl='https://www.ebersbach-neugersdorf.de/buergerverwaltung/verwaltung/ansprechpartner/';
+ const enrich=(input:string)=>contactRoleContext(input,contactCandidates(input,sourceUrl,'ebersbach-neugersdorf.de')).candidates;
+ const extras=(input:string,email:string)=>enrich(input).find(c=>c.email===email)?.additionalRoleEvidence??[];
+ it('retains the dedicated energy role from the original separate table',()=>{
+  expect(extras(original,'energiesparkonzept@ebersbach-neugersdorf.de')).toEqual(expect.arrayContaining([expect.objectContaining({scope:'local-block',exclusiveAddress:true,text:expect.stringContaining('Kommunales Energiemanagement')})]));
+ });
+ it('does not pass the energy label to adjacent tourism or personal contacts',()=>{
+  for(const email of ['tourismus','wirtschaftsfoerderung','stefan.halang'])expect(extras(original,email+'@ebersbach-neugersdorf.de')).toEqual([]);
+ });
+ it('rejects footer and header tables',()=>{
+  for(const tag of ['footer','header'])expect(extras(`<${tag}>${original}</${tag}>`,'energiesparkonzept@ebersbach-neugersdorf.de')).toEqual([]);
+ });
+ it('does not bridge an intervening paragraph or accept a multi-mailbox table',()=>{
+  const interrupted=original.replace('Kommunales Energiemanagement</u></p>','Kommunales Energiemanagement</u></p><p>Andere Kontakte</p>');
+  expect(extras(interrupted,'energiesparkonzept@ebersbach-neugersdorf.de')).toEqual([]);
+  const multiple=original.replace('energiesparkonzept@~@ebersbach-neugersdorf.de</a>','energiesparkonzept@~@ebersbach-neugersdorf.de</a><a href="mailto:other@example.org">other@example.org</a>');
+  expect(extras(multiple,'energiesparkonzept@ebersbach-neugersdorf.de')).toEqual([]);
+ });
+});
