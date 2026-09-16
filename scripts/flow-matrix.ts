@@ -7,16 +7,21 @@
  * erlaubten Minuten — 92 %. Am 05.09. hat er das Limit gerissen. Die Verteilung
  * war bis dahin unbekannt; sie ist es nicht mehr:
  *
- *   PV-Rechner              1.728 Wege   149 min   58 %
- *   Wärmepumpen-Rechner     1.120 Wege    71 min   28 %
- *   PV-Bedarf / Empfehlung    288 Wege    24 min    9 %
- *   Klimaanlagen-Rechner      144 Wege     5 min
- *   Förder-Check Frankfurt     90 Wege     3 min
- *   Einspeisevergütung         60 Wege     3 min
- *   Balkonkraftwerk-Rechner    32 Wege     1 min
+ *   PV-Rechner              1.728 Wege   174-182 min   58 %
+ *   Wärmepumpen-Rechner     1.120 Wege   100-107 min   28 %
+ *   PV-Bedarf / Empfehlung    288 Wege        25-28 min
+ *   Klimaanlagen-Rechner      144 Wege            7 min
+ *   Förder-Check Frankfurt     90 Wege            4 min
+ *   Einspeisevergütung         60 Wege            4 min
+ *   Balkonkraftwerk-Rechner    32 Wege            3 min
+ *
+ * Zeiten am 16.09.2026 an den abgeschlossenen Einzeljobs nachgemessen und
+ * korrigiert; die erste Fassung kam aus den Startzeitpunkten der Tests im
+ * gemeinsamen Job und lag um ein Fünftel bis die Hälfte zu niedrig. Die
+ * WEGEZAHLEN sind unverändert — an ihnen ist seither nichts gewachsen.
  *
  * Zwei Flows tragen 86 % der Zeit. Je Flow ein eigener Job macht daraus einen
- * längsten Job von rund 150 Minuten — ohne einen einzigen Weg weniger zu
+ * längsten Job von rund 180 Minuten — ohne einen einzigen Weg weniger zu
  * prüfen. Das ist der Unterschied zu den beiden Alternativen: Das Zeitlimit
  * anzuheben verschöbe den Abbruch nur (und das Gate verbietet genau diesen Zug),
  * und weniger Kombinationen zu gehen wäre weniger Abdeckung.
