@@ -78,7 +78,21 @@ export function buildWorkflow(directory:string,output:string,asOf:string){
     const decisionPath=resolve(output,'decisions',filename);if(existsSync(decisionPath)){c.decision=read(decisionPath);c=hydrateCase(directory,c);}
     writePrivate(resolve(records,filename),c);cases.push(c);
   }
-  const summary=summarizeWorkflow(cases,asOf);writePrivate(resolve(output,'summary.json'),summary);
+  const inventorySummary=summarizeWorkflow(cases,asOf);
+  const referencePath=resolve(output,'population-reference.json');
+  let referenceCoverage:{verified:boolean;observedAt:string|null;expectedMunicipalities:number|null;missingIds:string[];unexpectedIds:string[]}={verified:false,observedAt:null,expectedMunicipalities:null,missingIds:[],unexpectedIds:[]};
+  if(existsSync(referencePath)){
+    const reference=read(referencePath),bytes=readFileSync(reference.sourcePath);
+    if(hash(bytes)!==reference.sourceDigest)throw Error('Population reference changed');
+    const snapshot=JSON.parse(bytes.toString()),rows=snapshot.regions.filter((r:{level:string})=>r.level==='gemeinde');
+    const expected=new Set<string>(rows.map((r:{region_id:string})=>r.region_id));
+    if(expected.size!==rows.length||!Number.isFinite(Date.parse(reference.observedAt))||Date.parse(reference.observedAt)>Date.parse(asOf))throw Error('Invalid population reference');
+    const actual=new Set(cases.filter(c=>c.unit==='municipality').map(c=>c.organizationId));
+    referenceCoverage={verified:true,observedAt:reference.observedAt,expectedMunicipalities:expected.size,missingIds:[...expected].filter(id=>!actual.has(id)),unexpectedIds:[...actual].filter(id=>!expected.has(id))};
+  }
+  const summary={...inventorySummary,inventoryReviewComplete:inventorySummary.reviewComplete,referenceCoverage,reviewComplete:inventorySummary.reviewComplete&&referenceCoverage.verified&&referenceCoverage.missingIds.length===0&&referenceCoverage.unexpectedIds.length===0};
+  writePrivate(resolve(output,'population-gaps.json'),referenceCoverage);
+  writePrivate(resolve(output,'summary.json'),summary);
   const queue=cases.filter(c=>!workflowState(c,asOf).completed).map(c=>({organizationId:c.organizationId,dataset:c.dataset,name:c.name,revision:c.revision,state:workflowState(c,asOf).state,existingFindings:c.legacyFindings,unreadSources:c.unreadSources,next:c.sourceResultPresent?'Review the five checks; reuse prior source-bound findings':'Await source result or document official-source research',checks:CONTACT_CHECKS}));
   writePrivate(resolve(output,'queue.json'),queue);writePrivate(resolve(output,'inventory.json'),{sourceDirectory:resolve(directory),sourceInventoryDigest:hash(readFileSync(resolve(directory,'inventory.json'))),cases:cases.map(c=>({organizationId:c.organizationId,dataset:c.dataset,revision:c.revision}))});
   return summary;

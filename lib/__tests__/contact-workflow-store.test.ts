@@ -76,6 +76,12 @@ describe('Local source workflow and real sender gate',()=>{
   writeFileSync(f.original,html);const result=JSON.parse(readFileSync(f.result,'utf8'));result.pages[0].htmlDigest=hash(html);writeFileSync(f.result,JSON.stringify(result));
   buildWorkflow(f.source,f.output,now);const c=f.load();expect(c.proofs[0]).toMatchObject({valid:true,readable:false,publishedEmails:[]});
  });
+ it('does not claim population completeness when the independent roster has a missing municipality',()=>{
+  const f=fixture();const path=join(f.source,'reference.json');const bytes=JSON.stringify({regions:[{region_id:f.id,level:'gemeinde'},{region_id:'01000002',level:'gemeinde'}]});writeFileSync(path,bytes);
+  writeFileSync(join(f.output,'population-reference.json'),JSON.stringify({sourcePath:path,sourceDigest:hash(bytes),observedAt:now}));
+  const s=buildWorkflow(f.source,f.output,now);expect(s.referenceCoverage).toMatchObject({expectedMunicipalities:2,missingIds:['01000002']});expect(s.reviewComplete).toBe(false);
+  writeFileSync(path,'{}');expect(()=>buildWorkflow(f.source,f.output,now)).toThrow('Population reference changed');
+ });
  it('invalidates reviews for newly added legacy findings instead of silently reusing them',()=>{
   const f=fixture();const root=join(f.source,'contextual','municipality-findings');mkdirSync(root,{recursive:true});
   writeFileSync(join(root,'new.json'),JSON.stringify({organization_id:f.id,issue:'Conflicting person'}));

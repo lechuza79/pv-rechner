@@ -13,6 +13,18 @@ Laufsteuerung und lokale Aufbereitung sind Hilfsdienste. Ihre fertigen Datensät
 sind keine abgeschlossenen Kontaktprüfungen. Der neue lokale Workflow führt alle
 Organisationen und bestehende Prüfbelege zusammen, ohne frühere Urteile umzudeuten.
 
+## Grundgesamtheit unabhängig abgleichen
+
+Die Kontaktliste ist nicht selbst der Nachweis, dass alle Gemeinden vorkommen.
+Eine lokale `population-reference.json` verweist deshalb mit Dateihash und
+Beobachtungszeit auf den unabhängigen Regionsbestand. `sync` vergleicht dessen
+Gemeinden mit der Kontaktliste und schreibt `population-gaps.json`. Fehlende oder
+unerwartete Kennungen müssen sachlich geklärt werden: tatsächliche Lücke,
+Zusammenschluss oder veralteter Registereintrag. Ohne Referenzabgleich gibt es
+keine Gesamtfertigmeldung, auch wenn jede vorhandene Zeile geprüft wäre.
+Der gespeicherte Abgleich vom 14.09.2026 enthält 28 fehlende Kennungen. Deren
+heutiger Verwaltungsstatus ist noch zu verifizieren; sie werden nicht still entfernt.
+
 ## Ein verbindlicher Zustand je Organisation
 
 Fünf Fragen müssen belegt beantwortet sein:
