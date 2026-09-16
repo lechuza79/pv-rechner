@@ -95,18 +95,22 @@ export class FundingSourceReader {
       const { error } = await this.db.from("funding_source_state").upsert({ ...state, attempted_at: attemptedAt, final_url: observation.final_url, sha256: hash });
       if (error) { process.exitCode = 1; throw new Error(`Source observation not saved: ${error.message}`); }
     }
-    if (this.enhanced && reason && navigation && reason === "shell" && response) {
-      this.context.getStore()?.push(input);
-      return response;
-    }
-    if (reason || !response) throw new Error(`Source unreadable: ${reason}`);
-    if (derived) {
-      const result = new Response(content, { status: response.status, headers: { "content-type": "text/html; charset=utf-8" } });
+    const navigableShell = this.enhanced && reason === "shell" && navigation && response;
+    if (navigableShell) this.context.getStore()?.push(input);
+    if ((reason && !navigableShell) || !response) throw new Error(`Source unreadable: ${reason}`);
+    // The network signal may close the original stream while persistence runs.
+    // Serve the already captured bytes, not a clone of that live stream.
+    const payload = derived ? content : Buffer.from(bytes);
+    const headers = new Headers(response.headers);
+    if (derived) headers.set("content-type", "text/html; charset=utf-8");
+    headers.delete("content-encoding");
+    headers.delete("content-length");
+    const captured = (): Response => {
+      const result = new Response(payload, { status: response.status, headers });
       Object.defineProperty(result, "url", { value: response.url || input });
-      // Response.clone does not preserve an overridden URL; retain it on clones.
-      Object.defineProperty(result, "clone", { value: () => { const copy = new Response(content, { headers: result.headers }); Object.defineProperty(copy, "url", { value: response.url || input }); return copy; } });
+      Object.defineProperty(result, "clone", { value: captured });
       return result;
-    }
-    return response;
+    };
+    return captured();
   }
 }
