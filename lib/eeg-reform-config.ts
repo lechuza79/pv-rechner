@@ -522,7 +522,17 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   bleibt „regierungsentwurf", und der Verfahrenssatz nennt bewusst weiter
   //   keinen Termin (ein Plenartermin verschiebt sich, der Satz stünde dann
   //   still falsch da).
-  geprueftIso: "2026-09-15",
+  // 16.09.2026: Der Termin der ersten Lesung steht jetzt auf der amtlichen
+  //   Tagesordnungsseite des Bundestages selbst (bundestag.de, kw39-de-energie-
+  //   stromsektor): „Der Bundestag berät am Donnerstag, 24. September 2026,
+  //   in erster Lesung den Gesetzentwurf" — 20.35 Uhr, Überweisung an den
+  //   federführenden Ausschuss für Wirtschaft und Energie. Die Lesung steht
+  //   noch bevor; der Zustand bleibt „regierungsentwurf", der Verfahrenssatz
+  //   nennt weiterhin keinen Termin. Drucksache 21/7867 erneut geladen und
+  //   durchsucht: „6,2 Cent" (Z. 3004), „1,5 Cent pro eingespeiste
+  //   Kilowattstunde" (Z. 3139), „maximal 36 Monate" (Z. 120), „vor dem
+  //   1. Januar 2031" (Z. 1464) — alle vier unverändert.
+  geprueftIso: "2026-09-16",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

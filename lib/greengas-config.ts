@@ -512,7 +512,19 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // amtlich veröffentlicht. Zweiundzwanzigste Bioheizöl-Gegensuche: nur
   // Gesamtpreis-Statistik (Destatis, Beimischung unaufgeschlüsselt im
   // Deckungsbeitrag), keine Reihe für den Bio-Anteil.
-  geprueftRechtIso: "2026-09-15",
+  //
+  // 16.09.2026: Chronologie des Infoportals erneut gelesen — jüngster Eintrag
+  // weiter die Verkündung vom 28.07.2026, danach nichts. § 42a im amtlichen
+  // Volltext (gesetze-im-internet.de) nachgelesen: Er kündigt unverändert nur
+  // an („In einem bis zum 1. Dezember 2026 durch die Bundesregierung
+  // vorzulegenden Gesetz wird eine Grüngas-/Grünheizölquote eingeführt")
+  // und nennt WEDER Prozentsätze NOCH Startjahre für die Quote. Die in der
+  // Fachpresse kursierende Angabe „Start 2028 mit einem Prozent" steht nicht im
+  // Gesetz und ist damit Sekundärquelle — nicht übernehmen. Dreiundzwanzigste
+  // Bioheizöl-Gegensuche: wieder keine Reihe für den Bio-Anteil; gefunden nur
+  // HVO-Kraftstoffpreise gegen Diesel (anderer Markt, andere Steuern) und
+  // Gesamtpreis-Charts für Heizöl.
+  geprueftRechtIso: "2026-09-16",
   reviewBy: "2027-07-25",
 };
 
