@@ -131,3 +131,42 @@ für jede Organisation und veröffentlichtem Gesamtvergleich einschließlich Lü
 Vollständige Quellen, Kontakte, Analysedaten und Abonnements bleiben lokal. Kein
 Cloud-Aktenprüfer, kein anderer Anbieter als Ausweichweg. Nur erforderliche
 Quellenausschnitte werden zur persönlichen Prüfung in dieser Aufgabe gelesen.
+
+
+## Automatischer Vollbestand statt Pflicht zur manuellen Vollakte
+
+Der amtlich abgeglichene aktive Umfang steht lokal in
+`workflow/current-municipal-scope.json`. Historische Kennungen und gemeindefreie
+Gebiete bleiben als Herkunft erhalten; aktive Gemeinden werden genau einmal
+ausgewertet. Eine abweichende Inventarkennung braucht einen amtlichen eindeutigen
+Nachfolgebeleg. Aufgeteilte Gemeinden erlauben keine automatische Kontaktübernahme.
+
+`scripts/contact-automatic-review.ts --source=<Erhebung>` prüft sämtliche aktiven
+Fälle lokal, ohne Netzwerk, Modellaufrufe oder Produktdatenänderungen. Mit
+`--partition=0 --partitions=2` und der zweiten Partition können disjunkte Teile
+parallel laufen. `--action=summarize` zählt ausschließlich zum aktuellen Regel- und
+Quellenumfang passende Ergebnisse. Jeder Fall hat Originalbelege, einzeln geprüfte
+Kontakte und konkrete Nachrechercheaufträge. Originalbeleg, explizit belegte Funktion
+und abgeschlossene Suche sind unterschiedliche Aussagen.
+
+Automatisch positiv belegbar sind eng begrenzte veröffentlichte Funktionskarten:
+Originalhash und lesbare Quelle, eigene Quell- und Maildomain, ausdrücklich genannte
+Gemeinde und Funktion innerhalb derselben exklusiven Karte, keine widersprüchliche
+Adresse, ausgeschlossene Rolle oder zurückgestellte Adresse. Eine persönliche
+Adresse neben mehreren Rollen oder eine Amtsadresse ohne Gemeindegeltung bleibt
+unbestätigt. Bestehende revisionsfeste Einzelentscheidungen werden weiterverwendet.
+
+Nicht gelesene veröffentlichte Kontaktlinks, dynamische Verzeichnisse, PDF-/Browser-
+Belege und fehlende Quellen bleiben konkrete Arbeitsaufträge. Auch bei offener Suche
+bleiben belegte Einzelkontakte erhalten. `evaluationComplete` bedeutet, dass dieser
+Datensatz mit allen gespeicherten Beobachtungen maschinell ausgewertet wurde; es
+ist keine behauptete vollständige Internetsuche. Alte Einzelurteile werden weder
+umetikettiert noch durch automatische Kandidaten überschrieben. Die bestehende
+Versandprüfung bleibt zusätzlich erforderlich und wird durch diesen Lauf nicht
+ausgehebelt.
+
+Ausgaben liegen unter `workflow/automatic/`: `records/` je aktive Gemeinde,
+`sources/` als versionsgebundener lokaler Extraktionscache, `progress-*.json` je
+Partition sowie `summary.json` und `queue.json` nach Zusammenfassung. Wiederholungen
+prüfen Originalintegrität erneut; identische Quellen müssen nicht erneut geparst
+werden. Abgebrochene Läufe können mit derselben Partition wieder gestartet werden.
