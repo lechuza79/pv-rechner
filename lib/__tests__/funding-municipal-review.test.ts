@@ -14,6 +14,13 @@ describe("Municipal completion and follow-through", () => {
   it("validates the current dossiers without freezing their outcome", () => {
     expect(() => validateMunicipalReviews(reviews)).not.toThrow();
   });
+  it("accepts source keys containing an embedded URL, but rejects non-web schemes", () => {
+    const replaced = { ...review.sources[0], disposition: "replaced", reason: "Literal search template, resolved from the original HTML" };
+    expect(() => validateMunicipalReviews([{ ...review, sources: [{ ...replaced,
+      url: "town.de/solar/%7B%7Bitem|generateUrl:https://town.de/service/%id%%7D%7D",
+    }] }])).not.toThrow();
+    expect(() => validateMunicipalReviews([{ ...review, sources: [{ ...replaced, url: "ftp://town.de/file" }] }])).toThrow();
+  });
   it("counts an evidenced negative finding as done, not an unread town", () => {
     expect(state().done).toBe(true);
     expect(municipalReviewQueue([source], [], [], now).completedMunicipalities).toBe(0);

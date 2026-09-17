@@ -76,5 +76,100 @@
       "website": "https://www.flensburg.de",
       "question": "Auf Ihrer Solarenergieseite finde ich Beratung und das Solarkataster; die Dienstleistungsseite für steckerfertige Photovoltaik verweist auf das gestoppte Landesprogramm. Daneben bietet KlimaBonus lokale Boni in Regionalwährung an. Gibt es darüber hinaus derzeit einen beantragbaren Zuschuss der Stadt Flensburg für private Photovoltaikanlagen, Batteriespeicher, Balkonkraftwerke oder Wärmepumpen? Falls ja: Wo finde ich die aktuelle Richtlinie und den Stand der Antragstellung? Falls nein, hilft mir auch diese kurze Auskunft."
     }
+  },
+  {
+    "regionId": "07143231",
+    "name": "Hahn bei Marienberg",
+    "checkedAt": "2026-09-17T03:22:18.694850+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bekannte Quellen und ergänzende gezielte Recherche abgeschlossen. Das anwendbare VG-Programm ist 2026 ausgeschöpft und als solches veröffentlicht. Kein weiteres konkretes kommunales Geräte-Kaufzuschussprogramm in dieser Prüfung belegt; kein pauschaler Förderausschluss. Zwei gespeicherte Such-Templates anhand des Ursprungs-HTML als Extraktionsartefakte geklärt. Vor neuer Förderrunde sind die bereits dokumentierten offenen Speicher-/Balkon-Bedingungen amtlich zu klären; keine zugesagte Wiedereröffnung.",
+    "searches": [
+      "\"Hahn bei Marienberg\" Förderung Photovoltaik Balkonkraftwerk Wärmepumpe Speicher",
+      "site:bad-marienberg.de \"Hahn\" \"Förderung\" Solar",
+      "\"Hahn bei Marienberg\" Zuschuss Energie 2026",
+      "site:westerwaldkreis.de Förderung Photovoltaik Speicher Balkonkraftwerke Wärmepumpen 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/",
+        "finding": "Geltung im gesamten Verbandsgemeindegebiet einschließlich Hahn bei Marienberg. Richtlinie 2026 (22 Seiten), Betrag/Bedingungen und Gebiet bereits unabhängig geprüft; historischer Programmeintrag ohne unzureichend modellierten Abzug veröffentlicht."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/verbandsgemeinde-gemeinden/aktuelles/september-2026/foerdermittel-2026-ausgeschoepft/",
+        "finding": "Amtliche Meldung vom 16.09.2026, am 17.09. erneut gelesen: Mittel 2026 vollständig ausgeschöpft, keine weiteren Anträge/Bewilligungen; 2027 nur angekündigte spätere Information."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/barrierefreiheit/",
+        "finding": "Bereits vollständig geprüfte Erklärung zur Website-Zugänglichkeit; kein privates Kaufzuschussprogramm."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/",
+        "finding": "Index und alle drei Projekt-Unterseiten unabhängig geprüft. Kommunale Schulen/Kitas, Straßen-/Sportbeleuchtung, Wärmestudie und Klimaschutzarbeit; kein privates Geräte-Kaufzuschussprogramm dieser Quellen."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/verbandsgemeinde-bad-marienberg/",
+        "finding": "Vollständige Beschreibung von sieben kommunalen Eigenvorhaben geprüft; Schul-Wärmepumpen sind keine privaten Zuschussanträge."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/verbandsgemeinde-gemeinden/ortsgemeinden-und-stadt/hahn-b-m/",
+        "finding": "Amtliches Ortsprofil und Satzungsverweise untersucht; keine weitere konkrete Kaufzuschussregel gefunden. Hahn am See ist eine andere Gemeinde."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/",
+        "finding": "Klimaübersicht verweist auf die geprüften Eigenprojekte, Fachinformationen und Energieberatung; kein gesonderter privater Förderbetrag."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/energieberatung/",
+        "finding": "Kostenlose Verbraucherzentrale-Beratung; kein Geräte-Kaufzuschuss."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/gebaeudesanierung-in-ausgewiesenen-sanierungsgebieten/",
+        "finding": "Hahn und Hardter Mühle als Sanierungsgebiete mit Steuerbescheinigungsverfahren. Gesonderte Modernisierungsförderunterlagen ausdrücklich nur für Innenstadt Stadt Bad Marienberg; kein zusätzlicher Kaufzuschuss für Hahn daraus abgeleitet."
+      },
+      {
+        "url": "https://westerwaldkreis.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-bad-marienberg",
+        "finding": "Zusätzliche unabhängige Prüfung: Privatfördermeldung 2023 beschreibt Vorgänger des bekannten VG-Programms, keinen weiteren aktuell offenen Topf; durch Richtlinie 2026 ersetzt/vereinigt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-marienberg.de/barrierefreiheit",
+        "disposition": "reviewed",
+        "reason": "Bereits vollständig geprüfte Erklärung zur Website-Zugänglichkeit; kein privates Kaufzuschussprogramm.",
+        "evidenceUrl": "https://www.bad-marienberg.de/barrierefreiheit/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Index und alle drei Projekt-Unterseiten unabhängig geprüft. Kommunale Schulen/Kitas, Straßen-/Sportbeleuchtung, Wärmestudie und Klimaschutzarbeit; kein privates Geräte-Kaufzuschussprogramm dieser Quellen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/verbandsgemeinde-bad-marienberg",
+        "disposition": "reviewed",
+        "reason": "Vollständige Beschreibung von sieben kommunalen Eigenvorhaben geprüft; Schul-Wärmepumpen sind keine privaten Zuschussanträge.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/verbandsgemeinde-bad-marienberg/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien",
+        "disposition": "reviewed",
+        "reason": "Geltung im gesamten Verbandsgemeindegebiet einschließlich Hahn bei Marienberg. Richtlinie 2026 (22 Seiten), Betrag/Bedingungen und Gebiet bereits unabhängig geprüft; historischer Programmeintrag ohne unzureichend modellierten Abzug veröffentlicht.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item%20|%20generateUrl:&apos;https://www.bad-marienberg.de/buergerservice/ozglebenslage/%id%/%name%/&apos;%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozglebenslage mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item%20|%20generateUrl:&apos;https://www.bad-marienberg.de/buergerservice/ozgleistung/%id%/%name%/&apos;%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozgleistung mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      }
+    ]
   }
 ]

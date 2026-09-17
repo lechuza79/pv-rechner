@@ -34,7 +34,7 @@ export function validateMunicipalReviews(input: unknown): MunicipalReview[] {
       || !["programme-geprueft", "keine-passende-foerderung", "klaerung"].includes(r.outcome)
       || !Array.isArray(r.searches) || !r.searches.length || !r.searches.every(nonempty)
       || !Array.isArray(r.evidence) || !r.evidence.length || !r.evidence.every((e: MunicipalReview["evidence"][number]) => e && url(e.url) && nonempty(e.finding))
-      || !Array.isArray(r.sources) || !r.sources.every((s: MunicipalReview["sources"][number]) => s && nonempty(s.url) && url(s.url.includes("://") ? s.url : `https://${s.url}`) && ["reviewed", "replaced", "open"].includes(s.disposition) && nonempty(s.reason) && (r.outcome === "klaerung" || s.disposition !== "open") && r.evidence.some((e: MunicipalReview["evidence"][number]) => e.url === s.evidenceUrl))) {
+      || !Array.isArray(r.sources) || !r.sources.every((s: MunicipalReview["sources"][number]) => s && nonempty(s.url) && url(/^[a-z][a-z\d+.-]*:/i.test(s.url) ? s.url : `https://${s.url}`) && ["reviewed", "replaced", "open"].includes(s.disposition) && nonempty(s.reason) && (r.outcome === "klaerung" || s.disposition !== "open") && r.evidence.some((e: MunicipalReview["evidence"][number]) => e.url === s.evidenceUrl))) {
       throw new Error(`Incomplete municipal review: ${r?.regionId ?? "unknown"}`);
     }
     regions.add(r.regionId);

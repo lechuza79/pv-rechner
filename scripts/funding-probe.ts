@@ -26,6 +26,7 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
+import { loadFundingCheckHistory, type FundingCheckRow } from "../lib/funding-check-history";
 import {
   arbeitsvorrat,
   eskalationsVorschlag,
@@ -93,17 +94,9 @@ async function ladeProgramme(): Promise<FundingProgram[]> {
     .map((r) => ({ ...(r.data as FundingProgram), id: r.id, lastVerified: r.last_verified ?? undefined }));
 }
 
-async function ladeVersuche(): Promise<PruefVersuch[]> {
-  // `source` trägt die Erreichbarkeit — die Spalte gibt es seit der Anlage der
-  // Tabelle, sie war nur nie befüllt. Zeilen ohne bekannte Erreichbarkeit
-  // (Altbestand, manuelle Einträge) werden übergangen statt geraten.
-  const { data, error } = await sb
-    .from("funding_checks")
-    .select("program_id, checked_at, source")
-    .order("checked_at", { ascending: true });
-  if (error) throw new Error(`Prüfprotokoll nicht lesbar: ${error.message}`);
-  return (data ?? [])
-    .filter((r): r is { program_id: string; checked_at: string; source: Erreichbarkeit } =>
+function ladeVersuche(rows: FundingCheckRow[]): PruefVersuch[] {
+  return rows
+    .filter((r): r is FundingCheckRow & { source: Erreichbarkeit } =>
       ERREICHBARKEITEN.includes(r.source as Erreichbarkeit))
     .map((r) => ({ programId: r.program_id, checkedAt: r.checked_at, erreichbarkeit: r.source }));
 }
@@ -118,26 +111,23 @@ async function ladeVersuche(): Promise<PruefVersuch[]> {
  * Fehlversuch zählen, schaltete der Crawler binnen drei Tagen Programme ab, die
  * ein Browser problemlos liest.
  */
-async function ladeAenderungen(): Promise<SeitenAenderung[]> {
-  const { data, error } = await sb
-    .from("funding_checks")
-    .select("program_id, checked_at, source")
-    .in("source", ["seite-geaendert", "seite-unerreichbar"])
-    .order("checked_at", { ascending: true });
-  if (error) throw new Error(`Änderungsmeldungen nicht lesbar: ${error.message}`);
-  return (data ?? []).map((r) => ({
-    programId: r.program_id,
-    changedAt: r.checked_at,
-    art: r.source === "seite-geaendert" ? ("geaendert" as const) : ("unerreichbar" as const),
-  }));
+function ladeAenderungen(rows: FundingCheckRow[]): SeitenAenderung[] {
+  return rows
+    .filter((r) => r.source === "seite-geaendert" || r.source === "seite-unerreichbar")
+    .map((r) => ({
+      programId: r.program_id,
+      changedAt: r.checked_at,
+      art: r.source === "seite-geaendert" ? ("geaendert" as const) : ("unerreichbar" as const),
+    }));
 }
 
 async function zeigeVorrat(): Promise<void> {
-  const [programme, versuche, aenderungen] = await Promise.all([
+  const [programme, history] = await Promise.all([
     ladeProgramme(),
-    ladeVersuche(),
-    ladeAenderungen(),
+    loadFundingCheckHistory(sb),
   ]);
+  const versuche = ladeVersuche(history);
+  const aenderungen = ladeAenderungen(history);
   const vorrat = arbeitsvorrat(programme, versuche, heute, aenderungen);
   const nachId = new Map(programme.map((p) => [p.id, p]));
 
@@ -202,7 +192,7 @@ async function protokolliere(programId: string, erreichbarkeit: Erreichbarkeit):
     return;
   }
 
-  const versuche = await ladeVersuche();
+  const versuche = ladeVersuche(await loadFundingCheckHistory(sb));
   const stand = pruefstandFuer(program, versuche, heute);
   console.log(`${program.name}: Versuch als "${erreichbarkeit}" protokolliert (${stand.fehlversuche}× in Folge nicht an der Quelle).`);
 
