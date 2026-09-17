@@ -1,7 +1,9 @@
 /** Resumable, local-only municipal story preparation. Never publishes or invents missing data. */
 import {readFileSync,writeFileSync,existsSync,mkdirSync,renameSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {heuteInBerlin} from '../lib/zeit';
 import {validateStoryWeather} from '../lib/story-weather-validation';
+import {era5StoryWeather,storyWeatherCacheRoot,storyWeatherProvider} from '../lib/story-weather-provider';
 import {boundaryWeatherPoint} from '../lib/story-weather-location';
 import {solarMonth} from '../lib/story-monthly-solar';
 import {energyYear} from '../lib/story-energy-year';
@@ -22,8 +24,22 @@ const stockPath=arg('stock');const stockDate=arg('stock-date');
 if(!stockPath||!/^\d{4}-\d{2}-\d{2}$/.test(stockDate))throw Error('Explicit --stock and --stock-date required');
 const stockRaw=read(stockPath),stocks=new Map<string,any>((Array.isArray(stockRaw)?stockRaw:stockRaw.stats).map((r:any)=>[r.regionId,r]));
 const fetchEnabled=process.argv.includes('--fetch');let rateLimited=false;let limitReason='';
-const weatherRoot=base+'/story-weather';mkdirSync(weatherRoot,{recursive:true});
+// Which archive the hours come from. Separate cache trees per source, so the
+// provider answers this run is measured against are never overwritten.
+const provider=storyWeatherProvider();
+const weatherRoot=storyWeatherCacheRoot(provider,base);mkdirSync(weatherRoot,{recursive:true});
+if(provider!=='open-meteo')console.log('Wetterquelle:',provider);
 async function weather(id:string,kind:'month'|'year',lat:number,lon:number,start:string,end:string){
+ if(provider==='era5-archive'){
+  // Keyed on what actually determines the answer; the earlier Open-Meteo cache
+  // files are keyed on a request URL that does not exist for this source.
+  const key=createHash('sha256').update([lat,lon,start,end,kind].join('|')).digest('hex');
+  const local=weatherRoot+'/'+key+'.json';
+  if(existsSync(local))return read(local);
+  const result=era5StoryWeather({latitude:lat,longitude:lon,startDate:start,endDate:end,wind:kind==='year'});
+  validateStoryWeather(result.weather,start,end,kind==='year');
+  atomic(local,result);return result;
+ }
  const hourly='temperature_2m,shortwave_radiation'+(kind==='year'?',wind_speed_100m':'');
  const url=new URL('https://archive-api.open-meteo.com/v1/archive');
  for(const [k,v] of Object.entries({latitude:lat,longitude:lon,start_date:start,end_date:end,hourly,models:'era5',timezone:'UTC',wind_speed_unit:'ms'}))url.searchParams.set(k,String(v));
@@ -90,7 +106,7 @@ async function prepareCity(city:typeof cities[number]){
    if(privateUnits.length&&selfUse===null)throw Error('Eigenverbrauch nicht berechenbar.');
    const {rows,...value}=unitMonthValue(source.units,monthWeather.weather,month,selfUse??0);
    if(data.monthly&&Math.abs(value.totalMwh-data.monthly.totalMwh)>Math.max(.001,data.monthly.totalMwh*.00001))throw Error('Ertrag der Einzelanlagen stimmt nicht mit dem Monatschart überein.');
-   data.values??={};data.values[month]={...value,privateSelfConsumption:selfUse??0,sourceDate:source.sourceDate,valuationDate:new Date().toISOString().slice(0,10),month,model:'individual-register-unit-v2',assumptionSourceDate:stockDate};
+   data.values??={};data.values[month]={...value,privateSelfConsumption:selfUse??0,sourceDate:source.sourceDate,valuationDate:heuteInBerlin(),month,model:'individual-register-unit-v2',assumptionSourceDate:stockDate};
    // Preserve per-unit calculation evidence locally; it is never shipped to the browser.
    const auditRoot=base+'/story-valuation/'+report.sourceDate;mkdirSync(auditRoot,{recursive:true});atomic(auditRoot+'/'+city.regionId+'-'+month+'.json',{...data.values[month],rows});
   }mark('Stromkennzahlen',true,'Einzelanlagen bewertet; Eigenverbrauch mit örtlichem Speicherbestand vom '+stockDate+'.');
