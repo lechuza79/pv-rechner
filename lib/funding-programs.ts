@@ -3233,11 +3233,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     eligibility: ["privat"],
     coveredCosts: "Sockel + Zuschuss je kWp (Dach-PV); Programm derzeit ausgesetzt",
     rates: [
-      { label: "Dach-PV", value: "500 € + 100 €/kWp, max. 4.000 €" },
-      { label: "Gründach / Fassade", value: "+100 €/kWp" },
+      { label: "Dach-PV", value: "500 € + 100 € je angefangenem kWp, max. 4.000 €" },
+      { label: "Fassaden-PV", value: "750 € + 150 € je angefangenem kWp, max. 5.750 €" },
+      { label: "Balkonkraftwerk ab 300 Wp", value: "150 € pauschal" },
     ],
     conditions: [
-      "Antragsannahme wegen der Haushaltslage ausgesetzt — Neuauflage nicht terminiert",
+      "Wegen der Haushaltslage zum 3. Juli 2025 eingestellt; danach eingehende oder noch nicht bewilligte Anträge werden nicht mehr berücksichtigt — Neuauflage nicht terminiert",
       "bereits bewilligte Anträge bleiben gültig",
       "Antrag galt vor Maßnahmenbeginn",
     ],
@@ -4191,22 +4192,27 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Roth", level: "kommune", region: "Roth",
     bundesland: "Bayern", agsCode: "09576143",
     url: "https://www.stadt-roth.de/umwelt-mobilitaet/klimaschutz/klimaschutzfoerderprogramm",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Anteil der Kosten für Photovoltaik und für Erdwärmesonden",
-    maxFoerderung: "max. 1.000 € für die PV-Anlage",
+    coveredCosts: "Anteil der Kosten für Photovoltaik in Mieterstrommodellen und für Erdwärmesonden",
+    maxFoerderung: "max. 1.000 € für die PV-Anlage eines Mieterstrommodells, dazu 300 € je Mieterstrom-Abnehmer (max. 6.000 € je Hausanschluss)",
     rates: [
-      { label: "Photovoltaik", value: "10 % der Kosten, max. 1.000 €" },
+      { label: "Photovoltaik für Mieterstrommodelle in Mehrfamilienhäusern ab 4 Wohneinheiten", value: "10 % der Kosten, max. 1.000 €, plus 300 € je Mieterstrom-Abnehmer, max. 6.000 € je Hausanschluss", nur: ["pv"] },
       { label: "Erdwärmesonden, -kollektoren und -körbe", value: "20 % der Kosten, max. 2.500 €" },
     ],
     conditions: [
       "Antragsberechtigt sind Rother Bürgerinnen und Bürger, Eigentümergemeinschaften und gemeinnützige Rother Organisationen",
       "Der Antrag ist spätestens sechs Monate nach Fertigstellung der Maßnahme schriftlich zu stellen",
       "Gefördert wird die Erdwärmequelle, nicht der Heizungstausch als solcher",
+      { text: "Photovoltaik wird nur für Mieterstrommodelle in Mehrfamilienhäusern mit mindestens vier Wohneinheiten gefördert (auch Wohneigentumsgemeinschaften); eine Anlage am Einfamilienhaus fällt nicht darunter", nur: ["pv"] },
+      "Nur freiwillige Maßnahmen, nicht solche aus einer öffentlich-rechtlichen Pflicht wie der Solarpflicht; Bindungsfrist zehn Jahre bei ortsfesten Anlagen",
     ],
     combinableWith: BUND,
     foerdert: ["pv", "waermepumpe"],
-    percentOfCost: 0.1, pvCap: 1000,
+    // No percentOfCost/pvCap (17.09.2026): the PV grant is limited to tenant-power
+    // models in buildings with at least four units (programme page and PV
+    // application form). The calculator cannot express that condition, so it
+    // must not deduct 10 % from an ordinary rooftop system.
     // Der Wärmepumpen-Teil bekommt bewusst KEINEN Rechenwert. Gefördert wird die
     // Erdwärmequelle — das trifft nur Sole/Wasser-Anlagen, während der Rechner
     // auch Luft/Wasser kennt. Ein `wpPercentOfCost` versprächen 20 % auch dem,
@@ -5267,9 +5273,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     maxFoerderung: "max. 100 € je Wohneinheit",
     rates: [{ label: "Balkonkraftwerk", value: "50 € je Modul, höchstens zwei Module" }],
     conditions: [
-      "Je Wohneinheit mit abgeschlossenem Stromkreis werden höchstens zwei Module gefördert",
+      "Antragsberechtigt ist, wer in Herbrechtingen seinen Hauptwohnsitz hat",
+      "Je Wohneinheit mit abgeschlossenem Stromkreis werden höchstens zwei Module mit je mindestens 250 Watt gefördert; je Modul höchstens bis zu dessen Preis",
       "Dem Antrag sind die Originalrechnung und die Anmeldung im Marktstammdatenregister beizulegen",
       "Bei einer Miet- oder Eigentumswohnung ist die Erlaubnis der Vermieterseite oder der Eigentümergemeinschaft nötig",
+      "Die Anlage muss mindestens zwei Jahre an der Wohneinheit betrieben werden; über 800 Watt ist ein Nachweis der fachgerechten Installation durch einen Elektrobetrieb nötig",
       "Es besteht kein Rechtsanspruch; gefördert wird im Rahmen der Haushaltsmittel",
     ],
     combinableWith: BUND,
@@ -6591,8 +6599,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Mieter brauchen die Genehmigung des Eigentümers vor der Antragstellung",
       "Für denselben Gegenstand darf kein anderes Förderprogramm in Anspruch genommen werden",
       "Der Speicherzuschuss von 150 € setzt die Kopplung an eine PV-Anlage voraus; ob ein Balkonspeicher dafür zählt, sagt die Richtlinie nicht — wir rechnen ihn deshalb nicht mit",
+      "Speicher und Balkonkraftwerk müssen mindestens fünf Jahre ab Rechnungsdatum betrieben werden",
     ],
-    combinableWith: BUND,
+    // Only the VAT zero rate stays (17.09.2026): guideline Nr. 4 Abs. 6 excludes
+    // other funding programmes for the same item (KfW 270 out); the zero rate is
+    // a statutory tax rate, not a programme one "takes up".
+    combinableWith: ["bund-nullsteuer"],
     foerdert: ["balkon"],
     balkonPauschale: 50,
   },
@@ -6636,11 +6648,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Balkonkraftwerk", value: "25 % der Bruttoanschaffungskosten, max. 200 €" },
     ],
     conditions: [
-      "Die Richtlinie ist von 2022 und begrenzt die Anschlussleistung auf 600 Watt — sie wurde nicht auf 800 W angehoben",
+      "Gefördert werden Balkonkraftwerke mit höchstens 800 Watt Anschlussleistung (geänderte Richtlinie, in Kraft seit 16. Mai 2024)",
       "Mieter und Eigentümer selbstbewohnter Wohnungen und Häuser; ein Antrag je Haushalt",
       "Der Antrag muss unmittelbar nach dem Kauf eingehen, spätestens 14 Tage danach",
-      "Anträge nach dem 15. Dezember eines Jahres werden nicht mehr gefördert, Inbetriebnahme bis zum 30. Dezember",
+      "Anträge nach dem 15. Dezember eines Jahres werden nicht mehr gefördert; in Betrieb sein muss das Gerät bis zum 30. Dezember des Jahres der Antragstellung",
       "Andere Fördermittel sind vorrangig auszuschöpfen; zusammen höchstens 50 % der Gesamtkosten",
+      "Wird das Gerät innerhalb von drei Jahren nach der Anbringung abgebaut oder stillgelegt, kann die Gemeinde den Zuschuss zurückfordern; das ist ihr unverzüglich mitzuteilen",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
@@ -6746,6 +6759,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Dem Antrag liegt ein Angebot über die geplante Anlage bei",
       "Zwischen Antragseingang und Installationsnachweis dürfen höchstens vier Monate liegen",
       "Je Jahr stehen 5.000 € bereit; nicht verbrauchte Mittel gehen ins Folgejahr",
+      "Das Programm ist zunächst auf 2025 und 2026 befristet; über eine Verlängerung entscheidet der Gemeinderat zum Jahresende 2026",
+      "Der Wechselrichter darf höchstens 800 VA leisten; montiert wird in unmittelbarer Nähe der angegebenen Wohnung, Mieter brauchen die Zustimmung des Eigentümers",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
@@ -7004,8 +7019,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Natürliche Personen mit Hauptwohnsitz in Bissendorf sowie eingetragene Vereine",
       "Ein Antrag je Fördergegenstand und Haushalt",
-      "Der Antrag muss vor dem Kauf gestellt werden; bereits erworbene Geräte oder geschlossene Verträge sind ausgeschlossen",
-      "Nach der Bewilligung bleiben sechs Monate für den Kauf",
+      "Gekauft oder beauftragt werden darf erst nach dem Bewilligungsbescheid; ein vorher geschlossener Kaufvertrag schließt die Förderung aus",
+      "Nach der Bewilligung bleiben sechs Monate, um Zahlungs- und Verwendungsnachweis einzureichen",
+      "Gefördert wird nur der Kauf – kein Leasing oder Mietmodell und kein Kauf von Privatperson zu Privatperson; das Gerät muss mindestens vier Jahre installiert und genutzt werden",
       "Der Satz von 300 € setzt einen kombinierten Speicher voraus — wir rechnen die 150 €, die ohne gelten",
       "Die getrennte Förderung stationärer Speicher zur Dachanlage ist zum 30. April 2026 ausgelaufen",
     ],
@@ -7511,7 +7527,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "roggenburg-pv-kleinstanlagen", name: "Förderprogramm für PV-Kleinstanlagen",
     traeger: "Gemeinde Roggenburg", level: "kommune", region: "Roggenburg",
     bundesland: "Bayern", agsCode: "09775149",
-    url: "https://www.roggenburg.de/bauen-gewerbe/umwelt-klima-energie/energiekonzept-1/2024-foerderprogramm-fuer-pv-kleinstanlagen",
+    url: "https://www.roggenburg.de/bauen-gewerbe/umwelt-klima-energie/energiekonzept-1/2025-foerderprogramm-fuer-pv-kleinstanlagen-endet-zum-31-12-2025",
     stand: "September 2026", status: "eingestellt", capped: true, verified: true,
     beginntIso: "2022-04-01", endetIso: "2025-12-31",
     eligibility: ["privat"],
@@ -7617,13 +7633,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Antragsberechtigt sind ausschließlich Inhaberinnen und Inhaber des Leipzig-Passes",
       "Anträge können fortlaufend eingereicht werden",
-      "Das Gerät darf vor der Antragstellung beziehungsweise dem Zuwendungsbescheid nicht verbindlich bestellt oder gekauft sein",
+      "Bestellt oder gekauft werden darf erst nach dem Zuwendungsbescheid (Ausnahme: auf Antrag genehmigter vorzeitiger Beginn)",
       "Mindestens 300 Wp Modulleistung, Wechselrichter höchstens 800 W",
       "Nur für die selbst genutzte Wohneinheit, ein Antrag je Person, Gerät und Wohneinheit",
       "Im Mehrfamilienhaus braucht es die Zustimmung von Vermieter oder Eigentümergemeinschaft",
       "Der Leipzig-Pass setzt eine Einkommensprüfung voraus, die der Rechner nicht kennt — deshalb steht hier kein Betrag",
+      "Nicht mit Förderungen anderer öffentlicher Stellen kombinierbar; wer schon eine Landes- oder Bundesförderung für ein Balkonkraftwerk erhalten hat, ist ausgeschlossen",
+      "Nur neue Geräte vom gewerblichen Händler; für den eingespeisten Strom darf keine EEG-Vergütung bezogen werden",
+      "Das Gerät muss fünf Jahre ab Auszahlung in Leipzig betrieben werden",
     ],
-    combinableWith: BUND,
+    // Only the VAT zero rate stays (17.09.2026): guideline Nr. 3 and Nr. 5 exclude
+    // cumulation with EU, federal and state grants, so KfW 270 is out; the zero
+    // rate is a statutory tax rate, not a grant (Nr. 7.1 even names it). Same
+    // pattern as Regensburg.
+    combinableWith: ["bund-nullsteuer"],
     foerdert: ["balkon"],
   },
 

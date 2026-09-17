@@ -180,7 +180,10 @@ describe("Der Katalog bleibt mit der Wärmepumpen-Rechnung verträglich", () => 
     // aber die Erdwärmequelle, nicht der Tausch. Ein `percentOfCost` darf im
     // Wärmepumpen-Zweig deshalb NICHTS ergeben, sonst verspräche der Rechner
     // 10 % auch dem, der eine Luftwärmepumpe plant.
-    const roth = FUNDING_PROGRAMS["roth-klimaschutz"];
+    // Since 17.09.2026 Roth's catalogue entry carries no PV percentage any more
+    // (tenant-power only). The guard itself stays: the fixture sets the
+    // percentage explicitly on a program that also names the heat pump.
+    const roth = { ...FUNDING_PROGRAMS["roth-klimaschutz"], percentOfCost: 0.1, pvCap: 1000 };
     expect(roth.percentOfCost).toBeGreaterThan(0);
     expect(technikenVon(roth)).toContain("waermepumpe");
     const belegt = { ...roth, lastVerified: "2026-08-18", pageSeenAt: "2026-08-19" };
