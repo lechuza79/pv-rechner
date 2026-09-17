@@ -43,7 +43,7 @@ import {
   type LinkKandidat,
 } from "../lib/funding-url-suche";
 import { inSchueben } from "../lib/lauf-parallel";
-import { seitenSchluessel, istInterneRoute } from "../lib/funding-seiten";
+import { seitenSchluessel, istInterneRoute, istVorlagenRest } from "../lib/funding-seiten";
 
 function loadEnvFile(): void {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -287,7 +287,7 @@ export async function sucheFoerderseite(gemeldeteAdresse: string, mode: "legacy"
   const alleFunde = new Map<string, LinkKandidat>();
   const merken = (liste: LinkKandidat[]) => {
     for (const k of liste) {
-      if (!istEndergebnis(k) || istInterneRoute(k.url)) continue;
+      if (!istEndergebnis(k) || istInterneRoute(k.url) || istVorlagenRest(k.url)) continue;
       alleFunde.set(seitenSchluessel(k.url), k);
     }
   };

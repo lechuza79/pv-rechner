@@ -2814,16 +2814,58 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     //   Programm sähe der Seiten-Wächter eine erreichbare Seite und bestätigte
     //   einen Stand, den die Quelle gar nicht mehr trägt.
     url: "https://www.mainzer-stiftung.de/foerderprogramme/photovoltaik-batteriespeicher/", stand: "Juni 2026",
-    status: "ausgeschoepft", capped: true, verified: true,
+    status: "pausiert", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWh Speicher (mit neuer PV)",
+    coveredCosts: "Zuschuss je kWh Speicher (mit neuer PV) — das Förderfenster 2025 ist abgelaufen",
     rates: [{ label: "Batteriespeicher", value: "150 €/kWh, max. 1.500 €" }],
     conditions: [
-      "Mittel ausgeschöpft, keine Neuanträge; für 2026 keine Fortführung geplant",
+      "Gefördert wurden nur Speicher, die zusammen mit einer neuen PV-Anlage im Zeitraum 1. Januar bis 31. Dezember 2025 errichtet wurden; maßgeblich war das Datum der Schlussrechnung",
+      "Die Programmseite ist seit dem 12. September 2026 nicht mehr erreichbar; ob die Stiftung das Programm fortführt, ist offen",
       "nur mit neuer PV-Anlage ab 3 kWp, Speicher max. 1:1 zur PV-Leistung",
       "Antrag vor Baubeginn",
     ],
     combinableWith: BUND,
+    // VON „AUSGESCHÖPFT" AUF „PAUSIERT" AM 17.09.2026, dritter Lauf in Folge ohne
+    // Amtsquelle. Kein Geld bewegt sich dabei: `fundingZaehlt()` verlangt
+    // „aktiv", und der Eintrag trägt ohnehin keinen strukturierten Satz.
+    //
+    // WARUM NICHT „STATUS UNKLAR", obwohl die Eskalationsregel nach drei
+    // erfolglosen Läufen genau das vorsieht: Dieser Status ist der einzige, den
+    // die Seitenauswahl AUSSCHLIESST („wir veröffentlichen keine Programmdaten,
+    // denen wir nicht trauen"). Mainz hat aber seit Juni eine Förder-Stadtseite,
+    // und die stünde danach in der Sitemap und antwortete mit 404 — gemessen,
+    // drei Tests wurden rot. Ein Statuswechsel, der eine indexierte Seite
+    // abschaltet, ist ein größerer Eingriff als der Befund hergibt; „pausiert"
+    // behält die Seite, zeigt das Abzeichen „pausiert" und rechnet den Zuschuss
+    // nicht mit. Der Fall geht als Entscheidung an den Betreiber.
+    //
+    // „PAUSIERT" BEHAUPTET AM WENIGSTEN von den drei möglichen Zuständen:
+    // „ausgeschöpft" behauptet einen leeren Topf (unbelegt, siehe unten),
+    // „eingestellt" eine Entscheidung der Stiftung (nicht gesehen), „pausiert"
+    // nur, dass gerade nichts läuft — und das ist belegt, weil das Förderfenster
+    // am 31.12.2025 endete und keine Nachfolge auffindbar ist.
+    //
+    // ZWEI BEHAUPTUNGEN SIND DABEI WEGGEFALLEN, weil sie unbelegt waren —
+    // gefunden von einem adversarialen Prüfer, am Original nachgesehen:
+    // „Mittel ausgeschöpft" und „für 2026 keine Fortführung geplant". Der
+    // Archivstand der Programmseite sagt beides NICHT; er sagt, dass das
+    // Förderfenster auf das Jahr 2025 begrenzt war. „Ausgeschöpft" war damit von
+    // Anfang an die falsche Kategorie — ein leerer Topf und ein abgelaufenes
+    // Jahresfenster sind zwei verschiedene Auskünfte.
+    //
+    // KEIN `endetIso`, und das ist eine Feldfrage, keine Vorsicht: Dort gehört
+    // der Tag hin, ab dem keine Anträge mehr angenommen werden. Der 31.12.2025
+    // ist die Errichtungs- und Schlussrechnungsfrist; der Antragsschluss lag
+    // nachweislich früher („Die Antragstellung muss vor Baubeginn erfolgen"),
+    // und den Tag kennen wir nicht. Das Datum steht deshalb in der Bedingung.
+    //
+    // Quelle ist die Momentaufnahme der Programmseite vom 23.05.2025 (Archiv der
+    // Amtsseite, am 17.09.2026 gelesen): „Die förderfähige Batteriespeicheranlage
+    // muss in Verbindung mit einer PV-Anlage im Zeitraum vom 01.01. – 31.12.2025
+    // neu errichtet werden. Entscheidend ist das Datum der Schlussrechnung."
+    // Ein Archiv belegt den INHALT von damals, nicht die Aktualität — deshalb
+    // „Status unklar" und nicht „eingestellt": Dass die Stiftung das Programm
+    // beendet hat, hat niemand gesehen; gesehen haben wir eine Website im Umbau.
   },
   "muenchen-fkg": {
     id: "muenchen-fkg", name: "Förderprogramm Klimaneutrale Gebäude (FKG)",
@@ -3734,6 +3776,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Zuschuss je kWp, je kWh Speicher und für Balkonkraftwerke — beide Fördertöpfe derzeit leer",
     rates: [
       { label: "PV-Anlage", value: "100 €/kWp, max. 1.000 €", nur: ["pv"] },
+      { label: "Gründach-Bonus (Dachbegrünung und PV auf derselben Fläche)", value: "zusätzlich 1.000 € — nur bei gleichzeitigem Antrag für beide Maßnahmen", nur: ["pv"] },
       { label: "Batteriespeicher", value: "200 €/kWh, max. 2.000 €", nur: ["pv"] },
       { label: "Balkonkraftwerk", value: "400 €, höchstens 50 % der Kosten", nur: ["balkon"] },
     ],
@@ -3754,6 +3797,28 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // „Balkon-PV-Anlagen, Förderung 400 €, beachte die maximale Fördergrenze in
     // Höhe von 50% der Kosten" — als Text, weil der Topf leer ist und nichts
     // abziehen darf.
+    //
+    // DER GRÜNDACH-BONUS FEHLTE BIS 17.09.2026 und ist der größte Posten des
+    // Eintrags: Er VERDOPPELT die Dach-Förderung. Wortlaut der Seite, als Fußnote
+    // unter der Aufzählung: „Bei einer gleichzeitigen Installation und
+    // Förderungsbeantragung von Dachbegrünung und Photovoltaik für die selbe
+    // Fläche gewährt die Stabsstelle eine zusätzliche Förderung von 1000€."
+    // Das Sternchen hängt an der Zeile „Photovoltaik-Anlagen*" UND an
+    // „Dachbegrünung*" — es gilt also der PV-Förderung, nicht nur dem Gründach.
+    // Bei einem Deckel von 1.000 € sind das noch einmal dieselbe Summe.
+    //
+    // NICHT ALS RECHENWERT, gleiche Begründung wie beim Innovationsbonus in
+    // Oftersheim: Der Rechner fragt weder nach einer Dachbegrünung noch danach,
+    // ob beides für dieselbe Fläche gleichzeitig beantragt wird. `nur: ["pv"]`
+    // ist Pflicht, weil der Eintrag zwei Techniken führt.
+    //
+    // DASS BEIDE TÖPFE LEER SIND, IST KEIN GRUND, IHN WEGZULASSEN — und auch kein
+    // Schutz. Die strukturierten Werte darüber rechnen in dem Moment wieder, in
+    // dem Krefeld auf „aktiv" zurückwechselt (die Seite kündigt das selbst an:
+    // „In der Presse informiert der Klimastab darüber, wenn neue Gelder genehmigt
+    // wurden"). Der Bonus läuft dann bewusst NICHT mit; er steht als Zeile da,
+    // damit niemand ihn für eingerechnet hält. Dieselbe Lehre wie beim
+    // Balkon-Satz, der hier schon einmal ganz gefehlt hat.
   },
 
   // ── Landkreise (eigenes, wiederkehrendes Programm; aktuell ausgeschöpft) ──────
@@ -6079,8 +6144,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [{ label: "Balkonkraftwerk", value: "10 % der förderfähigen Kosten, max. 150 € je Wohnung" }],
     conditions: [
       "Geräte, die vor dem Inkrafttreten der Richtlinie am 17. November 2022 angeschafft wurden, werden nicht gefördert",
-      "Je Antragstellerin oder Antragsteller werden im Jahr höchstens 150 € bewilligt",
+      "Je Antragstellerin oder Antragsteller werden im Jahr höchstens 150 € bewilligt — ausgenommen Hausverwaltungen, die im Auftrag einer Eigentümergemeinschaft handeln",
       "Wer zusätzlich eine andere Förderung in Anspruch nimmt, bekommt hier nichts",
+      "Gefördert werden Geräte mit höchstens 800 W Abgabeleistung des Wechselrichters",
       "Der Höchstbetrag gilt je Wohnung, unabhängig von der Zahl der Module",
       "Das Gerät läuft mindestens zwei Jahre in Tegernheim",
       "Anlagen an gewerblich genutzten Gebäuden sind ausgeschlossen",
@@ -6090,17 +6156,44 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
     balkonPercentOfCost: 0.1, balkonCap: 150,
     // `combinableWith` ist LEER, und das ist kein Versehen: Nr. 3 der Richtlinie
-    // sagt „Eine Förderung erfolgt nur, sofern keine zusätzlichen
-    // Drittförderungen in Anspruch genommen werden." Ein Ausschluss dieser
-    // Schärfe kommt im Katalog sonst nicht vor; ihn stillschweigend mit BUND zu
-    // kombinieren wäre eine Falschaussage über das, was ein Antragsteller
-    // bekommt.
+    // sagt — im Fettdruck — „Eine Förderung erfolgt nur, sofern keine
+    // zusätzlichen Drittförderungen in Anspruch genommen werden." Ein Ausschluss
+    // dieser Schärfe kommt im Katalog sonst nicht vor.
+    //   WAS DAS FELD HIER NICHT LEISTET, damit es niemand für einen Schutz hält:
+    //   `schliesstBundesfoerderungAus()` wird ausschließlich im
+    //   Wärmepumpen-Rechner gelesen, und dieser Eintrag fördert nur
+    //   Balkonkraftwerke — die Wirkung ist heute null. Es steht als Angabe da,
+    //   nicht als Mechanik. Getragen wird die Auskunft von der Bedingung daneben.
     //
-    // Website und Richtlinie widersprechen sich bei der Leistungsgrenze: Die
-    // Seite sagt 600 W, die verlängerte Richtlinie (unterzeichnet 27.12.2023,
-    // am 19.08.2026 im Scan Seite für Seite gelesen) sagt 800 W. Maßgeblich ist
-    // die Richtlinie; weil der Widerspruch aber ungeklärt ist, steht gar keine
-    // Wattzahl in den Bedingungen — eine der beiden wäre falsch.
+    // DIE WATTZAHL IST SEIT DEM 17.09.2026 ENTSCHIEDEN und steht jetzt in den
+    // Bedingungen. Vorher stand hier gar keine, weil Website (600 W) und
+    // Richtlinie (800 W) auseinandergingen und der Widerspruch ungeklärt war.
+    // Die verlängerte Richtlinie wurde an diesem Tag erneut beschafft und Seite
+    // für Seite als Bild gelesen (sie hat keine Textebene), Nr. 3: „Photovoltaik-
+    // Module mit bis zu 800 Watt Leistung (Abgabeleistung des Wechselrichters)".
+    // Maßgeblich ist die Richtlinie, die Seite trägt den älteren Stand.
+    //
+    // DIE WEBSITE FÜGT EINEN SATZ HINZU, DEN DIE RICHTLINIE NICHT HAT. Unter
+    // „Förderhöchstgrenzen und Kumulierung" steht auf der Seite zusätzlich „Die
+    // Fördermittel können mit anderen Fördermitteln kumuliert werden, soweit
+    // dies nicht von anderen Fördergebern ausgeschlossen oder eingeschränkt
+    // wird" — das Gegenteil von Nr. 3. In der Richtlinie enthält derselbe
+    // Abschnitt (Nr. 7) NUR den Jahresdeckel und die WEG-Ausnahme, kein Wort zur
+    // Kumulierung. Es ist also kein Widerspruch der Quelle, sondern ein Zusatz
+    // der Seite, und es gilt dieselbe Regel wie bei der Wattzahl: die Richtlinie.
+    //   Beim Fund sah es nach einem Widerspruch IN der Quelle aus; erst das
+    //   Beschaffen der Richtlinie hat das aufgelöst. Erst holen, dann umschreiben.
+    //
+    // DIE WEG-AUSNAHME hat bis zum 17.09.2026 gefehlt (Nr. 7 Satz 3:
+    // „Ausgenommen davon sind Hausverwaltungen, die im Auftrag einer WEG
+    // handeln."). Der Jahresdeckel von 150 € stand ohne sie da und war damit für
+    // genau die Antragsteller falsch, die für mehrere Wohnungen beantragen.
+    //
+    // DIE 6.000 € STEHEN NUR IN DER RICHTLINIE (Nr. 2: „Für die Förderung stehen
+    // Gesamtmittel in Höhe von 6.000,00 € zur Verfügung"), auf der Website kommt
+    // die Zahl nirgends vor. Nachgezählt am 17.09.2026, nachdem ein Prüfer sie
+    // als unbelegt gemeldet hatte — sie ist belegt, nur nicht dort, wo er gesucht
+    // hat.
     //
     // 6.000 € Gesamtmittel bei 150 € Höchstbetrag reichen für rund vierzig
     // Anlagen, und die Richtlinie läuft seit November 2022. Ein Ausschöpfungs-

@@ -1,9 +1,12 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import {
   seitenSchluessel, gleicheSeite, technikenSchreiben, technikenLesen,
   abdeckungJeTechnik, offeneTechniken, brauchtLesen, leseReihenfolge, fundEinfuegen,
   type FoerderSeite,
   istInterneRoute,
+  istVorlagenRest,
   programmDecktSeite,
 } from "../funding-seiten";
 
@@ -184,6 +187,59 @@ describe("Dubletten, die der erste echte Lauf zutage gefördert hat (19.08.2026)
     expect(istInterneRoute("https://www.aachen.de/:translation/en/stadt-aachen/de/foerderprogramme")).toBe(true);
     expect(istInterneRoute("https://www.borgholzhausen.de/:res/modules/view.css")).toBe(true);
     expect(istInterneRoute("https://www.aachen.de/in-aachen-leben/klima-umwelt/klimaschutz/foerderprogramme")).toBe(false);
+  });
+});
+
+describe("Vorlagen-Reste sind keine Adressen", () => {
+  it("erkennt den unaufgelösten Ausdruck, kodiert wie unkodiert", () => {
+    // Beide am 17.09.2026 am Server gemessen: HTTP 400, der Server weist sie selbst ab.
+    expect(istVorlagenRest(
+      "https://www.amt-trave-land.de/newsfeed/schieren/richtlinie-zum-foerderprogramm-loeschwasserversorgung-im-aussenbereich/%7B%7B%20item%20|%20generateUrl:'https://www.amt-trave-land.de/ratsinfo/gremium/%id%/%name%/'%20%7D%7D",
+    )).toBe(true);
+    expect(istVorlagenRest("https://www.emlichheim.de/wirtschaft-bauen/klimaschutz/foerderprogramme/%7B%7B%20item.uri%20%7D%7D")).toBe(true);
+    expect(istVorlagenRest("https://www.stadt.de/foerderung/{{ item.self.webUrl }}")).toBe(true);
+  });
+
+  it("DIE ECHTE FÖRDERSEITE ÜBERLEBT — der Rest hängt nur als Unterpfad an ihr", () => {
+    // Gegenprobe zu dem Fall, an dem ein zu breiter Filter teuer würde: In der
+    // Kürzung auf 150 Zeichen sind beide Adressen zeichengleich, und die erste
+    // ist ein bestätigtes Programm.
+    expect(istVorlagenRest(
+      "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien",
+    )).toBe(false);
+    expect(istVorlagenRest(
+      "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item.uri%20%7D%7D",
+    )).toBe(true);
+  });
+
+  it("eine EINFACHE Klammer ist kein Vorlagen-Rest", () => {
+    // Geschweifte Klammern sind in einem Pfad erlaubt; erst die doppelte ist der
+    // Ausdruck. Die Regel aufzuweichen ist nie die Lösung — sie zu verbreitern auch nicht.
+    expect(istVorlagenRest("https://www.stadt.de/foerderung/{jahr}")).toBe(false);
+    expect(istVorlagenRest("https://www.stadt.de/foerderung/%7Bjahr%7D")).toBe(false);
+  });
+
+  it("die Platzhalter allein reichen NICHT als Merkmal", () => {
+    // Gegen den Bestand gemessen (17.09.2026): kein einziger Rest trägt einen
+    // Platzhalter ohne die Klammer. Wer auf sie prüft, fängt keine Zeile mehr.
+    expect(istVorlagenRest("https://www.stadt.de/ratsinfo/gremium/%id%/%name%/")).toBe(false);
+  });
+});
+
+describe("Der Filter wird auch BENUTZT, nicht nur gebaut", () => {
+  // Geprüft wird die VERWENDUNG, nicht das Vorhandensein: Ein Filter, den niemand
+  // aufruft, ist von keinem nicht zu unterscheiden. Beim Einchecken absichtlich
+  // kaputtgemacht — der Typprüfer fängt nur die verwaiste Einfuhr, nicht den Fall,
+  // dass Aufruf UND Einfuhr zusammen verschwinden.
+  const quelle = (pfad: string): string =>
+    readFileSync(resolve(__dirname, "..", "..", pfad), "utf8");
+
+  it("die Aufnahme neuer Fundstellen filtert Vorlagen-Reste weg", () => {
+    expect(quelle("scripts/funding-discover.ts")).toMatch(/istVorlagenRest\(/);
+  });
+
+  it("der Aufräumlauf entfernt Vorlagen-Reste aus dem Bestand", () => {
+    expect(quelle("scripts/funding-seiten-backfill.ts")).toMatch(/istVorlagenRest\(/);
   });
 });
 
