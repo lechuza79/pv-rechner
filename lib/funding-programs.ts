@@ -2059,6 +2059,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Kein Speicher gefördert",
       "Antrag innerhalb eines Jahres nach der Installation; ein Fachbetrieb muss installieren",
       "Zuschüsse gibt es erst ab 500 € Förderung, also ab 2 kWp",
+      "Mieter einer Wohnung im Gebäude sind mit Zustimmung des Eigentümers antragsberechtigt",
+      "Anlagen, die gesetzlich vorgeschrieben sind (etwa die Solarpflicht beim Neubau oder bei einer grundlegenden Dachsanierung nach dem Klimaschutzgesetz Baden-Württemberg), werden nicht gefördert",
+      "Ab 10 kWp wird zusätzlich eine erste professionelle Steuerberatung zur Anlage mit höchstens 500 € gefördert",
+      "Nicht neben anderen städtischen Programmen für dieselbe Maßnahme",
     ],
     combinableWith: BUND,
     pvPerKwp: 250, pvCap: 2500,
@@ -2172,6 +2176,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Freiwillige Leistung, kein Rechtsanspruch",
       "Hier wird der Antrag erst NACH Inbetriebnahme und Registrierung im Marktstammdatenregister gestellt — anders als bei den meisten anderen Programmen",
       "Die Anlage muss im eigenen Eigentum stehen; Rechnungsdatum der Module nach dem 28.06.2022",
+      "Je Haushalt eine Dach- oder Fassadenanlage und bis zu zwei Balkonkraftwerke mit zusammen höchstens 800 W; Balkonkraftwerke ab 200 W Systemleistung",
+      { text: "Balkonkraftwerke: 200 € für 200 bis 450 W, 400 € ab 450 W, höchstens die Hälfte der Kosten", nur: ["balkon"] },
+      "Auch Mieter und Pächter sind antragsberechtigt, mit Einverständniserklärung des Eigentümers",
+      "Die Anlage muss nach der Auszahlung 15 Jahre (Dach/Fassade) bzw. 5 Jahre (Balkonkraftwerk) in Darmstadt genutzt werden",
+      { text: "Für innovative Lösungen (z. B. Fassade, Gründach mit PV, PVT) können die Mehrkosten nach Einzelprüfung mit bis zu 10 Prozent erhöhter Förderung bezuschusst werden; das rechnen wir nicht ein", nur: ["pv"] },
     ],
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
@@ -3046,7 +3055,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Antragsstopp seit dem 17. August 2026: Das Haushaltsbudget ist vollständig aufgebraucht, das Programm wurde vorzeitig beendet",
       "Anträge, die bis dahin eingegangen sind, werden der Reihe nach bearbeitet",
       "Der Antrag muss vor Kauf und Installation gestellt werden — nachträglich gibt es nichts",
-      "Antragsberechtigt sind Eigentümer und Mieter in Böblingen und Dagersheim; je Haushalt ein Antrag",
+      "Antragsberechtigt sind Eigentümer und Mieter in Böblingen und Dagersheim; je Haushalt ein Antrag. Mieter brauchen die Zustimmung des Eigentümers",
+      "Auch eingetragene Vereine ohne wirtschaftliche Tätigkeit mit Sitz in Böblingen waren antragsberechtigt",
+      "Gefördert wurden Geräte mit 300 bis 800 W Wechselrichterleistung und Speicher bis 3 kWh; Nutzung mindestens fünf Jahre im eigenen Haushalt",
       "Wer in der ersten Förderperiode bis Ende 2025 schon einen Zuschuss bekommen hat, ist ausgeschlossen",
       "Gefördert wird auch ein Batteriespeicher für das Balkonkraftwerk",
       "Der höhere Satz von 550 € setzt den Böblinger Bonuspass oder einen gültigen BAföG-Bescheid voraus — wir rechnen mit den 150 €, die alle bekommen",
@@ -3925,7 +3936,40 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: [],
     foerdert: ["balkon"],
+  },  "mainz-bingen-balkonkraftwerke": {
+    id: "mainz-bingen-balkonkraftwerke", name: "Eiskalt Entschwenden: Balkonkraftwerke",
+    traeger: "Landkreis Mainz-Bingen", level: "landkreis", region: "Landkreis Mainz-Bingen", bundesland: "Rheinland-Pfalz", agsCode: "07339",
+    // The programme page (Foerderung-Entschwendung.php) answers 404 since at least
+    // 17 Sep 2026; the guideline PDF is still served by the county. Guideline
+    // (Neufassung, decision 1 Oct 2025, in force 15 Oct 2025) read in full on
+    // 17 Sep 2026. Archived programme page of 20 Apr 2026 (web.archive.org, wording
+    // of the county): budget raised to 270,000 € by the Kreisausschuss on
+    // 24 Nov 2025, "aktuell alle Mittel ... ausgeschöpft"; payment "spätestens
+    // jedoch bis zum 30.04.2026" (guideline no. 6). Historical entry, no
+    // calculation fields. Only the balcony focus is catalogued; pumps, fridges,
+    // heat buffers, meters and insulation are not technologies of this catalogue.
+    url: "https://www.mainz-bingen.de/default-wAssets/docs/Bauen-Energie-Umwelt/Umwelt-und-Energieberatungszentrum/Klimaschutz/Foerderung/Entschwendung/FR-Eiskalt-Entschwenden-Neufassung.pdf",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2025-10-01", beginntIso: "2025-10-15", endetIso: "2026-04-30",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungs- und Installationskosten eines Balkonkraftwerks, gegebenenfalls mit zugehörigem Speicher",
+    maxFoerderung: "1.500 €",
+    rates: [
+      { label: "Balkonkraftwerk, auch mit Speicher", value: "80 % der Kosten, max. 1.500 € — Programm beendet" },
+    ],
+    conditions: [
+      "Die Mittel waren spätestens im April 2026 ausgeschöpft; nach der Richtlinie konnte nur bis zum 30. April 2026 ausgezahlt werden",
+      "Gefördert wurden neue Balkonkraftwerke mit Rechnungsdatum ab dem 15. Oktober 2025, Wechselrichter höchstens 800 W; Speicher nur zusammen mit einem Balkonkraftwerk",
+      "Antragsberechtigt waren natürliche Personen mit Wohnsitz im Landkreis; ein Antrag je Haushalt, Mieter mit Einverständniserklärung des Vermieters",
+      "Antrag erst nach Kauf und Installation, mit Rechnung, Registrierung im Marktstammdatenregister und Auswertung der Verbrauchsdaten der letzten drei Jahre",
+      "Keine Einspeisevergütung für den erzeugten Strom; Betrieb mindestens zehn Jahre am Standort",
+      "Nicht kombinierbar mit Bundes- und Landesmitteln, weiteren kommunalen Förderprogrammen oder Drittmitteln",
+      "Finanziert aus dem Landesprogramm KIPKI",
+    ],
+    combinableWith: [],
+    foerdert: ["balkon"],
   },
+
   // ── Kommune – aus dem Abdeckungs-Screening, 18.08.2026 ──────────────────────
   //
   // Alle folgenden Einträge stammen aus dem Abdeckungs-Lauf und wurden am
@@ -6007,6 +6051,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Antragsberechtigt sind Personen mit Hauptwohnsitz in der Ortsgemeinde Asbach",
       "Die Anlage wird im Marktstammdatenregister angemeldet",
       "Vorgarten-Anlagen und Solarzäune werden nicht gefördert",
+      "Antragsberechtigt sind Eigentümer selbst genutzter Wohnungen oder Häuser und Mieter; wer beantragt, muss das Gerät selbst kaufen und betreiben",
+      "Auch die Erweiterung eines bestehenden Balkonkraftwerks auf zusammen höchstens 2.000 Wp wird gefördert",
+      "Die Anlage muss fünf Jahre in der Ortsgemeinde betrieben werden",
       "Bewilligt wird in der Reihenfolge des Eingangs, solange Haushaltsmittel da sind",
     ],
     combinableWith: BUND,

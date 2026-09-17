@@ -1676,5 +1676,326 @@
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
       }
     ]
+  },
+  {
+    "regionId": "07143206",
+    "name": "Bad Marienberg (Westerwald)",
+    "checkedAt": "2026-09-17T17:30:02+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Stadtseite, bekannte Quellen und die städtische Modernisierungsrichtlinie Innenstadt vollständig gelesen, gezielte Suche ohne eigenes Geräte-Kaufzuschussprogramm der Stadt. Anwendbar ist das VG-Programm (2026 ausgeschöpft, so veröffentlicht). Die Modernisierungsrichtlinie Innenstadt (2014) ist Städtebauförderung für umfassende Modernisierung ausgewiesener Gebäude im Sanierungsgebiet per Einzelvereinbarung (höchstens 30 %, max. 30.000 €), kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; nicht als Katalogprogramm aufgenommen. Einträge in Förderlisten Dritter ohne amtliche Fundstelle verworfen.",
+    "searches": [
+      "\"Stadt Bad Marienberg\" Zuschuss Balkonkraftwerk Photovoltaik Wärmepumpe Förderprogramm 2026",
+      "site:bad-marienberg.de Modernisierung Innenstadt Richtlinie"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/",
+        "finding": "Geltung im gesamten Verbandsgemeindegebiet; Dreisbach steht in der amtlich abgeglichenen Mitgliederliste des Katalogeintrags. Richtlinie vom 26.01.2026 am 17.09.2026 erneut gelesen: Position 3.8 Stromspeicher für PV sowie Balkonkraftwerke 100 EUR/Kilowatt pauschal, max. 600 EUR; Suchmaschinen-Zusammenfassung '20 %, max. 100 EUR' gehört zu Position 3.7 und ist verworfen."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/verbandsgemeinde-gemeinden/aktuelles/september-2026/foerdermittel-2026-ausgeschoepft/",
+        "finding": "Amtliche Meldung vom 16.09.2026, am 17.09. erneut gelesen: Mittel 2026 vollständig ausgeschöpft, keine weiteren Anträge/Bewilligungen; 2027 nur angekündigte spätere Information."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/barrierefreiheit/",
+        "finding": "Bereits vollständig geprüfte Erklärung zur Website-Zugänglichkeit; kein privates Kaufzuschussprogramm."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/",
+        "finding": "Index und alle drei Projekt-Unterseiten unabhängig geprüft. Kommunale Schulen/Kitas, Straßen-/Sportbeleuchtung, Wärmestudie und Klimaschutzarbeit; kein privates Geräte-Kaufzuschussprogramm dieser Quellen."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/verbandsgemeinde-bad-marienberg/",
+        "finding": "Vollständige Beschreibung von sieben kommunalen Eigenvorhaben geprüft; Schul-Wärmepumpen sind keine privaten Zuschussanträge."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/",
+        "finding": "Klimaübersicht verweist auf die geprüften Eigenprojekte, Fachinformationen und Energieberatung; kein gesonderter privater Förderbetrag."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/energieberatung/",
+        "finding": "Kostenlose Verbraucherzentrale-Beratung; kein Geräte-Kaufzuschuss."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/gebaeudesanierung-in-ausgewiesenen-sanierungsgebieten/",
+        "finding": "Hahn und Hardter Mühle als Sanierungsgebiete mit Steuerbescheinigungsverfahren. Gesonderte Modernisierungsförderunterlagen ausdrücklich nur für Innenstadt Stadt Bad Marienberg; kein zusätzlicher Kaufzuschuss für Hahn daraus abgeleitet."
+      },
+      {
+        "url": "https://westerwaldkreis.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-bad-marienberg",
+        "finding": "Zusätzliche unabhängige Prüfung: Privatfördermeldung 2023 beschreibt Vorgänger des bekannten VG-Programms, keinen weiteren aktuell offenen Topf; durch Richtlinie 2026 ersetzt/vereinigt."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/verbandsgemeinde-gemeinden/ortsgemeinden-und-stadt/bad-marienberg/",
+        "finding": "Stadtseite am 17.09.2026 vollständig gelesen: Kurzinfo, Bürgermeisteramt, Satzungsliste (Sanierungsgebiete Innenstadt, Kirchenumfeld, Langenbach, Eichenstruth, Zinhain; keine Förder- oder Zuschusssatzung), Baugrundstücke, Straßenbau; kein eigenes Förderprogramm für private PV-, Speicher-, Balkon- oder Wärmepumpenanlagen."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/dateien/sanierung/modernisierung-innenstadt-badmbg-richtlinie.pdf?cid=xo4",
+        "finding": "Richtlinie zur Förderung von Modernisierungs-/Instandsetzungsmaßnahmen an privaten Gebäuden innerhalb der Innenstadt Bad Marienberg (Ratsbeschluss 24.07.2014, ADD-genehmigt) vollständig gelesen (10 Seiten): nur Gebäude, die im Rahmenplan als modernisierungsbedürftig ausgewiesen sind; Modernisierungsvereinbarung vor Baubeginn; Kostenerstattungsbetrag höchstens 30 % der berücksichtigungsfähigen Gesamtkosten, max. 30.000 €; andere Zuschüsse werden angerechnet. Energieeffizienz ist Teil einer Gesamtmodernisierung, keine Anlagen- oder Gerätepauschale."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-marienberg.de/barrierefreiheit",
+        "disposition": "reviewed",
+        "reason": "Bereits vollständig geprüfte Erklärung zur Website-Zugänglichkeit; kein privates Kaufzuschussprogramm.",
+        "evidenceUrl": "https://www.bad-marienberg.de/barrierefreiheit/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Index und alle drei Projekt-Unterseiten unabhängig geprüft. Kommunale Schulen/Kitas, Straßen-/Sportbeleuchtung, Wärmestudie und Klimaschutzarbeit; kein privates Geräte-Kaufzuschussprogramm dieser Quellen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/verbandsgemeinde-bad-marienberg",
+        "disposition": "reviewed",
+        "reason": "Vollständige Beschreibung von sieben kommunalen Eigenvorhaben geprüft; Schul-Wärmepumpen sind keine privaten Zuschussanträge.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/verbandsgemeinde-bad-marienberg/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien",
+        "disposition": "reviewed",
+        "reason": "Geltung im gesamten Verbandsgemeindegebiet einschließlich Bad Marienberg. Richtlinie 2026 (22 Seiten), Betrag/Bedingungen und Gebiet bereits unabhängig geprüft; historischer Programmeintrag ohne unzureichend modellierten Abzug veröffentlicht.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item.self.webUrl%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ item.self.webUrl }}\" als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item.uri%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ item.uri }}\" (zweimal) als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item%20|%20generateUrl:",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich abgeschnittene Form der generateUrl-Vorlagen (ozglebenslage/ozgleistung/abteilungen/leistungen/mitarbeiter) am ersten Apostroph als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item%20|%20generateUrl:&apos;https://www.bad-marienberg.de/buergerservice/ozglebenslage/%id%/%name%/&apos;%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href mit generateUrl ozglebenslage als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item%20|%20generateUrl:&apos;https://www.bad-marienberg.de/buergerservice/ozgleistung/%id%/%name%/&apos;%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href mit generateUrl ozgleistung als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20website%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ website }}\" als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143300",
+    "name": "Unnau",
+    "checkedAt": "2026-09-17T17:30:02+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Ortsgemeindeseite und bekannte Quellen gelesen, gezielte Suche ohne eigenes Programm von Unnau. Anwendbar ist das VG-Programm, das 2026 ausgeschöpft und so veröffentlicht ist. Die Sanierungsgebiete Ortsmitte Unnau, Korb und Stangenrod tragen nur das steuerliche Bescheinigungsverfahren; die gesonderte Modernisierungsförderung gilt nach VG-Seite nur für die Innenstadt der Stadt. Ein Förderlisten-Eintrag Dritter zu Unnau nannte keinen Betrag und keine amtliche Fundstelle und ist nicht mehr abrufbar (HTTP 404); verworfen.",
+    "searches": [
+      "Unnau Westerwald Förderung Photovoltaik Balkonkraftwerk Zuschuss Ortsgemeinde",
+      "site:bad-marienberg.de Balkonkraftwerk Förderung Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/",
+        "finding": "Geltung im gesamten Verbandsgemeindegebiet; Dreisbach steht in der amtlich abgeglichenen Mitgliederliste des Katalogeintrags. Richtlinie vom 26.01.2026 am 17.09.2026 erneut gelesen: Position 3.8 Stromspeicher für PV sowie Balkonkraftwerke 100 EUR/Kilowatt pauschal, max. 600 EUR; Suchmaschinen-Zusammenfassung '20 %, max. 100 EUR' gehört zu Position 3.7 und ist verworfen."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/verbandsgemeinde-gemeinden/aktuelles/september-2026/foerdermittel-2026-ausgeschoepft/",
+        "finding": "Amtliche Meldung vom 16.09.2026, am 17.09. erneut gelesen: Mittel 2026 vollständig ausgeschöpft, keine weiteren Anträge/Bewilligungen; 2027 nur angekündigte spätere Information."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/barrierefreiheit/",
+        "finding": "Bereits vollständig geprüfte Erklärung zur Website-Zugänglichkeit; kein privates Kaufzuschussprogramm."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/",
+        "finding": "Index und alle drei Projekt-Unterseiten unabhängig geprüft. Kommunale Schulen/Kitas, Straßen-/Sportbeleuchtung, Wärmestudie und Klimaschutzarbeit; kein privates Geräte-Kaufzuschussprogramm dieser Quellen."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/verbandsgemeinde-bad-marienberg/",
+        "finding": "Vollständige Beschreibung von sieben kommunalen Eigenvorhaben geprüft; Schul-Wärmepumpen sind keine privaten Zuschussanträge."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/",
+        "finding": "Klimaübersicht verweist auf die geprüften Eigenprojekte, Fachinformationen und Energieberatung; kein gesonderter privater Förderbetrag."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/energieberatung/",
+        "finding": "Kostenlose Verbraucherzentrale-Beratung; kein Geräte-Kaufzuschuss."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/gebaeudesanierung-in-ausgewiesenen-sanierungsgebieten/",
+        "finding": "Hahn und Hardter Mühle als Sanierungsgebiete mit Steuerbescheinigungsverfahren. Gesonderte Modernisierungsförderunterlagen ausdrücklich nur für Innenstadt Stadt Bad Marienberg; kein zusätzlicher Kaufzuschuss für Hahn daraus abgeleitet."
+      },
+      {
+        "url": "https://westerwaldkreis.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-bad-marienberg",
+        "finding": "Zusätzliche unabhängige Prüfung: Privatfördermeldung 2023 beschreibt Vorgänger des bekannten VG-Programms, keinen weiteren aktuell offenen Topf; durch Richtlinie 2026 ersetzt/vereinigt."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/verbandsgemeinde-gemeinden/ortsgemeinden-und-stadt/unnau/",
+        "finding": "Ortsgemeindeseite Unnau am 17.09.2026 vollständig gelesen: Steckbrief (Ortsteile Korb, Stangenrod), Bürgermeisteramt, Einrichtungen, Satzungsliste (Sanierungsgebiete Ortsmitte Unnau/Korb/Stangenrod, keine Förder- oder Zuschusssatzung), Baugrundstücke, Vereine; kein eigenes Förderprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.balkonkraftwerke-foerdermittel.de/bundesland/Rheinland-Pfalz/ort/Unnau/",
+        "finding": "Suchtreffer eines privaten Portals mit allgemeiner Behauptung einer Unnauer Balkonförderung ohne Betrag oder amtliche Fundstelle; Seite am 17.09.2026 nicht mehr abrufbar (HTTP 404). Nur Hinweisgeber, durch amtliche Ortsgemeinde- und VG-Seiten nicht bestätigt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bad-marienberg.de/barrierefreiheit",
+        "disposition": "reviewed",
+        "reason": "Bereits vollständig geprüfte Erklärung zur Website-Zugänglichkeit; kein privates Kaufzuschussprogramm.",
+        "evidenceUrl": "https://www.bad-marienberg.de/barrierefreiheit/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Index und alle drei Projekt-Unterseiten unabhängig geprüft. Kommunale Schulen/Kitas, Straßen-/Sportbeleuchtung, Wärmestudie und Klimaschutzarbeit; kein privates Geräte-Kaufzuschussprogramm dieser Quellen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/verbandsgemeinde-bad-marienberg",
+        "disposition": "reviewed",
+        "reason": "Vollständige Beschreibung von sieben kommunalen Eigenvorhaben geprüft; Schul-Wärmepumpen sind keine privaten Zuschussanträge.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/klimaschutz/gefoerderte-projekte/verbandsgemeinde-bad-marienberg/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien",
+        "disposition": "reviewed",
+        "reason": "Geltung im gesamten Verbandsgemeindegebiet einschließlich Unnau. Richtlinie 2026 (22 Seiten), Betrag/Bedingungen und Gebiet bereits unabhängig geprüft; historischer Programmeintrag ohne unzureichend modellierten Abzug veröffentlicht.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item.self.webUrl%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ item.self.webUrl }}\" als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item.uri%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ item.uri }}\" (zweimal) als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item%20|%20generateUrl:",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich abgeschnittene Form der generateUrl-Vorlagen (ozglebenslage/ozgleistung/abteilungen/leistungen/mitarbeiter) am ersten Apostroph als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item%20|%20generateUrl:&apos;https://www.bad-marienberg.de/buergerservice/ozglebenslage/%id%/%name%/&apos;%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href mit generateUrl ozglebenslage als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20item%20|%20generateUrl:&apos;https://www.bad-marienberg.de/buergerservice/ozgleistung/%id%/%name%/&apos;%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href mit generateUrl ozgleistung als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/%7B%7B%20website%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ website }}\" als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07339050",
+    "name": "Sankt Johann (Rheinhessen)",
+    "checkedAt": "2026-09-17T17:37:37+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich VG- und Kreisprogramm; Landes-/Bundesprogramme und Ratsunterlagen nicht vollständig auditiert.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Zuständig sind das VG-Programm Balkonsolaranlagen (Mittel reserviert, Warteliste, im Katalog) und das Kreisprogramm Eiskalt Entschwenden (Balkonkraftwerke 80 %, max. 1.500 €; Mittel im April 2026 ausgeschöpft, Auszahlung laut Richtlinie spätestens 30.04.2026; als beendetes Programm aufgenommen). Die Ortsgemeinde hat laut VG-Seite eine eigene Website, die derzeit nur einen Bearbeitungshinweis zeigt; die VG-Ortsgemeindeseite nennt kein eigenes Förderprogramm. Kein weiteres kommunales Kaufzuschussprogramm belegt.",
+    "searches": [
+      "Landkreis Mainz-Bingen Förderprogramm Klimaschutz private Haushalte Photovoltaik Balkonkraftwerk Zuschuss 2026",
+      "site:sprendlingen-gensingen.de Förderprogramm Sankt Johann"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/",
+        "finding": "Übersicht der Förderprogramme am 17.09.2026 vollständig gelesen (VG-eigene Programme, Bundes-, ISB- und Kreisverweise)."
+      },
+      {
+        "url": "https://www.sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/",
+        "finding": "Programmseite und Richtlinie des VG-Programms; Warteliste-Hinweis am 17.09.2026 bestätigt."
+      },
+      {
+        "url": "https://www.mainz-bingen.de/default-wAssets/docs/Bauen-Energie-Umwelt/Umwelt-und-Energieberatungszentrum/Klimaschutz/Foerderung/Entschwendung/FR-Eiskalt-Entschwenden-Neufassung.pdf",
+        "finding": "Kreisrichtlinie Eiskalt Entschwenden (Neufassung, Beschluss 01.10.2025, in Kraft 15.10.2025) vollständig gelesen: 5.6 Balkonkraftwerke 80 %, max. 1.500 €; Nr. 6 Auszahlung spätestens bis 30.04.2026. Archivierte Programmseite vom 20.04.2026: alle Mittel ausgeschöpft; Live-Seite antwortet 404."
+      },
+      {
+        "url": "https://www.sprendlingen-gensingen.de/rathaus/ortsgemeinden/sankt-johann/",
+        "finding": "VG-Seite der Ortsgemeinde gelesen: Verweis auf eigene Website, kein Förderprogramm genannt."
+      },
+      {
+        "url": "http://sankt-johann-rheinhessen.de/",
+        "finding": "Eigene Website der Ortsgemeinde am 17.09.2026: nur 'Zurzeit werden die Inhalte dieser Seite überarbeitet.' Kein Inhalt; bei Wiederprüfung erneut ansehen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht der VG-Energieagentur (Stand 01.05.2024) am 17.09.2026 vollständig gelesen: eigene Programme nur Balkonsolaranlagen und Aktion Klima-Bäume (ausgeschöpft, kein Energiegerät); übrige Einträge sind Bundes-, Landes- (ISB) und Kreisprogramme. Der Kreisverweis führt auf das inzwischen beendete Kreisprogramm Eiskalt Entschwenden, das gesondert gelesen und aufgenommen wurde.",
+        "evidenceUrl": "https://www.sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/"
+      },
+      {
+        "url": "sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen",
+        "disposition": "reviewed",
+        "reason": "VG-Programm Balkonsolaranlagen für das ganze VG-Gebiet einschließlich Sankt Johann; Seite am 17.09.2026 erneut gelesen: Mittel komplett reserviert, Warteliste. Katalogeintrag mit Richtlinie bereits unabhängig geprüft.",
+        "evidenceUrl": "https://www.sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/"
+      },
+      {
+        "url": "sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/%7B%7B%20item%20|%20generateUrl:&apos;https://www.sprendlingen-gensingen.de/buergerservice/ozglebenslage/%id%/%name%/&apos;%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ item | generateUrl:'https://www.sprendlingen-gensingen.de/buergerservice/ozglebenslage/%id%/%name%/' }}\" als Angular-Vorlage; keine reale Zielseite, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/"
+      },
+      {
+        "url": "sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/%7B%7B%20item%20|%20generateUrl:&apos;https://www.sprendlingen-gensingen.de/buergerservice/ozgleistung/%id%/%name%/&apos;%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ item | generateUrl:'https://www.sprendlingen-gensingen.de/buergerservice/ozgleistung/%id%/%name%/' }}\" als Angular-Vorlage; keine reale Zielseite, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/"
+      },
+      {
+        "url": "sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/%7B%7B%20item%20|%20generateUrl:&apos;https://www.sprendlingen-gensingen.de/ratsinfo/gremium/%id%/%name%/&apos;%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ item | generateUrl:'https://www.sprendlingen-gensingen.de/ratsinfo/gremium/%id%/%name%/' }}\" als Angular-Vorlage; keine reale Zielseite, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/"
+      },
+      {
+        "url": "sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/%7B%7B%20item%20|%20generateUrl:&apos;https://www.sprendlingen-gensingen.de/ratsinfo/sitzungstermin/%id%/%name%/&apos;%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ item | generateUrl:'https://www.sprendlingen-gensingen.de/ratsinfo/sitzungstermin/%id%/%name%/' }}\" als Angular-Vorlage; keine reale Zielseite, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/"
+      },
+      {
+        "url": "sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/%7B%7B%20item%20|%20generateUrl:&apos;https://www.sprendlingen-gensingen.de/ratsinfo/vorlage/%id%/%name%/&apos;%20%7D%7D",
+        "disposition": "replaced",
+        "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ item | generateUrl:'https://www.sprendlingen-gensingen.de/ratsinfo/vorlage/%id%/%name%/' }}\" als Angular-Vorlage; keine reale Zielseite, nicht als Zielseite gelesen.",
+        "evidenceUrl": "https://www.sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/"
+      }
+    ]
   }
 ]
