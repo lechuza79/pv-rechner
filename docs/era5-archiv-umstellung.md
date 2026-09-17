@@ -107,8 +107,16 @@ Gemessen auf diesem Rechner:
 - Der Ausschnitt ist einmal Deutschland, nicht einmal je Gemeinde. Die Kosten
   wachsen mit dem Kalender, nicht mit der Zahl der Orte.
 
+Und der Vorbereitungslauf selbst, der vorher am Tageslimit hing: **200 zufällig
+gezogene Gemeinden in 12 Sekunden**, hochgerechnet rund **11 Minuten für alle
+11.247** — ohne einen einzigen Netzabruf. Dabei blieb kein Ort an einer
+fehlenden Ortshöhe hängen; was fehlte, fehlte schon vorher (Windbestand,
+Koordinate, Speichergrundlage).
+
 Zum Vergleich: die bisherige Lösung brauchte **einen Abruf je Gemeinde und
-Zeitraum** und ist genau daran ins Tageslimit gelaufen.
+Zeitraum** und ist genau daran ins Tageslimit gelaufen — der letzte vollständige
+Lauf brachte 2.401 von 11.247 Monatsprofilen zustande und wartete dann auf den
+nächsten Tag.
 
 ## Was gebaut ist
 
