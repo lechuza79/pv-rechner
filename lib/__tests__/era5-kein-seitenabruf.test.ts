@@ -8,6 +8,14 @@ import { describe, expect, it } from 'vitest';
  * modules that talk to the archive, or that read the block store from disk,
  * have no business in a request. On the server they would find no blocks, and
  * the failure would show up as a broken page rather than as a missing download.
+ *
+ * This is also a LICENCE boundary, not only a performance one. The archive
+ * reader `@openmeteo/file-reader` is GPL-2.0-only (checked in its own package
+ * on 17.09.2026). As a build tool it stays between us and our machines and the
+ * GPL asks nothing of us — v2 has no network clause. The moment it reaches the
+ * shipped bundle, the WebAssembly goes out to every visitor, that is
+ * distribution, and the licence reaches into whatever it is linked with. It
+ * therefore lives in devDependencies and is named below.
  */
 const FORBIDDEN = [
   'era5-archive',
