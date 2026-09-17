@@ -2280,27 +2280,52 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       // Gilt für beide Techniken
       "Der Antrag wird erst NACH Inbetriebnahme gestellt, und zwar binnen vier Wochen",
       "Die Anlage muss im Marktstammdatenregister registriert sein",
-      "Haltedauer zehn Jahre, sonst wird der Zuschuss zurückgefordert",
       "Freiwillige Leistung ohne Rechtsanspruch, nur solange Mittel vorhanden sind",
-      "Nicht gefördert: Eigenleistung, gebrauchte Teile, Anlagen aus einer gesetzlichen Pflicht (etwa nach dem Gebäudeenergiegesetz)",
+      "Nicht gefördert: Eigenleistung und gebrauchte Teile",
       "Antrag und Nachweise nur digital über das Online-Formular der Stadt",
+      "Gefördert wird nur, was im Förderzeitraum durchgeführt wird — er endet am 31. Dezember 2026",
       // Nur Dachanlage
       { text: "Die Anlage muss mindestens 4 kWp leisten — kleinere Dachanlagen werden nicht gefördert", nur: ["pv"] as FundingTechnik[] },
       { text: "Kein Ersatzneukauf und keine Erweiterung einer bestehenden Anlage", nur: ["pv"] as FundingTechnik[] },
       { text: "Je Wohngebäude eine Anlage im Förderzeitraum; Anlage und Speicher zusammen zählen als eine", nur: ["pv"] as FundingTechnik[] },
       { text: "Wohneigentum in Nidda ist Voraussetzung", nur: ["pv"] as FundingTechnik[] },
+      { text: "Haltedauer zehn Jahre für Anlage und Speicher, sonst wird der Zuschuss zurückgefordert", nur: ["pv"] as FundingTechnik[] },
+      { text: "Nicht gefördert werden Anlagen, die aus einer rechtlich bindenden Verpflichtung heraus installiert werden müssen, etwa nach dem Gebäudeenergiegesetz", nur: ["pv"] as FundingTechnik[] },
       // Nur Balkonkraftwerk
       { text: "Höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung", nur: ["balkon"] as FundingTechnik[] },
       { text: "Hauptwohnsitz in Nidda genügt — Mieterinnen und Mieter sind ausdrücklich antragsberechtigt", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Haltedauer drei Jahre im Stadtgebiet, gerechnet ab der Auszahlung", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Je Haushalt wird im Förderzeitraum nur eine Anlage gefördert", nur: ["balkon"] as FundingTechnik[] },
     ],
     // Die Richtlinie erlaubt die Kombination ausdrücklich („Der Zuschuss ist mit
     // Angeboten oder anderen Förderungen kombinierbar"), schiebt die Prüfung auf
     // Rückwirkungen aber der antragstellenden Person zu.
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
+    // FÖRDERZEITRAUM ENDET AM 31.12.2026 — ergänzt am 17.09.2026, vorher stand
+    // hier kein Enddatum. Beide Richtlinien tragen in der Kopfzeile
+    // „Förderzeitraum: 01.01. - 31.12.2026" und setzen nach: „Es werden nur
+    // Maßnahmen bezuschusst, die innerhalb des festgelegten Förderzeitraumes
+    // rechtskonform durchgeführt werden." Das ist NICHT bloß die Befristung
+    // eines Richtlinientextes, sondern der Zeitraum, in dem die Maßnahme selbst
+    // liegen muss — wer im Januar 2027 in Betrieb nimmt, bekommt nichts. Ohne
+    // das Datum hätte der Rechner ab dem 01.01.2027 weiter bis zu 1.500 €
+    // abgezogen: kein Absturz, kein roter Test, nur eine falsche Zahl in jedem
+    // Niddaer Ergebnis. Nidda beschließt die Fortführung jedes Jahr neu
+    // („Fortführung der Solarförderung für 2026 beschlossen"), ein
+    // automatisches Weiterlaufen ist also gerade nicht die Erwartung.
+    endetIso: "2026-12-31",
     pvPerKwp: 100, pvCap: 1000, pvMin: 4,
     speicherPerKwh: 50, speicherCap: 500,
     balkonPercentOfCost: 0.5, balkonCap: 200,
+    // HALTEDAUER JE TECHNIK GETRENNT (17.09.2026). Hier stand ungemarkt
+    // „Haltedauer zehn Jahre" — belegt ist das nur in der PV-Richtlinie
+    // („Haltedauer von PVA: 10 Jahre · Haltedauer von Stromspeichern: 10 Jahre").
+    // Die Mini-PV-Richtlinie sagt „eine Haltedauer von mindestens 3 Jahren im
+    // Stadtgebiet". Bei 200 € für ein Gerät, das man beim Umzug mitnimmt, ist
+    // „zehn Jahre, sonst Rückforderung" die teuerste denkbare Fehlauskunft.
+    // Ebenso die GEG-Klausel: Sie steht nur in der PV-Richtlinie, und eine
+    // gesetzliche Pflicht zum Balkonkraftwerk gibt es nicht.
   },
   "koeln-pv": {
     id: "koeln-pv", name: "Klimafreundliches Wohnen & Arbeiten",
@@ -4507,8 +4532,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [{ label: "Balkonkraftwerk", value: "max. 100 € je Anlage" }],
     conditions: [
       "Der Antrag für das laufende Jahr ist bis zum 31. August zu stellen; spätere Anträge werden nur bedient, wenn nach den fristgerechten noch Geld übrig ist",
+      "Die Richtlinie sagt an anderer Stelle strenger, es würden nur bis zum 31. August eingereichte Anträge berücksichtigt — nach diesem Tag sollte man vor dem Kauf nachfragen",
       "Gefördert werden Balkonkraftwerke mit mindestens 500 W und höchstens 1.000 W",
-      "Für Balkonkraftwerke sind bis zum 31. August höchstens 20 % der Gesamtfördersumme reserviert, danach gehen Restmittel an andere Maßnahmen",
+      "Für Balkonkraftwerke stehen höchstens 20 % der Gesamtfördersumme des Haushaltsjahres bereit",
+      "Dieser Anteil bleibt nur bis zum 31. August für Balkonkraftwerke reserviert; was bis dahin nicht abgerufen ist, geht an andere Maßnahmen",
+      "Je Antragsteller wird im Kalenderjahr nur eine Maßnahme gefördert",
       "Für das laufende Haushaltsjahr sind insgesamt 40.000 € eingeplant",
       "Dachanlagen fördert die Stadt nur als Mieterstromprojekt mit mindestens zwei Mietparteien, bis 2.000 € je Anlage; Batteriespeicher gar nicht",
     ],
@@ -4708,20 +4736,73 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Oftersheim", level: "kommune", region: "Oftersheim",
     bundesland: "Baden-Württemberg", agsCode: "08226062",
     url: "https://www.oftersheim.de/3187645",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-04-01",
     eligibility: ["privat"],
-    coveredCosts: "Zuschüsse für Photovoltaik, Balkonkraftwerk, Solarthermie und Dämmung",
-    rates: [{ label: "Photovoltaik und Balkonkraftwerk", value: "Beträge nur in der Förderrichtlinie" }],
+    coveredCosts: "Zuschuss je kWp für die Dachanlage, Anteil der Kosten beim Balkonkraftwerk",
+    maxFoerderung: "max. 1.500 € pro Jahr und Haushalt über alle Bausteine",
+    rates: [
+      { label: "Dachanlage (auch Carport)", value: "50 €/kWp, max. 500 €", nur: ["pv"] },
+      { label: "Innovationsbonus (Gründach, nachgeführt, PV/Solarthermie)", value: "150 €/kWp, max. 1.500 € — nur nach Einzelfallprüfung", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "15 % der Anschaffungskosten, max. 150 €", nur: ["balkon"] },
+    ],
     conditions: [
-      "Das Programm läuft seit April 2023",
-      "Gefördert werden unter anderem Photovoltaik, Balkonkraftwerke, Solarthermie und Dämmung",
-      "Die Förderbeträge stehen ausschließlich in der herunterladbaren Richtlinie",
+      "Das Programm läuft seit April 2023 und trägt kein Enddatum",
+      "Freiwillige Leistung ohne Rechtsanspruch; Anträge werden in der Reihenfolge des Posteingangs bearbeitet, solange Haushaltsmittel da sind",
+      "Über alle Bausteine zusammen gibt es höchstens 1.500 € pro Jahr und Haushalt",
+      // Nur Dachanlage
+      { text: "NICHT gefördert werden Anlagen im Neubau und Anlagen im Zuge einer Dachsanierung — die Gemeinde setzt beides mit einer Installationspflicht gleich", nur: ["pv"] as FundingTechnik[] },
+      { text: "Anlagen, die aus einer gesetzlichen Verpflichtung heraus errichtet werden, sind ausgeschlossen; ebenso Anlagen, deren Strom an Dritte veräußert wird", nur: ["pv"] as FundingTechnik[] },
+      { text: "Gefördert wird bis zu einer Gesamtleistung von 10 kWp je Anlage; die Anlage selbst darf größer sein", nur: ["pv"] as FundingTechnik[] },
+      { text: "Antragsberechtigt sind Eigentümer und Eigentümergemeinschaften mit selbst genutztem oder vermietetem Wohnraum sowie Kleingewerbe — Mietende nicht", nur: ["pv"] as FundingTechnik[] },
+      { text: "Der Antrag verlangt Kostenvoranschlag und Simulationsberechnung und muss spätestens sechs Monate nach dem Kauf eingehen; nach der vorläufigen Zusage bleiben zwölf Monate bis zur Inbetriebnahme", nur: ["pv"] as FundingTechnik[] },
+      // Nur Balkonkraftwerk
+      { text: "Antragsberechtigt sind ausdrücklich auch Mietende, dazu Eigentümer, Vermieter und Kleingewerbe", nur: ["balkon"] as FundingTechnik[] },
+      { text: "Je Wohn- oder Kleingewerbeeinheit einmalig; der Antrag muss spätestens sechs Monate nach dem Kauf eingehen", nur: ["balkon"] as FundingTechnik[] },
     ],
     combinableWith: BUND,
     foerdert: ["pv", "balkon"],
-    // Die Programmseite zählt nur auf, WAS gefördert wird, nicht mit wieviel.
-    // Die Beträge liegen als PDF dahinter und sind hier nicht gelesen — ohne
-    // gelesene Quelle keine Zahl.
+    pvPerKwp: 50, pvCap: 500,
+    balkonPercentOfCost: 0.15, balkonCap: 150,
+    // BETRÄGE AUS DEM PROGRAMM-PDF, nicht von der Übersichtsseite (17.09.2026 im
+    // Volltext gelesen, 15 Seiten, Fassung „gültig ab 01.01.2024"). Die Seite
+    // zählt nur auf, WAS gefördert wird; bis heute stand hier deshalb gar keine
+    // Zahl und die Stadtseite sagte sinngemäß „Beträge nur in der Richtlinie".
+    // Abschnitt E.1.3: „wird mit einmalig 50 € je kWp Leistung dieser Anlage
+    // gefördert. Die Förderung ist auf 500 € je Anlage begrenzt." Abschnitt
+    // F.1.3: „pro Wohn-/Kleingewerbeeinheit einmalig mit maximal 15 %
+    // (vorher 30 %), höchstens jedoch mit 150 € (vorher 300 €) der
+    // Anschaffungskosten". Die Klammerzusätze sind der Beleg, dass die Gemeinde
+    // den Balkon-Satz selbst halbiert hat.
+    //
+    // BALKON ALS PROZENTSATZ, nicht als Pauschale — sonst stünde für ein Set um
+    // 500 € der doppelte Betrag da: 15 % sind dort 75 €, der Deckel von 150 €
+    // greift erst ab 1.000 € Kaufpreis.
+    //
+    // DER NEUBAU- UND DACHSANIERUNGS-AUSSCHLUSS IST DER TEUERSTE TEIL DIESES
+    // EINTRAGS und stand fast nicht drin. E.1: „Neuinstallationen von
+    // Photovoltaikanlagen auf Dächern bzw. Carports, wofür keine
+    // Installationspflicht besteht, also nicht für Neubau und nicht im Falle
+    // einer Dachsanierung." Der PV-Rechner fragt beides nicht ab; ohne die
+    // Bedingung im Text zöge er 500 € ab für einen der häufigsten Anlässe, eine
+    // Anlage überhaupt zu bauen. Ein Feld dafür gibt es nicht — deshalb Text.
+    //
+    // DER INNOVATIONSBONUS WIRD NICHT GERECHNET, und „gilt nicht für gewöhnliche
+    // Dachanlagen" wäre falsch: E.1.3 nennt ihn für nachgeführte Anlagen,
+    // Gründach-PV und PVT und setzt nach: „Andere Realisierungsformen werden auf
+    // eine mögliche erhöhte Förderung im Rahmen des Innovationsbonus geprüft."
+    // Das ist Einzelfallermessen, keine Ausschlussklausel. Er steht als
+    // Satz-Zeile da, weil er bei 10 kWp 1.000 € mehr bedeutet als unsere
+    // Rechnung — die angenehme Richtung, aber keine, die man verschweigt.
+    //
+    // Die „Mindestförderung 200 €" (E.1.3) hängt grammatisch am
+    // Innovationsbonus-Satz und wird deshalb NICHT auf die Grundförderung
+    // angewandt. Bei 150 €/kWp wäre sie ab 1,33 kWp ohnehin wirkungslos.
+    //
+    // Das Dokument datiert sich selbst widersprüchlich: Kopf „gültig ab
+    // 01.01.2024", Schluss „tritt ab dem 01.04.2023 in Kraft", gezeichnet
+    // 03.04.2023. `beginntIso` nimmt deshalb den früheren, belegten Tag.
+    // Ein Enddatum nennt es nicht.
   },
 
   "bad-rothenfelde-klima": {
@@ -4787,7 +4868,61 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     "foerdert": [
       "balkon"
     ],
-    "nurWohnform": "mieter"
+    "nurWohnform": "mieter",
+    // RECHENWERT ERGÄNZT am 17.09.2026, nachdem die Richtlinie (Stand
+    // 30.04.2026) im Volltext gelesen war. Die Präambel sagt es in einem Satz:
+    // „Die Förderung beträgt 50 € je Anlage." Bis dahin stand der Betrag nur
+    // als Text da und zog nichts ab — Untererfassung, keine Falschauskunft,
+    // aber ohne Grund. `nurWohnform: "mieter"` schließt die Fälle bereits aus,
+    // für die das Programm nicht gilt.
+    "balkonPauschale": 50
+  },
+
+  "bahrenhof-solar": {
+    id: "bahrenhof-solar", name: "Förderprogramm Solaranlagen",
+    traeger: "Gemeinde Bahrenhof", level: "kommune", region: "Bahrenhof",
+    bundesland: "Schleswig-Holstein", agsCode: "01060006",
+    url: "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2023-06-13", beginntIso: "2023-06-13", endetIso: "2023-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Anlagengröße, höchstens die Hälfte der Kosten",
+    maxFoerderung: "max. 400 €",
+    rates: [
+      { label: "Balkonkraftwerk bis 300 W Wechselrichter", value: "100 € pauschal", nur: ["balkon"] },
+      { label: "Balkonkraftwerk bis 600 W Wechselrichter", value: "200 € pauschal", nur: ["balkon"] },
+      { label: "Dachanlage am Einfamilienhaus bis 5 kW", value: "300 € pauschal", nur: ["pv"] },
+      { label: "Dachanlage am Einfamilienhaus über 5 kW", value: "400 € pauschal", nur: ["pv"] },
+    ],
+    conditions: [
+      "Das Programm ist am 31. Dezember 2023 ausgelaufen; eine Neuauflage ist nicht bekannt",
+      "Antragsberechtigt waren Eigentümer und Mietende, Eigentümergemeinschaften und Hausverwaltungen; bei Miete mit Zustimmung der Eigentümerseite",
+      "Je Haushalt war nur ein Antrag zulässig",
+      "Der Antrag musste VOR dem Kauf gestellt werden — eine bereits beauftragte Anlage war nicht förderfähig",
+      "Der Zuschuss durfte die Hälfte der förderfähigen Kosten nicht übersteigen",
+      "Die Anlage musste fünf Jahre im eigenen Haushalt genutzt werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // AUFGENOMMEN AM 17.09.2026, obwohl beendet — „gab es, ist beendet" ist eine
+    // echte Auskunft, wir merken eine Neuauflage, und für die Zubau-Auswertung
+    // ist gerade die abgelaufene Förderung der interessante Fall.
+    //
+    // Richtlinie „Solaranlagen" der Gemeinde Bahrenhof vom 13.06.2023, im
+    // Volltext gelesen. Nr. 2 nennt die vier Pauschalen, Nr. 8: „Diese
+    // Richtlinie tritt zum 13.06.2023 in Kraft. Das Förderprogramm läuft bis zum
+    // 31.12.2023."
+    //
+    // KEINE RECHENWERTE, mit Absicht: Das Programm ist beendet, und die
+    // Dach-Staffel (300 € bis 5 kW, 400 € darüber) ließe sich zwar als Stufen
+    // ausdrücken, würde aber einen Abzug erzeugen, den es seit drei Jahren
+    // nicht mehr gibt.
+    //
+    // DER SCHLÜSSEL GILT NUR BAHRENHOF (210 Einwohner, aus dem Melderegister).
+    // Die Seite liegt auf der Domain des Amtes Trave-Land, und unsere Erfassung
+    // hatte sie deshalb 23 Gemeinden des Amtes zugeordnet. Nr. 2 der Richtlinie
+    // begrenzt sie ausdrücklich auf das Gemeindegebiet Bahrenhof; die übrigen 22
+    // sind als „Quelle gehört einer anderen Gemeinde" abgehakt.
   },
 
   // ── Kommune – erste Funde der URL-Suche, 18.08.2026 ─────────────────────────
@@ -4937,11 +5072,26 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Richtlinie sind, sagt sie nicht, und das ist eine Auslegungsfrage, keine
     // Abschrift.
     beginntIso: "2024-07-01", endetIso: "2027-02-28", beschlossenIso: "2026-01-28",
-    // Die Staffel läuft über die MODULZAHL, der Rechner kennt die Modulleistung
-    // — 300 W je Modul ist die Umrechnung, die die Stadt selbst in ihre Tabelle
-    // geschrieben hat. Ein typisches Set mit 800 Wp landet damit in der zweiten
-    // Stufe, was der Sache entspricht (zwei Module).
-    balkonTiers: [{ upTo: 300, amount: 90 }, { upTo: 999999, amount: 180 }],
+    // DIE STAFFEL LÄUFT ÜBER DIE MODULZAHL, der Rechner kennt nur die
+    // Modulleistung — und die Umrechnung war bis zum 17.09.2026 FALSCH gesetzt.
+    //
+    // Richtlinie Nr. 5: „für Anlagen mit einem PV-Modul und einer
+    // Mindestleistung von 300 Watt pauschal 90 €, für Anlagen mit zwei
+    // PV-Modulen mit einer Mindestleistung von 600 Watt pauschal 180 €."
+    // Die 300 W sind eine MINDESTLEISTUNG des Ein-Modul-Falls, keine
+    // Modulgröße. Die Grenze bei 300 Wp zu ziehen hieß deshalb: Unser
+    // Ein-Modul-Set (500 Wp, 300 € Kaufpreis) fiel in die zweite Stufe und
+    // bekam 180 € statt 90 € — 90 € zu viel auf einen Kaufpreis von 300 €,
+    // also 30 % des Preises erfunden. Der alte Kommentar behauptete, die Stadt
+    // habe 300 W je Modul in ihre Tabelle geschrieben; das steht dort nicht.
+    // Gefunden von einem adversarialen Prüfer, am Original nachgerechnet.
+    //
+    // Die Grenze liegt jetzt bei 599 Wp, und das ist eine LESART, keine
+    // Abschrift: Unterhalb von 600 Wp kann eine Anlage die Mindestleistung des
+    // Zwei-Modul-Falls nicht erreichen, also bleibt nur der Ein-Modul-Satz.
+    // Damit landen alle drei Sets des Rechners richtig — 500 Wp (ein Modul) bei
+    // 90 €, 960 und 2.000 Wp (zwei und vier Module) bei 180 €.
+    balkonTiers: [{ upTo: 599, amount: 90 }, { upTo: 999999, amount: 180 }],
   },
 
   "unterhaching-energiesparen": {
@@ -5191,7 +5341,26 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Mietende brauchen die Zustimmung der Vermieterseite oder der Eigentümergemeinschaft und müssen sie nachweisen",
       "Beantragt werden kann bis zum 31. Dezember 2026",
       "Ist das Budget ausgeschöpft, besteht kein Anspruch auf weitere Förderung",
+      "NICHT gefördert werden Anlagen nach Norden, Nordosten oder Nordwesten und verschattete Standorte — die Gemeinde zählt sie ausdrücklich als ungeeignet",
+      "Je Wohneinheit wird einmalig nur ein Balkonkraftwerk gefördert",
+      "Die Anlage muss zwei Jahre in Betrieb bleiben, gerechnet ab der Auszahlung",
+      "Bei einem Kulturdenkmal ist die denkmalschutzrechtliche Genehmigung nachzuweisen",
+      "Gebraucht gekaufte Geräte und rein gewerblich genutzte Gebäude sind ausgeschlossen",
     ],
+    // DER AUSRICHTUNGS-AUSSCHLUSS IST DER WICHTIGSTE DIESER BEDINGUNGEN und
+    // fehlte bis zum 17.09.2026 ganz. Richtlinie Nr. 4 d): „Nicht förderfähig
+    // sind: … Geräte, die an einem ungeeigneten Standort montiert bzw.
+    // aufgestellt wurden. Das sind Standorte, die von einem Großteil der
+    // täglichen direkten Sonneneinstrahlung nicht erreicht werden. Das ist der
+    // Fall bei Geräten, die nach Norden, Nordosten oder Nordwesten ausgerichtet
+    // und/oder verschattet (z.B. Gebäude oder Vegetation) sind."
+    //
+    // OFFEN (bis 11/2026): Der Balkon-Rechner FRAGT die Ausrichtung ab und
+    // könnte den Fall deshalb rechnen statt nur zu benennen — heute zieht er
+    // einem Nord-Balkon in Limburgerhof 200 € ab, die es nachweislich nicht
+    // gibt. Dafür fehlt ein Feld am Programm und die Ausrichtung in der
+    // Anlagen-Beschreibung; beides ist eine Änderung an der geteilten
+    // Förderrechnung und braucht ein eigenes Council.
     combinableWith: BUND,
     foerdert: ["balkon"],
     balkonPauschale: 200,

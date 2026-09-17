@@ -121,6 +121,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "rheinisch-bergisch-balkonsolar", "burbach-klimaschutz-privat",
   // Exhausted 2026 round: conditions remain explicit information, no application flow.
   "bad-marienberg-erneuerbare-energien",
+  // Closed since 31 December 2023 (guideline of 13 June 2023, read in full on
+  // 17 September 2026). The conditions stay as historical information; there is
+  // no application flow left to check them against.
+  "bahrenhof-solar",
   "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",
@@ -346,11 +350,18 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
         pruefung: { art: "antragsweg", weg: "online" },
       },
       {
-        ausBedingung: "Haltedauer zehn Jahre, sonst wird der Zuschuss zurückgefordert",
+        // JE TECHNIK GETRENNT seit 17.09.2026: Die PV-Richtlinie nennt zehn
+        // Jahre für Anlage und Speicher, die Mini-PV-Richtlinie drei Jahre.
+        // Hier stand eine gemeinsame Zeile mit zehn Jahren.
+        ausBedingung: "Haltedauer zehn Jahre für Anlage und Speicher, sonst wird der Zuschuss zurückgefordert",
         pruefung: { art: "bindung", jahre: 10 },
       },
       {
-        ausBedingung: "Nicht gefördert: Eigenleistung, gebrauchte Teile, Anlagen aus einer gesetzlichen Pflicht (etwa nach dem Gebäudeenergiegesetz)",
+        ausBedingung: "Haltedauer drei Jahre im Stadtgebiet, gerechnet ab der Auszahlung",
+        pruefung: { art: "bindung", jahre: 3 },
+      },
+      {
+        ausBedingung: "Nicht gefördert: Eigenleistung und gebrauchte Teile",
         pruefung: { art: "ausfuehrung", eigenleistungAusgeschlossen: true },
       },
     ],
@@ -362,6 +373,27 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
           "Gilt ohnehin für jede Anlage (§ 5 MaStRV) und ist keine zusätzliche Hürde " +
           "dieses Programms — die Stadt macht die Auszahlung nur ausdrücklich davon " +
           "abhängig. Unser Anmelde-Ratgeber führt durch den Vorgang.",
+      },
+      {
+        ausBedingung: "Gefördert wird nur, was im Förderzeitraum durchgeführt wird — er endet am 31. Dezember 2026",
+        warum:
+          "Der Rechner rechnet keine Inbetriebnahme mit Datum; das Ende des " +
+          "Förderzeitraums steht deshalb als `endetIso` am Programm und schaltet " +
+          "den Abzug ab. Als Bedingung bleibt es sichtbar, damit niemand im " +
+          "Dezember eine Anlage bestellt, die im Januar in Betrieb geht.",
+      },
+      {
+        ausBedingung: "Nicht gefördert werden Anlagen, die aus einer rechtlich bindenden Verpflichtung heraus installiert werden müssen, etwa nach dem Gebäudeenergiegesetz",
+        warum:
+          "Ob jemand aus einer gesetzlichen Pflicht heraus baut, steht in keiner " +
+          "Eingabe des Rechners. Die Klausel steht nur in der PV-Richtlinie — eine " +
+          "Pflicht zum Balkonkraftwerk gibt es nicht.",
+      },
+      {
+        ausBedingung: "Je Haushalt wird im Förderzeitraum nur eine Anlage gefördert",
+        warum:
+          "Ob dieser Haushalt im selben Jahr schon ein Balkonkraftwerk gefördert " +
+          "bekommen hat, weiß nur er selbst.",
       },
       {
         ausBedingung: "Kein Ersatzneukauf und keine Erweiterung einer bestehenden Anlage",

@@ -36,6 +36,7 @@ const OHNE_SEITE: Record<string, string> = {
   "bad-marienberg-erneuerbare-energien": "OFFEN (bis 03/2027). Mixed-technology programme of the Verbandsgemeinde, budget for 2026 exhausted (official notice 16 September 2026); an exhausted programme carries no funding page. All 18 member municipalities are individually audited in data/funding/municipal-reviews.json (17 September 2026). Reachable through the postcode lookup and the balcony overview. Revisit when the Verbandsgemeinde announces whether the programme continues in 2027.",
   "mainz-bingen-balkonkraftwerke": "OFFEN (bis 12/2026). Closed historical county programme (payments ended 30 April 2026); county-level pages are not released and a closed programme carries no funding page. Reachable through the postcode lookup.",
   "mayen-koblenz-balkonkraftwerke": "OFFEN (bis 12/2026). Closed historical county programme; the county entry already carries the storage programme as its page programme, and county-level pages are not released. Reachable through the postcode lookup.",
+  "bahrenhof-solar": "OFFEN (bis 12/2026). Closed village programme (guideline of 13 June 2023, expired 31 December 2023) in a municipality of 210 inhabitants. A closed programme carries no funding page, and the historical rates stay visible through the postcode lookup. Revisit if the municipality announces a new round.",
 };
 
 /**
