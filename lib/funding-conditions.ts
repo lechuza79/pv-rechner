@@ -239,6 +239,8 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Stadt Aachen (nur Mehrfamilienhaus oder Betriebsgebäude) kennt das Modell
   // als GEBÄUDEART bereits, aber nicht als Ausschluss des Einfamilienhauses.
   "aachen-solar", "staedteregion-aachen-ee",
+  // Added 17 Sep 2026 as a closed historical programme (no calculation fields).
+  "mayen-koblenz-balkonkraftwerke",
 ];
 
 /**

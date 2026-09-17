@@ -34,6 +34,7 @@ const istAlt = (ags: string) => ALT.has(ortSchluessel(ags));
  */
 const OHNE_SEITE: Record<string, string> = {
   "bad-marienberg-erneuerbare-energien": "OFFEN (bis 09/2026). Exhausted mixed-technology programme for 18 VG members; available through postcode lookup and the existing balcony overview. Individual municipal audits and city-page release evidence are not complete, so no new city page is published from this programme review alone.",
+  "mayen-koblenz-balkonkraftwerke": "OFFEN (bis 12/2026). Closed historical county programme; the county entry already carries the storage programme as its page programme, and county-level pages are not released. Reachable through the postcode lookup.",
 };
 
 /**

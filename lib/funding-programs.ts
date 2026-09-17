@@ -2118,8 +2118,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Eine gewöhnliche Dachanlage ohne Gründach ist nicht förderfähig — die vier Bausteine decken nur Gebäudeversorgung im Mehrfamilienhaus, Fassade, PVT und PV über einer Dachbegrünung",
       "Zielgruppe aller vier Bausteine: Gebäudeeigentümer, Wohnungseigentümergemeinschaften und Mehrfamilienhäuser",
-      "Antrag + Bescheid vor Maßnahmenbeginn; kein Speicher gefördert",
-      "Programm zum 25.04.2026 zu „KlimaStadt Würzburg“ umgebaut; die Dachbegrünung selbst ist ein eigener Baustein und mit dem PV-Baustein kombinierbar",
+      "Antrag + Bescheid vor Maßnahmenbeginn; Speicher sind in keinem Baustein genannt",
+      "Die Richtlinie „KlimaStadt Würzburg“ gilt seit dem 1. April 2026; die Dachbegrünung selbst ist ein eigener Baustein und mit dem PV-Baustein kombinierbar",
+      "Die Förderung wird einmalig pro Grundstück gewährt; die Anlagen sind mindestens 15 Jahre zu erhalten",
+      "Zuschüsse unter 250 € werden nicht gewährt",
+      "Gemeinschaftliche Gebäudeversorgung: mindestens drei Wohneinheiten, Messung über ein intelligentes Messsystem; die 150 €/kWp gibt es nur bei Neuerrichtung der PV-Anlage",
       "Bund/Land kumulierbar, max. 90 % der Kosten",
     ],
     combinableWith: BUND,
@@ -3100,7 +3103,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // im Text ist kein kleiner Anzeigefehler: Wer die Seite im November liest,
     // sieht einen Betrag und keinen Grund, sich zu beeilen. Der Abzug bleibt
     // unverändert — die Frist läuft erst.
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    // PAUSIERT (17.09.2026). The official page now reads: "derzeit können keine
+    // Fördermittelanträge gestellt werden. Sobald dies wieder möglich ist, werden die
+    // entsprechenden Informationen und Formulare hier zur Verfügung gestellt." The
+    // 31 Oct deadline notice and the application form are gone. The page does not say
+    // "ausgeschöpft", so the status is paused, not exhausted. Guideline unchanged.
+    stand: "September 2026", status: "pausiert", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp für Dach-/Fassaden-PV + Pauschale für Batteriespeicher",
     rates: [
@@ -3110,7 +3118,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Speicher für Balkonkraftwerk (ab 3 kWh)", value: "500 € pauschal" },
     ],
     conditions: [
-      "Anträge sind nur noch bis zum 31. Oktober 2026 möglich; die Bearbeitung ruht bis zum 16. September 2026 und läuft danach in der Reihenfolge des E-Mail-Eingangs",
+      "Derzeit können laut Stadt keine Anträge gestellt werden; Informationen und Formulare folgen, sobald das wieder möglich ist",
       "Energieberatung eines zertifizierten Energieberaters vor Antragstellung und Umsetzung erforderlich",
       "Antrag vor Maßnahmenbeginn; bei Luftwärmepumpe oder Batteriespeicher zusätzlich ein zertifizierter Ökostrom-Tarif",
       "nur für Privatpersonen mit Erstwohnsitz in Potsdam — Eigentum allein genügt nicht",
@@ -3330,6 +3338,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Begonnen werden darf erst nach der Bewilligung; der Antrag geht mit Angebot per E-Mail an das Amt für Umwelt und Klima",
       "Vollständige Anträge werden in der Reihenfolge ihres Eingangs bearbeitet; Antragsschluss ist der 1. Dezember 2026",
       { text: "Speicher und Wallbox müssen von einem Fachunternehmen eingebaut werden", nur: ["pv"] },
+      "Die Maßnahme ist innerhalb von 12 Monaten nach dem Förderbescheid einschließlich Verwendungsnachweis umzusetzen und mindestens 3 Jahre zu betreiben; die Anlage ist im Marktstammdatenregister zu registrieren",
+      "Mieter brauchen die Einverständniserklärung des Eigentümers; Eigentümer mehrerer Wohnungen oder Gebäude dürfen nur einen Antrag für eine Wohneinheit bzw. ein Gebäude stellen",
     ],
     // KORRIGIERT 11.09.2026 an der Förderrichtlinie Klimaschutz 2026 (in Kraft
     // 10.06.2026). Hier stand „Installation durch Fachbetrieb; Antrag online
@@ -3883,7 +3893,38 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Zuschussprogramm ist beendet - eine Antragstellung ist nicht mehr möglich!
     // +++". Ein beendetes Programm neu in den Katalog aufzunehmen ist keine
     // Korrektur, sondern eine Aufnahme, und die bleibt Vorschlag (Wächter-Gate,
-    // Teil 3).
+    // Teil 3). — Seit dem 01.09.2026 erlaubt das Gate die Aufnahme beendeter
+    // Programme; eingetragen am 17.09.2026 als "mayen-koblenz-balkonkraftwerke".
+  },
+  "mayen-koblenz-balkonkraftwerke": {
+    id: "mayen-koblenz-balkonkraftwerke", name: "Zuschussprogramm Balkonkraftwerke für Privathaushalte",
+    traeger: "Landkreis Mayen-Koblenz", level: "landkreis", region: "Landkreis Mayen-Koblenz", bundesland: "Rheinland-Pfalz", agsCode: "07137",
+    url: "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/zuschussprogramm-balkonkraftwerke-fuer-privathaushalte/",
+    // Programme page and guideline (version 1.2, 08/2024, Kreisausschuss decision
+    // 15 April 2024) read in full on 17 Sep 2026. Page banner: "Das Zuschussprogramm
+    // ist beendet - eine Antragstellung ist nicht mehr möglich!" Historical entry,
+    // no calculation fields: the programme is closed.
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    // 2024-08-01 is the start of the purchase window in guideline v1.2; the
+    // guideline itself entered into force "nach Veröffentlichung" (date not stated).
+    beschlossenIso: "2024-04-15", beginntIso: "2024-08-01", endetIso: "2026-03-31",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Brutto-Anschaffungskosten eines Balkonkraftwerks (ohne Speicher)",
+    maxFoerderung: "150 €",
+    rates: [
+      { label: "Balkonkraftwerk bis 800 W Wechselrichterleistung", value: "33 % der Anschaffungskosten, max. 150 € — Programm beendet" },
+    ],
+    conditions: [
+      "Das Programm ist beendet, Anträge sind nicht mehr möglich",
+      "Gefördert wurden Balkonkraftwerke, die zwischen dem 1. August 2024 und dem 31. März 2026 erworben und registriert wurden",
+      "Antragsberechtigt waren nur private Haushalte im Landkreis: Mieter sowie Eigentümer selbst bewohnter Wohngebäude",
+      "Ein Balkonkraftwerk je Antrag, Haushalt und Wohneinheit; Kosten für einen (mobilen) Stromspeicher waren nicht zuschussfähig",
+      "Registrierung im Marktstammdatenregister war Voraussetzung; ab der Förderzusage musste das Gerät zwei Jahre im Landkreis betrieben und durfte nicht verkauft werden",
+      "Eine Kombination mit anderen Förderungen oder Zuschüssen war laut Richtlinie grundsätzlich nicht zulässig",
+      "Finanziert mit 150.000 € aus dem Landesprogramm KIPKI",
+    ],
+    combinableWith: [],
+    foerdert: ["balkon"],
   },
   // ── Kommune – aus dem Abdeckungs-Screening, 18.08.2026 ──────────────────────
   //
@@ -4298,6 +4339,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Gefördert wird nur ein Kauf innerhalb des Förderzeitraums 2026",
       "Nach Angabe der Stadt sind ausreichend Fördermittel vorhanden",
+      "Beantragt wird nach dem Kauf mit Rechnung, Foto der installierten Anlage und Registrierungsbestätigung aus dem Marktstammdatenregister",
+      "In Mietwohnungen ist die Erlaubnis des Vermieters beizulegen",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
@@ -5512,12 +5555,18 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Satz als Begrenzung auf einen Zuschuss je Wohnung, die der Träger so
     // nirgends ausspricht. Betrag und Kontingent (20 Anträge je Jahr) am selben
     // Tag zellgleich bestätigt.
+    // 17.09.2026: The guideline 2026 (no. 6a) does say "Der Zuschuss beträgt 100,00
+    // Euro je Wohneinheit", and no. 4d/e limits funding to one device per applicant
+    // and per dwelling. The page says "pro Anlage"; both hold together because only
+    // one device per dwelling is funded. Conditions added from the guideline.
     rates: [{ label: "Balkonkraftwerk", value: "100 € pauschal je Anlage" }],
     conditions: [
-      "Antragsberechtigt sind Vermieter, Mieter und Eigentümer einer Wohneinheit in Gailingen",
+      "Antragsberechtigt sind Vermieter, Mieter und Eigentümer einer Wohneinheit in Gailingen sowie gemeinnützige Vereine",
       "Der Antrag wird nach dem Kauf gestellt; Rechnung und Foto der montierten Anlage sind beizulegen",
       "Gefördert werden nur Geräte, die im laufenden Jahr gekauft wurden",
       "Für das Jahr stehen Mittel für 20 Anträge bereit",
+      "Je Antragsteller und je Wohneinheit wird nur ein Gerät gefördert, Wechselrichter bis 800 Watt",
+      "Anträge nach dem 31. Dezember 2026 sind ausgeschlossen; Geräte an ausschließlich gewerblich genutzten Gebäuden werden nicht gefördert",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
@@ -7705,7 +7754,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "sprendlingen-gensingen-balkonsolar": {
     id: "sprendlingen-gensingen-balkonsolar", name: "Förderprogramm Balkonsolaranlagen",
     traeger: "Verbandsgemeinde Sprendlingen-Gensingen", level: "kommune", region: "Verbandsgemeinde Sprendlingen-Gensingen",
-    bundesland: "Rheinland-Pfalz", agsCode: "07339050",
+    bundesland: "Rheinland-Pfalz",
+    // Guideline 16 July 2024 (no. 1.1, 2): the whole Verbandsgemeinde area. Official
+    // member list (sprendlingen-gensingen.de/rathaus/ortsgemeinden, read 17 Sep 2026),
+    // each municipality matched against the register. The former single key 07339050
+    // was only Sankt Johann. Wolfsheim carries 07339202 (joined the county in 1974).
+    agsCodes: ["07339002", "07339004", "07339021", "07339022", "07339029", "07339050", "07339056", "07339065", "07339202", "07339068"],
     url: "https://www.sprendlingen-gensingen.de/buergerservice-2/energieagentur/foerderprogramme/foerderprogramm-balkonsolaranlagen/",
     stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
     beginntIso: "2024-05-01",

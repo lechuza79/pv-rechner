@@ -238,14 +238,16 @@ describe("stackFunding", () => {
 describe("funding batch 2 (Juni 2026)", () => {
   it("Potsdam funds roof PV (200 €/kWp, cap 1.200) and a flat storage grant", () => {
     const p = getFundingProgram("potsdam-klimaschutz")!;
-    expect(p.status).toBe("aktiv");
+    // Paused since 17 Sep 2026 ("derzeit können keine Fördermittelanträge gestellt
+    // werden"); the rates stay documented, but nothing is deducted while paused.
+    expect(p.status).toBe("pausiert");
     expect(fundingAmount(p, { technik: "pv", kwp: 5, speicherKwh: 0, kosten: 12000 }).total).toBe(5 * 200);
     expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 20000 }).total).toBe(1200);
     expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 8, kosten: 25000 }).total).toBe(1200 + 1000);
     expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 3, kosten: 25000 }).total).toBe(1200);
     // Mit Quellenbeleg (im Betrieb aus der Datenbank) — siehe Beleg-Verfall.
     const belegt = fundingForAgs("12054000").map((x) => ({ ...x, lastVerified: "2026-08-16" }));
-    expect(stackFunding(belegt, { technik: "pv", kwp: 10, speicherKwh: 8, kosten: 25000 }, "2026-08-16").total).toBe(2200);
+    expect(stackFunding(belegt, { technik: "pv", kwp: 10, speicherKwh: 8, kosten: 25000 }, "2026-08-16").total).toBe(0);
   });
   it("Hannover proKlima is info-only (not auto-deducted) — it covers only 6 of the ~21 Kreis municipalities", () => {
     const p = getFundingProgram("hannover-proklima")!;
