@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { ERA5_CHUNK_HOURS, ERA5_WINDOW, ERA5_WINDOW_CELLS, era5ChunksFor, era5HourOf, era5WindowIndex } from '../era5-archive';
+import { ERA5_CHUNK_HOURS, ERA5_WINDOW, ERA5_WINDOW_CELLS, era5ChunksFor, era5HourOf, era5IsoOf, era5WindowIndex } from '../era5-archive';
 import { era5BlockPaths, era5BlockReady, era5ReadCellBlock, era5WriteBlock } from '../era5-store';
 import { storyWeatherCacheRoot } from '../story-weather-provider';
 
@@ -71,6 +71,20 @@ describe('Blockzuschnitt', () => {
     expect(chunks.length).toBeGreaterThan(0);
     expect(chunks[0] * ERA5_CHUNK_HOURS).toBeLessThanOrEqual(from);
     expect((chunks[chunks.length - 1] + 1) * ERA5_CHUNK_HOURS).toBeGreaterThanOrEqual(to);
+  });
+
+  it('zählt ein Schaltjahr und die Zeitumstellungen richtig', () => {
+    // The axis is plain UTC, exactly as the chart code expects: a clock change
+    // must not add or drop an hour here, and 2024 must be one day longer.
+    const hours = (year: number) =>
+      era5HourOf(`${year + 1}-01-01T00:00:00Z`) - era5HourOf(`${year}-01-01T00:00:00Z`);
+    expect(hours(2024)).toBe(24 * 366);
+    expect(hours(2025)).toBe(24 * 365);
+    for (const day of ['2025-03-30', '2025-10-26', '2024-02-29']) {
+      const start = era5HourOf(day + 'T00:00:00Z');
+      expect(era5IsoOf(start)).toBe(day + 'T00:00');
+      expect(era5IsoOf(start + 23)).toBe(day + 'T23:00');
+    }
   });
 
   it('weist eine Zelle außerhalb des deutschen Ausschnitts ab', () => {
