@@ -136,6 +136,45 @@ nächsten Tag.
   Breitenrichtung, getrennte Zwischenspeicher je Quelle, kein Wetterabruf beim
   Seitenaufruf. Jede Schranke wurde absichtlich einmal ausgebaut; jede wurde rot.
 
+## Rechtliches, zweifach geprüft
+
+Zwei Legal-Judges, der zweite mit dem Auftrag, den ersten zu widerlegen.
+**Ergebnis: zulässig unter Auflagen.** Das Archiv steht unter CC BY 4.0 — so
+sagt es Open-Meteo in seinem eigenen, von ihm gepflegten Eintrag der AWS Open
+Data Registry. Die Nicht-kommerziell-Klausel der Nutzungsbedingungen hängt am
+Satz „by using the Free API" und misst in Aufrufen je Stunde; auf einen
+Datei-Abruf hat sie keinen Anwendungsfall. Open-Meteo selbst schreibt: „While
+you are permitted to utilise and distribute the data, including for commercial
+purposes, attribution is a requirement under this licence" — und empfiehlt bei
+großem Volumen ausdrücklich das Selbst-Hosten. ERA5 steht seit dem 02.07.2025
+ebenfalls unter CC BY 4.0 (dokumentierter Wechsel des EZMW, vom zweiten Prüfer
+unabhängig belegt), vorher unter der alten Copernicus-Lizenz; beide erlauben
+die kommerzielle Weiterverwendung.
+
+**Ein Befund des ersten Prüfers hat die Gegenprüfung nicht überlebt:** Er wollte
+die Klammer im Quellennamen ersetzt haben, weil die schmale Quellenkante
+Klammern wegschneide. Das war bis 08/2026 so und ist behoben; Anlagenregister
+und Energy-Charts tragen ihre Klammern heute unverändert. Die Klammer ist
+trotzdem gefallen — aus dem anderen Grund: Dort steht das betreibende Institut,
+hier stünde ein Mitrechteinhaber, dessen Nennung Pflicht ist.
+
+**Ein zweiter war übertrieben:** „Der Vermerk ist zu lang für die Kante."
+Gemessen ist er mit 106 Zeichen der fünftlängste von siebzehn; vier andere sind
+länger, bis 166 Zeichen, und die Kante trägt sie.
+
+**Umgesetzt:** Der Quellen-Link zeigt jetzt auf open-meteo.com statt auf das
+Archiv-Repository — die Lizenzseite gibt genau diese Form vor. Und der
+Lesebaustein für das Archiv steht unter GPL v2 und lag fälschlich bei den
+Produktions-Abhängigkeiten; als Bauwerkzeug verlangt die Lizenz nichts, im
+ausgelieferten Code ginge das WebAssembly an jeden Besucher. Er ist jetzt
+Entwicklungs-Abhängigkeit, und die Schranke, die ihn aus den Seiten hält, nennt
+den Grund.
+
+**Vor dem Livegang der Charts, nicht vor dem Merge:** der volle
+Copernicus-Vermerk samt Haftungssatz, das Datensatz-Zitat mit DOI und der
+Gewährleistungshinweis von Open-Meteo gehören auf `/datenstand`, vom
+Kurzvermerk aus verlinkt. Die Jahresangabe darin wird fest verdrahtet.
+
 ## Was offen bleibt
 
 - **Die Berge sind nicht gegen den Anbieter geprüft, nur nachgerechnet.** Die
@@ -160,6 +199,12 @@ nächsten Tag.
   Vortag. Der Zeitzonen-Wächter des Projekts meldet das seit jeher — in der
   Story-Worktree ist derselbe Test heute rot. Hier ist die eine Zeile behoben;
   die andere Sitzung wird beim Einchecken sonst am selben Test hängenbleiben.
+- **Zwei Vorlagedateien der Story-Module tragen eine handgetippte Herkunft.**
+  Sie nennen die kostenpflichtige Strecke — und das stimmt, von dort stammen
+  sie. Die Falle ist prospektiv und schärfer, als sie aussieht: Die Adresse
+  steht als fester Text im Erzeugungs-Skript, nicht aus der Eingabe abgeleitet.
+  Wer die Vorlagen aus dem Archiv neu erzeugt, bekommt eine Herkunftsangabe, die
+  auf die alte Quelle zeigt, und nichts schlägt an.
 - **Freigabe steht aus.** Nichts ist gemergt, die Vorgabe bleibt der alte
   Anbieter. Die Umstellung ist ein Schalter, kein Zustand.
 
