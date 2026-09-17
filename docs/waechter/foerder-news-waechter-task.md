@@ -1,6 +1,6 @@
 ---
 name: foerder-news-waechter
-description: Täglicher News-Wächter: PV-Förderprogramme + CO2-Preis + BEG-WP-Förderung + EEG (solar-check.io)
+description: Förderwächter (einziger fachlicher Bearbeiter, alle 2 h): Förderprogramme, Quellen- und Kommunenbestand, Behördenantworten + CO2/BEG/EEG (solar-check.io)
 ---
 
 ## Gemeinsamer Förderablauf — vor jeder Förderbearbeitung
@@ -16,6 +16,8 @@ Diese Datei bleibt der Auftrag für CO₂, EEG, BEG, GModG und Bioheizöl; diese
 - Umfangreiche Warteschlangen lokal in Dateien ablegen, im Modellkontext nur die aktuell bearbeiteten Fälle lesen. `foerder:screen -- --quellen --gruppiert` verwendet identische Originaladressen gemeinsam, erhält aber jede kommunale Zuordnung. Immer auch überfällige Fälle, Antworten und noch ungeprüfte Kommunen bearbeiten; keine endlose Schleife um dieselbe blockierte Quelle.
 - Ein Lauf muss tatsächliche fachliche Arbeit und gespeicherte Ergebnisse liefern. Ein neuer Prompt, ein grüner technischer Abruf, vorbereitete Akten oder eine vorgemerkte Mail sind kein erledigter Bestand. Bei Abbruch an der letzten gespeicherten Entscheidung fortsetzen. Pro Lauf die bearbeiteten Originale/Kommunen, Vorher-/Nachher-Zahlen und die nächsten konkreten Fälle festhalten.
 - Ausfälle der vorhandenen Quellen-, Versand- und Postfachläufe prüfen. Klare eigene technische Ursachen reparieren und den betroffenen bestehenden Lauf begrenzt wiederholen; laufende Jobs nicht doppelt starten. Bei unklarem Versandbeleg nie erneut senden. Frische Antworten prüfen, nach 14 Tagen ohne Antwort erneut manuell recherchieren; keine automatischen Erinnerungsmails an Behörden.
+- Ein Programm gilt nur als an der Amtsseite bestätigt, wenn sein vollständiger Programmtext (samt verlinkter Richtlinie, soweit vorhanden) gelesen wurde: Betrag, Bedingungen, Budget-/Antragshinweise, Laufzeit. Ein Betrags- oder Stichwortabgleich über viele Seiten ist nur Vorsortierung und stempelt kein Prüfdatum (gemessen am 17.09.2026: vier aktive Programme so bestätigt).
+- Jeder Lauf reserviert mindestens ein Drittel seiner Arbeit für den Quellen- und Kommunenbestand und endet mit mindestens einer gespeicherten Quellen- oder Kommunenentscheidung, sofern nicht ein belegter Ausfall das verhindert. Ein Lauf, der nur bekannte Programme bestätigt, baut den Rückstand nicht ab.
 - Der Bericht über `/api/alert` (Schritt 7) ist der vom Betreiber festgelegte Berichtweg dieses Auftrags und keine neue Übertragung: Er trägt Zählungen, Quellenadressen, Urteile und nächste Schritte, nie Kontaktlisten, Postfachinhalte oder vollständige Bestände. Eine Sperre dieses Wegs wird als Fehler gemeldet, nicht über einen anderen Weg umgangen.
 - Bei ausgeschalteter App, fehlendem Zugang oder verbrauchtem Kontingent wird keine Arbeit behauptet. Beim nächsten möglichen Lauf überfällige Arbeit zuerst aufnehmen. Nur echte menschliche Entscheidungen oder nicht selbst behebbare Ausfälle melden; unveränderte Zwischenstände bleiben still.
 

@@ -8,7 +8,7 @@ Zwei Ebenen, nicht verwechseln:
 
 - **Fachliche Wartung** (lesen, urteilen, Katalog ändern, berichten): Claude-Zeitpläne unter
   `~/.claude/scheduled-tasks/`. Versionierte Vorlage des Förderwächters:
-  `docs/waechter/foerder-news-waechter-task.md` (die installierte Kopie muss byte-gleich sein).
+  `docs/waechter/foerder-news-waechter-task.md` (die installierte Kopie muss inhaltsgleich sein; die Zeitplan-Verwaltung entfernt nur den letzten Zeilenumbruch).
 - **Technische Läufe** (abrufen, versenden, Postfach): GitHub Actions. Sie urteilen nicht und
   bleiben, wo sie sind.
 
@@ -16,7 +16,7 @@ Zwei Ebenen, nicht verwechseln:
 
 | Auftrag | Aufgabe | Rhythmus (lokal) | Letzter Lauf | Nächster Lauf |
 |---|---|---|---|---|
-| `foerder-news-waechter` | Förderprogramme, Quellen-/Kommunenbestand, Antworten; CO₂, EEG, BEG, GModG | alle 2 h (seit 17.09.2026, vorher 00:30 täglich) | 16.09. 13:53 UTC (danach bis 17.09. durch Codex) | siehe Zeitplan |
+| `foerder-news-waechter` | Förderprogramme, Quellen-/Kommunenbestand, Antworten; CO₂, EEG, BEG, GModG | alle 2 h (seit 17.09.2026, vorher 00:30 täglich) | 17.09. 07:22–07:41 UTC (erster Lauf nach Übergabe; Codex bis 06:54 UTC) | alle 2 h zur vollen Stunde |
 | `foerder-vollpruefung-quartal` | Vollprüfung Förderdaten | 1.1./4./7./10. 04:23 | 01.07.2026 | 01.10.2026 |
 | `solar-check-error-triage-daily` | Fehler + Antwortzeiten | täglich 02:15 | 17.09.2026 | 18.09.2026 |
 | `solar-check-preis-waechter` | Preis-Pipeline | Mo 07:15 | 14.09.2026 | 21.09.2026 |
