@@ -201,3 +201,36 @@ Der Bericht erzeugt keine Versandfreigabe und aktiviert keinen Versand.
 Der Vergleich benötigt `--selection-baseline` mit dem ursprünglichen gespeicherten Kontaktbestand. Rollen-, Presse-, Personen- und allgemeine Adressen bleiben darin vom gesamten alten Kandidatenpool getrennt. Mit `--sent-baseline` werden zusätzlich tatsächliche Versandnachweise ausgewertet; eine gespeicherte Adresse allein beweist keinen Versand. Beide Ausgangsdateien sind im Bericht mit Prüfsumme gebunden und werden vor einem Versand erneut geprüft.
 
 Ein ausdrücklich belegter fachfremder Kontakt kann als ausgeschlossen abgeschlossen werden. Dafür sind unveränderte lesbare Originale, eine exklusive Zuordnung und eine eindeutige fremde Aufgabe nötig; fehlende Rollenbelege, Sperren und widersprüchliche Zuständigkeiten bleiben offen. Gute alte Kandidaten bleiben auch dann gegen Verlust geschützt, wenn sie noch nicht als Empfänger gespeichert waren. Veraltete Auswertungen tragen keine aktuellen Gewinn- oder Verlustzahlen bei.
+
+## Zweite Generation (ab 17.09.2026) — ersetzt Abschlusskriterium und Zuständigkeitsprüfung
+
+Gegenprüfung vom 17.09.2026: Der erste automatische Lauf ließ 10.741 von 10.747
+Kommunen „ungeklärt", weil (1) eine Kontaktkarte wörtlich „Stadt X" tragen musste,
+(2) jeder ungelesene Link oder ein nicht belegbarer allgemeiner Rathauskontakt jede
+Verbesserung blockierte und (3) Überschriften über einer Adresse nie gelesen wurden.
+Dazu kamen zwei nicht entschlüsselte Adress-Verschleierungen (472 und 49 Kommunen),
+Symbol-Verschleierung (Kerpen) und verworfene vCards.
+
+`scripts/contact-municipal-v2.ts` (Bewertung in `lib/contact-municipal-judge.ts`):
+
+- **Zuständigkeit:** eigene Website plus eigene Adressendung genügt. Gemeinsame
+  Verwaltungen werden über das amtliche Gemeindeverzeichnis (GV100AD, Satzart 50/60,
+  `lib/gemeindeverband.ts`) belegt, nicht aus Seitentiteln geraten. Kreis- und
+  Regionsadressen auf dem Stadtportal zählen nicht als Stadt (Hannover).
+- **Rolle:** Kontaktkarte, nächste Inhaltsüberschrift ohne dazwischenliegende andere
+  Adresse, Seitenüberschrift bei genau einer Adresse. Nie aus der Schreibweise der
+  Adresse; die ordnet nur gleich belegte Kandidaten.
+- **Vergleich:** Ein bestätigter alter Kontakt bleibt als Rückfall erhalten und blockiert
+  keine belegte Verbesserung; ein belegter alter Rollenkontakt wird nie entfernt.
+- **Abschluss:** höchstens 15 neue Seiten je Kommune, zweiter Versuch nur bei
+  Unerreichbarkeit und frühestens nach 24 h. Danach ist das Ergebnis fest
+  (beide Fachkanäle / einer / nur allgemein / ungeklärt mit Grund), bis sich eine
+  Seite ändert.
+- **Zwischenstände:** Ergebnis je Kommune, Seitenauszug je Seiteninhalt zwischengespeichert;
+  eine Regeländerung bewertet neu, lädt aber nichts neu.
+
+Messung vor dem Gesamtlauf: frische Stichprobe von 50 Kommunen, alle ausgewählten
+Fachkontakte von Hand gegen den Belegtext gelesen — keiner falsch, drei schwach belegt.
+Altes System auf denselben 50: 3 Fachkontakte, 0 abgeschlossen; neu: 15 Kommunen mit
+Fachkontakt, 41 mit festem Ergebnis. Die Regeln wurden an 30 Probekommunen nachgeschärft;
+die 50 lagen außerhalb davon.

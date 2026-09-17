@@ -2,6 +2,7 @@ import { entschluesseltOderRoh } from "./uri-sicher";
 import { load } from "cheerio";
 import { entwirreAdressen } from "./personen-fund";
 import { publishedJoomlaMail } from "./published-joomla-mail";
+import { deobfuscatePublishedMail, repairGluedAddress } from "./mail-deobfuscation";
 
 export type ContactCandidate = {
   email: string;
@@ -88,6 +89,8 @@ export function contactDepartments(context: string): string[] {
 
 /** Keep every observed address and its local evidence. A foreign address is not an attribution. */
 export function contactCandidates(html: string, sourceUrl: string, domain: string): ContactCandidate[] {
+  html = deobfuscatePublishedMail(html);
+  const pageLower = html.toLowerCase();
   // Read the publisher's no-script fallback too. Removing it made whole CMS
   // families look contactless even though they supplied a plain-text address.
   const $ = load(html, { scriptingEnabled: false });
@@ -174,7 +177,7 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
     return best;
   };
   const add = (email: string, context: string, evidence = "") => {
-    email = email.trim().toLowerCase();
+    email = repairGluedAddress(email.trim().toLowerCase(), pageLower);
     if (!/^[\w.+%-]+@[\w-]+(?:\.[\w-]+)+$/.test(email)) return;
     if (candidates.has(email)) {
       const prior = candidates.get(email)!;
