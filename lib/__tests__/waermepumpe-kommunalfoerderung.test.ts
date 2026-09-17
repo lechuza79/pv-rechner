@@ -270,7 +270,7 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
 
   it("keeps unverified combinations explicit and out of the federal grant stack", () => {
     const unknown = Object.values(FUNDING_PROGRAMS).filter(p => p.combinableWith === null);
-    expect(unknown.map(p => p.id).sort()).toEqual(["burbach-klimaschutz-privat", "delmenhorst-balkon-solar", "eppelheim-balkonkraftwerke", "floersheim-photovoltaik", "kirchlengern-pv-kleinanlagen", "pfaffenhofen-balkon", "radolfzell-sonnige-zukunft", "rheinisch-bergisch-balkonsolar", "wendelstein-pv", "wendlingen-energie"]);
+    expect(unknown.map(p => p.id).sort()).toEqual(["bad-marienberg-erneuerbare-energien", "burbach-klimaschutz-privat", "delmenhorst-balkon-solar", "eppelheim-balkonkraftwerke", "floersheim-photovoltaik", "kirchlengern-pv-kleinanlagen", "pfaffenhofen-balkon", "radolfzell-sonnige-zukunft", "rheinisch-bergisch-balkonsolar", "wendelstein-pv", "wendlingen-energie"]);
     expect(programmeNebenBundesfoerderung(unknown)).toEqual([]);
   });
   it("führt jeden Ausschluss ausdrücklich", () => {
@@ -289,7 +289,7 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
     //   Volltext gelesen). Der Ausschluss gilt allen fremden Mitteln, also
     //   auch den Bundesmitteln.
     // Official combination clauses reviewed on 2026-09-16; unknown is distinct from prohibition.
-    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "herzebrock-clarholz-batteriespeicher", "luedinghausen-klimaschutzfonds", "meschede-balkon-speicher", "neuwied-balkonkraftwerke", "tegernheim-stecker-pv", "vaterstetten-pv-begleitung", "weyhe-klimaschutz", "wolfratshausen-pv"];
+    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "herzberg-balkonkraftwerke", "herzebrock-clarholz-batteriespeicher", "luedinghausen-klimaschutzfonds", "meschede-balkon-speicher", "neuwied-balkonkraftwerke", "tegernheim-stecker-pv", "vaterstetten-pv-begleitung", "weyhe-klimaschutz", "wolfratshausen-pv"];
     const ausschluss = Object.values(FUNDING_PROGRAMS).filter(p => Array.isArray(p.combinableWith) && p.combinableWith.length === 0);
     expect(
       ausschluss.map(p => p.id).sort(),

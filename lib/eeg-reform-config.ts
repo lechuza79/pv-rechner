@@ -532,7 +532,7 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   durchsucht: „6,2 Cent" (Z. 3004), „1,5 Cent pro eingespeiste
   //   Kilowattstunde" (Z. 3139), „maximal 36 Monate" (Z. 120), „vor dem
   //   1. Januar 2031" (Z. 1464) — alle vier unverändert.
-  geprueftIso: "2026-09-16",
+  geprueftIso: "2026-09-17",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

@@ -119,6 +119,8 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Closed municipal rounds: current closure verified, historical terms remain visible.
   // Closed rounds added by the funding watcher on 2026-09-16 (source queue).
   "rheinisch-bergisch-balkonsolar", "burbach-klimaschutz-privat",
+  // Exhausted 2026 round: conditions remain explicit information, no application flow.
+  "bad-marienberg-erneuerbare-energien",
   "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",

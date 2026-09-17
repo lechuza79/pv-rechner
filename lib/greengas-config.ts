@@ -524,7 +524,7 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Bioheizöl-Gegensuche: wieder keine Reihe für den Bio-Anteil; gefunden nur
   // HVO-Kraftstoffpreise gegen Diesel (anderer Markt, andere Steuern) und
   // Gesamtpreis-Charts für Heizöl.
-  geprueftRechtIso: "2026-09-16",
+  geprueftRechtIso: "2026-09-17",
   reviewBy: "2027-07-25",
 };
 

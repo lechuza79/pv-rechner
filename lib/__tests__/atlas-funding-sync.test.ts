@@ -32,7 +32,9 @@ const istAlt = (ags: string) => ALT.has(ortSchluessel(ags));
  * festgehalten, statt ihn zu befristen. Jetzt trägt das Verzeichnis
  * achtstellige Schlüssel, und die Regel ist weg.
  */
-const OHNE_SEITE: Record<string, string> = {};
+const OHNE_SEITE: Record<string, string> = {
+  "bad-marienberg-erneuerbare-energien": "OFFEN (bis 09/2026). Exhausted mixed-technology programme for 18 VG members; available through postcode lookup and the existing balcony overview. Individual municipal audits and city-page release evidence are not complete, so no new city page is published from this programme review alone.",
+};
 
 /**
  * 30 Sekunden statt der voreingestellten fünf.

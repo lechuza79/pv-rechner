@@ -5233,19 +5233,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Herzberg am Harz", level: "kommune", region: "Herzberg am Harz",
     bundesland: "Niedersachsen", agsCode: "03159019",
     url: "https://www.herzberg.de/service/themen/klima-und-umwelt/klimaschutz/foerderung-balkonkraftwerke/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Balkonkraftwerk",
     maxFoerderung: "bis zu 100 € je Anlage",
     rates: [{ label: "Balkonkraftwerk", value: "bis zu 100 € je Anlage" }],
     conditions: [
-      "Der Antrag muss vor Beginn des Vorhabens gestellt und bewilligt sein; als Beginn gilt bereits die Bestellung",
+      "Antrag vor Beginn; Start erst nach Förderbewilligung oder genehmigtem vorzeitigem Maßnahmenbeginn. Als Beginn gelten bereits Angebotsannahme, Auftrag oder Bestellung",
       "Antragsberechtigt sind Mietende und private Hausbesitzende; bei Mietobjekten ist die Genehmigung der Vermietenden nötig",
       "Je Wohneinheit und Zähler wird eine Anlage gefördert, bei Mietobjekten bis zu fünf je Antragsteller",
-      "Maßnahmen, die schon aus Bundes- oder Landesmitteln gefördert werden, sind ausgeschlossen",
+      "Maßnahmen, die bereits durch andere Fördermittel gefördert werden, sind ausgeschlossen; Bundes- und Landesprogramme sind Beispiele",
       "Der Topf umfasst 20.000 € für 200 Anlagen; vergeben wird nach Eingang",
     ],
-    combinableWith: BUND,
+    // Guideline sections 3 and 4.3, source-reviewed 17 September 2026.
+    // No supported KfW combination; this does not assert a VAT zero-rate ban.
+    combinableWith: [],
     foerdert: ["balkon"],
     balkonPauschale: 100,
   },
@@ -7818,6 +7820,44 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // gilt nur Mietern, der Speicherzuschuss nur Eigentümern — eine
     // Wohnform-Einschränkung am Programm träfe eine der beiden Hälften falsch.
     // Der Speichersatz hängt zudem an der Personenzahl im Haushalt.
+  },
+  "bad-marienberg-erneuerbare-energien": {
+    id: "bad-marienberg-erneuerbare-energien",
+    name: "Ortskernvitalisierung, Klimaanpassung und erneuerbare Energien",
+    traeger: "Verbandsgemeinde Bad Marienberg", level: "kommune",
+    region: "Verbandsgemeinde Bad Marienberg", bundesland: "Rheinland-Pfalz",
+    // Official member list, individually matched against the municipality register.
+    // Hahn bei Marienberg is included; Hahn am See and the rest of the county are not.
+    agsCodes: ["07143206", "07143211", "07143216", "07143222", "07143227", "07143231", "07143234", "07143243", "07143248", "07143253", "07143255", "07143264", "07143270", "07143277", "07143279", "07143280", "07143297", "07143300"],
+    url: "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/",
+    // Guideline 26 January 2026, complete 22 pages and table cell boundaries read.
+    // Budget notice 16 September 2026: no further applications for 2026.
+    // Evidence and independent verdicts: docs/quellen/bad-marienberg-2026.md.
+    // The original storage unit is Kilowatt, not kWh. Never infer a calculation.
+    stand: "September 2026", beginntIso: "2026-01-01",
+    status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"], nurWohnform: "eigentuemer",
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    coveredCosts: "Historische Zuschüsse für Wärmepumpen und die Richtlinienposition Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke; Mittel 2026 ausgeschöpft",
+    maxFoerderung: "2026 keine weiteren Anträge möglich",
+    rates: [
+      { label: "Wärmepumpe als alleinige Heizquelle oder Teil einer Hybridheizung", value: "Historisch 1.000 € pauschal", nur: ["waermepumpe"] },
+      { label: "Brauchwasserwärmepumpe zur Warmwasserbereitung", value: "Historisch 500 € pauschal", nur: ["waermepumpe"] },
+      { label: "Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke (Richtlinienwortlaut)", value: "Historisch: 100 EUR / Kilowatt pauschal, maximal 600 EUR; keine Berechnung aus dieser uneindeutigen Einheit", nur: ["pv", "balkon"] },
+    ],
+    conditions: [
+      "Laut amtlicher Mitteilung vom 16.09.2026 sind die Mittel für 2026 ausgeschöpft; weitere Anträge werden für 2026 weder angenommen noch bewilligt. Über eine Fortführung 2027 wird erst noch informiert",
+      "Für private gegenwärtige oder künftige Eigentümer selbstgenutzter Ein- und Zweifamilienhäuser mit Hauptwohnsitz in der Verbandsgemeinde Bad Marienberg; keine Förderung gewerblich oder überwiegend durch Dritte genutzter Gebäude",
+      "Schriftlicher Antrag vor rechtsverbindlicher Beauftragung; Beginn grundsätzlich erst nach Bewilligung, vorzeitiger Beginn nur nach vorheriger schriftlicher Zustimmung",
+      "Neue Anlagen und Anlagenteile; keine gebrauchten Anlagen, Eigenbauanlagen oder Prototypen; grundsätzlich professionelle Ausführung und keine Eigenleistungen",
+      { text: "Wärmepumpen: vorhandene Heizungsanlage mindestens zwei Jahre alt, Ausführung durch Fachunternehmen, hydraulischer Abgleich, Hocheffizienz-Umwälzpumpe und technische Mindestanforderungen gemäß GEG", nur: ["waermepumpe"] },
+      { text: "Für die Richtlinienposition Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke ist die Meldung im Marktstammdatenregister nachzuweisen. Keine Zusage eines eigenständigen Zuschusses für ein Balkonkraftwerk ohne Speicher und keine Umdeutung des Betrags in Euro je Kilowattstunde", nur: ["pv", "balkon"] },
+      { text: "Diese Speicher-/Balkonposition ist nicht mit anderen Förderprogrammen der EU, des Bundes, des Landes oder anderer Kommunen kombinierbar", nur: ["pv", "balkon"] },
+      { text: "Für Wärmepumpen ist die Kombination mit anderen Fördermitteln grundsätzlich möglich, muss aber vorab mit den jeweils zuständigen Förderstellen geklärt werden", nur: ["waermepumpe"] },
+      "Umsetzung grundsätzlich binnen eines Jahres nach Bescheid; Verwendungsnachweis binnen drei Monaten nach Fertigstellung. Fünfjährige Bindefrist; vollständige Nebenbedingungen und mögliche Rückforderungen stehen in der Richtlinie",
+      "Kein Rechtsanspruch; Zuschüsse nur im Rahmen verfügbarer Haushaltsmittel",
+    ],
+    combinableWith: null,
   },
 };
 
