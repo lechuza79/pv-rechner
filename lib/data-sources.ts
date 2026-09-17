@@ -129,6 +129,24 @@ export const DATA_SOURCES = {
     note: "abgeleitet",
   },
   /**
+   * ERA5-Stundenwerte für die kommunalen Energiecharts.
+   *
+   * Nicht der gehostete Abruf von Open-Meteo, sondern deren offenes Datenarchiv
+   * (AWS Open Data, Bucket `openmeteo`), aus dem wir selbst lesen — deshalb ein
+   * eigener Eintrag: Lizenz und Bereitsteller sind dieselben, der Weg ist ein
+   * anderer, und der Copernicus-Dienst als Urheber der Reanalyse gehört genannt.
+   * Ableitung nach Sec. 3(a)(1)(B): Wir wählen die Rasterzelle selbst, rechnen
+   * die Temperatur auf die Ortshöhe um und bilden aus den beiden Windkomponenten
+   * den Betrag.
+   */
+  era5Archive: {
+    name: "ERA5 (Copernicus Climate Change Service) über Open-Meteo",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://github.com/open-meteo/open-data",
+    note: "Rasterzelle und Höhenbezug abgeleitet",
+  },
+  /**
    * Jahresraster der Globalstrahlung, Deutscher Wetterdienst (CDC-OpenData).
    * CC BY 4.0 laut Nutzungsbedingungen des CDC-OpenData-Bereichs (Stand Mai
    * 2024, https://opendata.dwd.de/climate_environment/CDC/Nutzungsbedingungen_German.pdf).

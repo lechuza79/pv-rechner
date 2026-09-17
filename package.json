@@ -76,9 +76,18 @@
     "kontakte:vergleich": "tsx scripts/contact-compare.ts",
     "kontakte:recherche": "tsx scripts/contact-research.ts",
     "versorger:erhebung": "tsx scripts/versorger-erhebung.ts",
-    "kontakte:vollerhebung": "tsx scripts/contact-full-research.ts"
+    "kontakte:vollerhebung": "tsx scripts/contact-full-research.ts",
+    "era5:sync": "tsx scripts/era5-sync.ts",
+    "era5:static": "tsx scripts/era5-static-build.ts",
+    "era5:punkte": "tsx scripts/era5-points-build.ts",
+    "era5:vergleich": "tsx scripts/era5-compare.ts",
+    "era5:vergleich-ergebnis": "tsx scripts/era5-compare-outputs.ts",
+    "era5:bericht": "tsx scripts/era5-report.ts",
+    "era5:monat": "tsx scripts/era5-month.ts",
+    "era5:stichprobe": "tsx scripts/era5-spotcheck.ts"
   },
   "dependencies": {
+    "@openmeteo/file-reader": "^0.0.19",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.99.3",
     "@vercel/analytics": "^2.0.1",
