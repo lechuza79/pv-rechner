@@ -5,11 +5,11 @@ This runbook is the funding procedure for the existing `foerder-news-waechter` a
 ## Ownership and existing schedules
 
 - `foerder-watch.yml`: daily source discovery, observations and screening; no substantive programme approval.
-- Existing `foerder-news-waechter`: substantive review, eligible catalogue changes, release checks and operator report. Keep its existing schedule; inspect the latest completed discovery run rather than assuming today's run already finished.
+- Existing `foerder-news-waechter`: substantive review, eligible catalogue changes, release checks and operator report. Keep its schedule; inspect the latest completed discovery run rather than assuming today's run already finished.
 - `foerder-anfragen.yml`: the **only automatic authority sender**, using its existing eligibility, office-hour, spacing, maximum-volume and no-repeat protections.
 - `kommunen-ruecklauf.yml`: the **only mailbox reader**; funding replies remain separate from outreach response metrics.
 - Existing quarterly full review: broader audit using the same gates. Before edits run `npm run sessions`, inspect recent commits, and coordinate overlapping programme changes. Do not run two writers for the same entries.
-- The two existing task configurations are consolidated into one active worker: the existing Codex continuation `f-rderlauf-ergebnis-pr-fen` runs the complete canonical watcher task, while the old separate Claude schedule is disabled. Do not add another worker, sender or recurring task. Use the signed-in account, never additional paid model APIs/search services or purchased credits. Preserve complete source evidence locally; only necessary public excerpts enter the current review context.
+- One active worker (operator decision 17 September 2026, overview `docs/waechter/zustaendigkeit.md`): the existing Claude schedule `foerder-news-waechter` runs the complete canonical watcher task every two hours; the Codex continuation `f-rderlauf-ergebnis-pr-fen` is paused and must not be resumed alongside it. Do not add another worker, sender or recurring task. Use the signed-in account, never additional paid model APIs/search services or purchased credits. Preserve complete source evidence locally; only necessary public excerpts enter the current review context.
 
 ## 1. Resume actual work, not just search
 
