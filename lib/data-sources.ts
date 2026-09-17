@@ -134,16 +134,36 @@ export const DATA_SOURCES = {
    * Nicht der gehostete Abruf von Open-Meteo, sondern deren offenes Datenarchiv
    * (AWS Open Data, Bucket `openmeteo`), aus dem wir selbst lesen — deshalb ein
    * eigener Eintrag: Lizenz und Bereitsteller sind dieselben, der Weg ist ein
-   * anderer, und der Copernicus-Dienst als Urheber der Reanalyse gehört genannt.
-   * Ableitung nach Sec. 3(a)(1)(B): Wir wählen die Rasterzelle selbst, rechnen
-   * die Temperatur auf die Ortshöhe um und bilden aus den beiden Windkomponenten
-   * den Betrag.
+   * anderer.
+   *
+   * KOMMA statt Klammer, und anders als bei Anlagenregister oder Energy-Charts
+   * ist das hier keine Stilfrage: Dort steht in der Klammer das BETREIBENDE
+   * INSTITUT, hier stünde ein MITRECHTEINHABER. ERA5 steht seit dem 02.07.2025
+   * selbst unter CC BY 4.0, und die Zitieranleitung des EZMW verlangt die
+   * Nennung des Copernicus-Dienstes ausdrücklich — ein Pflichtbestandteil
+   * gehört nicht in eine Klammer, die sich wie ein Nachtrag liest.
+   *
+   * `url` zeigt auf open-meteo.com, nicht auf das Archiv-Repository: Die
+   * Lizenzseite von Open-Meteo gibt diese Form der Nennung vor („You must
+   * include a link next to any location Open-Meteo data are displayed"), und
+   * CC BY 4.0 Sec. 3(a)(1)(A)(i) bindet an die vom Lizenzgeber verlangte Form.
+   *
+   * `note` ist der Änderungshinweis nach Sec. 3(a)(1)(B) und deckt zugleich das
+   * „modified" der Copernicus-Fassung ab: Wir wählen die Rasterzelle selbst,
+   * rechnen die Temperatur auf die Ortshöhe um und bilden aus den beiden
+   * Windkomponenten den Betrag.
+   *
+   * OFFEN (bis zum Livegang der Kommunalcharts): der volle Copernicus-Vermerk
+   * samt Haftungssatz und der Gewährleistungshinweis von Open-Meteo gehören auf
+   * /datenstand, vom Kurzvermerk aus verlinkt — Sec. 3(a)(2) erlaubt dafür
+   * ausdrücklich einen Verweis. Die Jahresangabe darin wird fest verdrahtet,
+   * nie aus der laufenden Uhr gebildet.
    */
   era5Archive: {
-    name: "ERA5 (Copernicus Climate Change Service) über Open-Meteo",
+    name: "ERA5, Copernicus Climate Change Service, über Open-Meteo",
     license: "CC BY 4.0",
     licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
-    url: "https://github.com/open-meteo/open-data",
+    url: "https://open-meteo.com",
     note: "Rasterzelle und Höhenbezug abgeleitet",
   },
   /**
