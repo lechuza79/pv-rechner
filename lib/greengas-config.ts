@@ -524,7 +524,15 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Bioheizöl-Gegensuche: wieder keine Reihe für den Bio-Anteil; gefunden nur
   // HVO-Kraftstoffpreise gegen Diesel (anderer Markt, andere Steuern) und
   // Gesamtpreis-Charts für Heizöl.
-  geprueftRechtIso: "2026-09-17",
+  //
+  // 18.09.2026: § 42a im amtlichen Volltext nachgelesen, Wortlaut zellgleich
+  // („In einem bis zum 1. Dezember 2026 durch die Bundesregierung vorzulegenden
+  // Gesetz wird eine Grüngas-/Grünheizölquote eingeführt") — weiterhin ohne
+  // Prozentsätze und ohne Startjahre. Ein Quotengesetz ist nicht vorgelegt;
+  // die Frist läuft noch gut zehn Wochen. Vierundzwanzigste Bioheizöl-
+  // Gegensuche: unverändert keine Preisreihe für den Bio-Anteil, damit bleibt
+  // die Lücke im Öl-Ergebnis samt ihrer benannten Fehlerrichtung stehen.
+  geprueftRechtIso: "2026-09-18",
   reviewBy: "2027-07-25",
 };
 

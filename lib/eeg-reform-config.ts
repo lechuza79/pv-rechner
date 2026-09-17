@@ -532,7 +532,17 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   durchsucht: „6,2 Cent" (Z. 3004), „1,5 Cent pro eingespeiste
   //   Kilowattstunde" (Z. 3139), „maximal 36 Monate" (Z. 120), „vor dem
   //   1. Januar 2031" (Z. 1464) — alle vier unverändert.
-  geprueftIso: "2026-09-17",
+  // 18.09.2026: Drucksache 21/7867 erneut geladen und im Volltext durchsucht,
+  //   alle vier Werte unverändert und im Satzzusammenhang gelesen: „In der
+  //   Angabe vor Nummer 1 wird die Angabe ‚7 Cent' durch die Angabe ‚6,2 Cent'
+  //   ersetzt" samt der Begründung dazu, „Die Höhe des Bonus nach Absatz 1
+  //   beträgt 1,5 Cent pro eingespeiste Kilowattstunde", „längstens bis zum Ende
+  //   des 48. …" und „mit einer installierten Leistung von weniger als 7
+  //   Kilowatt, die vor dem 1. Januar 2031 in …". Der Bundestag selbst führt den
+  //   Entwurf am 10.09.2026 weiter als Vorlage der Bundesregierung ohne
+  //   Beschluss; die erste Lesung am 24.09.2026 steht bevor. Zustand unverändert:
+  //   Regierungsentwurf, eingebracht.
+  geprueftIso: "2026-09-18",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
