@@ -7048,10 +7048,39 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "vg-nahe-glan-balkonkraftwerke", name: "Förderung des Kaufs einer steckerfertigen Photovoltaikanlage",
     traeger: "Verbandsgemeinde Nahe-Glan", level: "kommune", region: "Verbandsgemeinde Nahe-Glan",
     bundesland: "Rheinland-Pfalz", agsCode: "07133057",
-    agsCodes: ["07133060"],
+    // DAS FÖRDERGEBIET WAR ZWEI ORTSGEMEINDEN GROSS UND IST ES SEIT DEM
+    // 18.09.2026 VOLLSTÄNDIG. Hier standen Lauschied und Löllbach — genau die
+    // zwei, für die der Crawler eine Quelle abgelegt hatte. Die Richtlinie
+    // fördert die ganze Verbandsgemeinde: Nr. 2.3 verlangt die Installation
+    // „auf dem Gebiet der Verbandsgemeinde Nahe-Glan", Nr. 4.1 den Hauptwohnsitz
+    // ebendort. Auf den Seiten der übrigen 32 Ortsgemeinden stand damit „keine
+    // kommunale Förderung", obwohl es eine gibt — dieselbe Falschauskunft wie
+    // ein zu hoher Betrag, nur andersherum.
+    //   DIE MITGLIEDER SIND GEZÄHLT, NICHT GERATEN: 34 Gemeinden — 32
+    //   Ortsgemeinden und die beiden Städte Bad Sobernheim und Meisenheim.
+    //   Namen von der Übersicht der Verbandsgemeinde selbst (18.09.2026), jeder
+    //   einzeln gegen das Melderegister aufgelöst, alle achtstellig unter 07133;
+    //   zwei unabhängige Gegenprüfer haben dieselbe Zahl aus dem amtlichen
+    //   Gemeindeverzeichnis des Statistischen Landesamts Rheinland-Pfalz
+    //   (Kennziffer „133 10 VG Nahe-Glan") gezogen. Der fünfstellige
+    //   Kreisschlüssel wäre hier falsch — unter 07133 liegen 118 Gemeinden,
+    //   also weitere Verbandsgemeinden, die dieses Programm nicht zahlen.
+    //   DIE NAMENSFALLE IST DER GRUND FÜR DIE EINZELAUFLÖSUNG: Im Kreis Bad
+    //   Kreuznach gibt es ZWEI Becherbach — 07133011 gehört hierher, 07133010
+    //   („Becherbach bei Kirn") zur Verbandsgemeinde Kirn-Land und zahlt nichts.
+    //   Aus einer Bildschirmliste abgeschrieben wäre das nicht zu unterscheiden
+    //   gewesen; ein Gegenprüfer hat beide Schlüssel eigens nachgesehen.
+    agsCodes: [
+      "07133001", "07133005", "07133009", "07133011", "07133017", "07133020",
+      "07133022", "07133024", "07133049", "07133050", "07133051", "07133053",
+      "07133055", "07133058", "07133060", "07133062", "07133064", "07133065",
+      "07133066", "07133067", "07133072", "07133076", "07133081", "07133082",
+      "07133083", "07133084", "07133090", "07133092", "07133094", "07133102",
+      "07133111", "07133116", "07133501",
+    ],
     url: "https://www.vg-nahe-glan.de/bauen-klimaschutz/klimaschutz/kommunale-foerderprogramme/",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
-    beginntIso: "2024-05-23",
+    beschlossenIso: "2024-04-30", beginntIso: "2024-05-23",
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Haushalt, unabhängig von der Modulzahl",
     maxFoerderung: "100 € je Wohneinheit",
@@ -7065,11 +7094,48 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Der Antrag wird nach dem Kauf gestellt, mit Rechnung und Foto der montierten Anlage",
       "Für den erzeugten Strom darf keine Einspeisevergütung in Anspruch genommen werden",
       "Bereits anderweitig geförderte Anlagen und Bauteile sind ausgeschlossen",
-      "Eine zusätzliche Förderung durch den Landkreis gibt es nach Angabe der Verwaltung nicht",
+      "Der Zuschuss gilt je Haushalt, Wohneinheit und Antragsteller; jeder Mieter stellt den Antrag für seine eigene Wohnung — der Vermieter kann das nicht für alle tun",
+      "Die Anlage wird beim Netzbetreiber angemeldet und im Marktstammdatenregister registriert; Mieter weisen das Einverständnis des Vermieters nach",
+      "Der Zuschuss ist an die technische Lebensdauer gebunden — wer das Gerät vorher verkauft, zahlt zurück",
+      "Eine zusätzliche Förderung durch den Landkreis gibt es nicht",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
     balkonPauschale: 100,
+    // VOLLTEXT DER RICHTLINIE AM 18.09.2026 GELESEN, Seite für Seite als Bild
+    // (der Scan hat keine Textebene): „20240130-foerderrichtlinie-balkonpv-vgng-
+    // nach-sp1-unterzeichnet.pdf", unterzeichnet am 30.04.2024 in Bad Sobernheim,
+    // Nr. 12 „tritt mit Wirkung zum 23.05.2024 in Kraft". Alle bisherigen
+    // Angaben haben sich bestätigt; dazu kamen die drei Bedingungen oben, die
+    // auf der Website nicht stehen (Antrag je Mieter, Anmeldepflichten,
+    // Zweckbindung über die Lebensdauer).
+    //   DAS „AKTIV" TRÄGT EIN DATIERTER SATZ DER GEMEINDE, nicht bloß die
+    //   fehlende Befristung — ein Programm lebt von der Bestätigung, nicht vom
+    //   Fehlen einer Frist. Auf der Meldungsseite steht unter dem 14.07.2026:
+    //   „Es sind noch Fördermittel vorhanden! Stellen Sie jetzt noch Ihren
+    //   Antrag." (Ursprungsmeldung 21.05.2024). Am 18.09.2026 selbst gelesen,
+    //   kein Antragsstopp, kein leerer Topf.
+    //   DIESE MELDUNGSSEITE GEHÖRT IN DIE SEITEN-ERFASSUNG, und das ist der
+    //   eigentliche Befund des Gegenprüfers: Läuft der Topf leer, wird das
+    //   voraussichtlich DORT vermeldet, nicht auf der Programmseite, auf die
+    //   dieser Eintrag zeigt. Der Seiten-Wächter sähe das Abschalt-Signal sonst
+    //   nie — https://www.vg-nahe-glan.de/aktuelles/foerderung-von-balkonkraftwerken/
+    //   KEIN `endetIso`: Die Richtlinie trägt keine Befristung. Sie endet nach
+    //   Nr. 11 faktisch mit dem Topf („Sind die Fördermittel ausgeschöpft,
+    //   besteht kein Rechtsanspruch"), und wann das sein wird, steht nirgends.
+    //   ABSEHBARER HORIZONT, aber ausdrücklich KEIN abgeleitetes Enddatum: Die
+    //   Mittel stammen aus dem Landesprogramm KIPKI, dessen letzter Mittelabruf
+    //   nach der Gesetzesänderung vom 23.10.2025 am 31.01.2027 liegt. Der
+    //   Mittelabruf der Verbandsgemeinde ist NICHT die Antragsfrist der Bürger —
+    //   daraus ein `endetIso` zu machen wäre ein erfundener Tag. Vor dem
+    //   31.01.2027 gehört das Programm aber enger nachgeprüft als ein laufendes
+    //   ohne Horizont.
+    //   KEIN GESAMTBUDGET: Nr. 1 nennt als Quelle das Landesprogramm KIPKI, aber
+    //   keine Summe. Sie zu raten hieße, eine Ausschöpfung zu behaupten, die
+    //   niemand gemessen hat.
+    //   AUFGEFALLEN, WEIL DIE QUELLE ENTSPERRT WURDE: Diese Seite lag als
+    //   „shell" in der Ablage — das leere Personal-Widget in ihrer Seitenleiste
+    //   hatte den ganzen Programmtext mitgenommen (siehe `fundingContentGap`).
   },
 
   "taunusstein-balkonsolar": {
