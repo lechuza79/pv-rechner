@@ -30,6 +30,7 @@ import { loadFundingCheckHistory, type FundingCheckRow } from "../lib/funding-ch
 import {
   arbeitsvorrat,
   eskalationsVorschlag,
+  ERREICHBARKEITEN,
   pruefstandFuer,
   zaehltAlsGeprueft,
   type Erreichbarkeit,
@@ -58,8 +59,6 @@ if (!url || !key) {
   process.exit(1);
 }
 const sb = createClient(url, key);
-
-const ERREICHBARKEITEN: Erreichbarkeit[] = ["traeger", "archiv", "sekundaer", "pruefseite", "gesperrt"];
 
 /**
  * Wert eines Schalters — alle Wörter bis zum nächsten Schalter.

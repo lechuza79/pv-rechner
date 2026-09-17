@@ -435,7 +435,7 @@ async function zeigeListe(d: Db) {
 
 async function autoLauf(d: Db, senden: boolean) {
   const { FUNDING_PROGRAMS } = await import("../lib/funding-programs");
-  const { arbeitsvorrat } = await import("../lib/funding-verify-state");
+  const { arbeitsvorrat, istErreichbarkeit } = await import("../lib/funding-verify-state");
   const { faelligeAnfragen } = await import("../lib/funding-anfragen");
   const { heuteInBerlin } = await import("../lib/zeit");
 
@@ -460,11 +460,17 @@ async function autoLauf(d: Db, senden: boolean) {
 
   const stand = arbeitsvorrat(
     katalog,
-    versuche.map((v) => ({
-      programId: v.program_id,
-      checkedAt: v.checked_at,
-      erreichbarkeit: v.source as never,
-    })),
+    // Only retrieval attempts. Page-watcher rows (`seite-geaendert`,
+    // `seite-unerreichbar`) share the table but are not failed attempts; the
+    // unfiltered cast escalated programmes whose pages merely changed and
+    // drafted mails claiming a bot wall.
+    versuche
+      .filter((v) => istErreichbarkeit(v.source))
+      .map((v) => ({
+        programId: v.program_id,
+        checkedAt: v.checked_at,
+        erreichbarkeit: v.source as never,
+      })),
     heuteInBerlin(),
   );
 

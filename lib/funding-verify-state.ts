@@ -41,6 +41,19 @@ export type Erreichbarkeit =
   /** Hart gesperrt: 403/404 auf allen Wegen, auch im echten Browser. */
   | "gesperrt";
 
+/**
+ * The only table sources that are retrieval attempts. The page watcher writes
+ * `seite-geaendert` / `seite-unerreichbar` into the same table; those are
+ * signals, never failed attempts. Counting them escalated programmes after
+ * three page movements and queued authority mails that falsely claimed a bot
+ * wall (found 17.09.2026, before any such mail went out).
+ */
+export const ERREICHBARKEITEN: readonly Erreichbarkeit[] = ["traeger", "archiv", "sekundaer", "pruefseite", "gesperrt"];
+
+export function istErreichbarkeit(source: string): source is Erreichbarkeit {
+  return (ERREICHBARKEITEN as readonly string[]).includes(source);
+}
+
 export type PruefVersuch = {
   programId: string;
   /** ISO-Datum oder Zeitstempel des Versuchs. */
@@ -131,7 +144,7 @@ export function pruefstandFuer(
   aenderungen: SeitenAenderung[] = [],
 ): Pruefstand {
   const eigene = versuche
-    .filter((v) => v.programId === program.id)
+    .filter((v) => v.programId === program.id && istErreichbarkeit(v.erreichbarkeit))
     .slice()
     .sort((a, b) => a.checkedAt.localeCompare(b.checkedAt));
 
