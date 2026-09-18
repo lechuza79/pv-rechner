@@ -30,8 +30,12 @@ import preise from "./solar-rueckblick-preise.json";
  * hour; the power law has no weather input. Without a battery the hourly
  * balance is the direct quantity.
  *
- * Known approximation, stated on the page: a constant seasonal performance
- * factor (JAZ) for the heat pump instead of a temperature-dependent one.
+ * Known approximations, all stated in the page's help text (review
+ * 2026-09-18): a constant seasonal performance factor (JAZ) instead of a
+ * temperature-dependent one, the heat pump's power priced like household
+ * power (both push the heat-pump figure up), and no 70 % feed-in cap.
+ * Feed-in revenue is the larger part of both figures (measured: 76–78 %
+ * without, 53–55 % with heat pump) — which is why the page says "gebracht".
  */
 
 export const RUECKBLICK_VON = 2016;

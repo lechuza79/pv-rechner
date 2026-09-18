@@ -14,8 +14,11 @@ import { isValidPlz, useLocation, writeLocation } from "../../../lib/location";
  * The chosen postcode goes into the site-wide location store, so the sky of the
  * stage behind follows the same place.
  *
- * Wording rule: this is an energy-cost advantage before purchase and running
- * costs — never "Gewinn" (reserved for the calculator's 25-year figure).
+ * Wording rule: the figure is saved electricity cost PLUS feed-in revenue
+ * (roughly three quarters of it is feed-in), before purchase and running
+ * costs. So the headline says "gebracht", not "gespart", and the line under
+ * the values says what is in it — visibly, not only behind the "?" (review
+ * 2026-09-18). Never "Gewinn" (reserved for the calculator's 25-year figure).
  */
 
 type Ergebnis = { vorteilOhneWp: number; vorteilMitWp: number; wetterquelle: string };
@@ -120,11 +123,11 @@ export default function RueckblickSchritt({ rennenAnker }: { rennenAnker: string
     return (
       <div className="hs-retro hs-retro-hero">
         <h2 ref={ueberschrift} tabIndex={-1}>
-          So viel hättest du in{" "}
+          So viel hätte dir eine Solaranlage in{" "}
           <button type="button" className="hs-place-edit" onClick={() => setZustand({ art: "eingabe" })} aria-label={`${ort} – Ort ändern`}>
             {ort}
           </button>{" "}
-          in 10 Jahren gespart.
+          in 10 Jahren gebracht.
           <button
             type="button"
             className="hs-inline-help"
@@ -144,11 +147,15 @@ export default function RueckblickSchritt({ rennenAnker }: { rennenAnker: string
             </p>
             <p>
               <strong>Mit Wärmepumpe:</strong> derselbe Haushalt, zusätzlich eine Luft-Wärmepumpe für 140 m² im teilsanierten
-              Haus. Beide Werte vergleichen jeweils mit und ohne PV – keinen Heizungswechsel.
+              Haus. Beide Werte vergleichen jeweils mit und ohne PV – keinen Heizungswechsel. Die Wärmepumpe arbeitet im Modell
+              das ganze Jahr mit derselben Effizienz, und ihr Strom kostet so viel wie der Haushaltsstrom. Beides macht den
+              zweiten Wert eher zu hoch.
             </p>
             <p>
-              <strong>Die Werte:</strong> gerundete Energiekostenersparnis 2016–2025 inklusive Einspeisevergütung, vor
-              Anschaffung und laufenden Anlagenkosten. Grundlage: stündliche Wetterdaten ({werte.wetterquelle}) und historische{" "}
+              <strong>Die Werte:</strong> ersparte Stromkosten plus Einspeisevergütung 2016–2025, gerundet, vor Anschaffung und
+              laufenden Anlagenkosten. Den größeren Teil macht die Vergütung für eingespeisten Strom aus (12,31 ct je kWh, Satz
+              von Januar 2016). Die damals geltende Grenze von 70 % Einspeiseleistung ist nicht abgezogen. Grundlage: stündliche
+              Wetterdaten ({werte.wetterquelle}) und historische{" "}
               <a href="https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table" target="_blank" rel="noopener noreferrer">
                 Durchschnittsstrompreise (Eurostat)
               </a>
@@ -166,6 +173,7 @@ export default function RueckblickSchritt({ rennenAnker }: { rennenAnker: string
             {betrag(werte.vorteilMitWp)}
           </p>
         </div>
+        <p className="hs-retro-note">Ersparte Stromkosten plus Einspeisevergütung, vor Anschaffung und laufenden Kosten.</p>
         <div className="hs-retro-actions">
           <NeonButton href="/photovoltaik-rechner" className="hs-profit-cta">
             Für deinen Haushalt berechnen <IconArrowRight size={16} />

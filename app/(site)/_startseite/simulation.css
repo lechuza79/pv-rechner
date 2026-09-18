@@ -265,3 +265,5 @@
   38% { transform: translateY(-3px); }
   47% { transform: translateY(3px); }
 }
+/* Own addition: what the figures contain, visible at the figures (review 2026-09-18). */
+.sc-neon .hs-retro .hs-retro-note{position:relative;z-index:3;margin:4px 0 20px;max-width:var(--neon-copy-max);font-size:var(--font-size-body);line-height:1.5;color:var(--scene-muted)}

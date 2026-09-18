@@ -1,5 +1,5 @@
 /* Current homepage and Atlas reference; provenance in docs/design-reference/sources.json. */
-@font-face{font-family:AtlasConcept;src:url('/fonts/atlas-montserrat-bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:AtlasConcept;src:url('/fonts/atlas-montserrat-bold.woff2') format('woff2'),url('/fonts/atlas-montserrat-bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
 .foundation {
  --atlas-picker-bg:#d5ddd5;--atlas-action:#1365ea;--atlas-action-ink:#fff;
  --atlas-surface:#edf0ec;--atlas-card:#fafbf8;--atlas-text:#18323e;--atlas-secondary:#617279;--atlas-border:#cdd6d2;
