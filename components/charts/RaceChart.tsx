@@ -197,7 +197,8 @@ function RaceCard({
   const FARBE_A = v(kamera.farbe), FARBE_B = v(anderer.farbe);
   const [t, setT] = useState(0);
   const [spielt, setSpielt] = useState(false);
-  const [narrow, setNarrow] = useState(false);
+  const [plotWidth, setPlotWidth] = useState(640);
+  const narrow = plotWidth <= 560;
   const [showCredit, setShowCredit] = useState(false);
   const [ruhig, setRuhig] = useState(false);
   const gestartet = useRef(false);
@@ -237,15 +238,20 @@ function RaceCard({
   useEffect(() => { setVideoKann(videoFormat() !== null); }, []);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width:560px)");
-    const on = () => setNarrow(mq.matches);
-    on();
-    mq.addEventListener("change", on);
+    // Match SVG units to CSS pixels so labels never scale with the card.
+    const svg = svgRef.current;
+    const measure = () => {
+      const width = svg?.getBoundingClientRect().width;
+      if (width && width > 0) setPlotWidth(width);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    if (svg) observer.observe(svg);
     const rm = window.matchMedia("(prefers-reduced-motion: reduce)");
     const onRm = () => setRuhig(rm.matches);
     onRm();
     rm.addEventListener("change", onRm);
-    return () => { mq.removeEventListener("change", on); rm.removeEventListener("change", onRm); };
+    return () => { observer.disconnect(); rm.removeEventListener("change", onRm); };
   }, []);
 
   // Von selbst loslaufen, wenn die Karte zum ersten Mal sichtbar wird — einmal.
@@ -316,7 +322,7 @@ function RaceCard({
     });
 
   // ── Mitlaufende Achsen: x vom Start bis heute, y als Kamera auf Läufer A ──
-  const W = narrow ? 320 : 640, H = mini ? (narrow ? 200 : 240) : narrow ? 260 : 340;
+  const W = plotWidth, H = mini ? (narrow ? 200 : 240) : narrow ? 260 : 340;
   // Mini: kein Platz für Achsenzahlen nötig — das Raster allein bleibt.
   const P = mini ? { t: 12, r: 12, b: 12, l: 12 } : { t: 18, r: narrow ? 10 : 12, b: 28, l: narrow ? 58 : 56 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
@@ -549,7 +555,7 @@ function RaceCard({
           hinaus: dieser Rahmen trägt sie und lässt ihr rechts Platz. */}
       <div style={{ position: "relative", paddingRight: mini ? 0 : SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
       <ExportBox>
-        <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
+        <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: H, display: "block" }} role="img"
           aria-label={ariaLabel(stand, kA[tag], kB[tag])}>
           {/* Achsenzahlen blenden ein, wenn sie erscheinen: Jede Marke ist per key ein
               eigenes Element und wird beim Auftauchen neu gemountet — die Animation
@@ -561,7 +567,7 @@ function RaceCard({
             <g key={val} className="kr-neu">
               <line x1={P.l} x2={P.l + cW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
               {!mini && (
-                <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+                <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
                   {yLabels[i]}
                 </text>
               )}

@@ -110,14 +110,14 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
 }
 
 /**
- * FAQ in the package's own tokens (homepage.css :root): ink, light surface,
+ * FAQ using shared homepage typography and the dark editorial surface:
  * type roles. Plain <details>, no script — readable before anything loads.
  */
 const FAQ_CSS = `
-.sc-faq{background:var(--sc-surface-light);color:var(--ink);padding:72px var(--sc-page-inset,max(24px,5vw)) 88px;font-family:'DM Sans',sans-serif}
-.sc-faq-wrap{max-width:760px;margin:0 auto}
-.sc-faq h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-section-compact-size,clamp(26px,3vw,38px));line-height:var(--sc-type-section-leading,1.25);font-weight:var(--sc-type-heading-weight,700);margin:0 0 24px}
-.sc-faq details{border-bottom:1px solid color-mix(in srgb,var(--ink) 18%,transparent)}
+.sc-faq{background:#08191c;color:#e8eee9;padding:72px var(--sc-page-inset,max(24px,5vw)) 88px;font-family:'DM Sans',sans-serif}
+.sc-faq-wrap{max-width:var(--sc-layout-content,1120px);margin:0 auto}
+.sc-faq h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-section-size,40px);line-height:var(--sc-type-section-leading,1.25);font-weight:var(--sc-type-heading-weight,700);margin:0 0 24px}
+.sc-faq details{border-bottom:1px solid #aec4bd30}
 .sc-faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;padding:18px 0;font-size:var(--sc-type-title-size,20px);line-height:var(--sc-type-title-leading,1.35);font-weight:var(--sc-type-label-weight,600)}
 .sc-faq summary::-webkit-details-marker{display:none}
 .sc-faq summary::after{content:"+";flex:none;font-weight:400}
