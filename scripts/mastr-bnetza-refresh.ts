@@ -28,6 +28,7 @@ import * as unzipper from "unzipper";
 import iconv from "iconv-lite";
 import sax from "sax";
 import { importNoetig, importTageAusZeitplan } from "../lib/mastr-import-plan";
+import { aktuellerGemeindeschluessel } from "../lib/ags-nachfolger";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -747,7 +748,7 @@ async function aggregateUnit(
     return { processed: 0, accepted: 0, skipped: { status: 0, gks: 0, year: 0, kwp: 0 } };
   }
 
-  const skipped = { status: 0, gks: 0, gksShort: 0, year: 0, kwp: 0 };
+  const skipped = { status: 0, gks: 0, gksShort: 0, year: 0, kwp: 0, umgeschluesselt: 0 };
   let accepted = 0;
   let processed = 0;
 
@@ -785,9 +786,15 @@ async function aggregateUnit(
         return;
       }
 
-      const regionId = gks.substring(0, 8);
-      const kreisAgs = gks.substring(0, 5);
-      const blAgs = gks.substring(0, 2);
+      // The register keeps the key a unit was registered under; after a merger
+      // or a change of district that key belongs to no page (Hanau: 06435014 →
+      // 06415000, zero plants on its page for eight months). Kreis and Land are
+      // taken from the CURRENT key — Hanau left the Main-Kinzig-Kreis.
+      const gks8 = gks.substring(0, 8);
+      const regionId = aktuellerGemeindeschluessel(gks8);
+      if (regionId !== gks8) skipped.umgeschluesselt++;
+      const kreisAgs = regionId.substring(0, 5);
+      const blAgs = regionId.substring(0, 2);
 
       // First-occurrence wins for region metadata. These names are a fallback:
       // they are operator free-text and carry no official designation (BNetzA
@@ -856,6 +863,7 @@ async function phaseAggregate(): Promise<void> {
     log(
       `    ${spec.et}: ${r.accepted.toLocaleString()} accepted / ${r.processed.toLocaleString()} total ` +
         `(skipped: status=${r.skipped.status}, gks=${r.skipped.gks}, gksShort=${r.skipped.gksShort}, ` +
+          `remapped to current key: ${r.skipped.umgeschluesselt}, ` +
         `year=${r.skipped.year}, kwp=${r.skipped.kwp})`,
       "ok",
     );
