@@ -142,6 +142,36 @@ const PATCHES = [
     to: "was Solarstrom von 2016 bis 2025 bei dir gebracht h\\xE4tte",
     why: "Einleitung zur selben Zahl; dieselbe Begründung.",
   },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: /"\/Solar-Check-Dynamisch\.html\?[^"]*"/g,
+    to: '"/"',
+    why: "Logo, Rücksprung und Fußzeile zeigten auf die Vorschau-Datei samt Schaltern; die Startseite ist /.",
+  },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: '"/pv-simulation/?homepage=1&panels=3d&foreground=branch"',
+    to: '"/pv-simulation"',
+    why: "Simulations-Link ohne Vorschau-Schalter und ohne Schrägstrich (die kanonische Adresse).",
+  },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: /"\/rechner-uebersicht\/"/g,
+    to: '"/#hs-rechner"',
+    why: "Eine Rechner-Übersicht gibt es (noch) nicht; derselbe Ersatz wie im Menü.",
+  },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: 'f="Solar Check \\xB7 Dein Dach. Deine Energie."',
+    to: 'f="Solar Check \u2013 Lohnt sich Photovoltaik? Ehrlich berechnet."',
+    why: "Das Skript setzt document.title; SEO-Titel bleiben unverändert (lib/neon-seite.ts). Wer rendert, sähe sonst einen anderen Titel als im HTML.",
+  },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: 'document.title=y?"PV-Simulation \\xB7 Solar Check":f',
+    to: 'document.title=y?"PV-Simulation \u2013 live: Was produziert dein Dach gerade? | Solar Check":f',
+    why: "Dieselbe Titel-Zuweisung für die Simulation.",
+  },
   { datei: "dynamic-hero/dist/test.js", ...DOMAIN_WEG },
   { datei: "shared-nav/nav.js", ...DOMAIN_WEG },
   {
@@ -184,6 +214,8 @@ function vorlage(quelle) {
   let rumpf = s.slice(kopfEnde + "</head>".length);
   rumpf = rumpf.replace(/<body>/, '<body data-lab-accent="lime" data-lab-splash="edge" style="--lab-wash:0.14">');
   rumpf = rumpf.replace(DOMAIN_WEG.from, DOMAIN_WEG.to);
+  // Back link of the simulation template pointed at the preview file.
+  rumpf = rumpf.replace(/href="\/Solar-Check-Dynamisch\.html[^"]*"/g, 'href="/"');
   // Scripts that only exist to read the preview's query switches.
   rumpf = rumpf.replace(/<script>\(function\(\)\{const q=new URLSearchParams\(location\.search\);const explicit=[\s\S]*?<\/script>/, "");
   rumpf = rumpf.replace(/<script type="module" src="\/design-lab\/homepage-experiments\.js"><\/script>/, "");
@@ -209,4 +241,13 @@ for (const [name, t] of [["startseite", start], ["simulation", sim]]) {
   if (/localhost|127\.0\.0\.1|noindex/.test(t)) throw new Error(`Vorschau-Rest in ${name}: localhost/noindex`);
   writeFileSync(join(ZIEL, `app/_neon/${name}.html`), t);
 }
+// ─── Guard: nothing may still point at the preview ───────────────────────────
+// Script-built links never show up in the server HTML, so a link check on the
+// delivered page cannot see them (found 2026-09-18: logo, back link and footer
+// pointed at the preview file). Checked in every taken-over text file instead.
+const VORSCHAU = /Solar-Check-Dynamisch|[?&]homepage=1|rechner-uebersicht|foreground=branch|localhost:\d/;
+const textdateien = [...kopiert.filter((f) => /\.(js|css|json|svg)$/.test(f)).map((f) => join(PUBLIC, f)), join(ZIEL, "app/_neon/startseite.html"), join(ZIEL, "app/_neon/simulation.html")];
+const reste = textdateien.filter((f) => VORSCHAU.test(readFileSync(f, "utf8")));
+if (reste.length) throw new Error(`Vorschau-Verweise übrig in:\n  ${reste.join("\n  ")}`);
+
 console.log(`${kopiert.length} Dateien übernommen, ${PATCHES.length} Anpassungen angewendet, 2 Seitenvorlagen geschrieben.`);

@@ -917,12 +917,62 @@ export default function DatenschutzPage() {
           vollständig lesbar.
         </p>
 
+        {/* Own section, not part of 16: a waitlist has no town, promises
+            exactly one message (the launch) and lives in its own table. Its
+            consent wording is archived in lib/warteliste-einwilligung.ts. */}
+        <h2 style={S.h2}>17. Warteliste für kommende Funktionen</h2>
+        <p style={S.p}>
+          Für Funktionen, die noch nicht fertig sind (derzeit der Angebotscheck
+          für Photovoltaik und Wärmepumpe), kannst du dich über das Menü auf
+          eine <strong>Warteliste</strong> setzen. Wir verarbeiten dafür deine{" "}
+          <strong>E-Mail-Adresse</strong>, die Warteliste, auf die du dich
+          eingetragen hast, und die Zeitpunkte deiner Eintragung, deiner
+          Bestätigung und einer etwaigen Austragung. Einen Namen fragen wir
+          nicht ab.
+        </p>
+        <p style={S.p}>
+          Die Anmeldung läuft im <strong>Bestätigungsverfahren</strong>: Nach dem
+          Eintragen schicken wir eine E-Mail mit einem Bestätigungslink. Erst
+          wenn du ihn anklickst, stehst du auf der Liste. Klickst du nicht, wird
+          die Eintragung nach sieben Tagen gelöscht und es folgt keine weitere
+          E-Mail. Nach deiner Bestätigung schreiben wir dir{" "}
+          <strong>eine Nachricht, wenn die Funktion startet</strong> — keinen
+          Newsletter. Rechtsgrundlage ist deine <strong>Einwilligung</strong>{" "}
+          (Art. 6 Abs. 1 lit. a DSGVO).
+        </p>
+        <p style={S.p}>
+          <strong>Du kannst dich jederzeit austragen</strong> — über den Link in
+          der Bestätigungsmail und in der Nachricht zum Start, ohne Anmeldung und
+          ohne Angabe von Gründen. Der Widerruf wirkt für die Zukunft und lässt
+          die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung unberührt.
+        </p>
+        <p style={S.p}>
+          Zum <strong>Nachweis deiner Einwilligung</strong> halten wir die
+          Fassung des Textes fest, den du beim Eintragen gelesen hast, und die
+          Kennung, unter der unser Mailserver die Bestätigungsmail angenommen
+          hat. Nach einer Austragung bleiben diese Angaben ausschließlich als
+          Nachweis bestehen — auf Grundlage unserer Rechenschaftspflicht und
+          unseres berechtigten Interesses an der Abwehr von Ansprüchen (Art. 6
+          Abs. 1 lit. c in Verbindung mit Art. 5 Abs. 2 und Art. 7 Abs. 1 sowie
+          lit. f DSGVO). Gelöscht werden sie zum 31. Dezember des dritten Jahres
+          nach dem Jahr, in dem wir dir zuletzt geschrieben haben; hast du nie
+          bestätigt, sofort. Deine IP-Adresse speichern wir nicht an der
+          Eintragung; für die Abwehr automatisierter Eintragungen gilt dasselbe
+          wie in Abschnitt 16 beschrieben.
+        </p>
+        <p style={S.p}>
+          Versand und Speicherung laufen über dieselben Dienste wie bei den
+          Meldungen zu einer Gemeinde (Abschnitt 16): das E-Mail-Postfach unserer
+          Domain bei der ALL-INKL.COM – Neue Medien Münnich und unsere Datenbank
+          bei Supabase (Abschnitt 9).
+        </p>
+
         {/* Nur ein Verweis, kein eigener Abschnitt: Die LinkedIn-Angaben
             betreffen Besucher unserer LinkedIn-Seite, nicht die dieser Website.
             Sie hier auszubreiten verlängerte die Erklärung für alle, die sie
             nichts angeht. Ohne diesen Satz wäre die Unterseite allerdings eine
             Waise — erreichbar nur über LinkedIn selbst. */}
-        <h2 style={S.h2}>17. Unsere Präsenz auf LinkedIn</h2>
+        <h2 style={S.h2}>18. Unsere Präsenz auf LinkedIn</h2>
         <p style={S.p}>
           Wir betreiben eine Unternehmensseite auf LinkedIn. Was dort verarbeitet
           wird, findet auf den Systemen von LinkedIn statt und nicht auf dieser
@@ -946,7 +996,7 @@ export default function DatenschutzPage() {
             geplant, aber nicht gebaut — sie kommen in diesen Abschnitt, wenn sie
             existieren. Eine Erklärung, die Verarbeitungen beschreibt, die es
             nicht gibt, ist derselbe Fehler wie eine, die vorhandene verschweigt. */}
-        <h2 style={S.h2}>17. Verzeichnis von PV-Fachbetrieben</h2>
+        <h2 style={S.h2}>19. Verzeichnis von PV-Fachbetrieben</h2>
         <p style={S.p}>
           Wir haben ein internes Verzeichnis von Photovoltaik-Fachbetrieben und
           Elektrohandwerksbetrieben in Deutschland angelegt. Erhoben wurden{" "}

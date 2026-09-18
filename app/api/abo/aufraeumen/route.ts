@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { aboAufraeumen } from "../../../../lib/gemeinde-abo";
+import { wartelisteAufraeumen } from "../../../../lib/warteliste";
 
 // ─── Verfallene Abo-Einträge löschen ─────────────────────────────────────────
 //
@@ -31,6 +32,10 @@ export async function GET(req: NextRequest) {
   if (!CRON_SECRET || req.headers.get("authorization") !== `Bearer ${CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const ergebnis = await aboAufraeumen(Date.now());
-  return NextResponse.json({ ok: true, ...ergebnis });
+  const jetzt = Date.now();
+  const ergebnis = await aboAufraeumen(jetzt);
+  // The waitlist makes the same two promises (privacy policy, confirmation
+  // mail) and rides on the same daily call.
+  const wartelisteGeloescht = await wartelisteAufraeumen(jetzt);
+  return NextResponse.json({ ok: true, ...ergebnis, wartelisteGeloescht });
 }
