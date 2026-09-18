@@ -14,6 +14,20 @@ import { v, space } from "../../../lib/theme";
 // `--content-lede-top`. Wer hier eigene Luft setzt, ist die nächste
 // Drift-Quelle.
 
+export const ABO_KNOPF_STIL: React.CSSProperties = {
+  display: "inline-block",
+  background: v("--color-accent"),
+  color: "#fff",
+  border: "none",
+  padding: "12px 20px",
+  borderRadius: v("--radius-md"),
+  fontWeight: 600,
+  fontSize: v("--font-size-body"),
+  fontFamily: "inherit",
+  cursor: "pointer",
+  marginTop: space.lg,
+};
+
 const S: Record<string, React.CSSProperties> = {
   page: {
     background: v("--color-bg"),
@@ -64,6 +78,12 @@ export default function AboErgebnis(o: {
   /** Zurück zum Ort — nur wenn wir wissen, um welchen es ging. */
   ortHref?: string;
   ortName?: string;
+  /**
+   * A form with the one action of the page (confirm, unsubscribe). Opening a
+   * mail link only shows it; the step happens on the press, because mail
+   * scanners open links on their own (legal review 18.09.).
+   */
+  aktion?: React.ReactNode;
 }) {
   return (
     <main style={S.page}>
@@ -74,6 +94,7 @@ export default function AboErgebnis(o: {
             {s}
           </p>
         ))}
+        {o.aktion}
         <div style={S.aktionen}>
           {o.ortHref && o.ortName ? (
             <Link href={o.ortHref} style={S.cta}>
