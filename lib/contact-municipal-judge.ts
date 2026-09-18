@@ -14,12 +14,10 @@
  *     fallback instead of blocking.
  * Mailbox spelling is never proof of a role; it only orders equally proven candidates.
  */
-import { load } from "cheerio";
-import { entwirreAdressen } from "./personen-fund";
-import { entschluesseltOderRoh } from "./uri-sicher";
 import { evidenceLimitations } from "./contact-quality-evidence";
 import type { ContactCandidate } from "./contact-evidence";
 import { hasSharedAdministration, type Gemeindeverband } from "./gemeindeverband";
+export { headingContext } from "./contact-heading-context";
 
 export type Channel = "energy" | "press";
 export type Municipality = { ags: string; name: string; website: string | null; verband?: Gemeindeverband };
@@ -31,7 +29,6 @@ export type Evidence = {
   strong: boolean;
 };
 
-const MAIL = /[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g;
 const stripMail = (t: string) => t.replace(/[\w.+%-]+\s*(?:@|\(at\)|\[at\])\s*[\w.-]+/giu, "");
 export const host = (u: string) => { try { return new URL(u).hostname.replace(/^www\./, "").toLowerCase(); } catch { return ""; } };
 /** German municipal sites use plain second-level domains; two labels are the registrable part. */
@@ -48,51 +45,25 @@ const EXCLUDED = /datenschutzbeauftrag|technische umsetzung|webdesign|dienstleis
 const OWN_TITLE = /pressesprecher\w*|leit(?:ung|er\w*)|klima(?:schutz)?manager\w*|energiemanager\w*|beauftragte?\w*|koordinator\w*|referent\w* für (?:presse|öffentlichkeit)/iu;
 const HISTORICAL = /ehemalig|nicht (?:mehr )?zuständig|nicht mehr erreichbar|außer dienst|\ba\.\s?d\./iu;
 /** A block naming another unit must not inherit a department heading from above. */
-const OTHER_UNIT = /bauhof|standesamt|bürgerbüro|buergerbuero|stadtkasse|gemeindekasse|ordnungsamt|bauamt|friedhof|bücherei|schule|kita|notfäll/iu;
+const OTHER_UNIT = /bauhof|standesamt|bürgerbüro|buergerbuero|stadtkasse|gemeindekasse|ordnungsamt|bauamt|friedhof|bücherei|bibliothek|schule|kita|notfäll|museum|archiv|theater|volkshochschule|passamt|meldeamt|einwohnermelde|vermietung/iu;
+
+/**
+ * A role word counts only as the person's unit or title, not as one item in a
+ * longer list of duties or departments. Measured on the full run (18.09.2026):
+ * archive, passport office, room letting and a museum were selected as press
+ * contacts because "Öffentlichkeitsarbeit" was the fifth item of their duties.
+ */
+function roleAsOwnUnit(text: string, role: RegExp): "title" | "unit" | false {
+  const segments = text.split(/\s*(?:[,;•·|\n]| \/ | – )\s*/u).map(t => t.trim()).filter(t => t.length > 1);
+  const hits = segments.map((t, i) => [t, i] as const).filter(([t]) => role.test(t));
+  if (!hits.length) return false;
+  if (hits.some(([t]) => OWN_TITLE.test(t))) return "title";
+  return segments.length < 4 || hits.some(([, i]) => i < 2) ? "unit" : false;
+}
 const NEWS_PATH = /\/(?:news|aktuelles|nachrichten|pressemitteilung\w*|presseinformation\w*|kalender|veranstaltung\w*|termine)(?:\/|$)/i;
 export const GENERAL_MAILBOX = /^(info|kontakt|rathaus|poststelle|post|gemeinde|stadt|stadtverwaltung|gemeindeverwaltung|verwaltung|buergerbuero|buergerservice|zentrale|mail|amt|vg|sg|verbandsgemeinde|samtgemeinde|amtsverwaltung|service|servicecenter|office)$/i;
 /** Hard reasons: no fallback use either. */
 const HARD = ["source-invalid", "published-address-conflict", "excluded-purpose", "historical-or-negated"];
-
-/** Nearest preceding content heading per address when no other address intervenes,
- * plus the page heading when the main content publishes exactly one address. */
-export function headingContext(html: string): { headings: Map<string, string[]>; title: string } {
-  const $ = load(html, { scriptingEnabled: false });
-  $("script,style").remove();
-  const out = new Map<string, string[]>();
-  const main = new Set<string>();
-  let heading = "";
-  let since = new Set<string>();
-  const push = (raw: string, chrome: boolean) => {
-    const addr = raw.toLowerCase().replace(/\.$/, "");
-    if (chrome) return;
-    main.add(addr);
-    if (heading && [...since].every(a => a === addr)) out.set(addr, [...(out.get(addr) ?? []), heading]);
-    since.add(addr);
-  };
-  const walk = (node: any, chrome: boolean) => {
-    for (const child of node.children ?? []) {
-      if (child.type === "text") { for (const m of entwirreAdressen(child.data ?? "").matchAll(MAIL)) push(m[0], chrome); continue; }
-      if (child.type !== "tag") continue;
-      const tag: string = child.name;
-      const inChrome = chrome || ["nav", "header", "footer", "aside"].includes(tag)
-        || /(?:^|\s)(?:footer|header|nav|navigation|breadcrumb|menu)(?:\s|$|-)/i.test(child.attribs?.class ?? "");
-      if (/^h[1-4]$/.test(tag) && !inChrome) { heading = $(child).text().replace(/\s+/g, " ").trim().slice(0, 160); since = new Set(); continue; }
-      const href: string = child.attribs?.href ?? "";
-      if (tag === "a" && href.toLowerCase().startsWith("mailto:")) {
-        push(entschluesseltOderRoh(href.slice(7).split("?")[0]), inChrome);
-      }
-      walk(child, inChrome);
-    }
-  };
-  walk($.root()[0], false);
-  const title = $("title").first().text().replace(/\s+/g, " ").trim();
-  if (main.size === 1) {
-    const only = [...main][0];
-    out.set(only, [...(out.get(only) ?? []), $("h1").first().text().replace(/\s+/g, " ").trim()]);
-  }
-  return { headings: out, title };
-}
 
 export function judgeEvidence(c: ContactCandidate, headings: string[], src: SourceRef, m: Municipality, asOf: string): Evidence {
   const reasons: string[] = [];
@@ -124,8 +95,11 @@ export function judgeEvidence(c: ContactCandidate, headings: string[], src: Sour
   const usable = general || footerish || NEWS_PATH.test(path) || OTHER_UNIT.test(stripMail(block)) ? [] :
     headings.map(h => h.split(" | ")[0].trim()).filter(h => h.length > 0 && h.length <= 60 && !/\d/.test(h));
   const rawChannels: Channel[] = [];
-  if (!general && (ENERGY_TEXT.test(roleText) || usable.some(h => ENERGY_HEAD.test(h)))) rawChannels.push("energy");
-  if (!general && (PRESS_TEXT.test(roleText) || usable.some(h => PRESS_HEAD.test(h)))) rawChannels.push("press");
+  // Another unit named in the card (archive, museum, passport office) keeps only an explicit own title.
+  const otherUnit = OTHER_UNIT.test(roleText);
+  const fromText = (role: RegExp) => { const found = roleAsOwnUnit(roleText, role); return found === "title" || (found === "unit" && !otherUnit); };
+  if (!general && (fromText(ENERGY_TEXT) || usable.some(h => ENERGY_HEAD.test(h)))) rawChannels.push("energy");
+  if (!general && (fromText(PRESS_TEXT) || usable.some(h => PRESS_HEAD.test(h)))) rawChannels.push("press");
   if (rawChannels.length && limits.includes("dated-source-needs-current-confirmation")) reasons.push("dated-source");
   const local = c.email.split("@")[0];
   const strong = /presse|klima|energie|kommunikation|oeffentlich/i.test(local) || OWN_TITLE.test(roleText) || (usable.length > 0 && !/\|/.test(block));
