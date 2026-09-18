@@ -7981,7 +7981,14 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "sinsheim-balkonkraftwerke", name: "Städtisches Förderprogramm für Balkonkraftwerke",
     traeger: "Stadt Sinsheim", level: "kommune", region: "Sinsheim",
     bundesland: "Baden-Württemberg", agsCode: "08226085",
-    url: "https://www.sinsheim.de/wirtschaft-bauen-umwelt/umwelt/klimaschutz",
+    // Adresse ersetzt am 18.09.2026: Die Klimaschutz-Seite nennt das Programm
+    // nicht (auch nicht im Archivstand vom 12.06.2026) — der Seiten-Wächter hat
+    // also eine Seite beobachtet, auf der es nie stand. Der Stand steht auf der
+    // Energieberatungs-Seite: „Die bereitsgestellten Mittel für das
+    // Förderprogramm sind vollständig ausgeschöpft. 75 Zuschüsse für Maßnahmen
+    // im Stadtgebiet konnten erteilt werden." Dazu die Pressemitteilung vom
+    // 06.10.2023 (Fördertopf 15.000 €, in Kraft 01.07.2023, ausgeschöpft).
+    url: "https://www.sinsheim.de/wirtschaft-bauen-umwelt/umwelt/energieberatung",
     stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
     beschlossenIso: "2023-06-13", beginntIso: "2023-07-01",
     eligibility: ["privat"],

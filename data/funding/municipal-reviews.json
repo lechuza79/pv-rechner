@@ -14970,5 +14970,545 @@
         "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
       }
     ]
+  },
+  {
+    "regionId": "01054007",
+    "name": "Arlewatt",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Arlewatt gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01054026",
+    "name": "Elisabeth-Sophien-Koog",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Elisabeth-Sophien-Koog gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01054032",
+    "name": "Fresendelf",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Fresendelf gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01054043",
+    "name": "Hattstedtermarsch",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hattstedtermarsch gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01054054",
+    "name": "Hude",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hude gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01054084",
+    "name": "Mildstedt",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mildstedt gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01054091",
+    "name": "Nordstrand",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nordstrand gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01054097",
+    "name": "Olderup",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Olderup gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01054130",
+    "name": "Süderhöft",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Süderhöft gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01054132",
+    "name": "Südermarsch",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Südermarsch gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01054156",
+    "name": "Winnert",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Winnert gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01054157",
+    "name": "Wisch",
+    "checkedAt": "2026-09-18T12:12:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wisch gehört zum Amt Nordsee-Treene. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite des Amtes ist eine leere Kurzmenü-Seite; der Menüpunkt Wirtschaftsförderung leitet auf die Wirtschaftsförderungsgesellschaft Nordfriesland weiter. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk nur die landesweite Leistungsbeschreibung „Förderung von haushaltsbezogenen Solarpanelen beantragen“ aus dem Zuständigkeitsfinder Schleswig-Holstein und Werbeanzeigen eines Händlers im Amtsblatt NT-Regional, für Photovoltaik/Solar/Speicher nur Gemeindeseiten ohne Programm, das Solarkataster und Landes-/Bundesdienste, für Zuschuss und Klimaschutz nur Landes-/Bundesleistungen und die LED-Straßenbeleuchtung der Gemeinde Mildstedt (Bundesförderung für die Gemeinde selbst). Der Kreis Nordfriesland führt unter „Fördermittel des Kreises“ nur Energieberatung für Haushalte, Radinfrastruktur, Naturschutz-Ersatzgeld, Mobilitätsprojekte und „Kleine Projekte“ — keinen Anlagenzuschuss.",
+    "searches": [
+      "amt-nordsee-treene.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz",
+      "Websuche: Amt Nordsee-Treene Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Zuschuss Mildstedt Nordstrand Winnert",
+      "Websuche: Kreis Nordfriesland Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss private Haushalte",
+      "Gemeindeseiten des Amtes gelesen: Arlewatt, Hattstedtermarsch, Mildstedt, Nordstrand"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-nordsee-treene.de/?ffmod=suche&NavID=3974.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026): Balkonkraftwerk → Dienstleistung „Förderung von haushaltsbezogenen Solarpanelen („Balkonkraftwerke“) beantragen“ (Weiterleitung in den Zuständigkeitsfinder Schleswig-Holstein, Leistungsbeschreibung dort ohne Ortsbezug leer) und fünf Ausgaben des Amtsblatts NT-Regional (2024/2025), in denen das Wort nur in einer Händleranzeige steht. Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderprogramm, Klimaschutz: Gemeindeseiten ohne Programm, Solarkataster, Landes- und Bundesleistungen."
+      },
+      {
+        "url": "https://zufish.schleswig-holstein.de/detail?areaId=&pstId=286389527&ouId=&infotype=0",
+        "finding": "Zielseite der Amtsdienstleistung: Landesweiter Leistungseintrag des Zuständigkeitsfinders Schleswig-Holstein (Quelle Linie6Plus), keine Leistung des Amtes; im Browser am 18.09.2026 gelesen, Leistungsbeschreibung ohne Ortsangabe leer."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Gemeinden-Stadt/M-S/Mildstedt/",
+        "finding": "Gemeindeseite Mildstedt: Klimaschutz nur als Ortsentwicklungskonzept und LED-Umrüstung der Straßenbeleuchtung (Kommunalrichtlinie des Bundes, Förderkennzeichen 67K30982); kein Zuschuss für Privathaushalte. Arlewatt, Hattstedtermarsch und Nordstrand ebenfalls ohne Programm (Nordstrand: nur Integriertes Klimaschutzkonzept)."
+      },
+      {
+        "url": "https://www.nordfriesland.de/Dienste-Leistungen/F%C3%B6rdermittel/",
+        "finding": "Kreis Nordfriesland, Fördermittel des Kreises (18.09.2026): Energieberatung für nordfriesische Haushalte, Fahrradinfrastruktur, Naturschutz-Ersatzgeld, regionale Mobilitätsprojekte, „Kleine Projekte“ — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "finding": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch im Browser gerendert): Die Seite „Kurzmenü / Wirtschaftsförderung“ hat keinen Inhalt außer Navigation und Öffnungszeiten; der Menüpunkt Wirtschaftsförderung leitet auf wfg-nf.de (Wirtschaftsförderung für Unternehmen). Kein Förderprogramm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
+      }
+    ]
   }
 ]
