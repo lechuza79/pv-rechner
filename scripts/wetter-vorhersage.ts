@@ -207,6 +207,9 @@ async function main() {
   const key = process.env.SUPABASE_SERVICE_KEY;
   if (!url || !key) throw new Error('Supabase-Zugang fehlt (NEXT_PUBLIC_SUPABASE_URL/SUPABASE_URL und SUPABASE_SERVICE_KEY).');
   const supabase = createClient(url, key, { auth: { persistSession: false } });
+  // The hourly snapshot usually creates the bucket; on a fresh project this
+  // run may come first.
+  await supabase.storage.createBucket(SNAPSHOT_BUCKET, { public: false }).catch(() => undefined);
   for (const [shard, content] of Array.from(shards)) {
     const { error } = await supabase.storage
       .from(SNAPSHOT_BUCKET)
