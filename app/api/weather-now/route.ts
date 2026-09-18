@@ -104,7 +104,9 @@ export async function GET(req: NextRequest) {
       weather,
       // From the source register, never typed here: the credit must read the same
       // at the scene, on the sources page and in a shared image.
-      attribution: [sourceLabel(DATA_SOURCES.iconD2Archive), sourceLabel(DATA_SOURCES.dwdRadar)],
+      // "Datenbasis:", not "Quelle:": the scene is a reworking, and "Quelle" next
+      // to it reads like an official DWD product (CC BY Sec. 2(a)(6)).
+      attribution: `Datenbasis: ${sourceLabel(DATA_SOURCES.dwdRadar)} · ${sourceLabel(DATA_SOURCES.iconD2Archive)}`,
     },
     { headers: { "Cache-Control": CDN_CACHE } },
   );

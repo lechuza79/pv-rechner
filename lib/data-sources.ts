@@ -167,6 +167,12 @@ export const DATA_SOURCES = {
     note: "Rasterzelle und Höhenbezug abgeleitet",
   },
   /**
+   * Der DWD steht VORN, nicht Open-Meteo (Zweitprüfung 18.09.2026): Lizenzgeber
+   * bleibt der DWD — sein CC-BY-Angebot erreicht jeden Empfänger direkt (Sec.
+   * 2(a)(5)(A)), gleich über welchen Weg die Daten kommen — und § 7 DWD-Gesetz
+   * verlangt seine Nennung bei jeder Verbreitung. „über Open-Meteo" allein
+   * reichte nicht.
+   *
    * Live-Wetter: das Wettermodell des DWD (ICON-D2), gelesen aus dem offenen
    * Datenarchiv von Open-Meteo. Zwei Rechteinhaber, beide CC BY 4.0 — der DWD
    * (Rechtliche Hinweise auf dwd.de: „alle frei zugänglichen Geodaten … unter
@@ -176,7 +182,7 @@ export const DATA_SOURCES = {
    * zeitlich auf „jetzt" interpoliert.
    */
   iconD2Archive: {
-    name: "ICON-D2, Deutscher Wetterdienst, über Open-Meteo",
+    name: "Deutscher Wetterdienst, Modell ICON-D2, über Open-Meteo",
     license: "CC BY 4.0",
     licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
     url: "https://open-meteo.com",
