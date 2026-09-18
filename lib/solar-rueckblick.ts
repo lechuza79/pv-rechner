@@ -40,6 +40,17 @@ import preise from "./solar-rueckblick-preise.json";
 
 export const RUECKBLICK_VON = 2016;
 export const RUECKBLICK_BIS = 2025;
+
+/**
+ * When the ten-year window was last moved, and by when the next move is due.
+ *
+ * The window moves by one year once the previous year's second-half household
+ * prices are published by Eurostat (usually in spring) — then 2017–2026 can be
+ * computed. `reviewBy` is the date after which the health check reports the
+ * window as overdue (lib/pruefstand.ts), so the move cannot be forgotten.
+ * Steps: scripts/solar-rueckblick-verify.md.
+ */
+export const RUECKBLICK_STAND = { geprueftIso: "2026-09-18", reviewBy: "2027-06-30" } as const;
 const JAHRE = RUECKBLICK_BIS - RUECKBLICK_VON + 1;
 
 /**

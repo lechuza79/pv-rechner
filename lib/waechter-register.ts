@@ -367,7 +367,13 @@ export const WAECHTER: WaechterJob[] = [
     rhythmus: "halbjährlich, am 28. Januar und 28. Juli",
     tag: "eeg-verguetung-verify-halbjaehrlich",
     beleg: "pruefdatum",
-    pruefFelder: ["FEED_IN_GEPRUEFT_ISO", "MARKTWERT_GEPRUEFT_ISO"],
+    pruefFelder: [
+      "FEED_IN_GEPRUEFT_ISO",
+      "MARKTWERT_GEPRUEFT_ISO",
+      // The retrospective's yearly window move: its trigger is reviewBy in the
+      // health check; this run is where its steps are carried out.
+      "RUECKBLICK_STAND.geprueftIso",
+    ],
     runbook: "scripts/eeg-verify.md",
   },
   {

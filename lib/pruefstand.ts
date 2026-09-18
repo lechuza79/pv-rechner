@@ -33,6 +33,7 @@ import { RECHTSTEXTE_GEPRUEFT_ISO } from "./rechtstexte-stand";
 import { rechtsbelegeGeprueftIso } from "./rechtsbelege";
 import { GLOSSAR_GEPRUEFT_ISO } from "./glossary";
 import { KFW_REPORT_STAND } from "./kfw-format";
+import { RUECKBLICK_STAND } from "./solar-rueckblick";
 
 export interface PruefEintrag {
   /** In der Sprache der Seite, damit die Meldung ohne Code-Kenntnis lesbar ist. */
@@ -111,6 +112,20 @@ export const PRUEFSTAND: PruefEintrag[] = [
     rhythmus: "quartalsweise, dazu täglicher News-Scan auf Programmstopps",
     maxAlterTage: 120,
     runbook: "scripts/waermepumpe-verify.md",
+  },
+  {
+    was: "PV-Simulation: Zehn-Jahres-Rückblick (Zeitfenster und Strompreise)",
+    feld: "RUECKBLICK_STAND.geprueftIso",
+    geprueftIso: RUECKBLICK_STAND.geprueftIso,
+    // Der fachliche Termin: Bis dahin liegen Eurostats Haushaltspreise des
+    // Vorjahres vor, und das Fenster muss ein Jahr weiter. Gemeldet wird vom
+    // Gesundheitscheck auf GitHub, nicht von einem Auftrag auf dem Rechner des
+    // Betreibers — der Termin darf nicht an einer offenen App hängen.
+    reviewBy: RUECKBLICK_STAND.reviewBy,
+    waechter: "eeg-verguetung-verify-halbjaehrlich",
+    rhythmus: "jährlich; neue Jahrespreise erscheinen im Frühjahr",
+    maxAlterTage: 460,
+    runbook: "scripts/solar-rueckblick-verify.md",
   },
   {
     was: "Wärmepumpe: Zusagen der Bundesförderung",
