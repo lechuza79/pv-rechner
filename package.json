@@ -90,7 +90,8 @@
     "era5:gegen-messung": "tsx scripts/era5-vs-dwd.ts",
     "dwd:stationen": "tsx scripts/dwd-stations-build.ts",
     "wetter:schnappschuss": "tsx scripts/icon-d2-snapshot.ts",
-    "wetter:radar-abgleich": "tsx scripts/radar-vs-stations.ts"
+    "wetter:radar-abgleich": "tsx scripts/radar-vs-stations.ts",
+    "wetter:ortspunkte": "tsx scripts/plz-wetterpunkt-build.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",

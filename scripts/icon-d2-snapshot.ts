@@ -33,6 +33,7 @@ import {
 import { SEA_MARKER, selectCell, temperatureOffset } from '../lib/regular-grid';
 import plzCoordinates from '../public/plz.json';
 import plzElevation from '../lib/plz-elevation.json';
+import plzWeatherPoint from '../lib/plz-weather-point.json';
 
 const flag = (key: string) => process.argv.includes('--' + key);
 const CACHE = new LruBlockCache(1024 * 1024, 2048);
@@ -119,8 +120,13 @@ async function main() {
     variables: ICON_D2_VARIABLE_NAMES,
     scale: { ...ICON_D2_VARIABLES } as Record<IconD2Variable, number>,
   };
-  for (const [plz, [latitude, longitude]] of Object.entries(coordinates)) {
-    const elevation = elevations[plz];
+  // Where the centroid sits on a mountain above the town, read the town
+  // (scripts/plz-wetterpunkt-build.ts); otherwise the centroid as before.
+  const townPoints = (plzWeatherPoint as { points: Record<string, { latitude: number; longitude: number; elevation: number }> }).points;
+  for (const [plz, centroid] of Object.entries(coordinates)) {
+    const town = townPoints[plz];
+    const [latitude, longitude] = town ? [town.latitude, town.longitude] : centroid;
+    const elevation = town ? town.elevation : elevations[plz];
     if (elevation === undefined) { missingHeight++; continue; }
     const cell = selectCell(ICON_D2_GRID, latitude, longitude, elevation, orography);
     const index = (cell.row - WINDOW.rowFrom) * COLUMNS + (cell.column - WINDOW.columnFrom);
