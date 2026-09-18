@@ -83,10 +83,12 @@ async function elevations() {
     const url = `${BASE}copernicus_dem90/static/lat_${band}.om`;
     const started = Date.now();
     const reader = await new OmHttpBackend({ url, eTagValidation: false }).asCachedReader(CACHE);
-    const [rows, columns] = reader.getDimensions().map(Number);
+    const [, columns] = reader.getDimensions().map(Number);
+    // Pixels per degree of longitude shrink towards the poles (1200 below 50°N,
+    // 800 above); the file's own width says which applies.
+    const perDegree = columns / 360;
     for (const point of list) {
-      const row = Math.floor((point.latitude - band) * rows);
-      const column = Math.floor(((point.longitude + 180) / 360) * columns);
+      const { row, column } = demPixel(point.latitude, point.longitude, perDegree);
       const value = await reader.read({
         type: OmDataType.FloatArray,
         ranges: [{ start: row, end: row + 1 }, { start: column, end: column + 1 }],
@@ -99,6 +101,20 @@ async function elevations() {
     console.log(`  Band ${band}: ${list.length} Punkte in ${Math.round((Date.now() - started) / 1000)}s`);
   }
   console.log(`Höhen gespeichert: ${Object.keys(known).length}.`);
+}
+
+/**
+ * Pixel of the 90 m elevation model, computed as `Dem90.read` does in
+ * `Sources/App/Dem/DownloadDem.swift`: in single precision and truncated.
+ * Double precision lands one pixel off often enough to matter in the mountains —
+ * Oberstdorf read 1448 m instead of the provider's 1393 m, 0.36 K of
+ * temperature (measured 18.09.2026).
+ */
+export function demPixel(latitude: number, longitude: number, perDegree: number) {
+  const f = Math.fround;
+  const row = Math.floor(f(f(f(latitude) * 1200) + 108000)) % 1200;
+  const column = Math.floor(f(f(f(longitude) + 180) * f(perDegree)));
+  return { row, column };
 }
 
 /** Six decimals: finer than the elevation model resolves, stable as a key. */
