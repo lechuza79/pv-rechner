@@ -4050,8 +4050,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // source for "40 %, max. 200 €" is a newspaper report (AK-Kurier,
     // 03.04.2026) — a secondary source, never the basis for a figure here.
     //
-    // The county's storage programme named in the same breath is NOT entered:
-    // no page states its current state. Open case for the next run.
+    // The county's storage programme named in the same breath has its own
+    // entry since 18.09.2026 (`altenkirchen-solarspeicher`).
     stand: "September 2026", status: "eingestellt", capped: true, verified: true,
     beginntIso: "2024-11-19",
     eligibility: ["privat"],
@@ -4067,6 +4067,104 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // The guideline is not available, so a combination rule cannot be stated.
     combinableWith: null,
     foerdert: ["balkon"],
+  },
+  "altenkirchen-solarspeicher": {
+    id: "altenkirchen-solarspeicher", name: "Förderprogramm zur Anschaffung privater Solarspeicher",
+    traeger: "Landkreis Altenkirchen", level: "landkreis", region: "Landkreis Altenkirchen", bundesland: "Rheinland-Pfalz", agsCode: "07132",
+    url: "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-privaten-Solarspeichern.php?ModID=10&FID=2333.196.1",
+    // Service page of the county read on 18 Sep 2026: "Der Fördertopf für
+    // private Solarspeicher im Kreis Altenkirchen ist ausgeschöpft … Ende 2024
+    // startete … Finanziert wurde es zu 100 Prozent aus Landesmitteln im Rahmen
+    // des … KIPKI. Nun ist der Fördertopf … in Höhe von insgesamt 260.000 Euro
+    // vollständig ausgeschöpft. Eine Antragstellung ist daher nicht mehr
+    // möglich. Bereits eingereichte Anträge werden jedoch weiterhin
+    // bearbeitet." About 250 storage systems, 2,500 kWh in total.
+    //
+    // `ausgeschoepft`, not `eingestellt`: the county says the pot is empty and
+    // pending applications are still processed, not that the programme ended.
+    // Start date from the page of VG Betzdorf-Gebhardshain, which names the
+    // county guidelines for balcony PV and solar storage "seit dem 19.11.2024
+    // in Kraft" (see `altenkirchen-balkonkraftwerke`).
+    //
+    // NO RATE ON PURPOSE: the service page states no amount, the guideline is
+    // not available, and the county's start announcement ("KIPKI-Mittel in
+    // Höhe von 380.000 Euro stehen bereit") now returns 404. An installer's
+    // page names 120 €/kWh, max. 1,500 € or 30 % — a secondary source, never
+    // the basis for a figure here. The same page limits eligibility to owners
+    // of self-used homes; unconfirmed at the county, so not entered.
+    // Adversarial review 18.09.2026: accepted with these fixes.
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beginntIso: "2024-11-19",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss zur Errichtung eines privaten Solarspeichers, auch zur Nachrüstung einer bestehenden Photovoltaikanlage",
+    rates: [
+      { label: "Solarspeicher", value: "Fördertopf ausgeschöpft — Förderhöhe an der Amtsquelle nicht abrufbar" },
+    ],
+    conditions: [
+      "Der Fördertopf von 260.000 € ist vollständig ausgeschöpft; neue Anträge sind nicht möglich, bereits eingereichte werden weiter bearbeitet",
+      "Finanziert zu 100 Prozent aus dem Landesprogramm KIPKI",
+      "Laut vorläufiger Bilanz des Kreises rund 250 geförderte Speicher; bei 37 Prozent wurde eine bestehende Photovoltaikanlage nachgerüstet",
+    ],
+    // The guideline is not available, so a combination rule cannot be stated.
+    combinableWith: null,
+    foerdert: ["pv"],
+  },
+  "cochem-zell-solarstromspeicher": {
+    id: "cochem-zell-solarstromspeicher", name: "Förderprogramm Solarstromspeicher",
+    traeger: "Landkreis Cochem-Zell", level: "landkreis", region: "Landkreis Cochem-Zell", bundesland: "Rheinland-Pfalz", agsCode: "07135",
+    url: "https://www.unser-klima-cochem-zell.de/foerderung/",
+    // Programme page of the county's climate office (Kreiswerke, Eigenbetrieb
+    // Klima & Energie) read on 18 Sep 2026: "Förderprogramme für Privathaushalte
+    // im Landkreis Cochem-Zell sind beendet. Die beiden Förderprogramme für
+    // Privathaushalte sind zum 31.03.2026 planmäßig ausgelaufen. Neue Anträge
+    // können nicht mehr gestellt werden." Closing report of 20.07.2026 on the
+    // same site: started 15.04.2024, 266 storage grants, the extra share of VG
+    // Zell was used up after about seven months, that of VG Cochem after less
+    // than six.
+    //
+    // GUIDELINE READ IN FULL (6 pages, text layer): "Richtlinie zur Förderung
+    // von Solarstromspeichern in Privathaushalten im Landkreis Cochem-Zell auf
+    // Grundlage des Kreistagsbeschlusses vom 08.04.2024, Gültig ab 15.04.2024".
+    // The county removed it; read from the Wayback copy of the programme page
+    // of 10.06.2026 (frl-solarstromspeicher.pdf) — the county's own wording,
+    // dated, which is all a closed programme needs. Nr. 9.4: 75 €/kWh (VG Ulmen,
+    // Kaisersesch, max. 500 €) or 150 €/kWh (VG Cochem, Zell, max. 1.000 €),
+    // minimum 5 kWh. Nr. 10: applications until 31.01.2026, proof of use until
+    // 31.03.2026.
+    //
+    // NO STRUCTURED RATE: the programme is closed, and the rate differs by
+    // Verbandsgemeinde inside the county key, which one rate cannot express.
+    // `endetIso` 31.01.2026 is the guideline's fixed application deadline
+    // (Nr. 10: "bis einschließlich 31.01.2026"). The pot may have run dry
+    // earlier; the county does not say when (the archived page of 10.06.2026
+    // just reads "Die Fördermittel sind aufgebraucht"). 31.03.2026 is the
+    // deadline for the proof of use, i.e. the programme end the page names.
+    //
+    // The sister programme "Clever heizen – einfach sanieren" is NOT entered:
+    // its only heat pump item is the domestic hot water heat pump
+    // (Brauchwasserwärmepumpe), not a heating heat pump.
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-04-15",
+    beschlossenIso: "2024-04-08",
+    endetIso: "2026-01-31",
+    eligibility: ["privat"],
+    coveredCosts: "Neuer stationärer Batteriespeicher zu einer bestehenden oder neuen Photovoltaikanlage in einem reinen Wohngebäude",
+    rates: [
+      { label: "Speicher (VG Cochem und Zell)", value: "150 € je kWh, höchstens 1.000 € — Programm beendet" },
+      { label: "Speicher (VG Kaisersesch und Ulmen)", value: "75 € je kWh, höchstens 500 € — Programm beendet" },
+    ],
+    conditions: [
+      "Das Programm ist zum 31.03.2026 ausgelaufen; Anträge waren nur bis zum 31.01.2026 möglich, solange Mittel da waren",
+      "Den Aufschlag der Verbandsgemeinden gab es nicht die ganze Laufzeit: Ihr Anteil war in der VG Cochem nach weniger als sechs, in der VG Zell nach rund sieben Monaten aufgebraucht; danach galt auch dort nur der Kreisanteil von 75 € je kWh",
+      "Nutzbare Speicherkapazität mindestens 5 kWh; ein Speicher je Antragsteller",
+      "Nur Eigentümer des Gebäudes; nur Gebäude, die ausschließlich dem Wohnen dienen",
+      "Eine bestehende Photovoltaikanlage durfte bei Antragstellung höchstens 15 Jahre alt sein (Inbetriebnahme laut Marktstammdatenregister)",
+      "Kein Kauf oder Auftrag vor der Förderzusage; ein vorzeitiger Beginn nur ausnahmsweise mit Zulassung",
+      "Finanziert aus dem Landesprogramm KIPKI; die Verbandsgemeinden Cochem und Zell stockten mit eigenen Mitteln auf",
+    ],
+    // Nr. 5: combining is allowed only where the other programme's rules allow it.
+    combinableWith: null,
+    foerdert: ["pv"],
   },  "mainz-bingen-balkonkraftwerke": {
     id: "mainz-bingen-balkonkraftwerke", name: "Eiskalt Entschwenden: Balkonkraftwerke",
     traeger: "Landkreis Mainz-Bingen", level: "landkreis", region: "Landkreis Mainz-Bingen", bundesland: "Rheinland-Pfalz", agsCode: "07339",
