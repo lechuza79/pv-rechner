@@ -800,7 +800,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           )}
           {geoLat !== null && geoLon !== null && (
             <>
-              <DataSourceNote label="Die simulierte Solarleistung nutzt Wetterdaten, Quelle:" source={DATA_SOURCES.iconD2Archive} />
+              <DataSourceNote label="Die simulierte Solarleistung nutzt Wetterdaten. Datenbasis:" source={DATA_SOURCES.iconD2Archive} />
               .{" "}
             </>
           )}

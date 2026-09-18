@@ -366,7 +366,7 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
           )}
           {blAgs && BL_CENTROID[blAgs] && solar && solar.total_kwp > 0 && (
             <>
-              {" "}<DataSourceNote label="Die simulierte Solarleistung nutzt Wetterdaten, Quelle:" source={DATA_SOURCES.iconD2Archive} />.
+              {" "}<DataSourceNote label="Die simulierte Solarleistung nutzt Wetterdaten. Datenbasis:" source={DATA_SOURCES.iconD2Archive} />.
             </>
           )}
         </p>

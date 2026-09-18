@@ -446,7 +446,7 @@ export default function SimulationPanel({
           Geschätzte Leistung für ein südausgerichtetes Dach ohne Verschattung.<br />
           {!embed && (
             <>
-              <DataSourceNote source={DATA_SOURCES.iconD2Archive} /> ·{" "}
+              <DataSourceNote label="Datenbasis:" source={DATA_SOURCES.iconD2Archive} /> ·{" "}
             </>
           )}
           Wettermodell stündlich neu

@@ -186,7 +186,8 @@ export const DATA_SOURCES = {
    * den Bedingungen der Lizenz Creative Commons BY 4.0") und Open-Meteo für das
    * Archiv, dessen Lizenzseite einen Link auf open-meteo.com verlangt.
    * Verändert: Rasterzelle gewählt, Temperatur auf die Ortshöhe umgerechnet,
-   * zeitlich auf „jetzt" interpoliert.
+   * zeitlich auf „jetzt" interpoliert. Wo die Seite den Vermerk selbst setzt,
+   * steht davor „Datenbasis:" (DWD-Vorlage für veränderte Daten), nicht „Quelle:".
    */
   iconD2Archive: {
     name: "Deutscher Wetterdienst, Modell ICON-D2, über Open-Meteo",

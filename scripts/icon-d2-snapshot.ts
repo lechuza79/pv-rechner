@@ -54,9 +54,12 @@ async function main() {
   // The hours around now for the scene, and the whole German calendar day for
   // the day curves (live simulation, municipal solar today). One file serves
   // both; whichever reaches further wins.
-  const [dayStart, dayEnd] = berlinTagesgrenzen(new Date());
+  // Reaching into tomorrow as soon as "now + 4 h" does: otherwise the last
+  // run before midnight leaves the new day empty until the first run after it.
+  const [dayStart] = berlinTagesgrenzen(new Date());
+  const [, reachEnd] = berlinTagesgrenzen(new Date((nowHour + SNAPSHOT_HOURS_AFTER) * 3600000));
   const firstHour = Math.min(nowHour - SNAPSHOT_HOURS_BEFORE, dayStart / 3600000);
-  const lastHour = Math.max(nowHour + SNAPSHOT_HOURS_AFTER, dayEnd / 3600000);
+  const lastHour = Math.max(nowHour + SNAPSHOT_HOURS_AFTER, reachEnd / 3600000);
   const hours = lastHour - firstHour + 1;
   const endHour = Math.floor(meta.data_end_time / 3600);
   if (firstHour + hours - 1 > endHour) {
