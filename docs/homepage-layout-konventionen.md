@@ -8,11 +8,14 @@ Do not edit the retired scene package for layout changes.
   stays full-bleed. Text-only paragraphs cap at `--sc-layout-reading`, 680px.
 - Hero headline: `--sc-type-hero-size`, desktop max 48px. Section headline:
   `--sc-type-section-size`, 26–34px. Compact section headline: 24–30px.
-- Body: 16px / 1.6, including person card copy, attribution and reassurance.
+- Body: 16px / 1.6; person quotation uses the 20px title role. Attribution and
+  reassurance stay at body size. Contact is icon-only through 850px, labelled
+  on desktop and equal in width to the primary action.
   Button and link labels must remain legible independently of card dimensions.
 - Hero actions remain stacked and equal width. Hero copy aligns with the centered content rail while the scene stays full bleed.
-  The secondary action uses a 78% dark fill and light text; blur is decorative,
-  not required for contrast (white is the worst-case scene background). The repeated trust
+  The secondary action uses a nearly transparent 6% tint, inherits scene text
+  contrast and adds a subtle contour. This no longer carries the previous
+  opaque-fill contrast guarantee; bright and dark scenes need visual review. The repeated trust
   line is omitted in the hero; the person card retains that reassurance.
 - Footer column dividers follow the four/two-column grid; rules are centered in the gaps. The two-column grid uses one continuous
   vertical divider without fragmented horizontal rules.

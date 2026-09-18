@@ -119,6 +119,7 @@ const FAQ_CSS = `
 .sc-faq-wrap{max-width:var(--sc-layout-content,1120px);margin:0 auto}
 .sc-faq h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-secondary-label-size,13px);line-height:1.5;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#a7bcbb;margin:0 0 16px}
 .sc-faq details{border-bottom:1px solid #aec4bd30}
+.sc-faq details:last-child{border-bottom:0}
 .sc-faq summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:92px;box-sizing:border-box;padding:28px 0;font-size:var(--sc-type-title-size,20px);line-height:1.4;font-weight:500;transition:color 180ms ease}
 .sc-faq summary:hover{color:#d4ff24}
 .sc-faq summary::-webkit-details-marker{display:none}

@@ -996,8 +996,8 @@ solar-illustration.hs-audience-art::before{content:none}
 .homepage-study .hs-intro>p:last-child{max-width:var(--sc-layout-reading);font-size:var(--sc-type-body-size)}
 .homepage-study .hs-organisation-links h2{font-size:var(--sc-type-section-compact-size)}
 .homepage-study .hs-person-section>.hs-wrap{max-width:900px}
-/* A stable surface protects the secondary action from moving foliage. */
-.homepage-study .hero-copy .secondary-cta{background:rgb(23 59 66 / 78%);color:#f0f4ee;border-color:rgb(240 244 238 / 24%);box-shadow:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+/* A faint tint follows the scene text contrast instead of a solid card fill. */
+.homepage-study .hero-copy .secondary-cta{background:color-mix(in srgb,currentColor 6%,transparent);color:inherit!important;border-color:color-mix(in srgb,currentColor 45%,transparent);box-shadow:none;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
 .homepage-study .hero-copy .trust-line{display:none}
 .homepage-study .hs-person-section .sc-person-text,
 .homepage-study .hs-person-section .sc-person-signature,
@@ -1022,6 +1022,18 @@ solar-illustration.hs-audience-art::before{content:none}
 .homepage-study .hs-person-section .sc-person-actions .hs-person-message{width:auto;min-height:46px;height:auto;flex-basis:auto;border:1px solid #173b4255;border-radius:999px;padding:10px 22px;gap:8px;background:transparent;font-weight:600;transition:background 180ms ease,border-color 180ms ease}
 .homepage-study .hs-person-section .hs-person-message:hover{background:#173b420b;border-color:#173b42}
 
-/* The fill itself provides contrast, including when backdrop-filter is absent. */
-.homepage-study .hero-copy .secondary-cta:hover{background:rgb(23 59 66 / 88%)}
-@media(prefers-reduced-transparency:reduce){.homepage-study .hero-copy .secondary-cta{background:#173b42;backdrop-filter:none;-webkit-backdrop-filter:none}}
+/* Keep hover subtle; reduced transparency uses an opaque contrast fallback. */
+.homepage-study .hero-copy .secondary-cta:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
+@media(prefers-reduced-transparency:reduce){.homepage-study .hero-copy .secondary-cta{background:#173b42;color:#f0f4ee!important;backdrop-filter:none;-webkit-backdrop-filter:none}}
+
+.homepage-study .hs-person-section .sc-person-text{font-size:var(--sc-type-title-size);line-height:1.55}
+@media(min-width:851px){
+ .homepage-study .hs-person-section .sc-person-actions{display:grid;grid-template-columns:max-content;justify-content:start;align-items:stretch}
+ .homepage-study .hs-person-section .sc-person-actions>a{box-sizing:border-box;width:100%;justify-content:center}
+}
+@media(max-width:850px){
+ .homepage-study .hs-person-section .sc-person-actions{display:grid;grid-template-columns:minmax(0,1fr) 46px;align-items:center;gap:10px}
+ .homepage-study .hs-person-section .sc-person-actions .sc-person-primary{font-size:var(--sc-type-action-size);padding:12px 10px;justify-content:center}
+ .homepage-study .hs-person-section .sc-person-actions .hs-person-message{width:46px;height:46px;min-height:46px;flex:0 0 46px;padding:0;justify-content:center}
+ .homepage-study .hs-person-message>span{display:none}
+}
