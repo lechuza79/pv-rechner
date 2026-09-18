@@ -19,6 +19,8 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   mastr: "Anlagenbestand in Deutschland (Solar-Atlas, Karten, Kennzahlen)",
   openMeteo: "Wetterdaten der Live-Simulation und der Kühlgradstunden",
   era5Archive: "Rückblickende Wetterstunden der kommunalen Energiecharts — Sonne, Temperatur und Wind je Ort",
+  iconD2Archive: "Live-Wetter: Wolken, Temperatur und Wind jetzt, aus dem Wettermodell des Wetterdienstes",
+  dwdRadar: "Live-Wetter: gemessener Regen und Schnee am Ort, alle fünf Minuten",
   dwd: "Sonneneinstrahlung je Jahr seit 1991 — die Wetterjahre im Stromkosten-Rennen",
   pvgis: "Standortabhängiger Solarertrag je Kilowatt-Peak",
   eurostat: "Haushaltsstrompreise im europäischen Vergleich",

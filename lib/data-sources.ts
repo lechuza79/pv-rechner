@@ -167,6 +167,35 @@ export const DATA_SOURCES = {
     note: "Rasterzelle und Höhenbezug abgeleitet",
   },
   /**
+   * Live-Wetter: das Wettermodell des DWD (ICON-D2), gelesen aus dem offenen
+   * Datenarchiv von Open-Meteo. Zwei Rechteinhaber, beide CC BY 4.0 — der DWD
+   * (Rechtliche Hinweise auf dwd.de: „alle frei zugänglichen Geodaten … unter
+   * den Bedingungen der Lizenz Creative Commons BY 4.0") und Open-Meteo für das
+   * Archiv, dessen Lizenzseite einen Link auf open-meteo.com verlangt.
+   * Verändert: Rasterzelle gewählt, Temperatur auf die Ortshöhe umgerechnet,
+   * zeitlich auf „jetzt" interpoliert.
+   */
+  iconD2Archive: {
+    name: "ICON-D2, Deutscher Wetterdienst, über Open-Meteo",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://open-meteo.com",
+    note: "ausgewertet und bildlich wiedergegeben",
+  },
+  /**
+   * Radar-Niederschlag (RADOLAN RY), direkt vom Open-Data-Server des DWD.
+   * Quellenvermerk nach den DWD-Vorgaben „Datenbasis: Deutscher Wetterdienst"
+   * mit Veränderungshinweis; § 7 DWD-Gesetz verlangt die Quellenangabe auch,
+   * wo ein einzelner Messwert urheberrechtlich nicht geschützt wäre.
+   */
+  dwdRadar: {
+    name: "Deutscher Wetterdienst, Radar",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://www.dwd.de",
+    note: "Radardaten ausgewertet und bildlich wiedergegeben",
+  },
+  /**
    * Jahresraster der Globalstrahlung, Deutscher Wetterdienst (CDC-OpenData).
    * CC BY 4.0 laut Nutzungsbedingungen des CDC-OpenData-Bereichs (Stand Mai
    * 2024, https://opendata.dwd.de/climate_environment/CDC/Nutzungsbedingungen_German.pdf).

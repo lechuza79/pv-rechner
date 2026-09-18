@@ -1756,6 +1756,9 @@ export const GEPLANTE_LAEUFE: ReadonlyArray<{ datei: string; was: string }> = [
   // außen aus wie ein Postfach, in dem nichts passiert. Genau dieser Zustand
   // hat den Lauf überhaupt erst nötig gemacht.
   { datei: "kommunen-ruecklauf.yml", was: "Kommunen-Rücklauf" },
+  // Stündlich. Fällt er aus, zeigt die Startseite nach drei Stunden kein
+  // Modellwetter mehr — von außen sieht das aus wie ein ruhiger Himmel.
+  { datei: "wetter-schnappschuss.yml", was: "Live-Wetter-Schnappschuss" },
 ];
 
 /** Ab so vielen Läufen ohne Erfolg in Folge ist ein geplanter Lauf auffällig. */
