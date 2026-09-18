@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import NeonButton from "../../../components/NeonButton";
-import { IconArrowDown, IconArrowLeft, IconArrowRight, IconCheck, IconPause, IconPlay } from "../../../components/Icons";
+import { IconArrowDown, IconArrowRight, IconCheck, IconPause, IconPlay } from "../../../components/Icons";
 import { useLocation } from "../../../lib/location";
 import partikel from "./szene-partikel.json";
 import { heroWetter, BEISPIEL_NAME, type HeroOrt, type HeroWetter } from "./hero-wetter";
@@ -178,7 +178,8 @@ export default function StartseiteHero({
         {simulation ? (
           <section className="hs-journey hs-scene-simulation" data-simulation-shell aria-label="Simulation für deinen Standort">
             <Link className="hs-journey-back" href="/">
-              <IconArrowLeft size={16} /> Zur Startseite
+              {/* The frozen stylesheet turns this arrow by 180°. */}
+              <IconArrowRight size={16} /> Zur Startseite
             </Link>
             {/* The page's h1 carries the keyword it ranks for; the step below
                 keeps the reviewed headline as h2. */}
