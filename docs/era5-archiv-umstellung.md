@@ -208,6 +208,27 @@ Kurzvermerk aus verlinkt. Die Jahresangabe darin wird fest verdrahtet.
 - **Freigabe steht aus.** Nichts ist gemergt, die Vorgabe bleibt der alte
   Anbieter. Die Umstellung ist ein Schalter, kein Zustand.
 
+## Zurück zu Open-Meteo, auch mit Abo
+
+Die Quellenwahl ist ein Schalter; Voreinstellung bleibt der gehostete Abruf.
+Mit einem Abo genügt es, den Schlüssel als Umgebungsvariable
+`OPEN_METEO_API_KEY` zu setzen: Dann geht die Anfrage an die Kundenadresse.
+Zwischenspeicher und gespeicherte Herkunft bleiben auf der öffentlichen Form —
+der Schlüssel landet nie auf der Platte, und die 3.419 gespeicherten Antworten
+bleiben gültig, weil Abo und freier Zugang dieselben Daten liefern.
+
+## Live-Wetter (nicht Teil dieser Umstellung)
+
+Die Sonnenanzeige der Startseite und die übrigen Live-Abrufe laufen weiter über
+die freie Vorhersage-Schnittstelle. Zwei Befunde dazu, beide ungelöst:
+
+- Der Wert „jetzt" ist ein **Modellwert** der Vorhersage, keine Messung. Wie weit
+  er von der tatsächlichen Einstrahlung abweicht, hat hier niemand gemessen.
+  Gemessene Werte gibt es offen beim Deutschen Wetterdienst (Stationsdaten im
+  Zehn-Minuten-Takt); Verzug und Abdeckung sind ungeprüft.
+- Fehlt der Anzeige ein Wert, setzt sie still **null Einstrahlung** bzw. 15 °C
+  ein — eine fehlende Zahl sieht dann aus wie Nacht.
+
 ## Wenn umgestellt wird
 
 1. `npm run era5:punkte` — Wetterpunkte sammeln, **einschließlich der in
