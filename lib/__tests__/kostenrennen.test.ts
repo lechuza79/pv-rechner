@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { kostenrennen, RENNEN_OHNE_MIT_PV, wetterFenster, wetterMonatsprofile, type RennHaushalt } from "../kostenrennen";
-import { calc, calcEigenverbrauch, calcWeightedFeedIn, estimateCost, batteryReplaceCost, BATTERY_LIFETIME_YEARS } from "../calc";
+import { calc, calcEigenverbrauchExakt, calcWeightedFeedIn, estimateCost, batteryReplaceCost, BATTERY_LIFETIME_YEARS } from "../calc";
 import { PERSONEN, YEARS, NATIONAL_AVG_YIELD } from "../constants";
 import { DEFAULT_PRICES } from "../prices-config";
 import { DEFAULT_FEED_IN } from "../feedin-config";
@@ -31,7 +31,7 @@ describe("Amortisations-Rennen — glattes Referenzjahr", () => {
   });
 
   it("der Abstand zwischen den Läufern IST der kumulierte Gewinn des Rechners", () => {
-    const ev = calcEigenverbrauch({ personenIdx: 2, nutzungIdx: 1, speicherKwh: 0, wp: "nein", ea: "nein", eaKm: 0, kwp: 10, ertragKwp: NATIONAL_AVG_YIELD });
+    const ev = calcEigenverbrauchExakt({ personenIdx: 2, nutzungIdx: 1, speicherKwh: 0, wp: "nein", ea: "nein", eaKm: 0, kwp: 10, ertragKwp: NATIONAL_AVG_YIELD });
     const kosten = estimateCost(10, 0, DEFAULT_PRICES);
     const ergebnis = calc({
       kwp: 10, kosten, strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev,
@@ -41,7 +41,8 @@ describe("Amortisations-Rennen — glattes Referenzjahr", () => {
     for (let i = 0; i <= YEARS; i++) {
       expect(Math.abs(ohne.kumuliert[i] - mit.kumuliert[i] - ergebnis.years[i].kum)).toBeLessThanOrEqual(1);
     }
-    expect(mit.eigenverbrauchPct).toBe(ev);
+    // Gezeigt in ganzen Prozent, gerechnet ungerundet — wie im Rechner.
+    expect(mit.eigenverbrauchPct).toBe(Math.round(ev));
     expect(r.ueberholJahr.mit).toBe(ergebnis.be?.i ?? null);
     expect(r.ueberholJahr.mit).not.toBeNull();
   });
@@ -74,7 +75,7 @@ describe("Amortisations-Rennen — glattes Referenzjahr", () => {
   });
 
   it("die Monatsausgabe der Amortisationsrechnung summiert je Jahr exakt auf den Jahresnutzen", () => {
-    const ev = calcEigenverbrauch({ personenIdx: 2, nutzungIdx: 1, speicherKwh: 10, wp: "nein", ea: "nein", eaKm: 0, kwp: 10, ertragKwp: NATIONAL_AVG_YIELD });
+    const ev = calcEigenverbrauchExakt({ personenIdx: 2, nutzungIdx: 1, speicherKwh: 10, wp: "nein", ea: "nein", eaKm: 0, kwp: 10, ertragKwp: NATIONAL_AVG_YIELD });
     const e = calc({
       kwp: 10, kosten: estimateCost(10, 10, DEFAULT_PRICES), strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev,
       einspeisung: calcWeightedFeedIn(10, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10, DEFAULT_FEED_IN.thresholdKwp),

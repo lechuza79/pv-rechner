@@ -35,6 +35,18 @@ export function zeitpunktInBerlin(iso: string | null | undefined): string | null
   }).format(d);
 }
 
+/**
+ * Das laufende Kalenderjahr in Deutschland.
+ *
+ * `new Date().getUTCFullYear()` ist zwischen 00:00 und 01:00 am 1. Januar noch
+ * das Vorjahr. Auf den Gemeindeseiten (Vorhaltezeit eine Woche) nannte die
+ * Auslauf-Geschichte damit bis zu sieben Tage lang Jahrgang und Frist um ein
+ * Jahr daneben (Rechenmodell-Council 12.09.2026).
+ */
+export function jahrInBerlin(jetzt: Date = new Date()): number {
+  return Number(heuteInBerlin(jetzt).slice(0, 4));
+}
+
 /** „2026-08-19" — der laufende Kalendertag in Deutschland. */
 export function heuteInBerlin(jetzt: Date = new Date()): string {
   // `sv-SE` formatiert als YYYY-MM-DD; das ist der kürzeste zuverlässige Weg

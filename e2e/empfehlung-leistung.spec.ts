@@ -59,7 +59,13 @@ test("shared recommendation hands over exactly 4 kWp", async ({ page }) => {
 test("intermediate recommendation and alternatives retain their displayed capacity", async ({ page }) => {
   await captureClipboard(page);
   test.setTimeout(90_000);
-  const recommendation = "/pv-bedarf-berechnen?haus=efh&dach=satteldach&az=sued&personen=4&nutzung=teils&view=ergebnis";
+  // Ein Haushalt, der eine halbe kWp-Stufe UND Alternativen bekommt — über
+  // ±10 % Modulpreis stabil, damit die Live-Preise der Prüfung ihn nicht kippen.
+  // Der frühere Fall (Einfamilienhaus, Satteldach, Süd, 3–4 Personen) hatte seine
+  // einzige Alternative nur, weil der Eigenverbrauch vor der Geldrechnung auf
+  // ganze Prozent gerundet wurde; ungerundet liegt sie unter der 95-%-Schwelle
+  // (Rechenmodell-Council 12.09.2026).
+  const recommendation = "/pv-bedarf-berechnen?haus=grosses-efh&dach=flachdach&az=ostwest&personen=5plus&nutzung=teils&view=ergebnis";
   await page.goto(recommendation);
   const hero = page.getByText("Unsere Empfehlung", { exact: true }).locator("..");
   const kwp = Number((await hero.innerText()).match(/([\d.]+) kWp/)![1]);

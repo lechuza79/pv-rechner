@@ -1,3 +1,5 @@
+import { entschluesseltOderRoh } from "./uri-sicher";
+import { load } from "cheerio";
 // Personen von einer Organisations-Website: Name, Funktion, Abschnitt, Adresse,
 // Durchwahl.
 //
@@ -38,24 +40,27 @@ import { decodeEntities } from "./kommunen-profil";
  * abdecken will, baut eine Liste, die nie fertig wird — und fängt sich dabei
  * falsche Treffer ein.
  */
+// Match whitespace only at the start of a run, never retry at every suffix.
+// A real municipal page contained 632,890 consecutive whitespace characters;
+// unanchored greedy prefixes blocked all concurrent crawls in one event loop.
 export function entwirreAdressen(text: string): string {
   return (
     text
       // (at) [at] {at}
-      .replace(/\s*[([{]\s*at\s*[)\]}]\s*/gi, "@")
+      .replace(/(?<!\s)\s*[([{]\s*at\s*[)\]}]\s*/gi, "@")
       // " at " zwischen Wort und Domain
-      .replace(/\s+at\s+(?=[\w-]+\.[a-z]{2,})/gi, "@")
+      .replace(/(?<!\s)\s+at\s+(?=[\w-]+\.[a-z]{2,})/gi, "@")
       // (punkt) [dot]
-      .replace(/\s*[([{]\s*(?:punkt|dot)\s*[)\]}]\s*/gi, ".")
+      .replace(/(?<!\s)\s*[([{]\s*(?:punkt|dot)\s*[)\]}]\s*/gi, ".")
       // Ein Füllzeichen ZWISCHEN zwei @ — gemessen am 05.09.2026 bei
       // informatik-aktuell.de: `name@~@domain.de` lieferte damit auf einmal
       // zwei Adressen statt keiner.
       .replace(/@[~*#|]+@/g, "@")
       // Leerzeichen um den Punkt der Domain: `info (at) bodensee-news . de`.
       // Ohne das bricht jedes Adressmuster, obwohl die Adresse dasteht.
-      .replace(/(?<=@[\w-]+)\s+\.\s+(?=[\w-]{2,})/g, ".")
+      .replace(/(@[\w-]+)\s+\.\s+(?=[\w-]{2,})/g, "$1.")
       // Leerzeichen unmittelbar um das @ — der häufigste Fall, inkl. geschütztem
-      .replace(/[ \t ]*@[ \t ]*/g, "@")
+      .replace(/(?<![ \t ])[ \t ]*@[ \t ]*/g, "@")
   );
 }
 
@@ -155,7 +160,7 @@ const FENSTER = 400;
  * Die Funktion ist das, was zwischen dem Namen und der Durchwahl steht — auch
  * das ohne Wortliste, weil die Wörter ja gerade eingesammelt werden sollen.
  */
-export function personenAus(html: string): Person[] {
+function legacyPersonenAus(html: string): Person[] {
   const text = textMitAbschnitten(html);
   const gefunden = new Map<string, Person>();
 
@@ -207,6 +212,27 @@ export function personenAus(html: string): Person[] {
     });
   }
   return [...gefunden.values()];
+}
+
+/** Bind fields inside a single contact card regardless of their visual order. */
+export function personenAus(html: string): Person[] {
+  const found = new Map(legacyPersonenAus(html).map(p => [p.mail, p]));
+  const $ = load(html);
+  $("script,style,noscript").remove();
+  $("a[href^='mailto:']").each((_, el) => {
+    try { $(el).append(" " + entschluesseltOderRoh(($(el).attr("href") ?? "").slice(7).split("?")[0])); } catch { /* Invalid source. */ }
+  });
+  $("p,li,td,div,article,section").each((_, el) => {
+    const text = entwirreAdressen($(el).text()).replace(/\s+/g, " ").trim();
+    const emails = [...new Set(text.match(MAIL) ?? [])];
+    // Never pair fields across two people. The legacy path handles split sibling cards.
+    if (emails.length !== 1 || text.length > 600 || found.has(emails[0].toLowerCase())) return;
+    const email = emails[0];
+    if (!istPersonenAdresse(email)) return;
+    const withoutEmail = text.replaceAll(email, " ");
+    for (const person of legacyPersonenAus(`<div>${withoutEmail} ${email}</div>`)) found.set(person.mail, person);
+  });
+  return [...found.values()];
 }
 
 /**

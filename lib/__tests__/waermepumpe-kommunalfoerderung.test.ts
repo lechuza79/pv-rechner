@@ -180,7 +180,10 @@ describe("Der Katalog bleibt mit der Wärmepumpen-Rechnung verträglich", () => 
     // aber die Erdwärmequelle, nicht der Tausch. Ein `percentOfCost` darf im
     // Wärmepumpen-Zweig deshalb NICHTS ergeben, sonst verspräche der Rechner
     // 10 % auch dem, der eine Luftwärmepumpe plant.
-    const roth = FUNDING_PROGRAMS["roth-klimaschutz"];
+    // Since 17.09.2026 Roth's catalogue entry carries no PV percentage any more
+    // (tenant-power only). The guard itself stays: the fixture sets the
+    // percentage explicitly on a program that also names the heat pump.
+    const roth = { ...FUNDING_PROGRAMS["roth-klimaschutz"], percentOfCost: 0.1, pvCap: 1000 };
     expect(roth.percentOfCost).toBeGreaterThan(0);
     expect(technikenVon(roth)).toContain("waermepumpe");
     const belegt = { ...roth, lastVerified: "2026-08-18", pageSeenAt: "2026-08-19" };
@@ -263,10 +266,16 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
   it("stellt sicher, dass der Zweig im Katalog gar nicht erst greift", () => {
     // Solange jedes Programm das Feld trägt, ist die Frage oben theoretisch.
     // Dieser Test hält sie theoretisch.
-    const ohneFeld = Object.values(FUNDING_PROGRAMS).filter(p => !Array.isArray(p.combinableWith));
+    const ohneFeld = Object.values(FUNDING_PROGRAMS).filter(p => p.combinableWith !== null && !Array.isArray(p.combinableWith));
     expect(ohneFeld.map(p => p.id)).toEqual([]);
   });
 
+
+  it("keeps unverified combinations explicit and out of the federal grant stack", () => {
+    const unknown = Object.values(FUNDING_PROGRAMS).filter(p => p.combinableWith === null);
+    expect(unknown.map(p => p.id).sort()).toEqual(["altenkirchen-balkonkraftwerke", "bad-marienberg-erneuerbare-energien", "burbach-klimaschutz-privat", "delmenhorst-balkon-solar", "eppelheim-balkonkraftwerke", "floersheim-photovoltaik", "kirchlengern-pv-kleinanlagen", "pfaffenhofen-balkon", "radolfzell-sonnige-zukunft", "rheinisch-bergisch-balkonsolar", "wendelstein-pv", "wendlingen-energie"]);
+    expect(programmeNebenBundesfoerderung(unknown)).toEqual([]);
+  });
   it("führt jeden Ausschluss ausdrücklich", () => {
     // Kein Schnappschuss, sondern eine Quittung: Wer ein Programm aufnimmt, das
     // Bundesmittel ausschließt, trägt es hier ein und bestätigt damit, dass die
@@ -282,8 +291,9 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
     //   kumuliert werden" (Nr. 1 der Richtlinie 2026, am 29.08.2026 im
     //   Volltext gelesen). Der Ausschluss gilt allen fremden Mitteln, also
     //   auch den Bundesmitteln.
-    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "tegernheim-stecker-pv", "weyhe-klimaschutz"];
-    const ausschluss = Object.values(FUNDING_PROGRAMS).filter(schliesstBundesfoerderungAus);
+    // Official combination clauses reviewed on 2026-09-16; unknown is distinct from prohibition.
+    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "herzberg-balkonkraftwerke", "herzebrock-clarholz-batteriespeicher", "luedinghausen-klimaschutzfonds", "mainz-bingen-balkonkraftwerke" /* guideline 5.6.5: no cumulation with federal, state or municipal funds */, "mayen-koblenz-balkonkraftwerke" /* guideline no. 7: "Kumulierung … grundsätzlich nicht zulässig" */, "meschede-balkon-speicher", "neuwied-balkonkraftwerke", "tegernheim-stecker-pv", "vaterstetten-pv-begleitung", "weyhe-klimaschutz", "wolfratshausen-pv"];
+    const ausschluss = Object.values(FUNDING_PROGRAMS).filter(p => Array.isArray(p.combinableWith) && p.combinableWith.length === 0);
     expect(
       ausschluss.map(p => p.id).sort(),
       "Neuer Ausschluss im Katalog — Fundstelle prüfen und hier eintragen, oder das fehlende combinableWith nachtragen",

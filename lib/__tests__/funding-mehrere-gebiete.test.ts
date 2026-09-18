@@ -47,7 +47,11 @@ describe("Programme mit mehreren Fördergebieten", () => {
     // hätte damit den echten Fall nie erreicht.
     for (const p of Object.values(FUNDING_PROGRAMS)) {
       if (!(p.agsCodes ?? []).length) continue;
-      expect(p.level, `${p.id}`).toBe("kommune");
+      // Ein Landkreis darf mehrere Gebiete tragen, wenn er einen Teil seines
+      // Kreises ausnimmt: Die StädteRegion Aachen fördert ihre neun Gemeinden
+      // OHNE die Stadt Aachen (Nr. 3.2 beider Richtlinien, 11.09.2026). Auch
+      // dann gilt die Prüfung darunter — nur Gemeindeschlüssel, nie der Kreis.
+      expect(["kommune", "landkreis"], `${p.id}`).toContain(p.level);
       for (const g of foerdergebiete(p)) {
         expect(g.length, `${p.id}: Fördergebiet ${g} ist ein Kreisschlüssel`).toBe(8);
       }

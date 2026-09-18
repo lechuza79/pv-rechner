@@ -1,12 +1,6 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, DACHARTEN, NATIONAL_AVG_YIELD, SCENARIOS, YEARS } from "../../../lib/constants";
-import { dachErtragKwp } from "../../../lib/dach-ertrag";
-import { type TiltOrientation } from "../../../lib/tilt-config";
-import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
-import { calcWpAnnualElectricity } from "../../../lib/heatpump";
-import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
-import { DEFAULT_PRICES } from "../../../lib/prices-config";
+import { ogRechnung } from "../../../lib/og-rechnung";
 import { tokens } from "../../../lib/theme";
 import { zeitpunktInBerlin } from "../../../lib/zeit";
 
@@ -257,73 +251,10 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const anlageIdx = paramInt(params, "a", 2, 0, 4);
-  const speicherIdx = paramInt(params, "s", 0, 0, 3);
-  const personenIdx = paramInt(params, "p", 1, 0, 3);
-  const nutzungIdx = paramInt(params, "n", 1, 0, 3);
-  const wp = paramStr(params, "wp", "nein", ["nein", "geplant", "ja"]);
-  const ea = paramStr(params, "ea", "nein", ["nein", "geplant", "ja"]);
-  const eaKm = paramInt(params, "km", 15000, 1000, 50000);
-  const customKwp = paramFloat(params, "ck", 12, 1, 50);
-  // `er` ist das Standort-OPTIMUM (PVGIS mit optimaler Neigung nach Süden);
-  // `da`/`az` machen daraus den Ertrag DIESES Dachs. Ohne diesen Schritt zeigt
-  // das Vorschaubild eines Ost/West-Links die Amortisation eines Süddachs —
-  // dieselbe Regel wie im Rechner (lib/dach-ertrag.ts).
-  const ertragOptimum = paramInt(params, "er", NATIONAL_AVG_YIELD, 700, 1400);
-  const ogDachart = params.da !== undefined ? paramInt(params, "da", -1, 0, DACHARTEN.length - 1) : -1;
-  const ogAusrichtung = paramStr(params, "az", "", ["sued", "suedostwest", "ostwest", "nord"]) as TiltOrientation | "";
-  const ertragKwp = dachErtragKwp(ertragOptimum, ogDachart >= 0 ? ogDachart : null, ogAusrichtung || null);
-  const strompreis = paramFloat(params, "st", DEFAULT_PRICES.electricityPrice, 0.05, 1.0);
-  const einspeisungModus = params.eia === "2" ? "voll" : params.eia === "0" ? "aus" : "teil";
+  // Die ganze Rechnung steht in lib/og-rechnung.ts — dieselben Bausteine wie im
+  // Rechner, und ein Test hält jeden Schlüssel des Teilen-Links dagegen.
   const plz = params.plz || "";
-
-  const kwp = anlageIdx < 4 ? ANLAGEN[anlageIdx].kwp : customKwp;
-  const spKwh = SPEICHER[speicherIdx].kwh;
-
-  const oKosten = params.k ? paramFloat(params, "k", 0, 500, 200000) : null;
-  const oEv = params.ev ? paramInt(params, "ev", 0, 5, 95) : null;
-
-  // WP-Jahresstrom aus den Gebäudedaten (gleiche Physik wie der Rechner), damit
-  // das Vorschaubild bei WP-Links dieselbe Amortisation zeigt wie die Seite.
-  const wpKwh = wp !== "nein"
-    ? calcWpAnnualElectricity({
-        situation: "bestand",
-        wohnflaeche: paramInt(params, "wf", 140, 20, 1000),
-        insulationIdx: paramInt(params, "wi", 1, 0, INSULATION_BESTAND.length - 1),
-        personen: PERSONEN[personenIdx].count,
-        heizsystem: paramStr(params, "wh", "hk_neu", ["fbh", "hk_neu", "hk_alt"]) as "fbh" | "hk_neu" | "hk_alt",
-        wpType: "lwwp",
-        haustypFaktor: HAUSTYP_WP[paramInt(params, "wht", 0, 0, HAUSTYP_WP.length - 1)].faktor,
-      })
-    : null;
-
-  const ev = oEv ?? calcEigenverbrauch({
-    personenIdx, nutzungIdx, speicherKwh: spKwh, wp, ea, eaKm, wpKwh, kwp, ertragKwp,
-  });
-  const kosten = oKosten ?? estimateCost(kwp, spKwh);
-  const oEinsp = params.ei ? paramFloat(params, "ei", 0, 0, 20) : null;
-  const autoEinsp = einspeisungModus === "voll"
-    ? calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.vollUnder10, DEFAULT_FEED_IN.vollOver10)
-    : calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
-  const einsp = einspeisungModus === "aus" ? 0 : (oEinsp ?? autoEinsp);
-  const effEv = einspeisungModus === "voll" ? 0 : ev;
-
-  const result = calc({
-    kwp, kosten, strompreis, eigenverbrauch: effEv, einspeisung: einsp,
-    // Dasselbe Szenario wie die Seite ohne Reiterwahl (realistisch). Hier stand
-    // 0,03 — das Bild im Chat zeigte 13.241 € Gewinn, die Seite 11.485 €.
-    // Was strukturell bleibt: Das Bild läuft ohne Datenbank, also ohne Live-
-    // Preise und ohne Monatsprofil; die Formeln sind dieselben, die Eingaben
-    // nicht vollständig.
-    stromSteigerung: SCENARIOS.find((s) => s.id === "realistic")!.strom, ertragKwp, monthly: null,
-    batteryReplace: batteryReplaceCost(spKwh),
-  });
-
-  const amortYears = result.be ? result.be.i : null;
-  const rendite25j = result.total;
-  // Dieselbe Formel wie „⌀ Ersparnis / Jahr" auf der Seite: mittlerer
-  // Jahresnutzen, nicht Gewinn durch 25 (das war um die Investition zu klein).
-  const avgSavings = Math.round((rendite25j + kosten) / YEARS);
+  const { kwp, spKwh, ev, amortYears, gewinn25: rendite25j, avgSavings } = ogRechnung(params);
 
   const amortColor = amortYears !== null ? C_ACCENT : C_NEGATIVE;
   const amortText = amortYears !== null ? `${amortYears}` : ">25";
@@ -333,7 +264,7 @@ export async function GET(req: NextRequest) {
   const cards = [
     { value: `${kwp} kWp`, label: "ANLAGE" },
     { value: spKwh > 0 ? `${spKwh} kWh` : "Ohne", label: "SPEICHER" },
-    { value: `${ev}%`, label: "EIGENVERBR." },
+    { value: `${Math.round(ev)}%`, label: "EIGENVERBR." },
   ];
   if (plz) cards.push({ value: plz, label: "STANDORT" });
 

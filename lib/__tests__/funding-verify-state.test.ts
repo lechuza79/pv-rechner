@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import {
   arbeitsvorrat,
   eskalationsVorschlag,
+  ERREICHBARKEITEN,
+  istErreichbarkeit,
   pruefstandFuer,
   zaehltAlsGeprueft,
   ESKALATION_AB_FEHLVERSUCHEN,
@@ -262,5 +264,38 @@ describe("Herkunft des Fingerabdrucks", () => {
   it("ein Herkunftswechsel wird ausgewiesen, nicht als unverändert verbucht", () => {
     const quelle = readFileSync(new URL("../../scripts/funding-watch.ts", import.meta.url), "utf8");
     expect(quelle).toContain("nichtVergleichbar");
+  });
+});
+
+describe("Seiten-Wächter-Zeilen sind keine Fehlversuche (17.09.2026)", () => {
+  // Real case: Alzey-Land had one successful read, then six nightly
+  // "page changed" rows. Counted as failures, it escalated and the sender
+  // drafted a mail claiming the page sat behind a bot wall — it was readable.
+  const zeilen = [
+    { programId: "alzey", checkedAt: "2026-09-09T09:00:00Z", erreichbarkeit: "traeger" },
+    ...["11", "12", "13", "14", "15", "16"].map((d) => ({
+      programId: "alzey",
+      checkedAt: `2026-09-${d}T08:30:00Z`,
+      erreichbarkeit: "seite-geaendert",
+    })),
+    { programId: "alzey", checkedAt: "2026-09-16T09:00:00Z", erreichbarkeit: "seite-unerreichbar" },
+  ] as unknown as PruefVersuch[];
+
+  it("eskalieren kein Programm, auch wenn sie im Versuchs-Strom landen", () => {
+    const stand = pruefstandFuer({ id: "alzey" }, zeilen, "2026-09-17");
+    expect(stand.fehlversuche).toBe(0);
+    expect(stand.eskalation).toBe(false);
+    expect(stand.letzteQuellenpruefung).toBe("2026-09-09");
+  });
+
+  it("nur die fünf echten Abrufausgänge gelten als Versuch", () => {
+    expect([...ERREICHBARKEITEN].sort()).toEqual(["archiv", "gesperrt", "pruefseite", "sekundaer", "traeger"]);
+    expect(istErreichbarkeit("seite-geaendert")).toBe(false);
+    expect(istErreichbarkeit("seite-unerreichbar")).toBe(false);
+  });
+
+  it("der Anfrage-Versand filtert die Tabelle, bevor er eskaliert", () => {
+    const src = readFileSync("scripts/funding-anfrage.ts", "utf8");
+    expect(src).toMatch(/\.filter\(\(v\) => istErreichbarkeit\(v\.source\)\)/);
   });
 });

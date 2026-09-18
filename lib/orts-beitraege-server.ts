@@ -22,6 +22,7 @@ import { ortsStories, type StoryDaten } from "./orts-stories";
 import { ortsPosts, type OrtsBeitrag } from "./orts-posts";
 import { ladeFassungen } from "./social-vorlagen-db";
 import type { GespeicherteFassung } from "./social-posts";
+import { jahrInBerlin } from "./zeit";
 
 /** Was der Aufrufer schon hat — die Seite lädt es ohnehin für ihre Kacheln. */
 export type OrtsEingang = {
@@ -73,7 +74,7 @@ export async function ortsBeitraege(
         monate,
         wohnungen,
       },
-      heuteJahr: new Date().getUTCFullYear(),
+      heuteJahr: jahrInBerlin(),
       plaetze,
       funde,
     }),

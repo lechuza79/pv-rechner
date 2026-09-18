@@ -19,7 +19,7 @@
 // Ein „Läufer" ist eine Haushaltskonfiguration; `kwp: 0` heißt „keine Anlage".
 
 import { PERSONEN, YEARS, YEAR, NATIONAL_AVG_YIELD, CONSUMPTION_MONTHLY } from "./constants";
-import { calc, calcEigenverbrauch, calcWeightedFeedIn, estimateCost, batteryReplaceCost, type JahresVerlauf } from "./calc";
+import { calc, calcEigenverbrauchExakt, calcWeightedFeedIn, estimateCost, batteryReplaceCost, type JahresVerlauf } from "./calc";
 import { calcExtraConsumption } from "./consumption";
 import { monthlyFromAnnual } from "./balkon-sim";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
@@ -191,7 +191,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
         nutzen: ohneMonat.map(() => 0),
       };
     }
-    const ev = calcEigenverbrauch({
+    const ev = calcEigenverbrauchExakt({
       personenIdx: h.personenIdx, nutzungIdx: h.nutzungIdx, speicherKwh: h.speicherKwh,
       wp: h.wp ?? "nein", ea: h.ea ?? "nein", eaKm: h.eaKm ?? 0,
       kwp: h.kwp, ertragKwp,
@@ -215,7 +215,7 @@ export function kostenrennen(haushalte: RennHaushalt[], p: RennParameter = {}): 
     }
     return {
       key: h.key, label: h.label, kurz: h.kurz, hatPv: true, kwp: h.kwp, speicherKwh: h.speicherKwh,
-      investition: kosten, verbrauchKwh, eigenverbrauchPct: ev,
+      investition: kosten, verbrauchKwh, eigenverbrauchPct: Math.round(ev),
       kumuliert: jahreswerte(mitMonat),
       monatlich: mitMonat.map((x) => Math.round(x)),
       nutzen: nutzen.map((x) => Math.round(x)),

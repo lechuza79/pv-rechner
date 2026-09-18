@@ -45,7 +45,7 @@ import { getRegionAtlasData } from "./mastr-data";
 import { getRegionById, atlasPathForRegionId } from "./atlas";
 import { tagMonatJahr } from "./stand-format";
 import { versandzeitOk } from "./versandzeit";
-import { heuteInBerlin } from "./zeit";
+import { jahrInBerlin, heuteInBerlin } from "./zeit";
 
 export type LaufErgebnis = {
   /** Orte, für die es überhaupt Abonnenten gibt. */
@@ -123,7 +123,7 @@ export async function aboLauf(o: {
     verschoben: null,
     fehler: [],
   };
-  const heuteJahr = o.jetzt.getUTCFullYear();
+  const heuteJahr = jahrInBerlin(o.jetzt);
   const jetztIso = o.jetzt.toISOString();
 
   // ─── Erst rechnen, dann schicken ──────────────────────────────────────────

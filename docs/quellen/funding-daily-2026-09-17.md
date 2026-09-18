@@ -1,0 +1,12 @@
+# Daily official-source check, 17 September 2026
+
+No newly confirmed national change. Only the EEG and GModG review dates advance; values and legal states stay unchanged.
+
+- EEG: [Bundestag agenda](https://www.bundestag.de/dokumente/textarchiv/2026/kw39-de-energie-stromsektor-1211294), relevant full original read, announces first reading on 24 September at 20:35. Draft [21/7867](https://dserver.bundestag.de/btd/21/078/2107867.pdf) remains a government draft, not enacted abolition of remuneration.
+- CO2: [draft 21/7869](https://dserver.bundestag.de/btd/21/078/2107869.pdf), relevant amendments and reasons read: 2027 corridor remains draft. No new change to the model inferred; underlying EU ETS2 regulation was not fully re-audited today.
+- GModG: [official promulgation](https://www.recht.bund.de/bgbl/1/2026/226/regelungstext.pdf?__blob=publicationFile&v=2) and complete consolidated [section 42a](https://www.gesetze-im-internet.de/geg/__42a.html) / [section 43](https://www.gesetze-im-internet.de/geg/__43.html) read. Existing promulgation/in-force status and stages confirmed. No new adopted quota law supported. The model's 2045 endpoint is not an additional numbered section-43 stage.
+- BEG: [KfW 458](https://www.kfw.de/inlandsfoerderung/Privatpersonen/Bestehende-Immobilie/F%C3%B6rderprodukte/Heizungsf%C3%B6rderung-f%C3%BCr-Privatpersonen-Wohngeb%C3%A4ude-(458)/), current funding and FAQ sections read, match current configuration, including 16% climate-speed bonus. The separate future 15% base grant is not today's bonus. No application stop found on this source; no new full audit of the July funding directive.
+- Bioheating oil: [UFOP September market information](https://www.ufop.de/files/3217/8886/0606/RZ_MI_0926.pdf) has biodiesel wholesale and road-diesel retail prices, not a usable end-customer heating-oil blend series. No unsupported heating cost series introduced.
+- Follow-up discovery: [NRW directive 2 September](https://recht.nrw.de/lrmb/verwaltungsvorschrift/02092026-richtlinie-ueber-die-gewaehrung-von-zuwendungen-aus-dem/), geothermal drilling in existing buildings with three or more units. Compare previous version and current application availability before catalogue decision; not a general single-family-house grant.
+
+Originals, retrieval manifest and detailed independent daily review are kept in the local watcher evidence archive. Search coverage is bounded, not proof of the absence of all further announcements.

@@ -4,10 +4,11 @@ import { join } from "node:path";
 import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs } from "../heatpump";
 import { recommend } from "../recommend";
 import { DEFAULT_HEATPUMP_CONFIG as CFG } from "../heatpump-config";
-import { greenGasApplies } from "../fossil-reference";
-import { INSULATION_BESTAND, WP_FUEL_OPTIONS, SCENARIOS, DEGRAD, DACHARTEN, NATIONAL_AVG_YIELD } from "../constants";
+import { greenGasApplies, kesselDerAblesung, referenzFuerEinheit } from "../fossil-reference";
+import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../heat-consumption";
+import { INSULATION_BESTAND, WP_FUEL_OPTIONS, FUEL, SCENARIOS, DEGRAD, DACHARTEN, NATIONAL_AVG_YIELD } from "../constants";
 import { dachErtragKwp } from "../dach-ertrag";
-import { calc } from "../calc";
+import { calc, calcEigenverbrauch, calcEigenverbrauchExakt, estimateCost, calcWeightedFeedIn } from "../calc";
 import { einspeiseVerlauf } from "../einspeise-regime";
 
 /**
@@ -561,5 +562,175 @@ describe("Modell-Kohärenz: eine Aussage gilt über die ganze Laufzeit", () => {
       `Der Wärmepumpenstrom wird mit einem anderen Preis gerechnet als im ` +
       `Wärmepumpen-Rechner: ${zeile?.trim().slice(0, 120)}`,
     ).toBe(true);
+  });
+});
+
+// ─── Rechenmodell-Council 12.09.2026 ────────────────────────────────────────
+//
+// Drei Prüfer, ein Gegenprüfer. Jeder Fall hier hat die Form, gegen die es
+// diesen Test gibt: Eine Größe wird an zwei Stellen verschieden gerechnet, und
+// im Browser sieht keine der beiden falsch aus.
+
+describe("Modell-Kohärenz: eine Eingabe, eine Zahl", () => {
+  it("die Empfehlung rechnet mit derselben Klimaanlage, die sie ausweist", () => {
+    // Gefunden 12.09.2026: Der ausgewiesene Gesamtverbrauch nahm die
+    // Raum-Schnellschätzung (228 kWh), die Wirtschaftlichkeit dahinter die
+    // Flächen-Schätzung (361 kWh) — dieselbe Klimaanlage, +58 %. Das ist die
+    // zweite Hälfte des Fixes vom 05.09.2026, die damals übersehen wurde: die
+    // Bewertung einer Konfiguration reichte die Kühlmenge nicht durch.
+    //
+    // Geprüft wird die WIRKUNG, nicht das Vorkommen eines Funktionsnamens —
+    // der Test vom 05.09. prüfte nur, dass der Name in der Datei steht, und war
+    // deshalb gegen genau diesen Fall blind.
+    const basis = {
+      personen: 0, nutzung: 0, wp: "nein", ea: "nein", eaKm: 15000,
+      haustyp: 0, dachart: 0, budgetLimit: null, ertragKwp: NATIONAL_AVG_YIELD,
+    } as const;
+    const ohne = recommend({ ...basis, klima: "nein" });
+    const mit = recommend({ ...basis, klima: "ja" });
+
+    // Der Kühlstrom, den die Empfehlung ausweist …
+    const ausgewiesen = mit.reasoning.klimaConsumption;
+    expect(ausgewiesen).toBeGreaterThan(0);
+    // … muss auch der sein, der im ausgewiesenen Gesamtverbrauch steckt.
+    expect(mit.reasoning.totalConsumption - ohne.reasoning.totalConsumption)
+      .toBeCloseTo(ausgewiesen, 6);
+
+    // Und er muss in der Rechnung ankommen: Bei derselben Anlagengröße und
+    // demselben Speicher muss der Eigenverbrauch genau der sein, der aus dem
+    // ausgewiesenen Kühlstrom folgt. Rechnete die Rechnung mit 361 statt
+    // 228 kWh, misst die Beschriftung etwas anderes als die Zahl.
+    const ev = (klimaKwh: number | null) => calcEigenverbrauch({
+      personenIdx: basis.personen, nutzungIdx: basis.nutzung,
+      speicherKwh: mit.speicherKwh, wp: "nein", ea: "nein", eaKm: 15000,
+      klima: "ja", klimaKwh, kwp: mit.kwp, ertragKwp: NATIONAL_AVG_YIELD,
+    });
+    expect(mit.reasoning.eigenverbrauch).toBe(ev(ausgewiesen));
+  });
+});
+
+describe("Modell-Kohärenz: eine Ablesung, ein Kessel", () => {
+  // Gefunden 12.09.2026: Die Umrechnung Zählerstand → Heizwärme rechnete fest mit
+  // der vorhandenen Therme (90 %), die Referenzrechnung danach mit dem gewählten
+  // Kessel. Bei „Alter Gaskessel" (80 %) wurden aus 24.000 abgelesenen kWh
+  // 27.000 gerechnete — derselbe Kessel mit zwei Nutzungsgraden.
+  const ABGELESEN_KWH = 24000;
+  const ABGELESEN_LITER = 2400;
+
+  it("eine vorhandene Heizung verbrennt in der Rechnung genau, was abgelesen wurde — über alle Bestandseinträge", () => {
+    const bestand = WP_FUEL_OPTIONS.filter(f => f.bestandsanlage);
+    expect(bestand.length).toBeGreaterThan(0);
+    for (const f of bestand) {
+      const einheit = f.kind === "oil" ? "oel" : "gas";
+      const endenergie = einheit === "oel" ? ABGELESEN_LITER * OEL_KWH_PRO_LITER : ABGELESEN_KWH;
+      const waerme = waermeAusEndenergie(endenergie, kesselDerAblesung(einheit, f));
+      // Die Referenzrechnung teilt durch den Nutzungsgrad des gewählten Kessels.
+      expect(waerme / f.efficiency, f.id).toBeCloseTo(endenergie, 6);
+    }
+  });
+
+  it("beim Ersatz durch ein Neugerät bleibt der Effizienzgewinn stehen", () => {
+    // Die Umrechnung darf NICHT pauschal den gewählten Nutzungsgrad nehmen — beim
+    // Ersatz beschreibt er das neue Gerät, und die Rechnung verbrennte dann exakt
+    // die Ablesung, als würde der alte Kessel weiterlaufen.
+    for (const f of WP_FUEL_OPTIONS.filter(o => !o.bestandsanlage)) {
+      const einheit = f.kind === "oil" ? "oel" : "gas";
+      expect(kesselDerAblesung(einheit, f), f.id).toBe(FUEL[f.kind].efficiency);
+    }
+  });
+
+  it("die Einheit der Ablesung setzt den Energieträger der Referenz, der Fall bleibt", () => {
+    for (const f of WP_FUEL_OPTIONS) {
+      for (const einheit of ["gas", "oel"] as const) {
+        const ziel = WP_FUEL_OPTIONS.find(o => o.id === referenzFuerEinheit(f.id, einheit))!;
+        expect(ziel.kind, `${f.id} → ${einheit}`).toBe(einheit === "oel" ? "oil" : "gas");
+        expect(!!ziel.bestandsanlage, `${f.id} → ${einheit}`).toBe(!!f.bestandsanlage);
+        if (f.kind === ziel.kind) expect(ziel.id).toBe(f.id);
+      }
+    }
+  });
+
+  it("der Rechner benutzt beide Regeln, statt den Nutzungsgrad selbst zu wählen", () => {
+    // Geprüft wird die Verwendung, nicht das Vorhandensein im Modul.
+    const quelle = readFileSync(join(ROOT, "app/(site)/waermepumpe-rechner/waermepumpe.tsx"), "utf8");
+    expect(quelle).not.toMatch(/FUEL\.(gas|oil)\.efficiency/);
+    const umrechnung = quelle.match(/waermeAusEndenergie\([^;]*\)/g) ?? [];
+    expect(umrechnung.length).toBeGreaterThan(0);
+    for (const u of umrechnung) expect(u).toMatch(/kesselDerAblesung\(/);
+    expect(quelle).toMatch(/referenzFuerEinheit\(/);
+  });
+});
+
+describe("Modell-Kohärenz: eine größere Anlage rechnet nie schlechter, weil gerundet wurde", () => {
+  // Gefunden 12.09.2026: Der Eigenverbrauch ging auf ganze Prozent gerundet in
+  // die Geldrechnung. An jeder Stufe wies eine GRÖSSERE Anlage weniger Gewinn aus
+  // als eine kleinere — 3–4 Personen ohne Speicher bei 11,5 kWp 797 € weniger als
+  // bei 11,0, andere Haushalte bis 1.418 €. Die Empfehlung wählte an solchen
+  // Stellen ein Rundungsartefakt.
+  const haushalte = [0, 1, 2, 3].flatMap(p => [0, 1, 2, 3].flatMap(n => [0, 5, 10].map(sp => ({ p, n, sp }))));
+  const kwps = Array.from({ length: 35 }, (_, i) => 3 + i * 0.5);
+
+  it("die selbst genutzte Energie wächst mit der Anlage — über alle Haushalte", () => {
+    for (const h of haushalte) {
+      let vorher = -Infinity;
+      for (const kwp of kwps) {
+        const ev = calcEigenverbrauchExakt({ personenIdx: h.p, nutzungIdx: h.n, speicherKwh: h.sp, wp: "nein", ea: "nein", eaKm: 0, kwp, ertragKwp: NATIONAL_AVG_YIELD });
+        const selbst = (ev / 100) * kwp * NATIONAL_AVG_YIELD;
+        expect(selbst, `P${h.p} N${h.n} S${h.sp} bei ${kwp} kWp`).toBeGreaterThanOrEqual(vorher - 1e-6);
+        vorher = selbst;
+        // Gezeigt wird dieselbe Rechnung, nur gerundet.
+        expect(calcEigenverbrauch({ personenIdx: h.p, nutzungIdx: h.n, speicherKwh: h.sp, wp: "nein", ea: "nein", eaKm: 0, kwp, ertragKwp: NATIONAL_AVG_YIELD })).toBe(Math.round(ev));
+      }
+    }
+  });
+
+  it("ein halbes kWp mehr kostet höchstens den Preissprung, nie einen Rundungssprung", () => {
+    // Die Anschaffung ist auf 500 € gerundet; ein Rückschritt bis zu diesem Betrag
+    // ist die Kostenstufe und legitim. Alles darüber kam aus dem Eigenverbrauch.
+    for (const h of haushalte) {
+      let vorher: number | null = null;
+      for (const kwp of kwps) {
+        const ev = calcEigenverbrauchExakt({ personenIdx: h.p, nutzungIdx: h.n, speicherKwh: h.sp, wp: "nein", ea: "nein", eaKm: 0, kwp, ertragKwp: NATIONAL_AVG_YIELD });
+        const gewinn = calc({ kwp, kosten: estimateCost(kwp, h.sp), strompreis: 0.35, eigenverbrauch: ev, einspeisung: calcWeightedFeedIn(kwp, 7.78, 6.73), stromSteigerung: 0.02, ertragKwp: NATIONAL_AVG_YIELD, monthly: null }).total;
+        if (vorher !== null) expect(vorher - gewinn, `P${h.p} N${h.n} S${h.sp} bei ${kwp} kWp`).toBeLessThan(500);
+        vorher = gewinn;
+      }
+    }
+  });
+
+  it("jede Geldrechnung nimmt den ungerundeten Eigenverbrauch", () => {
+    // Geprüft wird die Verwendung: Wer den gerundeten Wert in eine Rechnung
+    // steckt, weicht vom Rechner ab — und ein Teaser, der den Rechner vorbelegt,
+    // zeigte dann eine andere Zahl als das Ziel.
+    const geldPfade = [
+      "lib/faq.ts", "lib/funding-examples.ts", "lib/gemeinde-potential.ts", "lib/funding-scenarios.ts",
+      "lib/atlas-impact.ts", "lib/kostenrennen.ts", "app/api/og/route.tsx",
+      "app/(site)/ratgeber/lohnt-sich-pv-mit-speicher/page.tsx",
+      "app/(site)/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung/page.tsx",
+      "app/(site)/einspeiseverguetung-rechner/rechner.tsx",
+    ];
+    for (const datei of geldPfade) {
+      expect(readFileSync(join(ROOT, datei), "utf8"), datei).not.toMatch(/calcEigenverbrauch\(/);
+    }
+    const rechner = readFileSync(join(ROOT, "app/(site)/photovoltaik-rechner/rechner.tsx"), "utf8");
+    expect(rechner).not.toMatch(/Math\.min\(effEv \+ s\.evDelta/);
+    expect(rechner).toMatch(/Math\.min\(effEvRechnung \+ s\.evDelta/);
+    const empfehlung = readFileSync(join(ROOT, "lib/recommend.ts"), "utf8");
+    const bewertung = empfehlung.slice(empfehlung.indexOf("function evalConfig"), empfehlung.indexOf("export function economicsForScenario"));
+    expect(bewertung).toMatch(/calcEigenverbrauchExakt\(/);
+    expect(bewertung).not.toMatch(/calcEigenverbrauch\(/);
+  });
+});
+
+describe("Modell-Kohärenz: der Kaufblock sagt, wovor er rechnet", () => {
+  it("der Balkonrechner reicht den Zuschuss an den Kaufblock, und der nennt ihn", () => {
+    // Gefunden 12.09.2026: Oben zieht der Rechner den kommunalen Zuschuss ab, der
+    // Kaufblock rechnet mit dem Kassenpreis — unter „dieselbe Rechnung wie oben"
+    // stand „bezahlt nach 3,0 Jahren" neben einer Kachel mit 1,8.
+    const rechner = readFileSync(join(ROOT, "app/(site)/balkonkraftwerk/rechner/balkon.tsx"), "utf8");
+    expect(rechner).toMatch(/<BalkonAngebot[^>]*foerderungEuro=\{foerderung\}/);
+    const block = readFileSync(join(ROOT, "components/BalkonAngebot.tsx"), "utf8");
+    expect(block).toMatch(/foerderungEuro > 0 \?/);
+    expect(block).toMatch(/vor der Förderung/);
   });
 });

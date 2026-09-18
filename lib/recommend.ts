@@ -1,5 +1,5 @@
 import { PERSONEN, NUTZUNG, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, NATIONAL_AVG_YIELD } from "./constants";
-import { calcEigenverbrauch, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
+import { calcEigenverbrauch, calcEigenverbrauchExakt, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
 import { simulatePvYear } from "./pv-sim";
 import { calcEaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "./consumption";
 import { klimaSchnellschaetzungKwh } from "./aircon";
@@ -151,6 +151,9 @@ interface EvalCtx {
   wpKwh: number;
   klima: string;
   klimaM2: number;
+  /** Kühlstrom des Jahres, null ohne Klimaanlage — EINE Zahl für Anzeige,
+   *  Autarkie-Simulation und Eigenverbrauch. */
+  klimaKwh: number | null;
   totalConsumption: number;
   monthlyYieldPerKwp: number[] | null;
 }
@@ -185,12 +188,15 @@ function buildCtx(input: RecommendInput, prices?: PriceConfig, feedIn?: FeedInRa
   });
   const klima = input.klima ?? "nein";
   const klimaM2 = input.klimaM2 ?? KLIMA_DEFAULT_M2;
+  // EINE Kühlmenge für den ganzen Kontext: sie steht im ausgewiesenen
+  // Gesamtverbrauch, in der Autarkie-Simulation UND im Eigenverbrauch.
+  const klimaKwh = klima !== "nein" ? klimaKwhSchnell() : null;
   const totalConsumption = baseConsumption
     + (input.wp !== "nein" ? wpKwh : 0)
     + (input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0)
-    + (klima !== "nein" ? klimaKwhSchnell() : 0);
+    + (klimaKwh ?? 0);
   const monthlyYieldPerKwp = input.monthlyYieldPerKwp ?? null;
-  return { input, p, f, ertragKwp, strompreis, stromSteigerung, wpKwh, klima, klimaM2, totalConsumption, monthlyYieldPerKwp };
+  return { input, p, f, ertragKwp, strompreis, stromSteigerung, wpKwh, klima, klimaM2, klimaKwh, totalConsumption, monthlyYieldPerKwp };
 }
 
 /** Autarkiegrad einer Konfiguration aus der Stunden-Jahressimulation (wie im
@@ -209,7 +215,7 @@ function autarkyFor(ctx: EvalCtx, kwp: number, speicherKwh: number): number {
     klimaM2: ctx.klimaM2,
     wpAnnualKwh: ctx.input.wp !== "nein" ? ctx.wpKwh : undefined,
     eaAnnualKwh: ctx.input.ea !== "nein" ? calcEaAnnual(ctx.input.eaKm) : undefined,
-    klimaAnnualKwh: ctx.klima !== "nein" ? klimaKwhSchnell() : undefined,
+    klimaAnnualKwh: ctx.klimaKwh ?? undefined,
   };
   return simulatePvYear({ kwp, speicherKwh, monthlyYieldPerKwp: ctx.monthlyYieldPerKwp, ertragKwp: ctx.ertragKwp, household }).autarky;
 }
@@ -219,10 +225,18 @@ function autarkyFor(ctx: EvalCtx, kwp: number, speicherKwh: number): number {
  *  physikalischen Maximum (man kann nie mehr nutzen als man verbraucht). */
 function evalConfig(ctx: EvalCtx, kwpRounded: number, speicherKwh: number, evDelta = 0): Candidate {
   const feedInCt = effectiveFeedInCtPerKwh(kwpRounded, ctx.f);
-  const evBase = calcEigenverbrauch({
+  // Ungerundet: Die Auswahl der Anlagengröße vergleicht Gewinne, und die ganzen
+  // Prozent kippten dort stufenweise (Rechenmodell-Council 12.09.2026). Gezeigt
+  // wird unten der gerundete Wert.
+  const evBase = calcEigenverbrauchExakt({
     personenIdx: ctx.input.personen, nutzungIdx: ctx.input.nutzung,
     speicherKwh, wp: ctx.input.wp, ea: ctx.input.ea, eaKm: ctx.input.eaKm,
-    klima: ctx.klima, klimaM2: ctx.klimaM2, wpKwh: ctx.wpKwh,
+    // klimaKwh: dieselbe Raum-Schnellschätzung, die auch im ausgewiesenen
+    // Gesamtverbrauch steht. Ohne sie fällt der Eigenverbrauch intern auf die
+    // FLÄCHEN-Schätzung zurück (361 statt 228 kWh, +58 %) — die Empfehlung wies
+    // dann eine Klimaanlage aus und rechnete mit einer anderen (Council
+    // 12.09.2026, zweite Hälfte des Fixes vom 05.09.2026).
+    klima: ctx.klima, klimaM2: ctx.klimaM2, klimaKwh: ctx.klimaKwh, wpKwh: ctx.wpKwh,
     kwp: kwpRounded, ertragKwp: ctx.ertragKwp,
   });
   const jahresertrag = kwpRounded * ctx.ertragKwp;
@@ -236,7 +250,7 @@ function evalConfig(ctx: EvalCtx, kwpRounded: number, speicherKwh: number, evDel
     batteryReplace: batteryReplaceCost(speicherKwh, ctx.p),
   });
   return {
-    kwp: kwpRounded, speicherKwh, ev, investition,
+    kwp: kwpRounded, speicherKwh, ev: Math.round(ev), investition,
     npv25: result.total,
     paybackYears: result.be?.i ?? null,
   };
@@ -265,11 +279,11 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
 
   // 1. Verbrauchsgrößen (WP-Strom, Klima etc. kommen aus dem geteilten Kontext,
   // damit Empfehlung und Szenario-Rendite dasselbe Modell nutzen).
-  const { klima, totalConsumption } = ctx;
+  const { totalConsumption } = ctx;
   const baseConsumption = PERSONEN[input.personen].verbrauch;
   const wpConsumption = input.wp !== "nein" ? wpKwh : 0;
   const eaConsumption = input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0;
-  const klimaConsumption = klima !== "nein" ? klimaKwhSchnell() : 0;
+  const klimaConsumption = ctx.klimaKwh ?? 0;
   const dailyConsumption = totalConsumption / DAYS_PER_YEAR;
 
   // 2. Dachfläche → max. kWp (customRoofM2 hat Vorrang vor haustyp × dachart)
@@ -356,7 +370,7 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
   const evOhneSpeicher = calcEigenverbrauch({
     personenIdx: input.personen, nutzungIdx: input.nutzung,
     speicherKwh: 0, wp: input.wp, ea: input.ea, eaKm: input.eaKm, wpKwh,
-    klima: ctx.klima, klimaM2: ctx.klimaM2,
+    klima: ctx.klima, klimaM2: ctx.klimaM2, klimaKwh: ctx.klimaKwh,
     kwp: best.kwp, ertragKwp,
   });
 

@@ -304,6 +304,8 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "zweibruecken", name: "Zweibrücken", ags: "07320", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1102 },
   // ── Landkreise mit eigenem (wiederkehrendem) Förderprogramm (Juni 2026) ──────
   { slug: "rhein-erft-kreis", name: "Rhein-Erft-Kreis", ags: "05362", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "rhein-erft-energieoffensive" },
+  // A county has no single point to measure; NRW state value from lib/bundesland-ertrag.ts (16.09.2026).
+  { slug: "rheinisch-bergischer-kreis", name: "Rheinisch-Bergischer Kreis", ags: "05378", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1035 },
   { slug: "kreis-viersen", name: "Kreis Viersen", ags: "05166", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "viersen-klimaschutz" },
   { slug: "kreis-bergstrasse", name: "Kreis Bergstraße", ags: "06431", bundesland: "Hessen", yieldKwhKwp: 1030, fundingId: "bergstrasse-speicher" },
   { slug: "mayen-koblenz", name: "Landkreis Mayen-Koblenz", ags: "07137", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1010, fundingId: "mayen-koblenz-speicher" },
@@ -315,6 +317,13 @@ export const ATLAS_CITIES: AtlasCity[] = [
   // 09.09.2026): ein Landkreis hat keinen Punkt, an dem man messen könnte, und
   // 1.000 fügt sich zwischen Delmenhorst (1.003) und der Stadt Oldenburg (989).
   { slug: "landkreis-oldenburg", name: "Landkreis Oldenburg", ags: "03458", bundesland: "Niedersachsen", yieldKwhKwp: 1000, fundingId: "landkreis-oldenburg-steckersolar" },
+  // Die StädteRegion Aachen fördert Balkonkraftwerke und Speicher in ihren neun
+  // Gemeinden OHNE die Stadt Aachen (aufgenommen 11.09.2026, für 2026 gestoppt).
+  // Das Programm trägt die neun Gemeindeschlüssel, deshalb die feste
+  // Verknüpfung: Ohne sie fände der Kreisschlüssel kein Programm. Ertrag als
+  // Handwert in Eschweiler gemessen (50,817 / 6,264, 11.09.2026: 1.071),
+  // zwischen der Stadt Aachen (1.054) und dem Kreis Düren.
+  { slug: "staedteregion-aachen", name: "StädteRegion Aachen", ags: "05334", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1071, fundingId: "staedteregion-aachen-ee" },
   // Nidda kam am 26.08.2026 über den Rücklauf einer Outreach-Mail herein: Die
   // Klimaschutz-Beauftragte der Stadt hat uns ihre Förderseite selbst geschickt.
   // Achtstelliger Schlüssel mit Kreis, weil kreisangehörig — 06440016 ist Nidda,
@@ -435,6 +444,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "rodgau", name: "Rodgau", ags: "06438011", kreis: "Landkreis Offenbach", bundesland: "Hessen", yieldKwhKwp: 1083 },
   { slug: "hohenahr", name: "Hohenahr", ags: "06532013", kreis: "Lahn-Dill-Kreis", bundesland: "Hessen", yieldKwhKwp: 1055 },
   { slug: "gudensberg", name: "Gudensberg", ags: "06634007", kreis: "Schwalm-Eder-Kreis", bundesland: "Hessen", yieldKwhKwp: 1037 },
+  { slug: "allendorf-eder", name: "Allendorf (Eder)", ags: "06635001", kreis: "Landkreis Waldeck-Frankenberg", bundesland: "Hessen", yieldKwhKwp: 1020 },
   { slug: "neuwied", name: "Neuwied", ags: "07138045", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1054 },
   { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009 },
   { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011 },
@@ -488,6 +498,31 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "parkstein", name: "Parkstein", ags: "09374144", kreis: "Landkreis Neustadt a.d.Waldnaab", bundesland: "Bayern", yieldKwhKwp: 1052 },
   { slug: "marburg", name: "Marburg", ags: "06534014", kreis: "Landkreis Marburg-Biedenkopf", bundesland: "Hessen", yieldKwhKwp: 1054 },
   { slug: "schoenbrunn", name: "Schönbrunn", ags: "08226081", kreis: "Rhein-Neckar-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1073 },
+  // Municipal source review, 2026-09-16: registry and measured PVGIS yields retained in the review evidence.
+  {"slug": "schwandorf", "name": "Schwandorf", "ags": "09376161", "bundesland": "Bayern", "kreis": "09376", "yieldKwhKwp": 1078},
+  {"slug": "salzkotten", "name": "Salzkotten", "ags": "05774036", "bundesland": "Nordrhein-Westfalen", "kreis": "05774", "yieldKwhKwp": 1028},
+  {"slug": "wolfratshausen", "name": "Wolfratshausen", "ags": "09173147", "bundesland": "Bayern", "kreis": "09173", "yieldKwhKwp": 1147},
+  {"slug": "minden", "name": "Minden", "ags": "05770024", "bundesland": "Nordrhein-Westfalen", "kreis": "05770", "yieldKwhKwp": 1015},
+  {"slug": "luedinghausen", "name": "Lüdinghausen", "ags": "05558024", "bundesland": "Nordrhein-Westfalen", "kreis": "05558", "yieldKwhKwp": 1038},
+  {"slug": "vaterstetten", "name": "Vaterstetten", "ags": "09175132", "bundesland": "Bayern", "kreis": "09175", "yieldKwhKwp": 1129},
+  {"slug": "wendelstein", "name": "Wendelstein", "ags": "09576151", "bundesland": "Bayern", "kreis": "09576", "yieldKwhKwp": 1042},
+  {"slug": "wendlingen-am-neckar", "name": "Wendlingen am Neckar", "ags": "08116071", "bundesland": "Baden-Württemberg", "kreis": "08116", "yieldKwhKwp": 1136},
+  {"slug": "erkelenz", "name": "Erkelenz", "ags": "05370004", "bundesland": "Nordrhein-Westfalen", "kreis": "05370", "yieldKwhKwp": 1090},
+  {"slug": "haltern-am-see", "name": "Haltern am See", "ags": "05562016", "bundesland": "Nordrhein-Westfalen", "kreis": "05562", "yieldKwhKwp": 1012},
+  {"slug": "idstein", "name": "Idstein", "ags": "06439008", "bundesland": "Hessen", "kreis": "06439", "yieldKwhKwp": 1047},
+  {"slug": "kirchlengern", "name": "Kirchlengern", "ags": "05758020", "bundesland": "Nordrhein-Westfalen", "kreis": "05758", "yieldKwhKwp": 1020},
+  {"slug": "floersheim-am-main", "name": "Flörsheim am Main", "ags": "06436004", "bundesland": "Hessen", "kreis": "06436", "yieldKwhKwp": 1089},
+  {"slug": "eppelheim", "name": "Eppelheim", "ags": "08226018", "bundesland": "Baden-Württemberg", "kreis": "08226", "yieldKwhKwp": 1100},
+  {"slug": "radolfzell-am-bodensee", "name": "Radolfzell am Bodensee", "ags": "08335063", "bundesland": "Baden-Württemberg", "kreis": "08335", "yieldKwhKwp": 1135},
+  {"slug": "meschede", "name": "Meschede", "ags": "05958032", "bundesland": "Nordrhein-Westfalen", "kreis": "05958", "yieldKwhKwp": 969},
+  {"slug": "ingelheim-am-rhein", "name": "Ingelheim am Rhein", "ags": "07339030", "bundesland": "Rheinland-Pfalz", "kreis": "07339", "yieldKwhKwp": 1113},
+  {"slug": "verl", "name": "Verl", "ags": "05754044", "bundesland": "Nordrhein-Westfalen", "kreis": "05754", "yieldKwhKwp": 1019},
+  {"slug": "eschborn", "name": "Eschborn", "ags": "06436003", "bundesland": "Hessen", "kreis": "06436", "yieldKwhKwp": 1093},
+  {"slug": "bergkamen", "name": "Bergkamen", "ags": "05978004", "bundesland": "Nordrhein-Westfalen", "kreis": "05978", "yieldKwhKwp": 1034},
+  {"slug": "pfaffenhofen-a-d-ilm", "name": "Pfaffenhofen a.d.Ilm", "ags": "09186143", "bundesland": "Bayern", "kreis": "09186", "yieldKwhKwp": 1114},
+  {"slug": "hiddenhausen", "name": "Hiddenhausen", "ags": "05758016", "bundesland": "Nordrhein-Westfalen", "kreis": "05758", "yieldKwhKwp": 1018},
+  {"slug": "burbach", "name": "Burbach", "ags": "05970008", "bundesland": "Nordrhein-Westfalen", "kreis": "05970", "yieldKwhKwp": 1013},
+  {"slug": "herzebrock-clarholz", "name": "Herzebrock-Clarholz", "ags": "05754020", "bundesland": "Nordrhein-Westfalen", "kreis": "05754", "yieldKwhKwp": 1039},
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {

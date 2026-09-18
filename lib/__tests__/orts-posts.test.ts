@@ -165,3 +165,83 @@ describe("Eine Ortsgeschichte ist ein Beitrag des Redaktionssystems", () => {
     }
   });
 });
+
+// ─── Rechenmodell-Council 12.09.2026 ────────────────────────────────────────
+//
+// Der Referenzfall oben erzeugt keine Anomalie und liegt mit seiner Einspeise-
+// summe über einer Million. Beide Fehler dieses Tages lagen genau dort, wo er
+// nicht hinsah — deshalb Fälle, die die Ränder wirklich treffen.
+
+/** Zwölf reife Monate mit einem Ausschlag; die zwei jüngsten gelten als unreif. */
+function mitAusschlag(sonst: number, spitze: number): StoryDaten {
+  const monate = Array.from({ length: 14 }, (_, i) => ({
+    monat: i < 12 ? `2024-${String(i + 1).padStart(2, "0")}` : `2025-0${i - 11}`,
+    segment: "privat_dach",
+    count: i === 6 ? spitze : sonst,
+  }));
+  return { ...BASIS, monate };
+}
+
+/** Ein kleines Dorf: fünf Anlagen, eine Einspeisesumme weit unter einer Million. */
+const KLEINES_DORF: StoryDaten = {
+  ...BASIS,
+  population: 300,
+  solar: {
+    total_count: 5,
+    total_kwp: 40,
+    by_segment: [{ segment: "privat_dach", count: 5, kwp: 40 }],
+    by_year_segment: [{ year: 2022, segment: "privat_dach", count: 5, kwp: 40 }],
+  },
+};
+
+const beitraegeVon = (d: StoryDaten) =>
+  ortsPosts({ stories: ortsStories({ daten: d, heuteJahr: JAHR }), ort: ORT, standIso: d.standIso, fassungen: {} }).map(
+    (b) => b.post,
+  );
+
+describe("Die eingebaute Bildform trägt auch an den Rändern", () => {
+  const faelle: [string, StoryDaten][] = [
+    ["Ausschlag über einem Ort, der sonst nichts baut", mitAusschlag(0, 8)],
+    ["Ausschlag über einem Median von eins", mitAusschlag(1, 8)],
+    ["Ausschlag über einem Median von zwei", mitAusschlag(2, 12)],
+    ["kleines Dorf", KLEINES_DORF],
+  ];
+
+  it("jede Geschichte startet mit einer Form, die ihre Zahlen hergeben", () => {
+    for (const [name, d] of faelle) {
+      const posts = beitraegeVon(d);
+      expect(posts.length, name).toBeGreaterThan(0);
+      for (const p of posts) {
+        expect(moeglicheFormen(p.bild!), `${name}: „${p.id}" trägt ${p.bild!.art} nicht`).toContain(p.bild!.art);
+      }
+    }
+  });
+
+  it("es gibt die Anomalie in den Randfällen wirklich — sonst prüft der Test nichts", () => {
+    for (const [name, d] of faelle.slice(0, 3)) {
+      expect(beitraegeVon(d).some((p) => p.id.includes("anomalie")), name).toBe(true);
+    }
+  });
+
+  it("die Säule zeigt den echten Vergleichswert, und der Titel behauptet kein Vielfaches von nichts", () => {
+    const ohne = ortsStories({ daten: mitAusschlag(0, 8), heuteJahr: JAHR }).find((s) => s.art === "anomalie")!;
+    expect(ohne.werte.map((w) => w.wert)).toEqual([8, 0]);
+    expect(ohne.titel).not.toMatch(/-mal/);
+    const zwei = ortsStories({ daten: mitAusschlag(2, 12), heuteJahr: JAHR }).find((s) => s.art === "anomalie")!;
+    expect(zwei.werte.map((w) => w.wert)).toEqual([12, 2]);
+    expect(zwei.titel).toContain("6-mal");
+  });
+});
+
+describe("Die Einspeisesumme steht in Kachel und Titel als dieselbe Zahl", () => {
+  it("über und unter einer Million", () => {
+    for (const d of [BASIS, KLEINES_DORF]) {
+      const s = ortsStories({ daten: d, heuteJahr: JAHR }).find((x) => x.art === "eingespielt");
+      expect(s, d.name).toBeTruthy();
+      const haupt = s!.werte.find((w) => w.haupt)!;
+      expect(haupt.wert, `${d.solar.total_count} Anlagen: die Kachel zeigt null`).toBeGreaterThan(0);
+      const geschrieben = `${haupt.wert.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ${haupt.einheit}`;
+      expect(s!.titel, `${d.solar.total_count} Anlagen`).toContain(geschrieben);
+    }
+  });
+});

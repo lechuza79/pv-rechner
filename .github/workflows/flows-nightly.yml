@@ -20,16 +20,24 @@
 # Zeit frisst, stand nirgends, und genau das war der Blocker. Gemessen in der
 # Nacht zum 06.09.2026, aus den Startzeitpunkten der einzelnen Tests:
 #
-#   PV-Rechner              1.728 Wege   149 min   58 %
-#   Wärmepumpen-Rechner     1.120 Wege    71 min   28 %
-#   PV-Bedarf / Empfehlung    288 Wege    24 min    9 %
-#   Klimaanlagen-Rechner      144 Wege     5 min
-#   Förder-Check Frankfurt     90 Wege     3 min
-#   Einspeisevergütung         60 Wege     3 min
-#   Balkonkraftwerk-Rechner    32 Wege     1 min
+#   PV-Rechner              1.728 Wege   174-182 min   58 %
+#   Wärmepumpen-Rechner     1.120 Wege   100-107 min   28 %
+#   PV-Bedarf / Empfehlung    288 Wege        25-28 min
+#   Klimaanlagen-Rechner      144 Wege            7 min
+#   Förder-Check Frankfurt     90 Wege            4 min
+#   Einspeisevergütung         60 Wege            4 min
+#   Balkonkraftwerk-Rechner    32 Wege            3 min
+#
+# DIE ZAHLEN SIND AM 16.09.2026 KORRIGIERT — die erste Fassung nannte für den
+# PV-Rechner 149 und für die Wärmepumpe 71 Minuten und lag damit um ein Fünftel
+# bis die Hälfte zu niedrig. Sie stammte aus den Startzeitpunkten der Tests im
+# gemeinsamen Job; gemessen sind jetzt die abgeschlossenen EINZELJOBS („1 passed
+# (2.9h)"), also die Größe, gegen die das Zeitlimit wirklich gehalten wird.
+# Auf der zu niedrigen Zahl beruhte die Aussage, 200 Minuten seien „ein Drittel
+# Luft" — real sind es 10 %.
 #
 # Zwei Flows tragen 86 % der Zeit. Getrennte Jobs machen daraus einen längsten
-# von rund 150 Minuten, OHNE einen einzigen Weg weniger zu prüfen.
+# von rund 180 Minuten, OHNE einen einzigen Weg weniger zu prüfen.
 #
 # UND ES IST NICHT DASSELBE WIE MEHR ARBEITER: Parallele Arbeiter teilen sich
 # einen Server, und genau daraus entstanden die Fehlalarme vom 18.08.2026.
@@ -83,7 +91,7 @@ jobs:
     needs: aufteilung
     runs-on: ubuntu-latest
     # 220 statt der früheren 300: Der längste Job ist heute der PV-Rechner mit
-    # 149 Minuten. Das Job-Limit muss über der SUMME seiner Schritt-Limits
+    # 174 bis 182 Minuten. Das Job-Limit muss über der SUMME seiner Schritt-Limits
     # liegen (10 + 5 + 200 = 215), sonst reißt wieder der Job zuerst und der
     # Ausgang heißt „cancelled" statt „failure" — festgenagelt von
     # lib/__tests__/workflow-schritt-zeitlimits.test.ts.
@@ -110,7 +118,7 @@ jobs:
       # sie irgendwo zitiert findet, zitiert einen Messfehler.
       #
       # Tragend ist stattdessen, dass die Grenze NICHTS KOSTET. Der PV-Rechner
-      # allein braucht rund 150 Minuten, alle übrigen sieben zusammen gut 110.
+      # allein braucht rund 180 Minuten, alle übrigen sieben zusammen gut 150.
       # Auf drei Spuren bleibt der PV-Lauf der längste, der ganze Lauf endet also
       # weiterhin nach gut 150 statt der früheren 258 Minuten. Die Ersparnis
       # stammt daher, dass die Flows NEBENEINANDER laufen — nicht daraus, dass
@@ -168,12 +176,20 @@ jobs:
       # erfolglosen Naechten auf (`laufStumm`), ein gerissenes SCHRITT-Limit
       # endet „failure" und ist am naechsten Morgen rot zu sehen.
       #
-      # 200 Minuten fuer den laengsten Flow (PV-Rechner, 149 min gemessen) —
-      # ein Drittel Luft. Vorher waren es 8 %, und der Lauf ist genau daran
-      # gerissen. DAS IST KEIN ANGEHOBENES LIMIT: Die Gesamtzeit des Laufs
-      # sinkt von 258 auf rund 150 Minuten, weil sechs Flows daneben laufen
-      # statt danach. Ein blosses Hochsetzen waere der Zug, den das
-      # Waechter-Gate verbietet.
+      # 200 Minuten fuer den laengsten Flow. DAS IST KEIN ANGEHOBENES LIMIT:
+      # Die Gesamtzeit des Laufs sinkt von 258 auf rund 180 Minuten, weil sechs
+      # Flows daneben laufen statt danach. Ein blosses Hochsetzen waere der Zug,
+      # den das Waechter-Gate verbietet.
+      #
+      # DIE LUFT IST 10 %, NICHT EIN DRITTEL (nachgemessen 16.09.2026). Hier
+      # stand das Drittel, weil die Ausgangsmessung 149 statt 174-182 Minuten
+      # nannte. Zehn Prozent haben von 07. bis 15.09.2026 trotzdem an JEDER
+      # Nacht gereicht: Kein erster Versuch lag je ueber 182 Minuten. Gerissen
+      # ist das Limit ausschliesslich dort, wo Playwright nach einem
+      # Fehlschlag einen zweiten Durchlauf begann — und der passt per Bauart
+      # nie hinein, auch nicht in ein groesseres Limit (siehe `retries` in
+      # playwright.config.ts). Wer hier erneut auf ein zu knappes Limit
+      # schliesst, sucht im Protokoll zuerst nach „(retry #1)".
       #
       # Die BERICHTSFORM „github,line" bleibt (05.09.2026): „github" schreibt in
       # die Annotationen, „line" nennt jeden Test beim Namen, sobald er startet.

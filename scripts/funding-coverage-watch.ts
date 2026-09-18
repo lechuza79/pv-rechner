@@ -1,3 +1,4 @@
+import { FundingSourceReader, FundingPersistenceError, persistFundingWrite } from "./lib/funding-source-reader";
 /**
  * Seiten-Abgleich für die ABDECKUNG: Hat sich eine Förderseite bewegt, die wir
  * kennen, aber (noch) nicht führen?
@@ -51,6 +52,7 @@ if (!url || !key) {
   process.exit(1);
 }
 const sb = createClient(url, key);
+const sources = new FundingSourceReader(sb, "coverage-watch", process.argv.includes("--dry"));
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
@@ -83,6 +85,7 @@ type Zeile = {
 };
 
 async function main(): Promise<void> {
+  await sources.ready();
   const limit = zahl("limit", 3000);
   const zeilen = (
     await alleZeilen<Zeile>("funding_coverage", "region_id, url, fingerprint, seite_gesehen_am")
@@ -91,6 +94,7 @@ async function main(): Promise<void> {
   // Am längsten nicht gesehene zuerst — so kommt jede Seite reihum dran, auch
   // wenn der Schub kleiner ist als der Bestand.
   const dran = zeilen
+    .filter(z => sources.due(z.url?.startsWith("http") ? z.url : `https://${z.url}`))
     .sort((a, b) => (a.seite_gesehen_am ?? "").localeCompare(b.seite_gesehen_am ?? ""))
     .slice(0, limit);
 
@@ -106,14 +110,15 @@ async function main(): Promise<void> {
   await inSchueben(dran, zahl("gleichzeitig", 8), async (z) => {
     let html: string | null = null;
     try {
-      const res = await fetch(z.url!, {
+      const res = await sources.fetch(z.url!, {
         headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
         redirect: "follow",
         signal: AbortSignal.timeout(15_000),
       });
       if (res.ok) html = await res.text();
-    } catch {
-      /* unerreichbar */
+    } catch (error) {
+      if (error instanceof FundingPersistenceError) throw error;
+      /* unreachable public source */
     }
 
     if (!html) {
@@ -134,22 +139,22 @@ async function main(): Promise<void> {
     }
     const fp = markiert("live", abdruck);
     if (!z.fingerprint) {
+      await persistFundingWrite(() => sb.from("funding_coverage").update({ fingerprint: fp, seite_gesehen_am: jetzt }).eq("region_id", z.region_id), { operation: "coverage-initial", url: z.url! });
       neu++;
-      await sb.from("funding_coverage").update({ fingerprint: fp, seite_gesehen_am: jetzt }).eq("region_id", z.region_id);
       return;
     }
     if (fp === z.fingerprint) {
+      await persistFundingWrite(() => sb.from("funding_coverage").update({ seite_gesehen_am: jetzt }).eq("region_id", z.region_id), { operation: "coverage-seen", url: z.url! });
       unveraendert++;
-      await sb.from("funding_coverage").update({ seite_gesehen_am: jetzt }).eq("region_id", z.region_id);
       return;
     }
 
-    geaendert++;
-    if (bewegt.length < 40) bewegt.push(z.region_id);
-    await sb
+    await persistFundingWrite(() => sb
       .from("funding_coverage")
       .update({ fingerprint: fp, seite_gesehen_am: jetzt, seite_geaendert_am: jetzt })
-      .eq("region_id", z.region_id);
+      .eq("region_id", z.region_id), { operation: "coverage-changed", url: z.url! });
+    geaendert++;
+    if (bewegt.length < 40) bewegt.push(z.region_id);
   });
 
   console.log("Ergebnis:");

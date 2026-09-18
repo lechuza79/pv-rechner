@@ -1,3 +1,5 @@
+import { fundingReplyCandidates, type FundingReplyMail } from "../lib/funding-replies";
+import { readMail } from "./lib/read-mail";
 /**
  * Rückläufer aus dem Anschreiben-Postfach abholen und zuordnen.
  *
@@ -101,17 +103,21 @@ async function angeschriebene(db: Awaited<ReturnType<typeof makeClient>>) {
   for (let from = 0; ; from += 1000) {
     const { data, error } = await db
       .from("kommunen_kontakt")
-      .select("region_id, rollen_email, mastr_regions!inner(name)")
+      .select("region_id, sent_to, rollen_email, presse_email, notes, mastr_regions!inner(name)")
       .not("contacted_at", "is", null)
-      .not("rollen_email", "is", null)
       .order("region_id")
       .range(from, from + 999);
     if (error) throw new Error(error.message);
     if (!data?.length) break;
-    for (const r of data as unknown as { region_id: string; rollen_email: string; mastr_regions: { name: string } | { name: string }[] }[]) {
+    for (const r of data as unknown as { region_id: string; sent_to: string | null; rollen_email: string | null; presse_email: string | null; notes: string | null; mastr_regions: { name: string } | { name: string }[] }[]) {
       const reg = Array.isArray(r.mastr_regions) ? r.mastr_regions[0] : r.mastr_regions;
-      const email = r.rollen_email.toLowerCase();
-      out.push({ region_id: r.region_id, name: reg?.name ?? r.region_id, email, domain: email.split("@")[1] ?? "" });
+      // New sends have an immutable recipient. Legacy notes can retain repaired bounce addresses.
+      const addresses = r.sent_to ? [r.sent_to] : [r.rollen_email, r.presse_email, ...((r.notes ?? "").match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g) ?? [])];
+      for (const address of new Set(addresses.filter((x): x is string => !!x))) {
+        const email = address.toLowerCase();
+        if (email.endsWith("@solar-check.io")) continue;
+        out.push({ region_id: r.region_id, name: reg?.name ?? r.region_id, email, domain: email.split("@")[1] ?? "" });
+      }
     }
     if (data.length < 1000) break;
   }
@@ -156,61 +162,61 @@ type Befund = {
  * Antwort". Das ist schlimmer als keine Auswertung: Es sähe aus wie eine
  * Messung und wäre eine Konstante.
  */
-async function foerderAnfragenZuordnen(
+export async function foerderAnfragenZuordnen(
   db: Awaited<ReturnType<typeof makeClient>>,
-  mails: { von: string; betreff: string; roh: string; datum: string; text: string }[],
+  mails: FundingReplyMail[],
   schreiben: boolean,
 ): Promise<void> {
-  const { ordneAnfrageZu } = await import("../lib/funding-anfragen");
-  const { data, error } = await db
-    .from("funding_anfragen")
-    .select("program_id, empfaenger, betreff, gesendet_am, antwort_am, antwort_art")
-    .is("antwort_am", null);
-  if (error) {
-    // Kein Abbruch: Der Kommunen-Rücklauf ist der Hauptzweck dieses Laufs und
-    // darf nicht an einer Tabelle scheitern, die es womöglich noch nicht gibt.
-    log(`Förder-Anfragen nicht lesbar (${error.message}) — übersprungen.`, "warn");
-    return;
+  const data: { program_id: string; empfaenger: string; betreff: string; gesendet_am: string; antwort_am: string | null; antwort_art: string | null }[] = [];
+  for (let offset = 0; ; offset += 1000) {
+    const { data: page, error } = await db.from("funding_anfragen")
+      .select("program_id, empfaenger, betreff, gesendet_am, antwort_am, antwort_art")
+      .order("id").range(offset, offset + 999);
+    if (error) throw new Error(`Förder-Anfragen nicht lesbar: ${error.message}`);
+    data.push(...(page ?? []));
+    if ((page?.length ?? 0) < 1000) break;
   }
-  const offene = (data ?? []).map((z) => ({
+  const offene = data.map((z) => ({
     programId: z.program_id as string,
     empfaenger: z.empfaenger as string,
     gesendetAm: z.gesendet_am as string,
-    antwortAm: null,
-    antwortArt: null,
+    antwortAm: z.antwort_am as string | null,
+    antwortArt: z.antwort_art as string | null,
   }));
   if (!offene.length) return;
   const betreffe = new Map((data ?? []).map((z) => [z.program_id as string, z.betreff as string]));
 
-  const treffer: { programId: string; datum: string; von: string; text: string }[] = [];
-  for (const m of mails) {
-    const id = ordneAnfrageZu(m, offene, betreffe);
-    if (id) treffer.push({ programId: id, datum: m.datum, von: m.von, text: m.text });
-  }
+  const treffer = fundingReplyCandidates(mails, offene, betreffe);
 
   log();
-  log(`Offene Sachfragen an Förderstellen: ${offene.length}, davon beantwortet in diesem Zeitraum: ${treffer.length}`);
-  for (const t of treffer) log(`${t.programId} — Antwort von ${t.von} am ${t.datum}`);
+  log(`Sachfragen an Förderstellen: ${offene.length}, neue Antworten zur fachlichen Prüfung: ${treffer.length}`);
+  for (const t of treffer) log(`${t.programId} — Antwort von ${t.von} am ${t.receivedAt}`);
   if (!schreiben || !treffer.length) return;
 
+  let saved = 0;
+  const failures: string[] = [];
   for (const t of treffer) {
-    const { error: e } = await db
+    let update = db
       .from("funding_anfragen")
       .update({
         // Der Tag der ANTWORT, nicht der des Abrufs — dieselbe Trennung wie
         // beim Kommunen-Rücklauf.
-        antwort_am: new Date(`${t.datum}T12:00:00Z`).toISOString(),
+        antwort_am: t.receivedAt,
         antwort_art: "antwort",
         // Der eigene Teil ohne Zitat: Was die Stelle wirklich geschrieben hat,
         // ist die Auskunft, wegen der gefragt wurde. Sie später nur als „hat
         // geantwortet" vorzufinden wäre derselbe Verlust wie bei Nidda.
-        antwort_notiz: t.text.slice(0, 2000),
+        antwort_notiz: t.text,
       })
-      .eq("program_id", t.programId)
-      .is("antwort_am", null);
-    if (e) log(`${t.programId}: ${e.message}`, "err");
+      .eq("program_id", t.programId);
+    // Compare against the observed state; a concurrent newer reply must survive.
+    update = t.previousReplyAt ? update.eq("antwort_am", t.previousReplyAt) : update.is("antwort_am", null);
+    const { data: written, error: e } = await update.select("program_id");
+    if (e || !written?.length) failures.push(`${t.programId}: ${e?.message ?? "reply state changed concurrently"}`);
+    else saved++;
   }
-  log(`${treffer.length} ${treffer.length === 1 ? "Antwort" : "Antworten"} an Förder-Anfragen nachgetragen`, "ok");
+  log(`${saved} Antworten an Förder-Anfragen nachgetragen`, "ok");
+  if (failures.length) throw new Error(`Förderantworten nicht vollständig gespeichert: ${failures.join("; ")}`);
 }
 
 async function main(): Promise<void> {
@@ -236,7 +242,7 @@ async function main(): Promise<void> {
     if (arr) arr.push({ region_id: z.region_id, name: z.name });
     else perDomain.set(z.domain, [{ region_id: z.region_id, name: z.name }]);
   }
-  log(`${ziele.length} angeschriebene Gemeinden als Zuordnungsbasis`);
+  log(`${new Set(ziele.map(z => z.region_id)).size} angeschriebene Gemeinden als Zuordnungsbasis`);
 
   const { ImapFlow } = await import("imapflow");
   const client = new ImapFlow({ host, port, secure: port === 993, auth: { user, pass }, logger: false });
@@ -257,7 +263,7 @@ async function main(): Promise<void> {
   /** Antworten auf die Sachfragen an Förderstellen — nicht auf unseren Brief. */
   const sachfragen: Befund[] = [];
   /** Jede gelesene Mail — Grundlage für die Zuordnung zu Förder-Sachfragen. */
-  const alleMails: { von: string; betreff: string; roh: string; datum: string; text: string }[] = [];
+  const alleMails: FundingReplyMail[] = [];
   for (const name of ordner) {
     let lock;
     try {
@@ -270,26 +276,18 @@ async function main(): Promise<void> {
       const roh = String(msg.source ?? "");
       const von = msg.envelope?.from?.[0]?.address?.toLowerCase() ?? "";
       const betreff = msg.envelope?.subject ?? "";
-      // Kopfzeilen und Text grob trennen — für die Einordnung reicht das; ein
-      // vollständiger MIME-Parser wäre eine zweite Abhängigkeit für nichts.
-      const trenner = roh.indexOf("\r\n\r\n");
-      const kopfRoh = trenner > 0 ? roh.slice(0, trenner) : roh.slice(0, 4000);
-      const text = trenner > 0 ? roh.slice(trenner + 4) : "";
-      const kopf: Record<string, string> = {};
-      for (const zeile of kopfRoh.split(/\r?\n/)) {
-        const m = zeile.match(/^([A-Za-z-]+):\s*(.*)$/);
-        if (m) kopf[m[1].toLowerCase()] = m[2];
-      }
-      const mail: RohMail = { von, betreff, text, kopf };
+      const parsed = await readMail(msg.source ?? Buffer.from(roh));
+      const text = parsed.text;
+      const mail: RohMail = { ...parsed, von, betreff };
       const art = ordneEin(mail);
 
       // Zuordnung: erst über die Absender-Domain, sonst über eine im Text
       // zitierte Empfängeradresse (Unzustellbarkeiten kommen vom eigenen
       // Mailserver, nicht von der Gemeinde).
-      let treffer = perDomain.get(von.split("@")[1] ?? "") ?? [];
+      let treffer = [...new Map((perDomain.get(von.split("@")[1] ?? "") ?? []).map(x => [x.region_id, x])).values()];
       if (treffer.length !== 1) {
-        const gefunden = ziele.filter((z) => roh.toLowerCase().includes(z.email));
-        treffer = gefunden.map((z) => ({ region_id: z.region_id, name: z.name }));
+        const gefunden = ziele.filter((z) => (roh + "\n" + text).toLowerCase().includes(z.email));
+        treffer = [...new Map(gefunden.map(z => [z.region_id, { region_id: z.region_id, name: z.name }])).values()];
       }
       // DASSELBE POSTFACH TRÄGT ZWEI GESPRÄCHE: die Antworten auf den
       // Kommunen-Brief und die auf die Sachfragen an Förderstellen
@@ -297,7 +295,7 @@ async function main(): Promise<void> {
       // einen Brief bekommen haben — sie landen hier also in „nicht
       // zuzuordnen", wenn niemand sie mitliest. Deshalb wird JEDE Mail
       // aufgehoben, nicht nur die zuordenbaren.
-      alleMails.push({ von, betreff, roh, datum: heuteInBerlin(msg.envelope?.date ?? new Date()), text });
+      alleMails.push({ ...mail, roh, receivedAt: msg.envelope?.date?.toISOString() ?? "" });
 
       const b: Befund = {
         art,
@@ -365,7 +363,12 @@ async function main(): Promise<void> {
     for (const b of sachfragen) log(`    ${b.name ?? b.von} — „${b.betreff}"`);
   }
 
-  await foerderAnfragenZuordnen(db, alleMails, hat("schreiben"));
+  try {
+    await foerderAnfragenZuordnen(db, alleMails, hat("schreiben"));
+  } catch (error) {
+    log(String(error), "err");
+    process.exitCode = 1;
+  }
 
   if (!hat("schreiben")) {
     log();
@@ -490,7 +493,9 @@ async function main(): Promise<void> {
   );
 }
 
-main().catch((e) => {
-  log((e as Error).message, "err");
-  process.exit(1);
-});
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((e) => {
+    log((e as Error).message, "err");
+    process.exit(1);
+  });
+}

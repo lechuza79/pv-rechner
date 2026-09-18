@@ -32,7 +32,7 @@ import { simulateSolarYear } from "./balkon-sim";
 import { referenceMonthKwh } from "./solar-year";
 import { DEFAULT_BALKON_CONFIG } from "./balkon-config";
 import { ANLAGEN, NUTZUNG, PERSONEN } from "./constants";
-import { calcEigenverbrauch } from "./calc";
+import { calcEigenverbrauchExakt } from "./calc";
 import { NATIONAL_AVG_YIELD } from "./constants";
 import { DIREKTVERMARKTUNG, MARKTWERT_NIVEAU_CT } from "./marktwert-config";
 
@@ -102,7 +102,7 @@ const EV_BEZUGSHAUSHALT = { personenIdx: 1, nutzungIdx: 1 } as const;
  */
 function evAnteilAnlage(kwp: number, speicherKwh: number, ertragKwp: number): number {
   return (
-    calcEigenverbrauch({
+    calcEigenverbrauchExakt({
       ...EV_BEZUGSHAUSHALT,
       speicherKwh,
       wp: "nein",

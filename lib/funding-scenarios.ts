@@ -1,4 +1,4 @@
-import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "./calc";
+import { calc, calcEigenverbrauchExakt, estimateCost, calcWeightedFeedIn } from "./calc";
 import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { calcHeatPump } from "./heatpump";
@@ -32,7 +32,7 @@ export type FundingScenarios = {
 export function buildFundingScenarios(yieldKwhKwp: number, monthly: number[] | null = null): FundingScenarios {
   // PV: typical single-family home, 10 kWp, no battery, standard household.
   const pvKwp = 10;
-  const ev = calcEigenverbrauch({
+  const ev = calcEigenverbrauchExakt({
     personenIdx: 2, nutzungIdx: 1, speicherKwh: 0,
     wp: "nein", ea: "nein", eaKm: 15000, kwp: pvKwp, ertragKwp: yieldKwhKwp,
   });

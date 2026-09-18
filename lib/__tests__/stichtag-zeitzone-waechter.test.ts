@@ -62,6 +62,12 @@ const JETZT_ALS_TAG = [
   /new Date\(\)\s*\.toISOString\(\)\s*\.split\("T"\)\[0\]/,
   /new Date\(\s*Date\.now\(\)[^)]*\)\s*\.toISOString\(\)\s*\.slice\(\s*0\s*,\s*10\s*\)/,
   /new Date\(\s*Date\.now\(\)[^)]*\)\s*\.toISOString\(\)\s*\.split\("T"\)\[0\]/,
+  // Dieselbe Klasse eine Einheit größer: „jetzt" als Kalenderjahr aus der
+  // Weltzeit. Zwischen 00:00 und 01:00 am 1. Januar ist das das Vorjahr; auf den
+  // Gemeindeseiten hielt es sich eine Woche lang (Council 12.09.2026). Für das
+  // deutsche Jahr gibt es `jahrInBerlin()`.
+  /new Date\(\)\s*\.getUTCFullYear\(\)/,
+  /new Date\(\s*Date\.now\(\)[^)]*\)\s*\.getUTCFullYear\(\)/,
 ];
 
 /**
@@ -69,7 +75,12 @@ const JETZT_ALS_TAG = [
  * RICHTIGE ist. Jede braucht einen ausgeschriebenen Grund — „ist mir egal" ist
  * keiner, und die Regex aufzuweichen ist nie die Lösung.
  */
-const WELTZEIT_IST_RICHTIG: { datei: string; grund: string }[] = [];
+const WELTZEIT_IST_RICHTIG: { datei: string; grund: string }[] = [
+  {
+    datei: "scripts/autofix-budget.ts",
+    grund: "The existing model-spending cap uses a UTC day (previously date -u in Actions). GitHub created/started timestamps and the API date filter use that same UTC boundary; this is not a German product or funding deadline.",
+  },
+];
 
 /**
  * Vorübergehende Ausnahmen. Jede trägt eine Frist im Format JJJJ-MM-TT; läuft

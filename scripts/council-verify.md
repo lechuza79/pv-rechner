@@ -133,15 +133,17 @@ keiner widerlegt ihn mit einer harten Primärquelle.
   strukturierten Satz-Felder entfernen), Regressionstest in
   `lib/__tests__/funding-data.test.ts` festschreiben → `npm run build` +
   `npx vitest run` grün → auf `main` mergen + pushen → DB nachziehen
-  (`/api/funding/setup?resync=1` + `node scripts/set-funding-verified.mjs $(date +%F) <geprüfte-id …>` — nur die Programme nennen, die in DIESEM Lauf an der Trägerquelle geprüft wurden; `--all` ist dem Voll-Lauf vorbehalten)
+  (erst exakten produktiven Commit bestätigen, dann `/api/funding/setup?resync=1`,
+  danach quellengebundene Einzelprüfung mit `foerder:probe -- --ok <id> --wie traeger --url … --zitat …`)
   → Worktree auflösen. Encoding-Regel: „eingestellt/ausgeschoepft" (Archiv-Seite
   bleibt) statt „unsicher" (nimmt die Stadtseite auf 404).
-- **Förderung — Ermessens-Richtung (Einschalten / Betrag rauf): NICHT selbst
-  ändern.** Ein neues `status: "aktiv"`, ein höherer/neuer Satz oder ein
-  geänderter Betrag kann live ein Geldversprechen setzen, das nicht stimmt
-  (vergebliche Anträge, falsche Amortisation, Haftung). Auch bei Konsens nur
-  **hoch-konfidenten Vorschlag** mailen — der Mensch entscheidet Feld + „aktiv vs.
-  unsicher".
+- **Förderung — Neuaufnahme, Einschalten und Betragserhöhung unterscheiden.**
+  Maßgeblich ist `scripts/waechter-gate.md`, Teil 4, insbesondere die bereits
+  erlaubte Neuaufnahme nach Originalbeleg. Für den gemeinsamen Tages- und
+  Quartalsablauf gilt `scripts/funding-daily-review.md`: Gegenprüfung beibehalten,
+  neue Programme nicht pauschal verbieten, Reaktivierung nach aktuellem
+  Träger-Beleg prüfen. Eine Erhöhung vorhandener Abzüge oder neues Ermessen bleibt
+  im Vorschlagsweg von `scripts/foerder-verify.md`; nicht als Neuaufnahme tarnen.
 - **CO2-Preis, Wärmepumpe** (Ermessen — welcher Anker, welcher Korridorwert):
   **nicht selbst ändern.** Auch bei Konsens nur einen **hoch-konfidenten
   Vorschlag** mailen.
@@ -154,10 +156,4 @@ Immer das Council-Ergebnis aufnehmen — `Council: 3/3 bestätigt` /
 `2/3, 1 unklar` / `gespalten`, mit Quelle je Stimme. Bei EEG-Auto-Fix den
 Commit/Diff anhängen: „automatisch übernommen (Council-Konsens), bitte nachsehen".
 
-**Warum EEG + Förder-Abschaltung auto-fixen, der Rest nicht:** Beim EEG ist die
-*Zahl* eindeutig und das *Encoding* trivial. Bei der Förderung ist die
-*Abschalt-Richtung* richtungssicher — ein Fehler kann dort nur eine echte
-Förderung verstecken, nie eine falsche versprechen; deshalb darf sie sich selbst
-fixen. Die *Einschalt-Richtung* (neues „aktiv", höherer Satz) und CO2/WP können
-selbst bei korrekt bestätigter Zahl ein Encoding-/Ermessens-Urteil verlangen und
-ein falsches Geldversprechen setzen — das bleibt beim Menschen.
+**Die Grenze folgt der konkreten Änderung.** Sichere Förderkorrekturen und belegte Neuaufnahmen haben die Befugnisse aus dem Wächter-Gate; Erhöhungen vorhandener Abzüge und Ermessensentscheidungen behalten ihren Vorschlagsweg. Der gemeinsame Ablauf in `scripts/funding-daily-review.md` verlangt die Modell-, Quellen- und Gegenprüfung vor Veröffentlichung. Ein pauschales Einschaltverbot ersetzt diese Unterscheidung nicht.

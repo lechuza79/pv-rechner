@@ -462,7 +462,87 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Nächster Lauf: die Bundesratssitzung am 25.09.2026 (Stellungnahme?) und
   // parallel weiter die Bundestags-Tagesordnung — der Entwurf ist als besonders
   // eilbedürftig eingebracht und läuft dort unabhängig vom Bundesrat.
-  geprueftIso: "2026-09-10",
+  //
+  // 11.09.2026: unverändert. Tagesordnung der 94. Sitzung (Freitag, Stand
+  // 10.09.2026, 13.00 Uhr) gelesen: allein Haushaltsgesetz 2027 und Finanzplan,
+  // kein EEG-Punkt; „Nächste Plenarsitzung: Mittwoch, den 23. September 2026".
+  // Für diese Woche ist auf bundestag.de noch keine Tagesordnung verlinkt. Die
+  // Presse kündigt die erste Lesung „voraussichtlich in der Woche ab dem
+  // 21. September" an — eine Ankündigung, kein Termin, und die erste Lesung
+  // wäre ohnehin kein Zustandswechsel.
+  //
+  // 12.09.2026, DER ENTWURF LIEGT SEIT DEM 07.09.2026 ALS BUNDESTAGS-DRUCKSACHE
+  // 21/7867 VOR — und sechs Läufe haben das nicht gesehen, weil sie
+  // Tagesordnungen abgefragt haben statt des Drucksachenbestands. Eine
+  // Tagesordnung beantwortet „wird heute beraten", nicht „ist eingebracht"; wer
+  // nur sie liest, sieht einen Verfahrensschritt erst, wenn er im Plenum
+  // aufgerufen wird. Volltext heute gelesen (dserver.bundestag.de, 21 058
+  // Zeilen), Anschreiben des Bundeskanzlers im Wortlaut: „Der Gesetzentwurf ist
+  // dem Bundesrat am 14. August 2026 als besonders eilbedürftig zugeleitet
+  // worden. Die Stellungnahme des Bundesrates zu dem Gesetzentwurf sowie die
+  // Auffassung der Bundesregierung zu der Stellungnahme des Bundesrates werden
+  // unverzüglich nachgereicht."
+  //   EINBRINGEN IST KEIN BESCHLUSS, der Zustand bleibt „regierungsentwurf" —
+  //   dieselbe Trennung, die der CO2-Pfad für die BEHG-Novelle (21/7869, Eingang
+  //   am selben Tag) schon trägt. Was sich ändert, ist allein die Fundstelle:
+  //   Der Entwurf ist jetzt in BEIDEN Kammern amtlich gedruckt.
+  //   ALLE FÜNF ENTWURFSWERTE IM BT-VOLLTEXT NACHGESCHLAGEN und zellgleich mit
+  //   EEG_ENTWURF_WERTE vorgefunden: „die Angabe ‚7 Cent' durch die Angabe
+  //   ‚6,2 Cent'" (Art. 1 zu § 48 Abs. 1) · „maximal 50 Prozent der installierten
+  //   Leistung der hinter dem Verknüpfungspunkt angeschlossenen Solaranlage des
+  //   zweiten Segments … nicht anzuwenden auf Steckersolargeräte" (§ 9 Abs. 2b) ·
+  //   „vor dem 1. Januar 2031 — also im Laufe der Jahre 2029 und 2030" (Staffel
+  //   unter 7 kW) · „für maximal 36 Monate gewährt" (Übergangszahlung) · „Die
+  //   Höhe des Bonus nach Absatz 1 beträgt 1,5 Cent pro eingespeiste
+  //   Kilowattstunde" (§ 50c Abs. 4) samt „für vier Jahre nach erstmaligem
+  //   Eintritt in die Direktvermarktung".
+  //   PRIMÄRQUELLE BLEIBT DIE BR-DRUCKSACHE. 21/7867 trägt auf jeder Seite
+  //   „Vorabfassung – wird durch die lektorierte Fassung ersetzt", ist also die
+  //   noch nicht endredigierte Ausgabe; 470/26 ist dieselbe Kabinettsfassung in
+  //   endgültigem Satz. Eine Fundstelle, die sich noch ändern kann, taugt nicht
+  //   als die eine zitierte — sie steht hier daneben, nicht an ihrer Stelle.
+  //   Die Tagesordnungsseite des Bundestages trägt heute den Stand 12.09.2026
+  //   und kündigt die 95.–97. Sitzung an; ein EEG-Punkt ist dort nicht
+  //   ausgewiesen. Nächster Lauf: Bundesrat am 25.09.2026 (Stellungnahme?) und
+  //   die Tagesordnung der Woche ab dem 21.09.2026 (erste Lesung?) — beides
+  //   wäre ein Verfahrensschritt, keiner davon ein Zustandswechsel.
+  // 13.09.2026: Drucksache 21/7867 erneut im Volltext gelesen (Deckblatt
+  //   „Entwurf eines Gesetzes …", 07.09.2026) — „6,2 Cent", „1,5 Cent",
+  //   „maximal 36 Monate" und „vor dem 1. Januar 2031" stehen weiter so da.
+  //   Die Tagesordnungsseite zeigt noch die 95.–97. Sitzung (10.–11.09.), ohne
+  //   EEG-Punkt; die erste Lesung ist nur aus der Fachpresse für die Woche ab
+  //   21.09. angekündigt. Zustand unverändert: Regierungsentwurf, eingebracht.
+  // 15.09.2026: Drucksache 21/7867 erneut geladen und durchsucht — die vier
+  //   Werte stehen unverändert (Zeilen 120, 1464, 3004, 3139 der Textfassung).
+  //   NEU, und jetzt AMTLICH statt nur aus der Fachpresse: Das Textarchiv des
+  //   Bundestages (bundestag.de, kw39, „Grundlegende Reform des
+  //   Erneuerbare-Energien-Gesetzes geplant") setzt die erste Lesung auf
+  //   Donnerstag, 24.09.2026, mit Überweisung an den Ausschuss für Wirtschaft
+  //   und Energie. Eine erste Lesung ist kein Zustandswechsel; der Zustand
+  //   bleibt „regierungsentwurf", und der Verfahrenssatz nennt bewusst weiter
+  //   keinen Termin (ein Plenartermin verschiebt sich, der Satz stünde dann
+  //   still falsch da).
+  // 16.09.2026: Der Termin der ersten Lesung steht jetzt auf der amtlichen
+  //   Tagesordnungsseite des Bundestages selbst (bundestag.de, kw39-de-energie-
+  //   stromsektor): „Der Bundestag berät am Donnerstag, 24. September 2026,
+  //   in erster Lesung den Gesetzentwurf" — 20.35 Uhr, Überweisung an den
+  //   federführenden Ausschuss für Wirtschaft und Energie. Die Lesung steht
+  //   noch bevor; der Zustand bleibt „regierungsentwurf", der Verfahrenssatz
+  //   nennt weiterhin keinen Termin. Drucksache 21/7867 erneut geladen und
+  //   durchsucht: „6,2 Cent" (Z. 3004), „1,5 Cent pro eingespeiste
+  //   Kilowattstunde" (Z. 3139), „maximal 36 Monate" (Z. 120), „vor dem
+  //   1. Januar 2031" (Z. 1464) — alle vier unverändert.
+  // 18.09.2026: Drucksache 21/7867 erneut geladen und im Volltext durchsucht,
+  //   alle vier Werte unverändert und im Satzzusammenhang gelesen: „In der
+  //   Angabe vor Nummer 1 wird die Angabe ‚7 Cent' durch die Angabe ‚6,2 Cent'
+  //   ersetzt" samt der Begründung dazu, „Die Höhe des Bonus nach Absatz 1
+  //   beträgt 1,5 Cent pro eingespeiste Kilowattstunde", „längstens bis zum Ende
+  //   des 48. …" und „mit einer installierten Leistung von weniger als 7
+  //   Kilowatt, die vor dem 1. Januar 2031 in …". Der Bundestag selbst führt den
+  //   Entwurf am 10.09.2026 weiter als Vorlage der Bundesregierung ohne
+  //   Beschluss; die erste Lesung am 24.09.2026 steht bevor. Zustand unverändert:
+  //   Regierungsentwurf, eingebracht.
+  geprueftIso: "2026-09-18",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
@@ -492,7 +572,9 @@ export function eegReformStandLabel(stand: EegReformStand = EEG_REFORM_STAND): s
  *  und nicht sechsmal im Code. `kurz` für enge Stellen (Ergebnis-Notiz,
  *  Zeitleisten-Marke), Langform für FAQ und Ratgeber.
  *
- *  Kein Beratungstermin: Den hat keine amtliche Stelle genannt. */
+ *  Kein Beratungstermin, auch nicht, seit der Bundestag die erste Lesung für den
+ *  24.09.2026 angesetzt hat: Ein Plenartermin verschiebt sich, und eine erste
+ *  Lesung ändert den Zustand nicht. */
 export function eegVerfahrenSatz(
   opts: { kurz?: boolean } = {},
   stand: EegReformStand = EEG_REFORM_STAND,

@@ -45,6 +45,7 @@ import type { PostBild } from "./social-posts";
 import { fmtPvLeistung } from "./atlas-format";
 import { eigenverbrauchAnteilRegion, einspeiseCt, erzeugungKwh } from "./atlas-impact";
 import type { VorratsFund } from "./social-fundvorrat";
+import { jahrInBerlin } from "./zeit";
 
 // ─── Was hereingereicht wird ─────────────────────────────────────────────────
 
@@ -305,7 +306,7 @@ function anlagenWort(n: number): string {
 /** Das letzte Jahr, für das der Datenstand vollständig ist. */
 function letztesVollesJahr(standIso: string): number {
   const jahr = Number(standIso.slice(0, 4));
-  if (!Number.isFinite(jahr)) return new Date().getUTCFullYear() - 1;
+  if (!Number.isFinite(jahr)) return jahrInBerlin() - 1;
   // Anlagen werden verspätet gemeldet; das laufende Jahr ist per Bauart
   // unvollständig.
   return jahr - 1;
@@ -387,12 +388,17 @@ function storyEingespielt(d: StoryDaten, heuteJahr: number): OrtsStory | null {
   // zeigte „17.100 € je Anlage", der Satz daneben „17.139 €" — dieselbe Größe,
   // zwei Zahlen auf einer Karte. Von außen sieht keine der beiden falsch aus.
   const mio = runde(summe / 1_000_000, 1);
+  // Unter einer Million steht die Summe in Euro, in der Kachel WIE im Titel. Die
+  // Kachel zeigte bis 12.09.2026 immer „Mio €" — über 6.980 € stand dann „0 Mio €",
+  // über 61.409 € „0,1 Mio €" (Rechenmodell-Council). Das traf die Mehrheit der
+  // Gemeinden, nicht den Rand.
+  const geflossen = mio >= 1 ? { wert: mio, einheit: "Mio €" } : { wert: Math.round(summe), einheit: "€" };
   const jeAnlage = Math.round(summe / anlagen / 100) * 100;
   const proKopf =
     d.population && d.population > 0 ? Math.round(summe / d.population / 10) * 10 : null;
 
   const werte: StoryWert[] = [
-    { name: "seit 2000 geflossen", wert: mio, einheit: "Mio €", haupt: true },
+    { name: "seit 2000 geflossen", wert: geflossen.wert, einheit: geflossen.einheit, haupt: true },
     { name: "je Anlage", wert: jeAnlage, einheit: "€" },
   ];
   if (proKopf !== null) {
@@ -406,7 +412,7 @@ function storyEingespielt(d: StoryDaten, heuteJahr: number): OrtsStory | null {
     quellen: ["mastr"],
     gemessen: "Einspeisevergütung seit 2000, je Baujahr gerechnet",
     titel:
-      `${mio >= 1 ? `${mio.toLocaleString("de-DE", { maximumFractionDigits: 1 })} Mio €` : `${nf(summe)} €`} ` +
+      `${geflossen.wert.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ${geflossen.einheit} ` +
       `Einspeisevergütung sind seit 2000 nach ${d.name} geflossen`,
     text:
       `Verteilt auf ${anlagenWort(anlagen)}, die bisher mindestens ein volles Jahr vergütet wurden, ` +
@@ -734,9 +740,12 @@ function storyMonat(d: StoryDaten): OrtsStory | null {
  *
  * VERGLICHEN WIRD MIT DER EIGENEN GESCHICHTE, nicht mit anderen Orten —
  * dieselbe Rechnung wie im bundesweiten Suchlauf: der Median aller übrigen
- * Fenster desselben Orts. Ein Ort, der sonst nichts baut, bekommt dabei eine
- * Untergrenze von eins als Vergleichswert; „unendlich mal so viel" ist keine
- * Zahl.
+ * Fenster desselben Orts. Für die AUSWAHL des Monats bekommt ein Ort,
+ * der sonst nichts baut, eine Untergrenze von eins; „unendlich mal so viel" ist
+ * keine Zahl. Im Bild und im Titel steht dagegen der ECHTE Vergleichswert: Bis
+ * 12.09.2026 zeigte die Säule den Kehrwert der Untergrenze (bei „sonst null“ zwei
+ * gleich hohe Säulen unter „6-mal so viele“) und der Titel ein Vielfaches von
+ * nichts (Rechenmodell-Council).
  *
  * NUR NACH OBEN. Ein negativer Ausschlag wäre eine Bloßstellung, und der
  * Katalog verbietet ihn ausdrücklich.
@@ -763,21 +772,28 @@ function storyAnomalie(d: StoryDaten): OrtsStory | null {
   const m = reif[besteI];
   if (m.count < MIN_ANLAGEN_ANOMALIE || besterFaktor < MIN_FAKTOR_ANOMALIE) return null;
 
-  const faktor = runde(besterFaktor, 1);
+  const sonst = runde(medianVon(werte.filter((_, j) => Math.abs(j - besteI) > 1)), 1);
+  const faktor = sonst >= 1 ? runde(m.count / sonst, 1) : null;
+  const vergleich =
+    faktor !== null
+      ? `${faktor.toLocaleString("de-DE")}-mal so viele Anlagen ans Netz wie sonst`
+      : `${anlagenWort(m.count)} ans Netz — in den übrigen Monaten ${sonst === 0 ? "meist keine" : "meist weniger als eine"}`;
   return {
     kennung: `anomalie-${m.monat}`,
     bildform: "saeule",
     ...familie("anomalie"),
     quellen: ["mastr"],
     gemessen: `${monatsName(m.monat)} gegen den Median der übrigen Monate desselben Orts`,
-    titel: `Im ${monatsName(m.monat)} gingen in ${d.name} ${faktor.toLocaleString("de-DE")}-mal so viele Anlagen ans Netz wie sonst`,
+    titel: `Im ${monatsName(m.monat)} gingen in ${d.name} ${vergleich}`,
     text:
       `${anlagenWort(m.count)} in einem Monat, während es in den übrigen Monaten dieses Zeitraums ` +
       `im Mittel deutlich weniger waren. Woran das lag, sagen die Daten nicht — ein Förderprogramm, ` +
       `eine Sammelbestellung, ein Bericht in der Zeitung.`,
     werte: [
-      { name: `im ${monatsName(m.monat)}`, wert: m.count, einheit: "", haupt: true },
-      { name: "so viel wie sonst", wert: faktor, einheit: "-mal" },
+      // EINE Einheit, sonst trägt die Säule nicht: der Sockel ist der typische
+      // Monat, die überragende Fläche der Ausschlag.
+      { name: `im ${monatsName(m.monat)}`, wert: m.count, einheit: "Anlagen", haupt: true },
+      { name: "sonst im Monat (Median)", wert: sonst, einheit: "Anlagen" },
     ],
     grundlage:
       `Verglichen wird der Monat mit den übrigen Monaten DESSELBEN Orts (Median), nicht mit ` +

@@ -1,3 +1,4 @@
+import {requireContactComparison} from './lib/contact-comparison-gate';
 /**
  * Kommunen-Anschreiben verschicken — gedrosselt, protokolliert, mit Bremsen.
  *
@@ -11,7 +12,8 @@
  *   npm run kommunen:versand -- --liste                      Schub-Liste ansehen
  *   npm run kommunen:versand -- --vorschau --n=5             fünf echte Briefe lesen
  *   npm run kommunen:versand -- --test=adresse@example.org   EINE Probemail an sich selbst
- *   npm run kommunen:versand -- --senden --limit=20          Schub senden
+ *   npm run kommunen:versand -- --senden --limit=20 --contact-workflow=DIR --contact-batch=FILE
+ *                                                        Geprüften Schub senden
  *
  * Voraussetzungen: SUPABASE_URL, SUPABASE_SERVICE_KEY, CRON_SECRET sowie für
  * das Senden OUTREACH_SMTP_HOST/PORT/USER/PASS und OUTREACH_MAIL_FROM — alle
@@ -46,6 +48,7 @@ import {
 import { versandfenster } from "../lib/schulferien";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
 import { berlinOffset, heuteInBerlin, wochentagInBerlin } from "../lib/zeit";
+import { requireContactBatch } from "./lib/contact-dispatch-gate";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROTOKOLL_DIR = resolve(SCRIPT_DIR, ".cache", "versand");
@@ -329,6 +332,13 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
 }
 
 async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<void> {
+  const workflow = process.argv.find(a => a.startsWith('--contact-workflow='))?.slice('--contact-workflow='.length);
+  const contactBatch = process.argv.find(a => a.startsWith('--contact-batch='))?.slice('--contact-batch='.length);
+  if (!workflow || !contactBatch) throw new Error('Vor dem Versand fehlen die vollständige Kontaktprüfung und der aktuelle Batch-Abgleich (--contact-workflow, --contact-batch).');
+  const comparison=process.argv.find(a=>a.startsWith('--contact-quality-comparison='))?.slice('--contact-quality-comparison='.length);
+  if(!comparison)throw new Error('Vor dem Versand fehlt der vollständige Vorher-nachher-Qualitätsvergleich (--contact-quality-comparison).');
+  requireContactComparison(resolve(workflow),resolve(comparison),p.paket.slice(0,limit).map(b=>({organizationId:b.region_id,email:b.empfaenger})));
+  requireContactBatch(resolve(workflow), resolve(contactBatch), p.paket.slice(0, limit).map(b => ({ organizationId: b.region_id, email: b.empfaenger })), new Date().toISOString());
   const { transport, konfig } = await baueTransport();
   const absenderDomain = adresseAus(konfig.from).split("@")[1];
   const dkim = await dkimAktiv(absenderDomain);
@@ -436,6 +446,8 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
           outreach_status: "kontaktiert",
           contacted_at: new Date().toISOString(),
           channel: "mail",
+          sent_to: b.empfaenger,
+          sent_message_id: info.messageId,
           versendet_variante: b.variante,
           // DEN VERSCHICKTEN TEXT AUFHEBEN.
           //

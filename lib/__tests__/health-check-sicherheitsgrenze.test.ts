@@ -71,6 +71,6 @@ describe("Die Messung haengt im Hauptlauf", () => {
   });
 
   it("gibt das Urteil an Claude weiter", () => {
-    expect(quelle).toMatch(/forClaude\.push\(\.\.\.sicherheitsBefund\(/);
+    expect(quelle).toMatch(/technical\(`security:\$\{problem\}`, true, \.\.\.sicherheitsBefund\(/);
   });
 });

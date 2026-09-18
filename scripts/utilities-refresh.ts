@@ -1,3 +1,5 @@
+import { observedFields } from "../lib/contact-evidence";
+import { fetchContactPage, recordContactPage } from "./lib/contact-fetch";
 /**
  * Stadtwerke / Energieversorger — Tabellen anlegen und Bestand melden.
  *
@@ -138,6 +140,19 @@ async function setup(): Promise<void> {
     -- Programm — die Förder-Fundstelle sagt nur „hier steht etwas von Förderung".
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS themen jsonb;
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS profil_geprueft_am timestamptz;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS postfaecher jsonb;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS website_email text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS kundenanfrage_email text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS netz_email text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS erhebung_verantwortlich jsonb;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS kontaktformular boolean;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS kontaktseite_url text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS stromkennzeichnung_url text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS stromkennzeichnung_form jsonb;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS stromkennzeichnung_jahr integer;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS werkzeug jsonb;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS erhebung_geprueft_am timestamptz;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS erhebung_fehler text;
     -- Adresse auf FREMDER Domain: bei Versorgern ein Hinweis auf Konzernmutter
     -- oder Dienstleister. Kein Fehler, sondern ein Fund fuer den Menschen.
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS verbund_domain text;
@@ -888,18 +903,9 @@ const ABRUF_TIMEOUT_MS = 15000;
 const PARALLEL = 4;
 
 async function holeSeite(url: string): Promise<string | null> {
-  try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), ABRUF_TIMEOUT_MS);
-    const res = await fetch(url, { headers: { "User-Agent": UA }, signal: ctrl.signal, redirect: "follow" });
-    clearTimeout(t);
-    if (!res.ok) return null;
-    const typ = res.headers.get("content-type") ?? "";
-    if (typ && !/text\/html|application\/xhtml/i.test(typ)) return null;
-    return await res.text();
-  } catch {
-    return null;
-  }
+  const result = await fetchContactPage(url, { timeoutMs: ABRUF_TIMEOUT_MS, userAgent: UA,
+    record: o => recordContactPage("versorger", o) });
+  return result.html;
 }
 
 type ProfilErgebnis = {
@@ -941,6 +947,7 @@ async function profilFuer(
 
   if (impUrl) {
     const imp = await holeSeite(impUrl);
+    if (!imp) return null;
     if (imp) {
       const text = profil.toText(imp);
       const v = profil.extractVerantwortlich(text, vok);
@@ -959,6 +966,7 @@ async function profilFuer(
     }
   }
 
+  if (!impUrl) return null;
   return {
     id: u.id,
     name: u.name,
@@ -1032,9 +1040,10 @@ async function laufProfil(opts: { limit?: number; erneut: boolean; dry: boolean 
     return;
   }
   for (let i = 0; i < ergebnisse.length; i += 200) {
-    const teil = ergebnisse.slice(i, i + 200).map((e) => ({ ...e, themen: e.themen }));
-    const { error: upErr } = await supabase.from("utilities").upsert(teil, { onConflict: "id" });
-    if (upErr) throw new Error(`Profil schreiben: ${upErr.message}`);
+    for (const row of ergebnisse.slice(i, i + 200)) {
+      const { error: upErr } = await supabase.from("utilities").update(observedFields(row)).eq("id", row.id);
+      if (upErr) throw new Error(`Profil schreiben: ${upErr.message}`);
+    }
   }
   log(`${ergebnisse.length} Profile geschrieben`, "ok");
 }

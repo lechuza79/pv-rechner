@@ -1,3 +1,5 @@
+import { confirmedContactPage, observedFields } from "../lib/contact-evidence";
+import { fetchContactPage, recordContactPage } from "./lib/contact-fetch";
 /**
  * Kommunen-Kontaktdaten → kommunen_kontakt.
  *
@@ -181,6 +183,8 @@ async function setup(): Promise<void> {
     -- Felder für das Admin-Cockpit. Ein Entwurf je Gemeinde inline (MVP; falls
     -- Versionen nötig werden, später in eine eigene Tabelle auslagern).
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS channel text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS sent_to text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS sent_message_id text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS contacted_at timestamptz;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS responded_at timestamptz;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_subject text;
@@ -447,22 +451,9 @@ function findKontaktUrl(html: string, baseUrl: string): string | null {
 }
 
 async function fetchText(url: string): Promise<string | null> {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
-  try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": USER_AGENT, Accept: "text/html" },
-      signal: ctrl.signal,
-      redirect: "follow",
-    });
-    if (!res.ok) return null;
-    if (!(res.headers.get("content-type") ?? "").includes("html")) return null;
-    return await res.text();
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
+  const result = await fetchContactPage(url, { timeoutMs: FETCH_TIMEOUT_MS, userAgent: USER_AGENT,
+    record: o => recordContactPage("kommunen", o) });
+  return result.html;
 }
 
 async function pool<T>(
@@ -550,7 +541,10 @@ async function scrapeForms(opts: FormsOpts): Promise<void> {
       errors++;
     } else {
       const url = findKontaktUrl(html, c.website);
-      if (url) found.push({ region_id: c.region_id, kontakt_url: url, updated_at: now });
+      if (url) {
+        const page = await fetchProbe(url);
+        if (page && confirmedContactPage(page.html)) found.push({ region_id: c.region_id, kontakt_url: page.finalUrl, updated_at: now });
+      }
     }
     if (done % 50 === 0) log(`  ${done}/${list.length} geprüft, ${found.length} gefunden`);
   });
@@ -571,22 +565,9 @@ async function scrapeForms(opts: FormsOpts): Promise<void> {
 const PROBE_PATHS = ["kontakt", "kontaktformular", "rathaus/kontakt", "buergerservice/kontakt"];
 
 async function fetchProbe(url: string): Promise<{ finalUrl: string; html: string } | null> {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
-  try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": USER_AGENT, Accept: "text/html" },
-      signal: ctrl.signal,
-      redirect: "follow",
-    });
-    if (!res.ok) return null;
-    if (!(res.headers.get("content-type") ?? "").includes("html")) return null;
-    return { finalUrl: res.url, html: await res.text() };
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
+  const result = await fetchContactPage(url, { timeoutMs: FETCH_TIMEOUT_MS, userAgent: USER_AGENT,
+    record: observation => recordContactPage("kommunen", observation) });
+  return result.html === null ? null : { finalUrl: result.observation.finalUrl ?? url, html: result.html };
 }
 
 // Nur akzeptieren, wenn die (ggf. umgeleitete) End-URL noch "kontakt" trägt UND
@@ -599,7 +580,7 @@ function probeAccept(finalUrl: string, html: string): boolean {
   } catch {
     return false;
   }
-  return path.includes("kontakt") && /kontakt/i.test(html);
+  return path.includes("kontakt") && confirmedContactPage(html);
 }
 
 async function probeForms(opts: FormsOpts): Promise<void> {
@@ -957,11 +938,11 @@ async function scrapeProfil(opts: FormsOpts): Promise<void> {
     if (impUrl) {
       const imp = await fetchText(impUrl);
       if (imp) {
-        const text = toText(imp);
+        const text = toText(imp) + "\n" + (imp.match(/mailto:[^"\s?<>]+/gi) ?? []).map(x => x.slice(7)).join("\n");
         verantwortlich = extractVerantwortlich(text);
         adressen = extractAdressen(text, eigene, (d) => d !== eigene && domains.has(d));
-      } else ohneImpressum++;
-    } else ohneImpressum++;
+      } else { ohneImpressum++; return; }
+    } else { ohneImpressum++; return; }
 
     const url = (t: string) => themen.find((x) => x.thema === t)?.url ?? null;
     rows.push({
@@ -1003,8 +984,10 @@ async function scrapeProfil(opts: FormsOpts): Promise<void> {
     return;
   }
   for (let i = 0; i < rows.length; i += 500) {
-    const { error } = await supabase.from("kommunen_kontakt").upsert(rows.slice(i, i + 500), { onConflict: "region_id" });
-    if (error) throw new Error(`Profil speichern: ${error.message}`);
+    for (const row of rows.slice(i, i + 500)) {
+      const { error } = await supabase.from("kommunen_kontakt").update(observedFields(row)).eq("region_id", row.region_id);
+      if (error) throw new Error(`Profil speichern: ${error.message}`);
+    }
   }
   log(`${rows.length} Profile gespeichert`, "ok");
 }

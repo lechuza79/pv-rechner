@@ -134,6 +134,28 @@ export function seitenSchluessel(url: string): string {
   return u.replace(/\/+$/, "");
 }
 
+/**
+ * Addresses to fetch for a stored page key, in order.
+ *
+ * The key drops the scheme and a leading "www." (see above) — right for
+ * comparing pages, wrong for fetching them: many municipal hosts only answer
+ * under www. Measured 18.09.2026 on 50 random unread sources marked
+ * unreachable: 36 answered, 13 of them ONLY under www. Keys also still carry
+ * HTML-escaped query separators (`&amp;`, 614 of 2,161 unreachable keys) that
+ * a server reads as a parameter named "amp;…".
+ *
+ * The www form is a fallback, never a replacement: a key that came in with its
+ * own subdomain (`vg-lw.de` vs `www.vg-lw.de`) is tried as stored first.
+ */
+export function seitenAbrufAdressen(schluessel: string): string[] {
+  const u = schluessel.trim().replace(/&amp;/gi, "&");
+  if (!u) return [];
+  if (/^https?:\/\//i.test(u)) return [u];
+  const host = u.split(/[/?]/, 1)[0];
+  const ohneWww = /^www\./i.test(host) || /^\d+(?:\.\d+){3}(?::\d+)?$/.test(host) || !host.includes(".");
+  return ohneWww ? [`https://${u}`] : [`https://${u}`, `https://www.${u}`];
+}
+
 /** Zwei Adressen bezeichnen dieselbe Seite. */
 export function gleicheSeite(a: string, b: string): boolean {
   return seitenSchluessel(a) === seitenSchluessel(b);
@@ -280,6 +302,41 @@ export function istInterneRoute(url: string): boolean {
   const segmente = s.slice(i + 1).split("/");
   if (segmente.some((seg) => seg.startsWith(":"))) return true;
   return FREMDSPRACHE.test(segmente[0] ?? "");
+}
+
+/**
+ * Unaufgelöster Vorlagen-Ausdruck statt einer Adresse.
+ *
+ * Viele Kommunal-Systeme setzen ihre Listen im Browser zusammen. Steht die
+ * Vorlage im ausgelieferten HTML, liest der Crawler den Ausdruck selbst als
+ * Verweis und legt ihn als Fundstelle ab — angehängt an die Seite, auf der er
+ * stand. Das sind KEINE Seiten: Beide Stichproben antworten mit HTTP 400
+ * (amt-trave-land.de und vgv-kelberg.de, am 17.09.2026 am Server gemessen),
+ * der Server weist die Adresse also selbst ab.
+ *
+ * GEMESSEN, warum das hier steht (17.09.2026): 524 der 11.992 Fundstellen-Gruppen
+ * und 1.147 der 15.444 ungelesenen Zuordnungen sind solche Reste — 7,4 % des
+ * Vorrats. Sie stehen dabei ganz OBEN in der Liste der größten Gruppen, weil
+ * eine Verbandsgemeinde ihre Vorlage an alle Ortsgemeinden weitergibt: Jeder
+ * Lauf verbrannte seinen ersten Blick auf vier Varianten derselben
+ * Löschwasser-Richtlinie. Der Engpass des Katalogs ist das Lesen der Treffer,
+ * nicht das Finden.
+ *
+ * DAS MERKMAL IST DIE DOPPELTE KLAMMER, und zwar allein. Gegen den Bestand
+ * gemessen: 313 Reste tragen Klammer UND Platzhalter, 211 nur die Klammer,
+ * und **kein einziger** einen Platzhalter ohne Klammer. Die Klammer ist damit
+ * die scharfe Kante; `generateUrl`, `%id%` oder `%name%` zusätzlich zu prüfen
+ * fängt keine Zeile mehr und wäre nur eine weitere Regel, die veralten kann.
+ *
+ * DIE ECHTE SEITE ÜBERLEBT — das ist die Richtung, in der ein zu breiter Filter
+ * teuer wird. Der Rest hängt als Unterpfad an der Förderseite, die ihn
+ * ausgeliefert hat: Bad Marienbergs Ortskern-Programm steht als eigene,
+ * klammerfreie Fundstelle daneben und ist heute bestätigt. Wer nur die
+ * Trefferzeile liest, hält den Rest für diese Seite — in der Kürzung sind die
+ * ersten 150 Zeichen beider Adressen zeichengleich.
+ */
+export function istVorlagenRest(url: string): boolean {
+  return /%7[Bb]%7[Bb]|\{\{/.test(url ?? "");
 }
 
 /**

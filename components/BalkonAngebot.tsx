@@ -266,7 +266,7 @@ function Alternative({ eintrag }: { eintrag: BewertetesAngebot }) {
   );
 }
 
-export default function BalkonAngebot({ basis }: { basis: AngebotBasis }) {
+export default function BalkonAngebot({ basis, foerderungEuro = 0 }: { basis: AngebotBasis; foerderungEuro?: number }) {
   const [daten, setDaten] = useState<ShopAngebote | null>(null);
   const [fehlgeschlagen, setFehlgeschlagen] = useState(false);
 
@@ -313,7 +313,12 @@ export default function BalkonAngebot({ basis }: { basis: AngebotBasis }) {
 
       <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, margin: "8px 0 4px" }}>
         Diese Sets haben wir mit deinen Angaben durchgerechnet — dieselbe Rechnung wie oben,
-        nur mit den echten Daten der Produkte. <strong style={{ color: v("--color-text-secondary") }}>
+        nur mit den echten Daten der Produkte
+        {/* Oben ist der kommunale Zuschuss abgezogen, hier rechnet jedes Set mit
+            seinem Kassenpreis. Ohne diesen Satz stand „bezahlt nach 3,0 Jahren"
+            unter einer Kachel mit 1,8 und einem Text, der beides für dieselbe
+            Rechnung erklärte (Rechenmodell-Council 12.09.2026). */}
+        {foerderungEuro > 0 ? <>, und zwar mit dem Kaufpreis, <strong style={{ color: v("--color-text-secondary") }}>vor der Förderung von {Math.round(foerderungEuro).toLocaleString("de-DE")} €</strong> — mit ihr amortisiert sich jedes Set entsprechend früher</> : null}.{" "}<strong style={{ color: v("--color-text-secondary") }}>
         Sortiert nach dem, was dir das Set bringt, nicht nach unserer Provision.</strong>{" "}
         Kaufst du über einen dieser Links, bekommen wir eine Provision vom Händler — für dich
         ändert sich am Preis nichts.

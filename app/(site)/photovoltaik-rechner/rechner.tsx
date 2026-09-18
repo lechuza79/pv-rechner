@@ -18,7 +18,7 @@ import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN, LEISTE_SENDEN } from "../..
 // Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
 // components/GebaeudeField.
 import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NATIONAL_AVG_YIELD, EINSPEISESATZ_MAX_CT, type Heizsystem } from "../../../lib/constants";
-import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramFloatOrNull, paramStr, vollEinspeisungGesperrt } from "../../../lib/calc";
+import { estimateCost, calcEigenverbrauch, calcEigenverbrauchExakt, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramFloatOrNull, paramStr, vollEinspeisungGesperrt } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS, BATTERY_ROUNDTRIP } from "../../../lib/pv-sim";
 import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge, heatPumpScenarioAdj } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
@@ -440,8 +440,14 @@ export default function PVRechner({
   const setErtragVonHand = (val: number) =>
     setOErtrag(Math.min(ERTRAG_OPTIMUM_MAX, Math.max(ERTRAG_OPTIMUM_MIN, Math.round(val / ertragFaktor))));
 
-  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: effErtrag, baseKwh: oVerbrauch });
+  const evEingaben = { personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: effErtrag, baseKwh: oVerbrauch };
+  const autoEv = calcEigenverbrauch(evEingaben);
   const effEv = oEv !== null ? oEv : autoEv;
+  // Angezeigt wird der ganze Prozentwert, gerechnet mit dem ungerundeten: Die
+  // Rundung kippte im Geld stufenweise, und eine größere Anlage wies dann weniger
+  // Gewinn aus als eine kleinere (Rechenmodell-Council 12.09.2026). Ein von Hand
+  // gesetzter Wert gilt so, wie er eingetippt wurde.
+  const effEvRechnung = oEv !== null ? oEv : calcEigenverbrauchExakt(evEingaben);
   // Volleinspeisung is incompatible with WP/E-Auto (they require self-consumption)
   const vollDisabled = vollEinspeisungGesperrt({ wp, ea, speicherKwh: spKwh });
   const effEinspeisungModus = vollDisabled && einspeisungModus === "voll" ? "teil" : einspeisungModus;
@@ -559,13 +565,13 @@ export default function PVRechner({
         // optimistischen Kurve. jahresertrag=0 → Infinity → Cap greift nicht.
         eigenverbrauch: effEinspeisungModus === "voll"
           ? 0
-          : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
+          : Math.min(effEvRechnung + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
         einspeisung: effEinspeisungModus === "aus" ? 0 : effEinsp,
         stromSteigerung: s.strom, ertragKwp: effErtrag, monthly: monthlyProfile,
         batteryReplace: batteryReplaceCost(spKwh, prices),
         einspeiseModell: effEinspeisungModus === "aus" ? undefined : einspeiseModell,
       }),
-    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, effErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, einspeiseModell]);
+    })), [kwp, kosten, oStrom, effEvRechnung, effEinsp, effEinspeisungModus, effErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, einspeiseModell]);
 
   // (Die Liste der aktiven Großverbraucher ist entfallen: sie war die Kopfzeile
   // des gemeinsamen Verbrauchs-Abschnitts. Jeder Verbraucher hat jetzt seinen
@@ -583,7 +589,7 @@ export default function PVRechner({
       kwp, kosten, strompreis: oStrom,
       eigenverbrauch: effEinspeisungModus === "voll"
         ? 0
-        : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
+        : Math.min(effEvRechnung + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
       einspeisung: effEinsp,
       // Der Ertrag DIESER Anlage, nicht das Standort-Optimum: Hier stand `oErtrag`
       // und damit ein Bestfall-Dach, während jede andere Zahl der Seite mit dem
@@ -613,7 +619,7 @@ export default function PVRechner({
     // doch, wäre genau das die Auskunft, die an den Schalter gehört. Eine auf
     // null gekappte Zahl neben einer sinkenden Hauptzahl erklärt gar nichts.
     return total(true) - total(false);
-  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEv, effEinsp, effErtrag,
+  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEvRechnung, effEinsp, effErtrag,
       monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, marktSim, oMarktwert]);
 
   // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf

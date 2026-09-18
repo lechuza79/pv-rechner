@@ -119,11 +119,33 @@ export const FREIGABE_NACHWEIS: Record<AtlasLevel, FreigabeNachweis | null> = {
       "zur Ortsebene, kein eigenes Suchziel.",
     beleg: "docs/seo/befund-2026-08-18-atlas-wellen.md",
   },
-  // OFFEN (bis 12/2026): Vor Welle 1 zu erbringen. Die Nachfrage ist belegt
-  // (Ortsanfragen tragen das Volumen), die Kannibalisierung NICHT: 33 von 108
-  // sichtbaren Förder-Anfragen tragen kein Geld-Wort, bei drei Anfragen steht die
-  // Förderseite auf einem reinen Bestands-Wort besser als die Atlasseite. Das ist
-  // je Ort der geplanten Charge zu messen, nicht pauschal.
+  // OFFEN (bis 12/2026): Vor Welle 1 zu erbringen.
+  //
+  // NEU AM 12.09.2026, und es ist die erste Messung an UNSEREN eigenen Seiten
+  // statt am Wettbewerber: Die 289 einzeln freigegebenen Ortsseiten (Outreach)
+  // sind Welle 1 im Kleinen und laufen seit Wochen. Ergebnis über 28 Tage:
+  // **24 von 289 haben überhaupt Einblendungen (8 %), zusammen 115, ein Klick.**
+  // Das sind 0,4 Einblendungen je Seite und Monat — gegen 1.889 Einblendungen,
+  // die allein die 16 Landesseiten holen.
+  //
+  // Die Positionen sind dabei GUT (4,7 bis 13,8 auf den sichtbaren Seiten). Es
+  // ist also kein Qualitäts-, sondern ein Nachfrageproblem: Wer sucht, findet
+  // uns vorn — es sucht nur fast niemand. Und die 289 sind die günstigste
+  // denkbare Stichprobe, weil es die angeschriebenen Gemeinden sind, teils mit
+  // Verweis von der eigenen Gemeinde-Website.
+  //
+  // Die Kannibalisierung ist damit ebenfalls präziser: Von den 289 haben **4**
+  // auch eine Förder-Stadtseite (Darmstadt, Düsseldorf, Hohenahr, Nidda). Die
+  // Familien überlappen heute kaum — Förderseiten sitzen auf größeren Städten.
+  // Eine Ortswelle über kleine Orte kollidiert fast nicht; eine über die 63
+  // Städte mit Förderseite kollidiert frontal, und dort stehen die Förderseiten
+  // auf reinen Ortsanfragen weit vorn („balkonkraftwerk osnabrück" Position 2,
+  // „photovoltaik osnabrück" 3, „photovoltaik krefeld" 4).
+  //
+  // Beides zusammen heißt: Der Nachweis ist nicht bloß unvollständig, die
+  // bisherige Messung deutet in die GEGENRICHTUNG. Wer Welle 1 dennoch will,
+  // widerlegt diese Zahlen, statt sie zu ergänzen — und beantwortet beide
+  // Fragen je Ort der geplanten Charge, nicht pauschal.
   gemeinde: null,
 };
 

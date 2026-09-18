@@ -1,0 +1,222 @@
+[
+  {
+    "id": "homepage",
+    "title": "Startseite · aktueller Entwurf",
+    "group": "Startseite",
+    "description": "Dynamische Herostage, Ortsdaten und Rechner-Einstiege.",
+    "service": "homepage",
+    "path": "/Solar-Check-Dynamisch.html",
+    "status": "Entwurf",
+    "thumbnail": "/preview-thumbnails/homepage.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "design-lab",
+    "title": "Design Playground",
+    "group": "Startseite",
+    "description": "Farben, Schrift und Varianten der Startseite.",
+    "service": "homepage",
+    "path": "/design-lab/index.html",
+    "status": "Entwurf",
+    "thumbnail": "/preview-thumbnails/design-lab.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "hero-variants",
+    "title": "Herostage · Variantenvergleich",
+    "group": "Startseite",
+    "description": "Die frühen Varianten nebeneinander.",
+    "service": "homepage",
+    "path": "/Solar-Check-Varianten.html",
+    "status": "Archiv",
+    "thumbnail": "/preview-thumbnails/hero-variants.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "hero-original",
+    "title": "Herostage · erster Entwurf",
+    "group": "Startseite",
+    "description": "Ursprüngliche portable Herostage.",
+    "service": "homepage",
+    "path": "/Solar-Check-Hero.html",
+    "status": "Archiv",
+    "thumbnail": "/preview-thumbnails/hero-original.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "rain",
+    "title": "Regen & Licht",
+    "group": "Startseite",
+    "description": "Wetterwirkung und Regen im Vergleich.",
+    "service": "homepage",
+    "path": "/Solar-Check-Regen-Test.html",
+    "status": "Entwurf",
+    "thumbnail": "/preview-thumbnails/rain.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "atmosphere",
+    "title": "Atmosphärenvergleich",
+    "group": "Startseite",
+    "description": "Licht, Wetter und Atmosphäre.",
+    "service": "homepage",
+    "path": "/Solar-Check-Atmosphaere-Test.html",
+    "status": "Entwurf",
+    "thumbnail": "/preview-thumbnails/atmosphere.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "simulation",
+    "title": "PV-Simulation",
+    "group": "Rechner",
+    "description": "Dynamische Szene der Simulation.",
+    "service": "homepage",
+    "path": "/pv-simulation/index.html",
+    "status": "Entwurf",
+    "thumbnail": "/preview-thumbnails/simulation.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "calculator-overview",
+    "title": "Rechner-Übersicht",
+    "group": "Rechner",
+    "description": "Einstiege in die verschiedenen Rechner.",
+    "service": "homepage",
+    "path": "/rechner-uebersicht/index.html",
+    "status": "Entwurf",
+    "thumbnail": "/preview-thumbnails/calculator-overview.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "illustrations",
+    "title": "Illustrationen · Einbaupaket",
+    "group": "Illustrationen",
+    "description": "Motive mit Bewegung, Varianten und Wiederholung.",
+    "service": "homepage",
+    "path": "/illustrations-motion/index.html",
+    "status": "Entwurf",
+    "thumbnail": "/preview-thumbnails/illustrations.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "atlas",
+    "title": "Solar-Atlas · aktueller Entwurf",
+    "group": "Solar-Atlas",
+    "description": "Höchberg mit Wetter, Geschichten und Rangliste.",
+    "service": "atlas",
+    "path": "/atlas-design-preview/index.html?displayfont=montserrat-bold",
+    "status": "Entwurf",
+    "thumbnail": "/preview-thumbnails/atlas.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "atlas-clicks",
+    "title": "Atlas · Klickhinweise",
+    "group": "Solar-Atlas",
+    "description": "Interaktionen und Hinweise im Vergleich.",
+    "service": "atlas",
+    "path": "/atlas-design-preview/klickhinweise.html",
+    "status": "Entwurf",
+    "thumbnail": "/preview-thumbnails/atlas-clicks.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "atlas-v2",
+    "title": "Solar-Atlas · Entwurf 02",
+    "group": "Solar-Atlas",
+    "description": "Gespeicherter früherer Entwurf.",
+    "service": "atlas-v2",
+    "path": "/index.html",
+    "status": "Archiv",
+    "thumbnail": "/preview-thumbnails/atlas-v2.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "atlas-v3",
+    "title": "Solar-Atlas · Entwurf 03 (Snapshot)",
+    "group": "Solar-Atlas",
+    "description": "Gespeicherter Entwurf, getrennt vom aktuellen Arbeitsstand.",
+    "service": "atlas-v3",
+    "path": "/index.html",
+    "status": "Archiv",
+    "thumbnail": "/preview-thumbnails/atlas-v3.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "confetti",
+    "title": "Platzierung · Konfetti",
+    "group": "Solar-Atlas",
+    "description": "Drei Varianten; Kurzer Jubel mit Purple wurde freigegeben.",
+    "service": "confetti",
+    "path": "/",
+    "status": "Variante freigegeben",
+    "thumbnail": "/preview-thumbnails/confetti.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "heatpump",
+    "title": "Wärmepumpe · Ergebnis",
+    "group": "Rechner",
+    "description": "Ergebnisseite aus der separaten Design-Session.",
+    "service": "heatpump",
+    "path": "/waermepumpe-rechner",
+    "status": "Entwurf",
+    "thumbnail": null,
+    "thumbnailNote": "Vorschaubild noch nicht verfügbar"
+  },
+  {
+    "id": "registration",
+    "title": "Balkon-PV · Anmeldung",
+    "group": "Rechner",
+    "description": "Anmeldeassistent im separaten Arbeitsstand.",
+    "service": "registration",
+    "path": "/balkonkraftwerk/ratgeber/anmelden",
+    "status": "Entwurf",
+    "thumbnail": "/preview-thumbnails/registration.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "product-motion",
+    "title": "Produktanimation · Fachbetriebe",
+    "group": "Animation",
+    "description": "Produktanimation der Fachbetriebe-Session. Die Dateien müssen noch aus iCloud auf diesen Mac geladen werden.",
+    "service": "product",
+    "path": "/",
+    "status": "Dateien in iCloud",
+    "thumbnail": null,
+    "thumbnailNote": "Dateien noch in iCloud"
+  },
+  {
+    "id": "live-desktop",
+    "title": "Bisherige Startseite · Desktop",
+    "group": "Referenzen",
+    "description": "Gesicherte vollständige Desktop-Ansicht als Bild vom 9. September.",
+    "service": "archive",
+    "path": "/solar-check-live-archive-2026-09-09/desktop-full.png",
+    "status": "Archiv",
+    "thumbnail": "/preview-thumbnails/live-desktop.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "live-mobile",
+    "title": "Bisherige Startseite · Mobil",
+    "group": "Referenzen",
+    "description": "Gesicherte vollständige Mobilansicht als Bild vom 9. September.",
+    "service": "archive",
+    "path": "/solar-check-live-archive-2026-09-09/mobile-full.png",
+    "status": "Archiv",
+    "thumbnail": "/preview-thumbnails/live-mobile.webp",
+    "thumbnailNote": "Gespeicherte Ansicht"
+  },
+  {
+    "id": "live-replay",
+    "title": "Bisherige Website · interaktives Archiv",
+    "group": "Referenzen",
+    "description": "Archivierte Abläufe mit gespeicherten Antworten; kein Schreiben auf der Live-Seite.",
+    "service": "live-replay",
+    "path": "/__case-study",
+    "status": "Archiv",
+    "thumbnail": "/preview-thumbnails/live-replay.webp",
+    "thumbnailNote": "Archivierte Startansicht"
+  }
+]
