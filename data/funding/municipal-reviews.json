@@ -10501,5 +10501,390 @@
         "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
       }
     ]
+  },
+  {
+    "regionId": "13071008",
+    "name": "Beggerow",
+    "checkedAt": "2026-09-18T06:51:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Beggerow gehört zum Amt Demmin-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite gibt einen Überblick über Projekte, in die die Gemeinden mit EU-, Bundes- und Landesförderung investiert haben; die Volltextsuche findet nur einen Bebauungsplan für eine Photovoltaikanlage und ein Webinar für Kleinstunternehmen. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-demmin-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-demmin-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur der Bebauungsplan Nr. 1 „Errichtung einer Photovoltaikanlage in Buschmühl“; Zuschuss nur ein Webinar für Kleinstunternehmen und die Online-Dienste; Speicher nur die Datenschutzerklärung."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13071014",
+    "name": "Borrentin",
+    "checkedAt": "2026-09-18T06:51:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Borrentin gehört zum Amt Demmin-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite gibt einen Überblick über Projekte, in die die Gemeinden mit EU-, Bundes- und Landesförderung investiert haben; die Volltextsuche findet nur einen Bebauungsplan für eine Photovoltaikanlage und ein Webinar für Kleinstunternehmen. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-demmin-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-demmin-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur der Bebauungsplan Nr. 1 „Errichtung einer Photovoltaikanlage in Buschmühl“; Zuschuss nur ein Webinar für Kleinstunternehmen und die Online-Dienste; Speicher nur die Datenschutzerklärung."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13071065",
+    "name": "Hohenmocker",
+    "checkedAt": "2026-09-18T06:51:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hohenmocker gehört zum Amt Demmin-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite gibt einen Überblick über Projekte, in die die Gemeinden mit EU-, Bundes- und Landesförderung investiert haben; die Volltextsuche findet nur einen Bebauungsplan für eine Photovoltaikanlage und ein Webinar für Kleinstunternehmen. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-demmin-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-demmin-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur der Bebauungsplan Nr. 1 „Errichtung einer Photovoltaikanlage in Buschmühl“; Zuschuss nur ein Webinar für Kleinstunternehmen und die Online-Dienste; Speicher nur die Datenschutzerklärung."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13071072",
+    "name": "Kentzlin",
+    "checkedAt": "2026-09-18T06:51:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kentzlin gehört zum Amt Demmin-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite gibt einen Überblick über Projekte, in die die Gemeinden mit EU-, Bundes- und Landesförderung investiert haben; die Volltextsuche findet nur einen Bebauungsplan für eine Photovoltaikanlage und ein Webinar für Kleinstunternehmen. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-demmin-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-demmin-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur der Bebauungsplan Nr. 1 „Errichtung einer Photovoltaikanlage in Buschmühl“; Zuschuss nur ein Webinar für Kleinstunternehmen und die Online-Dienste; Speicher nur die Datenschutzerklärung."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13071076",
+    "name": "Kletzin",
+    "checkedAt": "2026-09-18T06:51:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kletzin gehört zum Amt Demmin-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite gibt einen Überblick über Projekte, in die die Gemeinden mit EU-, Bundes- und Landesförderung investiert haben; die Volltextsuche findet nur einen Bebauungsplan für eine Photovoltaikanlage und ein Webinar für Kleinstunternehmen. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-demmin-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-demmin-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur der Bebauungsplan Nr. 1 „Errichtung einer Photovoltaikanlage in Buschmühl“; Zuschuss nur ein Webinar für Kleinstunternehmen und die Online-Dienste; Speicher nur die Datenschutzerklärung."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13071089",
+    "name": "Lindenberg",
+    "checkedAt": "2026-09-18T06:51:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lindenberg gehört zum Amt Demmin-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite gibt einen Überblick über Projekte, in die die Gemeinden mit EU-, Bundes- und Landesförderung investiert haben; die Volltextsuche findet nur einen Bebauungsplan für eine Photovoltaikanlage und ein Webinar für Kleinstunternehmen. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-demmin-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-demmin-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur der Bebauungsplan Nr. 1 „Errichtung einer Photovoltaikanlage in Buschmühl“; Zuschuss nur ein Webinar für Kleinstunternehmen und die Online-Dienste; Speicher nur die Datenschutzerklärung."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13071096",
+    "name": "Meesiger",
+    "checkedAt": "2026-09-18T06:51:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Meesiger gehört zum Amt Demmin-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite gibt einen Überblick über Projekte, in die die Gemeinden mit EU-, Bundes- und Landesförderung investiert haben; die Volltextsuche findet nur einen Bebauungsplan für eine Photovoltaikanlage und ein Webinar für Kleinstunternehmen. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-demmin-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-demmin-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur der Bebauungsplan Nr. 1 „Errichtung einer Photovoltaikanlage in Buschmühl“; Zuschuss nur ein Webinar für Kleinstunternehmen und die Online-Dienste; Speicher nur die Datenschutzerklärung."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13071128",
+    "name": "Sarow",
+    "checkedAt": "2026-09-18T06:51:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sarow gehört zum Amt Demmin-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite gibt einen Überblick über Projekte, in die die Gemeinden mit EU-, Bundes- und Landesförderung investiert haben; die Volltextsuche findet nur einen Bebauungsplan für eine Photovoltaikanlage und ein Webinar für Kleinstunternehmen. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-demmin-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-demmin-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur der Bebauungsplan Nr. 1 „Errichtung einer Photovoltaikanlage in Buschmühl“; Zuschuss nur ein Webinar für Kleinstunternehmen und die Online-Dienste; Speicher nur die Datenschutzerklärung."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13071136",
+    "name": "Siedenbrünzow",
+    "checkedAt": "2026-09-18T06:51:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Siedenbrünzow gehört zum Amt Demmin-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite gibt einen Überblick über Projekte, in die die Gemeinden mit EU-, Bundes- und Landesförderung investiert haben; die Volltextsuche findet nur einen Bebauungsplan für eine Photovoltaikanlage und ein Webinar für Kleinstunternehmen. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-demmin-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-demmin-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur der Bebauungsplan Nr. 1 „Errichtung einer Photovoltaikanlage in Buschmühl“; Zuschuss nur ein Webinar für Kleinstunternehmen und die Online-Dienste; Speicher nur die Datenschutzerklärung."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13071148",
+    "name": "Utzedel",
+    "checkedAt": "2026-09-18T06:51:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Utzedel gehört zum Amt Demmin-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite gibt einen Überblick über Projekte, in die die Gemeinden mit EU-, Bundes- und Landesförderung investiert haben; die Volltextsuche findet nur einen Bebauungsplan für eine Photovoltaikanlage und ein Webinar für Kleinstunternehmen. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-demmin-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-demmin-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur der Bebauungsplan Nr. 1 „Errichtung einer Photovoltaikanlage in Buschmühl“; Zuschuss nur ein Webinar für Kleinstunternehmen und die Online-Dienste; Speicher nur die Datenschutzerklärung."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13071157",
+    "name": "Warrenzin",
+    "checkedAt": "2026-09-18T06:51:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Warrenzin gehört zum Amt Demmin-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite gibt einen Überblick über Projekte, in die die Gemeinden mit EU-, Bundes- und Landesförderung investiert haben; die Volltextsuche findet nur einen Bebauungsplan für eine Photovoltaikanlage und ein Webinar für Kleinstunternehmen. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-demmin-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-demmin-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur der Bebauungsplan Nr. 1 „Errichtung einer Photovoltaikanlage in Buschmühl“; Zuschuss nur ein Webinar für Kleinstunternehmen und die Online-Dienste; Speicher nur die Datenschutzerklärung."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "finding": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Hier können Sie sich einen Überblick verschaffen, in welche Projekte und Vorhaben die Gemeinden mit Hilfe von EU- Bundes- und Landesförderinstrumenten erfolgreich investiert haben“ — Förderung an die Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-demmin-land.de/seite/310045/kommunale-f%C3%B6rderprojekte.html"
+      }
+    ]
   }
 ]
