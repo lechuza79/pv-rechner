@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, SCHRITTE_OHNE_AUSWAHL, MAX_WEGE_JE_FLOW, ALLE_KOMBINATIONEN, flowTestTitel, uebrigeFragenBeantworten, akkordeonWahlenPruefen, akkordeonFragen, waehle, weiterKlicken } from "./flows";
+import { meldungstext } from "./konsole";
 
 /**
  * Der Flow-Läufer: klickt jede OPTION jedes Schritts und jeden ZWEIG durch
@@ -381,7 +382,9 @@ for (const flow of FLOWS) {
       // lokal antwortet die Adresse mit 404. Betrifft keine Seitenfunktion.
       if (m.text().includes("_vercel/insights")) return;
       if (m.text().includes("Failed to load resource") && m.location().url.includes("_vercel/")) return;
-      konsolenFehler.push(m.text());
+      // MIT der Adresse ablegen (geteilter Baustein, siehe dort): Der Satz
+      // allein nennt nicht, WAS fehlgeschlagen ist.
+      konsolenFehler.push(meldungstext(m));
     });
     page.on("pageerror", (e) => konsolenFehler.push(`Ausnahme: ${e.message}`));
 

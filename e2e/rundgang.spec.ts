@@ -1,5 +1,6 @@
 import { test, expect, type ConsoleMessage, type Page } from "@playwright/test";
 import { SEITEN, EMBEDS } from "./routen";
+import { meldungstext } from "./konsole";
 
 // Breiter Rundgang: jede Seite einmal aufrufen und auf Laufzeitfehler prüfen.
 //
@@ -51,22 +52,6 @@ const IGNORIEREN = [
 // Zugangsdaten (ci.yml), also ist ein Datenbankfehler hier ein echter Befund —
 // ihn wegzufiltern hätte genau die Klasse verdeckt, für die es den Rundgang gibt.
 
-/** Text UND Herkunft der Meldung.
- *
- *  Der Browser meldet eine fehlgeschlagene Ressource als nackten Satz — „Failed
- *  to load resource: the server responded with a status of 404" — OHNE die
- *  Adresse. Wer nur den Text filtert, kann ein bekanntes 404 gar nicht von
- *  einem unbekannten unterscheiden und muesste die ganze Zeile ausnehmen; damit
- *  waere jedes echte 404 mit weggefiltert. Die Adresse steht in der Herkunft,
- *  also wird sie mitgeprueft.
- *
- *  Gemessen am 07.09.2026: Ausgenommen wurde nur die MIME-Meldung, die die
- *  Adresse im Text traegt; die 404-Zeile derselben Datei blieb stehen und
- *  erzeugte 296 Fehlschlaege aus einer einzigen Ursache. */
-function meldungstext(msg: ConsoleMessage): string {
-  const herkunft = msg.location()?.url ?? "";
-  return herkunft ? `${msg.text()} [${herkunft}]` : msg.text();
-}
 
 function istEchterFehler(msg: ConsoleMessage): boolean {
   if (msg.type() !== "error") return false;
