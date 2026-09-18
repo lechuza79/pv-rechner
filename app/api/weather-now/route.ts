@@ -2,12 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 // @ts-expect-error seek-bzip ships no types
 import Bunzip from "seek-bzip";
 import { rateLimit } from "../../../lib/rate-limit";
-import { supabase } from "../../../lib/supabase-server";
-import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "../../../lib/db-timeout";
-import { modelWeatherAt, shardKey, snapshotPath, SNAPSHOT_BUCKET, type IconD2Shard } from "../../../lib/icon-d2";
+import { modelWeatherAt, shardKey } from "../../../lib/icon-d2";
+import { loadIconD2Shard } from "../../../lib/icon-d2-store";
 import { parseRadolan, precipitationRatePerHour, radolanValueAt, type RadolanGrid } from "../../../lib/dwd-radolan";
 import { combineWeather } from "../../../lib/weather-now";
-import { readFile } from "node:fs/promises";
 import plzCoords from "../../../public/plz.json";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 
@@ -22,39 +20,9 @@ const COORDS = plzCoords as unknown as Record<string, [number, number]>;
 const CDN_CACHE = "public, s-maxage=300, stale-while-revalidate=900";
 const RADAR_URL = "https://opendata.dwd.de/weather/radar/radolan/ry/raa01-ry_10000-latest-dwd---bin.bz2";
 
-/** Snapshot shards change hourly; ten minutes in memory keeps reads rare. */
-const SHARD_TTL = 10 * 60 * 1000;
-const shards = new Map<string, { shard: IconD2Shard | null; at: number }>();
 /** The radar file changes every five minutes. */
 const RADAR_TTL = 2 * 60 * 1000;
 let radar: { grid: RadolanGrid | null; at: number } | null = null;
-
-async function loadShard(key: string): Promise<IconD2Shard | null> {
-  const hit = shards.get(key);
-  if (hit && Date.now() - hit.at < SHARD_TTL) return hit.shard;
-  let shard: IconD2Shard | null = null;
-  const localDir = process.env.WEATHER_SNAPSHOT_DIR;
-  if (localDir) {
-    // Local development and tests read a snapshot written with `--lokal`, so a
-    // check never needs the production store.
-    shard = await readFile(`${localDir}/${key}.json`, "utf8").then((text) => JSON.parse(text) as IconD2Shard, () => null);
-  } else if (supabase) {
-    try {
-      const { data, error } = await withDbTimeout(
-        supabase.storage.from(SNAPSHOT_BUCKET).download(snapshotPath(key)),
-        "weather-now snapshot",
-        DB_SOFT_READ_TIMEOUT_MS,
-      );
-      if (!error && data) shard = JSON.parse(await data.text()) as IconD2Shard;
-    } catch {
-      shard = null;
-    }
-  }
-  // Keep the last good shard over a failed read; a failed read is not "no sky".
-  if (!shard && hit?.shard) shard = hit.shard;
-  shards.set(key, { shard, at: Date.now() });
-  return shard;
-}
 
 async function loadRadar(): Promise<RadolanGrid | null> {
   if (radar && Date.now() - radar.at < RADAR_TTL) return radar.grid;
@@ -83,7 +51,7 @@ export async function GET(req: NextRequest) {
   if (!coords) return NextResponse.json({ error: "Unknown plz" }, { status: 404 });
 
   const now = new Date();
-  const [shard, grid] = await Promise.all([loadShard(shardKey(plz)), loadRadar()]);
+  const [shard, grid] = await Promise.all([loadIconD2Shard(shardKey(plz)), loadRadar()]);
   const model = shard ? modelWeatherAt(shard, plz, now) : null;
 
   let radarRate: number | null = null;

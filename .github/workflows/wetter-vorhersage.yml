@@ -1,0 +1,43 @@
+name: Wetter-Vorhersage 16 Tage (ICON, ECMWF, GFS)
+
+# Schreibt alle sechs Stunden je Postleitzahl-Bereich die Tageshöchstwerte der
+# nächsten 16 Tage (scripts/wetter-vorhersage.ts → Supabase Storage
+# „wetter-modell/vorhersage"). Der Hitzewellen-Hinweis im Klimaanlagen-Rechner
+# liest nur diese Datei; kein Wetterdienst wird pro Besucher gefragt.
+#
+# Fällt ein Lauf aus, trägt der vorige weiter — die Seite wirft Tage vor
+# „heute" selbst weg, zeigt also nie gestern als Vorhersage.
+
+on:
+  schedule:
+    - cron: "50 1,7,13,19 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wetter-vorhersage
+  cancel-in-progress: false
+
+jobs:
+  forecast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Vorhersage schreiben
+        timeout-minutes: 10
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run wetter:vorhersage

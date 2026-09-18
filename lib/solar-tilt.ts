@@ -112,3 +112,14 @@ export function tiltedIrradiance(
   );
   return dni * incidence + moduleDiffuse + moduleAlbedo;
 }
+
+/** Sun elevation above the horizon in degrees, for a point and a UTC instant. */
+export function sunElevation(latitude: number, longitude: number, ms: number) {
+  const { declination, equationOfTimeHours } = sunAt(ms);
+  const ut = ((((ms / 1000) % 86400) + 86400) % 86400) / 3600;
+  const hourAngle = (15 * (ut - 12 + equationOfTimeHours) + longitude) * DEG;
+  const sin =
+    Math.sin(latitude * DEG) * Math.sin(declination * DEG) +
+    Math.cos(latitude * DEG) * Math.cos(declination * DEG) * Math.cos(hourAngle);
+  return Math.asin(Math.max(-1, Math.min(1, sin))) / DEG;
+}

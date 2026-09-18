@@ -43,6 +43,34 @@ export function era5ChunkOf(hour: number) {
 export function era5ChunkUrl(variable: Era5Variable, chunk: number) {
   return `${ERA5_ARCHIVE_BASE}${variable}/chunk_${chunk}.om`;
 }
+
+/**
+ * Before 2022 the archive keeps one file per calendar year (UTC) instead of
+ * 21-day chunks: `year_2021.om`, time axis in hours since 1 January. A block
+ * of ours is then assembled from one or two year files. They are stored a
+ * little coarser (measured on the eight overlapping days of 2021: temperature
+ * steps of 0.05 K, radiation of 1 W/m²); the hosted API reads the same files
+ * for those years, so the values are still the provider's.
+ */
+export function era5YearUrl(variable: Era5Variable, year: number) {
+  return `${ERA5_ARCHIVE_BASE}${variable}/year_${year}.om`;
+}
+
+/** Which part of which year file fills which part of a block. */
+export function era5ChunkYearParts(chunk: number) {
+  const from = chunk * ERA5_CHUNK_HOURS;
+  const to = from + ERA5_CHUNK_HOURS;
+  const parts: { year: number; fileFrom: number; count: number; blockFrom: number }[] = [];
+  for (let hour = from; hour < to; ) {
+    const year = new Date(hour * 3600000).getUTCFullYear();
+    const yearStart = Date.UTC(year, 0, 1) / 3600000;
+    const yearEnd = Date.UTC(year + 1, 0, 1) / 3600000;
+    const end = Math.min(to, yearEnd);
+    parts.push({ year, fileFrom: hour - yearStart, count: end - hour, blockFrom: hour - from });
+    hour = end;
+  }
+  return parts;
+}
 /** Hours since the Unix epoch; the archive's own time axis. */
 export function era5HourOf(iso: string) {
   const value = Date.parse(iso);

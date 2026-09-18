@@ -29,6 +29,13 @@ export interface DataSource {
   license?: string;
   /** Canonical homepage of the source, used for the credit link. */
   url?: string;
+  /**
+   * A notice the licensor requires in full wording (e.g. ECMWF's disclaimer).
+   * Too long for a credit line, so it stands on the sources page under the
+   * entry, and the credit line links there (CC BY 4.0 Sec. 3(a)(2) allows
+   * this "in any reasonable manner").
+   */
+  hinweis?: string;
   /** Licence homepage, if different from `url` (e.g. a govdata licence text page). */
   licenseUrl?: string;
   /**
@@ -187,6 +194,34 @@ export const DATA_SOURCES = {
     licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
     url: "https://open-meteo.com",
     note: "ausgewertet und bildlich wiedergegeben",
+  },
+  /**
+   * Hitzewellen-Hinweis: Tageshöchstwerte der nächsten 16 Tage aus drei
+   * Vorhersagemodellen in der Reihenfolge, in der auch die Open-Meteo-Schnittstelle
+   * sie für Deutschland nimmt — DWD ICON, dann ECMWF IFS, dann NOAA GFS —, gelesen
+   * aus dem offenen Datenarchiv von Open-Meteo (CC BY 4.0). ECMWF stellt seine
+   * offenen Vorhersagedaten unter CC BY 4.0, GFS ist als Werk der US-Regierung
+   * gemeinfrei; beide werden trotzdem genannt, weil der Leser sonst nicht wüsste,
+   * woher Tag 8 bis 16 stammen. Verändert: Rasterzelle gewählt, auf die Ortshöhe
+   * umgerechnet, zu Tageshöchstwerten verdichtet.
+   */
+  // Legal-Judge 18.09.2026: ECMWF verlangt Nennung mit www.ecmwf.int, den
+  // Lizenzhinweis, einen Änderungshinweis und seinen Haftungsausschluss im
+  // Wortlaut (Terms of Use, apps.ecmwf.int/datasets/licences/general/); der
+  // Ausschluss steht unter dem Eintrag auf /ueber (Quellenliste), die Zeile verlinkt
+  // dorthin. DWD: Form „Datenbasis: Deutscher Wetterdienst" bei veränderten
+  // Daten — deshalb rendert die Seite diesen Eintrag mit „Datenbasis:".
+  wetterVorhersage: {
+    name: "Deutscher Wetterdienst (ICON), ECMWF (www.ecmwf.int), NOAA (GFS), über Open-Meteo",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://open-meteo.com",
+    note: "zu Tageshöchstwerten verdichtet, höhenkorrigiert",
+    hinweis:
+      "Dieser Dienst beruht auf Daten und Produkten des Europäischen Zentrums für mittelfristige Wettervorhersage (ECMWF). " +
+      "ECMWF übernimmt keinerlei Haftung für Fehler oder Auslassungen in den Daten, deren Verfügbarkeit oder für Schäden aus ihrer Nutzung. " +
+      "— This service is based on data and products of the European Centre for Medium-Range Weather Forecasts (ECMWF). " +
+      "ECMWF does not accept any liability whatsoever for any error or omission in the data, their availability, or for any loss or damage arising from their use.",
   },
   /**
    * Radar-Niederschlag (RADOLAN RY), direkt vom Open-Data-Server des DWD.

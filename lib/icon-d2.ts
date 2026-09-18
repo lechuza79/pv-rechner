@@ -140,3 +140,31 @@ export function modelWeatherAt(shard: IconD2Shard, plz: string, at: Date): Model
     shortwaveRadiation: direct === null || diffuse === null ? null : direct + diffuse,
   };
 }
+
+/**
+ * The hourly radiation and temperature of one point over a span of whole
+ * hours, `fromMs` to before `toMs`. Radiation at an hour is the mean of the
+ * hour ENDING there, as in the API; null where the snapshot does not reach.
+ */
+export function modelHours(shard: IconD2Shard, plz: string, fromMs: number, toMs: number) {
+  const point = shard.points[plz];
+  if (!point) return null;
+  const first = Date.parse(shard.firstHour);
+  const read = (variable: IconD2Variable, hour: number) => {
+    const index = shard.variables.indexOf(variable);
+    const value = index < 0 || hour < 0 || hour >= shard.hours ? null : point.values[index]?.[hour];
+    return value === null || value === undefined ? null : value / shard.scale[variable];
+  };
+  const times: number[] = [];
+  const shortwave: (number | null)[] = [];
+  const temperature: (number | null)[] = [];
+  for (let at = fromMs; at < toMs; at += 3600000) {
+    const hour = Math.round((at - first) / 3600000);
+    const direct = read('direct_radiation', hour);
+    const diffuse = read('diffuse_radiation', hour);
+    times.push(at);
+    shortwave.push(direct === null || diffuse === null ? null : direct + diffuse);
+    temperature.push(read('temperature_2m', hour));
+  }
+  return { times, shortwave, temperature };
+}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DataSourceNote } from "../../../../../../components/PoweredBy";
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -799,19 +800,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           )}
           {geoLat !== null && geoLon !== null && (
             <>
-              Die simulierte Solarleistung nutzt Wetterdaten von{" "}
-              <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer" style={S.licLink}>
-                Open-Meteo
-              </a>{" "}
-              (DWD, NOAA), Lizenz{" "}
-              <a
-                href="https://creativecommons.org/licenses/by/4.0/"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={S.licLink}
-              >
-                CC BY 4.0
-              </a>
+              <DataSourceNote label="Die simulierte Solarleistung nutzt Wetterdaten, Quelle:" source={DATA_SOURCES.iconD2Archive} />
               .{" "}
             </>
           )}

@@ -74,6 +74,8 @@ export function era5WriteBlock(
   values: Float32Array,
   sourceLastModified: string | null,
   root = ERA5_STORE_ROOT,
+  /** Where the values came from; a block before 2022 comes from year files. */
+  sourceUrl = era5ChunkUrl(variable, chunk),
 ) {
   const expected = ERA5_WINDOW_CELLS * ERA5_CHUNK_HOURS;
   if (values.length !== expected) {
@@ -100,7 +102,7 @@ export function era5WriteBlock(
     rowFrom: ERA5_WINDOW.rowFrom,
     columnFrom: ERA5_WINDOW.columnFrom,
     values: expected,
-    sourceUrl: era5ChunkUrl(variable, chunk),
+    sourceUrl,
     sourceLastModified,
     retrievedAt: new Date().toISOString(),
   };

@@ -217,17 +217,33 @@ Zwischenspeicher und gespeicherte Herkunft bleiben auf der öffentlichen Form �
 der Schlüssel landet nie auf der Platte, und die 3.419 gespeicherten Antworten
 bleiben gültig, weil Abo und freier Zugang dieselben Daten liefern.
 
-## Live-Wetter (nicht Teil dieser Umstellung)
+## Live-Abrufe: ebenfalls umgestellt (18.09.2026)
 
-Die Sonnenanzeige der Startseite und die übrigen Live-Abrufe laufen weiter über
-die freie Vorhersage-Schnittstelle. Zwei Befunde dazu, beide ungelöst:
+Keine Seite fragt mehr die freie Vorhersage-Schnittstelle. Was jede liest und
+wie nah es am bisherigen Wert liegt — gemessen gegen die Schnittstelle am
+18.09.2026, nicht angenommen:
 
-- Der Wert „jetzt" ist ein **Modellwert** der Vorhersage, keine Messung. Wie weit
-  er von der tatsächlichen Einstrahlung abweicht, hat hier niemand gemessen.
-  Gemessene Werte gibt es offen beim Deutschen Wetterdienst (Stationsdaten im
-  Zehn-Minuten-Takt); Verzug und Abdeckung sind ungeprüft.
-- Fehlt der Anzeige ein Wert, setzt sie still **null Einstrahlung** bzw. 15 °C
-  ein — eine fehlende Zahl sieht dann aus wie Nacht.
+| Stelle | liest jetzt | gemessen gegen die Schnittstelle |
+|---|---|---|
+| Tageskurve (Live-Simulation, „Solarleistung heute") | stündlicher ICON-D2-Schnappschuss, ganzer deutscher Kalendertag, nächste Postleitzahl | Berlin, München: Temperatur je Stunde gleich, Strahlung < 1 W/m² |
+| Sonnenanzeige (Theme) | derselbe Schnappschuss, 16 Messpunkte | dasselbe Modell wie vorher (die Schnittstelle nimmt in Deutschland ICON-D2) |
+| Hitzewellen-Hinweis | eigene 16-Tage-Datei, alle 6 h: ICON → ECMWF → GFS | Tag 6–7 und 15–16 gleich; Tag 1–5 bis 1,5 K (die Schnittstelle nimmt dort ICON-D2/EU), Tag 8–14 meist < 1 K, München bis 2 K |
+| Kühlgradstunden, 5 Sommer und letzter Sommer | einmal im Jahr aus ERA5 vorgerechnet, Datei im Repo | im Mittel rund +20 % gegen die alten Werte (die kamen aus ERA5-Land) |
+| Kühlgradstunden, Projektion 20 Jahre | nur noch gespeicherte Klimamodell-Werte, als Verhältnis auf die neue Basis übertragen; sonst der Landesfaktor | — |
+
+**Warum ERA5 und nicht ERA5-Land** (gemessen, `npm run klima:kuehlgrad-gegen-messung`): Kühlgradstunden gegen DWD-Stationen, Sommer 2025 (56 Stationen) ERA5 +13 %, ERA5-Land −14 %; Sommer 2024 (32 Stationen) ERA5 −2 %, ERA5-Land −19 %. ERA5-Land unterschätzt Sommerhitze an beiden Sommern; die alten Seitenwerte taten es mit.
+
+**Warum die Projektion übertragen wird:** Das Klimamodell hat seine eigene Basis. Auf die höhere ERA5-Basis gesetzt, läge seine Zukunft an 7 % der Orte unter heute. Neue Klimawerte werden nicht geholt — die Klima-Schnittstelle ist kommerziell nur im Professional-Abo erlaubt (offene Entscheidung).
+
+**Vor 2022** liegt das offene Archiv in Jahresdateien statt Blöcken; `era5:sync` liest sie seitdem mit. Sie sind etwas gröber gespeichert (0,05 K, 1 W/m², gemessen an acht überlappenden Tagen), der Anbieter liest dieselben Dateien.
+
+Zwei Abweichungen mit Absicht: Alpen-Postleitzahlen lesen am Ortspunkt (siehe
+Ortspunkte), und der Tageswert „jetzt" ist ein Stundenmittel statt des
+15-Minuten-Werts der Schnittstelle.
+
+Jährliche Pflicht: nach dem 1. Oktober `npm run era5:sync -- --year=JJJJ` für den
+abgelaufenen Sommer, dann `npm run klima:kuehlgrad`. Ein Test wird im Januar rot,
+wenn der jüngste Sommer fehlt.
 
 ## Wenn umgestellt wird
 

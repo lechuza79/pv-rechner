@@ -17,6 +17,8 @@ import {
   ERA5_WINDOW,
   ERA5_WINDOW_CELLS,
   era5ChunkUrl,
+  era5ChunkYearParts,
+  era5YearUrl,
   era5ChunksFor,
   era5HourOf,
   type Era5Variable,
@@ -68,27 +70,58 @@ async function lastModified(url: string) {
   return response.headers.get('last-modified');
 }
 
-async function fetchBlock(variable: Era5Variable, chunk: number) {
+/**
+ * Where a block comes from and the stamp that says whether it changed: the
+ * chunk file, or — before 2022, where the archive has none — the year files.
+ */
+async function blockSource(variable: Era5Variable, chunk: number) {
   const url = era5ChunkUrl(variable, chunk);
-  const stamp = await lastModified(url);
+  const head = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(30000) });
+  if (head.ok) return { kind: 'chunk' as const, url, stamp: head.headers.get('last-modified') };
+  if (head.status !== 404) throw new Error(`HEAD ${url}: HTTP ${head.status}`);
+  const parts = era5ChunkYearParts(chunk).map((part) => ({ ...part, url: era5YearUrl(variable, part.year) }));
+  const stamps = await Promise.all(parts.map((part) => lastModified(part.url)));
+  return { kind: 'years' as const, url: parts.map((p) => p.url).join(' + '), stamp: stamps.join(' | '), parts };
+}
+
+async function readWindowFrom(url: string, fileFrom: number, count: number, expectedHours?: number) {
   const reader = await new OmHttpBackend({ url, eTagValidation: false }).asCachedReader(CACHE);
   const dimensions = reader.getDimensions();
-  if (dimensions.length !== 3 || Number(dimensions[2]) !== ERA5_CHUNK_HOURS) {
+  if (dimensions.length !== 3 || (expectedHours !== undefined && Number(dimensions[2]) !== expectedHours)) {
     throw new Error(`Unerwarteter Aufbau von ${url}: ${dimensions.join('x')}`);
   }
+  if (fileFrom + count > Number(dimensions[2])) throw new Error(`${url} endet vor Stunde ${fileFrom + count}.`);
   const values = await reader.read({
     type: OmDataType.FloatArray,
     ranges: [
       { start: ERA5_WINDOW.rowFrom, end: ERA5_WINDOW.rowTo },
       { start: ERA5_WINDOW.columnFrom, end: ERA5_WINDOW.columnTo },
-      { start: 0, end: ERA5_CHUNK_HOURS },
+      { start: fileFrom, end: fileFrom + count },
     ],
   });
   reader.dispose?.();
-  if (values.length !== ERA5_WINDOW_CELLS * ERA5_CHUNK_HOURS) {
-    throw new Error(`${url}: ${values.length} Werte statt ${ERA5_WINDOW_CELLS * ERA5_CHUNK_HOURS}.`);
+  if (values.length !== ERA5_WINDOW_CELLS * count) {
+    throw new Error(`${url}: ${values.length} Werte statt ${ERA5_WINDOW_CELLS * count}.`);
   }
-  return era5WriteBlock(variable, chunk, values as Float32Array, stamp);
+  return values as Float32Array;
+}
+
+async function fetchBlock(variable: Era5Variable, chunk: number) {
+  const source = await blockSource(variable, chunk);
+  if (source.kind === 'chunk') {
+    const values = await readWindowFrom(source.url, 0, ERA5_CHUNK_HOURS, ERA5_CHUNK_HOURS);
+    return era5WriteBlock(variable, chunk, values, source.stamp);
+  }
+  const block = new Float32Array(ERA5_WINDOW_CELLS * ERA5_CHUNK_HOURS).fill(Number.NaN);
+  for (const part of source.parts) {
+    const values = await readWindowFrom(part.url, part.fileFrom, part.count);
+    for (let cell = 0; cell < ERA5_WINDOW_CELLS; cell++) {
+      for (let h = 0; h < part.count; h++) {
+        block[cell * ERA5_CHUNK_HOURS + part.blockFrom + h] = values[cell * part.count + h];
+      }
+    }
+  }
+  return era5WriteBlock(variable, chunk, block, source.stamp, undefined, source.url);
 }
 
 /** Retry only transport failures, with growing pauses; a wrong shape is not retried. */
@@ -131,7 +164,7 @@ async function main() {
     for (const chunk of chunks) {
       if (era5BlockReady(variable, chunk)) {
         if (!revise) { ready++; continue; }
-        const stamp = await lastModified(era5ChunkUrl(variable, chunk));
+        const { stamp } = await blockSource(variable, chunk);
         if (stamp === era5ReadManifest(variable, chunk).sourceLastModified) { ready++; continue; }
         console.log(`  ${variable}/${chunk}: Quelle überarbeitet, wird neu geladen`);
         era5DropBlock(variable, chunk);

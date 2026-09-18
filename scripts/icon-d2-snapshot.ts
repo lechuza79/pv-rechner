@@ -14,7 +14,8 @@
  * snapshot with a hole would show a clear sky that nobody measured or modelled.
  */
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
-import { initWasm, LruBlockCache, OmDataType, OmHttpBackend } from '@openmeteo/file-reader';
+import { initWasm } from '@openmeteo/file-reader';
+import { readOrography, readWindow } from './open-data-window';
 import { createClient } from '@supabase/supabase-js';
 import {
   ICON_D2_BASE,
@@ -34,18 +35,14 @@ import { SEA_MARKER, selectCell, temperatureOffset } from '../lib/regular-grid';
 import plzCoordinates from '../public/plz.json';
 import plzElevation from '../lib/plz-elevation.json';
 import plzWeatherPoint from '../lib/plz-weather-point.json';
+import { berlinTagesgrenzen } from '../lib/zeit';
 
 const flag = (key: string) => process.argv.includes('--' + key);
-const CACHE = new LruBlockCache(1024 * 1024, 2048);
 /** Germany plus one cell of margin, in grid indices. */
 const WINDOW = { rowFrom: 191, rowTo: 607, columnFrom: 472, columnTo: 973 };
 const ROWS = WINDOW.rowTo - WINDOW.rowFrom;
 const COLUMNS = WINDOW.columnTo - WINDOW.columnFrom;
 const PARALLEL = 4;
-
-async function reader(path: string) {
-  return new OmHttpBackend({ url: ICON_D2_BASE + path, eTagValidation: false }).asCachedReader(CACHE);
-}
 
 async function main() {
   await initWasm();
@@ -54,25 +51,20 @@ async function main() {
     last_run_initialisation_time: number;
   };
   const nowHour = Math.floor(Date.now() / 3600000);
-  const firstHour = nowHour - SNAPSHOT_HOURS_BEFORE;
-  const hours = SNAPSHOT_HOURS_BEFORE + SNAPSHOT_HOURS_AFTER + 1;
+  // The hours around now for the scene, and the whole German calendar day for
+  // the day curves (live simulation, municipal solar today). One file serves
+  // both; whichever reaches further wins.
+  const [dayStart, dayEnd] = berlinTagesgrenzen(new Date());
+  const firstHour = Math.min(nowHour - SNAPSHOT_HOURS_BEFORE, dayStart / 3600000);
+  const lastHour = Math.max(nowHour + SNAPSHOT_HOURS_AFTER, dayEnd / 3600000);
+  const hours = lastHour - firstHour + 1;
   const endHour = Math.floor(meta.data_end_time / 3600);
   if (firstHour + hours - 1 > endHour) {
     throw new Error(`Modell reicht nur bis ${new Date(endHour * 3600000).toISOString()}; Schnappschuss nicht vollständig.`);
   }
 
   // Model orography for the cell choice, window only.
-  const orographyReader = await reader('static/HSURF.om');
-  const orographyWindow = await orographyReader.read({
-    type: OmDataType.FloatArray,
-    ranges: [{ start: WINDOW.rowFrom, end: WINDOW.rowTo }, { start: WINDOW.columnFrom, end: WINDOW.columnTo }],
-  });
-  const orography = (row: number, column: number) => {
-    const r = row - WINDOW.rowFrom;
-    const c = column - WINDOW.columnFrom;
-    if (r < 0 || r >= ROWS || c < 0 || c >= COLUMNS) return SEA_MARKER;
-    return orographyWindow[r * COLUMNS + c];
-  };
+  const orography = await readOrography(ICON_D2_BASE, WINDOW, SEA_MARKER);
 
   // One window per variable over the snapshot hours; a window may span two chunks.
   const windows = new Map<IconD2Variable, Float32Array>();
@@ -82,24 +74,7 @@ async function main() {
     Array.from({ length: PARALLEL }, async () => {
       while (cursor < ICON_D2_VARIABLE_NAMES.length) {
         const variable = ICON_D2_VARIABLE_NAMES[cursor++];
-        const out = new Float32Array(ROWS * COLUMNS * hours).fill(Number.NaN);
-        for (let chunk = Math.floor(firstHour / ICON_D2_CHUNK_HOURS); chunk <= Math.floor((firstHour + hours - 1) / ICON_D2_CHUNK_HOURS); chunk++) {
-          const from = Math.max(firstHour, chunk * ICON_D2_CHUNK_HOURS);
-          const to = Math.min(firstHour + hours, (chunk + 1) * ICON_D2_CHUNK_HOURS);
-          const r = await reader(`${variable}/chunk_${chunk}.om`);
-          const part = await r.read({
-            type: OmDataType.FloatArray,
-            ranges: [
-              { start: WINDOW.rowFrom, end: WINDOW.rowTo },
-              { start: WINDOW.columnFrom, end: WINDOW.columnTo },
-              { start: from - chunk * ICON_D2_CHUNK_HOURS, end: to - chunk * ICON_D2_CHUNK_HOURS },
-            ],
-          });
-          const span = to - from;
-          for (let cell = 0; cell < ROWS * COLUMNS; cell++) {
-            for (let h = 0; h < span; h++) out[cell * hours + (from - firstHour) + h] = part[cell * span + h];
-          }
-        }
+        const out = await readWindow({ base: ICON_D2_BASE, variable, chunkHours: ICON_D2_CHUNK_HOURS, window: WINDOW, firstHour, hours });
         windows.set(variable, out);
         console.log(`  ${variable} gelesen (${Math.round((Date.now() - started) / 1000)}s)`);
       }
