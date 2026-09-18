@@ -60,3 +60,16 @@ describe("Solar-Rückblick 2016–2025", () => {
     expect(() => solarRueckblick(jahre().slice(1))).toThrow();
   });
 });
+
+describe("Clock alignment", () => {
+  it("reads the German clock, including both daylight-saving switches", async () => {
+    const { berlinStunde } = await import("../solar-rueckblick");
+    // Winter: UTC+1
+    expect(berlinStunde(Date.UTC(2024, 0, 15, 11))).toEqual({ monat: 0, stunde: 12 });
+    // Summer: UTC+2
+    expect(berlinStunde(Date.UTC(2024, 6, 15, 11))).toEqual({ monat: 6, stunde: 13 });
+    // New Year in Germany starts while UTC is still in December
+    expect(berlinStunde(Date.UTC(2023, 11, 31, 23))).toEqual({ monat: 0, stunde: 0 });
+  });
+
+});

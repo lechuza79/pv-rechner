@@ -38,7 +38,11 @@ export const RUECKBLICK_VON = 2016;
 export const RUECKBLICK_BIS = 2025;
 const JAHRE = RUECKBLICK_BIS - RUECKBLICK_VON + 1;
 
-/** One calendar year of hourly weather, index 0 = 1 Jan 00:00 UTC. */
+/**
+ * One calendar year of hourly weather on a UTC axis: index i is labelled
+ * 1 Jan 00:00 UTC + i h and holds the mean of the hour BEFORE that label
+ * (ERA5 / Open-Meteo convention). Never feed a fixed-offset local axis.
+ */
 export interface WetterJahr {
   jahr: number;
   /** Air temperature 2 m, °C. */
@@ -84,6 +88,19 @@ function stundenImJahr(jahr: number): number {
   return (Date.UTC(jahr + 1, 0, 1) - Date.UTC(jahr, 0, 1)) / 3_600_000;
 }
 
+const BERLIN = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Berlin", month: "numeric", hour: "numeric", hourCycle: "h23" });
+
+/** Local month (0–11) and clock hour (0–23) in Germany for a UTC instant. */
+export function berlinStunde(ms: number): { monat: number; stunde: number } {
+  let monat = 0;
+  let stunde = 0;
+  for (const t of BERLIN.formatToParts(new Date(ms))) {
+    if (t.type === "month") monat = Number(t.value) - 1;
+    else if (t.type === "hour") stunde = Number(t.value);
+  }
+  return { monat, stunde };
+}
+
 export function solarRueckblick(wetter: WetterJahr[], kwp = 10): Rueckblick {
   if (!Number.isFinite(kwp) || kwp < 0 || kwp > 10) throw new Error("Anlagengröße außerhalb des Modells");
   if (wetter.length !== JAHRE) throw new Error("Es braucht genau zehn Wetterjahre");
@@ -111,9 +128,10 @@ export function solarRueckblick(wetter: WetterJahr[], kwp = 10): Rueckblick {
       if (typeof temp !== "number" || !Number.isFinite(temp) || typeof strahlung !== "number" || !Number.isFinite(strahlung) || strahlung < 0) {
         throw new Error(`Ungültiger Wetterwert ${jahr}, Stunde ${i}`);
       }
-      const zeit = new Date(Date.UTC(jahr, 0, 1) + i * 3_600_000);
-      const monat = zeit.getUTCMonth();
-      const stunde = zeit.getUTCHours();
+      // A weather value at label t is the mean of the PRECEDING hour, so the
+      // interval starts at t − 1 h. The household lives by the German clock:
+      // load profile and price period use Berlin local time (with DST), not UTC.
+      const { monat, stunde } = berlinStunde(Date.UTC(jahr, 0, 1) + (i - 1) * 3_600_000);
       const preis = strompreise[`${jahr}-S${monat < 6 ? 1 : 2}`];
       if (!(preis > 0)) throw new Error(`Strompreis ${jahr} fehlt`);
       // Heating degree hours (G20/15), used only to distribute annual heat.
