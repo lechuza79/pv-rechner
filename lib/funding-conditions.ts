@@ -254,6 +254,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "mainz-bingen-balkonkraftwerke",
   "mayen-koblenz-balkonkraftwerke",
   "altenkirchen-balkonkraftwerke",
+  // Added 18 Sep 2026: exhausted VG programme, guideline read in full; the
+  // test forms (application before contract, 3-/12-month deadlines) are missing.
+  "vg-hachenburg-erneuerbare-energien",
 ];
 
 /**

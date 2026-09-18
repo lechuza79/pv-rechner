@@ -6365,8 +6365,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // TRÄGER IST DIE ORTSGEMEINDE, nicht die Verbandsgemeinde — der eigene
     // Ratsbeschluss vom 20.11.2025 und die eigene Kasse machen den Unterschied.
     // Die Verbandsgemeinde Asbach führt nur die Verwaltung und stellt die Seite;
-    // deshalb steht dieses Programm im Katalog, während die VG-Programme aus
-    // derselben Runde (Hachenburg, Langenlonsheim-Stromberg) zurückgestellt sind.
+    // deshalb steht dieses Programm im Katalog. Die VG-Programme aus derselben
+    // Runde waren zunächst zurückgestellt; Hachenburg ist seit 18.09.2026 als
+    // eigenes VG-Programm aufgenommen, Langenlonsheim-Stromberg noch nicht.
     //
     // Gefunden über eine FALSCHE Zuordnung: Der Vorsortierer hatte diese Seite
     // der Nachbargemeinde Buchholz zugeschrieben. Buchholz hatte ein eigenes
@@ -7177,6 +7178,92 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     //   AUFGEFALLEN, WEIL DIE QUELLE ENTSPERRT WURDE: Diese Seite lag als
     //   „shell" in der Ablage — das leere Personal-Widget in ihrer Seitenleiste
     //   hatte den ganzen Programmtext mitgenommen (siehe `fundingContentGap`).
+  },
+
+  "vg-hachenburg-erneuerbare-energien": {
+    id: "vg-hachenburg-erneuerbare-energien", name: "Förderprogramm Erneuerbare Energie für Privathaushalte",
+    traeger: "Verbandsgemeinde Hachenburg", level: "kommune", region: "Verbandsgemeinde Hachenburg",
+    bundesland: "Rheinland-Pfalz",
+    // PROGRAMMSEITE AM 18.09.2026 GELESEN: „KIPKI-Fördermittel ausgeschöpft –
+    // Vorläufig zugesagte Anträge behalten Gültigkeit … Die dafür zu Verfügung
+    // stehenden Mittel in Höhe von 237.000 € sind zum jetzigen Zeitpunkt
+    // vollständig ausgeschöpft. Eine Antragstellung für die steckerfertigen
+    // Solaranlagen („Balkonkraftwerke") ist weiterhin möglich. Eine Rückmeldung
+    // der Verwaltung erfolgt jedoch erst, sobald wieder Fördermittel zur
+    // Verfügung stehen." Deshalb `ausgeschoepft`, nicht `eingestellt`: Die
+    // Verwaltung nimmt Balkon-Anträge weiter an und stellt neue Mittel in
+    // Aussicht, zahlt heute aber nichts.
+    //
+    // RICHTLINIE IM VOLLTEXT GELESEN (Scan ohne Textebene, Seite für Seite als
+    // Bild): „Richtlinien der Verbandsgemeinde Hachenburg für das
+    // Förderprogramm Erneuerbare Energien für Privathaushalte … in den Jahren
+    // 2024/2025", § 8: überarbeitete Fassung, beschlossen vom
+    // Verbandsgemeinderat am 27.08.2024. Beträge aus § 3 Abs. 3 (Pauschalen),
+    // Höchstbetrag 1.000 € je Haushalt aus § 3 Abs. 4.
+    //   Solarthermie (250/500 €) und Biomasse-Feuerung (500 €) fördert die
+    //   Richtlinie ebenfalls; unsere Techniken kennen sie nicht, deshalb stehen
+    //   sie nur in `coveredCosts`. Die Brauchwasser-Wärmepumpe (250 €) ist
+    //   KEINE Heizungs-Wärmepumpe — `wpPauschale` trägt den Satz für die
+    //   Heizungs-Wärmepumpe (Buchst. d, 500 €), um die es im Rechner geht.
+    //
+    // DAS FÖRDERGEBIET IST DIE GANZE VERBANDSGEMEINDE (§ 4 Abs. 2:
+    // „Privathaushalte, die dem Gebiet der Verbandsgemeinde Hachenburg
+    // zuzuordnen sind"). Die 33 Mitglieder — die Stadt Hachenburg und 32
+    // Ortsgemeinden — stammen aus der Gemeindeübersicht der Verbandsgemeinde
+    // selbst (18.09.2026), jede einzeln gegen das Melderegister aufgelöst, alle
+    // unter 07143. Der Crawler hatte die Seite 22 davon zugeordnet; alle 22
+    // liegen in dieser Liste. Namensfallen, einzeln nachgesehen: „Nister" ist
+    // 07143276 (nicht Nistertal, Nisterau, Nister-Möhrendorf), „Roßbach"
+    // 07143287 (nicht Nieder-/Oberroßbach), „Wied" 07143310 (nicht Steinebach an
+    // der Wied, das eigens mit 07143294 dabei ist), „Linden" 07143258. Der
+    // Kreisschlüssel 07143 wäre falsch: Der Westerwaldkreis hat weitere
+    // Verbandsgemeinden, die dieses Programm nicht zahlen.
+    //
+    // Bis 18.09.2026 bewusst zurückgestellt (siehe Kommentar bei Asbach): Die
+    // Ortsgemeinde-Zuordnung des Crawlers verdeckte, dass der Träger die
+    // Verbandsgemeinde ist.
+    agsCodes: [
+      "07143202", "07143204", "07143205", "07143212", "07143215", "07143223",
+      "07143225", "07143229", "07143235", "07143236", "07143240", "07143241",
+      "07143250", "07143252", "07143257", "07143258", "07143259", "07143260",
+      "07143261", "07143262", "07143265", "07143267", "07143268", "07143269",
+      "07143276", "07143287", "07143294", "07143296", "07143299", "07143301",
+      "07143306", "07143310", "07143313",
+    ],
+    url: "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    // NO `beschlossenIso`: 27.08.2024 is the council date of the REVISED
+    // guideline (§ 8 "überarbeitete Version"); the programme page existed from
+    // 23.07.2024, so the revision date would misread as the programme start.
+    // NO `endetIso` although the heading says "in den Jahren 2024/2025": § 8
+    // has no expiry clause, the live page (last modified 26.05.2026) still takes
+    // balcony applications and promises news once funds return.
+    // Start: VG press release of 23.07.2024 — "legt zum 01.08.2024 ein
+    // Förderprogramm zur Nutzung Erneuerbarer Energien auf".
+    beginntIso: "2024-08-01",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschalen für Balkonkraftwerk, Wärmepumpe, Brauchwasser-Wärmepumpe, Solarthermie und Biomasse-Feuerung; mehrere Maßnahmen kombinierbar",
+    maxFoerderung: "1.000 € je Privathaushalt",
+    rates: [
+      { label: "Balkonkraftwerk", value: "200 € pauschal (bis 2.000 W Modulleistung, 800 W Wechselrichter)" },
+      { label: "Wärmepumpe (DIN EN 14511)", value: "500 € pauschal, als alleinige Heizquelle oder Teil einer Hybridheizung" },
+      { label: "Brauchwasser-Wärmepumpe", value: "250 € pauschal" },
+      { label: "Solarthermie", value: "250 € (Warmwasser) bzw. 500 € (mit Heizungsunterstützung)" },
+      { label: "Biomasse-Feuerung", value: "500 € pauschal (mindestens 90 % Wirkungsgrad)" },
+    ],
+    conditions: [
+      "Die Mittel von 237.000 € aus dem Landesprogramm KIPKI sind vollständig ausgeschöpft (Stand 18.09.2026); weiterhin möglich ist laut Programmseite nur die Antragstellung für Balkonkraftwerke, eine Rückmeldung gibt es erst, wenn wieder Mittel da sind",
+      "Antragsberechtigt sind nur Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; gewerbliche Gebäude sind ausgeschlossen",
+      "Der Antrag wird vor Beginn der Maßnahme gestellt; beim Balkonkraftwerk gilt schon der Kaufvertrag als Beginn",
+      { text: "Nach dem Zuwendungsbescheid muss das Balkonkraftwerk binnen drei Monaten gekauft werden", nur: ["balkon"] },
+      { text: "Die Wärmepumpe muss vom Fachbetrieb eingebaut werden, mit Fachunternehmererklärung und hydraulischem Abgleich (der einfache Abgleich genügt); nach dem Bescheid bleiben zwölf Monate bis zur Inbetriebnahme", nur: ["waermepumpe"] },
+      "Gebrauchte Anlagen, Eigenbau und Eigenleistungen werden nicht gefördert",
+      "Bewilligt wird in der Reihenfolge des Eingangs, solange Haushaltsmittel da sind; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon", "waermepumpe"],
+    balkonPauschale: 200,
+    wpPauschale: 500,
   },
 
   "taunusstein-balkonsolar": {

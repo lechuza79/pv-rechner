@@ -3664,5 +3664,819 @@
         "evidenceUrl": "https://www.minden.de/kalender/quartiere/rodenbeck/2025-05-08-eltern-foerdern"
       }
     ]
+  },
+  {
+    "regionId": "07143204",
+    "name": "Astert",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Astert steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/astert/",
+        "finding": "Gemeindeseite von Astert auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      },
+      {
+        "url": "http://www.astert.de/",
+        "finding": "Eigene Website der Ortsgemeinde Astert am 18.09.2026 abgerufen und nach Förder-, Zuschuss-, Balkon-, Photovoltaik- und Wärmepumpen-Begriffen durchsucht: kein Gerätezuschuss der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143205",
+    "name": "Atzelgift",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Atzelgift steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/atzelgift/",
+        "finding": "Gemeindeseite von Atzelgift auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      },
+      {
+        "url": "http://www.atzelgift-ww.de/",
+        "finding": "Eigene Website der Ortsgemeinde Atzelgift am 18.09.2026 abgerufen und nach Förder-, Zuschuss-, Balkon-, Photovoltaik- und Wärmepumpen-Begriffen durchsucht: kein Gerätezuschuss der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143212",
+    "name": "Borod",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Borod steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/borod/",
+        "finding": "Gemeindeseite von Borod auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      },
+      {
+        "url": "http://www.borod.de/",
+        "finding": "Eigene Website der Ortsgemeinde Borod am 18.09.2026 abgerufen und nach Förder-, Zuschuss-, Balkon-, Photovoltaik- und Wärmepumpen-Begriffen durchsucht: kein Gerätezuschuss der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143215",
+    "name": "Dreifelden",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Dreifelden steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/dreifelden/",
+        "finding": "Gemeindeseite von Dreifelden auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143223",
+    "name": "Gehlert",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Gehlert steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/gehlert/",
+        "finding": "Gemeindeseite von Gehlert auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      },
+      {
+        "url": "http://www.gemeinde-gehlert.de/",
+        "finding": "Eigene Website der Ortsgemeinde Gehlert am 18.09.2026 abgerufen und nach Förder-, Zuschuss-, Balkon-, Photovoltaik- und Wärmepumpen-Begriffen durchsucht: kein Gerätezuschuss der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143225",
+    "name": "Giesenhausen",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Giesenhausen steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/giesenhausen/",
+        "finding": "Gemeindeseite von Giesenhausen auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      },
+      {
+        "url": "https://giesenhausen.de/",
+        "finding": "Eigene Website der Ortsgemeinde Giesenhausen am 18.09.2026 abgerufen und nach Förder-, Zuschuss-, Balkon-, Photovoltaik- und Wärmepumpen-Begriffen durchsucht: kein Gerätezuschuss der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143235",
+    "name": "Hattert",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Hattert steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/hattert/",
+        "finding": "Gemeindeseite von Hattert auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143236",
+    "name": "Heimborn",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Heimborn steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/heimborn/",
+        "finding": "Gemeindeseite von Heimborn auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143240",
+    "name": "Heuzert",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Heuzert steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/heuzert/",
+        "finding": "Gemeindeseite von Heuzert auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143241",
+    "name": "Höchstenbach",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Höchstenbach steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/hoechstenbach/",
+        "finding": "Gemeindeseite von Höchstenbach auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143250",
+    "name": "Kroppach",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Kroppach steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/kroppach/",
+        "finding": "Gemeindeseite von Kroppach auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      },
+      {
+        "url": "http://www.gemeinde-kroppach.de/",
+        "finding": "Eigene Website der Ortsgemeinde Kroppach am 18.09.2026 abgerufen und nach Förder-, Zuschuss-, Balkon-, Photovoltaik- und Wärmepumpen-Begriffen durchsucht: kein Gerätezuschuss der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143252",
+    "name": "Kundert",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Kundert steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/kundert/",
+        "finding": "Gemeindeseite von Kundert auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143257",
+    "name": "Limbach",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Limbach steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/limbach/",
+        "finding": "Gemeindeseite von Limbach auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      },
+      {
+        "url": "http://www.limbach-ww.de/",
+        "finding": "Eigene Website der Ortsgemeinde Limbach am 18.09.2026 abgerufen und nach Förder-, Zuschuss-, Balkon-, Photovoltaik- und Wärmepumpen-Begriffen durchsucht: kein Gerätezuschuss der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143259",
+    "name": "Lochum",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Lochum steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/lochum/",
+        "finding": "Gemeindeseite von Lochum auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      },
+      {
+        "url": "http://www.gemeinde-lochum.de/",
+        "finding": "Eigene Website der Ortsgemeinde Lochum am 18.09.2026 abgerufen und nach Förder-, Zuschuss-, Balkon-, Photovoltaik- und Wärmepumpen-Begriffen durchsucht: kein Gerätezuschuss der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143261",
+    "name": "Marzhausen",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Marzhausen steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/marzhausen/",
+        "finding": "Gemeindeseite von Marzhausen auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      },
+      {
+        "url": "https://marzhausen.com/",
+        "finding": "Eigene Website der Ortsgemeinde Marzhausen am 18.09.2026 abgerufen und nach Förder-, Zuschuss-, Balkon-, Photovoltaik- und Wärmepumpen-Begriffen durchsucht: kein Gerätezuschuss der Ortsgemeinde (Seite 'Förderprogramme' betrifft nur die Dorferneuerung über die Kreisverwaltung)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143265",
+    "name": "Mörsbach",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Mörsbach steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/moersbach/",
+        "finding": "Gemeindeseite von Mörsbach auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143267",
+    "name": "Mudenbach",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Mudenbach steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/mudenbach/",
+        "finding": "Gemeindeseite von Mudenbach auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      },
+      {
+        "url": "http://www.mudenbach.de/",
+        "finding": "Eigene Website der Ortsgemeinde Mudenbach am 18.09.2026 abgerufen und nach Förder-, Zuschuss-, Balkon-, Photovoltaik- und Wärmepumpen-Begriffen durchsucht: kein Gerätezuschuss der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143269",
+    "name": "Müschenbach",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Müschenbach steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/mueschenbach/",
+        "finding": "Gemeindeseite von Müschenbach auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143276",
+    "name": "Nister",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Nister steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/nister/",
+        "finding": "Gemeindeseite von Nister auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143287",
+    "name": "Roßbach",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Roßbach steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/rossbach/",
+        "finding": "Gemeindeseite von Roßbach auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      },
+      {
+        "url": "http://www.rossbach-ww.de/",
+        "finding": "Eigene Website der Ortsgemeinde Roßbach am 18.09.2026 abgerufen und nach Förder-, Zuschuss-, Balkon-, Photovoltaik- und Wärmepumpen-Begriffen durchsucht: kein Gerätezuschuss der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143296",
+    "name": "Stein-Wingert",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Stein-Wingert steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/stein-wingert/",
+        "finding": "Gemeindeseite von Stein-Wingert auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143313",
+    "name": "Winkelbach",
+    "checkedAt": "2026-09-18T04:10:00+00:00",
+    "recheckAt": "2026-12-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms. Kein Audit sämtlicher Ratsunterlagen oder Landes-/Bundesprogramme.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Anwendbar ist das Programm der Verbandsgemeinde Hachenburg (Balkonkraftwerk 200 €, Wärmepumpe 500 €; Mittel ausgeschöpft, Stand 18.09.2026); Winkelbach steht in der amtlich abgeglichenen Mitgliederliste. Kein eigenes Kaufzuschussprogramm der Ortsgemeinde gefunden. Wiedervorlage, sobald die VG neue Mittel meldet.",
+    "searches": [
+      "site:hachenburg-vg.de Zuschuss Balkonkraftwerk",
+      "Ortsgemeinde Verbandsgemeinde Hachenburg Zuschuss Balkonkraftwerk Photovoltaik Förderung Gemeinde eigenes Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/",
+        "finding": "Programmseite und Richtlinie (überarbeitete Fassung, VG-Rat 27.08.2024) am 18.09.2026 vollständig gelesen: § 4 Abs. 2 fördert alle Privathaushalte im Gebiet der Verbandsgemeinde Hachenburg; Balkonkraftwerk 200 €, Wärmepumpe 500 €, höchstens 1.000 € je Haushalt; KIPKI-Mittel 237.000 € ausgeschöpft, weiterhin nur Balkon-Anträge möglich. Im Katalog als vg-hachenburg-erneuerbare-energien (ausgeschöpft) mit allen 33 Mitgliedsgemeinden aufgenommen, zwei unabhängige Gegenprüfungen."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/aktuelles/pressemitteilungen/2024/juli/foerderprogramm-fuer-stecker-photovoltaik-anlagen-und-erneuerbare-heiztechnologien-startet-im-august-2024/",
+        "finding": "Amtliche Pressemitteilung der VG vom 23.07.2024: Programmstart zum 01.08.2024."
+      },
+      {
+        "url": "https://www.hachenburg-vg.de/unsere-gemeinden/winkelbach/",
+        "finding": "Gemeindeseite von Winkelbach auf der VG-Website am 18.09.2026 gelesen: Förder-Hinweise nur im gemeinsamen Menü der Verbandsgemeinde, kein eigenes Förderprogramm der Ortsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite und verlinkte Richtlinie vollständig gelesen, Programm aufgenommen.",
+        "evidenceUrl": "https://www.hachenburg-vg.de/fuer-die-buerger/foerderprogramm-erneuerbare-energien/"
+      }
+    ]
   }
 ]
