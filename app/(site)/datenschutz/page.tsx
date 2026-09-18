@@ -923,7 +923,7 @@ export default function DatenschutzPage() {
         <h2 style={S.h2}>17. Warteliste für kommende Funktionen</h2>
         <p style={S.p}>
           Für Funktionen, die noch nicht fertig sind (derzeit der Angebotscheck
-          für Photovoltaik und Wärmepumpe), kannst du dich über das Menü auf
+          für Photovoltaik und Wärmepumpe), kannst du dich auf der Seite „Angebot prüfen“ auf
           eine <strong>Warteliste</strong> setzen. Wir verarbeiten dafür deine{" "}
           <strong>E-Mail-Adresse</strong>, die Warteliste, auf die du dich
           eingetragen hast, und die Zeitpunkte deiner Eintragung, deiner

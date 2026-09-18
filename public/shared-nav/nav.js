@@ -76,7 +76,7 @@ export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='/solar-
  document.body.append(dialog);dialog.querySelector('.sc-waitlist-close').onclick=()=>dialog.close();
  const form=dialog.querySelector('form'),status=form.querySelector('[role=status]');let openedAt=0;
  form.addEventListener('submit',async event=>{event.preventDefault();const button=form.querySelector('[type=submit]');button.disabled=true;status.textContent='';try{const response=await fetch('/api/warteliste/anmelden',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:form.elements.email.value,website:form.elements.website.value,elapsedMs:Date.now()-openedAt,consent:'offer-check-v1'})});const result=await response.json();if(!response.ok)throw new Error(result.error||'Die Anmeldung klappt gerade nicht. Bitte später erneut versuchen.');status.textContent='Bitte bestätige deine Anmeldung über den Link in deinem Postfach.';form.reset();}catch(error){status.textContent=error.message;}finally{button.disabled=false;}});
- const waitlist=nav.querySelector('[data-waitlist]');waitlist.onclick=()=>{close(true);if(onWaitlist)onWaitlist();else{openedAt=Date.now();dialog.showModal();}};
+ const waitlist=nav.querySelector('[data-waitlist]');waitlist.onclick=()=>{close(true);location.href='/angebot-pruefen';};
  dialog.addEventListener('close',()=>{toggle.focus();});
 
  return ()=>{document.removeEventListener('click',outside);document.removeEventListener('keydown',keyboard);mobile.removeEventListener('change',configure);close(true);dialog.remove();nav.remove();toggle.remove();delete header.dataset.globalNav;};

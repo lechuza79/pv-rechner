@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { normalisiereEmail, siehtNachEmailAus } from "../../../../lib/gemeinde-abo";
-import { wartelisteBelegSetzen, wartelisteEintragen } from "../../../../lib/warteliste";
+import { wartelisteBelegSetzen, wartelisteEintragen, wartelisteVersandFehlgeschlagen } from "../../../../lib/warteliste";
 import { WARTELISTE_FASSUNGEN, wartelisteFassung } from "../../../../lib/warteliste-einwilligung";
 import { wartelisteAbmeldeLink, wartelisteBestaetigenLink } from "../../../../lib/warteliste-links";
 import { wartelisteBestaetigungsMail } from "../../../../lib/warteliste-mail";
@@ -81,7 +81,12 @@ export async function POST(req: NextRequest) {
   }
   if (ergebnis.art === "still") return OK();
 
-  const basis = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
+  // Locally the links must lead back to the dev server, otherwise the mail
+  // points at production, where this branch's pages do not exist yet.
+  const basis =
+    process.env.NODE_ENV === "development"
+      ? new URL(req.url).origin
+      : process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
   // Signing throws without ABO_HMAC_SECRET; the form must still get JSON back
   // (it reads `error`), not an HTML error page.
   let versand: Awaited<ReturnType<typeof sendeAboMail>>;
@@ -97,6 +102,7 @@ export async function POST(req: NextRequest) {
   }
   if (!versand.ok) {
     console.error("[Warteliste] Bestätigungsmail nicht versendet:", versand.fehler);
+    await wartelisteVersandFehlgeschlagen(ergebnis.eintrag.id);
     return NextResponse.json(
       { error: "Die Bestätigungsmail konnte gerade nicht verschickt werden. Bitte später erneut versuchen." },
       { status: 503 },

@@ -180,6 +180,12 @@ const PATCHES = [
     to: "'/#hs-rechner'",
     why: "Die Rechner-Übersicht ist nicht Teil dieses Livegangs; der Link führt zu den Rechnern der Startseite.",
   },
+  {
+    datei: "shared-nav/nav.js",
+    from: "waitlist.onclick=()=>{close(true);if(onWaitlist)onWaitlist();else{openedAt=Date.now();dialog.showModal();}};",
+    to: "waitlist.onclick=()=>{close(true);location.href='/angebot-pruefen';};",
+    why: "Die Warteliste hat eine eigene Seite, auf der später auch der Angebotscheck steht (Betreiber, 18.09.). Die Karte auf der Startseite klickt denselben Menüknopf und landet dort mit.",
+  },
   { datei: "homepage-study/race-dist/direct-race.js", ...DOMAIN_WEG },
   { datei: "homepage-study/story-dist/atlas-story-cards.js", ...DOMAIN_WEG },
 ];

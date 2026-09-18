@@ -29,7 +29,7 @@ export default async function Seite(props: { searchParams: Promise<{ t?: string 
           abgelaufen
             ? "Bestätigungslinks gelten 48 Stunden. Danach lässt sich damit nichts mehr bestätigen, damit eine alte Mail in einem fremden Postfach niemanden eintragen kann."
             : "Der Link ist unvollständig oder wurde verändert. Das passiert am häufigsten, wenn ein Mailprogramm die Adresse über zwei Zeilen umbricht.",
-          "Trag dich über „Angebot prüfen“ im Menü einfach noch einmal ein, dann kommt ein neuer Link.",
+          "Trag dich auf der Seite „Angebot prüfen“ einfach noch einmal ein, dann kommt ein neuer Link.",
         ]}
         cta={WEITER}
       />
@@ -50,7 +50,7 @@ export default async function Seite(props: { searchParams: Promise<{ t?: string 
     return (
       <AboErgebnis
         titel="Du hast dich ausgetragen"
-        saetze={["Diese Adresse steht nicht mehr auf der Warteliste. Wenn du doch Bescheid bekommen möchtest, trag dich über „Angebot prüfen“ im Menü neu ein."]}
+        saetze={["Diese Adresse steht nicht mehr auf der Warteliste. Wenn du doch Bescheid bekommen möchtest, trag dich auf der Seite „Angebot prüfen“ neu ein."]}
         cta={WEITER}
       />
     );

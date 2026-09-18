@@ -157,6 +157,25 @@ export async function wartelisteBestaetigen(
   return { ok: true, eintrag: aus(data as Zeile) };
 }
 
+/**
+ * The confirmation mail did not go out: release the resend lock, otherwise a
+ * retry within WARTELISTE_SPERRE_MS answers "check your inbox" and sends
+ * nothing. Backdating also lets the daily cleanup remove the row — no mail
+ * left, so there is nothing to prove.
+ */
+export async function wartelisteVersandFehlgeschlagen(id: string): Promise<void> {
+  if (!supabase) return;
+  try {
+    await withDbTimeout(
+      supabase.from("warteliste").update({ erstellt_am: new Date(0).toISOString() }).eq("id", id).eq("status", "ausstehend"),
+      "warteliste-versand-fehlgeschlagen",
+      DB_READ_TIMEOUT_MS,
+    );
+  } catch (e) {
+    console.error("[Warteliste] Sperre nicht gelöst:", e);
+  }
+}
+
 /** Unsubscribe. The row stays as proof of consent (see lib/gemeinde-abo.ts). */
 export async function wartelisteAbmelden(id: string, jetztIso: string): Promise<void> {
   if (!supabase) return;
