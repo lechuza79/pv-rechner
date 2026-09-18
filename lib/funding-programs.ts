@@ -5143,6 +5143,126 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // sind als „Quelle gehört einer anderen Gemeinde" abgehakt.
   },
 
+  "wakendorf-i-solar": {
+    id: "wakendorf-i-solar", name: "Förderprogramm Solaranlagen",
+    traeger: "Gemeinde Wakendorf I", level: "kommune", region: "Wakendorf I",
+    bundesland: "Schleswig-Holstein", agsCode: "01060093",
+    url: "https://www.amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-01-18", endetIso: "2024-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Anlagengröße, höchstens die Hälfte der Kosten",
+    maxFoerderung: "max. 400 €",
+    rates: [
+      { label: "Balkonkraftwerk bis 400 W Wechselrichter (2023: bis 300 W)", value: "100 € pauschal", nur: ["balkon"] },
+      { label: "Balkonkraftwerk bis 800 W Wechselrichter (2023: bis 600 W)", value: "200 € pauschal", nur: ["balkon"] },
+      { label: "Dachanlage am Einfamilienhaus bis 5 kW", value: "300 € pauschal", nur: ["pv"] },
+      { label: "Dachanlage am Einfamilienhaus über 5 kW", value: "400 € pauschal", nur: ["pv"] },
+    ],
+    conditions: [
+      "Das Programm ist am 31. Dezember 2024 ausgelaufen (bzw. früher, sobald die Mittel verbraucht waren); eine Neuauflage ist nicht bekannt",
+      "Antragsberechtigt waren Eigentümer und Mietende, Eigentümergemeinschaften und Hausverwaltungen; bei Miete mit Zustimmung der Eigentümerseite",
+      "Je Haushalt war nur ein Antrag zulässig",
+      "Mit der Maßnahme durfte erst nach der Bewilligung begonnen werden — eine bereits beauftragte Anlage war nicht förderfähig",
+      "Der Zuschuss durfte die Hälfte der förderfähigen Kosten nicht übersteigen",
+      "Die Anlage musste fünf Jahre im eigenen Haushalt genutzt werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // AUFGENOMMEN AM 19.09.2026, obwohl beendet (Betreiber-Entscheidung
+    // 17.08.2026: „gab es, ist beendet" ist eine echte Auskunft).
+    // Richtlinie „Solaranlagen" der Gemeinde Wakendorf I vom 18.01.2023, im
+    // Volltext gelesen (PDF auf der Seite des Amtes Trave-Land): vier Pauschalen
+    // (Nr. 2), „Insgesamt darf die Förderung 50% der förderfähigen Gesamtkosten
+    // nicht übersteigen" (Nr. 6.3), Laufzeit bis 31.12.2023 (Nr. 8).
+    // DIE RUNDE 2024 steht nur im Antragsformular vom 01.01.2024 (Word-Datei auf
+    // derselben Seite, gelesen 19.09.2026): 100 € bis 400 W, 200 € bis 800 W,
+    // 300/400 € für Dachanlagen, „Das Förderprogramm endet am 31.12.2024". Eine
+    // Richtlinie 2024 ist weder auf der Seite noch in der Sitemap zu finden; der
+    // 50-%-Deckel und die fünf Jahre stammen deshalb aus der Richtlinie 2023.
+    // Gefunden hat die Runde 2024 der adversariale Gegenprüfer — die erste
+    // Fassung dieses Eintrags stand auf 31.12.2023.
+    // Kein beschlossenIso: Das Datum der Richtlinie ist kein Ratsbeschluss.
+    // KEINE RECHENWERTE (beendet). Schlüssel aus dem Melderegister: 01060093
+    // (nicht Wakendorf II, 01060094).
+  },
+
+  "weede-mini-solar": {
+    id: "weede-mini-solar", name: "Förderprogramm Mini-Solaranlagen",
+    traeger: "Gemeinde Weede", level: "kommune", region: "Weede",
+    bundesland: "Schleswig-Holstein", agsCode: "01060096",
+    url: "https://www.amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-01-01", endetIso: "2024-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Wechselrichterleistung für ein Balkonkraftwerk",
+    maxFoerderung: "max. 200 €; Gesamtbudget 2023: 10.000 €",
+    rates: [
+      { label: "Balkonkraftwerk bis 300 W Wechselrichter", value: "100 € pauschal", nur: ["balkon"] },
+      { label: "Balkonkraftwerk bis 800 W Wechselrichter (2023: bis 600 W)", value: "200 € pauschal", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Das Programm ist am 31. Dezember 2024 ausgelaufen (bzw. früher, sobald die Mittel verbraucht waren); eine Neuauflage ist nicht bekannt",
+      "Gefördert wurden nur steckerfertige Anlagen; 2023 bis 600 W, 2024 bis 800 W am Wechselrichter je Haushalt",
+      "Antragsberechtigt waren Eigentümer und Mietende, Eigentümergemeinschaften und Hausverwaltungen; bei Miete mit Zustimmung der Eigentümerseite",
+      "Mit der Maßnahme durfte erst nach der Bewilligung begonnen werden — eine bereits beauftragte Anlage war nicht förderfähig",
+      "Umsetzung und Nachweis innerhalb von zwölf Monaten nach der Bewilligung",
+      "Die Anlage musste fünf Jahre im eigenen Haushalt genutzt werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // AUFGENOMMEN AM 19.09.2026, obwohl beendet. Richtlinie „Mini-Solaranlagen"
+    // der Gemeinde Weede vom 01.01.2023 und Flyer im Volltext gelesen: 100 € bis
+    // 300 W, 200 € bis 600 W am Wechselrichter, Laufzeit bis 31.12.2023,
+    // Gesamtbetrag 10.000 € (Flyer). Kein 50-%-Deckel in dieser Richtlinie.
+    // DIE RUNDE 2024 steht nur im Antragsformular vom 20.03.2024 (Word-Datei auf
+    // derselben Seite, gelesen 19.09.2026): 100 € bis 300 W, 200 € bis 800 W,
+    // „Das Förderprogramm endet am 31.12.2024". Budget 2024 unbekannt. Gefunden
+    // vom adversarialen Gegenprüfer; die erste Fassung stand auf 31.12.2023.
+    // Keine Rechenwerte (beendet). Schlüssel aus dem Melderegister: 01060096.
+  },
+
+  "geschendorf-solar": {
+    id: "geschendorf-solar", name: "Förderprogramm Solaranlagen",
+    traeger: "Gemeinde Geschendorf", level: "kommune", region: "Geschendorf",
+    bundesland: "Schleswig-Holstein", agsCode: "01060024",
+    url: "https://www.amt-trave-land.de/gemeinden/geschendorf/foerderung-von-mini-pv-anlagen",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-06-01", endetIso: "2024-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Wechselrichterleistung; vor allem Balkonkraftwerke, größere Anlagen mit kleinem Betrag",
+    maxFoerderung: "max. 200 € je Antragsteller; Gesamtbudget 5.000 € für 2024",
+    rates: [
+      { label: "Solaranlage bis 799 W Wechselrichter", value: "100 € pauschal", nur: ["balkon"] },
+      { label: "Solaranlage ab 800 W Wechselrichter", value: "200 € pauschal", nur: ["pv", "balkon"] },
+    ],
+    conditions: [
+      "Das Programm ist am 31. Dezember 2024 ausgelaufen (bzw. früher, sobald die Mittel verbraucht waren); eine Neuauflage ist nicht bekannt",
+      "Anträge waren vom 1. Juni bis 31. Dezember 2024 möglich; Rechnung und Installation mussten nach dem 1. Januar 2024 liegen",
+      "Richtlinie und Antragsformular verlangten, erst nach der Bewilligung mit der Maßnahme zu beginnen — obwohl die Richtlinie zugleich Rechnungen ab dem 1. Januar 2024 zuließ",
+      "Antragsberechtigt waren Eigentümer und Mietende, Eigentümergemeinschaften und Hausverwaltungen; bei Miete mit Zustimmung der Eigentümerseite",
+      "Je Antragsteller bzw. Haushalt war nur eine Förderung möglich",
+      "Die Anlage musste fünf Jahre im eigenen Haushalt genutzt werden",
+      "Das Verfahren musste bis zum 30. Juni 2025 abgeschlossen sein",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // AUFGENOMMEN AM 19.09.2026, obwohl beendet. Richtlinie der Gemeinde
+    // Geschendorf vom 30.05.2024, Flyer und Antragsformular (Word-Dateien auf
+    // der Seite des Amtes Trave-Land) im Volltext gelesen: 100 € bis 799 W,
+    // 200 € ab 800 W am Wechselrichter; „Das Förderprogramm läuft bis zum
+    // 31.12.2024" (Nr. 8); Zweckbindung fünf Jahre (Nr. 5); Nr. 6.1 „vorläufige
+    // Bewilligung … und damit die Freigabe zum Beginn der Maßnahme", Antrag:
+    // „Erst danach darf mit der Maßnahme begonnen werden". Flyer: 5.000 € für
+    // 2024, Abschluss bis 30.06.2025. Die Rückwirkung auf Rechnungen ab
+    // 01.01.2024 steht daneben — ein Widerspruch der Unterlagen, deshalb als
+    // Bedingung ausgeschrieben statt aufgelöst. Die 200-€-Stufe trifft auch ein
+    // Balkonkraftwerk mit genau 800 W. Kein beschlossenIso (Datum der
+    // Richtlinie ist kein Ratsbeschluss). Keine Rechenwerte (beendet).
+    // Schlüssel aus dem Melderegister: 01060024.
+  },
+
+
   // ── Kommune – erste Funde der URL-Suche, 18.08.2026 ─────────────────────────
   //
   // Diese Städte standen in KEINER erfassten Liste: Für sie kannten wir nur die

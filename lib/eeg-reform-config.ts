@@ -542,7 +542,14 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   Entwurf am 10.09.2026 weiter als Vorlage der Bundesregierung ohne
   //   Beschluss; die erste Lesung am 24.09.2026 steht bevor. Zustand unverändert:
   //   Regierungsentwurf, eingebracht.
-  geprueftIso: "2026-09-18",
+  // 19.09.2026: Drucksache 21/7867 erneut geladen, die vier Werte stehen
+  //   unverändert im Satzzusammenhang da („6,2 Cent" Z. 2168, „1,5 Cent pro
+  //   eingespeiste Kilowattstunde" Z. 2295, „maximal 36 Monate" Z. 125, „vor dem
+  //   1. Januar 2031" Z. 1093). Das Textarchiv des Bundestages
+  //   (kw39-de-energie-stromsektor-1211294) führt die erste Lesung weiter für
+  //   Donnerstag, 24.09.2026 — sie steht bevor. Zustand unverändert:
+  //   Regierungsentwurf, eingebracht.
+  geprueftIso: "2026-09-19",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

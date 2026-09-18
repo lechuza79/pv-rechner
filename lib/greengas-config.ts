@@ -532,7 +532,12 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // die Frist läuft noch gut zehn Wochen. Vierundzwanzigste Bioheizöl-
   // Gegensuche: unverändert keine Preisreihe für den Bio-Anteil, damit bleibt
   // die Lücke im Öl-Ergebnis samt ihrer benannten Fehlerrichtung stehen.
-  geprueftRechtIso: "2026-09-18",
+  //
+  // 19.09.2026: § 42a im amtlichen Volltext (gesetze-im-internet.de) erneut
+  // gelesen, Wortlaut unverändert und weiter ohne Prozentsätze oder Startjahre;
+  // ein Quotengesetz ist nicht vorgelegt. Fünfundzwanzigste Bioheizöl-
+  // Gegensuche: keine Preisreihe für den Bio-Anteil.
+  geprueftRechtIso: "2026-09-19",
   reviewBy: "2027-07-25",
 };
 
