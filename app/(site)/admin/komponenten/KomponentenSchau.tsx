@@ -20,6 +20,8 @@ import { Auswahl } from "../../../../components/Auswahl";
 import Toast from "../../../../components/Toast";
 import TriToggle from "../../../../components/TriToggle";
 import Logo from "../../../../components/Logo";
+import NeonButton from "../../../../components/NeonButton";
+import NeonFlaeche from "../../../../components/NeonFlaeche";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import DataSourceList from "../../../../components/DataSourceList";
 import FlowNav from "../../../../components/FlowNav";
@@ -44,7 +46,7 @@ import ObfuscatedEmail from "../../../../components/ObfuscatedEmail";
 import ProConLists from "../../../../components/ProConLists";
 import ScenarioTabs from "../../../../components/ScenarioTabs";
 import { BAUSTEINE, GRUPPEN, verwendetVon, type Baustein } from "../../../../lib/bausteine-registry";
-import { v, space, pad } from "../../../../lib/theme";
+import { v, space, pad, neonTokens } from "../../../../lib/theme";
 
 // ─── Die Komponenten, echt und bedienbar. ────────────────────────────────────
 //
@@ -658,7 +660,82 @@ function MultitoolBeispiel() {
   );
 }
 
+/** The neon action family, on the light and the dark surface it is used on. */
+function NeonButtonBeispiel() {
+  const [laedt, setLaedt] = useState(false);
+  const pfeil = (
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+  return (
+    <NeonFlaeche>
+      <div className="sc-surface" style={{ padding: space.xl, borderRadius: v("--radius-md") }}>
+        <Reihe>
+          <Zustand name="Hero-Paar, gestapelt">
+            <div className="sc-btn-stapel">
+              <NeonButton href="/photovoltaik-rechner">Meine Anlage berechnen</NeonButton>
+              <NeonButton href="/pv-simulation" variante="secondary">Simulation ansehen</NeonButton>
+            </div>
+          </Zustand>
+          <Zustand name="Rund (Icon)">
+            <NeonButton variante="icon" ariaLabel="Weiter">{pfeil}</NeonButton>
+          </Zustand>
+          <Zustand name="Gesperrt">
+            <NeonButton disabled>Berechnen</NeonButton>
+          </Zustand>
+          <Zustand name="Lädt">
+            <NeonButton laedt={laedt} onClick={() => { setLaedt(true); setTimeout(() => setLaedt(false), 1500); }}>
+              {laedt ? "Wird berechnet …" : "Klick: lädt 1,5 s"}
+            </NeonButton>
+          </Zustand>
+        </Reihe>
+      </div>
+      <div className="sc-dark" style={{ padding: space.xl, borderRadius: v("--radius-md"), marginTop: space.md }}>
+        <Reihe>
+          <Zustand name="Auf dunkler Fläche">
+            <div className="sc-btn-stapel">
+              <NeonButton href="/photovoltaik-rechner">Meine Anlage berechnen</NeonButton>
+              <NeonButton href="/pv-simulation" variante="secondary">Simulation ansehen</NeonButton>
+            </div>
+          </Zustand>
+        </Reihe>
+      </div>
+    </NeonFlaeche>
+  );
+}
+
+/** Colour and type roles of the neon surface, read from the theme (no second copy). */
+function NeonFlaecheBeispiel() {
+  const farben = (Object.entries(neonTokens) as [string, string][]).filter(([, wert]) => wert.startsWith("#"));
+  return (
+    <NeonFlaeche>
+      <div className="sc-surface" style={{ padding: space.xl, borderRadius: v("--radius-md") }}>
+        <p className="sc-eyebrow">Eyebrow · 12 px</p>
+        <h3 className="sc-section-title">Abschnittstitel</h3>
+        <p className="sc-card-title" style={{ marginTop: space.md }}>Kartentitel · 20 px</p>
+        <p className="sc-copy" style={{ marginTop: space.sm }}>
+          Lesetext · 16 px, Zeilenhöhe 1,6, höchstens 440 px breit — so breit wie Text und Formular der Simulation.
+        </p>
+        <div className="sc-surface-inset" style={{ marginTop: space.lg, padding: space.lg, borderRadius: v("--radius-md") }}>
+          Innere Fläche auf heller Fläche
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginTop: space.lg }}>
+          {farben.map(([name, wert]) => (
+            <div key={name} style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: v("--font-size-small") }}>
+              <span style={{ width: 20, height: 20, borderRadius: "50%", background: wert, border: `1px solid ${v("--color-border")}` }} />
+              {name.replace("--neon-", "")}
+            </div>
+          ))}
+        </div>
+      </div>
+    </NeonFlaeche>
+  );
+}
+
 const BEISPIELE: Record<string, Beispiel> = {
+  NeonButton: NeonButtonBeispiel,
+  NeonFlaeche: NeonFlaecheBeispiel,
   Auswahl: MultitoolBeispiel,
   OptionCard: OptionCardBeispiel,
   Switch: SchalterBeispiel,

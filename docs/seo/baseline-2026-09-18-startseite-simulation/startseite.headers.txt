@@ -1,0 +1,19 @@
+HTTP/2 200 
+age: 2663
+cache-control: public, max-age=0, must-revalidate
+content-type: text/html; charset=utf-8
+date: Fri, 18 Sep 2026 04:31:03 GMT
+etag: "11oiolkkmzq55x4"
+referrer-policy: strict-origin-when-cross-origin
+server: Vercel
+strict-transport-security: max-age=63072000
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+x-content-type-options: nosniff
+x-matched-path: /
+x-nextjs-prerender: 1
+x-nextjs-stale-time: 300
+x-powered-by: Next.js
+x-vercel-cache: HIT
+x-vercel-id: fra1::fra1::w6mkk-1789708526961-05c8a31c4ce2
+content-length: 241744
+

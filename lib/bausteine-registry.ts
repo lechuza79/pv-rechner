@@ -391,6 +391,26 @@ export const BAUSTEINE: Baustein[] = [
       "Klebt am unteren Fensterrand. In einer Karte gezeigt läge sie über der ganzen Seite statt in ihr.",
   },
   {
+    datei: "components/NeonButton.tsx",
+    name: "NeonButton",
+    zweck:
+      "Die Knopf-Familie der neuen Oberfläche (Startseite, Simulation): gefüllt, umrandet und rund — als echter Link, wo er irgendwohin führt.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: [],
+  },
+  {
+    datei: "components/NeonFlaeche.tsx",
+    name: "NeonFlaeche",
+    zweck:
+      "Der Rahmen, innerhalb dessen die neuen Farben, Schriftrollen und Knöpfe gelten — außerhalb bleiben Rechner und Artikel unverändert.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: [],
+  },
+  {
     datei: "components/Header.tsx",
     name: "Header",
     zweck: "Die Kopfzeile mit Navigation, Sonnenanzeige und Anmeldung.",

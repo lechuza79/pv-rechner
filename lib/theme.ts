@@ -536,6 +536,89 @@ export function stageDefaults(i: number): Record<TokenName, string> {
   return { ...base, ...(STAGE_TOKENS[i] ?? {}) };
 }
 
+
+// ─── Neon-Fläche (Startseite + PV-Simulation) ─────────────────────────────────
+// The redesigned homepage and simulation use a light surface with a neon
+// action colour. It is deliberately SCOPED: every value below only exists
+// inside an element carrying `.sc-neon` (see components/NeonFlaeche.tsx).
+// Calculators, charts, admin pages and embeds keep the site tokens above —
+// their body size (14px), blue accent and seven daylight stages are untouched.
+//
+// Values are the final COMPUTED appearance of the reviewed preview
+// (2026-09-18), not its stack of historical CSS overrides. Roles, not
+// shades: a new use picks a role, it does not add a colour.
+//
+// Font sizes live here as named roles rather than in the site scale because
+// the neon body (16px) and the site body (14px) are different roles that
+// coexist on the same page (FAQ and related links stay site-styled).
+export const neonTokens = {
+  // Colour roles
+  '--neon-action': '#d4ff24',            // Primary action fill — never text on light
+  '--neon-action-ink': '#153740',        // Text/icon on the action fill
+  '--neon-ink': '#153141',               // Headings and text on light surfaces
+  '--neon-ink-muted': '#3d5b60',         // Body copy on light surfaces
+  '--neon-surface': '#e8ece3',           // Light surface
+  '--neon-surface-inset': '#dce5db',     // Nested panel on a light surface
+  '--neon-circle-light': '#c6d5cd',      // Illustration circle on light
+  '--neon-circle-dark': '#29413f',       // Illustration circle on dark
+  '--neon-dark': '#071519',              // Dark section background
+  '--neon-dark-card': '#163338',         // Card on a dark section
+  '--neon-on-dark': '#e8eee9',           // Text on dark
+  '--neon-on-dark-muted': '#a7bcbb',     // Secondary text on dark
+  '--neon-focus': '#153740',             // Focus ring on light (action colour is too light)
+  '--neon-focus-on-dark': '#d4ff24',     // Focus ring on dark
+  // Type roles
+  '--neon-font-heading': "var(--font-montserrat),'Montserrat',system-ui,sans-serif",
+  '--neon-size-body': '16px',            // Reading copy, line-height 1.6
+  '--neon-size-card-title': '20px',      // Card title, line-height 1.35
+  '--neon-size-section': 'clamp(26px,3vw,38px)', // Compact section title, lh 1.25
+  '--neon-size-eyebrow': '12px',         // Label above a heading, lh 1.5, .08em
+  '--neon-size-action': '14px',          // Button label, 21px line
+  '--neon-size-intro': '28px',           // Simulation intro/result title (desktop)
+  // Layout roles
+  '--neon-action-height': '57px',        // Hero action height, 52px ≤600px
+  '--neon-rail': 'calc(max(24px,5vw) + 24px)', // Shared left rail of hero copy/form/actions
+  '--neon-copy-max': '440px',            // Readable cap for simulation copy and form
+} as const;
+
+const neonVars = Object.entries(neonTokens).map(([k, val]) => `${k}:${val}`).join(';');
+
+/**
+ * Scoped styles of the neon surface. Everything is prefixed with `.sc-neon`,
+ * so nothing here can reach a calculator or article page.
+ *
+ * Buttons (`.sc-btn`) are the shared action family of this surface —
+ * components/NeonButton.tsx renders them. Three variants: primary (filled),
+ * secondary (outlined, ink on light / white on dark) and icon (round, same
+ * fill as primary).
+ */
+export const neonScopeCss = `
+  .sc-neon{${neonVars};font-family:var(--font-text);font-size:var(--neon-size-body);line-height:1.6;color:var(--neon-ink)}
+  @media (max-width:600px){.sc-neon{--neon-action-height:52px;--neon-size-intro:var(--font-size-h1)}}
+  .sc-neon .sc-eyebrow{font-size:var(--neon-size-eyebrow);line-height:1.5;letter-spacing:.08em;font-weight:600;text-transform:uppercase;margin:0}
+  .sc-neon .sc-section-title{font-family:var(--neon-font-heading);font-size:var(--neon-size-section);line-height:1.25;font-weight:700;margin:0}
+  .sc-neon .sc-card-title{font-family:var(--neon-font-heading);font-size:var(--neon-size-card-title);line-height:1.35;font-weight:700;margin:0}
+  .sc-neon .sc-intro-title{font-family:var(--neon-font-heading);font-size:var(--neon-size-intro);line-height:1.25;font-weight:700;margin:0}
+  .sc-neon .sc-copy{max-width:var(--neon-copy-max);color:var(--neon-ink-muted)}
+  .sc-neon .sc-surface{background:var(--neon-surface)}
+  .sc-neon .sc-surface-inset{background:var(--neon-surface-inset)}
+  .sc-neon .sc-dark{background:var(--neon-dark);color:var(--neon-on-dark)}
+  .sc-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--neon-action-height);padding:0 28px;border-radius:999px;font-family:var(--neon-font-heading);font-size:var(--neon-size-action);line-height:21px;font-weight:600;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:filter .15s ease,background-color .15s ease,border-color .15s ease}
+  .sc-btn-primary{background:var(--neon-action);color:var(--neon-action-ink);border-color:var(--neon-action)}
+  .sc-btn-primary:hover{filter:brightness(.95)}
+  .sc-btn-secondary{background:transparent;color:var(--neon-ink);border-color:var(--neon-ink)}
+  .sc-btn-secondary:hover{background:color-mix(in srgb,var(--neon-ink) 6%,transparent)}
+  .sc-dark .sc-btn-secondary,.sc-btn-secondary[data-ton="dunkel"]{color:#fff;border-color:rgba(255,255,255,.8)}
+  .sc-btn-icon{width:42px;min-width:42px;height:42px;min-height:42px;padding:0;background:var(--neon-action);color:var(--neon-action-ink);border-color:var(--neon-action)}
+  .sc-btn:focus-visible{outline:2px solid var(--neon-focus);outline-offset:3px}
+  .sc-dark .sc-btn:focus-visible,.sc-btn[data-ton="dunkel"]:focus-visible{outline-color:var(--neon-focus-on-dark)}
+  .sc-btn[aria-disabled="true"],.sc-btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+  .sc-btn[aria-busy="true"]{cursor:progress}
+  .sc-btn-stapel{display:flex;flex-direction:column;align-items:stretch;gap:12px;width:max-content;max-width:100%}
+  .sc-btn-stapel>.sc-btn{width:100%}
+  @media (prefers-reduced-motion:reduce){.sc-btn{transition:none}}
+`;
+
 /** Global reset + animations (shared across all pages) */
 export const globalStyles = `
   html{scroll-behavior:smooth}
@@ -1092,4 +1175,5 @@ export const globalStyles = `
   .atlas-rank-row:has(.atlas-rank-neben:hover){--atlas-zeilen-bg:var(--color-bg)}
 
 
+  ${neonScopeCss}
 `;
