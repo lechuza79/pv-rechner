@@ -22,6 +22,7 @@ import {
   type Era5Orography,
 } from './era5-grid';
 import { era5BlockReady, era5ReadCellBlock, era5ReadManifest, ERA5_STORE_ROOT } from './era5-store';
+import { tiltedIrradiance } from './solar-tilt';
 
 /** Rounding of the hosted API, matched so shared links keep reading the same. */
 const roundTemperature = (value: number) => Math.round(value * 10) / 10;
@@ -60,6 +61,7 @@ export type Era5Weather = {
     temperature_2m: number[];
     shortwave_radiation: number[];
     wind_speed_100m?: number[];
+    global_tilted_irradiance?: number[];
   };
 };
 
@@ -112,6 +114,12 @@ export function era5Weather(options: {
   endDate: string;
   wind: boolean;
   orography: Era5Orography;
+  /**
+   * A module plane (degrees; azimuth 0 = south, −90 = east). With it the answer
+   * also carries `global_tilted_irradiance`, computed the way the hosted API
+   * computes it, so the same request keeps giving the same number.
+   */
+  tilted?: { tilt: number; azimuth: number };
   /** Where the blocks live; only tests and side-by-side checks pass another. */
   storeRoot?: string;
 }): Era5Answer {
@@ -151,6 +159,31 @@ export function era5Weather(options: {
     );
     hourly_units.wind_speed_100m = 'm/s';
   }
+  if (options.tilted) {
+    const { tilt, azimuth } = options.tilted;
+    if (!(tilt >= 0 && tilt <= 90) || !(azimuth >= -180 && azimuth <= 180)) {
+      throw new Error(`Ungültige Modulebene: Neigung ${tilt}°, Azimut ${azimuth}°.`);
+    }
+    const direct = readRange('direct_radiation', cell, fromHour, hours, storeRoot);
+    blocks.push(...direct.blocks);
+    // The provider computes on the cell's coordinates, not the requested point,
+    // and rounds to 0.1 W/m²; both matched (lib/__tests__/solar-tilt.test.ts).
+    hourly.global_tilted_irradiance = Array.from({ length: hours }, (_, index) => {
+      // The value at hour h is the mean of the hour ENDING at h.
+      const endMs = (fromHour + index) * 3600e3;
+      const value = tiltedIrradiance(
+        direct.values[index],
+        radiation.values[index] - direct.values[index],
+        tilt,
+        azimuth,
+        cell.latitude,
+        cell.longitude,
+        endMs,
+      );
+      return Math.round(value * 10) / 10;
+    });
+    hourly_units.global_tilted_irradiance = 'W/m²';
+  }
 
   const provenance: Era5Provenance = {
     provider: 'open-meteo-open-data',
@@ -181,7 +214,8 @@ export function era5Weather(options: {
     sourceUrl:
       `era5-archive://copernicus_era5?latitude=${latitude}&longitude=${longitude}` +
       `&start_date=${startDate}&end_date=${endDate}&elevation=${targetElevation}` +
-      `&cell_lat=${cell.latitude}&cell_lon=${cell.longitude}&wind=${wind ? 1 : 0}`,
+      `&cell_lat=${cell.latitude}&cell_lon=${cell.longitude}&wind=${wind ? 1 : 0}` +
+      (options.tilted ? `&tilt=${options.tilted.tilt}&azimuth=${options.tilted.azimuth}` : ''),
     retrievedAt: blocks.map((block) => block.retrievedAt).sort().slice(-1)[0] ?? new Date().toISOString(),
     provenance,
     weather: {

@@ -18,6 +18,9 @@ export const ERA5_CHUNK_HOURS = 504;
 export const ERA5_VARIABLES = [
   'temperature_2m',
   'shortwave_radiation',
+  // Horizontal direct share; with it, irradiance on a tilted plane can be
+  // computed the way the hosted API computes `global_tilted_irradiance`.
+  'direct_radiation',
   'wind_u_component_100m',
   'wind_v_component_100m',
 ] as const;
