@@ -1,0 +1,127 @@
+body[data-lab-accent]{--lab-accent:#1365ea;--lab-ink:#fff}body[data-lab-accent=lime]{--lab-accent:#d4ff24;--lab-ink:#132527}body[data-lab-accent=pink]{--lab-accent:#ff70bb;--lab-ink:#281025}
+body[data-lab-accent] .primary-cta,body[data-lab-accent] .hs-product-primary,body[data-lab-accent] .hs-person-section .sc-person-primary{background:var(--lab-accent)!important;color:var(--lab-ink)!important;border-color:var(--lab-accent)!important}
+/* Fixed asymmetric placements avoid repetition and layout changes on reload. */
+body[data-lab-accent] :is(.hs-tools,.hs-guides){position:relative;isolation:isolate;overflow:hidden}
+body[data-lab-accent] :is(.hs-tools,.hs-guides):before,body[data-lab-accent] :is(.hs-tools,.hs-guides):after{content:'';position:absolute;pointer-events:none;background:#adc6bb;mask:var(--splash-mask) center/contain no-repeat;-webkit-mask:var(--splash-mask) center/contain no-repeat;opacity:calc(var(--lab-wash)*.36);z-index:-1}
+body[data-lab-accent] .hs-tools:before{--splash-mask:url('/design-lab/splash-blue-web.svg');width:79%;height:760px;top:-130px;left:-39%;transform:rotate(29deg)}
+body[data-lab-accent] .hs-tools:after{--splash-mask:url('/design-lab/splash-sage-web.svg');width:62%;height:610px;bottom:6%;right:-27%;transform:rotate(-47deg) scaleX(-1);opacity:calc(var(--lab-wash)*.26)}
+body[data-lab-accent] .hs-guides:before{--splash-mask:url('/design-lab/splash-ochre-web.svg');width:65%;height:570px;top:-210px;right:-23%;transform:rotate(117deg);opacity:calc(var(--lab-wash)*.30)}
+body[data-lab-accent] .hs-guides:after{--splash-mask:url('/design-lab/splash-blue-web.svg');width:38%;height:340px;bottom:-150px;left:8%;transform:rotate(-23deg);opacity:calc(var(--lab-wash)*.22)}
+/* The color wash belongs to the light card background, behind the portrait. */
+body[data-lab-accent] .hs-person-section>.hs-wrap{position:relative;isolation:isolate}
+body[data-lab-accent] .hs-person-section>.hs-wrap:before{content:'';position:absolute;left:0;bottom:0;width:55%;height:100%;background:url('/design-lab/splash-color-web.svg') 35% 60%/120% auto no-repeat;opacity:.72;z-index:-1;pointer-events:none;border-radius:inherit}
+body[data-lab-splash=none] :is(.hs-tools,.hs-guides):before,body[data-lab-splash=none] :is(.hs-tools,.hs-guides):after,body[data-lab-splash=none] .hs-person-section>.hs-wrap:before{display:none}
+body[data-lab-splash=all] .hs-tools:before{left:-10%;width:100%}body[data-lab-splash=all] .hs-guides:before{right:-5%;width:90%}
+.lab-back{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:9999;border:1px solid #ffffff50;border-radius:50px;background:#142c30;color:#fff;padding:8px 18px;font:13px system-ui;text-decoration:none}
+@media(max-width:700px){body[data-lab-accent] .hs-person-section>.hs-wrap:before{width:65%;background-size:150% auto;opacity:.5}body[data-lab-accent] .hs-tools:before{width:110%;left:-70%}body[data-lab-accent] .hs-guides:before{width:100%;right:-50%}}
+/* Homepage trial: chamfered CTA corners, matching gallery variant 05. */
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){border-radius:0!important;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));transition:filter .2s,transform .2s}
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary):hover{filter:brightness(1.06)}
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary):focus-visible{outline:0;box-shadow:inset 0 0 0 3px var(--lab-ink)}
+@media(prefers-reduced-motion:reduce){body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){transition:none}}
+/* Rounded button trial with the site's Montserrat typeface. */
+body[data-lab-accent] :is(button:not(.story-preview-card),.primary-cta,.header-cta,.hs-product-primary,.sc-person-primary,.hs-person-message){font-family:Montserrat,system-ui,sans-serif!important;font-weight:600!important}
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){clip-path:none;border-radius:10px!important;font-family:Montserrat,system-ui,sans-serif!important;font-weight:600!important}
+@media(max-width:850px){body[data-lab-accent] .hs-person-section>.hs-wrap:before{top:0;bottom:auto;width:100%;height:240px;background-position:center;background-size:430px auto;opacity:.6}}
+@media(min-width:601px){body[data-lab-accent] .hs-person-section>.hs-wrap:before{top:0;bottom:0;width:51%;height:100%;background-position:center;background-size:120% auto;opacity:.65}}
+/* One accent across actions and data emphasis. Comparison series stay blue-grey. */
+body[data-lab-accent] :is(button:not(.story-preview-card),.primary-cta,.header-cta,.hs-product-primary,.sc-person-primary,.hs-person-message){border-radius:999px!important}
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){border-radius:999px!important;clip-path:none}
+body[data-lab-accent] input[type=range],body[data-lab-accent] input[type=checkbox]{accent-color:var(--lab-accent)}
+body[data-lab-accent] :is(.hs-race,.hs-simulation-content) svg [stroke='#bbdea4'],body[data-lab-accent] .hs-reading svg path[stroke='#f5cd73']{stroke:var(--lab-accent)!important}
+body[data-lab-accent] :is(.hs-race,.hs-simulation-content) svg [fill='#bbdea4']{fill:var(--lab-accent)!important}
+body[data-lab-accent] .hs-race-legend span+span i,body[data-lab-accent] .hs-reading .hs-coverage i{background:var(--lab-accent)!important}
+body[data-lab-accent] .hs-reading-visual svg path[stroke='currentColor']:first-child{stroke:var(--lab-accent);filter:drop-shadow(0 1px 1px #193b4266)}
+body[data-lab-accent] .hs-reading svg path[stroke='#f5cd73']{filter:drop-shadow(0 1px .5px #193b4266)}
+body[data-lab-accent] :is(.hs-layout-picker,.hs-race-tabs,.hs-reading-dots,.av-controls,.hs-tabs) button[aria-pressed=true]{background:var(--lab-accent)!important;color:var(--lab-ink)!important;border-color:var(--lab-accent)!important}
+body[data-lab-accent] .reading-dots button[aria-pressed=true]{background:var(--lab-accent)!important;border-color:var(--lab-accent)!important}
+body[data-lab-accent] .hs-effect-grid button[aria-pressed=true]{border-color:var(--lab-accent)!important}
+/* Give pill labels sufficient room at the curved edges. */
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){padding-inline:28px!important}
+
+/* Secondary navigation actions use the surrounding monochrome palette. */
+body[data-lab-accent] .hs-secondary-cta{background:transparent!important;color:#173b42!important;border:1px solid #173b4266!important;box-shadow:none!important}
+body[data-lab-accent] .hs-secondary-cta:hover{background:#173b420a!important;filter:none}
+body[data-lab-accent] .hs-more{border-bottom:0;text-align:center;margin-top:32px}
+body[data-lab-accent] .hs-more summary{display:inline-flex;align-items:center;gap:20px;padding:13px 28px;border:1px solid #aec4bd66;border-radius:999px;color:#e8eee9;font:600 14px/1.4 Montserrat,system-ui,sans-serif}
+body[data-lab-accent] .hs-more summary:hover{background:#ffffff08}
+body[data-lab-accent] .hs-more>div{text-align:left;margin-top:16px}
+/* Match the compact tile layout selectors. */
+body[data-lab-accent] :is(.hs-race-tabs,.hs-race-player) button{font-size:12px!important;line-height:16px!important;padding:8px 12px!important;min-height:34px;min-width:0}
+body[data-lab-accent] .hs-race-tabs{flex-wrap:wrap}
+
+body[data-lab-accent] .hs-secondary-cta{line-height:1.4;padding-block:13px;align-items:center}
+body[data-lab-accent] .hs-secondary-cta span{margin:0;line-height:1;font-size:inherit}
+
+/* The variant accent also colors the logo mark. */
+
+/* Preserve all artwork; request it only as its section approaches. */
+body[data-lab-accent] :is(.hs-tools,.hs-guides):not(.hs-art-ready)::before,
+body[data-lab-accent] :is(.hs-tools,.hs-guides):not(.hs-art-ready)::after{mask-image:none!important;-webkit-mask-image:none!important}
+body[data-lab-accent] .hs-person-section:not(.hs-art-ready)>.hs-wrap::before{background-image:none!important}
+solar-trust-badge:not(:defined){display:block;width:48px;aspect-ratio:1}
+
+/* Resolve the logo tokens on the SVG before the enhancement bundle starts. */
+.hs-coming{background:#e8d5ff!important;color:#562581!important;border-color:transparent!important;font-weight:600}
+.hs-arrow{display:inline-block;flex-shrink:0;vertical-align:middle}
+.hs-tool-actions button[data-home-waitlist]{appearance:none;border:0;border-top:1px solid var(--hs-line);border-radius:0;background:none;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 0 0;cursor:pointer;text-align:left}
+.hs-system-race{min-height:0;margin:16px auto 0}
+.hs-system-race-frame{background:transparent}
+.hs-five-tools .hs-tool .hs-tool-art{height:174px;margin:16px 0 20px}
+.hs-five-tools .hs-tool .hs-tool-art solar-illustration{width:190px;height:190px;top:-8px;transition:opacity .25s ease}
+.hs-five-tools .hs-tool h3{margin:0 0 12px}
+@media(max-width:600px){.hs-five-tools .hs-tool{padding:24px}.hs-five-tools .hs-tool .hs-tool-art{height:160px;margin:14px 0 20px}.hs-five-tools .hs-tool .hs-tool-art solar-illustration{width:180px;height:180px;top:-10px}.hs-section{padding-block:64px}.hs-race{padding-top:24px}.hs-race-card{padding:24px 18px}.hs-toolgrid{gap:20px}}
+
+.hs-content svg.hs-arrow{width:20px!important;height:20px!important;min-width:20px;margin:0!important}
+/* The portrait must remain a cutout; shared mobile avatars have a solid backdrop. */
+.hs-person-section .sc-person-picture{background:transparent!important}
+@media(max-width:480px){
+ .hs-content .sc-trust-item{grid-template-columns:36px minmax(0,1fr);column-gap:18px}
+ .hs-content .sc-trust-item solar-trust-badge{grid-column:1;grid-row:1 / 4;width:36px;margin:0}
+ .hs-content .sc-trust-item h3{margin:0 0 12px}
+ .hs-content .sc-trust-grid{row-gap:40px}
+}
+
+.hs-five-tools .hs-tool-art img{opacity:0;transition:opacity .2s ease}
+.hs-five-tools .hs-tool-art img.is-loaded{opacity:1}
+
+/* The race overlaps the next light surface; section padding must not cancel it. */
+#startseite-inhalt>.hs-race{padding-bottom:0;position:relative;z-index:3;overflow:visible}
+#startseite-inhalt>.hs-race .hs-race-card{margin-bottom:-104px}
+#startseite-inhalt>.hs-race+.hs-local-atlas{position:relative;z-index:1;padding-top:184px}
+.hs-system-race{position:relative}
+.hs-race-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;min-height:300px;color:#aec3bd;text-align:center;padding:24px}
+.hs-race-loading[hidden]{display:none}
+.hs-race-loading p{margin:0;font-size:15px}
+.hs-race-loading button{color:inherit;background:transparent;border:1px solid #aec3bd66;border-radius:999px;padding:10px 18px;font:inherit;cursor:pointer}
+.hs-race-spinner{width:28px;height:28px;border:2px solid #aec3bd33;border-top-color:#d4ff24;border-radius:50%;animation:hs-race-loading-spin 1s linear infinite}
+@keyframes hs-race-loading-spin{to{transform:rotate(360deg)}}
+@media(max-width:700px){#startseite-inhalt>.hs-race .hs-race-card{margin-bottom:-72px}#startseite-inhalt>.hs-race+.hs-local-atlas{padding-top:136px}}
+@media(prefers-reduced-motion:reduce){.hs-race-spinner{animation:none}}
+
+/* Card actions share one appearance regardless of link or dialog action. */
+body[data-lab-accent] .hs-five-tools .hs-tool-actions button[data-home-waitlist]{border-radius:0!important;clip-path:none;box-shadow:none;font:400 14px/1.4 'DM Sans',sans-serif!important;padding:12px 0 0;border:0;border-top:1px solid #aec4bd25;min-height:38px;gap:12px}
+body[data-lab-accent] .hs-more .hs-all-calculators{display:inline-flex;align-items:center;justify-content:center;gap:12px;border:1px solid #aec4bd66;border-radius:999px;padding:13px 24px;color:#e8eee9;font:600 14px/1.4 Montserrat,sans-serif;text-decoration:none}
+body[data-lab-accent] .hs-more .hs-all-calculators:hover{background:#ffffff0c}
+@media(max-width:700px){
+ #startseite-inhalt .hs-organisation-grid{grid-template-columns:1fr;gap:8px}
+ #startseite-inhalt .hs-organisation-grid>a{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:16px;row-gap:8px;padding:24px 0}
+ #startseite-inhalt .hs-organisation-grid .hs-audience-icon{width:44px;height:44px;margin:0;grid-row:1 / 3}
+ #startseite-inhalt .hs-organisation-grid strong{font-size:16px;line-height:1.5}
+ #startseite-inhalt .hs-organisation-grid>a>span{grid-column:2;font-size:16px;line-height:1.6;margin:0}
+}
+
+.hs-race-spinner[hidden]{display:none}
+
+.hs-direct-race{min-height:480px;color:#e7eeea;font-family:Montserrat,sans-serif}
+.hs-direct-race>div{border:0!important;border-radius:0!important;padding:0!important;background:transparent!important;box-shadow:none!important}
+.hs-direct-race svg polyline{stroke-width:1.4!important}
+.hs-direct-race svg text{font-family:Montserrat,sans-serif!important;font-weight:700}
+.hs-direct-race a[href*="photovoltaik-rechner"],.hs-direct-race a[href*="waermepumpe-rechner"]{display:none!important}
+/* The hero pauses its scene off-screen; the chart owns its own playback. */
+.hs-direct-race .kr-neu{animation-play-state:running!important}
+
+/* Keep event copy at body size and markers flush with the chart surface. */
+.hs-direct-race span.kr-neu{border-color:#08191c!important}
+.hs-direct-race div.kr-neu>div{font-family:DMSans,Arial,sans-serif!important;font-size:16px!important;line-height:1.5!important;font-weight:400!important}
+.hs-direct-race div.kr-neu>div:first-child{font-weight:600!important}

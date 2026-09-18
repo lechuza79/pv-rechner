@@ -1,11 +1,12 @@
 import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
-import { getCssVariables, getThemeOverrides, globalStyles } from "../../lib/theme";
+import { getCssVariables, getThemeOverrides, globalStyles, headerContentGap } from "../../lib/theme";
 import { getOverrideCss } from "../../lib/theme-overrides";
 import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
 import { jsonLdHtml } from "../../lib/json-ld";
+import { organizationJsonLd, softwareAppJsonLd } from "../../lib/site-json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
-import SeitenKopf from "../../components/SeitenKopf";
+import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { WebAnalytics } from "../../components/WebAnalytics";
 import { HerkunftsMelder } from "../../components/HerkunftsMelder";
@@ -87,32 +88,6 @@ export const metadata: Metadata = {
   },
 };
 
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Solar Check",
-  // Spellings people actually search for ("solarcheck" as one word) — helps
-  // Google connect brand queries to this site.
-  alternateName: ["Solarcheck", "solar-check.io"],
-  url: BASE_URL,
-  logo: `${BASE_URL}/logo.png`,
-  description:
-    "Kostenlose Energie-Rechner — ohne Anmeldung, ohne Verkaufsanrufe: Photovoltaik-Rentabilität, Wärmepumpe und Live-Energiedaten für Deutschland.",
-};
-
-const softwareAppJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: "Solar Check",
-  description:
-    "Kostenloser PV-Rentabilitätsrechner: Amortisation, Rendite und Szenarien für Photovoltaikanlagen mit oder ohne Speicher.",
-  url: BASE_URL,
-  applicationCategory: "UtilityApplication",
-  operatingSystem: "Web",
-  offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-  inLanguage: "de",
-};
-
 export default async function RootLayout({
   children,
 }: {
@@ -162,7 +137,7 @@ export default async function RootLayout({
               Seite selbst als Top-Padding mit (plus Header-marginBottom), was
               projektweit driftete. Keine Seite setzt jetzt noch eigenes
               Top-Padding. */}
-          <SeitenKopf />
+          <div style={{ padding: `20px 16px ${headerContentGap}px` }}><Header /></div>
           {children}
           <div style={{ padding: "0 16px" }}><Footer /></div>
         </GlossaryProvider>

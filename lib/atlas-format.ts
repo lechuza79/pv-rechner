@@ -250,11 +250,6 @@ export const fmtEuro = (euro: number): string => zusammen(euroTeile(euro));
  */
 export const fmtEuroVoll = (euro: number): string => `${nf(euro)} €`;
 
-/** `fmtEuroVoll` as number and unit, for a large figure with a smaller unit. */
-export function euroVollTeile(euro: number): Messwert {
-  return { value: nf(euro), unit: "€" };
-}
-
 /**
  * Ein zu ZAHLENDER Preis, als Zahl und Einheit getrennt — auf den Cent genau.
  *

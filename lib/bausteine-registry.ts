@@ -391,47 +391,16 @@ export const BAUSTEINE: Baustein[] = [
       "Klebt am unteren Fensterrand. In einer Karte gezeigt läge sie über der ganzen Seite statt in ihr.",
   },
   {
-    datei: "components/NeonButton.tsx",
-    name: "NeonButton",
-    zweck:
-      "Die Knopf-Familie der neuen Oberfläche (Startseite, Simulation): gefüllt, umrandet und rund — als echter Link, wo er irgendwohin führt.",
-    gruppe: "eingabe",
-    ebene: "baustein",
-    stand: "im-aufbau",
-    bestehtAus: [],
-  },
-  {
-    datei: "components/NeonFlaeche.tsx",
-    name: "NeonFlaeche",
-    zweck:
-      "Der Rahmen, innerhalb dessen die neuen Farben, Schriftrollen und Knöpfe gelten — außerhalb bleiben Rechner und Artikel unverändert.",
-    gruppe: "struktur",
-    ebene: "baustein",
-    stand: "im-aufbau",
-    bestehtAus: [],
-  },
-  {
     datei: "components/DesignHeader.tsx",
     name: "DesignHeader",
     zweck:
-      "Die neutrale Kopfzeile der neuen Oberfläche: Logo und die vier Navigationsgruppen, über die volle Breite einer Bühne gelegt.",
+      "Die neutrale Kopfzeile der neuen Oberfläche aus der Heizungs-Sitzung: Logo und die vier Navigationsgruppen.",
     gruppe: "struktur",
     ebene: "baustein",
     stand: "im-aufbau",
     bestehtAus: ["Logo"],
     keinBeispielWeil:
-      "Ein Seitenrahmen — er steht auf Startseite und Simulation bereits oben. Ein zweiter in der Galerie wäre kein Beispiel, sondern ein Fehler.",
-  },
-  {
-    datei: "components/SeitenKopf.tsx",
-    name: "SeitenKopf",
-    zweck:
-      "Entscheidet an EINER Stelle, welche Seite welche Kopfzeile bekommt: die neue auf Startseite und Simulation, die bisherige überall sonst.",
-    gruppe: "struktur",
-    ebene: "baustein",
-    stand: "im-aufbau",
-    bestehtAus: ["DesignHeader", "Header", "Icons"],
-    keinBeispielWeil: "Ein Umschalter zwischen zwei Seitenrahmen; zeigen lässt er sich nur auf den Seiten selbst.",
+      "Ein Seitenrahmen — ein zweiter in der Galerie wäre kein Beispiel, sondern ein Fehler.",
   },
   {
     datei: "components/Header.tsx",
