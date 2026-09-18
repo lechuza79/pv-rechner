@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
+import { SOLAR_RUECKBLICK_SQL } from "../../../../lib/solar-rueckblick-sql";
 
 // ─── Solar-Rückblick 2016–2025 (solar_rueckblick) ───────────────────────────
 //
@@ -17,20 +18,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!supabase) return NextResponse.json({ error: "Database not configured" }, { status: 500 });
-  const { error } = await supabase.rpc("exec_sql", {
-    sql: `
-      CREATE TABLE IF NOT EXISTS solar_rueckblick (
-        plz text PRIMARY KEY CHECK (plz ~ '^[0-9]{5}$'),
-        vorteil_ohne_wp numeric NOT NULL,
-        vorteil_mit_wp numeric NOT NULL,
-        jahre jsonb NOT NULL,
-        annahmen jsonb NOT NULL,
-        wetterquelle text NOT NULL,
-        berechnet_am timestamptz NOT NULL DEFAULT now()
-      );
-      ALTER TABLE solar_rueckblick ENABLE ROW LEVEL SECURITY;
-      NOTIFY pgrst, 'reload schema';
-    `,
-  });
+  const { error } = await supabase.rpc("exec_sql", { sql: SOLAR_RUECKBLICK_SQL });
   return NextResponse.json({ step: "solar_rueckblick table", status: error ? "error" : "ok", error: error?.message });
 }
