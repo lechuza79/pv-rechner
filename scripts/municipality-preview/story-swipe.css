@@ -1,0 +1,152 @@
+/* Interaction shell; visuals and dialog behaviour use the shared components. */
+.story-strip,.story-reader-viewport{overflow:hidden;touch-action:pan-y pinch-zoom}
+.story-strip-track,.story-reader-track{display:flex;align-items:stretch;gap:24px}
+.story-strip-slide{flex:0 0 clamp(260px,32%,360px);min-width:0}
+.story-feed-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;grid-column:1/-1}
+.story-reader-dialog{display:flex;flex-direction:column;height:90dvh;max-height:900px!important;overflow:hidden!important;border:1px solid var(--atlas-border);border-radius:28px!important;padding:0!important;margin:12px;isolation:isolate}
+.story-reader-dialog>div:first-child{flex:none;background:var(--atlas-card);padding:16px 24px;margin:0!important;border-bottom:1px solid var(--atlas-border);gap:12px!important}
+.story-reader-dialog>div:first-child>h2{font-size:18px!important;margin:0}
+.story-reader-dialog>div:first-child>button{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border:1px solid var(--atlas-border)!important;border-radius:50%;font-size:28px!important;background:transparent!important}
+.story-reader-body{flex:1;min-height:0;padding:0 24px}
+.story-reader-viewport,.story-reader-track{height:100%}
+.story-reader-slide{flex:0 0 100%;min-width:0;height:100%;overflow-y:auto;overscroll-behavior-y:contain;padding:0 2px 12px;touch-action:pan-y pinch-zoom;scrollbar-width:thin}
+.story-reader-bottom{flex:none;position:relative;z-index:10;background:var(--atlas-card);border-top:1px solid var(--atlas-border);padding:16px 24px calc(16px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px #00000014}
+.story-reader-controls{display:flex;align-items:center;justify-content:space-between;gap:16px;color:var(--atlas-text)}
+.story-reader-pagination{display:flex;align-items:center;gap:8px}
+.story-reader-controls button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;min-width:48px;padding:0;border:1px solid var(--atlas-border);border-radius:999px;background:transparent;color:inherit;font:inherit;cursor:pointer;transition:background .15s,border-color .15s}
+.story-reader-controls button:hover{background:color-mix(in srgb,var(--atlas-action) 12%,transparent);border-color:var(--atlas-action)}
+.story-reader-controls span{font-size:13px;white-space:nowrap;min-width:48px;text-align:center}
+.story-reader-controls .story-reader-share{padding:0 24px;background:var(--atlas-action);color:#132527;border-color:var(--atlas-action);font-size:14px;font-weight:600}
+.story-share-status{font-size:12px;margin:8px 0 0;text-align:right}
+.story-reader-controls button:focus-visible{outline:2px solid var(--atlas-action);outline-offset:3px}
+.story-all-link{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.story-all-link svg,.story-reader-controls svg{flex-shrink:0}
+@media(max-width:540px){.story-strip-slide{flex-basis:86%}.story-strip-track{gap:16px}.story-feed-grid{grid-template-columns:1fr}.story-reader-dialog{height:calc(100dvh - 32px);max-height:calc(100dvh - 32px)!important;margin:16px 12px;border-radius:24px!important}.story-reader-dialog>div:first-child{padding:12px 16px}.story-reader-body{padding:0 16px}.story-reader-bottom{padding:12px 16px calc(12px + env(safe-area-inset-bottom))}.story-reader-controls{gap:12px}.story-reader-pagination{gap:4px}.story-reader-controls .story-reader-share{padding:0 20px}}
+@media(prefers-reduced-motion:reduce){.story-reader-controls button{transition:none}}
+
+.story-strip-actions{display:flex;align-items:center;gap:18px}
+.story-strip-actions .story-autoplay{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:1px solid var(--atlas-border);border-radius:50%}
+.story-reader-dialog{max-width:640px!important}
+.story-reader-segments{display:flex;gap:5px;flex:none;padding:12px 24px}
+.story-reader-segments button{height:16px;flex:1;border:0;padding:6px 0;background:none;cursor:pointer}
+.story-reader-segments button:after{content:'';display:block;height:3px;border-radius:4px;background:var(--atlas-border)}
+.story-reader-segments button[aria-current]:after{background:var(--atlas-action)}
+.story-reader-context{border-top:1px solid var(--atlas-border);margin-top:12px}
+.story-reader-context summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;font-size:13px;cursor:pointer;list-style:none;color:var(--atlas-secondary)}
+.story-reader-context summary::-webkit-details-marker{display:none}
+.story-reader-context[open] summary svg{transform:rotate(180deg)}
+.story-reader-context p{font-size:14px!important;line-height:1.6!important}
+@media(max-width:540px){.story-reader-segments{padding:6px 16px}.story-reader-art{width:min(100%,calc(100dvh - 330px))}.story-reader-heading h3{font-size:22px}}
+.story-reader-slide{display:flex;flex-direction:column}
+.story-reader-context{flex:none;margin-top:12px}
+
+/* Compact timed story controls and independently readable caption. */
+.story-reader-dialog>div:first-child{padding:7px 16px}
+.story-reader-dialog>div:first-child>h2{font-size:14px!important}
+.story-reader-dialog>div:first-child>button{width:28px;height:28px;font-size:22px!important}
+.story-reader-bottom{padding:8px 16px calc(8px + env(safe-area-inset-bottom))}
+.story-reader-controls{gap:8px}
+.story-reader-controls button{min-width:32px;min-height:32px;gap:6px}
+.story-reader-controls span{min-width:40px;font-size:11px}
+.story-reader-pagination{gap:4px}
+.story-reader-actions{display:flex;gap:6px;align-items:center}
+.story-reader-controls .story-reader-share{padding:0 12px;background:transparent;color:inherit;border-color:var(--atlas-border);font-size:12px;font-weight:500}
+.story-share-status{position:absolute;bottom:100%;right:12px;padding:8px 12px;background:var(--atlas-card);border:1px solid var(--atlas-border);border-radius:10px;box-shadow:0 4px 20px #0003}
+.story-progress-row{display:flex;align-items:center;gap:8px;padding:4px 16px;flex:none}
+.story-reader-segments{padding:0;flex:1}
+.story-reader-segments button{position:relative;padding:8px 0;height:20px}
+.story-reader-segments button:after{display:none}
+.story-segment-track{display:block;height:3px;overflow:hidden;border-radius:4px;background:var(--atlas-border)}
+.story-segment-fill{display:block;height:100%;background:var(--atlas-action);transform-origin:left;will-change:transform}
+.story-timer-toggle{display:flex;align-items:center;justify-content:center;flex:none;width:28px;height:28px;padding:0;border:0;background:transparent;color:var(--atlas-text);cursor:pointer}
+.story-export-credit{display:none;font-size:11px;line-height:1.5;color:#a7bcbb;margin-top:20px}
+.story-reader-slide{overflow:hidden;padding-bottom:0}
+.story-reader-context{flex:0 0 120px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--atlas-secondary) transparent;padding:4px 10px 24px 0;border:0;mask-image:linear-gradient(to bottom,#000 0%,#000 calc(100% - 22px),transparent 100%)}
+.story-reader-context.is-at-end{mask-image:none}
+.story-reader-context p{margin:0 0 12px!important;font-size:13px!important;line-height:1.55!important}
+.story-reader-context:focus-visible{outline:1px solid var(--atlas-border);outline-offset:2px}
+@media(max-width:540px){.story-reader-dialog>div:first-child{padding:7px 12px}.story-reader-bottom{padding:8px 12px calc(8px + env(safe-area-inset-bottom))}.story-reader-controls .story-reader-share{padding:0 10px}.story-reader-heading h3{font-size:21px}}
+
+/* Keep headline and visual on one story surface. */
+.story-reader-dialog>div:first-child,.story-reader-bottom{background:var(--atlas-surface);box-shadow:none}
+.story-reader-context{width:min(100%,46ch);align-self:center;flex-basis:144px;padding-left:4px;padding-right:12px}
+.story-reader-context p{font-family:var(--atlas-body)!important;font-size:var(--atlas-body-size)!important;line-height:1.75!important}
+.story-artwork-stage{flex:1;min-height:0;width:100%;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.story-export-card{width:100%}
+
+/* Widget and collapsed caption have separate, stable areas in the viewer. */
+.story-reader-dialog>div:first-child{display:flex;align-items:center;gap:12px!important}
+.story-reader-dialog>div:first-child>h2{flex:none}
+.story-reader-dialog>div:first-child>button{order:3;flex:none}
+.story-progress-row{flex:1;min-width:0;padding:0;order:2}
+.story-reader-body{padding:0 16px}
+.story-reader-slide{position:relative}
+.story-artwork-stage{position:relative;overflow:hidden;flex:1;min-height:0;width:100%}
+.story-export-card{position:absolute;left:50%;top:50%;width:100%;transform-origin:center}
+.story-caption-overlay{position:absolute;bottom:0;left:0;right:0;z-index:4;background:linear-gradient(transparent,var(--atlas-surface) 52%);padding:32px 16px 12px;border-radius:0 0 16px 16px}
+.story-caption-toggle{display:flex;align-items:center;gap:12px;width:100%;padding:0;background:none;border:0;color:var(--atlas-text);text-align:left;font:inherit;cursor:pointer}
+.story-caption-toggle span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font:400 var(--atlas-body-size)/1.65 var(--atlas-body)}
+.story-caption-toggle svg{flex:none;width:16px;height:16px;transform:rotate(-90deg)}
+.story-caption-overlay.is-open{max-height:78%;display:flex;flex-direction:column;background:var(--atlas-surface);border:1px solid var(--atlas-border);border-radius:16px;padding:16px;box-shadow:0 -16px 44px #0005}
+.story-caption-overlay.is-open .story-caption-toggle svg{transform:rotate(90deg)}
+.story-caption-overlay .story-reader-context{width:100%;flex:1;min-height:0;margin-top:12px}
+.story-visible-widget{width:100%;aspect-ratio:1;display:flex;align-items:center;overflow:hidden;pointer-events:none}
+.story-visible-widget>div{width:100%}
+.story-reader-dialog>div:first-child>div:has(.story-progress-row){flex:1;min-width:0;margin-left:12px!important}
+
+.story-artwork-stage{margin-bottom:88px}
+.story-caption-overlay{bottom:0;height:80px;box-sizing:border-box;padding:12px 16px;background:var(--atlas-surface)}
+.story-caption-toggle span{mask-image:linear-gradient(#000 55%,transparent 100%)}
+.story-caption-overlay.is-open{bottom:0;height:auto}
+.story-caption-overlay.is-open .story-caption-toggle span{mask-image:none}
+
+/* One reference canvas; the caption travels upward as a continuous sheet. */
+.story-reader-dialog{height:calc(100dvh - 16px)!important;max-height:calc(100dvh - 16px)!important;margin:8px!important}
+.story-reader-dialog>div:first-child>button{display:none!important}
+.story-reader-bottom{border-top:0;box-shadow:none}
+.story-reader-body{padding:0 8px}
+.story-widget-area{flex:1;min-height:0;margin-bottom:76px;display:flex}
+.story-artwork-stage{margin:0;height:100%}
+.story-export-card{width:100%;height:auto;display:flex;align-items:flex-start;background:var(--atlas-card);border-radius:16px;overflow:hidden}
+.story-export-card>div:not(.story-export-credit){width:100%}
+.story-caption-overlay,.story-caption-overlay.is-open{bottom:0;height:70%;max-height:none;padding:20px 20px 0;display:flex;flex-direction:column;border:0;border-radius:16px 16px 0 0;background:var(--atlas-surface);box-shadow:none;transform:translateY(calc(100% - 72px));transition:transform 320ms cubic-bezier(.22,.8,.25,1);overflow:hidden}
+.story-caption-overlay.is-open{transform:translateY(0);box-shadow:0 -20px 40px #0003}
+.story-caption-overlay .story-reader-context{width:min(100%,46ch);margin:0 auto;padding:0 0 24px;flex:1;overflow:hidden;mask-image:linear-gradient(#000 28px,transparent 58px)}
+.story-caption-overlay.is-open .story-reader-context{overflow-y:auto;mask-image:none;padding-top:28px}
+.story-caption-toggle{position:absolute;inset:0 0 auto;width:100%;height:72px;z-index:2}
+.story-caption-overlay.is-open .story-caption-toggle{inset:4px 16px auto auto;width:auto;height:28px;font-size:13px}
+.story-close{display:flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;border:0;background:none;color:inherit;cursor:pointer}
+.story-reader-controls svg,.story-timer-toggle svg,.story-close svg{width:16px!important;height:16px!important;display:block!important}
+.story-reader-controls svg [stroke],.story-close svg [stroke]{vector-effect:non-scaling-stroke;stroke-width:1.5px}
+.story-reader-controls svg[viewBox="0 0 24 24"]{stroke-width:2.25px}
+@media(prefers-reduced-motion:reduce){.story-caption-overlay{transition:none}}
+
+/* Trailing slide margin also provides the gap at Embla's loop seam. */
+.story-strip-track{gap:0}
+.story-strip-slide{margin-right:24px}
+.story-preview-card>div:last-child{padding:20px}
+.story-preview-card>div:last-child h3{font-size:calc(var(--atlas-body-size) + 2px);line-height:1.35;margin:8px 0 0}
+.story-preview-card>div:last-child small{font-size:var(--atlas-caption-size)}
+@media(max-width:540px){.story-strip-slide{margin-right:16px}}
+/* Homepage card surface; only the teaser shell, not the full story artwork. */
+.story-strip .story-preview-card,.story-feed-grid .story-preview-card{background:linear-gradient(125deg,#14313988,#10262b44);border:1px solid var(--atlas-border)}
+.story-preview-card .story-visible-widget>div{--atlas-card:transparent;background:transparent}
+
+/* Full-width clipping and uninterrupted motion across the repeated slide seam. */
+.story-strip{width:100vw;margin-left:calc(50% - 50vw);mask-image:linear-gradient(to right,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+.story-strip-track{padding:0}
+/* Keep the full-width mask while leaving room for card lift and shadow. */
+.story-strip{padding-block:24px;margin-block:-24px}
+/* Embla owns slide transforms for instant loop relocation; never animate them. */
+.story-strip .story-strip-slide{transition:box-shadow 180ms ease}
+@media(hover:hover) and (pointer:fine){.story-strip .story-strip-slide:hover{transform:none}}
+
+/* Embla relocates the outer slide; only the inner card scales on hover. */
+.story-strip{mask-image:none;-webkit-mask-image:none}
+.story-strip .story-strip-slide{transition:none;overflow:visible}
+.story-strip-slide>.story-preview-card,.story-feed-cell>.story-preview-card{width:100%;height:100%;transition:transform 180ms ease,box-shadow 180ms ease}
+@media(hover:hover) and (pointer:fine){.story-strip-slide>.story-preview-card:hover,.story-feed-cell>.story-preview-card:hover{transform:scale(1.025)}}
+@media(prefers-reduced-motion:reduce){.story-strip-slide>.story-preview-card,.story-feed-cell>.story-preview-card{transition:none}.story-strip-slide>.story-preview-card:hover,.story-feed-cell>.story-preview-card:hover{transform:none}}
+
+/* Preview surfaces follow their host; reader styling remains independent. */
+.story-strip .story-preview-card[data-preview-scheme="light"],.story-feed-grid .story-preview-card[data-preview-scheme="light"]{background:var(--atlas-card)}
