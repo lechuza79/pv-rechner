@@ -115,6 +115,13 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // Aufgenommen am 18.09.2026 aus dem Quellen-Rückstand; Amtsseite und
+  // Richtlinie jeweils im Volltext gelesen. Die Prüfformen fehlen noch, und bei
+  // Würselen kennt das Modell eine Bedingung gar nicht: Gekauft werden darf erst
+  // nach der BEWILLIGUNG, nicht schon nach der Antragstellung — strenger als die
+  // übliche Regel „Antrag vor Kauf", die die Prüfform abbildet. Gronau ruht
+  // wegen der Haushaltssperre; halb erfasst gibt es hier nicht.
+  "wuerselen-balkonkraftwerke", "gronau-klima-umweltfonds", "herzogenrath-klimaschutzinvestitionen",
   "hiddenhausen-spar-mit-solar", "herzebrock-clarholz-batteriespeicher",
   // Closed municipal rounds: current closure verified, historical terms remain visible.
   // Closed rounds added by the funding watcher on 2026-09-16 (source queue).

@@ -7846,10 +7846,19 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Anschaffung ab dem 1. April 2024, Wechselrichter höchstens 800 W",
       "Vermieter durften für vermietetes Wohneigentum keinen Antrag stellen",
       "Batteriespeicher und Anlagen über 2.000 Wattpeak waren ausgeschlossen",
+      "Die Anlage war fünf Jahre im Kreisgebiet zu betreiben; für den erzeugten Strom durfte keine Einspeisevergütung in Anspruch genommen werden",
+      "Wer den Zuschuss der Stadt Wittlich beantragt hatte, bekam den des Landkreises nicht — und umgekehrt",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
     balkonPauschale: 150,
+    // 18.09.2026 an der Amtsseite UND der verlinkten Förderrichtlinie
+    // (Version 3, Stand 14.01.2025) vollständig nachgelesen: Betrag, Fristen und
+    // Leistungsgrenzen zellgleich. Ergänzt wurden zwei Bedingungen, die bisher
+    // nur in der Richtlinie standen — die fünfjährige Haltedauer samt
+    // EEG-Ausschluss (Nr. 4 und Nr. 8) und der wechselseitige Ausschluss mit dem
+    // Programm der Stadt Wittlich (Nr. 9). Beide ändern keinen Betrag; das
+    // Programm ist seit dem 01.04.2026 ohnehin geschlossen.
   },
 
   "trier-saarburg-balkonkraftwerke": {
@@ -8272,6 +8281,170 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // gilt nur Mietern, der Speicherzuschuss nur Eigentümern — eine
     // Wohnform-Einschränkung am Programm träfe eine der beiden Hälften falsch.
     // Der Speichersatz hängt zudem an der Personenzahl im Haushalt.
+  },
+
+  "wuerselen-balkonkraftwerke": {
+    id: "wuerselen-balkonkraftwerke", name: "Zuwendung für Balkonkraftwerke",
+    traeger: "Stadt Würselen", level: "kommune", region: "Würselen",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05334036",
+    url: "https://www.wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2023-08-22",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je PV-Modul, höchstens zwei Module je Anlage",
+    maxFoerderung: "200 € je Anlage",
+    rates: [
+      { label: "Balkonkraftwerk", value: "100 € je PV-Modul, höchstens zwei Module" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Privatpersonen ab 18 Jahren mit Wohnsitz in Würselen — Mieterinnen und Mieter ebenso wie Eigentümerinnen und Eigentümer",
+      "Gekauft werden darf erst nach der Bewilligung, nicht schon nach der Antragstellung",
+      "Gefördert wird nur der erstmalige Kauf; gebrauchte, gemietete und geleaste Anlagen sind ausgeschlossen",
+      "Höchstens 800 Watt je Modul (für Anschaffungen vor 2024: 600 Watt)",
+      "Bei Miete ist die Zustimmung der Eigentümerseite nötig, in einer Eigentümergemeinschaft deren Zustimmung — beides nachzuweisen",
+      "Die Anlage muss fünf Jahre in diesem Zustand erhalten bleiben",
+      "Eine Doppelförderung ist ausgeschlossen — auch neben dem Programm der StädteRegion Aachen",
+      "Es besteht kein Rechtsanspruch; gefördert wird aus den Haushaltsmitteln des Antragsjahres",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // NEU AUFGENOMMEN 18.09.2026. Übersichtsseite der Stadt und die verlinkte
+    // Richtlinie im Volltext gelesen — deren Seiten 3 bis 6 sind GESCANNT und
+    // haben keinen Textlayer; gelesen wurden sie als Bild (pdftoppm). Wer sie
+    // per Textabruf prüft, bekommt eine leere Datei und hält die Richtlinie für
+    // inhaltslos. Nr. 6: „Die Zuwendung wird für Investitionen in Form der
+    // Festbetragsfinanzierung von 100 Euro pro PV-Modul gewährt. Die Förderung
+    // ist auf maximal 2 PV-Module je Anlage beschränkt." Ratsbeschluss und
+    // Unterschrift des Bürgermeisters vom 22.08.2023.
+    //
+    // AKTIV UND UNBEFRISTET: Nr. 11 nennt nur das Inkrafttreten, keine
+    // Geltungsdauer; Nr. 1 stellt den Förderzeitraum unter den Vorbehalt der
+    // „(noch) zur Verfügung stehenden Haushaltsmittel im Antragsjahr", Nr. 8.2
+    // verschiebt einen Antrag bei erschöpften Mitteln ins Folgejahr. Eine
+    // Meldung der Stadt vom 10.02.2026 nennt „rund 35.000 Euro im Fördertopf".
+    //
+    // DER JAHRESDECKEL AUS DER RICHTLINIE STEHT BEWUSST NICHT HIER: Sie nennt
+    // 10.000 € je Haushaltsjahr, die Stadt selbst meldet 2026 rund 35.000 € —
+    // die Zahl von 2023 ist durch die Haushaltspraxis überholt. Eine überholte
+    // Zahl neben einem aktuellen Betrag wäre schlechter als keine.
+    //
+    // NICHT ZU VERWECHSELN mit dem Programm der StädteRegion Aachen, das
+    // Würselen ebenfalls abdeckt: Das zahlt 80 € und nur an Mieterhaushalte,
+    // liegt bei einem anderen Träger und ruht 2026. Dieses hier ist ein eigenes
+    // Programm der Stadt, Bewilligungsbehörde ist ihr zentrales
+    // Fördermittelmanagement. Beide schließen einander aus.
+    //
+    // GESTAFFELT NACH MODULLEISTUNG, weil der Rechner Module nicht zählt —
+    // dieselbe Lesart wie in Herbrechtingen. Die Grenze liegt bei 800 Wp, weil
+    // das die Obergrenze EINES Moduls nach Nr. 2 der Richtlinie ist: Darüber
+    // sind es zwangsläufig mindestens zwei Module. Die Staffel kann dadurch zu
+    // wenig ansetzen (zwei Module mit zusammen 700 Wp bekommen 200 € und hier
+    // 100 €), nie zu viel — die sichere Richtung.
+    balkonTiers: [{ upTo: 800, amount: 100 }, { upTo: 999999, amount: 200 }],
+  },
+
+  "gronau-klima-umweltfonds": {
+    id: "gronau-klima-umweltfonds", name: "Klima- und Umweltfonds, Förderbereich „Energie erzeugen“",
+    traeger: "Stadt Gronau (Westf.)", level: "kommune", region: "Gronau (Westf.)",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05554020",
+    url: "https://www.gronau.de/leben-in-gronau/klima-und-umweltschutz/klima-und-umweltfonds/",
+    stand: "September 2026", status: "pausiert", capped: true, verified: true,
+    beschlossenIso: "2026-03-25", beginntIso: "2026-01-01", endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten für Balkonkraftwerk, Dachanlage oder Solarthermie — 2026 wegen Haushaltssperre gestoppt",
+    maxFoerderung: "400 € je Anlage",
+    rates: [
+      { label: "Balkonkraftwerk, Dach-Photovoltaik oder Solarthermie", value: "60 % der Anschaffungskosten, höchstens 400 €" },
+    ],
+    conditions: [
+      "Keine neuen Anträge: Seit der Haushaltssperre vom 29. Juli 2026 ist die Antragstellung für alle vier Förderbereiche gestoppt",
+      "Antragsberechtigt sind Bürgerinnen und Bürger mit Erstwohnsitz in Gronau sowie Mieterinnen, Mieter und Eigentümerinnen und Eigentümer von Immobilien in Gronau",
+      "Je Haushalt ist ein Antrag je Förderbereich möglich",
+      "Gefördert werden nur Anlagen, die ab dem 1. Januar 2026 angeschafft wurden; Installations- und Versandkosten zählen nicht mit",
+      "Die Anlage muss ausschließlich privat oder für Vereinszwecke genutzt werden; rein gewerblich genutzte Gebäude sind ausgeschlossen",
+      "Rechnung und ein Foto der Anlage sind spätestens vier Wochen nach dem Antrag einzureichen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // NEU AUFGENOMMEN 18.09.2026. Fonds-Seite und die verlinkte Förderrichtlinie
+    // (Stand 21.04.2026) im Volltext gelesen. Nr. 3 „Energie erzeugen": „Die Höhe
+    // des Zuschusses beträgt maximal 400 € und höchstens 60 % der
+    // Anschaffungskosten." Ratsbeschluss vom 25.03.2026, Bewilligungszeitraum
+    // 01.01.–31.12.2026, Teilbudget dieses Bereichs 25.000 €.
+    //
+    // PAUSIERT, NICHT BEENDET — und das ist der ganze Punkt dieses Eintrags:
+    // Der Fonds läuft 2026 mit 120.000 € weiter, die Antragstellung ist aber seit
+    // der Haushaltssperre vom 29.07.2026 für alle vier Förderbereiche gestoppt.
+    // Der Haupt- und Finanzausschuss hat die Sperre am 09.09.2026 als
+    // fortbestehend zur Kenntnis genommen. Ein Ende des Programms ist nirgends
+    // erklärt.
+    //
+    // EINE FALLE, DIE HIER ZWEIMAL ZUGESCHNAPPT IST: Unter den Bürgerservice-
+    // Leistungen steht eine ältere Seite zu „Förderbereich 3: Energie erzeugen",
+    // die unverändert „im Programmjahr 2024" und „200 € pro Modul für maximal
+    // zwei Module" nennt und die Wielandsteckdose verlangt. Beides gilt 2026
+    // nicht mehr. Wer nur diese Seite liest, schreibt einen überholten Satz ab
+    // und hält das Programm für beendet, weil dort kein Antragsformular mehr
+    // erscheint. Maßgeblich ist die Fonds-Seite oben samt Richtlinie.
+    //
+    // OHNE RECHENWERT, solange die Sperre gilt: `status: "pausiert"` hält den
+    // Abzug ohnehin an, die Sätze stehen als Auskunft da. Die Prozent- und
+    // Deckelfelder sind trotzdem gesetzt, damit bei einer Aufhebung nichts neu
+    // hergeleitet werden muss — sie greifen erst mit dem Status.
+    percentOfCost: 0.6, pvCap: 400,
+    balkonPercentOfCost: 0.6, balkonCap: 400,
+  },
+
+  "herzogenrath-klimaschutzinvestitionen": {
+    id: "herzogenrath-klimaschutzinvestitionen", name: "Förderrichtlinie für Klimaschutzinvestitionen",
+    traeger: "Stadt Herzogenrath", level: "kommune", region: "Herzogenrath",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05334016",
+    url: "https://www.herzogenrath.de/bauen-planen-umwelt/umwelt-und-klimaschutz/foerderrichtlinie-fuer-klimaschutzinvestitionen",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beginntIso: "2025-02-26",
+    eligibility: ["privat"],
+    coveredCosts: "Feste Beträge je Gebäude für Balkonkraftwerk, Wärmepumpe, Solarthermie und weitere Maßnahmen — für 2026 keine Mittel mehr",
+    maxFoerderung: "500 € je Gebäude für die Wärmepumpe",
+    rates: [
+      { label: "Balkonkraftwerk", value: "100 € je Gebäude", nur: ["balkon"] },
+      { label: "Wärmepumpe oder andere Heizung mit erneuerbarer Energie", value: "500 € je Gebäude", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Für 2026 ist bei neuen Anträgen nicht mehr mit einer Bewilligung zu rechnen; die Stadt ist in vorläufiger Haushaltsführung und die eingegangenen Anträge übersteigen die erwarteten Mittel",
+      "Die Maßnahme muss im Stadtgebiet Herzogenrath durchgeführt werden",
+      { text: "Mieterinnen und Mieter sind für das Balkonkraftwerk ausdrücklich antragsberechtigt", nur: ["balkon"] },
+      { text: "Gemietete oder geleaste Balkonkraftwerke sind ausgeschlossen; gefördert wird die Neuerrichtung", nur: ["balkon"] },
+      "Der vollständige Antrag ist binnen eines Jahres nach Fertigstellung und Schlussrechnung zu stellen — es gilt das Datum der Schlussrechnung",
+      { text: "Gefördert wird die Neuerrichtung einer Heizung mit erneuerbarer Energie zur primären Wärmeerzeugung — Wärmepumpen jeder Art, Geothermie, Biogas und Biomasse", nur: ["waermepumpe"] },
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon", "waermepumpe"],
+    // NEU AUFGENOMMEN 18.09.2026. Die Förderrichtlinie vom 26.02.2025 im
+    // Volltext gelesen: Nr. 5.2.5 „Neuerrichtung einer PV-Kleinstanlage an Wohn-
+    // und Gewerbebauten = 100 €", Nr. 5.2.2 „Errichtung von Heizungsanlagen mit
+    // regenerativer Energienutzung … (Stückholz, Scheitholz, Pellets und alle
+    // Arten von Wärmepumpen) = 500 €". Nr. 3.2 nennt Mieterinnen und Mieter für
+    // die PV-Kleinstanlage ausdrücklich als antragsberechtigt.
+    //
+    // KEINE DACHANLAGE: Gefördert werden nach Nr. 2.5 nur Anlagen „bis zur
+    // jeweils gültigen Bagatellgrenze" — also Steckersolar, nicht die Dach-PV.
+    // Deshalb steht „pv" nicht in `foerdert`, und deshalb entsteht hier auch
+    // keine Förder-Stadtseite.
+    //
+    // AUSGESCHÖPFT, NICHT EINGESTELLT: Die Programmseite sagt heute „Aufgrund
+    // der bereits sehr hohen Anzahl eingegangener Anträge ist für das Jahr 2026
+    // voraussichtlich nicht mehr mit einer positiven Förderentscheidung bei neu
+    // eingereichten Anträgen zu rechnen" und „derzeit keine neuen städtischen
+    // Fördermittel" — zugleich aber „Vorbehaltlich der Haushaltsberatungen …
+    // werden auch künftig Fördermittel zur Verfügung stehen". Das ist ein leerer
+    // Topf, kein beendetes Programm.
+    //
+    // NICHT ZU VERWECHSELN mit dem Programm der StädteRegion Aachen, das
+    // Herzogenrath ebenfalls abdeckt: anderer Träger, andere Sätze, und es ruht
+    // 2026 aus Haushaltsgründen. Die StädteRegion schließt einen Zuschuss neben
+    // dem einer ihrer Städte ohnehin aus.
+    balkonPauschale: 100,
+    wpPauschale: 500,
   },
   "bad-marienberg-erneuerbare-energien": {
     id: "bad-marienberg-erneuerbare-energien",

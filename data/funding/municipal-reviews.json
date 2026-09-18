@@ -3239,5 +3239,269 @@
     "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf"
    }
   ]
+ },
+ {
+  "regionId": "05334036",
+  "name": "Würselen",
+  "checkedAt": "2026-09-18T00:27:29Z",
+  "recheckAt": "2026-12-31T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "programme-geprueft",
+  "conclusion": "Die Stadt Würselen zahlt aus einer eigenen Richtlinie (Ratsbeschluss 22.08.2023) einen Zuschuss für Balkonkraftwerke: 100 € je PV-Modul, höchstens zwei Module je Anlage, also höchstens 200 €. Die Richtlinie ist unbefristet, Nr. 1 stellt sie unter den Vorbehalt der Haushaltsmittel des Antragsjahres; eine Meldung der Stadt vom 10.02.2026 nennt rund 35.000 € im Topf. Antragsberechtigt sind Privatpersonen ab 18 mit Wohnsitz in Würselen, Mieterinnen und Mieter wie Eigentümerinnen und Eigentümer. Der Kauf darf erst nach der Bewilligung erfolgen, die Anlage ist fünf Jahre zu halten, Doppelförderung ist ausgeschlossen. Als aktives Programm aufgenommen. Das Programm der StädteRegion Aachen, das Würselen ebenfalls abdeckt, ist ein anderes und ruht 2026.",
+  "searches": [
+   "wuerselen.de Fördermittelmanagement Balkonkraftwerk Richtlinie",
+   "serviceportal.wuerselen.de Zuwendung Balkonkraftwerke Antrag"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement",
+    "finding": "Abschnitt „Anschaffung eines Balkonkraftwerks“ mit Richtlinie, Antrag, Verwendungsnachweis und Online-Antrag im Serviceportal."
+   },
+   {
+    "url": "https://serviceportal.wuerselen.de/detail/-/vr-bis-detail/dokument/217324/download?_19_WAR_vrportlet_priv_r_p_action=vr-bis-detail-dienstleistung-show",
+    "finding": "Richtlinie Nr. 6: „Die Zuwendung wird für Investitionen in Form der Festbetragsfinanzierung von 100 Euro pro PV-Modul gewährt. Die Förderung ist auf maximal 2 PV-Module je Anlage beschränkt.“ Nr. 3: natürliche Personen ab 18 Jahre mit Wohnsitz in Würselen, Eigentümer*in oder Mieter*in. Nr. 4.5: Anschaffung zum Zeitpunkt der Bewilligung noch nicht getätigt. Nr. 5: Zweckbindung fünf Jahre. Nr. 11: Inkrafttreten ohne Geltungsdauer, Würselen 22.08.2023. Die Seiten 3 bis 6 sind gescannt und wurden als Bild gelesen."
+   }
+  ],
+  "sources": [
+   {
+    "url": "wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement",
+    "disposition": "reviewed",
+    "reason": "Die Seite führt die Bürgerförderungen der Stadt, darunter das Balkonkraftwerk; Richtlinie im Volltext gelesen.",
+    "evidenceUrl": "https://www.wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement"
+   },
+   {
+    "url": "wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement/abgeschlossene-foerdermassnahmen",
+    "disposition": "reviewed",
+    "reason": "Abgeschlossene Projekte der Stadt als Fördernehmerin (u. a. Stadtgarten) — keine Bürgerförderung.",
+    "evidenceUrl": "https://www.wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement"
+   },
+   {
+    "url": "wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement/efre-foerderungen",
+    "disposition": "reviewed",
+    "reason": "EFRE-Projekte der Stadt selbst, kein Zuschuss an Privathaushalte.",
+    "evidenceUrl": "https://www.wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement"
+   },
+   {
+    "url": "wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement/klimaschutz-und-mobilitaet",
+    "disposition": "reviewed",
+    "reason": "Fördermittel, die die Stadt für eigene Anlagen erhalten hat (progres.nrw und Gigawattpakt für PV auf Schuldächern) — keine Bürgerförderung.",
+    "evidenceUrl": "https://www.wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement"
+   },
+   {
+    "url": "wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement/sonstige-foerdermassnahmen",
+    "disposition": "reviewed",
+    "reason": "Weitere Projekte der Stadt als Fördernehmerin, kein Zuschuss an Privathaushalte.",
+    "evidenceUrl": "https://www.wuerselen.de/rathaus-service/finanzen/foerdermittelmanagement"
+   }
+  ]
+ },
+ {
+  "regionId": "05554020",
+  "name": "Gronau (Westf.)",
+  "checkedAt": "2026-09-18T00:27:29Z",
+  "recheckAt": "2026-12-31T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "programme-geprueft",
+  "conclusion": "Die Stadt Gronau führt den Klima- und Umweltfonds auch 2026 mit 120.000 € fort (Ratsbeschluss 25.03.2026). Förderbereich 3 „Energie erzeugen“ zahlt für Balkonkraftwerk, Dachanlage oder Solarthermie höchstens 400 € und höchstens 60 % der Anschaffungskosten; Teilbudget 25.000 €, Bewilligungszeitraum 01.01. bis 31.12.2026. Seit der Haushaltssperre vom 29.07.2026 ist die Antragstellung für alle vier Förderbereiche gestoppt; der Haupt- und Finanzausschuss hat die Sperre am 09.09.2026 als fortbestehend zur Kenntnis genommen. Als pausiertes Programm aufgenommen, ohne Abzug. ACHTUNG für spätere Läufe: Unter den Bürgerservice-Leistungen steht eine veraltete Seite zu Förderbereich 3, die unverändert das Programmjahr 2024 und 200 € je Modul für maximal zwei Module nennt — diese Konditionen gelten 2026 nicht mehr.",
+  "searches": [
+   "gronau.de Klima- und Umweltfonds Förderrichtlinie 2026",
+   "gronau.de Förderbereich Energie erzeugen Steckersolaranlage",
+   "gronau.de sitemap Förderrichtlinie"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.gronau.de/leben-in-gronau/klima-und-umweltschutz/klima-und-umweltfonds/",
+    "finding": "„Achtung: Es ist keine Antragstellung mehr möglich. Aufgrund der Haushaltssperre der Stadt Gronau ist für alle vier Förderbereiche eine Antragstellung nicht mehr möglich.“ und „Zu diesem Zweck stellt die Stadt Gronau auch im Programmjahr 2026 wieder den Klima- und Umweltfonds in Höhe von 120.000 Euro als Bürgerförderprogramm zur Verfügung.“"
+   },
+   {
+    "url": "https://www.gronau.de/leben-in-gronau/klima-und-umweltschutz/klima-und-umweltfonds/foerderrichtlinie-stand-21.04.2026.pdf?cid=2jua",
+    "finding": "Förderrichtlinie Stand 21.04.2026, Nr. 3 „Energie erzeugen“: „Die Höhe des Zuschusses beträgt maximal 400 € und höchstens 60 % der Anschaffungskosten.“ Teilbudget 25.000 €; Nr. 9: „Diese Richtlinie hat der Rat der Stadt Gronau in seiner Sitzung am 25.03.2026 beschlossen.“ Ausgeschlossen sind Geräte, die vor dem 01.01.2026 angeschafft wurden."
+   },
+   {
+    "url": "https://www.gronau.de/buergerservice/leistungen/NRW:entry:33820-VLR/foerderbereich-3-energie-erzeugen/",
+    "finding": "Veraltete Leistungsseite: nennt unverändert „im Programmjahr 2024“ und „200 € pro Modul für maximal zwei Module“; im gerenderten Browser erscheint kein Antragsformular."
+   },
+   {
+    "url": "https://www.gronau.de/leben-in-gronau/stadtplanung-und-stadtentwicklung/staedtebauliche-satzungen/fassadenprogramm-foerderrichtlinie",
+    "finding": "Fassadenprogramm: Zuschüsse zur Neugestaltung und Begrünung privater Hausfassaden in den Innenstadtbereichen — keine Energieerzeugung."
+   },
+   {
+    "url": "https://www.gronau.de/leben-in-gronau/stadtplanung-und-stadtentwicklung/foerderprogramm-leader",
+    "finding": "LEADER-Regionalbudget für Kleinprojekte der Regionalentwicklung, Bewertung über einen Punktebogen — keine Anlagenförderung für Haushalte."
+   }
+  ],
+  "sources": [
+   {
+    "url": "gronau.de/buergerservice/leistungen/NRW:entry:33820-VLR/foerderbereich-3-energie-erzeugen",
+    "disposition": "reviewed",
+    "reason": "Im Original gelesen; inhaltlich überholt, maßgeblich ist die Fonds-Seite mit der Richtlinie von 2026.",
+    "evidenceUrl": "https://www.gronau.de/buergerservice/leistungen/NRW:entry:33820-VLR/foerderbereich-3-energie-erzeugen/"
+   },
+   {
+    "url": "gronau.de/buergerservice/leistungen/NRW:entry:33814-VLR/foerderbereich-1-energie-sparen",
+    "disposition": "replaced",
+    "reason": "Förderbereich 1 (Austausch alter Haushaltsgeräte) ist in derselben Richtlinie geregelt, die hier im Volltext gelesen wurde; keine Energieerzeugung.",
+    "evidenceUrl": "https://www.gronau.de/leben-in-gronau/klima-und-umweltschutz/klima-und-umweltfonds/foerderrichtlinie-stand-21.04.2026.pdf?cid=2jua"
+   },
+   {
+    "url": "gronau.de/buergerservice/leistungen/NRW:entry:33823-VLR/foerderbereich-4-artenvielfalt-foerdern-kleinklima-verbessern",
+    "disposition": "replaced",
+    "reason": "Förderbereich 4 (Gründach, Fassadenbegrünung, Schottergärten) ist in derselben Richtlinie geregelt; keine Energieerzeugung.",
+    "evidenceUrl": "https://www.gronau.de/leben-in-gronau/klima-und-umweltschutz/klima-und-umweltfonds/foerderrichtlinie-stand-21.04.2026.pdf?cid=2jua"
+   },
+   {
+    "url": "gronau.de/leben-in-gronau/stadtplanung-und-stadtentwicklung/staedtebauliche-satzungen/fassadenprogramm-foerderrichtlinie",
+    "disposition": "reviewed",
+    "reason": "Städtebauliches Fassadenprogramm für das Erscheinungsbild von Hausfassaden; keine Solar- oder Heizungsförderung.",
+    "evidenceUrl": "https://www.gronau.de/leben-in-gronau/stadtplanung-und-stadtentwicklung/staedtebauliche-satzungen/fassadenprogramm-foerderrichtlinie"
+   },
+   {
+    "url": "gronau.de/leben-in-gronau/stadtplanung-und-stadtentwicklung/foerderprogramm-leader",
+    "disposition": "reviewed",
+    "reason": "EU-LEADER-Regionalbudget für Kleinprojekte, keine Anlagenförderung für Privathaushalte.",
+    "evidenceUrl": "https://www.gronau.de/leben-in-gronau/stadtplanung-und-stadtentwicklung/foerderprogramm-leader"
+   },
+   {
+    "url": "gronau.de/buergerservice/leistungen/NRW:entry:25729-VLR/zuschuss-zu-den-notwendigen-bestattungskosten",
+    "disposition": "reviewed",
+    "reason": "Sozialleistung zu Bestattungskosten; anderer Gegenstand, keine Energieförderung.",
+    "evidenceUrl": "https://www.gronau.de/leben-in-gronau/klima-und-umweltschutz/klima-und-umweltfonds/"
+   },
+   {
+    "url": "gronau.de/rathaus/ueber-gronau/internationale-beziehungen/foerderung",
+    "disposition": "reviewed",
+    "reason": "Förderung von Begegnungen im Rahmen der Städtepartnerschaften; anderer Gegenstand.",
+    "evidenceUrl": "https://www.gronau.de/leben-in-gronau/klima-und-umweltschutz/klima-und-umweltfonds/"
+   }
+  ]
+ },
+ {
+  "regionId": "05334016",
+  "name": "Herzogenrath",
+  "checkedAt": "2026-09-18T00:27:29Z",
+  "recheckAt": "2027-03-31T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "programme-geprueft",
+  "conclusion": "Die Stadt Herzogenrath hat eine Förderrichtlinie für Klimaschutzinvestitionen (in Kraft seit 26.02.2025). Sie zahlt je Gebäude 100 € für eine PV-Kleinstanlage (Balkonkraftwerk) und 500 € für eine Heizung mit erneuerbarer Energie, ausdrücklich einschließlich aller Arten von Wärmepumpen; Mieterinnen und Mieter sind für die PV-Kleinstanlage antragsberechtigt. Eine Dachanlage wird NICHT gefördert — Nr. 2.5 begrenzt auf Anlagen bis zur Bagatellgrenze. Die Programmseite weist heute aus, dass die Stadt in vorläufiger Haushaltsführung ist und für 2026 bei neuen Anträgen nicht mehr mit einer Bewilligung zu rechnen ist; künftig sollen wieder Mittel bereitstehen. Als ausgeschöpftes Programm aufgenommen, ohne Abzug.",
+  "searches": [
+   "herzogenrath.de Förderrichtlinie Klimaschutzinvestitionen",
+   "herzogenrath.de sitemap Förderrichtlinie 2025 PDF",
+   "herzogenrath.de kommunale Förderrichtlinie erweitert Balkonkraftwerke"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.herzogenrath.de/bauen-planen-umwelt/umwelt-und-klimaschutz/foerderrichtlinie-fuer-klimaschutzinvestitionen",
+    "finding": "„Aufgrund der bereits sehr hohen Anzahl eingegangener Anträge ist für das Jahr 2026 voraussichtlich nicht mehr mit einer positiven Förderentscheidung bei neu eingereichten Anträgen zu rechnen.“ und „Auch wenn derzeit keine neuen städtischen Fördermittel bereitgestellt werden können …“; zugleich „Vorbehaltlich der Haushaltsberatungen … werden auch künftig Fördermittel zur Verfügung stehen.“"
+   },
+   {
+    "url": "https://www.herzogenrath.de/bauen-planen-umwelt/umwelt-und-klimaschutz/foerderrichtlinie-fuer-klimaschutzinvestitionen/foerderrichtlinie-herzogenrath-2025.pdf?cid=u1h",
+    "finding": "Förderrichtlinie, Nr. 5.2.5 „Neuerrichtung einer PV-Kleinstanlage an Wohn- und Gewerbebauten = 100 €“, Nr. 5.2.2 „Errichtung von Heizungsanlagen mit regenerativer Energienutzung … (Stückholz, Scheitholz, Pellets und alle Arten von Wärmepumpen) = 500 €“, Nr. 2.5 Begrenzung auf die Bagatellgrenze und Ausschluss gemieteter Anlagen, Nr. 3.2 Mieterinnen und Mieter antragsberechtigt, Nr. 7 Inkrafttreten zum 26.02.2025."
+   }
+  ],
+  "sources": [
+   {
+    "url": "herzogenrath.de/bauen-planen-umwelt/umwelt-und-klimaschutz/foerderrichtlinie-fuer-klimaschutzinvestitionen",
+    "disposition": "reviewed",
+    "reason": "Programmseite und die aus der Sitemap ermittelte Richtlinie von 2025 im Volltext gelesen.",
+    "evidenceUrl": "https://www.herzogenrath.de/bauen-planen-umwelt/umwelt-und-klimaschutz/foerderrichtlinie-fuer-klimaschutzinvestitionen"
+   }
+  ]
+ },
+ {
+  "regionId": "05382060",
+  "name": "Siegburg",
+  "checkedAt": "2026-09-18T00:27:29Z",
+  "recheckAt": "2026-12-17T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "keine-passende-foerderung",
+  "conclusion": "Die einzige Bürgerförderung der Kreisstadt Siegburg im Umwelt- und Klimabereich ist „BürgerGrün“ — eine Prämie als Siegburg-Gutschein für Balkon- und Gartenbegrünung sowie Grünflächenpatenschaften. Weder Photovoltaik noch Balkonkraftwerk, Speicher oder Wärmepumpe werden bezuschusst. Die beiden weiteren erfassten Seiten betreffen die Finanzierung von Kindertageseinrichtungen und ein Feedback-Formular.",
+  "searches": [
+   "siegburg.de Klimaschutz Förderung Photovoltaik Balkonkraftwerk",
+   "siegburg.de BürgerGrün Förderrichtlinie"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.siegburg.de/umwelt-klimaschutz/klimaschutz-klimanpassung/buergergruen/buergergruen-foerderantrag",
+    "finding": "„Balkonbegrünungen oder Gartenbegrünungen mit Pflanzen bzw. Kriterien aus der von der Stadt veröffentlichten Liste“ — die Förderung betrifft Begrünung, nicht Energieerzeugung; im Erfolgsfall gibt es einen SiegburgGutschein."
+   }
+  ],
+  "sources": [
+   {
+    "url": "siegburg.de/umwelt-klimaschutz/klimaschutz-klimanpassung/buergergruen/buergergruen-foerderantrag",
+    "disposition": "reviewed",
+    "reason": "Im Original gelesen: Begrünungsprämie, keine Energieförderung.",
+    "evidenceUrl": "https://www.siegburg.de/umwelt-klimaschutz/klimaschutz-klimanpassung/buergergruen/buergergruen-foerderantrag"
+   },
+   {
+    "url": "siegburg.de/buergerservice-views/leistungen/NRW:entry:41440-VLR/betriebs-und-investitionskostenfoerderung-fuer-kindertageseinrichtungen",
+    "disposition": "reviewed",
+    "reason": "Betriebs- und Investitionskosten von Kindertageseinrichtungen; anderer Gegenstand, keine Haushaltsförderung für Energieanlagen.",
+    "evidenceUrl": "https://www.siegburg.de/umwelt-klimaschutz/klimaschutz-klimanpassung/buergergruen/buergergruen-foerderantrag"
+   },
+   {
+    "url": "siegburg.de/feedback",
+    "disposition": "reviewed",
+    "reason": "Allgemeines Feedback-Formular der Website, kein Förderangebot.",
+    "evidenceUrl": "https://www.siegburg.de/umwelt-klimaschutz/klimaschutz-klimanpassung/buergergruen/buergergruen-foerderantrag"
+   }
+  ]
+ },
+ {
+  "regionId": "05570",
+  "name": "Kreis Warendorf",
+  "checkedAt": "2026-09-18T00:27:29Z",
+  "recheckAt": "2026-12-17T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "keine-passende-foerderung",
+  "conclusion": "Die Förderseite des Kreises Warendorf verweist ausschließlich auf fremde Förderdatenbanken — Fördernavi der NRW.Energy4Climate, Förderdatenbank des Bundes, ALTBAUNEU, KfW, BAFA und progres.NRW — sowie auf Energieberatung und den Stromspar-Check. Ein eigenes Kreisprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe gibt es dort nicht.",
+  "searches": [
+   "kreis-warendorf.de Energie Klimaschutz Förderungen",
+   "kreis-warendorf Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.kreis-warendorf.de/unsere-themen/umwelt/energie-und-klimaschutz/foerderungen",
+    "finding": "„Die Fördermöglichkeiten sind groß und häufig recht komplex. Unternehmen und Privatpersonen können sich auf folgenden Seiten einen Überblick über Förder- und Finanzierungsmöglichkeiten verschaffen“ — es folgen ausschließlich Verweise auf Fördernavi, Förderdatenbank des Bundes, ALTBAUNEU, KfW, BAFA und progres.NRW."
+   }
+  ],
+  "sources": [
+   {
+    "url": "kreis-warendorf.de/unsere-themen/umwelt/energie-und-klimaschutz/foerderungen",
+    "disposition": "reviewed",
+    "reason": "Im Original gelesen: reine Verweisseite auf Bundes- und Landesprogramme, kein eigenes Kreisprogramm.",
+    "evidenceUrl": "https://www.kreis-warendorf.de/unsere-themen/umwelt/energie-und-klimaschutz/foerderungen"
+   }
+  ]
+ },
+ {
+  "regionId": "07231",
+  "name": "Landkreis Bernkastel-Wittlich",
+  "checkedAt": "2026-09-18T00:27:29Z",
+  "recheckAt": "2027-03-31T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "programme-geprueft",
+  "conclusion": "Das Förderprogramm „Balkonkraftwerke für Privathaushalte“ des Landkreises ist geschlossen: Die Antragstellung war nach Nr. 4 der Richtlinie nur vom 01.04.2024 bis zum 01.04.2026 möglich, die Programmseite sagt heute, eine Beantragung sei nicht mehr möglich. Gezahlt wurden pauschal 150 € je Haushalt, Budget 200.000 €. Der Katalogeintrag stimmt mit dem Original überein; ergänzt wurden zwei Bedingungen, die nur in der Richtlinie stehen — fünf Jahre Haltedauer samt Ausschluss der Einspeisevergütung und der wechselseitige Ausschluss mit dem Programm der Stadt Wittlich.",
+  "searches": [
+   "bernkastel-wittlich.de Förderprogramm Balkonkraftwerke Richtlinie",
+   "Landkreis Bernkastel-Wittlich Balkonkraftwerk Zuschuss 150 Euro"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.bernkastel-wittlich.de/landkreis/kreisentwicklung/klimaschutzmanagement/foerderprogramm-balkonkraftwerke",
+    "finding": "„Eine Beantragung der Fördermittel für private Balkonkraftwerke ist nicht mehr möglich.“ und „Je Haushalt wird maximal ein Balkonkraftwerk mit einem Pauschalbetrag von 150 € gefördert.“; Budget „200.000 €“, also rechnerisch 1.333 Anlagen."
+   },
+   {
+    "url": "https://www.bernkastel-wittlich.de/landkreis/kreisentwicklung/klimaschutzmanagement/foerderprogramm-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke-fuer-privathaushalte-lk-bks-wil-version-3.pdf?cid=411",
+    "finding": "Förderrichtlinie Version 3 (Stand 14.01.2025), Nr. 4: „Die Antragstellung ist ausschließlich für Privatpersonen im Zeitraum vom 01.04.2024 bis zum 01.04.2026 möglich.“ Nr. 5: „Die Förderhöhe für Balkonkraftwerke beträgt pauschal 150 €.“ Nr. 8: Haltedauer von fünf Jahren im Fördergebiet. Nr. 4: keine EEG-Vergütung für den erzeugten Strom. Nr. 9: Doppelförderung mit der Stadt Wittlich unzulässig."
+   }
+  ],
+  "sources": [
+   {
+    "url": "bernkastel-wittlich.de/landkreis/kreisentwicklung/klimaschutzmanagement/foerderprogramm-balkonkraftwerke",
+    "disposition": "reviewed",
+    "reason": "Programmseite und verlinkte Richtlinie im Volltext gelesen; Katalogeintrag bestätigt und um zwei Bedingungen ergänzt.",
+    "evidenceUrl": "https://www.bernkastel-wittlich.de/landkreis/kreisentwicklung/klimaschutzmanagement/foerderprogramm-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke-fuer-privathaushalte-lk-bks-wil-version-3.pdf?cid=411"
+   }
+  ]
  }
 ]
