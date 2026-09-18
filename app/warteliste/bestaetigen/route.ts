@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
     ]);
   }
   return wartelisteErgebnis(PFAD, "Du stehst auf der Warteliste", [
-    "Sobald der Angebotscheck für Photovoltaik und Wärmepumpe startet, schreiben wir dir genau einmal. Kein Newsletter.",
+    "Sobald der Angebotscheck für Photovoltaik und Wärmepumpe startet, schreiben wir dir. Darüber hinaus schreiben wir dir nicht, kein Newsletter.",
     "Austragen kannst du dich jederzeit über den Link in der Bestätigungsmail.",
   ]);
 }

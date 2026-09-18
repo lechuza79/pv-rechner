@@ -18,7 +18,12 @@ export const WARTELISTE_SQL = `
     -- The one promised message ("Nachricht zum Start").
     letzte_mail_am timestamptz
   );
-  CREATE UNIQUE INDEX IF NOT EXISTS idx_warteliste_liste_email ON public.warteliste (liste, email);
+  -- One ACTIVE entry per list and address. Unsubscribed rows stay as proof of
+  -- consent and are excluded, so signing up again creates a new row instead of
+  -- overwriting the proof (legal review 18.09.).
+  DROP INDEX IF EXISTS public.idx_warteliste_liste_email;
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_warteliste_liste_email_aktiv
+    ON public.warteliste (liste, email) WHERE status <> 'abgemeldet';
   CREATE INDEX IF NOT EXISTS idx_warteliste_status ON public.warteliste (status, erstellt_am);
 
   ALTER TABLE public.warteliste ENABLE ROW LEVEL SECURITY;

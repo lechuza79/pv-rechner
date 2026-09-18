@@ -15,13 +15,13 @@ export function wartelisteBestaetigungsMail(o: {
     <p style="margin:0 0 14px;font-size:${T.titel};font-weight:800;line-height:1.25;color:${C.text};letter-spacing:-0.02em">Noch ein Klick</p>
     <p style="margin:0 0 14px">
       Du möchtest Bescheid bekommen, sobald der ${escapeHtml(titel)} auf solar-check.io startet.
-      Bestätige das bitte einmal. Danach schreiben wir dir genau einmal: zum Start. Kein Newsletter.
+      Bestätige das bitte einmal. Danach schreiben wir dir nur noch zum Start. Kein Newsletter.
     </p>
     ${knopf(o.bestaetigenUrl, "Ja, auf die Warteliste")}
     <p style="margin:0 0 8px;font-size:${T.fuss};color:${C.leise}">Der Link gilt 48 Stunden.</p>
     <p style="margin:0 0 8px;font-size:${T.fuss};color:${C.leise}">
       Wenn du das nicht warst, ist nichts passiert: Ohne diesen Klick verschicken wir nichts,
-      und die Eintragung wird nach kurzer Zeit von selbst gelöscht.
+      und die Eintragung wird nach sieben Tagen von selbst gelöscht.
     </p>
     <p style="margin:0;font-size:${T.fuss};color:${C.leise}">
       Doch kein Interesse mehr? <a href="${o.abmeldeUrl}" style="color:${C.leise}">Hier austragen</a>, jederzeit, auch nach der Bestätigung.
@@ -40,7 +40,7 @@ export function wartelisteBestaetigungsMail(o: {
     `Bitte bestätige das einmal:`,
     o.bestaetigenUrl,
     ``,
-    `Danach schreiben wir dir genau einmal: zum Start. Kein Newsletter.`,
+    `Danach schreiben wir dir nur noch zum Start. Kein Newsletter.`,
     `Der Link gilt 48 Stunden. Wenn du das nicht warst, ist nichts passiert.`,
     ``,
     `Austragen: ${o.abmeldeUrl}`,

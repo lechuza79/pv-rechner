@@ -6,10 +6,11 @@ import "server-only";
 // NOT stored in that table: a waitlist has no town, promises exactly ONE
 // message (the launch), and its entries must never reach the town send run.
 // Same rules otherwise, and for the same reasons:
-//   - one entry per list and address (unique index); signing up again resends
-//     the confirmation instead of adding a row,
+//   - one ACTIVE entry per list and address (partial unique index); signing
+//     up again resends the confirmation instead of adding a row,
 //   - a confirmed entry never gets a second confirmation mail,
-//   - an unsubscribed entry needs a NEW confirmation,
+//   - an unsubscribed entry is never revived: it stays as proof of consent,
+//     and a new signup gets a new row and a NEW confirmation,
 //   - the answer to the outside is always the same (no lookup service).
 
 import { supabase } from "./supabase-server";
@@ -62,7 +63,13 @@ export async function wartelisteEintragen(o: {
   const email = normalisiereEmail(o.email);
 
   const { data: vorhanden } = await withDbTimeout(
-    supabase.from("warteliste").select(SPALTEN).eq("liste", o.liste).eq("email", email).maybeSingle(),
+    supabase
+      .from("warteliste")
+      .select(SPALTEN)
+      .eq("liste", o.liste)
+      .eq("email", email)
+      .neq("status", "abgemeldet")
+      .maybeSingle(),
     "warteliste-lesen",
     DB_READ_TIMEOUT_MS,
   );
@@ -80,8 +87,6 @@ export async function wartelisteEintragen(o: {
         .update({
           status: "ausstehend",
           erstellt_am: o.jetztIso,
-          bestaetigt_am: null,
-          abgemeldet_am: null,
           einwilligung_version: o.einwilligungVersion,
           versand_beleg: null,
         })

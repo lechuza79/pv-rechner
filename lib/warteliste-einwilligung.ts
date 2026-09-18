@@ -41,6 +41,17 @@ export const WARTELISTE_FASSUNGEN: WartelisteFassung[] = [
     zusage:
       "Mit der Anmeldung erhältst du eine Bestätigungsmail und nach deiner Bestätigung eine Nachricht zum Start. Kein Newsletter.",
   },
+  {
+    // Legal review 18.09.: the withdrawal hint belongs next to the consent
+    // itself (Art. 7 Abs. 3 S. 3 DSGVO), not only in the later mail.
+    version: "offer-check-v2",
+    liste: "angebotscheck",
+    seit: "2026-09-18",
+    einleitung:
+      "Prüfe künftig dein Photovoltaik- oder Wärmepumpen-Angebot: Passen Preis, Auslegung und Leistungen? Trag dich ein – wir sagen Bescheid, sobald er startet.",
+    zusage:
+      "Mit der Anmeldung erhältst du eine Bestätigungsmail und nach deiner Bestätigung eine Nachricht zum Start. Kein Newsletter, austragen jederzeit.",
+  },
 ];
 
 /** Look up a stored or submitted version; unknown → null. */

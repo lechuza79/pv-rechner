@@ -938,7 +938,10 @@ export default function DatenschutzPage() {
           E-Mail. Nach deiner Bestätigung schreiben wir dir{" "}
           <strong>eine Nachricht, wenn die Funktion startet</strong> — keinen
           Newsletter. Rechtsgrundlage ist deine <strong>Einwilligung</strong>{" "}
-          (Art. 6 Abs. 1 lit. a DSGVO).
+          (Art. 6 Abs. 1 lit. a DSGVO). Nach der Nachricht zum Start nehmen wir
+          dich von der Liste; danach gilt für den Nachweis dieselbe Frist wie
+          nach einer Austragung. Startet die Funktion nicht, schreiben wir dir
+          das und löschen die Liste.
         </p>
         <p style={S.p}>
           <strong>Du kannst dich jederzeit austragen</strong> — über den Link in
@@ -956,9 +959,17 @@ export default function DatenschutzPage() {
           Abs. 1 lit. c in Verbindung mit Art. 5 Abs. 2 und Art. 7 Abs. 1 sowie
           lit. f DSGVO). Gelöscht werden sie zum 31. Dezember des dritten Jahres
           nach dem Jahr, in dem wir dir zuletzt geschrieben haben; hast du nie
-          bestätigt, sofort. Deine IP-Adresse speichern wir nicht an der
-          Eintragung; für die Abwehr automatisierter Eintragungen gilt dasselbe
-          wie in Abschnitt 16 beschrieben.
+          bestätigt, beim nächsten täglichen Aufräumen.
+        </p>
+        <p style={S.p}>
+          <strong>Deine IP-Adresse speichern wir nicht an der Eintragung.</strong>{" "}
+          Beim Absenden hält unser Server sie kurz im Arbeitsspeicher, um
+          automatisierte Masseneintragungen abzuwehren (bis zu fünf Versuche je
+          Stunde und Serverinstanz); sie wird nicht in die Datenbank übernommen.
+          Rechtsgrundlage ist unser berechtigtes Interesse an einem vor
+          automatisierten Eintragungen geschützten Formular (Art. 6 Abs. 1
+          lit. f DSGVO); du kannst dieser Verarbeitung nach Art. 21 DSGVO
+          widersprechen.
         </p>
         <p style={S.p}>
           Versand und Speicherung laufen über dieselben Dienste wie bei den

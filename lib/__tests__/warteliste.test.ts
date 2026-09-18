@@ -69,7 +69,7 @@ describe("Waitlist confirmation mail", () => {
   });
 
   it("promises one launch message and no newsletter, and offers a way out", () => {
-    expect(m.text).toMatch(/genau einmal/);
+    expect(m.text).toMatch(/nur noch zum Start/);
     expect(m.text).toMatch(/Kein Newsletter/);
     expect(m.html).toContain("/warteliste/abmelden");
   });
