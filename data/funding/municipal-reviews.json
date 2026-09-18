@@ -17703,5 +17703,1178 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "07233003",
+    "name": "Beinhausen",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Beinhausen gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233010",
+    "name": "Boxberg",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Boxberg gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233032",
+    "name": "Hörschhausen",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hörschhausen gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233037",
+    "name": "Katzwinkel",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Katzwinkel gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233048",
+    "name": "Neichen",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neichen gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233201",
+    "name": "Arbach",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Arbach gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233202",
+    "name": "Bereborn",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bereborn gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233203",
+    "name": "Berenbach",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Berenbach gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233206",
+    "name": "Bongard",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bongard gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233207",
+    "name": "Borler",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Borler gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233208",
+    "name": "Brücktal",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Brücktal gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233210",
+    "name": "Drees",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Drees gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233212",
+    "name": "Gelenberg",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gelenberg gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233216",
+    "name": "Horperath",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Horperath gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233220",
+    "name": "Kirsbach",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kirsbach gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233222",
+    "name": "Kolverath",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kolverath gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233226",
+    "name": "Mosbruch",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mosbruch gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233228",
+    "name": "Nitz",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nitz gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233230",
+    "name": "Oberelz",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oberelz gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233233",
+    "name": "Reimerath",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Reimerath gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233234",
+    "name": "Retterath",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Retterath gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233243",
+    "name": "Ueß",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ueß gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "07233244",
+    "name": "Welcherath",
+    "checkedAt": "2026-09-18T16:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Welcherath gehört zur Verbandsgemeinde Kelberg (Landkreis Vulkaneifel). Die VG führt als Förderprogramme nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); ihre Klimaschutzseiten betreffen nur kommunale Projekte. Der Katalog führt kein Programm des Landkreises Vulkaneifel für private Energieanlagen. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vgv-kelberg.de Sitemap (703 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss durchsucht",
+      "Gelesen: Satzungen und Förderprogramme, Richtlinie Vitalisierung, Förderprogramm Mannebach 2022, Nationale Klimaschutzinitiative",
+      "Katalog nach Programmen des Landkreises Vulkaneifel (07233) durchsucht: keines",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Eifel Ortsgemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/kommunales-foerderprogramm.pdf?cid=dys",
+        "finding": "Kommunales Förderprogramm „Vitalisierung“: Sanierung von Bauten vor 1985 mit Leerstand ≥ 1 Jahr und Eigentumswechsel zur Wiederverwendung als Wohnraum; Zuschuss 3.000 € VG + 3.000 € OG (+1.500 €). Keine Energietechnik als Fördergegenstand."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/dateien/dokument/foerderprogramm-mannebach-fassung-2022-neu.pdf?cid=aav",
+        "finding": "Förderprogramm Mannebach (Fassung 2022): Zuschüsse für junge Familien und Schülerbeförderung, nur Ortsgemeinde Mannebach; keine Energieförderung."
+      },
+      {
+        "url": "https://www.vgv-kelberg.de/sitemap.xml",
+        "finding": "703 Adressen; unter Klima/Energie nur die Nationale Klimaschutzinitiative mit kommunalen Projekten (LED-Umrüstung OG Kelberg, Potenzialstudien Kläranlage/Trinkwasser); kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "finding": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "finding": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Satzungen und Förderprogramme“ der VG Kelberg: Förderprogramme sind nur „Vitalisierung“ (Sanierung leerstehender Altbauten zu Wohnraum, 3.000 € VG + 3.000 € OG) und das Ortsprogramm Mannebach (junge Familien, Schülerbeförderung); kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme"
+      },
+      {
+        "url": "vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden",
+        "disposition": "reviewed",
+        "reason": "Unterseite mit Flächennutzungsplan, Bebauungsplänen und Ortssatzungen; Bauleitplanung, keine Förderung.",
+        "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
+      }
+    ]
   }
 ]

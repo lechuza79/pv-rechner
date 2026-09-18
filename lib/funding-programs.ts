@@ -333,6 +333,20 @@ export interface FundingProgram {
    * 05.09.2026; der Mindestleistungs-Test kannte nur `pvMin`.
    */
   pvNurMitSpeicher?: boolean;
+  /**
+   * Ausschlussgrenze der Dachanlage in kWp: LIEGT die Anlage darüber, zahlt das
+   * Programm für den PV-Teil gar nichts — nicht bloß bis zur Grenze.
+   *
+   * WARUM ES DAS GIBT (18.09.2026): Neustadt (Wied) fördert bis 15 kWp und
+   * schließt Anlagen „größer als 30 kWp" ganz aus. Ein Deckel (`pvCap`) sagt
+   * „höchstens so viel", eine Ausschlussgrenze „ab hier nichts" — der Rechner
+   * erlaubt bis 50 kWp, und ohne dieses Feld hätte er einer 35-kWp-Anlage den
+   * vollen Höchstbetrag abgezogen. Wirkt nur in die sichere Richtung.
+   * Ausschließend gemeint: `pvMax: 30` zahlt bei genau 30 kWp noch.
+   */
+  pvMax?: number;
+  /** Dasselbe für den Speicher in kWh nutzbarer Kapazität — darüber kein Speicherzuschuss. */
+  speicherMax?: number;
 
   // ── Technik ──────────────────────────────────────────────────────────────────
   /**
@@ -6435,6 +6449,54 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Bedingungen.
   },
 
+  "neustadt-wied-pv-speicher": {
+    id: "neustadt-wied-pv-speicher", name: "PV-Förderprogramm der Ortsgemeinde Neustadt (Wied)",
+    traeger: "Ortsgemeinde Neustadt (Wied)", level: "kommune", region: "Neustadt (Wied)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07138044",
+    url: "https://www.vg-asbach.de/klima-umweltschutz/foerderungen/pv-foerderprogramm-der-ortsgemeinde-neustadt-wied/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2025-12-18", endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp und je kWh Speicher — Dachanlage nur zusammen mit einem Speicher",
+    maxFoerderung: "max. 1.500 € für die Anlage und 1.950 € für den Speicher",
+    rates: [
+      { label: "PV-Anlage mit Speicher", value: "100 €/kWp, max. 1.500 €" },
+      { label: "Batteriespeicher", value: "130 €/kWh nutzbare Kapazität, max. 1.950 €" },
+    ],
+    conditions: [
+      "Die Dachanlage wird nur zusammen mit einem Batteriespeicher gefördert, der zugleich errichtet, erweitert oder nachgerüstet wird",
+      "Gefördert werden höchstens 15 kWp und 15 kWh; Anlagen bis 30 kWp bzw. Speicher bis 30 kWh erhalten den Höchstbetrag, größere gar nichts",
+      "Leistung, die die Ortsgemeinde schon früher gefördert hat, wird auf die Grenzen von 15 kWp und 15 kWh angerechnet — gefördert wird dann nur noch der Rest",
+      "Gefördert werden nur Neuanlagen an Gebäuden, die überwiegend (mindestens 51 % der Fläche) dem Wohnen dienen",
+      "Antragsberechtigt sind natürliche Personen, die Eigentümer oder Erbbauberechtigte eines selbst genutzten Wohnhauses oder einer Wohnung in Neustadt (Wied) sind, mit erstem Wohnsitz dort — wer dort neu baut, weist den Wohnsitz bis zum Mittelabruf nach",
+      "Die Anlage muss vollständig von einem Fachunternehmen installiert und im Marktstammdatenregister registriert werden",
+      "Der Antrag wird nach Montage und Inbetriebnahme gestellt, mit Rechnung, Fachunternehmererklärung und Fotos",
+      "Auch der Speicher eines Balkonkraftwerks wird gefördert — das Balkonkraftwerk selbst nicht",
+      "Antragstellung bis 31. Dezember 2026, in der Reihenfolge des Eingangs, solange Haushaltsmittel da sind",
+      "Die Anlage muss fünf Jahre in der Ortsgemeinde betrieben werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    pvPerKwp: 100, pvCap: 1500, pvMax: 30, pvNurMitSpeicher: true,
+    speicherPerKwh: 130, speicherCap: 1950, speicherMax: 30,
+    // RICHTLINIE IM VOLLTEXT GELESEN am 18.09.2026: „PV-Förderrichtlinie der
+    // Ortsgemeinde Neustadt (Wied); 6. Förderperiode 2026 (nach Ratsbeschluss am
+    // 18.12.2025)", unterzeichnet 08.01.2026, in Kraft 01.01.2026, gültig
+    // „spätestens bis zum 31.12.2026". Nr. 4.2: „für PV Anlagen bis 15 kWp
+    // 100 €/kWp; max. 1.500 €, für Batteriespeicher bis 15 kWh nutzbare
+    // Speicherkapazität 130 €/kWh; max. 1.950 €". Nr. 2.2: PV „nur in Verbindung
+    // mit einem Batteriespeicher". Nr. 2.4: über 30 kWp bzw. 30 kWh „von der
+    // Förderung ausgeschlossen" — deshalb `pvMax`/`speicherMax`, nicht nur der
+    // Deckel. Nr. 3.1: Eigentümer oder Erbbauberechtigte selbst genutzter
+    // Wohnhäuser/Wohnungen; die Erwähnung von „Mieter" in Nr. 3.4 betrifft nur die
+    // Personengleichheit und erweitert den Kreis nach Nr. 3.1 nicht.
+    //
+    // Gefunden am 18.09.2026 beim Prüfen des Asbacher Balkonprogramms: dieselbe
+    // Verbandsgemeinde-Seite führt eigene Rubriken der Ortsgemeinden.
+    // `pvNurMitSpeicher` greift beim Speicher nicht zurück: Ein Speicher ohne neue
+    // PV-Anlage ist nach Nr. 2.1 ausdrücklich förderfähig.
+  },
+
   "asbach-balkonkraftwerke": {
     id: "asbach-balkonkraftwerke", name: "PV-Förderprogramm der Ortsgemeinde Asbach",
     traeger: "Ortsgemeinde Asbach", level: "kommune", region: "Asbach",
@@ -9244,7 +9306,11 @@ export function fundingAmount(
   // der Betrag ist bekannt und null.
   const unterMindestleistung =
     (f.pvMin !== undefined && anlage.kwp < f.pvMin) ||
-    (f.pvNurMitSpeicher === true && !(anlage.speicherKwh > 0));
+    (f.pvMax !== undefined && anlage.kwp > f.pvMax) ||
+    // A storage above `speicherMax` is excluded, so it cannot carry a
+    // "PV only together with storage" condition either (safe direction).
+    (f.pvNurMitSpeicher === true &&
+      (!(anlage.speicherKwh > 0) || (f.speicherMax !== undefined && anlage.speicherKwh > f.speicherMax)));
 
   if (f.percentOfCost) {
     if (unterMindestleistung) return { total: 0, computable: true, active };
@@ -9268,7 +9334,9 @@ export function fundingAmount(
   }
   let sp = 0;
   const speicherKwh = anlage.speicherKwh;
-  if (f.speicherPerKwh && speicherKwh >= (f.speicherMin ?? 0) && speicherKwh > 0) {
+  if (f.speicherMax !== undefined && speicherKwh > f.speicherMax) {
+    sp = 0;
+  } else if (f.speicherPerKwh && speicherKwh >= (f.speicherMin ?? 0) && speicherKwh > 0) {
     if (f.speicherSockel !== undefined) {
       // Sockel plus Satz: Der Satz greift erst OBERHALB der Mindestkapazität,
       // und gezählt werden volle kWh. Beides steht so in den Richtlinien dieser

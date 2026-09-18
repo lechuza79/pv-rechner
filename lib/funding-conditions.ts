@@ -262,6 +262,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 18 Sep 2026: guideline read in full; building age (25 years) and the
   // 15,000 EUR total-cost floor have no test form and no model field.
   "vg-wallmerod-lange-leben-im-dorf",
+  // Added 18 Sep 2026: guideline read in full; owner-only eligibility, crediting of
+  // previously funded capacity and the commissioning-before-application order
+  // have no test form yet.
+  "neustadt-wied-pv-speicher",
 ];
 
 /**

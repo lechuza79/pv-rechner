@@ -375,6 +375,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "aulendorf", name: "Aulendorf", ags: "08436008", kreis: "Landkreis Ravensburg", bundesland: "Baden-Württemberg", yieldKwhKwp: 1129 },
   { slug: "amstetten", name: "Amstetten", ags: "08425008", kreis: "Alb-Donau-Kreis", bundesland: "Baden-Württemberg", yieldKwhKwp: 1080 },
   { slug: "neustadt-westerwald", name: "Neustadt (Westerwald)", ags: "07143272", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1042 },
+  { slug: "neustadt-wied", name: "Neustadt (Wied)", ags: "07138044", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1006 },
   { slug: "windhagen", name: "Windhagen", ags: "07138077", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1001 },
   { slug: "koenigswinter", name: "Königswinter", ags: "05382024", kreis: "Rhein-Sieg-Kreis", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 994 },
   { slug: "kronberg-taunus", name: "Kronberg im Taunus", ags: "06434006", kreis: "Hochtaunuskreis", bundesland: "Hessen", yieldKwhKwp: 1089 },
