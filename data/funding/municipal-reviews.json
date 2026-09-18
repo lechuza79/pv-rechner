@@ -7222,5 +7222,1931 @@
         "evidenceUrl": "https://www.luetzow-luebstorf.de/contact/index/link"
       }
     ]
+  },
+  {
+    "regionId": "13071003",
+    "name": "Altenhof",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Altenhof gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071013",
+    "name": "Bollewick",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bollewick gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071023",
+    "name": "Bütow",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bütow gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071034",
+    "name": "Fincken",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Fincken gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071045",
+    "name": "Gotthun",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gotthun gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071087",
+    "name": "Lärz",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lärz gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071088",
+    "name": "Leizen",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Leizen gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071097",
+    "name": "Melz",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Melz gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071118",
+    "name": "Priborn",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Priborn gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071122",
+    "name": "Rechlin",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rechlin gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071133",
+    "name": "Schwarz",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwarz gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071137",
+    "name": "Sietow",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sietow gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071143",
+    "name": "Stuer",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Stuer gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13071176",
+    "name": "Südmüritz",
+    "checkedAt": "2026-09-18T06:31:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Südmüritz gehört zum Amt Röbel-Müritz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet Förderung für das Regionalmanagement, die Suche nach einer Förderrichtlinie führt nur zu einem geförderten Nahwärmenetz der Gemeinde Bollewick. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-roebel-mueritz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderrichtlinie",
+      "Landkreis Mecklenburgische Seenplatte Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-roebel-mueritz.de/texte/seite.php?id=341996",
+        "finding": "Einziger Treffer der Amtssuche zu „Förderrichtlinie“: Nahwärmenetz der Gemeinde Bollewick aus der Klimaschutz-Förderrichtlinie-Unternehmen gefördert — Förderung an die Gemeinde, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Lärz-Krümmel, Agri-PV Neukrug Eldetal); Solar nur Gemeindeporträts; Zuschuss nur Formulare und Wohngeld."
+      },
+      {
+        "url": "https://lk-mecklenburgische-seenplatte.de/Angebote/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?object=tx,2761.2.1&ModID=10&FID=2761.3046.1&NavID=2761.8&La=1&ort=2761.21",
+        "finding": "Der Landkreis verweist für Balkonkraftwerke auf den Zuschuss des Landes (LFI M-V); ein eigenes Kreisprogramm wurde in der Websuche nicht gefunden."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "finding": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "finding": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-roebel-mueritz.de/contact/index/link",
+        "finding": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderung des Regionalmanagements Mecklenburgische Seenplatte aus der Gemeinschaftsaufgabe (GRWI-20-0082) — Förderung an das Amt, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Seite, im Original gelesen: identischer Inhalt (Regionalmanagement) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/seite/404594/f%C3%B6rderungen-durch-die-europ%C3%A4ische-union-(eu).html?modus=drucken"
+      },
+      {
+        "url": "amt-roebel-mueritz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Die Adresse liefert die Fehlerseite des Amtes („Die Seite wurde nicht gefunden“, HTTP 404); toter Kontakt-Link ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-roebel-mueritz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13076002",
+    "name": "Alt Zachun",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Alt Zachun gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076004",
+    "name": "Bandenitz",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bandenitz gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076008",
+    "name": "Belsch",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Belsch gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076013",
+    "name": "Bobzin",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bobzin gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076019",
+    "name": "Bresegard bei Picher",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bresegard bei Picher gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076041",
+    "name": "Gammelin",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gammelin gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076057",
+    "name": "Groß Krams",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Krams gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076064",
+    "name": "Hoort",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hoort gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076065",
+    "name": "Hülseburg",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hülseburg gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076070",
+    "name": "Kirch Jesar",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kirch Jesar gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076079",
+    "name": "Kuhstorf",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kuhstorf gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076099",
+    "name": "Moraas",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Moraas gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076110",
+    "name": "Pätow-Steegen",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Pätow-Steegen gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076111",
+    "name": "Picher",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Picher gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076116",
+    "name": "Pritzier",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Pritzier gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076119",
+    "name": "Redefin",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Redefin gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076123",
+    "name": "Setzin",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Setzin gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076131",
+    "name": "Strohkirchen",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Strohkirchen gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076145",
+    "name": "Warlitz",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Warlitz gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "13076169",
+    "name": "Toddin",
+    "checkedAt": "2026-09-18T06:35:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Toddin gehört zum Amt Hagenow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen Projekte, für die die Gemeinden selbst Zuwendungen erhielten; die Volltextsuche findet nur Bebauungspläne für Freiflächenanlagen und Zuwendungen an Gemeinden. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amt-hagenow-land.de Schnellfinder: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Bebauungspläne für Freiflächenanlagen (Kuhstorf, Hoort, Kirch Jesar, Warlitz, Gammelin); Zuschuss nur Wohngeld/BAföG; Förderrichtlinie nur ein Feuerwehrgerätehaus in Bandenitz (Sonderbedarfszuweisung des Landes); Solaranlage nur die Vorstellung eines Solarprojekts in der Gemeindevertretung Alt Zachun 2023."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/bekanntmachungen/uebersicht-900002512-28990.html?rubrik=900000004",
+        "finding": "Tagesordnung Bandenitz 26.08.2026: „Neubau eins Feuerwehrgerätehauses im Rahmen der Sonderbedarfszuweisungsförderrichtlinie - SBZFöRL M-V“ — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001",
+        "finding": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "finding": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "finding": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&amp;brotID=900000194&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Unsere Gemeinden beantragen zur Verwirklichung ihrer Aufgaben Zuwendungen“ — Übersicht der ELER-/LEADER-Projekte der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-900000324-28990.html?naviID=900000194&brotID=900000194&rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: ältere Fassung derselben Übersicht (Straßenausbau, Feuerwehr, Kita, Streuobstwiese der Gemeinden) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/portal/seiten/eu-foerderung-alt-900000284-28990.html?rubrik=900000001"
+      },
+      {
+        "url": "amt-hagenow-land.de/verwaltung-service/eu-foerderung",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: aktuelle Adresse derselben EU-Förderseite der Gemeindeprojekte — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
+      }
+    ]
   }
 ]
