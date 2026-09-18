@@ -1013,7 +1013,7 @@ export const BAUSTEINE: Baustein[] = [
  * Die Liste soll schrumpfen. Sie ist der Arbeitsvorrat, nicht ein Mangel —
  * die Bausteine werden sukzessive entwickelt (Betreiber, 01.09.2026).
  */
-export const NOCH_NICHT_EINGEORDNET: string[] = [];
+export const NOCH_NICHT_EINGEORDNET: string[] = ["DesignHeader"];
 
 /** Nachschlagen über den Anzeigenamen. */
 export function baustein(name: string): Baustein | undefined {
