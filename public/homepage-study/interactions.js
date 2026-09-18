@@ -76,3 +76,26 @@ if (!mountHeroTrust()) {
   trustObserver.observe(document.body, { childList: true, subtree: true });
   addEventListener('pagehide', () => trustObserver.disconnect(), { once: true });
 }
+
+// The scene's legacy dark flag switches only near nightfall. Twilight is
+// already dimmed by sky-brightness; use that rendered value for host copy.
+function bindHeroContrast() {
+  const root = document.querySelector('.homepage-study');
+  if (!root) return false;
+  function sync() {
+    const brightness = Number.parseFloat(root.style.getPropertyValue('--sky-brightness'));
+    const light = Number.isFinite(brightness) ? brightness < 0.65 : ['night', 'dusk', 'dawn'].includes(root.dataset.phase || root.dataset.mode);
+    const tone = light ? 'light' : 'dark';
+    if (root.dataset.copyTone !== tone) root.dataset.copyTone = tone;
+  }
+  sync();
+  const contrastObserver = new MutationObserver(sync);
+  contrastObserver.observe(root, { attributes: true, attributeFilter: ['style', 'data-phase', 'data-mode'] });
+  addEventListener('pagehide', () => contrastObserver.disconnect(), { once: true });
+  return true;
+}
+if (!bindHeroContrast()) {
+  const rootObserver = new MutationObserver(() => { if (bindHeroContrast()) rootObserver.disconnect(); });
+  rootObserver.observe(document.body, { childList: true, subtree: true });
+  addEventListener('pagehide', () => rootObserver.disconnect(), { once: true });
+}

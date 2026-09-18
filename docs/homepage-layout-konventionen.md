@@ -15,8 +15,10 @@ Do not edit the retired scene package for layout changes.
 - Hero actions remain stacked and equal width. Hero copy aligns with the centered content rail while the scene stays full bleed.
   The secondary action uses a nearly transparent 6% tint, inherits scene text
   contrast and adds a subtle contour. This no longer carries the previous
-  opaque-fill contrast guarantee; bright and dark scenes need visual review. The repeated trust
-  line is omitted in the hero; the person card retains that reassurance.
+  opaque-fill contrast guarantee; bright and dark scenes need visual review. Host text
+  follows rendered sky brightness, including twilight, rather than the late legacy night flag.
+  The compact trust strip sits at the actual hero bottom, fades with hero copy, and uses
+  a restrained multiply scrim. Never anchor it to a viewport coordinate inside a taller hero.
 - Footer column dividers follow the four/two-column grid; rules are centered in the gaps. The two-column grid uses one continuous
   vertical divider without fragmented horizontal rules.
 - FAQ headings are secondary labels. Question rows are at least 92px high;

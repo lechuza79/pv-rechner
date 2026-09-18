@@ -1038,16 +1038,26 @@ solar-illustration.hs-audience-art::before{content:none}
  .homepage-study .hs-person-message>span{display:none}
 }
 
-/* The trust strip belongs to the scene, never to a fixed site-wide overlay. */
-.homepage-study .sc-hero-trust{position:absolute;z-index:8;--trust-ink:#d3e0d7;inset:min(100%,100svh) 0 auto;transform:translateY(-100%);padding:64px var(--sc-hero-content-inset) max(24px,env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,#08191cc7 55%,#08191cf5);color:#e8eee9;pointer-events:none}
-.homepage-study .sc-hero-trust ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;max-width:var(--sc-layout-content);margin:0 auto;padding:0;list-style:none}
-.homepage-study .sc-hero-trust li{display:flex;align-items:center;gap:12px;font-size:13px;line-height:1.45;font-weight:500}
-.homepage-study .sc-hero-trust solar-trust-badge{width:40px;flex:0 0 40px}
+/* Anchor reassurance to the actual scene edge and fade it with the copy. */
+@media(min-width:601px){
+ html[data-homepage-preview] .homepage-study:not(.hs-simulation-route):not(.hs-journey-open) .hs-hero-portal>.hero{height:100svh;min-height:740px}
+}
+.homepage-study .sc-hero-trust{position:absolute;z-index:8;inset:auto 0 0;padding:42px var(--sc-hero-content-inset) max(22px,env(safe-area-inset-bottom));color:#e8eee9;--trust-ink:#d3e0d7;pointer-events:none;opacity:var(--hs-copy-exit,1)}
+.homepage-study .sc-hero-trust::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(transparent,rgba(0,0,0,.36));mix-blend-mode:multiply;pointer-events:none}
+.homepage-study .sc-hero-trust ul{display:flex;justify-content:space-between;gap:24px;max-width:var(--sc-layout-content);margin:0 auto;padding:0;list-style:none}
+.homepage-study .sc-hero-trust li{display:flex;align-items:center;gap:10px;font-size:12px;line-height:1.4;font-weight:400;max-width:220px}
+.homepage-study .sc-hero-trust solar-trust-badge{width:28px;flex:0 0 28px}
 .homepage-study.hs-journey-open .sc-hero-trust,.homepage-study.hs-simulation-route .sc-hero-trust{display:none}
 @media(max-width:600px){
- .homepage-study .sc-hero-trust{padding-top:40px;padding-bottom:max(18px,env(safe-area-inset-bottom))}
- .homepage-study .sc-hero-trust ul{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}
+ .homepage-study .sc-hero-trust{padding-top:28px;padding-bottom:max(18px,env(safe-area-inset-bottom))}
+ .homepage-study .sc-hero-trust ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px}
  .homepage-study .sc-hero-trust li{font-size:11px;gap:8px}
- .homepage-study .sc-hero-trust solar-trust-badge{width:30px;flex-basis:30px}
+ .homepage-study .sc-hero-trust solar-trust-badge{width:26px;flex-basis:26px}
 }
-.homepage-study .sc-hero-trust::after{content:"";position:absolute;inset:100% 0 auto;height:100px;background:linear-gradient(#08191cf5,transparent);pointer-events:none}
+/* Host contrast follows rendered sky brightness, including twilight. */
+html[data-sc-shell] .homepage-study[data-copy-tone=light] :is(.site-header,.hero-copy){color:#eef5ef}
+html[data-sc-shell] .homepage-study[data-copy-tone=light] .hero-description{color:#e0e9e4}
+html[data-sc-shell] .homepage-study[data-copy-tone=light] .site-header .brand svg{--color-accent:#eef5ef;--color-text-faint:#e0e9e4}
+html[data-sc-shell] .homepage-study[data-copy-tone=dark] :is(.site-header,.hero-copy){color:#122c3b}
+html[data-sc-shell] .homepage-study[data-copy-tone=dark] .hero-description{color:#294653}
+html[data-sc-shell] .homepage-study[data-copy-tone=dark] .site-header .brand svg{--color-accent:#173b42;--color-text-faint:#4a675e}
