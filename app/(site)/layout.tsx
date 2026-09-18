@@ -1,11 +1,11 @@
 import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
-import { getCssVariables, getThemeOverrides, globalStyles, headerContentGap } from "../../lib/theme";
+import { getCssVariables, getThemeOverrides, globalStyles } from "../../lib/theme";
 import { getOverrideCss } from "../../lib/theme-overrides";
 import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
 import { jsonLdHtml } from "../../lib/json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
-import Header from "../../components/Header";
+import SeitenKopf from "../../components/SeitenKopf";
 import Footer from "../../components/Footer";
 import { WebAnalytics } from "../../components/WebAnalytics";
 import { HerkunftsMelder } from "../../components/HerkunftsMelder";
@@ -162,7 +162,7 @@ export default async function RootLayout({
               Seite selbst als Top-Padding mit (plus Header-marginBottom), was
               projektweit driftete. Keine Seite setzt jetzt noch eigenes
               Top-Padding. */}
-          <div style={{ padding: `20px 16px ${headerContentGap}px` }}><Header /></div>
+          <SeitenKopf />
           {children}
           <div style={{ padding: "0 16px" }}><Footer /></div>
         </GlossaryProvider>

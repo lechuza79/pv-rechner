@@ -411,6 +411,29 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/DesignHeader.tsx",
+    name: "DesignHeader",
+    zweck:
+      "Die neutrale Kopfzeile der neuen Oberfläche: Logo und die vier Navigationsgruppen, über die volle Breite einer Bühne gelegt.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: ["Logo"],
+    keinBeispielWeil:
+      "Ein Seitenrahmen — er steht auf Startseite und Simulation bereits oben. Ein zweiter in der Galerie wäre kein Beispiel, sondern ein Fehler.",
+  },
+  {
+    datei: "components/SeitenKopf.tsx",
+    name: "SeitenKopf",
+    zweck:
+      "Entscheidet an EINER Stelle, welche Seite welche Kopfzeile bekommt: die neue auf Startseite und Simulation, die bisherige überall sonst.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: ["DesignHeader", "Header"],
+    keinBeispielWeil: "Ein Umschalter zwischen zwei Seitenrahmen; zeigen lässt er sich nur auf den Seiten selbst.",
+  },
+  {
     datei: "components/Header.tsx",
     name: "Header",
     zweck: "Die Kopfzeile mit Navigation, Sonnenanzeige und Anmeldung.",
@@ -1033,7 +1056,7 @@ export const BAUSTEINE: Baustein[] = [
  * Die Liste soll schrumpfen. Sie ist der Arbeitsvorrat, nicht ein Mangel —
  * die Bausteine werden sukzessive entwickelt (Betreiber, 01.09.2026).
  */
-export const NOCH_NICHT_EINGEORDNET: string[] = ["DesignHeader"];
+export const NOCH_NICHT_EINGEORDNET: string[] = [];
 
 /** Nachschlagen über den Anzeigenamen. */
 export function baustein(name: string): Baustein | undefined {

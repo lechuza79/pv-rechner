@@ -594,6 +594,10 @@ const neonVars = Object.entries(neonTokens).map(([k, val]) => `${k}:${val}`).joi
  */
 export const neonScopeCss = `
   .sc-neon{${neonVars};font-family:var(--font-text);font-size:var(--neon-size-body);line-height:1.6;color:var(--neon-ink)}
+  /* Aliases the frozen homepage/simulation stylesheets read (names from the
+     reviewed preview). They point at the roles above — no second value. */
+  .sc-neon{--sc-page-inset:max(24px,5vw);--sc-hero-content-inset:calc(var(--sc-page-inset) + 24px);--sc-type-section-compact-size:var(--neon-size-section);--sc-type-section-leading:1.25;--sc-type-title-size:var(--neon-size-card-title);--sc-type-title-leading:1.35;--sc-type-body-size:var(--neon-size-body);--sc-type-body-leading:1.6;--sc-type-eyebrow-size:var(--neon-size-eyebrow);--sc-type-eyebrow-leading:1.5;--sc-type-eyebrow-tracking:.08em;--sc-type-heading-weight:700;--sc-type-label-weight:600;--sc-type-body-weight:400;--sc-surface-light:var(--neon-surface);--sc-surface-light-inset:var(--neon-surface-inset);--sc-illustration-circle-light:var(--neon-circle-light);--sc-illustration-circle-dark:var(--neon-circle-dark);--sc-hero-action-height:var(--neon-action-height);--sc-sim-intro-size:var(--neon-size-intro);--sc-sim-content-top:72px;--sc-sim-heading-gap:6px;--sc-sim-copy-max:var(--neon-copy-max);--ink:var(--neon-ink);--lab-accent:var(--neon-action)}
+  @media (max-width:600px){.sc-neon{--sc-sim-content-top:48px}}
   @media (max-width:600px){.sc-neon{--neon-action-height:52px;--neon-size-intro:var(--font-size-h1)}}
   .sc-neon .sc-eyebrow{font-size:var(--neon-size-eyebrow);line-height:1.5;letter-spacing:.08em;font-weight:600;text-transform:uppercase;margin:0}
   .sc-neon .sc-section-title{font-family:var(--neon-font-heading);font-size:var(--neon-size-section);line-height:1.25;font-weight:700;margin:0}
@@ -603,6 +607,13 @@ export const neonScopeCss = `
   .sc-neon .sc-surface{background:var(--neon-surface)}
   .sc-neon .sc-surface-inset{background:var(--neon-surface-inset)}
   .sc-neon .sc-dark{background:var(--neon-dark);color:var(--neon-on-dark)}
+  /* Header over the full-bleed hero of the neon pages (components/SeitenKopf.tsx). */
+  .sc-neon-kopf{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;gap:24px;padding:20px max(24px,5vw);color:${neonTokens['--neon-ink']};font-family:var(--font-text)}
+  .sc-neon-kopf .sc-design-header{flex:1;max-width:none}
+  body:has(.solar-page[data-dark="true"]) .sc-neon-kopf,body:has(.solar-page[data-rain-study="night"]) .sc-neon-kopf,body:has(.solar-page[data-rain-study="rain"]) .sc-neon-kopf{color:${neonTokens['--neon-on-dark']};--color-accent:${neonTokens['--neon-on-dark']}}
+  .sc-kopf-konto{font-size:var(--font-size-small);color:inherit;text-decoration:none;white-space:nowrap}
+  .sc-kopf-konto:hover{text-decoration:underline}
+  .sc-kopf-konto:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:4px}
   .sc-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--neon-action-height);padding:0 28px;border-radius:999px;font-family:var(--neon-font-heading);font-size:var(--neon-size-action);line-height:21px;font-weight:600;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:filter .15s ease,background-color .15s ease,border-color .15s ease}
   .sc-btn-primary{background:var(--neon-action);color:var(--neon-action-ink);border-color:var(--neon-action)}
   .sc-btn-primary:hover{filter:brightness(.95)}

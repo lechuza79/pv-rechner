@@ -52,6 +52,8 @@ const LESEPFADE = [
   // hier und las ohne Budget. Am 10.09.2026 warf genau dieser Read bei einem
   // kurzen Datenbankausfall eine Ortsseite in einen 500er.
   "lib/social-fundvorrat.ts",
+  // Public route of the simulation page (ten-year retrospective per postcode).
+  "lib/solar-rueckblick-server.ts",
 ];
 
 /**

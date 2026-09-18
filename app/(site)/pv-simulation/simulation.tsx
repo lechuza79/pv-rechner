@@ -13,23 +13,11 @@ export default function LiveSimulation() {
   const searchParams = useSearchParams();
   const initialPlz = searchParams.get("plz") || "";
 
+  // The page around it provides heading and surface (neon redesign); this
+  // keeps only the shared live panel, unchanged.
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
-
-
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
-
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>
-            PV-Simulation
-          </h1>
-          <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: 6, lineHeight: 1.5 }}>
-            Was produziert eine PV-Anlage an deinem Standort gerade?
-          </p>
-        </div>
-
-        <SimulationPanel initialPlz={initialPlz} />
-      </div>
+    <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
+      <SimulationPanel initialPlz={initialPlz} />
     </div>
   );
 }
