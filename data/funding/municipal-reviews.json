@@ -20611,5 +20611,571 @@
         "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
       }
     ]
+  },
+  {
+    "regionId": "07140007",
+    "name": "Belg",
+    "checkedAt": "2026-09-18T20:09:20Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Belg gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
+      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
+      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
+        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
+        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
+      },
+      {
+        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
+        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/"
+      },
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140048",
+    "name": "Hecken",
+    "checkedAt": "2026-09-18T20:09:20Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hecken gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
+      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
+      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
+        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
+        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
+      },
+      {
+        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
+        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/"
+      },
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140053",
+    "name": "Hirschfeld (Hunsrück)",
+    "checkedAt": "2026-09-18T20:09:20Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hirschfeld (Hunsrück) gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
+      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
+      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
+        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
+        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
+      },
+      {
+        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
+        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/"
+      },
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140086",
+    "name": "Lindenschied",
+    "checkedAt": "2026-09-18T20:09:20Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lindenschied gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
+      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
+      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
+        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
+        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
+      },
+      {
+        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
+        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/"
+      },
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140090",
+    "name": "Maitzborn",
+    "checkedAt": "2026-09-18T20:09:20Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Maitzborn gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
+      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
+      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
+        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
+        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
+      },
+      {
+        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
+        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG, keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140094",
+    "name": "Metzenhausen",
+    "checkedAt": "2026-09-18T20:09:20Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Metzenhausen gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
+      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
+      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
+        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
+        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
+      },
+      {
+        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
+        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG, keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140111",
+    "name": "Ober Kostenz",
+    "checkedAt": "2026-09-18T20:09:20Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ober Kostenz gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
+      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
+      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
+        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
+        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
+      },
+      {
+        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
+        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG, keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140128",
+    "name": "Rödelhausen",
+    "checkedAt": "2026-09-18T20:09:20Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rödelhausen gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
+      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
+      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
+        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
+        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
+      },
+      {
+        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
+        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG, keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140145",
+    "name": "Sohren",
+    "checkedAt": "2026-09-18T20:09:20Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sohren gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
+      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
+      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
+        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
+        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
+      },
+      {
+        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
+        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/"
+      },
+      {
+        "url": "kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen",
+        "disposition": "reviewed",
+        "reason": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/"
+      },
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG, keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07140146",
+    "name": "Sohrschied",
+    "checkedAt": "2026-09-18T20:09:20Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sohrschied gehört zur Verbandsgemeinde Kirchberg (Hunsrück), Rhein-Hunsrück-Kreis. Die VG führt kein Zuschussprogramm für Private; ihre Klimaschutzmittel (Regionales Zukunftsprogramm) fließen in kommunale Gebäude, erneuerbare Energien bündelt sie in einer eigenen Anstalt. Das einzige einschlägige Kreisprogramm (200 € für Balkonanlagen einkommensschwacher Haushalte) lief bis 30.06.2026 und ist beendet. Keine laufende kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "kirchberg-hunsrueck.de Sitemap (704 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Kommunale Energie Kirchberg, Klimaschutz, Energieberatung, Wirtschaftsförderung, Regionales Zukunftsprogramm, Dorferneuerung, GAK-Dorfentwicklung",
+      "kv-rhk.de Sitemap (1.562 Adressen) und Klimaschutz-Projektseite des Kreises gelesen; Kreisrichtlinie einkommensschwache Haushalte im Archiv gelesen; Katalog ohne Programme des Kreises 07140",
+      "Websuche: Rhein-Hunsrück-Kreis / Kirchberg Förderung Balkonkraftwerk Photovoltaik Speicher 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/sitemap.xml",
+        "finding": "704 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind Kommunale Energie Kirchberg (AöR für Freiflächen-PV der Gemeinden), Klimaschutzkonzept/Wärmeplanung, Energieberatung der Verbraucherzentrale, Wirtschafts- und Vereinsförderung sowie Landes-Leistungsbeschreibungen. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/gemeinden/kommunale-energie-kirchberg/",
+        "finding": "Die Kommunale Energie Kirchberg AöR bündelt Erzeugung und Vermarktung erneuerbarer Energien der 41 Gebietskörperschaften (geplante Freiflächen-PV, Beteiligung an der Energiegesellschaft Rhein-Hunsrück) — kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/",
+        "finding": "Regionales Zukunftsprogramm: Landesbescheid an die VG über rund 3,3 Mio. €, davon ~989.000 € Klimaschutz für kommunale Gebäude (Grundschule Gemünden, Kita Sohren, Stromspeicher in Schulen/Feuerwehrhäusern, E-Fahrzeug Bauhof) — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/rathaus/bauen-umwelt/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus (Bundes-/Landesförderung), kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282611:ANLR-VLR/dorferneuerung-kommunale-foerderung/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur Dorferneuerung (Förderung der Gemeinden, Dorfmoderation, Ortskernstärkung); keine Förderung von Photovoltaik, Speichern, Balkonkraftwerken oder Wärmepumpen für private Haushalte."
+      },
+      {
+        "url": "https://www.kirchberg-hunsrueck.de/de/buergerservice/leistungen/RLP:entry:2282614:ANLR-VLR/gak-foerderung-der-dorfentwicklung-beantragen/",
+        "finding": "Landes-Dienstleistungsbeschreibung zur GAK-Förderung der Dorfentwicklung (Antrag der Gemeinden bzw. Vorhaben im Rahmen der Dorfentwicklung); kein kommunales Energie-Zuschussprogramm für Private."
+      },
+      {
+        "url": "https://web.archive.org/web/2025/https://kreis-sim.de/index.php?FID=3347.15.1&ModID=10&object=tx%2C3347.2",
+        "finding": "Kreisrichtlinie Rhein-Hunsrück zur Energieeinsparung in einkommensschwachen Haushalten (KIPKI): je 200 € u. a. für Balkonanlagen bis 800 Wp, Förderzeitraum 01.04.2024 – 30.06.2026 — beendet; Stand im Archiv der Amtsseite gelesen, die aktuelle Kreis-Website (kv-rhk.de, Sitemap 1.562 Adressen) führt kein Nachfolgeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn",
+        "disposition": "reviewed",
+        "reason": "Landesbescheid für kommunale Klimaschutzmaßnahmen der VG, keine Bürgerförderung.",
+        "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
+      }
+    ]
   }
 ]
