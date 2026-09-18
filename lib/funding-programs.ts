@@ -6166,6 +6166,55 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // überfliegt, hält das für ein Programm und trägt den falschen Status ein.
   },
 
+  "staudt-energieeffizienz": {
+    id: "staudt-energieeffizienz", name: "Förderrichtlinie Energieeffizienz und Klimafolgenanpassung / Balkonkraftwerke",
+    traeger: "Ortsgemeinde Staudt", level: "kommune", region: "Staudt",
+    bundesland: "Rheinland-Pfalz", agsCode: "07143073",
+    url: "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2021-03-01",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWh Speicher, Anteil einer Wärmepumpe, Pauschale je Balkonkraftwerk; Dachanlage nur ohne Einspeisung ins Netz",
+    maxFoerderung: "max. 1.000 € je Maßnahme (Anlage, Speicher, Wärmepumpe), 100 € je Balkonkraftwerk; insgesamt 5.000 € je Antragsteller in zehn Jahren",
+    rates: [
+      { label: "Photovoltaik", value: "100 €/kWp, max. 1.000 € — nur Anlagen, die keinen vergütungsfähigen Strom ins Netz einspeisen können", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "100 €/kWh nutzbare Kapazität, max. 1.000 €", nur: ["pv"] },
+      { label: "Wärmepumpe", value: "10 % der Gesamtkosten, max. 1.000 €", nur: ["waermepumpe"] },
+      { label: "Balkonkraftwerk", value: "100 € je Anlage, höchstens zwei je Antragsteller bzw. Wohneinheit", nur: ["balkon"] },
+    ],
+    conditions: [
+      { text: "Dachanlage, Speicher und Wärmepumpe setzen eine vorherige Energieberatung („Energie-Check“) voraus", nur: ["pv", "waermepumpe"] },
+      { text: "Die Dachanlage wird nur gefördert, wenn sie keinen vergütungsfähigen Strom über den Eigenverbrauch hinaus ins Netz einspeisen kann — eine gewöhnliche Dachanlage fällt damit heraus, deshalb rechnen wir hier nichts ein", nur: ["pv"] },
+      { text: "Dachanlage, Speicher und Wärmepumpe nur an Bestandsgebäuden, die älter als fünf Jahre sind, und nur für selbst genutzten Wohnraum von Eigentümern oder dinglich Nutzungsberechtigten", nur: ["pv", "waermepumpe"] },
+      { text: "Die Wärmepumpe muss an ein wasserführendes Heizungsnetz angeschlossen sein", nur: ["waermepumpe"] },
+      { text: "Balkonkraftwerke fördert die Gemeinde auch für Mieter (mit Zustimmung des Eigentümers), nicht für Hausverwaltungen und Gewerbebetriebe; gefördert werden Anlagen mit 0,6 bis 0,8 kW Ausgangsleistung, und alle Fördermittel zusammen dürfen 90 % der Kosten nicht übersteigen", nur: ["balkon"] },
+      "Mit der Maßnahme darf erst nach der Förderbestätigung begonnen werden; ein erteilter Auftrag zählt bereits als Beginn",
+      "Jeder Fördergegenstand wird nur einmal in zehn Jahren gefördert",
+      "Vergabe nach Reihenfolge des Antragseingangs, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    speicherPerKwh: 100, speicherCap: 1000,
+    balkonPauschale: 100,
+    // Heat pump (5.3: 10 % max 1,000 EUR) deliberately NOT computed: it would be the
+    // first percentage heat-pump grant, and the tripwire in
+    // waermepumpe-kommunalfoerderung.test.ts asks for the calculator's funding base
+    // to be reworked first. Shown as information until then.
+    // RICHTLINIEN IM VOLLTEXT GELESEN am 18.09.2026 (beide gescannt, Seite für
+    // Seite): „Förderrichtlinie Energieeffizienz und Klimafolgenanpassung",
+    // Stammfassung 01.03.2021 (daher beschlossenIso), zuletzt geändert durch Ratsbeschluss 29.01.2026, ausgefertigt 30.01.2026; Balkonförderung beschlossen 20.07.2023.
+    // Nr. 5.1 PV 100 €/kWp max 1.000 €; 5.2 Speicher 100 €/kWh max 1.000 €;
+    // 5.3 WP 10 % max 1.000 €; 5.12 max 5.000 € je Antragsteller. Nr. 2.2.1
+    // schließt Anlagen aus, die über den Eigenverbrauch hinaus einspeisen können —
+    // deshalb KEIN pvPerKwp: Der Rechner kann die Bemessung auf den Eigenbedarf
+    // nicht prüfen, und eine gewöhnliche Dachanlage speist ein. Nr. 9.7: Laufzeit
+    // jeweils bis 31.12., verlängert sich um ein Jahr ohne anderen Ratsbeschluss — deshalb KEIN endetIso. Ob Nr. 2.2.6 (Wärmeerzeugertausch, 30 % max 1.500 €) auch eine Wärmepumpe erfasst, ist offen; gerechnet wird die ausdrückliche Nr. 5.3.
+    // „Förderrichtlinie Balkonkraftwerke", Stand 12/2025, geändert 29.01.2026:
+    // Nr. 4 pauschal 100 € je Mini-PV-Anlage, max. zwei je Antragsteller bzw.
+    // Wohneinheit; Nr. 3 Eigentümer und Mieter. Gefunden über den Quellenbestand
+    // der VG Wirges; die Gemeinde fehlte bis dahin im Katalog.
+  },
+
   "schlierbach-energiespeicher": {
     id: "schlierbach-energiespeicher", name: "Förderung von Energiespeichern",
     traeger: "Gemeinde Schlierbach", level: "kommune", region: "Schlierbach",

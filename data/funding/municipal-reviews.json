@@ -21177,5 +21177,617 @@
         "evidenceUrl": "https://www.kirchberg-hunsrueck.de/de/allgemein/aktuelles/regionales-foerderprogramm-rzn/"
       }
     ]
+  },
+  {
+    "regionId": "07143003",
+    "name": "Bannberscheid",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bannberscheid gehört zur Verbandsgemeinde Wirges (Westerwaldkreis). Weder die VG noch die Ortsgemeinde führt ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzigen solchen Richtlinien im VG-Gebiet sind die der Ortsgemeinde Staudt und gelten nur dort. Siershahns Dorferneuerungsrichtlinie fördert Ortskern-Sanierungen, keine Energietechnik. Kein Programm des Westerwaldkreises im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143010",
+    "name": "Dernbach (Westerwald)",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dernbach (Westerwald) gehört zur Verbandsgemeinde Wirges (Westerwaldkreis). Weder die VG noch die Ortsgemeinde führt ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzigen solchen Richtlinien im VG-Gebiet sind die der Ortsgemeinde Staudt und gelten nur dort. Siershahns Dorferneuerungsrichtlinie fördert Ortskern-Sanierungen, keine Energietechnik. Kein Programm des Westerwaldkreises im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143012",
+    "name": "Ebernhahn",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ebernhahn gehört zur Verbandsgemeinde Wirges (Westerwaldkreis). Weder die VG noch die Ortsgemeinde führt ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzigen solchen Richtlinien im VG-Gebiet sind die der Ortsgemeinde Staudt und gelten nur dort. Siershahns Dorferneuerungsrichtlinie fördert Ortskern-Sanierungen, keine Energietechnik. Kein Programm des Westerwaldkreises im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143028",
+    "name": "Helferskirchen",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Helferskirchen gehört zur Verbandsgemeinde Wirges (Westerwaldkreis). Weder die VG noch die Ortsgemeinde führt ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzigen solchen Richtlinien im VG-Gebiet sind die der Ortsgemeinde Staudt und gelten nur dort. Siershahns Dorferneuerungsrichtlinie fördert Ortskern-Sanierungen, keine Energietechnik. Kein Programm des Westerwaldkreises im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143042",
+    "name": "Leuterod",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Leuterod gehört zur Verbandsgemeinde Wirges (Westerwaldkreis). Weder die VG noch die Ortsgemeinde führt ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzigen solchen Richtlinien im VG-Gebiet sind die der Ortsgemeinde Staudt und gelten nur dort. Siershahns Dorferneuerungsrichtlinie fördert Ortskern-Sanierungen, keine Energietechnik. Kein Programm des Westerwaldkreises im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143047",
+    "name": "Mogendorf",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mogendorf gehört zur Verbandsgemeinde Wirges (Westerwaldkreis). Weder die VG noch die Ortsgemeinde führt ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzigen solchen Richtlinien im VG-Gebiet sind die der Ortsgemeinde Staudt und gelten nur dort. Siershahns Dorferneuerungsrichtlinie fördert Ortskern-Sanierungen, keine Energietechnik. Kein Programm des Westerwaldkreises im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143049",
+    "name": "Moschheim",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Moschheim gehört zur Verbandsgemeinde Wirges (Westerwaldkreis). Weder die VG noch die Ortsgemeinde führt ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzigen solchen Richtlinien im VG-Gebiet sind die der Ortsgemeinde Staudt und gelten nur dort. Siershahns Dorferneuerungsrichtlinie fördert Ortskern-Sanierungen, keine Energietechnik. Kein Programm des Westerwaldkreises im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143060",
+    "name": "Ötzingen",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ötzingen gehört zur Verbandsgemeinde Wirges (Westerwaldkreis). Weder die VG noch die Ortsgemeinde führt ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzigen solchen Richtlinien im VG-Gebiet sind die der Ortsgemeinde Staudt und gelten nur dort. Siershahns Dorferneuerungsrichtlinie fördert Ortskern-Sanierungen, keine Energietechnik. Kein Programm des Westerwaldkreises im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143070",
+    "name": "Siershahn",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Siershahn gehört zur Verbandsgemeinde Wirges (Westerwaldkreis). Weder die VG noch die Ortsgemeinde führt ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzigen solchen Richtlinien im VG-Gebiet sind die der Ortsgemeinde Staudt und gelten nur dort. Siershahns Dorferneuerungsrichtlinie fördert Ortskern-Sanierungen, keine Energietechnik. Kein Programm des Westerwaldkreises im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143073",
+    "name": "Staudt",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Staudt (Verbandsgemeinde Wirges, Westerwaldkreis) fördert mit eigenen Richtlinien Speicher (100 €/kWh, max. 1.000 €), Wärmepumpen (10 %, max. 1.000 €), Balkonkraftwerke (100 € je Anlage) und Dachanlagen ohne Netzeinspeisung; das Programm ist seit 18.09.2026 im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143081",
+    "name": "Wirges",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wirges gehört zur Verbandsgemeinde Wirges (Westerwaldkreis). Weder die VG noch die Ortsgemeinde führt ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzigen solchen Richtlinien im VG-Gebiet sind die der Ortsgemeinde Staudt und gelten nur dort. Siershahns Dorferneuerungsrichtlinie fördert Ortskern-Sanierungen, keine Energietechnik. Kein Programm des Westerwaldkreises im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143275",
+    "name": "Niedersayn",
+    "checkedAt": "2026-09-18T20:19:02Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Niedersayn gehört zur Verbandsgemeinde Wirges (Westerwaldkreis). Weder die VG noch die Ortsgemeinde führt ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzigen solchen Richtlinien im VG-Gebiet sind die der Ortsgemeinde Staudt und gelten nur dort. Siershahns Dorferneuerungsrichtlinie fördert Ortskern-Sanierungen, keine Energietechnik. Kein Programm des Westerwaldkreises im Katalog (Stand 18.09.2026).",
+    "searches": [
+      "wirges.de Sitemap (5.397 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Förderrichtlinien Staudt (beide PDF, gescannt, alle Seiten), Dorferneuerungsrichtlinie Siershahn (gescannt), Klimaschutzseite der VG, Datenschutzinfo Balkonkraftwerke",
+      "Katalog nach Programmen des Westerwaldkreises (07143) durchsucht: keine",
+      "Websuche: Wirges Förderung Balkonkraftwerke Zuschuss Ortsgemeinde 2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wirges.de/sitemap.xml",
+        "finding": "5.397 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: einzige kommunale Energie-Förderrichtlinien sind die der Ortsgemeinde Staudt; sonst Energiecheck-Aktionen, Klimaschutzkonzept, Wärmeplanung, Windenergie, Städtebauförderung Wirges und Siershahns Dorferneuerungsrichtlinie."
+      },
+      {
+        "url": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+        "finding": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt."
+      },
+      {
+        "url": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/",
+        "finding": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.wirges.de/leben-in-der-vg/klimaschutz/",
+        "finding": "Klimaschutzkonzept der VG (Juni 2025), NKI-Klimaschutzmanagement, kostenloser Energiecheck — kein Zuschussprogramm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.wirges.de/datenschutz/foerderung-balkonkraftwerke/",
+        "finding": "Datenschutzinformation der VG zur Bearbeitung von Förderanträgen für Balkonkraftwerke (Fachbereich 3) — die VG bearbeitet die Anträge der Ortsgemeinde Staudt; eine eigene Balkon-Richtlinie der VG oder anderer Ortsgemeinden steht nirgends auf der Website."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wirges.de/gemeinden/staudt/foerderrichtlinien",
+        "disposition": "reviewed",
+        "reason": "Eigene Förderrichtlinien der Ortsgemeinde Staudt (Energieeffizienz und Klimafolgenanpassung; Balkonkraftwerke), beide am 29.01.2026 geändert, im Volltext gelesen und seit 18.09.2026 im Katalog; sie gelten nur für das Gemeindegebiet Staudt.",
+        "evidenceUrl": "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/"
+      },
+      {
+        "url": "wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Dorferneuerung/Ortskernbelebung Siershahn (2015, 1. Änderung 11.09.2023): 20 % der Baukosten ab 5.000 €, nur im Ortskern-Satzungsgebiet, Energiesparmaßnahmen nur zusammen mit Gebäudehülle/Wohnverhältnissen — kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.wirges.de/rathaus/ortsrechtsammlung/siershahn/foerderrichtlinie-fuer-die-gewaehrung-von-zuschuessen-zu-massnahmen-der-dorferneuerung-und-zur-belebung-des-ortskerns-in-der-ortsgemeinde-siershahn/"
+      }
+    ]
   }
 ]

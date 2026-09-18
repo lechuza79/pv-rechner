@@ -266,6 +266,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // previously funded capacity and the commissioning-before-application order
   // have no test form yet.
   "neustadt-wied-pv-speicher",
+  // Added 18 Sep 2026: guidelines read in full; the prior energy check, the
+  // existing-building rule and the own-consumption sizing of the roof system have
+  // no test form yet (roof system is therefore not computed at all).
+  "staudt-energieeffizienz",
 ];
 
 /**
