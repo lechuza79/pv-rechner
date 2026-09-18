@@ -7364,6 +7364,67 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     wpPauschale: 500,
   },
 
+  "vg-wallmerod-lange-leben-im-dorf": {
+    id: "vg-wallmerod-lange-leben-im-dorf", name: "Lange Leben im Dorf",
+    traeger: "Verbandsgemeinde Wallmerod", level: "kommune", region: "Verbandsgemeinde Wallmerod",
+    bundesland: "Rheinland-Pfalz",
+    // RICHTLINIE IM VOLLTEXT GELESEN am 18.09.2026 (Scan ohne Textebene, als Bild
+    // gelesen): „Richtlinien 2024 zum Förderprogramm ‚Lange Leben im Dorf' der
+    // Verbandsgemeinde Wallmerod zur Belebung der Ortskerne", unterzeichnet
+    // 28.09.2023, in Kraft 01.01.2024, ohne Ablaufdatum. Nr. 2 c: förderfähig sind
+    // „Energetische Optimierungsmaßnahmen (Wärmedämmung, Heizungstausch, usw.)"
+    // in Bestandsgebäuden; ausdrücklich „Nicht gefördert werden Maßnahmen zur
+    // Energieerzeugung (z.B. PV-Anlagen)". Nr. 3: einmaliger Zuschuss 1.500 € pro
+    // Objekt, Bestandsgebäude mindestens 25 Jahre alt. Nr. 4: Gesamtkosten
+    // mindestens 15.000 €, Kosten aus Nr. 2 a–d addierbar, Umsetzung extern
+    // bestätigt, Förderung mit anderen öffentlichen Mitteln zulässig. Nr. 5:
+    // Rechnungen ab 01.01.2024, bei Antragstellung höchstens zwei Jahre alt.
+    //
+    // KEIN `wpPauschale`, obwohl der Betrag fest ist: Die Richtlinie nennt den
+    // Heizungstausch, nicht die Wärmepumpe, und knüpft ihn an ein Gebäudealter
+    // (25 Jahre), das der Wärmepumpen-Rechner nicht erhebt. Ein Abzug stünde
+    // damit auch vor jedem jüngeren Haus. Das Programm informiert, es rechnet
+    // nicht.
+    //
+    // KEIN `beginntIso`: 01.01.2024 ist das Inkrafttreten DIESER Fassung (Nr. 6
+    // setzt „alle bisherigen Richtlinien (Lange leben im Dorf)" außer Kraft) —
+    // das Programm ist älter, das Datum läse sich als Programmstart.
+    //
+    // FÖRDERGEBIET: die 21 Ortsgemeinden aus der Gemeindeübersicht der
+    // Verbandsgemeinde selbst (wallmerod.de/gemeinden, 18.09.2026, „seine 21
+    // Ortsgemeinden"), jede gegen das Melderegister aufgelöst. Namensfalle:
+    // Herschbach (Oberwesterwald) ist 07143239, NICHT Herschbach 07143029 in der
+    // Verbandsgemeinde Selters. Der Kreisschlüssel 07143 wäre falsch.
+    agsCodes: [
+      "07143011", "07143037", "07143058", "07143074", "07143080", "07143203",
+      "07143208", "07143210", "07143220", "07143232", "07143239", "07143251",
+      "07143263", "07143266", "07143273", "07143281", "07143290", "07143304",
+      "07143316", "07143501", "07143502",
+    ],
+    url: "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // The 2024 guideline names no eligible group at all. Private owners are
+    // plainly covered; whether businesses are is not stated, so they stay out.
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Bestandsgebäude für barrierefreien Umbau, neue Wohnungen, energetische Optimierung (darunter Heizungstausch) und Klimaschutzmaßnahmen; Photovoltaik ausdrücklich ausgeschlossen",
+    maxFoerderung: "1.500 € je Objekt",
+    rates: [
+      { label: "Heizungstausch im Bestandsgebäude", value: "1.500 € pauschal je Objekt, bei mindestens 15.000 € Gesamtkosten" },
+    ],
+    conditions: [
+      "Gefördert wird nur in Bestandsgebäuden, die mindestens 25 Jahre alt sind",
+      "Die Gesamtkosten der Maßnahmen müssen mindestens 15.000 € betragen; Kosten für Umbau, neue Wohnung, Dämmung, Heizungstausch und Klimaschutz dürfen addiert werden, Eigenleistung zählt bis 20 % der Bausumme",
+      "Der Zuschuss ist einmalig und beträgt 1.500 € je Objekt, unabhängig von der Zahl der Maßnahmen",
+      "Maßnahmen zur Energieerzeugung wie Photovoltaik werden ausdrücklich nicht gefördert",
+      "Der Antrag wird nach der Umsetzung gestellt, mit Kostenaufstellung und Rechnungen",
+      "Die Umsetzung muss extern bestätigt sein (Architekt oder Handwerksmeister); berücksichtigt werden Rechnungen ab dem 01.01.2024, die bei Antragstellung höchstens zwei Jahre alt sind",
+      "Die Zweckbindung beträgt acht Jahre; ein Rechtsanspruch besteht nicht, über Zweifelsfälle entscheidet der Ausschuss für Dorfentwicklung im Rahmen der Haushaltsmittel",
+      "Eine gleichzeitige Förderung mit anderen öffentlichen Mitteln ist zulässig",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+  },
+
   "taunusstein-balkonsolar": {
     id: "taunusstein-balkonsolar", name: "Förderung Mini-PV-Anlagen",
     traeger: "Stadt Taunusstein", level: "kommune", region: "Taunusstein",

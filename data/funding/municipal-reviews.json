@@ -15510,5 +15510,2198 @@
         "evidenceUrl": "https://www.amt-nordsee-treene.de/Kurzmen%C3%BC/Witschaftsf%C3%B6rderung.php"
       }
     ]
+  },
+  {
+    "regionId": "01061002",
+    "name": "Aebtissinwisch",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Aebtissinwisch gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "01061007",
+    "name": "Beidenfleth",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Beidenfleth gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "01061020",
+    "name": "Büttel",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Büttel gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "01061023",
+    "name": "Dammfleth",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dammfleth gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "01061060",
+    "name": "Kudensee",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kudensee gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "01061062",
+    "name": "Landrecht",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Landrecht gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "01061077",
+    "name": "Nortorf",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nortorf gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "01061095",
+    "name": "Sankt Margarethen",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sankt Margarethen gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "01061102",
+    "name": "Stördorf",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Stördorf gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "01061110",
+    "name": "Wewelsfleth",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wewelsfleth gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "01061113",
+    "name": "Wilster",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wilster gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "01061119",
+    "name": "Neuendorf-Sachsenbande",
+    "checkedAt": "2026-09-18T14:09:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neuendorf-Sachsenbande gehört zum Amt Wilstermarsch (Verwaltungsgemeinschaft mit der Stadt Wilster, gemeinsamer Auftritt wilster.de). Weder das Amt, die Stadt Wilster noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die erfasste Förderseite ist die allgemeine Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers mit einer einzigen Leistung (Förderung von Mietwohnungen). Die Volltextsuche von wilster.de (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik nur einen Bebauungsplan (Sondergebiet PV) und die Ortsbeschreibung Büttel, für Solar, Klimaschutz und Zuschuss nur die Städtebauförderung Wilster (Sanierungsgebiet, Modernisierungsförderung für Gebäude mit baulichen Mängeln, kein Anlagenzuschuss), eine Meldung zum kommunalen Energiemanagement, die Lebenslage „Förderung von Energie und Klimaschutz“ (allgemeiner Hinweis auf Programme von Bund und Ländern für Unternehmen) und einen Familienzuschuss der Gemeinde Brokdorf. Der Kreis Steinburg fördert nach seiner Volltextsuche und der Seite „Energieeffizienter Kreis / Klimaschutz“ Energie-Checks der Verbraucherzentrale für private Haushalte, aber keine Anlagen; für Balkonkraftwerk findet seine Suche nichts.",
+    "searches": [
+      "wilster.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Energie, Zuschuss, Förderprogramm, Klimaschutz",
+      "steinburg.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Klimaschutz, Förderprogramm, Zuschuss",
+      "Gelesen: Lebenslage „Förderung von Energie und Klimaschutz“, Städtebauförderung Wilster, Kreis Steinburg „Energieeffizienter Kreis / Klimaschutz“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilster.de/suche?id=153&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche wilster.de (18.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur B-Plan Nr. 3 Sondergebiet PV und Ortsbeschreibung Büttel; Solar/Klimaschutz/Zuschuss nur Städtebauförderung, Energiemanagement-Meldung, Behördenwegweiser-Lebenslagen und ein Familienzuschuss der Gemeinde Brokdorf."
+      },
+      {
+        "url": "https://www.wilster.de/amt-stadt-und-gemeinden/bauen-und-wohnen/staedtebaufoerderung-wilster",
+        "finding": "Städtebauförderungsprogramm „Kleinere Städte und Gemeinden“: Modernisierungsförderung für Objekte im Sanierungsgebiet mit starken baulichen Mängeln und steuerliche Abschreibung — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/foerderung-von-energie-und-klimaschutz-2881",
+        "finding": "Lebenslage mit allgemeinem Hinweis, dass Bund, Länder und Kommunen Förder- und Beratungsprogramme für Unternehmen anbieten; kein Programm des Amtes."
+      },
+      {
+        "url": "https://www.steinburg.de/suche.html?tx_indexedsearch%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis Steinburg (18.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Abfallhinweise, Solarkataster, Energieberatung der Verbraucherzentrale, Kreisprojekte an Schulen; Klimaschutz: gefördert werden 100 Energie-Checks für private Haushalte, kein Anlagenzuschuss."
+      },
+      {
+        "url": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "finding": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880",
+        "disposition": "reviewed",
+        "reason": "Allgemeine Lebenslage des Behördenwegweisers zur Wohnungs- und Städtebauförderung; einzige Leistung ist die Förderung von Mietwohnungen, kein Programm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wilster.de/bhww-zfinder/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2880"
+      }
+    ]
+  },
+  {
+    "regionId": "07143011",
+    "name": "Dreikirchen",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Dreikirchen gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143058",
+    "name": "Obererbach",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Obererbach gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143074",
+    "name": "Steinefrenz",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Steinefrenz gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143203",
+    "name": "Arnshöfen",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Arnshöfen gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143208",
+    "name": "Berod bei Wallmerod",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Berod bei Wallmerod gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143210",
+    "name": "Bilkheim",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Bilkheim gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143220",
+    "name": "Ettinghausen",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Ettinghausen gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143232",
+    "name": "Hahn am See",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hahn am See gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143251",
+    "name": "Kuhnhöfen",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Kuhnhöfen gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143263",
+    "name": "Meudt",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Meudt gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143266",
+    "name": "Molsberg",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Molsberg gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143273",
+    "name": "Niederahr",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Niederahr gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143281",
+    "name": "Oberahr",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Oberahr gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143290",
+    "name": "Salz",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Salz gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143304",
+    "name": "Wallmerod",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Wallmerod gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143316",
+    "name": "Zehnhausen bei Wallmerod",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Zehnhausen bei Wallmerod gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143501",
+    "name": "Elbingen",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Elbingen gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.wallmerod.de/barriere-melden",
+        "finding": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm."
+      },
+      {
+        "url": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "finding": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "finding": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wallmerod.de/barriere-melden",
+        "disposition": "reviewed",
+        "reason": "Formular zur Meldung von Barrieren auf der Website; kein Förderprogramm.",
+        "evidenceUrl": "https://www.wallmerod.de/barriere-melden"
+      },
+      {
+        "url": "wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung",
+        "disposition": "reviewed",
+        "reason": "Schwimmkursförderung für Kinder (bis 50 €), keine Energieförderung.",
+        "evidenceUrl": "https://www.wallmerod.de/buergerservice/online-antrag-zur-schwimmkursfoerderung"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-lange-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zum VG-Programm „Lange Leben im Dorf“; Richtlinie 2024 gelesen, Heizungstausch förderfähig, PV ausgeschlossen, seit 18.09.2026 im Katalog.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/online-antrag-zuschuss-leben-im-dorf",
+        "disposition": "reviewed",
+        "reason": "Antragsformular zu „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022: Erwerb/Sanierung/Neubau im Ortskern); keine Energietechnik.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v"
+      },
+      {
+        "url": "wallmerod.de/leben-im-dorf/weitere-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Förderprogramme von Kreis (Dorferneuerung, LEADER) sowie Land, Bund und EU (Förderlotse); kein eigenes Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.wallmerod.de/leben-im-dorf/weitere-foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07143239",
+    "name": "Herschbach (Oberwesterwald)",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Herschbach (Oberwesterwald) gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07143037",
+    "name": "Hundsangen",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hundsangen gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07143502",
+    "name": "Mähren",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Mähren gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07143080",
+    "name": "Weroth",
+    "checkedAt": "2026-09-18T14:18:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Weroth gehört zum Gebiet der Verbandsgemeinde Wallmerod. Für private Haushalte gilt das VG-Programm „Lange Leben im Dorf“ (Richtlinie 2024, in Kraft seit 01.01.2024, ohne Ablaufdatum, am 18.09.2026 im Volltext gelesen): pauschal 1.500 € je Bestandsgebäude ab 25 Jahren bei mindestens 15.000 € Gesamtkosten, förderfähig u. a. energetische Optimierung einschließlich Heizungstausch; Photovoltaik und andere Energieerzeugung ausdrücklich ausgeschlossen. Seit 18.09.2026 im Katalog (Wärmepumpe, nur Auskunft, kein Abzug, weil der Rechner Gebäudealter und Kostenschwelle nicht kennt). Kein Programm für Photovoltaik, Speicher oder Balkonkraftwerk: Die Seite „Weitere Förderprogramme“ verweist nur auf Kreis (Dorferneuerung, LEADER) und Land/Bund/EU (Förderlotse), „Leben im Dorf – Leben mittendrin“ (Richtlinie 2022) fördert Erwerb, Sanierung und Neubau im Ortskern über Zinszuschüsse, die Schwimmkursförderung ist keine Energieförderung; die Sitemap von wallmerod.de (242 Adressen) enthält unter Klimaschutz nur kommunale Projekte (Photovoltaik auf VG-Gebäuden, KIPKI-Projekt der Ortsgemeinde Arnshöfen für ihr Dorfgemeinschaftshaus), Energieberatung und Wärmekonzept.",
+    "searches": [
+      "wallmerod.de Sitemap (242 Adressen, 18.09.2026) nach förder/klima/energ/solar/photov/balkon/waerme/zuschuss/heiz durchsucht",
+      "Gelesen: Lange Leben im Dorf (Seite + Richtlinie 2024), Initiative Leben im Dorf (Seite + Richtlinie 2022), Weitere Förderprogramme, Schwimmkursförderung, Klimaschutz-Seiten (Energieberatung, Grüne Energie, KIPKI Arnshöfen)",
+      "Mitglieder aus wallmerod.de/gemeinden („21 Ortsgemeinden“), Schlüssel aus dem Melderegister",
+      "Websuche: \"Lange Leben im Dorf\" Wallmerod Zuschuss Heizungstausch"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/foerderrichtlinien-lange-leben-im-dorf.pdf?cid=qg",
+        "finding": "Richtlinien 2024 (unterzeichnet 28.09.2023, in Kraft 01.01.2024): Nr. 2 c energetische Optimierung (Wärmedämmung, Heizungstausch) förderfähig, PV ausdrücklich nicht; 1.500 € je Objekt, Gebäude ab 25 Jahren, Gesamtkosten ab 15.000 €, Rechnungen ab 01.01.2024, Zweckbindung 8 Jahre, andere öffentliche Mittel zulässig."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+        "finding": "Programmseite mit Richtlinie und Zuschussantrag, kein Hinweis auf Stopp oder ausgeschöpfte Mittel (18.09.2026)."
+      },
+      {
+        "url": "https://www.wallmerod.de/leben-im-dorf/initiative-leben-im-dorf/foerderrichtlinien-lid.pdf?cid=9v",
+        "finding": "Richtlinien 2022 „Leben im Dorf – Leben mittendrin“: Erwerb/Sanierung alter Bausubstanz, Baulücken, Abriss und Neubau im Ortskern, Zuschuss auf Darlehensverbindlichkeiten; keine Energietechnik."
+      },
+      {
+        "url": "https://www.wallmerod.de/gemeinden/",
+        "finding": "Gemeindeübersicht der Verbandsgemeinde: 21 Ortsgemeinden."
+      },
+      {
+        "url": "https://www.wallmerod.de/sitemap.xml",
+        "finding": "242 Adressen, unter Klimaschutz nur Projekte der Kommune, Energieberatung, Wärmekonzept, Biodiversität, Hochwasservorsorge; kein weiteres Zuschussprogramm für private Energieanlagen."
+      }
+    ],
+    "sources": []
   }
 ]

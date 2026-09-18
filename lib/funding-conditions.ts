@@ -259,6 +259,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 18 Sep 2026: exhausted VG programme, guideline read in full; the
   // test forms (application before contract, 3-/12-month deadlines) are missing.
   "vg-hachenburg-erneuerbare-energien",
+  // Added 18 Sep 2026: guideline read in full; building age (25 years) and the
+  // 15,000 EUR total-cost floor have no test form and no model field.
+  "vg-wallmerod-lange-leben-im-dorf",
 ];
 
 /**
