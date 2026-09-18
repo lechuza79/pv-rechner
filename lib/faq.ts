@@ -222,7 +222,7 @@ export function pvSimulationFaq(): FaqEntry[] {
     },
     {
       q: "Ist das eine Messung echter Anlagen?",
-      a: "Nein — es ist eine Schätzung aus Wetterdaten (Open-Meteo, basierend auf DWD- und NOAA-Modellen), keine Messung einer realen Anlage. Ausrichtung, Neigung, Verschattung und Verschmutzung eines echten Dachs verschieben das Ergebnis. Die Simulation zeigt die Größenordnung und das Tagesprofil, nicht den Zählerstand.",
+      a: "Nein — es ist eine Schätzung aus dem Wettermodell ICON-D2 des Deutschen Wetterdienstes, keine Messung einer realen Anlage. Ausrichtung, Neigung, Verschattung und Verschmutzung eines echten Dachs verschieben das Ergebnis. Die Simulation zeigt die Größenordnung und das Tagesprofil, nicht den Zählerstand.",
     },
     {
       q: "Warum schwankt die angezeigte Leistung so stark?",

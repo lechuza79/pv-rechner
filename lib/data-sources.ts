@@ -29,6 +29,13 @@ export interface DataSource {
   license?: string;
   /** Canonical homepage of the source, used for the credit link. */
   url?: string;
+  /**
+   * A notice the licensor requires in full wording (e.g. ECMWF's disclaimer).
+   * Too long for a credit line, so it stands on the sources page under the
+   * entry, and the credit line links there (CC BY 4.0 Sec. 3(a)(2) allows
+   * this "in any reasonable manner").
+   */
+  hinweis?: string;
   /** Licence homepage, if different from `url` (e.g. a govdata licence text page). */
   licenseUrl?: string;
   /**
@@ -127,6 +134,108 @@ export const DATA_SOURCES = {
     // rechnet cdhFromDailyMinMax() einen synthetischen Tagesgang und daraus die
     // Kühlgradstunden — das ist eine Ableitung, keine Weitergabe.
     note: "abgeleitet",
+  },
+  /**
+   * ERA5-Stundenwerte für die kommunalen Energiecharts.
+   *
+   * Nicht der gehostete Abruf von Open-Meteo, sondern deren offenes Datenarchiv
+   * (AWS Open Data, Bucket `openmeteo`), aus dem wir selbst lesen — deshalb ein
+   * eigener Eintrag: Lizenz und Bereitsteller sind dieselben, der Weg ist ein
+   * anderer.
+   *
+   * KOMMA statt Klammer, und anders als bei Anlagenregister oder Energy-Charts
+   * ist das hier keine Stilfrage: Dort steht in der Klammer das BETREIBENDE
+   * INSTITUT, hier stünde ein MITRECHTEINHABER. ERA5 steht seit dem 02.07.2025
+   * selbst unter CC BY 4.0, und die Zitieranleitung des EZMW verlangt die
+   * Nennung des Copernicus-Dienstes ausdrücklich — ein Pflichtbestandteil
+   * gehört nicht in eine Klammer, die sich wie ein Nachtrag liest.
+   *
+   * `url` zeigt auf open-meteo.com, nicht auf das Archiv-Repository: Die
+   * Lizenzseite von Open-Meteo gibt diese Form der Nennung vor („You must
+   * include a link next to any location Open-Meteo data are displayed"), und
+   * CC BY 4.0 Sec. 3(a)(1)(A)(i) bindet an die vom Lizenzgeber verlangte Form.
+   *
+   * `note` ist der Änderungshinweis nach Sec. 3(a)(1)(B) und deckt zugleich das
+   * „modified" der Copernicus-Fassung ab: Wir wählen die Rasterzelle selbst,
+   * rechnen die Temperatur auf die Ortshöhe um und bilden aus den beiden
+   * Windkomponenten den Betrag.
+   *
+   * OFFEN (bis zum Livegang der Kommunalcharts): der volle Copernicus-Vermerk
+   * samt Haftungssatz und der Gewährleistungshinweis von Open-Meteo gehören auf
+   * /datenstand, vom Kurzvermerk aus verlinkt — Sec. 3(a)(2) erlaubt dafür
+   * ausdrücklich einen Verweis. Die Jahresangabe darin wird fest verdrahtet,
+   * nie aus der laufenden Uhr gebildet.
+   */
+  era5Archive: {
+    name: "ERA5, Copernicus Climate Change Service, über Open-Meteo",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://open-meteo.com",
+    note: "Rasterzelle und Höhenbezug abgeleitet",
+  },
+  /**
+   * Der DWD steht VORN, nicht Open-Meteo (Zweitprüfung 18.09.2026): Lizenzgeber
+   * bleibt der DWD — sein CC-BY-Angebot erreicht jeden Empfänger direkt (Sec.
+   * 2(a)(5)(A)), gleich über welchen Weg die Daten kommen — und § 7 DWD-Gesetz
+   * verlangt seine Nennung bei jeder Verbreitung. „über Open-Meteo" allein
+   * reichte nicht.
+   *
+   * Live-Wetter: das Wettermodell des DWD (ICON-D2), gelesen aus dem offenen
+   * Datenarchiv von Open-Meteo. Zwei Rechteinhaber, beide CC BY 4.0 — der DWD
+   * (Rechtliche Hinweise auf dwd.de: „alle frei zugänglichen Geodaten … unter
+   * den Bedingungen der Lizenz Creative Commons BY 4.0") und Open-Meteo für das
+   * Archiv, dessen Lizenzseite einen Link auf open-meteo.com verlangt.
+   * Verändert: Rasterzelle gewählt, Temperatur auf die Ortshöhe umgerechnet,
+   * zeitlich auf „jetzt" interpoliert. Wo die Seite den Vermerk selbst setzt,
+   * steht davor „Datenbasis:" (DWD-Vorlage für veränderte Daten), nicht „Quelle:".
+   */
+  iconD2Archive: {
+    name: "Deutscher Wetterdienst, Modell ICON-D2, über Open-Meteo",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://open-meteo.com",
+    note: "ausgewertet und bildlich wiedergegeben",
+  },
+  /**
+   * Hitzewellen-Hinweis: Tageshöchstwerte der nächsten 16 Tage aus drei
+   * Vorhersagemodellen in der Reihenfolge, in der auch die Open-Meteo-Schnittstelle
+   * sie für Deutschland nimmt — DWD ICON, dann ECMWF IFS, dann NOAA GFS —, gelesen
+   * aus dem offenen Datenarchiv von Open-Meteo (CC BY 4.0). ECMWF stellt seine
+   * offenen Vorhersagedaten unter CC BY 4.0, GFS ist als Werk der US-Regierung
+   * gemeinfrei; beide werden trotzdem genannt, weil der Leser sonst nicht wüsste,
+   * woher Tag 8 bis 16 stammen. Verändert: Rasterzelle gewählt, auf die Ortshöhe
+   * umgerechnet, zu Tageshöchstwerten verdichtet.
+   */
+  // Legal-Judge 18.09.2026: ECMWF verlangt Nennung mit www.ecmwf.int, den
+  // Lizenzhinweis, einen Änderungshinweis und seinen Haftungsausschluss im
+  // Wortlaut (Terms of Use, apps.ecmwf.int/datasets/licences/general/); der
+  // Ausschluss steht unter dem Eintrag auf /ueber (Quellenliste), die Zeile verlinkt
+  // dorthin. DWD: Form „Datenbasis: Deutscher Wetterdienst" bei veränderten
+  // Daten — deshalb rendert die Seite diesen Eintrag mit „Datenbasis:".
+  wetterVorhersage: {
+    name: "Deutscher Wetterdienst (ICON), ECMWF (www.ecmwf.int), NOAA (GFS), über Open-Meteo",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://open-meteo.com",
+    note: "zu Tageshöchstwerten verdichtet, höhenkorrigiert",
+    hinweis:
+      "Dieser Dienst beruht auf Daten und Produkten des Europäischen Zentrums für mittelfristige Wettervorhersage (ECMWF). " +
+      "ECMWF übernimmt keinerlei Haftung für Fehler oder Auslassungen in den Daten, deren Verfügbarkeit oder für Schäden aus ihrer Nutzung. " +
+      "— This service is based on data and products of the European Centre for Medium-Range Weather Forecasts (ECMWF). " +
+      "ECMWF does not accept any liability whatsoever for any error or omission in the data, their availability, or for any loss or damage arising from their use.",
+  },
+  /**
+   * Radar-Niederschlag (RADOLAN RY), direkt vom Open-Data-Server des DWD.
+   * Quellenvermerk nach den DWD-Vorgaben „Datenbasis: Deutscher Wetterdienst"
+   * mit Veränderungshinweis; § 7 DWD-Gesetz verlangt die Quellenangabe auch,
+   * wo ein einzelner Messwert urheberrechtlich nicht geschützt wäre.
+   */
+  dwdRadar: {
+    name: "Deutscher Wetterdienst, Radar",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://www.dwd.de",
+    note: "Radardaten ausgewertet und bildlich wiedergegeben",
   },
   /**
    * Jahresraster der Globalstrahlung, Deutscher Wetterdienst (CDC-OpenData).

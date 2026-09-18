@@ -1,0 +1,47 @@
+name: Live-Wetter-Schnappschuss (DWD ICON-D2)
+
+# Schreibt stündlich je Postleitzahl-Bereich eine kleine Datei mit dem
+# Wettermodell ICON-D2 für die Stunden um „jetzt" (scripts/icon-d2-snapshot.ts →
+# Supabase Storage „wetter-modell"). Die Seite liest bei einer Anfrage nur diese
+# Datei; das offene Archiv und sein Lesebaustein bleiben hier.
+#
+# Ein Schnappschuss deckt den ganzen deutschen Kalendertag ab (für die
+# Tageskurven der Live-Simulation und „Solarleistung heute") und mindestens
+# vier Stunden voraus. Verspätet sich ein Lauf (GitHub hält geplante Läufe zu
+# Stoßzeiten zurück) oder fällt einer aus, trägt der vorige also noch einige
+# Stunden; nach Mitternacht fehlt der neue Tag — dann zeigt die Seite kein
+# Modellwetter mehr, sie erfindet keins.
+
+on:
+  schedule:
+    - cron: "20 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wetter-schnappschuss
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Schnappschuss schreiben
+        timeout-minutes: 10
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run wetter:schnappschuss

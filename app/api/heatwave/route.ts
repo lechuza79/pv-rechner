@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { rateLimit } from "../../../lib/rate-limit";
+import { shardKey } from "../../../lib/icon-d2";
+import { loadSnapshotFile } from "../../../lib/icon-d2-store";
+import { nearestPlz } from "../../../lib/plz-nearest";
+import { forecastPath, heatwaveFrom, maximaFrom, type ForecastShard } from "../../../lib/wetter-vorhersage";
+import { heuteInBerlin } from "../../../lib/zeit";
 
 // ─── Akute Hitzewelle (16-Tage-Vorhersage) ───────────────────────────────────
 //
@@ -19,8 +24,9 @@ import { rateLimit } from "../../../lib/rate-limit";
 const CDN_CACHE_FORECAST = "public, s-maxage=3600, stale-while-revalidate=3600"; // 1 h
 
 export async function GET(req: NextRequest) {
-  // Ein externer Aufruf pro Miss — deutlich billiger als die Klimadaten-Route,
-  // deshalb ein weiteres Fenster.
+  // Liest nur die Vorhersage-Datei (DWD ICON, dann NOAA GFS; alle sechs
+  // Stunden geschrieben von scripts/wetter-vorhersage.ts) — kein Wetterdienst
+  // pro Besucher.
   const limited = rateLimit(req, "heatwave", 60, 60_000);
   if (limited) return limited;
 
@@ -33,35 +39,12 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const heatwave = await fetchHeatwave(Math.round(lat * 100) / 100, Math.round(lon * 100) / 100);
+  const plz = nearestPlz(lat, lon);
+  const shard = plz ? await loadSnapshotFile<ForecastShard>(forecastPath(shardKey(plz))) : null;
+  const maxima = shard && plz ? maximaFrom(shard, plz, heuteInBerlin()) : null;
+  const heatwave = maxima ? heatwaveFrom(maxima, CFG.heatwaveThreshold, CFG.heatwaveMinDays) : null;
   return NextResponse.json(
     { heatwave },
     { headers: { "Cache-Control": CDN_CACHE_FORECAST } },
   );
-}
-
-async function fetchHeatwave(
-  lat: number,
-  lon: number,
-): Promise<{ maxTemp: number; hotDays: number; active: boolean } | null> {
-  try {
-    const url = new URL("https://api.open-meteo.com/v1/forecast");
-    url.searchParams.set("latitude", String(lat));
-    url.searchParams.set("longitude", String(lon));
-    url.searchParams.set("daily", "temperature_2m_max");
-    url.searchParams.set("forecast_days", "16");
-    url.searchParams.set("timezone", "Europe/Berlin");
-    const res = await fetch(url.toString(), { signal: AbortSignal.timeout(5000) });
-    if (!res.ok) return null;
-    const json = await res.json();
-    const maxima: number[] = json?.daily?.temperature_2m_max ?? [];
-    if (!maxima.length) return null;
-    const maxTemp = Math.round(Math.max(...maxima));
-    const hotDays = maxima.filter(t => t >= CFG.heatwaveThreshold).length;
-    let streak = 0, best = 0;
-    for (const t of maxima) { streak = t >= CFG.heatwaveThreshold ? streak + 1 : 0; best = Math.max(best, streak); }
-    return { maxTemp, hotDays, active: best >= CFG.heatwaveMinDays };
-  } catch {
-    return null;
-  }
 }

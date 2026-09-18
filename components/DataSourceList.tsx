@@ -17,7 +17,11 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   energyCharts: "Strommix, Stromerzeugung und Grenzflüsse, stündlich aktualisiert",
   ember: "Ländervergleich: Zubau von Erneuerbaren und Atomkraft",
   mastr: "Anlagenbestand in Deutschland (Solar-Atlas, Karten, Kennzahlen)",
-  openMeteo: "Wetterdaten der Live-Simulation und der Kühlgradstunden",
+  openMeteo: "Klimaprojektion der Kühlgradstunden für die kommenden zwanzig Jahre",
+  era5Archive: "Rückblickende Wetterstunden der kommunalen Energiecharts — Sonne, Temperatur und Wind je Ort",
+  iconD2Archive: "Live-Wetter, Live-Simulation und Solarleistung heute: Wolken, Sonne, Temperatur und Wind aus dem Wettermodell des Wetterdienstes",
+  wetterVorhersage: "Hitzewellen-Hinweis im Klimaanlagen-Rechner: Tageshöchstwerte der nächsten 16 Tage",
+  dwdRadar: "Live-Wetter: gemessener Regen und Schnee am Ort, alle fünf Minuten",
   dwd: "Sonneneinstrahlung je Jahr seit 1991 — die Wetterjahre im Stromkosten-Rennen",
   pvgis: "Standortabhängiger Solarertrag je Kilowatt-Peak",
   eurostat: "Haushaltsstrompreise im europäischen Vergleich",
@@ -38,8 +42,9 @@ export default function DataSourceList() {
   return (
     <ul style={S.list}>
       {eintraege.map(([schluessel, quelle]) => (
-        <li key={schluessel} style={S.item}>
+        <li key={schluessel} id={`quelle-${schluessel}`} style={S.item}>
           <DataSourceNote source={quelle} label={`${VERWENDUNG[schluessel]}:`} />
+          {"hinweis" in quelle && quelle.hinweis ? <div style={{ marginTop: space.xs }}>{quelle.hinweis}</div> : null}
         </li>
       ))}
     </ul>

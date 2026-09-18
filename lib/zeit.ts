@@ -69,6 +69,24 @@ export function berlinOffset(jetzt: Date = new Date()): string {
   return name.replace("GMT", "") || "+01:00";
 }
 
+/**
+ * Beginn und Ende des deutschen Kalendertags, in dem `jetzt` liegt, als
+ * UTC-Millisekunden. An den Umstellungstagen ist der Tag 23 bzw. 25 Stunden lang.
+ *
+ * Der Versatz wird drei Stunden VOR Mitternacht Weltzeit gelesen: Die deutsche
+ * Mitternacht liegt dann noch vor jeder Umstellung (die geschieht um 01:00 UTC),
+ * also gilt der Versatz des Vortags — genau der, den die Mitternacht trägt.
+ */
+export function berlinTagesgrenzen(jetzt: Date = new Date()): [number, number] {
+  const mitternacht = (tag: string) => {
+    const probe = new Date(Date.parse(`${tag}T00:00:00Z`) - 3 * 3600000);
+    return Date.parse(`${tag}T00:00:00${berlinOffset(probe)}`);
+  };
+  const heute = heuteInBerlin(jetzt);
+  const morgen = new Date(Date.parse(`${heute}T12:00:00Z`) + 86400000).toISOString().slice(0, 10);
+  return [mitternacht(heute), mitternacht(morgen)];
+}
+
 /** Wochentag in Deutschland, 0 = Sonntag. */
 export function wochentagInBerlin(jetzt: Date = new Date()): number {
   const kurz = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Berlin", weekday: "short" }).format(jetzt);

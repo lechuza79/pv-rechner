@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { DataSourceNote } from "../../../../components/PoweredBy";
+import { DATA_SOURCES } from "../../../../lib/data-sources";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "../../../../components/Breadcrumb";
@@ -364,14 +366,7 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
           )}
           {blAgs && BL_CENTROID[blAgs] && solar && solar.total_kwp > 0 && (
             <>
-              {" "}Die simulierte Solarleistung nutzt Wetterdaten von{" "}
-              <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
-                Open-Meteo
-              </a>{" "}
-              (DWD, NOAA), Lizenz{" "}
-              <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
-                CC BY 4.0
-              </a>.
+              {" "}<DataSourceNote label="Die simulierte Solarleistung nutzt Wetterdaten. Datenbasis:" source={DATA_SOURCES.iconD2Archive} />.
             </>
           )}
         </p>

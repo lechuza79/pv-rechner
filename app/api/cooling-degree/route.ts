@@ -2,21 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabase-server";
 import { PLZ_BL } from "../../../lib/plz-bundesland";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
-import { cdhFromHourly, cdhFromDailyMinMax } from "../../../lib/aircon";
+import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "../../../lib/db-timeout";
+import { nearestPlz } from "../../../lib/plz-nearest";
+import kuehlgrad from "../../../lib/kuehlgrad.json";
 import { rateLimit } from "../../../lib/rate-limit";
 
 // Cooling-degree-hours for a location are climatology — effectively stationary.
 // Cache hard on the CDN so repeat requests skip the function entirely.
 const CDN_CACHE_LONG = "public, s-maxage=2592000, stale-while-revalidate=2592000"; // 30 days
 const CDN_CACHE_FALLBACK = "public, s-maxage=86400, stale-while-revalidate=604800"; // 1 day
-const CLIMATE_MAX_YEAR = 2050; // Open-Meteo Climate API endet 2050
 
-const BASE = CFG.coolBaseTemp;
 
 interface CdhModes {
-  avg5: number;        // Ø der letzten N Sommer (Wetterarchiv)
-  lastSummer: number;  // letzter vollständiger Sommer
-  projection: number;  // Projektion ~20 Jahre (CMIP6 Climate API)
+  avg5: number;        // Ø der letzten N Sommer (ERA5, vorberechnet)
+  lastSummer: number;  // letzter vollständiger Sommer (ERA5, vorberechnet)
+  projection: number;  // Projektion ~20 Jahre (CMIP6, gespeichert; siehe projectionFor)
 }
 
 export async function GET(req: NextRequest) {
@@ -47,114 +47,57 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const rLat = Math.round(lat * 100) / 100;
-  const rLon = Math.round(lon * 100) / 100;
-
-  // Cache prüfen (alle drei Modi). Fehlt die Tabelle/Spalten → still recompute.
-  if (supabase) {
-    const { data: cached } = await supabase
-      .from("klima_cache")
-      .select("cdh_avg5, cdh_last_summer, cdh_projection")
-      .eq("lat", rLat)
-      .eq("lon", rLon)
-      .maybeSingle();
-    if (cached?.cdh_avg5) {
-      return NextResponse.json(
-        { avg5: cached.cdh_avg5, lastSummer: cached.cdh_last_summer, projection: cached.cdh_projection, source: "cache" },
-        { headers: { "Cache-Control": CDN_CACHE_LONG } },
-      );
-    }
-  }
-
-  // Ab hier wird wirklich gerechnet: 5 Archivjahre + 1 Klimaprojektion, also
-  // SECHS externe Aufrufe pro Koordinatenpaar. Das Raster (0,01°) lässt rund
-  // 880.000 Paare über Deutschland zu — ein Skript könnte damit das kostenlose
-  // Open-Meteo-Kontingent in Minuten leerräumen, und die Folge wäre kein
-  // sichtbarer Fehler, sondern still schlechtere Zahlen auf allen
-  // Wetter-Features. Deshalb ein zweites, hartes Fenster, das NUR die teuren
-  // Misses zählt: Echte Nutzer fragen eine Handvoll PLZ ab und laufen fast
-  // immer in den Cache oben, Aufzählung dagegen erzeugt per Definition nur
-  // Misses und läuft nach fünf Versuchen pro Minute gegen die Wand.
-  const computeLimited = rateLimit(req, "cooling-degree-compute", 5, 60_000);
-  if (computeLimited) return computeLimited;
-
-  try {
-    const thisYear = new Date().getFullYear();
-    // Historie: letzte N vollständige Sommer (Vorjahr rückwärts).
-    const histYears = Array.from({ length: CFG.avgYears }, (_, i) => thisYear - 1 - i);
-    const histResults = await Promise.allSettled(histYears.map(y => fetchSummerCdh(rLat, rLon, y)));
-    const perYear = histResults.map(r => (r.status === "fulfilled" ? r.value : null));
-    const valid = perYear.filter((v): v is number => v != null && v >= 50 && v <= 5000);
-    if (!valid.length) throw new Error("no valid summers");
-
-    const avg5 = Math.round(valid.reduce((a, b) => a + b, 0) / valid.length);
-    const lastSummer = perYear[0] != null && perYear[0] >= 50 && perYear[0] <= 5000
-      ? Math.round(perYear[0])
-      : Math.round(avg5 * CFG.lastSummerFactor);
-
-    // Projektion ~20 Jahre via CMIP6 Climate API (gegen 2050 geclamped).
-    const pStart = Math.min(CLIMATE_MAX_YEAR, thisYear + CFG.projectionYearsAhead.start);
-    const pEnd = Math.min(CLIMATE_MAX_YEAR, thisYear + CFG.projectionYearsAhead.end);
-    let projection = Math.round(avg5 * CFG.projectionFactor); // Fallback
-    try {
-      const proj = await fetchProjectionCdh(rLat, rLon, pStart, pEnd);
-      if (proj != null && proj >= 50 && proj <= 6000) projection = Math.round(proj);
-    } catch { /* Faktor-Fallback bleibt */ }
-
-    if (supabase) {
-      await supabase.from("klima_cache").upsert(
-        { lat: rLat, lon: rLon, cdh_avg5: avg5, cdh_last_summer: lastSummer, cdh_projection: projection, updated_at: new Date().toISOString() },
-        { onConflict: "lat,lon" },
-      ).then(() => {});
-    }
-
-    return NextResponse.json(
-      { avg5, lastSummer, projection, source: "open-meteo" },
-      { headers: { "Cache-Control": CDN_CACHE_LONG } },
-    );
-  } catch {
+  // The past: computed once a year from our own ERA5 archive for every
+  // postcode (scripts/kuehlgrad-build.ts), answered for the nearest one.
+  const plz = nearestPlz(lat, lon);
+  const own = plz ? (kuehlgrad as unknown as { points: Record<string, [number, number]> }).points[plz] : undefined;
+  if (!own) {
     return NextResponse.json(
       { ...fallback, source: "fallback" },
       { headers: { "Cache-Control": CDN_CACHE_FALLBACK } },
     );
   }
+  const [avg5, lastSummer] = own;
+
+  const rLat = Math.round(lat * 100) / 100;
+  const rLon = Math.round(lon * 100) / 100;
+  const projection = await projectionFor(rLat, rLon, avg5);
+  return NextResponse.json(
+    { avg5, lastSummer, projection, source: "era5" },
+    { headers: { "Cache-Control": CDN_CACHE_LONG } },
+  );
 }
 
-// Ein Sommer (Mai–Sep) aus dem Wetterarchiv → Kühlgradstunden (echt stündlich).
-async function fetchSummerCdh(lat: number, lon: number, year: number): Promise<number> {
-  const url = new URL("https://archive-api.open-meteo.com/v1/archive");
-  url.searchParams.set("latitude", String(lat));
-  url.searchParams.set("longitude", String(lon));
-  url.searchParams.set("start_date", `${year}-05-01`);
-  url.searchParams.set("end_date", `${year}-09-30`);
-  url.searchParams.set("hourly", "temperature_2m");
-  url.searchParams.set("timezone", "Europe/Berlin");
-  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(10000) });
-  if (!res.ok) throw new Error(`archive ${res.status}`);
-  const json = await res.json();
-  const temps: number[] = json?.hourly?.temperature_2m ?? [];
-  if (!temps.length) throw new Error("empty archive");
-  return cdhFromHourly(temps, BASE);
-}
-
-// Projektion: CMIP6-Modell über das Zukunftsfenster, Tages-Min/Max → synthetische
-// Stunden → Kühlgradstunden, gemittelt pro Jahr. Wintertage tragen ~0 bei, daher
-// kein Monatsfilter nötig.
-async function fetchProjectionCdh(lat: number, lon: number, startYear: number, endYear: number): Promise<number | null> {
-  const url = new URL("https://climate-api.open-meteo.com/v1/climate");
-  url.searchParams.set("latitude", String(lat));
-  url.searchParams.set("longitude", String(lon));
-  url.searchParams.set("start_date", `${startYear}-01-01`);
-  url.searchParams.set("end_date", `${endYear}-12-31`);
-  url.searchParams.set("models", CFG.climateModel);
-  url.searchParams.set("daily", "temperature_2m_max,temperature_2m_min");
-  url.searchParams.set("timezone", "Europe/Berlin");
-  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(12000) });
-  if (!res.ok) throw new Error(`climate ${res.status}`);
-  const json = await res.json();
-  const tmax: number[] = json?.daily?.temperature_2m_max ?? [];
-  const tmin: number[] = json?.daily?.temperature_2m_min ?? [];
-  if (!tmax.length || !tmin.length) return null;
-  const years = endYear - startYear + 1;
-  return cdhFromDailyMinMax(tmax, tmin, BASE) / years;
+/**
+ * The ~20-year projection, without calling any weather service.
+ *
+ * The climate model's future (CMIP6 via the Open-Meteo climate API) is kept
+ * per coordinate in klima_cache from earlier visits, next to the baseline it
+ * was compared with then. That baseline came from another model (ERA5-Land,
+ * measured 14–19 % below DWD stations), so the future value is carried over
+ * as its ratio to that baseline and applied to ours — otherwise 7 % of places
+ * would show LESS cooling in twenty years than today. Without a stored value:
+ * the documented national factor.
+ *
+ * No new values are fetched: the climate API is licensed for non-commercial
+ * use only, and its commercial plan is a decision still open.
+ */
+async function projectionFor(lat: number, lon: number, avg5: number): Promise<number> {
+  const byFactor = Math.round(avg5 * CFG.projectionFactor);
+  if (!supabase) return byFactor;
+  try {
+    const { data: cached } = await withDbTimeout(
+      Promise.resolve(
+        supabase.from("klima_cache").select("cdh_avg5, cdh_projection").eq("lat", lat).eq("lon", lon).maybeSingle(),
+      ),
+      "klima_cache projection",
+      DB_SOFT_READ_TIMEOUT_MS,
+    );
+    if (cached?.cdh_projection && cached.cdh_avg5) {
+      return Math.round((cached.cdh_projection / cached.cdh_avg5) * avg5);
+    }
+  } catch {
+    /* factor below */
+  }
+  return byFactor;
 }

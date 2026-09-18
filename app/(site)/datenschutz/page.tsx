@@ -336,11 +336,12 @@ export default function DatenschutzPage() {
           standortabhängigen Solarertrag. Dazu wird die von dir eingegebene
           Postleitzahl bzw. die daraus abgeleiteten Koordinaten an unseren Server
           und von dort an den Photovoltaik-Ertragsdienst PVGIS der Europäischen
-          Kommission (Joint Research Centre) übermittelt. Für die
-          Live-Simulation, die Sonnenanzeige, den Klimaanlagen-Rechner und die
-          Hitzewellen-Vorschau werden die Koordinaten zusätzlich an den
-          Wetterdienst Open-Meteo gesendet. Dabei wird technisch bedingt die IP-Adresse unseres Servers,
-          nicht deine eigene, an diese Dienste übertragen. Es werden keine
+          Kommission (Joint Research Centre) übermittelt. Dabei wird technisch
+          bedingt die IP-Adresse unseres Servers, nicht deine eigene, an diesen
+          Dienst übertragen. Für die Live-Simulation, die Sonnenanzeige, den
+          Klimaanlagen-Rechner und die Hitzewellen-Vorschau lesen wir Wetterdaten
+          aus eigenen, regelmäßig aktualisierten Dateien; dafür werden keine
+          Koordinaten an einen Wetterdienst übermittelt. Es werden keine
           Berechnungs-Eingaben darüber hinaus weitergegeben. Rechtsgrundlage ist
           Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer
           standortgenauen Berechnung). Abgefragte Ertragsdaten werden zur

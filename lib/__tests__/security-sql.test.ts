@@ -223,7 +223,8 @@ describe("auditPosture", () => {
 describe("Eine Quelle", () => {
   it("definiert exec_sql nirgends sonst im Repo", () => {
     const root = resolve(__dirname, "..", "..");
-    const skip = new Set(["node_modules", ".next", ".next-dev", ".git", "docs", ".claude"]);
+    // `.cache` holds gitignored data (weather archive blocks, downloads): no code.
+    const skip = new Set(["node_modules", ".next", ".next-dev", ".git", "docs", ".claude", ".cache"]);
     const treffer: string[] = [];
 
     const lauf = (dir: string) => {

@@ -32,7 +32,7 @@ import { FundingSourceReader, FundingPersistenceError, persistFundingWrite } fro
 import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
-import { fingerprintOf, markiert } from "../lib/funding-fingerprint";
+import { fingerprintOf, markiert, vergleichbar } from "../lib/funding-fingerprint";
 import { inSchueben } from "../lib/lauf-parallel";
 
 function loadEnvFile(): void {
@@ -138,7 +138,11 @@ async function main(): Promise<void> {
       return;
     }
     const fp = markiert("live", abdruck);
-    if (!z.fingerprint) {
+    // A fingerprint from another procedure version is OUR change, not the
+    // town's: re-baseline without a change date. Without this, a single
+    // FINGERPRINT_VERSION bump marked every page as moved and reopened every
+    // completed municipality.
+    if (!z.fingerprint || !vergleichbar(z.fingerprint, fp)) {
       await persistFundingWrite(() => sb.from("funding_coverage").update({ fingerprint: fp, seite_gesehen_am: jetzt }).eq("region_id", z.region_id), { operation: "coverage-initial", url: z.url! });
       neu++;
       return;
@@ -160,7 +164,7 @@ async function main(): Promise<void> {
   console.log("Ergebnis:");
   console.log(`   unverändert:  ${unveraendert}`);
   console.log(`   BEWEGT:       ${geaendert}`);
-  console.log(`   erstmals erfasst: ${neu}`);
+  console.log(`   erstmals erfasst oder neu vermessen: ${neu}`);
   console.log(`   unerreichbar: ${unerreichbar}`);
   if (bewegt.length) {
     console.log(`\nDiese Gemeinden stehen im nächsten Screening-Lauf wieder oben:\n   ${bewegt.join(", ")}`);
