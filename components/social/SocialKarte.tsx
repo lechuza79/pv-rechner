@@ -1,5 +1,8 @@
+import React from 'react';
 import Logo from "../Logo";
 import { v, space } from "../../lib/theme";
+import { storyChart } from "../../lib/story-chart-tokens";
+import { brandAssets } from "../../lib/brand-assets";
 import { kartenTokens, serienFarben, type KartenPalette } from "../../lib/social-karten-stil";
 import { aufteilungsStellen, ranglistenStellen, restVon } from "../../lib/social-bildformen";
 import { BUNDESLAND_UMRISS, BUNDESLAND_UMRISS_SEITE } from "../../lib/bundesland-umrisse";
@@ -142,8 +145,14 @@ export function SocialKarte({
   skala = 1,
   stufe = "voll",
   palette = "eigene",
+  branding = true,
+  source = true,
+  dataAsOf,
 }: {
   bild: PostBild;
+  branding?: boolean;
+  source?: boolean;
+  dataAsOf?: string;
   skala?: number;
   stufe?: KartenStufe;
   /** Eigenes Farbschema oder das der Seite — siehe {@link KartenPalette}. */
@@ -191,6 +200,7 @@ export function SocialKarte({
         // rendert (oder als Bild aufnimmt), bekam die Tagesstufe der Seite und
         // damit eine Karte, die es so nie geben sollte.
         ...(palette === "eigene" ? (kartenTokens(bild.stil) as React.CSSProperties) : {}),
+        position: "relative",
         width: BREITE * skala,
         // Der Teaser hört auf, wo sein Inhalt endet — eine erzwungene
         // 4:5-Fläche wäre hier zur Hälfte leer.
@@ -210,6 +220,11 @@ export function SocialKarte({
           Im Teaser ist es umgekehrt: Dort steht die Aussage als Text unter der
           Karte, und das Bild zeigt nur die Zahlen. Zweimal derselbe Satz auf
           240 Pixeln wäre die Hälfte der Fläche für nichts. */}
+      {!klein && !branding && source && (
+        <div style={{ position: "absolute", top: 64 * skala, bottom: 64 * skala, right: 20 * skala, writingMode: "vertical-rl", transform: "rotate(180deg)", whiteSpace: "nowrap", fontSize: 18 * skala, lineHeight: 1.3, color: v("--color-text-muted") }}>
+          {bild.quelle}
+        </div>
+      )}
       {!klein && (
       <div
         style={{
@@ -223,13 +238,18 @@ export function SocialKarte({
         {bild.aussage}
       </div>
       )}
-      {!klein && bild.gemessen && (
+      {!klein && dataAsOf && <div style={{ fontSize: storyChart.detail * skala, color: v("--color-text-muted"), marginBottom: storyChart.gap * skala }}>Stand {dataAsOf}</div>}
+      {!klein && bild.gemessen && !(bild.art === "anteilsdonut" && bild.gesamtAnzeige) && (
         <div style={{ fontSize: px(g.untertitel), color: v("--color-text-muted"), marginBottom: px(quadrat ? 28 : 64) }}>
           {bild.gemessen}
         </div>
       )}
 
-      {donut ? (
+      {bild.art === "anteilsdonut" && !klein ? (
+        <AnteilsDonut bild={bild} skala={skala} palette={palette} stufe={stufe} />
+      ) : bild.art === "anteilsprofil" && !klein ? (
+        <AnteilsprofilTeil bild={bild} skala={skala} palette={palette} stufe={stufe} />
+      ) : donut ? (
         <DonutTeil bild={bild} max={max} skala={skala} palette={palette} stufe={stufe} />
       ) : saeule ? (
         <SaeulenTeil bild={bild} skala={skala} palette={palette} stufe={stufe} />
@@ -337,7 +357,7 @@ export function SocialKarte({
       </div>
       )}
 
-      {!klein && (
+      {!klein && branding && (
       <div
         style={{
           // DER FUSS GIBT NIE NACH. Er trägt Quellenvermerk und Marke, und beides
@@ -355,16 +375,16 @@ export function SocialKarte({
           gap: space.lg * skala,
         }}
       >
-        <div style={{ fontSize: 24 * skala, color: v("--color-text-muted"), lineHeight: 1.35, maxWidth: "72%" }}>
+        <div style={{ fontSize: 24 * skala, color: v("--color-text-muted"), lineHeight: 1.35, maxWidth: branding ? "72%" : "100%", marginLeft: branding ? undefined : "auto", textAlign: branding ? "left" : "right" }}>
           {bild.quelle}
         </div>
         {/* Die Marke als Logo, nicht als getippter Name: Im geteilten Bild ist
             sie das Einzige, was die Herkunft zeigt — einen Knopf, der darauf
             führt, gibt es hier nicht mehr. Das Logo führt seine Farben als
             Token, folgt also demselben Farbschema wie die Karte. */}
-        <div style={{ flexShrink: 0 }}>
+        {branding && <div style={{ flexShrink: 0 }}>
           <Logo width={200 * skala} />
-        </div>
+        </div>}
       </div>
       )}
     </div>
@@ -464,7 +484,7 @@ function bogenEnde(r: number, anteil: number, breite: number, mitte: number) {
   };
 }
 
-function DonutTeil({ bild, max, skala, palette, stufe }: { bild: PostBild; max: number; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
+export function DonutTeil({ bild, max, skala, palette, stufe }: { bild: PostBild; max: number; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
   const sortiert = [...bild.serien].sort((a, b) => Math.abs(b.wert) - Math.abs(a.wert));
   const zeigeEinheit = bild.einheitAmWert !== false;
   // Gibt es ein Ganzes, wird daran normiert — dann ist kein Ring voll, außer der
@@ -636,7 +656,7 @@ function DonutTeil({ bild, max, skala, palette, stufe }: { bild: PostBild; max: 
  * der größere Wert, an der Sockelkante der kleinere. Eine Legende bräuchte es
  * dann nicht mehr — die Zuordnung ist die Position.
  */
-function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
+export function SaeulenTeil({ bild, skala, palette, stufe, growthToRight=false, comparisonFlag=false }: { bild: PostBild; skala: number; palette: KartenPalette; stufe: KartenStufe; growthToRight?:boolean; comparisonFlag?:boolean }) {
   const [gross, klein] = [...bild.serien].sort((a, b) => Math.abs(b.wert) - Math.abs(a.wert));
   const zeigeEinheit = bild.einheitAmWert !== false;
   const toene = serienFarben(bild.stil, palette);
@@ -659,6 +679,8 @@ function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: n
   // steht — und eine Höhe liest man gegen einen Boden ab.
   const UEBERSTAND = Math.round(BREITE * 0.2);
   const TEXTBREITE = 400;
+  const chartOffset = comparisonFlag ? 210 : 0;
+  const comparisonLabelWidth = 230;
   const GRUNDLINIE = Math.max(2, 4 * skala);
   const sockel = Math.max(0, Math.min(Math.abs(klein.wert) / Math.abs(gross.wert), 1)) * HOEHE;
   const ecke = Math.round(BREITE * 0.1) * skala;
@@ -669,17 +691,29 @@ function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: n
       maximumFractionDigits: s.stellen ?? 0,
     });
 
+  const [previous,current] = [...bild.serien].sort((a,b)=>a.label.localeCompare(b.label));
+  const declining = comparisonFlag && current.wert < previous.wert;
+  const comparisonDelta = previous.wert !== 0
+    ? `${current.wert >= previous.wert ? "+" : "−"}${Math.abs(Math.round((current.wert / previous.wert - 1) * 100)).toLocaleString("de-DE")}`
+    : null;
   const block = (s: BildSerie, gruppe: boolean) => (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", textAlign: comparisonFlag && !gruppe ? "right" : undefined }}>
       <UmrissZeichen name={s.umriss} skala={skala} groesse={gruppe ? 300 : 220} farbe={toene.gedaempft} />
-      <div style={{ fontSize: 30 * skala, color: v("--color-text-muted"), lineHeight: 1.25 }}>
+      {comparisonFlag && gruppe ? (
+        <div style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: 16 * skala, padding: `${8 * skala}px ${14 * skala}px`, marginBottom: 14 * skala, borderRadius: 8 * skala, background: "var(--atlas-action)", color: "var(--atlas-action-ink, #092023)", fontSize: 30 * skala, lineHeight: 1.2, fontFamily: "var(--atlas-display)", fontWeight: 700, whiteSpace: "nowrap" }}>
+          <span>{s.zusatz ?? s.label}</span>
+          {comparisonDelta !== null && <span>{comparisonDelta}<span style={{ fontSize: ".65em", fontWeight: 400, opacity: .65 }}>%</span></span>}
+          <span aria-hidden="true" style={{ position: "absolute", top: "50%", left: -6 * skala, width: 12 * skala, height: 12 * skala, transform: "translateY(-50%) rotate(45deg)", background: "var(--atlas-action)" }} />
+        </div>
+      ) : <div style={{ fontSize: 30 * skala, color: v("--color-text-muted"), lineHeight: 1.25 }}>
         {s.zusatz ?? s.label}
-      </div>
+      </div>}
       <div
         style={{
           position: "relative",
           display: "flex",
           alignItems: "baseline",
+          justifyContent: comparisonFlag && !gruppe ? "flex-end" : undefined,
           gap: 12 * skala,
           whiteSpace: "nowrap",
         }}
@@ -695,9 +729,9 @@ function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: n
         >
           {wert(s)}
         </span>
-        {zeigeEinheit && <span style={{ fontSize: 28 * skala, color: v("--color-text-muted") }}>{s.einheit}</span>}
+        {zeigeEinheit && !(comparisonFlag && s.einheit === "Anlagen") && <span style={{ fontSize: 28 * skala, color: v("--color-text-muted") }}>{s.einheit}</span>}
       </div>
-      {s.delta && (
+      {s.delta && !comparisonFlag && (
         <div
           style={{
             fontSize: 44 * skala,
@@ -716,8 +750,23 @@ function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: n
     </div>
   );
 
+  if(declining){
+    const currentHeight=HOEHE*current.wert/previous.wert;
+    const differenceHeight=(HOEHE-currentHeight)*skala;
+    return <div style={{position:'relative',width:(chartOffset+AUSLEGER+BREITE+30+comparisonLabelWidth)*skala,height:(HOEHE+GRUNDLINIE/skala)*skala,margin:'0 auto'}}>
+      <div style={{position:'absolute',left:0,bottom:currentHeight*.35*skala,width:170*skala}}>{block(previous,false)}</div>
+      {/* The higher previous-year column is wide; the current-year column is narrow. */}
+      <div style={{position:'absolute',left:chartOffset*skala,bottom:GRUNDLINIE,width:BREITE*skala,height:HOEHE*skala,background:toene.gedaempft,borderRadius:`${ecke}px ${ecke}px 0 0`}}/>
+      <div style={{position:'absolute',left:chartOffset*skala,top:0,width:BREITE*skala,height:differenceHeight,background:toene.hervorgehoben,borderRadius:`${Math.min(ecke,differenceHeight/2)}px ${Math.min(ecke,differenceHeight/2)}px 0 0`}}/>
+      <div style={{position:'absolute',left:chartOffset*skala,top:differenceHeight,width:BREITE*skala,height:2,background:v('--color-bg')}}/>
+      <div style={{position:'absolute',left:(chartOffset+BREITE)*skala,bottom:GRUNDLINIE,width:AUSLEGER*skala,height:currentHeight*skala,background:toene.gedaempft,opacity:.4,borderLeft:`2px solid ${v('--color-bg')}`,boxSizing:'border-box',borderRadius:`0 ${ecke}px 0 0`}}/>
+      <div style={{position:'absolute',left:(chartOffset+AUSLEGER+BREITE+30)*skala,top:differenceHeight/2-26*skala,width:comparisonLabelWidth*skala}}>{block(current,true)}</div>
+      <div style={{position:'absolute',left:(chartOffset-UEBERSTAND)*skala,bottom:0,width:(AUSLEGER+BREITE+2*UEBERSTAND)*skala,height:GRUNDLINIE,background:v('--color-border')}}/>
+    </div>;
+  }
+
   return (
-    <div style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div data-growth-to-right={growthToRight || undefined} style={{ flex: 1, minHeight: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
       {/* Feste Gesamtbreite, damit die Gruppe mittig steht: Die Blöcke liegen
           absolut auf der Säulenhöhe, eine Breite „nach Inhalt" gibt es hier
           nicht. */}
@@ -725,7 +774,7 @@ function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: n
         style={{
           position: "relative",
           height: (HOEHE + GRUNDLINIE / skala) * skala,
-          width: (BREITE + AUSLEGER + ABSTAND + TEXTBREITE) * skala,
+          width: (comparisonFlag ? chartOffset + BREITE + AUSLEGER + 30 + comparisonLabelWidth : BREITE + AUSLEGER + ABSTAND + TEXTBREITE) * skala,
         }}
       >
         {/* Grundlinie: Ohne sie schwebt die Säule, und eine schwebende Säule
@@ -733,7 +782,7 @@ function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: n
         <div
           style={{
             position: "absolute",
-            left: -UEBERSTAND * skala,
+            left: (chartOffset - UEBERSTAND) * skala,
             bottom: 0,
             width: (BREITE + AUSLEGER + 2 * UEBERSTAND) * skala,
             height: GRUNDLINIE,
@@ -745,7 +794,7 @@ function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: n
         <div
           style={{
             position: "absolute",
-            left: 0,
+            left: (chartOffset + (growthToRight ? AUSLEGER : 0)) * skala,
             bottom: GRUNDLINIE,
             width: BREITE * skala,
             height: HOEHE * skala,
@@ -753,16 +802,16 @@ function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: n
             borderRadius: `${ecke}px ${ecke}px 0 0`,
           }}
         />
-        {/* Der Sockel ist der kleinere Wert. Keine Fuge zwischen ihm und dem
-            oberen Teil: Die beiden Flächen sind EINE Säule, und eine Trennlinie
-            quer hindurch machte daraus zwei gestapelte Kästen. */}
+        {/* Keep the segment boundary visible without changing the value heights. */}
         <div
           style={{
             position: "absolute",
-            left: 0,
+            left: (chartOffset + (growthToRight ? AUSLEGER : 0)) * skala,
             bottom: GRUNDLINIE,
             width: BREITE * skala,
             height: sockel * skala,
+            borderTop: comparisonFlag ? `2px solid ${v("--color-bg")}` : undefined,
+            boxSizing: "border-box",
             background: toene.gedaempft,
           }}
         />
@@ -772,15 +821,16 @@ function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: n
         <div
           style={{
             position: "absolute",
-            left: BREITE * skala,
+            left: (chartOffset + (growthToRight ? 0 : BREITE)) * skala,
             bottom: GRUNDLINIE,
             width: AUSLEGER * skala,
             height: sockel * skala,
             background: toene.gedaempft,
             opacity: 0.4,
-            borderLeft: `${Math.max(2, 4 * skala)}px solid ${v("--color-bg")}`,
+            borderLeft: growthToRight ? undefined : `${Math.max(2, 4 * skala)}px solid ${v("--color-bg")}`,
+            borderRight: growthToRight ? `${Math.max(2, 4 * skala)}px solid ${v("--color-bg")}` : undefined,
             boxSizing: "border-box",
-            borderRadius: `0 ${ecke}px 0 0`,
+            borderRadius: growthToRight ? `${ecke}px 0 0 0` : `0 ${ecke}px 0 0`,
           }}
         />
 
@@ -792,10 +842,10 @@ function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: n
         <div
           style={{
             position: "absolute",
-            left: (BREITE + AUSLEGER + ABSTAND) * skala,
-            top: 0,
-            width: TEXTBREITE * skala,
-            height: (HOEHE - sockel) * skala,
+            left: (chartOffset + BREITE + AUSLEGER + (comparisonFlag ? 30 : ABSTAND)) * skala,
+            top: comparisonFlag ? ((HOEHE - sockel) / 2 - 26) * skala : 0,
+            width: (comparisonFlag ? comparisonLabelWidth : TEXTBREITE) * skala,
+            height: comparisonFlag ? undefined : (HOEHE - sockel) * skala,
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -806,9 +856,9 @@ function SaeulenTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: n
         <div
           style={{
             position: "absolute",
-            left: (BREITE + AUSLEGER + ABSTAND) * skala,
+            left: comparisonFlag ? 0 : (BREITE + AUSLEGER + ABSTAND) * skala,
             bottom: GRUNDLINIE,
-            width: TEXTBREITE * skala,
+            width: (comparisonFlag ? 170 : TEXTBREITE) * skala,
             height: sockel * skala,
             display: "flex",
             flexDirection: "column",
@@ -910,7 +960,7 @@ function UmrissTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: nu
               >
                 <span
                   style={{
-                    fontSize: 88 * skala,
+                    fontSize: storyChart.donutValue * skala,
                     fontFamily: v("--font-mono"),
                     fontWeight: 700,
                     lineHeight: 1,
@@ -1271,7 +1321,7 @@ function AufteilungsTeil({ bild, skala, palette, stufe }: { bild: PostBild; skal
  * nicht. Zwei y-Stufen stehen im Bild, weil die Größenordnung sonst fehlt —
  * dieselbe Regel wie bei den Export-Charts.
  */
-function VerlaufsTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
+export function VerlaufsTeil({ bild, skala, palette, stufe, responsive = false }: { bild: PostBild; skala: number; palette: KartenPalette; stufe: KartenStufe; responsive?: boolean }) {
   const achse = bild.achse ?? [];
   const toene = serienFarben(bild.stil, palette);
   const alle = bild.serien.flatMap((s) => s.verlauf ?? []);
@@ -1286,12 +1336,12 @@ function VerlaufsTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: 
   const obenWert = Math.ceil(max / (zehner / 2)) * (zehner / 2);
 
   const B = 950;
-  const H = 700;
+  const H = responsive ? 600 : 700;
   // Wie beim Ring: proportional an der AUSGABEGRÖSSE, nicht an der viewBox —
   // sonst rechnet die y-Achse gegen ein anderes Koordinatensystem als die
   // Beschriftung, und die Kurve steht neben ihren Marken.
   const zeichenSkala = hoehenFaktor(stufe) * skala;
-  const LINKS = 150;
+  const LINKS = responsive ? 100 : 150;
   /**
    * Platz rechts für die Beschriftung am Linienende — mit Zuschlag, nicht auf
    * Kante.
@@ -1302,7 +1352,7 @@ function VerlaufsTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: 
    * geendet: Die Bildaufnahme setzt Text breiter als die Messung auf der Seite.
    * Die Regel dafür lautet ein Viertel Zuschlag auf den gemessenen Bedarf.
    */
-  const RECHTS = 260;
+  const RECHTS = responsive ? 40 : 260;
 
   const x = (i: number) => LINKS + ((B - LINKS - RECHTS) * i) / Math.max(1, achse.length - 1);
   const y = (w: number) => H - 40 - ((H - 80) * w) / obenWert;
@@ -1345,16 +1395,16 @@ function VerlaufsTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: 
         {/* Nur erstes und letztes Jahr: Fünfundzwanzig Jahreszahlen unter einer
             Kurve sind ein Band, keine Achse. */}
         <text x={LINKS} y={H - 4} textAnchor="start" fontSize={28} fill="currentColor" opacity={0.6} fontFamily="var(--font-mono)">
-          {achse[0]}
+          {bild.axisLabels?.[0] ?? achse[0]}
         </text>
         <text x={B - RECHTS} y={H - 4} textAnchor="end" fontSize={28} fill="currentColor" opacity={0.6} fontFamily="var(--font-mono)">
-          {achse[achse.length - 1]}
+          {bild.axisLabels?.[achse.length - 1] ?? achse[achse.length - 1]}
         </text>
 
         {bild.serien.map((s) => {
           const werte = s.verlauf ?? [];
           if (werte.length !== achse.length) return null;
-          const farbe = s.hervorgehoben ? toene.hervorgehoben : toene.gedaempft;
+          const farbe = responsive ? "var(--atlas-action)" : s.hervorgehoben ? toene.hervorgehoben : toene.gedaempft;
           const d = werte.map((w, i) => `${i === 0 ? "M" : "L"} ${x(i)} ${y(w)}`).join(" ");
           const letzterWert = werte[werte.length - 1];
           return (
@@ -1363,7 +1413,7 @@ function VerlaufsTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: 
               {/* Ein Punkt am Ende: Er bindet die Beschriftung an ihre Linie,
                   auch wenn zwei Enden dicht beieinanderliegen. */}
               <circle cx={x(werte.length - 1)} cy={y(letzterWert)} r={10} fill={farbe} />
-              <text
+              {!responsive&&<text
                 x={x(werte.length - 1) + 22}
                 y={y(letzterWert) + 10}
                 fontSize={30}
@@ -1371,7 +1421,7 @@ function VerlaufsTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: 
                 fill={farbe}
               >
                 {s.label}
-              </text>
+              </text>}
             </g>
           );
         })}
@@ -1381,3 +1431,85 @@ function VerlaufsTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: 
 }
 
 export const SOCIAL_KARTE_MASSE = { breite: BREITE, hoehe: HOEHE };
+
+/** A proportional strip with a separate, unambiguous index for every segment. */
+function AnteilsprofilTeil({ bild, skala, palette, stufe }: { bild: PostBild; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
+  const ganzes = bild.ganzes ?? 100;
+  const stellen = aufteilungsStellen(bild);
+  const rest = restVon(bild);
+  const teile: BildSerie[] = [
+    ...bild.serien,
+    ...(rest > ganzes * 0.005 && bild.restLabel
+      ? [{ label: bild.restLabel, wert: rest, einheit: bild.serien[0]?.einheit ?? "" }]
+      : []),
+  ].sort((a, b) => b.wert - a.wert);
+  const haupt = teile[0];
+  if (!haupt) return null;
+  const toene = serienFarben(bild.stil, palette);
+  const px = (n: number) => n * skala;
+  const kompakt = hoehenFaktor(stufe);
+  const wert = (s: BildSerie) => s.wert.toLocaleString("de-DE", { minimumFractionDigits: stellen, maximumFractionDigits: stellen });
+  const farbe = (i: number) => i === 0 ? toene.hervorgehoben : toene.gedaempft;
+  return (
+    <div data-anteilsprofil style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", justifyContent: "center", gap: px(storyChart.gap * kompakt) }}>
+      <div style={{ position: "relative", paddingBlock: px(storyChart.gap * kompakt), isolation: "isolate" }}>
+        <div aria-hidden="true" style={{ position: "absolute", left: px(-storyChart.gap), top: "40%", transform: "translateY(-50%)", width: px(storyChart.splashSize), height: px(storyChart.splashSize * kompakt), background: toene.hervorgehoben, opacity: 0.18, maskImage: `url(${brandAssets.splashMask})`, WebkitMaskImage: `url(${brandAssets.splashMask})`, maskSize: "contain", WebkitMaskSize: "contain", maskRepeat: "no-repeat", WebkitMaskRepeat: "no-repeat", maskPosition: "center", WebkitMaskPosition: "center", pointerEvents: "none", zIndex: -1 }} />
+        <div style={{ color: toene.hervorgehoben, fontFamily: v("--font-mono"), fontWeight: 700, lineHeight: 1, letterSpacing: "-0.05em" }}>
+          <span style={{ fontSize: px(storyChart.value * (stufe === "quadrat" ? 0.8 : 1)) }}>{wert(haupt)}</span>
+          <span style={{ fontSize: px(storyChart.unit), marginLeft: px(storyChart.gap / 2), letterSpacing: 0 }}>{bild.einheitAmWert !== false ? haupt.einheit : ""}</span>
+        </div>
+        <div style={{ fontSize: px(storyChart.label), marginTop: px(storyChart.gap / 2), lineHeight: 1.2 }}>{haupt.label}</div>
+      </div>
+      <div role="img" aria-label={teile.map((s) => `${s.label}: ${wert(s)} ${s.einheit}`).join("; ")} style={{ display: "flex", height: px(storyChart.barHeight), flexShrink: 0, borderRadius: v("--radius-sm"), overflow: "hidden" }}>
+        {teile.map((s, i) => s.wert > 0 && <div key={s.label} data-anteil={s.wert / ganzes} style={{ width: `${s.wert / ganzes * 100}%`, background: farbe(i), position: "relative", flexShrink: 0 }}>
+          {i > 0 && <span aria-hidden="true" style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: px(3), background: v("--color-bg") }} />}
+          {s.wert / ganzes >= 0.09 && <span aria-hidden="true" style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", color: v("--color-bg"), fontSize: px(storyChart.index), fontFamily: v("--font-mono") }}>{String(i + 1).padStart(2, "0")}</span>}
+        </div>)}
+      </div>
+      <div>
+        {teile.map((s, i) => <div key={s.label} style={{ display: "grid", gridTemplateColumns: `${px(storyChart.unit)}px 1fr auto`, gap: px(storyChart.gap / 2), alignItems: "baseline", paddingBlock: px(storyChart.gap * kompakt / 2), borderBottom: `1px solid ${v("--color-border")}`, fontSize: px(storyChart.detail), lineHeight: 1.3 }}>
+          <span style={{ color: v("--color-text-muted"), fontSize: px(storyChart.index), fontFamily: v("--font-mono") }}>{String(i + 1).padStart(2, "0")}</span>
+          <span>{s.label}</span>
+          <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: i === 0 ? toene.hervorgehoben : v("--color-text-primary"), whiteSpace: "nowrap" }}>{wert(s)}<span style={{ fontSize: px(storyChart.index), marginLeft: px(8), fontWeight: 400 }}>{bild.einheitAmWert !== false ? s.einheit : ""}</span></span>
+        </div>)}
+      </div>
+    </div>
+  );
+}
+
+/** One complete ring; raw fractions keep rounded labels out of the geometry. */
+function AnteilsDonut({ bild, skala, palette, stufe }: { bild: PostBild; skala: number; palette: KartenPalette; stufe: KartenStufe }) {
+  const tones = serienFarben(bild.stil, palette);
+  const colors = [100, 60, 28, 12].map(strength => `color-mix(in srgb, ${tones.hervorgehoben} ${strength}%, var(--color-bg))`);
+  const total = bild.serien.reduce((sum, s) => sum + s.wert, 0);
+  const fractions = bild.anteile ?? bild.serien.map(s => s.wert / total);
+  const size = (stufe === "quadrat" ? 480 : 610) * skala;
+  const center = (bild.gesamtAnzeige ?? `${bild.ganzes ?? total} ${bild.serien[0]?.einheit ?? ""}`).trim();
+  const [centerValue, ...centerUnit] = center.split(/\s+/);
+  let offset = 0;
+  return <div style={{ flex: 1, minHeight: 0, display: "grid", gridTemplateRows: "minmax(0, 1fr) auto", justifyItems: "center", alignItems: "center", gap: storyChart.gap * skala }}>
+    <div style={{ width: "100%", height: "100%", maxHeight: size, minHeight: 0, position: "relative" }}>
+      <svg viewBox="0 0 200 200" width="100%" height="100%" role="img" aria-label="Anteile der installierten Solarleistung">
+        {bild.serien.map((s, i) => {
+          const start = offset; offset += fractions[i] * 100;
+          return fractions[i] > 0 ? <circle key={s.label} cx="100" cy="100" r="78" fill="none" stroke={colors[i]} strokeWidth="30" pathLength="100" strokeDasharray={`${fractions[i] * 100} ${100 - fractions[i] * 100}`} strokeDashoffset={-start} transform="rotate(-90 100 100)" /> : null;
+        })}
+        {fractions.filter(fraction => fraction > 0).length > 1 && fractions.map((fraction, i) => {
+          if (fraction <= 0) return null;
+          const angle = fractions.slice(0, i).reduce((sum, value) => sum + value, 0) * Math.PI * 2 - Math.PI / 2;
+          return <line key={`divider-${i}`} x1={100 + 63 * Math.cos(angle)} y1={100 + 63 * Math.sin(angle)} x2={100 + 93 * Math.cos(angle)} y2={100 + 93 * Math.sin(angle)} stroke={v("--color-bg")} strokeWidth="1" />;
+        })}
+      </svg>
+      <div style={{ position: "absolute", inset: "25%", display: "flex", flexDirection: "column", justifyContent: "center", textAlign: "center" }}>
+        <strong style={{ fontSize: storyChart.donutValue * skala, lineHeight: 1.1, fontFamily: v("--font-mono") }}>{centerValue}</strong>
+        <span style={{ marginTop: 12 * skala, fontSize: storyChart.donutUnit * skala, lineHeight: 1.4, color: v("--color-text-muted") }}>{centerUnit.join(" ")}<br />{bild.gesamtAnzeige ? "installiert" : "gesamt"}</span>
+      </div>
+    </div>
+    <div style={{ width: "100%", display: "grid", gap: 20 * skala }}>
+      {bild.serien.map((s, i) => <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 18 * skala, fontSize: storyChart.donutLabel * skala }}>
+        <span style={{ width: 22 * skala, height: 22 * skala, borderRadius: 4 * skala, background: colors[i], flexShrink: 0 }} />
+        <span style={{ flex: 1 }}>{s.label}</span><strong style={{ fontFamily: v("--font-mono") }}>{s.wert.toLocaleString("de-DE")} {s.einheit}</strong>
+      </div>)}
+    </div>
+  </div>;
+}

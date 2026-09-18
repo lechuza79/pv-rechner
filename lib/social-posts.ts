@@ -194,6 +194,7 @@ export type BildSerie = {
  * Darstellung gehört in die Komponente, die Aussage hierher.
  */
 export type PostBild = {
+  countComparison?: {total:number;selected:number;label:string};
   /**
    * Wie das Bild aufgebaut ist.
    *
@@ -216,7 +217,9 @@ export type PostBild = {
    * Längen nebeneinander abschätzen und nichts über eine Grundmenge annehmen,
    * die es nicht gibt.
    */
-  art: "vergleich" | "kennzahl" | "donut" | "saeule" | "umriss" | "rangliste" | "aufteilung" | "verlauf";
+  gesamtAnzeige?: string;
+  anteile?: number[];
+  art: "vergleich" | "kennzahl" | "donut" | "saeule" | "umriss" | "rangliste" | "aufteilung" | "anteilsprofil" | "anteilsdonut" | "verlauf";
   /** Die Kernaussage, im Bild als Titel gesetzt — nicht die neutrale Achsenbeschriftung. */
   aussage: string;
   /** Was gemessen wurde. Steht klein unter der Aussage. */
@@ -274,6 +277,7 @@ export type PostBild = {
    * Die Zeitachse für die Verlaufsform — ein Eintrag je Wert in `BildSerie.verlauf`.
    */
   achse?: number[];
+  axisLabels?: string[];
   /**
    * Wie der Teil heißt, der bei einer Aufteilung zum Ganzen fehlt.
    *
@@ -381,6 +385,8 @@ export type SocialPost = {
    * umgestellt und dort nur lesbar.
    */
   vorlage?: string;
+  /** Generated heading and source surrounding an editable municipal body. */
+  textRahmen?: { vorher: string; nachher: string };
   platzhalter?: PlatzhalterInfo[];
 };
 

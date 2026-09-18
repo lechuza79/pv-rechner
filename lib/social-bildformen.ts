@@ -282,6 +282,19 @@ export const BILDFORMEN: Bildform[] = [
     passt: (b) => b.serien.length >= 3 && schoepftAus(b) && eineEinheit(b),
   },
   {
+    art: "anteilsdonut", name: "Donut · Anteile", kennung: "anteilsdonut",
+    wofuer: "Die vollständigen Anteile eines Ganzen in einem Ring, mit Gesamtleistung in der Mitte.",
+    passt: (b) => b.serien.length >= 2 && b.serien.length <= 4 && schoepftAus(b) && eineEinheit(b),
+  },
+  {
+    art: "anteilsprofil",
+    name: "Anteilsprofil",
+    kennung: "anteilsprofil",
+    wofuer:
+      "Der größte Anteil im Fokus, darunter das Ganze als proportionaler Streifen und alle Teile direkt benannt. Der Aquarellakzent ist dekorativ; ausschließlich die Streifenbreite zeigt die Anteile.",
+    passt: (b) => b.serien.length >= 3 && b.serien.length <= 4 && schoepftAus(b) && eineEinheit(b),
+  },
+  {
     art: "verlauf",
     name: "Verlauf",
     kennung: "verlauf",
