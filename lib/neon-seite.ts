@@ -106,6 +106,7 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
     // the query string is dropped before sending (it can carry a postcode).
     ANALYTICS_HTML,
     `<style>${FAQ_CSS}</style>`,
+    `<script src="/homepage-study/interactions.js" defer></script>`,
   ].join("");
 }
 
@@ -116,16 +117,19 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
 const FAQ_CSS = `
 .sc-faq{background:#08191c;color:#e8eee9;padding:72px var(--sc-page-inset,max(24px,5vw)) 88px;font-family:'DM Sans',sans-serif}
 .sc-faq-wrap{max-width:var(--sc-layout-content,1120px);margin:0 auto}
-.sc-faq h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-section-size,40px);line-height:var(--sc-type-section-leading,1.25);font-weight:var(--sc-type-heading-weight,700);margin:0 0 24px}
+.sc-faq h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-secondary-label-size,13px);line-height:1.5;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#a7bcbb;margin:0 0 16px}
 .sc-faq details{border-bottom:1px solid #aec4bd30}
-.sc-faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;padding:18px 0;font-size:var(--sc-type-title-size,20px);line-height:var(--sc-type-title-leading,1.35);font-weight:var(--sc-type-label-weight,600)}
+.sc-faq summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:92px;box-sizing:border-box;padding:28px 0;font-size:var(--sc-type-title-size,20px);line-height:1.4;font-weight:500;transition:color 180ms ease}
+.sc-faq summary:hover{color:#d4ff24}
 .sc-faq summary::-webkit-details-marker{display:none}
-.sc-faq summary::after{content:"+";flex:none;font-weight:400}
-.sc-faq details[open] summary::after{content:"−"}
-.sc-faq summary:focus-visible{outline:2px solid currentColor;outline-offset:4px}
-.sc-faq p{font-size:var(--sc-type-body-size,16px);line-height:var(--sc-type-body-leading,1.6);margin:0 0 18px;max-width:680px}
+.sc-faq summary::after{content:"";width:10px;height:10px;margin-right:4px;flex:none;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform 240ms ease}
+.sc-faq details[open]:not([data-closing]) summary::after{transform:rotate(225deg)}
+.sc-faq summary:focus-visible{outline:2px solid #d4ff24;outline-offset:4px}
+.sc-faq-answer{overflow:hidden}
+.sc-faq p{font-size:var(--sc-type-body-size,16px);line-height:var(--sc-type-body-leading,1.6);color:#a7bcbb;margin:0 0 24px;max-width:680px}
 .sc-faq a{color:inherit;text-decoration:underline;text-underline-offset:3px}
-.sc-faq .sc-faq-cta{display:inline-block;margin:0 0 20px;font-weight:600}
+.sc-faq .sc-faq-cta{display:inline-block;margin:0 0 28px;font-size:var(--sc-type-action-size,14px);font-weight:500}
+@media(prefers-reduced-motion:reduce){.sc-faq summary,.sc-faq summary::after{transition:none}}
 .sc-live{background:var(--sc-surface-light);padding:72px var(--sc-page-inset,max(24px,5vw)) 0;font-family:'DM Sans',sans-serif;color:var(--ink)}
 .sc-live-wrap{max-width:760px;margin:0 auto}
 .sc-live h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-section-compact-size,clamp(26px,3vw,38px));line-height:1.25;margin:0 0 12px}
@@ -170,7 +174,7 @@ function vorFuss(seite: NeonSeite, faq: FaqEntry[]): string {
         `<script>addEventListener("message",function(e){if(e.origin!==location.origin)return;var d=e.data,f=document.getElementById("sc-live-rahmen");if(f&&d&&d.type==="widget:height"&&d.height>0&&e.source===f.contentWindow)f.style.height=Math.ceil(d.height)+"px"});</script>`
       : "";
   const fragen = faq
-    .map((f) => `<details><summary>${esc(f.q)}</summary>${antwortHtml(f, aktuell)}</details>`)
+    .map((f) => `<details><summary>${esc(f.q)}</summary><div class="sc-faq-answer">${antwortHtml(f, aktuell)}</div></details>`)
     .join("");
   // The approved page builds its footer by script; move our blocks right above
   // it once it exists. Without script they stay at the end, still readable.
