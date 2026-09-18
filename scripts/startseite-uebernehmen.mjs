@@ -58,6 +58,8 @@ const DATEIEN = [
   "shared-person/sebastian-portrait.webp",
   "illustrations-motion/solar-illustrations.js",
   "illustrations-neon/solar-neon.js",
+  // Shell of the package's plain content pages (lib/neon-unterseite.ts).
+  "rechner-uebersicht/overview.css",
 ];
 // The stage bundle: its entry plus the chunks it imports (the package's dist
 // folder also holds a dozen stale builds of the renderer, ~9 MB).

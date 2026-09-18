@@ -64,8 +64,6 @@ export default function AboErgebnis(o: {
   /** Zurück zum Ort — nur wenn wir wissen, um welchen es ging. */
   ortHref?: string;
   ortName?: string;
-  /** Overrides the default next step (used by the waitlist pages). */
-  cta?: { href: string; label: string };
 }) {
   return (
     <main style={S.page}>
@@ -77,11 +75,7 @@ export default function AboErgebnis(o: {
           </p>
         ))}
         <div style={S.aktionen}>
-          {o.cta ? (
-            <Link href={o.cta.href} style={S.cta}>
-              {o.cta.label}
-            </Link>
-          ) : o.ortHref && o.ortName ? (
+          {o.ortHref && o.ortName ? (
             <Link href={o.ortHref} style={S.cta}>
               Zahlen zu {o.ortName} ansehen
             </Link>

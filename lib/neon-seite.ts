@@ -26,7 +26,15 @@ import { liveSatz } from "./stand-format";
 
 export type NeonSeite = "startseite" | "simulation";
 
-const esc = (s: string) =>
+/**
+ * Vercel Web Analytics, cookieless — with the same rule as the React site: the
+ * query string is dropped before sending (it can carry a postcode or a token).
+ */
+export const ANALYTICS_HTML =
+  `<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};window.va("beforeSend",function(e){try{var u=new URL(e.url);u.search="";e.url=u.toString();return e}catch(_){return null}});</script>` +
+  `<script defer src="/_vercel/insights/script.js"></script>`;
+
+export const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 /** Keywords the site layout sets for every page (kept identical). */
@@ -96,8 +104,7 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
     `<script type="application/ld+json">${jsonLdHtml(faqLd)}</script>`,
     // Vercel Web Analytics, cookieless — with the same rule as the React site:
     // the query string is dropped before sending (it can carry a postcode).
-    `<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};window.va("beforeSend",function(e){try{var u=new URL(e.url);u.search="";e.url=u.toString();return e}catch(_){return null}});</script>`,
-    `<script defer src="/_vercel/insights/script.js"></script>`,
+    ANALYTICS_HTML,
     `<style>${FAQ_CSS}</style>`,
   ].join("");
 }
