@@ -253,6 +253,7 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 17 Sep 2026 as a closed historical programme (no calculation fields).
   "mainz-bingen-balkonkraftwerke",
   "mayen-koblenz-balkonkraftwerke",
+  "altenkirchen-balkonkraftwerke",
 ];
 
 /**

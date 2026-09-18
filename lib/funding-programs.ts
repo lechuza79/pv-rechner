@@ -1124,7 +1124,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       },
       {
         "label": "Energetische Sanierung mit bestätigter Bundesförderung",
-        "value": "20 %, maximal 1.500 €",
+        "value": "20 %, maximal 1.500 € — derzeit keine Bewilligungen mehr",
         "nur": [
           "waermepumpe"
         ]
@@ -1173,6 +1173,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
           "waermepumpe"
         ]
       },
+      {
+        "text": "Anträge auf Mittelreservierung für energetische Sanierungen können laut Stadt derzeit nicht mehr genehmigt werden; das Förderbudget ist fast vollständig ausgeschöpft (Stand 18.09.2026)",
+        "nur": [
+          "waermepumpe"
+        ]
+      },
       "Für Gebäude in Minden; höchstens 3.000 € je Haushalt und Jahr",
       "Mittelreservierung für 2026 bis zum 31. Dezember 2026",
       "Freiwilliger Zuschuss im Rahmen verfügbarer Haushaltsmittel",
@@ -1189,7 +1195,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "bund-kfw270"
     ],
     "balkonPauschale": 75,
-    "maxFoerderung": "75 € Balkonkraftwerk; 1.500 € Sanierung"
+    "maxFoerderung": "75 € Balkonkraftwerk; 1.500 € Sanierung (derzeit keine Bewilligungen)"
   },
   "luedinghausen-klimaschutzfonds": {
     "id": "luedinghausen-klimaschutzfonds",
@@ -4025,6 +4031,41 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Finanziert mit 150.000 € aus dem Landesprogramm KIPKI",
     ],
     combinableWith: [],
+    foerdert: ["balkon"],
+  },
+  "altenkirchen-balkonkraftwerke": {
+    id: "altenkirchen-balkonkraftwerke", name: "Förderprogramm zur Anschaffung von Balkonkraftwerken im Privatbereich",
+    traeger: "Landkreis Altenkirchen", level: "landkreis", region: "Landkreis Altenkirchen", bundesland: "Rheinland-Pfalz", agsCode: "07132",
+    url: "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+    // Service page of the county read on 18 Sep 2026: "Das Förderprogramm für
+    // private Balkonkraftwerke im Kreis Altenkirchen ist beendet, da die zur
+    // Verfügung stehenden Fördermittel in Höhe von insgesamt 120.000 Euro
+    // vollständig ausgeschöpft sind. Eine Antragstellung ist daher nicht mehr
+    // möglich." Found via the page of VG Betzdorf-Gebhardshain, which names the
+    // county guidelines for balcony PV and solar storage "seit dem 19.11.2024 in
+    // Kraft".
+    //
+    // NO RATE ON PURPOSE. The county has removed its guideline PDF (the old
+    // address now returns an HTML page) and no archived copy exists. The only
+    // source for "40 %, max. 200 €" is a newspaper report (AK-Kurier,
+    // 03.04.2026) — a secondary source, never the basis for a figure here.
+    //
+    // The county's storage programme named in the same breath is NOT entered:
+    // no page states its current state. Open case for the next run.
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-11-19",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss zur Anschaffung eines privaten Balkonkraftwerks (Speicher nicht förderfähig)",
+    rates: [
+      { label: "Balkonkraftwerk", value: "Programm beendet — Förderhöhe an der Amtsquelle nicht mehr abrufbar" },
+    ],
+    conditions: [
+      "Das Programm ist beendet, die Fördermittel von 120.000 € sind vollständig ausgeschöpft; Anträge sind nicht mehr möglich",
+      "Finanziert zu 100 Prozent aus dem Landesprogramm KIPKI",
+      "Laut Kreis wurden knapp 700 Balkonkraftwerke gefördert; Kosten für Speichersysteme zählten nicht zu den förderfähigen Kosten",
+    ],
+    // The guideline is not available, so a combination rule cannot be stated.
+    combinableWith: null,
     foerdert: ["balkon"],
   },  "mainz-bingen-balkonkraftwerke": {
     id: "mainz-bingen-balkonkraftwerke", name: "Eiskalt Entschwenden: Balkonkraftwerke",

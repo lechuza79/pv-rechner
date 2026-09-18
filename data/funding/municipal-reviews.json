@@ -3585,5 +3585,84 @@
     "evidenceUrl": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger/foerderprogramm-erneuerbare-energien-und-waermedaemmung-in-wohngebaeuden"
    }
   ]
- }
+ },
+  {
+    "regionId": "05770024",
+    "name": "Minden",
+    "checkedAt": "2026-09-18T02:20:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Minden fördert über KlimaPlus+ (Richtlinie in Kraft seit 01.07.2024, geändert mit Wirkung ab 15.07.2026) Stecker-Solargeräte mit pauschal 75 € je Wohneinheit und energetische Sanierungen mit 20 % bis 1.500 €, höchstens 3.000 € je Haushalt und Jahr. Beide Werte stimmen mit dem Katalog überein. Laut Programmseite können Anträge für energetische Sanierungen derzeit nicht mehr genehmigt werden; das ist im Katalog nachgetragen. Eine eigene Dach-PV-Förderung gibt es nicht. Die übrigen Quellen sind Elternkurse und ein Innenstadt-Verfügungsfonds ohne Energiebezug.",
+    "searches": [
+      "minden.de Förderung Klimaschutz KlimaPlus Richtlinie",
+      "minden.de mitgestalten Förderprogramme"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.minden.de/rathaus-service-zukunft/klimaschutz-und-klimaanpassung/foerderung-klimaschutz/",
+        "finding": "Achtung: Das Förderbudget ist fast vollständig ausgeschöpft! Anträge auf Mittelreservierung für energetische Sanierungen können nicht mehr genehmigt werden! Antragstellung auf Mittelreservierung bis 31.12.2026."
+      },
+      {
+        "url": "https://www.minden.de/dokumente/satzungen/bauwesen/6.2.14-foerderrichtlinie-zum-foerderprogramm-klimaplus.pdf?cid=1etm",
+        "finding": "Nr. 4.2.1: Stecker-Solargeräte je Wohneinheit/Wohngebäude und je antragstellender Person einmalig pauschal 75 Euro. Nr. 4.3.1: energetische Sanierung 20 % der Maßnahmenkosten, maximal 1500 Euro. Nr. 3.1: höchstens 3000 Euro je Haushalt und Jahr. Nr. 8: in Kraft 01.07.2024, Änderung vom 02.07.2026 in Kraft ab 15.07.2026."
+      },
+      {
+        "url": "https://www.minden.de/rathaus-service-zukunft/mitgestalten/foerderprogramme",
+        "finding": "Übersicht: Verfügungsfonds, Kulturförderung, Sportförderung, Quartiersmanagement, Klimaschutzförderung — die letzte ist KlimaPlus+."
+      },
+      {
+        "url": "https://www.minden.de/rathaus-service-zukunft/mitgestalten/ideen-foerdern-verfuegungsfonds",
+        "finding": "Verfügungsfonds Innenstadt aus der Städtebauförderung: Projekte zur Aufwertung und Belebung der Innenstadt, regulär 10.000 Euro je Maßnahme; keine Energietechnik."
+      },
+      {
+        "url": "https://www.minden.de/kalender/quartiere/rodenbeck/2025-05-08-eltern-foerdern",
+        "finding": "Kalendereintrag Eltern fördern (Quartiersmanagement Rodenbeck), Kurs zur Erziehungskompetenz; gleichartig am 22.05. und 04.06.2025."
+      }
+    ],
+    "sources": [
+      {
+        "url": "minden.de/rathaus-service-zukunft/klimaschutz-und-klimaanpassung/foerderung-klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite gelesen; Stopp für Sanierungsanträge nachgetragen.",
+        "evidenceUrl": "https://www.minden.de/rathaus-service-zukunft/klimaschutz-und-klimaanpassung/foerderung-klimaschutz/"
+      },
+      {
+        "url": "minden.de/dokumente/satzungen/bauwesen/6.2.14-foerderrichtlinie-zum-foerderprogramm-klimaplus.pdf?cid=1etm",
+        "disposition": "reviewed",
+        "reason": "Richtlinie im Volltext gelesen, Beträge bestätigt.",
+        "evidenceUrl": "https://www.minden.de/dokumente/satzungen/bauwesen/6.2.14-foerderrichtlinie-zum-foerderprogramm-klimaplus.pdf?cid=1etm"
+      },
+      {
+        "url": "minden.de/rathaus-service-zukunft/mitgestalten/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht, verweist nur auf bereits geführte Klimaschutzförderung.",
+        "evidenceUrl": "https://www.minden.de/rathaus-service-zukunft/mitgestalten/foerderprogramme"
+      },
+      {
+        "url": "minden.de/rathaus-service-zukunft/mitgestalten/ideen-foerdern-verfuegungsfonds",
+        "disposition": "reviewed",
+        "reason": "Innenstadt-Verfügungsfonds, keine Energieförderung.",
+        "evidenceUrl": "https://www.minden.de/rathaus-service-zukunft/mitgestalten/ideen-foerdern-verfuegungsfonds"
+      },
+      {
+        "url": "minden.de/kalender/quartiere/rodenbeck/2025-05-08-eltern-foerdern",
+        "disposition": "reviewed",
+        "reason": "Kalendereintrag Elternkurs.",
+        "evidenceUrl": "https://www.minden.de/kalender/quartiere/rodenbeck/2025-05-08-eltern-foerdern"
+      },
+      {
+        "url": "minden.de/kalender/quartiere/rodenbeck/2025-05-22-eltern-foerdern",
+        "disposition": "reviewed",
+        "reason": "Kalendereintrag Elternkurs.",
+        "evidenceUrl": "https://www.minden.de/kalender/quartiere/rodenbeck/2025-05-08-eltern-foerdern"
+      },
+      {
+        "url": "minden.de/kalender/quartiere/rodenbeck/2025-06-04-eltern-foerdern",
+        "disposition": "reviewed",
+        "reason": "Kalendereintrag Elternkurs.",
+        "evidenceUrl": "https://www.minden.de/kalender/quartiere/rodenbeck/2025-05-08-eltern-foerdern"
+      }
+    ]
+  }
 ]
