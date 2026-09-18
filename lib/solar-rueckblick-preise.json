@@ -1,0 +1,57 @@
+{
+  "source": "Eurostat, Germany, household energy prices including taxes, EUR/kWh",
+  "period": "2016–2025",
+  "retrieved": "2026-09-16",
+  "series": {
+    "electricity": {
+      "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nrg_pc_204?geo=DE&currency=EUR&tax=I_TAX&unit=KWH&nrg_cons=KWH2500-4999&sinceTimePeriod=2016-S1&untilTimePeriod=2025-S2",
+      "values": {
+        "2016-S1": 0.2969,
+        "2016-S2": 0.2977,
+        "2017-S1": 0.3048,
+        "2017-S2": 0.3048,
+        "2018-S1": 0.2987,
+        "2018-S2": 0.3,
+        "2019-S1": 0.3088,
+        "2019-S2": 0.2878,
+        "2020-S1": 0.3043,
+        "2020-S2": 0.3006,
+        "2021-S1": 0.3193,
+        "2021-S2": 0.3234,
+        "2022-S1": 0.3279,
+        "2022-S2": 0.3357,
+        "2023-S1": 0.4125,
+        "2023-S2": 0.402,
+        "2024-S1": 0.3951,
+        "2024-S2": 0.3943,
+        "2025-S1": 0.3835,
+        "2025-S2": 0.3869
+      }
+    },
+    "gas": {
+      "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nrg_pc_202?geo=DE&currency=EUR&tax=I_TAX&unit=KWH&nrg_cons=GJ20-199&sinceTimePeriod=2016-S1&untilTimePeriod=2025-S2",
+      "values": {
+        "2016-S1": 0.0661,
+        "2016-S2": 0.0642,
+        "2017-S1": 0.0611,
+        "2017-S2": 0.0609,
+        "2018-S1": 0.0608,
+        "2018-S2": 0.0608,
+        "2019-S1": 0.0632,
+        "2019-S2": 0.0588,
+        "2020-S1": 0.0597,
+        "2020-S2": 0.062,
+        "2021-S1": 0.0647,
+        "2021-S2": 0.0692,
+        "2022-S1": 0.0806,
+        "2022-S2": 0.0941,
+        "2023-S1": 0.123,
+        "2023-S2": 0.1145,
+        "2024-S1": 0.1198,
+        "2024-S2": 0.1238,
+        "2025-S1": 0.1216,
+        "2025-S2": 0.1223
+      }
+    }
+  }
+}
