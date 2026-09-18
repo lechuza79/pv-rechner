@@ -106,6 +106,8 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
     // the query string is dropped before sending (it can carry a postcode).
     ANALYTICS_HTML,
     `<style>${FAQ_CSS}</style>`,
+    `<script src="/shared-footer/trust-badges-v7/trust-art-web.js" defer></script>`,
+    `<script src="/shared-footer/trust-badges-v7/trust-badges.js" defer></script>`,
     `<script src="/homepage-study/interactions.js" defer></script>`,
   ].join("");
 }

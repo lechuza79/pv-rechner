@@ -1,3 +1,6 @@
+// Safe to load eagerly in the hero and lazily in the footer.
+(() => {
+if (customElements.get("solar-trust-badge")) return;
 /* Load trust-art.js before this script. Every instance owns an isolated SVG. */
 class SolarTrustBadge extends HTMLElement {
  static get observedAttributes(){return ['motif','hide-layers','motion'];}
@@ -11,3 +14,5 @@ class SolarTrustBadge extends HTMLElement {
  disconnectedCallback(){this.preference?.removeEventListener('change',this.onPreference);this.onpointermove=null;this.onpointerleave=null;}
 }
 if(!customElements.get('solar-trust-badge'))customElements.define('solar-trust-badge',SolarTrustBadge);
+
+})();

@@ -43,3 +43,36 @@ if (!labelContact()) {
   observer.observe(document.body, { childList: true, subtree: true });
   addEventListener('pagehide', () => observer.disconnect(), { once: true });
 }
+
+// Reuse the trust box's artwork and wording at the foot of the homepage scene.
+function mountHeroTrust() {
+  const page = document.querySelector('.homepage-study:not(.hs-simulation-route)');
+  const hero = page?.querySelector('.hero');
+  const items = page?.querySelectorAll('.sc-trust-item');
+  if (!hero || !items?.length) return false;
+  if (hero.querySelector('.sc-hero-trust')) return true;
+  const strip = document.createElement('div');
+  strip.className = 'sc-hero-trust';
+  const list = document.createElement('ul');
+  list.setAttribute('aria-label', 'Unsere Grundlagen');
+  for (const item of items) {
+    const badge = item.querySelector('solar-trust-badge');
+    const heading = item.querySelector('h3');
+    if (!badge || !heading) continue;
+    const entry = document.createElement('li');
+    const art = badge.cloneNode(true);
+    art.setAttribute('motion', 'off');
+    const label = document.createElement('span');
+    label.textContent = heading.textContent;
+    entry.append(art, label);
+    list.append(entry);
+  }
+  strip.append(list);
+  hero.append(strip);
+  return true;
+}
+if (!mountHeroTrust()) {
+  const trustObserver = new MutationObserver(() => { if (mountHeroTrust()) trustObserver.disconnect(); });
+  trustObserver.observe(document.body, { childList: true, subtree: true });
+  addEventListener('pagehide', () => trustObserver.disconnect(), { once: true });
+}

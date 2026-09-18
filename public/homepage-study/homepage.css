@@ -1037,3 +1037,17 @@ solar-illustration.hs-audience-art::before{content:none}
  .homepage-study .hs-person-section .sc-person-actions .hs-person-message{width:46px;height:46px;min-height:46px;flex:0 0 46px;padding:0;justify-content:center}
  .homepage-study .hs-person-message>span{display:none}
 }
+
+/* The trust strip belongs to the scene, never to a fixed site-wide overlay. */
+.homepage-study .sc-hero-trust{position:absolute;z-index:8;--trust-ink:#d3e0d7;inset:min(100%,100svh) 0 auto;transform:translateY(-100%);padding:64px var(--sc-hero-content-inset) max(24px,env(safe-area-inset-bottom));background:linear-gradient(180deg,transparent,#08191cc7 55%,#08191cf5);color:#e8eee9;pointer-events:none}
+.homepage-study .sc-hero-trust ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;max-width:var(--sc-layout-content);margin:0 auto;padding:0;list-style:none}
+.homepage-study .sc-hero-trust li{display:flex;align-items:center;gap:12px;font-size:13px;line-height:1.45;font-weight:500}
+.homepage-study .sc-hero-trust solar-trust-badge{width:40px;flex:0 0 40px}
+.homepage-study.hs-journey-open .sc-hero-trust,.homepage-study.hs-simulation-route .sc-hero-trust{display:none}
+@media(max-width:600px){
+ .homepage-study .sc-hero-trust{padding-top:40px;padding-bottom:max(18px,env(safe-area-inset-bottom))}
+ .homepage-study .sc-hero-trust ul{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}
+ .homepage-study .sc-hero-trust li{font-size:11px;gap:8px}
+ .homepage-study .sc-hero-trust solar-trust-badge{width:30px;flex-basis:30px}
+}
+.homepage-study .sc-hero-trust::after{content:"";position:absolute;inset:100% 0 auto;height:100px;background:linear-gradient(#08191cf5,transparent);pointer-events:none}
