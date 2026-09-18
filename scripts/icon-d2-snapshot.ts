@@ -51,18 +51,22 @@ async function main() {
     last_run_initialisation_time: number;
   };
   const nowHour = Math.floor(Date.now() / 3600000);
-  // The hours around now for the scene, and the whole German calendar day for
-  // the day curves (live simulation, municipal solar today). One file serves
-  // both; whichever reaches further wins.
-  // Reaching into tomorrow as soon as "now + 4 h" does: otherwise the last
-  // run before midnight leaves the new day empty until the first run after it.
-  const [dayStart] = berlinTagesgrenzen(new Date());
+  // One file serves the scene (hours around now) and the day curves (the whole
+  // German calendar day). Required: the German day so far and at least four hours ahead, into
+  // tomorrow as soon as "now + 4 h" gets there (else the last run before
+  // midnight leaves the new day empty). Beyond that, as much of tomorrow as the
+  // model already covers: GitHub starts hourly schedules unreliably (measured
+  // after the switch: one start in five hours), and every extra hour here is an
+  // hour a missed run does not empty the page.
+  const [dayStart, dayEnd] = berlinTagesgrenzen(new Date());
   const [, reachEnd] = berlinTagesgrenzen(new Date((nowHour + SNAPSHOT_HOURS_AFTER) * 3600000));
-  const firstHour = Math.min(nowHour - SNAPSHOT_HOURS_BEFORE, dayStart / 3600000);
-  const lastHour = Math.max(nowHour + SNAPSHOT_HOURS_AFTER, reachEnd / 3600000);
-  const hours = lastHour - firstHour + 1;
+  const [, tomorrowEnd] = berlinTagesgrenzen(new Date(dayEnd + 12 * 3600000));
   const endHour = Math.floor(meta.data_end_time / 3600);
-  if (firstHour + hours - 1 > endHour) {
+  const firstHour = Math.min(nowHour - SNAPSHOT_HOURS_BEFORE, dayStart / 3600000);
+  const required = Math.max(nowHour + SNAPSHOT_HOURS_AFTER, reachEnd / 3600000);
+  const lastHour = Math.max(required, Math.min(tomorrowEnd / 3600000, endHour));
+  const hours = lastHour - firstHour + 1;
+  if (required > endHour) {
     throw new Error(`Modell reicht nur bis ${new Date(endHour * 3600000).toISOString()}; Schnappschuss nicht vollständig.`);
   }
 

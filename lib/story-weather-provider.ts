@@ -1,11 +1,12 @@
 /**
  * Which archive a preparation run reads its hours from.
  *
- * Two sources with the same output shape: the hosted Open-Meteo archive API,
- * and our own reads of Open-Meteo's open ERA5 archive. The second needs no
- * commercial plan, which is the whole point, but it is switched on explicitly
- * rather than by default — a silent change of source would rewrite figures that
- * are already published.
+ * Two sources with the same output shape: our own reads of Open-Meteo's open
+ * ERA5 archive (the default since 18.09.2026 — no commercial plan, no daily
+ * limit, measured against the hosted API at 1,146 municipalities: charts and
+ * euro values within 0.043 %), and the hosted Open-Meteo archive API, kept as
+ * the way back (`--provider=open-meteo`, with OPEN_METEO_API_KEY for the
+ * commercial host).
  */
 import { readFileSync, existsSync } from 'node:fs';
 import { era5Weather, type Era5Answer } from './era5-weather';
@@ -22,7 +23,7 @@ export function storyWeatherProvider(
   const raw =
     argv.find((a) => a.startsWith('--provider='))?.slice('--provider='.length) ??
     env.STORY_WEATHER_PROVIDER ??
-    'open-meteo';
+    'era5-archive';
   if (!STORY_WEATHER_PROVIDERS.includes(raw as StoryWeatherProvider)) {
     throw new Error(`Unbekannte Wetterquelle "${raw}"; erlaubt: ${STORY_WEATHER_PROVIDERS.join(', ')}.`);
   }

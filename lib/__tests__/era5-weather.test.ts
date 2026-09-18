@@ -120,13 +120,13 @@ describe('Wetterantwort aus dem Archiv', () => {
 });
 
 describe('Quellenwahl', () => {
-  it('bleibt ohne ausdrückliche Angabe beim bisherigen Anbieter', () => {
-    // A silent change of source would rewrite figures that are already out.
-    expect(storyWeatherProvider([], {})).toBe('open-meteo');
+  it('liest ohne Angabe das eigene ERA5-Archiv', () => {
+    // Default since 18.09.2026: no commercial plan, no daily limit.
+    expect(storyWeatherProvider([], {})).toBe('era5-archive');
   });
-  it('nimmt die neue Quelle nur auf Ansage', () => {
-    expect(storyWeatherProvider(['--provider=era5-archive'], {})).toBe('era5-archive');
-    expect(storyWeatherProvider([], { STORY_WEATHER_PROVIDER: 'era5-archive' })).toBe('era5-archive');
+  it('geht auf Ansage zurück zum gehosteten Archiv', () => {
+    expect(storyWeatherProvider(['--provider=open-meteo'], {})).toBe('open-meteo');
+    expect(storyWeatherProvider([], { STORY_WEATHER_PROVIDER: 'open-meteo' })).toBe('open-meteo');
   });
   it('weist einen Tippfehler ab, statt stillschweigend zurückzufallen', () => {
     expect(() => storyWeatherProvider(['--provider=era5'], {})).toThrow(/Unbekannte Wetterquelle/);

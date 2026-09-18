@@ -245,7 +245,11 @@ Jährliche Pflicht: nach dem 1. Oktober `npm run era5:sync -- --year=JJJJ` für 
 abgelaufenen Sommer, dann `npm run klima:kuehlgrad`. Ein Test wird im Januar rot,
 wenn der jüngste Sommer fehlt.
 
-## Wenn umgestellt wird
+## Umgestellt am 18.09.2026
+
+Das eigene Archiv ist seitdem Standard. Erster voller Lauf: 11.247 Gemeinden, Monatsprofil für 10.943, Jahresprofil und Euro-Werte für 10.745, **null Netzabrufe** (vorher: 2.401 Monatsprofile bis zum Tageslimit). Die Lücken fehlten schon vorher an den Eingangsdaten (Windbestand, Koordinate, Speichergrundlage). Das Archiv liegt dauerhaft im Haupt-Arbeitsverzeichnis unter scripts/.cache/era5-archive; Monatsabgleich und Jahresrechnung laufen dort als geplante Aufgaben. Rückweg: `--provider=open-meteo`.
+
+## Ablauf (für einen neuen Rechner)
 
 1. `npm run era5:punkte` — Wetterpunkte sammeln, **einschließlich der in
    früheren Ständen festgehaltenen**. Ohne die fehlt einem Drittel der bereits
