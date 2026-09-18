@@ -19,6 +19,7 @@ import { useSharedPlz } from "../../../lib/location";
 import { coordsForPlz, fetchHeatwave } from "../../../lib/useCoolingDegree";
 import { bundeslandFromPlz } from "../../../lib/plz-bundesland";
 import { DataSourceNote } from "../../../components/PoweredBy";
+import projektionJahre from "../../../lib/klima-projektion-jahre.json";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 
 const STEPS = ["Gerätetyp", "Räume & Größe", "Nutzung & Standort"];
@@ -52,16 +53,11 @@ type HeatwaveInfo = { maxTemp: number; hotDays: number; active: boolean } | null
 // Drei Standort-Modi für die Kühlgradstunden (im Ergebnis umschaltbar).
 type CdhMode = "avg5" | "lastSummer" | "projection";
 type CdhModes = { avg5: number; lastSummer: number; projection: number };
-// Projektionsjahr zur Render-Zeit (rollover-sicher, kein hardcoded Jahr).
-// Gegen 2050 geclamped — identisch zum Climate-API-Fenster in /api/cooling-degree,
-// damit Label und tatsächliche Projektionsdaten nicht auseinanderlaufen.
-const CLIMATE_MAX_YEAR = 2050;
-const PROJ_YEAR = (() => {
-  const y = new Date().getFullYear();
-  const s = Math.min(CLIMATE_MAX_YEAR, y + CFG.projectionYearsAhead.start);
-  const e = Math.min(CLIMATE_MAX_YEAR, y + CFG.projectionYearsAhead.end);
-  return Math.round((s + e) / 2);
-})();
+// Projektionsjahr aus den Daten selbst, nicht aus der Uhr: Die Faktoren
+// beschreiben genau diese Jahre (scripts/klima-projektion-build.ts). Aus dem
+// laufenden Jahr gerechnet, spränge das Label am 1. Januar weiter, während die
+// Zahl darunter bis zum nächsten Datenlauf dieselbe bliebe.
+const PROJ_YEAR = Math.round((projektionJahre.then[0] + projektionJahre.then[projektionJahre.then.length - 1]) / 2);
 
 
 // `stand` kommt fertig aufgelöst von der Server-Seite (page.tsx). Der Rechner
@@ -505,7 +501,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5, textAlign: "center" }}>
                   {cdhMode === "avg5" && `Durchschnitt der letzten ${CFG.avgYears} Sommer — der ausgewogene Wert.`}
                   {cdhMode === "lastSummer" && "Der letzte Sommer — oft heißer als der Schnitt."}
-                  {cdhMode === "projection" && `So heiß wird ein Sommer um ${PROJ_YEAR} laut Klimamodell (CMIP6) — Projektion, kein exakter Wert.`}
+                  {cdhMode === "projection" && `So heiß wird ein Sommer um ${PROJ_YEAR} laut acht Klimamodellen (CMIP6, mittleres Szenario) — Projektion, kein exakter Wert.`}
                 </div>
             </ResultSection>
             </div>
@@ -752,7 +748,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
               <span> · Kühlbedarf aus echten Kühlgradstunden · Heizen als Übergangszeit-Schätzung · Werte auf der </span>
               <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none" }}>Datenstand-Seite</Link>.
               <div style={{ marginTop: 6 }}>
-                <DataSourceNote source={[DATA_SOURCES.era5Archive, DATA_SOURCES.openMeteo]} />
+                <DataSourceNote source={[DATA_SOURCES.era5Archive, DATA_SOURCES.nexGddp]} />
               </div>
               <div style={{ marginTop: 6 }}>
                 <DataSourceNote label="Hitzewelle, Datenbasis:" source={DATA_SOURCES.wetterVorhersage} /> ·{" "}

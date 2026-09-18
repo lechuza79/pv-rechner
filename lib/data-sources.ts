@@ -121,20 +121,36 @@ export const DATA_SOURCES = {
     url: "https://www.marktstammdatenregister.de",
     note: "aggregiert",
   },
-  /** Live weather feed powering the PV simulation. */
-  openMeteo: {
-    // Ohne die Vorlieferanten (DWD, NOAA): Die Lizenz verlangt Open-Meteo als
-    // Rechteinhaber, nicht die Wetterdienste dahinter — und der Quellenvermerk
-    // steht in der schmalen senkrechten Kante, wo jedes Wort Höhe kostet.
-    name: "Open-Meteo",
+  /**
+   * Klimaprojektion im Klimaanlagen-Rechner: wie stark die Kühlgradstunden bis
+   * in rund zwanzig Jahren zunehmen, je 0,25°-Rasterfeld aus acht CMIP6-Modellen
+   * (lib/klima-projektion.ts). Ersetzt am 18.09.2026 die Werte aus der
+   * Klima-Schnittstelle von Open-Meteo, deren freier Zugang nur nicht-kommerziell
+   * genutzt werden darf.
+   *
+   * Lizenz (zwei Legal-Judges, 18.09.2026, Belege in docs/quellen/nex-gddp-cmip6/):
+   * Tragend ist NICHT die CC0-Erklärung der NASA — die NASA kann nur auf ihre
+   * eigenen Rechte verzichten —, sondern CC BY 4.0 jeder einzelnen Modellgruppe
+   * laut CMIP6-Lizenzliste, die nach den CMIP6-Nutzungsbedingungen 6-2 der
+   * Lizenzangabe im Dateikopf vorgeht. Die Dateien tragen dort noch das ältere
+   * „CC-BY-SA 4.0"; das ist überholter Altbestand, keine geltende Bedingung.
+   * Deshalb der Lizenzvermerk CC BY 4.0, die WCRP-Danksagung und die Modellliste
+   * im `hinweis`, und der Änderungshinweis: Wir zeigen keinen Modellwert,
+   * sondern die Veränderung, die wir aus ihnen rechnen.
+   */
+  nexGddp: {
+    name: "NASA NEX-GDDP-CMIP6 (acht CMIP6-Klimamodelle)",
     license: "CC BY 4.0",
     licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
-    url: "https://open-meteo.com",
-    // Sec. 3(a)(1)(B) wie bei den anderen CC-BY-Quellen: Aus Tages-Min/Max
-    // rechnet cdhFromDailyMinMax() einen synthetischen Tagesgang und daraus die
-    // Kühlgradstunden — das ist eine Ableitung, keine Weitergabe.
-    note: "abgeleitet",
+    url: "https://www.nccs.nasa.gov/data-collections/nex-gddp-cmip6/",
+    note: "Veränderung je Rasterfeld selbst berechnet",
+    hinweis:
+      "Klimaprojektion im mittleren Szenario (SSP2-4.5), Datenversion 2.0, Modelle: MPI-ESM1-2-HR, EC-Earth3, MRI-ESM2-0, IPSL-CM6A-LR, NorESM2-MM, CNRM-CM6-1, ACCESS-CM2, MIROC6. " +
+      "We acknowledge the World Climate Research Programme, which, through its Working Group on Coupled Modelling, coordinated and promoted CMIP6. " +
+      "We thank the climate modeling groups for producing and making available their model output, the Earth System Grid Federation (ESGF) for archiving the data and providing access, and the multiple funding agencies who support CMIP6 and ESGF. " +
+      "Die NASA stellt die Daten als vorläufig und ohne Gewähr bereit; es handelt sich um eine Modellprojektion, keinen Messwert.",
   },
+
   /**
    * ERA5-Stundenwerte für die kommunalen Energiecharts.
    *

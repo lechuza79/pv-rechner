@@ -72,7 +72,7 @@ describe("Quellenangaben", () => {
     const veraendert: Record<string, string> = {
       energyCharts: "Viertelstunden zu Wochenwerten gemittelt; nuclear-import.ts leitet eine Größe ab, die so nicht geliefert wird",
       ember: "Länderreihen werden bei jedem Sync neu gerechnet",
-      openMeteo: "cdhFromDailyMinMax bildet aus Tages-Min/Max einen synthetischen Tagesgang",
+      nexGddp: "wir zeigen nicht die Modellwerte, sondern die daraus berechnete Veränderung je Rasterfeld",
       dwd: "scripts/dwd-strahlung-sync.ts mittelt das 1-km-Raster zu einem Jahreswert für Deutschland",
     };
     for (const [schluessel, grund] of Object.entries(veraendert)) {

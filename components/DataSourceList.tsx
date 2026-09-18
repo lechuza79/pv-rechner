@@ -17,7 +17,7 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   energyCharts: "Strommix, Stromerzeugung und Grenzflüsse, stündlich aktualisiert",
   ember: "Ländervergleich: Zubau von Erneuerbaren und Atomkraft",
   mastr: "Anlagenbestand in Deutschland (Solar-Atlas, Karten, Kennzahlen)",
-  openMeteo: "Klimaprojektion der Kühlgradstunden für die kommenden zwanzig Jahre",
+  nexGddp: "Klimaprojektion im Klimaanlagen-Rechner: wie stark die Kühlstunden in rund zwanzig Jahren zunehmen",
   era5Archive: "Rückblickende Wetterstunden der kommunalen Energiecharts — Sonne, Temperatur und Wind je Ort",
   iconD2Archive: "Live-Wetter, Live-Simulation und Solarleistung heute: Wolken, Sonne, Temperatur und Wind aus dem Wettermodell des Wetterdienstes",
   wetterVorhersage: "Hitzewellen-Hinweis im Klimaanlagen-Rechner: Tageshöchstwerte der nächsten 16 Tage",
