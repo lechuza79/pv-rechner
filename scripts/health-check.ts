@@ -27,7 +27,7 @@
  */
 
 import { collectColdProbes } from "../lib/health-cold-probe";
-import { placementSnapshotProblems, readCoherentPlacementSnapshot } from "../lib/health-placement-snapshot";
+import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
 import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
 import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { heuteInBerlin } from "../lib/zeit";
@@ -2115,6 +2115,16 @@ async function main() {
     const problems = placementSnapshotProblems(snapshot, new Date());
     lines.push(`Vorbereitete Ranglisten: ${snapshot.actual}/${snapshot.expected} Gemeinden, ${problems.length ? "Prüfung fehlgeschlagen" : "vollständig und aktuell"}.`);
     technical("placement-snapshot", true, ...problems);
+    // Und dieselbe Frage von der ANDEREN Seite: Die Prüfung oben hält die
+    // Ranglisten gegen die Tabelle, aus der sie gebaut werden — sie kann eine
+    // Ortsseite ohne Rangliste gar nicht sehen. Gezählt wird deshalb gegen die
+    // Zahl der Seiten. Auffällig, nicht rot: Die Lücke entsteht in den Daten
+    // (ein Ort unter einem alten Schlüssel), und daran kann der Autofix nichts
+    // reparieren — Rot würde ihn täglich ins Leere schicken.
+    const seiten = count(await read("mastr_regions?select=region_id&level=eq.gemeinde&slug=not.is.null", true));
+    const luecke = ortsseitenOhneRangliste(seiten, snapshot.actual);
+    lines.push(`Ortsseiten mit Rangliste: ${snapshot.actual} von ${seiten}.`);
+    warnings.push(...luecke);
   } catch (error) {
     unknown.push("placement-snapshot");
     technical("placement-snapshot-measurement", true, `Ranglisten-Prüfung fehlgeschlagen: ${String(error)}`);
