@@ -10160,5 +10160,346 @@
         "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
       }
     ]
+  },
+  {
+    "regionId": "13075006",
+    "name": "Bandelin",
+    "checkedAt": "2026-09-18T06:49:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bandelin gehört zum Amt Züssow. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet geförderte Projekte der Gemeinden (fast ausschließlich LED-Straßenbeleuchtung); die Volltextsuche findet nur Bebauungspläne für Solarparks. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Vorpommern-Greifswald wurde nicht gefunden.",
+    "searches": [
+      "amt-zuessow.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Vorpommern-Greifswald Förderprogramm Balkonkraftwerk Photovoltaik (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-zuessow.de/suchergebnis.html?query=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Zuschuss und Wärmepumpe ohne Treffer; Photovoltaik und Solar nur Bebauungspläne (PV Deponie Gützkow, Solarpark Bandelin); Förderrichtlinie und Klimaschutz nur die Seite der Förderprojekte der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "13075040",
+    "name": "Gribow",
+    "checkedAt": "2026-09-18T06:49:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gribow gehört zum Amt Züssow. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet geförderte Projekte der Gemeinden (fast ausschließlich LED-Straßenbeleuchtung); die Volltextsuche findet nur Bebauungspläne für Solarparks. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Vorpommern-Greifswald wurde nicht gefunden.",
+    "searches": [
+      "amt-zuessow.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Vorpommern-Greifswald Förderprogramm Balkonkraftwerk Photovoltaik (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-zuessow.de/suchergebnis.html?query=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Zuschuss und Wärmepumpe ohne Treffer; Photovoltaik und Solar nur Bebauungspläne (PV Deponie Gützkow, Solarpark Bandelin); Förderrichtlinie und Klimaschutz nur die Seite der Förderprojekte der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "13075041",
+    "name": "Groß Kiesow",
+    "checkedAt": "2026-09-18T06:49:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Kiesow gehört zum Amt Züssow. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet geförderte Projekte der Gemeinden (fast ausschließlich LED-Straßenbeleuchtung); die Volltextsuche findet nur Bebauungspläne für Solarparks. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Vorpommern-Greifswald wurde nicht gefunden.",
+    "searches": [
+      "amt-zuessow.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Vorpommern-Greifswald Förderprogramm Balkonkraftwerk Photovoltaik (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-zuessow.de/suchergebnis.html?query=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Zuschuss und Wärmepumpe ohne Treffer; Photovoltaik und Solar nur Bebauungspläne (PV Deponie Gützkow, Solarpark Bandelin); Förderrichtlinie und Klimaschutz nur die Seite der Förderprojekte der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "13075043",
+    "name": "Groß Polzin",
+    "checkedAt": "2026-09-18T06:49:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Polzin gehört zum Amt Züssow. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet geförderte Projekte der Gemeinden (fast ausschließlich LED-Straßenbeleuchtung); die Volltextsuche findet nur Bebauungspläne für Solarparks. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Vorpommern-Greifswald wurde nicht gefunden.",
+    "searches": [
+      "amt-zuessow.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Vorpommern-Greifswald Förderprogramm Balkonkraftwerk Photovoltaik (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-zuessow.de/suchergebnis.html?query=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Zuschuss und Wärmepumpe ohne Treffer; Photovoltaik und Solar nur Bebauungspläne (PV Deponie Gützkow, Solarpark Bandelin); Förderrichtlinie und Klimaschutz nur die Seite der Förderprojekte der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "13075061",
+    "name": "Klein Bünzow",
+    "checkedAt": "2026-09-18T06:49:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Klein Bünzow gehört zum Amt Züssow. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet geförderte Projekte der Gemeinden (fast ausschließlich LED-Straßenbeleuchtung); die Volltextsuche findet nur Bebauungspläne für Solarparks. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Vorpommern-Greifswald wurde nicht gefunden.",
+    "searches": [
+      "amt-zuessow.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Vorpommern-Greifswald Förderprogramm Balkonkraftwerk Photovoltaik (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-zuessow.de/suchergebnis.html?query=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Zuschuss und Wärmepumpe ohne Treffer; Photovoltaik und Solar nur Bebauungspläne (PV Deponie Gützkow, Solarpark Bandelin); Förderrichtlinie und Klimaschutz nur die Seite der Förderprojekte der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "13075086",
+    "name": "Lühmannsdorf",
+    "checkedAt": "2026-09-18T06:49:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lühmannsdorf gehört zum Amt Züssow. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet geförderte Projekte der Gemeinden (fast ausschließlich LED-Straßenbeleuchtung); die Volltextsuche findet nur Bebauungspläne für Solarparks. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Vorpommern-Greifswald wurde nicht gefunden.",
+    "searches": [
+      "amt-zuessow.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Vorpommern-Greifswald Förderprogramm Balkonkraftwerk Photovoltaik (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-zuessow.de/suchergebnis.html?query=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Zuschuss und Wärmepumpe ohne Treffer; Photovoltaik und Solar nur Bebauungspläne (PV Deponie Gützkow, Solarpark Bandelin); Förderrichtlinie und Klimaschutz nur die Seite der Förderprojekte der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "13075094",
+    "name": "Murchin",
+    "checkedAt": "2026-09-18T06:49:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Murchin gehört zum Amt Züssow. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet geförderte Projekte der Gemeinden (fast ausschließlich LED-Straßenbeleuchtung); die Volltextsuche findet nur Bebauungspläne für Solarparks. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Vorpommern-Greifswald wurde nicht gefunden.",
+    "searches": [
+      "amt-zuessow.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Vorpommern-Greifswald Förderprogramm Balkonkraftwerk Photovoltaik (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-zuessow.de/suchergebnis.html?query=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Zuschuss und Wärmepumpe ohne Treffer; Photovoltaik und Solar nur Bebauungspläne (PV Deponie Gützkow, Solarpark Bandelin); Förderrichtlinie und Klimaschutz nur die Seite der Förderprojekte der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "13075121",
+    "name": "Rubkow",
+    "checkedAt": "2026-09-18T06:49:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rubkow gehört zum Amt Züssow. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet geförderte Projekte der Gemeinden (fast ausschließlich LED-Straßenbeleuchtung); die Volltextsuche findet nur Bebauungspläne für Solarparks. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Vorpommern-Greifswald wurde nicht gefunden.",
+    "searches": [
+      "amt-zuessow.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Vorpommern-Greifswald Förderprogramm Balkonkraftwerk Photovoltaik (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-zuessow.de/suchergebnis.html?query=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Zuschuss und Wärmepumpe ohne Treffer; Photovoltaik und Solar nur Bebauungspläne (PV Deponie Gützkow, Solarpark Bandelin); Förderrichtlinie und Klimaschutz nur die Seite der Förderprojekte der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "13075145",
+    "name": "Wrangelsburg",
+    "checkedAt": "2026-09-18T06:49:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wrangelsburg gehört zum Amt Züssow. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet geförderte Projekte der Gemeinden (fast ausschließlich LED-Straßenbeleuchtung); die Volltextsuche findet nur Bebauungspläne für Solarparks. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Vorpommern-Greifswald wurde nicht gefunden.",
+    "searches": [
+      "amt-zuessow.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Vorpommern-Greifswald Förderprogramm Balkonkraftwerk Photovoltaik (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-zuessow.de/suchergebnis.html?query=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Zuschuss und Wärmepumpe ohne Treffer; Photovoltaik und Solar nur Bebauungspläne (PV Deponie Gützkow, Solarpark Bandelin); Förderrichtlinie und Klimaschutz nur die Seite der Förderprojekte der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "13075150",
+    "name": "Ziethen",
+    "checkedAt": "2026-09-18T06:49:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ziethen gehört zum Amt Züssow. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet geförderte Projekte der Gemeinden (fast ausschließlich LED-Straßenbeleuchtung); die Volltextsuche findet nur Bebauungspläne für Solarparks. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Vorpommern-Greifswald wurde nicht gefunden.",
+    "searches": [
+      "amt-zuessow.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Vorpommern-Greifswald Förderprogramm Balkonkraftwerk Photovoltaik (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-zuessow.de/suchergebnis.html?query=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Zuschuss und Wärmepumpe ohne Treffer; Photovoltaik und Solar nur Bebauungspläne (PV Deponie Gützkow, Solarpark Bandelin); Förderrichtlinie und Klimaschutz nur die Seite der Förderprojekte der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      }
+    ]
+  },
+  {
+    "regionId": "13075154",
+    "name": "Züssow",
+    "checkedAt": "2026-09-18T06:49:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Züssow gehört zum Amt Züssow. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundene Seite listet geförderte Projekte der Gemeinden (fast ausschließlich LED-Straßenbeleuchtung); die Volltextsuche findet nur Bebauungspläne für Solarparks. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Vorpommern-Greifswald wurde nicht gefunden.",
+    "searches": [
+      "amt-zuessow.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz",
+      "Landkreis Vorpommern-Greifswald Förderprogramm Balkonkraftwerk Photovoltaik (Websuche, Treffer nur Landesprogramm)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-zuessow.de/suchergebnis.html?query=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Zuschuss und Wärmepumpe ohne Treffer; Photovoltaik und Solar nur Bebauungspläne (PV Deponie Gützkow, Solarpark Bandelin); Förderrichtlinie und Klimaschutz nur die Seite der Förderprojekte der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: „Geförderte Projekte in den amtsangehörigen Gemeinden“ — EFRE- und NKI-Förderung für die Straßenbeleuchtung der Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-zuessow.de/bekanntmachungen/foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      }
+    ]
   }
 ]
