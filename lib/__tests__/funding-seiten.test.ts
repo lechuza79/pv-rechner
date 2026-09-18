@@ -8,6 +8,7 @@ import {
   istInterneRoute,
   istVorlagenRest,
   programmDecktSeite,
+  seitenAbrufAdressen,
 } from "../funding-seiten";
 
 const seite = (p: Partial<FoerderSeite> & Pick<FoerderSeite, "url">): FoerderSeite => ({
@@ -283,5 +284,27 @@ describe("Fördergebiet deckt Gemeinde — die Richtung ist der ganze Punkt", ()
   it("leere Schlüssel decken nichts", () => {
     expect(programmDecktSeite("", "09663000")).toBe(false);
     expect(programmDecktSeite("09663", "")).toBe(false);
+  });
+});
+
+describe("seitenAbrufAdressen", () => {
+  it("tries the stored host first and the www form as fallback", () => {
+    expect(seitenAbrufAdressen("hummeltal.de/Foerderung-privater-Massnahmen.n264.html")).toEqual([
+      "https://hummeltal.de/Foerderung-privater-Massnahmen.n264.html",
+      "https://www.hummeltal.de/Foerderung-privater-Massnahmen.n264.html",
+    ]);
+  });
+  it("decodes escaped query separators so the server sees real parameters", () => {
+    expect(seitenAbrufAdressen("gemeindebrunnen.de/suche?bid=199&amp;app=search")[0])
+      .toBe("https://gemeindebrunnen.de/suche?bid=199&app=search");
+  });
+  it("does not double a www host or touch full addresses", () => {
+    expect(seitenAbrufAdressen("www.x.de/a")).toEqual(["https://www.x.de/a"]);
+    expect(seitenAbrufAdressen("https://x.de/a?b=1&amp;c=2")).toEqual(["https://x.de/a?b=1&c=2"]);
+    expect(seitenAbrufAdressen("")).toEqual([]);
+  });
+  it("round-trips: every fetch address maps back to the same page key", () => {
+    const key = seitenSchluessel("https://www.vg-lw.de/foerderung?id=3");
+    for (const a of seitenAbrufAdressen(key)) expect(seitenSchluessel(a)).toBe(key);
   });
 });

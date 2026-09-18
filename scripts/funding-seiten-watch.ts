@@ -1,4 +1,5 @@
 import { FundingSourceReader } from "./lib/funding-source-reader";
+import { holeSeite, seiteFaellig } from "./lib/funding-seiten-abruf";
 /**
  * Seiten-Wächter je EINZELNER Förderseite — nicht mehr eine je Gemeinde.
  *
@@ -55,9 +56,6 @@ if (!url || !key) {
 const sb = createClient(url, key);
 const sources = new FundingSourceReader(sb, "page-watch", process.argv.includes("--dry"));
 
-const UA =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
-
 const dry = process.argv.includes("--dry");
 
 function zahl(name: string, standard: number): number {
@@ -98,7 +96,7 @@ async function main(): Promise<void> {
   // Am längsten nicht gesehene zuerst — so kommt jede Seite reihum dran, auch
   // wenn der Schub kleiner ist als der Bestand.
   const dran = zeilen
-    .filter(z => sources.due(z.url?.startsWith("http") ? z.url : `https://${z.url}`))
+    .filter(z => !!z.url && seiteFaellig(sources, z.url))
     .sort((a, b) => (a.seite_gesehen_am ?? "").localeCompare(b.seite_gesehen_am ?? ""))
     .slice(0, limit);
 
@@ -123,17 +121,8 @@ async function main(): Promise<void> {
   };
 
   await inSchueben(dran, zahl("gleichzeitig", 8), async (z) => {
-    let html: string | null = null;
-    try {
-      const res = await sources.fetch(z.url.startsWith("http") ? z.url : `https://${z.url}`, {
-        headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
-        redirect: "follow",
-        signal: AbortSignal.timeout(15_000),
-      });
-      if (res.ok) html = await res.text();
-    } catch {
-      /* unerreichbar */
-    }
+    // Stored host first, www form as fallback — see seitenAbrufAdressen.
+    const html = await holeSeite(sources, z.url);
 
     if (!html) {
       // Ein gescheiterter Abruf ist KEINE Änderung. Eine unerreichbare Seite als
