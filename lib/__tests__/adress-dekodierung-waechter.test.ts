@@ -55,7 +55,7 @@ function dateien(ordner: string): string[] {
       return;
     }
     for (const e of eintraege) {
-      if (e === "node_modules" || e === ".next" || e === ".next-dev") continue;
+      if (e === "node_modules" || e === ".next" || e === ".next-dev" || e === ".cache") continue;
       const voll = join(p, e);
       if (statSync(voll).isDirectory()) lauf(voll);
       else if (/\.(ts|tsx)$/.test(e) && !voll.includes("__tests__")) out.push(voll);

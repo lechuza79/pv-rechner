@@ -145,6 +145,74 @@ describe("Der Fingerabdruck ignoriert, was nur rauscht", () => {
   });
 });
 
+describe("Der Rahmen einer Seite zählt nicht mit (Fassung 5)", () => {
+  // Gemessen an zwei Nächten gespeicherter Abrufe (17./18.09.2026): 26 von 155
+  // Programmseiten wechselten ihren Abdruck — Wetter-Widget, „jetzt geöffnet",
+  // das heutige Datum im Kopf, Veranstaltungen in der Randspalte. Jede solche
+  // Scheinänderung startet die 14-Tage-Uhr eines Programms.
+  const programm = Array.from({ length: 20 }, (_, i) => `Richtlinie Absatz${i} Balkonkraftwerk Zuschuss`).join(" ");
+  const amt = (kopf: string, rand: string, inhalt: string) =>
+    `<html><body><header>${kopf}</header><nav>${RAHMEN}</nav><main><p>${inhalt}</p></main>` +
+    `<aside>${rand}</aside><footer>Rathaus heute jetzt geöffnet schließt 18:00</footer></body></html>`;
+  const inhalt = `${programm} 150 Euro je Haushalt, Antrag bis 31.12.2026.`;
+
+  it("Wetter, Tagesdatum und Randspalte lösen keine Änderung aus", () => {
+    const gestern = amt("Donnerstag 17. September leicht bewölkt 17 °C", "Veranstaltung Stadtfest 750 Jahre", inhalt);
+    const heute = amt("Freitag 18. September überwiegend bewölkt 21 °C", "Veranstaltung Skate-Anlage Eröffnung", inhalt);
+    expect(fingerprintOf(heute)).toBe(fingerprintOf(gestern));
+  });
+
+  it("eine Änderung im Inhalt fällt weiterhin auf", () => {
+    const vorher = amt("Donnerstag 17. September", "Stadtfest", inhalt);
+    const nachher = amt("Donnerstag 17. September", "Stadtfest", inhalt.replace("150 Euro", "100 Euro"));
+    expect(fingerprintOf(nachher)).not.toBe(fingerprintOf(vorher));
+  });
+
+  it("der Kopf eines Artikels bleibt Inhalt — ein „ausgeschöpft“ darin fällt auf", () => {
+    // Bottrop, 18.09.2026: Der Status steht im <header> des Artikels, innerhalb
+    // von <main>. Die erste Fassung dieses Filters hätte ihn verschluckt.
+    const artikel = (status: string) =>
+      `<html><body><header>Stadtportal Donnerstag 17 bewölkt</header><main><article><header><h1>Solaroffensive</h1>` +
+      `<p>${status}</p></header><p>${inhalt}</p></article><aside>Veranstaltungen Stadtfest</aside></main></body></html>`;
+    expect(fingerprintOf(artikel("Anträge sind möglich"))).not.toBe(
+      fingerprintOf(artikel("Der Fördertopf für die Solaroffensive ist ausgeschöpft")),
+    );
+  });
+
+  it("ohne <main> fallen Kopf und Fuß der Seite weg", () => {
+    const ohneMain = (kopf: string) =>
+      `<html><body><header>${kopf}</header><div><p>${inhalt}</p></div><footer>Impressum</footer></body></html>`;
+    expect(fingerprintOf(ohneMain("Freitag 18 bewölkt 21 °C"))).toBe(fingerprintOf(ohneMain("Donnerstag 17 klar 17 °C")));
+  });
+
+  it("steht der ganze Inhalt im Rahmen, gilt die ganze Seite — lesbar bleibt lesbar", () => {
+    // 123 Förderseiten fielen am 18.09. ohne Rahmen unter die Mindestmenge.
+    // Ohne Rückfall wären sie als „nicht gelesen" liegen geblieben.
+    const imKopf = (betrag: string) =>
+      `<html><body><header><p>${programm} ${betrag} je Haushalt.</p></header><main>Aktuelles</main></body></html>`;
+    expect(fingerprintOf(imKopf("150 Euro"))).toBeTruthy();
+    expect(fingerprintOf(imKopf("100 Euro"))).not.toBe(fingerprintOf(imKopf("150 Euro")));
+  });
+
+  it("die Fassung ist hochgezählt, sonst meldet der nächste Lauf jede Seite als geändert", () => {
+    expect(FINGERPRINT_VERSION).toBeGreaterThanOrEqual(5);
+  });
+
+  it("jeder Seiten-Abgleich prüft die Vergleichbarkeit, bevor er eine Bewegung meldet", () => {
+    // Bis 18.09.2026 verglichen die beiden Abgleiche der Förderseiten nur auf
+    // Gleichheit. Das Hochzählen der Fassung hätte damit jede der 4.600 Seiten
+    // als „bewegt" gemeldet und alle abgeschlossenen Kommunen wieder geöffnet.
+    // Geprüft wird die Verwendung vor dem Änderungszweig, nicht der Import.
+    for (const w of ["scripts/funding-watch.ts", "scripts/funding-seiten-watch.ts", "scripts/funding-coverage-watch.ts"]) {
+      const quelle = readFileSync(resolve(process.cwd(), w), "utf8");
+      const pruefung = quelle.search(/vergleichbar\([^)]*\)/);
+      const aenderung = quelle.search(/seite_geaendert_am: jetzt|page_changed_at/);
+      expect(pruefung, `${w}: keine Vergleichbarkeitsprüfung`).toBeGreaterThan(-1);
+      expect(pruefung, `${w}: Änderung wird vor der Vergleichbarkeitsprüfung geschrieben`).toBeLessThan(aenderung);
+    }
+  });
+});
+
 describe("Herkunft am Abdruck", () => {
   it("wird angehängt und wieder ausgelesen", () => {
     expect(wegVon(markiert("archiv", "abc"))).toBe("archiv");

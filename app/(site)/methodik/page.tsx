@@ -458,8 +458,8 @@ export default async function MethodikPage() {
         </p>
         <p style={S.p}>
           Den Kühlbedarf leiten wir aus echten <strong>Kühlgradstunden</strong> ab: Wir zählen für deinen Standort,
-          wie viele Stunden es im Sommer wie weit über der Kühlschwelle lag (Open-Meteo-Wetterhistorie, ohne PLZ
-          ein deutscher Durchschnitt). Wunschtemperatur, Zeitfenster und die Lage zur Sonne skalieren diesen Wert —
+          wie viele Stunden es im Sommer wie weit über der Kühlschwelle lag (ERA5-Reanalyse von Copernicus, einmal im Jahr
+          für jede Postleitzahl vorgerechnet; ohne PLZ ein deutscher Durchschnitt). Wunschtemperatur, Zeitfenster und die Lage zur Sonne skalieren diesen Wert —
           beim Kühlen kommt der größte Wärmeeintrag durch die Fenster, deshalb fragen wir nach Sonne und Dachgeschoss,
           nicht nach dem Dämmstandard. Umschaltbar sind drei <strong>Klimadaten-Modi</strong>: der Durchschnitt der
           letzten {DEFAULT_AIRCON_CONFIG.avgYears} Sommer (Standard), der letzte Sommer (oft heißer) und eine

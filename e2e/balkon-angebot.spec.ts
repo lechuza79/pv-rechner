@@ -89,6 +89,8 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
     const rel = (await erster.getAttribute("rel")) ?? "";
     expect(rel).toContain("sponsored");
     expect(rel).toContain("noopener");
+    // The merchant must be able to see where the visit came from.
+    expect(rel).not.toContain("noreferrer");
     expect(await erster.getAttribute("target")).toBe("_blank");
   });
 

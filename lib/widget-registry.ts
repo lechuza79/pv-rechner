@@ -307,7 +307,7 @@ export const WIDGETS = {
     },
     shareUrl: `${SITE}/solar-atlas`,
     shareText: "Solarleistung einer Gemeinde, simuliert aus dem heutigen Wetter – Solar Check",
-    sources: [DATA_SOURCES.openMeteo, DATA_SOURCES.mastr],
+    sources: [DATA_SOURCES.iconD2Archive, DATA_SOURCES.mastr],
     cta: { label: "Eigene Anlage simulieren", href: "/pv-simulation" },
   },
   gemeindeMeldung: {
@@ -360,7 +360,7 @@ export const WIDGETS = {
     },
     shareUrl: `${SITE}/photovoltaik-foerderung`,
     shareText: "Solarleistung eines Bundeslands, simuliert aus dem heutigen Wetter – Solar Check",
-    sources: [DATA_SOURCES.openMeteo, DATA_SOURCES.mastr],
+    sources: [DATA_SOURCES.iconD2Archive, DATA_SOURCES.mastr],
     cta: { label: "Eigene Anlage simulieren", href: "/pv-simulation" },
   },
   // ── Werkzeuge: hier gibt man eigene Zahlen ein ──────────────────────────────
@@ -380,7 +380,7 @@ export const WIDGETS = {
     kind: "tool",
     shareUrl: `${SITE}/pv-simulation`,
     shareText: "Live PV-Simulation – Solar Check",
-    sources: [DATA_SOURCES.openMeteo],
+    sources: [DATA_SOURCES.iconD2Archive],
     cta: { label: "Eigene Anlage rechnen", href: "/photovoltaik-rechner" },
   },
   rechner: {

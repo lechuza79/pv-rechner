@@ -131,7 +131,10 @@ function ZumShop({ angebot, hervor }: { angebot: ShopAngebot; hervor: boolean })
     <a
       href={angebotUrl(angebot, undefined, hervor ? "bkw-rechner-empfehlung" : "bkw-rechner-alternative")}
       target="_blank"
-      rel="sponsored noopener noreferrer"
+      // No `noreferrer`: the merchant should see solar-check.io as the source.
+      // The site-wide Referrer-Policy (strict-origin-when-cross-origin) sends only
+      // the origin cross-site, never the calculator's path or query.
+      rel="sponsored noopener"
       style={{
         flex: "0 0 auto",
         display: "inline-flex", alignItems: "center", gap: 6,

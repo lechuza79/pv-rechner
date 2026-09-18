@@ -1680,7 +1680,7 @@
  {
   "regionId": "07143206",
   "name": "Bad Marienberg (Westerwald)",
-  "checkedAt": "2026-09-17T17:30:02+00:00",
+  "checkedAt": "2026-09-18T11:05:00+00:00",
   "recheckAt": "2026-12-01T08:00:00Z",
   "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
   "outcome": "programme-geprueft",
@@ -1690,6 +1690,14 @@
    "site:bad-marienberg.de Modernisierung Innenstadt Richtlinie"
   ],
   "evidence": [
+   {
+    "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+    "finding": "Richtlinie vom 26.01.2026 am 18.09.2026 erneut abgerufen: SHA256 dea94c2b… byte-gleich mit der am 17.09.2026 vollständig gelesenen Fassung; Pos. 3.8 Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke 100 EUR/Kilowatt pauschal, max. 600 EUR."
+   },
+   {
+    "url": "https://www.bad-marienberg.de/verbandsgemeinde-gemeinden/aktuelles/september-2026/foerdermittel-2026-ausgeschoepft/",
+    "finding": "Am 18.09.2026 erneut gelesen: Mittel 2026 vollständig ausgeschöpft, keine weiteren Anträge. Programmseite unverändert (Richtlinie ab 01.01.2026, Programmübersicht, Richtlinie)."
+   },
    {
     "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/",
     "finding": "Geltung im gesamten Verbandsgemeindegebiet; Dreisbach steht in der amtlich abgeglichenen Mitgliederliste des Katalogeintrags. Richtlinie vom 26.01.2026 am 17.09.2026 erneut gelesen: Position 3.8 Stromspeicher für PV sowie Balkonkraftwerke 100 EUR/Kilowatt pauschal, max. 600 EUR; Suchmaschinen-Zusammenfassung '20 %, max. 100 EUR' gehört zu Position 3.7 und ist verworfen."
@@ -1736,6 +1744,12 @@
    }
   ],
   "sources": [
+   {
+    "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+    "disposition": "reviewed",
+    "reason": "Neu erfasste Fundstelle ist die Förderrichtlinie vom 26.01.2026; am 18.09.2026 erneut abgerufen, SHA256 dea94c2b… byte-gleich mit der am 17.09.2026 vollständig gelesenen Fassung (Pos. 3.8: 100 EUR/Kilowatt pauschal, max. 600 EUR). Bereits als Katalogprogramm geführt.",
+    "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
+   },
    {
     "url": "bad-marienberg.de/barrierefreiheit",
     "disposition": "reviewed",
@@ -14448,6 +14462,512 @@
         "disposition": "replaced",
         "reason": "Gespeicherte Adresse zeigt nur die Übersicht „Dienstleistungen A-Z“ ohne Eintrag. Der Titel benennt einen Landes-/Bundesdienst für Unternehmen des Güterkraftverkehrs; die Volltextsuche des Amtes (18.09.2026) führt ihn nicht unter den Förderdiensten für Privathaushalte — kein kommunaler Zuschuss an Privathaushalte.",
         "evidenceUrl": "https://www.amt-hohe-elbgeest.de/index.php?ffmod=suche&such=Balkonkraftwerk"
+      }
+    ]
+  },
+  {
+    "regionId": "01051021",
+    "name": "Diekhusen-Fahrstedt",
+    "checkedAt": "2026-09-18T11:34:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Diekhusen-Fahrstedt gehört zum Amt Marne-Nordsee. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Beide gefundenen Förderseiten sind Einleitungstexte des Behördenwegweisers (Lebenslagen) ohne Programm. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik, Solar und Speicher nur Bauleitplanung (PV-Freiflächen, Energiespeicher Helse), Potenzialstudien und kommunale Wärmeplanung, für Zuschuss nur die Lebenslage „Hausbau und Immobilienerwerb“, für Klimaschutz nur Lebenslagen und das Pendlerportal. Der Kreis Dithmarschen verweist auf Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, seit 16.11.2023 gestoppt); ein Kreisprogramm wurde nicht gefunden.",
+    "searches": [
+      "amt-marne-nordsee.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderung, Klimaschutz",
+      "Websuche: Marne Dithmarschen Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026",
+      "Websuche site:dithmarschen.de Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Kreis Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-marne-nordsee.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026, gerendert gelesen): Balkonkraftwerk und Wärmepumpe „Keine Ergebnisse gefunden“; Photovoltaik 11 Treffer nur Bauleitplanung/Freiflächen und Gemeindeinformationen; Solar 11 Treffer Potenzialflächenstudien und kommunale Wärmeplanung; Speicher Bauleitplanung Energiespeicher Helse und Datenschutz; Zuschuss 1 Treffer Lebenslage „Hausbau und Immobilienerwerb“; Klimaschutz Lebenslagen und Pendlerportal."
+      },
+      {
+        "url": "https://www.dithmarschen.de/Informationen-beschaffen/Energie-und-Klimaschutz/Aktuelles/index.php?La=1&object=tx,2046.7950.1&kat=&kuo=2&sub=0",
+        "finding": "Kreis Dithmarschen nennt für Private Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Ladepunkte des Bundes) und die Verbraucherzentrale; kein eigenes Kreisprogramm gefunden (Websuche 18.09.2026)."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "finding": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "finding": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568"
+      },
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
+      }
+    ]
+  },
+  {
+    "regionId": "01051034",
+    "name": "Friedrichskoog",
+    "checkedAt": "2026-09-18T11:34:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Friedrichskoog gehört zum Amt Marne-Nordsee. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Beide gefundenen Förderseiten sind Einleitungstexte des Behördenwegweisers (Lebenslagen) ohne Programm. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik, Solar und Speicher nur Bauleitplanung (PV-Freiflächen, Energiespeicher Helse), Potenzialstudien und kommunale Wärmeplanung, für Zuschuss nur die Lebenslage „Hausbau und Immobilienerwerb“, für Klimaschutz nur Lebenslagen und das Pendlerportal. Der Kreis Dithmarschen verweist auf Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, seit 16.11.2023 gestoppt); ein Kreisprogramm wurde nicht gefunden.",
+    "searches": [
+      "amt-marne-nordsee.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderung, Klimaschutz",
+      "Websuche: Marne Dithmarschen Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026",
+      "Websuche site:dithmarschen.de Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Kreis Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-marne-nordsee.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026, gerendert gelesen): Balkonkraftwerk und Wärmepumpe „Keine Ergebnisse gefunden“; Photovoltaik 11 Treffer nur Bauleitplanung/Freiflächen und Gemeindeinformationen; Solar 11 Treffer Potenzialflächenstudien und kommunale Wärmeplanung; Speicher Bauleitplanung Energiespeicher Helse und Datenschutz; Zuschuss 1 Treffer Lebenslage „Hausbau und Immobilienerwerb“; Klimaschutz Lebenslagen und Pendlerportal."
+      },
+      {
+        "url": "https://www.dithmarschen.de/Informationen-beschaffen/Energie-und-Klimaschutz/Aktuelles/index.php?La=1&object=tx,2046.7950.1&kat=&kuo=2&sub=0",
+        "finding": "Kreis Dithmarschen nennt für Private Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Ladepunkte des Bundes) und die Verbraucherzentrale; kein eigenes Kreisprogramm gefunden (Websuche 18.09.2026)."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "finding": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "finding": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568"
+      },
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
+      }
+    ]
+  },
+  {
+    "regionId": "01051046",
+    "name": "Helse",
+    "checkedAt": "2026-09-18T11:34:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Helse gehört zum Amt Marne-Nordsee. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Beide gefundenen Förderseiten sind Einleitungstexte des Behördenwegweisers (Lebenslagen) ohne Programm. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik, Solar und Speicher nur Bauleitplanung (PV-Freiflächen, Energiespeicher Helse), Potenzialstudien und kommunale Wärmeplanung, für Zuschuss nur die Lebenslage „Hausbau und Immobilienerwerb“, für Klimaschutz nur Lebenslagen und das Pendlerportal. Der Kreis Dithmarschen verweist auf Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, seit 16.11.2023 gestoppt); ein Kreisprogramm wurde nicht gefunden.",
+    "searches": [
+      "amt-marne-nordsee.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderung, Klimaschutz",
+      "Websuche: Marne Dithmarschen Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026",
+      "Websuche site:dithmarschen.de Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Kreis Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-marne-nordsee.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026, gerendert gelesen): Balkonkraftwerk und Wärmepumpe „Keine Ergebnisse gefunden“; Photovoltaik 11 Treffer nur Bauleitplanung/Freiflächen und Gemeindeinformationen; Solar 11 Treffer Potenzialflächenstudien und kommunale Wärmeplanung; Speicher Bauleitplanung Energiespeicher Helse und Datenschutz; Zuschuss 1 Treffer Lebenslage „Hausbau und Immobilienerwerb“; Klimaschutz Lebenslagen und Pendlerportal."
+      },
+      {
+        "url": "https://www.dithmarschen.de/Informationen-beschaffen/Energie-und-Klimaschutz/Aktuelles/index.php?La=1&object=tx,2046.7950.1&kat=&kuo=2&sub=0",
+        "finding": "Kreis Dithmarschen nennt für Private Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Ladepunkte des Bundes) und die Verbraucherzentrale; kein eigenes Kreisprogramm gefunden (Websuche 18.09.2026)."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "finding": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "finding": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568"
+      },
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
+      }
+    ]
+  },
+  {
+    "regionId": "01051072",
+    "name": "Marne",
+    "checkedAt": "2026-09-18T11:34:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Marne gehört zum Amt Marne-Nordsee. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Beide gefundenen Förderseiten sind Einleitungstexte des Behördenwegweisers (Lebenslagen) ohne Programm. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik, Solar und Speicher nur Bauleitplanung (PV-Freiflächen, Energiespeicher Helse), Potenzialstudien und kommunale Wärmeplanung, für Zuschuss nur die Lebenslage „Hausbau und Immobilienerwerb“, für Klimaschutz nur Lebenslagen und das Pendlerportal. Der Kreis Dithmarschen verweist auf Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, seit 16.11.2023 gestoppt); ein Kreisprogramm wurde nicht gefunden.",
+    "searches": [
+      "amt-marne-nordsee.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderung, Klimaschutz",
+      "Websuche: Marne Dithmarschen Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026",
+      "Websuche site:dithmarschen.de Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Kreis Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-marne-nordsee.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026, gerendert gelesen): Balkonkraftwerk und Wärmepumpe „Keine Ergebnisse gefunden“; Photovoltaik 11 Treffer nur Bauleitplanung/Freiflächen und Gemeindeinformationen; Solar 11 Treffer Potenzialflächenstudien und kommunale Wärmeplanung; Speicher Bauleitplanung Energiespeicher Helse und Datenschutz; Zuschuss 1 Treffer Lebenslage „Hausbau und Immobilienerwerb“; Klimaschutz Lebenslagen und Pendlerportal."
+      },
+      {
+        "url": "https://www.dithmarschen.de/Informationen-beschaffen/Energie-und-Klimaschutz/Aktuelles/index.php?La=1&object=tx,2046.7950.1&kat=&kuo=2&sub=0",
+        "finding": "Kreis Dithmarschen nennt für Private Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Ladepunkte des Bundes) und die Verbraucherzentrale; kein eigenes Kreisprogramm gefunden (Websuche 18.09.2026)."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "finding": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "finding": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568"
+      },
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
+      }
+    ]
+  },
+  {
+    "regionId": "01051073",
+    "name": "Marnerdeich",
+    "checkedAt": "2026-09-18T11:34:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Marnerdeich gehört zum Amt Marne-Nordsee. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Beide gefundenen Förderseiten sind Einleitungstexte des Behördenwegweisers (Lebenslagen) ohne Programm. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik, Solar und Speicher nur Bauleitplanung (PV-Freiflächen, Energiespeicher Helse), Potenzialstudien und kommunale Wärmeplanung, für Zuschuss nur die Lebenslage „Hausbau und Immobilienerwerb“, für Klimaschutz nur Lebenslagen und das Pendlerportal. Der Kreis Dithmarschen verweist auf Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, seit 16.11.2023 gestoppt); ein Kreisprogramm wurde nicht gefunden.",
+    "searches": [
+      "amt-marne-nordsee.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderung, Klimaschutz",
+      "Websuche: Marne Dithmarschen Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026",
+      "Websuche site:dithmarschen.de Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Kreis Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-marne-nordsee.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026, gerendert gelesen): Balkonkraftwerk und Wärmepumpe „Keine Ergebnisse gefunden“; Photovoltaik 11 Treffer nur Bauleitplanung/Freiflächen und Gemeindeinformationen; Solar 11 Treffer Potenzialflächenstudien und kommunale Wärmeplanung; Speicher Bauleitplanung Energiespeicher Helse und Datenschutz; Zuschuss 1 Treffer Lebenslage „Hausbau und Immobilienerwerb“; Klimaschutz Lebenslagen und Pendlerportal."
+      },
+      {
+        "url": "https://www.dithmarschen.de/Informationen-beschaffen/Energie-und-Klimaschutz/Aktuelles/index.php?La=1&object=tx,2046.7950.1&kat=&kuo=2&sub=0",
+        "finding": "Kreis Dithmarschen nennt für Private Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Ladepunkte des Bundes) und die Verbraucherzentrale; kein eigenes Kreisprogramm gefunden (Websuche 18.09.2026)."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "finding": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "finding": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568"
+      },
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
+      }
+    ]
+  },
+  {
+    "regionId": "01051076",
+    "name": "Neufeld",
+    "checkedAt": "2026-09-18T11:34:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neufeld gehört zum Amt Marne-Nordsee. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Beide gefundenen Förderseiten sind Einleitungstexte des Behördenwegweisers (Lebenslagen) ohne Programm. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik, Solar und Speicher nur Bauleitplanung (PV-Freiflächen, Energiespeicher Helse), Potenzialstudien und kommunale Wärmeplanung, für Zuschuss nur die Lebenslage „Hausbau und Immobilienerwerb“, für Klimaschutz nur Lebenslagen und das Pendlerportal. Der Kreis Dithmarschen verweist auf Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, seit 16.11.2023 gestoppt); ein Kreisprogramm wurde nicht gefunden.",
+    "searches": [
+      "amt-marne-nordsee.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderung, Klimaschutz",
+      "Websuche: Marne Dithmarschen Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026",
+      "Websuche site:dithmarschen.de Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Kreis Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-marne-nordsee.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026, gerendert gelesen): Balkonkraftwerk und Wärmepumpe „Keine Ergebnisse gefunden“; Photovoltaik 11 Treffer nur Bauleitplanung/Freiflächen und Gemeindeinformationen; Solar 11 Treffer Potenzialflächenstudien und kommunale Wärmeplanung; Speicher Bauleitplanung Energiespeicher Helse und Datenschutz; Zuschuss 1 Treffer Lebenslage „Hausbau und Immobilienerwerb“; Klimaschutz Lebenslagen und Pendlerportal."
+      },
+      {
+        "url": "https://www.dithmarschen.de/Informationen-beschaffen/Energie-und-Klimaschutz/Aktuelles/index.php?La=1&object=tx,2046.7950.1&kat=&kuo=2&sub=0",
+        "finding": "Kreis Dithmarschen nennt für Private Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Ladepunkte des Bundes) und die Verbraucherzentrale; kein eigenes Kreisprogramm gefunden (Websuche 18.09.2026)."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "finding": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "finding": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568"
+      },
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
+      }
+    ]
+  },
+  {
+    "regionId": "01051077",
+    "name": "Neufelderkoog",
+    "checkedAt": "2026-09-18T11:34:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neufelderkoog gehört zum Amt Marne-Nordsee. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Beide gefundenen Förderseiten sind Einleitungstexte des Behördenwegweisers (Lebenslagen) ohne Programm. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik, Solar und Speicher nur Bauleitplanung (PV-Freiflächen, Energiespeicher Helse), Potenzialstudien und kommunale Wärmeplanung, für Zuschuss nur die Lebenslage „Hausbau und Immobilienerwerb“, für Klimaschutz nur Lebenslagen und das Pendlerportal. Der Kreis Dithmarschen verweist auf Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, seit 16.11.2023 gestoppt); ein Kreisprogramm wurde nicht gefunden.",
+    "searches": [
+      "amt-marne-nordsee.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderung, Klimaschutz",
+      "Websuche: Marne Dithmarschen Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026",
+      "Websuche site:dithmarschen.de Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Kreis Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-marne-nordsee.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026, gerendert gelesen): Balkonkraftwerk und Wärmepumpe „Keine Ergebnisse gefunden“; Photovoltaik 11 Treffer nur Bauleitplanung/Freiflächen und Gemeindeinformationen; Solar 11 Treffer Potenzialflächenstudien und kommunale Wärmeplanung; Speicher Bauleitplanung Energiespeicher Helse und Datenschutz; Zuschuss 1 Treffer Lebenslage „Hausbau und Immobilienerwerb“; Klimaschutz Lebenslagen und Pendlerportal."
+      },
+      {
+        "url": "https://www.dithmarschen.de/Informationen-beschaffen/Energie-und-Klimaschutz/Aktuelles/index.php?La=1&object=tx,2046.7950.1&kat=&kuo=2&sub=0",
+        "finding": "Kreis Dithmarschen nennt für Private Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Ladepunkte des Bundes) und die Verbraucherzentrale; kein eigenes Kreisprogramm gefunden (Websuche 18.09.2026)."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "finding": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "finding": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568"
+      },
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
+      }
+    ]
+  },
+  {
+    "regionId": "01051090",
+    "name": "Ramhusen",
+    "checkedAt": "2026-09-18T11:34:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ramhusen gehört zum Amt Marne-Nordsee. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Beide gefundenen Förderseiten sind Einleitungstexte des Behördenwegweisers (Lebenslagen) ohne Programm. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik, Solar und Speicher nur Bauleitplanung (PV-Freiflächen, Energiespeicher Helse), Potenzialstudien und kommunale Wärmeplanung, für Zuschuss nur die Lebenslage „Hausbau und Immobilienerwerb“, für Klimaschutz nur Lebenslagen und das Pendlerportal. Der Kreis Dithmarschen verweist auf Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, seit 16.11.2023 gestoppt); ein Kreisprogramm wurde nicht gefunden.",
+    "searches": [
+      "amt-marne-nordsee.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderung, Klimaschutz",
+      "Websuche: Marne Dithmarschen Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026",
+      "Websuche site:dithmarschen.de Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Kreis Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-marne-nordsee.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026, gerendert gelesen): Balkonkraftwerk und Wärmepumpe „Keine Ergebnisse gefunden“; Photovoltaik 11 Treffer nur Bauleitplanung/Freiflächen und Gemeindeinformationen; Solar 11 Treffer Potenzialflächenstudien und kommunale Wärmeplanung; Speicher Bauleitplanung Energiespeicher Helse und Datenschutz; Zuschuss 1 Treffer Lebenslage „Hausbau und Immobilienerwerb“; Klimaschutz Lebenslagen und Pendlerportal."
+      },
+      {
+        "url": "https://www.dithmarschen.de/Informationen-beschaffen/Energie-und-Klimaschutz/Aktuelles/index.php?La=1&object=tx,2046.7950.1&kat=&kuo=2&sub=0",
+        "finding": "Kreis Dithmarschen nennt für Private Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Ladepunkte des Bundes) und die Verbraucherzentrale; kein eigenes Kreisprogramm gefunden (Websuche 18.09.2026)."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "finding": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "finding": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568"
+      },
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
+      }
+    ]
+  },
+  {
+    "regionId": "01051103",
+    "name": "Schmedeswurth",
+    "checkedAt": "2026-09-18T11:34:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schmedeswurth gehört zum Amt Marne-Nordsee. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Beide gefundenen Förderseiten sind Einleitungstexte des Behördenwegweisers (Lebenslagen) ohne Programm. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik, Solar und Speicher nur Bauleitplanung (PV-Freiflächen, Energiespeicher Helse), Potenzialstudien und kommunale Wärmeplanung, für Zuschuss nur die Lebenslage „Hausbau und Immobilienerwerb“, für Klimaschutz nur Lebenslagen und das Pendlerportal. Der Kreis Dithmarschen verweist auf Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, seit 16.11.2023 gestoppt); ein Kreisprogramm wurde nicht gefunden.",
+    "searches": [
+      "amt-marne-nordsee.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderung, Klimaschutz",
+      "Websuche: Marne Dithmarschen Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026",
+      "Websuche site:dithmarschen.de Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Kreis Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-marne-nordsee.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026, gerendert gelesen): Balkonkraftwerk und Wärmepumpe „Keine Ergebnisse gefunden“; Photovoltaik 11 Treffer nur Bauleitplanung/Freiflächen und Gemeindeinformationen; Solar 11 Treffer Potenzialflächenstudien und kommunale Wärmeplanung; Speicher Bauleitplanung Energiespeicher Helse und Datenschutz; Zuschuss 1 Treffer Lebenslage „Hausbau und Immobilienerwerb“; Klimaschutz Lebenslagen und Pendlerportal."
+      },
+      {
+        "url": "https://www.dithmarschen.de/Informationen-beschaffen/Energie-und-Klimaschutz/Aktuelles/index.php?La=1&object=tx,2046.7950.1&kat=&kuo=2&sub=0",
+        "finding": "Kreis Dithmarschen nennt für Private Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Ladepunkte des Bundes) und die Verbraucherzentrale; kein eigenes Kreisprogramm gefunden (Websuche 18.09.2026)."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "finding": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "finding": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568"
+      },
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
+      }
+    ]
+  },
+  {
+    "regionId": "01051118",
+    "name": "Trennewurth",
+    "checkedAt": "2026-09-18T11:34:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Trennewurth gehört zum Amt Marne-Nordsee. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Beide gefundenen Förderseiten sind Einleitungstexte des Behördenwegweisers (Lebenslagen) ohne Programm. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik, Solar und Speicher nur Bauleitplanung (PV-Freiflächen, Energiespeicher Helse), Potenzialstudien und kommunale Wärmeplanung, für Zuschuss nur die Lebenslage „Hausbau und Immobilienerwerb“, für Klimaschutz nur Lebenslagen und das Pendlerportal. Der Kreis Dithmarschen verweist auf Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, seit 16.11.2023 gestoppt); ein Kreisprogramm wurde nicht gefunden.",
+    "searches": [
+      "amt-marne-nordsee.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderung, Klimaschutz",
+      "Websuche: Marne Dithmarschen Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026",
+      "Websuche site:dithmarschen.de Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Kreis Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-marne-nordsee.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026, gerendert gelesen): Balkonkraftwerk und Wärmepumpe „Keine Ergebnisse gefunden“; Photovoltaik 11 Treffer nur Bauleitplanung/Freiflächen und Gemeindeinformationen; Solar 11 Treffer Potenzialflächenstudien und kommunale Wärmeplanung; Speicher Bauleitplanung Energiespeicher Helse und Datenschutz; Zuschuss 1 Treffer Lebenslage „Hausbau und Immobilienerwerb“; Klimaschutz Lebenslagen und Pendlerportal."
+      },
+      {
+        "url": "https://www.dithmarschen.de/Informationen-beschaffen/Energie-und-Klimaschutz/Aktuelles/index.php?La=1&object=tx,2046.7950.1&kat=&kuo=2&sub=0",
+        "finding": "Kreis Dithmarschen nennt für Private Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Ladepunkte des Bundes) und die Verbraucherzentrale; kein eigenes Kreisprogramm gefunden (Websuche 18.09.2026)."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "finding": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "finding": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568"
+      },
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
+      }
+    ]
+  },
+  {
+    "regionId": "01051119",
+    "name": "Volsemenhusen",
+    "checkedAt": "2026-09-18T11:34:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Volsemenhusen gehört zum Amt Marne-Nordsee. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Beide gefundenen Förderseiten sind Einleitungstexte des Behördenwegweisers (Lebenslagen) ohne Programm. Die Volltextsuche des Amtes (18.09.2026) findet für Balkonkraftwerk und Wärmepumpe nichts, für Photovoltaik, Solar und Speicher nur Bauleitplanung (PV-Freiflächen, Energiespeicher Helse), Potenzialstudien und kommunale Wärmeplanung, für Zuschuss nur die Lebenslage „Hausbau und Immobilienerwerb“, für Klimaschutz nur Lebenslagen und das Pendlerportal. Der Kreis Dithmarschen verweist auf Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, seit 16.11.2023 gestoppt); ein Kreisprogramm wurde nicht gefunden.",
+    "searches": [
+      "amt-marne-nordsee.de Volltextsuche (18.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderung, Klimaschutz",
+      "Websuche: Marne Dithmarschen Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026",
+      "Websuche site:dithmarschen.de Förderung Balkonkraftwerk/Photovoltaik/Wärmepumpe Kreis Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-marne-nordsee.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes (18.09.2026, gerendert gelesen): Balkonkraftwerk und Wärmepumpe „Keine Ergebnisse gefunden“; Photovoltaik 11 Treffer nur Bauleitplanung/Freiflächen und Gemeindeinformationen; Solar 11 Treffer Potenzialflächenstudien und kommunale Wärmeplanung; Speicher Bauleitplanung Energiespeicher Helse und Datenschutz; Zuschuss 1 Treffer Lebenslage „Hausbau und Immobilienerwerb“; Klimaschutz Lebenslagen und Pendlerportal."
+      },
+      {
+        "url": "https://www.dithmarschen.de/Informationen-beschaffen/Energie-und-Klimaschutz/Aktuelles/index.php?La=1&object=tx,2046.7950.1&kat=&kuo=2&sub=0",
+        "finding": "Kreis Dithmarschen nennt für Private Bundes- und Landesprogramme (Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, Ladepunkte des Bundes) und die Verbraucherzentrale; kein eigenes Kreisprogramm gefunden (Websuche 18.09.2026)."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "finding": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag."
+      },
+      {
+        "url": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "finding": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026, auch gerendert): Einleitung der Lebenslage „Infrastruktur-, Bau- und Wohnförderung“ des Behördenwegweisers (sozialer Wohnungsbau, Breitband, energetische Sanierung, Barrierefreiheit) ohne kommunales Programm, Betrag oder Antrag.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568"
+      },
+      {
+        "url": "amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (18.09.2026): Einleitung der Lebenslage „Weitere Förderbereiche“ — „Weitere Förderangebote und Informationen für Unternehmen und Organisationen“ — ohne kommunales Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-marne-nordsee.de/buergerservice-politik/digitale-verwaltung/lebenslagen/detail/weitere-foerderbereiche-2572"
       }
     ]
   }

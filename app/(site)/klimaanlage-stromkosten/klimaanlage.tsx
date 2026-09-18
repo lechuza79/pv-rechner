@@ -108,7 +108,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
     cdhMode === "avg5" ? `Ø ${CFG.avgYears} Sommer`
     : cdhMode === "lastSummer" ? "letzter Sommer"
     : `Projektion ~${PROJ_YEAR}`;
-  const [cdhSource, setCdhSource] = useState<"fallback" | "open-meteo" | "cache">("fallback");
+  const [cdhSource, setCdhSource] = useState<"fallback" | "era5">("fallback");
   const [heatwave, setHeatwave] = useState<HeatwaveInfo>(null);
   const cdh = cdhSet[cdhMode];
 
@@ -752,7 +752,11 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
               <span> · Kühlbedarf aus echten Kühlgradstunden · Heizen als Übergangszeit-Schätzung · Werte auf der </span>
               <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none" }}>Datenstand-Seite</Link>.
               <div style={{ marginTop: 6 }}>
-                <DataSourceNote source={DATA_SOURCES.openMeteo} />
+                <DataSourceNote source={[DATA_SOURCES.era5Archive, DATA_SOURCES.openMeteo]} />
+              </div>
+              <div style={{ marginTop: 6 }}>
+                <DataSourceNote label="Hitzewelle, Datenbasis:" source={DATA_SOURCES.wetterVorhersage} /> ·{" "}
+                <Link href="/ueber#quelle-wetterVorhersage" style={{ color: "inherit" }}>Haftungsausschluss</Link>
               </div>
             </div>
 

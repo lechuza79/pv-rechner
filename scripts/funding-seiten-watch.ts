@@ -34,7 +34,7 @@ import { holeSeite, seiteFaellig } from "./lib/funding-seiten-abruf";
 import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
-import { fingerprintOf, markiert } from "../lib/funding-fingerprint";
+import { fingerprintOf, markiert, vergleichbar } from "../lib/funding-fingerprint";
 import { inSchueben } from "../lib/lauf-parallel";
 
 function loadEnvFile(): void {
@@ -147,7 +147,9 @@ async function main(): Promise<void> {
     const fp = markiert("live", abdruck);
     if (z.zustand === "unerreichbar") wiederDa++;
 
-    if (!z.fingerprint) {
+    // Different procedure version = our change, not the town's (see
+    // funding-coverage-watch.ts): re-baseline, no change date.
+    if (!z.fingerprint || !vergleichbar(z.fingerprint, fp)) {
       neu++;
       await schreibe(z, { fingerprint: fp, seite_gesehen_am: jetzt, zustand: "erreichbar" });
       return;
@@ -171,7 +173,7 @@ async function main(): Promise<void> {
   console.log("Ergebnis:");
   console.log(`   unverändert:      ${unveraendert}`);
   console.log(`   BEWEGT:           ${geaendert}`);
-  console.log(`   erstmals erfasst: ${neu}`);
+  console.log(`   erstmals erfasst oder neu vermessen: ${neu}`);
   console.log(`   unerreichbar:     ${unerreichbar}`);
   if (wiederDa) console.log(`   wieder erreichbar: ${wiederDa}`);
   if (bewegt.length) {

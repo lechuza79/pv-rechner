@@ -191,7 +191,7 @@ export default function SimulationPanel({
           text: "Die grüne Fläche ist der Teil der Erzeugung, der zeitgleich im Haushalt gebraucht wird; der Rest geht ins Netz.",
         }] : []),
       ],
-      source: sourceLabel(DATA_SOURCES.openMeteo),
+      source: sourceLabel(DATA_SOURCES.iconD2Archive),
     },
     filename: `solar-check-simulation-${selectedKwp}kwp.png`,
     shareText,
@@ -446,10 +446,10 @@ export default function SimulationPanel({
           Geschätzte Leistung für ein südausgerichtetes Dach ohne Verschattung.<br />
           {!embed && (
             <>
-              <DataSourceNote source={DATA_SOURCES.openMeteo} /> ·{" "}
+              <DataSourceNote label="Datenbasis:" source={DATA_SOURCES.iconD2Archive} /> ·{" "}
             </>
           )}
-          Aktualisierung alle 15 Min.
+          Wettermodell stündlich neu
         </div>
       )}
 
