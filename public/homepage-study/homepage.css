@@ -952,8 +952,8 @@ body[data-lab-accent] .av-stories .av-story-card{border-radius:20px!important;fo
 @media(prefers-reduced-motion:reduce){.av-story-card{transition:none}}
 
 /* Keep hero copy and its input in one readable column, including the result. */
-:root{--sc-sim-copy-max:440px;--sc-page-inset:max(24px,5vw);--sc-hero-content-inset:calc(var(--sc-page-inset) + 24px)}
-/* Hero copy shares an inner rail, one spacing step inside the page shell. */
+:root{--sc-sim-copy-max:440px;--sc-page-inset:max(24px,5vw);--sc-hero-content-inset:max(var(--sc-page-inset),calc((100% - var(--sc-layout-content)) / 2))}
+/* Full-bleed scene; text aligns with the centered content rail. */
 html[data-sc-shell][data-homepage-preview] .site-header{padding-inline:var(--sc-page-inset)}
 html[data-homepage-preview] .hero-copy{margin-inline:var(--sc-hero-content-inset) 0;max-width:calc(100% - 2 * var(--sc-hero-content-inset));padding-inline:0}
 @media(max-width:600px){html[data-homepage-preview] .solar-page:not(.hs-simulation-route) .hero-copy{margin-inline:0;width:auto;max-width:none}}
@@ -997,7 +997,7 @@ solar-illustration.hs-audience-art::before{content:none}
 .homepage-study .hs-organisation-links h2{font-size:var(--sc-type-section-compact-size)}
 .homepage-study .hs-person-section>.hs-wrap{max-width:900px}
 /* A stable surface protects the secondary action from moving foliage. */
-.homepage-study .hero-copy .secondary-cta{background:#173b42;color:#f0f4ee;border-color:#173b42;box-shadow:none;backdrop-filter:none}
+.homepage-study .hero-copy .secondary-cta{background:rgb(23 59 66 / 78%);color:#f0f4ee;border-color:rgb(240 244 238 / 24%);box-shadow:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .homepage-study .hero-copy .trust-line{display:none}
 .homepage-study .hs-person-section .sc-person-text,
 .homepage-study .hs-person-section .sc-person-signature,
@@ -1012,7 +1012,7 @@ solar-illustration.hs-audience-art::before{content:none}
 /* Calm content hierarchy; the hero remains the main visual emphasis. */
 .homepage-study .hs-tool h3{font-size:clamp(22px,2vw,26px);line-height:1.3}
 .homepage-study .hs-guide h3{font-size:var(--sc-type-title-size);line-height:1.4}
-.homepage-study .hs-section{padding-block:72px}
+.homepage-study .hs-section{padding-block:72px;padding-inline:var(--sc-page-inset)}
 @media(min-width:851px){
  .homepage-study .hero-copy .hero-actions{--sc-hero-action-height:52px;gap:12px}
  .homepage-study .hs-person-section .sc-person-picture{max-width:280px}
@@ -1021,3 +1021,7 @@ solar-illustration.hs-audience-art::before{content:none}
 .homepage-study .hs-person-section .sc-person-actions{flex-direction:column;align-items:flex-start;gap:12px}
 .homepage-study .hs-person-section .sc-person-actions .hs-person-message{width:auto;min-height:46px;height:auto;flex-basis:auto;border:1px solid #173b4255;border-radius:999px;padding:10px 22px;gap:8px;background:transparent;font-weight:600;transition:background 180ms ease,border-color 180ms ease}
 .homepage-study .hs-person-section .hs-person-message:hover{background:#173b420b;border-color:#173b42}
+
+/* The fill itself provides contrast, including when backdrop-filter is absent. */
+.homepage-study .hero-copy .secondary-cta:hover{background:rgb(23 59 66 / 88%)}
+@media(prefers-reduced-transparency:reduce){.homepage-study .hero-copy .secondary-cta{background:#173b42;backdrop-filter:none;-webkit-backdrop-filter:none}}
