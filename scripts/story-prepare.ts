@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {heuteInBerlin} from '../lib/zeit';
 import {validateStoryWeather} from '../lib/story-weather-validation';
 import {era5StoryWeather,storyWeatherCacheRoot,storyWeatherProvider} from '../lib/story-weather-provider';
+import {openMeteoArchiveUrls,redactApiKey} from '../lib/open-meteo-archive-url';
 import {boundaryWeatherPoint} from '../lib/story-weather-location';
 import {solarMonth} from '../lib/story-monthly-solar';
 import {energyYear} from '../lib/story-energy-year';
@@ -41,8 +42,9 @@ async function weather(id:string,kind:'month'|'year',lat:number,lon:number,start
   atomic(local,result);return result;
  }
  const hourly='temperature_2m,shortwave_radiation'+(kind==='year'?',wind_speed_100m':'');
- const url=new URL('https://archive-api.open-meteo.com/v1/archive');
- for(const [k,v] of Object.entries({latitude:lat,longitude:lon,start_date:start,end_date:end,hourly,models:'era5',timezone:'UTC',wind_speed_unit:'ms'}))url.searchParams.set(k,String(v));
+ // With a subscription key the request goes to the customer host; the cache key
+ // and the saved source stay on the public form, so the key never reaches disk.
+ const {publicUrl:url,fetchUrl}=openMeteoArchiveUrls({latitude:lat,longitude:lon,start_date:start,end_date:end,hourly,models:'era5',timezone:'UTC',wind_speed_unit:'ms'},process.env.OPEN_METEO_API_KEY);
  const path=weatherRoot+'/'+createHash('sha256').update(url.href).digest('hex')+'.json';
  if(existsSync(path))return read(path);
  // Reuse earlier raw inputs only when the requested complete period and variables agree.
@@ -51,16 +53,16 @@ async function weather(id:string,kind:'month'|'year',lat:number,lon:number,start
  const oldMonth=base+'/story-monthly-solar/'+id+'-'+end.slice(0,7)+'.json';
  if(kind==='month'&&existsSync(oldMonth)){const r=read(oldMonth);if(new URL(r.sourceUrl).searchParams.get('start_date')===start)return r;}
  if(!fetchEnabled||rateLimited)throw Error(rateLimited?'Wetterabruf wartet nach Anbieterlimit.':'Örtliche Wetterdaten noch nicht vorbereitet.');
- let response=await fetch(url,{signal:AbortSignal.timeout(30000)});
+ let response=await fetch(fetchUrl,{signal:AbortSignal.timeout(30000)});
  for(let retry=0;response.status===429&&retry<3;retry++){
   const reason=await response.text();console.log('Weather limit',reason);
   if(/daily|day limit|hourly|hour limit/i.test(reason)){rateLimited=true;limitReason=reason;throw Error('Wetteranbieter-Limit: '+reason);}
   console.log('Waiting 55 seconds before resuming cached preparation');
   await new Promise(resolve=>setTimeout(resolve,55000));
-  response=await fetch(url,{signal:AbortSignal.timeout(30000)});
+  response=await fetch(fetchUrl,{signal:AbortSignal.timeout(30000)});
  }
  if(response.status===429){rateLimited=true;limitReason='Persistent minute limit';throw Error('Wetteranbieter meldet anhaltendes Abruflimit; der Lauf ist wiederaufnehmbar.');}
- if(!response.ok)throw Error('Wetterabruf fehlgeschlagen: HTTP '+response.status);
+ if(!response.ok)throw Error('Wetterabruf fehlgeschlagen: HTTP '+response.status+' ('+redactApiKey(fetchUrl)+')');
  const result={sourceUrl:url.href,retrievedAt:new Date().toISOString(),weather:await response.json()};
  validateStoryWeather(result.weather,start,end,kind==='year');
  atomic(path,result);return result;
