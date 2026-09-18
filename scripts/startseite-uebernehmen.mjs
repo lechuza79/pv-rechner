@@ -30,20 +30,16 @@ const PUBLIC = join(ZIEL, "public");
 // 393 px incl. postcode entry and story reader), plus directories that are
 // read relative to a script (menu illustrations, motifs, reader assets). ────
 const DATEIEN = [
-  "dynamic-hero/test.css",
   "dynamic-hero/panel-fallback-0.webp",
   "dynamic-hero/panel-fallback-mobile.webp",
   "dynamic-hero/plz-coordinates.json",
   "dynamic-hero/shell-font-0.woff2",
   "dynamic-hero/shell-font-1.woff2",
   "dynamic-hero/moon-lroc-1k.jpg",
-  "design-lab/homepage-experiments.css",
   "design-lab/splash-blue-web.svg",
   "design-lab/splash-color-web.svg",
   "design-lab/splash-ochre-web.svg",
   "design-lab/splash-sage-web.svg",
-  "homepage-study/homepage.css",
-  "homepage-study/mobile-hero.css",
   "homepage-study/montserrat-700.woff2",
   "homepage-study/illustrations/balcony-modern-v20.webp",
   "homepage-study/illustrations/funding-check-v20.webp",
@@ -51,15 +47,8 @@ const DATEIEN = [
   "homepage-study/illustrations/house-v20.webp",
   "homepage-study/illustrations/offer-check-v20.webp",
   "homepage-study/audience-v3/register.js",
-  "shared-footer/footer.css",
-  "shared-footer/trust-badges-v7/trust-badges.js",
-  "shared-footer/trust-badges-v7/trust-art-web.js",
-  "shared-person/person.css",
-  "shared-person/sebastian-portrait.webp",
   "illustrations-motion/solar-illustrations.js",
   "illustrations-neon/solar-neon.js",
-  // Shell of the package's plain content pages (lib/neon-unterseite.ts).
-  "rechner-uebersicht/overview.css",
 ];
 // The stage bundle: its entry plus the chunks it imports (the package's dist
 // folder also holds a dozen stale builds of the renderer, ~9 MB).
@@ -80,10 +69,16 @@ const ORDNER = [
   "homepage-study/race-dist",
   "homepage-study/story-dist",
   "homepage-study/audience-v3/assets",
-  "shared-nav",
   "illustrations-neon/assets-web",
   "illustrations-neon/motifs",
 ];
+// OWNED BY THE REPO since 2026-09-18, never copied again: menu, footer, person
+// card and every stylesheet. They are hand-written files without a build step,
+// so the repo is their only source and Codex edits them there on a branch. A
+// copy would silently overwrite that work. Only the built scene bundles and
+// their assets still come from the package (their sources and build live
+// there until the scene is rebuilt after launch).
+const IM_PROJEKT = [/^shared-nav\//, /^shared-footer\//, /^shared-person\//, /^(?!.*(?:^|\/)(?:dist|race-dist|story-dist)\/).*\.css$/];
 // Only web formats; the packages also carry multi-megabyte masters.
 const ERLAUBT = /\.(js|css|json|webp|svg|woff2|jpg|png)$/;
 
@@ -96,6 +91,7 @@ function kopiere(rel) {
     return;
   }
   if (!ERLAUBT.test(rel)) return;
+  if (IM_PROJEKT.some((r) => r.test(rel))) throw new Error(`Gehört dem Projekt, wird nicht kopiert: ${rel}`);
   const nach = join(PUBLIC, rel);
   mkdirSync(dirname(nach), { recursive: true });
   copyFileSync(von, nach);
@@ -175,19 +171,6 @@ const PATCHES = [
     why: "Dieselbe Titel-Zuweisung für die Simulation.",
   },
   { datei: "dynamic-hero/dist/test.js", ...DOMAIN_WEG },
-  { datei: "shared-nav/nav.js", ...DOMAIN_WEG },
-  {
-    datei: "shared-nav/nav.js",
-    from: "'/rechner-uebersicht'",
-    to: "'/#hs-rechner'",
-    why: "Die Rechner-Übersicht ist nicht Teil dieses Livegangs; der Link führt zu den Rechnern der Startseite.",
-  },
-  {
-    datei: "shared-nav/nav.js",
-    from: "waitlist.onclick=()=>{close(true);if(onWaitlist)onWaitlist();else{openedAt=Date.now();dialog.showModal();}};",
-    to: "waitlist.onclick=()=>{close(true);location.href='/angebot-pruefen';};",
-    why: "Die Warteliste hat eine eigene Seite, auf der später auch der Angebotscheck steht (Betreiber, 18.09.). Die Karte auf der Startseite klickt denselben Menüknopf und landet dort mit.",
-  },
   { datei: "homepage-study/race-dist/direct-race.js", ...DOMAIN_WEG },
   { datei: "homepage-study/story-dist/atlas-story-cards.js", ...DOMAIN_WEG },
 ];
