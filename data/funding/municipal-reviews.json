@@ -3216,19 +3216,24 @@
  {
   "regionId": "01060006",
   "name": "Bahrenhof",
-  "checkedAt": "2026-09-17T19:05:00Z",
+  "checkedAt": "2026-09-18T00:32:52Z",
   "recheckAt": "2026-12-31T08:00:00Z",
   "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
   "outcome": "keine-passende-foerderung",
   "conclusion": "Die Gemeinde hatte ein eigenes Solar-Förderprogramm (Richtlinie vom 13.06.2023): Balkonkraftwerk 100 € bis 300 W bzw. 200 € bis 600 W am Wechselrichter, Dachanlage am Einfamilienhaus 300 € bis 5 kW und 400 € darüber, höchstens die Hälfte der Kosten. Nr. 8 der Richtlinie begrenzt es: „Das Förderprogramm läuft bis zum 31.12.2023.\" Es ist damit seit Ende 2023 beendet und aktuell nicht beantragbar; als beendetes Programm im Katalog aufgenommen.",
   "searches": [
    "amt-trave-land.de Bahrenhof Förderung Mini PV-Anlagen",
-   "Gemeinde Bahrenhof Förderprogramm Solaranlagen Richtlinie"
+   "Gemeinde Bahrenhof Förderprogramm Solaranlagen Richtlinie",
+   "amt-trave-land.de Bahrenhof weitere Förderprogramme"
   ],
   "evidence": [
    {
     "url": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf",
     "finding": "Richtlinie zum Förderprogramm „Solaranlagen\" vom 13.06.2023, Nr. 2 mit den vier Pauschalen und Nr. 8: „Das Förderprogramm läuft bis zum 31.12.2023.\""
+   },
+   {
+    "url": "https://www.amt-trave-land.de/newsfeed/schieren/richtlinie-zum-foerderprogramm-loeschwasserversorgung-im-aussenbereich",
+    "finding": "Richtlinie des Amtes Trave-Land zum Förderprogramm Löschwasserversorgung im Außenbereich — Brandschutz, kein Zuschuss für Energieanlagen privater Haushalte."
    }
   ],
   "sources": [
@@ -3237,6 +3242,12 @@
     "disposition": "reviewed",
     "reason": "Richtlinie im Volltext gelesen; Programm zum 31.12.2023 ausgelaufen.",
     "evidenceUrl": "https://www.amt-trave-land.de/gemeinden/bahrenhof/foerderung-mini-pv-anlagen/2023-05-26-foerderprogramm-bahrenhof-pdf.pdf"
+   },
+   {
+    "url": "amt-trave-land.de/newsfeed/schieren/richtlinie-zum-foerderprogramm-loeschwasserversorgung-im-aussenbereich",
+    "disposition": "reviewed",
+    "reason": "Löschwasserversorgung im Außenbereich; anderer Gegenstand, keine Energieförderung.",
+    "evidenceUrl": "https://www.amt-trave-land.de/newsfeed/schieren/richtlinie-zum-foerderprogramm-loeschwasserversorgung-im-aussenbereich"
    }
   ]
  },
