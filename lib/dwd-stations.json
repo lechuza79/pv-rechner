@@ -1,0 +1,1792 @@
+{
+ "builtAt": "2026-09-18T04:29:21.812Z",
+ "catalogue": "https://www.dwd.de/DE/leistungen/met_verfahren_mosmix/mosmix_stationskatalog.cfg?view=nasPublication&nn=16102",
+ "reports": "https://opendata.dwd.de/weather/weather_reports/poi/",
+ "stations": [
+  {
+   "id": "02635",
+   "name": "MALMO",
+   "latitude": 55.5667,
+   "longitude": 13.0667,
+   "elevation": 20
+  },
+  {
+   "id": "06120",
+   "name": "ODENSE",
+   "latitude": 55.4667,
+   "longitude": 10.3333,
+   "elevation": 17
+  },
+  {
+   "id": "06180",
+   "name": "KOPENHAGEN",
+   "latitude": 55.6333,
+   "longitude": 12.6667,
+   "elevation": 5
+  },
+  {
+   "id": "06235",
+   "name": "KOOY",
+   "latitude": 52.9167,
+   "longitude": 4.7833,
+   "elevation": 0
+  },
+  {
+   "id": "06240",
+   "name": "AMSTERDAM",
+   "latitude": 52.3,
+   "longitude": 4.7667,
+   "elevation": -4
+  },
+  {
+   "id": "06270",
+   "name": "LEEUWARDEN",
+   "latitude": 53.2167,
+   "longitude": 5.7667,
+   "elevation": 1
+  },
+  {
+   "id": "06290",
+   "name": "TWENTHE",
+   "latitude": 52.2667,
+   "longitude": 6.9,
+   "elevation": 35
+  },
+  {
+   "id": "06370",
+   "name": "EINDHOVEN",
+   "latitude": 51.45,
+   "longitude": 5.4167,
+   "elevation": 23
+  },
+  {
+   "id": "06375",
+   "name": "VOLKEL",
+   "latitude": 51.65,
+   "longitude": 5.7,
+   "elevation": 22
+  },
+  {
+   "id": "06380",
+   "name": "MAASTRICHT",
+   "latitude": 50.9167,
+   "longitude": 5.7833,
+   "elevation": 114
+  },
+  {
+   "id": "06476",
+   "name": "ST.HUBERT",
+   "latitude": 50.0333,
+   "longitude": 5.4,
+   "elevation": 563
+  },
+  {
+   "id": "06590",
+   "name": "LUXEMBURG",
+   "latitude": 49.6167,
+   "longitude": 6.2167,
+   "elevation": 376
+  },
+  {
+   "id": "06610",
+   "name": "PAYERNE",
+   "latitude": 46.8167,
+   "longitude": 6.9333,
+   "elevation": 490
+  },
+  {
+   "id": "06670",
+   "name": "ZUERICH",
+   "latitude": 47.4833,
+   "longitude": 8.5333,
+   "elevation": 436
+  },
+  {
+   "id": "06680",
+   "name": "SAENTIS",
+   "latitude": 47.25,
+   "longitude": 9.3333,
+   "elevation": 2502
+  },
+  {
+   "id": "06990",
+   "name": "VADUZ FL.",
+   "latitude": 47.1333,
+   "longitude": 9.5167,
+   "elevation": 460
+  },
+  {
+   "id": "07180",
+   "name": "NANCY",
+   "latitude": 48.6833,
+   "longitude": 6.2167,
+   "elevation": 229
+  },
+  {
+   "id": "07190",
+   "name": "STRASSBURG",
+   "latitude": 48.55,
+   "longitude": 7.6333,
+   "elevation": 153
+  },
+  {
+   "id": "07280",
+   "name": "DIJON",
+   "latitude": 47.2667,
+   "longitude": 5.0833,
+   "elevation": 219
+  },
+  {
+   "id": "07299",
+   "name": "BASEL-MLH.",
+   "latitude": 47.6,
+   "longitude": 7.5167,
+   "elevation": 270
+  },
+  {
+   "id": "10004",
+   "name": "UFS TW EMS",
+   "latitude": 54.1667,
+   "longitude": 6.35,
+   "elevation": 0
+  },
+  {
+   "id": "10007",
+   "name": "UFS DEUTSCHE BUCHT",
+   "latitude": 54.1667,
+   "longitude": 7.45,
+   "elevation": 0
+  },
+  {
+   "id": "10015",
+   "name": "HELGOLAND",
+   "latitude": 54.1667,
+   "longitude": 7.8833,
+   "elevation": 4
+  },
+  {
+   "id": "10020",
+   "name": "LIST/SYLT",
+   "latitude": 55.0167,
+   "longitude": 8.4167,
+   "elevation": 26
+  },
+  {
+   "id": "10022",
+   "name": "LECK",
+   "latitude": 54.8,
+   "longitude": 8.95,
+   "elevation": 7
+  },
+  {
+   "id": "10028",
+   "name": "ST. PETER ORDING",
+   "latitude": 54.3333,
+   "longitude": 8.6,
+   "elevation": 5
+  },
+  {
+   "id": "10033",
+   "name": "FLENSBURG",
+   "latitude": 54.8333,
+   "longitude": 9.5,
+   "elevation": 27
+  },
+  {
+   "id": "10035",
+   "name": "SCHLESWIG",
+   "latitude": 54.5333,
+   "longitude": 9.55,
+   "elevation": 47
+  },
+  {
+   "id": "10037",
+   "name": "SCHLESWIG-JAGEL",
+   "latitude": 54.4667,
+   "longitude": 9.5167,
+   "elevation": 22
+  },
+  {
+   "id": "10038",
+   "name": "HOHN",
+   "latitude": 54.3167,
+   "longitude": 9.5333,
+   "elevation": 10
+  },
+  {
+   "id": "10042",
+   "name": "OLPENITZ",
+   "latitude": 54.6667,
+   "longitude": 10.0333,
+   "elevation": 4
+  },
+  {
+   "id": "10044",
+   "name": "LEUCHTTURM KIEL",
+   "latitude": 54.5,
+   "longitude": 10.2667,
+   "elevation": 5
+  },
+  {
+   "id": "10046",
+   "name": "KIEL-H.",
+   "latitude": 54.3833,
+   "longitude": 10.15,
+   "elevation": 28
+  },
+  {
+   "id": "10055",
+   "name": "WESTERMARKELSDORF",
+   "latitude": 54.5333,
+   "longitude": 11.0667,
+   "elevation": 3
+  },
+  {
+   "id": "10091",
+   "name": "ARKONA",
+   "latitude": 54.6833,
+   "longitude": 13.4333,
+   "elevation": 42
+  },
+  {
+   "id": "10093",
+   "name": "PUTBUS",
+   "latitude": 54.3667,
+   "longitude": 13.4833,
+   "elevation": 40
+  },
+  {
+   "id": "10097",
+   "name": "GREIFSWALDER OIE",
+   "latitude": 54.2333,
+   "longitude": 13.9167,
+   "elevation": 12
+  },
+  {
+   "id": "10113",
+   "name": "NORDERNEY",
+   "latitude": 53.7167,
+   "longitude": 7.15,
+   "elevation": 11
+  },
+  {
+   "id": "10124",
+   "name": "LEUCHTTURM A. WESER",
+   "latitude": 53.85,
+   "longitude": 8.1167,
+   "elevation": 32
+  },
+  {
+   "id": "10126",
+   "name": "WITTMUNDHAVEN",
+   "latitude": 53.55,
+   "longitude": 7.6667,
+   "elevation": 8
+  },
+  {
+   "id": "10129",
+   "name": "BREMERHAVEN",
+   "latitude": 53.5333,
+   "longitude": 8.5833,
+   "elevation": 7
+  },
+  {
+   "id": "10130",
+   "name": "ELPERSBUETTEL",
+   "latitude": 54.0667,
+   "longitude": 9.0167,
+   "elevation": 3
+  },
+  {
+   "id": "10131",
+   "name": "CUXHAVEN",
+   "latitude": 53.8667,
+   "longitude": 8.7167,
+   "elevation": 5
+  },
+  {
+   "id": "10136",
+   "name": "NORDHOLZ",
+   "latitude": 53.7667,
+   "longitude": 8.6667,
+   "elevation": 23
+  },
+  {
+   "id": "10139",
+   "name": "BREMERVOERDE",
+   "latitude": 53.5,
+   "longitude": 9.1667,
+   "elevation": 3
+  },
+  {
+   "id": "10142",
+   "name": "ITZEHOE",
+   "latitude": 54,
+   "longitude": 9.5833,
+   "elevation": 25
+  },
+  {
+   "id": "10146",
+   "name": "QUICKBORN",
+   "latitude": 53.7333,
+   "longitude": 9.8833,
+   "elevation": 13
+  },
+  {
+   "id": "10147",
+   "name": "HAMBURG-FU.",
+   "latitude": 53.6333,
+   "longitude": 10,
+   "elevation": 16
+  },
+  {
+   "id": "10150",
+   "name": "DOERNICK",
+   "latitude": 54.1667,
+   "longitude": 10.35,
+   "elevation": 26
+  },
+  {
+   "id": "10152",
+   "name": "PELZERHAKEN",
+   "latitude": 54.0833,
+   "longitude": 10.8833,
+   "elevation": 1
+  },
+  {
+   "id": "10156",
+   "name": "LUEBECK",
+   "latitude": 53.8167,
+   "longitude": 10.7,
+   "elevation": 14
+  },
+  {
+   "id": "10161",
+   "name": "BOLTENHAGEN",
+   "latitude": 54,
+   "longitude": 11.1833,
+   "elevation": 15
+  },
+  {
+   "id": "10162",
+   "name": "SCHWERIN",
+   "latitude": 53.6333,
+   "longitude": 11.3833,
+   "elevation": 59
+  },
+  {
+   "id": "10168",
+   "name": "GOLDBERG",
+   "latitude": 53.6167,
+   "longitude": 12.1,
+   "elevation": 58
+  },
+  {
+   "id": "10170",
+   "name": "WARNEMUENDE",
+   "latitude": 54.1833,
+   "longitude": 12.0833,
+   "elevation": 4
+  },
+  {
+   "id": "10172",
+   "name": "LAAGE",
+   "latitude": 53.9167,
+   "longitude": 12.2833,
+   "elevation": 42
+  },
+  {
+   "id": "10180",
+   "name": "BARTH",
+   "latitude": 54.3333,
+   "longitude": 12.7167,
+   "elevation": 7
+  },
+  {
+   "id": "10184",
+   "name": "GREIFSWALD",
+   "latitude": 54.1,
+   "longitude": 13.4167,
+   "elevation": 2
+  },
+  {
+   "id": "10193",
+   "name": "UECKERMUENDE",
+   "latitude": 53.7333,
+   "longitude": 14.0667,
+   "elevation": 1
+  },
+  {
+   "id": "10200",
+   "name": "EMDEN-FLUGPLATZ",
+   "latitude": 53.3833,
+   "longitude": 7.2333,
+   "elevation": 0
+  },
+  {
+   "id": "10210",
+   "name": "FRIESOYTHE-ALTENOYTH",
+   "latitude": 53.0667,
+   "longitude": 7.9,
+   "elevation": 6
+  },
+  {
+   "id": "10224",
+   "name": "BREMEN",
+   "latitude": 53.05,
+   "longitude": 8.8,
+   "elevation": 3
+  },
+  {
+   "id": "10235",
+   "name": "SOLTAU",
+   "latitude": 52.9667,
+   "longitude": 9.7833,
+   "elevation": 76
+  },
+  {
+   "id": "10238",
+   "name": "BERGEN-HOHNE",
+   "latitude": 52.8167,
+   "longitude": 9.9333,
+   "elevation": 70
+  },
+  {
+   "id": "10246",
+   "name": "FASSBERG",
+   "latitude": 52.9167,
+   "longitude": 10.1833,
+   "elevation": 75
+  },
+  {
+   "id": "10249",
+   "name": "BOIZENBURG",
+   "latitude": 53.3833,
+   "longitude": 10.6833,
+   "elevation": 45
+  },
+  {
+   "id": "10253",
+   "name": "LUECHOW",
+   "latitude": 52.9667,
+   "longitude": 11.1333,
+   "elevation": 17
+  },
+  {
+   "id": "10261",
+   "name": "SEEHAUSEN",
+   "latitude": 52.8833,
+   "longitude": 11.7333,
+   "elevation": 21
+  },
+  {
+   "id": "10264",
+   "name": "MARNITZ",
+   "latitude": 53.3167,
+   "longitude": 11.9333,
+   "elevation": 81
+  },
+  {
+   "id": "10267",
+   "name": "KYRITZ",
+   "latitude": 52.9333,
+   "longitude": 12.4167,
+   "elevation": 40
+  },
+  {
+   "id": "10268",
+   "name": "WAREN",
+   "latitude": 53.5167,
+   "longitude": 12.6667,
+   "elevation": 70
+  },
+  {
+   "id": "10271",
+   "name": "NEURUPPIN-ALT RUPPIN",
+   "latitude": 52.95,
+   "longitude": 12.85,
+   "elevation": 50
+  },
+  {
+   "id": "10281",
+   "name": "TROLLENHAGEN",
+   "latitude": 53.6,
+   "longitude": 13.3,
+   "elevation": 71
+  },
+  {
+   "id": "10282",
+   "name": "FELDBERG/MECKLENBURG",
+   "latitude": 53.3167,
+   "longitude": 13.4167,
+   "elevation": 115
+  },
+  {
+   "id": "10289",
+   "name": "GRUENOW",
+   "latitude": 53.3167,
+   "longitude": 13.9333,
+   "elevation": 56
+  },
+  {
+   "id": "10291",
+   "name": "ANGERMUENDE",
+   "latitude": 53.0333,
+   "longitude": 14,
+   "elevation": 56
+  },
+  {
+   "id": "10303",
+   "name": "LINGEN-BACCUM",
+   "latitude": 52.5167,
+   "longitude": 7.4167,
+   "elevation": 40
+  },
+  {
+   "id": "10309",
+   "name": "AHAUS",
+   "latitude": 52.0833,
+   "longitude": 6.9333,
+   "elevation": 46
+  },
+  {
+   "id": "10312",
+   "name": "BELM",
+   "latitude": 52.3167,
+   "longitude": 8.1667,
+   "elevation": 103
+  },
+  {
+   "id": "10315",
+   "name": "MUENSTER/OSNABR.",
+   "latitude": 52.1333,
+   "longitude": 7.7,
+   "elevation": 48
+  },
+  {
+   "id": "10321",
+   "name": "DIEPHOLZ",
+   "latitude": 52.5833,
+   "longitude": 8.35,
+   "elevation": 39
+  },
+  {
+   "id": "10325",
+   "name": "BAD SALZUFLEN",
+   "latitude": 52.1,
+   "longitude": 8.75,
+   "elevation": 135
+  },
+  {
+   "id": "10334",
+   "name": "WUNSTORF",
+   "latitude": 52.45,
+   "longitude": 9.4333,
+   "elevation": 57
+  },
+  {
+   "id": "10335",
+   "name": "BUECKEBURG",
+   "latitude": 52.2833,
+   "longitude": 9.0833,
+   "elevation": 70
+  },
+  {
+   "id": "10338",
+   "name": "HANNOVER",
+   "latitude": 52.4667,
+   "longitude": 9.6833,
+   "elevation": 56
+  },
+  {
+   "id": "10343",
+   "name": "CELLE",
+   "latitude": 52.6,
+   "longitude": 10.0167,
+   "elevation": 39
+  },
+  {
+   "id": "10348",
+   "name": "BRAUNSCHWG.",
+   "latitude": 52.2833,
+   "longitude": 10.45,
+   "elevation": 81
+  },
+  {
+   "id": "10356",
+   "name": "UMMENDORF",
+   "latitude": 52.1667,
+   "longitude": 11.1833,
+   "elevation": 162
+  },
+  {
+   "id": "10359",
+   "name": "GARDELEGEN",
+   "latitude": 52.5167,
+   "longitude": 11.3833,
+   "elevation": 47
+  },
+  {
+   "id": "10361",
+   "name": "MAGDEBURG",
+   "latitude": 52.1167,
+   "longitude": 11.5833,
+   "elevation": 79
+  },
+  {
+   "id": "10365",
+   "name": "GENTHIN",
+   "latitude": 52.3833,
+   "longitude": 12.1667,
+   "elevation": 35
+  },
+  {
+   "id": "10368",
+   "name": "WIESENBURG",
+   "latitude": 52.1167,
+   "longitude": 12.4667,
+   "elevation": 187
+  },
+  {
+   "id": "10376",
+   "name": "BARUTH",
+   "latitude": 52.0667,
+   "longitude": 13.5,
+   "elevation": 55
+  },
+  {
+   "id": "10379",
+   "name": "POTSDAM",
+   "latitude": 52.3833,
+   "longitude": 13.0667,
+   "elevation": 99
+  },
+  {
+   "id": "10381",
+   "name": "BERLIN-DAHLEM",
+   "latitude": 52.4667,
+   "longitude": 13.3,
+   "elevation": 58
+  },
+  {
+   "id": "10382",
+   "name": "BERLIN-TEGEL",
+   "latitude": 52.5667,
+   "longitude": 13.3167,
+   "elevation": 37
+  },
+  {
+   "id": "10384",
+   "name": "BERLIN-TEMPELHOF",
+   "latitude": 52.4667,
+   "longitude": 13.4,
+   "elevation": 50
+  },
+  {
+   "id": "10385",
+   "name": "BERLIN-BRANDENBURG",
+   "latitude": 52.3833,
+   "longitude": 13.5167,
+   "elevation": 47
+  },
+  {
+   "id": "10393",
+   "name": "LINDENBERG",
+   "latitude": 52.2167,
+   "longitude": 14.1167,
+   "elevation": 112
+  },
+  {
+   "id": "10396",
+   "name": "MANSCHNOW",
+   "latitude": 52.55,
+   "longitude": 14.55,
+   "elevation": 12
+  },
+  {
+   "id": "10400",
+   "name": "DUESSELDORF",
+   "latitude": 51.3,
+   "longitude": 6.7667,
+   "elevation": 45
+  },
+  {
+   "id": "10410",
+   "name": "ESSEN",
+   "latitude": 51.4,
+   "longitude": 6.9667,
+   "elevation": 161
+  },
+  {
+   "id": "10418",
+   "name": "LUEDENSCHEID",
+   "latitude": 51.25,
+   "longitude": 7.6333,
+   "elevation": 387
+  },
+  {
+   "id": "10424",
+   "name": "WERL",
+   "latitude": 51.5833,
+   "longitude": 7.8833,
+   "elevation": 85
+  },
+  {
+   "id": "10427",
+   "name": "K.ASTEN",
+   "latitude": 51.1833,
+   "longitude": 8.4833,
+   "elevation": 839
+  },
+  {
+   "id": "10430",
+   "name": "BAD LIPPSPRINGE",
+   "latitude": 51.7833,
+   "longitude": 8.8333,
+   "elevation": 157
+  },
+  {
+   "id": "10433",
+   "name": "LUEDGE",
+   "latitude": 51.8667,
+   "longitude": 9.2667,
+   "elevation": 258
+  },
+  {
+   "id": "10435",
+   "name": "WARBURG",
+   "latitude": 51.5,
+   "longitude": 9.1167,
+   "elevation": 236
+  },
+  {
+   "id": "10439",
+   "name": "FRITZLAR",
+   "latitude": 51.1167,
+   "longitude": 9.2833,
+   "elevation": 172
+  },
+  {
+   "id": "10441",
+   "name": "SCHAUENBURG-ELGERSH.",
+   "latitude": 51.2833,
+   "longitude": 9.3667,
+   "elevation": 317
+  },
+  {
+   "id": "10442",
+   "name": "ALFELD",
+   "latitude": 51.9667,
+   "longitude": 9.8,
+   "elevation": 148
+  },
+  {
+   "id": "10444",
+   "name": "GOETTINGEN",
+   "latitude": 51.5,
+   "longitude": 9.95,
+   "elevation": 175
+  },
+  {
+   "id": "10449",
+   "name": "LEINEFELDE",
+   "latitude": 51.3833,
+   "longitude": 10.3167,
+   "elevation": 356
+  },
+  {
+   "id": "10452",
+   "name": "BRAUNLAGE",
+   "latitude": 51.7167,
+   "longitude": 10.6,
+   "elevation": 607
+  },
+  {
+   "id": "10453",
+   "name": "BROCKEN",
+   "latitude": 51.8,
+   "longitude": 10.6167,
+   "elevation": 1142
+  },
+  {
+   "id": "10454",
+   "name": "WERNIGERODE",
+   "latitude": 51.85,
+   "longitude": 10.7667,
+   "elevation": 234
+  },
+  {
+   "id": "10458",
+   "name": "HARZGERODE",
+   "latitude": 51.65,
+   "longitude": 11.1333,
+   "elevation": 404
+  },
+  {
+   "id": "10460",
+   "name": "ARTERN",
+   "latitude": 51.3667,
+   "longitude": 11.2833,
+   "elevation": 164
+  },
+  {
+   "id": "10469",
+   "name": "LEIPZIG/SCHKEUDITZ",
+   "latitude": 51.4167,
+   "longitude": 12.2333,
+   "elevation": 141
+  },
+  {
+   "id": "10471",
+   "name": "LEIPZIG",
+   "latitude": 51.3167,
+   "longitude": 12.4167,
+   "elevation": 141
+  },
+  {
+   "id": "10474",
+   "name": "WITTENBERG",
+   "latitude": 51.8833,
+   "longitude": 12.6333,
+   "elevation": 105
+  },
+  {
+   "id": "10476",
+   "name": "HOLZDORF",
+   "latitude": 51.7667,
+   "longitude": 13.1833,
+   "elevation": 79
+  },
+  {
+   "id": "10480",
+   "name": "OSCHATZ",
+   "latitude": 51.3,
+   "longitude": 13.0833,
+   "elevation": 150
+  },
+  {
+   "id": "10488",
+   "name": "DRESDEN/FLUGHAFEN",
+   "latitude": 51.1333,
+   "longitude": 13.75,
+   "elevation": 230
+  },
+  {
+   "id": "10490",
+   "name": "DOBERLUG-KIRCHHAIN",
+   "latitude": 51.65,
+   "longitude": 13.5667,
+   "elevation": 97
+  },
+  {
+   "id": "10495",
+   "name": "HOYERSWERDA",
+   "latitude": 51.45,
+   "longitude": 14.25,
+   "elevation": 116
+  },
+  {
+   "id": "10496",
+   "name": "COTTBUS",
+   "latitude": 51.7833,
+   "longitude": 14.3167,
+   "elevation": 69
+  },
+  {
+   "id": "10499",
+   "name": "GOERLITZ",
+   "latitude": 51.1667,
+   "longitude": 14.95,
+   "elevation": 237
+  },
+  {
+   "id": "10500",
+   "name": "GEILENKIRCHEN",
+   "latitude": 50.9667,
+   "longitude": 6.05,
+   "elevation": 90
+  },
+  {
+   "id": "10502",
+   "name": "NOERVENICH",
+   "latitude": 50.8333,
+   "longitude": 6.6667,
+   "elevation": 118
+  },
+  {
+   "id": "10505",
+   "name": "AACHEN-ORSBACH",
+   "latitude": 50.8,
+   "longitude": 6.0333,
+   "elevation": 231
+  },
+  {
+   "id": "10506",
+   "name": "NUERBURG-BARWEILER",
+   "latitude": 50.3667,
+   "longitude": 6.8667,
+   "elevation": 485
+  },
+  {
+   "id": "10513",
+   "name": "KOELN/BONN",
+   "latitude": 50.8667,
+   "longitude": 7.1667,
+   "elevation": 91
+  },
+  {
+   "id": "10519",
+   "name": "BONN-ROLEBER",
+   "latitude": 50.7333,
+   "longitude": 7.1833,
+   "elevation": 159
+  },
+  {
+   "id": "10520",
+   "name": "ANDERNACH",
+   "latitude": 50.4333,
+   "longitude": 7.4333,
+   "elevation": 75
+  },
+  {
+   "id": "10522",
+   "name": "EUSKIRCHEN",
+   "latitude": 50.65,
+   "longitude": 6.7833,
+   "elevation": 176
+  },
+  {
+   "id": "10526",
+   "name": "B.MARIENBG.",
+   "latitude": 50.6667,
+   "longitude": 7.9667,
+   "elevation": 547
+  },
+  {
+   "id": "10532",
+   "name": "GIESSEN",
+   "latitude": 50.6,
+   "longitude": 8.6333,
+   "elevation": 203
+  },
+  {
+   "id": "10534",
+   "name": "HOHERODSKOPF (VOGELS",
+   "latitude": 50.5167,
+   "longitude": 9.2167,
+   "elevation": 743
+  },
+  {
+   "id": "10537",
+   "name": "NEU-ULRICHSTEIN",
+   "latitude": 50.75,
+   "longitude": 9.0167,
+   "elevation": 350
+  },
+  {
+   "id": "10540",
+   "name": "EISENACH",
+   "latitude": 51,
+   "longitude": 10.3667,
+   "elevation": 312
+  },
+  {
+   "id": "10542",
+   "name": "BAD HERSFELD",
+   "latitude": 50.85,
+   "longitude": 9.7333,
+   "elevation": 272
+  },
+  {
+   "id": "10544",
+   "name": "WASSERKUPPE",
+   "latitude": 50.5,
+   "longitude": 9.9333,
+   "elevation": 921
+  },
+  {
+   "id": "10548",
+   "name": "MEININGEN",
+   "latitude": 50.5667,
+   "longitude": 10.3833,
+   "elevation": 450
+  },
+  {
+   "id": "10552",
+   "name": "SCHMUECKE",
+   "latitude": 50.65,
+   "longitude": 10.7667,
+   "elevation": 937
+  },
+  {
+   "id": "10554",
+   "name": "ERFURT",
+   "latitude": 50.9833,
+   "longitude": 10.9667,
+   "elevation": 315
+  },
+  {
+   "id": "10557",
+   "name": "NEUHAUS A.R.",
+   "latitude": 50.5,
+   "longitude": 11.1333,
+   "elevation": 845
+  },
+  {
+   "id": "10564",
+   "name": "SCHLEIZ",
+   "latitude": 50.5667,
+   "longitude": 11.8,
+   "elevation": 501
+  },
+  {
+   "id": "10565",
+   "name": "OSTERFELD",
+   "latitude": 51.0833,
+   "longitude": 11.9333,
+   "elevation": 246
+  },
+  {
+   "id": "10567",
+   "name": "GERA",
+   "latitude": 50.8833,
+   "longitude": 12.1333,
+   "elevation": 311
+  },
+  {
+   "id": "10569",
+   "name": "PLAUEN",
+   "latitude": 50.4833,
+   "longitude": 12.1333,
+   "elevation": 386
+  },
+  {
+   "id": "10574",
+   "name": "CARLSFELD",
+   "latitude": 50.4333,
+   "longitude": 12.6167,
+   "elevation": 897
+  },
+  {
+   "id": "10577",
+   "name": "CHEMNITZ",
+   "latitude": 50.7833,
+   "longitude": 12.8667,
+   "elevation": 418
+  },
+  {
+   "id": "10578",
+   "name": "FICHTELBERG",
+   "latitude": 50.4333,
+   "longitude": 12.95,
+   "elevation": 1213
+  },
+  {
+   "id": "10579",
+   "name": "MARIENBERG",
+   "latitude": 50.65,
+   "longitude": 13.15,
+   "elevation": 639
+  },
+  {
+   "id": "10582",
+   "name": "ZINNWALD-G.",
+   "latitude": 50.7333,
+   "longitude": 13.75,
+   "elevation": 877
+  },
+  {
+   "id": "10591",
+   "name": "LICHTENHAIN",
+   "latitude": 50.9333,
+   "longitude": 14.2167,
+   "elevation": 321
+  },
+  {
+   "id": "10609",
+   "name": "TRIER",
+   "latitude": 49.75,
+   "longitude": 6.6667,
+   "elevation": 265
+  },
+  {
+   "id": "10613",
+   "name": "BUECHEL",
+   "latitude": 50.1667,
+   "longitude": 7.0667,
+   "elevation": 478
+  },
+  {
+   "id": "10615",
+   "name": "DEUSELBACH",
+   "latitude": 49.7667,
+   "longitude": 7.05,
+   "elevation": 481
+  },
+  {
+   "id": "10616",
+   "name": "HAHN",
+   "latitude": 49.95,
+   "longitude": 7.2667,
+   "elevation": 502
+  },
+  {
+   "id": "10618",
+   "name": "IDAR-OBERSTEIN",
+   "latitude": 49.7,
+   "longitude": 7.3333,
+   "elevation": 376
+  },
+  {
+   "id": "10628",
+   "name": "GEISENHEIM",
+   "latitude": 49.9833,
+   "longitude": 7.95,
+   "elevation": 118
+  },
+  {
+   "id": "10635",
+   "name": "KL.FELDBG./TS.",
+   "latitude": 50.2167,
+   "longitude": 8.45,
+   "elevation": 805
+  },
+  {
+   "id": "10637",
+   "name": "FRANKFURT/M",
+   "latitude": 50.05,
+   "longitude": 8.6,
+   "elevation": 111
+  },
+  {
+   "id": "10641",
+   "name": "OFFENBACH-WETTERPARK",
+   "latitude": 50.0833,
+   "longitude": 8.7833,
+   "elevation": 119
+  },
+  {
+   "id": "10646",
+   "name": "NEUHUETTEN/SPESSART",
+   "latitude": 50.0167,
+   "longitude": 9.4167,
+   "elevation": 340
+  },
+  {
+   "id": "10648",
+   "name": "MICHELSTADT-V.",
+   "latitude": 49.7167,
+   "longitude": 9.1,
+   "elevation": 453
+  },
+  {
+   "id": "10655",
+   "name": "WUERZBURG",
+   "latitude": 49.7667,
+   "longitude": 9.9667,
+   "elevation": 268
+  },
+  {
+   "id": "10658",
+   "name": "KISSINGEN",
+   "latitude": 50.2,
+   "longitude": 10.0833,
+   "elevation": 262
+  },
+  {
+   "id": "10671",
+   "name": "LAUTERTAL-OBERLAUTER",
+   "latitude": 50.2833,
+   "longitude": 10.9833,
+   "elevation": 322
+  },
+  {
+   "id": "10675",
+   "name": "BAMBERG",
+   "latitude": 49.8833,
+   "longitude": 10.9167,
+   "elevation": 243
+  },
+  {
+   "id": "10685",
+   "name": "HOF",
+   "latitude": 50.3167,
+   "longitude": 11.8833,
+   "elevation": 567
+  },
+  {
+   "id": "10686",
+   "name": "WUNSIEDEL-SCHOENBRUN",
+   "latitude": 50.0333,
+   "longitude": 11.9667,
+   "elevation": 622
+  },
+  {
+   "id": "10688",
+   "name": "WEIDEN",
+   "latitude": 49.6667,
+   "longitude": 12.1833,
+   "elevation": 438
+  },
+  {
+   "id": "10704",
+   "name": "BERUS",
+   "latitude": 49.2667,
+   "longitude": 6.6833,
+   "elevation": 363
+  },
+  {
+   "id": "10706",
+   "name": "THOLEY",
+   "latitude": 49.4833,
+   "longitude": 7.05,
+   "elevation": 396
+  },
+  {
+   "id": "10708",
+   "name": "SAARBRUECKEN",
+   "latitude": 49.2167,
+   "longitude": 7.1167,
+   "elevation": 322
+  },
+  {
+   "id": "10724",
+   "name": "WEINBIET",
+   "latitude": 49.3833,
+   "longitude": 8.1167,
+   "elevation": 553
+  },
+  {
+   "id": "10729",
+   "name": "MANNHEIM",
+   "latitude": 49.5167,
+   "longitude": 8.55,
+   "elevation": 96
+  },
+  {
+   "id": "10731",
+   "name": "RHEINSTETTEN",
+   "latitude": 48.9667,
+   "longitude": 8.3167,
+   "elevation": 118
+  },
+  {
+   "id": "10733",
+   "name": "WAIBSTADT",
+   "latitude": 49.2833,
+   "longitude": 8.9167,
+   "elevation": 237
+  },
+  {
+   "id": "10736",
+   "name": "MUEHLACKER",
+   "latitude": 48.9667,
+   "longitude": 8.8667,
+   "elevation": 244
+  },
+  {
+   "id": "10738",
+   "name": "STUTTGART-ECHT.",
+   "latitude": 48.6833,
+   "longitude": 9.2167,
+   "elevation": 396
+  },
+  {
+   "id": "10739",
+   "name": "STUTTGART-SCHN.",
+   "latitude": 48.8333,
+   "longitude": 9.2,
+   "elevation": 314
+  },
+  {
+   "id": "10742",
+   "name": "OEHRINGEN",
+   "latitude": 49.2167,
+   "longitude": 9.5167,
+   "elevation": 276
+  },
+  {
+   "id": "10743",
+   "name": "NIEDERSTETTEN",
+   "latitude": 49.4,
+   "longitude": 9.9667,
+   "elevation": 468
+  },
+  {
+   "id": "10747",
+   "name": "KAISERSBACH-CRONHUET",
+   "latitude": 48.9167,
+   "longitude": 9.6833,
+   "elevation": 489
+  },
+  {
+   "id": "10756",
+   "name": "FEUCHTWANGEN",
+   "latitude": 49.1667,
+   "longitude": 10.3667,
+   "elevation": 475
+  },
+  {
+   "id": "10761",
+   "name": "WEISSENBURG-EMETZH.",
+   "latitude": 49.0167,
+   "longitude": 10.9333,
+   "elevation": 439
+  },
+  {
+   "id": "10763",
+   "name": "NUERNBERG",
+   "latitude": 49.5,
+   "longitude": 11.05,
+   "elevation": 318
+  },
+  {
+   "id": "10765",
+   "name": "ROTH",
+   "latitude": 49.2167,
+   "longitude": 11.1,
+   "elevation": 388
+  },
+  {
+   "id": "10771",
+   "name": "KUEMMERSBRUCK",
+   "latitude": 49.4333,
+   "longitude": 11.9,
+   "elevation": 419
+  },
+  {
+   "id": "10776",
+   "name": "REGENSBURG",
+   "latitude": 49.0333,
+   "longitude": 12.1,
+   "elevation": 365
+  },
+  {
+   "id": "10777",
+   "name": "GELBELSEE",
+   "latitude": 48.95,
+   "longitude": 11.4333,
+   "elevation": 539
+  },
+  {
+   "id": "10782",
+   "name": "WALDMUENCHEN",
+   "latitude": 49.3833,
+   "longitude": 12.6833,
+   "elevation": 499
+  },
+  {
+   "id": "10788",
+   "name": "STRAUBING",
+   "latitude": 48.8333,
+   "longitude": 12.5667,
+   "elevation": 350
+  },
+  {
+   "id": "10791",
+   "name": "GR.ARBER",
+   "latitude": 49.1167,
+   "longitude": 13.1333,
+   "elevation": 1446
+  },
+  {
+   "id": "10796",
+   "name": "ZWIESEL",
+   "latitude": 49.0333,
+   "longitude": 13.2333,
+   "elevation": 612
+  },
+  {
+   "id": "10803",
+   "name": "FREIBURG",
+   "latitude": 48.0167,
+   "longitude": 7.8333,
+   "elevation": 236
+  },
+  {
+   "id": "10805",
+   "name": "LAHR",
+   "latitude": 48.3667,
+   "longitude": 7.8333,
+   "elevation": 156
+  },
+  {
+   "id": "10815",
+   "name": "FREUDENST.",
+   "latitude": 48.45,
+   "longitude": 8.4167,
+   "elevation": 797
+  },
+  {
+   "id": "10818",
+   "name": "KLIPPENECK",
+   "latitude": 48.1167,
+   "longitude": 8.75,
+   "elevation": 973
+  },
+  {
+   "id": "10827",
+   "name": "MESSSTETTEN",
+   "latitude": 48.1833,
+   "longitude": 9,
+   "elevation": 920
+  },
+  {
+   "id": "10836",
+   "name": "STOETTEN",
+   "latitude": 48.6667,
+   "longitude": 9.8667,
+   "elevation": 734
+  },
+  {
+   "id": "10837",
+   "name": "LAUPHEIM",
+   "latitude": 48.2167,
+   "longitude": 9.9167,
+   "elevation": 538
+  },
+  {
+   "id": "10840",
+   "name": "ULM-MAEHRINGEN",
+   "latitude": 48.45,
+   "longitude": 9.9167,
+   "elevation": 593
+  },
+  {
+   "id": "10850",
+   "name": "HARBURG",
+   "latitude": 48.7833,
+   "longitude": 10.7167,
+   "elevation": 502
+  },
+  {
+   "id": "10852",
+   "name": "AUGSBURG",
+   "latitude": 48.4333,
+   "longitude": 10.9333,
+   "elevation": 463
+  },
+  {
+   "id": "10853",
+   "name": "NEUBURG/DONAU",
+   "latitude": 48.7167,
+   "longitude": 11.2167,
+   "elevation": 380
+  },
+  {
+   "id": "10856",
+   "name": "LECHFELD",
+   "latitude": 48.1833,
+   "longitude": 10.85,
+   "elevation": 555
+  },
+  {
+   "id": "10860",
+   "name": "INGOLSTADT",
+   "latitude": 48.7167,
+   "longitude": 11.5333,
+   "elevation": 367
+  },
+  {
+   "id": "10863",
+   "name": "WEIHENSTEPHAN",
+   "latitude": 48.4,
+   "longitude": 11.7,
+   "elevation": 470
+  },
+  {
+   "id": "10865",
+   "name": "MUENCHEN STADT",
+   "latitude": 48.1667,
+   "longitude": 11.5333,
+   "elevation": 515
+  },
+  {
+   "id": "10870",
+   "name": "MUENCHEN-FL.",
+   "latitude": 48.3667,
+   "longitude": 11.8,
+   "elevation": 453
+  },
+  {
+   "id": "10872",
+   "name": "GOTTFRIEDING",
+   "latitude": 48.6667,
+   "longitude": 12.5333,
+   "elevation": 350
+  },
+  {
+   "id": "10875",
+   "name": "MUEHLDORF",
+   "latitude": 48.2833,
+   "longitude": 12.5,
+   "elevation": 406
+  },
+  {
+   "id": "10895",
+   "name": "FUERSTENZELL",
+   "latitude": 48.55,
+   "longitude": 13.35,
+   "elevation": 476
+  },
+  {
+   "id": "10908",
+   "name": "FELDBERG/S.",
+   "latitude": 47.8833,
+   "longitude": 8,
+   "elevation": 1486
+  },
+  {
+   "id": "10929",
+   "name": "KONSTANZ",
+   "latitude": 47.6833,
+   "longitude": 9.1833,
+   "elevation": 443
+  },
+  {
+   "id": "10945",
+   "name": "LEUTKIRCH-HERLAZHFN.",
+   "latitude": 47.8,
+   "longitude": 10.0333,
+   "elevation": 672
+  },
+  {
+   "id": "10946",
+   "name": "KEMPTEN",
+   "latitude": 47.7167,
+   "longitude": 10.3333,
+   "elevation": 705
+  },
+  {
+   "id": "10948",
+   "name": "OBERSTDORF",
+   "latitude": 47.4,
+   "longitude": 10.2833,
+   "elevation": 810
+  },
+  {
+   "id": "10954",
+   "name": "ALTENSTADT",
+   "latitude": 47.8333,
+   "longitude": 10.8667,
+   "elevation": 739
+  },
+  {
+   "id": "10961",
+   "name": "ZUGSPITZE",
+   "latitude": 47.4167,
+   "longitude": 10.9833,
+   "elevation": 2960
+  },
+  {
+   "id": "10962",
+   "name": "HOHENPEISS.BG",
+   "latitude": 47.8,
+   "longitude": 11.0167,
+   "elevation": 977
+  },
+  {
+   "id": "10963",
+   "name": "GARMISCH",
+   "latitude": 47.4833,
+   "longitude": 11.0667,
+   "elevation": 719
+  },
+  {
+   "id": "10982",
+   "name": "CHIEMING",
+   "latitude": 47.8833,
+   "longitude": 12.5333,
+   "elevation": 549
+  },
+  {
+   "id": "11010",
+   "name": "LINZ FL.",
+   "latitude": 48.2333,
+   "longitude": 14.1833,
+   "elevation": 298
+  },
+  {
+   "id": "11035",
+   "name": "WIEN/HOHE WARTE",
+   "latitude": 48.25,
+   "longitude": 16.3667,
+   "elevation": 195
+  },
+  {
+   "id": "11105",
+   "name": "FELDKIRCH",
+   "latitude": 47.2667,
+   "longitude": 9.6167,
+   "elevation": 438
+  },
+  {
+   "id": "11120",
+   "name": "INNSBRUCK FL.",
+   "latitude": 47.2667,
+   "longitude": 11.35,
+   "elevation": 581
+  },
+  {
+   "id": "11144",
+   "name": "ZELL A.SEE",
+   "latitude": 47.3333,
+   "longitude": 12.8,
+   "elevation": 766
+  },
+  {
+   "id": "11148",
+   "name": "ST.MICHAEL/LUNGAU",
+   "latitude": 47.1,
+   "longitude": 13.65,
+   "elevation": 1094
+  },
+  {
+   "id": "11150",
+   "name": "SALZBURG FL.",
+   "latitude": 47.8,
+   "longitude": 13,
+   "elevation": 430
+  },
+  {
+   "id": "11157",
+   "name": "AIGEN/ENNS",
+   "latitude": 47.5333,
+   "longitude": 14.1333,
+   "elevation": 638
+  },
+  {
+   "id": "11213",
+   "name": "VILLACH",
+   "latitude": 46.6167,
+   "longitude": 13.8667,
+   "elevation": 495
+  },
+  {
+   "id": "11231",
+   "name": "KLAGENFURT FL.",
+   "latitude": 46.65,
+   "longitude": 14.3333,
+   "elevation": 448
+  },
+  {
+   "id": "11240",
+   "name": "GRAZ FL.",
+   "latitude": 47,
+   "longitude": 15.4333,
+   "elevation": 340
+  },
+  {
+   "id": "11357",
+   "name": "ST. WOLFGANG",
+   "latitude": 47.7333,
+   "longitude": 13.45,
+   "elevation": 537
+  },
+  {
+   "id": "11406",
+   "name": "CHEB",
+   "latitude": 50.0667,
+   "longitude": 12.3833,
+   "elevation": 483
+  },
+  {
+   "id": "11423",
+   "name": "PRIMDA",
+   "latitude": 49.6667,
+   "longitude": 12.6833,
+   "elevation": 743
+  },
+  {
+   "id": "11457",
+   "name": "CHURANOV",
+   "latitude": 49.0667,
+   "longitude": 13.6167,
+   "elevation": 1122
+  },
+  {
+   "id": "11487",
+   "name": "KOCELOVICE",
+   "latitude": 49.4667,
+   "longitude": 13.8333,
+   "elevation": 519
+  },
+  {
+   "id": "11518",
+   "name": "PRAG FL.",
+   "latitude": 50.1,
+   "longitude": 14.25,
+   "elevation": 380
+  },
+  {
+   "id": "11603",
+   "name": "LIBEREC",
+   "latitude": 50.7667,
+   "longitude": 15.0167,
+   "elevation": 405
+  },
+  {
+   "id": "11659",
+   "name": "PRIBYSLAW",
+   "latitude": 49.5833,
+   "longitude": 15.7667,
+   "elevation": 533
+  },
+  {
+   "id": "11679",
+   "name": "USTI NAD ORLICI",
+   "latitude": 49.9833,
+   "longitude": 16.4167,
+   "elevation": 402
+  },
+  {
+   "id": "12105",
+   "name": "KOSZALIN",
+   "latitude": 54.2,
+   "longitude": 16.1667,
+   "elevation": 33
+  },
+  {
+   "id": "12205",
+   "name": "SZCZECIN",
+   "latitude": 53.4,
+   "longitude": 14.6167,
+   "elevation": 1
+  },
+  {
+   "id": "12300",
+   "name": "GORZOW WLKP",
+   "latitude": 52.7333,
+   "longitude": 15.2833,
+   "elevation": 71
+  },
+  {
+   "id": "12400",
+   "name": "ZIELONA GORA",
+   "latitude": 51.9333,
+   "longitude": 15.5333,
+   "elevation": 192
+  },
+  {
+   "id": "16008",
+   "name": "S. VALENTINO A. MUTA",
+   "latitude": 46.7667,
+   "longitude": 10.5333,
+   "elevation": 1459
+  },
+  {
+   "id": "16033",
+   "name": "DOBBIACO",
+   "latitude": 46.7333,
+   "longitude": 12.2167,
+   "elevation": 1222
+  },
+  {
+   "id": "16040",
+   "name": "TARVISIO",
+   "latitude": 46.5,
+   "longitude": 13.5833,
+   "elevation": 777
+  }
+ ]
+}
