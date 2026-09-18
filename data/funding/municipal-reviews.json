@@ -18876,5 +18876,1740 @@
         "evidenceUrl": "https://vgv-kelberg.de/rathaus/satzungen-und-foerderprogramme/flaechennutzungsplan-der-vg-bebauungsplaene-und-satzungen-der-ortsgemeinden"
       }
     ]
+  },
+  {
+    "regionId": "07137001",
+    "name": "Acht",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Acht gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137004",
+    "name": "Anschau",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Anschau gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137006",
+    "name": "Arft",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Arft gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137007",
+    "name": "Baar",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Baar gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137011",
+    "name": "Bermel",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bermel gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137019",
+    "name": "Ditscheid",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ditscheid gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137034",
+    "name": "Hausten",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hausten gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137035",
+    "name": "Herresbach",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Herresbach gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137036",
+    "name": "Hirten",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hirten gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137043",
+    "name": "Kehrig",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kehrig gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137049",
+    "name": "Kirchwald",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kirchwald gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137060",
+    "name": "Langenfeld",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Langenfeld gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137061",
+    "name": "Langscheid",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Langscheid gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137063",
+    "name": "Lind",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lind gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137066",
+    "name": "Luxem",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Luxem gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137092",
+    "name": "Reudelsterz",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Reudelsterz gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137097",
+    "name": "Sankt Johann",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sankt Johann gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137099",
+    "name": "Siebenbach",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Siebenbach gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137113",
+    "name": "Welschenbach",
+    "checkedAt": "2026-09-18T18:25:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Welschenbach gehört zur Verbandsgemeinde Vordereifel (Landkreis Mayen-Koblenz). Die VG hat ihre KIPKI-Mittel in kommunale Klimaschutzmaßnahmen der Ortsgemeinden gelenkt (PV auf eigenen Gebäuden, LED-Beleuchtung), nicht in ein Zuschussprogramm für Private; ihre Website führt kein solches Programm. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vordereifel.de Sitemap (1.639 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: KIPKI-Übersicht und Bescheid-Meldung, KIPKI-Maßnahmen PV Luxem und PV Virneburg, Aktuelle Förderungen, Klimaforum MYK 2026",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: zwei, beide beendet",
+      "Websuche: Vordereifel Ortsgemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordereifel.de/sitemap.xml",
+        "finding": "1.639 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Treffer sind LEADER-Förderaufrufe, Denkmalschutz-Sonderprogramm, Vereinsförderung, Wirtschaftsförderung (FISU, Ökoprofit), Bauleitplanung Solarpark Polcher Holz / Freiflächen-PV Ditscheid und KIPKI-Maßnahmen der Ortsgemeinden. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/",
+        "finding": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/durchgefuehrte-klimaschutzmassnahmen-der-ortsgemeinden/pv-anlage-luxem/",
+        "finding": "PV-Anlage 11,38 kWp auf dem Kühlhaus/Feuerwehrgerätehaus der Ortsgemeinde Luxem, vollständig aus KIPKI finanziert — kommunale Anlage, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.vordereifel.de/wirtschaft-und-tourismus/wirtschaft/wirtschaftsfoerderung/aktuelle-foerderungen/",
+        "finding": "Aktuelle Förderungen: nur landwirtschaftliche/gartenbauliche Förderung (FISU) und Unternehmensangebote."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz im Katalog: Balkonkraftwerk-Zuschuss beendet (Kauf bis 31.03.2026), Solarspeicher-Programm nicht mehr im Angebot — beide als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum KIPKI-Zuwendungsbescheid AN die Verbandsgemeinde Vordereifel (475.676,89 €); die Mittel fließen in kommunale Maßnahmen mit den Ortsgemeinden (umgesetzt: PV auf Kühlhaus Luxem und Kita Virneburg, LED-Straßenbeleuchtung, Flutlicht), kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.vordereifel.de/buergerservice/klimaschutz-kipki/kipki-foerderantrag-der-verbandsgemeinde-vordereifel/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134004",
+    "name": "Asbach",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Asbach gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134012",
+    "name": "Bollenbach",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bollenbach gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134013",
+    "name": "Breitenthal",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Breitenthal gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134028",
+    "name": "Gerach",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gerach gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134030",
+    "name": "Gösenroth",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gösenroth gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134035",
+    "name": "Hausen",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hausen gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134037",
+    "name": "Hellertshausen",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hellertshausen gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134043",
+    "name": "Horbruch",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Horbruch gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134064",
+    "name": "Oberhosenbach",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oberhosenbach gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134066",
+    "name": "Oberreidenbach",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oberreidenbach gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134067",
+    "name": "Oberwörresbach",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oberwörresbach gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134081",
+    "name": "Sensweiler",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sensweiler gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134083",
+    "name": "Sienhachenbach",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sienhachenbach gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134088",
+    "name": "Sulzbach",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sulzbach gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134091",
+    "name": "Weiden",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weiden gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
+  },
+  {
+    "regionId": "07134092",
+    "name": "Weitersbach",
+    "checkedAt": "2026-09-18T18:30:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weitersbach gehört zur Nationalparkverbandsgemeinde Herrstein-Rhaunen (Landkreis Birkenfeld). Die VG fördert Kultur, Sport, Jugendarbeit und Arztpraxen; ihre Klimaschutzmittel (KIPKI, ZENAPA, NKI) gehen in kommunale Projekte. Der Landkreis Birkenfeld setzt seine KIPKI-Mittel für eigene Gebäude und Fahrzeuge ein. Keine kommunale Förderung für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gefunden (Stand 18.09.2026).",
+    "searches": [
+      "vg-hr.de Sitemap (1.407 Adressen, 18.09.2026) nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht",
+      "Gelesen: Klimaschutz und Klimaanpassung, Beratung, KIPKI-Bewilligung VG, KIPKI-Wettbewerb Kirschweiler, SolarOffensive 2022, AöR Energiewelt Idarwald",
+      "Landkreis Birkenfeld: KIPKI-Pressemitteilung 07.11.2024 im Browser gelesen; Katalog ohne Kreisprogramm",
+      "Websuche: Landkreis Birkenfeld Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hr.de/sitemap.xml",
+        "finding": "1.407 Adressen am 18.09.2026 nach foerder/klima/energ/solar/photov/balkon/waerme/zuschuss/kipki durchsucht: Kultur-, Sport-, Jugend-, Ärzte- und Wohnungsbauförderung, Windenergie-/Freiflächen-PV-Bauleitplanung, Klimaschutzprojekte der VG. Kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/",
+        "finding": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/",
+        "finding": "NKI-geförderte LED-Umstellung der Sporthalle Sien (Ortsgemeinde); kommunales Projekt."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/",
+        "finding": "Klimaschutz und Klimaanpassung: Klimaanpassungsmanagement (NKI), ZENAPA-Projekt; Projekte sind kommunal (Verwaltungsgebäude, LED-Straßenbeleuchtung, E-Flotte, KIPKI für IGS Rhaunen: Pellet + Wärmepumpe). Beratung: kostenloser Energiecheck (Verbraucherzentrale/Caritas), kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/veranstaltung-solaroffensive-kohlesparen-mit-sonnenschein/",
+        "finding": "Infoabend 2022 (BUND, ZENAPA) mit Hinweis aufs Solarkataster Rheinland-Pfalz; keine kommunale Förderung genannt."
+      },
+      {
+        "url": "https://www.landkreis-birkenfeld.de/Pressemitteilungen/KIPKI-Kreis-Birkenfeld-setzt-drei-Projekte-fuer-mehr-Klimaschutz-um.html",
+        "finding": "Im Browser gelesen: KIPKI-Mittel des Kreises (1,18 Mio. €) für E-Fuhrpark mit Ladepunkten und PV am Verwaltungsgebäude, Notebooks, PV mit Speicher auf dem AWB-Gebäude — kein Programm für Private. Katalog führt kein Programm des Landkreises Birkenfeld (07134)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg",
+        "disposition": "reviewed",
+        "reason": "Niederlassungsförderung der Nationalparkverbandsgemeinde Herrstein-Rhaunen für Haus- und Fachärzte; betrifft keine Energieanlagen.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/aerztliche-versorgung/niederlassungsfoerderung-vg/"
+      },
+      {
+        "url": "vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung",
+        "disposition": "reviewed",
+        "reason": "Projektbericht: NKI-geförderte Umstellung der Sporthallenbeleuchtung der Ortsgemeinde Sien auf LED; kommunale Maßnahme, keine Förderung für Private.",
+        "evidenceUrl": "https://www.vg-hr.de/zukunftsorientiert/klimaschutz-und-klimaanpassung/projekte-in-der-vg/investive-foerderschwerpunkte-hocheffiziente-innen-und-hallenbeleuchtung/"
+      }
+    ]
   }
 ]
