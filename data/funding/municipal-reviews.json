@@ -9148,5 +9148,1017 @@
         "evidenceUrl": "https://www.amt-hagenow-land.de/verwaltung-service/eu-foerderung"
       }
     ]
+  },
+  {
+    "regionId": "13076009",
+    "name": "Bengerstorf",
+    "checkedAt": "2026-09-18T06:43:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bengerstorf gehört zum Amt Boizenburg-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen EU-kofinanzierte Projekte der Gemeinden (etwa LED-Straßenbeleuchtung Nostorf); die Volltextsuche findet nur Bauleitplanung, einen Infoabend zu Solaranlagen (2023) und die kommunale Wärmeplanung. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amtboizenburgland.de Suche: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Stromspeicher",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtboizenburgland.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Stromspeicher ohne Treffer; Photovoltaik nur Bauleitplanung Gresse und ein kostenloser Infoabend zu Dach-Photovoltaik (2023); Zuschuss nur Wohngeld; Wärmepumpe nur die abgeschlossene kommunale Wärmeplanung; Förderrichtlinie nur die EU-Förderprojekte-Seite."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001"
+      }
+    ]
+  },
+  {
+    "regionId": "13076010",
+    "name": "Besitz",
+    "checkedAt": "2026-09-18T06:43:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Besitz gehört zum Amt Boizenburg-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen EU-kofinanzierte Projekte der Gemeinden (etwa LED-Straßenbeleuchtung Nostorf); die Volltextsuche findet nur Bauleitplanung, einen Infoabend zu Solaranlagen (2023) und die kommunale Wärmeplanung. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amtboizenburgland.de Suche: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Stromspeicher",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtboizenburgland.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Stromspeicher ohne Treffer; Photovoltaik nur Bauleitplanung Gresse und ein kostenloser Infoabend zu Dach-Photovoltaik (2023); Zuschuss nur Wohngeld; Wärmepumpe nur die abgeschlossene kommunale Wärmeplanung; Förderrichtlinie nur die EU-Förderprojekte-Seite."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001"
+      }
+    ]
+  },
+  {
+    "regionId": "13076016",
+    "name": "Brahlstorf",
+    "checkedAt": "2026-09-18T06:43:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Brahlstorf gehört zum Amt Boizenburg-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen EU-kofinanzierte Projekte der Gemeinden (etwa LED-Straßenbeleuchtung Nostorf); die Volltextsuche findet nur Bauleitplanung, einen Infoabend zu Solaranlagen (2023) und die kommunale Wärmeplanung. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amtboizenburgland.de Suche: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Stromspeicher",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtboizenburgland.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Stromspeicher ohne Treffer; Photovoltaik nur Bauleitplanung Gresse und ein kostenloser Infoabend zu Dach-Photovoltaik (2023); Zuschuss nur Wohngeld; Wärmepumpe nur die abgeschlossene kommunale Wärmeplanung; Förderrichtlinie nur die EU-Förderprojekte-Seite."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001"
+      }
+    ]
+  },
+  {
+    "regionId": "13076030",
+    "name": "Dersenow",
+    "checkedAt": "2026-09-18T06:43:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dersenow gehört zum Amt Boizenburg-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen EU-kofinanzierte Projekte der Gemeinden (etwa LED-Straßenbeleuchtung Nostorf); die Volltextsuche findet nur Bauleitplanung, einen Infoabend zu Solaranlagen (2023) und die kommunale Wärmeplanung. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amtboizenburgland.de Suche: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Stromspeicher",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtboizenburgland.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Stromspeicher ohne Treffer; Photovoltaik nur Bauleitplanung Gresse und ein kostenloser Infoabend zu Dach-Photovoltaik (2023); Zuschuss nur Wohngeld; Wärmepumpe nur die abgeschlossene kommunale Wärmeplanung; Förderrichtlinie nur die EU-Förderprojekte-Seite."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001"
+      }
+    ]
+  },
+  {
+    "regionId": "13076054",
+    "name": "Gresse",
+    "checkedAt": "2026-09-18T06:43:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gresse gehört zum Amt Boizenburg-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen EU-kofinanzierte Projekte der Gemeinden (etwa LED-Straßenbeleuchtung Nostorf); die Volltextsuche findet nur Bauleitplanung, einen Infoabend zu Solaranlagen (2023) und die kommunale Wärmeplanung. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amtboizenburgland.de Suche: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Stromspeicher",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtboizenburgland.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Stromspeicher ohne Treffer; Photovoltaik nur Bauleitplanung Gresse und ein kostenloser Infoabend zu Dach-Photovoltaik (2023); Zuschuss nur Wohngeld; Wärmepumpe nur die abgeschlossene kommunale Wärmeplanung; Förderrichtlinie nur die EU-Förderprojekte-Seite."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001"
+      }
+    ]
+  },
+  {
+    "regionId": "13076055",
+    "name": "Greven",
+    "checkedAt": "2026-09-18T06:43:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Greven gehört zum Amt Boizenburg-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen EU-kofinanzierte Projekte der Gemeinden (etwa LED-Straßenbeleuchtung Nostorf); die Volltextsuche findet nur Bauleitplanung, einen Infoabend zu Solaranlagen (2023) und die kommunale Wärmeplanung. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amtboizenburgland.de Suche: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Stromspeicher",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtboizenburgland.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Stromspeicher ohne Treffer; Photovoltaik nur Bauleitplanung Gresse und ein kostenloser Infoabend zu Dach-Photovoltaik (2023); Zuschuss nur Wohngeld; Wärmepumpe nur die abgeschlossene kommunale Wärmeplanung; Förderrichtlinie nur die EU-Förderprojekte-Seite."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001"
+      }
+    ]
+  },
+  {
+    "regionId": "13076102",
+    "name": "Neu Gülze",
+    "checkedAt": "2026-09-18T06:43:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neu Gülze gehört zum Amt Boizenburg-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen EU-kofinanzierte Projekte der Gemeinden (etwa LED-Straßenbeleuchtung Nostorf); die Volltextsuche findet nur Bauleitplanung, einen Infoabend zu Solaranlagen (2023) und die kommunale Wärmeplanung. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amtboizenburgland.de Suche: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Stromspeicher",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtboizenburgland.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Stromspeicher ohne Treffer; Photovoltaik nur Bauleitplanung Gresse und ein kostenloser Infoabend zu Dach-Photovoltaik (2023); Zuschuss nur Wohngeld; Wärmepumpe nur die abgeschlossene kommunale Wärmeplanung; Förderrichtlinie nur die EU-Förderprojekte-Seite."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001"
+      }
+    ]
+  },
+  {
+    "regionId": "13076106",
+    "name": "Nostorf",
+    "checkedAt": "2026-09-18T06:43:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nostorf gehört zum Amt Boizenburg-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen EU-kofinanzierte Projekte der Gemeinden (etwa LED-Straßenbeleuchtung Nostorf); die Volltextsuche findet nur Bauleitplanung, einen Infoabend zu Solaranlagen (2023) und die kommunale Wärmeplanung. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amtboizenburgland.de Suche: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Stromspeicher",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtboizenburgland.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Stromspeicher ohne Treffer; Photovoltaik nur Bauleitplanung Gresse und ein kostenloser Infoabend zu Dach-Photovoltaik (2023); Zuschuss nur Wohngeld; Wärmepumpe nur die abgeschlossene kommunale Wärmeplanung; Förderrichtlinie nur die EU-Förderprojekte-Seite."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001"
+      }
+    ]
+  },
+  {
+    "regionId": "13076122",
+    "name": "Schwanheide",
+    "checkedAt": "2026-09-18T06:43:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwanheide gehört zum Amt Boizenburg-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen EU-kofinanzierte Projekte der Gemeinden (etwa LED-Straßenbeleuchtung Nostorf); die Volltextsuche findet nur Bauleitplanung, einen Infoabend zu Solaranlagen (2023) und die kommunale Wärmeplanung. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amtboizenburgland.de Suche: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Stromspeicher",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtboizenburgland.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Stromspeicher ohne Treffer; Photovoltaik nur Bauleitplanung Gresse und ein kostenloser Infoabend zu Dach-Photovoltaik (2023); Zuschuss nur Wohngeld; Wärmepumpe nur die abgeschlossene kommunale Wärmeplanung; Förderrichtlinie nur die EU-Förderprojekte-Seite."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001"
+      }
+    ]
+  },
+  {
+    "regionId": "13076136",
+    "name": "Teldau",
+    "checkedAt": "2026-09-18T06:43:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Teldau gehört zum Amt Boizenburg-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen EU-kofinanzierte Projekte der Gemeinden (etwa LED-Straßenbeleuchtung Nostorf); die Volltextsuche findet nur Bauleitplanung, einen Infoabend zu Solaranlagen (2023) und die kommunale Wärmeplanung. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amtboizenburgland.de Suche: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Stromspeicher",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtboizenburgland.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Stromspeicher ohne Treffer; Photovoltaik nur Bauleitplanung Gresse und ein kostenloser Infoabend zu Dach-Photovoltaik (2023); Zuschuss nur Wohngeld; Wärmepumpe nur die abgeschlossene kommunale Wärmeplanung; Förderrichtlinie nur die EU-Förderprojekte-Seite."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001"
+      }
+    ]
+  },
+  {
+    "regionId": "13076138",
+    "name": "Tessin b. Boizenburg",
+    "checkedAt": "2026-09-18T06:43:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Tessin b. Boizenburg gehört zum Amt Boizenburg-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten listen EU-kofinanzierte Projekte der Gemeinden (etwa LED-Straßenbeleuchtung Nostorf); die Volltextsuche findet nur Bauleitplanung, einen Infoabend zu Solaranlagen (2023) und die kommunale Wärmeplanung. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V.",
+    "searches": [
+      "amtboizenburgland.de Suche: Balkonkraftwerk, Photovoltaik, Solaranlage, Zuschuss, Förderrichtlinie, Wärmepumpe, Stromspeicher",
+      "Landkreis Ludwigslust-Parchim Förderprogramm Balkonkraftwerk Photovoltaik Speicher (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtboizenburgland.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk und Stromspeicher ohne Treffer; Photovoltaik nur Bauleitplanung Gresse und ein kostenloser Infoabend zu Dach-Photovoltaik (2023); Zuschuss nur Wohngeld; Wärmepumpe nur die abgeschlossene kommunale Wärmeplanung; Förderrichtlinie nur die EU-Förderprojekte-Seite."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "finding": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "finding": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen (hinter der Hinweis-Zwischenseite): „Viele Projekte im Amt Boizenburg-Land werden mit der Unterstützung von EU-Fördermitteln realisiert“ — Projekte der Gemeinden wie LED-Straßenbeleuchtung Nostorf, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/bekanntmachungen/eu-foerderprojekte"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&amp;brotID=900000147&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?naviID=900000147&brotID=900000147&rubrik=900000001"
+      },
+      {
+        "url": "amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Adresse derselben Seite, im Original gelesen: identischer Inhalt (EU-kofinanzierte Gemeindeprojekte) — kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amtboizenburgland.de/portal/seiten/eu-foerderprojekte-900000076-28910.html?rubrik=900000001"
+      }
+    ]
+  },
+  {
+    "regionId": "13072033",
+    "name": "Glasewitz",
+    "checkedAt": "2026-09-18T06:46:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Glasewitz gehört zum Amt Güstrow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten betreffen Landes- und Bundesförderung für Projekte des Amtes und der Gemeinden (Bushaltestellen, kommunale Entwicklungspolitik); die Volltextsuche findet nichts Einschlägiges. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Rostock wurde nicht gefunden.",
+    "searches": [
+      "amt-guestrow-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Rostock Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-guestrow-land.de/component/finder/search.html?q=Photovoltaik&Itemid=101",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Solar, Zuschuss, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur eine Auftragsvergabe (Zukunftswerkstatt Lohmen, Experte Photovoltaik); Speicher nur Veranstaltungsorte („Gemeindezentrum Speicher“)."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "finding": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "finding": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html"
+      },
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072039",
+    "name": "Groß Schwiesow",
+    "checkedAt": "2026-09-18T06:46:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Schwiesow gehört zum Amt Güstrow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten betreffen Landes- und Bundesförderung für Projekte des Amtes und der Gemeinden (Bushaltestellen, kommunale Entwicklungspolitik); die Volltextsuche findet nichts Einschlägiges. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Rostock wurde nicht gefunden.",
+    "searches": [
+      "amt-guestrow-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Rostock Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-guestrow-land.de/component/finder/search.html?q=Photovoltaik&Itemid=101",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Solar, Zuschuss, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur eine Auftragsvergabe (Zukunftswerkstatt Lohmen, Experte Photovoltaik); Speicher nur Veranstaltungsorte („Gemeindezentrum Speicher“)."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "finding": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "finding": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html"
+      },
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072042",
+    "name": "Gülzow-Prüzen",
+    "checkedAt": "2026-09-18T06:46:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gülzow-Prüzen gehört zum Amt Güstrow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten betreffen Landes- und Bundesförderung für Projekte des Amtes und der Gemeinden (Bushaltestellen, kommunale Entwicklungspolitik); die Volltextsuche findet nichts Einschlägiges. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Rostock wurde nicht gefunden.",
+    "searches": [
+      "amt-guestrow-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Rostock Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-guestrow-land.de/component/finder/search.html?q=Photovoltaik&Itemid=101",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Solar, Zuschuss, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur eine Auftragsvergabe (Zukunftswerkstatt Lohmen, Experte Photovoltaik); Speicher nur Veranstaltungsorte („Gemeindezentrum Speicher“)."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "finding": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "finding": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html"
+      },
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072044",
+    "name": "Gutow",
+    "checkedAt": "2026-09-18T06:46:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gutow gehört zum Amt Güstrow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten betreffen Landes- und Bundesförderung für Projekte des Amtes und der Gemeinden (Bushaltestellen, kommunale Entwicklungspolitik); die Volltextsuche findet nichts Einschlägiges. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Rostock wurde nicht gefunden.",
+    "searches": [
+      "amt-guestrow-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Rostock Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-guestrow-land.de/component/finder/search.html?q=Photovoltaik&Itemid=101",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Solar, Zuschuss, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur eine Auftragsvergabe (Zukunftswerkstatt Lohmen, Experte Photovoltaik); Speicher nur Veranstaltungsorte („Gemeindezentrum Speicher“)."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "finding": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "finding": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html"
+      },
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072055",
+    "name": "Klein Upahl",
+    "checkedAt": "2026-09-18T06:46:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Klein Upahl gehört zum Amt Güstrow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten betreffen Landes- und Bundesförderung für Projekte des Amtes und der Gemeinden (Bushaltestellen, kommunale Entwicklungspolitik); die Volltextsuche findet nichts Einschlägiges. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Rostock wurde nicht gefunden.",
+    "searches": [
+      "amt-guestrow-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Rostock Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-guestrow-land.de/component/finder/search.html?q=Photovoltaik&Itemid=101",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Solar, Zuschuss, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur eine Auftragsvergabe (Zukunftswerkstatt Lohmen, Experte Photovoltaik); Speicher nur Veranstaltungsorte („Gemeindezentrum Speicher“)."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "finding": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "finding": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html"
+      },
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072061",
+    "name": "Kuhs",
+    "checkedAt": "2026-09-18T06:46:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kuhs gehört zum Amt Güstrow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten betreffen Landes- und Bundesförderung für Projekte des Amtes und der Gemeinden (Bushaltestellen, kommunale Entwicklungspolitik); die Volltextsuche findet nichts Einschlägiges. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Rostock wurde nicht gefunden.",
+    "searches": [
+      "amt-guestrow-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Rostock Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-guestrow-land.de/component/finder/search.html?q=Photovoltaik&Itemid=101",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Solar, Zuschuss, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur eine Auftragsvergabe (Zukunftswerkstatt Lohmen, Experte Photovoltaik); Speicher nur Veranstaltungsorte („Gemeindezentrum Speicher“)."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "finding": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "finding": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html"
+      },
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072069",
+    "name": "Lüssow",
+    "checkedAt": "2026-09-18T06:46:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lüssow gehört zum Amt Güstrow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten betreffen Landes- und Bundesförderung für Projekte des Amtes und der Gemeinden (Bushaltestellen, kommunale Entwicklungspolitik); die Volltextsuche findet nichts Einschlägiges. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Rostock wurde nicht gefunden.",
+    "searches": [
+      "amt-guestrow-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Rostock Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-guestrow-land.de/component/finder/search.html?q=Photovoltaik&Itemid=101",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Solar, Zuschuss, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur eine Auftragsvergabe (Zukunftswerkstatt Lohmen, Experte Photovoltaik); Speicher nur Veranstaltungsorte („Gemeindezentrum Speicher“)."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "finding": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "finding": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html"
+      },
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072071",
+    "name": "Mistorf",
+    "checkedAt": "2026-09-18T06:46:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mistorf gehört zum Amt Güstrow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten betreffen Landes- und Bundesförderung für Projekte des Amtes und der Gemeinden (Bushaltestellen, kommunale Entwicklungspolitik); die Volltextsuche findet nichts Einschlägiges. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Rostock wurde nicht gefunden.",
+    "searches": [
+      "amt-guestrow-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Rostock Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-guestrow-land.de/component/finder/search.html?q=Photovoltaik&Itemid=101",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Solar, Zuschuss, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur eine Auftragsvergabe (Zukunftswerkstatt Lohmen, Experte Photovoltaik); Speicher nur Veranstaltungsorte („Gemeindezentrum Speicher“)."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "finding": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "finding": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html"
+      },
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072079",
+    "name": "Plaaz",
+    "checkedAt": "2026-09-18T06:46:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Plaaz gehört zum Amt Güstrow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten betreffen Landes- und Bundesförderung für Projekte des Amtes und der Gemeinden (Bushaltestellen, kommunale Entwicklungspolitik); die Volltextsuche findet nichts Einschlägiges. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Rostock wurde nicht gefunden.",
+    "searches": [
+      "amt-guestrow-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Rostock Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-guestrow-land.de/component/finder/search.html?q=Photovoltaik&Itemid=101",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Solar, Zuschuss, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur eine Auftragsvergabe (Zukunftswerkstatt Lohmen, Experte Photovoltaik); Speicher nur Veranstaltungsorte („Gemeindezentrum Speicher“)."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "finding": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "finding": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html"
+      },
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072084",
+    "name": "Reimershagen",
+    "checkedAt": "2026-09-18T06:46:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Reimershagen gehört zum Amt Güstrow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten betreffen Landes- und Bundesförderung für Projekte des Amtes und der Gemeinden (Bushaltestellen, kommunale Entwicklungspolitik); die Volltextsuche findet nichts Einschlägiges. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Rostock wurde nicht gefunden.",
+    "searches": [
+      "amt-guestrow-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Rostock Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-guestrow-land.de/component/finder/search.html?q=Photovoltaik&Itemid=101",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Solar, Zuschuss, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur eine Auftragsvergabe (Zukunftswerkstatt Lohmen, Experte Photovoltaik); Speicher nur Veranstaltungsorte („Gemeindezentrum Speicher“)."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "finding": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "finding": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html"
+      },
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13072092",
+    "name": "Sarmstorf",
+    "checkedAt": "2026-09-18T06:46:00Z",
+    "recheckAt": "2026-12-17T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sarmstorf gehört zum Amt Güstrow-Land. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die gefundenen Seiten betreffen Landes- und Bundesförderung für Projekte des Amtes und der Gemeinden (Bushaltestellen, kommunale Entwicklungspolitik); die Volltextsuche findet nichts Einschlägiges. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Programm des Landkreises Rostock wurde nicht gefunden.",
+    "searches": [
+      "amt-guestrow-land.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Speicher",
+      "Landkreis Rostock Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss Privathaushalte (Websuche)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-guestrow-land.de/component/finder/search.html?q=Photovoltaik&Itemid=101",
+        "finding": "Volltextsuche der Amtsseite (18.09.2026): Balkonkraftwerk, Solar, Zuschuss, Förderrichtlinie und Wärmepumpe ohne Treffer; Photovoltaik nur eine Auftragsvergabe (Zukunftswerkstatt Lohmen, Experte Photovoltaik); Speicher nur Veranstaltungsorte („Gemeindezentrum Speicher“)."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "finding": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "finding": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Förderprojekte des Amtes über LFI und WRR, etwa Bau von Bushaltestellen in Gutow und Plaaz — Förderung an Amt und Gemeinden, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/foerderprojekte-lfi-und-wrr.html"
+      },
+      {
+        "url": "amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html",
+        "disposition": "reviewed",
+        "reason": "Im Original gelesen: Projekt „Koordination kommunaler Entwicklungspolitik“ (Partnerschaften mit Gabun und Vietnam) — kein Energiebezug, kein Zuschuss an Privathaushalte.",
+        "evidenceUrl": "https://www.amt-guestrow-land.de/amt/foerderprojekte/kommunale-entwicklungspolitik.html"
+      }
+    ]
   }
 ]
