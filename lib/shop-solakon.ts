@@ -144,10 +144,26 @@ export function istB2b(titel: string): boolean {
   return /\bB2B\b/i.test(titel);
 }
 
-/** Produktadresse mit Empfehlungscode. */
-export function angebotUrl(angebot: ShopAngebot, ref: string = SOLAKON_REF): string {
-  const trenner = angebot.url.includes("?") ? "&" : "?";
-  return `${angebot.url}${trenner}ref=${encodeURIComponent(ref)}`;
+// Preserve the merchant's source/medium and identify our campaign.
+const SOLAKON_KAMPAGNE: Record<string, string> = {
+  utm_source: "affiliate",
+  utm_medium: "cpo",
+  utm_campaign: "solar-check",
+};
+
+// Track placement without changing the destination product or variant.
+export type AngebotPlatzierung = "bkw-rechner-empfehlung" | "bkw-rechner-alternative";
+
+export function angebotUrl(
+  angebot: ShopAngebot,
+  ref: string = SOLAKON_REF,
+  platzierung?: AngebotPlatzierung,
+): string {
+  const url = new URL(angebot.url);
+  for (const [k, v] of Object.entries(SOLAKON_KAMPAGNE)) url.searchParams.set(k, v);
+  url.searchParams.set("ref", ref);
+  if (platzierung) url.searchParams.set("utm_content", platzierung);
+  return url.toString();
 }
 
 /**

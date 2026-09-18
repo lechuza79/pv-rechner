@@ -17,6 +17,8 @@
     "mastr:refresh": "tsx scripts/mastr-refresh.ts",
     "mastr:refresh-bnetza": "NODE_OPTIONS=--max-old-space-size=8192 tsx scripts/mastr-bnetza-refresh.ts",
     "destatis:gemeinden": "tsx scripts/destatis-gemeinden.ts",
+    "destatis:gebietsaenderungen": "tsx scripts/destatis-gebietsaenderungen.ts",
+    "mastr:umschluesseln": "tsx scripts/mastr-ags-umschluesseln.ts",
     "kommunen:kontakt": "tsx scripts/kommunen-kontakt-refresh.ts",
     "kommunen:versand": "tsx scripts/kommunen-versand.ts",
     "kommunen:ruecklauf": "tsx scripts/kommunen-ruecklauf.ts",

@@ -129,7 +129,7 @@ function ZumShop({ angebot, hervor }: { angebot: ShopAngebot; hervor: boolean })
 
   return (
     <a
-      href={angebotUrl(angebot)}
+      href={angebotUrl(angebot, undefined, hervor ? "bkw-rechner-empfehlung" : "bkw-rechner-alternative")}
       target="_blank"
       rel="sponsored noopener noreferrer"
       style={{

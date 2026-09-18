@@ -20,6 +20,7 @@
  */
 import { createClient } from "@supabase/supabase-js";
 import { jahrInBerlin } from "../lib/zeit";
+import { aktuellerGemeindeschluessel } from "../lib/ags-nachfolger";
 import {
   UNIT_SPECS,
   buildActorMap,
@@ -163,7 +164,9 @@ async function main() {
         const kwp = parseKwp(row.Bruttoleistung);
         if (!kwp || kwp <= 0) return;
         const segment = classifySolarSegment(row, actorMap, kwp);
-        const key = `${gks.slice(0, 8)}|${segment}|${monat}`;
+        // Same key mapping as the main import — otherwise a merged town's month
+        // values land on a key its page never reads.
+        const key = `${aktuellerGemeindeschluessel(gks.slice(0, 8))}|${segment}|${monat}`;
         const vorhanden = agg.get(key);
         if (vorhanden) {
           vorhanden.count++;
