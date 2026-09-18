@@ -8446,6 +8446,76 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     balkonPauschale: 100,
     wpPauschale: 500,
   },
+
+  "allendorf-eder-erneuerbare": {
+    id: "allendorf-eder-erneuerbare", name: "Förderung Erneuerbarer Energien und Wärmedämmung bei Bestandsgebäuden",
+    traeger: "Gemeinde Allendorf (Eder)", level: "kommune", region: "Allendorf (Eder)",
+    bundesland: "Hessen", agsCode: "06635001",
+    url: "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger/foerderprogramm-erneuerbare-energien-und-waermedaemmung-in-wohngebaeuden",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-12-13",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschüsse für Dachanlage, Speicher, Balkonkraftwerk, Wärmepumpe, Solarthermie und Dämmung an Bestandsgebäuden",
+    maxFoerderung: "2.500 € für die Dachanlage",
+    rates: [
+      { label: "Dach-Photovoltaik", value: "250 € je kWp, höchstens 2.500 € je Objekt und höchstens 25 % der Kosten", nur: ["pv"] },
+      { label: "Batteriespeicher ab 4 kWh zur PV-Anlage", value: "25 % der Kosten, höchstens 500 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk ab 600 Wp Modulleistung", value: "25 % der Kosten, höchstens 150 €", nur: ["balkon"] },
+      { label: "Luft/Wasser- oder Sole/Wasser-Wärmepumpe", value: "25 % der Kosten, höchstens 1.000 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Gefördert werden nur Bestandswohngebäude im Gemeindegebiet; sie müssen bei Antragstellung älter als fünf Jahre sein — Photovoltaik und Balkonkraftwerk sind davon ausgenommen",
+      "Der Antrag muss VOR der Beauftragung gestellt werden, beim Balkonkraftwerk vor dem Kauf; rückwirkend wird nichts gefördert",
+      "Antragsberechtigt sind Eigentümerinnen und Eigentümer selbst genutzter oder vermieteter Wohngebäude; institutionelle Vermieter sind ausgeschlossen",
+      "Mindestens die Hälfte der beheizten Fläche muss Wohnzwecken dienen",
+      "Es besteht kein Rechtsanspruch; gefördert wird im Rahmen der Haushaltsmittel",
+      { text: "Für das Balkonkraftwerk sind auch Mieterinnen und Mieter antragsberechtigt; gefördert werden nur Anlagen ab 600 Wp Gesamtmodulleistung", nur: ["balkon"] },
+      { text: "Bauliche Maßnahmen und Installationen muss ein Fachbetrieb ausführen, Eigenbauanlagen sind ausgeschlossen — für das Balkonkraftwerk gilt das nicht", nur: ["pv", "waermepumpe"] },
+      { text: "Der Speicher braucht mindestens 4 kWh und eine bestehende oder neu errichtete PV-Anlage; bei einem Pauschalangebot für Anlage und Speicher zusammen sinkt der Satz auf 15 %", nur: ["pv"] },
+      { text: "Wärmepumpen allein zur Brauchwassererwärmung werden nicht gefördert", nur: ["waermepumpe"] },
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    // NEU AUFGENOMMEN 18.09.2026. Programmseite und die verlinkte Richtlinie
+    // (Beschluss der Gemeindevertretung vom 13.12.2024, Stand 12/2024) im
+    // Volltext gelesen. § 2 Nr. 4: „Die Förderung beträgt 250 Euro pro
+    // installiertem kWp bis maximal 2.500 Euro pro Objekt, sowie maximal 25 %
+    // der nachgewiesenen förderfähigen Ausgaben."
+    //
+    // GEFUNDEN, WEIL DER ZUSTAND „UNERREICHBAR" NICHT STIMMTE: Diese Seite stand
+    // als unerreichbar erfasst und war damit aus dem Arbeitsvorrat heraus. Sie
+    // antwortet mit HTTP 200. Dasselbe galt am selben Tag für Gronau.
+    //
+    // DIE 25-%-GRENZE IST NICHT MITGERECHNET, und das ist eine Abwägung, keine
+    // Nachlässigkeit: Das Modell kann einen Satz je kWp und einen Prozentdeckel
+    // nicht gleichzeitig ausdrücken — `percentOfCost` kehrt sofort zurück und
+    // überginge den kWp-Satz. Gerechnet: Die Prozentgrenze bindet erst unterhalb
+    // von 1.000 € je kWp (250 / 0,25); die Marktpreise des Rechners liegen bei
+    // 1.200 bis 1.800 € je kWp, also weit darüber. Bei jeder Anlagengröße, die
+    // der Rechner kennt, gilt der kWp-Satz und nicht der Prozentsatz. Wer den
+    // Kaufpreis von Hand auf unter 1.000 €/kWp setzt, bekäme zu viel angerechnet
+    // — die Bedingung steht deshalb als Satz an der Rate.
+    //
+    // OHNE RECHENWERT, mit Grund:
+    //   · SPEICHER — 25 % mit Deckel 500 € ist neben einem kWp-Satz für die
+    //     Dachanlage nicht ausdrückbar (es gibt kein `speicherPercentOfCost`,
+    //     und `percentOfCost` würde den kWp-Satz verdrängen). Lieber die
+    //     Dachanlage richtig als beides halb.
+    //   · BALKONKRAFTWERK — die Richtlinie zahlt erst ab 600 Wp
+    //     Gesamtmodulleistung. Das Ein-Modul-Set des Rechners hat 500 Wp und
+    //     bekäme ohne diese Untergrenze 75 € angerechnet, die es nicht gibt;
+    //     eine Mindest-Modulleistung kennt das Balkon-Modell nicht. Der Betrag
+    //     steht als Auskunft da.
+    //   · WÄRMEPUMPE — 25 % mit Deckel 1.000 € wäre der ERSTE prozentuale
+    //     Wärmepumpen-Zuschuss im Katalog, und dafür steht ein Stolperdraht in
+    //     `waermepumpe-kommunalfoerderung.test.ts`: Der Rechner bemisst den
+    //     kommunalen Zuschuss an der Investition des BASIS-Wegs. Bei einer
+    //     Pauschale ist das gleichgültig, bei einem Prozentsatz nicht — dann
+    //     gehört der Aufschlag des gewählten Sanierungswegs in die Bemessung.
+    //     Das ist eine Änderung am Rechner, keine am Katalog; bis sie gemacht
+    //     ist, steht der Satz als Auskunft da und zieht nichts ab.
+    pvPerKwp: 250, pvCap: 2500,
+  },
   "bad-marienberg-erneuerbare-energien": {
     id: "bad-marienberg-erneuerbare-energien",
     name: "Ortskernvitalisierung, Klimaanpassung und erneuerbare Energien",

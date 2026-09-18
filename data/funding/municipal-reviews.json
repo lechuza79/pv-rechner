@@ -3514,5 +3514,76 @@
     "evidenceUrl": "https://www.bernkastel-wittlich.de/landkreis/kreisentwicklung/klimaschutzmanagement/foerderprogramm-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke-fuer-privathaushalte-lk-bks-wil-version-3.pdf?cid=411"
    }
   ]
+ },
+ {
+  "regionId": "06635001",
+  "name": "Allendorf (Eder)",
+  "checkedAt": "2026-09-18T00:51:13Z",
+  "recheckAt": "2027-03-31T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "programme-geprueft",
+  "conclusion": "Die Gemeinde Allendorf (Eder) fördert nach einer Richtlinie der Gemeindevertretung vom 13.12.2024 erneuerbare Energien und Wärmedämmung an Bestandswohngebäuden: Dach-Photovoltaik 250 € je kWp bis höchstens 2.500 € je Objekt und höchstens 25 % der Kosten, Batteriespeicher ab 4 kWh 25 % bis 500 €, Balkonkraftwerk ab 600 Wp 25 % bis 150 €, Luft/Wasser- oder Sole/Wasser-Wärmepumpe 25 % bis 1.000 €, dazu Solarthermie, Dämmung und Lüftung. Der Antrag muss vor der Beauftragung gestellt werden, beim Balkonkraftwerk vor dem Kauf. Als aktives Programm aufgenommen; gerechnet wird nur die Dachanlage, die übrigen Sätze stehen als Auskunft, die Gründe stehen im Katalog. Gefunden wurde die Seite nur, weil ihr erfasster Zustand als unerreichbar nicht stimmte.",
+  "searches": [
+   "allendorf-eder.de kommunale Förderprogramme für Bürger erneuerbare Energien",
+   "allendorf-eder.de Richtlinie Förderung erneuerbare Energien Wärmedämmung PDF"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger/foerderprogramm-erneuerbare-energien-und-waermedaemmung-in-wohngebaeuden",
+    "finding": "Liste der Zuschüsse auf der Programmseite, darunter bis zu 2500 Euro für den Einbau einer PV-Anlage, bis zu 500 Euro für einen ortsfesten Stromspeicher und bis zu 150 Euro für eine Mikro-Photovoltaikanlage, Balkonanlage, Plug-In-PV."
+   },
+   {
+    "url": "https://www.allendorf-eder.de/dokumente/satzung/energien-und-waermedaemmung-richtlinie-erneuerbare-energien-und-waermedaemmung-von-bestandsgebaeuden-v-01-03-22/erneuerbare-energien-foerderung-erneuerbare-energien-stand-01.01.2025.pdf?cid=9h0",
+    "finding": "Richtlinie, Beschluss der Gemeindevertretung vom 13.12.2024. Paragraf 2 Nummer 4: Die Förderung beträgt 250 Euro pro installiertem kWp bis maximal 2.500 Euro pro Objekt, sowie maximal 25 Prozent der nachgewiesenen förderfähigen Ausgaben. Nummer 5: Stromspeicher ab 4 kWh, 25 Prozent bis 500 Euro. Nummer 2: Wärmepumpe 25 Prozent bis 1.000 Euro, nicht für reine Brauchwassererwärmung. Paragraf 1 Absatz 5: Antrag vor Beauftragung, bei Mikro-PV vor dem Erwerb."
+   },
+   {
+    "url": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger",
+    "finding": "Uebersicht der kommunalen Buergerprogramme: genau zwei, das Foerderprogramm Erneuerbare Energien und Waermedaemmung und das Foerderprogramm Regenwasserzisternen."
+   }
+  ],
+  "sources": [
+   {
+    "url": "allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger/foerderprogramm-erneuerbare-energien-und-waermedaemmung-in-wohngebaeuden",
+    "disposition": "reviewed",
+    "reason": "Programmseite und verlinkte Richtlinie im Volltext gelesen; Programm aufgenommen.",
+    "evidenceUrl": "https://www.allendorf-eder.de/dokumente/satzung/energien-und-waermedaemmung-richtlinie-erneuerbare-energien-und-waermedaemmung-von-bestandsgebaeuden-v-01-03-22/erneuerbare-energien-foerderung-erneuerbare-energien-stand-01.01.2025.pdf?cid=9h0"
+   },
+   {
+    "url": "allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger",
+    "disposition": "reviewed",
+    "reason": "Uebersicht der Buergerprogramme; sie fuehrt genau zwei, das aufgenommene Energieprogramm und die Regenwasserzisternen.",
+    "evidenceUrl": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger"
+   },
+   {
+    "url": "allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger/foerderprogramm-regenwasserzisternen",
+    "disposition": "reviewed",
+    "reason": "Regenwassernutzungsanlagen zur Klimawandelanpassung; kein Zuschuss fuer Energieanlagen.",
+    "evidenceUrl": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger"
+   },
+   {
+    "url": "allendorf-eder.de/wirtschaft-soziales/klimaschutz/foerdermittel",
+    "disposition": "reviewed",
+    "reason": "Verweisseite auf die hessische Foerdermittelauskunft, KfW, BAFA und die Landesenergieagentur; kein eigenes Programm.",
+    "evidenceUrl": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger/foerderprogramm-erneuerbare-energien-und-waermedaemmung-in-wohngebaeuden"
+   },
+   {
+    "url": "allendorf-eder.de/wirtschaft-soziales/klimaschutz/gefoerderte-kommunale-projekte",
+    "disposition": "reviewed",
+    "reason": "Projekte der Gemeinde als Foerdernehmerin, keine Buergerfoerderung.",
+    "evidenceUrl": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger/foerderprogramm-erneuerbare-energien-und-waermedaemmung-in-wohngebaeuden"
+   },
+   {
+    "url": "allendorf-eder.de/verwaltung/fachbereiche-von-a-z/foerderantraege/foerderung-von-baumassnahmen-an-aelteren-gebaeuden-in-den-ortskernen",
+    "disposition": "reviewed",
+    "reason": "Ortskernfoerderung fuer Gebaeude vor 1950 — Bausubstanz, keine Energieanlagen.",
+    "evidenceUrl": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger/foerderprogramm-erneuerbare-energien-und-waermedaemmung-in-wohngebaeuden"
+   },
+   {
+    "url": "allendorf-eder.de/dokumente/klimaschutz/abschlussbericht-integriertes-klimaschutzkonzept-ederbergland?cid=1ay",
+    "disposition": "reviewed",
+    "reason": "Abschlussbericht des integrierten Klimaschutzkonzepts Ederbergland; Planungsdokument, kein Zuschuss.",
+    "evidenceUrl": "https://www.allendorf-eder.de/wirtschaft-soziales/klimaschutz/kommunale-foerderprogramme-fuer-buerger/foerderprogramm-erneuerbare-energien-und-waermedaemmung-in-wohngebaeuden"
+   }
+  ]
  }
 ]

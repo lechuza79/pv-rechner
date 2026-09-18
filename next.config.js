@@ -320,6 +320,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/rodgau", destination: "/photovoltaik-foerderung/hessen/rodgau", permanent: true },
       { source: "/photovoltaik-foerderung/hohenahr", destination: "/photovoltaik-foerderung/hessen/hohenahr", permanent: true },
       { source: "/photovoltaik-foerderung/gudensberg", destination: "/photovoltaik-foerderung/hessen/gudensberg", permanent: true },
+      { source: "/photovoltaik-foerderung/allendorf-eder", destination: "/photovoltaik-foerderung/hessen/allendorf-eder", permanent: true },
       { source: "/photovoltaik-foerderung/neuwied", destination: "/photovoltaik-foerderung/rheinland-pfalz/neuwied", permanent: true },
       { source: "/photovoltaik-foerderung/hillscheid", destination: "/photovoltaik-foerderung/rheinland-pfalz/hillscheid", permanent: true },
       { source: "/photovoltaik-foerderung/hoehr-grenzhausen", destination: "/photovoltaik-foerderung/rheinland-pfalz/hoehr-grenzhausen", permanent: true },
