@@ -55,6 +55,19 @@ export default function StartseiteHero({
   const [wetter, setWetter] = useState<HeroWetter | null>(null);
   const [stufe, setStufe] = useState<Stufe>("laedt");
   const [pausiert, setPausiert] = useState(false);
+  // The panel photograph is only the fallback when the 3D stage cannot run.
+  // It is not in the first HTML: in the normal path it would be 221 kB that
+  // nobody sees.
+  const [ohne3d, setOhne3d] = useState(false);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const pruefen = () => setOhne3d(root.dataset.sceneBoot === "failed");
+    const beobachter = new MutationObserver(pruefen);
+    beobachter.observe(root, { attributes: true, attributeFilter: ["data-scene-boot"] });
+    return () => beobachter.disconnect();
+  }, []);
 
   // Location + weather. Refreshed every 10 minutes while the page is open.
   useEffect(() => {
@@ -148,11 +161,13 @@ export default function StartseiteHero({
           <div className="mist"><i /><i /></div>
           <div className="sky-life" aria-hidden="true"><div className="passing-fly" /></div>
           <div className="panel-layer">
-            <picture>
-              <source media="(max-width:600px)" srcSet="/hero-system/panel-fallback-mobile.webp" />
-              {/* eslint-disable-next-line @next/next/no-img-element -- art-directed layer, not a content image */}
-              <img src="/hero-system/panel-fallback-0.webp" alt="" width={1536} height={1024} fetchPriority="high" draggable={false} />
-            </picture>
+            {ohne3d && (
+              <picture>
+                <source media="(max-width:600px)" srcSet="/hero-system/panel-fallback-mobile.webp" />
+                {/* eslint-disable-next-line @next/next/no-img-element -- art-directed fallback layer, not a content image */}
+                <img src="/hero-system/panel-fallback-0.webp" alt="" width={1536} height={1024} draggable={false} />
+              </picture>
+            )}
             <div className="panel-light" />
           </div>
           <div className="particles">{partikel.particles.map((s, i) => <i key={i} style={s} />)}</div>

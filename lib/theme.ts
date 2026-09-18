@@ -611,7 +611,8 @@ export const neonScopeCss = `
   .sc-neon-kopf{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;gap:24px;padding:20px max(24px,5vw);color:${neonTokens['--neon-ink']};font-family:var(--font-text)}
   .sc-neon-kopf .sc-design-header{flex:1;max-width:none}
   body:has(.solar-page[data-dark="true"]) .sc-neon-kopf,body:has(.solar-page[data-rain-study="night"]) .sc-neon-kopf,body:has(.solar-page[data-rain-study="rain"]) .sc-neon-kopf{color:${neonTokens['--neon-on-dark']};--color-accent:${neonTokens['--neon-on-dark']}}
-  .sc-kopf-konto{font-size:var(--font-size-small);color:inherit;text-decoration:none;white-space:nowrap}
+  .sc-kopf-konto{display:inline-flex;align-items:center;gap:6px;font-size:var(--font-size-small);color:inherit;text-decoration:none;white-space:nowrap}
+  @media (max-width:420px){.sc-neon-kopf{padding:16px;gap:12px}.sc-kopf-konto-text{display:none}}
   .sc-kopf-konto:hover{text-decoration:underline}
   .sc-kopf-konto:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:4px}
   .sc-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--neon-action-height);padding:0 28px;border-radius:999px;font-family:var(--neon-font-heading);font-size:var(--neon-size-action);line-height:21px;font-weight:600;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:filter .15s ease,background-color .15s ease,border-color .15s ease}

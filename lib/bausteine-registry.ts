@@ -430,7 +430,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     ebene: "baustein",
     stand: "im-aufbau",
-    bestehtAus: ["DesignHeader", "Header"],
+    bestehtAus: ["DesignHeader", "Header", "Icons"],
     keinBeispielWeil: "Ein Umschalter zwischen zwei Seitenrahmen; zeigen lässt er sich nur auf den Seiten selbst.",
   },
   {

@@ -237,11 +237,27 @@ export default function Modal({
     // Screenreader erst Titel und Kontext vor.
     // Make the dialog focusable only for initial focus. A permanent negative
     // tabindex also receives mouse focus when plain text is clicked, scrolling
-    // a long dialog back to its start. Removing it preserves text selection.
-    const initialDialog = dialogRef.current;
-    initialDialog?.setAttribute("tabindex", "-1");
-    initialDialog?.focus({ preventScroll: true });
-    initialDialog?.removeAttribute("tabindex");
+    // a long dialog back to its start. The attribute is removed once focus
+    // LEAVES the dialog itself — removing it right away (as a first version
+    // did) drops the focus back to <body> in Chromium, and a screen reader
+    // then never hears the dialog's title.
+    //
+    // The dialog is portalled in one render AFTER `open` turns true, so at this
+    // point it may not exist yet — focusing then silently hit nothing and the
+    // focus stayed on the trigger behind the backdrop. Wait for it a few frames.
+    let fokusFrame = 0;
+    let versuche = 0;
+    const fokussieren = () => {
+      const initialDialog = dialogRef.current;
+      if (!initialDialog) {
+        if (versuche++ < 10) fokusFrame = requestAnimationFrame(fokussieren);
+        return;
+      }
+      initialDialog.setAttribute("tabindex", "-1");
+      initialDialog.focus({ preventScroll: true });
+      initialDialog.addEventListener("blur", () => initialDialog.removeAttribute("tabindex"), { once: true });
+    };
+    fokussieren();
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -272,6 +288,7 @@ export default function Modal({
     };
     document.addEventListener("keydown", onKeyDown);
     return () => {
+      cancelAnimationFrame(fokusFrame);
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = prevOverflow;
       trigger?.focus();

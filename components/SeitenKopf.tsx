@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import DesignHeader from "./DesignHeader";
 import Header from "./Header";
+import { IconUser } from "./Icons";
 import { useAuth } from "../lib/auth";
 import { headerContentGap } from "../lib/theme";
 
@@ -27,10 +28,14 @@ export function istNeonPfad(pfad: string | null): boolean {
 function KontoLink() {
   const auth = useAuth();
   if (auth.status === "loading") return null;
-  return auth.status === "authed" ? (
-    <Link href="/dashboard" className="sc-kopf-konto">Mein Konto</Link>
-  ) : (
-    <Link href="/login" className="sc-kopf-konto">Einloggen</Link>
+  const [href, text] = auth.status === "authed" ? ["/dashboard", "Mein Konto"] : ["/login", "Einloggen"];
+  // On narrow phones the word gives way to the icon; the name stays for
+  // screen readers, so the link never loses its purpose.
+  return (
+    <Link href={href} className="sc-kopf-konto" aria-label={text}>
+      <IconUser size={16} />
+      <span className="sc-kopf-konto-text">{text}</span>
+    </Link>
   );
 }
 
