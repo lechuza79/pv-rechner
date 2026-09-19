@@ -25075,5 +25075,695 @@
     ],
     "outcome": "programme-geprueft",
     "conclusion": "Weede (Amt Trave-Land, Kreis Segeberg) hatte ein eigenes Förderprogramm für Solaranlagen, das beendet ist; es steht seit 19.09.2026 als beendetes Programm im Katalog (Richtlinie im Volltext gelesen). Eine Neuauflage führt die Website des Amtes nicht, und weder Amt noch Kreis haben ein laufendes Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076035",
+    "name": "Domsühl",
+    "checkedAt": "2026-09-19T00:40:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-parchimer-umland.de Volltextsuche (Meldungen, Seiten, Bekanntmachungen einzeln): Photovoltaik, Balkonkraftwerk, Solar, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie",
+      "Gelesen: LEADER-Seite, Meldungen Klimaschutzinitiative Obere Warnow, LED Lewitzrand, Härtefallhilfe 2023, Kleinkläranlagen 2008, Ortsrechtsseiten Stolpe, Zölkow, Ziegendorf",
+      "Websuche: Amt Parchimer Umland Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-parchimer-umland.de/",
+        "finding": "Startseite des Amtes (19.09.2026): Menü ohne Förder- oder Klimaschutzrubrik; das Suchformular führt auf die Volltextsuche; der Link-verschicken-Dienst ist keine Inhaltsseite."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): LEADER-LAG Warnow-Elde-Land, Beschreibung der Aktionsgruppe und Verweis auf die Förderanträge der LAG — EU-Regionalförderung, kein Programm für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Meldungen, Seiten und Bekanntmachungen einzeln): Balkonkraftwerk, Wärmepumpe und Förderprogramm ohne Förderbezug; Photovoltaik und Solar nur Bebauungs- und Flächennutzungspläne für Freiflächen-Solarparks (u. a. Rom, Spornitz, Stolpe, Groß Godems, Karrenzin, Lewitzrand, Ziegendorf); Zuschuss nur Härtefallhilfe für nicht leitungsgebundene Energieträger (2023) und Kleinkläranlagen-Förderung (2008); Klimaschutz nur LED-Beleuchtung der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/170658/nachrichten/170658.html",
+        "finding": "Im Original gelesen: Nationale Klimaschutzinitiative 2012 — LED-Gehwegbeleuchtung der Gemeinde Obere Warnow (OT Grebbin), Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/219713/nachrichten/219713.html",
+        "finding": "Im Original gelesen: Landesförderung 2013 für LED-Straßenbeleuchtung der Gemeinde Lewitzrand (Garwitz) — Förderung der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/832694/nachrichten/832694.html",
+        "finding": "Im Original gelesen: Papierantrag Härtefallhilfe für private Haushalte mit nicht leitungsgebundenen Energieträgern (Mai 2023, Bundes-/Landesprogramm, beendet) — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/52657/nachrichten/52657.html",
+        "finding": "Im Original gelesen: Förderung von Kleinkläranlagen (2008, Land/EU, bis 2013) — kein Energiebezug."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-parchimer-umland.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Formular „Link verschicken“ der Website (am 19.09.2026 ohne Referrer HTTP 404) — keine Inhaltsseite, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "LEADER-Seite des Amtes (LAG Warnow-Elde-Land): EU-Regionalförderung für Projekte in der Region über die Lokale Aktionsgruppe — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben LEADER-Seite; Inhalt identisch mit dem gelesenen Original.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Domsühl gehört zum Amt Parchimer Umland (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Volltextsuche der Amtsseite findet zu Photovoltaik und Solar nur Bauleitpläne für Freiflächen-Solarparks, sonst LED-Beleuchtung der Gemeinden, LEADER-Regionalförderung, die Härtefallhilfe 2023 und eine Kleinkläranlagen-Förderung von 2008. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076056",
+    "name": "Groß Godems",
+    "checkedAt": "2026-09-19T00:40:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-parchimer-umland.de Volltextsuche (Meldungen, Seiten, Bekanntmachungen einzeln): Photovoltaik, Balkonkraftwerk, Solar, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie",
+      "Gelesen: LEADER-Seite, Meldungen Klimaschutzinitiative Obere Warnow, LED Lewitzrand, Härtefallhilfe 2023, Kleinkläranlagen 2008, Ortsrechtsseiten Stolpe, Zölkow, Ziegendorf",
+      "Websuche: Amt Parchimer Umland Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-parchimer-umland.de/",
+        "finding": "Startseite des Amtes (19.09.2026): Menü ohne Förder- oder Klimaschutzrubrik; das Suchformular führt auf die Volltextsuche; der Link-verschicken-Dienst ist keine Inhaltsseite."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): LEADER-LAG Warnow-Elde-Land, Beschreibung der Aktionsgruppe und Verweis auf die Förderanträge der LAG — EU-Regionalförderung, kein Programm für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Meldungen, Seiten und Bekanntmachungen einzeln): Balkonkraftwerk, Wärmepumpe und Förderprogramm ohne Förderbezug; Photovoltaik und Solar nur Bebauungs- und Flächennutzungspläne für Freiflächen-Solarparks (u. a. Rom, Spornitz, Stolpe, Groß Godems, Karrenzin, Lewitzrand, Ziegendorf); Zuschuss nur Härtefallhilfe für nicht leitungsgebundene Energieträger (2023) und Kleinkläranlagen-Förderung (2008); Klimaschutz nur LED-Beleuchtung der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/170658/nachrichten/170658.html",
+        "finding": "Im Original gelesen: Nationale Klimaschutzinitiative 2012 — LED-Gehwegbeleuchtung der Gemeinde Obere Warnow (OT Grebbin), Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/219713/nachrichten/219713.html",
+        "finding": "Im Original gelesen: Landesförderung 2013 für LED-Straßenbeleuchtung der Gemeinde Lewitzrand (Garwitz) — Förderung der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/832694/nachrichten/832694.html",
+        "finding": "Im Original gelesen: Papierantrag Härtefallhilfe für private Haushalte mit nicht leitungsgebundenen Energieträgern (Mai 2023, Bundes-/Landesprogramm, beendet) — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/52657/nachrichten/52657.html",
+        "finding": "Im Original gelesen: Förderung von Kleinkläranlagen (2008, Land/EU, bis 2013) — kein Energiebezug."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-parchimer-umland.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Formular „Link verschicken“ der Website (am 19.09.2026 ohne Referrer HTTP 404) — keine Inhaltsseite, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "LEADER-Seite des Amtes (LAG Warnow-Elde-Land): EU-Regionalförderung für Projekte in der Region über die Lokale Aktionsgruppe — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben LEADER-Seite; Inhalt identisch mit dem gelesenen Original.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Godems gehört zum Amt Parchimer Umland (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Volltextsuche der Amtsseite findet zu Photovoltaik und Solar nur Bauleitpläne für Freiflächen-Solarparks, sonst LED-Beleuchtung der Gemeinden, LEADER-Regionalförderung, die Härtefallhilfe 2023 und eine Kleinkläranlagen-Förderung von 2008. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076068",
+    "name": "Karrenzin",
+    "checkedAt": "2026-09-19T00:40:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-parchimer-umland.de Volltextsuche (Meldungen, Seiten, Bekanntmachungen einzeln): Photovoltaik, Balkonkraftwerk, Solar, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie",
+      "Gelesen: LEADER-Seite, Meldungen Klimaschutzinitiative Obere Warnow, LED Lewitzrand, Härtefallhilfe 2023, Kleinkläranlagen 2008, Ortsrechtsseiten Stolpe, Zölkow, Ziegendorf",
+      "Websuche: Amt Parchimer Umland Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-parchimer-umland.de/",
+        "finding": "Startseite des Amtes (19.09.2026): Menü ohne Förder- oder Klimaschutzrubrik; das Suchformular führt auf die Volltextsuche; der Link-verschicken-Dienst ist keine Inhaltsseite."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): LEADER-LAG Warnow-Elde-Land, Beschreibung der Aktionsgruppe und Verweis auf die Förderanträge der LAG — EU-Regionalförderung, kein Programm für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Meldungen, Seiten und Bekanntmachungen einzeln): Balkonkraftwerk, Wärmepumpe und Förderprogramm ohne Förderbezug; Photovoltaik und Solar nur Bebauungs- und Flächennutzungspläne für Freiflächen-Solarparks (u. a. Rom, Spornitz, Stolpe, Groß Godems, Karrenzin, Lewitzrand, Ziegendorf); Zuschuss nur Härtefallhilfe für nicht leitungsgebundene Energieträger (2023) und Kleinkläranlagen-Förderung (2008); Klimaschutz nur LED-Beleuchtung der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/170658/nachrichten/170658.html",
+        "finding": "Im Original gelesen: Nationale Klimaschutzinitiative 2012 — LED-Gehwegbeleuchtung der Gemeinde Obere Warnow (OT Grebbin), Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/219713/nachrichten/219713.html",
+        "finding": "Im Original gelesen: Landesförderung 2013 für LED-Straßenbeleuchtung der Gemeinde Lewitzrand (Garwitz) — Förderung der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/832694/nachrichten/832694.html",
+        "finding": "Im Original gelesen: Papierantrag Härtefallhilfe für private Haushalte mit nicht leitungsgebundenen Energieträgern (Mai 2023, Bundes-/Landesprogramm, beendet) — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/52657/nachrichten/52657.html",
+        "finding": "Im Original gelesen: Förderung von Kleinkläranlagen (2008, Land/EU, bis 2013) — kein Energiebezug."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-parchimer-umland.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Formular „Link verschicken“ der Website (am 19.09.2026 ohne Referrer HTTP 404) — keine Inhaltsseite, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "LEADER-Seite des Amtes (LAG Warnow-Elde-Land): EU-Regionalförderung für Projekte in der Region über die Lokale Aktionsgruppe — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben LEADER-Seite; Inhalt identisch mit dem gelesenen Original.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Karrenzin gehört zum Amt Parchimer Umland (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Volltextsuche der Amtsseite findet zu Photovoltaik und Solar nur Bauleitpläne für Freiflächen-Solarparks, sonst LED-Beleuchtung der Gemeinden, LEADER-Regionalförderung, die Härtefallhilfe 2023 und eine Kleinkläranlagen-Förderung von 2008. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076085",
+    "name": "Lewitzrand",
+    "checkedAt": "2026-09-19T00:40:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-parchimer-umland.de Volltextsuche (Meldungen, Seiten, Bekanntmachungen einzeln): Photovoltaik, Balkonkraftwerk, Solar, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie",
+      "Gelesen: LEADER-Seite, Meldungen Klimaschutzinitiative Obere Warnow, LED Lewitzrand, Härtefallhilfe 2023, Kleinkläranlagen 2008, Ortsrechtsseiten Stolpe, Zölkow, Ziegendorf",
+      "Websuche: Amt Parchimer Umland Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-parchimer-umland.de/",
+        "finding": "Startseite des Amtes (19.09.2026): Menü ohne Förder- oder Klimaschutzrubrik; das Suchformular führt auf die Volltextsuche; der Link-verschicken-Dienst ist keine Inhaltsseite."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): LEADER-LAG Warnow-Elde-Land, Beschreibung der Aktionsgruppe und Verweis auf die Förderanträge der LAG — EU-Regionalförderung, kein Programm für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Meldungen, Seiten und Bekanntmachungen einzeln): Balkonkraftwerk, Wärmepumpe und Förderprogramm ohne Förderbezug; Photovoltaik und Solar nur Bebauungs- und Flächennutzungspläne für Freiflächen-Solarparks (u. a. Rom, Spornitz, Stolpe, Groß Godems, Karrenzin, Lewitzrand, Ziegendorf); Zuschuss nur Härtefallhilfe für nicht leitungsgebundene Energieträger (2023) und Kleinkläranlagen-Förderung (2008); Klimaschutz nur LED-Beleuchtung der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/170658/nachrichten/170658.html",
+        "finding": "Im Original gelesen: Nationale Klimaschutzinitiative 2012 — LED-Gehwegbeleuchtung der Gemeinde Obere Warnow (OT Grebbin), Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/219713/nachrichten/219713.html",
+        "finding": "Im Original gelesen: Landesförderung 2013 für LED-Straßenbeleuchtung der Gemeinde Lewitzrand (Garwitz) — Förderung der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/832694/nachrichten/832694.html",
+        "finding": "Im Original gelesen: Papierantrag Härtefallhilfe für private Haushalte mit nicht leitungsgebundenen Energieträgern (Mai 2023, Bundes-/Landesprogramm, beendet) — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/52657/nachrichten/52657.html",
+        "finding": "Im Original gelesen: Förderung von Kleinkläranlagen (2008, Land/EU, bis 2013) — kein Energiebezug."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-parchimer-umland.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Formular „Link verschicken“ der Website (am 19.09.2026 ohne Referrer HTTP 404) — keine Inhaltsseite, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "LEADER-Seite des Amtes (LAG Warnow-Elde-Land): EU-Regionalförderung für Projekte in der Region über die Lokale Aktionsgruppe — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben LEADER-Seite; Inhalt identisch mit dem gelesenen Original.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lewitzrand gehört zum Amt Parchimer Umland (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Volltextsuche der Amtsseite findet zu Photovoltaik und Solar nur Bauleitpläne für Freiflächen-Solarparks, sonst LED-Beleuchtung der Gemeinden, LEADER-Regionalförderung, die Härtefallhilfe 2023 und eine Kleinkläranlagen-Förderung von 2008. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076120",
+    "name": "Rom",
+    "checkedAt": "2026-09-19T00:40:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-parchimer-umland.de Volltextsuche (Meldungen, Seiten, Bekanntmachungen einzeln): Photovoltaik, Balkonkraftwerk, Solar, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie",
+      "Gelesen: LEADER-Seite, Meldungen Klimaschutzinitiative Obere Warnow, LED Lewitzrand, Härtefallhilfe 2023, Kleinkläranlagen 2008, Ortsrechtsseiten Stolpe, Zölkow, Ziegendorf",
+      "Websuche: Amt Parchimer Umland Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-parchimer-umland.de/",
+        "finding": "Startseite des Amtes (19.09.2026): Menü ohne Förder- oder Klimaschutzrubrik; das Suchformular führt auf die Volltextsuche; der Link-verschicken-Dienst ist keine Inhaltsseite."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): LEADER-LAG Warnow-Elde-Land, Beschreibung der Aktionsgruppe und Verweis auf die Förderanträge der LAG — EU-Regionalförderung, kein Programm für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Meldungen, Seiten und Bekanntmachungen einzeln): Balkonkraftwerk, Wärmepumpe und Förderprogramm ohne Förderbezug; Photovoltaik und Solar nur Bebauungs- und Flächennutzungspläne für Freiflächen-Solarparks (u. a. Rom, Spornitz, Stolpe, Groß Godems, Karrenzin, Lewitzrand, Ziegendorf); Zuschuss nur Härtefallhilfe für nicht leitungsgebundene Energieträger (2023) und Kleinkläranlagen-Förderung (2008); Klimaschutz nur LED-Beleuchtung der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/170658/nachrichten/170658.html",
+        "finding": "Im Original gelesen: Nationale Klimaschutzinitiative 2012 — LED-Gehwegbeleuchtung der Gemeinde Obere Warnow (OT Grebbin), Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/219713/nachrichten/219713.html",
+        "finding": "Im Original gelesen: Landesförderung 2013 für LED-Straßenbeleuchtung der Gemeinde Lewitzrand (Garwitz) — Förderung der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/832694/nachrichten/832694.html",
+        "finding": "Im Original gelesen: Papierantrag Härtefallhilfe für private Haushalte mit nicht leitungsgebundenen Energieträgern (Mai 2023, Bundes-/Landesprogramm, beendet) — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/52657/nachrichten/52657.html",
+        "finding": "Im Original gelesen: Förderung von Kleinkläranlagen (2008, Land/EU, bis 2013) — kein Energiebezug."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-parchimer-umland.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Formular „Link verschicken“ der Website (am 19.09.2026 ohne Referrer HTTP 404) — keine Inhaltsseite, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "LEADER-Seite des Amtes (LAG Warnow-Elde-Land): EU-Regionalförderung für Projekte in der Region über die Lokale Aktionsgruppe — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben LEADER-Seite; Inhalt identisch mit dem gelesenen Original.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rom gehört zum Amt Parchimer Umland (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Volltextsuche der Amtsseite findet zu Photovoltaik und Solar nur Bauleitpläne für Freiflächen-Solarparks, sonst LED-Beleuchtung der Gemeinden, LEADER-Regionalförderung, die Härtefallhilfe 2023 und eine Kleinkläranlagen-Förderung von 2008. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076126",
+    "name": "Spornitz",
+    "checkedAt": "2026-09-19T00:40:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-parchimer-umland.de Volltextsuche (Meldungen, Seiten, Bekanntmachungen einzeln): Photovoltaik, Balkonkraftwerk, Solar, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie",
+      "Gelesen: LEADER-Seite, Meldungen Klimaschutzinitiative Obere Warnow, LED Lewitzrand, Härtefallhilfe 2023, Kleinkläranlagen 2008, Ortsrechtsseiten Stolpe, Zölkow, Ziegendorf",
+      "Websuche: Amt Parchimer Umland Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-parchimer-umland.de/",
+        "finding": "Startseite des Amtes (19.09.2026): Menü ohne Förder- oder Klimaschutzrubrik; das Suchformular führt auf die Volltextsuche; der Link-verschicken-Dienst ist keine Inhaltsseite."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): LEADER-LAG Warnow-Elde-Land, Beschreibung der Aktionsgruppe und Verweis auf die Förderanträge der LAG — EU-Regionalförderung, kein Programm für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Meldungen, Seiten und Bekanntmachungen einzeln): Balkonkraftwerk, Wärmepumpe und Förderprogramm ohne Förderbezug; Photovoltaik und Solar nur Bebauungs- und Flächennutzungspläne für Freiflächen-Solarparks (u. a. Rom, Spornitz, Stolpe, Groß Godems, Karrenzin, Lewitzrand, Ziegendorf); Zuschuss nur Härtefallhilfe für nicht leitungsgebundene Energieträger (2023) und Kleinkläranlagen-Förderung (2008); Klimaschutz nur LED-Beleuchtung der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/170658/nachrichten/170658.html",
+        "finding": "Im Original gelesen: Nationale Klimaschutzinitiative 2012 — LED-Gehwegbeleuchtung der Gemeinde Obere Warnow (OT Grebbin), Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/219713/nachrichten/219713.html",
+        "finding": "Im Original gelesen: Landesförderung 2013 für LED-Straßenbeleuchtung der Gemeinde Lewitzrand (Garwitz) — Förderung der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/832694/nachrichten/832694.html",
+        "finding": "Im Original gelesen: Papierantrag Härtefallhilfe für private Haushalte mit nicht leitungsgebundenen Energieträgern (Mai 2023, Bundes-/Landesprogramm, beendet) — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/52657/nachrichten/52657.html",
+        "finding": "Im Original gelesen: Förderung von Kleinkläranlagen (2008, Land/EU, bis 2013) — kein Energiebezug."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-parchimer-umland.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Formular „Link verschicken“ der Website (am 19.09.2026 ohne Referrer HTTP 404) — keine Inhaltsseite, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "LEADER-Seite des Amtes (LAG Warnow-Elde-Land): EU-Regionalförderung für Projekte in der Region über die Lokale Aktionsgruppe — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben LEADER-Seite; Inhalt identisch mit dem gelesenen Original.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Spornitz gehört zum Amt Parchimer Umland (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Volltextsuche der Amtsseite findet zu Photovoltaik und Solar nur Bauleitpläne für Freiflächen-Solarparks, sonst LED-Beleuchtung der Gemeinden, LEADER-Regionalförderung, die Härtefallhilfe 2023 und eine Kleinkläranlagen-Förderung von 2008. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076129",
+    "name": "Stolpe",
+    "checkedAt": "2026-09-19T00:40:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-parchimer-umland.de Volltextsuche (Meldungen, Seiten, Bekanntmachungen einzeln): Photovoltaik, Balkonkraftwerk, Solar, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie",
+      "Gelesen: LEADER-Seite, Meldungen Klimaschutzinitiative Obere Warnow, LED Lewitzrand, Härtefallhilfe 2023, Kleinkläranlagen 2008, Ortsrechtsseiten Stolpe, Zölkow, Ziegendorf",
+      "Websuche: Amt Parchimer Umland Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-parchimer-umland.de/",
+        "finding": "Startseite des Amtes (19.09.2026): Menü ohne Förder- oder Klimaschutzrubrik; das Suchformular führt auf die Volltextsuche; der Link-verschicken-Dienst ist keine Inhaltsseite."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): LEADER-LAG Warnow-Elde-Land, Beschreibung der Aktionsgruppe und Verweis auf die Förderanträge der LAG — EU-Regionalförderung, kein Programm für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Meldungen, Seiten und Bekanntmachungen einzeln): Balkonkraftwerk, Wärmepumpe und Förderprogramm ohne Förderbezug; Photovoltaik und Solar nur Bebauungs- und Flächennutzungspläne für Freiflächen-Solarparks (u. a. Rom, Spornitz, Stolpe, Groß Godems, Karrenzin, Lewitzrand, Ziegendorf); Zuschuss nur Härtefallhilfe für nicht leitungsgebundene Energieträger (2023) und Kleinkläranlagen-Förderung (2008); Klimaschutz nur LED-Beleuchtung der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/170658/nachrichten/170658.html",
+        "finding": "Im Original gelesen: Nationale Klimaschutzinitiative 2012 — LED-Gehwegbeleuchtung der Gemeinde Obere Warnow (OT Grebbin), Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/219713/nachrichten/219713.html",
+        "finding": "Im Original gelesen: Landesförderung 2013 für LED-Straßenbeleuchtung der Gemeinde Lewitzrand (Garwitz) — Förderung der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/832694/nachrichten/832694.html",
+        "finding": "Im Original gelesen: Papierantrag Härtefallhilfe für private Haushalte mit nicht leitungsgebundenen Energieträgern (Mai 2023, Bundes-/Landesprogramm, beendet) — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/52657/nachrichten/52657.html",
+        "finding": "Im Original gelesen: Förderung von Kleinkläranlagen (2008, Land/EU, bis 2013) — kein Energiebezug."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-parchimer-umland.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Formular „Link verschicken“ der Website (am 19.09.2026 ohne Referrer HTTP 404) — keine Inhaltsseite, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "LEADER-Seite des Amtes (LAG Warnow-Elde-Land): EU-Regionalförderung für Projekte in der Region über die Lokale Aktionsgruppe — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben LEADER-Seite; Inhalt identisch mit dem gelesenen Original.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Stolpe gehört zum Amt Parchimer Umland (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Volltextsuche der Amtsseite findet zu Photovoltaik und Solar nur Bauleitpläne für Freiflächen-Solarparks, sonst LED-Beleuchtung der Gemeinden, LEADER-Regionalförderung, die Härtefallhilfe 2023 und eine Kleinkläranlagen-Förderung von 2008. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076160",
+    "name": "Ziegendorf",
+    "checkedAt": "2026-09-19T00:40:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-parchimer-umland.de Volltextsuche (Meldungen, Seiten, Bekanntmachungen einzeln): Photovoltaik, Balkonkraftwerk, Solar, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie",
+      "Gelesen: LEADER-Seite, Meldungen Klimaschutzinitiative Obere Warnow, LED Lewitzrand, Härtefallhilfe 2023, Kleinkläranlagen 2008, Ortsrechtsseiten Stolpe, Zölkow, Ziegendorf",
+      "Websuche: Amt Parchimer Umland Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-parchimer-umland.de/",
+        "finding": "Startseite des Amtes (19.09.2026): Menü ohne Förder- oder Klimaschutzrubrik; das Suchformular führt auf die Volltextsuche; der Link-verschicken-Dienst ist keine Inhaltsseite."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): LEADER-LAG Warnow-Elde-Land, Beschreibung der Aktionsgruppe und Verweis auf die Förderanträge der LAG — EU-Regionalförderung, kein Programm für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Meldungen, Seiten und Bekanntmachungen einzeln): Balkonkraftwerk, Wärmepumpe und Förderprogramm ohne Förderbezug; Photovoltaik und Solar nur Bebauungs- und Flächennutzungspläne für Freiflächen-Solarparks (u. a. Rom, Spornitz, Stolpe, Groß Godems, Karrenzin, Lewitzrand, Ziegendorf); Zuschuss nur Härtefallhilfe für nicht leitungsgebundene Energieträger (2023) und Kleinkläranlagen-Förderung (2008); Klimaschutz nur LED-Beleuchtung der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/170658/nachrichten/170658.html",
+        "finding": "Im Original gelesen: Nationale Klimaschutzinitiative 2012 — LED-Gehwegbeleuchtung der Gemeinde Obere Warnow (OT Grebbin), Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/219713/nachrichten/219713.html",
+        "finding": "Im Original gelesen: Landesförderung 2013 für LED-Straßenbeleuchtung der Gemeinde Lewitzrand (Garwitz) — Förderung der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/832694/nachrichten/832694.html",
+        "finding": "Im Original gelesen: Papierantrag Härtefallhilfe für private Haushalte mit nicht leitungsgebundenen Energieträgern (Mai 2023, Bundes-/Landesprogramm, beendet) — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/52657/nachrichten/52657.html",
+        "finding": "Im Original gelesen: Förderung von Kleinkläranlagen (2008, Land/EU, bis 2013) — kein Energiebezug."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-parchimer-umland.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Formular „Link verschicken“ der Website (am 19.09.2026 ohne Referrer HTTP 404) — keine Inhaltsseite, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "LEADER-Seite des Amtes (LAG Warnow-Elde-Land): EU-Regionalförderung für Projekte in der Region über die Lokale Aktionsgruppe — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben LEADER-Seite; Inhalt identisch mit dem gelesenen Original.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ziegendorf gehört zum Amt Parchimer Umland (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Volltextsuche der Amtsseite findet zu Photovoltaik und Solar nur Bauleitpläne für Freiflächen-Solarparks, sonst LED-Beleuchtung der Gemeinden, LEADER-Regionalförderung, die Härtefallhilfe 2023 und eine Kleinkläranlagen-Förderung von 2008. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076162",
+    "name": "Zölkow",
+    "checkedAt": "2026-09-19T00:40:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-parchimer-umland.de Volltextsuche (Meldungen, Seiten, Bekanntmachungen einzeln): Photovoltaik, Balkonkraftwerk, Solar, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie",
+      "Gelesen: LEADER-Seite, Meldungen Klimaschutzinitiative Obere Warnow, LED Lewitzrand, Härtefallhilfe 2023, Kleinkläranlagen 2008, Ortsrechtsseiten Stolpe, Zölkow, Ziegendorf",
+      "Websuche: Amt Parchimer Umland Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-parchimer-umland.de/",
+        "finding": "Startseite des Amtes (19.09.2026): Menü ohne Förder- oder Klimaschutzrubrik; das Suchformular führt auf die Volltextsuche; der Link-verschicken-Dienst ist keine Inhaltsseite."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): LEADER-LAG Warnow-Elde-Land, Beschreibung der Aktionsgruppe und Verweis auf die Förderanträge der LAG — EU-Regionalförderung, kein Programm für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Meldungen, Seiten und Bekanntmachungen einzeln): Balkonkraftwerk, Wärmepumpe und Förderprogramm ohne Förderbezug; Photovoltaik und Solar nur Bebauungs- und Flächennutzungspläne für Freiflächen-Solarparks (u. a. Rom, Spornitz, Stolpe, Groß Godems, Karrenzin, Lewitzrand, Ziegendorf); Zuschuss nur Härtefallhilfe für nicht leitungsgebundene Energieträger (2023) und Kleinkläranlagen-Förderung (2008); Klimaschutz nur LED-Beleuchtung der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/170658/nachrichten/170658.html",
+        "finding": "Im Original gelesen: Nationale Klimaschutzinitiative 2012 — LED-Gehwegbeleuchtung der Gemeinde Obere Warnow (OT Grebbin), Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/219713/nachrichten/219713.html",
+        "finding": "Im Original gelesen: Landesförderung 2013 für LED-Straßenbeleuchtung der Gemeinde Lewitzrand (Garwitz) — Förderung der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/832694/nachrichten/832694.html",
+        "finding": "Im Original gelesen: Papierantrag Härtefallhilfe für private Haushalte mit nicht leitungsgebundenen Energieträgern (Mai 2023, Bundes-/Landesprogramm, beendet) — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/52657/nachrichten/52657.html",
+        "finding": "Im Original gelesen: Förderung von Kleinkläranlagen (2008, Land/EU, bis 2013) — kein Energiebezug."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-parchimer-umland.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Formular „Link verschicken“ der Website (am 19.09.2026 ohne Referrer HTTP 404) — keine Inhaltsseite, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "LEADER-Seite des Amtes (LAG Warnow-Elde-Land): EU-Regionalförderung für Projekte in der Region über die Lokale Aktionsgruppe — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben LEADER-Seite; Inhalt identisch mit dem gelesenen Original.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Zölkow gehört zum Amt Parchimer Umland (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Volltextsuche der Amtsseite findet zu Photovoltaik und Solar nur Bauleitpläne für Freiflächen-Solarparks, sonst LED-Beleuchtung der Gemeinden, LEADER-Regionalförderung, die Härtefallhilfe 2023 und eine Kleinkläranlagen-Förderung von 2008. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076164",
+    "name": "Obere Warnow",
+    "checkedAt": "2026-09-19T00:40:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-parchimer-umland.de Volltextsuche (Meldungen, Seiten, Bekanntmachungen einzeln): Photovoltaik, Balkonkraftwerk, Solar, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie",
+      "Gelesen: LEADER-Seite, Meldungen Klimaschutzinitiative Obere Warnow, LED Lewitzrand, Härtefallhilfe 2023, Kleinkläranlagen 2008, Ortsrechtsseiten Stolpe, Zölkow, Ziegendorf",
+      "Websuche: Amt Parchimer Umland Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-parchimer-umland.de/",
+        "finding": "Startseite des Amtes (19.09.2026): Menü ohne Förder- oder Klimaschutzrubrik; das Suchformular führt auf die Volltextsuche; der Link-verschicken-Dienst ist keine Inhaltsseite."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): LEADER-LAG Warnow-Elde-Land, Beschreibung der Aktionsgruppe und Verweis auf die Förderanträge der LAG — EU-Regionalförderung, kein Programm für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Meldungen, Seiten und Bekanntmachungen einzeln): Balkonkraftwerk, Wärmepumpe und Förderprogramm ohne Förderbezug; Photovoltaik und Solar nur Bebauungs- und Flächennutzungspläne für Freiflächen-Solarparks (u. a. Rom, Spornitz, Stolpe, Groß Godems, Karrenzin, Lewitzrand, Ziegendorf); Zuschuss nur Härtefallhilfe für nicht leitungsgebundene Energieträger (2023) und Kleinkläranlagen-Förderung (2008); Klimaschutz nur LED-Beleuchtung der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/170658/nachrichten/170658.html",
+        "finding": "Im Original gelesen: Nationale Klimaschutzinitiative 2012 — LED-Gehwegbeleuchtung der Gemeinde Obere Warnow (OT Grebbin), Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/219713/nachrichten/219713.html",
+        "finding": "Im Original gelesen: Landesförderung 2013 für LED-Straßenbeleuchtung der Gemeinde Lewitzrand (Garwitz) — Förderung der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/832694/nachrichten/832694.html",
+        "finding": "Im Original gelesen: Papierantrag Härtefallhilfe für private Haushalte mit nicht leitungsgebundenen Energieträgern (Mai 2023, Bundes-/Landesprogramm, beendet) — keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.amt-parchimer-umland.de/news/1/52657/nachrichten/52657.html",
+        "finding": "Im Original gelesen: Förderung von Kleinkläranlagen (2008, Land/EU, bis 2013) — kein Energiebezug."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-parchimer-umland.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Formular „Link verschicken“ der Website (am 19.09.2026 ohne Referrer HTTP 404) — keine Inhaltsseite, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "LEADER-Seite des Amtes (LAG Warnow-Elde-Land): EU-Regionalförderung für Projekte in der Region über die Lokale Aktionsgruppe — kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben LEADER-Seite; Inhalt identisch mit dem gelesenen Original.",
+        "evidenceUrl": "https://www.amt-parchimer-umland.de/seite/360299/leader-f%C3%B6rderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Obere Warnow gehört zum Amt Parchimer Umland (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Volltextsuche der Amtsseite findet zu Photovoltaik und Solar nur Bauleitpläne für Freiflächen-Solarparks, sonst LED-Beleuchtung der Gemeinden, LEADER-Regionalförderung, die Härtefallhilfe 2023 und eine Kleinkläranlagen-Förderung von 2008. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
   }
 ]
