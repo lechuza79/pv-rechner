@@ -235,6 +235,13 @@ export function postfachBefund(
    * geschrieben wurde.
    */
   verwaltungDomain?: string | null,
+  /**
+   * Die Kontaktsuche hat die Rolle der Adresse auf der Seite der Verwaltung
+   * belegt (Presse, Klimaschutz). Dann darf der Postfachname eine Person sein —
+   * die Prüfung auf Personennamen gibt es nur, weil beim Einsammeln niemand
+   * wusste, wem ein Postfach gehört. Die Domain wird weiter geprüft.
+   */
+  opts: { belegteRolle?: boolean } = {},
 ): PostfachBefund {
   const adresse = email.trim().toLowerCase();
   const [lokal, domain] = adresse.split("@");
@@ -261,10 +268,10 @@ export function postfachBefund(
   if (ROLLEN_WORTE_TECHNISCH.includes(teile[0])) {
     return { ok: false, grund: `${teile[0]}@ betreut die Website, nicht die Verwaltung` };
   }
-  if (!istRollenwort(teile[0])) {
+  if (!opts.belegteRolle && !istRollenwort(teile[0])) {
     return { ok: false, grund: `„${teile[0]}" ist kein Funktionsname — sieht nach einer Person aus` };
   }
-  for (const t of teile.slice(1)) {
+  for (const t of opts.belegteRolle ? [] : teile.slice(1)) {
     const passtZumOrt = kern.length >= 4 && (t.includes(kern.slice(0, 5)) || kern.includes(t) || domainStamm.includes(t));
     if (!istRollenwort(t) && !/^\d+$/.test(t) && !passtZumOrt) {
       return { ok: false, grund: `„${t}" im Postfachnamen ist vermutlich ein Personenname` };

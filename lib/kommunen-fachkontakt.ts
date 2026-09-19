@@ -53,3 +53,15 @@ export function fachkontakteAus(r: SearchResult): Fachkontakte {
 export function bevorzugterFachkontakt(k: Fachkontakte): Fachkontakt | null {
   return k.klima ?? k.presse;
 }
+
+/** Where a proven contact was published, for the Art. 14 line of a letter. */
+export function fachHerkunft(belegUrl: string | null | undefined): "presseseite" | "kontaktseite" {
+  return /presse|medien|oeffentlichkeit|öffentlichkeit|kommunikation/i.test(belegUrl ?? "") ? "presseseite" : "kontaktseite";
+}
+
+/** Mail domain of the shared administration a stored contact was proven through. */
+export function verwaltungDomainVon(fachkontakte: unknown, email: string): string | null {
+  if (!Array.isArray(fachkontakte)) return null;
+  const hit = fachkontakte.find((k: any) => typeof k?.email === "string" && k.email.toLowerCase() === email.toLowerCase());
+  return typeof hit?.verwaltungDomain === "string" ? hit.verwaltungDomain : null;
+}

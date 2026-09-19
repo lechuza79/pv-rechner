@@ -6,6 +6,7 @@ import { istAdminOderCron } from "../../../../../lib/admin-guard";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../../../../../lib/kommunen-testballon";
 import { versandfenster } from "../../../../../lib/schulferien";
 import { empfaengerFuerBrief } from "../../../../../lib/kommunen-presse";
+import { fachHerkunft, verwaltungDomainVon } from "../../../../../lib/kommunen-fachkontakt";
 import { postfachBefund } from "../../../../../lib/outreach-mail";
 import { heuteInBerlin } from "../../../../../lib/zeit";
 import { darfOutreachEmpfangen } from "../../../../../lib/kommunen-ebene";
@@ -53,7 +54,7 @@ export async function GET(req: NextRequest) {
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
     .select(
-      "region_id, rollen_email, rollen_email_quelle, presse_email, presse_email_quelle, kontakt_url, outreach_status, contacted_at, notes, charge, ask_variante, verwaltung_domain, mastr_regions!inner(name)",
+      "region_id, rollen_email, rollen_email_quelle, presse_email, presse_email_quelle, kontakt_url, outreach_status, contacted_at, notes, charge, ask_variante, verwaltung_domain, klima_email, klima_beleg_url, presse_kontakt_email, presse_kontakt_beleg_url, fachkontakte, mastr_regions!inner(name)",
     )
     .eq("kampagne", schub.kampagne)
     .eq("charge", charge)
@@ -67,6 +68,11 @@ export async function GET(req: NextRequest) {
     presse_email: string | null;
     presse_email_quelle: string | null;
     verwaltung_domain: string | null;
+    klima_email: string | null;
+    klima_beleg_url: string | null;
+    presse_kontakt_email: string | null;
+    presse_kontakt_beleg_url: string | null;
+    fachkontakte: unknown;
     outreach_status: string;
     contacted_at: string | null;
     notes: string | null;
@@ -131,7 +137,11 @@ export async function GET(req: NextRequest) {
     // veröffentlicht. Gemessen am 03.09.2026: In 227 verschickten Briefen war
     // genau EINE Presseadresse; im offenen NRW-Schub führen 17 der 63 Städte
     // eine, und wir hätten 16 davon an info@ oder stadt@ geschickt.
-    const ziel = empfaengerFuerBrief({ rollenEmail: z.rollen_email, presseEmail: z.presse_email });
+    // Vor beiden stehen die belegten Fachkontakte der Kontaktsuche: Klimaschutz
+    // zuerst, dann Presse (lib/kommunen-fachkontakt.ts).
+    const ziel = empfaengerFuerBrief({ rollenEmail: z.rollen_email, presseEmail: z.presse_email, klimaEmail: z.klima_email, presseKontaktEmail: z.presse_kontakt_email });
+    const verwaltungDomain = (ziel.fach && ziel.email ? verwaltungDomainVon(z.fachkontakte, ziel.email) : null) ?? z.verwaltung_domain;
+    const belegUrl = ziel.email === z.klima_email ? z.klima_beleg_url : z.presse_kontakt_beleg_url;
     if (!ziel.email) {
       skip("kein Rollen-Postfach");
       continue;
@@ -148,7 +158,7 @@ export async function GET(req: NextRequest) {
     // abgefangen, statt den Datenbestand rückwirkend umzuschreiben.
     // Eine Presseadresse ist per Bauart ein Funktionspostfach — die Prüfung
     // auf Personennamen greift dort nicht, die Domain-Prüfung schon.
-    const postfach = postfachBefund(ziel.email, name ?? "", z.verwaltung_domain);
+    const postfach = postfachBefund(ziel.email, name ?? "", verwaltungDomain, { belegteRolle: ziel.fach });
     if (!postfach.ok) {
       skip(postfach.grund);
       continue;
@@ -158,7 +168,7 @@ export async function GET(req: NextRequest) {
     // pauschal „Impressum" zu nennen war bei einer Presseadresse falsch —
     // Düsseldorfs steht auf der Kontaktseite des Medienportals.
     const herkunft = (
-      ziel.anPresse ? z.presse_email_quelle : z.rollen_email_quelle
+      ziel.fach ? fachHerkunft(belegUrl) : ziel.anPresse ? z.presse_email_quelle : z.rollen_email_quelle
     ) as Adressherkunft | null;
     const gebaut = await briefFuerGemeinde(z.region_id, ziel.email, {
       anPresse: ziel.anPresse,
@@ -185,7 +195,7 @@ export async function GET(req: NextRequest) {
       body: gebaut.draft.body,
       body_html: gebaut.draft.bodyHtml,
       variante: gebaut.variante,
-      verwaltung_domain: z.verwaltung_domain,
+      verwaltung_domain: verwaltungDomain,
       seite_url: gebaut.seiteUrl,
       rangliste_url: gebaut.ranglisteUrl,
       stand: gebaut.stand,
