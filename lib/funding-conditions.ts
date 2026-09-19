@@ -132,6 +132,8 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // 17 September 2026). The conditions stay as historical information; there is
   // no application flow left to check them against.
   "bahrenhof-solar",
+  // Closed 2023/2024 rounds in the same Amt (guidelines read in full on 19 Sep 2026).
+  "wakendorf-i-solar", "weede-mini-solar", "geschendorf-solar",
   "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",
@@ -259,6 +261,17 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 18 Sep 2026: exhausted VG programme, guideline read in full; the
   // test forms (application before contract, 3-/12-month deadlines) are missing.
   "vg-hachenburg-erneuerbare-energien",
+  // Added 18 Sep 2026: guideline read in full; building age (25 years) and the
+  // 15,000 EUR total-cost floor have no test form and no model field.
+  "vg-wallmerod-lange-leben-im-dorf",
+  // Added 18 Sep 2026: guideline read in full; owner-only eligibility, crediting of
+  // previously funded capacity and the commissioning-before-application order
+  // have no test form yet.
+  "neustadt-wied-pv-speicher",
+  // Added 18 Sep 2026: guidelines read in full; the prior energy check, the
+  // existing-building rule and the own-consumption sizing of the roof system have
+  // no test form yet (roof system is therefore not computed at all).
+  "staudt-energieeffizienz",
 ];
 
 /**

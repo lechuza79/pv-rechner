@@ -463,7 +463,7 @@ export default async function MethodikPage() {
           beim Kühlen kommt der größte Wärmeeintrag durch die Fenster, deshalb fragen wir nach Sonne und Dachgeschoss,
           nicht nach dem Dämmstandard. Umschaltbar sind drei <strong>Klimadaten-Modi</strong>: der Durchschnitt der
           letzten {DEFAULT_AIRCON_CONFIG.avgYears} Sommer (Standard), der letzte Sommer (oft heißer) und eine
-          Projektion in ~20 Jahre auf Basis eines Klimamodells (CMIP6) — eine Modellrechnung, kein exakter Wert.
+          Projektion in ~20 Jahre: unser heutiger Wert, hochgerechnet mit der Zunahme, die acht Klimamodelle (CMIP6, mittleres Szenario) für den Ort erwarten — eine Modellrechnung, kein exakter Wert.
         </p>
         <p style={S.p}>
           <strong>Warum die Zahl oft niedriger wirkt als erwartet:</strong> Der Wert ist ein <em>Jahres</em>betrag,

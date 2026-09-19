@@ -16,7 +16,7 @@ const files = (dir: string): string[] =>
 describe('Seiten fragen keinen Wetterdienst mit Nutzungsbeschränkung', () => {
   // The free Open-Meteo API is for non-commercial use only. Pages read our own
   // snapshots (DWD, ECMWF, GFS via open data) and precomputed ERA5 values;
-  // the climate projection only reads what klima_cache already holds.
+  // the climate projection comes from NASA NEX-GDDP-CMIP6, precomputed.
   it('keine Seite ruft sie auf', () => {
     const hits: string[] = [];
     for (const file of [...files('app'), ...files('components'), ...files('lib')]) {

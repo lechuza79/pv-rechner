@@ -335,6 +335,78 @@ async function messeVorschaubild(): Promise<VorschaubildBefund | null> {
   }
 }
 
+/**
+ * Wie alt ist das Wetter, das die Seiten zeigen?
+ *
+ * Live-Wetter, Tageskurven, Sonnenanzeige und Hitzewelle lesen Dateien, die
+ * zwei geplante GitHub-Läufe schreiben (stündlich bzw. alle sechs Stunden).
+ * Ein Lauf, der ausfällt oder von GitHub nicht gestartet wird, meldet sich
+ * nicht — gemessen am Tag der Umstellung: fünf Stunden lang kein einziger
+ * planmäßiger Start. Die Seite zeigt dann ein immer älteres Modell, bis es
+ * aus dem Zeitfenster fällt. Deshalb die WIRKUNG: der Modelllauf, den die
+ * Seite gerade ausliefert, und ob die Vorhersage überhaupt antwortet.
+ */
+export type WetterFrische = { modellLauf: string | null; tageskurve: boolean; hitzewelle: boolean };
+/** Älter als das, und der stündliche Lauf ist mehrfach ausgefallen (ICON-D2 rechnet alle drei Stunden). */
+export const WETTER_MAX_ALTER_STUNDEN = 9;
+
+async function messeWetterFrische(): Promise<WetterFrische | null> {
+  const get = async (pfad: string) => {
+    const res = await fetch(`${BASE_URL}${pfad}`, {
+      headers: { "user-agent": "solar-check-health-check" },
+      signal: AbortSignal.timeout(30000),
+    });
+    return res.ok ? res.json() : null;
+  };
+  try {
+    const [jetzt, tag, hitze] = await Promise.all([
+      get("/api/weather-now?plz=10115"),
+      get("/api/weather?lat=52.53&lon=13.38"),
+      get("/api/heatwave?lat=52.53&lon=13.38"),
+    ]);
+    return {
+      modellLauf: jetzt?.weather?.sources?.sky?.runInit ?? null,
+      tageskurve: tag?.source === "dwd-icon-d2",
+      hitzewelle: Boolean(hitze?.heatwave),
+    };
+  } catch {
+    return null; // nicht nachsehen können ist kein Befund
+  }
+}
+
+/** Urteil über die Wetterdateien. Leer heißt: frisch genug. */
+export function wetterBefund(b: WetterFrische | null, jetzt: Date): string[] {
+  if (!b) return [];
+  const befunde: string[] = [];
+  if (!b.modellLauf) {
+    befunde.push(
+      "Das Live-Wetter liefert kein Modellwetter: Der stündliche Wetter-Schnappschuss fehlt oder reicht nicht bis jetzt. " +
+        "Läufe von wetter-schnappschuss.yml ansehen (auch: hat GitHub sie überhaupt gestartet?).",
+    );
+  } else {
+    const stunden = (jetzt.getTime() - Date.parse(b.modellLauf)) / 3600000;
+    if (stunden > WETTER_MAX_ALTER_STUNDEN) {
+      befunde.push(
+        `Das Live-Wetter zeigt einen Modelllauf von vor ${Math.round(stunden)} Stunden — der stündliche Schnappschuss ` +
+          "ist mehrfach ausgefallen oder nicht gestartet worden. Läufe von wetter-schnappschuss.yml ansehen.",
+      );
+    }
+  }
+  if (!b.tageskurve) {
+    befunde.push(
+      "Die Tageskurve (Live-Simulation, Solarleistung heute) liefert kein Wetter: Der Schnappschuss deckt den " +
+        "heutigen deutschen Tag nicht ab.",
+    );
+  }
+  if (!b.hitzewelle) {
+    befunde.push(
+      "Der Hitzewellen-Hinweis antwortet leer: Die 16-Tage-Vorhersage fehlt oder ist älter als ihr erster Tag. " +
+        "Läufe von wetter-vorhersage.yml ansehen.",
+    );
+  }
+  return befunde;
+}
+
 /** Urteil über das Vorschaubild. Leer heißt: es kommt ein Bild heraus. */
 export function vorschaubildBefund(b: VorschaubildBefund | null): string[] {
   if (!b) return [];
@@ -2175,6 +2247,7 @@ async function main() {
         : `Vorschaubild: kein Bild (HTTP ${vorschau.status}, ${vorschau.bytes} Byte).`,
   );
   technical("preview-image", false, ...vorschaubildBefund(vorschau));
+  technical("weather-freshness", false, ...wetterBefund(await messeWetterFrische(), new Date()));
   if (!vorschau) { unknown.push("preview-image"); technical("preview-measurement", true, "Vorschaubild-Prüfung nicht erreichbar."); }
 
   // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────

@@ -274,6 +274,8 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/aulendorf", destination: "/photovoltaik-foerderung/baden-wuerttemberg/aulendorf", permanent: true },
       { source: "/photovoltaik-foerderung/amstetten", destination: "/photovoltaik-foerderung/baden-wuerttemberg/amstetten", permanent: true },
       { source: "/photovoltaik-foerderung/neustadt-westerwald", destination: "/photovoltaik-foerderung/rheinland-pfalz/neustadt-westerwald", permanent: true },
+      { source: "/photovoltaik-foerderung/neustadt-wied", destination: "/photovoltaik-foerderung/rheinland-pfalz/neustadt-wied", permanent: true },
+      { source: "/photovoltaik-foerderung/staudt", destination: "/photovoltaik-foerderung/rheinland-pfalz/staudt", permanent: true },
       { source: "/photovoltaik-foerderung/windhagen", destination: "/photovoltaik-foerderung/rheinland-pfalz/windhagen", permanent: true },
       { source: "/photovoltaik-foerderung/koenigswinter", destination: "/photovoltaik-foerderung/nordrhein-westfalen/koenigswinter", permanent: true },
       { source: "/photovoltaik-foerderung/kronberg-taunus", destination: "/photovoltaik-foerderung/hessen/kronberg-taunus", permanent: true },

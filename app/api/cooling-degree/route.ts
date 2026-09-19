@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "../../../lib/supabase-server";
 import { PLZ_BL } from "../../../lib/plz-bundesland";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
-import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "../../../lib/db-timeout";
 import { nearestPlz } from "../../../lib/plz-nearest";
 import kuehlgrad from "../../../lib/kuehlgrad.json";
+import { klimaProjektionFaktor } from "../../../lib/klima-projektion";
 import { rateLimit } from "../../../lib/rate-limit";
 
 // Cooling-degree-hours for a location are climatology — effectively stationary.
@@ -16,7 +15,7 @@ const CDN_CACHE_FALLBACK = "public, s-maxage=86400, stale-while-revalidate=60480
 interface CdhModes {
   avg5: number;        // Ø der letzten N Sommer (ERA5, vorberechnet)
   lastSummer: number;  // letzter vollständiger Sommer (ERA5, vorberechnet)
-  projection: number;  // Projektion ~20 Jahre (CMIP6, gespeichert; siehe projectionFor)
+  projection: number;  // Projektion ~20 Jahre (acht CMIP6-Modelle, vorberechnet; siehe projectionFor)
 }
 
 export async function GET(req: NextRequest) {
@@ -59,9 +58,7 @@ export async function GET(req: NextRequest) {
   }
   const [avg5, lastSummer] = own;
 
-  const rLat = Math.round(lat * 100) / 100;
-  const rLon = Math.round(lon * 100) / 100;
-  const projection = await projectionFor(rLat, rLon, avg5);
+  const projection = projectionFor(lat, lon, avg5);
   return NextResponse.json(
     { avg5, lastSummer, projection, source: "era5" },
     { headers: { "Cache-Control": CDN_CACHE_LONG } },
@@ -69,35 +66,14 @@ export async function GET(req: NextRequest) {
 }
 
 /**
- * The ~20-year projection, without calling any weather service.
- *
- * The climate model's future (CMIP6 via the Open-Meteo climate API) is kept
- * per coordinate in klima_cache from earlier visits, next to the baseline it
- * was compared with then. That baseline came from another model (ERA5-Land,
- * measured 14–19 % below DWD stations), so the future value is carried over
- * as its ratio to that baseline and applied to ours — otherwise 7 % of places
- * would show LESS cooling in twenty years than today. Without a stored value:
- * the documented national factor.
- *
- * No new values are fetched: the climate API is licensed for non-commercial
- * use only, and its commercial plan is a decision still open.
+ * The ~20-year projection: our own value of today times the change the climate
+ * models expect for this 0.25° cell (lib/klima-projektion.ts, eight CMIP6
+ * models from NASA NEX-GDDP-CMIP6, each compared with itself). No weather
+ * service is asked and no stored third-party value is read — until 18.09.2026
+ * this reused values from the Open-Meteo climate API, which is licensed for
+ * non-commercial use only. Outside the grid: the documented national factor.
  */
-async function projectionFor(lat: number, lon: number, avg5: number): Promise<number> {
-  const byFactor = Math.round(avg5 * CFG.projectionFactor);
-  if (!supabase) return byFactor;
-  try {
-    const { data: cached } = await withDbTimeout(
-      Promise.resolve(
-        supabase.from("klima_cache").select("cdh_avg5, cdh_projection").eq("lat", lat).eq("lon", lon).maybeSingle(),
-      ),
-      "klima_cache projection",
-      DB_SOFT_READ_TIMEOUT_MS,
-    );
-    if (cached?.cdh_projection && cached.cdh_avg5) {
-      return Math.round((cached.cdh_projection / cached.cdh_avg5) * avg5);
-    }
-  } catch {
-    /* factor below */
-  }
-  return byFactor;
+function projectionFor(lat: number, lon: number, avg5: number): number {
+  const cell = klimaProjektionFaktor(lat, lon);
+  return Math.round(avg5 * (cell?.factor ?? CFG.projectionFactor));
 }

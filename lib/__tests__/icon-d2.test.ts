@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ICON_D2_GRID, ICON_D2_VARIABLE_NAMES, ICON_D2_VARIABLES, modelWeatherAt, type IconD2Shard } from '../icon-d2';
+import { ICON_D2_GRID, ICON_D2_VARIABLE_NAMES, ICON_D2_VARIABLES, lastModelHour, modelWeatherAt, type IconD2Shard } from '../icon-d2';
 import { gridColumn, gridLatitude, gridRow } from '../regular-grid';
 
 /** One postcode, six hours, every variable constant except where a test sets it. */
@@ -54,5 +54,16 @@ describe('Rasterzelle wie beim Anbieter', () => {
     expect(gridRow(ICON_D2_GRID, 52.53)).toBe(467);
     expect(gridLatitude(ICON_D2_GRID, gridRow(ICON_D2_GRID, 52.53))).toBeCloseTo(52.52, 4);
     expect(gridColumn(ICON_D2_GRID, 13.38)).toBe(866);
+  });
+});
+
+describe('lastModelHour', () => {
+  it('treats the archive end as exclusive (measured: the end hour itself is empty)', () => {
+    // Run 19.09.2026 03 UTC stated end 21.09.2026 04 UTC; 04 UTC was NaN in every cell.
+    const end = Date.UTC(2026, 8, 21, 4) / 1000;
+    expect(lastModelHour(end)).toBe(Date.UTC(2026, 8, 21, 3) / 3600000);
+  });
+  it('keeps a partial hour that has started', () => {
+    expect(lastModelHour(3600 * 10 + 1)).toBe(10);
   });
 });

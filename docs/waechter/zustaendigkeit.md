@@ -58,7 +58,10 @@ kein Ausfall und kein leeres Postfach.
 
 ## Offen
 
-- Die Codex-Automation „Wärmepumpenpreise aktualisieren" ist ein täglicher Katalogimport, kein
-  Urteil über Werte — der Sache nach ein technischer Lauf. Nach der Betreibervorgabe gehört ihre
-  Wartung nicht zu Codex; umgestellt ist sie noch nicht (Kandidat: eigener GitHub-Lauf, dann
-  überwacht vom Gesundheitscheck).
+- Die Codex-Automation „Wärmepumpenpreise aktualisieren" (täglicher Händler-Katalogimport) zieht erst
+  mit ihrem Feature um: Import-Skript und Katalog-Anzeige liegen nur im nicht gemergten Arbeitsstand
+  `codex/wp-ergebnis-design` (34 Commits vor `main`, dazu ungesicherte Änderungen; Stand 19.09.2026).
+  Auf `main` liest nichts den Katalog, ein GitHub-Lauf auf `main` hätte kein Skript. Beim Merge dieses
+  Stands kommt der GitHub-Lauf im selben Zug dazu (täglich, in `GEPLANTE_LAEUFE` des Gesundheitschecks),
+  danach wird die Codex-Automation pausiert. Bis dahin läuft sie weiter; sie schreibt nur in eine
+  Tabelle, die noch keine Seite anzeigt.

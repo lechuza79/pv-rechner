@@ -156,3 +156,21 @@ describe("Findings from the fresh sample", () => {
     expect(selectAndCompare([box("i.sonntag@bad-waldsee.de", false), box("n.hauff@bad-waldsee.de", false), box("c.liebmann@bad-waldsee.de", true)], []).press[0]).toBe("c.liebmann@bad-waldsee.de");
   });
 });
+
+describe("False positives found by reading the full run", () => {
+  const card = (text: string, email: string, site: string) =>
+    channelsOf(judgePage(`<main><div><p>${text} <a href="mailto:${email}">${email}</a></p></div></main>`, `https://www.${site}/rathaus/ansprechpartner`, town(`https://www.${site}/`)), email);
+  it("does not select staff for whom press work is one of many listed duties (Großbettlingen, Bessenbach)", () => {
+    expect(card("Melissa Kunze Aufgabengebiet Vermietung und Belegung gemeindeeigener Gebäude, Verwaltung und Organisation, Kindergartenbeiträge, Öffentlichkeitsarbeit", "m.kunze@grossbettlingen.de", "grossbettlingen.de")).toEqual([]);
+    expect(card("Winfried Sauer Fachbereich 1 Allgemeine Verwaltung: Personal, Organisation, Sitzungsdienst, Wahlen, Öffentlichkeitsarbeit", "sauer@bessenbach.de", "bessenbach.de")).toEqual([]);
+  });
+  it("does not select an archive or museum for the town's press channel (Koblenz, Ettlingen)", () => {
+    expect(card("Archivleitung Archivmanagement, Aktenbestände, Öffentlichkeitsarbeit", "stadtarchiv@stadt.koblenz.de", "koblenz.de")).toEqual([]);
+    expect(card("Wir begrüßen Sie im Pressebereich des Museums. Presseverteiler per E-Mail an", "museum@ettlingen.de", "ettlingen.de")).toEqual([]);
+  });
+  it("still accepts units and titles named first (Lüdinghausen, Aichach, Südtondern)", () => {
+    expect(card("Stadt Lüdinghausen Theresa Vester Pressesprecherin Borg 2", "t.vester@stadt-luedinghausen.de", "stadt-luedinghausen.de")).toEqual(["press"]);
+    expect(card("Martina Baur » Hauptamt Leiterin Öffentlichkeitsarbeit, Kultur und Tourismus Tandlmarkt 10", "martina.baur@aichach.de", "aichach.de")).toEqual(["press"]);
+    expect(card("Claudia Bruch Büro der Amtsdirektorin SG Gremien / Öffentlichkeitsarbeit / Rechtsfragen", "claudia.bruch@suedtondern.de", "suedtondern.de")).toEqual(["press"]);
+  });
+});

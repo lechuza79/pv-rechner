@@ -95,6 +95,7 @@
     "wetter:ortspunkte": "tsx scripts/plz-wetterpunkt-build.ts",
     "wetter:vorhersage": "tsx scripts/wetter-vorhersage.ts",
     "klima:kuehlgrad": "tsx scripts/kuehlgrad-build.ts",
+    "klima:projektion": "tsx scripts/klima-projektion-build.ts",
     "klima:kuehlgrad-gegen-messung": "tsx scripts/kuehlgrad-vs-dwd.ts",
     "rueckblick:vorbereiten": "tsx scripts/solar-rueckblick-vorbereiten.ts"
   },
@@ -139,6 +140,7 @@
     "csv-parse": "^6.2.1",
     "iconv-lite": "^0.7.2",
     "imapflow": "^1.7.1",
+    "netcdfjs": "^4.0.0",
     "nodemailer": "^9.0.5",
     "sax": "^1.6.0",
     "server-only": "^0.0.1",

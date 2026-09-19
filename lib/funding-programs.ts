@@ -333,6 +333,20 @@ export interface FundingProgram {
    * 05.09.2026; der Mindestleistungs-Test kannte nur `pvMin`.
    */
   pvNurMitSpeicher?: boolean;
+  /**
+   * Ausschlussgrenze der Dachanlage in kWp: LIEGT die Anlage darüber, zahlt das
+   * Programm für den PV-Teil gar nichts — nicht bloß bis zur Grenze.
+   *
+   * WARUM ES DAS GIBT (18.09.2026): Neustadt (Wied) fördert bis 15 kWp und
+   * schließt Anlagen „größer als 30 kWp" ganz aus. Ein Deckel (`pvCap`) sagt
+   * „höchstens so viel", eine Ausschlussgrenze „ab hier nichts" — der Rechner
+   * erlaubt bis 50 kWp, und ohne dieses Feld hätte er einer 35-kWp-Anlage den
+   * vollen Höchstbetrag abgezogen. Wirkt nur in die sichere Richtung.
+   * Ausschließend gemeint: `pvMax: 30` zahlt bei genau 30 kWp noch.
+   */
+  pvMax?: number;
+  /** Dasselbe für den Speicher in kWh nutzbarer Kapazität — darüber kein Speicherzuschuss. */
+  speicherMax?: number;
 
   // ── Technik ──────────────────────────────────────────────────────────────────
   /**
@@ -5129,6 +5143,126 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // sind als „Quelle gehört einer anderen Gemeinde" abgehakt.
   },
 
+  "wakendorf-i-solar": {
+    id: "wakendorf-i-solar", name: "Förderprogramm Solaranlagen",
+    traeger: "Gemeinde Wakendorf I", level: "kommune", region: "Wakendorf I",
+    bundesland: "Schleswig-Holstein", agsCode: "01060093",
+    url: "https://www.amt-trave-land.de/gemeinden/wakendorf-i/foerderung-pv-anlage",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-01-18", endetIso: "2024-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Anlagengröße, höchstens die Hälfte der Kosten",
+    maxFoerderung: "max. 400 €",
+    rates: [
+      { label: "Balkonkraftwerk bis 400 W Wechselrichter (2023: bis 300 W)", value: "100 € pauschal", nur: ["balkon"] },
+      { label: "Balkonkraftwerk bis 800 W Wechselrichter (2023: bis 600 W)", value: "200 € pauschal", nur: ["balkon"] },
+      { label: "Dachanlage am Einfamilienhaus bis 5 kW", value: "300 € pauschal", nur: ["pv"] },
+      { label: "Dachanlage am Einfamilienhaus über 5 kW", value: "400 € pauschal", nur: ["pv"] },
+    ],
+    conditions: [
+      "Das Programm ist am 31. Dezember 2024 ausgelaufen (bzw. früher, sobald die Mittel verbraucht waren); eine Neuauflage ist nicht bekannt",
+      "Antragsberechtigt waren Eigentümer und Mietende, Eigentümergemeinschaften und Hausverwaltungen; bei Miete mit Zustimmung der Eigentümerseite",
+      "Je Haushalt war nur ein Antrag zulässig",
+      "Mit der Maßnahme durfte erst nach der Bewilligung begonnen werden — eine bereits beauftragte Anlage war nicht förderfähig",
+      "Der Zuschuss durfte die Hälfte der förderfähigen Kosten nicht übersteigen",
+      "Die Anlage musste fünf Jahre im eigenen Haushalt genutzt werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // AUFGENOMMEN AM 19.09.2026, obwohl beendet (Betreiber-Entscheidung
+    // 17.08.2026: „gab es, ist beendet" ist eine echte Auskunft).
+    // Richtlinie „Solaranlagen" der Gemeinde Wakendorf I vom 18.01.2023, im
+    // Volltext gelesen (PDF auf der Seite des Amtes Trave-Land): vier Pauschalen
+    // (Nr. 2), „Insgesamt darf die Förderung 50% der förderfähigen Gesamtkosten
+    // nicht übersteigen" (Nr. 6.3), Laufzeit bis 31.12.2023 (Nr. 8).
+    // DIE RUNDE 2024 steht nur im Antragsformular vom 01.01.2024 (Word-Datei auf
+    // derselben Seite, gelesen 19.09.2026): 100 € bis 400 W, 200 € bis 800 W,
+    // 300/400 € für Dachanlagen, „Das Förderprogramm endet am 31.12.2024". Eine
+    // Richtlinie 2024 ist weder auf der Seite noch in der Sitemap zu finden; der
+    // 50-%-Deckel und die fünf Jahre stammen deshalb aus der Richtlinie 2023.
+    // Gefunden hat die Runde 2024 der adversariale Gegenprüfer — die erste
+    // Fassung dieses Eintrags stand auf 31.12.2023.
+    // Kein beschlossenIso: Das Datum der Richtlinie ist kein Ratsbeschluss.
+    // KEINE RECHENWERTE (beendet). Schlüssel aus dem Melderegister: 01060093
+    // (nicht Wakendorf II, 01060094).
+  },
+
+  "weede-mini-solar": {
+    id: "weede-mini-solar", name: "Förderprogramm Mini-Solaranlagen",
+    traeger: "Gemeinde Weede", level: "kommune", region: "Weede",
+    bundesland: "Schleswig-Holstein", agsCode: "01060096",
+    url: "https://www.amt-trave-land.de/gemeinden/weede/foerderung-mini-pv-anlagen",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-01-01", endetIso: "2024-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Wechselrichterleistung für ein Balkonkraftwerk",
+    maxFoerderung: "max. 200 €; Gesamtbudget 2023: 10.000 €",
+    rates: [
+      { label: "Balkonkraftwerk bis 300 W Wechselrichter", value: "100 € pauschal", nur: ["balkon"] },
+      { label: "Balkonkraftwerk bis 800 W Wechselrichter (2023: bis 600 W)", value: "200 € pauschal", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Das Programm ist am 31. Dezember 2024 ausgelaufen (bzw. früher, sobald die Mittel verbraucht waren); eine Neuauflage ist nicht bekannt",
+      "Gefördert wurden nur steckerfertige Anlagen; 2023 bis 600 W, 2024 bis 800 W am Wechselrichter je Haushalt",
+      "Antragsberechtigt waren Eigentümer und Mietende, Eigentümergemeinschaften und Hausverwaltungen; bei Miete mit Zustimmung der Eigentümerseite",
+      "Mit der Maßnahme durfte erst nach der Bewilligung begonnen werden — eine bereits beauftragte Anlage war nicht förderfähig",
+      "Umsetzung und Nachweis innerhalb von zwölf Monaten nach der Bewilligung",
+      "Die Anlage musste fünf Jahre im eigenen Haushalt genutzt werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // AUFGENOMMEN AM 19.09.2026, obwohl beendet. Richtlinie „Mini-Solaranlagen"
+    // der Gemeinde Weede vom 01.01.2023 und Flyer im Volltext gelesen: 100 € bis
+    // 300 W, 200 € bis 600 W am Wechselrichter, Laufzeit bis 31.12.2023,
+    // Gesamtbetrag 10.000 € (Flyer). Kein 50-%-Deckel in dieser Richtlinie.
+    // DIE RUNDE 2024 steht nur im Antragsformular vom 20.03.2024 (Word-Datei auf
+    // derselben Seite, gelesen 19.09.2026): 100 € bis 300 W, 200 € bis 800 W,
+    // „Das Förderprogramm endet am 31.12.2024". Budget 2024 unbekannt. Gefunden
+    // vom adversarialen Gegenprüfer; die erste Fassung stand auf 31.12.2023.
+    // Keine Rechenwerte (beendet). Schlüssel aus dem Melderegister: 01060096.
+  },
+
+  "geschendorf-solar": {
+    id: "geschendorf-solar", name: "Förderprogramm Solaranlagen",
+    traeger: "Gemeinde Geschendorf", level: "kommune", region: "Geschendorf",
+    bundesland: "Schleswig-Holstein", agsCode: "01060024",
+    url: "https://www.amt-trave-land.de/gemeinden/geschendorf/foerderung-von-mini-pv-anlagen",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-06-01", endetIso: "2024-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Wechselrichterleistung; vor allem Balkonkraftwerke, größere Anlagen mit kleinem Betrag",
+    maxFoerderung: "max. 200 € je Antragsteller; Gesamtbudget 5.000 € für 2024",
+    rates: [
+      { label: "Solaranlage bis 799 W Wechselrichter", value: "100 € pauschal", nur: ["balkon"] },
+      { label: "Solaranlage ab 800 W Wechselrichter", value: "200 € pauschal", nur: ["pv", "balkon"] },
+    ],
+    conditions: [
+      "Das Programm ist am 31. Dezember 2024 ausgelaufen (bzw. früher, sobald die Mittel verbraucht waren); eine Neuauflage ist nicht bekannt",
+      "Anträge waren vom 1. Juni bis 31. Dezember 2024 möglich; Rechnung und Installation mussten nach dem 1. Januar 2024 liegen",
+      "Richtlinie und Antragsformular verlangten, erst nach der Bewilligung mit der Maßnahme zu beginnen — obwohl die Richtlinie zugleich Rechnungen ab dem 1. Januar 2024 zuließ",
+      "Antragsberechtigt waren Eigentümer und Mietende, Eigentümergemeinschaften und Hausverwaltungen; bei Miete mit Zustimmung der Eigentümerseite",
+      "Je Antragsteller bzw. Haushalt war nur eine Förderung möglich",
+      "Die Anlage musste fünf Jahre im eigenen Haushalt genutzt werden",
+      "Das Verfahren musste bis zum 30. Juni 2025 abgeschlossen sein",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // AUFGENOMMEN AM 19.09.2026, obwohl beendet. Richtlinie der Gemeinde
+    // Geschendorf vom 30.05.2024, Flyer und Antragsformular (Word-Dateien auf
+    // der Seite des Amtes Trave-Land) im Volltext gelesen: 100 € bis 799 W,
+    // 200 € ab 800 W am Wechselrichter; „Das Förderprogramm läuft bis zum
+    // 31.12.2024" (Nr. 8); Zweckbindung fünf Jahre (Nr. 5); Nr. 6.1 „vorläufige
+    // Bewilligung … und damit die Freigabe zum Beginn der Maßnahme", Antrag:
+    // „Erst danach darf mit der Maßnahme begonnen werden". Flyer: 5.000 € für
+    // 2024, Abschluss bis 30.06.2025. Die Rückwirkung auf Rechnungen ab
+    // 01.01.2024 steht daneben — ein Widerspruch der Unterlagen, deshalb als
+    // Bedingung ausgeschrieben statt aufgelöst. Die 200-€-Stufe trifft auch ein
+    // Balkonkraftwerk mit genau 800 W. Kein beschlossenIso (Datum der
+    // Richtlinie ist kein Ratsbeschluss). Keine Rechenwerte (beendet).
+    // Schlüssel aus dem Melderegister: 01060024.
+  },
+
+
   // ── Kommune – erste Funde der URL-Suche, 18.08.2026 ─────────────────────────
   //
   // Diese Städte standen in KEINER erfassten Liste: Für sie kannten wir nur die
@@ -6152,6 +6286,55 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // überfliegt, hält das für ein Programm und trägt den falschen Status ein.
   },
 
+  "staudt-energieeffizienz": {
+    id: "staudt-energieeffizienz", name: "Förderrichtlinie Energieeffizienz und Klimafolgenanpassung / Balkonkraftwerke",
+    traeger: "Ortsgemeinde Staudt", level: "kommune", region: "Staudt",
+    bundesland: "Rheinland-Pfalz", agsCode: "07143073",
+    url: "https://www.wirges.de/gemeinden/staudt/foerderrichtlinien/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2021-03-01",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWh Speicher, Anteil einer Wärmepumpe, Pauschale je Balkonkraftwerk; Dachanlage nur ohne Einspeisung ins Netz",
+    maxFoerderung: "max. 1.000 € je Maßnahme (Anlage, Speicher, Wärmepumpe), 100 € je Balkonkraftwerk; insgesamt 5.000 € je Antragsteller in zehn Jahren",
+    rates: [
+      { label: "Photovoltaik", value: "100 €/kWp, max. 1.000 € — nur Anlagen, die keinen vergütungsfähigen Strom ins Netz einspeisen können", nur: ["pv"] },
+      { label: "Batteriespeicher", value: "100 €/kWh nutzbare Kapazität, max. 1.000 €", nur: ["pv"] },
+      { label: "Wärmepumpe", value: "10 % der Gesamtkosten, max. 1.000 €", nur: ["waermepumpe"] },
+      { label: "Balkonkraftwerk", value: "100 € je Anlage, höchstens zwei je Antragsteller bzw. Wohneinheit", nur: ["balkon"] },
+    ],
+    conditions: [
+      { text: "Dachanlage, Speicher und Wärmepumpe setzen eine vorherige Energieberatung („Energie-Check“) voraus", nur: ["pv", "waermepumpe"] },
+      { text: "Die Dachanlage wird nur gefördert, wenn sie keinen vergütungsfähigen Strom über den Eigenverbrauch hinaus ins Netz einspeisen kann — eine gewöhnliche Dachanlage fällt damit heraus, deshalb rechnen wir hier nichts ein", nur: ["pv"] },
+      { text: "Dachanlage, Speicher und Wärmepumpe nur an Bestandsgebäuden, die älter als fünf Jahre sind, und nur für selbst genutzten Wohnraum von Eigentümern oder dinglich Nutzungsberechtigten", nur: ["pv", "waermepumpe"] },
+      { text: "Die Wärmepumpe muss an ein wasserführendes Heizungsnetz angeschlossen sein", nur: ["waermepumpe"] },
+      { text: "Balkonkraftwerke fördert die Gemeinde auch für Mieter (mit Zustimmung des Eigentümers), nicht für Hausverwaltungen und Gewerbebetriebe; gefördert werden Anlagen mit 0,6 bis 0,8 kW Ausgangsleistung, und alle Fördermittel zusammen dürfen 90 % der Kosten nicht übersteigen", nur: ["balkon"] },
+      "Mit der Maßnahme darf erst nach der Förderbestätigung begonnen werden; ein erteilter Auftrag zählt bereits als Beginn",
+      "Jeder Fördergegenstand wird nur einmal in zehn Jahren gefördert",
+      "Vergabe nach Reihenfolge des Antragseingangs, solange Haushaltsmittel da sind; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon", "waermepumpe"],
+    speicherPerKwh: 100, speicherCap: 1000,
+    balkonPauschale: 100,
+    // Heat pump (5.3: 10 % max 1,000 EUR) deliberately NOT computed: it would be the
+    // first percentage heat-pump grant, and the tripwire in
+    // waermepumpe-kommunalfoerderung.test.ts asks for the calculator's funding base
+    // to be reworked first. Shown as information until then.
+    // RICHTLINIEN IM VOLLTEXT GELESEN am 18.09.2026 (beide gescannt, Seite für
+    // Seite): „Förderrichtlinie Energieeffizienz und Klimafolgenanpassung",
+    // Stammfassung 01.03.2021 (daher beschlossenIso), zuletzt geändert durch Ratsbeschluss 29.01.2026, ausgefertigt 30.01.2026; Balkonförderung beschlossen 20.07.2023.
+    // Nr. 5.1 PV 100 €/kWp max 1.000 €; 5.2 Speicher 100 €/kWh max 1.000 €;
+    // 5.3 WP 10 % max 1.000 €; 5.12 max 5.000 € je Antragsteller. Nr. 2.2.1
+    // schließt Anlagen aus, die über den Eigenverbrauch hinaus einspeisen können —
+    // deshalb KEIN pvPerKwp: Der Rechner kann die Bemessung auf den Eigenbedarf
+    // nicht prüfen, und eine gewöhnliche Dachanlage speist ein. Nr. 9.7: Laufzeit
+    // jeweils bis 31.12., verlängert sich um ein Jahr ohne anderen Ratsbeschluss — deshalb KEIN endetIso. Ob Nr. 2.2.6 (Wärmeerzeugertausch, 30 % max 1.500 €) auch eine Wärmepumpe erfasst, ist offen; gerechnet wird die ausdrückliche Nr. 5.3.
+    // „Förderrichtlinie Balkonkraftwerke", Stand 12/2025, geändert 29.01.2026:
+    // Nr. 4 pauschal 100 € je Mini-PV-Anlage, max. zwei je Antragsteller bzw.
+    // Wohneinheit; Nr. 3 Eigentümer und Mieter. Gefunden über den Quellenbestand
+    // der VG Wirges; die Gemeinde fehlte bis dahin im Katalog.
+  },
+
   "schlierbach-energiespeicher": {
     id: "schlierbach-energiespeicher", name: "Förderung von Energiespeichern",
     traeger: "Gemeinde Schlierbach", level: "kommune", region: "Schlierbach",
@@ -6433,6 +6616,54 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Die Richtlinie verlangt nirgends eine PV-Anlage. Ob ein Speicher ohne
     // Erzeugung förderfähig wäre, bleibt offen und steht deshalb nicht in den
     // Bedingungen.
+  },
+
+  "neustadt-wied-pv-speicher": {
+    id: "neustadt-wied-pv-speicher", name: "PV-Förderprogramm der Ortsgemeinde Neustadt (Wied)",
+    traeger: "Ortsgemeinde Neustadt (Wied)", level: "kommune", region: "Neustadt (Wied)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07138044",
+    url: "https://www.vg-asbach.de/klima-umweltschutz/foerderungen/pv-foerderprogramm-der-ortsgemeinde-neustadt-wied/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2025-12-18", endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp und je kWh Speicher — Dachanlage nur zusammen mit einem Speicher",
+    maxFoerderung: "max. 1.500 € für die Anlage und 1.950 € für den Speicher",
+    rates: [
+      { label: "PV-Anlage mit Speicher", value: "100 €/kWp, max. 1.500 €" },
+      { label: "Batteriespeicher", value: "130 €/kWh nutzbare Kapazität, max. 1.950 €" },
+    ],
+    conditions: [
+      "Die Dachanlage wird nur zusammen mit einem Batteriespeicher gefördert, der zugleich errichtet, erweitert oder nachgerüstet wird",
+      "Gefördert werden höchstens 15 kWp und 15 kWh; Anlagen bis 30 kWp bzw. Speicher bis 30 kWh erhalten den Höchstbetrag, größere gar nichts",
+      "Leistung, die die Ortsgemeinde schon früher gefördert hat, wird auf die Grenzen von 15 kWp und 15 kWh angerechnet — gefördert wird dann nur noch der Rest",
+      "Gefördert werden nur Neuanlagen an Gebäuden, die überwiegend (mindestens 51 % der Fläche) dem Wohnen dienen",
+      "Antragsberechtigt sind natürliche Personen, die Eigentümer oder Erbbauberechtigte eines selbst genutzten Wohnhauses oder einer Wohnung in Neustadt (Wied) sind, mit erstem Wohnsitz dort — wer dort neu baut, weist den Wohnsitz bis zum Mittelabruf nach",
+      "Die Anlage muss vollständig von einem Fachunternehmen installiert und im Marktstammdatenregister registriert werden",
+      "Der Antrag wird nach Montage und Inbetriebnahme gestellt, mit Rechnung, Fachunternehmererklärung und Fotos",
+      "Auch der Speicher eines Balkonkraftwerks wird gefördert — das Balkonkraftwerk selbst nicht",
+      "Antragstellung bis 31. Dezember 2026, in der Reihenfolge des Eingangs, solange Haushaltsmittel da sind",
+      "Die Anlage muss fünf Jahre in der Ortsgemeinde betrieben werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    pvPerKwp: 100, pvCap: 1500, pvMax: 30, pvNurMitSpeicher: true,
+    speicherPerKwh: 130, speicherCap: 1950, speicherMax: 30,
+    // RICHTLINIE IM VOLLTEXT GELESEN am 18.09.2026: „PV-Förderrichtlinie der
+    // Ortsgemeinde Neustadt (Wied); 6. Förderperiode 2026 (nach Ratsbeschluss am
+    // 18.12.2025)", unterzeichnet 08.01.2026, in Kraft 01.01.2026, gültig
+    // „spätestens bis zum 31.12.2026". Nr. 4.2: „für PV Anlagen bis 15 kWp
+    // 100 €/kWp; max. 1.500 €, für Batteriespeicher bis 15 kWh nutzbare
+    // Speicherkapazität 130 €/kWh; max. 1.950 €". Nr. 2.2: PV „nur in Verbindung
+    // mit einem Batteriespeicher". Nr. 2.4: über 30 kWp bzw. 30 kWh „von der
+    // Förderung ausgeschlossen" — deshalb `pvMax`/`speicherMax`, nicht nur der
+    // Deckel. Nr. 3.1: Eigentümer oder Erbbauberechtigte selbst genutzter
+    // Wohnhäuser/Wohnungen; die Erwähnung von „Mieter" in Nr. 3.4 betrifft nur die
+    // Personengleichheit und erweitert den Kreis nach Nr. 3.1 nicht.
+    //
+    // Gefunden am 18.09.2026 beim Prüfen des Asbacher Balkonprogramms: dieselbe
+    // Verbandsgemeinde-Seite führt eigene Rubriken der Ortsgemeinden.
+    // `pvNurMitSpeicher` greift beim Speicher nicht zurück: Ein Speicher ohne neue
+    // PV-Anlage ist nach Nr. 2.1 ausdrücklich förderfähig.
   },
 
   "asbach-balkonkraftwerke": {
@@ -7364,6 +7595,67 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     wpPauschale: 500,
   },
 
+  "vg-wallmerod-lange-leben-im-dorf": {
+    id: "vg-wallmerod-lange-leben-im-dorf", name: "Lange Leben im Dorf",
+    traeger: "Verbandsgemeinde Wallmerod", level: "kommune", region: "Verbandsgemeinde Wallmerod",
+    bundesland: "Rheinland-Pfalz",
+    // RICHTLINIE IM VOLLTEXT GELESEN am 18.09.2026 (Scan ohne Textebene, als Bild
+    // gelesen): „Richtlinien 2024 zum Förderprogramm ‚Lange Leben im Dorf' der
+    // Verbandsgemeinde Wallmerod zur Belebung der Ortskerne", unterzeichnet
+    // 28.09.2023, in Kraft 01.01.2024, ohne Ablaufdatum. Nr. 2 c: förderfähig sind
+    // „Energetische Optimierungsmaßnahmen (Wärmedämmung, Heizungstausch, usw.)"
+    // in Bestandsgebäuden; ausdrücklich „Nicht gefördert werden Maßnahmen zur
+    // Energieerzeugung (z.B. PV-Anlagen)". Nr. 3: einmaliger Zuschuss 1.500 € pro
+    // Objekt, Bestandsgebäude mindestens 25 Jahre alt. Nr. 4: Gesamtkosten
+    // mindestens 15.000 €, Kosten aus Nr. 2 a–d addierbar, Umsetzung extern
+    // bestätigt, Förderung mit anderen öffentlichen Mitteln zulässig. Nr. 5:
+    // Rechnungen ab 01.01.2024, bei Antragstellung höchstens zwei Jahre alt.
+    //
+    // KEIN `wpPauschale`, obwohl der Betrag fest ist: Die Richtlinie nennt den
+    // Heizungstausch, nicht die Wärmepumpe, und knüpft ihn an ein Gebäudealter
+    // (25 Jahre), das der Wärmepumpen-Rechner nicht erhebt. Ein Abzug stünde
+    // damit auch vor jedem jüngeren Haus. Das Programm informiert, es rechnet
+    // nicht.
+    //
+    // KEIN `beginntIso`: 01.01.2024 ist das Inkrafttreten DIESER Fassung (Nr. 6
+    // setzt „alle bisherigen Richtlinien (Lange leben im Dorf)" außer Kraft) —
+    // das Programm ist älter, das Datum läse sich als Programmstart.
+    //
+    // FÖRDERGEBIET: die 21 Ortsgemeinden aus der Gemeindeübersicht der
+    // Verbandsgemeinde selbst (wallmerod.de/gemeinden, 18.09.2026, „seine 21
+    // Ortsgemeinden"), jede gegen das Melderegister aufgelöst. Namensfalle:
+    // Herschbach (Oberwesterwald) ist 07143239, NICHT Herschbach 07143029 in der
+    // Verbandsgemeinde Selters. Der Kreisschlüssel 07143 wäre falsch.
+    agsCodes: [
+      "07143011", "07143037", "07143058", "07143074", "07143080", "07143203",
+      "07143208", "07143210", "07143220", "07143232", "07143239", "07143251",
+      "07143263", "07143266", "07143273", "07143281", "07143290", "07143304",
+      "07143316", "07143501", "07143502",
+    ],
+    url: "https://www.wallmerod.de/leben-im-dorf/lange-leben-im-dorf/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // The 2024 guideline names no eligible group at all. Private owners are
+    // plainly covered; whether businesses are is not stated, so they stay out.
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Bestandsgebäude für barrierefreien Umbau, neue Wohnungen, energetische Optimierung (darunter Heizungstausch) und Klimaschutzmaßnahmen; Photovoltaik ausdrücklich ausgeschlossen",
+    maxFoerderung: "1.500 € je Objekt",
+    rates: [
+      { label: "Heizungstausch im Bestandsgebäude", value: "1.500 € pauschal je Objekt, bei mindestens 15.000 € Gesamtkosten" },
+    ],
+    conditions: [
+      "Gefördert wird nur in Bestandsgebäuden, die mindestens 25 Jahre alt sind",
+      "Die Gesamtkosten der Maßnahmen müssen mindestens 15.000 € betragen; Kosten für Umbau, neue Wohnung, Dämmung, Heizungstausch und Klimaschutz dürfen addiert werden, Eigenleistung zählt bis 20 % der Bausumme",
+      "Der Zuschuss ist einmalig und beträgt 1.500 € je Objekt, unabhängig von der Zahl der Maßnahmen",
+      "Maßnahmen zur Energieerzeugung wie Photovoltaik werden ausdrücklich nicht gefördert",
+      "Der Antrag wird nach der Umsetzung gestellt, mit Kostenaufstellung und Rechnungen",
+      "Die Umsetzung muss extern bestätigt sein (Architekt oder Handwerksmeister); berücksichtigt werden Rechnungen ab dem 01.01.2024, die bei Antragstellung höchstens zwei Jahre alt sind",
+      "Die Zweckbindung beträgt acht Jahre; ein Rechtsanspruch besteht nicht, über Zweifelsfälle entscheidet der Ausschuss für Dorfentwicklung im Rahmen der Haushaltsmittel",
+      "Eine gleichzeitige Förderung mit anderen öffentlichen Mitteln ist zulässig",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+  },
+
   "taunusstein-balkonsolar": {
     id: "taunusstein-balkonsolar", name: "Förderung Mini-PV-Anlagen",
     traeger: "Stadt Taunusstein", level: "kommune", region: "Taunusstein",
@@ -7981,7 +8273,14 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "sinsheim-balkonkraftwerke", name: "Städtisches Förderprogramm für Balkonkraftwerke",
     traeger: "Stadt Sinsheim", level: "kommune", region: "Sinsheim",
     bundesland: "Baden-Württemberg", agsCode: "08226085",
-    url: "https://www.sinsheim.de/wirtschaft-bauen-umwelt/umwelt/klimaschutz",
+    // Adresse ersetzt am 18.09.2026: Die Klimaschutz-Seite nennt das Programm
+    // nicht (auch nicht im Archivstand vom 12.06.2026) — der Seiten-Wächter hat
+    // also eine Seite beobachtet, auf der es nie stand. Der Stand steht auf der
+    // Energieberatungs-Seite: „Die bereitsgestellten Mittel für das
+    // Förderprogramm sind vollständig ausgeschöpft. 75 Zuschüsse für Maßnahmen
+    // im Stadtgebiet konnten erteilt werden." Dazu die Pressemitteilung vom
+    // 06.10.2023 (Fördertopf 15.000 €, in Kraft 01.07.2023, ausgeschöpft).
+    url: "https://www.sinsheim.de/wirtschaft-bauen-umwelt/umwelt/energieberatung",
     stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
     beschlossenIso: "2023-06-13", beginntIso: "2023-07-01",
     eligibility: ["privat"],
@@ -9176,7 +9475,11 @@ export function fundingAmount(
   // der Betrag ist bekannt und null.
   const unterMindestleistung =
     (f.pvMin !== undefined && anlage.kwp < f.pvMin) ||
-    (f.pvNurMitSpeicher === true && !(anlage.speicherKwh > 0));
+    (f.pvMax !== undefined && anlage.kwp > f.pvMax) ||
+    // A storage above `speicherMax` is excluded, so it cannot carry a
+    // "PV only together with storage" condition either (safe direction).
+    (f.pvNurMitSpeicher === true &&
+      (!(anlage.speicherKwh > 0) || (f.speicherMax !== undefined && anlage.speicherKwh > f.speicherMax)));
 
   if (f.percentOfCost) {
     if (unterMindestleistung) return { total: 0, computable: true, active };
@@ -9200,7 +9503,9 @@ export function fundingAmount(
   }
   let sp = 0;
   const speicherKwh = anlage.speicherKwh;
-  if (f.speicherPerKwh && speicherKwh >= (f.speicherMin ?? 0) && speicherKwh > 0) {
+  if (f.speicherMax !== undefined && speicherKwh > f.speicherMax) {
+    sp = 0;
+  } else if (f.speicherPerKwh && speicherKwh >= (f.speicherMin ?? 0) && speicherKwh > 0) {
     if (f.speicherSockel !== undefined) {
       // Sockel plus Satz: Der Satz greift erst OBERHALB der Mindestkapazität,
       // und gezählt werden volle kWh. Beides steht so in den Richtlinien dieser

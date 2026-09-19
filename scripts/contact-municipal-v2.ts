@@ -58,8 +58,8 @@ const RETRY_AFTER_MS = 24 * 3600 * 1000;
 const MAX_ATTEMPTS = 2;
 
 // Extraction and judgement files: a change re-judges everything, fetched pages stay.
-const EXTRACTION_FILES = ["lib/contact-evidence.ts", "lib/mail-deobfuscation.ts", "lib/contact-role-context.ts", "lib/contact-discovery.ts", "lib/personen-fund.ts", "lib/published-joomla-mail.ts", "lib/uri-sicher.ts", "lib/contact-municipal-judge.ts"];
-const JUDGE_FILES = [...EXTRACTION_FILES, "lib/contact-quality-evidence.ts", "lib/gemeindeverband.ts", "scripts/contact-municipal-v2.ts"];
+const EXTRACTION_FILES = ["lib/contact-evidence.ts", "lib/mail-deobfuscation.ts", "lib/contact-role-context.ts", "lib/contact-discovery.ts", "lib/personen-fund.ts", "lib/published-joomla-mail.ts", "lib/uri-sicher.ts", "lib/contact-heading-context.ts"];
+const JUDGE_FILES = [...EXTRACTION_FILES, "lib/contact-municipal-judge.ts", "lib/contact-quality-evidence.ts", "lib/gemeindeverband.ts", "scripts/contact-municipal-v2.ts"];
 const digestOf = (files: string[]) => sha(JSON.stringify(files.map(f => [f, sha(readFileSync(resolve(root, f)))])));
 const EXTRACTION = digestOf(EXTRACTION_FILES).slice(0, 16);
 const RULES = digestOf(JUDGE_FILES).slice(0, 16);
