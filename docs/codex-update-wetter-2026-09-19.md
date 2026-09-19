@@ -71,6 +71,13 @@ selbst ausliefert.
 - **Kühlgradstunden** kommen aus ERA5 (`lib/kuehlgrad.json`) und liegen rund
   20 % über den alten Werten — gegen DWD-Stationen gemessen trifft ERA5 die
   Messung besser als ERA5-Land.
+- **Klimaprojektion** (Nachtrag 19.09.2026): Die „Projektion ~20 Jahre" im
+  Klimaanlagen-Rechner rechnet seit 18.09. unseren heutigen Wert mal der
+  Zunahme aus acht CMIP6-Modellen (NASA NEX-GDDP-CMIP6, `lib/klima-projektion.ts`,
+  `npm run klima:projektion`). `klima_cache` wird nicht mehr gelesen, und der
+  Quelleneintrag `openMeteo` ist entfernt — neuer Eintrag `nexGddp`. Wer auf
+  einem älteren Stand `DATA_SOURCES.openMeteo` benutzt, bekommt nach dem
+  Aufsetzen auf main einen Typfehler.
 
 ## Was du NICHT tun solltest
 

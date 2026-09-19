@@ -501,7 +501,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5, textAlign: "center" }}>
                   {cdhMode === "avg5" && `Durchschnitt der letzten ${CFG.avgYears} Sommer — der ausgewogene Wert.`}
                   {cdhMode === "lastSummer" && "Der letzte Sommer — oft heißer als der Schnitt."}
-                  {cdhMode === "projection" && `So heiß wird ein Sommer um ${PROJ_YEAR} laut acht Klimamodellen (CMIP6, mittleres Szenario) — Projektion, kein exakter Wert.`}
+                  {cdhMode === "projection" && `So heiß wird ein Sommer um ${PROJ_YEAR} laut acht Klimamodellen (CMIP6, mittleres Szenario) — Projektion, kein exakter Wert. Wer das Gerät auch für diese Sommer kauft, plant bei der Leistung etwas Reserve ein.`}
                 </div>
             </ResultSection>
             </div>
@@ -569,7 +569,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                   />
                 );
               })()}
-              <StatCard label="Kühlleistung" value={`~${result.capacityKw.toString().replace(".", ",")} kW`} help="Empfohlene Geräteleistung für die gekühlte Fläche (~85 W/m²)." />
+              <StatCard label="Kühlleistung" value={`~${result.capacityKw.toString().replace(".", ",")} kW`} help="Empfohlene Geräteleistung für die gekühlte Fläche (~85 W/m²), ausgelegt auf heutige Sommer. Für die heißeren Sommer der kommenden Jahrzehnte lohnt etwas Reserve nach oben." />
             </div>
 
             {/* PV-Deckung — getroffene Auswahl aus dem Funnel, hier umschaltbar */}
