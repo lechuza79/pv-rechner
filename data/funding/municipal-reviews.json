@@ -27450,5 +27450,446 @@
     ],
     "outcome": "keine-passende-foerderung",
     "conclusion": "Zettemin gehört zum Amt Stavenhagen (Landkreis Mecklenburgische Seenplatte). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Steckersolar und Batteriespeicher nichts, die Richtlinien im Ortsrecht betreffen Jugend, Kultur, Soziales, Sport und Studienbeihilfen, und die erfasste Quelle beschreibt die Bundeszuwendung für die Wärmeplanung Rosenow. Eine eigene Gemeindewebsite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13074005",
+    "name": "Bernstorf",
+    "checkedAt": "2026-09-19T08:18:04Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "grevesmuehlen.de Volltextsuche (Stadt und Amt Grevesmühlen-Land): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Förderung, Zuschuss, Wärmepumpe, Speicher, Richtlinie, Klimaschutz, Energie (Gegenprobe „Grevesmühlen“: 151 Treffer, die Suche funktioniert)",
+      "Gelesen: Seite Klimaschutz der Stadt, Seite EU-Förderung, Ortsrecht der Stadt und der Gemeinden Bernstorf, Roggenstorf, Rüting, Stepenitztal, Testorf-Steinfort, Upahl, Warnow",
+      "Stadtwerke Grevesmühlen (stadtwerke-gvm.de): Startseite, Erneuerbare, E-Mobilität, Sommeraktion gelesen — THG-Prämie für E-Autos, kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13074)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.grevesmuehlen.de/foerderung.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „EU-Förderung“ — Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden (Spielplätze, Straßen, Bushaltestellen, Schulcampus, LED-Straßenbeleuchtung Warnow, Machbarkeitsstudie Energieversorgung Upahl); Zuwendungen an Kommunen, kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/suchergebnisse.html?keywords=Photovoltaik",
+        "finding": "Volltextsuche gelesen (19.09.2026): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Wärmepumpe ohne Treffer; Förderung nur Schule, Kita-Förderung, EU-Förderung und Förderung sozialer/kultureller Projekte; Zuschuss nur Wohngeld; Speicher nur Ortsbeschreibung Rüting; Richtlinie nur E-Rechnung; Klimaschutz/Energie nur die Klimaschutzseite. Gegenprobe „Grevesmühlen“: 151 Treffer."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/leben/klimaschutz.html",
+        "finding": "Im Original gelesen: „Stadt ohne Watt“ — Stadtwerke (Wind, Biogas, Fernwärme), Energie-Plus-Klärwerk, Kommunale Wärmeplanung seit 2025; kein Förderprogramm für Bürger."
+      },
+      {
+        "url": "https://www.stadtwerke-gvm.de/de/strom/emobilitaet.html",
+        "finding": "Im Original gelesen: Stadtwerke zahlen eine THG-Prämie von 300 € je E-Auto; auf den Seiten Erneuerbare und Sommeraktion kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/rathaus/Ortsrecht.html",
+        "finding": "Ortsrecht der Stadt und der Amtsgemeinden gelesen: Haupt-, Steuer-, Gebühren-, Straßen- und Benutzungssatzungen — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Nordwestmecklenburg wurde nicht gefunden (Katalog ohne Kreisprogramm 13074)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "grevesmuehlen.de/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite „EU-Förderung“: Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden — Zuwendungen an Kommunen, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.grevesmuehlen.de/foerderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bernstorf gehört zum Amt Grevesmühlen-Land, das von der Stadt Grevesmühlen verwaltet wird (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch die Stadt Grevesmühlen als Verwaltung des Amtes führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche findet zu Photovoltaik, Balkonkraftwerk, Förderprogramm und Wärmepumpe nichts, das Ortsrecht enthält keine Förderrichtlinie, und die erfasste Quelle listet EU-/Landeszuwendungen an Stadt und Gemeinden. Die Stadtwerke zahlen nur eine THG-Prämie für E-Autos. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13074026",
+    "name": "Grevesmühlen",
+    "checkedAt": "2026-09-19T08:18:04Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "grevesmuehlen.de Volltextsuche (Stadt und Amt Grevesmühlen-Land): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Förderung, Zuschuss, Wärmepumpe, Speicher, Richtlinie, Klimaschutz, Energie (Gegenprobe „Grevesmühlen“: 151 Treffer, die Suche funktioniert)",
+      "Gelesen: Seite Klimaschutz der Stadt, Seite EU-Förderung, Ortsrecht der Stadt und der Gemeinden Bernstorf, Roggenstorf, Rüting, Stepenitztal, Testorf-Steinfort, Upahl, Warnow",
+      "Stadtwerke Grevesmühlen (stadtwerke-gvm.de): Startseite, Erneuerbare, E-Mobilität, Sommeraktion gelesen — THG-Prämie für E-Autos, kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13074)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.grevesmuehlen.de/foerderung.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „EU-Förderung“ — Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden (Spielplätze, Straßen, Bushaltestellen, Schulcampus, LED-Straßenbeleuchtung Warnow, Machbarkeitsstudie Energieversorgung Upahl); Zuwendungen an Kommunen, kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/suchergebnisse.html?keywords=Photovoltaik",
+        "finding": "Volltextsuche gelesen (19.09.2026): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Wärmepumpe ohne Treffer; Förderung nur Schule, Kita-Förderung, EU-Förderung und Förderung sozialer/kultureller Projekte; Zuschuss nur Wohngeld; Speicher nur Ortsbeschreibung Rüting; Richtlinie nur E-Rechnung; Klimaschutz/Energie nur die Klimaschutzseite. Gegenprobe „Grevesmühlen“: 151 Treffer."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/leben/klimaschutz.html",
+        "finding": "Im Original gelesen: „Stadt ohne Watt“ — Stadtwerke (Wind, Biogas, Fernwärme), Energie-Plus-Klärwerk, Kommunale Wärmeplanung seit 2025; kein Förderprogramm für Bürger."
+      },
+      {
+        "url": "https://www.stadtwerke-gvm.de/de/strom/emobilitaet.html",
+        "finding": "Im Original gelesen: Stadtwerke zahlen eine THG-Prämie von 300 € je E-Auto; auf den Seiten Erneuerbare und Sommeraktion kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/rathaus/Ortsrecht.html",
+        "finding": "Ortsrecht der Stadt und der Amtsgemeinden gelesen: Haupt-, Steuer-, Gebühren-, Straßen- und Benutzungssatzungen — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Nordwestmecklenburg wurde nicht gefunden (Katalog ohne Kreisprogramm 13074)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "grevesmuehlen.de/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite „EU-Förderung“: Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden — Zuwendungen an Kommunen, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.grevesmuehlen.de/foerderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Grevesmühlen ist zugleich Verwaltungsbehörde für das Amt Grevesmühlen-Land (Landkreis Nordwestmecklenburg). Weder die Stadt noch die Stadt Grevesmühlen als Verwaltung des Amtes führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche findet zu Photovoltaik, Balkonkraftwerk, Förderprogramm und Wärmepumpe nichts, das Ortsrecht enthält keine Förderrichtlinie, und die erfasste Quelle listet EU-/Landeszuwendungen an Stadt und Gemeinden. Die Stadtwerke zahlen nur eine THG-Prämie für E-Autos. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13074063",
+    "name": "Plüschow",
+    "checkedAt": "2026-09-19T08:18:04Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "grevesmuehlen.de Volltextsuche (Stadt und Amt Grevesmühlen-Land): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Förderung, Zuschuss, Wärmepumpe, Speicher, Richtlinie, Klimaschutz, Energie (Gegenprobe „Grevesmühlen“: 151 Treffer, die Suche funktioniert)",
+      "Gelesen: Seite Klimaschutz der Stadt, Seite EU-Förderung, Ortsrecht der Stadt und der Gemeinden Bernstorf, Roggenstorf, Rüting, Stepenitztal, Testorf-Steinfort, Upahl, Warnow",
+      "Stadtwerke Grevesmühlen (stadtwerke-gvm.de): Startseite, Erneuerbare, E-Mobilität, Sommeraktion gelesen — THG-Prämie für E-Autos, kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13074)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.grevesmuehlen.de/foerderung.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „EU-Förderung“ — Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden (Spielplätze, Straßen, Bushaltestellen, Schulcampus, LED-Straßenbeleuchtung Warnow, Machbarkeitsstudie Energieversorgung Upahl); Zuwendungen an Kommunen, kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/suchergebnisse.html?keywords=Photovoltaik",
+        "finding": "Volltextsuche gelesen (19.09.2026): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Wärmepumpe ohne Treffer; Förderung nur Schule, Kita-Förderung, EU-Förderung und Förderung sozialer/kultureller Projekte; Zuschuss nur Wohngeld; Speicher nur Ortsbeschreibung Rüting; Richtlinie nur E-Rechnung; Klimaschutz/Energie nur die Klimaschutzseite. Gegenprobe „Grevesmühlen“: 151 Treffer."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/leben/klimaschutz.html",
+        "finding": "Im Original gelesen: „Stadt ohne Watt“ — Stadtwerke (Wind, Biogas, Fernwärme), Energie-Plus-Klärwerk, Kommunale Wärmeplanung seit 2025; kein Förderprogramm für Bürger."
+      },
+      {
+        "url": "https://www.stadtwerke-gvm.de/de/strom/emobilitaet.html",
+        "finding": "Im Original gelesen: Stadtwerke zahlen eine THG-Prämie von 300 € je E-Auto; auf den Seiten Erneuerbare und Sommeraktion kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/rathaus/Ortsrecht.html",
+        "finding": "Ortsrecht der Stadt und der Amtsgemeinden gelesen: Haupt-, Steuer-, Gebühren-, Straßen- und Benutzungssatzungen — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Nordwestmecklenburg wurde nicht gefunden (Katalog ohne Kreisprogramm 13074)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "grevesmuehlen.de/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite „EU-Förderung“: Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden — Zuwendungen an Kommunen, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.grevesmuehlen.de/foerderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Plüschow ist nach der amtlichen Gebietsänderungsliste seit dem 01.01.2019 Teil der Gemeinde Upahl (Amt Grevesmühlen-Land); der alte Gemeindeschlüssel führt nur noch Altbestände (Landkreis Nordwestmecklenburg). Weder Upahl als heutige Gemeinde noch die Stadt Grevesmühlen als Verwaltung des Amtes führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche findet zu Photovoltaik, Balkonkraftwerk, Förderprogramm und Wärmepumpe nichts, das Ortsrecht enthält keine Förderrichtlinie, und die erfasste Quelle listet EU-/Landeszuwendungen an Stadt und Gemeinden. Die Stadtwerke zahlen nur eine THG-Prämie für E-Autos. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13074069",
+    "name": "Roggenstorf",
+    "checkedAt": "2026-09-19T08:18:04Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "grevesmuehlen.de Volltextsuche (Stadt und Amt Grevesmühlen-Land): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Förderung, Zuschuss, Wärmepumpe, Speicher, Richtlinie, Klimaschutz, Energie (Gegenprobe „Grevesmühlen“: 151 Treffer, die Suche funktioniert)",
+      "Gelesen: Seite Klimaschutz der Stadt, Seite EU-Förderung, Ortsrecht der Stadt und der Gemeinden Bernstorf, Roggenstorf, Rüting, Stepenitztal, Testorf-Steinfort, Upahl, Warnow",
+      "Stadtwerke Grevesmühlen (stadtwerke-gvm.de): Startseite, Erneuerbare, E-Mobilität, Sommeraktion gelesen — THG-Prämie für E-Autos, kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13074)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.grevesmuehlen.de/foerderung.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „EU-Förderung“ — Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden (Spielplätze, Straßen, Bushaltestellen, Schulcampus, LED-Straßenbeleuchtung Warnow, Machbarkeitsstudie Energieversorgung Upahl); Zuwendungen an Kommunen, kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/suchergebnisse.html?keywords=Photovoltaik",
+        "finding": "Volltextsuche gelesen (19.09.2026): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Wärmepumpe ohne Treffer; Förderung nur Schule, Kita-Förderung, EU-Förderung und Förderung sozialer/kultureller Projekte; Zuschuss nur Wohngeld; Speicher nur Ortsbeschreibung Rüting; Richtlinie nur E-Rechnung; Klimaschutz/Energie nur die Klimaschutzseite. Gegenprobe „Grevesmühlen“: 151 Treffer."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/leben/klimaschutz.html",
+        "finding": "Im Original gelesen: „Stadt ohne Watt“ — Stadtwerke (Wind, Biogas, Fernwärme), Energie-Plus-Klärwerk, Kommunale Wärmeplanung seit 2025; kein Förderprogramm für Bürger."
+      },
+      {
+        "url": "https://www.stadtwerke-gvm.de/de/strom/emobilitaet.html",
+        "finding": "Im Original gelesen: Stadtwerke zahlen eine THG-Prämie von 300 € je E-Auto; auf den Seiten Erneuerbare und Sommeraktion kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/rathaus/Ortsrecht.html",
+        "finding": "Ortsrecht der Stadt und der Amtsgemeinden gelesen: Haupt-, Steuer-, Gebühren-, Straßen- und Benutzungssatzungen — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Nordwestmecklenburg wurde nicht gefunden (Katalog ohne Kreisprogramm 13074)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "grevesmuehlen.de/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite „EU-Förderung“: Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden — Zuwendungen an Kommunen, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.grevesmuehlen.de/foerderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Roggenstorf gehört zum Amt Grevesmühlen-Land, das von der Stadt Grevesmühlen verwaltet wird (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch die Stadt Grevesmühlen als Verwaltung des Amtes führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche findet zu Photovoltaik, Balkonkraftwerk, Förderprogramm und Wärmepumpe nichts, das Ortsrecht enthält keine Förderrichtlinie, und die erfasste Quelle listet EU-/Landeszuwendungen an Stadt und Gemeinden. Die Stadtwerke zahlen nur eine THG-Prämie für E-Autos. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13074071",
+    "name": "Rüting",
+    "checkedAt": "2026-09-19T08:18:04Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "grevesmuehlen.de Volltextsuche (Stadt und Amt Grevesmühlen-Land): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Förderung, Zuschuss, Wärmepumpe, Speicher, Richtlinie, Klimaschutz, Energie (Gegenprobe „Grevesmühlen“: 151 Treffer, die Suche funktioniert)",
+      "Gelesen: Seite Klimaschutz der Stadt, Seite EU-Förderung, Ortsrecht der Stadt und der Gemeinden Bernstorf, Roggenstorf, Rüting, Stepenitztal, Testorf-Steinfort, Upahl, Warnow",
+      "Stadtwerke Grevesmühlen (stadtwerke-gvm.de): Startseite, Erneuerbare, E-Mobilität, Sommeraktion gelesen — THG-Prämie für E-Autos, kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13074)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.grevesmuehlen.de/foerderung.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „EU-Förderung“ — Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden (Spielplätze, Straßen, Bushaltestellen, Schulcampus, LED-Straßenbeleuchtung Warnow, Machbarkeitsstudie Energieversorgung Upahl); Zuwendungen an Kommunen, kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/suchergebnisse.html?keywords=Photovoltaik",
+        "finding": "Volltextsuche gelesen (19.09.2026): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Wärmepumpe ohne Treffer; Förderung nur Schule, Kita-Förderung, EU-Förderung und Förderung sozialer/kultureller Projekte; Zuschuss nur Wohngeld; Speicher nur Ortsbeschreibung Rüting; Richtlinie nur E-Rechnung; Klimaschutz/Energie nur die Klimaschutzseite. Gegenprobe „Grevesmühlen“: 151 Treffer."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/leben/klimaschutz.html",
+        "finding": "Im Original gelesen: „Stadt ohne Watt“ — Stadtwerke (Wind, Biogas, Fernwärme), Energie-Plus-Klärwerk, Kommunale Wärmeplanung seit 2025; kein Förderprogramm für Bürger."
+      },
+      {
+        "url": "https://www.stadtwerke-gvm.de/de/strom/emobilitaet.html",
+        "finding": "Im Original gelesen: Stadtwerke zahlen eine THG-Prämie von 300 € je E-Auto; auf den Seiten Erneuerbare und Sommeraktion kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/rathaus/Ortsrecht.html",
+        "finding": "Ortsrecht der Stadt und der Amtsgemeinden gelesen: Haupt-, Steuer-, Gebühren-, Straßen- und Benutzungssatzungen — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Nordwestmecklenburg wurde nicht gefunden (Katalog ohne Kreisprogramm 13074)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "grevesmuehlen.de/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite „EU-Förderung“: Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden — Zuwendungen an Kommunen, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.grevesmuehlen.de/foerderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rüting gehört zum Amt Grevesmühlen-Land, das von der Stadt Grevesmühlen verwaltet wird (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch die Stadt Grevesmühlen als Verwaltung des Amtes führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche findet zu Photovoltaik, Balkonkraftwerk, Förderprogramm und Wärmepumpe nichts, das Ortsrecht enthält keine Förderrichtlinie, und die erfasste Quelle listet EU-/Landeszuwendungen an Stadt und Gemeinden. Die Stadtwerke zahlen nur eine THG-Prämie für E-Autos. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13074077",
+    "name": "Testorf-Steinfort",
+    "checkedAt": "2026-09-19T08:18:04Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "grevesmuehlen.de Volltextsuche (Stadt und Amt Grevesmühlen-Land): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Förderung, Zuschuss, Wärmepumpe, Speicher, Richtlinie, Klimaschutz, Energie (Gegenprobe „Grevesmühlen“: 151 Treffer, die Suche funktioniert)",
+      "Gelesen: Seite Klimaschutz der Stadt, Seite EU-Förderung, Ortsrecht der Stadt und der Gemeinden Bernstorf, Roggenstorf, Rüting, Stepenitztal, Testorf-Steinfort, Upahl, Warnow",
+      "Stadtwerke Grevesmühlen (stadtwerke-gvm.de): Startseite, Erneuerbare, E-Mobilität, Sommeraktion gelesen — THG-Prämie für E-Autos, kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13074)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.grevesmuehlen.de/foerderung.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „EU-Förderung“ — Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden (Spielplätze, Straßen, Bushaltestellen, Schulcampus, LED-Straßenbeleuchtung Warnow, Machbarkeitsstudie Energieversorgung Upahl); Zuwendungen an Kommunen, kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/suchergebnisse.html?keywords=Photovoltaik",
+        "finding": "Volltextsuche gelesen (19.09.2026): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Wärmepumpe ohne Treffer; Förderung nur Schule, Kita-Förderung, EU-Förderung und Förderung sozialer/kultureller Projekte; Zuschuss nur Wohngeld; Speicher nur Ortsbeschreibung Rüting; Richtlinie nur E-Rechnung; Klimaschutz/Energie nur die Klimaschutzseite. Gegenprobe „Grevesmühlen“: 151 Treffer."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/leben/klimaschutz.html",
+        "finding": "Im Original gelesen: „Stadt ohne Watt“ — Stadtwerke (Wind, Biogas, Fernwärme), Energie-Plus-Klärwerk, Kommunale Wärmeplanung seit 2025; kein Förderprogramm für Bürger."
+      },
+      {
+        "url": "https://www.stadtwerke-gvm.de/de/strom/emobilitaet.html",
+        "finding": "Im Original gelesen: Stadtwerke zahlen eine THG-Prämie von 300 € je E-Auto; auf den Seiten Erneuerbare und Sommeraktion kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/rathaus/Ortsrecht.html",
+        "finding": "Ortsrecht der Stadt und der Amtsgemeinden gelesen: Haupt-, Steuer-, Gebühren-, Straßen- und Benutzungssatzungen — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Nordwestmecklenburg wurde nicht gefunden (Katalog ohne Kreisprogramm 13074)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "grevesmuehlen.de/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite „EU-Förderung“: Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden — Zuwendungen an Kommunen, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.grevesmuehlen.de/foerderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Testorf-Steinfort gehört zum Amt Grevesmühlen-Land, das von der Stadt Grevesmühlen verwaltet wird (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch die Stadt Grevesmühlen als Verwaltung des Amtes führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche findet zu Photovoltaik, Balkonkraftwerk, Förderprogramm und Wärmepumpe nichts, das Ortsrecht enthält keine Förderrichtlinie, und die erfasste Quelle listet EU-/Landeszuwendungen an Stadt und Gemeinden. Die Stadtwerke zahlen nur eine THG-Prämie für E-Autos. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13074079",
+    "name": "Upahl",
+    "checkedAt": "2026-09-19T08:18:04Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "grevesmuehlen.de Volltextsuche (Stadt und Amt Grevesmühlen-Land): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Förderung, Zuschuss, Wärmepumpe, Speicher, Richtlinie, Klimaschutz, Energie (Gegenprobe „Grevesmühlen“: 151 Treffer, die Suche funktioniert)",
+      "Gelesen: Seite Klimaschutz der Stadt, Seite EU-Förderung, Ortsrecht der Stadt und der Gemeinden Bernstorf, Roggenstorf, Rüting, Stepenitztal, Testorf-Steinfort, Upahl, Warnow",
+      "Stadtwerke Grevesmühlen (stadtwerke-gvm.de): Startseite, Erneuerbare, E-Mobilität, Sommeraktion gelesen — THG-Prämie für E-Autos, kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13074)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.grevesmuehlen.de/foerderung.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „EU-Förderung“ — Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden (Spielplätze, Straßen, Bushaltestellen, Schulcampus, LED-Straßenbeleuchtung Warnow, Machbarkeitsstudie Energieversorgung Upahl); Zuwendungen an Kommunen, kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/suchergebnisse.html?keywords=Photovoltaik",
+        "finding": "Volltextsuche gelesen (19.09.2026): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Wärmepumpe ohne Treffer; Förderung nur Schule, Kita-Förderung, EU-Förderung und Förderung sozialer/kultureller Projekte; Zuschuss nur Wohngeld; Speicher nur Ortsbeschreibung Rüting; Richtlinie nur E-Rechnung; Klimaschutz/Energie nur die Klimaschutzseite. Gegenprobe „Grevesmühlen“: 151 Treffer."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/leben/klimaschutz.html",
+        "finding": "Im Original gelesen: „Stadt ohne Watt“ — Stadtwerke (Wind, Biogas, Fernwärme), Energie-Plus-Klärwerk, Kommunale Wärmeplanung seit 2025; kein Förderprogramm für Bürger."
+      },
+      {
+        "url": "https://www.stadtwerke-gvm.de/de/strom/emobilitaet.html",
+        "finding": "Im Original gelesen: Stadtwerke zahlen eine THG-Prämie von 300 € je E-Auto; auf den Seiten Erneuerbare und Sommeraktion kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/rathaus/Ortsrecht.html",
+        "finding": "Ortsrecht der Stadt und der Amtsgemeinden gelesen: Haupt-, Steuer-, Gebühren-, Straßen- und Benutzungssatzungen — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Nordwestmecklenburg wurde nicht gefunden (Katalog ohne Kreisprogramm 13074)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "grevesmuehlen.de/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite „EU-Förderung“: Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden — Zuwendungen an Kommunen, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.grevesmuehlen.de/foerderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Upahl gehört zum Amt Grevesmühlen-Land, das von der Stadt Grevesmühlen verwaltet wird (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch die Stadt Grevesmühlen als Verwaltung des Amtes führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche findet zu Photovoltaik, Balkonkraftwerk, Förderprogramm und Wärmepumpe nichts, das Ortsrecht enthält keine Förderrichtlinie, und die erfasste Quelle listet EU-/Landeszuwendungen an Stadt und Gemeinden. Die Stadtwerke zahlen nur eine THG-Prämie für E-Autos. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13074085",
+    "name": "Warnow",
+    "checkedAt": "2026-09-19T08:18:04Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "grevesmuehlen.de Volltextsuche (Stadt und Amt Grevesmühlen-Land): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Förderung, Zuschuss, Wärmepumpe, Speicher, Richtlinie, Klimaschutz, Energie (Gegenprobe „Grevesmühlen“: 151 Treffer, die Suche funktioniert)",
+      "Gelesen: Seite Klimaschutz der Stadt, Seite EU-Förderung, Ortsrecht der Stadt und der Gemeinden Bernstorf, Roggenstorf, Rüting, Stepenitztal, Testorf-Steinfort, Upahl, Warnow",
+      "Stadtwerke Grevesmühlen (stadtwerke-gvm.de): Startseite, Erneuerbare, E-Mobilität, Sommeraktion gelesen — THG-Prämie für E-Autos, kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13074)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.grevesmuehlen.de/foerderung.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „EU-Förderung“ — Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden (Spielplätze, Straßen, Bushaltestellen, Schulcampus, LED-Straßenbeleuchtung Warnow, Machbarkeitsstudie Energieversorgung Upahl); Zuwendungen an Kommunen, kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/suchergebnisse.html?keywords=Photovoltaik",
+        "finding": "Volltextsuche gelesen (19.09.2026): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Wärmepumpe ohne Treffer; Förderung nur Schule, Kita-Förderung, EU-Förderung und Förderung sozialer/kultureller Projekte; Zuschuss nur Wohngeld; Speicher nur Ortsbeschreibung Rüting; Richtlinie nur E-Rechnung; Klimaschutz/Energie nur die Klimaschutzseite. Gegenprobe „Grevesmühlen“: 151 Treffer."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/leben/klimaschutz.html",
+        "finding": "Im Original gelesen: „Stadt ohne Watt“ — Stadtwerke (Wind, Biogas, Fernwärme), Energie-Plus-Klärwerk, Kommunale Wärmeplanung seit 2025; kein Förderprogramm für Bürger."
+      },
+      {
+        "url": "https://www.stadtwerke-gvm.de/de/strom/emobilitaet.html",
+        "finding": "Im Original gelesen: Stadtwerke zahlen eine THG-Prämie von 300 € je E-Auto; auf den Seiten Erneuerbare und Sommeraktion kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/rathaus/Ortsrecht.html",
+        "finding": "Ortsrecht der Stadt und der Amtsgemeinden gelesen: Haupt-, Steuer-, Gebühren-, Straßen- und Benutzungssatzungen — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Nordwestmecklenburg wurde nicht gefunden (Katalog ohne Kreisprogramm 13074)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "grevesmuehlen.de/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite „EU-Förderung“: Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden — Zuwendungen an Kommunen, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.grevesmuehlen.de/foerderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Warnow gehört zum Amt Grevesmühlen-Land, das von der Stadt Grevesmühlen verwaltet wird (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch die Stadt Grevesmühlen als Verwaltung des Amtes führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche findet zu Photovoltaik, Balkonkraftwerk, Förderprogramm und Wärmepumpe nichts, das Ortsrecht enthält keine Förderrichtlinie, und die erfasste Quelle listet EU-/Landeszuwendungen an Stadt und Gemeinden. Die Stadtwerke zahlen nur eine THG-Prämie für E-Autos. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13074093",
+    "name": "Stepenitztal",
+    "checkedAt": "2026-09-19T08:18:04Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "grevesmuehlen.de Volltextsuche (Stadt und Amt Grevesmühlen-Land): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Förderung, Zuschuss, Wärmepumpe, Speicher, Richtlinie, Klimaschutz, Energie (Gegenprobe „Grevesmühlen“: 151 Treffer, die Suche funktioniert)",
+      "Gelesen: Seite Klimaschutz der Stadt, Seite EU-Förderung, Ortsrecht der Stadt und der Gemeinden Bernstorf, Roggenstorf, Rüting, Stepenitztal, Testorf-Steinfort, Upahl, Warnow",
+      "Stadtwerke Grevesmühlen (stadtwerke-gvm.de): Startseite, Erneuerbare, E-Mobilität, Sommeraktion gelesen — THG-Prämie für E-Autos, kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13074)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.grevesmuehlen.de/foerderung.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „EU-Förderung“ — Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden (Spielplätze, Straßen, Bushaltestellen, Schulcampus, LED-Straßenbeleuchtung Warnow, Machbarkeitsstudie Energieversorgung Upahl); Zuwendungen an Kommunen, kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/suchergebnisse.html?keywords=Photovoltaik",
+        "finding": "Volltextsuche gelesen (19.09.2026): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Förderprogramm, Wärmepumpe ohne Treffer; Förderung nur Schule, Kita-Förderung, EU-Förderung und Förderung sozialer/kultureller Projekte; Zuschuss nur Wohngeld; Speicher nur Ortsbeschreibung Rüting; Richtlinie nur E-Rechnung; Klimaschutz/Energie nur die Klimaschutzseite. Gegenprobe „Grevesmühlen“: 151 Treffer."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/leben/klimaschutz.html",
+        "finding": "Im Original gelesen: „Stadt ohne Watt“ — Stadtwerke (Wind, Biogas, Fernwärme), Energie-Plus-Klärwerk, Kommunale Wärmeplanung seit 2025; kein Förderprogramm für Bürger."
+      },
+      {
+        "url": "https://www.stadtwerke-gvm.de/de/strom/emobilitaet.html",
+        "finding": "Im Original gelesen: Stadtwerke zahlen eine THG-Prämie von 300 € je E-Auto; auf den Seiten Erneuerbare und Sommeraktion kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.grevesmuehlen.de/rathaus/Ortsrecht.html",
+        "finding": "Ortsrecht der Stadt und der Amtsgemeinden gelesen: Haupt-, Steuer-, Gebühren-, Straßen- und Benutzungssatzungen — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Nordwestmecklenburg wurde nicht gefunden (Katalog ohne Kreisprogramm 13074)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "grevesmuehlen.de/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Seite „EU-Förderung“: Liste von EU-/Landesprojekten der Stadt und der Amtsgemeinden — Zuwendungen an Kommunen, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.grevesmuehlen.de/foerderung.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Stepenitztal gehört zum Amt Grevesmühlen-Land, das von der Stadt Grevesmühlen verwaltet wird (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch die Stadt Grevesmühlen als Verwaltung des Amtes führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche findet zu Photovoltaik, Balkonkraftwerk, Förderprogramm und Wärmepumpe nichts, das Ortsrecht enthält keine Förderrichtlinie, und die erfasste Quelle listet EU-/Landeszuwendungen an Stadt und Gemeinden. Die Stadtwerke zahlen nur eine THG-Prämie für E-Autos. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
   }
 ]
