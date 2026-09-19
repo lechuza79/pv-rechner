@@ -37248,5 +37248,211 @@
     ],
     "outcome": "keine-passende-foerderung",
     "conclusion": "Harrislee führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte. Der Treffer „Zuschuss für steckerfertige Photovoltaikanlagen“ ist der Landeseintrag des Zuständigkeitsfinders zum seit 16.11.2023 gestoppten Landesprogramm. Gesondert: Der Flensburger KlimaBonus e.V. belohnt ein Balkonkraftwerk mit 60 KlimaBoni Regionalwährung — kein Euro-Zuschuss der Gemeinde, daher kein Abzug. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059137",
+    "name": "Langballig",
+    "checkedAt": "2026-09-19T20:18:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Regionale Belohnungswährung gesondert erfasst.",
+    "searches": [
+      "amt-langballig.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Wärmepumpe, Solar, Förderprogramm, Zuschuss, Klimaschutz",
+      "Amtsbote 07/2025, 07/2026 und 09/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung (antwortet für jeden Ort des Kreises gleich, kein Beleg)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-langballig.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Langballig am 19.09.2026: Balkonkraftwerk nur Amtsbote Juli 2025; Photovoltaik, Solar und Wärmepumpe nur Kommunale Wärmeplanung der Gemeinden und Amtsboten; Förderprogramm/Zuschuss/Klimaschutz nur Behördenwegweiser, Wärmeplanung (Nationale Klimaschutzinitiative) und Regionalbudget Mitte des Nordens. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-langballig.de/fileadmin/Amt/Dateien/Amtsbote/2025/Amtsbote_Langballig_0725.pdf",
+        "finding": "Amtsbote Juli 2025 gelesen: Artikel „Balkonkraftwerke erleben Boom in der Klimaschutzregion Flensburg“ — Zubau-Auswertung; als Belohnung nennt er nur KlimaBoni (Regionalwährung des KlimaBonus e.V.), keinen Zuschuss von Amt oder Gemeinde."
+      },
+      {
+        "url": "https://www.amt-langballig.de/fileadmin/Amt/Dateien/Amtsbote/2026/Amtsbote_Langballig_0926.pdf",
+        "finding": "Amtsboten Juli und September 2026 gelesen: Energiebegriffe nur in Handwerker-Anzeigen und Wohnungsgesuchen; kein Förderaufruf für Haushalte."
+      },
+      {
+        "url": "https://www.amt-langballig.de/buergerservice-und-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-2728",
+        "finding": "Lebenslage „Weitere Förderbereiche“ gelesen: Verweis auf Förderangebote für Unternehmen/Organisationen; Leistungen „Gleichstellung der Geschlechter“ und „Kommunale Förderung für Vereine beantragen“ — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.hier-wirken.de/flensburg/klimabonus-fuer-privatpersonen/belohnungsaktionen",
+        "finding": "KlimaBonus e.V. (Klimaschutzregion Flensburg): 60 KlimaBoni in Regionalwährung für ein Balkonkraftwerk (Stand 19.09.2026) — Vereinsbelohnung, kein Euro-Zuschuss der Gemeinde."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite gibt nur das am 16.11.2023 gestoppte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder; kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-langballig.de/buergerservice-und-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-2728",
+        "disposition": "reviewed",
+        "reason": "Lebenslage für Unternehmen/Vereine, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-langballig.de/buergerservice-und-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-2728"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Langballig gehört zum Amt Langballig (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; Amtssuche und Amtsboten zeigen nur Wärmeplanung, Regionalbudget und Vereinsförderung. Gesondert: Der KlimaBonus e.V. der Klimaschutzregion Flensburg belohnt ein Balkonkraftwerk mit KlimaBoni in Regionalwährung — kein Euro-Zuschuss der Gemeinde, daher kein Abzug. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059157",
+    "name": "Ringsberg",
+    "checkedAt": "2026-09-19T20:18:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Regionale Belohnungswährung gesondert erfasst.",
+    "searches": [
+      "amt-langballig.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Wärmepumpe, Solar, Förderprogramm, Zuschuss, Klimaschutz",
+      "Amtsbote 07/2025, 07/2026 und 09/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung (antwortet für jeden Ort des Kreises gleich, kein Beleg)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-langballig.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Langballig am 19.09.2026: Balkonkraftwerk nur Amtsbote Juli 2025; Photovoltaik, Solar und Wärmepumpe nur Kommunale Wärmeplanung der Gemeinden und Amtsboten; Förderprogramm/Zuschuss/Klimaschutz nur Behördenwegweiser, Wärmeplanung (Nationale Klimaschutzinitiative) und Regionalbudget Mitte des Nordens. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-langballig.de/fileadmin/Amt/Dateien/Amtsbote/2025/Amtsbote_Langballig_0725.pdf",
+        "finding": "Amtsbote Juli 2025 gelesen: Artikel „Balkonkraftwerke erleben Boom in der Klimaschutzregion Flensburg“ — Zubau-Auswertung; als Belohnung nennt er nur KlimaBoni (Regionalwährung des KlimaBonus e.V.), keinen Zuschuss von Amt oder Gemeinde."
+      },
+      {
+        "url": "https://www.amt-langballig.de/fileadmin/Amt/Dateien/Amtsbote/2026/Amtsbote_Langballig_0926.pdf",
+        "finding": "Amtsboten Juli und September 2026 gelesen: Energiebegriffe nur in Handwerker-Anzeigen und Wohnungsgesuchen; kein Förderaufruf für Haushalte."
+      },
+      {
+        "url": "https://www.amt-langballig.de/buergerservice-und-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-2728",
+        "finding": "Lebenslage „Weitere Förderbereiche“ gelesen: Verweis auf Förderangebote für Unternehmen/Organisationen; Leistungen „Gleichstellung der Geschlechter“ und „Kommunale Förderung für Vereine beantragen“ — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.hier-wirken.de/flensburg/klimabonus-fuer-privatpersonen/belohnungsaktionen",
+        "finding": "KlimaBonus e.V. (Klimaschutzregion Flensburg): 60 KlimaBoni in Regionalwährung für ein Balkonkraftwerk (Stand 19.09.2026) — Vereinsbelohnung, kein Euro-Zuschuss der Gemeinde."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite gibt nur das am 16.11.2023 gestoppte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder; kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-langballig.de/buergerservice-und-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-2728",
+        "disposition": "reviewed",
+        "reason": "Lebenslage für Unternehmen/Vereine, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-langballig.de/buergerservice-und-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-2728"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ringsberg gehört zum Amt Langballig (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; Amtssuche und Amtsboten zeigen nur Wärmeplanung, Regionalbudget und Vereinsförderung. Gesondert: Der KlimaBonus e.V. der Klimaschutzregion Flensburg belohnt ein Balkonkraftwerk mit KlimaBoni in Regionalwährung — kein Euro-Zuschuss der Gemeinde, daher kein Abzug. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059178",
+    "name": "Westerholz",
+    "checkedAt": "2026-09-19T20:18:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Regionale Belohnungswährung gesondert erfasst.",
+    "searches": [
+      "amt-langballig.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Wärmepumpe, Solar, Förderprogramm, Zuschuss, Klimaschutz",
+      "Amtsbote 07/2025, 07/2026 und 09/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung (antwortet für jeden Ort des Kreises gleich, kein Beleg)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-langballig.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Langballig am 19.09.2026: Balkonkraftwerk nur Amtsbote Juli 2025; Photovoltaik, Solar und Wärmepumpe nur Kommunale Wärmeplanung der Gemeinden und Amtsboten; Förderprogramm/Zuschuss/Klimaschutz nur Behördenwegweiser, Wärmeplanung (Nationale Klimaschutzinitiative) und Regionalbudget Mitte des Nordens. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-langballig.de/fileadmin/Amt/Dateien/Amtsbote/2025/Amtsbote_Langballig_0725.pdf",
+        "finding": "Amtsbote Juli 2025 gelesen: Artikel „Balkonkraftwerke erleben Boom in der Klimaschutzregion Flensburg“ — Zubau-Auswertung; als Belohnung nennt er nur KlimaBoni (Regionalwährung des KlimaBonus e.V.), keinen Zuschuss von Amt oder Gemeinde."
+      },
+      {
+        "url": "https://www.amt-langballig.de/fileadmin/Amt/Dateien/Amtsbote/2026/Amtsbote_Langballig_0926.pdf",
+        "finding": "Amtsboten Juli und September 2026 gelesen: Energiebegriffe nur in Handwerker-Anzeigen und Wohnungsgesuchen; kein Förderaufruf für Haushalte."
+      },
+      {
+        "url": "https://www.amt-langballig.de/buergerservice-und-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-2728",
+        "finding": "Lebenslage „Weitere Förderbereiche“ gelesen: Verweis auf Förderangebote für Unternehmen/Organisationen; Leistungen „Gleichstellung der Geschlechter“ und „Kommunale Förderung für Vereine beantragen“ — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.hier-wirken.de/flensburg/klimabonus-fuer-privatpersonen/belohnungsaktionen",
+        "finding": "KlimaBonus e.V. (Klimaschutzregion Flensburg): 60 KlimaBoni in Regionalwährung für ein Balkonkraftwerk (Stand 19.09.2026) — Vereinsbelohnung, kein Euro-Zuschuss der Gemeinde."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite gibt nur das am 16.11.2023 gestoppte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder; kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-langballig.de/buergerservice-und-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-2728",
+        "disposition": "reviewed",
+        "reason": "Lebenslage für Unternehmen/Vereine, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-langballig.de/buergerservice-und-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-2728"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Westerholz gehört zum Amt Langballig (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; Amtssuche und Amtsboten zeigen nur Wärmeplanung, Regionalbudget und Vereinsförderung. Gesondert: Der KlimaBonus e.V. der Klimaschutzregion Flensburg belohnt ein Balkonkraftwerk mit KlimaBoni in Regionalwährung — kein Euro-Zuschuss der Gemeinde, daher kein Abzug. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059118",
+    "name": "Grundhof",
+    "checkedAt": "2026-09-19T20:18:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Regionale Belohnungswährung gesondert erfasst.",
+    "searches": [
+      "amt-langballig.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Wärmepumpe, Solar, Förderprogramm, Zuschuss, Klimaschutz",
+      "Amtsbote 07/2025, 07/2026 und 09/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung (antwortet für jeden Ort des Kreises gleich, kein Beleg)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-langballig.de/suche?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Langballig am 19.09.2026: Balkonkraftwerk nur Amtsbote Juli 2025; Photovoltaik, Solar und Wärmepumpe nur Kommunale Wärmeplanung der Gemeinden und Amtsboten; Förderprogramm/Zuschuss/Klimaschutz nur Behördenwegweiser, Wärmeplanung (Nationale Klimaschutzinitiative) und Regionalbudget Mitte des Nordens. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-langballig.de/fileadmin/Amt/Dateien/Amtsbote/2025/Amtsbote_Langballig_0725.pdf",
+        "finding": "Amtsbote Juli 2025 gelesen: Artikel „Balkonkraftwerke erleben Boom in der Klimaschutzregion Flensburg“ — Zubau-Auswertung; als Belohnung nennt er nur KlimaBoni (Regionalwährung des KlimaBonus e.V.), keinen Zuschuss von Amt oder Gemeinde."
+      },
+      {
+        "url": "https://www.amt-langballig.de/fileadmin/Amt/Dateien/Amtsbote/2026/Amtsbote_Langballig_0926.pdf",
+        "finding": "Amtsboten Juli und September 2026 gelesen: Energiebegriffe nur in Handwerker-Anzeigen und Wohnungsgesuchen; kein Förderaufruf für Haushalte."
+      },
+      {
+        "url": "https://www.amt-langballig.de/buergerservice-und-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/weitere-foerderbereiche-2728",
+        "finding": "Lebenslage „Weitere Förderbereiche“ gelesen: Verweis auf Förderangebote für Unternehmen/Organisationen; Leistungen „Gleichstellung der Geschlechter“ und „Kommunale Förderung für Vereine beantragen“ — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.hier-wirken.de/flensburg/klimabonus-fuer-privatpersonen/belohnungsaktionen",
+        "finding": "KlimaBonus e.V. (Klimaschutzregion Flensburg): 60 KlimaBoni in Regionalwährung für ein Balkonkraftwerk (Stand 19.09.2026) — Vereinsbelohnung, kein Euro-Zuschuss der Gemeinde."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite gibt nur das am 16.11.2023 gestoppte Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder; kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.gemeinde-grundhof.de/das-land-foerdert-privaten-klimaschutz",
+        "finding": "Gelesen: Meldung von 2020 zum Landesprogramm (Balkonanlagen, Lastenräder, Wallboxen seit 09.06.2020, 1,6 bzw. 3,6 Mio. € Landesmittel) — kein Gemeindeprogramm."
+      },
+      {
+        "url": "https://www.gemeinde-grundhof.de/foerderprogramm-klimaschutz-fuer-buergerinnen-und-buerger-neu-aufgelegt",
+        "finding": "Gelesen: Updates 2023 zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (Balkonanlagen-Budget erschöpft 29.01.2023, erneut gestoppt 01.04.2023, kurzes Zeitfenster 21.06.2023) — kein Gemeindeprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-grundhof.de/das-land-foerdert-privaten-klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Meldung zum Landesprogramm von 2020, kein Gemeindeprogramm.",
+        "evidenceUrl": "https://www.gemeinde-grundhof.de/das-land-foerdert-privaten-klimaschutz"
+      },
+      {
+        "url": "gemeinde-grundhof.de/foerderprogramm-klimaschutz-fuer-buergerinnen-und-buerger-neu-aufgelegt",
+        "disposition": "reviewed",
+        "reason": "Meldungen 2023 zum inzwischen gestoppten Landesprogramm, kein Gemeindeprogramm.",
+        "evidenceUrl": "https://www.gemeinde-grundhof.de/foerderprogramm-klimaschutz-fuer-buergerinnen-und-buerger-neu-aufgelegt"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Grundhof gehört zum Amt Langballig (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; Amtssuche und Amtsboten zeigen nur Wärmeplanung, Regionalbudget und Vereinsförderung. Gesondert: Der KlimaBonus e.V. der Klimaschutzregion Flensburg belohnt ein Balkonkraftwerk mit KlimaBoni in Regionalwährung — kein Euro-Zuschuss der Gemeinde, daher kein Abzug. Stand 19.09.2026."
   }
 ]
