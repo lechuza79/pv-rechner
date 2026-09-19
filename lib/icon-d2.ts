@@ -40,6 +40,19 @@ export const ICON_D2_VARIABLE_NAMES = Object.keys(ICON_D2_VARIABLES) as IconD2Va
 export const SNAPSHOT_HOURS_BEFORE = 1;
 export const SNAPSHOT_HOURS_AFTER = 4;
 
+/**
+ * The last hour the archive holds values for, in hours since the epoch.
+ *
+ * `data_end_time` is exclusive: it names the first hour WITHOUT data (measured
+ * 19.09.2026: run 03 UTC, end 04 UTC two days later, that hour NaN in every
+ * cell). Read as inclusive, the snapshot asked for one empty hour — invisible
+ * by day, when tomorrow's end lies before the model's end, but after German
+ * midnight the window reaches the model's end and every postcode had a gap.
+ */
+export function lastModelHour(dataEndTimeSeconds: number) {
+  return Math.ceil(dataEndTimeSeconds / 3600) - 1;
+}
+
 export type IconD2Point = {
   /** Grid cell centre the values belong to. */
   cell: [number, number];

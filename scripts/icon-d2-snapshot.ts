@@ -26,6 +26,7 @@ import {
   SNAPSHOT_BUCKET,
   SNAPSHOT_HOURS_AFTER,
   SNAPSHOT_HOURS_BEFORE,
+  lastModelHour,
   shardKey,
   snapshotPath,
   type IconD2Shard,
@@ -61,7 +62,7 @@ async function main() {
   const [dayStart, dayEnd] = berlinTagesgrenzen(new Date());
   const [, reachEnd] = berlinTagesgrenzen(new Date((nowHour + SNAPSHOT_HOURS_AFTER) * 3600000));
   const [, tomorrowEnd] = berlinTagesgrenzen(new Date(dayEnd + 12 * 3600000));
-  const endHour = Math.floor(meta.data_end_time / 3600);
+  const endHour = lastModelHour(meta.data_end_time);
   const firstHour = Math.min(nowHour - SNAPSHOT_HOURS_BEFORE, dayStart / 3600000);
   const required = Math.max(nowHour + SNAPSHOT_HOURS_AFTER, reachEnd / 3600000);
   const lastHour = Math.max(required, Math.min(tomorrowEnd / 3600000, endHour));
