@@ -45,7 +45,15 @@ const EXCLUDED = /datenschutzbeauftrag|technische umsetzung|webdesign|dienstleis
 const OWN_TITLE = /pressesprecher\w*|leit(?:ung|er\w*)|klima(?:schutz)?manager\w*|energiemanager\w*|beauftragte?\w*|koordinator\w*|referent\w* für (?:presse|öffentlichkeit)/iu;
 const HISTORICAL = /ehemalig|nicht (?:mehr )?zuständig|nicht mehr erreichbar|außer dienst|\ba\.\s?d\./iu;
 /** A block naming another unit must not inherit a department heading from above. */
-const OTHER_UNIT = /bauhof|standesamt|bürgerbüro|buergerbuero|stadtkasse|gemeindekasse|ordnungsamt|bauamt|friedhof|bücherei|bibliothek|schule|kita|notfäll|museum|archiv|theater|volkshochschule|passamt|meldeamt|einwohnermelde|vermietung/iu;
+const OTHER_UNIT = /bauhof|standesamt|bürgerbüro|buergerbuero|stadtkasse|gemeindekasse|ordnungsamt|bauamt|friedhof|bücherei|bibliothek|schule|kita|notfäll|museum|archiv|theater|volkshochschule|passamt|meldeamt|einwohnermelde|vermietung|haustechnik/iu;
+
+/**
+ * Elected council members publish mailboxes on the town site with their committee
+ * "Referat: Energie und Klimaschutz" — a political office, not the administration
+ * (Wolfertschwenden, found in the hand review of 19.09.2026).
+ */
+const COUNCIL = /fraktion|wählergruppe|waehlergruppe|ortsverband|ratsmitglied|gemeinderatsmitglied|stadtratsmitglied|\bbündnis 90\b|\b(?:cdu|csu|spd|fdp|afd)\b|freie wähler/iu;
+const COUNCIL_PATH = /\/(?:gemeinderat|stadtrat|ortsgemeinderat|fraktionen?)(?:\/|$)/i;
 
 /**
  * A role word counts only as the person's unit or title, not as one item in a
@@ -87,6 +95,7 @@ export function judgeEvidence(c: ContactCandidate, headings: string[], src: Sour
   // The town hall mailbox sits next to web agency credits in every imprint; only its purpose can exclude it.
   if (c.purpose === "excluded" || (!general && EXCLUDED.test(stripMail(block.length <= 400 ? block : near(block))))) reasons.push("excluded-purpose");
   if (HISTORICAL.test(stripMail(block))) reasons.push("historical-or-negated");
+  if (!general && (COUNCIL.test(stripMail(block)) || (() => { try { return COUNCIL_PATH.test(new URL(src.url).pathname); } catch { return false; } })())) reasons.push("council-member");
   const limits = evidenceLimitations(block, src.url, { asOf }, c.publishedAt);
   reasons.push(...limits.filter(r => r !== "dated-source-needs-current-confirmation"));
   let path = "";
@@ -134,7 +143,9 @@ export function applyAdministration(evidence: Evidence[], titles: Map<string, st
   // A county or region publishing on the town's portal is a different authority.
   const otherAuthority = (d: string) => /kreis|region|bezirk|lra|landratsamt/.test(fold(d)) && !tokens.some(w => fold(d).includes(w));
   const ownVariant = (d: string) => ownToken.length >= 4 && new RegExp(`^(?:stadt|gemeinde|markt|flecken)?${ownToken}(?:stadt|gemeinde)?$`).test(fold(d.split(".")[0] ?? ""));
-  const institutional = new Set([...perDomain].filter(([d, set]) => !otherAuthority(d) && (set.size >= 3
+  // Municipal companies carry the town name but are not the administration (hameln-tourismus.de).
+  const company = (d: string) => /touris|marketing|stadtwerk|werke|gmbh|messe|hafen|kultur|verkehrsverein|wirtschaftsfoerder/.test(fold(d));
+  const institutional = new Set([...perDomain].filter(([d, set]) => !otherAuthority(d) && !company(d) && (set.size >= 3
     || ownVariant(d)
     || tokens.some(w => fold(d).includes(w)))).map(([d]) => d));
   return evidence.map(e => {

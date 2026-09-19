@@ -48,6 +48,22 @@ describe("Municipal judgement: real false positives found while piloting", () =>
     const html = `<main><h2>Klimaschutz</h2><p>Für technische Notfälle steht der Städtische Bauhof unter Tel. 04431-4311 oder <a href="mailto:bauhof@wildeshausen.de">bauhof@wildeshausen.de</a> zur Verfügung.</p></main>`;
     expect(channelsOf(judgePage(html, "https://www.wildeshausen.de/buergerservice/klimaschutz/", town("https://www.wildeshausen.de/")), "bauhof@wildeshausen.de")).toEqual([]);
   });
+  it("does not take elected council members as administration contacts (Wolfertschwenden)", () => {
+    const html = `<main><h2>Mitglieder</h2><p>Kempfle, Raik <a href="mailto:raik.kempfle@wolfertschwenden.de">raik.kempfle@wolfertschwenden.de</a> Parteilose Wählergruppe Aufgaben und Tätigkeiten: Mitglied: Bauausschuss Referat: Energie und Klimaschutz</p></main>`;
+    expect(channelsOf(judgePage(html, "https://www.wolfertschwenden.de/buergerservice-politik/gemeinderat/mitglieder", town("https://www.wolfertschwenden.de/")), "raik.kempfle@wolfertschwenden.de")).toEqual([]);
+    const admin = `<main><h2>Klimaschutz</h2><p>Herr Muster Klimaschutzmanager <a href="mailto:muster@wolfertschwenden.de">muster@wolfertschwenden.de</a></p></main>`;
+    expect(channelsOf(judgePage(admin, "https://www.wolfertschwenden.de/rathaus/klimaschutz", town("https://www.wolfertschwenden.de/")), "muster@wolfertschwenden.de")).toEqual(["energy"]);
+  });
+  it("does not accept a municipal company domain as the town's own (Hameln tourism)", () => {
+    const html = `<main><h2>Pressemitteilungen</h2><p>Presseanfragen rund um das Rathaus <a href="mailto:pressestelle@hameln.de">pressestelle@hameln.de</a></p><p>Presseanfragen zum Thema Tourismus Anastasia Muster <a href="mailto:a.muster@hameln-tourismus.de">a.muster@hameln-tourismus.de</a></p><p>Tourist-Information <a href="mailto:info@hameln-tourismus.de">info@hameln-tourismus.de</a> Gruppen <a href="mailto:gruppen@hameln-tourismus.de">gruppen@hameln-tourismus.de</a></p></main>`;
+    const found = judgePage(html, "https://www.hameln.de/de/verwaltung/pressemitteilungen", town("https://www.hameln.de/", { name: "Hameln" }));
+    expect(channelsOf(found, "pressestelle@hameln.de")).toEqual(["press"]);
+    expect(channelsOf(found, "a.muster@hameln-tourismus.de")).toEqual([]);
+  });
+  it("does not take building services as the press office (Werl)", () => {
+    const html = `<main><p>Dennis Volke Haustechnik Abteilung Öffentlichkeitsarbeit und Veranstaltungen Stadthalle <a href="mailto:dennis.volke@werl.de">dennis.volke@werl.de</a></p></main>`;
+    expect(channelsOf(judgePage(html, "https://www.werl.de/rathaus/mitarbeiter", town("https://www.werl.de/")), "dennis.volke@werl.de")).toEqual([]);
+  });
   it("never turns a general town hall mailbox into a press contact (Telgte, Köln)", () => {
     const html = `<main><h2>Presse Abwasserbetrieb</h2><p>Baßfeld 4-6 Telefon 02504 130 <a href="mailto:rathaus@telgte.de">rathaus@telgte.de</a> Kontakt Impressum Datenschutz</p></main>`;
     expect(channelsOf(judgePage(html, "https://www.telgte.de/rathaus/presse/", town("https://www.telgte.de/")), "rathaus@telgte.de")).toEqual([]);
