@@ -265,6 +265,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 19 Sep 2026: guideline read in full; the one-year application window
   // after installation and the one-per-dwelling limit have no test form.
   "mehren-balkonkraftwerke",
+  // Added 19 Sep 2026: income condition (Wohngeld/Bürgergeld), green tariff,
+  // one-per-meter and the 3-year operating duty have no test form.
+  "holzminden-solarfair",
   // Added 18 Sep 2026: exhausted VG programme, guideline read in full; the
   // test forms (application before contract, 3-/12-month deadlines) are missing.
   "vg-hachenburg-erneuerbare-energien",

@@ -4215,6 +4215,52 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Nr. 4.4: "Eine Kumulierung mit anderen Förderprogrammen ist zulässig."
     combinableWith: BUND,
   },
+  "holzminden-solarfair": {
+    id: "holzminden-solarfair", name: "Holzminden SolarFair – Gemeinsam klimafreundlich leben!",
+    traeger: "Stadt Holzminden", level: "kommune", region: "Holzminden (Landkreis Holzminden)",
+    bundesland: "Niedersachsen", agsCode: "03255023",
+    url: "https://www.holzminden.de/bauen-wirtschaft/umwelt/solarfair/",
+    // NEU AUFGENOMMEN 19.09.2026. Found while closing SG Eschershausen-
+    // Stadtoldendorf; programme page and guideline ("Richtlinie der Stadt
+    // Holzminden zur Förderung von Balkonkraftwerken", dated 11.03.2025, linked
+    // from the page) read in full on 19.09.2026.
+    // Nr. 5: "Die Höhe der Zuwendung beträgt 200 Euro pro Balkonkraftwerk."
+    // Nr. 2: only for recipients of Wohngeld or Bürgergeld with main residence
+    // in Holzminden and a green-electricity tariff. Nr. 6: up to 50 systems in
+    // 2025 and 50 in 2026, unused 2025 funds carry over into 2026, funded from
+    // the foundation "Vermächtnis Holzmindener Bürger", no carry-over into 2027.
+    // Adversarial review 19.09.2026: entry confirmed except the carry-over,
+    // which was added. Nr. 12: in force 01.07.2025 to
+    // 31.12.2026.
+    // NO STRUCTURED RATE: the grant depends on an income condition the
+    // calculator cannot know (same treatment as hamburg-balkon-einkommen).
+    // STATUS "aktiv" rests on the page still offering the online application
+    // without an exhaustion notice; how many of the 2026 places are left is
+    // unknown.
+    // Key: Stadt Holzminden 03255023 (18,921 inhabitants), checked in the
+    // register — not the Landkreis (03255) and not the uninhabited 03255505.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-07-01", endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Zuschuss zum Kauf eines neuen Balkonkraftwerks — nur für Haushalte mit Wohngeld oder Bürgergeld",
+    maxFoerderung: "200 € je Balkonkraftwerk",
+    rates: [
+      { label: "Balkonkraftwerk (nur mit Wohngeld oder Bürgergeld)", value: "200 € je Anlage" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind nur Personen, die Wohngeld oder Bürgergeld beziehen und ihren Erstwohnsitz in Holzminden oder den zugehörigen Ortschaften haben",
+      "Ein Ökostrom-Tarif ist Pflicht — bestehend oder bei Antragstellung abgeschlossen",
+      "Das Balkonkraftwerk muss nach dem 01.07.2025 neu gekauft und installiert worden sein, an der Adresse des Erstwohnsitzes, und im Marktstammdatenregister angemeldet sein",
+      "Höchstens eine Förderung je Stromzähler; die Anlage muss mindestens drei Jahre betrieben werden",
+      "Gefördert werden insgesamt bis zu 100 Anlagen in den Jahren 2025 und 2026 (je 50; nicht genutzte Plätze aus 2025 gehen ins Jahr 2026 über), in der Reihenfolge der Anträge; kein Rechtsanspruch",
+      "Die Richtlinie tritt zum 31.12.2026 außer Kraft; Mittel werden nicht ins Jahr 2027 übertragen",
+    ],
+    // The guideline requires a declaration excluding double funding ("Ausschluss
+    // einer Doppelförderung", Nr. 7.1 item 6) without naming which programmes;
+    // no combination rule is stated, so none is assumed.
+    combinableWith: null,
+  },
   "cochem-zell-solarstromspeicher": {
     id: "cochem-zell-solarstromspeicher", name: "Förderprogramm Solarstromspeicher",
     traeger: "Landkreis Cochem-Zell", level: "landkreis", region: "Landkreis Cochem-Zell", bundesland: "Rheinland-Pfalz", agsCode: "07135",

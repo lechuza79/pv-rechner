@@ -35105,7 +35105,7 @@
   {
     "regionId": "03255023",
     "name": "Holzminden",
-    "checkedAt": "2026-09-19T16:40:00Z",
+    "checkedAt": "2026-09-19T18:30:00Z",
     "recheckAt": "2026-12-18T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "searches": [
@@ -35119,16 +35119,508 @@
       },
       {
         "url": "https://www.holzminden.de/downloads/datei/YmQxOTYxMzlhMTU4NGIxOXdCK1JScjVLRURraUJsYk9vQU5iQnFmTks0VjJoNWxqQ2ZjL2cvMnBCYVlQeDhIYStWMVlpRXJvTi9pMjZEODRyM05jaHhGdlY1U1ZLM2lyTE5XWTBlKzZoL0h6VFA1RzY3TTZOYWFHMlhCd3RXTkxGeVdscFQzT2tDdmVmNTJuK3I5eFk3QTQvbVhIRlpaeWxYNncweDZFVmpwQ3RRS3U0dHJxVHVEbWNpRT0",
-        "finding": "Förderrichtlinie SolarFair gelesen: 200 € je Balkonkraftwerk, nur Wohngeld-/Bürgergeld-Beziehende mit Erstwohnsitz im Stadtgebiet und Ökostromtarif, Anschaffung nach 01.07.2025, MaStR-Registrierung, je Zähler eine Förderung, je 50 Anlagen 2025/2026, keine Übertragung nach 2027, kein Rechtsanspruch; finanziert von der Stiftung „Vermächtnis Holzmindener Bürger“."
+        "finding": "Förderrichtlinie SolarFair gelesen: 200 € je Balkonkraftwerk, nur Wohngeld-/Bürgergeld-Beziehende mit Erstwohnsitz im Stadtgebiet und Ökostromtarif, Anschaffung nach 01.07.2025, MaStR-Registrierung, je Zähler eine Förderung, je 50 Anlagen 2025/2026 (nicht genutzte Plätze aus 2025 gehen ins Jahr 2026 über), keine Übertragung nach 2027, kein Rechtsanspruch; finanziert von der Stiftung „Vermächtnis Holzmindener Bürger“."
       }
     ],
-    "sources": [],
-    "outcome": "klaerung",
-    "conclusion": "Die Stadt Holzminden fördert Balkonkraftwerke mit 200 € (SolarFair), aber nur für Wohngeld- und Bürgergeld-Beziehende — eine Einkommensbedingung, die der Rechner nicht abbilden kann; aufzunehmen ist das Programm deshalb als Information ohne Geldabzug. Ob 2026 noch Mittel frei sind, sagt die Seite nicht. Aufnahme in den Katalog steht aus. Stand 19.09.2026.",
-    "nextAction": {
-      "kind": "manual",
-      "dueAt": "2026-09-20T18:00:00Z",
-      "detail": "SolarFair als Balkon-Programm der Stadt Holzminden (Ortsschlüssel 03255023) nach Gate aufnehmen: vollständige Belege liegen vor (Seite + Richtlinie), Einkommensbedingung → kein strukturierter Satz, Laufzeit bis 31.12.2026; Ortsverzeichnis-Eintrag mit achtstelligem Schlüssel und Kreis ergänzen; Council vor dem Commit."
-    }
+    "sources": [
+      {
+        "url": "holzminden.de/downloads/datei/YmQxOTYxMzlhMTU4NGIxOXdCK1JScjVLRURraUJsYk9vQU5iQnFmTks0VjJoNWxqQ2ZjL2cvMnBCYVlQeDhIYStWMVlpRXJvTi9pMjZEODRyM05jaHhGdlY1U1ZLM2lyTE5XWTBlKzZoL0h6VFA1RzY3TTZOYWFHMlhCd3RXTkxGeVdscFQzT2tDdmVmNTJuK3I5eFk3QTQvbVhIRlpaeWxYNncweDZFVmpwQ3RRS3U0dHJxVHVEbWNpRT0",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinie SolarFair im Original gelesen und als Programm holzminden-solarfair aufgenommen.",
+        "evidenceUrl": "https://www.holzminden.de/downloads/datei/YmQxOTYxMzlhMTU4NGIxOXdCK1JScjVLRURraUJsYk9vQU5iQnFmTks0VjJoNWxqQ2ZjL2cvMnBCYVlQeDhIYStWMVlpRXJvTi9pMjZEODRyM05jaHhGdlY1U1ZLM2lyTE5XWTBlKzZoL0h6VFA1RzY3TTZOYWFHMlhCd3RXTkxGeVdscFQzT2tDdmVmNTJuK3I5eFk3QTQvbVhIRlpaeWxYNncweDZFVmpwQ3RRS3U0dHJxVHVEbWNpRT0"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Stadt Holzminden fördert Balkonkraftwerke mit 200 € je Anlage (SolarFair, Richtlinie gültig 01.07.2025–31.12.2026), aber nur für Wohngeld- und Bürgergeld-Beziehende mit Erstwohnsitz im Stadtgebiet und Ökostromtarif. Am 19.09.2026 nach adversarialer Gegenprüfung in den Katalog aufgenommen — als Information ohne Geldabzug, weil der Rechner die Einkommensbedingung nicht kennt. Ob 2026 noch Plätze frei sind, sagt die Seite nicht; ein Erschöpfungshinweis fehlt. Einen Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen führen weder Stadt noch Landkreis (Kreis nur Unternehmensförderung). Stand 19.09.2026."
+  },
+  {
+    "regionId": "16075014",
+    "name": "Dittersdorf",
+    "checkedAt": "2026-09-19T18:45:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-seenplatte.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Zuschuss, Klimaschutz jeweils „Leider keine Treffer gefunden“; Förderung: nur die Seite „Förderung“ (Wirtschaftsförderung), zwei Meldungen (Stellenausschreibung, Grundsteuerreform) und Kita-Verzeichniseinträge",
+      "Gemeinde-Websites Löhma, Plothen und Moßbach (Startseiten, 19.09.2026): keine Förder-, Energie- oder Klimaseite",
+      "Websuche „Saale-Orla-Kreis Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte Schleiz“ (19.09.2026): einziger Treffer mit Privatbezug ist ein Förderhinweis der LEADER-Aktionsgruppe Saale-Orla",
+      "leader-sok.de: Förderhinweis „Photovoltaik für den Eigenverbrauch“, aktueller Förderrahmen und Startseite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): „Auskunft über die Möglichkeiten der Wirtschafts- und Gründungsförderung erhalten Sie bei folgenden Behörden: Landratsamt Saale-Orla-Kreis, Fachdienst Wirtschaft …“ — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.vg-seenplatte.de/contact/index/link",
+        "finding": "Abgerufen (19.09.2026): Formularverweis „Link verschicken“, ohne Parameter HTTP 404 — kein Förderinhalt, reine Seitenfunktion."
+      },
+      {
+        "url": "https://leader-sok.de/photovoltaik-fuer-den-eigenverbrauch-foerderhinweise/",
+        "finding": "Gelesen (19.09.2026): undatierter Förderhinweis der LEADER-Aktionsgruppe Saale-Orla (bis 30 %, max. 10.000 € für netzunabhängige PV mit mind. 60 % Eigenverbrauch, vorherige Energieberatung). Eingebundene Dateien stammen aus 2017/2018, also aus der Förderperiode vor 2023; der aktuelle Förderrahmen (https://leader-sok.de/foerderung/foerderrahmen-leader-saale-orla/) nennt keine PV-Förderung, sondern votierte Einzelprojekte mit Konzept und Projektaufruf. Keine kommunale Förderung und kein belegtes laufendes Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Verwaltungsgemeinschaft: nur Verweis auf die Wirtschaftsförderung des Landratsamts.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Förderseite; durch die gelesene Förderseite erledigt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Seitenfunktion „Link verschicken“ (HTTP 404), kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dittersdorf gehört zur Verwaltungsgemeinschaft Seenplatte (Saale-Orla-Kreis, Thüringen). Weder Verwaltungsgemeinschaft noch Mitgliedsgemeinden führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; die Förderseite verweist nur auf die Wirtschaftsförderung des Landratsamts, die Volltextsuche findet zu keinem Energiebegriff einen Treffer. Der PV-Förderhinweis der LEADER-Aktionsgruppe Saale-Orla stammt erkennbar aus der Förderperiode vor 2023 und ist keine kommunale Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "16075033",
+    "name": "Görkwitz",
+    "checkedAt": "2026-09-19T18:45:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-seenplatte.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Zuschuss, Klimaschutz jeweils „Leider keine Treffer gefunden“; Förderung: nur die Seite „Förderung“ (Wirtschaftsförderung), zwei Meldungen (Stellenausschreibung, Grundsteuerreform) und Kita-Verzeichniseinträge",
+      "Gemeinde-Websites Löhma, Plothen und Moßbach (Startseiten, 19.09.2026): keine Förder-, Energie- oder Klimaseite",
+      "Websuche „Saale-Orla-Kreis Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte Schleiz“ (19.09.2026): einziger Treffer mit Privatbezug ist ein Förderhinweis der LEADER-Aktionsgruppe Saale-Orla",
+      "leader-sok.de: Förderhinweis „Photovoltaik für den Eigenverbrauch“, aktueller Förderrahmen und Startseite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): „Auskunft über die Möglichkeiten der Wirtschafts- und Gründungsförderung erhalten Sie bei folgenden Behörden: Landratsamt Saale-Orla-Kreis, Fachdienst Wirtschaft …“ — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.vg-seenplatte.de/contact/index/link",
+        "finding": "Abgerufen (19.09.2026): Formularverweis „Link verschicken“, ohne Parameter HTTP 404 — kein Förderinhalt, reine Seitenfunktion."
+      },
+      {
+        "url": "https://leader-sok.de/photovoltaik-fuer-den-eigenverbrauch-foerderhinweise/",
+        "finding": "Gelesen (19.09.2026): undatierter Förderhinweis der LEADER-Aktionsgruppe Saale-Orla (bis 30 %, max. 10.000 € für netzunabhängige PV mit mind. 60 % Eigenverbrauch, vorherige Energieberatung). Eingebundene Dateien stammen aus 2017/2018, also aus der Förderperiode vor 2023; der aktuelle Förderrahmen (https://leader-sok.de/foerderung/foerderrahmen-leader-saale-orla/) nennt keine PV-Förderung, sondern votierte Einzelprojekte mit Konzept und Projektaufruf. Keine kommunale Förderung und kein belegtes laufendes Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Verwaltungsgemeinschaft: nur Verweis auf die Wirtschaftsförderung des Landratsamts.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Förderseite; durch die gelesene Förderseite erledigt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Seitenfunktion „Link verschicken“ (HTTP 404), kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Görkwitz gehört zur Verwaltungsgemeinschaft Seenplatte (Saale-Orla-Kreis, Thüringen). Weder Verwaltungsgemeinschaft noch Mitgliedsgemeinden führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; die Förderseite verweist nur auf die Wirtschaftsförderung des Landratsamts, die Volltextsuche findet zu keinem Energiebegriff einen Treffer. Der PV-Förderhinweis der LEADER-Aktionsgruppe Saale-Orla stammt erkennbar aus der Förderperiode vor 2023 und ist keine kommunale Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "16075034",
+    "name": "Göschitz",
+    "checkedAt": "2026-09-19T18:45:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-seenplatte.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Zuschuss, Klimaschutz jeweils „Leider keine Treffer gefunden“; Förderung: nur die Seite „Förderung“ (Wirtschaftsförderung), zwei Meldungen (Stellenausschreibung, Grundsteuerreform) und Kita-Verzeichniseinträge",
+      "Gemeinde-Websites Löhma, Plothen und Moßbach (Startseiten, 19.09.2026): keine Förder-, Energie- oder Klimaseite",
+      "Websuche „Saale-Orla-Kreis Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte Schleiz“ (19.09.2026): einziger Treffer mit Privatbezug ist ein Förderhinweis der LEADER-Aktionsgruppe Saale-Orla",
+      "leader-sok.de: Förderhinweis „Photovoltaik für den Eigenverbrauch“, aktueller Förderrahmen und Startseite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): „Auskunft über die Möglichkeiten der Wirtschafts- und Gründungsförderung erhalten Sie bei folgenden Behörden: Landratsamt Saale-Orla-Kreis, Fachdienst Wirtschaft …“ — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.vg-seenplatte.de/contact/index/link",
+        "finding": "Abgerufen (19.09.2026): Formularverweis „Link verschicken“, ohne Parameter HTTP 404 — kein Förderinhalt, reine Seitenfunktion."
+      },
+      {
+        "url": "https://leader-sok.de/photovoltaik-fuer-den-eigenverbrauch-foerderhinweise/",
+        "finding": "Gelesen (19.09.2026): undatierter Förderhinweis der LEADER-Aktionsgruppe Saale-Orla (bis 30 %, max. 10.000 € für netzunabhängige PV mit mind. 60 % Eigenverbrauch, vorherige Energieberatung). Eingebundene Dateien stammen aus 2017/2018, also aus der Förderperiode vor 2023; der aktuelle Förderrahmen (https://leader-sok.de/foerderung/foerderrahmen-leader-saale-orla/) nennt keine PV-Förderung, sondern votierte Einzelprojekte mit Konzept und Projektaufruf. Keine kommunale Förderung und kein belegtes laufendes Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Verwaltungsgemeinschaft: nur Verweis auf die Wirtschaftsförderung des Landratsamts.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Förderseite; durch die gelesene Förderseite erledigt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Seitenfunktion „Link verschicken“ (HTTP 404), kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Göschitz gehört zur Verwaltungsgemeinschaft Seenplatte (Saale-Orla-Kreis, Thüringen). Weder Verwaltungsgemeinschaft noch Mitgliedsgemeinden führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; die Förderseite verweist nur auf die Wirtschaftsförderung des Landratsamts, die Volltextsuche findet zu keinem Energiebegriff einen Treffer. Der PV-Förderhinweis der LEADER-Aktionsgruppe Saale-Orla stammt erkennbar aus der Förderperiode vor 2023 und ist keine kommunale Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "16075063",
+    "name": "Löhma",
+    "checkedAt": "2026-09-19T18:45:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-seenplatte.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Zuschuss, Klimaschutz jeweils „Leider keine Treffer gefunden“; Förderung: nur die Seite „Förderung“ (Wirtschaftsförderung), zwei Meldungen (Stellenausschreibung, Grundsteuerreform) und Kita-Verzeichniseinträge",
+      "Gemeinde-Websites Löhma, Plothen und Moßbach (Startseiten, 19.09.2026): keine Förder-, Energie- oder Klimaseite",
+      "Websuche „Saale-Orla-Kreis Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte Schleiz“ (19.09.2026): einziger Treffer mit Privatbezug ist ein Förderhinweis der LEADER-Aktionsgruppe Saale-Orla",
+      "leader-sok.de: Förderhinweis „Photovoltaik für den Eigenverbrauch“, aktueller Förderrahmen und Startseite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): „Auskunft über die Möglichkeiten der Wirtschafts- und Gründungsförderung erhalten Sie bei folgenden Behörden: Landratsamt Saale-Orla-Kreis, Fachdienst Wirtschaft …“ — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.vg-seenplatte.de/contact/index/link",
+        "finding": "Abgerufen (19.09.2026): Formularverweis „Link verschicken“, ohne Parameter HTTP 404 — kein Förderinhalt, reine Seitenfunktion."
+      },
+      {
+        "url": "https://leader-sok.de/photovoltaik-fuer-den-eigenverbrauch-foerderhinweise/",
+        "finding": "Gelesen (19.09.2026): undatierter Förderhinweis der LEADER-Aktionsgruppe Saale-Orla (bis 30 %, max. 10.000 € für netzunabhängige PV mit mind. 60 % Eigenverbrauch, vorherige Energieberatung). Eingebundene Dateien stammen aus 2017/2018, also aus der Förderperiode vor 2023; der aktuelle Förderrahmen (https://leader-sok.de/foerderung/foerderrahmen-leader-saale-orla/) nennt keine PV-Förderung, sondern votierte Einzelprojekte mit Konzept und Projektaufruf. Keine kommunale Förderung und kein belegtes laufendes Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Verwaltungsgemeinschaft: nur Verweis auf die Wirtschaftsförderung des Landratsamts.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Förderseite; durch die gelesene Förderseite erledigt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Seitenfunktion „Link verschicken“ (HTTP 404), kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Löhma gehört zur Verwaltungsgemeinschaft Seenplatte (Saale-Orla-Kreis, Thüringen). Weder Verwaltungsgemeinschaft noch Mitgliedsgemeinden führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; die Förderseite verweist nur auf die Wirtschaftsförderung des Landratsamts, die Volltextsuche findet zu keinem Energiebegriff einen Treffer. Der PV-Förderhinweis der LEADER-Aktionsgruppe Saale-Orla stammt erkennbar aus der Förderperiode vor 2023 und ist keine kommunale Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "16075068",
+    "name": "Moßbach",
+    "checkedAt": "2026-09-19T18:45:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-seenplatte.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Zuschuss, Klimaschutz jeweils „Leider keine Treffer gefunden“; Förderung: nur die Seite „Förderung“ (Wirtschaftsförderung), zwei Meldungen (Stellenausschreibung, Grundsteuerreform) und Kita-Verzeichniseinträge",
+      "Gemeinde-Websites Löhma, Plothen und Moßbach (Startseiten, 19.09.2026): keine Förder-, Energie- oder Klimaseite",
+      "Websuche „Saale-Orla-Kreis Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte Schleiz“ (19.09.2026): einziger Treffer mit Privatbezug ist ein Förderhinweis der LEADER-Aktionsgruppe Saale-Orla",
+      "leader-sok.de: Förderhinweis „Photovoltaik für den Eigenverbrauch“, aktueller Förderrahmen und Startseite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): „Auskunft über die Möglichkeiten der Wirtschafts- und Gründungsförderung erhalten Sie bei folgenden Behörden: Landratsamt Saale-Orla-Kreis, Fachdienst Wirtschaft …“ — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.vg-seenplatte.de/contact/index/link",
+        "finding": "Abgerufen (19.09.2026): Formularverweis „Link verschicken“, ohne Parameter HTTP 404 — kein Förderinhalt, reine Seitenfunktion."
+      },
+      {
+        "url": "https://leader-sok.de/photovoltaik-fuer-den-eigenverbrauch-foerderhinweise/",
+        "finding": "Gelesen (19.09.2026): undatierter Förderhinweis der LEADER-Aktionsgruppe Saale-Orla (bis 30 %, max. 10.000 € für netzunabhängige PV mit mind. 60 % Eigenverbrauch, vorherige Energieberatung). Eingebundene Dateien stammen aus 2017/2018, also aus der Förderperiode vor 2023; der aktuelle Förderrahmen (https://leader-sok.de/foerderung/foerderrahmen-leader-saale-orla/) nennt keine PV-Förderung, sondern votierte Einzelprojekte mit Konzept und Projektaufruf. Keine kommunale Förderung und kein belegtes laufendes Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Verwaltungsgemeinschaft: nur Verweis auf die Wirtschaftsförderung des Landratsamts.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Förderseite; durch die gelesene Förderseite erledigt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Seitenfunktion „Link verschicken“ (HTTP 404), kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Moßbach gehört zur Verwaltungsgemeinschaft Seenplatte (Saale-Orla-Kreis, Thüringen). Weder Verwaltungsgemeinschaft noch Mitgliedsgemeinden führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; die Förderseite verweist nur auf die Wirtschaftsförderung des Landratsamts, die Volltextsuche findet zu keinem Energiebegriff einen Treffer. Der PV-Förderhinweis der LEADER-Aktionsgruppe Saale-Orla stammt erkennbar aus der Förderperiode vor 2023 und ist keine kommunale Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "16075072",
+    "name": "Neundorf (bei Schleiz)",
+    "checkedAt": "2026-09-19T18:45:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-seenplatte.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Zuschuss, Klimaschutz jeweils „Leider keine Treffer gefunden“; Förderung: nur die Seite „Förderung“ (Wirtschaftsförderung), zwei Meldungen (Stellenausschreibung, Grundsteuerreform) und Kita-Verzeichniseinträge",
+      "Gemeinde-Websites Löhma, Plothen und Moßbach (Startseiten, 19.09.2026): keine Förder-, Energie- oder Klimaseite",
+      "Websuche „Saale-Orla-Kreis Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte Schleiz“ (19.09.2026): einziger Treffer mit Privatbezug ist ein Förderhinweis der LEADER-Aktionsgruppe Saale-Orla",
+      "leader-sok.de: Förderhinweis „Photovoltaik für den Eigenverbrauch“, aktueller Förderrahmen und Startseite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): „Auskunft über die Möglichkeiten der Wirtschafts- und Gründungsförderung erhalten Sie bei folgenden Behörden: Landratsamt Saale-Orla-Kreis, Fachdienst Wirtschaft …“ — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.vg-seenplatte.de/contact/index/link",
+        "finding": "Abgerufen (19.09.2026): Formularverweis „Link verschicken“, ohne Parameter HTTP 404 — kein Förderinhalt, reine Seitenfunktion."
+      },
+      {
+        "url": "https://leader-sok.de/photovoltaik-fuer-den-eigenverbrauch-foerderhinweise/",
+        "finding": "Gelesen (19.09.2026): undatierter Förderhinweis der LEADER-Aktionsgruppe Saale-Orla (bis 30 %, max. 10.000 € für netzunabhängige PV mit mind. 60 % Eigenverbrauch, vorherige Energieberatung). Eingebundene Dateien stammen aus 2017/2018, also aus der Förderperiode vor 2023; der aktuelle Förderrahmen (https://leader-sok.de/foerderung/foerderrahmen-leader-saale-orla/) nennt keine PV-Förderung, sondern votierte Einzelprojekte mit Konzept und Projektaufruf. Keine kommunale Förderung und kein belegtes laufendes Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Verwaltungsgemeinschaft: nur Verweis auf die Wirtschaftsförderung des Landratsamts.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Förderseite; durch die gelesene Förderseite erledigt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Seitenfunktion „Link verschicken“ (HTTP 404), kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neundorf (bei Schleiz) gehört zur Verwaltungsgemeinschaft Seenplatte (Saale-Orla-Kreis, Thüringen). Weder Verwaltungsgemeinschaft noch Mitgliedsgemeinden führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; die Förderseite verweist nur auf die Wirtschaftsförderung des Landratsamts, die Volltextsuche findet zu keinem Energiebegriff einen Treffer. Der PV-Förderhinweis der LEADER-Aktionsgruppe Saale-Orla stammt erkennbar aus der Förderperiode vor 2023 und ist keine kommunale Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "16075083",
+    "name": "Plothen",
+    "checkedAt": "2026-09-19T18:45:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-seenplatte.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Zuschuss, Klimaschutz jeweils „Leider keine Treffer gefunden“; Förderung: nur die Seite „Förderung“ (Wirtschaftsförderung), zwei Meldungen (Stellenausschreibung, Grundsteuerreform) und Kita-Verzeichniseinträge",
+      "Gemeinde-Websites Löhma, Plothen und Moßbach (Startseiten, 19.09.2026): keine Förder-, Energie- oder Klimaseite",
+      "Websuche „Saale-Orla-Kreis Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte Schleiz“ (19.09.2026): einziger Treffer mit Privatbezug ist ein Förderhinweis der LEADER-Aktionsgruppe Saale-Orla",
+      "leader-sok.de: Förderhinweis „Photovoltaik für den Eigenverbrauch“, aktueller Förderrahmen und Startseite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): „Auskunft über die Möglichkeiten der Wirtschafts- und Gründungsförderung erhalten Sie bei folgenden Behörden: Landratsamt Saale-Orla-Kreis, Fachdienst Wirtschaft …“ — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.vg-seenplatte.de/contact/index/link",
+        "finding": "Abgerufen (19.09.2026): Formularverweis „Link verschicken“, ohne Parameter HTTP 404 — kein Förderinhalt, reine Seitenfunktion."
+      },
+      {
+        "url": "https://leader-sok.de/photovoltaik-fuer-den-eigenverbrauch-foerderhinweise/",
+        "finding": "Gelesen (19.09.2026): undatierter Förderhinweis der LEADER-Aktionsgruppe Saale-Orla (bis 30 %, max. 10.000 € für netzunabhängige PV mit mind. 60 % Eigenverbrauch, vorherige Energieberatung). Eingebundene Dateien stammen aus 2017/2018, also aus der Förderperiode vor 2023; der aktuelle Förderrahmen (https://leader-sok.de/foerderung/foerderrahmen-leader-saale-orla/) nennt keine PV-Förderung, sondern votierte Einzelprojekte mit Konzept und Projektaufruf. Keine kommunale Förderung und kein belegtes laufendes Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Verwaltungsgemeinschaft: nur Verweis auf die Wirtschaftsförderung des Landratsamts.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Förderseite; durch die gelesene Förderseite erledigt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Seitenfunktion „Link verschicken“ (HTTP 404), kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Plothen gehört zur Verwaltungsgemeinschaft Seenplatte (Saale-Orla-Kreis, Thüringen). Weder Verwaltungsgemeinschaft noch Mitgliedsgemeinden führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; die Förderseite verweist nur auf die Wirtschaftsförderung des Landratsamts, die Volltextsuche findet zu keinem Energiebegriff einen Treffer. Der PV-Förderhinweis der LEADER-Aktionsgruppe Saale-Orla stammt erkennbar aus der Förderperiode vor 2023 und ist keine kommunale Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "16075084",
+    "name": "Pörmitz",
+    "checkedAt": "2026-09-19T18:45:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-seenplatte.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Zuschuss, Klimaschutz jeweils „Leider keine Treffer gefunden“; Förderung: nur die Seite „Förderung“ (Wirtschaftsförderung), zwei Meldungen (Stellenausschreibung, Grundsteuerreform) und Kita-Verzeichniseinträge",
+      "Gemeinde-Websites Löhma, Plothen und Moßbach (Startseiten, 19.09.2026): keine Förder-, Energie- oder Klimaseite",
+      "Websuche „Saale-Orla-Kreis Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte Schleiz“ (19.09.2026): einziger Treffer mit Privatbezug ist ein Förderhinweis der LEADER-Aktionsgruppe Saale-Orla",
+      "leader-sok.de: Förderhinweis „Photovoltaik für den Eigenverbrauch“, aktueller Förderrahmen und Startseite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): „Auskunft über die Möglichkeiten der Wirtschafts- und Gründungsförderung erhalten Sie bei folgenden Behörden: Landratsamt Saale-Orla-Kreis, Fachdienst Wirtschaft …“ — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.vg-seenplatte.de/contact/index/link",
+        "finding": "Abgerufen (19.09.2026): Formularverweis „Link verschicken“, ohne Parameter HTTP 404 — kein Förderinhalt, reine Seitenfunktion."
+      },
+      {
+        "url": "https://leader-sok.de/photovoltaik-fuer-den-eigenverbrauch-foerderhinweise/",
+        "finding": "Gelesen (19.09.2026): undatierter Förderhinweis der LEADER-Aktionsgruppe Saale-Orla (bis 30 %, max. 10.000 € für netzunabhängige PV mit mind. 60 % Eigenverbrauch, vorherige Energieberatung). Eingebundene Dateien stammen aus 2017/2018, also aus der Förderperiode vor 2023; der aktuelle Förderrahmen (https://leader-sok.de/foerderung/foerderrahmen-leader-saale-orla/) nennt keine PV-Förderung, sondern votierte Einzelprojekte mit Konzept und Projektaufruf. Keine kommunale Förderung und kein belegtes laufendes Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Verwaltungsgemeinschaft: nur Verweis auf die Wirtschaftsförderung des Landratsamts.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Förderseite; durch die gelesene Förderseite erledigt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Seitenfunktion „Link verschicken“ (HTTP 404), kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Pörmitz gehört zur Verwaltungsgemeinschaft Seenplatte (Saale-Orla-Kreis, Thüringen). Weder Verwaltungsgemeinschaft noch Mitgliedsgemeinden führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; die Förderseite verweist nur auf die Wirtschaftsförderung des Landratsamts, die Volltextsuche findet zu keinem Energiebegriff einen Treffer. Der PV-Förderhinweis der LEADER-Aktionsgruppe Saale-Orla stammt erkennbar aus der Förderperiode vor 2023 und ist keine kommunale Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "16075109",
+    "name": "Tegau",
+    "checkedAt": "2026-09-19T18:45:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-seenplatte.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Zuschuss, Klimaschutz jeweils „Leider keine Treffer gefunden“; Förderung: nur die Seite „Förderung“ (Wirtschaftsförderung), zwei Meldungen (Stellenausschreibung, Grundsteuerreform) und Kita-Verzeichniseinträge",
+      "Gemeinde-Websites Löhma, Plothen und Moßbach (Startseiten, 19.09.2026): keine Förder-, Energie- oder Klimaseite",
+      "Websuche „Saale-Orla-Kreis Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte Schleiz“ (19.09.2026): einziger Treffer mit Privatbezug ist ein Förderhinweis der LEADER-Aktionsgruppe Saale-Orla",
+      "leader-sok.de: Förderhinweis „Photovoltaik für den Eigenverbrauch“, aktueller Förderrahmen und Startseite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): „Auskunft über die Möglichkeiten der Wirtschafts- und Gründungsförderung erhalten Sie bei folgenden Behörden: Landratsamt Saale-Orla-Kreis, Fachdienst Wirtschaft …“ — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.vg-seenplatte.de/contact/index/link",
+        "finding": "Abgerufen (19.09.2026): Formularverweis „Link verschicken“, ohne Parameter HTTP 404 — kein Förderinhalt, reine Seitenfunktion."
+      },
+      {
+        "url": "https://leader-sok.de/photovoltaik-fuer-den-eigenverbrauch-foerderhinweise/",
+        "finding": "Gelesen (19.09.2026): undatierter Förderhinweis der LEADER-Aktionsgruppe Saale-Orla (bis 30 %, max. 10.000 € für netzunabhängige PV mit mind. 60 % Eigenverbrauch, vorherige Energieberatung). Eingebundene Dateien stammen aus 2017/2018, also aus der Förderperiode vor 2023; der aktuelle Förderrahmen (https://leader-sok.de/foerderung/foerderrahmen-leader-saale-orla/) nennt keine PV-Förderung, sondern votierte Einzelprojekte mit Konzept und Projektaufruf. Keine kommunale Förderung und kein belegtes laufendes Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Verwaltungsgemeinschaft: nur Verweis auf die Wirtschaftsförderung des Landratsamts.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Förderseite; durch die gelesene Förderseite erledigt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Seitenfunktion „Link verschicken“ (HTTP 404), kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Tegau gehört zur Verwaltungsgemeinschaft Seenplatte (Saale-Orla-Kreis, Thüringen). Weder Verwaltungsgemeinschaft noch Mitgliedsgemeinden führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; die Förderseite verweist nur auf die Wirtschaftsförderung des Landratsamts, die Volltextsuche findet zu keinem Energiebegriff einen Treffer. Der PV-Förderhinweis der LEADER-Aktionsgruppe Saale-Orla stammt erkennbar aus der Förderperiode vor 2023 und ist keine kommunale Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "16075119",
+    "name": "Volkmannsdorf",
+    "checkedAt": "2026-09-19T18:45:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-seenplatte.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Zuschuss, Klimaschutz jeweils „Leider keine Treffer gefunden“; Förderung: nur die Seite „Förderung“ (Wirtschaftsförderung), zwei Meldungen (Stellenausschreibung, Grundsteuerreform) und Kita-Verzeichniseinträge",
+      "Gemeinde-Websites Löhma, Plothen und Moßbach (Startseiten, 19.09.2026): keine Förder-, Energie- oder Klimaseite",
+      "Websuche „Saale-Orla-Kreis Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte Schleiz“ (19.09.2026): einziger Treffer mit Privatbezug ist ein Förderhinweis der LEADER-Aktionsgruppe Saale-Orla",
+      "leader-sok.de: Förderhinweis „Photovoltaik für den Eigenverbrauch“, aktueller Förderrahmen und Startseite gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "finding": "Im Original gelesen (19.09.2026): „Auskunft über die Möglichkeiten der Wirtschafts- und Gründungsförderung erhalten Sie bei folgenden Behörden: Landratsamt Saale-Orla-Kreis, Fachdienst Wirtschaft …“ — kein eigenes Förderprogramm."
+      },
+      {
+        "url": "https://www.vg-seenplatte.de/contact/index/link",
+        "finding": "Abgerufen (19.09.2026): Formularverweis „Link verschicken“, ohne Parameter HTTP 404 — kein Förderinhalt, reine Seitenfunktion."
+      },
+      {
+        "url": "https://leader-sok.de/photovoltaik-fuer-den-eigenverbrauch-foerderhinweise/",
+        "finding": "Gelesen (19.09.2026): undatierter Förderhinweis der LEADER-Aktionsgruppe Saale-Orla (bis 30 %, max. 10.000 € für netzunabhängige PV mit mind. 60 % Eigenverbrauch, vorherige Energieberatung). Eingebundene Dateien stammen aus 2017/2018, also aus der Förderperiode vor 2023; der aktuelle Förderrahmen (https://leader-sok.de/foerderung/foerderrahmen-leader-saale-orla/) nennt keine PV-Förderung, sondern votierte Einzelprojekte mit Konzept und Projektaufruf. Keine kommunale Förderung und kein belegtes laufendes Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Verwaltungsgemeinschaft: nur Verweis auf die Wirtschaftsförderung des Landratsamts.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/seite/624062/f%C3%B6rderung.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckfassung derselben Förderseite; durch die gelesene Förderseite erledigt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/seite/624062/f%C3%B6rderung.html"
+      },
+      {
+        "url": "vg-seenplatte.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Seitenfunktion „Link verschicken“ (HTTP 404), kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-seenplatte.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Volkmannsdorf gehört zur Verwaltungsgemeinschaft Seenplatte (Saale-Orla-Kreis, Thüringen). Weder Verwaltungsgemeinschaft noch Mitgliedsgemeinden führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; die Förderseite verweist nur auf die Wirtschaftsförderung des Landratsamts, die Volltextsuche findet zu keinem Energiebegriff einen Treffer. Der PV-Förderhinweis der LEADER-Aktionsgruppe Saale-Orla stammt erkennbar aus der Förderperiode vor 2023 und ist keine kommunale Förderung. Stand 19.09.2026."
   }
 ]
