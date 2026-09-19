@@ -69,3 +69,6 @@
 .sc-trust p a{color:inherit}
 .sc-footer-legal a{text-decoration:none}
 .sc-trust h3,.sc-footer-grid h2{font-family:Montserrat,sans-serif}
+/* Legal links and disclaimer centred, like the state block above them. */
+.sc-footer-legal{justify-content:center}
+.sc-footer-disclaimer{margin-left:auto;margin-right:auto;text-align:center}
