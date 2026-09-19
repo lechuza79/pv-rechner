@@ -6472,7 +6472,7 @@
   {
     "regionId": "07135092",
     "name": "Zell (Mosel)",
-    "checkedAt": "2026-09-18T06:24:00Z",
+    "checkedAt": "2026-09-19T10:05:03Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -6498,6 +6498,10 @@
       {
         "url": "https://www.stadt-zell-mosel.de/aktuelles/foerderprogramm-gastgewerbe",
         "finding": "Im Original gelesen: Hinweis auf ein Landesprogramm für Restaurants, Campingplätze und Hotels — keine Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.stadt-zell-mosel.de/aktuelles/aus-dem-rathaus-03022023",
+        "finding": "Im Original gelesen (19.09.2026): Wochenbrief des Stadtbürgermeisters vom Februar 2023 zu Energiepreisen und einer möglichen Nahwärmeversorgung im Wohngebiet Barl über die Kreiswerke; erwähnt eine erwartete Landesrichtlinie für Nahwärmeprojekte, aber keinen Zuschuss der Stadt für Wärmepumpen, Photovoltaik, Speicher oder Balkonkraftwerke."
       }
     ],
     "sources": [
@@ -6506,6 +6510,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: Hinweis auf ein Landesprogramm für Restaurants, Campingplätze und Hotels — keine Förderung für Privathaushalte.",
         "evidenceUrl": "https://www.stadt-zell-mosel.de/aktuelles/foerderprogramm-gastgewerbe"
+      },
+      {
+        "url": "stadt-zell-mosel.de/aktuelles/aus-dem-rathaus-03022023",
+        "disposition": "reviewed",
+        "reason": "Wochenbrief 02/2023 zur Nahwärme-Planung Barl — kein kommunales Förderprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.stadt-zell-mosel.de/aktuelles/aus-dem-rathaus-03022023"
       }
     ]
   },
@@ -27891,5 +27901,415 @@
     ],
     "outcome": "keine-passende-foerderung",
     "conclusion": "Stepenitztal gehört zum Amt Grevesmühlen-Land, das von der Stadt Grevesmühlen verwaltet wird (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch die Stadt Grevesmühlen als Verwaltung des Amtes führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche findet zu Photovoltaik, Balkonkraftwerk, Förderprogramm und Wärmepumpe nichts, das Ortsrecht enthält keine Förderrichtlinie, und die erfasste Quelle listet EU-/Landeszuwendungen an Stadt und Gemeinden. Die Stadtwerke zahlen nur eine THG-Prämie für E-Autos. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "07132024",
+    "name": "Elben",
+    "checkedAt": "2026-09-19T10:20:02Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Sitemap nach Förder-, Klima-, Energie-, Solar-, Speicher-, Wärme- und Richtlinienseiten durchsucht und die Treffer gelesen (Speicherprogramm, Beratungsangebote/Fördermöglichkeiten, Energiespartipps PV, Klimaschutz, KIPKI-Pressemitteilung, Kommunaler Klimapakt, Wärmeplanung, Solar- und Wärmebotschafter)",
+      "vg-bg.de: Seiten „Umgesetzte Umwelt- und Klimaschutzmaßnahmen“ der Verbandsgemeinde und aller zehn Ortsgemeinden Elben, Elkenroth, Gebhardshain, Kausen, Malberg, Molzhain, Nauroth, Rosenheim, Steinebach/Sieg, Steineroth gelesen — keine Zuschussprogramme für Privathaushalte (nur das beendete Speicherprogramm der VG)",
+      "Landkreis Altenkirchen: Balkonkraftwerk- und Solarspeicherprogramm (beide im Katalog, beendet bzw. ausgeschöpft)",
+      "EKM Energieeffizienz Kommunal Mitgestalten GmbH (ekm-energie.de): Förderantrag, FAQ, Fördergebiet, Gesellschafterliste, Pressemitteilungen Altenkirchen 2024/2025 gelesen; adversariale Gegenprüfung 19.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“ Verweis auf die seit 19.11.2024 geltenden Kreisrichtlinien für Balkon-PV und Solarspeicher."
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/beratungsangebote-foerdermoeglichkeiten-informationen/",
+        "finding": "Im Original gelesen: Linkliste zu Beratung und Förderdatenbanken (co2online, Verbraucherzentrale, Energieagentur, KfW, BAFA) und zur EKM als „regionales Förderprogramm für Klimaschutz“; kein eigenes Programm der Verbandsgemeinde oder der Ortsgemeinden."
+      },
+      {
+        "url": "https://www.vg-bg.de/buergernah/aktuelles/pressemitteilungen/kipki-foerderung/",
+        "finding": "Im Original gelesen: KIPKI-Mittel der Verbandsgemeinde für eigene Maßnahmen (Flutlicht LED, Solarthermie, Dämmung öffentlicher Gebäude) — kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Dateistand 31.03.2026) gelesen: Privatpersonen in Gesellschafterkommunen (alle sechs Verbandsgemeinden des Kreises) können Zuschüsse beantragen; im Regionalausschuss Altenkirchen sind PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellungen (z. B. Wärmepumpe) nicht; Höhe nach Einzelfallentscheidung, kein Rechtsanspruch. Als Programm ekm-altenkirchen in den Katalog aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Speicherprogramm der Verbandsgemeinde beendet (Doppelförderung mit dem Kreisprogramm unzulässig); Kreisprogramme im Katalog.",
+        "evidenceUrl": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Elben gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Die Verbandsgemeinde hat ihr Batteriespeicher-Programm beendet, weil der Kreis seit 19.11.2024 eigene Programme für Balkonkraftwerke und Solarspeicher führte; beide Kreisprogramme sind inzwischen beendet bzw. ausgeschöpft und als historische Programme im Katalog. Laufend ist nur die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke sind dort ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; ob und wie viel gefördert wird, entscheidet der Ausschuss, und nur in Orten mit EAM-Netz. Sie ist als Programm ohne festen Satz aufgenommen. Ein eigenes Programm der Ortsgemeinde wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "07132025",
+    "name": "Elkenroth",
+    "checkedAt": "2026-09-19T10:20:02Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Sitemap nach Förder-, Klima-, Energie-, Solar-, Speicher-, Wärme- und Richtlinienseiten durchsucht und die Treffer gelesen (Speicherprogramm, Beratungsangebote/Fördermöglichkeiten, Energiespartipps PV, Klimaschutz, KIPKI-Pressemitteilung, Kommunaler Klimapakt, Wärmeplanung, Solar- und Wärmebotschafter)",
+      "vg-bg.de: Seiten „Umgesetzte Umwelt- und Klimaschutzmaßnahmen“ der Verbandsgemeinde und aller zehn Ortsgemeinden Elben, Elkenroth, Gebhardshain, Kausen, Malberg, Molzhain, Nauroth, Rosenheim, Steinebach/Sieg, Steineroth gelesen — keine Zuschussprogramme für Privathaushalte (nur das beendete Speicherprogramm der VG)",
+      "Landkreis Altenkirchen: Balkonkraftwerk- und Solarspeicherprogramm (beide im Katalog, beendet bzw. ausgeschöpft)",
+      "EKM Energieeffizienz Kommunal Mitgestalten GmbH (ekm-energie.de): Förderantrag, FAQ, Fördergebiet, Gesellschafterliste, Pressemitteilungen Altenkirchen 2024/2025 gelesen; adversariale Gegenprüfung 19.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“ Verweis auf die seit 19.11.2024 geltenden Kreisrichtlinien für Balkon-PV und Solarspeicher."
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/beratungsangebote-foerdermoeglichkeiten-informationen/",
+        "finding": "Im Original gelesen: Linkliste zu Beratung und Förderdatenbanken (co2online, Verbraucherzentrale, Energieagentur, KfW, BAFA) und zur EKM als „regionales Förderprogramm für Klimaschutz“; kein eigenes Programm der Verbandsgemeinde oder der Ortsgemeinden."
+      },
+      {
+        "url": "https://www.vg-bg.de/buergernah/aktuelles/pressemitteilungen/kipki-foerderung/",
+        "finding": "Im Original gelesen: KIPKI-Mittel der Verbandsgemeinde für eigene Maßnahmen (Flutlicht LED, Solarthermie, Dämmung öffentlicher Gebäude) — kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Dateistand 31.03.2026) gelesen: Privatpersonen in Gesellschafterkommunen (alle sechs Verbandsgemeinden des Kreises) können Zuschüsse beantragen; im Regionalausschuss Altenkirchen sind PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellungen (z. B. Wärmepumpe) nicht; Höhe nach Einzelfallentscheidung, kein Rechtsanspruch. Als Programm ekm-altenkirchen in den Katalog aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Speicherprogramm der Verbandsgemeinde beendet (Doppelförderung mit dem Kreisprogramm unzulässig); Kreisprogramme im Katalog.",
+        "evidenceUrl": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Elkenroth gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Die Verbandsgemeinde hat ihr Batteriespeicher-Programm beendet, weil der Kreis seit 19.11.2024 eigene Programme für Balkonkraftwerke und Solarspeicher führte; beide Kreisprogramme sind inzwischen beendet bzw. ausgeschöpft und als historische Programme im Katalog. Laufend ist nur die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke sind dort ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; ob und wie viel gefördert wird, entscheidet der Ausschuss, und nur in Orten mit EAM-Netz. Sie ist als Programm ohne festen Satz aufgenommen. Ein eigenes Programm der Ortsgemeinde wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "07132039",
+    "name": "Gebhardshain",
+    "checkedAt": "2026-09-19T10:20:02Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Sitemap nach Förder-, Klima-, Energie-, Solar-, Speicher-, Wärme- und Richtlinienseiten durchsucht und die Treffer gelesen (Speicherprogramm, Beratungsangebote/Fördermöglichkeiten, Energiespartipps PV, Klimaschutz, KIPKI-Pressemitteilung, Kommunaler Klimapakt, Wärmeplanung, Solar- und Wärmebotschafter)",
+      "vg-bg.de: Seiten „Umgesetzte Umwelt- und Klimaschutzmaßnahmen“ der Verbandsgemeinde und aller zehn Ortsgemeinden Elben, Elkenroth, Gebhardshain, Kausen, Malberg, Molzhain, Nauroth, Rosenheim, Steinebach/Sieg, Steineroth gelesen — keine Zuschussprogramme für Privathaushalte (nur das beendete Speicherprogramm der VG)",
+      "Landkreis Altenkirchen: Balkonkraftwerk- und Solarspeicherprogramm (beide im Katalog, beendet bzw. ausgeschöpft)",
+      "EKM Energieeffizienz Kommunal Mitgestalten GmbH (ekm-energie.de): Förderantrag, FAQ, Fördergebiet, Gesellschafterliste, Pressemitteilungen Altenkirchen 2024/2025 gelesen; adversariale Gegenprüfung 19.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“ Verweis auf die seit 19.11.2024 geltenden Kreisrichtlinien für Balkon-PV und Solarspeicher."
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/beratungsangebote-foerdermoeglichkeiten-informationen/",
+        "finding": "Im Original gelesen: Linkliste zu Beratung und Förderdatenbanken (co2online, Verbraucherzentrale, Energieagentur, KfW, BAFA) und zur EKM als „regionales Förderprogramm für Klimaschutz“; kein eigenes Programm der Verbandsgemeinde oder der Ortsgemeinden."
+      },
+      {
+        "url": "https://www.vg-bg.de/buergernah/aktuelles/pressemitteilungen/kipki-foerderung/",
+        "finding": "Im Original gelesen: KIPKI-Mittel der Verbandsgemeinde für eigene Maßnahmen (Flutlicht LED, Solarthermie, Dämmung öffentlicher Gebäude) — kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Dateistand 31.03.2026) gelesen: Privatpersonen in Gesellschafterkommunen (alle sechs Verbandsgemeinden des Kreises) können Zuschüsse beantragen; im Regionalausschuss Altenkirchen sind PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellungen (z. B. Wärmepumpe) nicht; Höhe nach Einzelfallentscheidung, kein Rechtsanspruch. Als Programm ekm-altenkirchen in den Katalog aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Speicherprogramm der Verbandsgemeinde beendet (Doppelförderung mit dem Kreisprogramm unzulässig); Kreisprogramme im Katalog.",
+        "evidenceUrl": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Gebhardshain gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Die Verbandsgemeinde hat ihr Batteriespeicher-Programm beendet, weil der Kreis seit 19.11.2024 eigene Programme für Balkonkraftwerke und Solarspeicher führte; beide Kreisprogramme sind inzwischen beendet bzw. ausgeschöpft und als historische Programme im Katalog. Laufend ist nur die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke sind dort ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; ob und wie viel gefördert wird, entscheidet der Ausschuss, und nur in Orten mit EAM-Netz. Sie ist als Programm ohne festen Satz aufgenommen. Ein eigenes Programm der Ortsgemeinde wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "07132059",
+    "name": "Kausen",
+    "checkedAt": "2026-09-19T10:20:02Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Sitemap nach Förder-, Klima-, Energie-, Solar-, Speicher-, Wärme- und Richtlinienseiten durchsucht und die Treffer gelesen (Speicherprogramm, Beratungsangebote/Fördermöglichkeiten, Energiespartipps PV, Klimaschutz, KIPKI-Pressemitteilung, Kommunaler Klimapakt, Wärmeplanung, Solar- und Wärmebotschafter)",
+      "vg-bg.de: Seiten „Umgesetzte Umwelt- und Klimaschutzmaßnahmen“ der Verbandsgemeinde und aller zehn Ortsgemeinden Elben, Elkenroth, Gebhardshain, Kausen, Malberg, Molzhain, Nauroth, Rosenheim, Steinebach/Sieg, Steineroth gelesen — keine Zuschussprogramme für Privathaushalte (nur das beendete Speicherprogramm der VG)",
+      "Landkreis Altenkirchen: Balkonkraftwerk- und Solarspeicherprogramm (beide im Katalog, beendet bzw. ausgeschöpft)",
+      "EKM Energieeffizienz Kommunal Mitgestalten GmbH (ekm-energie.de): Förderantrag, FAQ, Fördergebiet, Gesellschafterliste, Pressemitteilungen Altenkirchen 2024/2025 gelesen; adversariale Gegenprüfung 19.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“ Verweis auf die seit 19.11.2024 geltenden Kreisrichtlinien für Balkon-PV und Solarspeicher."
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/beratungsangebote-foerdermoeglichkeiten-informationen/",
+        "finding": "Im Original gelesen: Linkliste zu Beratung und Förderdatenbanken (co2online, Verbraucherzentrale, Energieagentur, KfW, BAFA) und zur EKM als „regionales Förderprogramm für Klimaschutz“; kein eigenes Programm der Verbandsgemeinde oder der Ortsgemeinden."
+      },
+      {
+        "url": "https://www.vg-bg.de/buergernah/aktuelles/pressemitteilungen/kipki-foerderung/",
+        "finding": "Im Original gelesen: KIPKI-Mittel der Verbandsgemeinde für eigene Maßnahmen (Flutlicht LED, Solarthermie, Dämmung öffentlicher Gebäude) — kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Dateistand 31.03.2026) gelesen: Privatpersonen in Gesellschafterkommunen (alle sechs Verbandsgemeinden des Kreises) können Zuschüsse beantragen; im Regionalausschuss Altenkirchen sind PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellungen (z. B. Wärmepumpe) nicht; Höhe nach Einzelfallentscheidung, kein Rechtsanspruch. Als Programm ekm-altenkirchen in den Katalog aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Speicherprogramm der Verbandsgemeinde beendet (Doppelförderung mit dem Kreisprogramm unzulässig); Kreisprogramme im Katalog.",
+        "evidenceUrl": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Kausen gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Die Verbandsgemeinde hat ihr Batteriespeicher-Programm beendet, weil der Kreis seit 19.11.2024 eigene Programme für Balkonkraftwerke und Solarspeicher führte; beide Kreisprogramme sind inzwischen beendet bzw. ausgeschöpft und als historische Programme im Katalog. Laufend ist nur die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke sind dort ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; ob und wie viel gefördert wird, entscheidet der Ausschuss, und nur in Orten mit EAM-Netz. Sie ist als Programm ohne festen Satz aufgenommen. Ein eigenes Programm der Ortsgemeinde wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "07132066",
+    "name": "Malberg",
+    "checkedAt": "2026-09-19T10:20:02Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Sitemap nach Förder-, Klima-, Energie-, Solar-, Speicher-, Wärme- und Richtlinienseiten durchsucht und die Treffer gelesen (Speicherprogramm, Beratungsangebote/Fördermöglichkeiten, Energiespartipps PV, Klimaschutz, KIPKI-Pressemitteilung, Kommunaler Klimapakt, Wärmeplanung, Solar- und Wärmebotschafter)",
+      "vg-bg.de: Seiten „Umgesetzte Umwelt- und Klimaschutzmaßnahmen“ der Verbandsgemeinde und aller zehn Ortsgemeinden Elben, Elkenroth, Gebhardshain, Kausen, Malberg, Molzhain, Nauroth, Rosenheim, Steinebach/Sieg, Steineroth gelesen — keine Zuschussprogramme für Privathaushalte (nur das beendete Speicherprogramm der VG)",
+      "Landkreis Altenkirchen: Balkonkraftwerk- und Solarspeicherprogramm (beide im Katalog, beendet bzw. ausgeschöpft)",
+      "EKM Energieeffizienz Kommunal Mitgestalten GmbH (ekm-energie.de): Förderantrag, FAQ, Fördergebiet, Gesellschafterliste, Pressemitteilungen Altenkirchen 2024/2025 gelesen; adversariale Gegenprüfung 19.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“ Verweis auf die seit 19.11.2024 geltenden Kreisrichtlinien für Balkon-PV und Solarspeicher."
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/beratungsangebote-foerdermoeglichkeiten-informationen/",
+        "finding": "Im Original gelesen: Linkliste zu Beratung und Förderdatenbanken (co2online, Verbraucherzentrale, Energieagentur, KfW, BAFA) und zur EKM als „regionales Förderprogramm für Klimaschutz“; kein eigenes Programm der Verbandsgemeinde oder der Ortsgemeinden."
+      },
+      {
+        "url": "https://www.vg-bg.de/buergernah/aktuelles/pressemitteilungen/kipki-foerderung/",
+        "finding": "Im Original gelesen: KIPKI-Mittel der Verbandsgemeinde für eigene Maßnahmen (Flutlicht LED, Solarthermie, Dämmung öffentlicher Gebäude) — kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Dateistand 31.03.2026) gelesen: Privatpersonen in Gesellschafterkommunen (alle sechs Verbandsgemeinden des Kreises) können Zuschüsse beantragen; im Regionalausschuss Altenkirchen sind PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellungen (z. B. Wärmepumpe) nicht; Höhe nach Einzelfallentscheidung, kein Rechtsanspruch. Als Programm ekm-altenkirchen in den Katalog aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Speicherprogramm der Verbandsgemeinde beendet (Doppelförderung mit dem Kreisprogramm unzulässig); Kreisprogramme im Katalog.",
+        "evidenceUrl": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Malberg gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Die Verbandsgemeinde hat ihr Batteriespeicher-Programm beendet, weil der Kreis seit 19.11.2024 eigene Programme für Balkonkraftwerke und Solarspeicher führte; beide Kreisprogramme sind inzwischen beendet bzw. ausgeschöpft und als historische Programme im Katalog. Laufend ist nur die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke sind dort ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; ob und wie viel gefördert wird, entscheidet der Ausschuss, und nur in Orten mit EAM-Netz. Sie ist als Programm ohne festen Satz aufgenommen. Ein eigenes Programm der Ortsgemeinde wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "07132071",
+    "name": "Molzhain",
+    "checkedAt": "2026-09-19T10:20:02Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Sitemap nach Förder-, Klima-, Energie-, Solar-, Speicher-, Wärme- und Richtlinienseiten durchsucht und die Treffer gelesen (Speicherprogramm, Beratungsangebote/Fördermöglichkeiten, Energiespartipps PV, Klimaschutz, KIPKI-Pressemitteilung, Kommunaler Klimapakt, Wärmeplanung, Solar- und Wärmebotschafter)",
+      "vg-bg.de: Seiten „Umgesetzte Umwelt- und Klimaschutzmaßnahmen“ der Verbandsgemeinde und aller zehn Ortsgemeinden Elben, Elkenroth, Gebhardshain, Kausen, Malberg, Molzhain, Nauroth, Rosenheim, Steinebach/Sieg, Steineroth gelesen — keine Zuschussprogramme für Privathaushalte (nur das beendete Speicherprogramm der VG)",
+      "Landkreis Altenkirchen: Balkonkraftwerk- und Solarspeicherprogramm (beide im Katalog, beendet bzw. ausgeschöpft)",
+      "EKM Energieeffizienz Kommunal Mitgestalten GmbH (ekm-energie.de): Förderantrag, FAQ, Fördergebiet, Gesellschafterliste, Pressemitteilungen Altenkirchen 2024/2025 gelesen; adversariale Gegenprüfung 19.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“ Verweis auf die seit 19.11.2024 geltenden Kreisrichtlinien für Balkon-PV und Solarspeicher."
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/beratungsangebote-foerdermoeglichkeiten-informationen/",
+        "finding": "Im Original gelesen: Linkliste zu Beratung und Förderdatenbanken (co2online, Verbraucherzentrale, Energieagentur, KfW, BAFA) und zur EKM als „regionales Förderprogramm für Klimaschutz“; kein eigenes Programm der Verbandsgemeinde oder der Ortsgemeinden."
+      },
+      {
+        "url": "https://www.vg-bg.de/buergernah/aktuelles/pressemitteilungen/kipki-foerderung/",
+        "finding": "Im Original gelesen: KIPKI-Mittel der Verbandsgemeinde für eigene Maßnahmen (Flutlicht LED, Solarthermie, Dämmung öffentlicher Gebäude) — kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Dateistand 31.03.2026) gelesen: Privatpersonen in Gesellschafterkommunen (alle sechs Verbandsgemeinden des Kreises) können Zuschüsse beantragen; im Regionalausschuss Altenkirchen sind PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellungen (z. B. Wärmepumpe) nicht; Höhe nach Einzelfallentscheidung, kein Rechtsanspruch. Als Programm ekm-altenkirchen in den Katalog aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Speicherprogramm der Verbandsgemeinde beendet (Doppelförderung mit dem Kreisprogramm unzulässig); Kreisprogramme im Katalog.",
+        "evidenceUrl": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Molzhain gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Die Verbandsgemeinde hat ihr Batteriespeicher-Programm beendet, weil der Kreis seit 19.11.2024 eigene Programme für Balkonkraftwerke und Solarspeicher führte; beide Kreisprogramme sind inzwischen beendet bzw. ausgeschöpft und als historische Programme im Katalog. Laufend ist nur die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke sind dort ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; ob und wie viel gefördert wird, entscheidet der Ausschuss, und nur in Orten mit EAM-Netz. Sie ist als Programm ohne festen Satz aufgenommen. Ein eigenes Programm der Ortsgemeinde wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "07132073",
+    "name": "Nauroth",
+    "checkedAt": "2026-09-19T10:20:02Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Sitemap nach Förder-, Klima-, Energie-, Solar-, Speicher-, Wärme- und Richtlinienseiten durchsucht und die Treffer gelesen (Speicherprogramm, Beratungsangebote/Fördermöglichkeiten, Energiespartipps PV, Klimaschutz, KIPKI-Pressemitteilung, Kommunaler Klimapakt, Wärmeplanung, Solar- und Wärmebotschafter)",
+      "vg-bg.de: Seiten „Umgesetzte Umwelt- und Klimaschutzmaßnahmen“ der Verbandsgemeinde und aller zehn Ortsgemeinden Elben, Elkenroth, Gebhardshain, Kausen, Malberg, Molzhain, Nauroth, Rosenheim, Steinebach/Sieg, Steineroth gelesen — keine Zuschussprogramme für Privathaushalte (nur das beendete Speicherprogramm der VG)",
+      "Landkreis Altenkirchen: Balkonkraftwerk- und Solarspeicherprogramm (beide im Katalog, beendet bzw. ausgeschöpft)",
+      "EKM Energieeffizienz Kommunal Mitgestalten GmbH (ekm-energie.de): Förderantrag, FAQ, Fördergebiet, Gesellschafterliste, Pressemitteilungen Altenkirchen 2024/2025 gelesen; adversariale Gegenprüfung 19.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“ Verweis auf die seit 19.11.2024 geltenden Kreisrichtlinien für Balkon-PV und Solarspeicher."
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/beratungsangebote-foerdermoeglichkeiten-informationen/",
+        "finding": "Im Original gelesen: Linkliste zu Beratung und Förderdatenbanken (co2online, Verbraucherzentrale, Energieagentur, KfW, BAFA) und zur EKM als „regionales Förderprogramm für Klimaschutz“; kein eigenes Programm der Verbandsgemeinde oder der Ortsgemeinden."
+      },
+      {
+        "url": "https://www.vg-bg.de/buergernah/aktuelles/pressemitteilungen/kipki-foerderung/",
+        "finding": "Im Original gelesen: KIPKI-Mittel der Verbandsgemeinde für eigene Maßnahmen (Flutlicht LED, Solarthermie, Dämmung öffentlicher Gebäude) — kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Dateistand 31.03.2026) gelesen: Privatpersonen in Gesellschafterkommunen (alle sechs Verbandsgemeinden des Kreises) können Zuschüsse beantragen; im Regionalausschuss Altenkirchen sind PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellungen (z. B. Wärmepumpe) nicht; Höhe nach Einzelfallentscheidung, kein Rechtsanspruch. Als Programm ekm-altenkirchen in den Katalog aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Speicherprogramm der Verbandsgemeinde beendet (Doppelförderung mit dem Kreisprogramm unzulässig); Kreisprogramme im Katalog.",
+        "evidenceUrl": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Nauroth gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Die Verbandsgemeinde hat ihr Batteriespeicher-Programm beendet, weil der Kreis seit 19.11.2024 eigene Programme für Balkonkraftwerke und Solarspeicher führte; beide Kreisprogramme sind inzwischen beendet bzw. ausgeschöpft und als historische Programme im Katalog. Laufend ist nur die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke sind dort ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; ob und wie viel gefördert wird, entscheidet der Ausschuss, und nur in Orten mit EAM-Netz. Sie ist als Programm ohne festen Satz aufgenommen. Ein eigenes Programm der Ortsgemeinde wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "07132095",
+    "name": "Rosenheim (Landkreis Altenkirchen)",
+    "checkedAt": "2026-09-19T10:20:02Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Sitemap nach Förder-, Klima-, Energie-, Solar-, Speicher-, Wärme- und Richtlinienseiten durchsucht und die Treffer gelesen (Speicherprogramm, Beratungsangebote/Fördermöglichkeiten, Energiespartipps PV, Klimaschutz, KIPKI-Pressemitteilung, Kommunaler Klimapakt, Wärmeplanung, Solar- und Wärmebotschafter)",
+      "vg-bg.de: Seiten „Umgesetzte Umwelt- und Klimaschutzmaßnahmen“ der Verbandsgemeinde und aller zehn Ortsgemeinden Elben, Elkenroth, Gebhardshain, Kausen, Malberg, Molzhain, Nauroth, Rosenheim, Steinebach/Sieg, Steineroth gelesen — keine Zuschussprogramme für Privathaushalte (nur das beendete Speicherprogramm der VG)",
+      "Landkreis Altenkirchen: Balkonkraftwerk- und Solarspeicherprogramm (beide im Katalog, beendet bzw. ausgeschöpft)",
+      "EKM Energieeffizienz Kommunal Mitgestalten GmbH (ekm-energie.de): Förderantrag, FAQ, Fördergebiet, Gesellschafterliste, Pressemitteilungen Altenkirchen 2024/2025 gelesen; adversariale Gegenprüfung 19.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“ Verweis auf die seit 19.11.2024 geltenden Kreisrichtlinien für Balkon-PV und Solarspeicher."
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/beratungsangebote-foerdermoeglichkeiten-informationen/",
+        "finding": "Im Original gelesen: Linkliste zu Beratung und Förderdatenbanken (co2online, Verbraucherzentrale, Energieagentur, KfW, BAFA) und zur EKM als „regionales Förderprogramm für Klimaschutz“; kein eigenes Programm der Verbandsgemeinde oder der Ortsgemeinden."
+      },
+      {
+        "url": "https://www.vg-bg.de/buergernah/aktuelles/pressemitteilungen/kipki-foerderung/",
+        "finding": "Im Original gelesen: KIPKI-Mittel der Verbandsgemeinde für eigene Maßnahmen (Flutlicht LED, Solarthermie, Dämmung öffentlicher Gebäude) — kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Dateistand 31.03.2026) gelesen: Privatpersonen in Gesellschafterkommunen (alle sechs Verbandsgemeinden des Kreises) können Zuschüsse beantragen; im Regionalausschuss Altenkirchen sind PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellungen (z. B. Wärmepumpe) nicht; Höhe nach Einzelfallentscheidung, kein Rechtsanspruch. Als Programm ekm-altenkirchen in den Katalog aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Speicherprogramm der Verbandsgemeinde beendet (Doppelförderung mit dem Kreisprogramm unzulässig); Kreisprogramme im Katalog.",
+        "evidenceUrl": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Rosenheim (Landkreis Altenkirchen) gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Die Verbandsgemeinde hat ihr Batteriespeicher-Programm beendet, weil der Kreis seit 19.11.2024 eigene Programme für Balkonkraftwerke und Solarspeicher führte; beide Kreisprogramme sind inzwischen beendet bzw. ausgeschöpft und als historische Programme im Katalog. Laufend ist nur die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke sind dort ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; ob und wie viel gefördert wird, entscheidet der Ausschuss, und nur in Orten mit EAM-Netz. Sie ist als Programm ohne festen Satz aufgenommen. Ein eigenes Programm der Ortsgemeinde wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "07132107",
+    "name": "Steinebach/Sieg",
+    "checkedAt": "2026-09-19T10:20:02Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Sitemap nach Förder-, Klima-, Energie-, Solar-, Speicher-, Wärme- und Richtlinienseiten durchsucht und die Treffer gelesen (Speicherprogramm, Beratungsangebote/Fördermöglichkeiten, Energiespartipps PV, Klimaschutz, KIPKI-Pressemitteilung, Kommunaler Klimapakt, Wärmeplanung, Solar- und Wärmebotschafter)",
+      "vg-bg.de: Seiten „Umgesetzte Umwelt- und Klimaschutzmaßnahmen“ der Verbandsgemeinde und aller zehn Ortsgemeinden Elben, Elkenroth, Gebhardshain, Kausen, Malberg, Molzhain, Nauroth, Rosenheim, Steinebach/Sieg, Steineroth gelesen — keine Zuschussprogramme für Privathaushalte (nur das beendete Speicherprogramm der VG)",
+      "Landkreis Altenkirchen: Balkonkraftwerk- und Solarspeicherprogramm (beide im Katalog, beendet bzw. ausgeschöpft)",
+      "EKM Energieeffizienz Kommunal Mitgestalten GmbH (ekm-energie.de): Förderantrag, FAQ, Fördergebiet, Gesellschafterliste, Pressemitteilungen Altenkirchen 2024/2025 gelesen; adversariale Gegenprüfung 19.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“ Verweis auf die seit 19.11.2024 geltenden Kreisrichtlinien für Balkon-PV und Solarspeicher."
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/beratungsangebote-foerdermoeglichkeiten-informationen/",
+        "finding": "Im Original gelesen: Linkliste zu Beratung und Förderdatenbanken (co2online, Verbraucherzentrale, Energieagentur, KfW, BAFA) und zur EKM als „regionales Förderprogramm für Klimaschutz“; kein eigenes Programm der Verbandsgemeinde oder der Ortsgemeinden."
+      },
+      {
+        "url": "https://www.vg-bg.de/buergernah/aktuelles/pressemitteilungen/kipki-foerderung/",
+        "finding": "Im Original gelesen: KIPKI-Mittel der Verbandsgemeinde für eigene Maßnahmen (Flutlicht LED, Solarthermie, Dämmung öffentlicher Gebäude) — kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Dateistand 31.03.2026) gelesen: Privatpersonen in Gesellschafterkommunen (alle sechs Verbandsgemeinden des Kreises) können Zuschüsse beantragen; im Regionalausschuss Altenkirchen sind PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellungen (z. B. Wärmepumpe) nicht; Höhe nach Einzelfallentscheidung, kein Rechtsanspruch. Als Programm ekm-altenkirchen in den Katalog aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Speicherprogramm der Verbandsgemeinde beendet (Doppelförderung mit dem Kreisprogramm unzulässig); Kreisprogramme im Katalog.",
+        "evidenceUrl": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Steinebach/Sieg gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Die Verbandsgemeinde hat ihr Batteriespeicher-Programm beendet, weil der Kreis seit 19.11.2024 eigene Programme für Balkonkraftwerke und Solarspeicher führte; beide Kreisprogramme sind inzwischen beendet bzw. ausgeschöpft und als historische Programme im Katalog. Laufend ist nur die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke sind dort ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; ob und wie viel gefördert wird, entscheidet der Ausschuss, und nur in Orten mit EAM-Netz. Sie ist als Programm ohne festen Satz aufgenommen. Ein eigenes Programm der Ortsgemeinde wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "07132108",
+    "name": "Steineroth",
+    "checkedAt": "2026-09-19T10:20:02Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Sitemap nach Förder-, Klima-, Energie-, Solar-, Speicher-, Wärme- und Richtlinienseiten durchsucht und die Treffer gelesen (Speicherprogramm, Beratungsangebote/Fördermöglichkeiten, Energiespartipps PV, Klimaschutz, KIPKI-Pressemitteilung, Kommunaler Klimapakt, Wärmeplanung, Solar- und Wärmebotschafter)",
+      "vg-bg.de: Seiten „Umgesetzte Umwelt- und Klimaschutzmaßnahmen“ der Verbandsgemeinde und aller zehn Ortsgemeinden Elben, Elkenroth, Gebhardshain, Kausen, Malberg, Molzhain, Nauroth, Rosenheim, Steinebach/Sieg, Steineroth gelesen — keine Zuschussprogramme für Privathaushalte (nur das beendete Speicherprogramm der VG)",
+      "Landkreis Altenkirchen: Balkonkraftwerk- und Solarspeicherprogramm (beide im Katalog, beendet bzw. ausgeschöpft)",
+      "EKM Energieeffizienz Kommunal Mitgestalten GmbH (ekm-energie.de): Förderantrag, FAQ, Fördergebiet, Gesellschafterliste, Pressemitteilungen Altenkirchen 2024/2025 gelesen; adversariale Gegenprüfung 19.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“ Verweis auf die seit 19.11.2024 geltenden Kreisrichtlinien für Balkon-PV und Solarspeicher."
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/beratungsangebote-foerdermoeglichkeiten-informationen/",
+        "finding": "Im Original gelesen: Linkliste zu Beratung und Förderdatenbanken (co2online, Verbraucherzentrale, Energieagentur, KfW, BAFA) und zur EKM als „regionales Förderprogramm für Klimaschutz“; kein eigenes Programm der Verbandsgemeinde oder der Ortsgemeinden."
+      },
+      {
+        "url": "https://www.vg-bg.de/buergernah/aktuelles/pressemitteilungen/kipki-foerderung/",
+        "finding": "Im Original gelesen: KIPKI-Mittel der Verbandsgemeinde für eigene Maßnahmen (Flutlicht LED, Solarthermie, Dämmung öffentlicher Gebäude) — kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Dateistand 31.03.2026) gelesen: Privatpersonen in Gesellschafterkommunen (alle sechs Verbandsgemeinden des Kreises) können Zuschüsse beantragen; im Regionalausschuss Altenkirchen sind PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellungen (z. B. Wärmepumpe) nicht; Höhe nach Einzelfallentscheidung, kein Rechtsanspruch. Als Programm ekm-altenkirchen in den Katalog aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Speicherprogramm der Verbandsgemeinde beendet (Doppelförderung mit dem Kreisprogramm unzulässig); Kreisprogramme im Katalog.",
+        "evidenceUrl": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Steineroth gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Die Verbandsgemeinde hat ihr Batteriespeicher-Programm beendet, weil der Kreis seit 19.11.2024 eigene Programme für Balkonkraftwerke und Solarspeicher führte; beide Kreisprogramme sind inzwischen beendet bzw. ausgeschöpft und als historische Programme im Katalog. Laufend ist nur die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke sind dort ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; ob und wie viel gefördert wird, entscheidet der Ausschuss, und nur in Orten mit EAM-Netz. Sie ist als Programm ohne festen Satz aufgenommen. Ein eigenes Programm der Ortsgemeinde wurde nicht gefunden (Stand 19.09.2026)."
   }
 ]
