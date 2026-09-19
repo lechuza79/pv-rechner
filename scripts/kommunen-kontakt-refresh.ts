@@ -264,6 +264,23 @@ async function setup(): Promise<void> {
     -- kommunikation@). Eindeutige Adressen brauchen ihn nicht und lassen ihn
     -- leer — ein Beleg, den niemand geprueft hat, waere schlechter als keiner.
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_beleg text;
+    -- BELEGTE FACHKONTAKTE aus der Kontaktsuche (scripts/contact-municipal-v2.ts):
+    -- Personen oder Stellen, deren Rolle auf der Seite der Verwaltung steht.
+    -- Klimaschutz ist der bevorzugte Kontakt, Presse der zweite. Je Kanal der
+    -- beste mit seiner Belegseite, dazu ALLE belegten Kontakte als Liste.
+    -- Geschrieben nur von dort; die allgemeinen Postfaecher bleiben unberuehrt.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS klima_email text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS klima_beleg_url text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_kontakt_email text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS presse_kontakt_beleg_url text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS fachkontakte jsonb;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS fachkontakte_at timestamptz;
+    -- Kurzlebige Vorfassung vom 19.09.2026 (ein Fachkontakt, Presse vorn).
+    ALTER TABLE kommunen_kontakt DROP COLUMN IF EXISTS fach_email;
+    ALTER TABLE kommunen_kontakt DROP COLUMN IF EXISTS fach_kanal;
+    ALTER TABLE kommunen_kontakt DROP COLUMN IF EXISTS fach_beleg_url;
+    ALTER TABLE kommunen_kontakt DROP COLUMN IF EXISTS fach_verwaltung_domain;
+    ALTER TABLE kommunen_kontakt DROP COLUMN IF EXISTS fach_geprueft_at;
     -- Versandliste: die Auswahl wird FESTGESCHRIEBEN, nicht nur gefiltert. Der
     -- Aufhaenger aendert sich mit jedem Monatslauf der Anlagendaten — ein reiner
     -- Filter haette in Charge 2 andere Gemeinden als in Charge 1.

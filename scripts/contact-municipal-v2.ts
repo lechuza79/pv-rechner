@@ -4,6 +4,8 @@
  *   --mode=evaluate   offline over stored originals and earlier research pages
  *   --mode=research   bounded page fetches for municipalities without both channels
  *   --mode=summary    aggregate results, full old/new comparison
+ *   --mode=recheck    --recipients=<file>: fetch each planned recipient's page again (before a send)
+ *   --mode=apply      write all proven specialist contacts into the contact list (--schreiben)
  *
  * Common: --ids=A,B | --sample=FILE (JSON {group:[ids]}) | --part=i --parts=n
  *         --audit=DIR (default: municipal-full-audit-2026-09-15-v3) --out=DIR
@@ -21,19 +23,18 @@
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import { execSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { DEFAULT_AUDIT, MAIN_CHECKOUT, extractionVersion, outDir, rulesVersion } from "./lib/contact-v2-config";
 import { contactCandidates, type ContactCandidate } from "../lib/contact-evidence";
 import { contactLinks } from "../lib/contact-discovery";
 import { contactRoleContext } from "../lib/contact-role-context";
 import { parseGv100, type Gemeindeverband } from "../lib/gemeindeverband";
 import { vcardToHtml } from "../lib/mail-deobfuscation";
+import { fachkontakteAus } from "../lib/kommunen-fachkontakt";
 import {
   applyAdministration, consolidate, headingContext, host, judgeEvidence, selectAndCompare, siteOf,
   type Evidence, type Municipality,
 } from "../lib/contact-municipal-judge";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const arg = (name: string) => process.argv.find(a => a.startsWith(`--${name}=`))?.slice(name.length + 3);
 const sha = (b: Buffer | string) => createHash("sha256").update(b).digest("hex");
 const readJson = (p: string) => JSON.parse(readFileSync(p, "utf8"));
@@ -44,10 +45,8 @@ function writeJson(path: string, data: unknown) {
   renameSync(tmp, path);
 }
 
-// Evidence lives in the main checkout's cache, also when this runs from a worktree.
-const mainCheckout = resolve(execSync("git rev-parse --path-format=absolute --git-common-dir", { cwd: root }).toString().trim(), "..");
-const AUDIT = resolve(arg("audit") ?? resolve(mainCheckout, "scripts/.cache/contact-evidence/municipal-full-audit-2026-09-15-v3"));
-const OUT = resolve(arg("out") ?? resolve(AUDIT, "workflow/municipal-v2"));
+const AUDIT = resolve(arg("audit") ?? DEFAULT_AUDIT);
+const OUT = resolve(arg("out") ?? outDir(AUDIT));
 const RECORDS = resolve(AUDIT, "workflow/corrected-selection/records");
 const SCOPE = resolve(AUDIT, "workflow/current-municipal-scope.json");
 const GV100 = resolve(AUDIT, "workflow/reference-review/GV100AD3108-GV100AD_31082026.txt");
@@ -56,13 +55,8 @@ const mode = arg("mode") ?? "evaluate";
 const BUDGET = Number(arg("budget") ?? 15);
 const RETRY_AFTER_MS = 24 * 3600 * 1000;
 const MAX_ATTEMPTS = 2;
-
-// Extraction and judgement files: a change re-judges everything, fetched pages stay.
-const EXTRACTION_FILES = ["lib/contact-evidence.ts", "lib/mail-deobfuscation.ts", "lib/contact-role-context.ts", "lib/contact-discovery.ts", "lib/personen-fund.ts", "lib/published-joomla-mail.ts", "lib/uri-sicher.ts", "lib/contact-heading-context.ts"];
-const JUDGE_FILES = [...EXTRACTION_FILES, "lib/contact-municipal-judge.ts", "lib/contact-quality-evidence.ts", "lib/gemeindeverband.ts", "scripts/contact-municipal-v2.ts"];
-const digestOf = (files: string[]) => sha(JSON.stringify(files.map(f => [f, sha(readFileSync(resolve(root, f)))])));
-const EXTRACTION = digestOf(EXTRACTION_FILES).slice(0, 16);
-const RULES = digestOf(JUDGE_FILES).slice(0, 16);
+const EXTRACTION = extractionVersion();
+const RULES = rulesVersion();
 
 function decode(bytes: Buffer) {
   const charset = /<meta[^>]+charset\s*=\s*["']?([\w-]+)/i.exec(bytes.subarray(0, 8192).toString("latin1"))?.[1];
@@ -276,6 +270,135 @@ function summary() {
   console.log(JSON.stringify(out, null, 1));
 }
 
+// ── recheck (before every send) ───────────────────────────────────────────────
+// Fetches the page that publishes each planned recipient once more and confirms
+// the address is still there. Nothing else is fetched and nothing is stored but
+// the verdict.
+async function recheck(ctx: Context) {
+  const file = arg("recipients");
+  if (!file) throw new Error("--recipients=<json: [{organizationId, email}]> fehlt");
+  const recipients: { organizationId: string; email: string }[] = readJson(resolve(file));
+  const byId = new Map(ctx.scope.map((r: any) => [r.currentMunicipalityId, r]));
+  let bad = 0;
+  for (const { organizationId: id, email } of recipients) {
+    const e = email.trim().toLowerCase();
+    const row = byId.get(id);
+    const out = { id, email: e, rules: RULES, checkedAt: new Date().toISOString(), ok: false, url: null as string | null, reason: null as string | null };
+    if (!row) out.reason = "Gemeinde nicht im Bestand";
+    else {
+      const result = evaluate(row, ctx);
+      const snap = ctx.snapshot.get(id) ?? {};
+      const domain = host(snap.website ?? "");
+      const proof = result.proofs.find((p: any) => p.email === e);
+      let url: string | null = proof?.url ?? null;
+      if (!url) for (const page of storedPages(readJson(resolve(RECORDS, `${id}.json`)), row.inventoryOrganizationId)) {
+        if (page.kind !== "html" || !page.valid || !page.path || !existsSync(page.path)) continue;
+        if (parsePage(page, domain).candidates.some(c => c.email.toLowerCase() === e)) { url = page.url; break; }
+      }
+      out.url = url;
+      if (!url) out.reason = "keine Seite bekannt, auf der die Adresse steht";
+      else {
+        const live = await fetchLive(url);
+        if ("error" in live) out.reason = live.error;
+        else {
+          const found = contactCandidates(live.html, url, domain).some(c => c.email.toLowerCase() === e);
+          out.ok = found;
+          if (!found) out.reason = "Adresse steht nicht mehr auf der Seite";
+        }
+      }
+    }
+    if (!out.ok) bad++;
+    writeJson(resolve(OUT, "recheck", `${id}.json`), out);
+    console.log(`${out.ok ? "✓" : "✗"} ${id} ${row?.name ?? ""} ${e}${out.ok ? "" : ` — ${out.reason}`}`);
+  }
+  console.log(`${recipients.length - bad} von ${recipients.length} bestätigt`);
+}
+
+async function fetchLive(url: string): Promise<{ html: string } | { error: string }> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const controller = new AbortController();
+    timer = setTimeout(() => controller.abort(new DOMException("timeout", "TimeoutError")), 20000);
+    const res = await fetch(url, { redirect: "follow", signal: controller.signal, headers: { "user-agent": UA, accept: "text/html,text/vcard;q=0.9" } });
+    if (!res.ok) return { error: `Seite antwortet mit HTTP ${res.status}` };
+    const bytes = Buffer.from(await res.arrayBuffer());
+    const type = res.headers.get("content-type") ?? "";
+    if (/vcard/i.test(type) || /\.vcf(?:$|\?)/i.test(url)) return { html: vcardToHtml(bytes.toString("utf8")) ?? "" };
+    return { html: decode(bytes) };
+  } catch (e: any) {
+    return { error: e?.name === "TimeoutError" ? "Seite antwortet nicht" : `Abruf fehlgeschlagen (${String(e?.cause?.code ?? e?.message ?? e)})` };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// ── apply: the proven specialist contacts into the contact list ─────────────
+// Writes only its own columns. The general and press mailboxes stay as they
+// are; a municipality without a proven contact gets these columns cleared.
+async function apply() {
+  const write = process.argv.includes("--schreiben");
+  const dir = resolve(OUT, "results");
+  const rows = readdirSync(dir).filter(f => f.endsWith(".json")).map(f => readJson(resolve(dir, f)));
+  const stale = rows.filter(r => r.rules !== RULES).length;
+  if (stale) throw new Error(`${stale} Ergebnisse stammen aus älteren Regeln — erst neu auswerten`);
+  const COLS = ["klima_email", "klima_beleg_url", "presse_kontakt_email", "presse_kontakt_beleg_url", "fachkontakte"] as const;
+  const want = new Map<string, Record<(typeof COLS)[number], unknown>>(rows.map(r => {
+    const k = fachkontakteAus(r);
+    return [r.id, {
+      klima_email: k.klima?.email ?? null, klima_beleg_url: k.klima?.belegUrl ?? null,
+      presse_kontakt_email: k.presse?.email ?? null, presse_kontakt_beleg_url: k.presse?.belegUrl ?? null,
+      fachkontakte: k.alle.length ? k.alle : null,
+    }];
+  }));
+  const db = await dbClient();
+  const current = new Map<string, any>();
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await db.from("kommunen_kontakt").select(`region_id, ${COLS.join(", ")}`).order("region_id").range(from, from + 999);
+    if (error) throw new Error(error.message);
+    for (const r of (data ?? []) as any[]) current.set(r.region_id, r);
+    if (!data || data.length < 1000) break;
+  }
+  const changes: any[] = [];
+  const counts = { geaendert: 0, gleich: 0, nichtInListe: 0 };
+  const now = new Date().toISOString();
+  for (const [id, next] of want) {
+    const cur = current.get(id);
+    if (!cur) { if (next.fachkontakte) counts.nichtInListe++; continue; }
+    if (COLS.every(c => JSON.stringify(cur[c] ?? null) === JSON.stringify(next[c]))) { counts.gleich++; continue; }
+    counts.geaendert++;
+    changes.push({ region_id: id, ...next, fachkontakte_at: next.fachkontakte ? now : null });
+  }
+  const values = [...want.values()];
+  console.log(JSON.stringify({
+    write, rules: RULES, ...counts,
+    mitKlima: values.filter(v => v.klima_email).length,
+    mitPresse: values.filter(v => v.presse_kontakt_email).length,
+    mitBeiden: values.filter(v => v.klima_email && v.presse_kontakt_email).length,
+    kontakteGesamt: values.reduce((n, v) => n + ((v.fachkontakte as unknown[] | null)?.length ?? 0), 0),
+  }, null, 1));
+  if (!write) return console.log("Probelauf — nichts geschrieben. Mit --schreiben eintragen.");
+  for (let i = 0; i < changes.length; i++) {
+    const { region_id, ...fields } = changes[i];
+    const { error } = await db.from("kommunen_kontakt").update(fields).eq("region_id", region_id);
+    if (error) throw new Error(`${region_id}: ${error.message}`);
+    if ((i + 1) % 500 === 0 || i + 1 === changes.length) console.log(`${i + 1} von ${changes.length} eingetragen`);
+  }
+}
+
+async function dbClient() {
+  const envPath = resolve(MAIN_CHECKOUT, ".env.local");
+  const env = existsSync(envPath) ? readFileSync(envPath, "utf8") : "";
+  for (const line of env.split("\n")) {
+    const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+  }
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) throw new Error("SUPABASE_URL oder SUPABASE_SERVICE_KEY fehlt");
+  const { createClient } = await import("@supabase/supabase-js");
+  return createClient(url, key, { auth: { persistSession: false } });
+}
+
 async function main() {
   // Keep the process alive until the loop is really done; an early exit must never look like success.
   const keepAlive = setInterval(() => {}, 60_000);
@@ -285,7 +408,9 @@ async function main() {
 async function run() {
   mkdirSync(resolve(OUT, "sources"), { recursive: true, mode: 0o700 });
   if (mode === "summary") return summary();
+  if (mode === "apply") return apply();
   const ctx = loadContext();
+  if (mode === "recheck") return recheck(ctx);
   let rows = ctx.scope;
   const ids = arg("ids")?.split(",") ?? (arg("sample") ? Object.values(readJson(resolve(arg("sample")!)) as Record<string, string[]>).flat() : null);
   if (ids) { const wanted = new Set(ids); rows = rows.filter(r => wanted.has(r.currentMunicipalityId)); }
