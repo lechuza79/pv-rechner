@@ -26355,5 +26355,610 @@
     ],
     "outcome": "keine-passende-foerderung",
     "conclusion": "Kloster Tempzin gehört zum Amt Sternberger Seenlandschaft (Landkreis Ludwigslust-Parchim) und hat keine eigene Website. Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Satzungsseite der Gemeinde enthält keine Förderrichtlinie, die Volltextsuche der Amtsseite findet zu Photovoltaik, Solar, Balkonkraftwerk, Zuschuss und Wärmepumpe nichts, und die beiden erfassten Quellen betreffen EU-/Landeszuwendungen an Amt und Gemeinden sowie ein Flurneuordnungsverfahren. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076001",
+    "name": "Alt Krenzlin",
+    "checkedAt": "2026-09-19T04:07:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ludwigslust-land.de Volltextsuche je Rubrik: Photovoltaik, Solar, Balkonkraftwerk, Balkon, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Richtlinie (Gegenprobe Ludwigslust: 733 Treffer)",
+      "Eigene Gemeindeseite gemeinde-altkrenzlin.de (Verwaltungsportal) durchsucht: Photovoltaik, Solar, Balkonkraftwerk, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz",
+      "Gelesen: Geförderte Projekte, Kommunale Wärmeplanung, Meldung Batteriespeicher, Gemeinden online, Rechtsgrundlagen und Bekanntmachungen (Richtlinien)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Geförderte Projekte“ des Amtes — EU-/Landesförderung für LED-Straßenbeleuchtung (Göhlen, Lübesse), Kita Warlow, Einzelhalle Rastow, Feuerwehr/Dorfgemeinschaftshaus Neu Lüblow, Badesee Dreenkrögen, Gemeindehaus Warlow; Zuwendungen an Amt und Gemeinden, kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/contact/index/link",
+        "finding": "Im Original abgerufen (19.09.2026): Die Adresse liefert die Fehlerseite des Amtes (HTTP 404); es ist der Seitenbaustein „Link verschicken“ ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite je Rubrik gelesen (19.09.2026): Balkonkraftwerk, Wärmepumpe, Förderprogramm ohne direkte Treffer; Photovoltaik/Solar nur PV-Anlage des Amtsgebäudes, Solarpark-Planungen (Groß Laasch, Sülte), Bioenergiedörfer, Dachflächenvermietung Rastow, Unternehmensverzeichnis; Zuschuss nur Ferienlager, Wohngeld, Jugendförderung, kultureller Verwendungsnachweis Rastow; Speicher nur Meldung zum Batteriespeicher des Amtsgebäudes; Klimaschutz nur Windkraft, Bioenergie, Kommunale Wärmeplanung. Gegenprobe „Ludwigslust“: 733 Meldungstreffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/news/1/656769/nachrichten/656769.html",
+        "finding": "Im Original gelesen: Meldung „Die Energiewende voranbringen – Nutzung von Batteriespeichern“ — zählt PV-Kleinanlagen und Speicher je Gemeinde und berichtet über den Batteriespeicher für das Amtsgebäude (Amtsausschuss); kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/768008/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Im Original gelesen: Kommunale Wärmeplanung aller elf Amtsgemeinden, Bundeszuwendung an das Amt (Bewilligungszeitraum 01.06.–31.10.2025); keine Förderung für private Heizungen."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Richtlinie&modul=rechtsgrundlagen",
+        "finding": "Rechtsgrundlagen und Bekanntmachungen des Amtes (Suche Richtlinie/Förderung) gelesen: nur Richtlinien zur Förderung des kulturellen Lebens der Gemeinden, Vereinsförderrichtlinie Rastow, Kinderkleiderbörsen- und Weihnachtsmarktrichtlinie Groß Laasch, Stundungssatzungen — keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)."
+      },
+      {
+        "url": "https://www.gemeinde-altkrenzlin.de/",
+        "finding": "Eigene Gemeindeseite gemeinde-altkrenzlin.de (Verwaltungsportal) durchsucht: Solar, Balkonkraftwerk, Zuschuss, Wärmepumpe, Klimaschutz ohne Treffer; Förderung/Förderprogramm nur Jahresrückblicke (Landkreis-Förderprogramm Jugendklub, Landesmittel für Spielplätze und Löschwasserbrunnen) und die Kulturförderrichtlinie; Photovoltaik nur das Unternehmensverzeichnis mit privaten PV-Anlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Seite „Geförderte Projekte“ des Amtes: EU-/Landeszuwendungen an Amt und Gemeinden (LED-Straßenbeleuchtung, Kita, Sporthalle, Gemeindehäuser, Badesee) — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite „Geförderte Projekte“; durch das gelesene Original erledigt (gleicher Inhalt, nur Druckformat).",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Fehlerseite des Amtes (HTTP 404), Seitenbaustein „Link verschicken“ ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Alt Krenzlin gehört zum Amt Ludwigslust-Land (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Wärmepumpe und Förderprogramm nichts, die Förderrichtlinien in Ortsrecht und Bekanntmachungen betreffen Kultur und Vereine, und die erfassten Quellen beschreiben EU-/Landeszuwendungen an Amt und Gemeinden. Auch die eigene Gemeindeseite nennt kein solches Programm. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076018",
+    "name": "Bresegard bei Eldena",
+    "checkedAt": "2026-09-19T04:07:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ludwigslust-land.de Volltextsuche je Rubrik: Photovoltaik, Solar, Balkonkraftwerk, Balkon, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Richtlinie (Gegenprobe Ludwigslust: 733 Treffer)",
+      "Keine eigene Gemeindeseite (Liste „Gemeinden online“ des Amtes); Informationen über die Amtsseite",
+      "Gelesen: Geförderte Projekte, Kommunale Wärmeplanung, Meldung Batteriespeicher, Gemeinden online, Rechtsgrundlagen und Bekanntmachungen (Richtlinien)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Geförderte Projekte“ des Amtes — EU-/Landesförderung für LED-Straßenbeleuchtung (Göhlen, Lübesse), Kita Warlow, Einzelhalle Rastow, Feuerwehr/Dorfgemeinschaftshaus Neu Lüblow, Badesee Dreenkrögen, Gemeindehaus Warlow; Zuwendungen an Amt und Gemeinden, kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/contact/index/link",
+        "finding": "Im Original abgerufen (19.09.2026): Die Adresse liefert die Fehlerseite des Amtes (HTTP 404); es ist der Seitenbaustein „Link verschicken“ ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite je Rubrik gelesen (19.09.2026): Balkonkraftwerk, Wärmepumpe, Förderprogramm ohne direkte Treffer; Photovoltaik/Solar nur PV-Anlage des Amtsgebäudes, Solarpark-Planungen (Groß Laasch, Sülte), Bioenergiedörfer, Dachflächenvermietung Rastow, Unternehmensverzeichnis; Zuschuss nur Ferienlager, Wohngeld, Jugendförderung, kultureller Verwendungsnachweis Rastow; Speicher nur Meldung zum Batteriespeicher des Amtsgebäudes; Klimaschutz nur Windkraft, Bioenergie, Kommunale Wärmeplanung. Gegenprobe „Ludwigslust“: 733 Meldungstreffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/news/1/656769/nachrichten/656769.html",
+        "finding": "Im Original gelesen: Meldung „Die Energiewende voranbringen – Nutzung von Batteriespeichern“ — zählt PV-Kleinanlagen und Speicher je Gemeinde und berichtet über den Batteriespeicher für das Amtsgebäude (Amtsausschuss); kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/768008/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Im Original gelesen: Kommunale Wärmeplanung aller elf Amtsgemeinden, Bundeszuwendung an das Amt (Bewilligungszeitraum 01.06.–31.10.2025); keine Förderung für private Heizungen."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Richtlinie&modul=rechtsgrundlagen",
+        "finding": "Rechtsgrundlagen und Bekanntmachungen des Amtes (Suche Richtlinie/Förderung) gelesen: nur Richtlinien zur Förderung des kulturellen Lebens der Gemeinden, Vereinsförderrichtlinie Rastow, Kinderkleiderbörsen- und Weihnachtsmarktrichtlinie Groß Laasch, Stundungssatzungen — keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Seite „Geförderte Projekte“ des Amtes: EU-/Landeszuwendungen an Amt und Gemeinden (LED-Straßenbeleuchtung, Kita, Sporthalle, Gemeindehäuser, Badesee) — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite „Geförderte Projekte“; durch das gelesene Original erledigt (gleicher Inhalt, nur Druckformat).",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Fehlerseite des Amtes (HTTP 404), Seitenbaustein „Link verschicken“ ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bresegard bei Eldena gehört zum Amt Ludwigslust-Land (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Wärmepumpe und Förderprogramm nichts, die Förderrichtlinien in Ortsrecht und Bekanntmachungen betreffen Kultur und Vereine, und die erfassten Quellen beschreiben EU-/Landeszuwendungen an Amt und Gemeinden. Eine eigene Gemeindeseite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076046",
+    "name": "Göhlen",
+    "checkedAt": "2026-09-19T04:07:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ludwigslust-land.de Volltextsuche je Rubrik: Photovoltaik, Solar, Balkonkraftwerk, Balkon, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Richtlinie (Gegenprobe Ludwigslust: 733 Treffer)",
+      "Eigene Gemeindeseite gemeinde-goehlen.de (Verwaltungsportal) durchsucht: Photovoltaik, Solar, Balkonkraftwerk, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz",
+      "Gelesen: Geförderte Projekte, Kommunale Wärmeplanung, Meldung Batteriespeicher, Gemeinden online, Rechtsgrundlagen und Bekanntmachungen (Richtlinien)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Geförderte Projekte“ des Amtes — EU-/Landesförderung für LED-Straßenbeleuchtung (Göhlen, Lübesse), Kita Warlow, Einzelhalle Rastow, Feuerwehr/Dorfgemeinschaftshaus Neu Lüblow, Badesee Dreenkrögen, Gemeindehaus Warlow; Zuwendungen an Amt und Gemeinden, kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/contact/index/link",
+        "finding": "Im Original abgerufen (19.09.2026): Die Adresse liefert die Fehlerseite des Amtes (HTTP 404); es ist der Seitenbaustein „Link verschicken“ ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite je Rubrik gelesen (19.09.2026): Balkonkraftwerk, Wärmepumpe, Förderprogramm ohne direkte Treffer; Photovoltaik/Solar nur PV-Anlage des Amtsgebäudes, Solarpark-Planungen (Groß Laasch, Sülte), Bioenergiedörfer, Dachflächenvermietung Rastow, Unternehmensverzeichnis; Zuschuss nur Ferienlager, Wohngeld, Jugendförderung, kultureller Verwendungsnachweis Rastow; Speicher nur Meldung zum Batteriespeicher des Amtsgebäudes; Klimaschutz nur Windkraft, Bioenergie, Kommunale Wärmeplanung. Gegenprobe „Ludwigslust“: 733 Meldungstreffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/news/1/656769/nachrichten/656769.html",
+        "finding": "Im Original gelesen: Meldung „Die Energiewende voranbringen – Nutzung von Batteriespeichern“ — zählt PV-Kleinanlagen und Speicher je Gemeinde und berichtet über den Batteriespeicher für das Amtsgebäude (Amtsausschuss); kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/768008/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Im Original gelesen: Kommunale Wärmeplanung aller elf Amtsgemeinden, Bundeszuwendung an das Amt (Bewilligungszeitraum 01.06.–31.10.2025); keine Förderung für private Heizungen."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Richtlinie&modul=rechtsgrundlagen",
+        "finding": "Rechtsgrundlagen und Bekanntmachungen des Amtes (Suche Richtlinie/Förderung) gelesen: nur Richtlinien zur Förderung des kulturellen Lebens der Gemeinden, Vereinsförderrichtlinie Rastow, Kinderkleiderbörsen- und Weihnachtsmarktrichtlinie Groß Laasch, Stundungssatzungen — keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)."
+      },
+      {
+        "url": "http://www.gemeinde-goehlen.de/",
+        "finding": "Eigene Gemeindeseite gemeinde-goehlen.de (Verwaltungsportal) durchsucht: Balkonkraftwerk, Wärmepumpe, Solar ohne Treffer; Photovoltaik nur Meldung zur PV-Anlage auf dem Feuerwehrgebäude; Förderung nur Kulturförderrichtlinie und Stundungssatzung; Zuschuss nur Kürzung der Jugendförderung des Landkreises."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Seite „Geförderte Projekte“ des Amtes: EU-/Landeszuwendungen an Amt und Gemeinden (LED-Straßenbeleuchtung, Kita, Sporthalle, Gemeindehäuser, Badesee) — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite „Geförderte Projekte“; durch das gelesene Original erledigt (gleicher Inhalt, nur Druckformat).",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Fehlerseite des Amtes (HTTP 404), Seitenbaustein „Link verschicken“ ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Göhlen gehört zum Amt Ludwigslust-Land (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Wärmepumpe und Förderprogramm nichts, die Förderrichtlinien in Ortsrecht und Bekanntmachungen betreffen Kultur und Vereine, und die erfassten Quellen beschreiben EU-/Landeszuwendungen an Amt und Gemeinden. Auch die eigene Gemeindeseite nennt kein solches Programm. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076087",
+    "name": "Lüblow",
+    "checkedAt": "2026-09-19T04:07:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ludwigslust-land.de Volltextsuche je Rubrik: Photovoltaik, Solar, Balkonkraftwerk, Balkon, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Richtlinie (Gegenprobe Ludwigslust: 733 Treffer)",
+      "Keine eigene Gemeindeseite (Liste „Gemeinden online“ des Amtes); Informationen über die Amtsseite",
+      "Gelesen: Geförderte Projekte, Kommunale Wärmeplanung, Meldung Batteriespeicher, Gemeinden online, Rechtsgrundlagen und Bekanntmachungen (Richtlinien)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Geförderte Projekte“ des Amtes — EU-/Landesförderung für LED-Straßenbeleuchtung (Göhlen, Lübesse), Kita Warlow, Einzelhalle Rastow, Feuerwehr/Dorfgemeinschaftshaus Neu Lüblow, Badesee Dreenkrögen, Gemeindehaus Warlow; Zuwendungen an Amt und Gemeinden, kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/contact/index/link",
+        "finding": "Im Original abgerufen (19.09.2026): Die Adresse liefert die Fehlerseite des Amtes (HTTP 404); es ist der Seitenbaustein „Link verschicken“ ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite je Rubrik gelesen (19.09.2026): Balkonkraftwerk, Wärmepumpe, Förderprogramm ohne direkte Treffer; Photovoltaik/Solar nur PV-Anlage des Amtsgebäudes, Solarpark-Planungen (Groß Laasch, Sülte), Bioenergiedörfer, Dachflächenvermietung Rastow, Unternehmensverzeichnis; Zuschuss nur Ferienlager, Wohngeld, Jugendförderung, kultureller Verwendungsnachweis Rastow; Speicher nur Meldung zum Batteriespeicher des Amtsgebäudes; Klimaschutz nur Windkraft, Bioenergie, Kommunale Wärmeplanung. Gegenprobe „Ludwigslust“: 733 Meldungstreffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/news/1/656769/nachrichten/656769.html",
+        "finding": "Im Original gelesen: Meldung „Die Energiewende voranbringen – Nutzung von Batteriespeichern“ — zählt PV-Kleinanlagen und Speicher je Gemeinde und berichtet über den Batteriespeicher für das Amtsgebäude (Amtsausschuss); kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/768008/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Im Original gelesen: Kommunale Wärmeplanung aller elf Amtsgemeinden, Bundeszuwendung an das Amt (Bewilligungszeitraum 01.06.–31.10.2025); keine Förderung für private Heizungen."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Richtlinie&modul=rechtsgrundlagen",
+        "finding": "Rechtsgrundlagen und Bekanntmachungen des Amtes (Suche Richtlinie/Förderung) gelesen: nur Richtlinien zur Förderung des kulturellen Lebens der Gemeinden, Vereinsförderrichtlinie Rastow, Kinderkleiderbörsen- und Weihnachtsmarktrichtlinie Groß Laasch, Stundungssatzungen — keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Seite „Geförderte Projekte“ des Amtes: EU-/Landeszuwendungen an Amt und Gemeinden (LED-Straßenbeleuchtung, Kita, Sporthalle, Gemeindehäuser, Badesee) — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite „Geförderte Projekte“; durch das gelesene Original erledigt (gleicher Inhalt, nur Druckformat).",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Fehlerseite des Amtes (HTTP 404), Seitenbaustein „Link verschicken“ ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lüblow gehört zum Amt Ludwigslust-Land (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Wärmepumpe und Förderprogramm nichts, die Förderrichtlinien in Ortsrecht und Bekanntmachungen betreffen Kultur und Vereine, und die erfassten Quellen beschreiben EU-/Landeszuwendungen an Amt und Gemeinden. Eine eigene Gemeindeseite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076118",
+    "name": "Rastow",
+    "checkedAt": "2026-09-19T04:07:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ludwigslust-land.de Volltextsuche je Rubrik: Photovoltaik, Solar, Balkonkraftwerk, Balkon, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Richtlinie (Gegenprobe Ludwigslust: 733 Treffer)",
+      "Eigene Gemeindeseite gemeinde-rastow.de (WordPress-Suche) durchsucht: Photovoltaik, Solar, Balkonkraftwerk, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz",
+      "Gelesen: Geförderte Projekte, Kommunale Wärmeplanung, Meldung Batteriespeicher, Gemeinden online, Rechtsgrundlagen und Bekanntmachungen (Richtlinien)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Geförderte Projekte“ des Amtes — EU-/Landesförderung für LED-Straßenbeleuchtung (Göhlen, Lübesse), Kita Warlow, Einzelhalle Rastow, Feuerwehr/Dorfgemeinschaftshaus Neu Lüblow, Badesee Dreenkrögen, Gemeindehaus Warlow; Zuwendungen an Amt und Gemeinden, kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/contact/index/link",
+        "finding": "Im Original abgerufen (19.09.2026): Die Adresse liefert die Fehlerseite des Amtes (HTTP 404); es ist der Seitenbaustein „Link verschicken“ ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite je Rubrik gelesen (19.09.2026): Balkonkraftwerk, Wärmepumpe, Förderprogramm ohne direkte Treffer; Photovoltaik/Solar nur PV-Anlage des Amtsgebäudes, Solarpark-Planungen (Groß Laasch, Sülte), Bioenergiedörfer, Dachflächenvermietung Rastow, Unternehmensverzeichnis; Zuschuss nur Ferienlager, Wohngeld, Jugendförderung, kultureller Verwendungsnachweis Rastow; Speicher nur Meldung zum Batteriespeicher des Amtsgebäudes; Klimaschutz nur Windkraft, Bioenergie, Kommunale Wärmeplanung. Gegenprobe „Ludwigslust“: 733 Meldungstreffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/news/1/656769/nachrichten/656769.html",
+        "finding": "Im Original gelesen: Meldung „Die Energiewende voranbringen – Nutzung von Batteriespeichern“ — zählt PV-Kleinanlagen und Speicher je Gemeinde und berichtet über den Batteriespeicher für das Amtsgebäude (Amtsausschuss); kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/768008/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Im Original gelesen: Kommunale Wärmeplanung aller elf Amtsgemeinden, Bundeszuwendung an das Amt (Bewilligungszeitraum 01.06.–31.10.2025); keine Förderung für private Heizungen."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Richtlinie&modul=rechtsgrundlagen",
+        "finding": "Rechtsgrundlagen und Bekanntmachungen des Amtes (Suche Richtlinie/Förderung) gelesen: nur Richtlinien zur Förderung des kulturellen Lebens der Gemeinden, Vereinsförderrichtlinie Rastow, Kinderkleiderbörsen- und Weihnachtsmarktrichtlinie Groß Laasch, Stundungssatzungen — keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)."
+      },
+      {
+        "url": "https://gemeinde-rastow.de/",
+        "finding": "Eigene Gemeindeseite gemeinde-rastow.de (WordPress-Suche) durchsucht: Photovoltaik, Solar, Balkonkraftwerk, Zuschuss, Wärmepumpe ohne Treffer; Förderung nur Schulbau-Förderung, Sport, Hort und Vereine."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Seite „Geförderte Projekte“ des Amtes: EU-/Landeszuwendungen an Amt und Gemeinden (LED-Straßenbeleuchtung, Kita, Sporthalle, Gemeindehäuser, Badesee) — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite „Geförderte Projekte“; durch das gelesene Original erledigt (gleicher Inhalt, nur Druckformat).",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Fehlerseite des Amtes (HTTP 404), Seitenbaustein „Link verschicken“ ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rastow gehört zum Amt Ludwigslust-Land (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Wärmepumpe und Förderprogramm nichts, die Förderrichtlinien in Ortsrecht und Bekanntmachungen betreffen Kultur und Vereine, und die erfassten Quellen beschreiben EU-/Landeszuwendungen an Amt und Gemeinden. Auch die eigene Gemeindeseite nennt kein solches Programm. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076134",
+    "name": "Sülstorf",
+    "checkedAt": "2026-09-19T04:07:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ludwigslust-land.de Volltextsuche je Rubrik: Photovoltaik, Solar, Balkonkraftwerk, Balkon, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Richtlinie (Gegenprobe Ludwigslust: 733 Treffer)",
+      "Eigene Gemeindeseite gemeinde-suelstorf.de (Verwaltungsportal) durchsucht: Photovoltaik, Solar, Balkonkraftwerk, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz",
+      "Gelesen: Geförderte Projekte, Kommunale Wärmeplanung, Meldung Batteriespeicher, Gemeinden online, Rechtsgrundlagen und Bekanntmachungen (Richtlinien)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Geförderte Projekte“ des Amtes — EU-/Landesförderung für LED-Straßenbeleuchtung (Göhlen, Lübesse), Kita Warlow, Einzelhalle Rastow, Feuerwehr/Dorfgemeinschaftshaus Neu Lüblow, Badesee Dreenkrögen, Gemeindehaus Warlow; Zuwendungen an Amt und Gemeinden, kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/contact/index/link",
+        "finding": "Im Original abgerufen (19.09.2026): Die Adresse liefert die Fehlerseite des Amtes (HTTP 404); es ist der Seitenbaustein „Link verschicken“ ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite je Rubrik gelesen (19.09.2026): Balkonkraftwerk, Wärmepumpe, Förderprogramm ohne direkte Treffer; Photovoltaik/Solar nur PV-Anlage des Amtsgebäudes, Solarpark-Planungen (Groß Laasch, Sülte), Bioenergiedörfer, Dachflächenvermietung Rastow, Unternehmensverzeichnis; Zuschuss nur Ferienlager, Wohngeld, Jugendförderung, kultureller Verwendungsnachweis Rastow; Speicher nur Meldung zum Batteriespeicher des Amtsgebäudes; Klimaschutz nur Windkraft, Bioenergie, Kommunale Wärmeplanung. Gegenprobe „Ludwigslust“: 733 Meldungstreffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/news/1/656769/nachrichten/656769.html",
+        "finding": "Im Original gelesen: Meldung „Die Energiewende voranbringen – Nutzung von Batteriespeichern“ — zählt PV-Kleinanlagen und Speicher je Gemeinde und berichtet über den Batteriespeicher für das Amtsgebäude (Amtsausschuss); kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/768008/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Im Original gelesen: Kommunale Wärmeplanung aller elf Amtsgemeinden, Bundeszuwendung an das Amt (Bewilligungszeitraum 01.06.–31.10.2025); keine Förderung für private Heizungen."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Richtlinie&modul=rechtsgrundlagen",
+        "finding": "Rechtsgrundlagen und Bekanntmachungen des Amtes (Suche Richtlinie/Förderung) gelesen: nur Richtlinien zur Förderung des kulturellen Lebens der Gemeinden, Vereinsförderrichtlinie Rastow, Kinderkleiderbörsen- und Weihnachtsmarktrichtlinie Groß Laasch, Stundungssatzungen — keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)."
+      },
+      {
+        "url": "https://www.gemeinde-suelstorf.de/",
+        "finding": "Eigene Gemeindeseite gemeinde-suelstorf.de (Verwaltungsportal) durchsucht: Photovoltaik, Zuschuss, Balkonkraftwerk, Wärmepumpe ohne Treffer; Förderung nur Vereins-, Kirchen- und Jugendmeldungen sowie Kulturförderrichtlinie und Stundungssatzung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Seite „Geförderte Projekte“ des Amtes: EU-/Landeszuwendungen an Amt und Gemeinden (LED-Straßenbeleuchtung, Kita, Sporthalle, Gemeindehäuser, Badesee) — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite „Geförderte Projekte“; durch das gelesene Original erledigt (gleicher Inhalt, nur Druckformat).",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Fehlerseite des Amtes (HTTP 404), Seitenbaustein „Link verschicken“ ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sülstorf gehört zum Amt Ludwigslust-Land (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Wärmepumpe und Förderprogramm nichts, die Förderrichtlinien in Ortsrecht und Bekanntmachungen betreffen Kultur und Vereine, und die erfassten Quellen beschreiben EU-/Landeszuwendungen an Amt und Gemeinden. Auch die eigene Gemeindeseite nennt kein solches Programm. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076141",
+    "name": "Uelitz",
+    "checkedAt": "2026-09-19T04:07:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ludwigslust-land.de Volltextsuche je Rubrik: Photovoltaik, Solar, Balkonkraftwerk, Balkon, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Richtlinie (Gegenprobe Ludwigslust: 733 Treffer)",
+      "Eigene Gemeindeseite gemeinde-uelitz.de (Verwaltungsportal) durchsucht: Photovoltaik, Solar, Balkonkraftwerk, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz",
+      "Gelesen: Geförderte Projekte, Kommunale Wärmeplanung, Meldung Batteriespeicher, Gemeinden online, Rechtsgrundlagen und Bekanntmachungen (Richtlinien)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Geförderte Projekte“ des Amtes — EU-/Landesförderung für LED-Straßenbeleuchtung (Göhlen, Lübesse), Kita Warlow, Einzelhalle Rastow, Feuerwehr/Dorfgemeinschaftshaus Neu Lüblow, Badesee Dreenkrögen, Gemeindehaus Warlow; Zuwendungen an Amt und Gemeinden, kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/contact/index/link",
+        "finding": "Im Original abgerufen (19.09.2026): Die Adresse liefert die Fehlerseite des Amtes (HTTP 404); es ist der Seitenbaustein „Link verschicken“ ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite je Rubrik gelesen (19.09.2026): Balkonkraftwerk, Wärmepumpe, Förderprogramm ohne direkte Treffer; Photovoltaik/Solar nur PV-Anlage des Amtsgebäudes, Solarpark-Planungen (Groß Laasch, Sülte), Bioenergiedörfer, Dachflächenvermietung Rastow, Unternehmensverzeichnis; Zuschuss nur Ferienlager, Wohngeld, Jugendförderung, kultureller Verwendungsnachweis Rastow; Speicher nur Meldung zum Batteriespeicher des Amtsgebäudes; Klimaschutz nur Windkraft, Bioenergie, Kommunale Wärmeplanung. Gegenprobe „Ludwigslust“: 733 Meldungstreffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/news/1/656769/nachrichten/656769.html",
+        "finding": "Im Original gelesen: Meldung „Die Energiewende voranbringen – Nutzung von Batteriespeichern“ — zählt PV-Kleinanlagen und Speicher je Gemeinde und berichtet über den Batteriespeicher für das Amtsgebäude (Amtsausschuss); kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/768008/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Im Original gelesen: Kommunale Wärmeplanung aller elf Amtsgemeinden, Bundeszuwendung an das Amt (Bewilligungszeitraum 01.06.–31.10.2025); keine Förderung für private Heizungen."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Richtlinie&modul=rechtsgrundlagen",
+        "finding": "Rechtsgrundlagen und Bekanntmachungen des Amtes (Suche Richtlinie/Förderung) gelesen: nur Richtlinien zur Förderung des kulturellen Lebens der Gemeinden, Vereinsförderrichtlinie Rastow, Kinderkleiderbörsen- und Weihnachtsmarktrichtlinie Groß Laasch, Stundungssatzungen — keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)."
+      },
+      {
+        "url": "https://www.gemeinde-uelitz.de/",
+        "finding": "Eigene Gemeindeseite gemeinde-uelitz.de (Verwaltungsportal) durchsucht: Balkonkraftwerk, Zuschuss, Wärmepumpe, Klimaschutz ohne Treffer; Photovoltaik/Solar nur Meldung zur PV-Anlage des Amtsgebäudes; Förderung/Förderprogramm nur Breitband, Feuerwehr, Schul-Notebooks, Ehrenamt; Rechtsgrundlagen nur Stundungssatzung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Seite „Geförderte Projekte“ des Amtes: EU-/Landeszuwendungen an Amt und Gemeinden (LED-Straßenbeleuchtung, Kita, Sporthalle, Gemeindehäuser, Badesee) — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite „Geförderte Projekte“; durch das gelesene Original erledigt (gleicher Inhalt, nur Druckformat).",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Fehlerseite des Amtes (HTTP 404), Seitenbaustein „Link verschicken“ ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Uelitz gehört zum Amt Ludwigslust-Land (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Wärmepumpe und Förderprogramm nichts, die Förderrichtlinien in Ortsrecht und Bekanntmachungen betreffen Kultur und Vereine, und die erfassten Quellen beschreiben EU-/Landeszuwendungen an Amt und Gemeinden. Auch die eigene Gemeindeseite nennt kein solches Programm. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076146",
+    "name": "Warlow",
+    "checkedAt": "2026-09-19T04:07:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ludwigslust-land.de Volltextsuche je Rubrik: Photovoltaik, Solar, Balkonkraftwerk, Balkon, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Richtlinie (Gegenprobe Ludwigslust: 733 Treffer)",
+      "Keine eigene Gemeindeseite (Liste „Gemeinden online“ des Amtes); Informationen über die Amtsseite",
+      "Gelesen: Geförderte Projekte, Kommunale Wärmeplanung, Meldung Batteriespeicher, Gemeinden online, Rechtsgrundlagen und Bekanntmachungen (Richtlinien)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Geförderte Projekte“ des Amtes — EU-/Landesförderung für LED-Straßenbeleuchtung (Göhlen, Lübesse), Kita Warlow, Einzelhalle Rastow, Feuerwehr/Dorfgemeinschaftshaus Neu Lüblow, Badesee Dreenkrögen, Gemeindehaus Warlow; Zuwendungen an Amt und Gemeinden, kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/contact/index/link",
+        "finding": "Im Original abgerufen (19.09.2026): Die Adresse liefert die Fehlerseite des Amtes (HTTP 404); es ist der Seitenbaustein „Link verschicken“ ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite je Rubrik gelesen (19.09.2026): Balkonkraftwerk, Wärmepumpe, Förderprogramm ohne direkte Treffer; Photovoltaik/Solar nur PV-Anlage des Amtsgebäudes, Solarpark-Planungen (Groß Laasch, Sülte), Bioenergiedörfer, Dachflächenvermietung Rastow, Unternehmensverzeichnis; Zuschuss nur Ferienlager, Wohngeld, Jugendförderung, kultureller Verwendungsnachweis Rastow; Speicher nur Meldung zum Batteriespeicher des Amtsgebäudes; Klimaschutz nur Windkraft, Bioenergie, Kommunale Wärmeplanung. Gegenprobe „Ludwigslust“: 733 Meldungstreffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/news/1/656769/nachrichten/656769.html",
+        "finding": "Im Original gelesen: Meldung „Die Energiewende voranbringen – Nutzung von Batteriespeichern“ — zählt PV-Kleinanlagen und Speicher je Gemeinde und berichtet über den Batteriespeicher für das Amtsgebäude (Amtsausschuss); kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/768008/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Im Original gelesen: Kommunale Wärmeplanung aller elf Amtsgemeinden, Bundeszuwendung an das Amt (Bewilligungszeitraum 01.06.–31.10.2025); keine Förderung für private Heizungen."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Richtlinie&modul=rechtsgrundlagen",
+        "finding": "Rechtsgrundlagen und Bekanntmachungen des Amtes (Suche Richtlinie/Förderung) gelesen: nur Richtlinien zur Förderung des kulturellen Lebens der Gemeinden, Vereinsförderrichtlinie Rastow, Kinderkleiderbörsen- und Weihnachtsmarktrichtlinie Groß Laasch, Stundungssatzungen — keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Seite „Geförderte Projekte“ des Amtes: EU-/Landeszuwendungen an Amt und Gemeinden (LED-Straßenbeleuchtung, Kita, Sporthalle, Gemeindehäuser, Badesee) — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite „Geförderte Projekte“; durch das gelesene Original erledigt (gleicher Inhalt, nur Druckformat).",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Fehlerseite des Amtes (HTTP 404), Seitenbaustein „Link verschicken“ ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Warlow gehört zum Amt Ludwigslust-Land (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Wärmepumpe und Förderprogramm nichts, die Förderrichtlinien in Ortsrecht und Bekanntmachungen betreffen Kultur und Vereine, und die erfassten Quellen beschreiben EU-/Landeszuwendungen an Amt und Gemeinden. Eine eigene Gemeindeseite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076156",
+    "name": "Wöbbelin",
+    "checkedAt": "2026-09-19T04:07:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ludwigslust-land.de Volltextsuche je Rubrik: Photovoltaik, Solar, Balkonkraftwerk, Balkon, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Richtlinie (Gegenprobe Ludwigslust: 733 Treffer)",
+      "Keine eigene Gemeindeseite (Liste „Gemeinden online“ des Amtes); Informationen über die Amtsseite",
+      "Gelesen: Geförderte Projekte, Kommunale Wärmeplanung, Meldung Batteriespeicher, Gemeinden online, Rechtsgrundlagen und Bekanntmachungen (Richtlinien)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Geförderte Projekte“ des Amtes — EU-/Landesförderung für LED-Straßenbeleuchtung (Göhlen, Lübesse), Kita Warlow, Einzelhalle Rastow, Feuerwehr/Dorfgemeinschaftshaus Neu Lüblow, Badesee Dreenkrögen, Gemeindehaus Warlow; Zuwendungen an Amt und Gemeinden, kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/contact/index/link",
+        "finding": "Im Original abgerufen (19.09.2026): Die Adresse liefert die Fehlerseite des Amtes (HTTP 404); es ist der Seitenbaustein „Link verschicken“ ohne Förderinhalt."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite je Rubrik gelesen (19.09.2026): Balkonkraftwerk, Wärmepumpe, Förderprogramm ohne direkte Treffer; Photovoltaik/Solar nur PV-Anlage des Amtsgebäudes, Solarpark-Planungen (Groß Laasch, Sülte), Bioenergiedörfer, Dachflächenvermietung Rastow, Unternehmensverzeichnis; Zuschuss nur Ferienlager, Wohngeld, Jugendförderung, kultureller Verwendungsnachweis Rastow; Speicher nur Meldung zum Batteriespeicher des Amtsgebäudes; Klimaschutz nur Windkraft, Bioenergie, Kommunale Wärmeplanung. Gegenprobe „Ludwigslust“: 733 Meldungstreffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/news/1/656769/nachrichten/656769.html",
+        "finding": "Im Original gelesen: Meldung „Die Energiewende voranbringen – Nutzung von Batteriespeichern“ — zählt PV-Kleinanlagen und Speicher je Gemeinde und berichtet über den Batteriespeicher für das Amtsgebäude (Amtsausschuss); kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/seite/768008/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Im Original gelesen: Kommunale Wärmeplanung aller elf Amtsgemeinden, Bundeszuwendung an das Amt (Bewilligungszeitraum 01.06.–31.10.2025); keine Förderung für private Heizungen."
+      },
+      {
+        "url": "https://www.amt-ludwigslust-land.de/suche/index.php?suchbegriff=Richtlinie&modul=rechtsgrundlagen",
+        "finding": "Rechtsgrundlagen und Bekanntmachungen des Amtes (Suche Richtlinie/Förderung) gelesen: nur Richtlinien zur Förderung des kulturellen Lebens der Gemeinden, Vereinsförderrichtlinie Rastow, Kinderkleiderbörsen- und Weihnachtsmarktrichtlinie Groß Laasch, Stundungssatzungen — keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuchen 18.09.2026 und 19.09.2026, Katalog ohne Kreisprogramm 13076)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html",
+        "disposition": "reviewed",
+        "reason": "Seite „Geförderte Projekte“ des Amtes: EU-/Landeszuwendungen an Amt und Gemeinden (LED-Straßenbeleuchtung, Kita, Sporthalle, Gemeindehäuser, Badesee) — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Seite „Geförderte Projekte“; durch das gelesene Original erledigt (gleicher Inhalt, nur Druckformat).",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/seite/467038/gef%C3%B6rderte-projekte.html"
+      },
+      {
+        "url": "amt-ludwigslust-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Im Original abgerufen: Fehlerseite des Amtes (HTTP 404), Seitenbaustein „Link verschicken“ ohne Förderinhalt.",
+        "evidenceUrl": "https://www.amt-ludwigslust-land.de/contact/index/link"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wöbbelin gehört zum Amt Ludwigslust-Land (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Wärmepumpe und Förderprogramm nichts, die Förderrichtlinien in Ortsrecht und Bekanntmachungen betreffen Kultur und Vereine, und die erfassten Quellen beschreiben EU-/Landeszuwendungen an Amt und Gemeinden. Eine eigene Gemeindeseite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
   }
 ]
