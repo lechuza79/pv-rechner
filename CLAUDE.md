@@ -53,6 +53,8 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 
 ## Seiten und Flows
 
+**Navigation, Zielbild vom 18.09.2026:** Tools · Förderung · Energiemonitor · Vor Ort · Wissen; separat Login. Für Organisationen ist vorbereitet, bleibt zum Start aber ausgeblendet, bis passende Zielgruppenseiten existieren. `public/shared-nav/nav-content.js` hält die gemeinsamen Inhalte und die eindeutige Bereichszuordnung, `nav.js` die Interaktionen. `SharedSiteHeader` verwendet beides auf React-Seiten mit bestehender Anmeldung und einer ohne JavaScript bedienbaren Ersatznavigation. Startseite und Simulation verwenden denselben Baustein direkt. Angebotscheck bleibt Warteliste innerhalb Tools. Lokale Einstiege zeigen weiter auf den bestehenden Atlas; keine neuen kommunalen Monitorseiten und keine URL-Umzüge. Ältere Aussagen unten zur Zuordnung in `Header.tsx` beschreiben nur die bisherige Kopfzeile. Dieser Menüstand ist visuell abgenommen und zur Integration vorbereitet, noch nicht veröffentlicht. Mobil lassen sich mehrere Bereiche unabhängig öffnen; auf Desktop bleibt nur ein Flyout offen.
+
 **Startseite (`/`):** Tool-Hub mit Widget-Cards → Live Simulation, Anlage rechnen, Wärmepumpe, Energiedaten.
 
 **Routen-Schema:** Slugs sind keyword-optimiert (`thema-funktion`, transliteriert). Alte Pfade werden via `next.config.js` dauerhaft (301/308) umgeleitet, Query-Parameter bleiben erhalten (geteilte Links intakt): `/rechner`→`/photovoltaik-rechner` · `/waermepumpe`→`/waermepumpe-rechner` · `/energie`→`/strommix-deutschland` · `/empfehlung`→`/pv-bedarf-berechnen` · `/simulation`→`/pv-simulation` · `/balkonkraftwerk-rechner`→`/balkonkraftwerk/rechner`.

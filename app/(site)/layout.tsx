@@ -6,7 +6,7 @@ import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
 import { jsonLdHtml } from "../../lib/json-ld";
 import { organizationJsonLd, softwareAppJsonLd } from "../../lib/site-json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
-import Header from "../../components/Header";
+import Header from "../../components/SharedSiteHeader";
 import Footer from "../../components/Footer";
 import { WebAnalytics } from "../../components/WebAnalytics";
 import { HerkunftsMelder } from "../../components/HerkunftsMelder";
