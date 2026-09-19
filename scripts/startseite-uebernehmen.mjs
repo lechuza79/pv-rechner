@@ -77,7 +77,7 @@ const ORDNER = [
 // copy would silently overwrite that work. Only the built scene bundles and
 // their assets still come from the package (their sources and build live
 // there until the scene is rebuilt after launch).
-const IM_PROJEKT = [/^homepage-study\/race-dist\/, /^shared-nav\//, /^shared-footer\//, /^shared-person\//, /^(?!.*(?:^|\/)(?:dist|race-dist|story-dist)\/).*\.css$/];
+const IM_PROJEKT = [/^homepage-study\/race-dist\//, /^shared-nav\//, /^shared-footer\//, /^shared-person\//, /^(?!.*(?:^|\/)(?:dist|race-dist|story-dist)\/).*\.css$/];
 // Only web formats; the packages also carry multi-megabyte masters.
 const ERLAUBT = /\.(js|css|json|webp|svg|woff2|jpg|png)$/;
 
