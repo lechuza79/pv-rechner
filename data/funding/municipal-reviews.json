@@ -34431,5 +34431,704 @@
       "website": "https://www.betzdorf.de",
       "question": "Laut Presse fördert bzw. förderte die Stadt Betzdorf die Installation von Balkonkraftwerken. Auf betzdorf.de und vg-bg.de finde ich dazu keine Richtlinie, nur die Vereinsförderung von 2023 und das beendete Speicherprogramm der Verbandsgemeinde. Gibt es derzeit einen beantragbaren Zuschuss der Stadt Betzdorf für Balkonkraftwerke, Photovoltaik, Speicher oder Wärmepumpen, und wo finde ich die Richtlinie? Falls die Förderung beendet ist, hilft mir auch diese kurze Auskunft mit dem Enddatum."
     }
+  },
+  {
+    "regionId": "03255001",
+    "name": "Arholzen",
+    "checkedAt": "2026-09-19T16:25:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "samtgemeindeverwaltung.de Volltextsuche (19.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Freibad-Beitrag; Solar nur Klimaschutz-Seite und KMU-Beratung; Förderung 38 Treffer (Wahlbekanntmachungen, Wirtschaftsförderung, Dorfentwicklung, Spielplatz, KMU-Beratung); Klimaschutz 8 Treffer (Klimaschutz-Seite, Energiesparmodelle, Bebauungspläne, ISEK)",
+      "Gelesen: Förderprogramme, Förderprojekte (Stadtoldendorf, Eschershausen), Energiesparmodelle, Klimaschutz, Energieversorgung",
+      "Stadtwerke Stadtoldendorf (örtlicher Versorger): Seitenverzeichnis der Startseite (rund 80 Seiten) ohne Förder-, Solar- oder Zuschussseite",
+      "Landkreis Holzminden: Seite Fördermittelberatung gelesen (nur Unternehmensförderung); Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „Stadtoldendorf Eschershausen Balkonkraftwerk Förderung Zuschuss Samtgemeinde“ (19.09.2026); einziger Treffer mit Privatzuschuss ist SolarFair der Stadt Holzminden (nur Stadtgebiet Holzminden, nicht Samtgemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprogramme",
+        "finding": "Im Original gelesen (19.09.2026): Förderung junger Familien beim Kauf städtischer Baugrundstücke (Eschershausen, Stadtoldendorf; Deensen 10 €/m² zinslose Stundung), Dorferneuerung/Stadtsanierung bis 25 % nur im Sanierungsgebiet, Verweis auf NBank und KfW — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte",
+        "finding": "Gelesen: geförderte Projekte der Stadt Stadtoldendorf (Waldspielplatz, LED-Straßenbeleuchtung mit Bundesmitteln) — Zuwendungen an die Kommune, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2",
+        "finding": "Gelesen: Innenstadtprojekte Eschershausen und Stadtoldendorf (Aufenthaltsqualität, Machbarkeitsstudie) — kommunale Projekte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "finding": "Gelesen: NKI-Projekt Energiesparmodelle in Schulen, Sporthallen, Kitas der Samtgemeinde (Laufzeit 2023–2028) — Bundesförderung an die Kommune."
+      },
+      {
+        "url": "https://samtgemeindeverwaltung.de/klimaschutz/",
+        "finding": "Gelesen: Zusammenarbeit mit der Klimaschutzagentur Weserbergland — kostenlose Beratungen (Mach dein Haus fit, Heizungsvisite, Solar-Check) und KMU-Beratungen; kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "finding": "Gelesen: Kreis-Förderprogramm nur für kleine und mittlere Unternehmen (REK Weserbergland+), Klima-Fördermittelberatung für Unternehmen — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Samtgemeinde: Baugrundstücke, Sanierungsgebiete, NBank/KfW — keine Technikförderung für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprogramme"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Geförderte Projekte der Stadt Stadtoldendorf (Spielplatz, LED-Straßenbeleuchtung) — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte-2",
+        "disposition": "reviewed",
+        "reason": "Innenstadtprojekte Eschershausen und Stadtoldendorf — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "disposition": "reviewed",
+        "reason": "NKI-Energiesparmodelle in kommunalen Einrichtungen — kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Arholzen gehört zur Samtgemeinde Eschershausen-Stadtoldendorf (Landkreis Holzminden). Weder Samtgemeinde, Mitgliedsgemeinde, örtliche Stadtwerke noch Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; angeboten werden nur kostenlose Beratungen der Klimaschutzagentur Weserbergland sowie Baugrundstücks- und Sanierungsgebietsförderung. Das SolarFair-Programm gilt nur im Stadtgebiet Holzminden. Stand 19.09.2026."
+  },
+  {
+    "regionId": "03255007",
+    "name": "Deensen",
+    "checkedAt": "2026-09-19T16:25:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "samtgemeindeverwaltung.de Volltextsuche (19.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Freibad-Beitrag; Solar nur Klimaschutz-Seite und KMU-Beratung; Förderung 38 Treffer (Wahlbekanntmachungen, Wirtschaftsförderung, Dorfentwicklung, Spielplatz, KMU-Beratung); Klimaschutz 8 Treffer (Klimaschutz-Seite, Energiesparmodelle, Bebauungspläne, ISEK)",
+      "Gelesen: Förderprogramme, Förderprojekte (Stadtoldendorf, Eschershausen), Energiesparmodelle, Klimaschutz, Energieversorgung",
+      "Stadtwerke Stadtoldendorf (örtlicher Versorger): Seitenverzeichnis der Startseite (rund 80 Seiten) ohne Förder-, Solar- oder Zuschussseite",
+      "Landkreis Holzminden: Seite Fördermittelberatung gelesen (nur Unternehmensförderung); Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „Stadtoldendorf Eschershausen Balkonkraftwerk Förderung Zuschuss Samtgemeinde“ (19.09.2026); einziger Treffer mit Privatzuschuss ist SolarFair der Stadt Holzminden (nur Stadtgebiet Holzminden, nicht Samtgemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprogramme",
+        "finding": "Im Original gelesen (19.09.2026): Förderung junger Familien beim Kauf städtischer Baugrundstücke (Eschershausen, Stadtoldendorf; Deensen 10 €/m² zinslose Stundung), Dorferneuerung/Stadtsanierung bis 25 % nur im Sanierungsgebiet, Verweis auf NBank und KfW — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte",
+        "finding": "Gelesen: geförderte Projekte der Stadt Stadtoldendorf (Waldspielplatz, LED-Straßenbeleuchtung mit Bundesmitteln) — Zuwendungen an die Kommune, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2",
+        "finding": "Gelesen: Innenstadtprojekte Eschershausen und Stadtoldendorf (Aufenthaltsqualität, Machbarkeitsstudie) — kommunale Projekte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "finding": "Gelesen: NKI-Projekt Energiesparmodelle in Schulen, Sporthallen, Kitas der Samtgemeinde (Laufzeit 2023–2028) — Bundesförderung an die Kommune."
+      },
+      {
+        "url": "https://samtgemeindeverwaltung.de/klimaschutz/",
+        "finding": "Gelesen: Zusammenarbeit mit der Klimaschutzagentur Weserbergland — kostenlose Beratungen (Mach dein Haus fit, Heizungsvisite, Solar-Check) und KMU-Beratungen; kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "finding": "Gelesen: Kreis-Förderprogramm nur für kleine und mittlere Unternehmen (REK Weserbergland+), Klima-Fördermittelberatung für Unternehmen — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Samtgemeinde: Baugrundstücke, Sanierungsgebiete, NBank/KfW — keine Technikförderung für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprogramme"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Geförderte Projekte der Stadt Stadtoldendorf (Spielplatz, LED-Straßenbeleuchtung) — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte-2",
+        "disposition": "reviewed",
+        "reason": "Innenstadtprojekte Eschershausen und Stadtoldendorf — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "disposition": "reviewed",
+        "reason": "NKI-Energiesparmodelle in kommunalen Einrichtungen — kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Deensen gehört zur Samtgemeinde Eschershausen-Stadtoldendorf (Landkreis Holzminden). Weder Samtgemeinde, Mitgliedsgemeinde, örtliche Stadtwerke noch Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; angeboten werden nur kostenlose Beratungen der Klimaschutzagentur Weserbergland sowie Baugrundstücks- und Sanierungsgebietsförderung. Das SolarFair-Programm gilt nur im Stadtgebiet Holzminden. Stand 19.09.2026."
+  },
+  {
+    "regionId": "03255010",
+    "name": "Dielmissen",
+    "checkedAt": "2026-09-19T16:25:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "samtgemeindeverwaltung.de Volltextsuche (19.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Freibad-Beitrag; Solar nur Klimaschutz-Seite und KMU-Beratung; Förderung 38 Treffer (Wahlbekanntmachungen, Wirtschaftsförderung, Dorfentwicklung, Spielplatz, KMU-Beratung); Klimaschutz 8 Treffer (Klimaschutz-Seite, Energiesparmodelle, Bebauungspläne, ISEK)",
+      "Gelesen: Förderprogramme, Förderprojekte (Stadtoldendorf, Eschershausen), Energiesparmodelle, Klimaschutz, Energieversorgung",
+      "Stadtwerke Stadtoldendorf (örtlicher Versorger): Seitenverzeichnis der Startseite (rund 80 Seiten) ohne Förder-, Solar- oder Zuschussseite",
+      "Landkreis Holzminden: Seite Fördermittelberatung gelesen (nur Unternehmensförderung); Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „Stadtoldendorf Eschershausen Balkonkraftwerk Förderung Zuschuss Samtgemeinde“ (19.09.2026); einziger Treffer mit Privatzuschuss ist SolarFair der Stadt Holzminden (nur Stadtgebiet Holzminden, nicht Samtgemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprogramme",
+        "finding": "Im Original gelesen (19.09.2026): Förderung junger Familien beim Kauf städtischer Baugrundstücke (Eschershausen, Stadtoldendorf; Deensen 10 €/m² zinslose Stundung), Dorferneuerung/Stadtsanierung bis 25 % nur im Sanierungsgebiet, Verweis auf NBank und KfW — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte",
+        "finding": "Gelesen: geförderte Projekte der Stadt Stadtoldendorf (Waldspielplatz, LED-Straßenbeleuchtung mit Bundesmitteln) — Zuwendungen an die Kommune, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2",
+        "finding": "Gelesen: Innenstadtprojekte Eschershausen und Stadtoldendorf (Aufenthaltsqualität, Machbarkeitsstudie) — kommunale Projekte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "finding": "Gelesen: NKI-Projekt Energiesparmodelle in Schulen, Sporthallen, Kitas der Samtgemeinde (Laufzeit 2023–2028) — Bundesförderung an die Kommune."
+      },
+      {
+        "url": "https://samtgemeindeverwaltung.de/klimaschutz/",
+        "finding": "Gelesen: Zusammenarbeit mit der Klimaschutzagentur Weserbergland — kostenlose Beratungen (Mach dein Haus fit, Heizungsvisite, Solar-Check) und KMU-Beratungen; kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "finding": "Gelesen: Kreis-Förderprogramm nur für kleine und mittlere Unternehmen (REK Weserbergland+), Klima-Fördermittelberatung für Unternehmen — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Samtgemeinde: Baugrundstücke, Sanierungsgebiete, NBank/KfW — keine Technikförderung für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprogramme"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Geförderte Projekte der Stadt Stadtoldendorf (Spielplatz, LED-Straßenbeleuchtung) — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte-2",
+        "disposition": "reviewed",
+        "reason": "Innenstadtprojekte Eschershausen und Stadtoldendorf — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "disposition": "reviewed",
+        "reason": "NKI-Energiesparmodelle in kommunalen Einrichtungen — kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dielmissen gehört zur Samtgemeinde Eschershausen-Stadtoldendorf (Landkreis Holzminden). Weder Samtgemeinde, Mitgliedsgemeinde, örtliche Stadtwerke noch Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; angeboten werden nur kostenlose Beratungen der Klimaschutzagentur Weserbergland sowie Baugrundstücks- und Sanierungsgebietsförderung. Das SolarFair-Programm gilt nur im Stadtgebiet Holzminden. Stand 19.09.2026."
+  },
+  {
+    "regionId": "03255012",
+    "name": "Eimen",
+    "checkedAt": "2026-09-19T16:25:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "samtgemeindeverwaltung.de Volltextsuche (19.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Freibad-Beitrag; Solar nur Klimaschutz-Seite und KMU-Beratung; Förderung 38 Treffer (Wahlbekanntmachungen, Wirtschaftsförderung, Dorfentwicklung, Spielplatz, KMU-Beratung); Klimaschutz 8 Treffer (Klimaschutz-Seite, Energiesparmodelle, Bebauungspläne, ISEK)",
+      "Gelesen: Förderprogramme, Förderprojekte (Stadtoldendorf, Eschershausen), Energiesparmodelle, Klimaschutz, Energieversorgung",
+      "Stadtwerke Stadtoldendorf (örtlicher Versorger): Seitenverzeichnis der Startseite (rund 80 Seiten) ohne Förder-, Solar- oder Zuschussseite",
+      "Landkreis Holzminden: Seite Fördermittelberatung gelesen (nur Unternehmensförderung); Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „Stadtoldendorf Eschershausen Balkonkraftwerk Förderung Zuschuss Samtgemeinde“ (19.09.2026); einziger Treffer mit Privatzuschuss ist SolarFair der Stadt Holzminden (nur Stadtgebiet Holzminden, nicht Samtgemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprogramme",
+        "finding": "Im Original gelesen (19.09.2026): Förderung junger Familien beim Kauf städtischer Baugrundstücke (Eschershausen, Stadtoldendorf; Deensen 10 €/m² zinslose Stundung), Dorferneuerung/Stadtsanierung bis 25 % nur im Sanierungsgebiet, Verweis auf NBank und KfW — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte",
+        "finding": "Gelesen: geförderte Projekte der Stadt Stadtoldendorf (Waldspielplatz, LED-Straßenbeleuchtung mit Bundesmitteln) — Zuwendungen an die Kommune, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2",
+        "finding": "Gelesen: Innenstadtprojekte Eschershausen und Stadtoldendorf (Aufenthaltsqualität, Machbarkeitsstudie) — kommunale Projekte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "finding": "Gelesen: NKI-Projekt Energiesparmodelle in Schulen, Sporthallen, Kitas der Samtgemeinde (Laufzeit 2023–2028) — Bundesförderung an die Kommune."
+      },
+      {
+        "url": "https://samtgemeindeverwaltung.de/klimaschutz/",
+        "finding": "Gelesen: Zusammenarbeit mit der Klimaschutzagentur Weserbergland — kostenlose Beratungen (Mach dein Haus fit, Heizungsvisite, Solar-Check) und KMU-Beratungen; kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "finding": "Gelesen: Kreis-Förderprogramm nur für kleine und mittlere Unternehmen (REK Weserbergland+), Klima-Fördermittelberatung für Unternehmen — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Samtgemeinde: Baugrundstücke, Sanierungsgebiete, NBank/KfW — keine Technikförderung für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprogramme"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Geförderte Projekte der Stadt Stadtoldendorf (Spielplatz, LED-Straßenbeleuchtung) — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte-2",
+        "disposition": "reviewed",
+        "reason": "Innenstadtprojekte Eschershausen und Stadtoldendorf — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "disposition": "reviewed",
+        "reason": "NKI-Energiesparmodelle in kommunalen Einrichtungen — kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eimen gehört zur Samtgemeinde Eschershausen-Stadtoldendorf (Landkreis Holzminden). Weder Samtgemeinde, Mitgliedsgemeinde, örtliche Stadtwerke noch Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; angeboten werden nur kostenlose Beratungen der Klimaschutzagentur Weserbergland sowie Baugrundstücks- und Sanierungsgebietsförderung. Das SolarFair-Programm gilt nur im Stadtgebiet Holzminden. Stand 19.09.2026."
+  },
+  {
+    "regionId": "03255013",
+    "name": "Eschershausen",
+    "checkedAt": "2026-09-19T16:25:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "samtgemeindeverwaltung.de Volltextsuche (19.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Freibad-Beitrag; Solar nur Klimaschutz-Seite und KMU-Beratung; Förderung 38 Treffer (Wahlbekanntmachungen, Wirtschaftsförderung, Dorfentwicklung, Spielplatz, KMU-Beratung); Klimaschutz 8 Treffer (Klimaschutz-Seite, Energiesparmodelle, Bebauungspläne, ISEK)",
+      "Gelesen: Förderprogramme, Förderprojekte (Stadtoldendorf, Eschershausen), Energiesparmodelle, Klimaschutz, Energieversorgung",
+      "Stadtwerke Stadtoldendorf (örtlicher Versorger): Seitenverzeichnis der Startseite (rund 80 Seiten) ohne Förder-, Solar- oder Zuschussseite",
+      "Landkreis Holzminden: Seite Fördermittelberatung gelesen (nur Unternehmensförderung); Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „Stadtoldendorf Eschershausen Balkonkraftwerk Förderung Zuschuss Samtgemeinde“ (19.09.2026); einziger Treffer mit Privatzuschuss ist SolarFair der Stadt Holzminden (nur Stadtgebiet Holzminden, nicht Samtgemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprogramme",
+        "finding": "Im Original gelesen (19.09.2026): Förderung junger Familien beim Kauf städtischer Baugrundstücke (Eschershausen, Stadtoldendorf; Deensen 10 €/m² zinslose Stundung), Dorferneuerung/Stadtsanierung bis 25 % nur im Sanierungsgebiet, Verweis auf NBank und KfW — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte",
+        "finding": "Gelesen: geförderte Projekte der Stadt Stadtoldendorf (Waldspielplatz, LED-Straßenbeleuchtung mit Bundesmitteln) — Zuwendungen an die Kommune, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2",
+        "finding": "Gelesen: Innenstadtprojekte Eschershausen und Stadtoldendorf (Aufenthaltsqualität, Machbarkeitsstudie) — kommunale Projekte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "finding": "Gelesen: NKI-Projekt Energiesparmodelle in Schulen, Sporthallen, Kitas der Samtgemeinde (Laufzeit 2023–2028) — Bundesförderung an die Kommune."
+      },
+      {
+        "url": "https://samtgemeindeverwaltung.de/klimaschutz/",
+        "finding": "Gelesen: Zusammenarbeit mit der Klimaschutzagentur Weserbergland — kostenlose Beratungen (Mach dein Haus fit, Heizungsvisite, Solar-Check) und KMU-Beratungen; kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "finding": "Gelesen: Kreis-Förderprogramm nur für kleine und mittlere Unternehmen (REK Weserbergland+), Klima-Fördermittelberatung für Unternehmen — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Samtgemeinde: Baugrundstücke, Sanierungsgebiete, NBank/KfW — keine Technikförderung für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprogramme"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Geförderte Projekte der Stadt Stadtoldendorf (Spielplatz, LED-Straßenbeleuchtung) — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte-2",
+        "disposition": "reviewed",
+        "reason": "Innenstadtprojekte Eschershausen und Stadtoldendorf — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "disposition": "reviewed",
+        "reason": "NKI-Energiesparmodelle in kommunalen Einrichtungen — kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eschershausen gehört zur Samtgemeinde Eschershausen-Stadtoldendorf (Landkreis Holzminden). Weder Samtgemeinde, Mitgliedsgemeinde, örtliche Stadtwerke noch Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; angeboten werden nur kostenlose Beratungen der Klimaschutzagentur Weserbergland sowie Baugrundstücks- und Sanierungsgebietsförderung. Das SolarFair-Programm gilt nur im Stadtgebiet Holzminden. Stand 19.09.2026."
+  },
+  {
+    "regionId": "03255018",
+    "name": "Heinade",
+    "checkedAt": "2026-09-19T16:25:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "samtgemeindeverwaltung.de Volltextsuche (19.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Freibad-Beitrag; Solar nur Klimaschutz-Seite und KMU-Beratung; Förderung 38 Treffer (Wahlbekanntmachungen, Wirtschaftsförderung, Dorfentwicklung, Spielplatz, KMU-Beratung); Klimaschutz 8 Treffer (Klimaschutz-Seite, Energiesparmodelle, Bebauungspläne, ISEK)",
+      "Gelesen: Förderprogramme, Förderprojekte (Stadtoldendorf, Eschershausen), Energiesparmodelle, Klimaschutz, Energieversorgung",
+      "Stadtwerke Stadtoldendorf (örtlicher Versorger): Seitenverzeichnis der Startseite (rund 80 Seiten) ohne Förder-, Solar- oder Zuschussseite",
+      "Landkreis Holzminden: Seite Fördermittelberatung gelesen (nur Unternehmensförderung); Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „Stadtoldendorf Eschershausen Balkonkraftwerk Förderung Zuschuss Samtgemeinde“ (19.09.2026); einziger Treffer mit Privatzuschuss ist SolarFair der Stadt Holzminden (nur Stadtgebiet Holzminden, nicht Samtgemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprogramme",
+        "finding": "Im Original gelesen (19.09.2026): Förderung junger Familien beim Kauf städtischer Baugrundstücke (Eschershausen, Stadtoldendorf; Deensen 10 €/m² zinslose Stundung), Dorferneuerung/Stadtsanierung bis 25 % nur im Sanierungsgebiet, Verweis auf NBank und KfW — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte",
+        "finding": "Gelesen: geförderte Projekte der Stadt Stadtoldendorf (Waldspielplatz, LED-Straßenbeleuchtung mit Bundesmitteln) — Zuwendungen an die Kommune, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2",
+        "finding": "Gelesen: Innenstadtprojekte Eschershausen und Stadtoldendorf (Aufenthaltsqualität, Machbarkeitsstudie) — kommunale Projekte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "finding": "Gelesen: NKI-Projekt Energiesparmodelle in Schulen, Sporthallen, Kitas der Samtgemeinde (Laufzeit 2023–2028) — Bundesförderung an die Kommune."
+      },
+      {
+        "url": "https://samtgemeindeverwaltung.de/klimaschutz/",
+        "finding": "Gelesen: Zusammenarbeit mit der Klimaschutzagentur Weserbergland — kostenlose Beratungen (Mach dein Haus fit, Heizungsvisite, Solar-Check) und KMU-Beratungen; kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "finding": "Gelesen: Kreis-Förderprogramm nur für kleine und mittlere Unternehmen (REK Weserbergland+), Klima-Fördermittelberatung für Unternehmen — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Samtgemeinde: Baugrundstücke, Sanierungsgebiete, NBank/KfW — keine Technikförderung für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprogramme"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Geförderte Projekte der Stadt Stadtoldendorf (Spielplatz, LED-Straßenbeleuchtung) — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte-2",
+        "disposition": "reviewed",
+        "reason": "Innenstadtprojekte Eschershausen und Stadtoldendorf — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "disposition": "reviewed",
+        "reason": "NKI-Energiesparmodelle in kommunalen Einrichtungen — kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Heinade gehört zur Samtgemeinde Eschershausen-Stadtoldendorf (Landkreis Holzminden). Weder Samtgemeinde, Mitgliedsgemeinde, örtliche Stadtwerke noch Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; angeboten werden nur kostenlose Beratungen der Klimaschutzagentur Weserbergland sowie Baugrundstücks- und Sanierungsgebietsförderung. Das SolarFair-Programm gilt nur im Stadtgebiet Holzminden. Stand 19.09.2026."
+  },
+  {
+    "regionId": "03255027",
+    "name": "Lenne",
+    "checkedAt": "2026-09-19T16:25:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "samtgemeindeverwaltung.de Volltextsuche (19.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Freibad-Beitrag; Solar nur Klimaschutz-Seite und KMU-Beratung; Förderung 38 Treffer (Wahlbekanntmachungen, Wirtschaftsförderung, Dorfentwicklung, Spielplatz, KMU-Beratung); Klimaschutz 8 Treffer (Klimaschutz-Seite, Energiesparmodelle, Bebauungspläne, ISEK)",
+      "Gelesen: Förderprogramme, Förderprojekte (Stadtoldendorf, Eschershausen), Energiesparmodelle, Klimaschutz, Energieversorgung",
+      "Stadtwerke Stadtoldendorf (örtlicher Versorger): Seitenverzeichnis der Startseite (rund 80 Seiten) ohne Förder-, Solar- oder Zuschussseite",
+      "Landkreis Holzminden: Seite Fördermittelberatung gelesen (nur Unternehmensförderung); Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „Stadtoldendorf Eschershausen Balkonkraftwerk Förderung Zuschuss Samtgemeinde“ (19.09.2026); einziger Treffer mit Privatzuschuss ist SolarFair der Stadt Holzminden (nur Stadtgebiet Holzminden, nicht Samtgemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprogramme",
+        "finding": "Im Original gelesen (19.09.2026): Förderung junger Familien beim Kauf städtischer Baugrundstücke (Eschershausen, Stadtoldendorf; Deensen 10 €/m² zinslose Stundung), Dorferneuerung/Stadtsanierung bis 25 % nur im Sanierungsgebiet, Verweis auf NBank und KfW — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte",
+        "finding": "Gelesen: geförderte Projekte der Stadt Stadtoldendorf (Waldspielplatz, LED-Straßenbeleuchtung mit Bundesmitteln) — Zuwendungen an die Kommune, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2",
+        "finding": "Gelesen: Innenstadtprojekte Eschershausen und Stadtoldendorf (Aufenthaltsqualität, Machbarkeitsstudie) — kommunale Projekte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "finding": "Gelesen: NKI-Projekt Energiesparmodelle in Schulen, Sporthallen, Kitas der Samtgemeinde (Laufzeit 2023–2028) — Bundesförderung an die Kommune."
+      },
+      {
+        "url": "https://samtgemeindeverwaltung.de/klimaschutz/",
+        "finding": "Gelesen: Zusammenarbeit mit der Klimaschutzagentur Weserbergland — kostenlose Beratungen (Mach dein Haus fit, Heizungsvisite, Solar-Check) und KMU-Beratungen; kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "finding": "Gelesen: Kreis-Förderprogramm nur für kleine und mittlere Unternehmen (REK Weserbergland+), Klima-Fördermittelberatung für Unternehmen — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Samtgemeinde: Baugrundstücke, Sanierungsgebiete, NBank/KfW — keine Technikförderung für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprogramme"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Geförderte Projekte der Stadt Stadtoldendorf (Spielplatz, LED-Straßenbeleuchtung) — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte-2",
+        "disposition": "reviewed",
+        "reason": "Innenstadtprojekte Eschershausen und Stadtoldendorf — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "disposition": "reviewed",
+        "reason": "NKI-Energiesparmodelle in kommunalen Einrichtungen — kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lenne gehört zur Samtgemeinde Eschershausen-Stadtoldendorf (Landkreis Holzminden). Weder Samtgemeinde, Mitgliedsgemeinde, örtliche Stadtwerke noch Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; angeboten werden nur kostenlose Beratungen der Klimaschutzagentur Weserbergland sowie Baugrundstücks- und Sanierungsgebietsförderung. Das SolarFair-Programm gilt nur im Stadtgebiet Holzminden. Stand 19.09.2026."
+  },
+  {
+    "regionId": "03255028",
+    "name": "Lüerdissen",
+    "checkedAt": "2026-09-19T16:25:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "samtgemeindeverwaltung.de Volltextsuche (19.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Freibad-Beitrag; Solar nur Klimaschutz-Seite und KMU-Beratung; Förderung 38 Treffer (Wahlbekanntmachungen, Wirtschaftsförderung, Dorfentwicklung, Spielplatz, KMU-Beratung); Klimaschutz 8 Treffer (Klimaschutz-Seite, Energiesparmodelle, Bebauungspläne, ISEK)",
+      "Gelesen: Förderprogramme, Förderprojekte (Stadtoldendorf, Eschershausen), Energiesparmodelle, Klimaschutz, Energieversorgung",
+      "Stadtwerke Stadtoldendorf (örtlicher Versorger): Seitenverzeichnis der Startseite (rund 80 Seiten) ohne Förder-, Solar- oder Zuschussseite",
+      "Landkreis Holzminden: Seite Fördermittelberatung gelesen (nur Unternehmensförderung); Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „Stadtoldendorf Eschershausen Balkonkraftwerk Förderung Zuschuss Samtgemeinde“ (19.09.2026); einziger Treffer mit Privatzuschuss ist SolarFair der Stadt Holzminden (nur Stadtgebiet Holzminden, nicht Samtgemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprogramme",
+        "finding": "Im Original gelesen (19.09.2026): Förderung junger Familien beim Kauf städtischer Baugrundstücke (Eschershausen, Stadtoldendorf; Deensen 10 €/m² zinslose Stundung), Dorferneuerung/Stadtsanierung bis 25 % nur im Sanierungsgebiet, Verweis auf NBank und KfW — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte",
+        "finding": "Gelesen: geförderte Projekte der Stadt Stadtoldendorf (Waldspielplatz, LED-Straßenbeleuchtung mit Bundesmitteln) — Zuwendungen an die Kommune, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2",
+        "finding": "Gelesen: Innenstadtprojekte Eschershausen und Stadtoldendorf (Aufenthaltsqualität, Machbarkeitsstudie) — kommunale Projekte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "finding": "Gelesen: NKI-Projekt Energiesparmodelle in Schulen, Sporthallen, Kitas der Samtgemeinde (Laufzeit 2023–2028) — Bundesförderung an die Kommune."
+      },
+      {
+        "url": "https://samtgemeindeverwaltung.de/klimaschutz/",
+        "finding": "Gelesen: Zusammenarbeit mit der Klimaschutzagentur Weserbergland — kostenlose Beratungen (Mach dein Haus fit, Heizungsvisite, Solar-Check) und KMU-Beratungen; kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "finding": "Gelesen: Kreis-Förderprogramm nur für kleine und mittlere Unternehmen (REK Weserbergland+), Klima-Fördermittelberatung für Unternehmen — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Samtgemeinde: Baugrundstücke, Sanierungsgebiete, NBank/KfW — keine Technikförderung für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprogramme"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Geförderte Projekte der Stadt Stadtoldendorf (Spielplatz, LED-Straßenbeleuchtung) — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte-2",
+        "disposition": "reviewed",
+        "reason": "Innenstadtprojekte Eschershausen und Stadtoldendorf — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "disposition": "reviewed",
+        "reason": "NKI-Energiesparmodelle in kommunalen Einrichtungen — kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lüerdissen gehört zur Samtgemeinde Eschershausen-Stadtoldendorf (Landkreis Holzminden). Weder Samtgemeinde, Mitgliedsgemeinde, örtliche Stadtwerke noch Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; angeboten werden nur kostenlose Beratungen der Klimaschutzagentur Weserbergland sowie Baugrundstücks- und Sanierungsgebietsförderung. Das SolarFair-Programm gilt nur im Stadtgebiet Holzminden. Stand 19.09.2026."
+  },
+  {
+    "regionId": "03255034",
+    "name": "Stadtoldendorf",
+    "checkedAt": "2026-09-19T16:25:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "samtgemeindeverwaltung.de Volltextsuche (19.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Freibad-Beitrag; Solar nur Klimaschutz-Seite und KMU-Beratung; Förderung 38 Treffer (Wahlbekanntmachungen, Wirtschaftsförderung, Dorfentwicklung, Spielplatz, KMU-Beratung); Klimaschutz 8 Treffer (Klimaschutz-Seite, Energiesparmodelle, Bebauungspläne, ISEK)",
+      "Gelesen: Förderprogramme, Förderprojekte (Stadtoldendorf, Eschershausen), Energiesparmodelle, Klimaschutz, Energieversorgung",
+      "Stadtwerke Stadtoldendorf (örtlicher Versorger): Seitenverzeichnis der Startseite (rund 80 Seiten) ohne Förder-, Solar- oder Zuschussseite",
+      "Landkreis Holzminden: Seite Fördermittelberatung gelesen (nur Unternehmensförderung); Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „Stadtoldendorf Eschershausen Balkonkraftwerk Förderung Zuschuss Samtgemeinde“ (19.09.2026); einziger Treffer mit Privatzuschuss ist SolarFair der Stadt Holzminden (nur Stadtgebiet Holzminden, nicht Samtgemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprogramme",
+        "finding": "Im Original gelesen (19.09.2026): Förderung junger Familien beim Kauf städtischer Baugrundstücke (Eschershausen, Stadtoldendorf; Deensen 10 €/m² zinslose Stundung), Dorferneuerung/Stadtsanierung bis 25 % nur im Sanierungsgebiet, Verweis auf NBank und KfW — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte",
+        "finding": "Gelesen: geförderte Projekte der Stadt Stadtoldendorf (Waldspielplatz, LED-Straßenbeleuchtung mit Bundesmitteln) — Zuwendungen an die Kommune, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2",
+        "finding": "Gelesen: Innenstadtprojekte Eschershausen und Stadtoldendorf (Aufenthaltsqualität, Machbarkeitsstudie) — kommunale Projekte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "finding": "Gelesen: NKI-Projekt Energiesparmodelle in Schulen, Sporthallen, Kitas der Samtgemeinde (Laufzeit 2023–2028) — Bundesförderung an die Kommune."
+      },
+      {
+        "url": "https://samtgemeindeverwaltung.de/klimaschutz/",
+        "finding": "Gelesen: Zusammenarbeit mit der Klimaschutzagentur Weserbergland — kostenlose Beratungen (Mach dein Haus fit, Heizungsvisite, Solar-Check) und KMU-Beratungen; kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "finding": "Gelesen: Kreis-Förderprogramm nur für kleine und mittlere Unternehmen (REK Weserbergland+), Klima-Fördermittelberatung für Unternehmen — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Samtgemeinde: Baugrundstücke, Sanierungsgebiete, NBank/KfW — keine Technikförderung für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprogramme"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Geförderte Projekte der Stadt Stadtoldendorf (Spielplatz, LED-Straßenbeleuchtung) — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte-2",
+        "disposition": "reviewed",
+        "reason": "Innenstadtprojekte Eschershausen und Stadtoldendorf — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "disposition": "reviewed",
+        "reason": "NKI-Energiesparmodelle in kommunalen Einrichtungen — kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Stadtoldendorf gehört zur Samtgemeinde Eschershausen-Stadtoldendorf (Landkreis Holzminden). Weder Samtgemeinde, Mitgliedsgemeinde, örtliche Stadtwerke noch Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; angeboten werden nur kostenlose Beratungen der Klimaschutzagentur Weserbergland sowie Baugrundstücks- und Sanierungsgebietsförderung. Das SolarFair-Programm gilt nur im Stadtgebiet Holzminden. Stand 19.09.2026."
+  },
+  {
+    "regionId": "03255036",
+    "name": "Wangelnstedt",
+    "checkedAt": "2026-09-19T16:25:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "samtgemeindeverwaltung.de Volltextsuche (19.09.2026): Balkonkraftwerk und Wärmepumpe ohne Treffer; Photovoltaik nur Freibad-Beitrag; Solar nur Klimaschutz-Seite und KMU-Beratung; Förderung 38 Treffer (Wahlbekanntmachungen, Wirtschaftsförderung, Dorfentwicklung, Spielplatz, KMU-Beratung); Klimaschutz 8 Treffer (Klimaschutz-Seite, Energiesparmodelle, Bebauungspläne, ISEK)",
+      "Gelesen: Förderprogramme, Förderprojekte (Stadtoldendorf, Eschershausen), Energiesparmodelle, Klimaschutz, Energieversorgung",
+      "Stadtwerke Stadtoldendorf (örtlicher Versorger): Seitenverzeichnis der Startseite (rund 80 Seiten) ohne Förder-, Solar- oder Zuschussseite",
+      "Landkreis Holzminden: Seite Fördermittelberatung gelesen (nur Unternehmensförderung); Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „Stadtoldendorf Eschershausen Balkonkraftwerk Förderung Zuschuss Samtgemeinde“ (19.09.2026); einziger Treffer mit Privatzuschuss ist SolarFair der Stadt Holzminden (nur Stadtgebiet Holzminden, nicht Samtgemeinde)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprogramme",
+        "finding": "Im Original gelesen (19.09.2026): Förderung junger Familien beim Kauf städtischer Baugrundstücke (Eschershausen, Stadtoldendorf; Deensen 10 €/m² zinslose Stundung), Dorferneuerung/Stadtsanierung bis 25 % nur im Sanierungsgebiet, Verweis auf NBank und KfW — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte",
+        "finding": "Gelesen: geförderte Projekte der Stadt Stadtoldendorf (Waldspielplatz, LED-Straßenbeleuchtung mit Bundesmitteln) — Zuwendungen an die Kommune, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2",
+        "finding": "Gelesen: Innenstadtprojekte Eschershausen und Stadtoldendorf (Aufenthaltsqualität, Machbarkeitsstudie) — kommunale Projekte."
+      },
+      {
+        "url": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "finding": "Gelesen: NKI-Projekt Energiesparmodelle in Schulen, Sporthallen, Kitas der Samtgemeinde (Laufzeit 2023–2028) — Bundesförderung an die Kommune."
+      },
+      {
+        "url": "https://samtgemeindeverwaltung.de/klimaschutz/",
+        "finding": "Gelesen: Zusammenarbeit mit der Klimaschutzagentur Weserbergland — kostenlose Beratungen (Mach dein Haus fit, Heizungsvisite, Solar-Check) und KMU-Beratungen; kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "finding": "Gelesen: Kreis-Förderprogramm nur für kleine und mittlere Unternehmen (REK Weserbergland+), Klima-Fördermittelberatung für Unternehmen — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Samtgemeinde: Baugrundstücke, Sanierungsgebiete, NBank/KfW — keine Technikförderung für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprogramme"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Geförderte Projekte der Stadt Stadtoldendorf (Spielplatz, LED-Straßenbeleuchtung) — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/foerderprojekte-2",
+        "disposition": "reviewed",
+        "reason": "Innenstadtprojekte Eschershausen und Stadtoldendorf — kommunale Zuwendungen.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/foerderprojekte-2"
+      },
+      {
+        "url": "samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle",
+        "disposition": "reviewed",
+        "reason": "NKI-Energiesparmodelle in kommunalen Einrichtungen — kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.samtgemeindeverwaltung.de/informationen-zum-foerderprojekt-energiesparmodelle"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wangelnstedt gehört zur Samtgemeinde Eschershausen-Stadtoldendorf (Landkreis Holzminden). Weder Samtgemeinde, Mitgliedsgemeinde, örtliche Stadtwerke noch Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; angeboten werden nur kostenlose Beratungen der Klimaschutzagentur Weserbergland sowie Baugrundstücks- und Sanierungsgebietsförderung. Das SolarFair-Programm gilt nur im Stadtgebiet Holzminden. Stand 19.09.2026."
+  },
+  {
+    "regionId": "03255023",
+    "name": "Holzminden",
+    "checkedAt": "2026-09-19T16:40:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "Websuchen „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ und „SolarFair Holzminden Bürgerstiftung Balkonkraftwerk 200 Euro“ (19.09.2026)",
+      "holzminden.de: Seite SolarFair und verlinkte Förderrichtlinie im Original gelesen; Menü Umwelt (SolarFair, Klimaschutz, LED-Umrüstung, Energiebericht)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.holzminden.de/bauen-wirtschaft/umwelt/solarfair/",
+        "finding": "Im Original gelesen (19.09.2026): „Sie bekommen Wohngeld oder Bürgergeld? Sie wohnen in Holzminden? Dann können Sie 200 Euro für ein Balkonkraftwerk bekommen.“ 2025 und 2026 bis zu 100 Anlagen, Vergabe nach Eingang, Online-Antrag."
+      },
+      {
+        "url": "https://www.holzminden.de/downloads/datei/YmQxOTYxMzlhMTU4NGIxOXdCK1JScjVLRURraUJsYk9vQU5iQnFmTks0VjJoNWxqQ2ZjL2cvMnBCYVlQeDhIYStWMVlpRXJvTi9pMjZEODRyM05jaHhGdlY1U1ZLM2lyTE5XWTBlKzZoL0h6VFA1RzY3TTZOYWFHMlhCd3RXTkxGeVdscFQzT2tDdmVmNTJuK3I5eFk3QTQvbVhIRlpaeWxYNncweDZFVmpwQ3RRS3U0dHJxVHVEbWNpRT0",
+        "finding": "Förderrichtlinie SolarFair gelesen: 200 € je Balkonkraftwerk, nur Wohngeld-/Bürgergeld-Beziehende mit Erstwohnsitz im Stadtgebiet und Ökostromtarif, Anschaffung nach 01.07.2025, MaStR-Registrierung, je Zähler eine Förderung, je 50 Anlagen 2025/2026, keine Übertragung nach 2027, kein Rechtsanspruch; finanziert von der Stiftung „Vermächtnis Holzmindener Bürger“."
+      }
+    ],
+    "sources": [],
+    "outcome": "klaerung",
+    "conclusion": "Die Stadt Holzminden fördert Balkonkraftwerke mit 200 € (SolarFair), aber nur für Wohngeld- und Bürgergeld-Beziehende — eine Einkommensbedingung, die der Rechner nicht abbilden kann; aufzunehmen ist das Programm deshalb als Information ohne Geldabzug. Ob 2026 noch Mittel frei sind, sagt die Seite nicht. Aufnahme in den Katalog steht aus. Stand 19.09.2026.",
+    "nextAction": {
+      "kind": "manual",
+      "dueAt": "2026-09-20T18:00:00Z",
+      "detail": "SolarFair als Balkon-Programm der Stadt Holzminden (Ortsschlüssel 03255023) nach Gate aufnehmen: vollständige Belege liegen vor (Seite + Richtlinie), Einkommensbedingung → kein strukturierter Satz, Laufzeit bis 31.12.2026; Ortsverzeichnis-Eintrag mit achtstelligem Schlüssel und Kreis ergänzen; Council vor dem Commit."
+    }
   }
 ]
