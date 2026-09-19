@@ -26960,5 +26960,495 @@
     ],
     "outcome": "keine-passende-foerderung",
     "conclusion": "Wöbbelin gehört zum Amt Ludwigslust-Land (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Wärmepumpe und Förderprogramm nichts, die Förderrichtlinien in Ortsrecht und Bekanntmachungen betreffen Kultur und Vereine, und die erfassten Quellen beschreiben EU-/Landeszuwendungen an Amt und Gemeinden. Eine eigene Gemeindeseite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13071018",
+    "name": "Briggow",
+    "checkedAt": "2026-09-19T08:12:27Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "stavenhagen.de Volltextsuche (Amt und alle 12 Gemeinden): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Steckersolar, Förderprogramm, Förderung, Förderrichtlinie, Richtlinie, Zuschuss, Wärmepumpe, Batteriespeicher, Speicher, Klimaschutz, Energie (Gegenprobe „Reuterstadt“: Treffer, die Suche funktioniert)",
+      "Gelesen: Ortsrecht Reuterstadt Stavenhagen und Gemeinde Knorrendorf (Richtlinien), Nationale Klimaschutzinitiative, Kommunale Wärmeplanung, Bauen & Wohnen in der Reuterstadt und in den Gemeinden, Unsere 12 Gemeinden (keine eigenen Gemeindewebsites)",
+      "Gelesen: Meldungen „Zuwendungsbescheide übergeben“ (28.07.2026), „Klimaneutrale Fernwärme 2027“, Jahresrückblick 2024, Infoveranstaltung Photovoltaik in Zettemin (2021)",
+      "Landkreis Mecklenburgische Seenplatte: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13071)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "finding": "Im Original gelesen (19.09.2026): „Information über die Durchführung eines geförderten Vorhabens … Erstellung eines Wärmeplanes für alle Ortsteile der Gemeinde Rosenow“ — Bundeszuwendung (Kommunalrichtlinie) an die Gemeinde für die Wärmeplanung 09/2024–02/2025, kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite gelesen (19.09.2026): Balkonkraftwerk, Steckersolar, Batteriespeicher ohne Treffer; Balkon nur Festspiel-/Saatgut-Meldungen; Photovoltaik/Solar nur Bauleitplanung für Solarparks (Knorrendorf, Mölln, Kittendorf, Zettemin); Förderprogramm/Förderung nur Zuwendungen an Stadt und Gemeinden (Feuerwehrhäuser, Schulcampus, Spielplätze, Fahrradabstellanlagen, Wärmeplanung Rosenow, LEADER); Zuschuss nur Wohngeld-Anträge; Wärmepumpe nur Firmenmeldungen; Richtlinie nur Transporter-, Studienbeihilfe-, Jugend-, Kultur-, Sozial- und Sportrichtlinien."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/seiten/ortsrecht-stavenhagen-900000004-28750.html",
+        "finding": "Ortsrecht der Reuterstadt gelesen: Richtlinien Jugend, Kultur, Soziales, Sport, Nutzung des städtischen Transporters, regionale Studienbeihilfe für Medizinstudenten — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/klimaneutrale-fernwaerme-2027-einladung-zur-infoveranstaltung-fuer-eigentuemer-innen-und-interessierte-am-27-februar-2025-900001242-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Umstellung des Fernwärmenetzes der Wärmeversorgung Stavenhagen GmbH mit Bundesförderung an den Netzbetreiber; Einladung zur Infoveranstaltung, kein Zuschuss an Eigentümer."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/zuwendungsbescheide-uebergeben-900001640-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Landeszuwendungen für Feuerwehrgerätehäuser Grammentin und Ritzerow und für den Schulcampus Stavenhagen — Zuwendungen an Kommunen, kein Programm für Private."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Mecklenburgische Seenplatte wurde nicht gefunden (Katalog ohne Kreisprogramm 13071)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "disposition": "reviewed",
+        "reason": "Informationsblatt zur Bundeszuwendung für die kommunale Wärmeplanung der Gemeinde Rosenow (Kommunalrichtlinie, 09/2024–02/2025) — Förderung der Gemeinde, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Briggow gehört zum Amt Stavenhagen (Landkreis Mecklenburgische Seenplatte). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Steckersolar und Batteriespeicher nichts, die Richtlinien im Ortsrecht betreffen Jugend, Kultur, Soziales, Sport und Studienbeihilfen, und die erfasste Quelle beschreibt die Bundeszuwendung für die Wärmeplanung Rosenow. Eine eigene Gemeindewebsite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13071048",
+    "name": "Grammentin",
+    "checkedAt": "2026-09-19T08:12:27Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "stavenhagen.de Volltextsuche (Amt und alle 12 Gemeinden): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Steckersolar, Förderprogramm, Förderung, Förderrichtlinie, Richtlinie, Zuschuss, Wärmepumpe, Batteriespeicher, Speicher, Klimaschutz, Energie (Gegenprobe „Reuterstadt“: Treffer, die Suche funktioniert)",
+      "Gelesen: Ortsrecht Reuterstadt Stavenhagen und Gemeinde Knorrendorf (Richtlinien), Nationale Klimaschutzinitiative, Kommunale Wärmeplanung, Bauen & Wohnen in der Reuterstadt und in den Gemeinden, Unsere 12 Gemeinden (keine eigenen Gemeindewebsites)",
+      "Gelesen: Meldungen „Zuwendungsbescheide übergeben“ (28.07.2026), „Klimaneutrale Fernwärme 2027“, Jahresrückblick 2024, Infoveranstaltung Photovoltaik in Zettemin (2021)",
+      "Landkreis Mecklenburgische Seenplatte: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13071)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "finding": "Im Original gelesen (19.09.2026): „Information über die Durchführung eines geförderten Vorhabens … Erstellung eines Wärmeplanes für alle Ortsteile der Gemeinde Rosenow“ — Bundeszuwendung (Kommunalrichtlinie) an die Gemeinde für die Wärmeplanung 09/2024–02/2025, kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite gelesen (19.09.2026): Balkonkraftwerk, Steckersolar, Batteriespeicher ohne Treffer; Balkon nur Festspiel-/Saatgut-Meldungen; Photovoltaik/Solar nur Bauleitplanung für Solarparks (Knorrendorf, Mölln, Kittendorf, Zettemin); Förderprogramm/Förderung nur Zuwendungen an Stadt und Gemeinden (Feuerwehrhäuser, Schulcampus, Spielplätze, Fahrradabstellanlagen, Wärmeplanung Rosenow, LEADER); Zuschuss nur Wohngeld-Anträge; Wärmepumpe nur Firmenmeldungen; Richtlinie nur Transporter-, Studienbeihilfe-, Jugend-, Kultur-, Sozial- und Sportrichtlinien."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/seiten/ortsrecht-stavenhagen-900000004-28750.html",
+        "finding": "Ortsrecht der Reuterstadt gelesen: Richtlinien Jugend, Kultur, Soziales, Sport, Nutzung des städtischen Transporters, regionale Studienbeihilfe für Medizinstudenten — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/klimaneutrale-fernwaerme-2027-einladung-zur-infoveranstaltung-fuer-eigentuemer-innen-und-interessierte-am-27-februar-2025-900001242-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Umstellung des Fernwärmenetzes der Wärmeversorgung Stavenhagen GmbH mit Bundesförderung an den Netzbetreiber; Einladung zur Infoveranstaltung, kein Zuschuss an Eigentümer."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/zuwendungsbescheide-uebergeben-900001640-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Landeszuwendungen für Feuerwehrgerätehäuser Grammentin und Ritzerow und für den Schulcampus Stavenhagen — Zuwendungen an Kommunen, kein Programm für Private."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Mecklenburgische Seenplatte wurde nicht gefunden (Katalog ohne Kreisprogramm 13071)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "disposition": "reviewed",
+        "reason": "Informationsblatt zur Bundeszuwendung für die kommunale Wärmeplanung der Gemeinde Rosenow (Kommunalrichtlinie, 09/2024–02/2025) — Förderung der Gemeinde, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Grammentin gehört zum Amt Stavenhagen (Landkreis Mecklenburgische Seenplatte). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Steckersolar und Batteriespeicher nichts, die Richtlinien im Ortsrecht betreffen Jugend, Kultur, Soziales, Sport und Studienbeihilfen, und die erfasste Quelle beschreibt die Bundeszuwendung für die Wärmeplanung Rosenow. Eine eigene Gemeindewebsite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13071070",
+    "name": "Jürgenstorf",
+    "checkedAt": "2026-09-19T08:12:27Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "stavenhagen.de Volltextsuche (Amt und alle 12 Gemeinden): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Steckersolar, Förderprogramm, Förderung, Förderrichtlinie, Richtlinie, Zuschuss, Wärmepumpe, Batteriespeicher, Speicher, Klimaschutz, Energie (Gegenprobe „Reuterstadt“: Treffer, die Suche funktioniert)",
+      "Gelesen: Ortsrecht Reuterstadt Stavenhagen und Gemeinde Knorrendorf (Richtlinien), Nationale Klimaschutzinitiative, Kommunale Wärmeplanung, Bauen & Wohnen in der Reuterstadt und in den Gemeinden, Unsere 12 Gemeinden (keine eigenen Gemeindewebsites)",
+      "Gelesen: Meldungen „Zuwendungsbescheide übergeben“ (28.07.2026), „Klimaneutrale Fernwärme 2027“, Jahresrückblick 2024, Infoveranstaltung Photovoltaik in Zettemin (2021)",
+      "Landkreis Mecklenburgische Seenplatte: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13071)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "finding": "Im Original gelesen (19.09.2026): „Information über die Durchführung eines geförderten Vorhabens … Erstellung eines Wärmeplanes für alle Ortsteile der Gemeinde Rosenow“ — Bundeszuwendung (Kommunalrichtlinie) an die Gemeinde für die Wärmeplanung 09/2024–02/2025, kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite gelesen (19.09.2026): Balkonkraftwerk, Steckersolar, Batteriespeicher ohne Treffer; Balkon nur Festspiel-/Saatgut-Meldungen; Photovoltaik/Solar nur Bauleitplanung für Solarparks (Knorrendorf, Mölln, Kittendorf, Zettemin); Förderprogramm/Förderung nur Zuwendungen an Stadt und Gemeinden (Feuerwehrhäuser, Schulcampus, Spielplätze, Fahrradabstellanlagen, Wärmeplanung Rosenow, LEADER); Zuschuss nur Wohngeld-Anträge; Wärmepumpe nur Firmenmeldungen; Richtlinie nur Transporter-, Studienbeihilfe-, Jugend-, Kultur-, Sozial- und Sportrichtlinien."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/seiten/ortsrecht-stavenhagen-900000004-28750.html",
+        "finding": "Ortsrecht der Reuterstadt gelesen: Richtlinien Jugend, Kultur, Soziales, Sport, Nutzung des städtischen Transporters, regionale Studienbeihilfe für Medizinstudenten — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/klimaneutrale-fernwaerme-2027-einladung-zur-infoveranstaltung-fuer-eigentuemer-innen-und-interessierte-am-27-februar-2025-900001242-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Umstellung des Fernwärmenetzes der Wärmeversorgung Stavenhagen GmbH mit Bundesförderung an den Netzbetreiber; Einladung zur Infoveranstaltung, kein Zuschuss an Eigentümer."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/zuwendungsbescheide-uebergeben-900001640-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Landeszuwendungen für Feuerwehrgerätehäuser Grammentin und Ritzerow und für den Schulcampus Stavenhagen — Zuwendungen an Kommunen, kein Programm für Private."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Mecklenburgische Seenplatte wurde nicht gefunden (Katalog ohne Kreisprogramm 13071)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "disposition": "reviewed",
+        "reason": "Informationsblatt zur Bundeszuwendung für die kommunale Wärmeplanung der Gemeinde Rosenow (Kommunalrichtlinie, 09/2024–02/2025) — Förderung der Gemeinde, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Jürgenstorf gehört zum Amt Stavenhagen (Landkreis Mecklenburgische Seenplatte). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Steckersolar und Batteriespeicher nichts, die Richtlinien im Ortsrecht betreffen Jugend, Kultur, Soziales, Sport und Studienbeihilfen, und die erfasste Quelle beschreibt die Bundeszuwendung für die Wärmeplanung Rosenow. Eine eigene Gemeindewebsite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13071074",
+    "name": "Kittendorf",
+    "checkedAt": "2026-09-19T08:12:27Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "stavenhagen.de Volltextsuche (Amt und alle 12 Gemeinden): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Steckersolar, Förderprogramm, Förderung, Förderrichtlinie, Richtlinie, Zuschuss, Wärmepumpe, Batteriespeicher, Speicher, Klimaschutz, Energie (Gegenprobe „Reuterstadt“: Treffer, die Suche funktioniert)",
+      "Gelesen: Ortsrecht Reuterstadt Stavenhagen und Gemeinde Knorrendorf (Richtlinien), Nationale Klimaschutzinitiative, Kommunale Wärmeplanung, Bauen & Wohnen in der Reuterstadt und in den Gemeinden, Unsere 12 Gemeinden (keine eigenen Gemeindewebsites)",
+      "Gelesen: Meldungen „Zuwendungsbescheide übergeben“ (28.07.2026), „Klimaneutrale Fernwärme 2027“, Jahresrückblick 2024, Infoveranstaltung Photovoltaik in Zettemin (2021)",
+      "Landkreis Mecklenburgische Seenplatte: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13071)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "finding": "Im Original gelesen (19.09.2026): „Information über die Durchführung eines geförderten Vorhabens … Erstellung eines Wärmeplanes für alle Ortsteile der Gemeinde Rosenow“ — Bundeszuwendung (Kommunalrichtlinie) an die Gemeinde für die Wärmeplanung 09/2024–02/2025, kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite gelesen (19.09.2026): Balkonkraftwerk, Steckersolar, Batteriespeicher ohne Treffer; Balkon nur Festspiel-/Saatgut-Meldungen; Photovoltaik/Solar nur Bauleitplanung für Solarparks (Knorrendorf, Mölln, Kittendorf, Zettemin); Förderprogramm/Förderung nur Zuwendungen an Stadt und Gemeinden (Feuerwehrhäuser, Schulcampus, Spielplätze, Fahrradabstellanlagen, Wärmeplanung Rosenow, LEADER); Zuschuss nur Wohngeld-Anträge; Wärmepumpe nur Firmenmeldungen; Richtlinie nur Transporter-, Studienbeihilfe-, Jugend-, Kultur-, Sozial- und Sportrichtlinien."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/seiten/ortsrecht-stavenhagen-900000004-28750.html",
+        "finding": "Ortsrecht der Reuterstadt gelesen: Richtlinien Jugend, Kultur, Soziales, Sport, Nutzung des städtischen Transporters, regionale Studienbeihilfe für Medizinstudenten — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/klimaneutrale-fernwaerme-2027-einladung-zur-infoveranstaltung-fuer-eigentuemer-innen-und-interessierte-am-27-februar-2025-900001242-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Umstellung des Fernwärmenetzes der Wärmeversorgung Stavenhagen GmbH mit Bundesförderung an den Netzbetreiber; Einladung zur Infoveranstaltung, kein Zuschuss an Eigentümer."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/zuwendungsbescheide-uebergeben-900001640-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Landeszuwendungen für Feuerwehrgerätehäuser Grammentin und Ritzerow und für den Schulcampus Stavenhagen — Zuwendungen an Kommunen, kein Programm für Private."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Mecklenburgische Seenplatte wurde nicht gefunden (Katalog ohne Kreisprogramm 13071)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "disposition": "reviewed",
+        "reason": "Informationsblatt zur Bundeszuwendung für die kommunale Wärmeplanung der Gemeinde Rosenow (Kommunalrichtlinie, 09/2024–02/2025) — Förderung der Gemeinde, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kittendorf gehört zum Amt Stavenhagen (Landkreis Mecklenburgische Seenplatte). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Steckersolar und Batteriespeicher nichts, die Richtlinien im Ortsrecht betreffen Jugend, Kultur, Soziales, Sport und Studienbeihilfen, und die erfasste Quelle beschreibt die Bundeszuwendung für die Wärmeplanung Rosenow. Eine eigene Gemeindewebsite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13071079",
+    "name": "Knorrendorf",
+    "checkedAt": "2026-09-19T08:12:27Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "stavenhagen.de Volltextsuche (Amt und alle 12 Gemeinden): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Steckersolar, Förderprogramm, Förderung, Förderrichtlinie, Richtlinie, Zuschuss, Wärmepumpe, Batteriespeicher, Speicher, Klimaschutz, Energie (Gegenprobe „Reuterstadt“: Treffer, die Suche funktioniert)",
+      "Gelesen: Ortsrecht Reuterstadt Stavenhagen und Gemeinde Knorrendorf (Richtlinien), Nationale Klimaschutzinitiative, Kommunale Wärmeplanung, Bauen & Wohnen in der Reuterstadt und in den Gemeinden, Unsere 12 Gemeinden (keine eigenen Gemeindewebsites)",
+      "Gelesen: Meldungen „Zuwendungsbescheide übergeben“ (28.07.2026), „Klimaneutrale Fernwärme 2027“, Jahresrückblick 2024, Infoveranstaltung Photovoltaik in Zettemin (2021)",
+      "Landkreis Mecklenburgische Seenplatte: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13071)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "finding": "Im Original gelesen (19.09.2026): „Information über die Durchführung eines geförderten Vorhabens … Erstellung eines Wärmeplanes für alle Ortsteile der Gemeinde Rosenow“ — Bundeszuwendung (Kommunalrichtlinie) an die Gemeinde für die Wärmeplanung 09/2024–02/2025, kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite gelesen (19.09.2026): Balkonkraftwerk, Steckersolar, Batteriespeicher ohne Treffer; Balkon nur Festspiel-/Saatgut-Meldungen; Photovoltaik/Solar nur Bauleitplanung für Solarparks (Knorrendorf, Mölln, Kittendorf, Zettemin); Förderprogramm/Förderung nur Zuwendungen an Stadt und Gemeinden (Feuerwehrhäuser, Schulcampus, Spielplätze, Fahrradabstellanlagen, Wärmeplanung Rosenow, LEADER); Zuschuss nur Wohngeld-Anträge; Wärmepumpe nur Firmenmeldungen; Richtlinie nur Transporter-, Studienbeihilfe-, Jugend-, Kultur-, Sozial- und Sportrichtlinien."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/seiten/ortsrecht-stavenhagen-900000004-28750.html",
+        "finding": "Ortsrecht der Reuterstadt gelesen: Richtlinien Jugend, Kultur, Soziales, Sport, Nutzung des städtischen Transporters, regionale Studienbeihilfe für Medizinstudenten — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/klimaneutrale-fernwaerme-2027-einladung-zur-infoveranstaltung-fuer-eigentuemer-innen-und-interessierte-am-27-februar-2025-900001242-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Umstellung des Fernwärmenetzes der Wärmeversorgung Stavenhagen GmbH mit Bundesförderung an den Netzbetreiber; Einladung zur Infoveranstaltung, kein Zuschuss an Eigentümer."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/zuwendungsbescheide-uebergeben-900001640-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Landeszuwendungen für Feuerwehrgerätehäuser Grammentin und Ritzerow und für den Schulcampus Stavenhagen — Zuwendungen an Kommunen, kein Programm für Private."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Mecklenburgische Seenplatte wurde nicht gefunden (Katalog ohne Kreisprogramm 13071)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "disposition": "reviewed",
+        "reason": "Informationsblatt zur Bundeszuwendung für die kommunale Wärmeplanung der Gemeinde Rosenow (Kommunalrichtlinie, 09/2024–02/2025) — Förderung der Gemeinde, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Knorrendorf gehört zum Amt Stavenhagen (Landkreis Mecklenburgische Seenplatte). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Steckersolar und Batteriespeicher nichts, die Richtlinien im Ortsrecht betreffen Jugend, Kultur, Soziales, Sport und Studienbeihilfen, und die erfasste Quelle beschreibt die Bundeszuwendung für die Wärmeplanung Rosenow. Eine eigene Gemeindewebsite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13071102",
+    "name": "Mölln",
+    "checkedAt": "2026-09-19T08:12:27Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "stavenhagen.de Volltextsuche (Amt und alle 12 Gemeinden): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Steckersolar, Förderprogramm, Förderung, Förderrichtlinie, Richtlinie, Zuschuss, Wärmepumpe, Batteriespeicher, Speicher, Klimaschutz, Energie (Gegenprobe „Reuterstadt“: Treffer, die Suche funktioniert)",
+      "Gelesen: Ortsrecht Reuterstadt Stavenhagen und Gemeinde Knorrendorf (Richtlinien), Nationale Klimaschutzinitiative, Kommunale Wärmeplanung, Bauen & Wohnen in der Reuterstadt und in den Gemeinden, Unsere 12 Gemeinden (keine eigenen Gemeindewebsites)",
+      "Gelesen: Meldungen „Zuwendungsbescheide übergeben“ (28.07.2026), „Klimaneutrale Fernwärme 2027“, Jahresrückblick 2024, Infoveranstaltung Photovoltaik in Zettemin (2021)",
+      "Landkreis Mecklenburgische Seenplatte: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13071)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "finding": "Im Original gelesen (19.09.2026): „Information über die Durchführung eines geförderten Vorhabens … Erstellung eines Wärmeplanes für alle Ortsteile der Gemeinde Rosenow“ — Bundeszuwendung (Kommunalrichtlinie) an die Gemeinde für die Wärmeplanung 09/2024–02/2025, kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite gelesen (19.09.2026): Balkonkraftwerk, Steckersolar, Batteriespeicher ohne Treffer; Balkon nur Festspiel-/Saatgut-Meldungen; Photovoltaik/Solar nur Bauleitplanung für Solarparks (Knorrendorf, Mölln, Kittendorf, Zettemin); Förderprogramm/Förderung nur Zuwendungen an Stadt und Gemeinden (Feuerwehrhäuser, Schulcampus, Spielplätze, Fahrradabstellanlagen, Wärmeplanung Rosenow, LEADER); Zuschuss nur Wohngeld-Anträge; Wärmepumpe nur Firmenmeldungen; Richtlinie nur Transporter-, Studienbeihilfe-, Jugend-, Kultur-, Sozial- und Sportrichtlinien."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/seiten/ortsrecht-stavenhagen-900000004-28750.html",
+        "finding": "Ortsrecht der Reuterstadt gelesen: Richtlinien Jugend, Kultur, Soziales, Sport, Nutzung des städtischen Transporters, regionale Studienbeihilfe für Medizinstudenten — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/klimaneutrale-fernwaerme-2027-einladung-zur-infoveranstaltung-fuer-eigentuemer-innen-und-interessierte-am-27-februar-2025-900001242-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Umstellung des Fernwärmenetzes der Wärmeversorgung Stavenhagen GmbH mit Bundesförderung an den Netzbetreiber; Einladung zur Infoveranstaltung, kein Zuschuss an Eigentümer."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/zuwendungsbescheide-uebergeben-900001640-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Landeszuwendungen für Feuerwehrgerätehäuser Grammentin und Ritzerow und für den Schulcampus Stavenhagen — Zuwendungen an Kommunen, kein Programm für Private."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Mecklenburgische Seenplatte wurde nicht gefunden (Katalog ohne Kreisprogramm 13071)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "disposition": "reviewed",
+        "reason": "Informationsblatt zur Bundeszuwendung für die kommunale Wärmeplanung der Gemeinde Rosenow (Kommunalrichtlinie, 09/2024–02/2025) — Förderung der Gemeinde, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mölln gehört zum Amt Stavenhagen (Landkreis Mecklenburgische Seenplatte). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Steckersolar und Batteriespeicher nichts, die Richtlinien im Ortsrecht betreffen Jugend, Kultur, Soziales, Sport und Studienbeihilfen, und die erfasste Quelle beschreibt die Bundeszuwendung für die Wärmeplanung Rosenow. Eine eigene Gemeindewebsite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13071123",
+    "name": "Ritzerow",
+    "checkedAt": "2026-09-19T08:12:27Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "stavenhagen.de Volltextsuche (Amt und alle 12 Gemeinden): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Steckersolar, Förderprogramm, Förderung, Förderrichtlinie, Richtlinie, Zuschuss, Wärmepumpe, Batteriespeicher, Speicher, Klimaschutz, Energie (Gegenprobe „Reuterstadt“: Treffer, die Suche funktioniert)",
+      "Gelesen: Ortsrecht Reuterstadt Stavenhagen und Gemeinde Knorrendorf (Richtlinien), Nationale Klimaschutzinitiative, Kommunale Wärmeplanung, Bauen & Wohnen in der Reuterstadt und in den Gemeinden, Unsere 12 Gemeinden (keine eigenen Gemeindewebsites)",
+      "Gelesen: Meldungen „Zuwendungsbescheide übergeben“ (28.07.2026), „Klimaneutrale Fernwärme 2027“, Jahresrückblick 2024, Infoveranstaltung Photovoltaik in Zettemin (2021)",
+      "Landkreis Mecklenburgische Seenplatte: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13071)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "finding": "Im Original gelesen (19.09.2026): „Information über die Durchführung eines geförderten Vorhabens … Erstellung eines Wärmeplanes für alle Ortsteile der Gemeinde Rosenow“ — Bundeszuwendung (Kommunalrichtlinie) an die Gemeinde für die Wärmeplanung 09/2024–02/2025, kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite gelesen (19.09.2026): Balkonkraftwerk, Steckersolar, Batteriespeicher ohne Treffer; Balkon nur Festspiel-/Saatgut-Meldungen; Photovoltaik/Solar nur Bauleitplanung für Solarparks (Knorrendorf, Mölln, Kittendorf, Zettemin); Förderprogramm/Förderung nur Zuwendungen an Stadt und Gemeinden (Feuerwehrhäuser, Schulcampus, Spielplätze, Fahrradabstellanlagen, Wärmeplanung Rosenow, LEADER); Zuschuss nur Wohngeld-Anträge; Wärmepumpe nur Firmenmeldungen; Richtlinie nur Transporter-, Studienbeihilfe-, Jugend-, Kultur-, Sozial- und Sportrichtlinien."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/seiten/ortsrecht-stavenhagen-900000004-28750.html",
+        "finding": "Ortsrecht der Reuterstadt gelesen: Richtlinien Jugend, Kultur, Soziales, Sport, Nutzung des städtischen Transporters, regionale Studienbeihilfe für Medizinstudenten — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/klimaneutrale-fernwaerme-2027-einladung-zur-infoveranstaltung-fuer-eigentuemer-innen-und-interessierte-am-27-februar-2025-900001242-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Umstellung des Fernwärmenetzes der Wärmeversorgung Stavenhagen GmbH mit Bundesförderung an den Netzbetreiber; Einladung zur Infoveranstaltung, kein Zuschuss an Eigentümer."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/zuwendungsbescheide-uebergeben-900001640-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Landeszuwendungen für Feuerwehrgerätehäuser Grammentin und Ritzerow und für den Schulcampus Stavenhagen — Zuwendungen an Kommunen, kein Programm für Private."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Mecklenburgische Seenplatte wurde nicht gefunden (Katalog ohne Kreisprogramm 13071)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "disposition": "reviewed",
+        "reason": "Informationsblatt zur Bundeszuwendung für die kommunale Wärmeplanung der Gemeinde Rosenow (Kommunalrichtlinie, 09/2024–02/2025) — Förderung der Gemeinde, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ritzerow gehört zum Amt Stavenhagen (Landkreis Mecklenburgische Seenplatte). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Steckersolar und Batteriespeicher nichts, die Richtlinien im Ortsrecht betreffen Jugend, Kultur, Soziales, Sport und Studienbeihilfen, und die erfasste Quelle beschreibt die Bundeszuwendung für die Wärmeplanung Rosenow. Eine eigene Gemeindewebsite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13071127",
+    "name": "Rosenow",
+    "checkedAt": "2026-09-19T08:12:27Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "stavenhagen.de Volltextsuche (Amt und alle 12 Gemeinden): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Steckersolar, Förderprogramm, Förderung, Förderrichtlinie, Richtlinie, Zuschuss, Wärmepumpe, Batteriespeicher, Speicher, Klimaschutz, Energie (Gegenprobe „Reuterstadt“: Treffer, die Suche funktioniert)",
+      "Gelesen: Ortsrecht Reuterstadt Stavenhagen und Gemeinde Knorrendorf (Richtlinien), Nationale Klimaschutzinitiative, Kommunale Wärmeplanung, Bauen & Wohnen in der Reuterstadt und in den Gemeinden, Unsere 12 Gemeinden (keine eigenen Gemeindewebsites)",
+      "Gelesen: Meldungen „Zuwendungsbescheide übergeben“ (28.07.2026), „Klimaneutrale Fernwärme 2027“, Jahresrückblick 2024, Infoveranstaltung Photovoltaik in Zettemin (2021)",
+      "Landkreis Mecklenburgische Seenplatte: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13071)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "finding": "Im Original gelesen (19.09.2026): „Information über die Durchführung eines geförderten Vorhabens … Erstellung eines Wärmeplanes für alle Ortsteile der Gemeinde Rosenow“ — Bundeszuwendung (Kommunalrichtlinie) an die Gemeinde für die Wärmeplanung 09/2024–02/2025, kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite gelesen (19.09.2026): Balkonkraftwerk, Steckersolar, Batteriespeicher ohne Treffer; Balkon nur Festspiel-/Saatgut-Meldungen; Photovoltaik/Solar nur Bauleitplanung für Solarparks (Knorrendorf, Mölln, Kittendorf, Zettemin); Förderprogramm/Förderung nur Zuwendungen an Stadt und Gemeinden (Feuerwehrhäuser, Schulcampus, Spielplätze, Fahrradabstellanlagen, Wärmeplanung Rosenow, LEADER); Zuschuss nur Wohngeld-Anträge; Wärmepumpe nur Firmenmeldungen; Richtlinie nur Transporter-, Studienbeihilfe-, Jugend-, Kultur-, Sozial- und Sportrichtlinien."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/seiten/ortsrecht-stavenhagen-900000004-28750.html",
+        "finding": "Ortsrecht der Reuterstadt gelesen: Richtlinien Jugend, Kultur, Soziales, Sport, Nutzung des städtischen Transporters, regionale Studienbeihilfe für Medizinstudenten — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/klimaneutrale-fernwaerme-2027-einladung-zur-infoveranstaltung-fuer-eigentuemer-innen-und-interessierte-am-27-februar-2025-900001242-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Umstellung des Fernwärmenetzes der Wärmeversorgung Stavenhagen GmbH mit Bundesförderung an den Netzbetreiber; Einladung zur Infoveranstaltung, kein Zuschuss an Eigentümer."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/zuwendungsbescheide-uebergeben-900001640-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Landeszuwendungen für Feuerwehrgerätehäuser Grammentin und Ritzerow und für den Schulcampus Stavenhagen — Zuwendungen an Kommunen, kein Programm für Private."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Mecklenburgische Seenplatte wurde nicht gefunden (Katalog ohne Kreisprogramm 13071)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "disposition": "reviewed",
+        "reason": "Informationsblatt zur Bundeszuwendung für die kommunale Wärmeplanung der Gemeinde Rosenow (Kommunalrichtlinie, 09/2024–02/2025) — Förderung der Gemeinde, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rosenow gehört zum Amt Stavenhagen (Landkreis Mecklenburgische Seenplatte). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Steckersolar und Batteriespeicher nichts, die Richtlinien im Ortsrecht betreffen Jugend, Kultur, Soziales, Sport und Studienbeihilfen, und die erfasste Quelle beschreibt die Bundeszuwendung für die Wärmeplanung Rosenow. Eine eigene Gemeindewebsite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13071142",
+    "name": "Stavenhagen",
+    "checkedAt": "2026-09-19T08:12:27Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "stavenhagen.de Volltextsuche (Amt und alle 12 Gemeinden): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Steckersolar, Förderprogramm, Förderung, Förderrichtlinie, Richtlinie, Zuschuss, Wärmepumpe, Batteriespeicher, Speicher, Klimaschutz, Energie (Gegenprobe „Reuterstadt“: Treffer, die Suche funktioniert)",
+      "Gelesen: Ortsrecht Reuterstadt Stavenhagen und Gemeinde Knorrendorf (Richtlinien), Nationale Klimaschutzinitiative, Kommunale Wärmeplanung, Bauen & Wohnen in der Reuterstadt und in den Gemeinden, Unsere 12 Gemeinden (keine eigenen Gemeindewebsites)",
+      "Gelesen: Meldungen „Zuwendungsbescheide übergeben“ (28.07.2026), „Klimaneutrale Fernwärme 2027“, Jahresrückblick 2024, Infoveranstaltung Photovoltaik in Zettemin (2021)",
+      "Landkreis Mecklenburgische Seenplatte: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13071)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "finding": "Im Original gelesen (19.09.2026): „Information über die Durchführung eines geförderten Vorhabens … Erstellung eines Wärmeplanes für alle Ortsteile der Gemeinde Rosenow“ — Bundeszuwendung (Kommunalrichtlinie) an die Gemeinde für die Wärmeplanung 09/2024–02/2025, kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite gelesen (19.09.2026): Balkonkraftwerk, Steckersolar, Batteriespeicher ohne Treffer; Balkon nur Festspiel-/Saatgut-Meldungen; Photovoltaik/Solar nur Bauleitplanung für Solarparks (Knorrendorf, Mölln, Kittendorf, Zettemin); Förderprogramm/Förderung nur Zuwendungen an Stadt und Gemeinden (Feuerwehrhäuser, Schulcampus, Spielplätze, Fahrradabstellanlagen, Wärmeplanung Rosenow, LEADER); Zuschuss nur Wohngeld-Anträge; Wärmepumpe nur Firmenmeldungen; Richtlinie nur Transporter-, Studienbeihilfe-, Jugend-, Kultur-, Sozial- und Sportrichtlinien."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/seiten/ortsrecht-stavenhagen-900000004-28750.html",
+        "finding": "Ortsrecht der Reuterstadt gelesen: Richtlinien Jugend, Kultur, Soziales, Sport, Nutzung des städtischen Transporters, regionale Studienbeihilfe für Medizinstudenten — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/klimaneutrale-fernwaerme-2027-einladung-zur-infoveranstaltung-fuer-eigentuemer-innen-und-interessierte-am-27-februar-2025-900001242-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Umstellung des Fernwärmenetzes der Wärmeversorgung Stavenhagen GmbH mit Bundesförderung an den Netzbetreiber; Einladung zur Infoveranstaltung, kein Zuschuss an Eigentümer."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/zuwendungsbescheide-uebergeben-900001640-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Landeszuwendungen für Feuerwehrgerätehäuser Grammentin und Ritzerow und für den Schulcampus Stavenhagen — Zuwendungen an Kommunen, kein Programm für Private."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Mecklenburgische Seenplatte wurde nicht gefunden (Katalog ohne Kreisprogramm 13071)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "disposition": "reviewed",
+        "reason": "Informationsblatt zur Bundeszuwendung für die kommunale Wärmeplanung der Gemeinde Rosenow (Kommunalrichtlinie, 09/2024–02/2025) — Förderung der Gemeinde, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Reuterstadt Stavenhagen ist Sitz des Amtes Stavenhagen (Landkreis Mecklenburgische Seenplatte). Weder die Stadt noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Steckersolar und Batteriespeicher nichts, die Richtlinien im Ortsrecht betreffen Jugend, Kultur, Soziales, Sport und Studienbeihilfen, und die erfasste Quelle beschreibt die Bundeszuwendung für die Wärmeplanung Rosenow. Eine eigene Gemeindewebsite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13071169",
+    "name": "Zettemin",
+    "checkedAt": "2026-09-19T08:12:27Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "stavenhagen.de Volltextsuche (Amt und alle 12 Gemeinden): Photovoltaik, Solar, Balkon, Balkonkraftwerk, Steckersolar, Förderprogramm, Förderung, Förderrichtlinie, Richtlinie, Zuschuss, Wärmepumpe, Batteriespeicher, Speicher, Klimaschutz, Energie (Gegenprobe „Reuterstadt“: Treffer, die Suche funktioniert)",
+      "Gelesen: Ortsrecht Reuterstadt Stavenhagen und Gemeinde Knorrendorf (Richtlinien), Nationale Klimaschutzinitiative, Kommunale Wärmeplanung, Bauen & Wohnen in der Reuterstadt und in den Gemeinden, Unsere 12 Gemeinden (keine eigenen Gemeindewebsites)",
+      "Gelesen: Meldungen „Zuwendungsbescheide übergeben“ (28.07.2026), „Klimaneutrale Fernwärme 2027“, Jahresrückblick 2024, Infoveranstaltung Photovoltaik in Zettemin (2021)",
+      "Landkreis Mecklenburgische Seenplatte: kein Kreisprogramm (Websuchen 18.09.2026, Katalog ohne Kreisprogramm 13071)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "finding": "Im Original gelesen (19.09.2026): „Information über die Durchführung eines geförderten Vorhabens … Erstellung eines Wärmeplanes für alle Ortsteile der Gemeinde Rosenow“ — Bundeszuwendung (Kommunalrichtlinie) an die Gemeinde für die Wärmeplanung 09/2024–02/2025, kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtsseite gelesen (19.09.2026): Balkonkraftwerk, Steckersolar, Batteriespeicher ohne Treffer; Balkon nur Festspiel-/Saatgut-Meldungen; Photovoltaik/Solar nur Bauleitplanung für Solarparks (Knorrendorf, Mölln, Kittendorf, Zettemin); Förderprogramm/Förderung nur Zuwendungen an Stadt und Gemeinden (Feuerwehrhäuser, Schulcampus, Spielplätze, Fahrradabstellanlagen, Wärmeplanung Rosenow, LEADER); Zuschuss nur Wohngeld-Anträge; Wärmepumpe nur Firmenmeldungen; Richtlinie nur Transporter-, Studienbeihilfe-, Jugend-, Kultur-, Sozial- und Sportrichtlinien."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/seiten/ortsrecht-stavenhagen-900000004-28750.html",
+        "finding": "Ortsrecht der Reuterstadt gelesen: Richtlinien Jugend, Kultur, Soziales, Sport, Nutzung des städtischen Transporters, regionale Studienbeihilfe für Medizinstudenten — keine Förderrichtlinie für Energieanlagen privater Haushalte."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/klimaneutrale-fernwaerme-2027-einladung-zur-infoveranstaltung-fuer-eigentuemer-innen-und-interessierte-am-27-februar-2025-900001242-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Umstellung des Fernwärmenetzes der Wärmeversorgung Stavenhagen GmbH mit Bundesförderung an den Netzbetreiber; Einladung zur Infoveranstaltung, kein Zuschuss an Eigentümer."
+      },
+      {
+        "url": "https://www.stavenhagen.de/portal/meldungen/zuwendungsbescheide-uebergeben-900001640-28750.html?rubrik=900000001",
+        "finding": "Im Original gelesen: Landeszuwendungen für Feuerwehrgerätehäuser Grammentin und Ritzerow und für den Schulcampus Stavenhagen — Zuwendungen an Kommunen, kein Programm für Private."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Mecklenburgische Seenplatte wurde nicht gefunden (Katalog ohne Kreisprogramm 13071)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ",
+        "disposition": "reviewed",
+        "reason": "Informationsblatt zur Bundeszuwendung für die kommunale Wärmeplanung der Gemeinde Rosenow (Kommunalrichtlinie, 09/2024–02/2025) — Förderung der Gemeinde, kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.stavenhagen.de/downloads/datei/NjFjN2FmZTljYWMxZjE5ZDQxa2ZDV0wwNjdoSG9QKzUvVGI0MlVWcCtGZ3hsSWdvQll6eE4wV0pKK25hLzBhWC9GZXdHc29vSW00cndjdjVXQXBYTExXdENqYkdQVjhkb3ZOSGJDUEROWVBSSkxyQlRyRytkRXhNMjljQm5tek5obDNXMmdhN0Zlb2lQSitiNG9iUERtYUNBYUZObktJTXd0NS9WWTFRN0Q1ZERRN2JVbFpvSEJsTUtwRWNjcnNtaFhIWTdGdmp4NzNCR28xOQ"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Zettemin gehört zum Amt Stavenhagen (Landkreis Mecklenburgische Seenplatte). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Volltextsuche der Amtsseite findet zu Balkonkraftwerk, Steckersolar und Batteriespeicher nichts, die Richtlinien im Ortsrecht betreffen Jugend, Kultur, Soziales, Sport und Studienbeihilfen, und die erfasste Quelle beschreibt die Bundeszuwendung für die Wärmeplanung Rosenow. Eine eigene Gemeindewebsite gibt es nicht. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
   }
 ]
