@@ -35622,5 +35622,491 @@
     ],
     "outcome": "keine-passende-foerderung",
     "conclusion": "Volkmannsdorf gehört zur Verwaltungsgemeinschaft Seenplatte (Saale-Orla-Kreis, Thüringen). Weder Verwaltungsgemeinschaft noch Mitgliedsgemeinden führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte; die Förderseite verweist nur auf die Wirtschaftsförderung des Landratsamts, die Volltextsuche findet zu keinem Energiebegriff einen Treffer. Der PV-Förderhinweis der LEADER-Aktionsgruppe Saale-Orla stammt erkennbar aus der Förderperiode vor 2023 und ist keine kommunale Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059006",
+    "name": "Böel",
+    "checkedAt": "2026-09-19T19:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suederbrarup.de Volltextsuche (19.09.2026): Balkonkraftwerk 1 Treffer (Kursleiter-Aufruf Digitalzentrum); Photovoltaik 13 Treffer (Bauleitplanung Sondergebiet Photovoltaik Saustrup, Quartierskonzept, Regionalbudget-PV auf der Sporthalle Mohrkirch); Wärmepumpe 1 Treffer (Fernwärmeprojekt Süderbrarup West); Zuschuss 18 Treffer (Jugenderholung, Heizkostenzuschuss des Bundes 2023, Hochwasserhilfe); Förderung 153 und Klimaschutz 39 Treffer ohne Haushaltsprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Websuche „Kreis Schleswig-Flensburg Förderung Balkonkraftwerk Photovoltaik Zuschuss Süderbrarup“ (19.09.2026); die Behauptung eines 150-€-Kreiszuschusses in einer Suchzusammenfassung ist im Original nicht belegt",
+      "Kreis Schleswig-Flensburg, Zuständigkeitsfinder: Eintrag „Zuschuss für steckerfertige Photovoltaikanlagen“ und Eintrag „Förderung von haushaltsbezogenen Solarpanelen“ mit Wohnort Süderbrarup gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suederbrarup.de/vergabebekanntmachungen",
+        "finding": "Im Original gelesen (19.09.2026): „Vergabe- und Förderbekanntmachungen“ des Amtes und der Gemeinden — Ausschreibungen öffentlicher Aufträge (z. B. Neubau Campusklassen Nordlichtschule, 10.09.2026); kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "finding": "Gelesen: Schülerfahrkarten über das Portal OLAV der Zentralen Stelle Ratzeburg — kein Bezug zu Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/fileadmin/user_upload/Suederbrarup/2024-05-06-Antrag_Zuschuss_Suederbrarup_ausfuellbares_PDF-01.pdf",
+        "finding": "Gelesen: „Antrag auf Gewährung einer freiwilligen kommunalen Zuwendung für Maßnahmen, Vorhaben und Projekte im sozialen Bereich“ der Gemeinde Süderbrarup (2024) — für Vereine und Initiativen, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/aktuelles/zukunftswaerme-fuer-suederbrarup-west-jetzt-letzte-chance-zur-beteiligung",
+        "finding": "Gelesen: Fernwärmeprojekt Süderbrarup West sammelt Absichtserklärungen (Frist 31.12.2025); für Haushalte ohne Anschluss wird ein Dienstleistungsmodell mit Wärmepumpen im Großeinkauf erwogen — kein Zuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Gelesen (19.09.2026): Kreisseite gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ aus dem Zuständigkeitsfinder wieder — PV-Balkon-Anlage max. 200 €, Programm „bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023“; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.2117.1&object=tx,3333.2",
+        "finding": "Gelesen mit Wohnort Süderbrarup: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ — keine Balkonkraftwerk-Förderung für diesen Ort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suederbrarup.de/vergabebekanntmachungen",
+        "disposition": "reviewed",
+        "reason": "Vergabebekanntmachungen öffentlicher Aufträge, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/vergabebekanntmachungen"
+      },
+      {
+        "url": "amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "disposition": "reviewed",
+        "reason": "Schülerfahrkarten, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Böel gehört zum Amt Süderbrarup (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes findet nur Bauleitplanung, Quartierskonzept, Fernwärmeplanung und kommunale Projekte; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder, und der Zuständigkeitsfinder nennt für den Ort keine Balkonkraftwerk-Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059055",
+    "name": "Loit",
+    "checkedAt": "2026-09-19T19:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suederbrarup.de Volltextsuche (19.09.2026): Balkonkraftwerk 1 Treffer (Kursleiter-Aufruf Digitalzentrum); Photovoltaik 13 Treffer (Bauleitplanung Sondergebiet Photovoltaik Saustrup, Quartierskonzept, Regionalbudget-PV auf der Sporthalle Mohrkirch); Wärmepumpe 1 Treffer (Fernwärmeprojekt Süderbrarup West); Zuschuss 18 Treffer (Jugenderholung, Heizkostenzuschuss des Bundes 2023, Hochwasserhilfe); Förderung 153 und Klimaschutz 39 Treffer ohne Haushaltsprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Websuche „Kreis Schleswig-Flensburg Förderung Balkonkraftwerk Photovoltaik Zuschuss Süderbrarup“ (19.09.2026); die Behauptung eines 150-€-Kreiszuschusses in einer Suchzusammenfassung ist im Original nicht belegt",
+      "Kreis Schleswig-Flensburg, Zuständigkeitsfinder: Eintrag „Zuschuss für steckerfertige Photovoltaikanlagen“ und Eintrag „Förderung von haushaltsbezogenen Solarpanelen“ mit Wohnort Süderbrarup gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suederbrarup.de/vergabebekanntmachungen",
+        "finding": "Im Original gelesen (19.09.2026): „Vergabe- und Förderbekanntmachungen“ des Amtes und der Gemeinden — Ausschreibungen öffentlicher Aufträge (z. B. Neubau Campusklassen Nordlichtschule, 10.09.2026); kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "finding": "Gelesen: Schülerfahrkarten über das Portal OLAV der Zentralen Stelle Ratzeburg — kein Bezug zu Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/fileadmin/user_upload/Suederbrarup/2024-05-06-Antrag_Zuschuss_Suederbrarup_ausfuellbares_PDF-01.pdf",
+        "finding": "Gelesen: „Antrag auf Gewährung einer freiwilligen kommunalen Zuwendung für Maßnahmen, Vorhaben und Projekte im sozialen Bereich“ der Gemeinde Süderbrarup (2024) — für Vereine und Initiativen, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/aktuelles/zukunftswaerme-fuer-suederbrarup-west-jetzt-letzte-chance-zur-beteiligung",
+        "finding": "Gelesen: Fernwärmeprojekt Süderbrarup West sammelt Absichtserklärungen (Frist 31.12.2025); für Haushalte ohne Anschluss wird ein Dienstleistungsmodell mit Wärmepumpen im Großeinkauf erwogen — kein Zuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Gelesen (19.09.2026): Kreisseite gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ aus dem Zuständigkeitsfinder wieder — PV-Balkon-Anlage max. 200 €, Programm „bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023“; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.2117.1&object=tx,3333.2",
+        "finding": "Gelesen mit Wohnort Süderbrarup: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ — keine Balkonkraftwerk-Förderung für diesen Ort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suederbrarup.de/vergabebekanntmachungen",
+        "disposition": "reviewed",
+        "reason": "Vergabebekanntmachungen öffentlicher Aufträge, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/vergabebekanntmachungen"
+      },
+      {
+        "url": "amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "disposition": "reviewed",
+        "reason": "Schülerfahrkarten, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Loit gehört zum Amt Süderbrarup (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes findet nur Bauleitplanung, Quartierskonzept, Fernwärmeplanung und kommunale Projekte; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder, und der Zuständigkeitsfinder nennt für den Ort keine Balkonkraftwerk-Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059063",
+    "name": "Norderbrarup",
+    "checkedAt": "2026-09-19T19:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suederbrarup.de Volltextsuche (19.09.2026): Balkonkraftwerk 1 Treffer (Kursleiter-Aufruf Digitalzentrum); Photovoltaik 13 Treffer (Bauleitplanung Sondergebiet Photovoltaik Saustrup, Quartierskonzept, Regionalbudget-PV auf der Sporthalle Mohrkirch); Wärmepumpe 1 Treffer (Fernwärmeprojekt Süderbrarup West); Zuschuss 18 Treffer (Jugenderholung, Heizkostenzuschuss des Bundes 2023, Hochwasserhilfe); Förderung 153 und Klimaschutz 39 Treffer ohne Haushaltsprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Websuche „Kreis Schleswig-Flensburg Förderung Balkonkraftwerk Photovoltaik Zuschuss Süderbrarup“ (19.09.2026); die Behauptung eines 150-€-Kreiszuschusses in einer Suchzusammenfassung ist im Original nicht belegt",
+      "Kreis Schleswig-Flensburg, Zuständigkeitsfinder: Eintrag „Zuschuss für steckerfertige Photovoltaikanlagen“ und Eintrag „Förderung von haushaltsbezogenen Solarpanelen“ mit Wohnort Süderbrarup gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suederbrarup.de/vergabebekanntmachungen",
+        "finding": "Im Original gelesen (19.09.2026): „Vergabe- und Förderbekanntmachungen“ des Amtes und der Gemeinden — Ausschreibungen öffentlicher Aufträge (z. B. Neubau Campusklassen Nordlichtschule, 10.09.2026); kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "finding": "Gelesen: Schülerfahrkarten über das Portal OLAV der Zentralen Stelle Ratzeburg — kein Bezug zu Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/fileadmin/user_upload/Suederbrarup/2024-05-06-Antrag_Zuschuss_Suederbrarup_ausfuellbares_PDF-01.pdf",
+        "finding": "Gelesen: „Antrag auf Gewährung einer freiwilligen kommunalen Zuwendung für Maßnahmen, Vorhaben und Projekte im sozialen Bereich“ der Gemeinde Süderbrarup (2024) — für Vereine und Initiativen, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/aktuelles/zukunftswaerme-fuer-suederbrarup-west-jetzt-letzte-chance-zur-beteiligung",
+        "finding": "Gelesen: Fernwärmeprojekt Süderbrarup West sammelt Absichtserklärungen (Frist 31.12.2025); für Haushalte ohne Anschluss wird ein Dienstleistungsmodell mit Wärmepumpen im Großeinkauf erwogen — kein Zuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Gelesen (19.09.2026): Kreisseite gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ aus dem Zuständigkeitsfinder wieder — PV-Balkon-Anlage max. 200 €, Programm „bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023“; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.2117.1&object=tx,3333.2",
+        "finding": "Gelesen mit Wohnort Süderbrarup: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ — keine Balkonkraftwerk-Förderung für diesen Ort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suederbrarup.de/vergabebekanntmachungen",
+        "disposition": "reviewed",
+        "reason": "Vergabebekanntmachungen öffentlicher Aufträge, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/vergabebekanntmachungen"
+      },
+      {
+        "url": "amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "disposition": "reviewed",
+        "reason": "Schülerfahrkarten, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Norderbrarup gehört zum Amt Süderbrarup (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes findet nur Bauleitplanung, Quartierskonzept, Fernwärmeplanung und kommunale Projekte; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder, und der Zuständigkeitsfinder nennt für den Ort keine Balkonkraftwerk-Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059065",
+    "name": "Nottfeld",
+    "checkedAt": "2026-09-19T19:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suederbrarup.de Volltextsuche (19.09.2026): Balkonkraftwerk 1 Treffer (Kursleiter-Aufruf Digitalzentrum); Photovoltaik 13 Treffer (Bauleitplanung Sondergebiet Photovoltaik Saustrup, Quartierskonzept, Regionalbudget-PV auf der Sporthalle Mohrkirch); Wärmepumpe 1 Treffer (Fernwärmeprojekt Süderbrarup West); Zuschuss 18 Treffer (Jugenderholung, Heizkostenzuschuss des Bundes 2023, Hochwasserhilfe); Förderung 153 und Klimaschutz 39 Treffer ohne Haushaltsprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Websuche „Kreis Schleswig-Flensburg Förderung Balkonkraftwerk Photovoltaik Zuschuss Süderbrarup“ (19.09.2026); die Behauptung eines 150-€-Kreiszuschusses in einer Suchzusammenfassung ist im Original nicht belegt",
+      "Kreis Schleswig-Flensburg, Zuständigkeitsfinder: Eintrag „Zuschuss für steckerfertige Photovoltaikanlagen“ und Eintrag „Förderung von haushaltsbezogenen Solarpanelen“ mit Wohnort Süderbrarup gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suederbrarup.de/vergabebekanntmachungen",
+        "finding": "Im Original gelesen (19.09.2026): „Vergabe- und Förderbekanntmachungen“ des Amtes und der Gemeinden — Ausschreibungen öffentlicher Aufträge (z. B. Neubau Campusklassen Nordlichtschule, 10.09.2026); kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "finding": "Gelesen: Schülerfahrkarten über das Portal OLAV der Zentralen Stelle Ratzeburg — kein Bezug zu Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/fileadmin/user_upload/Suederbrarup/2024-05-06-Antrag_Zuschuss_Suederbrarup_ausfuellbares_PDF-01.pdf",
+        "finding": "Gelesen: „Antrag auf Gewährung einer freiwilligen kommunalen Zuwendung für Maßnahmen, Vorhaben und Projekte im sozialen Bereich“ der Gemeinde Süderbrarup (2024) — für Vereine und Initiativen, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/aktuelles/zukunftswaerme-fuer-suederbrarup-west-jetzt-letzte-chance-zur-beteiligung",
+        "finding": "Gelesen: Fernwärmeprojekt Süderbrarup West sammelt Absichtserklärungen (Frist 31.12.2025); für Haushalte ohne Anschluss wird ein Dienstleistungsmodell mit Wärmepumpen im Großeinkauf erwogen — kein Zuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Gelesen (19.09.2026): Kreisseite gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ aus dem Zuständigkeitsfinder wieder — PV-Balkon-Anlage max. 200 €, Programm „bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023“; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.2117.1&object=tx,3333.2",
+        "finding": "Gelesen mit Wohnort Süderbrarup: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ — keine Balkonkraftwerk-Förderung für diesen Ort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suederbrarup.de/vergabebekanntmachungen",
+        "disposition": "reviewed",
+        "reason": "Vergabebekanntmachungen öffentlicher Aufträge, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/vergabebekanntmachungen"
+      },
+      {
+        "url": "amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "disposition": "reviewed",
+        "reason": "Schülerfahrkarten, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nottfeld gehört zum Amt Süderbrarup (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes findet nur Bauleitplanung, Quartierskonzept, Fernwärmeplanung und kommunale Projekte; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder, und der Zuständigkeitsfinder nennt für den Ort keine Balkonkraftwerk-Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059072",
+    "name": "Saustrup",
+    "checkedAt": "2026-09-19T19:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suederbrarup.de Volltextsuche (19.09.2026): Balkonkraftwerk 1 Treffer (Kursleiter-Aufruf Digitalzentrum); Photovoltaik 13 Treffer (Bauleitplanung Sondergebiet Photovoltaik Saustrup, Quartierskonzept, Regionalbudget-PV auf der Sporthalle Mohrkirch); Wärmepumpe 1 Treffer (Fernwärmeprojekt Süderbrarup West); Zuschuss 18 Treffer (Jugenderholung, Heizkostenzuschuss des Bundes 2023, Hochwasserhilfe); Förderung 153 und Klimaschutz 39 Treffer ohne Haushaltsprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Websuche „Kreis Schleswig-Flensburg Förderung Balkonkraftwerk Photovoltaik Zuschuss Süderbrarup“ (19.09.2026); die Behauptung eines 150-€-Kreiszuschusses in einer Suchzusammenfassung ist im Original nicht belegt",
+      "Kreis Schleswig-Flensburg, Zuständigkeitsfinder: Eintrag „Zuschuss für steckerfertige Photovoltaikanlagen“ und Eintrag „Förderung von haushaltsbezogenen Solarpanelen“ mit Wohnort Süderbrarup gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suederbrarup.de/vergabebekanntmachungen",
+        "finding": "Im Original gelesen (19.09.2026): „Vergabe- und Förderbekanntmachungen“ des Amtes und der Gemeinden — Ausschreibungen öffentlicher Aufträge (z. B. Neubau Campusklassen Nordlichtschule, 10.09.2026); kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "finding": "Gelesen: Schülerfahrkarten über das Portal OLAV der Zentralen Stelle Ratzeburg — kein Bezug zu Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/fileadmin/user_upload/Suederbrarup/2024-05-06-Antrag_Zuschuss_Suederbrarup_ausfuellbares_PDF-01.pdf",
+        "finding": "Gelesen: „Antrag auf Gewährung einer freiwilligen kommunalen Zuwendung für Maßnahmen, Vorhaben und Projekte im sozialen Bereich“ der Gemeinde Süderbrarup (2024) — für Vereine und Initiativen, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/aktuelles/zukunftswaerme-fuer-suederbrarup-west-jetzt-letzte-chance-zur-beteiligung",
+        "finding": "Gelesen: Fernwärmeprojekt Süderbrarup West sammelt Absichtserklärungen (Frist 31.12.2025); für Haushalte ohne Anschluss wird ein Dienstleistungsmodell mit Wärmepumpen im Großeinkauf erwogen — kein Zuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Gelesen (19.09.2026): Kreisseite gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ aus dem Zuständigkeitsfinder wieder — PV-Balkon-Anlage max. 200 €, Programm „bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023“; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.2117.1&object=tx,3333.2",
+        "finding": "Gelesen mit Wohnort Süderbrarup: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ — keine Balkonkraftwerk-Förderung für diesen Ort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suederbrarup.de/vergabebekanntmachungen",
+        "disposition": "reviewed",
+        "reason": "Vergabebekanntmachungen öffentlicher Aufträge, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/vergabebekanntmachungen"
+      },
+      {
+        "url": "amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "disposition": "reviewed",
+        "reason": "Schülerfahrkarten, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Saustrup gehört zum Amt Süderbrarup (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes findet nur Bauleitplanung, Quartierskonzept, Fernwärmeplanung und kommunale Projekte; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder, und der Zuständigkeitsfinder nennt für den Ort keine Balkonkraftwerk-Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059074",
+    "name": "Scheggerott",
+    "checkedAt": "2026-09-19T19:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suederbrarup.de Volltextsuche (19.09.2026): Balkonkraftwerk 1 Treffer (Kursleiter-Aufruf Digitalzentrum); Photovoltaik 13 Treffer (Bauleitplanung Sondergebiet Photovoltaik Saustrup, Quartierskonzept, Regionalbudget-PV auf der Sporthalle Mohrkirch); Wärmepumpe 1 Treffer (Fernwärmeprojekt Süderbrarup West); Zuschuss 18 Treffer (Jugenderholung, Heizkostenzuschuss des Bundes 2023, Hochwasserhilfe); Förderung 153 und Klimaschutz 39 Treffer ohne Haushaltsprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Websuche „Kreis Schleswig-Flensburg Förderung Balkonkraftwerk Photovoltaik Zuschuss Süderbrarup“ (19.09.2026); die Behauptung eines 150-€-Kreiszuschusses in einer Suchzusammenfassung ist im Original nicht belegt",
+      "Kreis Schleswig-Flensburg, Zuständigkeitsfinder: Eintrag „Zuschuss für steckerfertige Photovoltaikanlagen“ und Eintrag „Förderung von haushaltsbezogenen Solarpanelen“ mit Wohnort Süderbrarup gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suederbrarup.de/vergabebekanntmachungen",
+        "finding": "Im Original gelesen (19.09.2026): „Vergabe- und Förderbekanntmachungen“ des Amtes und der Gemeinden — Ausschreibungen öffentlicher Aufträge (z. B. Neubau Campusklassen Nordlichtschule, 10.09.2026); kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "finding": "Gelesen: Schülerfahrkarten über das Portal OLAV der Zentralen Stelle Ratzeburg — kein Bezug zu Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/fileadmin/user_upload/Suederbrarup/2024-05-06-Antrag_Zuschuss_Suederbrarup_ausfuellbares_PDF-01.pdf",
+        "finding": "Gelesen: „Antrag auf Gewährung einer freiwilligen kommunalen Zuwendung für Maßnahmen, Vorhaben und Projekte im sozialen Bereich“ der Gemeinde Süderbrarup (2024) — für Vereine und Initiativen, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/aktuelles/zukunftswaerme-fuer-suederbrarup-west-jetzt-letzte-chance-zur-beteiligung",
+        "finding": "Gelesen: Fernwärmeprojekt Süderbrarup West sammelt Absichtserklärungen (Frist 31.12.2025); für Haushalte ohne Anschluss wird ein Dienstleistungsmodell mit Wärmepumpen im Großeinkauf erwogen — kein Zuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Gelesen (19.09.2026): Kreisseite gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ aus dem Zuständigkeitsfinder wieder — PV-Balkon-Anlage max. 200 €, Programm „bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023“; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.2117.1&object=tx,3333.2",
+        "finding": "Gelesen mit Wohnort Süderbrarup: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ — keine Balkonkraftwerk-Förderung für diesen Ort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suederbrarup.de/vergabebekanntmachungen",
+        "disposition": "reviewed",
+        "reason": "Vergabebekanntmachungen öffentlicher Aufträge, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/vergabebekanntmachungen"
+      },
+      {
+        "url": "amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "disposition": "reviewed",
+        "reason": "Schülerfahrkarten, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Scheggerott gehört zum Amt Süderbrarup (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes findet nur Bauleitplanung, Quartierskonzept, Fernwärmeplanung und kommunale Projekte; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder, und der Zuständigkeitsfinder nennt für den Ort keine Balkonkraftwerk-Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059080",
+    "name": "Steinfeld",
+    "checkedAt": "2026-09-19T19:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suederbrarup.de Volltextsuche (19.09.2026): Balkonkraftwerk 1 Treffer (Kursleiter-Aufruf Digitalzentrum); Photovoltaik 13 Treffer (Bauleitplanung Sondergebiet Photovoltaik Saustrup, Quartierskonzept, Regionalbudget-PV auf der Sporthalle Mohrkirch); Wärmepumpe 1 Treffer (Fernwärmeprojekt Süderbrarup West); Zuschuss 18 Treffer (Jugenderholung, Heizkostenzuschuss des Bundes 2023, Hochwasserhilfe); Förderung 153 und Klimaschutz 39 Treffer ohne Haushaltsprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Websuche „Kreis Schleswig-Flensburg Förderung Balkonkraftwerk Photovoltaik Zuschuss Süderbrarup“ (19.09.2026); die Behauptung eines 150-€-Kreiszuschusses in einer Suchzusammenfassung ist im Original nicht belegt",
+      "Kreis Schleswig-Flensburg, Zuständigkeitsfinder: Eintrag „Zuschuss für steckerfertige Photovoltaikanlagen“ und Eintrag „Förderung von haushaltsbezogenen Solarpanelen“ mit Wohnort Süderbrarup gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suederbrarup.de/vergabebekanntmachungen",
+        "finding": "Im Original gelesen (19.09.2026): „Vergabe- und Förderbekanntmachungen“ des Amtes und der Gemeinden — Ausschreibungen öffentlicher Aufträge (z. B. Neubau Campusklassen Nordlichtschule, 10.09.2026); kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "finding": "Gelesen: Schülerfahrkarten über das Portal OLAV der Zentralen Stelle Ratzeburg — kein Bezug zu Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/fileadmin/user_upload/Suederbrarup/2024-05-06-Antrag_Zuschuss_Suederbrarup_ausfuellbares_PDF-01.pdf",
+        "finding": "Gelesen: „Antrag auf Gewährung einer freiwilligen kommunalen Zuwendung für Maßnahmen, Vorhaben und Projekte im sozialen Bereich“ der Gemeinde Süderbrarup (2024) — für Vereine und Initiativen, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/aktuelles/zukunftswaerme-fuer-suederbrarup-west-jetzt-letzte-chance-zur-beteiligung",
+        "finding": "Gelesen: Fernwärmeprojekt Süderbrarup West sammelt Absichtserklärungen (Frist 31.12.2025); für Haushalte ohne Anschluss wird ein Dienstleistungsmodell mit Wärmepumpen im Großeinkauf erwogen — kein Zuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Gelesen (19.09.2026): Kreisseite gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ aus dem Zuständigkeitsfinder wieder — PV-Balkon-Anlage max. 200 €, Programm „bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023“; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.2117.1&object=tx,3333.2",
+        "finding": "Gelesen mit Wohnort Süderbrarup: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ — keine Balkonkraftwerk-Förderung für diesen Ort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suederbrarup.de/vergabebekanntmachungen",
+        "disposition": "reviewed",
+        "reason": "Vergabebekanntmachungen öffentlicher Aufträge, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/vergabebekanntmachungen"
+      },
+      {
+        "url": "amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "disposition": "reviewed",
+        "reason": "Schülerfahrkarten, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Steinfeld gehört zum Amt Süderbrarup (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes findet nur Bauleitplanung, Quartierskonzept, Fernwärmeplanung und kommunale Projekte; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder, und der Zuständigkeitsfinder nennt für den Ort keine Balkonkraftwerk-Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059083",
+    "name": "Süderbrarup",
+    "checkedAt": "2026-09-19T19:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suederbrarup.de Volltextsuche (19.09.2026): Balkonkraftwerk 1 Treffer (Kursleiter-Aufruf Digitalzentrum); Photovoltaik 13 Treffer (Bauleitplanung Sondergebiet Photovoltaik Saustrup, Quartierskonzept, Regionalbudget-PV auf der Sporthalle Mohrkirch); Wärmepumpe 1 Treffer (Fernwärmeprojekt Süderbrarup West); Zuschuss 18 Treffer (Jugenderholung, Heizkostenzuschuss des Bundes 2023, Hochwasserhilfe); Förderung 153 und Klimaschutz 39 Treffer ohne Haushaltsprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Websuche „Kreis Schleswig-Flensburg Förderung Balkonkraftwerk Photovoltaik Zuschuss Süderbrarup“ (19.09.2026); die Behauptung eines 150-€-Kreiszuschusses in einer Suchzusammenfassung ist im Original nicht belegt",
+      "Kreis Schleswig-Flensburg, Zuständigkeitsfinder: Eintrag „Zuschuss für steckerfertige Photovoltaikanlagen“ und Eintrag „Förderung von haushaltsbezogenen Solarpanelen“ mit Wohnort Süderbrarup gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suederbrarup.de/vergabebekanntmachungen",
+        "finding": "Im Original gelesen (19.09.2026): „Vergabe- und Förderbekanntmachungen“ des Amtes und der Gemeinden — Ausschreibungen öffentlicher Aufträge (z. B. Neubau Campusklassen Nordlichtschule, 10.09.2026); kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "finding": "Gelesen: Schülerfahrkarten über das Portal OLAV der Zentralen Stelle Ratzeburg — kein Bezug zu Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/fileadmin/user_upload/Suederbrarup/2024-05-06-Antrag_Zuschuss_Suederbrarup_ausfuellbares_PDF-01.pdf",
+        "finding": "Gelesen: „Antrag auf Gewährung einer freiwilligen kommunalen Zuwendung für Maßnahmen, Vorhaben und Projekte im sozialen Bereich“ der Gemeinde Süderbrarup (2024) — für Vereine und Initiativen, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/aktuelles/zukunftswaerme-fuer-suederbrarup-west-jetzt-letzte-chance-zur-beteiligung",
+        "finding": "Gelesen: Fernwärmeprojekt Süderbrarup West sammelt Absichtserklärungen (Frist 31.12.2025); für Haushalte ohne Anschluss wird ein Dienstleistungsmodell mit Wärmepumpen im Großeinkauf erwogen — kein Zuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Gelesen (19.09.2026): Kreisseite gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ aus dem Zuständigkeitsfinder wieder — PV-Balkon-Anlage max. 200 €, Programm „bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023“; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.2117.1&object=tx,3333.2",
+        "finding": "Gelesen mit Wohnort Süderbrarup: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ — keine Balkonkraftwerk-Förderung für diesen Ort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suederbrarup.de/vergabebekanntmachungen",
+        "disposition": "reviewed",
+        "reason": "Vergabebekanntmachungen öffentlicher Aufträge, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/vergabebekanntmachungen"
+      },
+      {
+        "url": "amt-suederbrarup.de/fileadmin/user_upload/Suederbrarup/2024-05-06-Antrag_Zuschuss_Suederbrarup_ausfuellbares_PDF-01.pdf",
+        "disposition": "reviewed",
+        "reason": "Antrag auf soziale Zuwendungen für Vereine und Initiativen, keine Energieförderung.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/fileadmin/user_upload/Suederbrarup/2024-05-06-Antrag_Zuschuss_Suederbrarup_ausfuellbares_PDF-01.pdf"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Süderbrarup gehört zum Amt Süderbrarup (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes findet nur Bauleitplanung, Quartierskonzept, Fernwärmeplanung und kommunale Projekte; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder, und der Zuständigkeitsfinder nennt für den Ort keine Balkonkraftwerk-Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059095",
+    "name": "Wagersrott",
+    "checkedAt": "2026-09-19T19:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suederbrarup.de Volltextsuche (19.09.2026): Balkonkraftwerk 1 Treffer (Kursleiter-Aufruf Digitalzentrum); Photovoltaik 13 Treffer (Bauleitplanung Sondergebiet Photovoltaik Saustrup, Quartierskonzept, Regionalbudget-PV auf der Sporthalle Mohrkirch); Wärmepumpe 1 Treffer (Fernwärmeprojekt Süderbrarup West); Zuschuss 18 Treffer (Jugenderholung, Heizkostenzuschuss des Bundes 2023, Hochwasserhilfe); Förderung 153 und Klimaschutz 39 Treffer ohne Haushaltsprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen",
+      "Websuche „Kreis Schleswig-Flensburg Förderung Balkonkraftwerk Photovoltaik Zuschuss Süderbrarup“ (19.09.2026); die Behauptung eines 150-€-Kreiszuschusses in einer Suchzusammenfassung ist im Original nicht belegt",
+      "Kreis Schleswig-Flensburg, Zuständigkeitsfinder: Eintrag „Zuschuss für steckerfertige Photovoltaikanlagen“ und Eintrag „Förderung von haushaltsbezogenen Solarpanelen“ mit Wohnort Süderbrarup gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suederbrarup.de/vergabebekanntmachungen",
+        "finding": "Im Original gelesen (19.09.2026): „Vergabe- und Förderbekanntmachungen“ des Amtes und der Gemeinden — Ausschreibungen öffentlicher Aufträge (z. B. Neubau Campusklassen Nordlichtschule, 10.09.2026); kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "finding": "Gelesen: Schülerfahrkarten über das Portal OLAV der Zentralen Stelle Ratzeburg — kein Bezug zu Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/fileadmin/user_upload/Suederbrarup/2024-05-06-Antrag_Zuschuss_Suederbrarup_ausfuellbares_PDF-01.pdf",
+        "finding": "Gelesen: „Antrag auf Gewährung einer freiwilligen kommunalen Zuwendung für Maßnahmen, Vorhaben und Projekte im sozialen Bereich“ der Gemeinde Süderbrarup (2024) — für Vereine und Initiativen, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-suederbrarup.de/aktuelles/zukunftswaerme-fuer-suederbrarup-west-jetzt-letzte-chance-zur-beteiligung",
+        "finding": "Gelesen: Fernwärmeprojekt Süderbrarup West sammelt Absichtserklärungen (Frist 31.12.2025); für Haushalte ohne Anschluss wird ein Dienstleistungsmodell mit Wärmepumpen im Großeinkauf erwogen — kein Zuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Gelesen (19.09.2026): Kreisseite gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ aus dem Zuständigkeitsfinder wieder — PV-Balkon-Anlage max. 200 €, Programm „bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023“; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.2117.1&object=tx,3333.2",
+        "finding": "Gelesen mit Wohnort Süderbrarup: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ — keine Balkonkraftwerk-Förderung für diesen Ort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suederbrarup.de/vergabebekanntmachungen",
+        "disposition": "reviewed",
+        "reason": "Vergabebekanntmachungen öffentlicher Aufträge, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/vergabebekanntmachungen"
+      },
+      {
+        "url": "amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen",
+        "disposition": "reviewed",
+        "reason": "Schülerfahrkarten, kein Förderbezug.",
+        "evidenceUrl": "https://www.amt-suederbrarup.de/buergerservice/anliegen/busfahrkarten-fuer-schuelerinnen"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wagersrott gehört zum Amt Süderbrarup (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes findet nur Bauleitplanung, Quartierskonzept, Fernwärmeplanung und kommunale Projekte; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder, und der Zuständigkeitsfinder nennt für den Ort keine Balkonkraftwerk-Förderung. Stand 19.09.2026."
   }
 ]
