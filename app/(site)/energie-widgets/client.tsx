@@ -237,7 +237,7 @@ const SECTIONS: WidgetSection[] = [
     id: "gemeinde-solar",
     label: "Solaranlagen einer Gemeinde",
     intro:
-      "Der Anlagenbestand einer einzelnen Gemeinde aus dem Marktstammdatenregister — Anlagen, Leistung und Leistung je Einwohner. Für Kommunen zum Einbetten auf der eigenen Website. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas.",
+      "Der Anlagenbestand einer einzelnen Gemeinde aus dem Marktstammdatenregister — Anlagen, Leistung und Leistung je Einwohner. Für Kommunen zum Einbetten auf der eigenen Website. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Energie-Atlas.",
     attribution: {
       path: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
       text: "Solaranlagen in Höchberg · Solar Check",
@@ -251,7 +251,7 @@ const SECTIONS: WidgetSection[] = [
     id: "gemeinde-erneuerbare",
     label: "Erneuerbare Leistung einer Gemeinde",
     intro:
-      "Die installierte erneuerbare Leistung einer Gemeinde nach Technologie (Solar, Wind, Biomasse, Wasserkraft) aus dem Marktstammdatenregister — als Donut. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas.",
+      "Die installierte erneuerbare Leistung einer Gemeinde nach Technologie (Solar, Wind, Biomasse, Wasserkraft) aus dem Marktstammdatenregister — als Donut. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Energie-Atlas.",
     attribution: {
       path: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
       text: "Erneuerbare Leistung in Höchberg · Solar Check",
@@ -265,7 +265,7 @@ const SECTIONS: WidgetSection[] = [
     id: "gemeinde-solarleistung",
     label: "Solarleistung einer Gemeinde (simuliert)",
     intro:
-      "Der Tagesverlauf der Solarleistung des Gemeinde-Bestands, simuliert aus dem heutigen Wetter am Standort — kein Messwert, aber standortgenau. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas.",
+      "Der Tagesverlauf der Solarleistung des Gemeinde-Bestands, simuliert aus dem heutigen Wetter am Standort — kein Messwert, aber standortgenau. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Energie-Atlas.",
     attribution: {
       path: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
       text: "Solarleistung in Höchberg · Solar Check",
@@ -404,7 +404,7 @@ function mitGemeinde(
       // "Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde …" —
       // der Satz stimmt nicht mehr, wenn die eigene Gemeinde drinsteht.
       intro: ersetze(s.intro).replace(
-        / Hier als Beispiel [^.;]+; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas\./,
+        / Hier als Beispiel [^.;]+; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Energie-Atlas\./,
         ` Hier mit den Zahlen von ${anzeige}.`,
       ),
       // AUCH DER LINK, nicht nur der Text: Sonst verlinkt eine Kommune unter

@@ -1,4 +1,4 @@
-// Ranking-Seiten des Solar-Atlas: die Ranglisten, die es bisher nur im Fenster
+// Ranking-Seiten des Energie-Atlas: die Ranglisten, die es bisher nur im Fenster
 // auf der Gemeindeseite gab, als eigene Adressen.
 //
 // Warum überhaupt (Entscheidung 28.07.2026): Ein Rang, den man nur in einem

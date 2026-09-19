@@ -15,7 +15,7 @@ import type { Segment } from "./mastr-data";
 
 export type BestandSegmentZeile = {
   segment: Exclude<Segment, "n/a">;
-  /** Wie das Segment auf der Seite heißt. Gleiche Wörter wie im Solar-Atlas. */
+  /** Wie das Segment auf der Seite heißt. Gleiche Wörter wie im Energie-Atlas. */
   label: string;
   /** Was in dieses Segment fällt — die Einordnung stammt aus dem Register. */
   erklaerung: string;

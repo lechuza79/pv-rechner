@@ -44,7 +44,7 @@ describe("Vertrauens-Leiste", () => {
     });
   });
 
-  // Die Hervorhebung wird per Textsuche gesetzt (components/TrustBar → MitBetonung).
+  // Die Hervorhebung wird per Textsuche gesetzt (früher components/TrustBar → MitBetonung; die neue Leiste in lib/site-fuss.ts betont nicht).
   // Trifft sie nicht, verschwindet sie stumm: Der Satz steht dann unbetont da,
   // niemandem fällt es auf, und die Absicht ist weg.
   describe("Hervorhebung", () => {

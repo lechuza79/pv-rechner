@@ -323,7 +323,7 @@ export const DATA_SOURCES = {
     note: "Preisszenarien zum GModG",
   },
   /**
-   * Administrative boundaries for the Solar-Atlas map (Bundesländer, Kreise, Gemeinden).
+   * Administrative boundaries for the Energie-Atlas map (Bundesländer, Kreise, Gemeinden).
    *
    * Der Quellenvermerk ist hier nicht frei formulierbar: Das BKG gibt ihn auf
    * der VG250-Produktseite wörtlich vor —

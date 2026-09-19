@@ -157,6 +157,9 @@ export function WidgetFooter({
   onEmbed,
   narrow = false,
   compact = false,
+  actionSize,
+  secondaryActions = false,
+  surface,
 }: {
   widget: WidgetDef;
   chartExport: Pick<
@@ -197,6 +200,9 @@ export function WidgetFooter({
    * aufklappt. Alles darüber bleibt die Knopfreihe (Widget-Konvention).
    */
   compact?: boolean;
+  actionSize?: number;
+  secondaryActions?: boolean;
+  surface?: string;
 }) {
   const [citeOpen, setCiteOpen] = useState(false);
   const copy =
@@ -234,7 +240,7 @@ export function WidgetFooter({
   const ctaZiel = !rahmen.imIframe ? undefined : rahmen.hostPfad ? "_top" : "_blank";
 
   return (
-    <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: 14 }}>
+    <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: 14, ...(surface ? { background: surface, padding: "12px 16px", borderRadius: v("--radius-md") } : {}) }}>
       <div
         style={{
           display: "flex",
@@ -277,7 +283,8 @@ export function WidgetFooter({
             <ChartActionBar
               variant={compact ? "menu" : "bar"}
               menuUp={compact}
-              size={compact ? 26 : 28}
+              size={actionSize ?? (compact ? 26 : 28)}
+              secondary={secondaryActions}
               showDownload={widget.exportable !== false}
               onDownload={chartExport.downloadPng}
               onDownloadVideo={chartExport.downloadVideo}

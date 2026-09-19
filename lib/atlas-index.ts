@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { releaseFreigegeben } from "./release-plan";
 
-// Gestufte Index-Freischaltung des Solar-Atlas (Plan: docs/atlas-index-wellen.md).
+// Gestufte Index-Freischaltung des Energie-Atlas (Plan: docs/atlas-index-wellen.md).
 // Solange eine Ebene hier nicht freigeschaltet ist, bleibt sie noindex (Pilot) und
 // steht nicht in der Sitemap. So kippen wir nicht ~11.000 dünne Seiten auf einmal
 // in den Index. Ausrollen = diese Datei ändern + deployen.

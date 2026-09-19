@@ -1,0 +1,1 @@
+import"./chunk-SQE76S5B.js";var o={homepage:{assets:{moonTextureUrl:"/hero-system/moon-lroc-1k.jpg"},layout:{panels:"3d",foreground:"branch",foregroundOverlay:!0},quality:"auto",motion:!0},municipality:{assets:{moonTextureUrl:"/hero-system/moon-lroc-1k.jpg"},layout:{panels:"3d",foreground:"branch",foregroundOverlay:!1},quality:"auto",motion:!0}};export{o as heroInstances};

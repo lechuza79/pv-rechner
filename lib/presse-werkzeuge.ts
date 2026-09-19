@@ -77,7 +77,7 @@ export const WERKZEUGE: Werkzeug[] = [
   },
   {
     schluessel: "atlas",
-    name: "Solar-Atlas",
+    name: "Energie-Atlas",
     pfad: "/solar-atlas",
     leistet:
       "zeigt Bestand und Zubau je Gemeinde und Landkreis aus dem Anlagenregister, mit Datenstand an jeder Zahl",
@@ -157,7 +157,7 @@ export function werkzeugVon(schluessel: string): Werkzeug | undefined {
  * Der Text ist Überschrift plus Analyse — also das, was jemand beim Lesen
  * festgehalten hat. Ein Werkzeug, dessen Wörter darin nirgends auftauchen, ist
  * ein Befund und kein Grenzfall: Genau so wurde einem Beitrag über die
- * Einspeisevergütung der Solar-Atlas angeboten.
+ * Einspeisevergütung der Energie-Atlas angeboten.
  *
  * `widgets` ist ausgenommen — ein einbettbares Diagramm passt zu jedem Thema,
  * das wir überhaupt führen, und eine Wortprüfung wäre dort eine Scheingenauigkeit.

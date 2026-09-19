@@ -197,8 +197,8 @@ function RaceCard({
   const FARBE_A = v(kamera.farbe), FARBE_B = v(anderer.farbe);
   const [t, setT] = useState(0);
   const [spielt, setSpielt] = useState(false);
-  const [narrow, setNarrow] = useState(false);
-  const [showCredit, setShowCredit] = useState(false);
+  const [plotWidth, setPlotWidth] = useState(640);
+  const narrow = plotWidth <= 560;
   const [ruhig, setRuhig] = useState(false);
   const gestartet = useRef(false);
   // Sprung zu einem Ereignis: Das Chart gleitet in gut einer halben Sekunde
@@ -237,15 +237,20 @@ function RaceCard({
   useEffect(() => { setVideoKann(videoFormat() !== null); }, []);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width:560px)");
-    const on = () => setNarrow(mq.matches);
-    on();
-    mq.addEventListener("change", on);
+    // Match SVG units to CSS pixels so labels never scale with the card.
+    const svg = svgRef.current;
+    const measure = () => {
+      const width = svg?.getBoundingClientRect().width;
+      if (width && width > 0) setPlotWidth(width);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    if (svg) observer.observe(svg);
     const rm = window.matchMedia("(prefers-reduced-motion: reduce)");
     const onRm = () => setRuhig(rm.matches);
     onRm();
     rm.addEventListener("change", onRm);
-    return () => { mq.removeEventListener("change", on); rm.removeEventListener("change", onRm); };
+    return () => { observer.disconnect(); rm.removeEventListener("change", onRm); };
   }, []);
 
   // Von selbst loslaufen, wenn die Karte zum ersten Mal sichtbar wird — einmal.
@@ -316,7 +321,7 @@ function RaceCard({
     });
 
   // ── Mitlaufende Achsen: x vom Start bis heute, y als Kamera auf Läufer A ──
-  const W = narrow ? 320 : 640, H = mini ? (narrow ? 200 : 240) : narrow ? 260 : 340;
+  const W = plotWidth, H = mini ? (narrow ? 200 : 240) : narrow ? 260 : 340;
   // Mini: kein Platz für Achsenzahlen nötig — das Raster allein bleibt.
   const P = mini ? { t: 12, r: 12, b: 12, l: 12 } : { t: 18, r: narrow ? 10 : 12, b: 28, l: narrow ? 58 : 56 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
@@ -398,7 +403,7 @@ function RaceCard({
   const knopf: React.CSSProperties = {
     display: "inline-flex", alignItems: "center", justifyContent: "center",
     width: 32, height: 32, padding: 0, borderRadius: "50%", flexShrink: 0, boxSizing: "border-box",
-    border: `1px solid ${v("--color-border")}`, background: v("--color-bg"), color: v("--color-accent"),
+    border: `1px solid ${v("--color-border")}`, background: v("--color-bg"), color: v("--color-text-primary"),
     cursor: "pointer",
   };
   // Die Kante steht nur am Chart-Bereich (Chart, Spur, Ereignis-Box), nicht am
@@ -440,7 +445,7 @@ function RaceCard({
         style={{
           flexShrink: 0, width: 32, height: 32, padding: 0, boxSizing: "border-box", borderRadius: "50%",
           border: `1px solid ${v("--color-border")}`, background: v("--color-bg"),
-          color: aus ? v("--color-text-muted") : v("--color-accent"), fontSize: v("--font-size-h3"), lineHeight: 1,
+          color: aus ? v("--color-text-muted") : v("--color-text-primary"), fontSize: v("--font-size-h3"), lineHeight: 1,
           cursor: aus ? "default" : "pointer", opacity: aus ? 0.4 : 1, display: "inline-flex", alignItems: "center", justifyContent: "center",
         }}
       >
@@ -502,9 +507,6 @@ function RaceCard({
   const karte = (
     <div
       ref={(el) => { (chartRef as { current: HTMLDivElement | null }).current = el; hostRef.current = el; }}
-      onMouseEnter={() => setShowCredit(true)}
-      onMouseLeave={() => setShowCredit(false)}
-      onFocusCapture={() => setShowCredit(true)}
       style={{
         position: "relative",
         background: v("--color-bg"),
@@ -519,7 +521,18 @@ function RaceCard({
       {!mini && <div style={{ fontSize: v("--font-size-h2"), fontWeight: 800, lineHeight: 1.2, color: v("--color-text-primary"), marginBottom: space.md }}>
         {widget.title}{" "}
         <span style={{ display: "inline-block", verticalAlign: "middle", fontSize: v("--font-size-body"), fontWeight: 400 }}>
-          <InfoTooltip title={titelHilfe.title} ariaLabel={titelHilfe.ariaLabel}>{titelHilfe.inhalt}</InfoTooltip>
+          <InfoTooltip title="Berechnung & Quellen" ariaLabel="Berechnung und Quellen" size={16}>
+            <div style={{ display: "grid", gap: 12 }}>
+              <div><strong>{titelHilfe.title}</strong>{titelHilfe.inhalt}</div>
+              <div><strong style={{ display: "block", marginBottom: 4 }}>{zeitraumHilfe.title}</strong>{zeitraumHilfe.inhalt}</div>
+              <div><strong>Quellen</strong>
+                {widget.sources.map((source) => <div key={source.name}>
+                  <a href={source.url} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>{sourceLabel(source)}</a>
+                </div>)}
+                {quellenStand && <div>Stand: {quellenStand}</div>}
+              </div>
+            </div>
+          </InfoTooltip>
         </span>
       </div>}
 
@@ -531,7 +544,6 @@ function RaceCard({
           <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1.3, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap", minWidth: `${zeitraum(datumVon(T).jahr).length}ch`, display: "inline-block" }}>
             {zeitraum(tag === 0 ? startJahr : datum.jahr)}
           </span>
-          {!mini && <InfoTooltip title={zeitraumHilfe.title} ariaLabel={zeitraumHilfe.ariaLabel}>{zeitraumHilfe.inhalt}</InfoTooltip>}
         </span>
         {/* Legende: die Spitzen tragen nur Zahlen, die Zuordnung braucht einen
             Namen. Im Bild kommt sie aus dem Bild-Fuß. */}
@@ -547,9 +559,9 @@ function RaceCard({
 
       {/* Die Quellen-Kante steht am Chart-Bereich, nicht über die Fußzeile
           hinaus: dieser Rahmen trägt sie und lässt ihr rechts Platz. */}
-      <div style={{ position: "relative", paddingRight: mini ? 0 : SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
+      <div style={{ position: "relative", paddingRight: mini || onsite ? 0 : SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
       <ExportBox>
-        <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
+        <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: H, display: "block" }} role="img"
           aria-label={ariaLabel(stand, kA[tag], kB[tag])}>
           {/* Achsenzahlen blenden ein, wenn sie erscheinen: Jede Marke ist per key ein
               eigenes Element und wird beim Auftauchen neu gemountet — die Animation
@@ -561,7 +573,7 @@ function RaceCard({
             <g key={val} className="kr-neu">
               <line x1={P.l} x2={P.l + cW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
               {!mini && (
-                <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+                <text x={P.l - 6} y={yL(val) + 3} textAnchor="end" fontSize={fsPx("--font-size-small")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
                   {yLabels[i]}
                 </text>
               )}
@@ -623,7 +635,7 @@ function RaceCard({
           ))}
         </svg>
       </ExportBox>
-      {!mini && <WidgetSourceEdge widget={widget} visible={!onsite || showCredit} stand={quellenStand} spalten={kantenSpalten} />}
+      {!mini && !onsite && <WidgetSourceEdge widget={widget} stand={quellenStand} spalten={kantenSpalten} />}
       </div>
 
       {mini ? (
@@ -644,7 +656,7 @@ function RaceCard({
             Derselbe rechte Rand wie das Chart, damit die Punkte über den
             Chart-Tagen stehen; die Quellen-Kante steht nur neben dem Chart. */}
         <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: space.md }}>
-          <div style={{ position: "relative", height: 32, marginRight: SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
+          <div style={{ position: "relative", height: 32, marginRight: onsite ? 0 : SOURCE_EDGE_WIDTH * kantenSpalten + space.sm }}>
             <div style={{ position: "absolute", top: 15, left: `${(P.l / W) * 100}%`, width: `${(cW / W) * 100}%`, height: 2, background: v("--color-border") }} />
             {sichtbareEreignisse.map((e) => {
               const aktiv = e === aktivesEreignis;
@@ -713,7 +725,6 @@ function RaceCard({
           style={{ flex: 1, minWidth: 0 }}
         />
       </div>
-      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ borderTop: `1px solid ${v("--color-border")}`, marginTop: space.lg }} />
 
       {/* Im Bild: der eingestellte Stand steht schon im Kopf; hier nur der
           Hinweis, dass das Bild einen Zwischenstand und ein Zeitfenster zeigt. */}
@@ -724,6 +735,9 @@ function RaceCard({
       </ExportOnly>
 
       <WidgetFooter
+        surface={toenung}
+        actionSize={32}
+        secondaryActions
         widget={widget}
         chartExport={{ downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare, downloadVideo: videoKann ? downloadVideo : undefined, isRecording: aufnahme !== null }}
         onsite={onsite}

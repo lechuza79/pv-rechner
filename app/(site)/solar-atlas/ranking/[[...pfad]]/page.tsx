@@ -313,10 +313,10 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
 
   // KRUEMELSPUR UEBER DAS GEBIET, nicht ueber die Kategorie: Eine Rangliste ist
   // eine Ansicht auf ein Gebiet ("Zubau im Landkreis München"), keine eigene
-  // Ebene neben dem Atlas. Vorher lief sie ueber "Solar-Atlas > Rankings > …"
+  // Ebene neben dem Atlas. Vorher lief sie ueber "Energie-Atlas > Rankings > …"
   // und widersprach damit dem Menue, in dem beide gleichrangig standen.
   const crumbs: Crumb[] = [
-    { label: "Solar-Atlas", href: "/solar-atlas" },
+    { label: "Energie-Atlas", href: "/solar-atlas" },
     ...d.gebiet.map((_, i) => ({
       label: i === 0 ? bundeslandByAgs(region.region_id.slice(0, 2))?.name ?? d.gebiet[0] : region.name,
       href: `/solar-atlas/${d.gebiet.slice(0, i + 1).join("/")}`,
@@ -684,7 +684,7 @@ function Uebersicht() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <Breadcrumb items={[{ label: "Solar-Atlas", href: "/solar-atlas" }, { label: "Rankings" }]} />
+        <Breadcrumb items={[{ label: "Energie-Atlas", href: "/solar-atlas" }, { label: "Rankings" }]} />
         <h1 style={S.h1}>Rankings der Städte und Gemeinden</h1>
         <p style={S.intro}>
           {`Wer baut am meisten — gemessen an der Einwohnerzahl. ${GROESSENKLASSEN_WARUM} `}

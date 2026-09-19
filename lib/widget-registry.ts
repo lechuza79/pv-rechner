@@ -242,7 +242,7 @@ export const WIDGETS = {
     // sichtbar wird, gehört in den Credit, auch wenn sie nicht in jedem Zustand
     // gebraucht wird.
     sources: [DATA_SOURCES.mastr, DATA_SOURCES.bkg, DATA_SOURCES.energyCharts],
-    cta: { label: "Solar-Atlas öffnen", href: "/" },
+    cta: { label: "Energie-Atlas öffnen", href: "/" },
     exportable: false,
   },
   anlagenbestand: {

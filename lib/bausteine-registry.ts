@@ -391,6 +391,28 @@ export const BAUSTEINE: Baustein[] = [
       "Klebt am unteren Fensterrand. In einer Karte gezeigt läge sie über der ganzen Seite statt in ihr.",
   },
   {
+    datei: "components/SharedSiteHeader.tsx",
+    name: "SharedSiteHeader",
+    zweck: "Die gemeinsame Navigation für Startseite, Rechner und Ortsseiten mit denselben Zielen und mobilem Menü.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: ["Logo"],
+    keinBeispielWeil: "Der Seitenrahmen selbst; die lokale Startseitenvorschau zeigt seine Desktop- und Mobilansicht.",
+  },
+  {
+    datei: "components/DesignHeader.tsx",
+    name: "DesignHeader",
+    zweck:
+      "Die neutrale Kopfzeile der neuen Oberfläche aus der Heizungs-Sitzung: Logo und die vier Navigationsgruppen.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: ["Logo"],
+    keinBeispielWeil:
+      "Ein Seitenrahmen — ein zweiter in der Galerie wäre kein Beispiel, sondern ein Fehler.",
+  },
+  {
     datei: "components/Header.tsx",
     name: "Header",
     zweck: "Die Kopfzeile mit Navigation, Sonnenanzeige und Anmeldung.",
@@ -402,26 +424,16 @@ export const BAUSTEINE: Baustein[] = [
       "Der Seitenrahmen selbst — auf dieser Seite steht er bereits oben. Ein zweiter darin wäre kein Beispiel, sondern ein Fehler.",
   },
   {
-    datei: "components/Footer.tsx",
-    name: "Footer",
-    zweck: "Die Fußzeile — neben dem Themen-Einstieg der einzige Ort, an dem alle Bereiche verlinkt sind.",
+    datei: "components/SiteFuss.tsx",
+    name: "SiteFuss",
+    zweck:
+      "Vertrauensleiste und Fußzeile des neuen Designs auf jeder Seite — der einzige Ort, an dem alle Bereiche crawlbar verlinkt sind. Daten und Markup aus lib/site-fuss.ts, dieselbe Quelle wie Startseite und Simulation.",
     gruppe: "struktur",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["TrustBar"],
+    bestehtAus: ["Logo"],
     keinBeispielWeil:
-      "Wie die Kopfzeile ein Seitenrahmen; er steht auf jeder Seite genau einmal und enthielte sich hier selbst.",
-  },
-  {
-    datei: "components/TrustBar.tsx",
-    name: "TrustBar",
-    zweck: "Die vier Zusagen über der Fußzeile. Jede ist eine Werbeaussage und trägt ihren Beleg.",
-    gruppe: "struktur",
-    ebene: "baustein",
-    stand: "verbindlich",
-    bestehtAus: ["Icons", "Modal"],
-    keinBeispielWeil:
-      "Sitzt fest über der Fußzeile und trägt vier Werbeaussagen mit Belegen — ein Beispiel daneben ließe offen, welche der beiden Fassungen gilt.",
+      "Ein Seitenrahmen; er steht auf jeder Seite genau einmal und enthielte sich hier selbst.",
   },
   {
     datei: "components/Breadcrumb.tsx",

@@ -101,7 +101,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ? new Date(Math.max(...ratgeberDaten.map((d) => d.getTime())))
     : undefined;
 
-  // Solar-Atlas: nur die freigeschalteten Wellen (lib/atlas-index). Aktuell 0a =
+  // Energie-Atlas: nur die freigeschalteten Wellen (lib/atlas-index). Aktuell 0a =
   // Deutschland + Bundesländer; Landkreise (0b) waren am 27.07.2026 zwei Stunden
   // frei und sind zurückgenommen, Gemeinden folgen gestaffelt. Der Kreis-Zweig
   // unten bleibt trotzdem stehen: Er hing beim ersten Anlauf an der Freischaltung

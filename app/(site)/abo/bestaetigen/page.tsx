@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import AboErgebnis from "../_ergebnis";
+import AboErgebnis, { ABO_KNOPF_STIL } from "../_ergebnis";
 import { pruefeBestaetigung } from "../../../../lib/abo-token";
 import { aboBestaetigen } from "../../../../lib/gemeinde-abo";
 import { atlasPathForRegionId } from "../../../../lib/atlas";
@@ -14,8 +14,7 @@ import { ABO_BESTAETIGT_PARAM } from "../../../../lib/abo-bestaetigt";
 // jeder Aufruf ist einmalig, und ein Suchergebnis „Anmeldung bestätigt" wäre
 // für niemanden von Nutzen.
 //
-// DYNAMISCH, kein Zwischenspeicher: Die Seite schreibt beim Aufruf in die
-// Datenbank. Eine zwischengespeicherte Fassung würde die Bestätigung beim
+// DYNAMISCH, kein Zwischenspeicher: Der Knopf schreibt in die Datenbank. Eine zwischengespeicherte Fassung würde die Bestätigung beim
 // zweiten Besucher gar nicht erst ausführen und ihm die Bestätigung eines
 // fremden Abos zeigen.
 export const dynamic = "force-dynamic";
@@ -25,8 +24,26 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function Seite(props: { searchParams: Promise<{ t?: string }> }) {
-  const { t } = await props.searchParams;
+// OPENING THE LINK CONFIRMS NOTHING — only the press of the button does.
+// Mail scanners in company and council mailboxes open links on their own; a
+// confirmation they trigger is not a person's consent (legal review 18.09.).
+async function bestaetigen(formData: FormData) {
+  "use server";
+  const t = String(formData.get("t") ?? "");
+  const zurueck = `/abo/bestaetigen?t=${encodeURIComponent(t)}`;
+  const befund = pruefeBestaetigung(t, Date.now());
+  if (!befund.ok) redirect(zurueck);
+  const ergebnis = await aboBestaetigen(befund.aboId, new Date().toISOString()).catch(() => null);
+  if (!ergebnis || !ergebnis.ok) redirect(`${zurueck}&fehler=1`);
+  // Back to the town page of the kind the person signed up on (see zielPfad).
+  const ziel = await zielPfad(ergebnis.abo.regionId, ergebnis.abo.quelle);
+  redirect(ziel ? `${ziel}?${ABO_BESTAETIGT_PARAM}=1` : `${zurueck}&fertig=1`);
+}
+
+export default async function Seite(props: {
+  searchParams: Promise<{ t?: string; fehler?: string; fertig?: string }>;
+}) {
+  const { t, fehler, fertig } = await props.searchParams;
   const befund = pruefeBestaetigung(t ?? "", Date.now());
 
   if (!befund.ok) {
@@ -48,41 +65,35 @@ export default async function Seite(props: { searchParams: Promise<{ t?: string 
     );
   }
 
-  const ergebnis = await aboBestaetigen(befund.aboId, new Date().toISOString());
-
-  if (!ergebnis.ok) {
+  if (fertig) {
+    // No resolvable town page (not released): the own receipt is the fallback.
     return (
       <AboErgebnis
-        titel="Das hat gerade nicht geklappt"
+        titel="Angemeldet"
         saetze={[
-          "Wir konnten die Anmeldung im Moment nicht bestätigen. Versuch es in ein paar Minuten noch einmal — der Link bleibt gültig.",
+          "Du bekommst jetzt eine Nachricht, wenn sich in deinem Ort etwas Nennenswertes tut.",
+          "Es kommt nur etwas, wenn es etwas zu berichten gibt. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
         ]}
       />
     );
   }
 
-  // ZURÜCK AUF DIE SEITE DES ORTS, nicht auf eine eigene Quittungsseite
-  // (Betreiber, 01.09.2026). Eine Seite, die nur „hat geklappt" sagt, ist eine
-  // Sackgasse: Wer gerade Meldungen zu einem Ort abonniert hat, will diesen Ort
-  // sehen, nicht einen Haken. Die Bestätigung erscheint dort an der Stelle, an
-  // der vorher der Anmeldeknopf stand.
-  //
-  // Und ZU DER GATTUNG, auf der er sich eingetragen hat: Wer über die
-  // Förderseite kam, interessiert sich für Zuschüsse und nicht für den
-  // Anlagenbestand. Beide Seiten tragen denselben Ortsnamen; die Quittung auf
-  // der falschen abzusetzen wäre die Sorte Fehler, die niemand meldet.
-  const ziel = await zielPfad(ergebnis.abo.regionId, ergebnis.abo.quelle);
-  if (ziel) redirect(`${ziel}?${ABO_BESTAETIGT_PARAM}=1`);
-
-  // Kein Ziel auflösbar (Ort ohne freigeschaltete Seite): Dann bleibt die
-  // eigene Quittung — sie ist die Rückfallebene, nicht der Normalfall.
   return (
     <AboErgebnis
-      titel="Angemeldet"
+      titel={fehler ? "Das hat gerade nicht geklappt" : "Noch ein Klick"}
       saetze={[
-        "Du bekommst jetzt eine Nachricht, wenn sich in deinem Ort etwas Nennenswertes tut.",
-        "Es kommt nur etwas, wenn es etwas zu berichten gibt. Abmelden kannst du dich mit einem Klick am Fuß jeder Mail.",
+        fehler
+          ? "Wir konnten die Anmeldung im Moment nicht bestätigen. Versuch es in ein paar Minuten noch einmal, der Link bleibt 48 Stunden gültig."
+          : "Bestätige hier, dass du die Meldungen bekommen möchtest. Erst dann schicken wir dir etwas.",
       ]}
+      aktion={
+        <form action={bestaetigen}>
+          <input type="hidden" name="t" value={t ?? ""} />
+          <button type="submit" style={ABO_KNOPF_STIL}>
+            Ja, Meldungen bekommen
+          </button>
+        </form>
+      }
     />
   );
 }

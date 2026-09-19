@@ -7,6 +7,7 @@ import {
   kernzahlen,
   reiter,
   abschnitte,
+  abschnittKoepfe,
   editierbareWerte,
   wertSetzen,
 } from "./ergebnis";
@@ -218,7 +219,7 @@ for (const erg of ERGEBNISSE) {
       // erstbesten — der Läufer prüfte dann etwas anderes, als er meldete.
       for (const [i, a] of liste.entries()) {
         if (a.offen) continue;
-        const kopf = page.locator("button[aria-expanded]:visible").nth(i);
+        const kopf = abschnittKoepfe(page).nth(i);
         if ((await kopf.count()) === 0) continue;
         await kopf.click();
         const zustand = await kopf.getAttribute("aria-expanded");

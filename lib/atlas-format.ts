@@ -1,4 +1,4 @@
-// Anzeige-Regeln des Solar-Atlas: Einheiten und Regionsnamen.
+// Anzeige-Regeln des Energie-Atlas: Einheiten und Regionsnamen.
 //
 // Bewusst ohne Datenbank- oder Next-Importe, damit Server-Seiten, Client-
 // Komponenten und Embed-Widgets dieselben Funktionen benutzen können. Genau das

@@ -1,4 +1,4 @@
-// Rechnerische Wirkungs-Werte des Solar-Atlas: vermiedenes CO₂ und der Wert
+// Rechnerische Wirkungs-Werte des Energie-Atlas: vermiedenes CO₂ und der Wert
 // des erzeugten Solarstroms je Region.
 //
 // Beides sind MODELLWERTE, keine Messwerte — die Oberflächen sagen das dazu.

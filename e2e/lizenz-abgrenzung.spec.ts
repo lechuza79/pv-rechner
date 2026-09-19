@@ -9,7 +9,7 @@ import { test, expect } from "@playwright/test";
 // Warum gerade diese Sätze: Die Lizenzseite gibt CC BY 4.0, und diese Lizenz zieht
 // das Datenbankherstellerrecht automatisch mit hinein — für alles, worauf wir sie
 // anwenden. Bis zum 17.08.2026 stand in der Aufzählung "unsere Auswertungen im
-// Solar-Atlas", also die aggregierten Zahlen selbst und nicht bloß ihre
+// Energie-Atlas", also die aggregierten Zahlen selbst und nicht bloß ihre
 // Darstellung. Wer das zurückdreht, verschenkt den Bestand erneut, ohne es zu
 // merken: Die Seite sieht danach genauso aus.
 //
@@ -31,9 +31,9 @@ test.describe("Lizenz: Abgrenzung zwischen Darstellung und Datenbestand", () => 
     // Die entschärfte Formulierung steht da…
     expect(text).toMatch(/Darstellung unserer Auswertungen/);
     // …und die alte, die den Datenbestand mitgab, ist weg. Der Wortlaut war
-    // "unsere Auswertungen im Solar-Atlas und in den Datengeschichten," als
+    // "unsere Auswertungen im Energie-Atlas und in den Datengeschichten," als
     // eigener Aufzählungspunkt.
-    expect(text).not.toMatch(/^\s*unsere Auswertungen im Solar-Atlas/m);
+    expect(text).not.toMatch(/^\s*unsere Auswertungen im Energie-Atlas/m);
 
     // Die Aufzählung ist abschließend formuliert. "alles, was wir selbst erstellt
     // haben" war der Satz, der die Datenbestände miterfasste.

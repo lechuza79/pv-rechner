@@ -119,7 +119,7 @@ export interface Recommendation {
 
 // Gewichteter Einspeise-Mischsatz für Anlagen über der 10-kWp-Schwelle.
 // Wohnt seit 17.08.2026 in feedin-config.ts (Leaf-Modul), damit auch der
-// Solar-Atlas ihn benutzen kann, ohne den halben Rechner in sein Client-Bundle
+// Energie-Atlas ihn benutzen kann, ohne den halben Rechner in sein Client-Bundle
 // zu ziehen. Hier re-exportiert, weil der Invarianz-Test ihn gegen
 // calcWeightedFeedIn (calc.ts) nagelt — dieselbe EEG-Formel, kein Drift.
 export { effectiveFeedInCtPerKwh };

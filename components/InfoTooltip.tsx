@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { v } from "../lib/theme";
 import { IconHelpCircle } from "./Icons";
@@ -91,6 +91,28 @@ export default function InfoTooltip({
     maxHeight: 0,
   });
   const tooltipId = useId();
+  const [portalTheme, setPortalTheme] = useState<CSSProperties>({});
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const keepOpen = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpen(true);
+  };
+  const delayedClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpen(false), 180);
+  };
+  useEffect(() => () => { if (closeTimer.current) clearTimeout(closeTimer.current); }, []);
+
+  // Portals leave their themed ancestor. Carry its resolved tokens with them.
+  useLayoutEffect(() => {
+    if (!open || !triggerRef.current) return;
+    const computed = getComputedStyle(triggerRef.current);
+    const tokens: Record<string, string> = {};
+    for (const name of Array.from(computed)) {
+      if (name.startsWith("--")) tokens[name] = computed.getPropertyValue(name);
+    }
+    setPortalTheme(tokens as CSSProperties);
+  }, [open]);
 
   useEffect(() => setMounted(true), []);
 
@@ -129,12 +151,15 @@ export default function InfoTooltip({
     left = Math.max(EDGE, Math.min(left, vw - width - EDGE));
 
     setPos({ top, left, width, maxHeight });
-  }, [open]);
+  }, [open, portalTheme]);
 
   // Close on outside click, scroll, resize, or Escape.
   useEffect(() => {
     if (!open) return;
-    const close = () => setOpen(false);
+    const close = (event: Event) => {
+      if (event.target instanceof Node && tooltipRef.current?.contains(event.target)) return;
+      setOpen(false);
+    };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
@@ -165,13 +190,13 @@ export default function InfoTooltip({
         {...(label || trigger ? {} : { [EXPORT_IGNORE_ATTR]: "" })}
         aria-label={ariaLabel}
         aria-describedby={open ? tooltipId : undefined}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        onBlur={() => setOpen(false)}
+        onMouseEnter={keepOpen}
+        onMouseLeave={delayedClose}
+        onFocus={keepOpen}
+        onBlur={delayedClose}
         onClick={(e) => {
           e.preventDefault();
-          setOpen((o) => !o);
+          keepOpen();
         }}
         style={
           trigger
@@ -230,7 +255,13 @@ export default function InfoTooltip({
             ref={tooltipRef}
             id={tooltipId}
             role="tooltip"
+            onMouseEnter={keepOpen}
+            onMouseLeave={delayedClose}
+            onFocus={keepOpen}
+            onBlur={delayedClose}
             style={{
+              ...portalTheme,
+              boxSizing: "border-box",
               position: "fixed",
               top: pos.top,
               left: pos.left,
