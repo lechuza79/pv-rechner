@@ -9,7 +9,7 @@ body[data-lab-accent] .hs-guides:before{--splash-mask:url('/design-lab/splash-oc
 body[data-lab-accent] .hs-guides:after{--splash-mask:url('/design-lab/splash-blue-web.svg');width:38%;height:340px;bottom:-150px;left:8%;transform:rotate(-23deg);opacity:calc(var(--lab-wash)*.22)}
 /* The color wash belongs to the light card background, behind the portrait. */
 body[data-lab-accent] .hs-person-section>.hs-wrap{position:relative;isolation:isolate}
-body[data-lab-accent] .hs-person-section>.hs-wrap:before{content:'';position:absolute;left:0;bottom:0;width:55%;height:100%;background:url('/design-lab/splash-color-web.svg') 35% 60%/120% auto no-repeat;opacity:.72;z-index:-1;pointer-events:none;border-radius:inherit}
+body[data-lab-accent] .hs-person-section>.hs-wrap:before{content:'';position:absolute;left:0;bottom:0;width:55%;height:100%;background:#d4ff24;mask:url('/design-lab/splash-color-web.svg') 35% 60%/120% auto no-repeat;opacity:.72;z-index:-1;pointer-events:none;border-radius:inherit}
 body[data-lab-splash=none] :is(.hs-tools,.hs-guides):before,body[data-lab-splash=none] :is(.hs-tools,.hs-guides):after,body[data-lab-splash=none] .hs-person-section>.hs-wrap:before{display:none}
 body[data-lab-splash=all] .hs-tools:before{left:-10%;width:100%}body[data-lab-splash=all] .hs-guides:before{right:-5%;width:90%}
 .lab-back{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:9999;border:1px solid #ffffff50;border-radius:50px;background:#142c30;color:#fff;padding:8px 18px;font:13px system-ui;text-decoration:none}

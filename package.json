@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "homepage:race": "node scripts/homepage-race-build.mjs",
     "prebuild": "node -e \"if(!process.env.VERCEL){require('fs').rmSync('.next',{recursive:true,force:true})}\"",
     "build": "next build",
     "start": "next start",
@@ -144,6 +145,7 @@
     "tsx": "^4.21.0",
     "typescript": "5.9.3",
     "unzipper": "^0.12.3",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "esbuild": "^0.27.7"
   }
 }

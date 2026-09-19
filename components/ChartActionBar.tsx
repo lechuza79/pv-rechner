@@ -58,6 +58,7 @@ export interface ChartActionBarProps {
   canNativeShare: boolean;
   /** Button edge length; the footer uses a slightly smaller size than pages. */
   size?: number;
+  secondary?: boolean;
   /**
    * "bar" (default) = the full button row (download + share dropdown + embed),
    * for wide widgets. "menu" = a single ⋯ button opening one dropdown with all
@@ -98,6 +99,7 @@ export default function ChartActionBar({
   isExporting,
   canNativeShare,
   size = 36,
+  secondary = false,
   variant = "bar",
   showDownload = true,
   menuUp = false,
@@ -157,7 +159,7 @@ export default function ChartActionBar({
     cursor: "pointer",
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border-accent")}`,
-    color: v("--color-accent"),
+    color: v(secondary ? "--color-text-primary" : "--color-accent"),
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

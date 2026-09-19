@@ -391,6 +391,16 @@ export const BAUSTEINE: Baustein[] = [
       "Klebt am unteren Fensterrand. In einer Karte gezeigt läge sie über der ganzen Seite statt in ihr.",
   },
   {
+    datei: "components/SharedSiteHeader.tsx",
+    name: "SharedSiteHeader",
+    zweck: "Die gemeinsame Navigation für Startseite, Rechner und Ortsseiten mit denselben Zielen und mobilem Menü.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: ["Logo"],
+    keinBeispielWeil: "Der Seitenrahmen selbst; die lokale Startseitenvorschau zeigt seine Desktop- und Mobilansicht.",
+  },
+  {
     datei: "components/DesignHeader.tsx",
     name: "DesignHeader",
     zweck:

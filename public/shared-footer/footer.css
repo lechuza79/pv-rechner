@@ -25,3 +25,16 @@
 
 /* Shared trust-link alignment and icon dimensions. */
 .sc-trust-more{display:inline-flex;align-items:center;gap:8px}.sc-trust-more svg{width:20px;height:20px;flex:none}
+
+/* Rules sit in the middle of the gutters, never on a text-column edge. */
+.sc-footer-wrap,.sc-trust-grid{max-width:var(--sc-layout-content,1000px)}
+.sc-footer-grid{position:relative;gap:36px 40px}
+.sc-footer-grid>section{position:relative;min-width:0}
+@media(min-width:851px){
+ .sc-footer .sc-footer-grid h2{min-height:3em}
+ .sc-footer-grid>section:not(:first-child)::before{content:'';position:absolute;left:-20px;top:0;bottom:0;width:1px;background:#aec4bd24}
+}
+@media(max-width:850px){
+ .sc-footer-grid{column-gap:40px;row-gap:40px}
+ .sc-footer-grid::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:#aec4bd24}
+}

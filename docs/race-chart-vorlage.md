@@ -109,3 +109,20 @@ zwar so, wie die Nachbar-Charts auf derselben Seite beschriften.
   Seite als eigenes Ergebnisfeld offenlegen (Muster `kostenJeJahr` in
   `lib/heatpump.ts`), mit Test, dass sie auf die Summen aufgehen — nie im
   Rennen nachbauen.
+
+## Responsive convention (2026-09-18)
+
+Chart geometry follows its own container, not the viewport. RaceChart observes
+its rendered plot width and uses that width as its SVG coordinate width: one
+SVG unit equals one CSS pixel. Text, strokes, markers and icons therefore keep
+their token sizes. Only the available data area grows. Full plots are 340px tall
+or 260px in containers up to 560px; mini plots are 240px/200px. Narrow containers
+also use short labels and stacked controls, even on wide desktop pages.
+
+Do not enlarge a fixed 640px viewBox, transform:scale a widget, or override all
+SVG text from a page stylesheet. Test the same widget in a narrow card and a
+wide section, including resize after mount. Preserve export legibility.
+
+The static homepage uses the same source via `npm run homepage:race`. Commit
+its generated race-dist entry and chunks together with source changes. The
+entry and shims now belong to the project; do not rebuild from the old package.
