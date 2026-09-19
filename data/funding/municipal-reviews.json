@@ -25765,5 +25765,595 @@
     ],
     "outcome": "keine-passende-foerderung",
     "conclusion": "Obere Warnow gehört zum Amt Parchimer Umland (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Volltextsuche der Amtsseite findet zu Photovoltaik und Solar nur Bauleitpläne für Freiflächen-Solarparks, sonst LED-Beleuchtung der Gemeinden, LEADER-Regionalförderung, die Härtefallhilfe 2023 und eine Kleinkläranlagen-Förderung von 2008. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076011",
+    "name": "Blankenberg",
+    "checkedAt": "2026-09-19T02:35:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ssl.de Volltextsuche (Volltext + Schlagworte): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie, Richtlinie, Satzung, Anlage",
+      "Gelesen: Förderprojekte, Flurneuordnung Warnow I, Aktuelles und Nachrichten, Bekanntmachungen, Satzungsseite Blankenberg",
+      "Websuche: Sternberger Seenlandschaft Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Förderprojekte“ des Amtes — EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden (u. a. Sanierung Sportplatz Sternberg 2026, Dachsanierung Schulsporthalle Brüel 2026); kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Flurneuordnungsverfahren Warnow I (Zaschendorf), angeordnet 2014 durch das Staatliche Amt für Landwirtschaft und Umwelt — Bodenordnung, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-ssl.de/classes/fts/rest/search/?criteria=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Suche mit Volltext und Schlagworten): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Zuschuss, Wärmepumpe, Speicher ohne Treffer; Förderung/Förderprogramm nur Förderprojekte-Seite, Flurneuordnung und Öffnungszeiten; Klimaschutz/Energie nur Förderprojekte und Nachrichtenseite; Richtlinie nur Ausschreibungen, Bekanntmachungen, Datenschutz. Gegenprobe „Sternberg“: 62 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ssl.de/aktuelles-und-nachrichten/index.html",
+        "finding": "Im Original gelesen: Klimaschutz-/Energiebezug nur EFRE-Landesförderung für LED-Straßenbeleuchtung der Gemeinde Dabel (OT Holzendorf) und Energieausweis-Angaben in einer Immobilienausschreibung — Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/bekanntmachungen/index.html",
+        "finding": "Im Original gelesen: Bekanntmachungen ohne Förderrichtlinie für Energieanlagen; einziger Richtlinien-Treffer ist die FFH-Richtlinie (Geländebegehungen 2024)."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/satzungen/blankenberg.html",
+        "finding": "Satzungsseite der Gemeinde Blankenberg im Original gelesen (19.09.2026): Haupt-, Gebühren-, Steuer-, Haushalts- und Beitragssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ssl.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Seite „Förderprojekte“ des Amtes: EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden für kommunale Bauprojekte — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/index.html"
+      },
+      {
+        "url": "amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow",
+        "disposition": "reviewed",
+        "reason": "Flurneuordnungsverfahren Warnow I (Zaschendorf) des Staatlichen Amtes für Landwirtschaft und Umwelt — Bodenordnung, kein Förderprogramm für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Blankenberg gehört zum Amt Sternberger Seenlandschaft (Landkreis Ludwigslust-Parchim) und hat keine eigene Website. Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Satzungsseite der Gemeinde enthält keine Förderrichtlinie, die Volltextsuche der Amtsseite findet zu Photovoltaik, Solar, Balkonkraftwerk, Zuschuss und Wärmepumpe nichts, und die beiden erfassten Quellen betreffen EU-/Landeszuwendungen an Amt und Gemeinden sowie ein Flurneuordnungsverfahren. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076015",
+    "name": "Borkow",
+    "checkedAt": "2026-09-19T02:35:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ssl.de Volltextsuche (Volltext + Schlagworte): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie, Richtlinie, Satzung, Anlage",
+      "Gelesen: Förderprojekte, Flurneuordnung Warnow I, Aktuelles und Nachrichten, Bekanntmachungen, Satzungsseite Borkow",
+      "Websuche: Sternberger Seenlandschaft Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Förderprojekte“ des Amtes — EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden (u. a. Sanierung Sportplatz Sternberg 2026, Dachsanierung Schulsporthalle Brüel 2026); kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Flurneuordnungsverfahren Warnow I (Zaschendorf), angeordnet 2014 durch das Staatliche Amt für Landwirtschaft und Umwelt — Bodenordnung, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-ssl.de/classes/fts/rest/search/?criteria=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Suche mit Volltext und Schlagworten): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Zuschuss, Wärmepumpe, Speicher ohne Treffer; Förderung/Förderprogramm nur Förderprojekte-Seite, Flurneuordnung und Öffnungszeiten; Klimaschutz/Energie nur Förderprojekte und Nachrichtenseite; Richtlinie nur Ausschreibungen, Bekanntmachungen, Datenschutz. Gegenprobe „Sternberg“: 62 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ssl.de/aktuelles-und-nachrichten/index.html",
+        "finding": "Im Original gelesen: Klimaschutz-/Energiebezug nur EFRE-Landesförderung für LED-Straßenbeleuchtung der Gemeinde Dabel (OT Holzendorf) und Energieausweis-Angaben in einer Immobilienausschreibung — Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/bekanntmachungen/index.html",
+        "finding": "Im Original gelesen: Bekanntmachungen ohne Förderrichtlinie für Energieanlagen; einziger Richtlinien-Treffer ist die FFH-Richtlinie (Geländebegehungen 2024)."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/satzungen/borkow.html",
+        "finding": "Satzungsseite der Gemeinde Borkow im Original gelesen (19.09.2026): Haupt-, Gebühren-, Steuer-, Haushalts- und Beitragssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ssl.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Seite „Förderprojekte“ des Amtes: EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden für kommunale Bauprojekte — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/index.html"
+      },
+      {
+        "url": "amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow",
+        "disposition": "reviewed",
+        "reason": "Flurneuordnungsverfahren Warnow I (Zaschendorf) des Staatlichen Amtes für Landwirtschaft und Umwelt — Bodenordnung, kein Förderprogramm für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Borkow gehört zum Amt Sternberger Seenlandschaft (Landkreis Ludwigslust-Parchim) und hat keine eigene Website. Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Satzungsseite der Gemeinde enthält keine Förderrichtlinie, die Volltextsuche der Amtsseite findet zu Photovoltaik, Solar, Balkonkraftwerk, Zuschuss und Wärmepumpe nichts, und die beiden erfassten Quellen betreffen EU-/Landeszuwendungen an Amt und Gemeinden sowie ein Flurneuordnungsverfahren. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076026",
+    "name": "Dabel",
+    "checkedAt": "2026-09-19T02:35:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ssl.de Volltextsuche (Volltext + Schlagworte): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie, Richtlinie, Satzung, Anlage",
+      "Gelesen: Förderprojekte, Flurneuordnung Warnow I, Aktuelles und Nachrichten, Bekanntmachungen, Satzungsseite Dabel",
+      "Websuche: Sternberger Seenlandschaft Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Förderprojekte“ des Amtes — EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden (u. a. Sanierung Sportplatz Sternberg 2026, Dachsanierung Schulsporthalle Brüel 2026); kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Flurneuordnungsverfahren Warnow I (Zaschendorf), angeordnet 2014 durch das Staatliche Amt für Landwirtschaft und Umwelt — Bodenordnung, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-ssl.de/classes/fts/rest/search/?criteria=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Suche mit Volltext und Schlagworten): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Zuschuss, Wärmepumpe, Speicher ohne Treffer; Förderung/Förderprogramm nur Förderprojekte-Seite, Flurneuordnung und Öffnungszeiten; Klimaschutz/Energie nur Förderprojekte und Nachrichtenseite; Richtlinie nur Ausschreibungen, Bekanntmachungen, Datenschutz. Gegenprobe „Sternberg“: 62 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ssl.de/aktuelles-und-nachrichten/index.html",
+        "finding": "Im Original gelesen: Klimaschutz-/Energiebezug nur EFRE-Landesförderung für LED-Straßenbeleuchtung der Gemeinde Dabel (OT Holzendorf) und Energieausweis-Angaben in einer Immobilienausschreibung — Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/bekanntmachungen/index.html",
+        "finding": "Im Original gelesen: Bekanntmachungen ohne Förderrichtlinie für Energieanlagen; einziger Richtlinien-Treffer ist die FFH-Richtlinie (Geländebegehungen 2024)."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/satzungen/dabel.html",
+        "finding": "Satzungsseite der Gemeinde Dabel im Original gelesen (19.09.2026): Haupt-, Gebühren-, Steuer-, Haushalts- und Beitragssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ssl.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Seite „Förderprojekte“ des Amtes: EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden für kommunale Bauprojekte — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/index.html"
+      },
+      {
+        "url": "amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow",
+        "disposition": "reviewed",
+        "reason": "Flurneuordnungsverfahren Warnow I (Zaschendorf) des Staatlichen Amtes für Landwirtschaft und Umwelt — Bodenordnung, kein Förderprogramm für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dabel gehört zum Amt Sternberger Seenlandschaft (Landkreis Ludwigslust-Parchim) und hat keine eigene Website. Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Satzungsseite der Gemeinde enthält keine Förderrichtlinie, die Volltextsuche der Amtsseite findet zu Photovoltaik, Solar, Balkonkraftwerk, Zuschuss und Wärmepumpe nichts, und die beiden erfassten Quellen betreffen EU-/Landeszuwendungen an Amt und Gemeinden sowie ein Flurneuordnungsverfahren. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076062",
+    "name": "Hohen Pritz",
+    "checkedAt": "2026-09-19T02:35:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ssl.de Volltextsuche (Volltext + Schlagworte): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie, Richtlinie, Satzung, Anlage",
+      "Gelesen: Förderprojekte, Flurneuordnung Warnow I, Aktuelles und Nachrichten, Bekanntmachungen, Satzungsseite Hohen Pritz",
+      "Websuche: Sternberger Seenlandschaft Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Förderprojekte“ des Amtes — EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden (u. a. Sanierung Sportplatz Sternberg 2026, Dachsanierung Schulsporthalle Brüel 2026); kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Flurneuordnungsverfahren Warnow I (Zaschendorf), angeordnet 2014 durch das Staatliche Amt für Landwirtschaft und Umwelt — Bodenordnung, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-ssl.de/classes/fts/rest/search/?criteria=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Suche mit Volltext und Schlagworten): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Zuschuss, Wärmepumpe, Speicher ohne Treffer; Förderung/Förderprogramm nur Förderprojekte-Seite, Flurneuordnung und Öffnungszeiten; Klimaschutz/Energie nur Förderprojekte und Nachrichtenseite; Richtlinie nur Ausschreibungen, Bekanntmachungen, Datenschutz. Gegenprobe „Sternberg“: 62 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ssl.de/aktuelles-und-nachrichten/index.html",
+        "finding": "Im Original gelesen: Klimaschutz-/Energiebezug nur EFRE-Landesförderung für LED-Straßenbeleuchtung der Gemeinde Dabel (OT Holzendorf) und Energieausweis-Angaben in einer Immobilienausschreibung — Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/bekanntmachungen/index.html",
+        "finding": "Im Original gelesen: Bekanntmachungen ohne Förderrichtlinie für Energieanlagen; einziger Richtlinien-Treffer ist die FFH-Richtlinie (Geländebegehungen 2024)."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/satzungen/hohen-pritz.html",
+        "finding": "Satzungsseite der Gemeinde Hohen Pritz im Original gelesen (19.09.2026): Haupt-, Gebühren-, Steuer-, Haushalts- und Beitragssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ssl.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Seite „Förderprojekte“ des Amtes: EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden für kommunale Bauprojekte — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/index.html"
+      },
+      {
+        "url": "amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow",
+        "disposition": "reviewed",
+        "reason": "Flurneuordnungsverfahren Warnow I (Zaschendorf) des Staatlichen Amtes für Landwirtschaft und Umwelt — Bodenordnung, kein Förderprogramm für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hohen Pritz gehört zum Amt Sternberger Seenlandschaft (Landkreis Ludwigslust-Parchim) und hat keine eigene Website. Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Satzungsseite der Gemeinde enthält keine Förderrichtlinie, die Volltextsuche der Amtsseite findet zu Photovoltaik, Solar, Balkonkraftwerk, Zuschuss und Wärmepumpe nichts, und die beiden erfassten Quellen betreffen EU-/Landeszuwendungen an Amt und Gemeinden sowie ein Flurneuordnungsverfahren. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076072",
+    "name": "Kobrow",
+    "checkedAt": "2026-09-19T02:35:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ssl.de Volltextsuche (Volltext + Schlagworte): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie, Richtlinie, Satzung, Anlage",
+      "Gelesen: Förderprojekte, Flurneuordnung Warnow I, Aktuelles und Nachrichten, Bekanntmachungen, Satzungsseite Kobrow",
+      "Websuche: Sternberger Seenlandschaft Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Förderprojekte“ des Amtes — EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden (u. a. Sanierung Sportplatz Sternberg 2026, Dachsanierung Schulsporthalle Brüel 2026); kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Flurneuordnungsverfahren Warnow I (Zaschendorf), angeordnet 2014 durch das Staatliche Amt für Landwirtschaft und Umwelt — Bodenordnung, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-ssl.de/classes/fts/rest/search/?criteria=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Suche mit Volltext und Schlagworten): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Zuschuss, Wärmepumpe, Speicher ohne Treffer; Förderung/Förderprogramm nur Förderprojekte-Seite, Flurneuordnung und Öffnungszeiten; Klimaschutz/Energie nur Förderprojekte und Nachrichtenseite; Richtlinie nur Ausschreibungen, Bekanntmachungen, Datenschutz. Gegenprobe „Sternberg“: 62 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ssl.de/aktuelles-und-nachrichten/index.html",
+        "finding": "Im Original gelesen: Klimaschutz-/Energiebezug nur EFRE-Landesförderung für LED-Straßenbeleuchtung der Gemeinde Dabel (OT Holzendorf) und Energieausweis-Angaben in einer Immobilienausschreibung — Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/bekanntmachungen/index.html",
+        "finding": "Im Original gelesen: Bekanntmachungen ohne Förderrichtlinie für Energieanlagen; einziger Richtlinien-Treffer ist die FFH-Richtlinie (Geländebegehungen 2024)."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/satzungen/kobrow.html",
+        "finding": "Satzungsseite der Gemeinde Kobrow im Original gelesen (19.09.2026): Haupt-, Gebühren-, Steuer-, Haushalts- und Beitragssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ssl.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Seite „Förderprojekte“ des Amtes: EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden für kommunale Bauprojekte — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/index.html"
+      },
+      {
+        "url": "amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow",
+        "disposition": "reviewed",
+        "reason": "Flurneuordnungsverfahren Warnow I (Zaschendorf) des Staatlichen Amtes für Landwirtschaft und Umwelt — Bodenordnung, kein Förderprogramm für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kobrow gehört zum Amt Sternberger Seenlandschaft (Landkreis Ludwigslust-Parchim) und hat keine eigene Website. Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Satzungsseite der Gemeinde enthält keine Förderrichtlinie, die Volltextsuche der Amtsseite findet zu Photovoltaik, Solar, Balkonkraftwerk, Zuschuss und Wärmepumpe nichts, und die beiden erfassten Quellen betreffen EU-/Landeszuwendungen an Amt und Gemeinden sowie ein Flurneuordnungsverfahren. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076078",
+    "name": "Kuhlen-Wendorf",
+    "checkedAt": "2026-09-19T02:35:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ssl.de Volltextsuche (Volltext + Schlagworte): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie, Richtlinie, Satzung, Anlage",
+      "Gelesen: Förderprojekte, Flurneuordnung Warnow I, Aktuelles und Nachrichten, Bekanntmachungen, Satzungsseite Kuhlen-Wendorf",
+      "Websuche: Sternberger Seenlandschaft Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Förderprojekte“ des Amtes — EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden (u. a. Sanierung Sportplatz Sternberg 2026, Dachsanierung Schulsporthalle Brüel 2026); kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Flurneuordnungsverfahren Warnow I (Zaschendorf), angeordnet 2014 durch das Staatliche Amt für Landwirtschaft und Umwelt — Bodenordnung, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-ssl.de/classes/fts/rest/search/?criteria=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Suche mit Volltext und Schlagworten): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Zuschuss, Wärmepumpe, Speicher ohne Treffer; Förderung/Förderprogramm nur Förderprojekte-Seite, Flurneuordnung und Öffnungszeiten; Klimaschutz/Energie nur Förderprojekte und Nachrichtenseite; Richtlinie nur Ausschreibungen, Bekanntmachungen, Datenschutz. Gegenprobe „Sternberg“: 62 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ssl.de/aktuelles-und-nachrichten/index.html",
+        "finding": "Im Original gelesen: Klimaschutz-/Energiebezug nur EFRE-Landesförderung für LED-Straßenbeleuchtung der Gemeinde Dabel (OT Holzendorf) und Energieausweis-Angaben in einer Immobilienausschreibung — Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/bekanntmachungen/index.html",
+        "finding": "Im Original gelesen: Bekanntmachungen ohne Förderrichtlinie für Energieanlagen; einziger Richtlinien-Treffer ist die FFH-Richtlinie (Geländebegehungen 2024)."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/satzungen/kuhlen-wendorf.html",
+        "finding": "Satzungsseite der Gemeinde Kuhlen-Wendorf im Original gelesen (19.09.2026): Haupt-, Gebühren-, Steuer-, Haushalts- und Beitragssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ssl.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Seite „Förderprojekte“ des Amtes: EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden für kommunale Bauprojekte — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/index.html"
+      },
+      {
+        "url": "amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow",
+        "disposition": "reviewed",
+        "reason": "Flurneuordnungsverfahren Warnow I (Zaschendorf) des Staatlichen Amtes für Landwirtschaft und Umwelt — Bodenordnung, kein Förderprogramm für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kuhlen-Wendorf gehört zum Amt Sternberger Seenlandschaft (Landkreis Ludwigslust-Parchim) und hat keine eigene Website. Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Satzungsseite der Gemeinde enthält keine Förderrichtlinie, die Volltextsuche der Amtsseite findet zu Photovoltaik, Solar, Balkonkraftwerk, Zuschuss und Wärmepumpe nichts, und die beiden erfassten Quellen betreffen EU-/Landeszuwendungen an Amt und Gemeinden sowie ein Flurneuordnungsverfahren. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076101",
+    "name": "Mustin",
+    "checkedAt": "2026-09-19T02:35:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ssl.de Volltextsuche (Volltext + Schlagworte): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie, Richtlinie, Satzung, Anlage",
+      "Gelesen: Förderprojekte, Flurneuordnung Warnow I, Aktuelles und Nachrichten, Bekanntmachungen, Satzungsseite Mustin",
+      "Websuche: Sternberger Seenlandschaft Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Förderprojekte“ des Amtes — EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden (u. a. Sanierung Sportplatz Sternberg 2026, Dachsanierung Schulsporthalle Brüel 2026); kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Flurneuordnungsverfahren Warnow I (Zaschendorf), angeordnet 2014 durch das Staatliche Amt für Landwirtschaft und Umwelt — Bodenordnung, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-ssl.de/classes/fts/rest/search/?criteria=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Suche mit Volltext und Schlagworten): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Zuschuss, Wärmepumpe, Speicher ohne Treffer; Förderung/Förderprogramm nur Förderprojekte-Seite, Flurneuordnung und Öffnungszeiten; Klimaschutz/Energie nur Förderprojekte und Nachrichtenseite; Richtlinie nur Ausschreibungen, Bekanntmachungen, Datenschutz. Gegenprobe „Sternberg“: 62 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ssl.de/aktuelles-und-nachrichten/index.html",
+        "finding": "Im Original gelesen: Klimaschutz-/Energiebezug nur EFRE-Landesförderung für LED-Straßenbeleuchtung der Gemeinde Dabel (OT Holzendorf) und Energieausweis-Angaben in einer Immobilienausschreibung — Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/bekanntmachungen/index.html",
+        "finding": "Im Original gelesen: Bekanntmachungen ohne Förderrichtlinie für Energieanlagen; einziger Richtlinien-Treffer ist die FFH-Richtlinie (Geländebegehungen 2024)."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/satzungen/mustin.html",
+        "finding": "Satzungsseite der Gemeinde Mustin im Original gelesen (19.09.2026): Haupt-, Gebühren-, Steuer-, Haushalts- und Beitragssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ssl.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Seite „Förderprojekte“ des Amtes: EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden für kommunale Bauprojekte — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/index.html"
+      },
+      {
+        "url": "amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow",
+        "disposition": "reviewed",
+        "reason": "Flurneuordnungsverfahren Warnow I (Zaschendorf) des Staatlichen Amtes für Landwirtschaft und Umwelt — Bodenordnung, kein Förderprogramm für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mustin gehört zum Amt Sternberger Seenlandschaft (Landkreis Ludwigslust-Parchim) und hat keine eigene Website. Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Satzungsseite der Gemeinde enthält keine Förderrichtlinie, die Volltextsuche der Amtsseite findet zu Photovoltaik, Solar, Balkonkraftwerk, Zuschuss und Wärmepumpe nichts, und die beiden erfassten Quellen betreffen EU-/Landeszuwendungen an Amt und Gemeinden sowie ein Flurneuordnungsverfahren. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076148",
+    "name": "Weitendorf",
+    "checkedAt": "2026-09-19T02:35:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ssl.de Volltextsuche (Volltext + Schlagworte): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie, Richtlinie, Satzung, Anlage",
+      "Gelesen: Förderprojekte, Flurneuordnung Warnow I, Aktuelles und Nachrichten, Bekanntmachungen, Satzungsseite Weitendorf",
+      "Websuche: Sternberger Seenlandschaft Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Förderprojekte“ des Amtes — EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden (u. a. Sanierung Sportplatz Sternberg 2026, Dachsanierung Schulsporthalle Brüel 2026); kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Flurneuordnungsverfahren Warnow I (Zaschendorf), angeordnet 2014 durch das Staatliche Amt für Landwirtschaft und Umwelt — Bodenordnung, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-ssl.de/classes/fts/rest/search/?criteria=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Suche mit Volltext und Schlagworten): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Zuschuss, Wärmepumpe, Speicher ohne Treffer; Förderung/Förderprogramm nur Förderprojekte-Seite, Flurneuordnung und Öffnungszeiten; Klimaschutz/Energie nur Förderprojekte und Nachrichtenseite; Richtlinie nur Ausschreibungen, Bekanntmachungen, Datenschutz. Gegenprobe „Sternberg“: 62 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ssl.de/aktuelles-und-nachrichten/index.html",
+        "finding": "Im Original gelesen: Klimaschutz-/Energiebezug nur EFRE-Landesförderung für LED-Straßenbeleuchtung der Gemeinde Dabel (OT Holzendorf) und Energieausweis-Angaben in einer Immobilienausschreibung — Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/bekanntmachungen/index.html",
+        "finding": "Im Original gelesen: Bekanntmachungen ohne Förderrichtlinie für Energieanlagen; einziger Richtlinien-Treffer ist die FFH-Richtlinie (Geländebegehungen 2024)."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/satzungen/weitendorf.html",
+        "finding": "Satzungsseite der Gemeinde Weitendorf im Original gelesen (19.09.2026): Haupt-, Gebühren-, Steuer-, Haushalts- und Beitragssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ssl.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Seite „Förderprojekte“ des Amtes: EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden für kommunale Bauprojekte — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/index.html"
+      },
+      {
+        "url": "amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow",
+        "disposition": "reviewed",
+        "reason": "Flurneuordnungsverfahren Warnow I (Zaschendorf) des Staatlichen Amtes für Landwirtschaft und Umwelt — Bodenordnung, kein Förderprogramm für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weitendorf gehört zum Amt Sternberger Seenlandschaft (Landkreis Ludwigslust-Parchim) und hat keine eigene Website. Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Satzungsseite der Gemeinde enthält keine Förderrichtlinie, die Volltextsuche der Amtsseite findet zu Photovoltaik, Solar, Balkonkraftwerk, Zuschuss und Wärmepumpe nichts, und die beiden erfassten Quellen betreffen EU-/Landeszuwendungen an Amt und Gemeinden sowie ein Flurneuordnungsverfahren. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076155",
+    "name": "Witzin",
+    "checkedAt": "2026-09-19T02:35:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ssl.de Volltextsuche (Volltext + Schlagworte): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie, Richtlinie, Satzung, Anlage",
+      "Gelesen: Förderprojekte, Flurneuordnung Warnow I, Aktuelles und Nachrichten, Bekanntmachungen, Satzungsseite Witzin",
+      "Websuche: Sternberger Seenlandschaft Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Förderprojekte“ des Amtes — EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden (u. a. Sanierung Sportplatz Sternberg 2026, Dachsanierung Schulsporthalle Brüel 2026); kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Flurneuordnungsverfahren Warnow I (Zaschendorf), angeordnet 2014 durch das Staatliche Amt für Landwirtschaft und Umwelt — Bodenordnung, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-ssl.de/classes/fts/rest/search/?criteria=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Suche mit Volltext und Schlagworten): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Zuschuss, Wärmepumpe, Speicher ohne Treffer; Förderung/Förderprogramm nur Förderprojekte-Seite, Flurneuordnung und Öffnungszeiten; Klimaschutz/Energie nur Förderprojekte und Nachrichtenseite; Richtlinie nur Ausschreibungen, Bekanntmachungen, Datenschutz. Gegenprobe „Sternberg“: 62 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ssl.de/aktuelles-und-nachrichten/index.html",
+        "finding": "Im Original gelesen: Klimaschutz-/Energiebezug nur EFRE-Landesförderung für LED-Straßenbeleuchtung der Gemeinde Dabel (OT Holzendorf) und Energieausweis-Angaben in einer Immobilienausschreibung — Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/bekanntmachungen/index.html",
+        "finding": "Im Original gelesen: Bekanntmachungen ohne Förderrichtlinie für Energieanlagen; einziger Richtlinien-Treffer ist die FFH-Richtlinie (Geländebegehungen 2024)."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/satzungen/witzin.html",
+        "finding": "Satzungsseite der Gemeinde Witzin im Original gelesen (19.09.2026): Haupt-, Gebühren-, Steuer-, Haushalts- und Beitragssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ssl.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Seite „Förderprojekte“ des Amtes: EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden für kommunale Bauprojekte — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/index.html"
+      },
+      {
+        "url": "amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow",
+        "disposition": "reviewed",
+        "reason": "Flurneuordnungsverfahren Warnow I (Zaschendorf) des Staatlichen Amtes für Landwirtschaft und Umwelt — Bodenordnung, kein Förderprogramm für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Witzin gehört zum Amt Sternberger Seenlandschaft (Landkreis Ludwigslust-Parchim) und hat keine eigene Website. Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Satzungsseite der Gemeinde enthält keine Förderrichtlinie, die Volltextsuche der Amtsseite findet zu Photovoltaik, Solar, Balkonkraftwerk, Zuschuss und Wärmepumpe nichts, und die beiden erfassten Quellen betreffen EU-/Landeszuwendungen an Amt und Gemeinden sowie ein Flurneuordnungsverfahren. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
+  },
+  {
+    "regionId": "13076167",
+    "name": "Kloster Tempzin",
+    "checkedAt": "2026-09-19T02:35:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-ssl.de Volltextsuche (Volltext + Schlagworte): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Förderung, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz, Speicher, Energie, Richtlinie, Satzung, Anlage",
+      "Gelesen: Förderprojekte, Flurneuordnung Warnow I, Aktuelles und Nachrichten, Bekanntmachungen, Satzungsseite Kloster Tempzin",
+      "Websuche: Sternberger Seenlandschaft Gemeinde Förderung Balkonkraftwerk Photovoltaik Zuschuss (19.09.2026, nur allgemeine Ratgeber)",
+      "Landkreis Ludwigslust-Parchim: kein Kreisprogramm (Websuche 18.09.2026, Katalog ohne Kreisprogramm 13076)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Seite „Förderprojekte“ des Amtes — EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden (u. a. Sanierung Sportplatz Sternberg 2026, Dachsanierung Schulsporthalle Brüel 2026); kein Zuschussprogramm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html",
+        "finding": "Im Original gelesen (19.09.2026): Flurneuordnungsverfahren Warnow I (Zaschendorf), angeordnet 2014 durch das Staatliche Amt für Landwirtschaft und Umwelt — Bodenordnung, keine Energieförderung."
+      },
+      {
+        "url": "https://www.amt-ssl.de/classes/fts/rest/search/?criteria=Photovoltaik",
+        "finding": "Volltextsuche der Amtsseite (19.09.2026, Suche mit Volltext und Schlagworten): Photovoltaik, Solar, PV, Balkonkraftwerk, Balkon, Mini, Zuschuss, Wärmepumpe, Speicher ohne Treffer; Förderung/Förderprogramm nur Förderprojekte-Seite, Flurneuordnung und Öffnungszeiten; Klimaschutz/Energie nur Förderprojekte und Nachrichtenseite; Richtlinie nur Ausschreibungen, Bekanntmachungen, Datenschutz. Gegenprobe „Sternberg“: 62 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.amt-ssl.de/aktuelles-und-nachrichten/index.html",
+        "finding": "Im Original gelesen: Klimaschutz-/Energiebezug nur EFRE-Landesförderung für LED-Straßenbeleuchtung der Gemeinde Dabel (OT Holzendorf) und Energieausweis-Angaben in einer Immobilienausschreibung — Förderung der Gemeinde, kein Zuschuss an Private."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/bekanntmachungen/index.html",
+        "finding": "Im Original gelesen: Bekanntmachungen ohne Förderrichtlinie für Energieanlagen; einziger Richtlinien-Treffer ist die FFH-Richtlinie (Geländebegehungen 2024)."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog; ein Programm des Landkreises Ludwigslust-Parchim wurde nicht gefunden (Websuche 18.09.2026 und 19.09.2026)."
+      },
+      {
+        "url": "https://www.amt-ssl.de/ortsrecht/satzungen/kloster-tempzin.html",
+        "finding": "Satzungsseite der Gemeinde Kloster Tempzin im Original gelesen (19.09.2026): Haupt-, Gebühren-, Steuer-, Haushalts- und Beitragssatzungen, keine Förderrichtlinie für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ssl.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Seite „Förderprojekte“ des Amtes: EU-/ELER-/LEADER- und Landeszuwendungen an Amt und Gemeinden für kommunale Bauprojekte — kein Zuschussprogramm für Energieanlagen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/index.html"
+      },
+      {
+        "url": "amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow",
+        "disposition": "reviewed",
+        "reason": "Flurneuordnungsverfahren Warnow I (Zaschendorf) des Staatlichen Amtes für Landwirtschaft und Umwelt — Bodenordnung, kein Förderprogramm für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ssl.de/foerderprojekte/flurneuordnungsverfahren-warnow/index.html"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kloster Tempzin gehört zum Amt Sternberger Seenlandschaft (Landkreis Ludwigslust-Parchim) und hat keine eigene Website. Weder die Gemeinde noch das Amt führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen: Die Satzungsseite der Gemeinde enthält keine Förderrichtlinie, die Volltextsuche der Amtsseite findet zu Photovoltaik, Solar, Balkonkraftwerk, Zuschuss und Wärmepumpe nichts, und die beiden erfassten Quellen betreffen EU-/Landeszuwendungen an Amt und Gemeinden sowie ein Flurneuordnungsverfahren. Für Balkonkraftwerke gibt es das Landesprogramm des LFI M-V; ein Kreisprogramm wurde nicht gefunden (Stand 19.09.2026)."
   }
 ]
