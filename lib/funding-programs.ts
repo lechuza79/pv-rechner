@@ -4175,6 +4175,46 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // The form states no combination rule.
     combinableWith: null,
   },
+  "mehren-balkonkraftwerke": {
+    id: "mehren-balkonkraftwerke", name: "Richtlinie zur Förderung von Balkonkraftwerken in der Ortsgemeinde Mehren",
+    traeger: "Ortsgemeinde Mehren", level: "kommune", region: "Mehren (Landkreis Altenkirchen)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07132069",
+    url: "https://www.vg-altenkirchen-flammersfeld.de/leben-wohnen/bauen-immobilien-umwelt/klimaschutz-neu/foerderungen",
+    // NEU AUFGENOMMEN 19.09.2026. Found on the funding page of VG Altenkirchen-
+    // Flammersfeld while closing its municipalities; page and guideline read in
+    // full: https://www.vg-altenkirchen-flammersfeld.de/fileadmin/user_upload/
+    // Klimaschutz/F%C3%B6rderungen/OG_Mehren_Balkon_PV/Richtlinie_zur_F%C3%B6rderung_
+    // von_Balkonkraftwerken_in_der_Ortsgemeinde_Mehren_final.pdf
+    // Nr. 3.1: "Die Förderung beträgt 25 % der Brutto-Investitionssumme,
+    // maximal jedoch 100,00 Euro." Nr. 6: in force from 01.06.2024, no end date;
+    // the VG page still offers the guideline and the application form.
+    // STATUS "aktiv" rests only on the undated VG page still offering guideline
+    // and form; the pot of a 465-inhabitant village is unknown (Rhein-Zeitung
+    // 19.08.2024: 30 systems via a group order). Adversarial review 19.09.2026:
+    // entry confirmed, wording refined.
+    // Key: Mehren in Kreis Altenkirchen (07132069, 465 inhabitants) — NOT the
+    // larger Mehren in Vulkaneifel (07233042); checked in the municipality register.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-06-01",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Anschaffung von Solarmodulen, Wechselrichter, elektrischen Bauteilen, Halterungen und Befestigungen; Lohnkosten für Einbau und Netzanschluss nicht förderfähig",
+    maxFoerderung: "100 € je Wohneinheit",
+    balkonPercentOfCost: 0.25, balkonCap: 100,
+    rates: [
+      { label: "Balkonkraftwerk", value: "25 % der Brutto-Investition, höchstens 100 €" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümerinnen und Eigentümer von Wohngebäuden sowie Mieterinnen und Mieter in der Ortsgemeinde Mehren",
+      "Höchstens ein Balkonkraftwerk je Wohneinheit, in Ein-, Zwei- oder Mehrfamilienhäusern",
+      "Nur steckerfertige Balkonkraftwerke im gesetzlichen Rahmen an einem Wohngebäude oder einer Wohneinheit in Mehren",
+      "Nur neue Anlagen, installiert ab Inkrafttreten der Richtlinie am 01.06.2024; gebrauchte Balkonkraftwerke sind ausgeschlossen",
+      "Antrag innerhalb eines Jahres nach der Installation, sonst erlischt der Anspruch — bei der Verbandsgemeindeverwaltung Altenkirchen-Flammersfeld, mit Rechnung, Zahlungsnachweis und Nachweis der Anmeldung im Marktstammdatenregister",
+      "Bewilligung per Bescheid im Rahmen der Haushaltsmittel der Ortsgemeinde; kein Rechtsanspruch",
+    ],
+    // Nr. 4.4: "Eine Kumulierung mit anderen Förderprogrammen ist zulässig."
+    combinableWith: BUND,
+  },
   "cochem-zell-solarstromspeicher": {
     id: "cochem-zell-solarstromspeicher", name: "Förderprogramm Solarstromspeicher",
     traeger: "Landkreis Cochem-Zell", level: "landkreis", region: "Landkreis Cochem-Zell", bundesland: "Rheinland-Pfalz", agsCode: "07135",
