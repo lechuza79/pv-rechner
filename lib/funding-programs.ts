@@ -4123,6 +4123,98 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: null,
     foerdert: ["pv"],
   },
+  "ekm-altenkirchen": {
+    id: "ekm-altenkirchen", name: "Förderung der EKM Energieeffizienz Kommunal Mitgestalten, Regionalausschuss Altenkirchen",
+    traeger: "EKM Energieeffizienz Kommunal Mitgestalten GmbH", level: "landkreis", region: "Landkreis Altenkirchen", bundesland: "Rheinland-Pfalz", agsCode: "07132",
+    url: "https://www.ekm-energie.de/de/unsere-leistungen/foerderantrag-stellen",
+    // Read in full on 19 Sep 2026: application form (PDF id=526, file modified
+    // 31 Mar 2026, copy in docs/quellen/ekm-foerderantrag-2026-03.pdf), FAQ,
+    // "Fördergebiet", "Gesellschafter und Ansprechpartner", imprint (GmbH, HRB
+    // 15077 Kassel — older press releases still say gGmbH), press releases
+    // Altenkirchen 2024 and 2025.
+    //
+    // AREA. Private persons may apply if their "Stadt oder Gemeinde kommunaler
+    // Gesellschafter der EKM ist"; the shareholders are all six Verbands-
+    // gemeinden, which make up the whole county. BUT the EKM funds only where
+    // EAM Netz runs the electricity and/or gas grid ("In deren Netzgebieten ist
+    // eine Förderung durch die EKM leider nicht möglich"). The adversarial review
+    // (19 Sep 2026) matched EAM Netz's takeover lists against the county and
+    // found about 14 villages outside them (e.g. Betzdorf and Herdorf, Westnetz).
+    // Whether EAM runs the gas grid there is open, so no list of keys is claimed;
+    // the county key plus the grid condition is the honest area.
+    //
+    // SCOPE. The form excludes for private applicants: fossil heating
+    // (footnote 1: "ausgenommen Regionalausschüsse Main Kinzig und
+    // Altenkirchen"), heating conversions incl. heat pumps (footnote 2: "gilt
+    // nur im Regionalausschuss Nord"), PV, storage, balcony PV and e-mobility
+    // (footnote 3: "ausgenommen Regionalausschuss Main Kinzig"). So in
+    // Altenkirchen a heat pump is NOT EXCLUDED — which is not the same as
+    // funded: selection favours "besonders innovative Projekte", and no press
+    // release says what the private grants were for. Worded as such.
+    //
+    // NO RATE ON PURPOSE: the committee decides eligibility AND amount. Other
+    // EKM regions have different exclusions and are not entered here.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    foerdert: ["waermepumpe"],
+    coveredCosts: "Zuschuss nach Einzelfallentscheidung für Klimaschutz- und Effizienzmaßnahmen an Bestandsgebäuden; eine Heizungsumstellung (z. B. auf eine Wärmepumpe) ist im Regionalausschuss Altenkirchen nicht ausgeschlossen",
+    maxFoerderung: "Höhe entscheidet der Regionalausschuss im Einzelfall",
+    rates: [
+      { label: "Heizungsumstellung (z. B. Wärmepumpe)", value: "Kein fester Satz — ob und in welcher Höhe gefördert wird, entscheidet der Regionalausschuss aus dem verfügbaren Budget" },
+    ],
+    conditions: [
+      "Nur in Orten, in denen die EAM Netz das Strom- oder Gasnetz betreibt; in Netzgebieten anderer Betreiber ist laut EKM keine Förderung möglich",
+      "Antrag über die Stadt- bzw. Gemeindeverwaltung, die ihn mit Stellungnahme an die EKM weiterleitet; der Regionalausschuss Altenkirchen entscheidet über Förderwürdigkeit und Höhe, meist einmal im Jahr im Herbst",
+      "Ausgewählt werden laut Antrag „in erster Linie besonders innovative Projekte mit messbarem Erfolg, die ohne die Förderung nicht realisiert worden wären“; ein Rechtsanspruch besteht nicht",
+      "Für private Anträge im ganzen Kreis wurden zuletzt rund 7.000 € im Jahr bewilligt (2024: vier Anträge, 7.001 €; 2025: fünf Anträge, 7.167 €)",
+      "Beauftragung und Umsetzung (auch die Bestellung) erst nach Antragstellung und Erhalt der Eingangsbestätigung per Post; begonnene Maßnahmen werden nicht gefördert",
+      "Keine Förderung von Maßnahmen an Neubauten",
+      "Photovoltaikanlagen, Stromspeicher, Balkonkraftwerke und Elektromobilität (Wallbox, E-Auto, E-Bike) sind im Regionalausschuss Altenkirchen von der Förderung ausgeschlossen",
+      "Rechnung binnen drei Monaten nach Abschluss vorlegen, Abschläge auf Antrag möglich; Prüfung der Mittelverwendung bis drei Jahre, Rückforderung bei Zweckverfehlung",
+    ],
+    // The form states no combination rule.
+    combinableWith: null,
+  },
+  "mehren-balkonkraftwerke": {
+    id: "mehren-balkonkraftwerke", name: "Richtlinie zur Förderung von Balkonkraftwerken in der Ortsgemeinde Mehren",
+    traeger: "Ortsgemeinde Mehren", level: "kommune", region: "Mehren (Landkreis Altenkirchen)",
+    bundesland: "Rheinland-Pfalz", agsCode: "07132069",
+    url: "https://www.vg-altenkirchen-flammersfeld.de/leben-wohnen/bauen-immobilien-umwelt/klimaschutz-neu/foerderungen",
+    // NEU AUFGENOMMEN 19.09.2026. Found on the funding page of VG Altenkirchen-
+    // Flammersfeld while closing its municipalities; page and guideline read in
+    // full: https://www.vg-altenkirchen-flammersfeld.de/fileadmin/user_upload/
+    // Klimaschutz/F%C3%B6rderungen/OG_Mehren_Balkon_PV/Richtlinie_zur_F%C3%B6rderung_
+    // von_Balkonkraftwerken_in_der_Ortsgemeinde_Mehren_final.pdf
+    // Nr. 3.1: "Die Förderung beträgt 25 % der Brutto-Investitionssumme,
+    // maximal jedoch 100,00 Euro." Nr. 6: in force from 01.06.2024, no end date;
+    // the VG page still offers the guideline and the application form.
+    // STATUS "aktiv" rests only on the undated VG page still offering guideline
+    // and form; the pot of a 465-inhabitant village is unknown (Rhein-Zeitung
+    // 19.08.2024: 30 systems via a group order). Adversarial review 19.09.2026:
+    // entry confirmed, wording refined.
+    // Key: Mehren in Kreis Altenkirchen (07132069, 465 inhabitants) — NOT the
+    // larger Mehren in Vulkaneifel (07233042); checked in the municipality register.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-06-01",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Anschaffung von Solarmodulen, Wechselrichter, elektrischen Bauteilen, Halterungen und Befestigungen; Lohnkosten für Einbau und Netzanschluss nicht förderfähig",
+    maxFoerderung: "100 € je Wohneinheit",
+    balkonPercentOfCost: 0.25, balkonCap: 100,
+    rates: [
+      { label: "Balkonkraftwerk", value: "25 % der Brutto-Investition, höchstens 100 €" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümerinnen und Eigentümer von Wohngebäuden sowie Mieterinnen und Mieter in der Ortsgemeinde Mehren",
+      "Höchstens ein Balkonkraftwerk je Wohneinheit, in Ein-, Zwei- oder Mehrfamilienhäusern",
+      "Nur steckerfertige Balkonkraftwerke im gesetzlichen Rahmen an einem Wohngebäude oder einer Wohneinheit in Mehren",
+      "Nur neue Anlagen, installiert ab Inkrafttreten der Richtlinie am 01.06.2024; gebrauchte Balkonkraftwerke sind ausgeschlossen",
+      "Antrag innerhalb eines Jahres nach der Installation, sonst erlischt der Anspruch — bei der Verbandsgemeindeverwaltung Altenkirchen-Flammersfeld, mit Rechnung, Zahlungsnachweis und Nachweis der Anmeldung im Marktstammdatenregister",
+      "Bewilligung per Bescheid im Rahmen der Haushaltsmittel der Ortsgemeinde; kein Rechtsanspruch",
+    ],
+    // Nr. 4.4: "Eine Kumulierung mit anderen Förderprogrammen ist zulässig."
+    combinableWith: BUND,
+  },
   "cochem-zell-solarstromspeicher": {
     id: "cochem-zell-solarstromspeicher", name: "Förderprogramm Solarstromspeicher",
     traeger: "Landkreis Cochem-Zell", level: "landkreis", region: "Landkreis Cochem-Zell", bundesland: "Rheinland-Pfalz", agsCode: "07135",

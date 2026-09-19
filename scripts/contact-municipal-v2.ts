@@ -176,8 +176,15 @@ async function fetchPage(url: string, id: string) {
   if (wait) await new Promise(r => setTimeout(r, wait));
   lastHit.set(h, Date.now());
   const started = Date.now();
+  let timer: ReturnType<typeof setTimeout> | undefined;
   try {
-    const res = await fetch(url, { redirect: "follow", signal: AbortSignal.timeout(15000), headers: { "user-agent": UA, accept: "text/html,text/vcard;q=0.9" } });
+    // A referenced timer, not AbortSignal.timeout: that one is unref'd, so a request that
+    // never answers left an empty event loop and the process exited with code 0 mid-run
+    // (twice, 18.09.2026 — silently, looking like a finished batch).
+    const controller = new AbortController();
+    // It covers the body as well: a stalled body would otherwise hang the batch forever.
+    timer = setTimeout(() => controller.abort(new DOMException("timeout", "TimeoutError")), 20000);
+    const res = await fetch(url, { redirect: "follow", signal: controller.signal, headers: { "user-agent": UA, accept: "text/html,text/vcard;q=0.9" } });
     const type = res.headers.get("content-type") ?? "";
     if (!res.ok) return { url, status: res.status, ms: Date.now() - started, error: `HTTP ${res.status}` };
     let bytes = Buffer.from(await res.arrayBuffer());
@@ -200,6 +207,8 @@ async function fetchPage(url: string, id: string) {
     return { url, status: res.status, ms: Date.now() - started, error: null, finalUrl: res.url, digest };
   } catch (e: any) {
     return { url, status: 0, ms: Date.now() - started, error: e?.name === "TimeoutError" ? "timeout" : String(e?.cause?.code ?? e?.message ?? e) };
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -268,6 +277,12 @@ function summary() {
 }
 
 async function main() {
+  // Keep the process alive until the loop is really done; an early exit must never look like success.
+  const keepAlive = setInterval(() => {}, 60_000);
+  try { await run(); } finally { clearInterval(keepAlive); }
+}
+
+async function run() {
   mkdirSync(resolve(OUT, "sources"), { recursive: true, mode: 0o700 });
   if (mode === "summary") return summary();
   const ctx = loadContext();

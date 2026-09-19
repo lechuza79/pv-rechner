@@ -258,6 +258,13 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "altenkirchen-balkonkraftwerke",
   "altenkirchen-solarspeicher",
   "cochem-zell-solarstromspeicher",
+  // Added 19 Sep 2026: discretionary EKM grant without a rate; the committee
+  // decision, the start-after-receipt rule and the new-building exclusion have
+  // no test form.
+  "ekm-altenkirchen",
+  // Added 19 Sep 2026: guideline read in full; the one-year application window
+  // after installation and the one-per-dwelling limit have no test form.
+  "mehren-balkonkraftwerke",
   // Added 18 Sep 2026: exhausted VG programme, guideline read in full; the
   // test forms (application before contract, 3-/12-month deadlines) are missing.
   "vg-hachenburg-erneuerbare-energien",
