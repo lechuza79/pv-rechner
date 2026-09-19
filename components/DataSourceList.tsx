@@ -16,7 +16,7 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   // Stunden sind keine Echtzeit, und die Seite weiß es an anderer Stelle.
   energyCharts: "Strommix, Stromerzeugung und Grenzflüsse, stündlich aktualisiert",
   ember: "Ländervergleich: Zubau von Erneuerbaren und Atomkraft",
-  mastr: "Anlagenbestand in Deutschland (Solar-Atlas, Karten, Kennzahlen)",
+  mastr: "Anlagenbestand in Deutschland (Energie-Atlas, Karten, Kennzahlen)",
   nexGddp: "Klimaprojektion im Klimaanlagen-Rechner: wie stark die Kühlstunden in rund zwanzig Jahren zunehmen",
   era5Archive: "Rückblickende Wetterstunden der kommunalen Energiecharts — Sonne, Temperatur und Wind je Ort",
   iconD2Archive: "Live-Wetter, Live-Simulation und Solarleistung heute: Wolken, Sonne, Temperatur und Wind aus dem Wettermodell des Wetterdienstes",

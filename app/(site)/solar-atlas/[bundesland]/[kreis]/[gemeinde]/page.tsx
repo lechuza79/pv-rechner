@@ -444,7 +444,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
   });
 
   const crumbs: { label: string; href?: string }[] = [
-    { label: "Solar-Atlas", href: "/solar-atlas" },
+    { label: "Energie-Atlas", href: "/solar-atlas" },
     // In Berlin und Hamburg stünde der Name sonst dreimal hintereinander.
     ...(istStadtstaatRegion ? [] : [{ label: bl?.name ?? blAgs, href: `/solar-atlas/${params.bundesland}` }]),
     // Bei kreisfreien Städten stünde hier zweimal derselbe Name.

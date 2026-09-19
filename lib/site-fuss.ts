@@ -9,7 +9,7 @@
 //
 // Markup and class names are the design package's own (sc-trust, sc-footer,
 // public/shared-footer/footer.css); only the data behind them lives here:
-//   - the link groups are the package's groups, plus the Solar-Atlas state
+//   - the link groups are the package's groups, plus the Energie-Atlas state
 //     pages the old footer linked (released atlas levels, same rule as before);
 //   - the trust items come from lib/trust-signals.ts, never typed here — they
 //     are promises under § 5 UWG on every page and have exactly one source.
@@ -21,10 +21,12 @@ import { atlasLevelReleased } from "./atlas-index";
 export type FussLink = { href: string; label: string };
 export type FussGruppe = { titel: string; links: FussLink[] };
 
-/** State pages of the Solar-Atlas (released levels only, same rule as the old
- *  footer). Shown as a compact row under the columns, not as a fifth column. */
-export const FUSS_LAENDER: FussLink[] = atlasLevelReleased("bundesland")
-  ? BUNDESLAENDER.map((bl) => ({ href: `/solar-atlas/${slugify(bl.name)}`, label: bl.name }))
+/** State pages of the Energie-Atlas (released levels only, same rule as the old
+ *  footer). Shown centred under the columns, each with its outline faintly
+ *  behind the name — the outlines come from one cached sprite
+ *  (app/bundeslaender.svg), not inline: all sixteen are ~30 kB, on every page. */
+export const FUSS_LAENDER: (FussLink & { slug: string })[] = atlasLevelReleased("bundesland")
+  ? BUNDESLAENDER.map((bl) => ({ href: `/solar-atlas/${slugify(bl.name)}`, label: bl.name, slug: slugify(bl.name) }))
   : [];
 
 export const FUSS_GRUPPEN: FussGruppe[] = [
@@ -56,7 +58,7 @@ export const FUSS_GRUPPEN: FussGruppe[] = [
   {
     titel: "Atlas & Energiemonitor",
     links: [
-      { href: "/solar-atlas", label: "Solar-Atlas" },
+      { href: "/solar-atlas", label: "Energie-Atlas" },
       { href: "/strommix-deutschland", label: "Strommix Deutschland" },
       { href: "/atomstrom-import", label: "Atomstrom-Import" },
       { href: "/photovoltaik-bestand-deutschland", label: "Solaranlagen in Deutschland" },
@@ -116,7 +118,7 @@ export function fussInnenHtml(): string {
     `<p class="sc-footer-tagline">Dein Dach. Deine Energie.</p>` +
     `<nav class="sc-footer-grid" aria-label="Fußnavigation">${gruppen}</nav>` +
     (FUSS_LAENDER.length
-      ? `<nav class="sc-footer-laender" aria-label="Solar-Atlas nach Bundesland"><h2>Solar-Atlas nach Bundesland</h2><div>${FUSS_LAENDER.map((l) => `<a href="${esc(l.href)}">${esc(l.label)}</a>`).join("")}</div></nav>`
+      ? `<nav class="sc-footer-laender" aria-label="Energie-Atlas nach Bundesland"><h2>Energie-Atlas nach Bundesland</h2><div>${FUSS_LAENDER.map((l) => `<a href="${esc(l.href)}"><svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="/bundeslaender.svg#bl-${esc(l.slug)}"/></svg><span>${esc(l.label)}</span></a>`).join("")}</div></nav>`
       : "") +
     `<div class="sc-footer-legal"><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a></div>` +
     `<p class="sc-footer-disclaimer">Alle Berechnungen und Angaben sind unverbindliche Näherungswerte ohne Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit und stellen keine Rechts-, Steuer- oder Anlageberatung dar.</p>`

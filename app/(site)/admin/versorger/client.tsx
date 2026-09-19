@@ -452,7 +452,7 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
 
 /** Eine Kennzahl mit ihrer Einordnung.
  *
- *  Die Tendenz zeigt der BESTEHENDE Badge des Solar-Atlas (`TendTag`) — dort ist
+ *  Die Tendenz zeigt der BESTEHENDE Badge des Energie-Atlas (`TendTag`) — dort ist
  *  bereits entschieden, wie eine Abweichung aussieht: Vorzeichen statt Pfeil
  *  (der Knick der Pfeil-Icons wirkte unruhig), ein Ton je Richtung, Farben aus
  *  den semantischen Tokens. Ein eigenes Zeichen hier wäre eine zweite Antwort

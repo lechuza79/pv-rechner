@@ -45,6 +45,6 @@ export function RankStoryChart({story,compact=false}:{story:StoryConcept;compact
   })}</div>
   {highlights.length>rows.length&&<p className={styles.more}>{highlights.length-rows.length} weitere bemerkenswerte Platzierungen</p>}
   {!compact&&<a className={styles.rankLink} href={rankingHref}>Alle Platzierungen <IconArrowRight size={16}/></a>}
-  {!compact&&<footer>Quelle: Solar-Atlas · Marktstammdatenregister</footer>}
+  {!compact&&<footer>Quelle: Energie-Atlas · Marktstammdatenregister</footer>}
  </div>;
 }

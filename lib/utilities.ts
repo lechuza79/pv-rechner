@@ -534,7 +534,7 @@ export type Kennzahl = {
   anzeige: string;
   niveau: "hoch" | "mittel" | "niedrig" | null;
   /** Relativer Abstand zum Median (0,12 = +12 %) — genau das Format, das der
-   *  bestehende Tendenz-Badge des Solar-Atlas erwartet. Null, wenn es nichts zu
+   *  bestehende Tendenz-Badge des Energie-Atlas erwartet. Null, wenn es nichts zu
    *  vergleichen gibt. */
   abweichung: number | null;
   /** Woran gemessen wurde — gehört immer mit angezeigt. */

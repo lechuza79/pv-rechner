@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "../../../../lib/rate-limit";
 import { atlasPathForRegionId } from "../../../../lib/atlas";
 
-// AGS → canonical Solar-Atlas page. The homepage map links a Gemeinde here by
+// AGS → canonical Energie-Atlas page. The homepage map links a Gemeinde here by
 // its 8-digit AGS; the server resolves the slug path and redirects. This keeps
 // the ~11.000-entry slug table on the server instead of shipping it to every
 // browser, and gives the map a plain <a href> that also works without JS.

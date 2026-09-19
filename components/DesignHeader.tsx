@@ -29,7 +29,7 @@ export default function DesignHeader() {
     <button ref={toggle} className="sc-design-menu-toggle" aria-expanded={open} aria-controls="sc-design-design-navigation" onClick={() => setOpen(!open)}>{open ? 'Schließen ×' : 'Menü ☰'}</button>
     <nav id="sc-design-design-navigation" className={open ? 'is-open' : ''} aria-label="Hauptnavigation">
       {groups.map((group, i) => <div className="sc-design-nav-entry" key={group.title}>
-        {i === 3 && <Link className="sc-design-atlas-nav" href="/solar-atlas">Solar-Atlas</Link>}
+        {i === 3 && <Link className="sc-design-atlas-nav" href="/solar-atlas">Energie-Atlas</Link>}
         <details onToggle={event => { const active = event.currentTarget; if (active.open) ref.current?.querySelectorAll('details').forEach(item => { if (item !== active) item.open = false; }); }}>
           <summary>{group.title} <span aria-hidden="true">⌄</span></summary>
           <div className="sc-design-nav-panel">{group.links.map(([title, href]) => <Link key={href} href={href} aria-current={href === pathname ? 'page' : undefined} onClick={close}>{title}</Link>)}</div>

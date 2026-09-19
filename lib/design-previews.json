@@ -100,8 +100,8 @@
   },
   {
     "id": "atlas",
-    "title": "Solar-Atlas · aktueller Entwurf",
-    "group": "Solar-Atlas",
+    "title": "Energie-Atlas · aktueller Entwurf",
+    "group": "Energie-Atlas",
     "description": "Höchberg mit Wetter, Geschichten und Rangliste.",
     "service": "atlas",
     "path": "/atlas-design-preview/index.html?displayfont=montserrat-bold",
@@ -112,7 +112,7 @@
   {
     "id": "atlas-clicks",
     "title": "Atlas · Klickhinweise",
-    "group": "Solar-Atlas",
+    "group": "Energie-Atlas",
     "description": "Interaktionen und Hinweise im Vergleich.",
     "service": "atlas",
     "path": "/atlas-design-preview/klickhinweise.html",
@@ -122,8 +122,8 @@
   },
   {
     "id": "atlas-v2",
-    "title": "Solar-Atlas · Entwurf 02",
-    "group": "Solar-Atlas",
+    "title": "Energie-Atlas · Entwurf 02",
+    "group": "Energie-Atlas",
     "description": "Gespeicherter früherer Entwurf.",
     "service": "atlas-v2",
     "path": "/index.html",
@@ -133,8 +133,8 @@
   },
   {
     "id": "atlas-v3",
-    "title": "Solar-Atlas · Entwurf 03 (Snapshot)",
-    "group": "Solar-Atlas",
+    "title": "Energie-Atlas · Entwurf 03 (Snapshot)",
+    "group": "Energie-Atlas",
     "description": "Gespeicherter Entwurf, getrennt vom aktuellen Arbeitsstand.",
     "service": "atlas-v3",
     "path": "/index.html",
@@ -145,7 +145,7 @@
   {
     "id": "confetti",
     "title": "Platzierung · Konfetti",
-    "group": "Solar-Atlas",
+    "group": "Energie-Atlas",
     "description": "Drei Varianten; Kurzer Jubel mit Purple wurde freigegeben.",
     "service": "confetti",
     "path": "/",

@@ -50,7 +50,7 @@ export const GEWERKE: Gewerk[] = [
   { name: "Inhaltsseiten mit Redaktion und Suchmaschinen-Arbeit", menge: (_, z) => z.seiten, tage: 1, einheit: "Seiten" },
   { name: "Einbettbare Widgets mit Theming, Bildexport, Lizenz", menge: (_, z) => z.widgets, tage: 2.5, einheit: "Widgets" },
   { name: "Schnittstellen, Zwischenspeicher, Datenbank", menge: (_, z) => z.routen, tage: 0.7, einheit: "Routen" },
-  { name: "Solar-Atlas: Registerimport, Aggregation, Tempo", menge: null, tage: 40 },
+  { name: "Energie-Atlas: Registerimport, Aggregation, Tempo", menge: null, tage: 40 },
   { name: "Förderkatalog samt Such- und Prüfautomatik", menge: null, tage: 50 },
   { name: "Erhebung Kommunen, Fachbetriebe, Versorger und Versand", menge: null, tage: 40 },
   { name: "Redaktions- und Veröffentlichungssystem", menge: null, tage: 30 },

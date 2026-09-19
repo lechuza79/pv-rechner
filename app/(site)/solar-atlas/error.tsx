@@ -12,7 +12,7 @@ import { v } from "../../../lib/theme";
 export default function AtlasError({ error, reset }: { error: Error; reset: () => void }) {
   useEffect(() => {
     // Landet in den Server-/Vercel-Logs für die Fehlerauswertung.
-    console.error("Solar-Atlas error:", error);
+    console.error("Energie-Atlas error:", error);
   }, [error]);
 
   return (

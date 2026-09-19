@@ -181,7 +181,7 @@ async function AtlasBody({
   ]);
 
   const crumbs: Crumb[] = [
-    { label: "Solar-Atlas", href: "/solar-atlas" },
+    { label: "Energie-Atlas", href: "/solar-atlas" },
     ...ancestors
       .filter((a) => a.level !== "de")
       .map((a, i) => ({

@@ -124,7 +124,7 @@ export default function Client() {
             neuesten Mail.
           </p>
           <Link href="/solar-atlas" style={{ color: v("--color-accent") }}>
-            Zum Solar-Atlas
+            Zum Energie-Atlas
           </Link>
         </div>
       </main>

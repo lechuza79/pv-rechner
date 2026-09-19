@@ -1,4 +1,4 @@
-// Solar-Atlas data access: resolves /solar-atlas/<bundesland>/<kreis>/<gemeinde>
+// Energie-Atlas data access: resolves /solar-atlas/<bundesland>/<kreis>/<gemeinde>
 // to a region and assembles what a page needs.
 //
 // Two sources, cleanly split:

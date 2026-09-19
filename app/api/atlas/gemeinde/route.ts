@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import { rateLimit } from "../../../../lib/rate-limit";
 import { getRegionById } from "../../../../lib/atlas";
 
-// PLZ → Gemeinde. Resolves a postcode to the Solar-Atlas page for that place, so
+// PLZ → Gemeinde. Resolves a postcode to the Energie-Atlas page for that place, so
 // the client can remember one home Gemeinde without shipping the 933 KB lookup
 // table to every browser.
 //

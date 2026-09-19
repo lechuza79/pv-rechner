@@ -289,7 +289,7 @@ export function feedInEndIso(commissioningIso: string): string {
  * um mehrere Prozent zu schlecht — der Fehler wächst, je näher die Anlage an
  * der Schwelle liegt.
  *
- * Steht hier und nicht im Empfehlungs-Rechner, damit auch der Solar-Atlas die
+ * Steht hier und nicht im Empfehlungs-Rechner, damit auch der Energie-Atlas die
  * Formel benutzen kann, ohne dessen Abhängigkeiten zu erben. Der
  * Invarianz-Test in recommend.test.ts nagelt sie gegen `calcWeightedFeedIn`
  * (lib/calc.ts) — beide bilden dieselbe Vorschrift ab.

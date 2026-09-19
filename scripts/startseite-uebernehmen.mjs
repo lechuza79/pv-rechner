@@ -184,6 +184,16 @@ const PATCHES = [
     why: "Die Vertrauensleiste trägt die geprüften Zusagen aus lib/trust-signals.ts; das Skript rückt die serverseitige Leiste an ihren Platz, statt eigene Texte zu bauen.",
   },
   { datei: "homepage-study/story-dist/atlas-story-cards.js", ...DOMAIN_WEG },
+  // The atlas is called "Energie-Atlas" (operator, 19.09.2026). Optional: the
+  // race and story bundles are built from our own sources, which already carry
+  // the new name — once the package is rebuilt there is nothing left to replace.
+  ...["dynamic-hero/dist/test.js", "homepage-study/race-dist/direct-race.js", "homepage-study/story-dist/atlas-story-cards.js"].map((datei) => ({
+    datei,
+    from: /Solar-Atlas/g,
+    to: "Energie-Atlas",
+    optional: true,
+    why: "Der Atlas heißt Energie-Atlas.",
+  })),
 ];
 
 function lies(datei) {
@@ -192,6 +202,7 @@ function lies(datei) {
 function anwenden(text, p, wo) {
   if (p.from instanceof RegExp) {
     const n = (text.match(p.from) ?? []).length;
+    if (!n && p.optional) return text;
     if (!n) throw new Error(`Patch trifft nicht: ${wo} — ${p.why}`);
     return text.replace(p.from, p.to);
   }

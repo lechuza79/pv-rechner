@@ -1,6 +1,6 @@
 // ─── Was ein Freiflächen-Park je eingespeister Kilowattstunde erlöst ─────────
 //
-// WOFÜR: Der Solar-Atlas bewertet den Anlagenbestand einer Region je Anlagenart
+// WOFÜR: Der Energie-Atlas bewertet den Anlagenbestand einer Region je Anlagenart
 // (lib/atlas-impact.ts). Für Freiflächen stand dort der Marktwert Solar — also
 // das, was der Strom an der Börse bringt. Das ist der falsche Maßstab: Ein
 // Freiflächen-Park verkauft zwar an der Börse, bekommt aber zusätzlich die
@@ -152,7 +152,7 @@ export const FREIFLAECHE_QUELLE =
 
 // ─── Was ältere Freiflächen-Jahrgänge bekommen ──────────────────────────────
 //
-// WOFÜR: Der Solar-Atlas bewertet jeden Jahrgang mit dem Satz, den er wirklich
+// WOFÜR: Der Energie-Atlas bewertet jeden Jahrgang mit dem Satz, den er wirklich
 // bekommt. Für Dachanlagen gibt es dafür zwei Jahrgangs-Tabellen im Projekt
 // (feedin-archiv-alt, feedin-archiv); für Freiflächen fehlte die Mitte, und
 // jeder Park von 2012 bis heute wurde deshalb mit dem HEUTIGEN Zuschlagsniveau

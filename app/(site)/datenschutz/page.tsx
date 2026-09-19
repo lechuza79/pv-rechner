@@ -327,7 +327,7 @@ export default function DatenschutzPage() {
         </p>
 
         <p style={S.p}>
-          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong> und, falls du im Solar-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Dazu kommt das <strong>Farbschema</strong> (hell, dunkel oder automatisch) — dieser Eintrag entsteht bei jedem Besuch, auch wenn du nie eines ausgewählt hast, und hält dann schlicht die automatische Voreinstellung fest. Klickst du im Ergebnis auf „Speichern“, ohne angemeldet zu sein, wird die Berechnung außerdem vorgemerkt, bis du dem Anmeldelink folgst; folgst du ihm nie, bleibt sie liegen, bis du den Browser-Speicher löschst. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird für ortsbezogene Abfragen verwendet — Standort-Ertrag, Wetter- und Klimadaten, die Sonnenanzeige und die Suche nach Förderprogrammen für deinen Ort (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Solar-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
+          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong> und, falls du im Energie-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Dazu kommt das <strong>Farbschema</strong> (hell, dunkel oder automatisch) — dieser Eintrag entsteht bei jedem Besuch, auch wenn du nie eines ausgewählt hast, und hält dann schlicht die automatische Voreinstellung fest. Klickst du im Ergebnis auf „Speichern“, ohne angemeldet zu sein, wird die Berechnung außerdem vorgemerkt, bis du dem Anmeldelink folgst; folgst du ihm nie, bleibt sie liegen, bis du den Browser-Speicher löschst. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird für ortsbezogene Abfragen verwendet — Standort-Ertrag, Wetter- und Klimadaten, die Sonnenanzeige und die Suche nach Förderprogrammen für deinen Ort (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Energie-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
         </p>
 
         <h2 style={S.h2}>8. Standortgenaue Ertragsprognose</h2>
@@ -606,7 +606,7 @@ export default function DatenschutzPage() {
         <p style={S.p}>
           Dieselbe Abwehr läuft auf allen Schnittstellen, über die unsere Rechner
           Daten nachladen — Standort-Ertrag, Wetter- und Klimadaten, Förderprogramme,
-          Strommix und die Karten des Solar-Atlas. Auch dort merkt sich unser Server
+          Strommix und die Karten des Energie-Atlas. Auch dort merkt sich unser Server
           die IP-Adresse der anfragenden Verbindung kurzzeitig im Arbeitsspeicher,
           um die Zahl der Abrufe je Verbindung zu begrenzen. Das betrifft jeden
           Aufruf einer Seite mit nachgeladenen Daten, also auch dann, wenn du kein
@@ -799,7 +799,7 @@ export default function DatenschutzPage() {
             darzustellen. */}
         <h2 style={S.h2}>16. Meldungen zu einer Gemeinde (Abo)</h2>
         <p style={S.p}>
-          Auf den Gemeindeseiten im Solar-Atlas und auf den Förderseiten zu einer
+          Auf den Gemeindeseiten im Energie-Atlas und auf den Förderseiten zu einer
           Stadt oder Gemeinde kannst du dich für Meldungen zu einem Ort
           eintragen. Wir verarbeiten dafür deine{" "}
           <strong>E-Mail-Adresse</strong> und den <strong>Ort</strong>, den du
@@ -836,7 +836,7 @@ export default function DatenschutzPage() {
           betreffen.
         </p>
         <p style={S.p}>
-          Trägst du dich auf einer Ortsseite im Solar-Atlas ein, kannst du
+          Trägst du dich auf einer Ortsseite im Energie-Atlas ein, kannst du
           angeben, dass du{" "}
           <strong>für die Stadt- oder Gemeindeverwaltung arbeitest</strong>. Die
           Angabe ist freiwillig, wir prüfen sie nicht nach, und sie entscheidet

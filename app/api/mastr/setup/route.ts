@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
   });
   results.push({ step: "mastr_regions", status: e1 ? "error" : "ok", error: e1?.message });
 
-  // 1b. Migration to Gemeinde granularity (Solar-Atlas).
+  // 1b. Migration to Gemeinde granularity (Energie-Atlas).
   //     CREATE TABLE IF NOT EXISTS above is a no-op on an existing table, so the
   //     new level, columns and indexes are added explicitly and idempotently.
   //

@@ -730,11 +730,11 @@ export const globalStyles = `
     .trust-modal-liste li{flex-direction:column;gap:0}
     .trust-modal-rhythmus{text-align:left}
   }
-  /* KPI-Reihe des Solar-Atlas: sechs Kacheln nebeneinander, auf schmalen
+  /* KPI-Reihe des Energie-Atlas: sechs Kacheln nebeneinander, auf schmalen
      Schirmen ein Wisch-Slider (Embla). Der Umschaltpunkt steht hier UND als
      Embla-Breakpoint in AtlasKpiRow — beide bei 760px, sonst wischt der Desktop
      an einem Grid vorbei. */
-  /* KPI-Reihe des Solar-Atlas: sechs Kacheln nebeneinander, auf schmalen
+  /* KPI-Reihe des Energie-Atlas: sechs Kacheln nebeneinander, auf schmalen
      Schirmen eine wischbare Leiste (Bordmittel, keine Slider-Bibliothek). */
   /* Spaltenzahl als Variable: die Kennzahlen-Reihe hat sechs Kacheln, der
      Groessenklassen-Vergleich vier. Eine Regel mit --kpi-cols statt zwei

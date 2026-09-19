@@ -102,7 +102,7 @@ export default function AboErgebnis(o: {
             </Link>
           ) : (
             <Link href="/solar-atlas" style={S.cta}>
-              Zum Solar-Atlas
+              Zum Energie-Atlas
             </Link>
           )}
           <Link href="/" style={S.leise}>

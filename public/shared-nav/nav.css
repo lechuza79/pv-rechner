@@ -284,3 +284,8 @@
 }
 
 @media(max-width:1280px){.sc-nav-group>.sc-nav-panel{overflow:hidden}}
+/* React pages: same logo colours as the new homepage header. The homepage
+   gets them from header.css under html[data-sc-shell], which React pages do
+   not carry — without this the logo showed the old site's blue. */
+.sc-react-header .brand svg{--color-brand:var(--sc-brand-accent,var(--lab-accent,#d4ff24));--color-brand-deep:color-mix(in srgb,var(--sc-brand-accent,var(--lab-accent,#d4ff24)) 55%,#fff);--color-accent:#173b42;--color-text-faint:#4a675e}
+.sc-react-header .brand svg>path{fill:var(--color-accent)}

@@ -505,7 +505,7 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Sim
 
 ## Vertrauens-Leiste im Footer — BLOCKER
 
-Über dem Footer steht auf **jeder** (site)-Seite eine Leiste mit vier Zusagen (`components/TrustBar.tsx`). Damit ist jeder Satz darin eine Werbeaussage nach § 5 UWG auf der gesamten Site gleichzeitig — und keine davon ist im Browser als falsch erkennbar. **Die Aussagen stehen deshalb genau einmal im Code (`lib/trust-signals.ts`), jede mit ihrem Beleg**; Darstellung ist die Komponente, sonst nichts.
+Über der Fußzeile steht auf **jeder** Seite eine Leiste mit vier Zusagen (`lib/site-fuss.ts`, seit 19.09.2026 im neuen Design und dieselbe Quelle für React-Seiten, Startseite und Simulation). Damit ist jeder Satz darin eine Werbeaussage nach § 5 UWG auf der gesamten Site gleichzeitig — und keine davon ist im Browser als falsch erkennbar. **Die Aussagen stehen deshalb genau einmal im Code (`lib/trust-signals.ts`), jede mit ihrem Beleg**; Darstellung ist die Komponente, sonst nichts.
 
 **Was ein Punkt braucht, um überhaupt aufgenommen zu werden:** eine Stelle im Projekt, an der er nachprüfbar ist (Test, Datenschutzerklärung, Quellen-Register, Prüfstand) — benannt im Feld `beleg`. „Klingt gut" ist kein Beleg.
 

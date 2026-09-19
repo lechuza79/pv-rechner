@@ -223,7 +223,7 @@ export const WAECHTER: WaechterJob[] = [
   },
   {
     id: "solar-atlas-welle-monitor",
-    titel: "Solar-Atlas: Index-Wellen",
+    titel: "Energie-Atlas: Index-Wellen",
     zweck: "Prüft Indexierungsstatus und Sitemap-Frische und empfiehlt die nächste Freigabe-Welle.",
     art: "auftrag",
     rhythmus: "wöchentlich, montags",

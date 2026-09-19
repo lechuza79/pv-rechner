@@ -317,7 +317,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
               {atlasPfad ? (
                 <Link
                   href={atlasPfad}
-                  title={`Anlagenbestand in ${city.name} im Solar-Atlas`}
+                  title={`Anlagenbestand in ${city.name} im Energie-Atlas`}
                   style={{ color: "inherit", textDecorationColor: v("--color-border-accent"), textUnderlineOffset: 4 }}
                 >
                   {city.name}
@@ -569,7 +569,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                 den Ort gibt es bewusst nicht — die Gemeindeebene ist nicht
                 freigeschaltet, und ein Link ins Leere wäre schlimmer als keiner. */}
             <Link href={atlasPfad ?? `/solar-atlas/${params.bundesland}`} style={{ ...S.sekundaerKnopf, marginBottom: space.md }}>
-              {atlasPfad ? <>Alle Zahlen zu {city.name} im Solar-Atlas</> : <>Im Solar-Atlas {city.bundesland} vergleichen</>}
+              {atlasPfad ? <>Alle Zahlen zu {city.name} im Energie-Atlas</> : <>Im Energie-Atlas {city.bundesland} vergleichen</>}
               <IconArrowRight size={iconSizes.sm} />
             </Link>
             <div style={S.metricsGrid}>

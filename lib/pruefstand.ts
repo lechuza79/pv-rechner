@@ -241,7 +241,7 @@ export const PRUEFSTAND: PruefEintrag[] = [
     runbook: "scripts/marktwert-verify.md",
   },
   {
-    was: "Solar-Atlas: Zuschlagswerte der Freiflächen-Ausschreibungen",
+    was: "Energie-Atlas: Zuschlagswerte der Freiflächen-Ausschreibungen",
     feld: "FREIFLAECHE_GEPRUEFT_ISO",
     geprueftIso: FREIFLAECHE_GEPRUEFT_ISO,
     reviewBy: FREIFLAECHE_REVIEW_BY,

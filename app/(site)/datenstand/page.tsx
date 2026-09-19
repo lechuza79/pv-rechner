@@ -577,9 +577,9 @@ export default async function DatenstandPage() {
           source="Branchenübliche Konventionen · PVGIS (Photovoltaic Geographical Information System, EU JRC) · PLZ-Koordinaten: WZB plz_geocoord (Markus Konrad), Apache License 2.0"
         />
 
-        {/* ── Solar-Atlas & Karte ── */}
+        {/* ── Energie-Atlas & Karte ── */}
         <Section
-          title="Solar-Atlas & Karte"
+          title="Energie-Atlas & Karte"
           stand="Amtliche Register"
           intro="Der Bestand an Solaranlagen je Bundesland, Landkreis und Gemeinde stammt aus dem Marktstammdatenregister. Die Umrisse auf der Karte sind amtliche Verwaltungsgebiete, für das Web vereinfacht."
           rows={[

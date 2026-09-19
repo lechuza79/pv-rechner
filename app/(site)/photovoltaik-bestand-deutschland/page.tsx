@@ -174,7 +174,7 @@ export default async function BestandDeutschlandPage() {
           <Breadcrumb
             items={[
               { label: "Start", href: "/" },
-              { label: "Solar-Atlas", href: "/solar-atlas" },
+              { label: "Energie-Atlas", href: "/solar-atlas" },
               { label: "Solaranlagen in Deutschland" },
             ]}
             jsonLd
@@ -350,7 +350,7 @@ export default async function BestandDeutschlandPage() {
           <RelatedLinks
             currentPath="/photovoltaik-bestand-deutschland"
             links={[
-              { href: "/solar-atlas", label: "Solar-Atlas", desc: "Dieselben Registerdaten für deinen Ort: Anlagen, Leistung und Speicher je Gemeinde und Landkreis." },
+              { href: "/solar-atlas", label: "Energie-Atlas", desc: "Dieselben Registerdaten für deinen Ort: Anlagen, Leistung und Speicher je Gemeinde und Landkreis." },
               { href: "/photovoltaik-zubau-deutschland", label: "PV-Zubau seit 2000", desc: "Wie Einspeisevergütung und Strompreis die Ausbaukurve geformt haben — mit interaktivem Chart." },
               { href: "/balkonkraftwerk", label: "Balkonkraftwerk", desc: "Was ein Steckersolargerät bringt, was es kostet und was bei der Anmeldung zu tun ist." },
               { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Amortisation und Rendite für das eigene Dach — alle Annahmen sichtbar und anpassbar." },
