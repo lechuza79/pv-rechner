@@ -32784,5 +32784,1033 @@
     "sources": [],
     "outcome": "programme-geprueft",
     "conclusion": "Mehren (Verbandsgemeinde Altenkirchen-Flammersfeld, Landkreis Altenkirchen) fördert Balkonkraftwerke mit 25 % der Brutto-Investition, höchstens 100 € (Richtlinie seit 01.06.2024, ohne Enddatum; als Programm mehren-balkonkraftwerke aufgenommen). Dazu kommt die Ermessensförderung der EKM für Heizungsumstellungen (keine PV, Speicher oder Balkonkraftwerke; nur mit EAM-Netz). Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132018",
+    "name": "Daaden",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "daaden-herdorf.de: Seitenverzeichnis (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; Förderseite, Richtlinien und Energie-Pressemitteilungen gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "finding": "Förderseite der VG im Original gelesen (19.09.2026): „Daadener Land – Leben mitten im Dorf“ (Zuschuss bis 4.500 € für Bau/Sanierung nach Erwerb alter Bausubstanz; beteiligt Daaden, Derschen, Friedewald, Niederdreisbach, Nisterberg, Weitefeld), ISEK-Modernisierung in den Sanierungsgebieten Daaden und Weitefeld (20 %, höchstens 20.000 €), Innenstadt-Impulse (Kommunen) und Weiterleitung von EKM-Anträgen. Kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme/leben-mitten-im-dorf/foerderrichtlinien-og-derschen.pdf?cid=2cy",
+        "finding": "Richtlinien Derschen, Friedewald, Nisterberg, Weitefeld und Anträge Daaden, Niederdreisbach gelesen: Förderung 10 % der Bau-/Sanierungskosten nach Erwerb eines mindestens 50 Jahre alten Gebäudes bzw. einer Baulücke — Wohnraumaktivierung, kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert; gelesen: Gründung der Kommunale Energieprojekte AöR und der Westerwald/Sieg-Energie (kommunale Wind-/Freiflächenprojekte), Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.herdorf.de/staedtebaufoerderprogramm",
+        "finding": "Herdorf: Seite Städtebauförderung (Stadtentwicklung) und Meldung „Fördergerüst am Kreisel“ (Bergbau-Denkmal) gelesen — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: Wohnraum-, Städtebau- und Innenstadtförderung sowie EKM-Weiterleitung; kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Daaden gehört zur Verbandsgemeinde Daaden-Herdorf (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132019",
+    "name": "Derschen",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "daaden-herdorf.de: Seitenverzeichnis (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; Förderseite, Richtlinien und Energie-Pressemitteilungen gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "finding": "Förderseite der VG im Original gelesen (19.09.2026): „Daadener Land – Leben mitten im Dorf“ (Zuschuss bis 4.500 € für Bau/Sanierung nach Erwerb alter Bausubstanz; beteiligt Daaden, Derschen, Friedewald, Niederdreisbach, Nisterberg, Weitefeld), ISEK-Modernisierung in den Sanierungsgebieten Daaden und Weitefeld (20 %, höchstens 20.000 €), Innenstadt-Impulse (Kommunen) und Weiterleitung von EKM-Anträgen. Kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme/leben-mitten-im-dorf/foerderrichtlinien-og-derschen.pdf?cid=2cy",
+        "finding": "Richtlinien Derschen, Friedewald, Nisterberg, Weitefeld und Anträge Daaden, Niederdreisbach gelesen: Förderung 10 % der Bau-/Sanierungskosten nach Erwerb eines mindestens 50 Jahre alten Gebäudes bzw. einer Baulücke — Wohnraumaktivierung, kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert; gelesen: Gründung der Kommunale Energieprojekte AöR und der Westerwald/Sieg-Energie (kommunale Wind-/Freiflächenprojekte), Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.herdorf.de/staedtebaufoerderprogramm",
+        "finding": "Herdorf: Seite Städtebauförderung (Stadtentwicklung) und Meldung „Fördergerüst am Kreisel“ (Bergbau-Denkmal) gelesen — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: Wohnraum-, Städtebau- und Innenstadtförderung sowie EKM-Weiterleitung; kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Derschen gehört zur Verbandsgemeinde Daaden-Herdorf (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132026",
+    "name": "Emmerzhausen",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "daaden-herdorf.de: Seitenverzeichnis (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; Förderseite, Richtlinien und Energie-Pressemitteilungen gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "finding": "Förderseite der VG im Original gelesen (19.09.2026): „Daadener Land – Leben mitten im Dorf“ (Zuschuss bis 4.500 € für Bau/Sanierung nach Erwerb alter Bausubstanz; beteiligt Daaden, Derschen, Friedewald, Niederdreisbach, Nisterberg, Weitefeld), ISEK-Modernisierung in den Sanierungsgebieten Daaden und Weitefeld (20 %, höchstens 20.000 €), Innenstadt-Impulse (Kommunen) und Weiterleitung von EKM-Anträgen. Kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme/leben-mitten-im-dorf/foerderrichtlinien-og-derschen.pdf?cid=2cy",
+        "finding": "Richtlinien Derschen, Friedewald, Nisterberg, Weitefeld und Anträge Daaden, Niederdreisbach gelesen: Förderung 10 % der Bau-/Sanierungskosten nach Erwerb eines mindestens 50 Jahre alten Gebäudes bzw. einer Baulücke — Wohnraumaktivierung, kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert; gelesen: Gründung der Kommunale Energieprojekte AöR und der Westerwald/Sieg-Energie (kommunale Wind-/Freiflächenprojekte), Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.herdorf.de/staedtebaufoerderprogramm",
+        "finding": "Herdorf: Seite Städtebauförderung (Stadtentwicklung) und Meldung „Fördergerüst am Kreisel“ (Bergbau-Denkmal) gelesen — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: Wohnraum-, Städtebau- und Innenstadtförderung sowie EKM-Weiterleitung; kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Emmerzhausen gehört zur Verbandsgemeinde Daaden-Herdorf (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132036",
+    "name": "Friedewald",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "daaden-herdorf.de: Seitenverzeichnis (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; Förderseite, Richtlinien und Energie-Pressemitteilungen gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "finding": "Förderseite der VG im Original gelesen (19.09.2026): „Daadener Land – Leben mitten im Dorf“ (Zuschuss bis 4.500 € für Bau/Sanierung nach Erwerb alter Bausubstanz; beteiligt Daaden, Derschen, Friedewald, Niederdreisbach, Nisterberg, Weitefeld), ISEK-Modernisierung in den Sanierungsgebieten Daaden und Weitefeld (20 %, höchstens 20.000 €), Innenstadt-Impulse (Kommunen) und Weiterleitung von EKM-Anträgen. Kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme/leben-mitten-im-dorf/foerderrichtlinien-og-derschen.pdf?cid=2cy",
+        "finding": "Richtlinien Derschen, Friedewald, Nisterberg, Weitefeld und Anträge Daaden, Niederdreisbach gelesen: Förderung 10 % der Bau-/Sanierungskosten nach Erwerb eines mindestens 50 Jahre alten Gebäudes bzw. einer Baulücke — Wohnraumaktivierung, kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert; gelesen: Gründung der Kommunale Energieprojekte AöR und der Westerwald/Sieg-Energie (kommunale Wind-/Freiflächenprojekte), Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.herdorf.de/staedtebaufoerderprogramm",
+        "finding": "Herdorf: Seite Städtebauförderung (Stadtentwicklung) und Meldung „Fördergerüst am Kreisel“ (Bergbau-Denkmal) gelesen — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: Wohnraum-, Städtebau- und Innenstadtförderung sowie EKM-Weiterleitung; kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Friedewald gehört zur Verbandsgemeinde Daaden-Herdorf (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132050",
+    "name": "Herdorf",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "daaden-herdorf.de: Seitenverzeichnis (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; Förderseite, Richtlinien und Energie-Pressemitteilungen gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "finding": "Förderseite der VG im Original gelesen (19.09.2026): „Daadener Land – Leben mitten im Dorf“ (Zuschuss bis 4.500 € für Bau/Sanierung nach Erwerb alter Bausubstanz; beteiligt Daaden, Derschen, Friedewald, Niederdreisbach, Nisterberg, Weitefeld), ISEK-Modernisierung in den Sanierungsgebieten Daaden und Weitefeld (20 %, höchstens 20.000 €), Innenstadt-Impulse (Kommunen) und Weiterleitung von EKM-Anträgen. Kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme/leben-mitten-im-dorf/foerderrichtlinien-og-derschen.pdf?cid=2cy",
+        "finding": "Richtlinien Derschen, Friedewald, Nisterberg, Weitefeld und Anträge Daaden, Niederdreisbach gelesen: Förderung 10 % der Bau-/Sanierungskosten nach Erwerb eines mindestens 50 Jahre alten Gebäudes bzw. einer Baulücke — Wohnraumaktivierung, kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert; gelesen: Gründung der Kommunale Energieprojekte AöR und der Westerwald/Sieg-Energie (kommunale Wind-/Freiflächenprojekte), Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.herdorf.de/staedtebaufoerderprogramm",
+        "finding": "Herdorf: Seite Städtebauförderung (Stadtentwicklung) und Meldung „Fördergerüst am Kreisel“ (Bergbau-Denkmal) gelesen — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "herdorf.de/foerdergeruest-auf-dem-kreisel-am-huettenhaus-installiert",
+        "disposition": "reviewed",
+        "reason": "Meldung über die Nachbildung eines Bergbau-Fördergerüsts auf einem Kreisel — kein Förderprogramm.",
+        "evidenceUrl": "https://www.herdorf.de/staedtebaufoerderprogramm"
+      },
+      {
+        "url": "herdorf.de/staedtebaufoerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Städtebauförderung der Stadt Herdorf (Stadtentwicklung) — kein Energiezuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.herdorf.de/staedtebaufoerderprogramm"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Herdorf gehört zur Verbandsgemeinde Daaden-Herdorf (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132068",
+    "name": "Mauden",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "daaden-herdorf.de: Seitenverzeichnis (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; Förderseite, Richtlinien und Energie-Pressemitteilungen gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "finding": "Förderseite der VG im Original gelesen (19.09.2026): „Daadener Land – Leben mitten im Dorf“ (Zuschuss bis 4.500 € für Bau/Sanierung nach Erwerb alter Bausubstanz; beteiligt Daaden, Derschen, Friedewald, Niederdreisbach, Nisterberg, Weitefeld), ISEK-Modernisierung in den Sanierungsgebieten Daaden und Weitefeld (20 %, höchstens 20.000 €), Innenstadt-Impulse (Kommunen) und Weiterleitung von EKM-Anträgen. Kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme/leben-mitten-im-dorf/foerderrichtlinien-og-derschen.pdf?cid=2cy",
+        "finding": "Richtlinien Derschen, Friedewald, Nisterberg, Weitefeld und Anträge Daaden, Niederdreisbach gelesen: Förderung 10 % der Bau-/Sanierungskosten nach Erwerb eines mindestens 50 Jahre alten Gebäudes bzw. einer Baulücke — Wohnraumaktivierung, kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert; gelesen: Gründung der Kommunale Energieprojekte AöR und der Westerwald/Sieg-Energie (kommunale Wind-/Freiflächenprojekte), Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.herdorf.de/staedtebaufoerderprogramm",
+        "finding": "Herdorf: Seite Städtebauförderung (Stadtentwicklung) und Meldung „Fördergerüst am Kreisel“ (Bergbau-Denkmal) gelesen — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: Wohnraum-, Städtebau- und Innenstadtförderung sowie EKM-Weiterleitung; kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Mauden gehört zur Verbandsgemeinde Daaden-Herdorf (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132075",
+    "name": "Niederdreisbach",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "daaden-herdorf.de: Seitenverzeichnis (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; Förderseite, Richtlinien und Energie-Pressemitteilungen gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "finding": "Förderseite der VG im Original gelesen (19.09.2026): „Daadener Land – Leben mitten im Dorf“ (Zuschuss bis 4.500 € für Bau/Sanierung nach Erwerb alter Bausubstanz; beteiligt Daaden, Derschen, Friedewald, Niederdreisbach, Nisterberg, Weitefeld), ISEK-Modernisierung in den Sanierungsgebieten Daaden und Weitefeld (20 %, höchstens 20.000 €), Innenstadt-Impulse (Kommunen) und Weiterleitung von EKM-Anträgen. Kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme/leben-mitten-im-dorf/foerderrichtlinien-og-derschen.pdf?cid=2cy",
+        "finding": "Richtlinien Derschen, Friedewald, Nisterberg, Weitefeld und Anträge Daaden, Niederdreisbach gelesen: Förderung 10 % der Bau-/Sanierungskosten nach Erwerb eines mindestens 50 Jahre alten Gebäudes bzw. einer Baulücke — Wohnraumaktivierung, kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert; gelesen: Gründung der Kommunale Energieprojekte AöR und der Westerwald/Sieg-Energie (kommunale Wind-/Freiflächenprojekte), Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.herdorf.de/staedtebaufoerderprogramm",
+        "finding": "Herdorf: Seite Städtebauförderung (Stadtentwicklung) und Meldung „Fördergerüst am Kreisel“ (Bergbau-Denkmal) gelesen — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: Wohnraum-, Städtebau- und Innenstadtförderung sowie EKM-Weiterleitung; kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Niederdreisbach gehört zur Verbandsgemeinde Daaden-Herdorf (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132079",
+    "name": "Nisterberg",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "daaden-herdorf.de: Seitenverzeichnis (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; Förderseite, Richtlinien und Energie-Pressemitteilungen gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "finding": "Förderseite der VG im Original gelesen (19.09.2026): „Daadener Land – Leben mitten im Dorf“ (Zuschuss bis 4.500 € für Bau/Sanierung nach Erwerb alter Bausubstanz; beteiligt Daaden, Derschen, Friedewald, Niederdreisbach, Nisterberg, Weitefeld), ISEK-Modernisierung in den Sanierungsgebieten Daaden und Weitefeld (20 %, höchstens 20.000 €), Innenstadt-Impulse (Kommunen) und Weiterleitung von EKM-Anträgen. Kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme/leben-mitten-im-dorf/foerderrichtlinien-og-derschen.pdf?cid=2cy",
+        "finding": "Richtlinien Derschen, Friedewald, Nisterberg, Weitefeld und Anträge Daaden, Niederdreisbach gelesen: Förderung 10 % der Bau-/Sanierungskosten nach Erwerb eines mindestens 50 Jahre alten Gebäudes bzw. einer Baulücke — Wohnraumaktivierung, kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert; gelesen: Gründung der Kommunale Energieprojekte AöR und der Westerwald/Sieg-Energie (kommunale Wind-/Freiflächenprojekte), Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.herdorf.de/staedtebaufoerderprogramm",
+        "finding": "Herdorf: Seite Städtebauförderung (Stadtentwicklung) und Meldung „Fördergerüst am Kreisel“ (Bergbau-Denkmal) gelesen — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: Wohnraum-, Städtebau- und Innenstadtförderung sowie EKM-Weiterleitung; kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Nisterberg gehört zur Verbandsgemeinde Daaden-Herdorf (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132101",
+    "name": "Schutzbach",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "daaden-herdorf.de: Seitenverzeichnis (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; Förderseite, Richtlinien und Energie-Pressemitteilungen gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "finding": "Förderseite der VG im Original gelesen (19.09.2026): „Daadener Land – Leben mitten im Dorf“ (Zuschuss bis 4.500 € für Bau/Sanierung nach Erwerb alter Bausubstanz; beteiligt Daaden, Derschen, Friedewald, Niederdreisbach, Nisterberg, Weitefeld), ISEK-Modernisierung in den Sanierungsgebieten Daaden und Weitefeld (20 %, höchstens 20.000 €), Innenstadt-Impulse (Kommunen) und Weiterleitung von EKM-Anträgen. Kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme/leben-mitten-im-dorf/foerderrichtlinien-og-derschen.pdf?cid=2cy",
+        "finding": "Richtlinien Derschen, Friedewald, Nisterberg, Weitefeld und Anträge Daaden, Niederdreisbach gelesen: Förderung 10 % der Bau-/Sanierungskosten nach Erwerb eines mindestens 50 Jahre alten Gebäudes bzw. einer Baulücke — Wohnraumaktivierung, kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert; gelesen: Gründung der Kommunale Energieprojekte AöR und der Westerwald/Sieg-Energie (kommunale Wind-/Freiflächenprojekte), Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.herdorf.de/staedtebaufoerderprogramm",
+        "finding": "Herdorf: Seite Städtebauförderung (Stadtentwicklung) und Meldung „Fördergerüst am Kreisel“ (Bergbau-Denkmal) gelesen — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: Wohnraum-, Städtebau- und Innenstadtförderung sowie EKM-Weiterleitung; kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Schutzbach gehört zur Verbandsgemeinde Daaden-Herdorf (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132113",
+    "name": "Weitefeld",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "daaden-herdorf.de: Seitenverzeichnis (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; Förderseite, Richtlinien und Energie-Pressemitteilungen gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "finding": "Förderseite der VG im Original gelesen (19.09.2026): „Daadener Land – Leben mitten im Dorf“ (Zuschuss bis 4.500 € für Bau/Sanierung nach Erwerb alter Bausubstanz; beteiligt Daaden, Derschen, Friedewald, Niederdreisbach, Nisterberg, Weitefeld), ISEK-Modernisierung in den Sanierungsgebieten Daaden und Weitefeld (20 %, höchstens 20.000 €), Innenstadt-Impulse (Kommunen) und Weiterleitung von EKM-Anträgen. Kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme/leben-mitten-im-dorf/foerderrichtlinien-og-derschen.pdf?cid=2cy",
+        "finding": "Richtlinien Derschen, Friedewald, Nisterberg, Weitefeld und Anträge Daaden, Niederdreisbach gelesen: Förderung 10 % der Bau-/Sanierungskosten nach Erwerb eines mindestens 50 Jahre alten Gebäudes bzw. einer Baulücke — Wohnraumaktivierung, kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.daaden-herdorf.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.663 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert; gelesen: Gründung der Kommunale Energieprojekte AöR und der Westerwald/Sieg-Energie (kommunale Wind-/Freiflächenprojekte), Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.herdorf.de/staedtebaufoerderprogramm",
+        "finding": "Herdorf: Seite Städtebauförderung (Stadtentwicklung) und Meldung „Fördergerüst am Kreisel“ (Bergbau-Denkmal) gelesen — kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: Wohnraum-, Städtebau- und Innenstadtförderung sowie EKM-Weiterleitung; kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.daaden-herdorf.de/buergerservice/bauen-umwelt/foerderprogramme"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Weitefeld gehört zur Verbandsgemeinde Daaden-Herdorf (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132007",
+    "name": "Birkenbeul",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "hamm-sieg.de: Seitenverzeichnis (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; RZN- und Energiemanagement-Seite gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "finding": "RZN-Seite der VG gelesen (19.09.2026): Landesprogramm „regional.zukunft.nachhaltig“, 2,1 Mio € für rund hundert kommunale Maßnahmen (Hallen, Gemeinschaftshäuser, Spielplätze, Radwege) — Zuwendung an VG und Ortsgemeinden, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.hamm-sieg.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert: nur Fördervereine, Energiemanagement (Stelle des Energiemanagers, NKI-gefördert), kommunale Wärmeplanung und energetische Sanierung der Abwasseranlagen — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm RZN für kommunale Infrastruktur der VG und Ortsgemeinden — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Birkenbeul gehört zur Verbandsgemeinde Hamm (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132013",
+    "name": "Breitscheidt",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "hamm-sieg.de: Seitenverzeichnis (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; RZN- und Energiemanagement-Seite gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "finding": "RZN-Seite der VG gelesen (19.09.2026): Landesprogramm „regional.zukunft.nachhaltig“, 2,1 Mio € für rund hundert kommunale Maßnahmen (Hallen, Gemeinschaftshäuser, Spielplätze, Radwege) — Zuwendung an VG und Ortsgemeinden, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.hamm-sieg.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert: nur Fördervereine, Energiemanagement (Stelle des Energiemanagers, NKI-gefördert), kommunale Wärmeplanung und energetische Sanierung der Abwasseranlagen — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm RZN für kommunale Infrastruktur der VG und Ortsgemeinden — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Breitscheidt gehört zur Verbandsgemeinde Hamm (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132034",
+    "name": "Forst",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "hamm-sieg.de: Seitenverzeichnis (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; RZN- und Energiemanagement-Seite gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "finding": "RZN-Seite der VG gelesen (19.09.2026): Landesprogramm „regional.zukunft.nachhaltig“, 2,1 Mio € für rund hundert kommunale Maßnahmen (Hallen, Gemeinschaftshäuser, Spielplätze, Radwege) — Zuwendung an VG und Ortsgemeinden, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.hamm-sieg.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert: nur Fördervereine, Energiemanagement (Stelle des Energiemanagers, NKI-gefördert), kommunale Wärmeplanung und energetische Sanierung der Abwasseranlagen — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm RZN für kommunale Infrastruktur der VG und Ortsgemeinden — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Forst gehört zur Verbandsgemeinde Hamm (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132044",
+    "name": "Hamm (Sieg)",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "hamm-sieg.de: Seitenverzeichnis (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; RZN- und Energiemanagement-Seite gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "finding": "RZN-Seite der VG gelesen (19.09.2026): Landesprogramm „regional.zukunft.nachhaltig“, 2,1 Mio € für rund hundert kommunale Maßnahmen (Hallen, Gemeinschaftshäuser, Spielplätze, Radwege) — Zuwendung an VG und Ortsgemeinden, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.hamm-sieg.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert: nur Fördervereine, Energiemanagement (Stelle des Energiemanagers, NKI-gefördert), kommunale Wärmeplanung und energetische Sanierung der Abwasseranlagen — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm RZN für kommunale Infrastruktur der VG und Ortsgemeinden — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Hamm (Sieg) gehört zur Verbandsgemeinde Hamm (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132077",
+    "name": "Niederirsen",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "hamm-sieg.de: Seitenverzeichnis (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; RZN- und Energiemanagement-Seite gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "finding": "RZN-Seite der VG gelesen (19.09.2026): Landesprogramm „regional.zukunft.nachhaltig“, 2,1 Mio € für rund hundert kommunale Maßnahmen (Hallen, Gemeinschaftshäuser, Spielplätze, Radwege) — Zuwendung an VG und Ortsgemeinden, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.hamm-sieg.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert: nur Fördervereine, Energiemanagement (Stelle des Energiemanagers, NKI-gefördert), kommunale Wärmeplanung und energetische Sanierung der Abwasseranlagen — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm RZN für kommunale Infrastruktur der VG und Ortsgemeinden — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Niederirsen gehört zur Verbandsgemeinde Hamm (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132091",
+    "name": "Pracht",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "hamm-sieg.de: Seitenverzeichnis (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; RZN- und Energiemanagement-Seite gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "finding": "RZN-Seite der VG gelesen (19.09.2026): Landesprogramm „regional.zukunft.nachhaltig“, 2,1 Mio € für rund hundert kommunale Maßnahmen (Hallen, Gemeinschaftshäuser, Spielplätze, Radwege) — Zuwendung an VG und Ortsgemeinden, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.hamm-sieg.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert: nur Fördervereine, Energiemanagement (Stelle des Energiemanagers, NKI-gefördert), kommunale Wärmeplanung und energetische Sanierung der Abwasseranlagen — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm RZN für kommunale Infrastruktur der VG und Ortsgemeinden — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Pracht gehört zur Verbandsgemeinde Hamm (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132096",
+    "name": "Roth",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "hamm-sieg.de: Seitenverzeichnis (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; RZN- und Energiemanagement-Seite gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "finding": "RZN-Seite der VG gelesen (19.09.2026): Landesprogramm „regional.zukunft.nachhaltig“, 2,1 Mio € für rund hundert kommunale Maßnahmen (Hallen, Gemeinschaftshäuser, Spielplätze, Radwege) — Zuwendung an VG und Ortsgemeinden, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.hamm-sieg.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert: nur Fördervereine, Energiemanagement (Stelle des Energiemanagers, NKI-gefördert), kommunale Wärmeplanung und energetische Sanierung der Abwasseranlagen — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm RZN für kommunale Infrastruktur der VG und Ortsgemeinden — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Roth gehört zur Verbandsgemeinde Hamm (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132102",
+    "name": "Seelbach bei Hamm (Sieg)",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "hamm-sieg.de: Seitenverzeichnis (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar-, Wärme- und Speicherseiten gefiltert; RZN- und Energiemanagement-Seite gelesen",
+      "Websuche „Ortsgemeinde Förderung Balkonkraftwerk Zuschuss Daaden Herdorf Hamm Wissen“ (19.09.2026): keine kommunalen Programme, nur Portale"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "finding": "RZN-Seite der VG gelesen (19.09.2026): Landesprogramm „regional.zukunft.nachhaltig“, 2,1 Mio € für rund hundert kommunale Maßnahmen (Hallen, Gemeinschaftshäuser, Spielplätze, Radwege) — Zuwendung an VG und Ortsgemeinden, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.hamm-sieg.de/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (1.262 Seiten) nach Förder-, Klima-, Energie-, Solar- und Wärmeseiten gefiltert: nur Fördervereine, Energiemanagement (Stelle des Energiemanagers, NKI-gefördert), kommunale Wärmeplanung und energetische Sanierung der Abwasseranlagen — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm RZN für kommunale Infrastruktur der VG und Ortsgemeinden — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.hamm-sieg.de/de/leben-wohnen/bauen-umwelt/rzn-foerderprogramm"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Seelbach bei Hamm (Sieg) gehört zur Verbandsgemeinde Hamm (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132008",
+    "name": "Birken-Honigsessen",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "wissen.eu: Seitenverzeichnis (599 Seiten) nach Förder-, Klima-, Energie-, Solar-, Bau- und Wärmeseiten gefiltert; Bereich Wirtschaft & Bauen gelesen",
+      "Websuche „Verbandsgemeinde Wissen Förderprogramm Photovoltaik Balkonkraftwerk Wärmepumpe Zuschuss Ortsgemeinde“ (19.09.2026): keine kommunalen Programme"
+    ],
+    "evidence": [
+      {
+        "url": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "finding": "Erfasste Quelle ist ein Suchtreffer der VG-Seite zu „Förderprogramm“: Mitteilungsblatt KW 51/2020 (PDF) — kein aktuelles Programm."
+      },
+      {
+        "url": "https://www.wissen.eu/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (599 Seiten) gefiltert; gelesen: Bauen & Wohnen, Stadtwerke Wissen (Freizeitbad), Wirtschaftsförderung/Citymanagement, Kommunale Wärmeplanung (NKI-gefördert) — kein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Stromnetz: EnergieNetz Mitte (EAM), EKM-Förderung damit möglich."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "disposition": "reviewed",
+        "reason": "Suchtreffer „Förderprogramm“ führt auf das Mitteilungsblatt KW 51/2020 — kein aktuelles Förderprogramm; die VG-Seiten führen keines.",
+        "evidenceUrl": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Birken-Honigsessen gehört zur Verbandsgemeinde Wissen (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132011",
+    "name": "Mittelhof",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "wissen.eu: Seitenverzeichnis (599 Seiten) nach Förder-, Klima-, Energie-, Solar-, Bau- und Wärmeseiten gefiltert; Bereich Wirtschaft & Bauen gelesen",
+      "Websuche „Verbandsgemeinde Wissen Förderprogramm Photovoltaik Balkonkraftwerk Wärmepumpe Zuschuss Ortsgemeinde“ (19.09.2026): keine kommunalen Programme"
+    ],
+    "evidence": [
+      {
+        "url": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "finding": "Erfasste Quelle ist ein Suchtreffer der VG-Seite zu „Förderprogramm“: Mitteilungsblatt KW 51/2020 (PDF) — kein aktuelles Programm."
+      },
+      {
+        "url": "https://www.wissen.eu/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (599 Seiten) gefiltert; gelesen: Bauen & Wohnen, Stadtwerke Wissen (Freizeitbad), Wirtschaftsförderung/Citymanagement, Kommunale Wärmeplanung (NKI-gefördert) — kein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Stromnetz: EnergieNetz Mitte (EAM), EKM-Förderung damit möglich."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "disposition": "reviewed",
+        "reason": "Suchtreffer „Förderprogramm“ führt auf das Mitteilungsblatt KW 51/2020 — kein aktuelles Förderprogramm; die VG-Seiten führen keines.",
+        "evidenceUrl": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Mittelhof gehört zur Verbandsgemeinde Wissen (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132054",
+    "name": "Hövels",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "wissen.eu: Seitenverzeichnis (599 Seiten) nach Förder-, Klima-, Energie-, Solar-, Bau- und Wärmeseiten gefiltert; Bereich Wirtschaft & Bauen gelesen",
+      "Websuche „Verbandsgemeinde Wissen Förderprogramm Photovoltaik Balkonkraftwerk Wärmepumpe Zuschuss Ortsgemeinde“ (19.09.2026): keine kommunalen Programme"
+    ],
+    "evidence": [
+      {
+        "url": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "finding": "Erfasste Quelle ist ein Suchtreffer der VG-Seite zu „Förderprogramm“: Mitteilungsblatt KW 51/2020 (PDF) — kein aktuelles Programm."
+      },
+      {
+        "url": "https://www.wissen.eu/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (599 Seiten) gefiltert; gelesen: Bauen & Wohnen, Stadtwerke Wissen (Freizeitbad), Wirtschaftsförderung/Citymanagement, Kommunale Wärmeplanung (NKI-gefördert) — kein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Stromnetz: EnergieNetz Mitte (EAM), EKM-Förderung damit möglich."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "disposition": "reviewed",
+        "reason": "Suchtreffer „Förderprogramm“ führt auf das Mitteilungsblatt KW 51/2020 — kein aktuelles Förderprogramm; die VG-Seiten führen keines.",
+        "evidenceUrl": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Hövels gehört zur Verbandsgemeinde Wissen (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132080",
+    "name": "Katzwinkel (Sieg)",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "wissen.eu: Seitenverzeichnis (599 Seiten) nach Förder-, Klima-, Energie-, Solar-, Bau- und Wärmeseiten gefiltert; Bereich Wirtschaft & Bauen gelesen",
+      "Websuche „Verbandsgemeinde Wissen Förderprogramm Photovoltaik Balkonkraftwerk Wärmepumpe Zuschuss Ortsgemeinde“ (19.09.2026): keine kommunalen Programme"
+    ],
+    "evidence": [
+      {
+        "url": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "finding": "Erfasste Quelle ist ein Suchtreffer der VG-Seite zu „Förderprogramm“: Mitteilungsblatt KW 51/2020 (PDF) — kein aktuelles Programm."
+      },
+      {
+        "url": "https://www.wissen.eu/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (599 Seiten) gefiltert; gelesen: Bauen & Wohnen, Stadtwerke Wissen (Freizeitbad), Wirtschaftsförderung/Citymanagement, Kommunale Wärmeplanung (NKI-gefördert) — kein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Stromnetz: EnergieNetz Mitte (EAM), EKM-Förderung damit möglich."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "disposition": "reviewed",
+        "reason": "Suchtreffer „Förderprogramm“ führt auf das Mitteilungsblatt KW 51/2020 — kein aktuelles Förderprogramm; die VG-Seiten führen keines.",
+        "evidenceUrl": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Katzwinkel (Sieg) gehört zur Verbandsgemeinde Wissen (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132105",
+    "name": "Selbach (Sieg)",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "wissen.eu: Seitenverzeichnis (599 Seiten) nach Förder-, Klima-, Energie-, Solar-, Bau- und Wärmeseiten gefiltert; Bereich Wirtschaft & Bauen gelesen",
+      "Websuche „Verbandsgemeinde Wissen Förderprogramm Photovoltaik Balkonkraftwerk Wärmepumpe Zuschuss Ortsgemeinde“ (19.09.2026): keine kommunalen Programme"
+    ],
+    "evidence": [
+      {
+        "url": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "finding": "Erfasste Quelle ist ein Suchtreffer der VG-Seite zu „Förderprogramm“: Mitteilungsblatt KW 51/2020 (PDF) — kein aktuelles Programm."
+      },
+      {
+        "url": "https://www.wissen.eu/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (599 Seiten) gefiltert; gelesen: Bauen & Wohnen, Stadtwerke Wissen (Freizeitbad), Wirtschaftsförderung/Citymanagement, Kommunale Wärmeplanung (NKI-gefördert) — kein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Stromnetz: EnergieNetz Mitte (EAM), EKM-Förderung damit möglich."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "disposition": "reviewed",
+        "reason": "Suchtreffer „Förderprogramm“ führt auf das Mitteilungsblatt KW 51/2020 — kein aktuelles Förderprogramm; die VG-Seiten führen keines.",
+        "evidenceUrl": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Selbach (Sieg) gehört zur Verbandsgemeinde Wissen (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132117",
+    "name": "Wissen",
+    "checkedAt": "2026-09-19T12:08:29Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "wissen.eu: Seitenverzeichnis (599 Seiten) nach Förder-, Klima-, Energie-, Solar-, Bau- und Wärmeseiten gefiltert; Bereich Wirtschaft & Bauen gelesen",
+      "Websuche „Verbandsgemeinde Wissen Förderprogramm Photovoltaik Balkonkraftwerk Wärmepumpe Zuschuss Ortsgemeinde“ (19.09.2026): keine kommunalen Programme"
+    ],
+    "evidence": [
+      {
+        "url": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "finding": "Erfasste Quelle ist ein Suchtreffer der VG-Seite zu „Förderprogramm“: Mitteilungsblatt KW 51/2020 (PDF) — kein aktuelles Programm."
+      },
+      {
+        "url": "https://www.wissen.eu/sitemap.xml",
+        "finding": "Seitenverzeichnis der VG (599 Seiten) gefiltert; gelesen: Bauen & Wohnen, Stadtwerke Wissen (Freizeitbad), Wirtschaftsförderung/Citymanagement, Kommunale Wärmeplanung (NKI-gefördert) — kein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Stromnetz: EnergieNetz Mitte (EAM), EKM-Förderung damit möglich."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisseiten am 19.09.2026 erneut gelesen: Balkonkraftwerk-Programm „beendet … 120.000 Euro vollständig ausgeschöpft“, Solarspeicher-Topf (260.000 €) „ausgeschöpft“ — beide als historische Programme im Katalog."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "disposition": "reviewed",
+        "reason": "Suchtreffer „Förderprogramm“ führt auf das Mitteilungsblatt KW 51/2020 — kein aktuelles Förderprogramm; die VG-Seiten führen keines.",
+        "evidenceUrl": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D"
+      },
+      {
+        "url": "stadt-wissen.de/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D",
+        "disposition": "replaced",
+        "reason": "Dieselbe verschlüsselte Suchanfrage („Förderprogramm“) auf dem Stadtportal, das dieselbe Plattform der VG nutzt; der gelesene VG-Treffer (Mitteilungsblatt 2020) erledigt sie.",
+        "evidenceUrl": "https://wissen.eu/output/vt_stats.php?query=eyJzZWFyY2giOiJac08yY21SbGNuQnliMmR5WVcxdCIsInRhcmdldCI6IlwvaW5kZXgucGhwP29iamVjdD10eCwzOTQxLjMuMSZhbXA7TW9kSUQ9NiZhbXA7RklEPTM5NDEuMjY1Mi4xIiwiTW9kSUQiOiI2IiwiVlRMYSI6MX0%3D"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Wissen gehört zur Verbandsgemeinde Wissen (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
   }
 ]
