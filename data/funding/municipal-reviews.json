@@ -36108,5 +36108,1145 @@
     ],
     "outcome": "keine-passende-foerderung",
     "conclusion": "Wagersrott gehört zum Amt Süderbrarup (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes findet nur Bauleitplanung, Quartierskonzept, Fernwärmeplanung und kommunale Projekte; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder, und der Zuständigkeitsfinder nennt für den Ort keine Balkonkraftwerk-Förderung. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059001",
+    "name": "Alt Bennebek",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kropp.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Wärmepumpe, Stromspeicher, Förderprogramm, Zuschuss",
+      "Websuche „Förderung Balkonkraftwerk/Photovoltaik Zuschuss“ mit allen sieben Gemeindenamen (19.09.2026): keine kommunale Förderung; ein Treffer „Mitteilungen | Amt Kropp-Stapelholm“ (alte Adresse kropp.de/de/news.html?id=42284) liefert heute 404 und ist im Webarchiv nicht gesichert",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://kropp.de/amt/bauen-klimaschutz/klima/",
+        "finding": "Klimaseite des Amtes Kropp-Stapelholm am 19.09.2026 gelesen: Klimabündnis Mittlere Geest (22 Gemeinden der Ämter Arensharde und Kropp-Stapelholm, seit 08.10.2024) erstellt Wärmeplanung, CO2-Bilanz und Klimaschutzkonzept; Maßnahmen im Einflussbereich der Gemeinden (PV auf kommunalen Dächern, LED, Ladeinfrastruktur). Kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://kropp.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche kropp.de (Website von Gemeinde Kropp und Amt Kropp-Stapelholm; amt-kropp-stapelholm.de leitet auf kropp.de/rathaus/ um) am 19.09.2026: Balkonkraftwerk 0 Treffer, Stromspeicher 0, Photovoltaik und Wärmepumpe je nur die Klimaseite, Förderprogramm/Zuschuss nur Städtebauförderung der Gemeinde Kropp."
+      },
+      {
+        "url": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "finding": "Veranstalterseite des Fördervereins des Kindergartens Erfde — Vereinsveranstaltungen, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "disposition": "reviewed",
+        "reason": "Veranstalterseite des Kindergarten-Fördervereins Erfde, kein Förderprogramm.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?eventDisplay=past",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?outlook-ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Alt Bennebek gehört zum Amt Kropp-Stapelholm (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Das Klimabündnis Mittlere Geest plant Maßnahmen für kommunale Liegenschaften, keinen Haushaltszuschuss. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059020",
+    "name": "Dörpstedt",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kropp.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Wärmepumpe, Stromspeicher, Förderprogramm, Zuschuss",
+      "Websuche „Förderung Balkonkraftwerk/Photovoltaik Zuschuss“ mit allen sieben Gemeindenamen (19.09.2026): keine kommunale Förderung; ein Treffer „Mitteilungen | Amt Kropp-Stapelholm“ (alte Adresse kropp.de/de/news.html?id=42284) liefert heute 404 und ist im Webarchiv nicht gesichert",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://kropp.de/amt/bauen-klimaschutz/klima/",
+        "finding": "Klimaseite des Amtes Kropp-Stapelholm am 19.09.2026 gelesen: Klimabündnis Mittlere Geest (22 Gemeinden der Ämter Arensharde und Kropp-Stapelholm, seit 08.10.2024) erstellt Wärmeplanung, CO2-Bilanz und Klimaschutzkonzept; Maßnahmen im Einflussbereich der Gemeinden (PV auf kommunalen Dächern, LED, Ladeinfrastruktur). Kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://kropp.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche kropp.de (Website von Gemeinde Kropp und Amt Kropp-Stapelholm; amt-kropp-stapelholm.de leitet auf kropp.de/rathaus/ um) am 19.09.2026: Balkonkraftwerk 0 Treffer, Stromspeicher 0, Photovoltaik und Wärmepumpe je nur die Klimaseite, Förderprogramm/Zuschuss nur Städtebauförderung der Gemeinde Kropp."
+      },
+      {
+        "url": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "finding": "Veranstalterseite des Fördervereins des Kindergartens Erfde — Vereinsveranstaltungen, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "disposition": "reviewed",
+        "reason": "Veranstalterseite des Kindergarten-Fördervereins Erfde, kein Förderprogramm.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?eventDisplay=past",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?outlook-ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dörpstedt gehört zum Amt Kropp-Stapelholm (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Das Klimabündnis Mittlere Geest plant Maßnahmen für kommunale Liegenschaften, keinen Haushaltszuschuss. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059051",
+    "name": "Klein Rheide",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kropp.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Wärmepumpe, Stromspeicher, Förderprogramm, Zuschuss",
+      "Websuche „Förderung Balkonkraftwerk/Photovoltaik Zuschuss“ mit allen sieben Gemeindenamen (19.09.2026): keine kommunale Förderung; ein Treffer „Mitteilungen | Amt Kropp-Stapelholm“ (alte Adresse kropp.de/de/news.html?id=42284) liefert heute 404 und ist im Webarchiv nicht gesichert",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://kropp.de/amt/bauen-klimaschutz/klima/",
+        "finding": "Klimaseite des Amtes Kropp-Stapelholm am 19.09.2026 gelesen: Klimabündnis Mittlere Geest (22 Gemeinden der Ämter Arensharde und Kropp-Stapelholm, seit 08.10.2024) erstellt Wärmeplanung, CO2-Bilanz und Klimaschutzkonzept; Maßnahmen im Einflussbereich der Gemeinden (PV auf kommunalen Dächern, LED, Ladeinfrastruktur). Kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://kropp.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche kropp.de (Website von Gemeinde Kropp und Amt Kropp-Stapelholm; amt-kropp-stapelholm.de leitet auf kropp.de/rathaus/ um) am 19.09.2026: Balkonkraftwerk 0 Treffer, Stromspeicher 0, Photovoltaik und Wärmepumpe je nur die Klimaseite, Förderprogramm/Zuschuss nur Städtebauförderung der Gemeinde Kropp."
+      },
+      {
+        "url": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "finding": "Veranstalterseite des Fördervereins des Kindergartens Erfde — Vereinsveranstaltungen, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "disposition": "reviewed",
+        "reason": "Veranstalterseite des Kindergarten-Fördervereins Erfde, kein Förderprogramm.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?eventDisplay=past",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?outlook-ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Klein Rheide gehört zum Amt Kropp-Stapelholm (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Das Klimabündnis Mittlere Geest plant Maßnahmen für kommunale Liegenschaften, keinen Haushaltszuschuss. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059053",
+    "name": "Kropp",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kropp.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Wärmepumpe, Stromspeicher, Förderprogramm, Zuschuss",
+      "Websuche „Förderung Balkonkraftwerk/Photovoltaik Zuschuss“ mit allen sieben Gemeindenamen (19.09.2026): keine kommunale Förderung; ein Treffer „Mitteilungen | Amt Kropp-Stapelholm“ (alte Adresse kropp.de/de/news.html?id=42284) liefert heute 404 und ist im Webarchiv nicht gesichert",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://kropp.de/amt/bauen-klimaschutz/klima/",
+        "finding": "Klimaseite des Amtes Kropp-Stapelholm am 19.09.2026 gelesen: Klimabündnis Mittlere Geest (22 Gemeinden der Ämter Arensharde und Kropp-Stapelholm, seit 08.10.2024) erstellt Wärmeplanung, CO2-Bilanz und Klimaschutzkonzept; Maßnahmen im Einflussbereich der Gemeinden (PV auf kommunalen Dächern, LED, Ladeinfrastruktur). Kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://kropp.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche kropp.de (Website von Gemeinde Kropp und Amt Kropp-Stapelholm; amt-kropp-stapelholm.de leitet auf kropp.de/rathaus/ um) am 19.09.2026: Balkonkraftwerk 0 Treffer, Stromspeicher 0, Photovoltaik und Wärmepumpe je nur die Klimaseite, Förderprogramm/Zuschuss nur Städtebauförderung der Gemeinde Kropp."
+      },
+      {
+        "url": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "finding": "Veranstalterseite des Fördervereins des Kindergartens Erfde — Vereinsveranstaltungen, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "disposition": "reviewed",
+        "reason": "Veranstalterseite des Kindergarten-Fördervereins Erfde, kein Förderprogramm.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?eventDisplay=past",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?outlook-ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kropp gehört zum Amt Kropp-Stapelholm (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Das Klimabündnis Mittlere Geest plant Maßnahmen für kommunale Liegenschaften, keinen Haushaltszuschuss. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059058",
+    "name": "Meggerdorf",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kropp.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Wärmepumpe, Stromspeicher, Förderprogramm, Zuschuss",
+      "Websuche „Förderung Balkonkraftwerk/Photovoltaik Zuschuss“ mit allen sieben Gemeindenamen (19.09.2026): keine kommunale Förderung; ein Treffer „Mitteilungen | Amt Kropp-Stapelholm“ (alte Adresse kropp.de/de/news.html?id=42284) liefert heute 404 und ist im Webarchiv nicht gesichert",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://kropp.de/amt/bauen-klimaschutz/klima/",
+        "finding": "Klimaseite des Amtes Kropp-Stapelholm am 19.09.2026 gelesen: Klimabündnis Mittlere Geest (22 Gemeinden der Ämter Arensharde und Kropp-Stapelholm, seit 08.10.2024) erstellt Wärmeplanung, CO2-Bilanz und Klimaschutzkonzept; Maßnahmen im Einflussbereich der Gemeinden (PV auf kommunalen Dächern, LED, Ladeinfrastruktur). Kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://kropp.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche kropp.de (Website von Gemeinde Kropp und Amt Kropp-Stapelholm; amt-kropp-stapelholm.de leitet auf kropp.de/rathaus/ um) am 19.09.2026: Balkonkraftwerk 0 Treffer, Stromspeicher 0, Photovoltaik und Wärmepumpe je nur die Klimaseite, Förderprogramm/Zuschuss nur Städtebauförderung der Gemeinde Kropp."
+      },
+      {
+        "url": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "finding": "Veranstalterseite des Fördervereins des Kindergartens Erfde — Vereinsveranstaltungen, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "disposition": "reviewed",
+        "reason": "Veranstalterseite des Kindergarten-Fördervereins Erfde, kein Förderprogramm.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?eventDisplay=past",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?outlook-ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Meggerdorf gehört zum Amt Kropp-Stapelholm (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Das Klimabündnis Mittlere Geest plant Maßnahmen für kommunale Liegenschaften, keinen Haushaltszuschuss. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059088",
+    "name": "Tielen",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kropp.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Wärmepumpe, Stromspeicher, Förderprogramm, Zuschuss",
+      "Websuche „Förderung Balkonkraftwerk/Photovoltaik Zuschuss“ mit allen sieben Gemeindenamen (19.09.2026): keine kommunale Förderung; ein Treffer „Mitteilungen | Amt Kropp-Stapelholm“ (alte Adresse kropp.de/de/news.html?id=42284) liefert heute 404 und ist im Webarchiv nicht gesichert",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://kropp.de/amt/bauen-klimaschutz/klima/",
+        "finding": "Klimaseite des Amtes Kropp-Stapelholm am 19.09.2026 gelesen: Klimabündnis Mittlere Geest (22 Gemeinden der Ämter Arensharde und Kropp-Stapelholm, seit 08.10.2024) erstellt Wärmeplanung, CO2-Bilanz und Klimaschutzkonzept; Maßnahmen im Einflussbereich der Gemeinden (PV auf kommunalen Dächern, LED, Ladeinfrastruktur). Kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://kropp.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche kropp.de (Website von Gemeinde Kropp und Amt Kropp-Stapelholm; amt-kropp-stapelholm.de leitet auf kropp.de/rathaus/ um) am 19.09.2026: Balkonkraftwerk 0 Treffer, Stromspeicher 0, Photovoltaik und Wärmepumpe je nur die Klimaseite, Förderprogramm/Zuschuss nur Städtebauförderung der Gemeinde Kropp."
+      },
+      {
+        "url": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "finding": "Veranstalterseite des Fördervereins des Kindergartens Erfde — Vereinsveranstaltungen, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "disposition": "reviewed",
+        "reason": "Veranstalterseite des Kindergarten-Fördervereins Erfde, kein Förderprogramm.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?eventDisplay=past",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?outlook-ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Tielen gehört zum Amt Kropp-Stapelholm (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Das Klimabündnis Mittlere Geest plant Maßnahmen für kommunale Liegenschaften, keinen Haushaltszuschuss. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059096",
+    "name": "Wohlde",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kropp.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Wärmepumpe, Stromspeicher, Förderprogramm, Zuschuss",
+      "Websuche „Förderung Balkonkraftwerk/Photovoltaik Zuschuss“ mit allen sieben Gemeindenamen (19.09.2026): keine kommunale Förderung; ein Treffer „Mitteilungen | Amt Kropp-Stapelholm“ (alte Adresse kropp.de/de/news.html?id=42284) liefert heute 404 und ist im Webarchiv nicht gesichert",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://kropp.de/amt/bauen-klimaschutz/klima/",
+        "finding": "Klimaseite des Amtes Kropp-Stapelholm am 19.09.2026 gelesen: Klimabündnis Mittlere Geest (22 Gemeinden der Ämter Arensharde und Kropp-Stapelholm, seit 08.10.2024) erstellt Wärmeplanung, CO2-Bilanz und Klimaschutzkonzept; Maßnahmen im Einflussbereich der Gemeinden (PV auf kommunalen Dächern, LED, Ladeinfrastruktur). Kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://kropp.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche kropp.de (Website von Gemeinde Kropp und Amt Kropp-Stapelholm; amt-kropp-stapelholm.de leitet auf kropp.de/rathaus/ um) am 19.09.2026: Balkonkraftwerk 0 Treffer, Stromspeicher 0, Photovoltaik und Wärmepumpe je nur die Klimaseite, Förderprogramm/Zuschuss nur Städtebauförderung der Gemeinde Kropp."
+      },
+      {
+        "url": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "finding": "Veranstalterseite des Fördervereins des Kindergartens Erfde — Vereinsveranstaltungen, kein Förderprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v",
+        "disposition": "reviewed",
+        "reason": "Veranstalterseite des Kindergarten-Fördervereins Erfde, kein Förderprogramm.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?eventDisplay=past",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      },
+      {
+        "url": "kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v/?outlook-ical=1",
+        "disposition": "replaced",
+        "reason": "Kalender-/Archivvariante derselben Veranstalterseite; durch die gelesene Hauptseite erledigt.",
+        "evidenceUrl": "https://kropp.de/veranstalter/foerderung-des-kindergartens-erfde-e-v"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wohlde gehört zum Amt Kropp-Stapelholm (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Das Klimabündnis Mittlere Geest plant Maßnahmen für kommunale Liegenschaften, keinen Haushaltszuschuss. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059008",
+    "name": "Böklund",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suedangeln.de Volltextsuche (19.09.2026, Umlaute ISO-kodiert): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Stromspeicher, Förderprogramm, Förderung, Zuschuss, Klimaschutz",
+      "Mitteilungsblätter 2025/2026 und Südangeln Rundschau 4/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Südangeln am 19.09.2026: Balkonkraftwerk nur ein Urheber-Texteintrag; Photovoltaik nur Bauleitplanung, Solarpark- und Schuldach-Meldungen 2009–2013; Solar ebenso; Wärmepumpe und Stromspeicher nur Mitteilungsblätter/Rundschauen; Förderung/Zuschuss/Förderprogramm nur Feuerwehr, Gemeindehäuser, Wasserversorgung, Schulen und Regionalbudget-Projekte. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3702_1.PDF",
+        "finding": "Mitteilungsblatt Nr. 32 vom 29.08.2025 gelesen (Treffer für Stromspeicher/Wärmepumpe): Bekanntmachung zur Bauleitplanung PVA Neuberend (Blendgutachten Photovoltaik und Stromspeicher) und Förderprogramm für eine pädagogische Fachkraft — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3906_1.PDF",
+        "finding": "Südangeln Rundschau Nr. 4/2026 gelesen: Treffer „Wärmepumpen“ ist eine Handwerker-Anzeige; Gemeindeberichte ohne Energiezuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3916_1.PDF",
+        "finding": "Mitteilungsblätter Nr. 22/2026, 35/2026, 36/2026 und 37/2026 (11.09.2026) gelesen: „Förderprogramm“ steht nur bei Regionalbudget-Projekten von Vereinen und Gemeinden (Outdoor-Geräte, Wanderwegbeschilderung) und einer Bundeszuwendung der Gemeinde — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-der-Feuerwehrinfrastruktur.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-trotz-Finanznot.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Goltoft-k%C3%BCrzt-Zuschuss-f%C3%BCr-Gemeindehaus-Sanierung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Havetoft-freut-sich-%C3%BCber-Zusch%C3%BCsse.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Hoffnung-auf-F%C3%B6rderung-f%C3%BCr-die-Wasserversorgung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Wehrf%C3%BChrer-zum-L%C3%B6schmeister-bef%C3%B6rdert.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Böklund gehört zum Amt Südangeln (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059037",
+    "name": "Havetoft",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suedangeln.de Volltextsuche (19.09.2026, Umlaute ISO-kodiert): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Stromspeicher, Förderprogramm, Förderung, Zuschuss, Klimaschutz",
+      "Mitteilungsblätter 2025/2026 und Südangeln Rundschau 4/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Südangeln am 19.09.2026: Balkonkraftwerk nur ein Urheber-Texteintrag; Photovoltaik nur Bauleitplanung, Solarpark- und Schuldach-Meldungen 2009–2013; Solar ebenso; Wärmepumpe und Stromspeicher nur Mitteilungsblätter/Rundschauen; Förderung/Zuschuss/Förderprogramm nur Feuerwehr, Gemeindehäuser, Wasserversorgung, Schulen und Regionalbudget-Projekte. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3702_1.PDF",
+        "finding": "Mitteilungsblatt Nr. 32 vom 29.08.2025 gelesen (Treffer für Stromspeicher/Wärmepumpe): Bekanntmachung zur Bauleitplanung PVA Neuberend (Blendgutachten Photovoltaik und Stromspeicher) und Förderprogramm für eine pädagogische Fachkraft — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3906_1.PDF",
+        "finding": "Südangeln Rundschau Nr. 4/2026 gelesen: Treffer „Wärmepumpen“ ist eine Handwerker-Anzeige; Gemeindeberichte ohne Energiezuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3916_1.PDF",
+        "finding": "Mitteilungsblätter Nr. 22/2026, 35/2026, 36/2026 und 37/2026 (11.09.2026) gelesen: „Förderprogramm“ steht nur bei Regionalbudget-Projekten von Vereinen und Gemeinden (Outdoor-Geräte, Wanderwegbeschilderung) und einer Bundeszuwendung der Gemeinde — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-der-Feuerwehrinfrastruktur.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-trotz-Finanznot.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Goltoft-k%C3%BCrzt-Zuschuss-f%C3%BCr-Gemeindehaus-Sanierung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Havetoft-freut-sich-%C3%BCber-Zusch%C3%BCsse.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Hoffnung-auf-F%C3%B6rderung-f%C3%BCr-die-Wasserversorgung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Wehrf%C3%BChrer-zum-L%C3%B6schmeister-bef%C3%B6rdert.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Havetoft gehört zum Amt Südangeln (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059073",
+    "name": "Schaalby",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suedangeln.de Volltextsuche (19.09.2026, Umlaute ISO-kodiert): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Stromspeicher, Förderprogramm, Förderung, Zuschuss, Klimaschutz",
+      "Mitteilungsblätter 2025/2026 und Südangeln Rundschau 4/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Südangeln am 19.09.2026: Balkonkraftwerk nur ein Urheber-Texteintrag; Photovoltaik nur Bauleitplanung, Solarpark- und Schuldach-Meldungen 2009–2013; Solar ebenso; Wärmepumpe und Stromspeicher nur Mitteilungsblätter/Rundschauen; Förderung/Zuschuss/Förderprogramm nur Feuerwehr, Gemeindehäuser, Wasserversorgung, Schulen und Regionalbudget-Projekte. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3702_1.PDF",
+        "finding": "Mitteilungsblatt Nr. 32 vom 29.08.2025 gelesen (Treffer für Stromspeicher/Wärmepumpe): Bekanntmachung zur Bauleitplanung PVA Neuberend (Blendgutachten Photovoltaik und Stromspeicher) und Förderprogramm für eine pädagogische Fachkraft — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3906_1.PDF",
+        "finding": "Südangeln Rundschau Nr. 4/2026 gelesen: Treffer „Wärmepumpen“ ist eine Handwerker-Anzeige; Gemeindeberichte ohne Energiezuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3916_1.PDF",
+        "finding": "Mitteilungsblätter Nr. 22/2026, 35/2026, 36/2026 und 37/2026 (11.09.2026) gelesen: „Förderprogramm“ steht nur bei Regionalbudget-Projekten von Vereinen und Gemeinden (Outdoor-Geräte, Wanderwegbeschilderung) und einer Bundeszuwendung der Gemeinde — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-der-Feuerwehrinfrastruktur.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-trotz-Finanznot.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Goltoft-k%C3%BCrzt-Zuschuss-f%C3%BCr-Gemeindehaus-Sanierung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Havetoft-freut-sich-%C3%BCber-Zusch%C3%BCsse.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Hoffnung-auf-F%C3%B6rderung-f%C3%BCr-die-Wasserversorgung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Wehrf%C3%BChrer-zum-L%C3%B6schmeister-bef%C3%B6rdert.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schaalby gehört zum Amt Südangeln (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059082",
+    "name": "Struxdorf",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suedangeln.de Volltextsuche (19.09.2026, Umlaute ISO-kodiert): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Stromspeicher, Förderprogramm, Förderung, Zuschuss, Klimaschutz",
+      "Mitteilungsblätter 2025/2026 und Südangeln Rundschau 4/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Südangeln am 19.09.2026: Balkonkraftwerk nur ein Urheber-Texteintrag; Photovoltaik nur Bauleitplanung, Solarpark- und Schuldach-Meldungen 2009–2013; Solar ebenso; Wärmepumpe und Stromspeicher nur Mitteilungsblätter/Rundschauen; Förderung/Zuschuss/Förderprogramm nur Feuerwehr, Gemeindehäuser, Wasserversorgung, Schulen und Regionalbudget-Projekte. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3702_1.PDF",
+        "finding": "Mitteilungsblatt Nr. 32 vom 29.08.2025 gelesen (Treffer für Stromspeicher/Wärmepumpe): Bekanntmachung zur Bauleitplanung PVA Neuberend (Blendgutachten Photovoltaik und Stromspeicher) und Förderprogramm für eine pädagogische Fachkraft — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3906_1.PDF",
+        "finding": "Südangeln Rundschau Nr. 4/2026 gelesen: Treffer „Wärmepumpen“ ist eine Handwerker-Anzeige; Gemeindeberichte ohne Energiezuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3916_1.PDF",
+        "finding": "Mitteilungsblätter Nr. 22/2026, 35/2026, 36/2026 und 37/2026 (11.09.2026) gelesen: „Förderprogramm“ steht nur bei Regionalbudget-Projekten von Vereinen und Gemeinden (Outdoor-Geräte, Wanderwegbeschilderung) und einer Bundeszuwendung der Gemeinde — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-der-Feuerwehrinfrastruktur.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-trotz-Finanznot.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Goltoft-k%C3%BCrzt-Zuschuss-f%C3%BCr-Gemeindehaus-Sanierung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Havetoft-freut-sich-%C3%BCber-Zusch%C3%BCsse.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Hoffnung-auf-F%C3%B6rderung-f%C3%BCr-die-Wasserversorgung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Wehrf%C3%BChrer-zum-L%C3%B6schmeister-bef%C3%B6rdert.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Struxdorf gehört zum Amt Südangeln (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059084",
+    "name": "Süderfahrenstedt",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suedangeln.de Volltextsuche (19.09.2026, Umlaute ISO-kodiert): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Stromspeicher, Förderprogramm, Förderung, Zuschuss, Klimaschutz",
+      "Mitteilungsblätter 2025/2026 und Südangeln Rundschau 4/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Südangeln am 19.09.2026: Balkonkraftwerk nur ein Urheber-Texteintrag; Photovoltaik nur Bauleitplanung, Solarpark- und Schuldach-Meldungen 2009–2013; Solar ebenso; Wärmepumpe und Stromspeicher nur Mitteilungsblätter/Rundschauen; Förderung/Zuschuss/Förderprogramm nur Feuerwehr, Gemeindehäuser, Wasserversorgung, Schulen und Regionalbudget-Projekte. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3702_1.PDF",
+        "finding": "Mitteilungsblatt Nr. 32 vom 29.08.2025 gelesen (Treffer für Stromspeicher/Wärmepumpe): Bekanntmachung zur Bauleitplanung PVA Neuberend (Blendgutachten Photovoltaik und Stromspeicher) und Förderprogramm für eine pädagogische Fachkraft — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3906_1.PDF",
+        "finding": "Südangeln Rundschau Nr. 4/2026 gelesen: Treffer „Wärmepumpen“ ist eine Handwerker-Anzeige; Gemeindeberichte ohne Energiezuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3916_1.PDF",
+        "finding": "Mitteilungsblätter Nr. 22/2026, 35/2026, 36/2026 und 37/2026 (11.09.2026) gelesen: „Förderprogramm“ steht nur bei Regionalbudget-Projekten von Vereinen und Gemeinden (Outdoor-Geräte, Wanderwegbeschilderung) und einer Bundeszuwendung der Gemeinde — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-der-Feuerwehrinfrastruktur.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-trotz-Finanznot.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Goltoft-k%C3%BCrzt-Zuschuss-f%C3%BCr-Gemeindehaus-Sanierung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Havetoft-freut-sich-%C3%BCber-Zusch%C3%BCsse.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Hoffnung-auf-F%C3%B6rderung-f%C3%BCr-die-Wasserversorgung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Wehrf%C3%BChrer-zum-L%C3%B6schmeister-bef%C3%B6rdert.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Süderfahrenstedt gehört zum Amt Südangeln (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059093",
+    "name": "Uelsby",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suedangeln.de Volltextsuche (19.09.2026, Umlaute ISO-kodiert): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Stromspeicher, Förderprogramm, Förderung, Zuschuss, Klimaschutz",
+      "Mitteilungsblätter 2025/2026 und Südangeln Rundschau 4/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Südangeln am 19.09.2026: Balkonkraftwerk nur ein Urheber-Texteintrag; Photovoltaik nur Bauleitplanung, Solarpark- und Schuldach-Meldungen 2009–2013; Solar ebenso; Wärmepumpe und Stromspeicher nur Mitteilungsblätter/Rundschauen; Förderung/Zuschuss/Förderprogramm nur Feuerwehr, Gemeindehäuser, Wasserversorgung, Schulen und Regionalbudget-Projekte. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3702_1.PDF",
+        "finding": "Mitteilungsblatt Nr. 32 vom 29.08.2025 gelesen (Treffer für Stromspeicher/Wärmepumpe): Bekanntmachung zur Bauleitplanung PVA Neuberend (Blendgutachten Photovoltaik und Stromspeicher) und Förderprogramm für eine pädagogische Fachkraft — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3906_1.PDF",
+        "finding": "Südangeln Rundschau Nr. 4/2026 gelesen: Treffer „Wärmepumpen“ ist eine Handwerker-Anzeige; Gemeindeberichte ohne Energiezuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3916_1.PDF",
+        "finding": "Mitteilungsblätter Nr. 22/2026, 35/2026, 36/2026 und 37/2026 (11.09.2026) gelesen: „Förderprogramm“ steht nur bei Regionalbudget-Projekten von Vereinen und Gemeinden (Outdoor-Geräte, Wanderwegbeschilderung) und einer Bundeszuwendung der Gemeinde — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-der-Feuerwehrinfrastruktur.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-trotz-Finanznot.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Goltoft-k%C3%BCrzt-Zuschuss-f%C3%BCr-Gemeindehaus-Sanierung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Havetoft-freut-sich-%C3%BCber-Zusch%C3%BCsse.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Hoffnung-auf-F%C3%B6rderung-f%C3%BCr-die-Wasserversorgung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Wehrf%C3%BChrer-zum-L%C3%B6schmeister-bef%C3%B6rdert.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Uelsby gehört zum Amt Südangeln (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059097",
+    "name": "Twedt",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suedangeln.de Volltextsuche (19.09.2026, Umlaute ISO-kodiert): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Stromspeicher, Förderprogramm, Förderung, Zuschuss, Klimaschutz",
+      "Mitteilungsblätter 2025/2026 und Südangeln Rundschau 4/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Südangeln am 19.09.2026: Balkonkraftwerk nur ein Urheber-Texteintrag; Photovoltaik nur Bauleitplanung, Solarpark- und Schuldach-Meldungen 2009–2013; Solar ebenso; Wärmepumpe und Stromspeicher nur Mitteilungsblätter/Rundschauen; Förderung/Zuschuss/Förderprogramm nur Feuerwehr, Gemeindehäuser, Wasserversorgung, Schulen und Regionalbudget-Projekte. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3702_1.PDF",
+        "finding": "Mitteilungsblatt Nr. 32 vom 29.08.2025 gelesen (Treffer für Stromspeicher/Wärmepumpe): Bekanntmachung zur Bauleitplanung PVA Neuberend (Blendgutachten Photovoltaik und Stromspeicher) und Förderprogramm für eine pädagogische Fachkraft — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3906_1.PDF",
+        "finding": "Südangeln Rundschau Nr. 4/2026 gelesen: Treffer „Wärmepumpen“ ist eine Handwerker-Anzeige; Gemeindeberichte ohne Energiezuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3916_1.PDF",
+        "finding": "Mitteilungsblätter Nr. 22/2026, 35/2026, 36/2026 und 37/2026 (11.09.2026) gelesen: „Förderprogramm“ steht nur bei Regionalbudget-Projekten von Vereinen und Gemeinden (Outdoor-Geräte, Wanderwegbeschilderung) und einer Bundeszuwendung der Gemeinde — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-der-Feuerwehrinfrastruktur.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-trotz-Finanznot.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Goltoft-k%C3%BCrzt-Zuschuss-f%C3%BCr-Gemeindehaus-Sanierung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Havetoft-freut-sich-%C3%BCber-Zusch%C3%BCsse.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Hoffnung-auf-F%C3%B6rderung-f%C3%BCr-die-Wasserversorgung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Wehrf%C3%BChrer-zum-L%C3%B6schmeister-bef%C3%B6rdert.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Twedt gehört zum Amt Südangeln (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059098",
+    "name": "Nübel",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "amt-suedangeln.de Volltextsuche (19.09.2026, Umlaute ISO-kodiert): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Stromspeicher, Förderprogramm, Förderung, Zuschuss, Klimaschutz",
+      "Mitteilungsblätter 2025/2026 und Südangeln Rundschau 4/2026 als PDF gelesen",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung je Wohnort abgefragt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk",
+        "finding": "Volltextsuche des Amtes Südangeln am 19.09.2026: Balkonkraftwerk nur ein Urheber-Texteintrag; Photovoltaik nur Bauleitplanung, Solarpark- und Schuldach-Meldungen 2009–2013; Solar ebenso; Wärmepumpe und Stromspeicher nur Mitteilungsblätter/Rundschauen; Förderung/Zuschuss/Förderprogramm nur Feuerwehr, Gemeindehäuser, Wasserversorgung, Schulen und Regionalbudget-Projekte. Kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3702_1.PDF",
+        "finding": "Mitteilungsblatt Nr. 32 vom 29.08.2025 gelesen (Treffer für Stromspeicher/Wärmepumpe): Bekanntmachung zur Bauleitplanung PVA Neuberend (Blendgutachten Photovoltaik und Stromspeicher) und Förderprogramm für eine pädagogische Fachkraft — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3906_1.PDF",
+        "finding": "Südangeln Rundschau Nr. 4/2026 gelesen: Treffer „Wärmepumpen“ ist eine Handwerker-Anzeige; Gemeindeberichte ohne Energiezuschuss."
+      },
+      {
+        "url": "https://www.amt-suedangeln.de/media/custom/1659_3916_1.PDF",
+        "finding": "Mitteilungsblätter Nr. 22/2026, 35/2026, 36/2026 und 37/2026 (11.09.2026) gelesen: „Förderprogramm“ steht nur bei Regionalbudget-Projekten von Vereinen und Gemeinden (Outdoor-Geräte, Wanderwegbeschilderung) und einer Bundeszuwendung der Gemeinde — kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-der-Feuerwehrinfrastruktur.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/F%C3%B6rderung-trotz-Finanznot.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Goltoft-k%C3%BCrzt-Zuschuss-f%C3%BCr-Gemeindehaus-Sanierung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Havetoft-freut-sich-%C3%BCber-Zusch%C3%BCsse.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Hoffnung-auf-F%C3%B6rderung-f%C3%BCr-die-Wasserversorgung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      },
+      {
+        "url": "amt-suedangeln.de/Wehrf%C3%BChrer-zum-L%C3%B6schmeister-bef%C3%B6rdert.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse einer Pressemeldung (Feuerwehr, Gemeindehaus, Wasserversorgung, Zuschüsse an Havetoft) liefert heute 404; die Meldungen stammen nach der Trefferliste der Amtssuche aus 2008–2012 und betreffen kommunale Einrichtungen. Die Volltextsuche des Amtes nach allen Energiebegriffen erledigt die Frage.",
+        "evidenceUrl": "https://www.amt-suedangeln.de/index.phtml?ffmod=suche&mNavID=1659.1&such=Balkonkraftwerk"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nübel gehört zum Amt Südangeln (Kreis Schleswig-Flensburg). Weder Amt noch Gemeinde noch Kreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte: Die Volltextsuche des Amtes und die gelesenen Amtsveröffentlichungen zeigen nur Bauleitplanung, kommunale Projekte und Vereinsförderung; die Kreisseite gibt nur das seit dem 16.11.2023 gestoppte Landesprogramm wieder. Stand 19.09.2026."
+  },
+  {
+    "regionId": "01059120",
+    "name": "Harrislee",
+    "checkedAt": "2026-09-19T20:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Regionale Belohnungswährung gesondert erfasst.",
+    "searches": [
+      "harrislee.de Volltextsuche (19.09.2026): Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Förderprogramm, Zuschuss, Klimaschutz — nur Zuständigkeitsfinder-Einträge des Landes/Bundes, Standortkonzept Freiflächen-PV, Wärmeplanung, Quartierskonzept Niehuus",
+      "Websuche „Harrislee Gemeinde Förderung Balkonkraftwerk Zuschuss Photovoltaik“ und „Solaroffensive Harrislee“ (19.09.2026): kein Gemeindeprogramm",
+      "Kreis Schleswig-Flensburg: Zuständigkeitsfinder Balkonkraftwerk-Förderung mit Wohnort Harrislee"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.harrislee.de/?ffmod=suche&NavID=3581.1&such=Balkonkraftwerk",
+        "finding": "Volltextsuche der Gemeinde am 19.09.2026: Treffer für Balkonkraftwerk sind nur die Landesdienste „Zuschuss für steckerfertige Photovoltaikanlagen beantragen“ und „Klimaschutz für Bürgerinnen und Bürger“ (Landesprogramm, gestoppt 16.11.2023) sowie Infoheft 2024-2 und Abschlussbericht Quartierskonzept Niehuus."
+      },
+      {
+        "url": "https://www.harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "finding": "Am 19.09.2026 im Browser gelesen: ZuFiSH-Seite der Landesregierung; mit Wohnort Harrislee „Es wurden leider keine Dienstleistungen gefunden.“ Kein Gemeindezuschuss."
+      },
+      {
+        "url": "https://www.harrislee.de/media/custom/3581_1131_1.PDF",
+        "finding": "Infoheft 2024-2 gelesen: einziger Balkonkraftwerk-Bezug ist der Laden „Der offene Kleiderschrank“, der KlimaBonus-Scheine annimmt (Flensburger Modellprojekt, 1 KlimaBonus = 1 €)."
+      },
+      {
+        "url": "https://www.hier-wirken.de/flensburg/klimabonus-fuer-privatpersonen/belohnungsaktionen",
+        "finding": "KlimaBonus e.V. (Flensburg) belohnt ein Balkonkraftwerk mit 60 KlimaBoni in Regionalwährung; die 100 KlimaBoni für PV stiftet ein Solarunternehmen. Vereins-/Unternehmensbelohnung, kein Euro-Zuschuss der Gemeinde; eine Wohnortbeschränkung nennt die Seite nicht."
+      },
+      {
+        "url": "https://www.harrislee.de/Wirtschaft-Bauen-Umwelt/Umwelt/Klimaschutzregion/",
+        "finding": "Seite Klimaschutzregion gelesen: Klimaschutzkonzept Region Flensburg 2014/15, Masterplan 100 % Klimaschutz, Wettbewerb #Harrisleefürklimaschutz (u. a. Energiespeicher-Idee prämiert) — kein Förderprogramm; das Bild „Solaroffensive Harrislee“ ist nur eine Mediendatei ohne Programmtext."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/index.php?ModID=10&FID=3333.3628.1&object=tx,3333.2",
+        "finding": "Kreisseite (am 19.09.2026 bereits gelesen, Befund übernommen): gibt das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ wieder, gestoppt am 16.11.2023; kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/index.php?ModID=10&object=tx,3333.2.1&La=1&NavID=3333.14&FID=3333.2117.1",
+        "finding": "Zuständigkeitsfinder „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«)“ am 19.09.2026 für diesen Wohnort abgefragt: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Schwacher Hinweis: dieselbe Antwort kommt für jeden abgefragten Ort des Kreises, auch Flensburg."
+      }
+    ],
+    "sources": [
+      {
+        "url": "harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Zuständigkeitsfinders (ZuFiSH) zum gestoppten Landesprogramm; für den Wohnort Harrislee findet der Dienst heute keine Leistung („Es wurden leider keine Dienstleistungen gefunden.“), keine Gemeindeförderung.",
+        "evidenceUrl": "https://www.harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php"
+      },
+      {
+        "url": "harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=1902.172&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&sfwort=1&kuo=1&ort=120.37&ModID=10&object=tx%7C3581.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Zuständigkeitsfinders (ZuFiSH) zum gestoppten Landesprogramm; für den Wohnort Harrislee findet der Dienst heute keine Leistung („Es wurden leider keine Dienstleistungen gefunden.“), keine Gemeindeförderung.",
+        "evidenceUrl": "https://www.harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php"
+      },
+      {
+        "url": "harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=1902.172&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&sfwort=1&kuo=1&ort=120.37&ModID=10&object=tx%7C3581.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Zuständigkeitsfinders (ZuFiSH) zum gestoppten Landesprogramm; für den Wohnort Harrislee findet der Dienst heute keine Leistung („Es wurden leider keine Dienstleistungen gefunden.“), keine Gemeindeförderung.",
+        "evidenceUrl": "https://www.harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php"
+      },
+      {
+        "url": "harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=1902.172&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&sfwort=1&kuo=1&ort=120.37&ModID=10&object=tx%7C3581.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Zuständigkeitsfinders (ZuFiSH) zum gestoppten Landesprogramm; für den Wohnort Harrislee findet der Dienst heute keine Leistung („Es wurden leider keine Dienstleistungen gefunden.“), keine Gemeindeförderung.",
+        "evidenceUrl": "https://www.harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php"
+      },
+      {
+        "url": "harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?NavID=1902.172&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&sfwort=1&kuo=1&ort=120.37&ModID=10&object=tx%7C3581.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Eintrag des Landes-Zuständigkeitsfinders (ZuFiSH) zum gestoppten Landesprogramm; für den Wohnort Harrislee findet der Dienst heute keine Leistung („Es wurden leider keine Dienstleistungen gefunden.“), keine Gemeindeförderung.",
+        "evidenceUrl": "https://www.harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php"
+      },
+      {
+        "url": "harrislee.de/Politik-Verwaltung/B%C3%BCrgerservice/Zust%C3%A4ndigkeitsfinder/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Unternehmen des Güterkraftverkehrs aus dem Zuständigkeitsfinder, kein Haushaltszuschuss.",
+        "evidenceUrl": "https://www.harrislee.de/?ffmod=suche&NavID=3581.1&such=Balkonkraftwerk"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Harrislee führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen für Privathaushalte. Der Treffer „Zuschuss für steckerfertige Photovoltaikanlagen“ ist der Landeseintrag des Zuständigkeitsfinders zum seit 16.11.2023 gestoppten Landesprogramm. Gesondert: Der Flensburger KlimaBonus e.V. belohnt ein Balkonkraftwerk mit 60 KlimaBoni Regionalwährung — kein Euro-Zuschuss der Gemeinde, daher kein Abzug. Stand 19.09.2026."
   }
 ]
