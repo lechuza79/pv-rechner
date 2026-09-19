@@ -1,6 +1,8 @@
 # Release: redesigned homepage + PV simulation (new design)
 
-Branch `claude/solar-check-integration-8b2cd3` (pushed). Not merged, not deployed.
+LIVE since 2026-09-19 ~15:50 CEST: release merge `35204955` on main (branch
+`claude/solar-check-integration-8b2cd3`, PR #8). CI and health check green after
+deploy; all 429 sitemap pages carry the new header and footer (checked live).
 Baseline before the change: `docs/seo/baseline-2026-09-18-startseite-simulation/`
 (production HTML of both pages, Search Console queries 28/56 days, production
 revision in `produktions-revision.txt`).
@@ -61,19 +63,30 @@ JavaScript do not see them (follow-up after launch: server-rendered snapshot).
   `scripts/solar-rueckblick-verify.md`, deadline in `lib/pruefstand.ts`,
   reported by the health check).
 
-## Before the go
+## Measured after going live (19.09.2026, emulated mid-range phone, slow 4G, 4x CPU)
 
-1. Codex's menu/design changes merged from his branch.
-2. Legal review of privacy section 17 (running).
-3. Production build + throttled mobile performance on the final state.
-4. Operator: acceptance in the browser, real Safari on iPhone 15 Pro, one real
-   waitlist signup on production after deploy.
+| Page | First paint | Largest paint | Layout shift | Transfer |
+|---|---|---|---|---|
+| `/` | 0.75 s | 1.20 s | 0.000 | 1265 kB |
+| `/pv-simulation` | 0.70 s | 0.70 s | 0.000 | 987 kB |
+| `/balkonkraftwerk/rechner` | 0.56 s | 0.56 s | 0.006 | 478 kB |
+| `/photovoltaik-rechner` | 0.51 s | 0.51 s | 0.006 | 528 kB |
+
+Before (old design): `/` 0.54 s / 0.54 s, 549 kB. Scene fades in ~3.5 s after
+load over ~1.1 s. Safari engine (WebKit, iPhone 15 Pro emulation): no errors.
+
+## Follow-ups
+
+- 404 page is Next's bare default (predates this release) — put it in the new frame.
+- Homepage transfers ~2x the old weight (scene, inline images) — trim.
+- Sections below the hero are script-built; render them server-side for crawlers.
+- Old header/footer/trust-bar rules still in the theme stylesheet (unused) — remove.
 
 ## Rollback
 
-The release is one merge commit on main. Rollback = `git revert -m 1 <merge sha>`
-and push, or Vercel "Instant Rollback" to the deployment of
-`produktions-revision.txt`. No URL, redirect or data migration is involved;
+The release is one merge commit on main. Rollback = `git revert -m 1 35204955`
+and push, or Vercel "Instant Rollback" to deployment
+`dpl_61SpckGgdjGw8Hra7NShyeVCcocp` (built from `edd0614b`). No URL, redirect or data migration is involved;
 the new tables (`solar_rueckblick`, `warteliste`) and routes are additive and
 can stay. After a rollback `/angebot-pruefen` disappears; waitlist entries stay
 in the table and the daily cleanup keeps its promises.
