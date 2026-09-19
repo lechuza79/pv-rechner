@@ -15,21 +15,28 @@ beforeAll(() => {
 });
 
 describe("Waitlist consent wording", () => {
+  // The signup lives on its own page since 19.09.2026; the menu only links
+  // there. The page must render AND send the latest archived version, taken
+  // from the archive — never typed — so the stored version points at the text
+  // the person actually saw.
+  const seite = lies("app/angebot-pruefen/route.ts");
   const nav = lies("public/shared-nav/nav.js");
 
-  it("the version the menu sends is in the archive", () => {
-    const gesendet = nav.match(/consent:'([^']+)'/)?.[1];
-    expect(gesendet).toBeTruthy();
-    expect(wartelisteFassung(gesendet)).not.toBeNull();
+  it("the page renders and sends the latest archived version", () => {
+    expect(seite).toMatch(/WARTELISTE_FASSUNGEN\[WARTELISTE_FASSUNGEN\.length - 1\]/);
+    expect(seite).toContain("esc(FASSUNG.einleitung)");
+    expect(seite).toContain("esc(FASSUNG.zusage)");
+    expect(seite).toContain("consent:${JSON.stringify(FASSUNG.version)}");
   });
 
-  // The proof of consent is the WORDING. If the menu text changes without a
-  // new version here, stored entries would point at a text nobody saw.
-  it("the current version's texts are exactly what the menu shows", () => {
-    const gesendet = nav.match(/consent:'([^']+)'/)![1];
-    const f = wartelisteFassung(gesendet)!;
-    expect(nav).toContain(f.einleitung);
-    expect(nav).toContain(f.zusage);
+  it("the latest version resolves in the archive the signup route checks", () => {
+    const neueste = WARTELISTE_FASSUNGEN[WARTELISTE_FASSUNGEN.length - 1];
+    expect(wartelisteFassung(neueste.version)).toEqual(neueste);
+  });
+
+  it("the menu has no second signup form of its own", () => {
+    expect(nav).not.toMatch(/warteliste\/anmelden/);
+    expect(nav).not.toMatch(/consent:/);
   });
 
   it("versions are unique", () => {

@@ -35,8 +35,9 @@ test("Wärmepumpe flow lands on a result with TCO and amortization", async ({ pa
   await page.getByRole("button", { name: /berechnen|ergebnis|fertig/i }).click();
 
   // Result: heat-load, JAZ, TCO comparison, amortization
-  await expect(page.getByText(/Amortisation|Ersparnis|TCO/i).first()).toBeVisible({ timeout: 10_000 });
-  await expect(page.getByText(/Wärmepumpe|Gas/i).first()).toBeVisible();
+  // Visible matches only: the site menu carries the same words in its closed flyouts.
+  await expect(page.getByText(/Amortisation|Ersparnis|TCO/i).filter({ visible: true }).first()).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText(/Wärmepumpe|Gas/i).filter({ visible: true }).first()).toBeVisible();
 
   const bodyText = await page.locator("body").innerText();
   // Should contain a € figure (savings or TCO) and at least one year reference

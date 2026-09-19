@@ -37,7 +37,7 @@ test.describe("Shared navigation", () => {
     await page.goto("/impressum");
     const nav = page.getByRole("navigation", { name: "Hauptnavigation" });
     await nav.locator('[data-section="tools"] > summary').click();
-    await expect(nav.getByRole("link", { name: /Angebotscheck/ })).toHaveAttribute("href", "/angebot-pruefen");
+    await expect(nav.getByRole("link", { name: /Warteliste/ })).toHaveAttribute("href", "/angebot-pruefen");
     await nav.locator('[data-section="monitor"] > summary').click();
     await expect(nav.locator("details[open]")).toHaveCount(1);
     await expect(nav.getByRole("link", { name: /Atomstrom-Import/ })).toBeVisible();

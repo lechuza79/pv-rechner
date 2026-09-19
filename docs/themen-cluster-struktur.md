@@ -106,7 +106,7 @@ damit wir später umbauen können". Eine neue Seite in einem Cluster muss heute 
 
 1. die Menügruppe in `components/Header.tsx` (`BALKON_ITEMS`),
 2. die Markierungs-Kette in derselben Datei (Pfad → Schlüssel),
-3. die Fußzeile in `components/Footer.tsx` (`GROUPS`),
+3. die Fußzeile in `lib/site-fuss.ts` (`FUSS_GRUPPEN`),
 
 dazu die Ratgeber-Registry, wenn es ein Artikel ist. **Beim Speicher-Ratgeber
 sind zwei davon vergessen worden** — und keine davon fällt im Browser auf: Die

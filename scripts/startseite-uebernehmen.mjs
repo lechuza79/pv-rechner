@@ -101,6 +101,17 @@ for (const d of ORDNER) kopiere(d);
 
 // ─── Patches ────────────────────────────────────────────────────────────────
 // Each: file (in public/ or the page templates), from, to, why.
+// The retrospective's credit comes from the source registry, never typed here:
+// CC BY 4.0 needs licensor, licence link and the change note (legal checklist 1),
+// and a second hand-written copy would drift from lib/data-sources.ts.
+const { DATA_SOURCES } = await import(join(ZIEL, "lib/data-sources.ts"));
+const quelleLink = (href, text) => `<a href="${href}" target="_blank" rel="noopener">${text}</a>`;
+const ERA5 = DATA_SOURCES.era5Archive;
+const EUROSTAT = DATA_SOURCES.eurostat;
+const RUECKBLICK_QUELLE =
+  `Grundlage: st\\xFCndliche Wetterdaten aus ${quelleLink(ERA5.url, ERA5.name)} ` +
+  `(${quelleLink(ERA5.licenseUrl, ERA5.license)}, ${ERA5.note}) und historische ` +
+  `Durchschnittsstrompreise von ${quelleLink(EUROSTAT.url, EUROSTAT.name)} (${EUROSTAT.note}).`;
 const DOMAIN_WEG = { from: /https:\/\/solar-check\.io(?=[/"'`])/g, to: "", why: "Links auf die eigene Seite relativ statt auf die Live-Domain (die Vorschau lief auf localhost)." };
 const PATCHES = [
   {
@@ -169,6 +180,12 @@ const PATCHES = [
     to: 'document.title=y?"PV-Simulation \u2013 live: Was produziert dein Dach gerade? | Solar Check":f',
     why: "Dieselbe Titel-Zuweisung für die Simulation.",
   },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: 'Grundlage: st\\xFCndliche <a href="https://open-meteo.com/en/docs/historical-weather-api" target="_blank" rel="noopener">Wetterdaten</a> und historische <a href="https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table" target="_blank" rel="noopener">Durchschnittsstrompreise</a>.',
+    to: RUECKBLICK_QUELLE,
+    why: "Die Rückschau rechnet mit ERA5 (Copernicus, CC BY 4.0) und Eurostat-Preisen; die Quellenzeile nennt Urheber, Lizenz und Änderungshinweis aus dem Quellen-Register.",
+  },
   { datei: "dynamic-hero/dist/test.js", ...DOMAIN_WEG },
   // After the domain patch: these match the already relative defaults.
   {
@@ -233,6 +250,9 @@ function vorlage(quelle) {
   rumpf = rumpf.replace(/<script>\(function\(\)\{const q=new URLSearchParams\(location\.search\);const explicit=[\s\S]*?<\/script>/, "");
   rumpf = rumpf.replace(/<script type="module" src="\/design-lab\/homepage-experiments\.js"><\/script>/, "");
   if (!rumpf.includes('<footer class="prototype-footer"')) throw new Error(`Kein Fußbereich gefunden in ${quelle}`);
+  // The placeholder footer carries the draft's label ("Hero-Konzept · …"); it is
+  // hidden only by script, so without script and for crawlers it would show.
+  rumpf = rumpf.replace(/<footer class="prototype-footer">[\s\S]*?<\/footer>/, "");
   // The static footer placeholder sits inside a section the page hides; the
   // real footer is built by script. Our additions go to the end of the body
   // (visible without script) and are moved before the built footer (see

@@ -683,7 +683,7 @@ export const globalStyles = `
   .footer-cols>div{padding:0 22px}
   .footer-cols>div+div{border-left:1px solid var(--color-border)}
   @media (max-width:640px){.footer-cols{grid-template-columns:1fr;max-width:none;gap:20px}.footer-cols>div{padding:0}.footer-cols>div+div{border-left:none}}
-  /* Vertrauens-Leiste über dem Footer (components/TrustBar.tsx). Zwei Spalten
+  /* Vertrauens-Leiste des ALTEN Footers (bis 19.09.2026, ersetzt durch lib/site-fuss.ts; Regeln unbenutzt). Zwei Spalten
      auf Desktop statt vier: Die Punkte sind ganze Sätze, und bei der 600px des
      Footer-Rasters bliebe für vier Spalten je ~140px — zu schmal zum Lesen.
      Der Abstand nach unten ist das Doppelte der größten Skalenstufe (96px) und
