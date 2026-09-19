@@ -9217,6 +9217,98 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: null,
   },
+
+  // NEU AUFGENOMMEN 20.09.2026. Gefunden über die Quellenliste (Aurachtal
+  // verlinkt die Seite des Landkreises). Programmseite und das dort verlinkte
+  // Antragsformular am 20.09.2026 im Volltext gelesen (Formular-Kopie:
+  // docs/quellen/erlangen-hoechstadt-waermepumpe-foerderantrag-2026-01.pdf).
+  // Council 3/3 am 20.09.2026, adversarialer Prüfer und Legal-Judge
+  // eingeschlossen; beide haben die Aufnahme nur MIT ÄNDERUNGEN freigegeben,
+  // die hier eingearbeitet sind.
+  //
+  // KEIN ABZUG — und die naheliegende Begründung trägt NICHT. „Das Modell kennt
+  // die Wärmequelle nicht" wäre falsch: Poing führt 800 € Erdwärme / 600 € Luft
+  // und trägt trotzdem den niedrigeren Satz plus eine Bedingungszeile. Und „ein
+  // halogenfreies Kältemittel hat kaum ein Gerät" ist widerlegt — 74 % aller
+  // BEG-Heizungsmaßnahmen 2025 trugen den Effizienzbonus, dessen Kriterium
+  // natürliches Kältemittel ODER Erd-/Wasserquelle ist (KfW-Förderreport).
+  // Was wirklich trägt, ist die EFFIZIENZSCHWELLE: Der Landkreis verlangt in
+  // fünf von sechs Zellen MEHR als die BEG (Luft 180 statt 150 % bei 35 °C,
+  // 130 statt 125 % bei 55 °C; Wasser 240 statt 180 % und 160 statt 140 %).
+  // Jedes BAFA-gelistete Gerät hält die BEG-Werte — wie viele die schärferen
+  // halten, ist NICHT gemessen (die BAFA-Schnittstelle weist eine Suche ohne
+  // Pflichtkriterium ab). Solange das offen ist, ist keine Zahl die richtige
+  // Richtung. Wer den Abzug nachrüsten will, misst zuerst diesen Anteil.
+  //
+  // DIE ZWEI-MONATS-FRIST STEHT NUR IM FORMULAR, nicht auf der Programmseite —
+  // und sie ist die teuerste Auskunft des Programms: „Das Rechnungsdatum liegt
+  // maximal zwei Monate zurück. (Später vorgelegte Förderanträge werden nicht
+  // berücksichtigt.)" Wer nur die Seite liest, baut einen Eintrag, der genau in
+  // dem Punkt schweigt, der über Geld oder kein Geld entscheidet.
+  //
+  // ANTRAG NACH DEM KAUF — ausdrücklich GEGEN die BEG-Reihenfolge. Das Formular
+  // verlangt den Kaufbeleg als Anlage; eine Antragstellung vor Vorhabenbeginn
+  // wäre hier eine Verschärfung ohne Fundstelle. Beide Reihenfolgen stehen im
+  // selben Rechner-Ergebnis nebeneinander, deshalb nennt die Bedingung den
+  // Unterschied.
+  //
+  // „EIN RECHTSANSPRUCH BESTEHT NICHT" STEHT NIRGENDS und darf deshalb auch
+  // hier nicht stehen (Legal-Judge, 20.09.2026): Weder Seite noch Formular
+  // enthalten das Wort. Über die Selbstbindung der Verwaltung besteht bei einer
+  // freiwilligen Leistung ein Anspruch auf Gleichbehandlung und auf
+  // ermessensfehlerfreie Entscheidung; wer „kein Anspruch" liest, ficht eine
+  // Ablehnung womöglich nicht an, gegen die ihm etwas zusteht. Der belegte
+  // Wortlaut des Haushaltsvorbehalts trägt die Aussage vollständig.
+  //
+  // NICHT „JAHRESARBEITSZAHL" (Legal-Judge): Die Quelle nennt die
+  // jahreszeitbedingte Leistungszahl (SCOP) für mittleres Klima, das Formular
+  // dieselbe Größe als ηs in Prozent. Die Jahresarbeitszahl ist das
+  // Betriebsergebnis im konkreten Gebäude — sie zu verlangen wäre eine
+  // Verschärfung, und die BAFA-Liste weist sie gar nicht aus.
+  //
+  // BEFRISTUNG ROLLT JÄHRLICH, ist also kein Programmende: Im Webarchiv steht
+  // 2024 „bis zum 31.12.2024", 2025 „bis zum 31.12.2025", heute 2026. Am
+  // 15.02.2025 stand dort allerdings sechs Wochen lang eine ABGELAUFENE
+  // Geltung bei unverändertem Fingerabdruck — der Seiten-Wächter hätte den
+  // Eintrag in dieser Zeit weiter als bestätigt geführt. Deshalb: Wiedervorlage
+  // im Januar 2027 VON HAND, der Fingerabdruck taugt am Jahreswechsel nicht.
+  //
+  // ANTRAGSBERECHTIGUNG IST ABGELEITET, nicht zitiert: Weder Seite noch
+  // Formular regeln sie. Die Seite hängt unter „Angebote für Bürgerinnen und
+  // Bürger", das Formular fragt Person, Wohnort und privates Konto, die
+  // Pressemitteilung vom 06.02.2024 spricht von „Haushalte des Landkreises".
+  // Das trägt „privat ist eingeschlossen", nicht „nur privat".
+  //
+  // OFFEN und bewusst nicht aufgelöst: ob die 35-°C- oder die 55-°C-Spalte
+  // gilt. Die Seite stellt beide als Anwendungsfälle nebeneinander, das
+  // Formular verlangt beide Felder. Die Bedingung nennt deshalb beide Werte.
+  "erlangen-hoechstadt-waermepumpe": {
+    id: "erlangen-hoechstadt-waermepumpe", name: "Förderprogramm Wärmepumpen",
+    traeger: "Landkreis Erlangen-Höchstadt", level: "landkreis", region: "Landkreis Erlangen-Höchstadt",
+    bundesland: "Bayern", agsCode: "09572",
+    url: "https://www.erlangen-hoechstadt.de/leben-in-erh/klima-und-energie/angebote/fuer-buergerinnen-und-buerger/foerderprogramm-waermepumpen/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-01-01", endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    foerdert: ["waermepumpe"],
+    coveredCosts: "Zuschuss zur Neu-Anschaffung einer besonders klimafreundlichen und effizienten Wärmepumpe, die ihre Wärme an einen wassergeführten Heizkreis abgibt",
+    maxFoerderung: "500 € bei Erdwärme oder Grundwasser",
+    rates: [
+      { label: "Luftwärmepumpe", value: "250 €", nur: ["waermepumpe"] },
+      { label: "Wärmepumpe mit Erdwärme oder Grundwasser als Wärmequelle", value: "500 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      { text: "Der Antrag muss spätestens zwei Monate nach dem Rechnungsdatum vorliegen — später eingereichte Anträge werden nach dem Antragsformular nicht berücksichtigt", nur: ["waermepumpe"] },
+      { text: "Anders als bei der Bundesförderung wird hier NACH dem Kauf beantragt: Der Kaufbeleg mit dem Wärmepumpen-Modell gehört als Anlage zum Antrag", nur: ["waermepumpe"] },
+      { text: "Die Wärmepumpe muss in einem Gebäude im Landkreis Erlangen-Höchstadt eingebaut und betrieben werden", nur: ["waermepumpe"] },
+      { text: "Gefördert wird nur die Neu-Anschaffung — ein gebrauchtes Gerät ist ausgeschlossen", nur: ["waermepumpe"] },
+      { text: "Die Wärmepumpe muss in der Liste der förderfähigen Wärmepumpenanlagen des BAFA stehen und ihre Wärme an einen wassergeführten Heizkreis abgeben", nur: ["waermepumpe"] },
+      { text: "Natürliches Kältemittel ohne Halogene — das Antragsformular lässt R290 Propan, R600a Isobutan, R1270 Propen, R717 Ammoniak, R718 Wasser und R744 Kohlendioxid zu. Die marktüblichen Kältemittel R32, R410A und R454C enthalten Fluor und sind damit ausgeschlossen", nur: ["waermepumpe"] },
+      { text: "Mindest-Effizienz nach der BAFA-Liste, jahreszeitbedingte Leistungszahl (SCOP) für mittleres Klima: Luft/Wasser 3,3 bei 55 °C bzw. 4,6 bei 35 °C (ηs 130 bzw. 180 %), Sole/Wasser 3,7 bzw. 5,3 (ηs 140 bzw. 205 %), Wasser/Wasser 4,2 bzw. 6,2 (ηs 160 bzw. 240 %). Diese Schwellen liegen über denen der Bundesförderung", nur: ["waermepumpe"] },
+      { text: "Befristet bis 31.12.2026, vorbehaltlich der im Landkreishaushalt 2026 verfügbaren Mittel", nur: ["waermepumpe"] },
+    ],
+    combinableWith: BUND,
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

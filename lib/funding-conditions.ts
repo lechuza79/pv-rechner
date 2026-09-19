@@ -292,6 +292,54 @@ export const NOCH_NICHT_ERFASST: string[] = [
  * genau die stille Lücke, die der Test verhindern soll.
  */
 export const FUNDING_CHECKS: Record<string, FundingChecks> = {
+  // Landkreis Erlangen-Höchstadt, Wärmepumpen-Zuschuss (aufgenommen 20.09.2026).
+  // Prüfbar ist hier genau EINES: der Antragszeitpunkt. Alles andere sind
+  // Geräteeigenschaften (Kältemittel, Effizienzstufe, BAFA-Listung, Heizkreis),
+  // die der Rechner nicht kennt — deshalb Hinweis, nicht Prüfung, und deshalb
+  // trägt das Programm auch keinen Abzug.
+  "erlangen-hoechstadt-waermepumpe": {
+    pruefungen: [
+      {
+        ausBedingung: "Der Antrag muss spätestens zwei Monate nach dem Rechnungsdatum vorliegen — später eingereichte Anträge werden nach dem Antragsformular nicht berücksichtigt",
+        // Die Frist steht bewusst NICHT als `fristMonate`: Sie läuft ab dem
+        // RECHNUNGSDATUM, nicht ab Inbetriebnahme, und die Rechnung kann vorher
+        // liegen. Als Monatsfrist ab Inbetriebnahme gerechnet wäre sie zu
+        // großzügig — also die gefährliche Richtung. Der Zeitpunkt hier, die
+        // zwei Monate im Text daneben.
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "nach-inbetriebnahme" },
+      },
+    ],
+    durchRegion: [
+      "Die Wärmepumpe muss in einem Gebäude im Landkreis Erlangen-Höchstadt eingebaut und betrieben werden",
+    ],
+    hinweise: [
+      {
+        ausBedingung: "Anders als bei der Bundesförderung wird hier NACH dem Kauf beantragt: Der Kaufbeleg mit dem Wärmepumpen-Modell gehört als Anlage zum Antrag",
+        warum: "Die Reihenfolge steht schon als Prüfung; dieser Satz grenzt sie gegen die BEG-Regel „Antrag vor Vorhabenbeginn\" ab, die im selben Ergebnis daneben steht.",
+      },
+      {
+        ausBedingung: "Gefördert wird nur die Neu-Anschaffung — ein gebrauchtes Gerät ist ausgeschlossen",
+        warum: "Der Rechner rechnet ohnehin mit einer neuen Anlage; ob jemand ein gebrauchtes Gerät einbaut, weiß er nicht.",
+      },
+      {
+        ausBedingung: "Die Wärmepumpe muss in der Liste der förderfähigen Wärmepumpenanlagen des BAFA stehen und ihre Wärme an einen wassergeführten Heizkreis abgeben",
+        warum: "Geräteeigenschaft aus einer fremden Liste — der Rechner kennt weder das Modell noch den Heizkreis.",
+      },
+      {
+        ausBedingung: "Natürliches Kältemittel ohne Halogene — das Antragsformular lässt R290 Propan, R600a Isobutan, R1270 Propen, R717 Ammoniak, R718 Wasser und R744 Kohlendioxid zu. Die marktüblichen Kältemittel R32, R410A und R454C enthalten Fluor und sind damit ausgeschlossen",
+        warum: "Geräteeigenschaft; das Kältemittel steht im Datenblatt, nicht in den Angaben des Nutzers.",
+      },
+      {
+        ausBedingung: "Mindest-Effizienz nach der BAFA-Liste, jahreszeitbedingte Leistungszahl (SCOP) für mittleres Klima: Luft/Wasser 3,3 bei 55 °C bzw. 4,6 bei 35 °C (ηs 130 bzw. 180 %), Sole/Wasser 3,7 bzw. 5,3 (ηs 140 bzw. 205 %), Wasser/Wasser 4,2 bzw. 6,2 (ηs 160 bzw. 240 %). Diese Schwellen liegen über denen der Bundesförderung",
+        warum: "Geräteeigenschaft, und der genaue Anteil der Geräte, die diese Schwellen halten, ist nicht gemessen — genau deshalb zieht das Programm auch nichts ab.",
+      },
+      {
+        ausBedingung: "Befristet bis 31.12.2026, vorbehaltlich der im Landkreishaushalt 2026 verfügbaren Mittel",
+        warum: "Haushaltsvorbehalt des Trägers — nicht am Vorhaben des Nutzers prüfbar.",
+      },
+    ],
+  },
+
   "bund-nullsteuer": {
     ohneAntrag: {
       warum:
