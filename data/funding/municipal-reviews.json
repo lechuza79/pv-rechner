@@ -33812,5 +33812,624 @@
     ],
     "outcome": "programme-geprueft",
     "conclusion": "Wissen gehört zur Verbandsgemeinde Wissen (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die erfassten Quellen betreffen Wohnraum-, Städtebau- oder Kommunalförderung. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132002",
+    "name": "Alsdorf",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Seitenverzeichnis (Förder-, Klima-, Energie-, Solar-, Speicher-, Balkon-Seiten) gefiltert; Speicherprogramm-Seite und die Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld und Wallmenroth im Original gelesen (19.09.2026)",
+      "betzdorf.de: Seitenverzeichnis (99 Seiten) gelesen; einzige Förderrichtlinie ist die Vereinsförderung vom 26.04.2023",
+      "Websuche „Betzdorf Wallmenroth Scheuerfeld Alsdorf Förderung Balkonkraftwerk Wärmepumpe Zuschuss“ und „Stadt Betzdorf Förderrichtlinie Balkonkraftwerk“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“"
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/umgesetzte-umwelt-und-klimaschutzmassnahmen-in-der-vg-betzdorf-gebhardshain/",
+        "finding": "Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld, Wallmenroth gelesen: nur eigene kommunale Maßnahmen (LED-Straßenbeleuchtung, Fenstertausch/Dämmung Kita, PV auf dem Feuerwehrhaus Wallmenroth) — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.betzdorf.de/files/media/Bilder/StadtUndPolitik/Fo%CC%88rderrichtlinie%20Stadt%20Betzdorf.pdf",
+        "finding": "Förderrichtlinie der Stadt Betzdorf vom 26.04.2023 gelesen: Zuschüsse an Vereine, Verbände, Organisationen und kirchliche/caritative Einrichtungen — kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [],
+    "outcome": "programme-geprueft",
+    "conclusion": "Alsdorf gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen laufenden Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; das Speicherprogramm der VG ist beendet. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132020",
+    "name": "Dickendorf",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Seitenverzeichnis (Förder-, Klima-, Energie-, Solar-, Speicher-, Balkon-Seiten) gefiltert; Speicherprogramm-Seite und die Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld und Wallmenroth im Original gelesen (19.09.2026)",
+      "betzdorf.de: Seitenverzeichnis (99 Seiten) gelesen; einzige Förderrichtlinie ist die Vereinsförderung vom 26.04.2023",
+      "Websuche „Betzdorf Wallmenroth Scheuerfeld Alsdorf Förderung Balkonkraftwerk Wärmepumpe Zuschuss“ und „Stadt Betzdorf Förderrichtlinie Balkonkraftwerk“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“"
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/umgesetzte-umwelt-und-klimaschutzmassnahmen-in-der-vg-betzdorf-gebhardshain/",
+        "finding": "Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld, Wallmenroth gelesen: nur eigene kommunale Maßnahmen (LED-Straßenbeleuchtung, Fenstertausch/Dämmung Kita, PV auf dem Feuerwehrhaus Wallmenroth) — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.betzdorf.de/files/media/Bilder/StadtUndPolitik/Fo%CC%88rderrichtlinie%20Stadt%20Betzdorf.pdf",
+        "finding": "Förderrichtlinie der Stadt Betzdorf vom 26.04.2023 gelesen: Zuschüsse an Vereine, Verbände, Organisationen und kirchliche/caritative Einrichtungen — kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Speicherprogramm der Verbandsgemeinde beendet (Doppelförderung mit dem Kreisprogramm unzulässig); Kreisprogramme im Katalog.",
+        "evidenceUrl": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Dickendorf gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen laufenden Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; das Speicherprogramm der VG ist beendet. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132030",
+    "name": "Fensdorf",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Seitenverzeichnis (Förder-, Klima-, Energie-, Solar-, Speicher-, Balkon-Seiten) gefiltert; Speicherprogramm-Seite und die Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld und Wallmenroth im Original gelesen (19.09.2026)",
+      "betzdorf.de: Seitenverzeichnis (99 Seiten) gelesen; einzige Förderrichtlinie ist die Vereinsförderung vom 26.04.2023",
+      "Websuche „Betzdorf Wallmenroth Scheuerfeld Alsdorf Förderung Balkonkraftwerk Wärmepumpe Zuschuss“ und „Stadt Betzdorf Förderrichtlinie Balkonkraftwerk“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“"
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/umgesetzte-umwelt-und-klimaschutzmassnahmen-in-der-vg-betzdorf-gebhardshain/",
+        "finding": "Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld, Wallmenroth gelesen: nur eigene kommunale Maßnahmen (LED-Straßenbeleuchtung, Fenstertausch/Dämmung Kita, PV auf dem Feuerwehrhaus Wallmenroth) — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.betzdorf.de/files/media/Bilder/StadtUndPolitik/Fo%CC%88rderrichtlinie%20Stadt%20Betzdorf.pdf",
+        "finding": "Förderrichtlinie der Stadt Betzdorf vom 26.04.2023 gelesen: Zuschüsse an Vereine, Verbände, Organisationen und kirchliche/caritative Einrichtungen — kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [],
+    "outcome": "programme-geprueft",
+    "conclusion": "Fensdorf gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen laufenden Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; das Speicherprogramm der VG ist beendet. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132042",
+    "name": "Grünebach",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Seitenverzeichnis (Förder-, Klima-, Energie-, Solar-, Speicher-, Balkon-Seiten) gefiltert; Speicherprogramm-Seite und die Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld und Wallmenroth im Original gelesen (19.09.2026)",
+      "betzdorf.de: Seitenverzeichnis (99 Seiten) gelesen; einzige Förderrichtlinie ist die Vereinsförderung vom 26.04.2023",
+      "Websuche „Betzdorf Wallmenroth Scheuerfeld Alsdorf Förderung Balkonkraftwerk Wärmepumpe Zuschuss“ und „Stadt Betzdorf Förderrichtlinie Balkonkraftwerk“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“"
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/umgesetzte-umwelt-und-klimaschutzmassnahmen-in-der-vg-betzdorf-gebhardshain/",
+        "finding": "Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld, Wallmenroth gelesen: nur eigene kommunale Maßnahmen (LED-Straßenbeleuchtung, Fenstertausch/Dämmung Kita, PV auf dem Feuerwehrhaus Wallmenroth) — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.betzdorf.de/files/media/Bilder/StadtUndPolitik/Fo%CC%88rderrichtlinie%20Stadt%20Betzdorf.pdf",
+        "finding": "Förderrichtlinie der Stadt Betzdorf vom 26.04.2023 gelesen: Zuschüsse an Vereine, Verbände, Organisationen und kirchliche/caritative Einrichtungen — kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [],
+    "outcome": "programme-geprueft",
+    "conclusion": "Grünebach gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen laufenden Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; das Speicherprogramm der VG ist beendet. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132098",
+    "name": "Scheuerfeld",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Seitenverzeichnis (Förder-, Klima-, Energie-, Solar-, Speicher-, Balkon-Seiten) gefiltert; Speicherprogramm-Seite und die Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld und Wallmenroth im Original gelesen (19.09.2026)",
+      "betzdorf.de: Seitenverzeichnis (99 Seiten) gelesen; einzige Förderrichtlinie ist die Vereinsförderung vom 26.04.2023",
+      "Websuche „Betzdorf Wallmenroth Scheuerfeld Alsdorf Förderung Balkonkraftwerk Wärmepumpe Zuschuss“ und „Stadt Betzdorf Förderrichtlinie Balkonkraftwerk“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“"
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/umgesetzte-umwelt-und-klimaschutzmassnahmen-in-der-vg-betzdorf-gebhardshain/",
+        "finding": "Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld, Wallmenroth gelesen: nur eigene kommunale Maßnahmen (LED-Straßenbeleuchtung, Fenstertausch/Dämmung Kita, PV auf dem Feuerwehrhaus Wallmenroth) — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.betzdorf.de/files/media/Bilder/StadtUndPolitik/Fo%CC%88rderrichtlinie%20Stadt%20Betzdorf.pdf",
+        "finding": "Förderrichtlinie der Stadt Betzdorf vom 26.04.2023 gelesen: Zuschüsse an Vereine, Verbände, Organisationen und kirchliche/caritative Einrichtungen — kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [],
+    "outcome": "programme-geprueft",
+    "conclusion": "Scheuerfeld gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen laufenden Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; das Speicherprogramm der VG ist beendet. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132111",
+    "name": "Wallmenroth",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Seitenverzeichnis (Förder-, Klima-, Energie-, Solar-, Speicher-, Balkon-Seiten) gefiltert; Speicherprogramm-Seite und die Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld und Wallmenroth im Original gelesen (19.09.2026)",
+      "betzdorf.de: Seitenverzeichnis (99 Seiten) gelesen; einzige Förderrichtlinie ist die Vereinsförderung vom 26.04.2023",
+      "Websuche „Betzdorf Wallmenroth Scheuerfeld Alsdorf Förderung Balkonkraftwerk Wärmepumpe Zuschuss“ und „Stadt Betzdorf Förderrichtlinie Balkonkraftwerk“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“"
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/umgesetzte-umwelt-und-klimaschutzmassnahmen-in-der-vg-betzdorf-gebhardshain/",
+        "finding": "Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld, Wallmenroth gelesen: nur eigene kommunale Maßnahmen (LED-Straßenbeleuchtung, Fenstertausch/Dämmung Kita, PV auf dem Feuerwehrhaus Wallmenroth) — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.betzdorf.de/files/media/Bilder/StadtUndPolitik/Fo%CC%88rderrichtlinie%20Stadt%20Betzdorf.pdf",
+        "finding": "Förderrichtlinie der Stadt Betzdorf vom 26.04.2023 gelesen: Zuschüsse an Vereine, Verbände, Organisationen und kirchliche/caritative Einrichtungen — kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [],
+    "outcome": "programme-geprueft",
+    "conclusion": "Wallmenroth gehört zur Verbandsgemeinde Betzdorf-Gebhardshain (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen laufenden Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; das Speicherprogramm der VG ist beendet. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132012",
+    "name": "Brachbach",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kirchen-sieg.de: Startseite, Gemeindeseiten von Brachbach, Friesenhagen, Harbach, Mudersbach, Niederfischbach und Stadt Kirchen samt verlinkter Satzungen/Richtlinien gelesen (19.09.2026); Seitenverzeichnis liefert nichts",
+      "Webarchiv-Index von kirchen-sieg.de nach Förderrichtlinien durchsucht: Stecker-PV-Richtlinien der Stadt Kirchen (2023) und der Ortsgemeinde Mudersbach (2024), Heizungspumpen-Richtlinie der VG (2019–2021), Breitband Friesenhagen",
+      "gemeinde-harbach.de Suche „Förderung“ (16 Treffer) und „Balkonkraftwerk“; niederfischbach.de Suche „Förderprogramm“",
+      "Websuchen „Kirchen Sieg Mudersbach Niederfischbach Förderprogramm Balkonkraftwerk“ und „Brachbach Friesenhagen Harbach Niederfischbach Richtlinie steckerfertige Photovoltaik“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/dokumente/Alle/Richtlinie_OG_Mudersbach_Foerderung_Stecker_PV_Anlagen.pdf",
+        "finding": "Richtlinie der Ortsgemeinde Mudersbach vom 08.05.2024 (unterschrieben 15.01.2025, noch abrufbar) gelesen: 100 € pauschal je steckerfertiger Anlage bis zur Bagatellgrenze, Eigentümer und Mieter, Antrag bis 12 Monate nach Inbetriebnahme, gültig solange Haushaltsmittel; Antrag nur über die frühere Seite kirchen-sieg.de/steckerphotovoltaik, die seit dem Relaunch nicht mehr existiert (404; im Webarchiv zuletzt 14.04.2026)."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/user_upload/Richtlinie_StadtKirchen_Foerderung_Stecker-PV-Anlagen_15062023.pdf",
+        "finding": "Richtlinie der Stadt Kirchen (Sieg) vom 20.06.2023, in Kraft 01.07.2023, gelesen: 100 € pauschal je steckerfertiger Anlage, gleiche Bedingungen wie Mudersbach, gültig solange Haushaltsmittel; die Antragsseite ist im Webarchiv nur bis 06/2024 belegt."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/stadt-kirchen",
+        "finding": "Gemeindeseite der Stadt Kirchen gelesen: verlinkt ISEK-Sanierungssatzung und Modernisierungsrichtlinie (Mai 2026, Sanierungsgebiet) — kein Energie-Technikzuschuss."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-mudersbach",
+        "finding": "Gemeindeseite Mudersbach gelesen: nur Satzungen, kein Hinweis mehr auf die Stecker-PV-Förderung; mudersbach.net nennt unter Aktuelles weiter die Förderung von Balkonkraftwerken mit Antragslink auf eine nicht mehr existierende VG-Seite."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-brachbach",
+        "finding": "Gemeindeseiten Brachbach, Friesenhagen, Harbach und Niederfischbach gelesen: nur Satzungen, Haushalt, Breitband-Richtlinie (Friesenhagen) — keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.niederfischbach.de/2023/03/24/eigener-strom-dank-balkonkraftwerk/",
+        "finding": "Einziger Treffer unter „Balkonkraftwerke“ auf niederfischbach.de: PR-Artikel eines Fachbetriebs von 03/2023 mit Verweis auf Förderungen in Freudenberg und Siegen — kein Programm der Ortsgemeinde."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [],
+    "outcome": "programme-geprueft",
+    "conclusion": "Brachbach gehört zur Verbandsgemeinde Kirchen (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die Stecker-PV-Richtlinien betreffen nur die Stadt Kirchen und die Ortsgemeinde Mudersbach. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132037",
+    "name": "Friesenhagen",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kirchen-sieg.de: Startseite, Gemeindeseiten von Brachbach, Friesenhagen, Harbach, Mudersbach, Niederfischbach und Stadt Kirchen samt verlinkter Satzungen/Richtlinien gelesen (19.09.2026); Seitenverzeichnis liefert nichts",
+      "Webarchiv-Index von kirchen-sieg.de nach Förderrichtlinien durchsucht: Stecker-PV-Richtlinien der Stadt Kirchen (2023) und der Ortsgemeinde Mudersbach (2024), Heizungspumpen-Richtlinie der VG (2019–2021), Breitband Friesenhagen",
+      "gemeinde-harbach.de Suche „Förderung“ (16 Treffer) und „Balkonkraftwerk“; niederfischbach.de Suche „Förderprogramm“",
+      "Websuchen „Kirchen Sieg Mudersbach Niederfischbach Förderprogramm Balkonkraftwerk“ und „Brachbach Friesenhagen Harbach Niederfischbach Richtlinie steckerfertige Photovoltaik“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/dokumente/Alle/Richtlinie_OG_Mudersbach_Foerderung_Stecker_PV_Anlagen.pdf",
+        "finding": "Richtlinie der Ortsgemeinde Mudersbach vom 08.05.2024 (unterschrieben 15.01.2025, noch abrufbar) gelesen: 100 € pauschal je steckerfertiger Anlage bis zur Bagatellgrenze, Eigentümer und Mieter, Antrag bis 12 Monate nach Inbetriebnahme, gültig solange Haushaltsmittel; Antrag nur über die frühere Seite kirchen-sieg.de/steckerphotovoltaik, die seit dem Relaunch nicht mehr existiert (404; im Webarchiv zuletzt 14.04.2026)."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/user_upload/Richtlinie_StadtKirchen_Foerderung_Stecker-PV-Anlagen_15062023.pdf",
+        "finding": "Richtlinie der Stadt Kirchen (Sieg) vom 20.06.2023, in Kraft 01.07.2023, gelesen: 100 € pauschal je steckerfertiger Anlage, gleiche Bedingungen wie Mudersbach, gültig solange Haushaltsmittel; die Antragsseite ist im Webarchiv nur bis 06/2024 belegt."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/stadt-kirchen",
+        "finding": "Gemeindeseite der Stadt Kirchen gelesen: verlinkt ISEK-Sanierungssatzung und Modernisierungsrichtlinie (Mai 2026, Sanierungsgebiet) — kein Energie-Technikzuschuss."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-mudersbach",
+        "finding": "Gemeindeseite Mudersbach gelesen: nur Satzungen, kein Hinweis mehr auf die Stecker-PV-Förderung; mudersbach.net nennt unter Aktuelles weiter die Förderung von Balkonkraftwerken mit Antragslink auf eine nicht mehr existierende VG-Seite."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-brachbach",
+        "finding": "Gemeindeseiten Brachbach, Friesenhagen, Harbach und Niederfischbach gelesen: nur Satzungen, Haushalt, Breitband-Richtlinie (Friesenhagen) — keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.niederfischbach.de/2023/03/24/eigener-strom-dank-balkonkraftwerk/",
+        "finding": "Einziger Treffer unter „Balkonkraftwerke“ auf niederfischbach.de: PR-Artikel eines Fachbetriebs von 03/2023 mit Verweis auf Förderungen in Freudenberg und Siegen — kein Programm der Ortsgemeinde."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [],
+    "outcome": "programme-geprueft",
+    "conclusion": "Friesenhagen gehört zur Verbandsgemeinde Kirchen (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die Stecker-PV-Richtlinien betreffen nur die Stadt Kirchen und die Ortsgemeinde Mudersbach. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132045",
+    "name": "Harbach",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kirchen-sieg.de: Startseite, Gemeindeseiten von Brachbach, Friesenhagen, Harbach, Mudersbach, Niederfischbach und Stadt Kirchen samt verlinkter Satzungen/Richtlinien gelesen (19.09.2026); Seitenverzeichnis liefert nichts",
+      "Webarchiv-Index von kirchen-sieg.de nach Förderrichtlinien durchsucht: Stecker-PV-Richtlinien der Stadt Kirchen (2023) und der Ortsgemeinde Mudersbach (2024), Heizungspumpen-Richtlinie der VG (2019–2021), Breitband Friesenhagen",
+      "gemeinde-harbach.de Suche „Förderung“ (16 Treffer) und „Balkonkraftwerk“; niederfischbach.de Suche „Förderprogramm“",
+      "Websuchen „Kirchen Sieg Mudersbach Niederfischbach Förderprogramm Balkonkraftwerk“ und „Brachbach Friesenhagen Harbach Niederfischbach Richtlinie steckerfertige Photovoltaik“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/dokumente/Alle/Richtlinie_OG_Mudersbach_Foerderung_Stecker_PV_Anlagen.pdf",
+        "finding": "Richtlinie der Ortsgemeinde Mudersbach vom 08.05.2024 (unterschrieben 15.01.2025, noch abrufbar) gelesen: 100 € pauschal je steckerfertiger Anlage bis zur Bagatellgrenze, Eigentümer und Mieter, Antrag bis 12 Monate nach Inbetriebnahme, gültig solange Haushaltsmittel; Antrag nur über die frühere Seite kirchen-sieg.de/steckerphotovoltaik, die seit dem Relaunch nicht mehr existiert (404; im Webarchiv zuletzt 14.04.2026)."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/user_upload/Richtlinie_StadtKirchen_Foerderung_Stecker-PV-Anlagen_15062023.pdf",
+        "finding": "Richtlinie der Stadt Kirchen (Sieg) vom 20.06.2023, in Kraft 01.07.2023, gelesen: 100 € pauschal je steckerfertiger Anlage, gleiche Bedingungen wie Mudersbach, gültig solange Haushaltsmittel; die Antragsseite ist im Webarchiv nur bis 06/2024 belegt."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/stadt-kirchen",
+        "finding": "Gemeindeseite der Stadt Kirchen gelesen: verlinkt ISEK-Sanierungssatzung und Modernisierungsrichtlinie (Mai 2026, Sanierungsgebiet) — kein Energie-Technikzuschuss."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-mudersbach",
+        "finding": "Gemeindeseite Mudersbach gelesen: nur Satzungen, kein Hinweis mehr auf die Stecker-PV-Förderung; mudersbach.net nennt unter Aktuelles weiter die Förderung von Balkonkraftwerken mit Antragslink auf eine nicht mehr existierende VG-Seite."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-brachbach",
+        "finding": "Gemeindeseiten Brachbach, Friesenhagen, Harbach und Niederfischbach gelesen: nur Satzungen, Haushalt, Breitband-Richtlinie (Friesenhagen) — keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.niederfischbach.de/2023/03/24/eigener-strom-dank-balkonkraftwerk/",
+        "finding": "Einziger Treffer unter „Balkonkraftwerke“ auf niederfischbach.de: PR-Artikel eines Fachbetriebs von 03/2023 mit Verweis auf Förderungen in Freudenberg und Siegen — kein Programm der Ortsgemeinde."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [],
+    "outcome": "programme-geprueft",
+    "conclusion": "Harbach gehört zur Verbandsgemeinde Kirchen (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die Stecker-PV-Richtlinien betreffen nur die Stadt Kirchen und die Ortsgemeinde Mudersbach. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132076",
+    "name": "Niederfischbach",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kirchen-sieg.de: Startseite, Gemeindeseiten von Brachbach, Friesenhagen, Harbach, Mudersbach, Niederfischbach und Stadt Kirchen samt verlinkter Satzungen/Richtlinien gelesen (19.09.2026); Seitenverzeichnis liefert nichts",
+      "Webarchiv-Index von kirchen-sieg.de nach Förderrichtlinien durchsucht: Stecker-PV-Richtlinien der Stadt Kirchen (2023) und der Ortsgemeinde Mudersbach (2024), Heizungspumpen-Richtlinie der VG (2019–2021), Breitband Friesenhagen",
+      "gemeinde-harbach.de Suche „Förderung“ (16 Treffer) und „Balkonkraftwerk“; niederfischbach.de Suche „Förderprogramm“",
+      "Websuchen „Kirchen Sieg Mudersbach Niederfischbach Förderprogramm Balkonkraftwerk“ und „Brachbach Friesenhagen Harbach Niederfischbach Richtlinie steckerfertige Photovoltaik“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/dokumente/Alle/Richtlinie_OG_Mudersbach_Foerderung_Stecker_PV_Anlagen.pdf",
+        "finding": "Richtlinie der Ortsgemeinde Mudersbach vom 08.05.2024 (unterschrieben 15.01.2025, noch abrufbar) gelesen: 100 € pauschal je steckerfertiger Anlage bis zur Bagatellgrenze, Eigentümer und Mieter, Antrag bis 12 Monate nach Inbetriebnahme, gültig solange Haushaltsmittel; Antrag nur über die frühere Seite kirchen-sieg.de/steckerphotovoltaik, die seit dem Relaunch nicht mehr existiert (404; im Webarchiv zuletzt 14.04.2026)."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/user_upload/Richtlinie_StadtKirchen_Foerderung_Stecker-PV-Anlagen_15062023.pdf",
+        "finding": "Richtlinie der Stadt Kirchen (Sieg) vom 20.06.2023, in Kraft 01.07.2023, gelesen: 100 € pauschal je steckerfertiger Anlage, gleiche Bedingungen wie Mudersbach, gültig solange Haushaltsmittel; die Antragsseite ist im Webarchiv nur bis 06/2024 belegt."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/stadt-kirchen",
+        "finding": "Gemeindeseite der Stadt Kirchen gelesen: verlinkt ISEK-Sanierungssatzung und Modernisierungsrichtlinie (Mai 2026, Sanierungsgebiet) — kein Energie-Technikzuschuss."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-mudersbach",
+        "finding": "Gemeindeseite Mudersbach gelesen: nur Satzungen, kein Hinweis mehr auf die Stecker-PV-Förderung; mudersbach.net nennt unter Aktuelles weiter die Förderung von Balkonkraftwerken mit Antragslink auf eine nicht mehr existierende VG-Seite."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-brachbach",
+        "finding": "Gemeindeseiten Brachbach, Friesenhagen, Harbach und Niederfischbach gelesen: nur Satzungen, Haushalt, Breitband-Richtlinie (Friesenhagen) — keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.niederfischbach.de/2023/03/24/eigener-strom-dank-balkonkraftwerk/",
+        "finding": "Einziger Treffer unter „Balkonkraftwerke“ auf niederfischbach.de: PR-Artikel eines Fachbetriebs von 03/2023 mit Verweis auf Förderungen in Freudenberg und Siegen — kein Programm der Ortsgemeinde."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "niederfischbach.de/tag/balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Schlagwortseite führt nur auf einen PR-Artikel eines Fachbetriebs (03/2023) — kein Programm der Ortsgemeinde.",
+        "evidenceUrl": "https://www.niederfischbach.de/2023/03/24/eigener-strom-dank-balkonkraftwerk/"
+      },
+      {
+        "url": "niederfischbach.de/tag/balkonkraftwerke/feed",
+        "disposition": "replaced",
+        "reason": "RSS-Fassung derselben Schlagwortseite mit demselben einen PR-Artikel; durch die gelesene Seite erledigt.",
+        "evidenceUrl": "https://www.niederfischbach.de/2023/03/24/eigener-strom-dank-balkonkraftwerk/"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Niederfischbach gehört zur Verbandsgemeinde Kirchen (Sieg) (Landkreis Altenkirchen). Weder Verbandsgemeinde noch Ortsgemeinde führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die Stecker-PV-Richtlinien betreffen nur die Stadt Kirchen und die Ortsgemeinde Mudersbach. Laufend ist die Ermessensförderung der EKM (Regionalausschuss Altenkirchen): PV, Speicher und Balkonkraftwerke ausgeschlossen, eine Heizungsumstellung etwa auf eine Wärmepumpe nicht; Höhe nach Einzelfall und nur in Orten mit Strom- oder Gasnetz der EAM Netz. Die Kreisprogramme für Balkonkraftwerke und Speicher sind beendet bzw. ausgeschöpft. Stand 19.09.2026."
+  },
+  {
+    "regionId": "07132072",
+    "name": "Mudersbach",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kirchen-sieg.de: Startseite, Gemeindeseiten von Brachbach, Friesenhagen, Harbach, Mudersbach, Niederfischbach und Stadt Kirchen samt verlinkter Satzungen/Richtlinien gelesen (19.09.2026); Seitenverzeichnis liefert nichts",
+      "Webarchiv-Index von kirchen-sieg.de nach Förderrichtlinien durchsucht: Stecker-PV-Richtlinien der Stadt Kirchen (2023) und der Ortsgemeinde Mudersbach (2024), Heizungspumpen-Richtlinie der VG (2019–2021), Breitband Friesenhagen",
+      "gemeinde-harbach.de Suche „Förderung“ (16 Treffer) und „Balkonkraftwerk“; niederfischbach.de Suche „Förderprogramm“",
+      "Websuchen „Kirchen Sieg Mudersbach Niederfischbach Förderprogramm Balkonkraftwerk“ und „Brachbach Friesenhagen Harbach Niederfischbach Richtlinie steckerfertige Photovoltaik“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/dokumente/Alle/Richtlinie_OG_Mudersbach_Foerderung_Stecker_PV_Anlagen.pdf",
+        "finding": "Richtlinie der Ortsgemeinde Mudersbach vom 08.05.2024 (unterschrieben 15.01.2025, noch abrufbar) gelesen: 100 € pauschal je steckerfertiger Anlage bis zur Bagatellgrenze, Eigentümer und Mieter, Antrag bis 12 Monate nach Inbetriebnahme, gültig solange Haushaltsmittel; Antrag nur über die frühere Seite kirchen-sieg.de/steckerphotovoltaik, die seit dem Relaunch nicht mehr existiert (404; im Webarchiv zuletzt 14.04.2026)."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/user_upload/Richtlinie_StadtKirchen_Foerderung_Stecker-PV-Anlagen_15062023.pdf",
+        "finding": "Richtlinie der Stadt Kirchen (Sieg) vom 20.06.2023, in Kraft 01.07.2023, gelesen: 100 € pauschal je steckerfertiger Anlage, gleiche Bedingungen wie Mudersbach, gültig solange Haushaltsmittel; die Antragsseite ist im Webarchiv nur bis 06/2024 belegt."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/stadt-kirchen",
+        "finding": "Gemeindeseite der Stadt Kirchen gelesen: verlinkt ISEK-Sanierungssatzung und Modernisierungsrichtlinie (Mai 2026, Sanierungsgebiet) — kein Energie-Technikzuschuss."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-mudersbach",
+        "finding": "Gemeindeseite Mudersbach gelesen: nur Satzungen, kein Hinweis mehr auf die Stecker-PV-Förderung; mudersbach.net nennt unter Aktuelles weiter die Förderung von Balkonkraftwerken mit Antragslink auf eine nicht mehr existierende VG-Seite."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-brachbach",
+        "finding": "Gemeindeseiten Brachbach, Friesenhagen, Harbach und Niederfischbach gelesen: nur Satzungen, Haushalt, Breitband-Richtlinie (Friesenhagen) — keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.niederfischbach.de/2023/03/24/eigener-strom-dank-balkonkraftwerk/",
+        "finding": "Einziger Treffer unter „Balkonkraftwerke“ auf niederfischbach.de: PR-Artikel eines Fachbetriebs von 03/2023 mit Verweis auf Förderungen in Freudenberg und Siegen — kein Programm der Ortsgemeinde."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [],
+    "outcome": "klaerung",
+    "conclusion": "Die Ortsgemeinde Mudersbach hat eine Richtlinie vom 08.05.2024 zur Förderung steckerfertiger PV-Anlagen (100 € pauschal, solange Haushaltsmittel); die Richtlinie ist noch abrufbar, die Antragsseite der Verbandsgemeinde existiert seit dem Relaunch nicht mehr. Ob Anträge derzeit möglich sind, ist nicht belegt — deshalb Rückfrage und bis dahin kein Katalogeintrag mit Geldabzug. Daneben EKM-Ermessensförderung (Wärmepumpe möglich) und beendete Kreisprogramme.",
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-09-21T07:00:00Z",
+      "detail": "Bestehenden Versandlauf auf Zustellbeleg prüfen; Antwort im Original lesen. Bestätigt die Verwaltung eine laufende Antragstellung, Programm nach Gate aufnehmen; sonst als beendet/historisch erfassen. Nach 14 Tagen ohne Antwort manuelle Nachprüfung, kein automatisches Nachfassen."
+    },
+    "enquiry": {
+      "id": "klaerung-07132072",
+      "recipient": "vg-kirchen@kirchen-sieg.de",
+      "recipientSource": "https://www.kirchen-sieg.de/impressum",
+      "website": "https://www.kirchen-sieg.de",
+      "question": "Auf Ihrer Website ist die Richtlinie der Ortsgemeinde Mudersbach zur Förderung steckerfertiger Photovoltaikanlagen (08.05.2024, 100 € je Anlage) weiterhin abrufbar, die frühere Antragsseite „Steckerphotovoltaik“ ist nach der Umstellung Ihrer Website aber nicht mehr erreichbar. Können Bürgerinnen und Bürger derzeit noch einen Zuschuss nach dieser Richtlinie beantragen, und falls ja, auf welchem Weg? Falls die Förderung beendet ist, hilft mir auch diese kurze Auskunft mit dem Enddatum."
+    }
+  },
+  {
+    "regionId": "07132063",
+    "name": "Kirchen (Sieg)",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "kirchen-sieg.de: Startseite, Gemeindeseiten von Brachbach, Friesenhagen, Harbach, Mudersbach, Niederfischbach und Stadt Kirchen samt verlinkter Satzungen/Richtlinien gelesen (19.09.2026); Seitenverzeichnis liefert nichts",
+      "Webarchiv-Index von kirchen-sieg.de nach Förderrichtlinien durchsucht: Stecker-PV-Richtlinien der Stadt Kirchen (2023) und der Ortsgemeinde Mudersbach (2024), Heizungspumpen-Richtlinie der VG (2019–2021), Breitband Friesenhagen",
+      "gemeinde-harbach.de Suche „Förderung“ (16 Treffer) und „Balkonkraftwerk“; niederfischbach.de Suche „Förderprogramm“",
+      "Websuchen „Kirchen Sieg Mudersbach Niederfischbach Förderprogramm Balkonkraftwerk“ und „Brachbach Friesenhagen Harbach Niederfischbach Richtlinie steckerfertige Photovoltaik“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/dokumente/Alle/Richtlinie_OG_Mudersbach_Foerderung_Stecker_PV_Anlagen.pdf",
+        "finding": "Richtlinie der Ortsgemeinde Mudersbach vom 08.05.2024 (unterschrieben 15.01.2025, noch abrufbar) gelesen: 100 € pauschal je steckerfertiger Anlage bis zur Bagatellgrenze, Eigentümer und Mieter, Antrag bis 12 Monate nach Inbetriebnahme, gültig solange Haushaltsmittel; Antrag nur über die frühere Seite kirchen-sieg.de/steckerphotovoltaik, die seit dem Relaunch nicht mehr existiert (404; im Webarchiv zuletzt 14.04.2026)."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/fileadmin/user_upload/Richtlinie_StadtKirchen_Foerderung_Stecker-PV-Anlagen_15062023.pdf",
+        "finding": "Richtlinie der Stadt Kirchen (Sieg) vom 20.06.2023, in Kraft 01.07.2023, gelesen: 100 € pauschal je steckerfertiger Anlage, gleiche Bedingungen wie Mudersbach, gültig solange Haushaltsmittel; die Antragsseite ist im Webarchiv nur bis 06/2024 belegt."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/stadt-kirchen",
+        "finding": "Gemeindeseite der Stadt Kirchen gelesen: verlinkt ISEK-Sanierungssatzung und Modernisierungsrichtlinie (Mai 2026, Sanierungsgebiet) — kein Energie-Technikzuschuss."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-mudersbach",
+        "finding": "Gemeindeseite Mudersbach gelesen: nur Satzungen, kein Hinweis mehr auf die Stecker-PV-Förderung; mudersbach.net nennt unter Aktuelles weiter die Förderung von Balkonkraftwerken mit Antragslink auf eine nicht mehr existierende VG-Seite."
+      },
+      {
+        "url": "https://www.kirchen-sieg.de/verwaltung-gremien/gemeinden/ortsgemeinde-brachbach",
+        "finding": "Gemeindeseiten Brachbach, Friesenhagen, Harbach und Niederfischbach gelesen: nur Satzungen, Haushalt, Breitband-Richtlinie (Friesenhagen) — keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.niederfischbach.de/2023/03/24/eigener-strom-dank-balkonkraftwerk/",
+        "finding": "Einziger Treffer unter „Balkonkraftwerke“ auf niederfischbach.de: PR-Artikel eines Fachbetriebs von 03/2023 mit Verweis auf Förderungen in Freudenberg und Siegen — kein Programm der Ortsgemeinde."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      }
+    ],
+    "sources": [],
+    "outcome": "klaerung",
+    "conclusion": "Die Stadt Kirchen (Sieg) hat eine Richtlinie vom 20.06.2023 zur Förderung steckerfertiger PV-Anlagen (100 € pauschal, solange Haushaltsmittel); die Antragsseite ist nur bis 06/2024 belegt. Ob die Förderung noch läuft, ist nicht belegt — deshalb Rückfrage und bis dahin kein Katalogeintrag mit Geldabzug. Daneben ISEK-Modernisierungsrichtlinie (Sanierungsgebiet), EKM-Ermessensförderung und beendete Kreisprogramme.",
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-09-21T07:00:00Z",
+      "detail": "Bestehenden Versandlauf auf Zustellbeleg prüfen; Antwort im Original lesen. Bestätigt die Verwaltung eine laufende Antragstellung, Programm nach Gate aufnehmen; sonst als beendet/historisch erfassen. Nach 14 Tagen ohne Antwort manuelle Nachprüfung, kein automatisches Nachfassen."
+    },
+    "enquiry": {
+      "id": "klaerung-07132063",
+      "recipient": "vg-kirchen@kirchen-sieg.de",
+      "recipientSource": "https://www.kirchen-sieg.de/impressum",
+      "website": "https://www.kirchen-sieg.de",
+      "question": "Auf Ihrer Website ist die Richtlinie der Stadt Kirchen (Sieg) zur Förderung steckerfertiger Photovoltaikanlagen (in Kraft seit 01.07.2023, 100 € je Anlage) weiterhin abrufbar, eine Antragsseite finde ich jedoch nicht mehr. Können Bürgerinnen und Bürger derzeit noch einen Zuschuss nach dieser Richtlinie beantragen? Falls die Förderung beendet ist, hilft mir auch diese kurze Auskunft mit dem Enddatum."
+    }
+  },
+  {
+    "regionId": "07132006",
+    "name": "Betzdorf",
+    "checkedAt": "2026-09-19T14:10:00Z",
+    "recheckAt": "2026-12-18T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "vg-bg.de: Seitenverzeichnis (Förder-, Klima-, Energie-, Solar-, Speicher-, Balkon-Seiten) gefiltert; Speicherprogramm-Seite und die Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld und Wallmenroth im Original gelesen (19.09.2026)",
+      "betzdorf.de: Seitenverzeichnis (99 Seiten) gelesen; einzige Förderrichtlinie ist die Vereinsförderung vom 26.04.2023",
+      "Websuche „Betzdorf Wallmenroth Scheuerfeld Alsdorf Förderung Balkonkraftwerk Wärmepumpe Zuschuss“ und „Stadt Betzdorf Förderrichtlinie Balkonkraftwerk“ (19.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-bg.de/lebenswert/wohnen-bauen/bauen/foerderung-von-batteriespeicher-in-verbindung-mit-photovoltaikanlagen",
+        "finding": "Im Original gelesen (19.09.2026): „Das Förderprogramm der Verbandsgemeinde Betzdorf-Gebhardshain für Batteriespeicher in Verbindung mit Photovoltaikanlagen wurde beendet, weil eine Doppelförderung unzulässig ist.“"
+      },
+      {
+        "url": "https://www.vg-bg.de/lebenswert/umwelt-klima/klimaschutz/umgesetzte-umwelt-und-klimaschutzmassnahmen-in-der-vg-betzdorf-gebhardshain/",
+        "finding": "Klimaschutz-Seiten der Ortsgemeinden Alsdorf, Betzdorf, Dickendorf, Fensdorf, Grünebach, Scheuerfeld, Wallmenroth gelesen: nur eigene kommunale Maßnahmen (LED-Straßenbeleuchtung, Fenstertausch/Dämmung Kita, PV auf dem Feuerwehrhaus Wallmenroth) — kein Zuschussprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.betzdorf.de/files/media/Bilder/StadtUndPolitik/Fo%CC%88rderrichtlinie%20Stadt%20Betzdorf.pdf",
+        "finding": "Förderrichtlinie der Stadt Betzdorf vom 26.04.2023 gelesen: Zuschüsse an Vereine, Verbände, Organisationen und kirchliche/caritative Einrichtungen — kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.ekm-energie.de/magic/show_image.php?id=526&download=1",
+        "finding": "Förderantrag der EKM (Regionalausschuss Altenkirchen, alle sechs Verbandsgemeinden des Kreises sind Gesellschafter): PV, Speicher, Balkonkraftwerke und E-Mobilität ausgeschlossen, Heizungsumstellung (z. B. Wärmepumpe) nicht; Höhe nach Einzelfall, kein Rechtsanspruch, nur in Orten mit Strom- oder Gasnetz der EAM Netz. Im Katalog als ekm-altenkirchen."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Kreisprogramme Altenkirchen: Balkonkraftwerk-Programm beendet (120.000 € ausgeschöpft), Solarspeicher-Topf (260.000 €) ausgeschöpft — beide als historische Programme im Katalog (am 19.09.2026 gelesen)."
+      },
+      {
+        "url": "https://www.vg-bg.de/buergernah/impressum/",
+        "finding": "Impressum der Verbandsgemeinde gelesen: Poststelle poststelle@vg-bg.de."
+      }
+    ],
+    "sources": [],
+    "outcome": "klaerung",
+    "conclusion": "Die Stadt Betzdorf gehört zur Verbandsgemeinde Betzdorf-Gebhardshain. Eine Pressemeldung der Siegener Zeitung („Wer ein Balkonkraftwerk installiert, bekommt Geld von der Stadt“, Bezahlschranke) nennt einen Balkonkraftwerk-Zuschuss der Stadt; auf betzdorf.de und vg-bg.de ist keine Richtlinie dazu zu finden (einzige Förderrichtlinie: Vereinsförderung 2023). Ob es ihn gab und ob er läuft, ist nicht belegt — deshalb Rückfrage. Daneben EKM-Ermessensförderung und beendete VG-/Kreisprogramme.",
+    "nextAction": {
+      "kind": "enquiry",
+      "dueAt": "2026-09-21T07:00:00Z",
+      "detail": "Bestehenden Versandlauf auf Zustellbeleg prüfen; Antwort im Original lesen. Bestätigt die Verwaltung eine laufende Antragstellung, Programm nach Gate aufnehmen; sonst als beendet/historisch erfassen. Nach 14 Tagen ohne Antwort manuelle Nachprüfung, kein automatisches Nachfassen."
+    },
+    "enquiry": {
+      "id": "klaerung-07132006",
+      "recipient": "poststelle@vg-bg.de",
+      "recipientSource": "https://www.vg-bg.de/buergernah/impressum/",
+      "website": "https://www.betzdorf.de",
+      "question": "Laut Presse fördert bzw. förderte die Stadt Betzdorf die Installation von Balkonkraftwerken. Auf betzdorf.de und vg-bg.de finde ich dazu keine Richtlinie, nur die Vereinsförderung von 2023 und das beendete Speicherprogramm der Verbandsgemeinde. Gibt es derzeit einen beantragbaren Zuschuss der Stadt Betzdorf für Balkonkraftwerke, Photovoltaik, Speicher oder Wärmepumpen, und wo finde ich die Richtlinie? Falls die Förderung beendet ist, hilft mir auch diese kurze Auskunft mit dem Enddatum."
+    }
   }
 ]
