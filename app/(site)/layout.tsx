@@ -7,7 +7,7 @@ import { jsonLdHtml } from "../../lib/json-ld";
 import { organizationJsonLd, softwareAppJsonLd } from "../../lib/site-json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
 import Header from "../../components/SharedSiteHeader";
-import Footer from "../../components/Footer";
+import SiteFuss from "../../components/SiteFuss";
 import { WebAnalytics } from "../../components/WebAnalytics";
 import { HerkunftsMelder } from "../../components/HerkunftsMelder";
 
@@ -139,7 +139,9 @@ export default async function RootLayout({
               Top-Padding. */}
           <div style={{ padding: `20px 16px ${headerContentGap}px` }}><Header /></div>
           {children}
-          <div style={{ padding: "0 16px" }}><Footer /></div>
+          {/* Trust section + footer of the new design, full width, one source
+              with the document pages (lib/site-fuss.ts). */}
+          <div style={{ marginTop: 64 }}><SiteFuss /></div>
         </GlossaryProvider>
         {/* Reichweitenmessung ohne Cookies. Nur im (site)-Layout, nicht in den
             Embed-Widgets. Siehe /datenschutz.

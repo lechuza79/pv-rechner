@@ -424,26 +424,16 @@ export const BAUSTEINE: Baustein[] = [
       "Der Seitenrahmen selbst — auf dieser Seite steht er bereits oben. Ein zweiter darin wäre kein Beispiel, sondern ein Fehler.",
   },
   {
-    datei: "components/Footer.tsx",
-    name: "Footer",
-    zweck: "Die Fußzeile — neben dem Themen-Einstieg der einzige Ort, an dem alle Bereiche verlinkt sind.",
+    datei: "components/SiteFuss.tsx",
+    name: "SiteFuss",
+    zweck:
+      "Vertrauensleiste und Fußzeile des neuen Designs auf jeder Seite — der einzige Ort, an dem alle Bereiche crawlbar verlinkt sind. Daten und Markup aus lib/site-fuss.ts, dieselbe Quelle wie Startseite und Simulation.",
     gruppe: "struktur",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["TrustBar"],
+    bestehtAus: ["Logo"],
     keinBeispielWeil:
-      "Wie die Kopfzeile ein Seitenrahmen; er steht auf jeder Seite genau einmal und enthielte sich hier selbst.",
-  },
-  {
-    datei: "components/TrustBar.tsx",
-    name: "TrustBar",
-    zweck: "Die vier Zusagen über der Fußzeile. Jede ist eine Werbeaussage und trägt ihren Beleg.",
-    gruppe: "struktur",
-    ebene: "baustein",
-    stand: "verbindlich",
-    bestehtAus: ["Icons", "Modal"],
-    keinBeispielWeil:
-      "Sitzt fest über der Fußzeile und trägt vier Werbeaussagen mit Belegen — ein Beispiel daneben ließe offen, welche der beiden Fassungen gilt.",
+      "Ein Seitenrahmen; er steht auf jeder Seite genau einmal und enthielte sich hier selbst.",
   },
   {
     datei: "components/Breadcrumb.tsx",

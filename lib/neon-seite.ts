@@ -7,6 +7,7 @@ import { BASE_URL, brandOgImage, energyOgImage } from "./seo";
 import { organizationJsonLd, softwareAppJsonLd } from "./site-json-ld";
 import { standSeite } from "./stand";
 import { liveSatz } from "./stand-format";
+import { siteFussHtml } from "./site-fuss";
 
 /**
  * The redesigned homepage and PV simulation, served as the approved documents.
@@ -106,8 +107,6 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
     // the query string is dropped before sending (it can carry a postcode).
     ANALYTICS_HTML,
     `<style>${FAQ_CSS}</style>`,
-    `<script src="/shared-footer/trust-badges-v7/trust-art-web.js" defer></script>`,
-    `<script src="/shared-footer/trust-badges-v7/trust-badges.js" defer></script>`,
     `<script src="/homepage-study/hero-contrast.js" defer></script>`,
     `<script src="/homepage-study/interactions.js" defer></script>`,
   ].join("");
@@ -180,11 +179,11 @@ function vorFuss(seite: NeonSeite, faq: FaqEntry[]): string {
   const fragen = faq
     .map((f) => `<details><summary>${esc(f.q)}</summary><div class="sc-faq-answer">${antwortHtml(f, aktuell)}</div></details>`)
     .join("");
-  // The approved page builds its footer by script; move our blocks right above
-  // it once it exists. Without script they stay at the end, still readable.
-  const verschieben =
-    `<script>(function(){var b=[].slice.call(document.querySelectorAll("[data-sc-vor-fuss]"));function los(){var f=document.querySelector(".sc-footer");if(!f)return false;b.forEach(function(x){f.before(x)});return true}if(los())return;var o=new MutationObserver(function(){if(los())o.disconnect()});o.observe(document.body,{childList:true,subtree:true});setTimeout(function(){o.disconnect()},30000)})();</script>`;
-  return `${live}<section class="sc-faq" data-sc-vor-fuss aria-labelledby="sc-faq-titel"><div class="sc-faq-wrap"><h2 id="sc-faq-titel">${esc(s.faqTitel)}</h2>${fragen}</div></section>${verschieben}`;
+  // The footer (with trust section) is ours and server-rendered
+  // (lib/site-fuss.ts); the page's script no longer builds one (takeover
+  // patch). Order at the end of the body: live output, FAQ, footer. On the
+  // homepage the script moves the trust section into its own slot.
+  return `${live}<section class="sc-faq" data-sc-vor-fuss aria-labelledby="sc-faq-titel"><div class="sc-faq-wrap"><h2 id="sc-faq-titel">${esc(s.faqTitel)}</h2>${fragen}</div></section>${siteFussHtml()}`;
 }
 
 export function neonSeiteHtml(seite: NeonSeite): string {

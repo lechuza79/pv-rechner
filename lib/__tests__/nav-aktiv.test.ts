@@ -98,7 +98,7 @@ describe("Menü-Markierung: Zuordnung Pfad → Menüpunkt", () => {
 //
 // WARUM ES DIESEN TEST GIBT (19.08.2026): Eine neue Seite in einem Themen-Cluster
 // muss heute an DREI Stellen von Hand eingetragen werden — Menügruppe und
-// Markierungs-Kette in components/Header.tsx, Fußzeile in components/Footer.tsx,
+// Markierungs-Kette in components/Header.tsx, Fußzeile in lib/site-fuss.ts,
 // dazu die Ratgeber-Registry. Beim Speicher-Ratgeber sind zwei davon vergessen
 // worden, und keine davon fällt im Browser auf: Die Seite funktioniert, sie ist
 // nur nirgends verlinkt.
@@ -169,7 +169,7 @@ describe("Interne Links zeigen nie auf eine Weiterleitung", () => {
 });
 
 describe("Themen-Cluster: jede Seite ist auch verlinkt", () => {
-  const footer = readFileSync(resolve(__dirname, "../../components/Footer.tsx"), "utf8");
+  const footer = readFileSync(resolve(__dirname, "../site-fuss.ts"), "utf8");
 
   /** Alle Seiten eines Clusters, direkt aus dem Dateibaum — auch die in
    *  Kategorie-Unterordnern (seit 19.08.2026 liegen die Ratgeber eine Ebene

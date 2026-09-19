@@ -170,6 +170,19 @@ const PATCHES = [
     why: "Dieselbe Titel-Zuweisung für die Simulation.",
   },
   { datei: "dynamic-hero/dist/test.js", ...DOMAIN_WEG },
+  // After the domain patch: these match the already relative defaults.
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: 'function Ye(a,{logoElement:n,base:e="",homeHref:g="/",simulationHref:t,atlasHref:r}={}){',
+    to: 'function Ye(a,{logoElement:n,base:e="",homeHref:g="/",simulationHref:t,atlasHref:r}={}){let sF=document.querySelector("footer.sc-footer[data-sc-server]");if(sF)return{footer:sF,dispose(){}};',
+    why: "Die Fußzeile kommt serverseitig aus lib/site-fuss.ts (eine Quelle für alle Seiten, crawlbar). Das Skript baut keine zweite.",
+  },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: 'function Xe(a,{base:n=""}={}){',
+    to: 'function Xe(a,{base:n=""}={}){let sT=document.querySelector(".sc-trust[data-sc-server]");if(sT){a.replaceWith(sT);return{trust:sT,dispose(){}}}',
+    why: "Die Vertrauensleiste trägt die geprüften Zusagen aus lib/trust-signals.ts; das Skript rückt die serverseitige Leiste an ihren Platz, statt eigene Texte zu bauen.",
+  },
   { datei: "homepage-study/story-dist/atlas-story-cards.js", ...DOMAIN_WEG },
 ];
 

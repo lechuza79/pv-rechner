@@ -1,6 +1,7 @@
 import "server-only";
 import { BASE_URL } from "./seo";
 import { ANALYTICS_HTML, esc } from "./neon-seite";
+import { siteFussHtml } from "./site-fuss";
 
 /**
  * A plain content page in the new design, built on the design package's own
@@ -34,14 +35,14 @@ export function neonUnterseiteHtml(o: {
     `<meta name="theme-color" content="#FFFFFF">`,
     `<link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any">`,
     `<link rel="apple-touch-icon" href="/apple-icon.png" type="image/png" sizes="180x180">`,
-    `<link rel="stylesheet" href="/shared-nav/nav.css"><link rel="stylesheet" href="/rechner-uebersicht/overview.css">`,
+    `<link rel="stylesheet" href="/shared-nav/nav.css"><link rel="stylesheet" href="/rechner-uebersicht/overview.css"><link rel="stylesheet" href="/shared-footer/footer.css">`,
     ANALYTICS_HTML,
     `</head><body>`,
     `<header class="site-header"><a class="brand" href="/"><img src="/shared-nav/logo-result.svg" alt="Solar Check" width="210" height="40"></a></header>`,
     `<main><nav class="crumb" aria-label="Brotkrümel"><a href="/">Startseite</a><span aria-hidden="true">/</span>${esc(o.krume)}</nav>`,
     o.inhalt,
     `</main>`,
-    `<footer><a href="/ueber">Über Solar Check</a><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a></footer>`,
+    siteFussHtml(),
     `<script type="module">import {mountGlobalNav} from '/shared-nav/nav.js';mountGlobalNav(document.querySelector('header'));</script>`,
     o.skript ? `<script>${o.skript}</script>` : "",
     `</body></html>`,
