@@ -952,11 +952,11 @@ body[data-lab-accent] .av-stories .av-story-card{border-radius:20px!important;fo
 @media(prefers-reduced-motion:reduce){.av-story-card{transition:none}}
 
 /* Keep hero copy and its input in one readable column, including the result. */
-:root{--sc-sim-copy-max:440px;--sc-page-inset:max(24px,5vw);--sc-hero-content-inset:max(var(--sc-page-inset),calc((100% - var(--sc-layout-content)) / 2))}
+:root{--sc-sim-copy-max:440px;--sc-page-inset:max(24px,5vw);--sc-hero-content-inset:calc(max(var(--sc-page-inset),calc((100% - var(--sc-layout-content)) / 2)) + 24px)}
 /* Full-bleed scene; text aligns with the centered content rail. */
 html[data-sc-shell][data-homepage-preview] .site-header{padding-inline:var(--sc-page-inset)}
 html[data-homepage-preview] .hero-copy{margin-inline:var(--sc-hero-content-inset) 0;max-width:calc(100% - 2 * var(--sc-hero-content-inset));padding-inline:0}
-@media(max-width:600px){html[data-homepage-preview] .solar-page:not(.hs-simulation-route) .hero-copy{margin-inline:0;width:auto;max-width:none}}
+@media(max-width:600px){:root{--sc-hero-content-inset:var(--sc-page-inset)}html[data-homepage-preview] .solar-page:not(.hs-simulation-route) .hero-copy{margin-inline:0;width:auto;max-width:none}}
 /* Match the homepage hero inset instead of centering a capped stage container. */
 :is(.homepage-study,html[data-homepage-preview]).hs-simulation-route .hs-scene-simulation{width:auto;max-width:none;margin-inline:var(--sc-hero-content-inset)}
 .hs-scene-simulation :is(.hs-location-step,.hs-retro-hero){width:100%;max-width:var(--sc-sim-copy-max);margin-inline:0;box-sizing:border-box}
@@ -1042,22 +1042,64 @@ solar-illustration.hs-audience-art::before{content:none}
 @media(min-width:601px){
  html[data-homepage-preview] .homepage-study:not(.hs-simulation-route):not(.hs-journey-open) .hs-hero-portal>.hero{height:100svh;min-height:740px}
 }
-.homepage-study .sc-hero-trust{position:absolute;z-index:8;inset:auto 0 0;padding:42px var(--sc-hero-content-inset) max(22px,env(safe-area-inset-bottom));color:#e8eee9;--trust-ink:#d3e0d7;pointer-events:none;opacity:var(--hs-copy-exit,1)}
+.homepage-study .sc-hero-trust{position:absolute;z-index:8;inset:auto 0 0;padding:42px var(--sc-hero-content-inset) max(22px,env(safe-area-inset-bottom));color:#e8eee9;--trust-ink:#d3e0d7;pointer-events:none;opacity:clamp(0,calc(1 - var(--scroll,0)*6),1)}
 .homepage-study .sc-hero-trust::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(transparent,rgba(0,0,0,.36));mix-blend-mode:multiply;pointer-events:none}
-.homepage-study .sc-hero-trust ul{display:flex;justify-content:space-between;gap:24px;max-width:var(--sc-layout-content);margin:0 auto;padding:0;list-style:none}
-.homepage-study .sc-hero-trust li{display:flex;align-items:center;gap:10px;font-size:12px;line-height:1.4;font-weight:400;max-width:220px}
-.homepage-study .sc-hero-trust solar-trust-badge{width:28px;flex:0 0 28px}
+.homepage-study .sc-hero-trust ul{display:flex;justify-content:space-between;gap:16px;max-width:var(--sc-layout-content);margin:0 auto;padding:0;list-style:none}
+.homepage-study .sc-hero-trust li{display:flex;align-items:center;gap:10px;font-size:12px;line-height:1.4;font-weight:400;max-width:none;white-space:nowrap;flex-shrink:0}
+.homepage-study .sc-hero-trust solar-trust-badge{width:44px;flex:0 0 44px;opacity:.6}
 .homepage-study.hs-journey-open .sc-hero-trust,.homepage-study.hs-simulation-route .sc-hero-trust{display:none}
 @media(max-width:600px){
  .homepage-study .sc-hero-trust{padding-top:28px;padding-bottom:max(18px,env(safe-area-inset-bottom))}
- .homepage-study .sc-hero-trust ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 16px}
- .homepage-study .sc-hero-trust li{font-size:11px;gap:8px}
- .homepage-study .sc-hero-trust solar-trust-badge{width:26px;flex-basis:26px}
+ .homepage-study .sc-hero-trust ul{display:grid;grid-template-columns:minmax(0,1fr);gap:0;min-height:38px}
+ .homepage-study .sc-hero-trust li{grid-area:1/1;justify-self:center;max-width:100%;font-size:12px;gap:10px;white-space:nowrap;opacity:0;animation:sc-trust-cycle 20s linear infinite}
+ .homepage-study .sc-hero-trust li:nth-child(1){animation-delay:-.5s}
+ .homepage-study .sc-hero-trust li:nth-child(2){animation-delay:4.5s}
+ .homepage-study .sc-hero-trust li:nth-child(3){animation-delay:9.5s}
+ .homepage-study .sc-hero-trust li:nth-child(4){animation-delay:14.5s}
+ .homepage-study .sc-hero-trust solar-trust-badge{width:38px;flex-basis:38px}
 }
-/* Host contrast follows rendered sky brightness, including twilight. */
-html[data-sc-shell] .homepage-study[data-copy-tone=light] :is(.site-header,.hero-copy){color:#eef5ef}
-html[data-sc-shell] .homepage-study[data-copy-tone=light] .hero-description{color:#e0e9e4}
-html[data-sc-shell] .homepage-study[data-copy-tone=light] .site-header .brand svg{--color-accent:#eef5ef;--color-text-faint:#e0e9e4}
-html[data-sc-shell] .homepage-study[data-copy-tone=dark] :is(.site-header,.hero-copy){color:#122c3b}
-html[data-sc-shell] .homepage-study[data-copy-tone=dark] .hero-description{color:#294653}
-html[data-sc-shell] .homepage-study[data-copy-tone=dark] .site-header .brand svg{--color-accent:#173b42;--color-text-faint:#4a675e}
+/* Each region follows its own rendered sky. Typography has one owner, including
+   legacy mobile overrides. Keep all scene backgrounds unchanged. */
+html[data-sc-shell][data-homepage-preview] .homepage-study [data-hero-tone=dark]{--sc-region-ink:#122c3b}
+html[data-sc-shell][data-homepage-preview] .homepage-study [data-hero-tone=strong-dark]{--sc-region-ink:#000}
+html[data-sc-shell][data-homepage-preview] .homepage-study [data-hero-tone=light]{--sc-region-ink:#fff}
+html[data-sc-shell][data-homepage-preview] .homepage-study [data-hero-tone]{color:var(--sc-region-ink);transition:none}
+html[data-sc-shell][data-homepage-preview] .homepage-study [data-hero-tone] :is(.hero-description,.eyebrow,h1,h2,.hs-location-explanation,.hs-journey-back){color:var(--sc-region-ink);transition:none}
+html[data-sc-shell][data-homepage-preview] .homepage-study .hero-actions[data-hero-tone] .secondary-cta{color:var(--sc-region-ink)!important;border-color:currentColor;transition:background-color .2s}
+html[data-sc-shell][data-homepage-preview] .homepage-study .site-header[data-hero-tone] .brand svg{--color-accent:var(--sc-region-ink);--color-text-faint:var(--sc-region-ink)}
+html[data-sc-shell][data-homepage-preview] .homepage-study .site-header[data-hero-tone] .brand svg path{transition:none}
+
+/* Small host-side twilight correction until scene lighting is tuned in full.
+   Keep the renderer's haze and panel-edge composition intact. */
+.homepage-study:is([data-phase=dusk],[data-phase=dawn]) .unified-canvas{filter:brightness(.68) saturate(.82)}
+.homepage-study:is([data-phase=dusk],[data-phase=dawn]) .clouds{filter:brightness(.48);opacity:.35!important}
+
+/* One quiet reassurance at a time; no layout movement between statements. */
+@keyframes sc-trust-cycle{
+ 0%,25%,100%{opacity:0}
+ 2.5%,22.5%{opacity:1}
+}
+@media(max-width:600px) and (prefers-reduced-motion:reduce){
+ .homepage-study .sc-hero-trust li{animation:none;opacity:0}
+ .homepage-study .sc-hero-trust li:first-child{opacity:1}
+}
+
+/* Two stable slots alternate independently, with their changes offset by 2.5 seconds. */
+@media(min-width:601px) and (max-width:1100px){
+ .homepage-study .sc-hero-trust ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;min-height:44px}
+ .homepage-study .sc-hero-trust li{grid-row:1;max-width:none;min-width:0;font-size:12px;opacity:0;animation:sc-trust-pairs 10s linear infinite}
+ .homepage-study .sc-hero-trust li:nth-child(odd){grid-column:1}
+ .homepage-study .sc-hero-trust li:nth-child(even){grid-column:2}
+ .homepage-study .sc-hero-trust li:nth-child(1){animation-delay:-.5s}
+ .homepage-study .sc-hero-trust li:nth-child(2){animation-delay:-3s}
+ .homepage-study .sc-hero-trust li:nth-child(3){animation-delay:4.5s}
+ .homepage-study .sc-hero-trust li:nth-child(4){animation-delay:2s}
+}
+@keyframes sc-trust-pairs{0%,50%,100%{opacity:0}5%,45%{opacity:1}}
+@media(min-width:601px) and (max-width:1100px) and (prefers-reduced-motion:reduce){
+ .homepage-study .sc-hero-trust li{animation:none;opacity:0}
+ .homepage-study .sc-hero-trust li:nth-child(-n+2){opacity:1}
+}
+
+/* Native button semantics with the existing text-link appearance. */
+.homepage-study button.hs-all-calculators{font:inherit;color:inherit;background:none;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:10px}

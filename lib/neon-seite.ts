@@ -108,6 +108,7 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
     `<style>${FAQ_CSS}</style>`,
     `<script src="/shared-footer/trust-badges-v7/trust-art-web.js" defer></script>`,
     `<script src="/shared-footer/trust-badges-v7/trust-badges.js" defer></script>`,
+    `<script src="/homepage-study/hero-contrast.js" defer></script>`,
     `<script src="/homepage-study/interactions.js" defer></script>`,
   ].join("");
 }
