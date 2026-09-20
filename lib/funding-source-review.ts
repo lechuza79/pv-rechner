@@ -8,11 +8,18 @@ export type ReviewSource = {
 };
 
 // Explicit completed outcomes; free text and unresolved decisions stay in the queue.
-const completed = new Set([
+//
+// EXPORTIERT, DAMIT DAS ABHAKEN DIESELBE LISTE BENUTZT WIE DAS FILTERN.
+// Solange nur der Filter sie kannte, konnte ein Lauf ein Ergebnis schreiben,
+// das die Zeile im Vorrat ließ — gemessen am 20.09.2026 bei 625 von 2.375
+// gelesenen Zeilen. Zwei Listen für dieselbe Frage sind hier gar nicht nötig:
+// Es ist eine, und das Werkzeug weist jetzt alles andere ab.
+export const ABSCHLIESSENDE_ERGEBNISSE = new Set([
   "aufgenommen", "vorhanden", "keine-foerderung", "ausgelaufen",
   "fachlich geprüft: addable", "fachlich geprüft: existing",
   "fachlich geprüft: no-program", "fachlich geprüft: closed",
 ]);
+const completed = ABSCHLIESSENDE_ERGEBNISSE;
 
 export function pendingFundingSources<T extends ReviewSource>(rows: T[]): T[] {
   return rows.filter((row) => {

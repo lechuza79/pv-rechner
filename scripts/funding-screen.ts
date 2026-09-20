@@ -1,6 +1,6 @@
 import { municipalReviewQueue, validateMunicipalReviews, type InquiryReceipt } from "../lib/funding-municipal-review";
 import municipalReviews from "../data/funding/municipal-reviews.json";
-import { groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
+import { ABSCHLIESSENDE_ERGEBNISSE, groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
 import { seitenAbrufAdressen, seitenSchluessel } from "../lib/funding-seiten";
 import { FundingSourceReader, FundingSourceUnreadable, recordStage } from "./lib/funding-source-reader";
 /**
@@ -335,7 +335,29 @@ async function gelesen(): Promise<void> {
   const roh = wert("gelesen");
   const ergebnis = wert("ergebnis");
   if (!roh || !ergebnis) {
-    console.error("Aufruf: --gelesen <region_id> --url <url> (--beleg <quote> | --tot) --ergebnis <text> [--notiz <text>]");
+    console.error(`Aufruf: --gelesen <region_id> --url <url> (--beleg <quote> | --tot) --ergebnis <${[...ABSCHLIESSENDE_ERGEBNISSE].join(" | ")}> [--notiz <text>]`);
+    process.exit(1);
+  }
+  // EIN FREITEXT-ERGEBNIS HAKT NICHTS AB — BLOCKER (20.09.2026).
+  // Eine Zeile verlässt den Vorrat nur, wenn ihr Ergebnis eines der
+  // abschließenden Wörter ist (`pendingFundingSources`). Jedes andere Wort
+  // schreibt zwar Datum und Beleg, lässt die Zeile aber stehen — von einer
+  // NIE gelesenen Zeile ist sie danach nicht zu unterscheiden, und genau so
+  // sinkt der Vorrat nicht, obwohl gearbeitet wurde.
+  //   Gemessen an diesem Tag: 625 der 2.375 gelesenen Zeilen (26 %) tragen
+  //   Freitext — „verworfen", „Adresse entfernt (404/410 beim Gegenlesen)" —
+  //   und liegen deshalb weiter im Vorrat von 13.905. Mir selbst ist es in
+  //   diesem Lauf mit drei Zeilen passiert, bevor ich es gemessen habe.
+  //   Dieselbe Fehlerklasse wie der Vorrat, aus dem nichts herausgenommen
+  //   werden konnte: von außen unsichtbar, weil die Zahl dabei genau so
+  //   aussieht wie bei ehrlicher Arbeit.
+  // Die Prosa gehört in `--notiz`; `--ergebnis` trägt das Urteil.
+  if (!ABSCHLIESSENDE_ERGEBNISSE.has(ergebnis.trim().toLowerCase())) {
+    console.error(
+      `„${ergebnis}" ist kein abschließendes Ergebnis — die Zeile bliebe im Vorrat stehen, als wäre sie nie gelesen worden.\n` +
+        `Erlaubt: ${[...ABSCHLIESSENDE_ERGEBNISSE].join(", ")}\n` +
+        `Die Begründung gehört in --notiz.`,
+    );
     process.exit(1);
   }
   const ids = roh.split(",").map((x) => x.trim()).filter(Boolean);

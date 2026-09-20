@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import {
+  ABSCHLIESSENDE_ERGEBNISSE,
+  pendingFundingSources,
+  type ReviewSource,
+} from "../funding-source-review";
 
 // Source guards deliberately avoid executing the production-writing CLI.
 // A municipality-wide stamp must not silently return through a refactor.
@@ -14,6 +19,19 @@ describe("Source-specific funding review stamps", () => {
     expect(review).toContain('ids.length !== 1 || !sourceUrl || (!quote && !tot)');
     expect(review).not.toMatch(/\.in\("region_id"/);
     expect(review).toContain('.eq("url", normalized)');
+  });
+
+  it("weist ein Ergebnis ab, das die Zeile gar nicht abhakt", () => {
+    // DIE VERWENDUNG, NICHT DAS VORHANDENSEIN. Beim Bauen dieser Sperre am
+    // 20.09.2026 war der Unit-Test darunter schon grün, während die Prüfung im
+    // Werkzeug ausgebaut war — er kannte nur die Liste, nicht ihren Einsatz.
+    // Geprüft wird deshalb hier: Das Werkzeug liest dieselbe Liste UND bricht
+    // ab, bevor es irgendetwas schreibt.
+    expect(source).toContain("ABSCHLIESSENDE_ERGEBNISSE");
+    const sperre = review.indexOf("ABSCHLIESSENDE_ERGEBNISSE.has(ergebnis");
+    expect(sperre, "die Sperre gegen Freitext-Ergebnisse fehlt").toBeGreaterThan(-1);
+    expect(sperre).toBeLessThan(review.indexOf(".update("));
+    expect(review.slice(sperre, sperre + 400)).toContain("process.exit(1)");
   });
 
   it("checks the quote against the fetched original before writing", () => {
@@ -147,5 +165,47 @@ describe("Removed addresses may be checked off, but only when measured", () => {
   it("records what was measured, not an assumed quote", () => {
     expect(review).toContain("HTTP 404/410 beim Gegenlesen am");
     expect(review).toContain("quote: nachweis");
+  });
+});
+
+/**
+ * EIN GELESENES ERGEBNIS MUSS DIE ZEILE AUCH WIRKLICH ABHAKEN (20.09.2026).
+ *
+ * Der Filter kennt acht abschließende Wörter; alles andere lässt die Zeile im
+ * Vorrat stehen — mit Datum, Beleg und Notiz, aber ununterscheidbar von einer
+ * nie gelesenen. Gemessen an diesem Tag: 625 der 2.375 gelesenen Zeilen (26 %)
+ * tragen Freitext und liegen deshalb weiter im Vorrat. Mir selbst ist es im
+ * selben Lauf mit drei Zeilen passiert.
+ *
+ * Seitdem weist das Abhak-Werkzeug ein unbekanntes Ergebnis ab. Dieser Test
+ * hält die EINE Liste fest, aus der beide Seiten lesen — zwei Fassungen davon
+ * würden genau diesen Fehler zurückbringen.
+ */
+describe("Abschließende Ergebnisse — eine Liste für Filter und Abhaken", () => {
+  const zeile = (ergebnis: string): ReviewSource => ({
+    region_id: "06634005",
+    url: "beispiel.de/foerderung",
+    gelesen_am: "2026-09-20",
+    gelesen_ergebnis: ergebnis,
+    gelesen_notiz: null,
+    seite_geaendert_am: null,
+  });
+
+  it("jedes erlaubte Wort nimmt die Zeile wirklich aus dem Vorrat", () => {
+    for (const wort of ABSCHLIESSENDE_ERGEBNISSE) {
+      expect(pendingFundingSources([zeile(wort)]), wort).toEqual([]);
+    }
+  });
+
+  it("Freitext lässt die Zeile stehen — deshalb weist das Werkzeug ihn ab", () => {
+    for (const freitext of ["verworfen", "Adresse entfernt (404/410 beim Gegenlesen)", "Programm aufgenommen (mauer)"]) {
+      expect(pendingFundingSources([zeile(freitext)]), freitext).toHaveLength(1);
+      expect(ABSCHLIESSENDE_ERGEBNISSE.has(freitext.trim().toLowerCase()), freitext).toBe(false);
+    }
+  });
+
+  it("die Liste ist nicht leer und wird groß- und kleingeschrieben gleich gelesen", () => {
+    expect(ABSCHLIESSENDE_ERGEBNISSE.size).toBeGreaterThan(0);
+    expect(pendingFundingSources([zeile("AUFGENOMMEN")])).toEqual([]);
   });
 });
