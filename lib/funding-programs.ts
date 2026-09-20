@@ -287,6 +287,28 @@ export interface FundingProgram {
    * Untergrenze wäre nicht bestimmt, ab welcher Kapazität er überhaupt anfällt.
    */
   speicherSockel?: number;
+  /**
+   * Der Satz gilt je VOLL erreichter Einheit — kWp und kWh werden vor der
+   * Multiplikation abgerundet.
+   *
+   * WARUM ES DAS GIBT (20.09.2026): Röttenbach schreibt die Regel selbst hin
+   * und rechnet sie vor — „jeweils voll erreichte kWp bzw. kWh mit je 50 €",
+   * Beispiel 9,84 kWp → 9 kWp → 450 €. Ohne diese Angabe rechnet das Modell
+   * 492 € und weist damit einen Zuschuss aus, den die Gemeinde nicht zahlt —
+   * die teure Richtung: Wer 42 € einplant, die es nicht gibt, merkt es erst
+   * beim Bescheid.
+   *
+   * Die Alternative wäre gewesen, das Programm ohne strukturierten Satz
+   * aufzunehmen. Das wäre hier zu viel weggeworfen: Die Regel ist eindeutig,
+   * die Gemeinde rechnet sie selbst vor, und dieselbe Bauform steht in
+   * Richtlinien häufiger („auf volle kWp abgerundet"). Dieselbe Abrundung
+   * macht {@link speicherSockel} längst — dort allerdings nur im Sockel-Zweig.
+   *
+   * Wirkt auf den €/kWp- und den €/kWh-Satz, NICHT auf `percentOfCost`,
+   * `pvTiers`/`speicherTiers` (die stufen ohnehin) und nicht auf den
+   * Sockel-Zweig (der rundet schon ab).
+   */
+  vollEinheiten?: boolean;
   /** Share of total cost, e.g. 0.2 for 20 %. */
   percentOfCost?: number;
   /** Total € cap on the PV part — gilt für den €/kWp-Satz UND für
@@ -9309,6 +9331,374 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+
+  // ── Landkreis Erlangen-Höchstadt, Gemeindeprogramme ───────────────────────
+  //
+  // NEU AUFGENOMMEN 20.09.2026. Der Landkreis führt eine Übersichtsseite mit
+  // den Förderprogrammen seiner Gemeinden
+  // (erlangen-hoechstadt.de/…/foerderprogramme-in-den-gemeinden/). Sie ist
+  // HINWEISGEBER, nicht Quelle — sie sagt das selbst („erhebt keinen Anspruch
+  // auf Vollständigkeit"), und sie war an zwei Stellen messbar veraltet:
+  // Spardorf ist dort mit „Photovoltaik-Anlagen, Plug-In-Photovoltaik-Anlagen,
+  // Festinstallierte Stromspeicher" geführt, die Gemeinde selbst fördert heute
+  // ausschließlich NOTSTROMFÄHIGE PV mit Speicher; Uttenreuth ist dort mit
+  // Plug-In-Anlagen geführt, seine geltende Richtlinie kennt diese Position
+  // nicht. Jede Zahl unten stammt aus der Richtlinie der jeweiligen Gemeinde,
+  // am 20.09.2026 im Volltext gelesen (die drei Richtlinien der VG Uttenreuth
+  // sind reine Scans ohne Textebene und wurden seitenweise als Bild gelesen).
+  //
+  // Buckenhof, Marloffstein und Uttenreuth teilen sich die Verwaltungs-
+  // gemeinschaft Uttenreuth und damit den Aufbau der Richtlinie — die SÄTZE
+  // sind trotzdem einzeln geprüft und sie unterscheiden sich: Uttenreuth hat
+  // KEINE Plug-In-Position und dafür als einzige den nachgerüsteten Speicher
+  // ab 3 kWh, Buckenhof und Marloffstein haben die Plug-In-Pauschale und keine
+  // Speicher-Einzelposition. Wer eine Richtlinie dieser Familie aufnimmt, darf
+  // die Nachbargemeinde nicht abschreiben.
+
+  "buckenhof-klimaschutz": {
+    id: "buckenhof-klimaschutz", name: "Förderrichtlinie Klimaschutz",
+    traeger: "Gemeinde Buckenhof", level: "kommune", region: "Buckenhof",
+    bundesland: "Bayern", agsCode: "09572120",
+    url: "https://buckenhof.vg-uttenreuth.de/umwelt-mobilitaet/umwelt/foerderungen/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-03-01",
+    eligibility: ["privat"],
+    foerdert: ["pv", "balkon"],
+    coveredCosts: "Zuschuss zu Photovoltaikanlagen mit und ohne Batteriestromspeicher sowie zu Plug-In-Photovoltaikanlagen; daneben Wärmedämmung und Zisternen",
+    maxFoerderung: "500 € für Photovoltaik mit Speicher",
+    pvPerKwp: 50, pvCap: 250,
+    speicherPerKwh: 50, speicherCap: 250,
+    balkonPauschale: 50,
+    rates: [
+      { label: "Plug-In-Photovoltaikanlage", value: "50 € pauschal", nur: ["balkon"] },
+      { label: "Photovoltaikanlage ohne Batteriestromspeicher", value: "50 € je kWp, höchstens 250 €", nur: ["pv"] },
+      { label: "Photovoltaikanlage mit Batteriestromspeicher", value: "50 € je kWp plus 50 € je kWh, höchstens 500 € (gefördert werden höchstens 5 kWp und 5 kWh)", nur: ["pv"] },
+    ],
+    conditions: [
+      { text: "Der Speicher wird nur ZUSAMMEN mit der Photovoltaikanlage gefördert — anders als in Uttenreuth kennt die Zuschusstabelle keine Position für einen nachgerüsteten Speicher allein", nur: ["pv"] },
+      { text: "Die Dachanlage muss von einer anerkannten Prüfstelle auf die Einhaltung der Mindestanforderungen nach geltenden Normen begutachtet sein", nur: ["pv"] },
+      { text: "Das Balkonkraftwerk muss der Norm VDE-AR-N 4105:2018-11 Ziffer 5.5.3 entsprechen", nur: ["balkon"] },
+      "Richtlinie in Kraft seit 01.03.2026; kein Rechtsanspruch, Bewilligung nur im Rahmen der Haushaltsmittel und in der Reihenfolge des Antragseingangs",
+      "Antragsberechtigt sind Privatpersonen mit Wohneigentum im Gemeindegebiet, Mieterinnen und Mieter mit schriftlicher Zustimmung der Eigentümer, Wohnungseigentümergemeinschaften und ortsansässige Vereine; nicht antragsberechtigt sind juristische Personen des Privatrechts außer einer WEG und gewerbliche Gesellschaften",
+      "Antrag vor dem Kauf: Als Maßnahmenbeginn gilt der Kauf oder der erste Liefer- oder Leistungsvertrag. Begonnen werden darf erst, wenn die Bewilligungsbehörde dem vorzeitigen Beginn ausdrücklich zugestimmt hat; Planungsleistungen dürfen vorher erbracht werden",
+      "Dem Antrag liegt ein unverbindliches Angebot einer Fachfirma bei, das nicht älter als drei Monate ist",
+      "Eine geförderte Maßnahme je Haushalt und Kalenderjahr",
+      "Kumulierung mit anderen Fördermitteln ist zulässig, soweit die Regeln des anderen Programms das erlauben und die Summe aller Fördermittel 60 % der Investition nicht übersteigt; darüber wird der gemeindliche Zuschuss anteilig gekürzt. Unabhängig davon darf der gemeindliche Zuschuss allein 60 % der Investitionskosten nicht überschreiten",
+      "Fünf Jahre Zweckbindung: Die geförderte Anlage muss im Gemeindegebiet bleiben, ordnungsgemäß betrieben und bei Defekt instandgesetzt werden; vorzeitige Außerbetriebnahme oder Veräußerung führt regelmäßig zum Widerruf",
+      "Die durch den Zuschuss abgedeckten Kosten dürfen bei Vermietung weder direkt noch indirekt auf die Miete umgelegt werden",
+      "ZWEI Fristen, zwei Startpunkte: Die Maßnahme muss binnen zwölf Monaten nach der Zustimmung zum vorzeitigen Beginn begonnen sein, und der Nachweis der Durchführung muss binnen zwölf Monaten nach dem Zuwendungsbescheid vorliegen. Beide Male verfallen die Mittel sonst; eine Fristverlängerung ist nur in begründeten Fällen und vor Ablauf möglich",
+    ],
+    combinableWith: BUND,
+  },
+
+  "marloffstein-klimaschutz": {
+    id: "marloffstein-klimaschutz", name: "Förderrichtlinie Klimaschutz",
+    traeger: "Gemeinde Marloffstein", level: "kommune", region: "Marloffstein",
+    bundesland: "Bayern", agsCode: "09572141",
+    url: "https://marloffstein.vg-uttenreuth.de/umwelt-mobilitaet/umwelt/foerderungen/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-05-01",
+    eligibility: ["privat"],
+    foerdert: ["pv", "balkon"],
+    coveredCosts: "Zuschuss zu Photovoltaikanlagen mit und ohne Batteriestromspeicher sowie zu Plug-In-Photovoltaikanlagen; daneben Wärmedämmung und Zisternen",
+    maxFoerderung: "500 € für Photovoltaik mit Speicher",
+    pvPerKwp: 50, pvCap: 250,
+    speicherPerKwh: 50, speicherCap: 250,
+    balkonPauschale: 50,
+    rates: [
+      { label: "Plug-In-Photovoltaikanlage", value: "50 € pauschal", nur: ["balkon"] },
+      { label: "Photovoltaikanlage ohne Batteriestromspeicher", value: "50 € je kWp, höchstens 250 €", nur: ["pv"] },
+      { label: "Photovoltaikanlage mit Batteriestromspeicher", value: "50 € je kWp plus 50 € je kWh, höchstens 500 € (gefördert werden höchstens 5 kWp und 5 kWh)", nur: ["pv"] },
+    ],
+    conditions: [
+      { text: "Der Speicher wird nur ZUSAMMEN mit der Photovoltaikanlage gefördert — anders als in Uttenreuth kennt die Zuschusstabelle keine Position für einen nachgerüsteten Speicher allein", nur: ["pv"] },
+      { text: "Die Dachanlage muss von einer anerkannten Prüfstelle auf die Einhaltung der Mindestanforderungen nach geltenden Normen begutachtet sein", nur: ["pv"] },
+      { text: "Das Balkonkraftwerk muss der Norm VDE-AR-N 4105:2018-11 Ziffer 5.5.3 entsprechen", nur: ["balkon"] },
+      "Richtlinie in Kraft seit 01.05.2026; kein Rechtsanspruch, Bewilligung nur im Rahmen der Haushaltsmittel und in der Reihenfolge des Antragseingangs",
+      "Antragsberechtigt sind Privatpersonen mit Wohneigentum im Gemeindegebiet, Mieterinnen und Mieter mit schriftlicher Zustimmung der Eigentümer, Wohnungseigentümergemeinschaften und ortsansässige Vereine; nicht antragsberechtigt sind juristische Personen des Privatrechts außer einer WEG und gewerbliche Gesellschaften",
+      "Antrag vor dem Kauf: Als Maßnahmenbeginn gilt der Kauf oder der erste Liefer- oder Leistungsvertrag. Begonnen werden darf erst, wenn die Bewilligungsbehörde dem vorzeitigen Beginn ausdrücklich zugestimmt hat; Planungsleistungen dürfen vorher erbracht werden",
+      "Dem Antrag liegt ein unverbindliches Angebot einer Fachfirma bei, das nicht älter als drei Monate ist",
+      "Eine geförderte Maßnahme je Haushalt und Kalenderjahr",
+      "Kumulierung mit anderen Fördermitteln ist zulässig, soweit die Regeln des anderen Programms das erlauben und die Summe aller Fördermittel 60 % der Investition nicht übersteigt; darüber wird der gemeindliche Zuschuss anteilig gekürzt. Unabhängig davon darf der gemeindliche Zuschuss allein 60 % der Investitionskosten nicht überschreiten",
+      "Fünf Jahre Zweckbindung: Die geförderte Anlage muss im Gemeindegebiet bleiben, ordnungsgemäß betrieben und bei Defekt instandgesetzt werden; vorzeitige Außerbetriebnahme oder Veräußerung führt regelmäßig zum Widerruf",
+      "Die durch den Zuschuss abgedeckten Kosten dürfen bei Vermietung weder direkt noch indirekt auf die Miete umgelegt werden",
+      "ZWEI Fristen, zwei Startpunkte: Die Maßnahme muss binnen zwölf Monaten nach der Zustimmung zum vorzeitigen Beginn begonnen sein, und der Nachweis der Durchführung muss binnen zwölf Monaten nach dem Zuwendungsbescheid vorliegen. Beide Male verfallen die Mittel sonst; eine Fristverlängerung ist nur in begründeten Fällen und vor Ablauf möglich",
+    ],
+    combinableWith: BUND,
+  },
+
+  // UTTENREUTH: KEINE Plug-In-Pauschale — und das ist geprüft, nicht vergessen.
+  // Die Kreis-Übersicht führt die Gemeinde mit Plug-In-Anlagen; die geltende
+  // Richtlinie vom 12.05.2026 kennt in ihrer Zuschusstabelle nur PV ohne
+  // Speicher, PV mit Speicher und den nachgerüsteten Speicher ab 3 kWh.
+  //
+  // Zwei unabhängige Belege (Council 20.09.2026):
+  // (1) Die Förderseite der Gemeinde zählt selbst auf, was gefördert wird —
+  //     „Photovoltaikanlagen, Batteriestromspeicher, Lastenrad, Wärmedämmung
+  //     sowie Zisternen", ohne Balkonkraftwerk. Buckenhofs Seite nennt es an
+  //     derselben Stelle.
+  // (2) Buckenhofs Richtlinie führt Plug-In-Anlagen in Nr. 2.1 als eigenen
+  //     Fördergegenstand und in Nr. 5.1 als eigene Zeile. Dieselbe
+  //     Verwaltungsgemeinschaft, dieselbe Vorlage — Uttenreuths Fassung hat
+  //     beides nicht.
+  //
+  // WIDERLEGT und deshalb hier festgehalten: „Die Auszahlung verlangt ein
+  // Inbetriebsetzungsprotokoll nach VDE-AR-N 4105, das ein Steckersolargerät
+  // nicht bekommt" stand kurz als Begründung hier und trägt NICHT. Buckenhof
+  // benutzt genau diese Norm als DEFINITION des Balkonkraftwerks (Nr. 2.1:
+  // „die der Norm VDE-AR-N 4105:2018-11 Ziffer 5.5.3 entsprechen") und verlangt
+  // für diese Zeile kein Protokoll. Der adversariale Prüfer hat das an einem
+  // Dokument desselben Commits gezeigt.
+  //
+  // Die Antragsberechtigung nennt das Balkonkraftwerk als Beispiel für Mieter —
+  // das ist Textbaustein der Verwaltungsgemeinschaft, Buckenhof trägt denselben
+  // Satz wortgleich; über Uttenreuths Fördergegenstände sagt er nichts.
+  //
+  // Das Programm steht trotzdem in `foerdert` unter "balkon": Ohne das wäre es
+  // im Balkon-Rechner unsichtbar, und ein Uttenreuther Mieter läse „keine
+  // kommunale Förderung" — die Falschauskunft in der anderen Richtung. Ohne
+  // Balkon-Satz informiert es und zieht nichts ab, dieselbe Bauform wie
+  // Spardorf.
+  //
+  // `speicherMin` bleibt bewusst OFFEN: Die 3-kWh-Schwelle steht in der
+  // Richtlinie nur an der Position „Batteriestromspeicher" (Nachrüstung), nicht
+  // an „Photovoltaikanlagen mit Batteriestromspeicher". Sie hier zu setzen
+  // würde einen kleinen Speicher, der zusammen mit der Anlage gekauft wird, um
+  // seinen Zuschuss bringen.
+  "uttenreuth-klimaschutz": {
+    id: "uttenreuth-klimaschutz", name: "Förderrichtlinie Klimaschutz",
+    traeger: "Gemeinde Uttenreuth", level: "kommune", region: "Uttenreuth",
+    bundesland: "Bayern", agsCode: "09572158",
+    url: "https://uttenreuth.vg-uttenreuth.de/umwelt-mobilitaet/umwelt/foerderungen/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-05-12",
+    eligibility: ["privat"],
+    foerdert: ["pv", "balkon"],
+    coveredCosts: "Zuschuss zu Photovoltaikanlagen mit und ohne Batteriestromspeicher sowie zu nachgerüsteten Batteriestromspeichern ab 3 kWh; daneben Lastenräder, Wärmedämmung und Zisternen",
+    maxFoerderung: "500 € für Photovoltaik mit Speicher",
+    pvPerKwp: 50, pvCap: 250,
+    speicherPerKwh: 50, speicherCap: 250,
+    rates: [
+      { label: "Photovoltaikanlage ohne Batteriestromspeicher", value: "50 € je kWp, höchstens 250 €", nur: ["pv"] },
+      { label: "Photovoltaikanlage mit Batteriestromspeicher", value: "50 € je kWp plus 50 € je kWh, höchstens 500 € (gefördert werden höchstens 5 kWp und 5 kWh)", nur: ["pv"] },
+      { label: "Batteriestromspeicher ab 3 kWh, von einer Fachkraft installiert", value: "50 € je kWh, höchstens 250 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "Die Zuschusstabelle der Richtlinie kennt keine Position dafür — hier ist nachzufragen, bevor gekauft wird", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Richtlinie in Kraft seit 12.05.2026 (Beschluss des Gemeinderats vom 11.05.2026); kein Rechtsanspruch, Bewilligung nur im Rahmen der Haushaltsmittel und in der Reihenfolge des Antragseingangs",
+      "Antragsberechtigt sind Privatpersonen mit Wohneigentum im Gemeindegebiet, Mieterinnen und Mieter mit schriftlicher Zustimmung der Eigentümer, Wohnungseigentümergemeinschaften und ortsansässige Vereine; nicht antragsberechtigt sind juristische Personen des Privatrechts außer einer WEG und gewerbliche Gesellschaften",
+      "Die Photovoltaikanlage muss von einer anerkannten Prüfstelle auf die Einhaltung der Mindestanforderungen nach geltenden Normen begutachtet sein; ein nachgerüsteter Batteriestromspeicher ab 3 kWh muss von einer Fachkraft installiert werden",
+      { text: "OFFEN: Die Antragsberechtigung nennt Mieterinnen und Mieter mit einem Balkonkraftwerk ausdrücklich, die Zuschusstabelle der Richtlinie hat dafür aber keine Zeile — anders als in den Nachbargemeinden Buckenhof und Marloffstein. Wer hier ein Balkonkraftwerk plant, fragt vor dem Kauf bei der Verwaltungsgemeinschaft nach; wir rechnen dafür keinen Betrag", nur: ["balkon"] },
+      "Antrag vor dem Kauf: Als Maßnahmenbeginn gilt der Kauf oder der erste Liefer- oder Leistungsvertrag. Begonnen werden darf erst, wenn die Bewilligungsbehörde dem vorzeitigen Beginn ausdrücklich zugestimmt hat; Planungsleistungen dürfen vorher erbracht werden",
+      "Dem Antrag liegt ein unverbindliches Angebot einer Fachfirma bei, das nicht älter als drei Monate ist; für die Auszahlung sind Abschlussrechnung, Zahlungsbeleg, Inbetriebsetzungsprotokoll nach VDE-AR-N 4105 und der Eintrag im Marktstammdatenregister nachzuweisen",
+      "Eine geförderte Maßnahme je Haushalt und Kalenderjahr",
+      "Kumulierung mit anderen Fördermitteln ist zulässig, soweit die Regeln des anderen Programms das erlauben und die Summe aller Fördermittel 60 % der Investition nicht übersteigt; darüber wird der gemeindliche Zuschuss anteilig gekürzt. Unabhängig davon darf der gemeindliche Zuschuss allein 60 % der Investitionskosten nicht überschreiten",
+      "Fünf Jahre Zweckbindung: Die geförderte Anlage muss im Gemeindegebiet bleiben, ordnungsgemäß betrieben und bei Defekt instandgesetzt werden; vorzeitige Außerbetriebnahme oder Veräußerung führt regelmäßig zum Widerruf",
+      "Die durch den Zuschuss abgedeckten Kosten dürfen bei Vermietung weder direkt noch indirekt auf die Miete umgelegt werden",
+      "ZWEI Fristen, zwei Startpunkte: Die Maßnahme muss binnen zwölf Monaten nach der Zustimmung zum vorzeitigen Beginn begonnen sein, und der Nachweis der Durchführung muss binnen zwölf Monaten nach dem Zuwendungsbescheid vorliegen. Beide Male verfallen die Mittel sonst; eine Fristverlängerung ist nur in begründeten Fällen und vor Ablauf möglich",
+    ],
+    combinableWith: BUND,
+  },
+
+  // RÖTTENBACH liegt im Landkreis Erlangen-Höchstadt (09572149) — es gibt ein
+  // zweites Röttenbach im Landkreis Roth (09576141). Der Schlüssel stammt aus
+  // dem Melderegister, die Zuordnung aus der Domain der Gemeinde
+  // (roettenbach-erh.de).
+  //
+  // `vollEinheiten`: Die Richtlinie rechnet ihre Regel selbst vor — „jeweils
+  // voll erreichte kWp bzw. kWh mit je 50 €", Beispiel 9,84 kWp → 9 kWp →
+  // 450 €. Ohne Abrundung wiese das Modell 492 € aus.
+  //
+  // Balkonkraftwerke sind AUSDRÜCKLICH ausgeschlossen („Balkonkraftwerke und
+  // ortsunabhängig verwendbare Photovoltaikanlagen sind von der Zuwendung
+  // ausgeschlossen") — deshalb kein Balkon-Satz und kein `balkon` in `foerdert`.
+  "roettenbach-erh-pv-speicher": {
+    id: "roettenbach-erh-pv-speicher", name: "Zuschuss für Photovoltaikanlagen und Stromspeicher",
+    traeger: "Gemeinde Röttenbach (Erlangen-Höchstadt)", level: "kommune", region: "Röttenbach (Erlangen-Höchstadt)",
+    bundesland: "Bayern", agsCode: "09572149",
+    url: "https://www.roettenbach-erh.de/klima/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2022-06-01",
+    eligibility: ["privat"],
+    // ZWEI RICHTLINIEN, EIN EINTRAG — und das ist die Konvention des Katalogs:
+    // Wo eine Gemeinde mehrere Techniken auf EINER Seite fördert, steht das als
+    // ein Eintrag mit mehreren `rates`, weil zwei Einträge auf derselben
+    // Amtsseite den Seiten-Wächter doppelt auf denselben Fingerabdruck setzen
+    // und `fundingFor()` bei gleicher Spezifität `undefined` liefert (Stadtseite
+    // still auf 404). Der Heizungs-Zuschuss ist eine EIGENE Richtlinie derselben
+    // Gemeinde; gefunden hat sie der adversariale Prüfer, nachdem der Ort schon
+    // als geprüft abgehakt war — der größere der beiden Haushaltstöpfe
+    // (65.000 € gegen 15.000 €) war ungelesen.
+    foerdert: ["pv", "waermepumpe"],
+    coveredCosts: "Zuschuss zur Errichtung einer Photovoltaik-Dachanlage und/oder eines Stromspeichers auf Wohn- und Nebengebäuden; in einer zweiten Richtlinie außerdem zum Austausch einer Öl- oder Gasheizung gegen regenerative Wärmeversorgungstechnik und zur Heizungsoptimierung",
+    maxFoerderung: "1.250 € für die Anlage und 1.250 € für den Speicher",
+    // DECKEL, KEINE AUSSCHLUSSGRENZE — zwei Council-Prüfer haben hier denselben
+    // Fehler gefunden, und der Test darunter hatte ihn festgeschrieben. Die
+    // Richtlinie sagt es dreimal: gefördert wird „unabhängig der geplanten
+    // Anlagengesamtgröße", die Förderhöhe ist „an der Spitzennennleistung in Höhe
+    // von 25 kWp GEDECKELT", und Nr. V spricht von der „Bemessungsgrenze". Mit
+    // `pvMax`/`speicherMax` zahlte das Modell einer 26-kWp-Anlage NULL statt
+    // 1.250 € — und widersprach dabei dem eigenen Höchstbetrag zwei Zeilen
+    // weiter oben. Die Richtung ist die ungefährlichere, falsch ist sie trotzdem:
+    // „keine Förderung" ist dieselbe Falschauskunft wie ein zu hoher Betrag.
+    pvPerKwp: 50, pvCap: 1250,
+    speicherPerKwh: 50, speicherCap: 1250,
+    vollEinheiten: true,
+    rates: [
+      { label: "Photovoltaikanlage auf dem Dach", value: "50 € je voll erreichter kWp, förderfähig bis 25 kWp", nur: ["pv"] },
+      { label: "Stromspeicher", value: "50 € je voll erreichter kWh, förderfähig bis 25 kWh", nur: ["pv"] },
+      // BEWUSST OHNE RECHENWERT: Der Zuschuss beträgt 10 % AUF DIE ZUSCHUSSSUMME
+      // der Bundesförderung, nicht auf die Investition. Unser Modell kennt für
+      // die Wärmepumpe nur einen Pauschalbetrag und einen Anteil an den KOSTEN;
+      // ein Anteil an einer fremden Förderzusage ist damit nicht ausdrückbar.
+      // Größenordnung am Beispiel der Gemeinde selbst: 30.000 € förderfähige
+      // Kosten, 16.500 € Bundesförderung, also 1.650 € von der Gemeinde.
+      { label: "Austausch der Heizung gegen regenerative Wärmeversorgungstechnik oder Solarthermie", value: "10 % der Zuschusssumme aus dem Festsetzungsbescheid des Bundes — keine Berechnung, weil ein Anteil an einer fremden Förderzusage in unserem Modell nicht abbildbar ist", nur: ["waermepumpe"] },
+      { label: "Heizungsoptimierung", value: "15 % der förderfähigen Kosten zwischen 1.000 € und 10.000 €, also 150 € bis 1.500 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Programm läuft seit 01.06.2022; kein Rechtsanspruch, Bewilligung im Rahmen der Haushaltsmittel und in der Reihenfolge des Eingangs vollständiger Anträge",
+      "Gerechnet wird je VOLL erreichter Einheit: Die Richtlinie rechnet 9,84 kWp als 9 kWp und zahlt dafür 450 €",
+      "Antragsberechtigt sind natürliche Personen mit Eigentum im Gemeindegebiet; bei Eigentumswohnungen die Eigentümergemeinschaft. Gewerblich genutzte Anlagen sind ausdrücklich ausgeschlossen",
+      { text: "Balkonkraftwerke und ortsunabhängig verwendbare Photovoltaikanlagen sind ausdrücklich von der Förderung ausgeschlossen", nur: ["pv"] },
+      "Antrag vor der Montage: Mit der Montage darf erst nach der Förderzusage begonnen werden, sonst verfällt der Anspruch; Planungsleistungen sind ausgenommen",
+      "Die Gemeinde bittet um rund zwei Wochen Vorlauf zwischen Antrag und geplantem Montagebeginn",
+      "Die endgültige Förderhöhe wird nach dem Inbetriebsetzungsprotokoll bestimmt, nicht nach der Planung: Wer 12 kWp beantragt und 11 kWp baut, bekommt 550 € statt 600 €",
+      "Gefördert wird nur die Erstinstallation eines Speichers; Erweiterungen werden bis zur Gesamtgrenze von 25 kWp beziehungsweise 25 kWh berücksichtigt",
+      "Die Inbetriebnahme muss durch einen beim Netzbetreiber eingetragenen Fachbetrieb erfolgen; Eigenleistung genügt nicht",
+      "Nachweis der Fertigstellung binnen 24 Monaten nach der Bewilligung über die Registrierungsbestätigung aus dem Marktstammdatenregister",
+      "Die geförderte Anlage ist mindestens zehn Jahre zu betreiben und ordnungsgemäß zu unterhalten",
+      { text: "Kumulierung mit anderen Förderungen ist möglich; ausgenommen ist das KfW-Programm 442 (Solarstrom für Elektroautos)", nur: ["pv"] },
+      { text: "Der Heizungs-Zuschuss hängt an der Bundesförderung: Vorausgesetzt werden die Förderfähigkeit nach der Bundesförderung für effiziente Gebäude und die Bestätigung der förderfähigen Kosten durch das Bundesamt; einzureichen sind der gemeindliche Antrag UND der Zuwendungsbescheid des Bundes. Ausgezahlt wird nach Vorlage des Festsetzungsbescheids", nur: ["waermepumpe"] },
+      { text: "Für den Heizungs-Zuschuss läuft das Programm ebenfalls seit 01.06.2022; auch hier gilt: Montage erst nach der Förderzusage der Gemeinde, Nachweis binnen 24 Monaten, Betrieb mindestens zehn Jahre", nur: ["waermepumpe"] },
+    ],
+    combinableWith: BUND,
+  },
+
+  // ECKENTAL: reines Balkonprogramm. Die Richtlinie vom 17.10.2023 ist seit
+  // 01.01.2024 in Kraft und nennt KEIN Außerkrafttreten; sie steht unverändert
+  // auf der aktuellen Seite des Marktes. Der Satz „Für das Jahr 2024 stehen
+  // Fördermittel in Höhe von insgesamt 5.000 € zur Verfügung" steht in der
+  // Präambel und ist die Haushaltsangabe jenes Jahres — die operative Regel ist
+  // Nr. 4 a („Finanzielle Mittel … müssen im ANTRAGSJAHR noch ausreichend zur
+  // Verfügung stehen"), also eine jährlich wiederkehrende Bedingung.
+  //
+  // Die 600-W-Definition in Nr. 2 ist der Stand von 2023 und inzwischen
+  // überholt (800 VA seit 2024). Sie wird hier NICHT als Bedingung geführt: Sie
+  // beschreibt in der Richtlinie, was ein Steckersolargerät ist, und der
+  // Zuschuss ist ausdrücklich unabhängig von der Modulzahl. Ob der Markt ein
+  // 800-VA-Gerät ablehnt, ist offen — deshalb steht die Fundstelle hier und
+  // nicht als Zusage im Katalog.
+  "eckental-balkon": {
+    id: "eckental-balkon", name: "Förderung von Stecker-Solargeräten bzw. Balkonkraftwerken",
+    traeger: "Markt Eckental", level: "kommune", region: "Eckental",
+    bundesland: "Bayern", agsCode: "09572121",
+    url: "https://eckental.de/photovoltaikanlagen/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-01-01",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Zuschuss zur Installation eines neuen Balkonkraftwerks",
+    maxFoerderung: "50 € je Haushalt",
+    balkonPauschale: 50,
+    rates: [
+      { label: "Balkonkraftwerk", value: "50 € je Eckentaler Haushalt, unabhängig von der Zahl der Module", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Richtlinie vom 17.10.2023, in Kraft seit 01.01.2024, ohne Befristung; kein Rechtsanspruch, Entscheidung in der Reihenfolge des Antragseingangs",
+      "Die Mittel müssen im Antragsjahr noch ausreichen — der Markt entscheidet im Rahmen der jeweils bereitstehenden Haushaltsmittel",
+      "Antragsberechtigt sind natürliche Personen, die Vermieter, Mieter oder Eigentümer einer Wohneinheit im Marktgebiet sind; Mieter legen die schriftliche Zustimmung des Vermieters vor",
+      "Je Wohneinheit wird höchstens ein Stecker-Solargerät gefördert, und es muss innerhalb der Gemeindegrenzen betrieben werden",
+      "Antrag NACH dem Kauf: Zum Antrag gehören die Rechnung über das angeschaffte Gerät und ein Foto des montierten Balkonkraftwerks",
+      "Gefördert werden nur Geräte mit Nachweis über die Produktsicherheit (CE-Kennzeichnung, Konformitätserklärung des Herstellers oder Verkäufers zur Netzanschlussnorm 4105 oder DGS-Sicherheitsstandard)",
+      "Nicht gefördert werden Geräte mit einem Rechnungsdatum vor dem 01.01.2024, Anlagen an gewerblich genutzten Gebäuden oder Gebäudeteilen sowie Umsetzungsorte, denen planungs- oder baurechtliche Belange oder der Denkmalschutz entgegenstehen",
+      "OFFEN und vor dem Kauf zu klären: Die Richtlinie stammt von 2023 und beschreibt ein Balkonkraftwerk als Solarmodule mit bis zu 600 Watt Abgabeleistung des Wechselrichters. Seit 2024 sind 800 Voltampere der Normalfall. Ob der Markt ein heute übliches Gerät trotzdem fördert, steht nirgends — der Zuschuss ist ausdrücklich unabhängig von der Zahl der Module",
+      "Bei Kulturdenkmälern ist die denkmalschutzrechtliche Genehmigung nachzuweisen",
+    ],
+    combinableWith: BUND,
+  },
+
+  // SPARDORF: BEWUSST OHNE RECHENWERT. Die Gemeinde zahlt 750 € pauschal, aber
+  // nur für eine NOTSTROMFÄHIGE Photovoltaikanlage mit Speicher, und die
+  // Notstromfähigkeit ist an vier technische Kriterien gebunden (automatische
+  // Umschaltung auf Inselbetrieb, Schwarzstartfähigkeit, Sektorenkopplung,
+  // netzdienliche Beladung), die ein Elektrofachbetrieb bestätigen muss. Ob
+  // eine geplante Anlage das erfüllt, weiß unser Rechner nicht — und die
+  // übliche Anlage erfüllt es nicht. Ein Pauschalabzug von 750 € wäre für die
+  // Mehrheit schlicht falsch.
+  //
+  // Die Solarthermie-Sätze der Gemeinde (120 €/m² mit, 75 €/m² ohne
+  // Heizungsunterstützung) stehen hier nicht: Solarthermie ist keine Technik
+  // dieses Katalogs.
+  "spardorf-solar": {
+    id: "spardorf-solar", name: "Förderung der Nutzung von Solarenergie",
+    traeger: "Gemeinde Spardorf", level: "kommune", region: "Spardorf",
+    bundesland: "Bayern", agsCode: "09572154",
+    url: "https://spardorf.vg-uttenreuth.de/umwelt-mobilitaet/foerderungen/solarenergie/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2021-08-01",
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Zuschuss zu notstromfähigen Photovoltaikanlagen mit Batteriestromspeicher sowie zu Solarthermieanlagen",
+    maxFoerderung: "750 € pauschal für die notstromfähige Anlage mit Speicher",
+    rates: [
+      { label: "Notstromfähige Photovoltaikanlage mit Batteriestromspeicher", value: "750 € pauschal; keine Berechnung, weil der Rechner die Notstromfähigkeit einer geplanten Anlage nicht kennt", nur: ["pv"] },
+    ],
+    conditions: [
+      "Die Gemeinde fördert Solarenergie seit 01.08.2021; die heute geltende Richtlinie ist seit 01.01.2026 in Kraft und gilt bis auf Widerruf. Gefördert werden nur Vorhaben, deren Umsetzung danach begonnen wurde",
+      "Anders als die Nachbargemeinden derselben Verwaltungsgemeinschaft verlangt Spardorf KEINE Zustimmung vor dem Maßnahmenbeginn: Das Verfahren beginnt mit der Mitteilung an die Gemeinde, ein Angebot ist für den Antrag nicht nötig, und als Maßnahmenbeginn gilt der erste Liefer- oder Leistungsvertrag",
+      "Antragsberechtigt sind Privatpersonen, Wohnungseigentümergemeinschaften und Vereine, solange die Maßnahme nicht einer wirtschaftlichen Betätigung zuzurechnen ist; je Anlage nur ein Antrag, und jede Maßnahme nur einmal aus Mitteln der Gemeinde",
+      { text: "Gefördert wird ausschließlich die NOTSTROMFÄHIGE Anlage: mindestens 5 kWp Photovoltaik und mindestens 5 kWh Speicher, und der Elektrofachbetrieb muss vier Kriterien bestätigen — automatische Umschaltung auf Inselbetrieb bei Stromausfall, Schwarzstartfähigkeit, Sektorenkopplung und netzdienliche Beladung", nur: ["pv"] },
+      "Die Förderung beträgt höchstens 60 % der Investitionskosten",
+      "Die Auszahlung ist binnen zwölf Monaten nach Verfahrensbeginn zu beantragen; eine Fristverlängerung ist in begründeten Fällen möglich",
+      "Kumulierung mit anderen Fördermitteln ist zulässig, soweit deren Regeln das erlauben und die Summe der Fördermittel die Investition nicht übersteigt",
+      "Für die Auszahlung sind Rechnung, Zahlungsnachweis, der Eintrag im Marktstammdatenregister für Anlage und Speicher sowie das Inbetriebsetzungsprotokoll nach VDE-AR-N 4105 einzureichen",
+      "Rechnungen müssen auf den Namen der antragstellenden Person lauten und per Überweisung von deren eigenem Konto bezahlt werden; die Auszahlung erfolgt ausschließlich auf dieses Konto",
+    ],
+    combinableWith: BUND,
+  },
+
+  // KALCHREUTH: AUFGENOMMEN MIT STATUS „UNSICHER" — und das ist die Korrektur
+  // eines Fehlgriffs aus demselben Lauf. Zuerst stand hier gar kein Eintrag,
+  // weil die Geltung offen ist; der adversariale Prüfer hat gezeigt, dass das
+  // die einzige Variante ist, die sicher eine Falschauskunft erzeugt: Ohne
+  // Eintrag steht auf Kalchreuths Seite „keine kommunale Förderung", obwohl es
+  // um 500 € für den Heizungstausch geht. `status: "unsicher"` fällt aus
+  // `fundingZaehlt()` heraus — das Programm informiert und zieht nachweislich
+  // nichts ab, und die Rückfrage an die Gemeinde bleibt vorgemerkt.
+  //
+  // Der offene Punkt ist NICHT der Betrag, sondern die Geltung: Nr. 8 der
+  // Richtlinie sagt „tritt zum 01.04.2023 in Kraft und endet mit Ablauf des
+  // laufenden Haushaltsjahres", die Gemeinde veröffentlicht sie am 20.09.2026
+  // aber weiterhin im Präsens samt zwei Antragsformularen.
+  "kalchreuth-regenerative-energien": {
+    id: "kalchreuth-regenerative-energien", name: "Zuschüsse zur Minderung des Energieverbrauchs und zur Nutzung regenerativer Energiequellen",
+    traeger: "Gemeinde Kalchreuth", level: "kommune", region: "Kalchreuth",
+    bundesland: "Bayern", agsCode: "09572137",
+    url: "https://www.kalchreuth.de/wirtschaft-verkehr-bauen/foerderung-regenerative-energien",
+    stand: "September 2026", status: "unsicher", capped: true, verified: true,
+    beginntIso: "2023-04-01",
+    eligibility: ["privat"],
+    foerdert: ["waermepumpe"],
+    coveredCosts: "Zuschuss für den Austausch einer fossilen Heizung gegen eine regenerative Wärmeerzeugung sowie für den individuellen Sanierungsfahrplan",
+    maxFoerderung: "500 € für den Heizungstausch",
+    rates: [
+      { label: "Austausch einer Öl-, Gas-, Kohle- oder Nachtspeicherheizung gegen regenerative Wärmeerzeugung", value: "500 € pauschal", nur: ["waermepumpe"] },
+      { label: "Individueller Sanierungsfahrplan", value: "10 % der Kosten, höchstens 300 €", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "GELTUNG UNKLAR: Die Richtlinie vom März 2023 sagt unter Nr. 8, sie trete zum 01.04.2023 in Kraft und ende mit Ablauf des laufenden Haushaltsjahres. Die Gemeinde veröffentlicht sie am 20.09.2026 weiterhin samt Antragsformularen. Ob sie für das laufende Haushaltsjahr erneut beschlossen wurde, ist aus den öffentlich zugänglichen Seiten nicht zu belegen — wir rechnen deshalb keinen Betrag an und haben bei der Gemeinde nachgefragt",
+      "Nur Bestandsgebäude: Bauantrag oder Bauanzeige müssen zum Zeitpunkt der Antragstellung mindestens zehn Jahre zurückliegen",
+      "Voraussetzung ist die Förderfähigkeit nach der Bundesförderung für effiziente Gebäude, nachzuweisen durch einen gültigen Zuwendungsbescheid des Bundesamtes für Wirtschaft und Ausfuhrkontrolle",
+      "Antragsberechtigt sind natürliche Personen für ihre Wohn- und Nichtwohngebäude im Gemeindegebiet; bei Wohnungseigentümergemeinschaften ein Bevollmächtigter",
+      "Antrag vor Vorhabenbeginn: Als Beginn gilt der Abschluss eines der Ausführung zuzurechnenden Liefer- oder Leistungsvertrags",
+      "Die Förderung wird befristet zugesagt und muss binnen zwölf Monaten nach Zugang des Zuwendungsbescheids abgerufen werden; ein später eingereichter Verwendungsnachweis kostet den Anspruch",
+      "Beim Heizungstausch darf die Förderquote insgesamt 60 % nicht übersteigen, beim Sanierungsfahrplan 90 % der förderfähigen Ausgaben",
+      "Für dieselbe Maßnahme nur ein Antrag; für ein Gebäude sind mehrere Anträge für verschiedene Maßnahmen möglich",
+    ],
+    combinableWith: BUND,
+  },
+
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
@@ -9726,7 +10116,8 @@ export function fundingAmount(
   if (unterMindestleistung) {
     pv = 0;
   } else if (f.pvPerKwp) {
-    pv = (f.pvSockel ?? 0) + anlage.kwp * f.pvPerKwp;
+    const kwp = f.vollEinheiten ? Math.floor(anlage.kwp) : anlage.kwp;
+    pv = (f.pvSockel ?? 0) + kwp * f.pvPerKwp;
     if (f.pvCap) pv = Math.min(pv, f.pvCap);
   } else if (f.pvTiers) {
     pv = tierAmount(f.pvTiers, anlage.kwp);
@@ -9745,7 +10136,7 @@ export function fundingAmount(
       const weitere = Math.floor(speicherKwh) - (f.speicherMin ?? 0);
       sp = f.speicherSockel + Math.max(0, weitere) * f.speicherPerKwh;
     } else {
-      sp = speicherKwh * f.speicherPerKwh;
+      sp = (f.vollEinheiten ? Math.floor(speicherKwh) : speicherKwh) * f.speicherPerKwh;
     }
     if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
   } else if (f.speicherTiers && speicherKwh >= (f.speicherMin ?? 0)) {

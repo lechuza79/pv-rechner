@@ -87,6 +87,12 @@ const nextConfig = {
       {"source": "/photovoltaik-foerderung/pfaffenhofen-a-d-ilm", "destination": "/photovoltaik-foerderung/bayern/pfaffenhofen-a-d-ilm", "permanent": true},
       {"source": "/photovoltaik-foerderung/hiddenhausen", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/hiddenhausen", "permanent": true},
       {"source": "/photovoltaik-foerderung/herzebrock-clarholz", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/herzebrock-clarholz", "permanent": true},
+      // Landkreis Erlangen-Höchstadt, 20.09.2026
+      { source: "/photovoltaik-foerderung/buckenhof", destination: "/photovoltaik-foerderung/bayern/buckenhof", permanent: true },
+      { source: "/photovoltaik-foerderung/marloffstein", destination: "/photovoltaik-foerderung/bayern/marloffstein", permanent: true },
+      { source: "/photovoltaik-foerderung/uttenreuth", destination: "/photovoltaik-foerderung/bayern/uttenreuth", permanent: true },
+      { source: "/photovoltaik-foerderung/spardorf", destination: "/photovoltaik-foerderung/bayern/spardorf", permanent: true },
+      { source: "/photovoltaik-foerderung/roettenbach-erlangen-hoechstadt", destination: "/photovoltaik-foerderung/bayern/roettenbach-erlangen-hoechstadt", permanent: true },
       {"source": "/photovoltaik-foerderung/burbach", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/burbach", "permanent": true},
       {"source": "/photovoltaik-foerderung/rheinisch-bergischer-kreis", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/rheinisch-bergischer-kreis", "permanent": true},
       {

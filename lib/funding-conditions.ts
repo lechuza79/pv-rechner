@@ -115,6 +115,19 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // Landkreis Erlangen-Höchstadt, sechs Gemeindeprogramme, aufgenommen am
+  // 20.09.2026. Jede Richtlinie ist im Volltext gelesen und jede Bedingung steht
+  // am Programm — die Prüfformen fehlen noch, und sie sind hier nicht trivial:
+  // Fünf der sechs verlangen den Antrag VOR dem Kauf, Eckental dagegen NACH dem
+  // Kauf (Rechnung und Foto gehören zum Antrag). Beides zugleich abzubilden ist
+  // die eigentliche Arbeit und braucht einen eigenen Durchgang; halb erfasst
+  // gibt es hier nicht. Bis dahin stehen die Bedingungen vollständig auf der
+  // Karte, sie werden nur nicht gegen das Vorhaben geprüft.
+  "buckenhof-klimaschutz", "marloffstein-klimaschutz", "uttenreuth-klimaschutz",
+  "roettenbach-erh-pv-speicher", "eckental-balkon", "spardorf-solar",
+  // Dazu die beiden Nachträge aus der Gegenprüfung desselben Tages: Röttenbachs
+  // zweite Richtlinie (Heizung) und Kalchreuth, dessen Geltung offen ist.
+"kalchreuth-regenerative-energien",
   // Aufgenommen am 18.09.2026 aus dem Quellen-Rückstand; Amtsseite und
   // Richtlinie jeweils im Volltext gelesen. Die Prüfformen fehlen noch, und bei
   // Würselen kennt das Modell eine Bedingung gar nicht: Gekauft werden darf erst
