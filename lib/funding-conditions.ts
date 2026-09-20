@@ -115,6 +115,23 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // Fritzlar, aufgenommen am 20.09.2026. Richtlinie im Volltext gelesen, jede
+  // Bedingung steht am Programm. Die Prüfform fehlt noch und ist hier nicht
+  // trivial, weil das Antragsverfahren das UMGEKEHRTE ist: „Es handelt sich um
+  // ein nachträgliches Zuschussverfahren, d. h. die Maßnahme bedarf keiner
+  // Bewilligung." Die vorhandenen Prüfformen bilden die übliche Regel „Antrag
+  // vor Kauf" ab; sie hier anzuwenden würde dem Nutzer eine Bewilligung
+  // abverlangen, die es gar nicht gibt. Dazu kommt eine Frist, die das Modell
+  // nicht kennt: Die Rechnung darf beim Antrag höchstens drei Monate alt sein
+  // — also eine Frist NACH dem Kauf statt davor. Halb erfasst gibt es hier
+  // nicht; bis dahin stehen die Bedingungen vollständig auf der Karte.
+  "fritzlar-balkonkraftwerke-speicher",
+  // Mauer, aufgenommen am 20.09.2026. Amtsseite und Antragsformular im
+  // Volltext gelesen. Auch hier ist das Antragsverfahren das nachträgliche
+  // (die Rechnungskopie gehört zum Antrag), und die Gemeinde nennt darüber
+  // hinaus keine Frist — es gibt damit schlicht kein Antragsverfahren, gegen
+  // das eine Prüfform das Vorhaben halten könnte.
+  "mauer-balkonkraftwerke",
   // Landkreis Erlangen-Höchstadt, sechs Gemeindeprogramme, aufgenommen am
   // 20.09.2026. Jede Richtlinie ist im Volltext gelesen und jede Bedingung steht
   // am Programm — die Prüfformen fehlen noch, und sie sind hier nicht trivial:

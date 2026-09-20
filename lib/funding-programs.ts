@@ -2840,10 +2840,25 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "mainz-kipki-speicher", name: "Photovoltaik-Batteriespeicher (KIPKI)",
     traeger: "Mainzer Stiftung für Klimaschutz / Stadt Mainz", level: "kommune", region: "Mainz", bundesland: "Rheinland-Pfalz", agsCode: "07315",
     // DIE PROGRAMMSEITE GIBT ES NICHT MEHR (12.09.2026, am Server gemessen).
-    // Die Stiftung baut ihre Website um: JEDER Pfad der Domain — auch die Wurzel
-    // und die Übersicht der Förderprogramme — antwortet mit HTTP 200 und leitet
-    // auf „Über uns" um, wo im Seitenkopf „Diese Seite befindet sich im Umbau"
-    // steht. Über das Programm steht dort kein Wort.
+    // Die Stiftung baut ihre Website um: die Wurzel, die Übersicht der
+    // Förderprogramme und die Programmseite selbst antworten mit HTTP 200 und
+    // leiten auf „Über uns" um, wo im Seitenkopf „Diese Seite befindet sich im
+    // Umbau" steht. Über das Programm steht dort kein Wort.
+    //   NACHGEMESSEN AM 20.09.2026, und die frühere Fassung dieses Kommentars
+    //   war zu weit: Sie schrieb „JEDER Pfad der Domain" leite um. Das stimmt
+    //   nicht — ein erfundener Pfad antwortet mit 404, `/impressum/` bleibt
+    //   stehen, `/wp-sitemap.xml` antwortet mit 410. Die Umleitung trifft
+    //   also GENAU die alten Förderpfade, und das ist der stärkere Befund:
+    //   Sie ist eine Entscheidung der Stiftung für diese Adressen, nicht ein
+    //   Auffangnetz einer Baustelle. (Eine Aussage über eine fremde Seite
+    //   gehört gemessen, nicht verallgemeinert — dieselbe Lehre wie bei
+    //   Havelland.)
+    //   IHRE EIGENE SEITENKARTE FÜHRT VIER ADRESSEN, und keine davon ist ein
+    //   Förderprogramm: Datenschutz, Barrierefreiheit, Impressum, „Über uns"
+    //   (`/sitemap.xml`, von ihrer robots.txt benannt, gelesen am 20.09.2026).
+    //   Das ist der maschinenlesbare Index des Betreibers selbst und damit der
+    //   beste Beleg dafür, dass die Fundstelle weg ist. Er sagt NICHT, dass das
+    //   PROGRAMM beendet ist — nur, dass diese Website es nicht mehr führt.
     //   DIE ADRESSE BLEIBT TROTZDEM STEHEN, und zwar mit Absicht: Es gibt keine
     //   bessere. Sie auf die Wurzel zu setzen wäre kein Gewinn (dieselbe
     //   Umleitung, dasselbe Ziel) und würde nur verbergen, dass die belegte
@@ -10200,6 +10215,155 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // antwortete am 20.09.2026 mit HTTP 503. Der verlinkte Online-Antrag
     // (`formulare.hvlnet.de/formcycle/form/provide/754/`) antwortet heute mit
     // HTTP 404 — passend zur Pause, aber nicht als Beleg dafür genommen.
+  },
+  "fritzlar-balkonkraftwerke-speicher": {
+    id: "fritzlar-balkonkraftwerke-speicher", name: "Förderung Balkonkraftwerke mit Speicher",
+    traeger: "Stadt Fritzlar", level: "kommune", region: "Fritzlar",
+    bundesland: "Hessen", agsCode: "06634005",
+    url: "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // TAGESGENAU AUS DER RICHTLINIE, nicht aus der Jahresangabe der Seite.
+    // Die Programmseite sagt nur „Laufzeit von 2026 – 2027"; die Richtlinie
+    // sagt „Diese Richtlinie tritt am 01.01.2026 in Kraft … Sie ist bis
+    // 31.12.2027 gültig."
+    //   `endetIso` MEINT DEN ANNAHMESCHLUSS, nicht die Befristung der
+    //   Richtlinie — hier fallen beide zusammen, weil derselbe Satz die
+    //   Geltung an die Anträge bindet („gilt für alle Anträge, die ab diesem
+    //   Zeitpunkt … gestellt werden"). Der Topf kann trotzdem früher leer sein:
+    //   100 Plätze, Windhundprinzip, deshalb `capped: true`. Etwas Genaueres
+    //   ist nicht belegbar.
+    //   `beschlossenIso` IST EINE BRÜCKE, keine Gleichsetzung: Belegt ist ein
+    //   AUFTRAG der Stadtverordnetenversammlung vom 25.09.2025, die Richtlinie
+    //   selbst trägt nur „Stand: November 2025". Dass es ihr Beschluss ist,
+    //   folgt aus ihrer Schlussklausel — die Laufzeit lasse sich „mit ERNEUTEM
+    //   Beschluss der Stadtverordnetenversammlung" verlängern.
+    beginntIso: "2026-01-01", endetIso: "2027-12-31", beschlossenIso: "2025-09-25",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk mit Speicher, ein Gerät je Wohneinheit",
+    maxFoerderung: "100 € je Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk mit Speicher", value: "100 € pauschal (brutto), ein Gerät je Wohneinheit", nur: ["balkon"] }],
+    conditions: [
+      "Gefördert wird ausschließlich das Balkonkraftwerk zusammen mit einem Speicher — ohne Speicher gibt es nichts",
+      // DER ANTRAGSZEITPUNKT IST DER UMGEKEHRTE als sonst, und er stand auf der
+      // Programmseite mit keinem Wort. Fast jedes Programm des Katalogs
+      // verlangt den Antrag VOR dem Kauf; hier ausdrücklich nicht: „Es handelt
+      // sich um ein nachträgliches Zuschussverfahren, d. h. die Maßnahme bedarf
+      // keiner Bewilligung." Wer die übliche Regel annimmt, wartet auf eine
+      // Bewilligung, die es gar nicht gibt. Dieselbe Bauform wie in
+      // Herbrechtingen und im Landkreis Havelland.
+      "Beantragt wird erst nach dem Einbau: eine Bewilligung vorab gibt es nicht",
+      "Der Speicher muss mindestens 1 kWh fassen, die Module höchstens 2.000 Wattpeak und der Wechselrichter höchstens 800 Voltampere liefern",
+      "Das Set muss von einem einzigen Anbieter gekauft sein; Rechnungen einzelner Bauteile verschiedener Anbieter sind ausgeschlossen",
+      // EIGENE BEDINGUNG, nicht im Ausschluss der Inselanlagen enthalten: Ein
+      // netzgekoppeltes Set mit NULLEINSPEISUNG ist keine Inselanlage, verstößt
+      // aber gegen diese Voraussetzung — und genau diese Betriebsart bieten die
+      // gängigen Balkonspeicher serienmäßig an. Gefunden im Council.
+      "Überschuss, den der Speicher nicht mehr aufnimmt, muss ins öffentliche Netz eingespeist werden — eine Nulleinspeisung ist nicht förderfähig",
+      "Die Rechnung darf beim Antrag höchstens drei Monate alt sein und nicht vor dem 1. Januar 2026 ausgestellt worden sein",
+      "Antragsberechtigt sind volljährige Personen mit erstem Wohnsitz in Fritzlar — Eigentümer wie Mieter, für die selbstbewohnte Wohnung",
+      "Je Wohneinheit wird höchstens ein Balkonkraftwerk gefördert; im Haushalt darf noch keine geförderte Anlage stehen",
+      "Mieter brauchen vorab die Zustimmung der Vermieterseite, Eigentumswohnungen die der Eigentümergemeinschaft",
+      "Die Anlage muss zwei Jahre lang im Stadtgebiet Fritzlar betrieben werden",
+      "Die Anlage ist im Marktstammdatenregister anzumelden; der Nachweis muss den Status In Betrieb zeigen und gehört zum Antrag, dazu Rechnung, Zahlungsbeleg und ein Foto der angeschlossenen Anlage",
+      "Liegt der Aufstellungsort im Bereich eines Kulturdenkmals oder einer denkmalgeschützten Gesamtanlage, ist vorab eine denkmalschutzrechtliche Genehmigung einzuholen",
+      "Ausgeschlossen sind Eigenbauten und Prototypen, gebrauchte Geräte, fest mit dem Gebäude verbundene Anlagen, Leasing- und Ratenkauf, Inselanlagen ohne Einspeisung und gewerblich genutzte Gebäude",
+      "Die Anlagenteile müssen den einschlägigen nationalen Normen entsprechen (etwa CE) und fachgerecht montiert sein",
+      "Der Topf umfasst je 5.000 € für 2026 und 2027, zusammen 10.000 € für höchstens 100 Anlagen; vergeben wird nach Eingang",
+      "Ein Rechtsanspruch besteht nicht — die Förderung ist eine freiwillige Leistung der Stadt",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    balkonPauschale: 100, balkonNurMitSpeicher: true,
+    // NEU AUFGENOMMEN 20.09.2026. Gefunden im Treffer-Vorrat, Amtsseite und
+    // Richtlinie am selben Tag im Volltext gelesen („Richtlinie zur Förderung
+    // von steckerfertigen Photovoltaikanlagen (sogenannten Balkonkraftwerken)
+    // mit Speicher in 2026 und 2027", Stand November 2025, vier Seiten).
+    // Satz: „Die Förderhöhe beträgt pauschal 100 Euro (brutto) pro
+    // Balkonkraftwerk."
+    //
+    // DIE RICHTLINIE STEHT NICHT ALS LINK AUF DER SEITE, sie steht im
+    // Datenblock des Download-Bausteins: Ein `href` auf das PDF gibt es nicht,
+    // der Pfad kommt aber fünfmal im ausgelieferten HTML vor, HTML-maskiert
+    // innerhalb eines JSON-Blocks. Ein einfacher Abruf genügt also, wenn man
+    // den ROHTEXT durchsucht statt die Ankerliste.
+    //   EINE ERSTE FASSUNG BEHAUPTETE HIER „braucht einen echten Browser" —
+    //   am 20.09.2026 vom Gegenprüfer widerlegt und nachgemessen. Der Irrtum
+    //   entstand aus derselben Wurzel wie der Havelland-Fehlgriff zwei Tage
+    //   zuvor: nach Verweisen gesucht statt im Rohtext. Eine falsche Aussage
+    //   über unser eigenes Vorgehen kostet die nächste Sitzung einen Browser,
+    //   wo ein Abruf reicht.
+    // Ohne die Richtlinie hätte der Eintrag zum Antragszeitpunkt schweigen
+    // müssen — also zur teuersten Bedingung des Programms.
+    //
+    // `balkonNurMitSpeicher` IST HIER PFLICHT, nicht Beiwerk: Die Stadt zahlt
+    // ausschließlich für Sets MIT Speicher. Ohne das Feld bekäme jedes Set ohne
+    // Speicher 100 € abgezogen, die es nicht gibt. Nachgesehen und deshalb
+    // ohne eigenes Feld gelassen: Die Mindestspeichergröße von 1 kWh kann der
+    // Rechner nicht unterschreiten — seine beiden Speicher messen 1,6 und
+    // 2,7 kWh —, und keines seiner drei Sets überschreitet 2.000 Wp oder
+    // 800 VA. Die drei Grenzen stehen deshalb im Bedingungstext, wo sie den
+    // Nutzer betreffen, und nicht in der Rechnung, wo sie nie greifen würden.
+    //
+    // `combinableWith: null` heißt „nicht geklärt": Die Richtlinie sagt zur
+    // Kumulierung mit anderen Fördermitteln nichts — weder erlaubend noch
+    // ausschließend. Im Ergebnis behandelt der Code das wie einen Ausschluss
+    // von Bundesmitteln, also die vorsichtige Richtung.
+    //
+    // DER BESCHLUSSTAG IST NICHT DER ANTRAGSSTART: „Mit Beschluss vom
+    // 25.09.2025 hat die Stadtverordnetenversammlung … den Magistrat
+    // beauftragt". Der Start steht getrennt davon im Inkrafttreten.
+  },
+  "mauer-balkonkraftwerke": {
+    id: "mauer-balkonkraftwerke", name: "Förderprogramm Balkonkraftwerk",
+    traeger: "Gemeinde Mauer", level: "kommune", region: "Mauer",
+    bundesland: "Baden-Württemberg", agsCode: "08226048",
+    url: "https://www.gemeinde-mauer.de/seite/662274/klimaschutz.html",
+    stand: "September 2026", status: "aktiv", capped: false, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten je Anlage",
+    maxFoerderung: "10 % der Anschaffungskosten, max. 100 €",
+    rates: [{ label: "Balkonkraftwerk", value: "10 % der Anschaffungskosten, max. 100 €", nur: ["balkon"] }],
+    conditions: [
+      // Der Antragszeitpunkt ist auch hier der umgekehrte: Das Formular
+      // verlangt die Rechnungskopie als Anlage, eine Bewilligung vorab kommt
+      // weder auf der Seite noch im Formular vor.
+      "Beantragt wird erst nach dem Kauf: die Rechnungskopie gehört zum Antrag",
+      "Gefördert werden nur Anlagen, die VDE-konform sind — Erzeugungsanlage und Anschluss müssen den aktuell gültigen Regeln der Technik entsprechen",
+      "Maßgeblich sind der Nachweis und der Zeitpunkt der Installation",
+      "Die Anlage ist beim Netzbetreiber und im Marktstammdatenregister anzumelden",
+      "Ein Rechtsanspruch auf die Förderung besteht nicht",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.10, balkonCap: 100,
+    // NEU AUFGENOMMEN 20.09.2026 aus dem Treffer-Vorrat. Amtsseite und
+    // Antragsformular am selben Tag im Volltext gelesen. Satz der Seite: „Der
+    // Gemeinderat hat eine Förderung in Höhe von 10 % der
+    // Anschaffungskosten/Anlage (max. 100 €) beschlossen." Das Formular
+    // („Antrag für Förderprogramm ‚Balkonkraftwerk'", Bürgermeisteramt Mauer)
+    // wiederholt den Satz wörtlich und verlangt die Rechnungskopie.
+    //
+    // DIE 600 W DER SEITE SIND KEINE BEDINGUNG, und das ist die einzige
+    // Entscheidung dieses Eintrags. Die Seite schreibt im erklärenden Absatz
+    // darüber: „Mini-Photovoltaik-Anlagen … Sie sind auf eine Maximalleistung
+    // von 600W begrenzt". Das ist eine (seit 2024 überholte) Beschreibung
+    // dessen, was ein Balkonkraftwerk ist — kein Fördermerkmal: Weder der
+    // Beschlusssatz noch das Formular nennen eine Leistungsgrenze. Sie als
+    // Bedingung zu schreiben würde die Quelle härten und zwei der drei Sets des
+    // Rechners grundlos ausschließen; sie wegzulassen ist trotzdem nicht
+    // stillschweigend, sondern steht hier. Was die Gemeinde wirklich verlangt,
+    // ist VDE-Konformität nach den AKTUELL gültigen Regeln — und die erlauben
+    // heute 800 VA.
+    //
+    // KEIN TOPF GENANNT: Weder Seite noch Formular nennen ein Budget oder eine
+    // Reihenfolge nach Eingang, deshalb `capped: false`. Auch kein Enddatum und
+    // kein Beschlussdatum — der Satz nennt nur „der Gemeinderat hat beschlossen"
+    // ohne Tag. Ein geratenes Datum trüge die Auswertung „Zubau vor und nach der
+    // Förderung" und verschöbe sie.
+    //
+    // `combinableWith: null` heißt „nicht geklärt": Zur Kumulierung sagt keine
+    // der beiden Quellen etwas. Im Ergebnis wirkt das wie ein Ausschluss von
+    // Bundesmitteln, also die vorsichtige Richtung.
   },
 };
 
