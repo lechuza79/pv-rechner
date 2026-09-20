@@ -20,7 +20,7 @@ export const outDir = (audit = DEFAULT_AUDIT) => resolve(audit, "workflow/munici
 
 // Extraction and judgement files: a change re-judges everything, fetched pages stay.
 export const EXTRACTION_FILES = ["lib/contact-evidence.ts", "lib/mail-deobfuscation.ts", "lib/contact-role-context.ts", "lib/contact-discovery.ts", "lib/personen-fund.ts", "lib/published-joomla-mail.ts", "lib/uri-sicher.ts", "lib/contact-heading-context.ts"];
-export const JUDGE_FILES = [...EXTRACTION_FILES, "lib/contact-municipal-judge.ts", "lib/contact-quality-evidence.ts", "lib/gemeindeverband.ts", "scripts/contact-municipal-v2.ts", "scripts/lib/contact-v2-config.ts"];
+export const JUDGE_FILES = [...EXTRACTION_FILES, "lib/contact-municipal-judge.ts", "lib/kontakt-suche.ts", "lib/contact-quality-evidence.ts", "lib/gemeindeverband.ts", "scripts/contact-municipal-v2.ts", "scripts/lib/contact-v2-config.ts"];
 const digestOf = (files: string[]) => sha(JSON.stringify(files.map(f => [f, sha(readFileSync(resolve(REPO_ROOT, f)))])));
 export const extractionVersion = () => digestOf(EXTRACTION_FILES).slice(0, 16);
 export const rulesVersion = () => digestOf(JUDGE_FILES).slice(0, 16);
