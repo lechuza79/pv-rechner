@@ -6,20 +6,53 @@
 
 export const tokens = {
   // ─── Backgrounds (3) ────────────────────────────────────────────────────────
-  '--color-bg': '#FFFFFF',              // Page, cards, panels, chart
-  '--color-bg-muted': '#F8F8F8',        // Inputs, subtle areas, overlays
-  '--color-bg-accent': '#F1F6FE',       // Hero section, accent backgrounds
+  // v3 (20.09.2026): the surfaces of the new design. Measured off the design
+  // package's own content-page stylesheet (public/rechner-uebersicht/overview.css)
+  // and the released pages — NOT invented here. The neutral is a desaturated
+  // teal-green, not a cool grey, so a page body sits in the same family as the
+  // shared header and footer that every page has carried since 19.09.
+  //   card / panel   #F6F8F1  (overview.css .tool)
+  //   page ground    #E8ECE3  (overview.css body)
+  // The old system uses ONE token for page and card, and bg-muted for the tier
+  // below it. That relation is kept: bg is the card white, bg-muted one step
+  // down, bg-accent the package's page ground.
+  '--color-bg': '#F6F8F1',              // Page, cards, panels, chart
+  '--color-bg-muted': '#EDF0E8',        // Inputs, subtle areas, overlays
+  // The ACCENT surface, not a third neutral: it has always been the accent's
+  // own tint (a pale blue under the blue accent) and stays that under the green
+  // one — the olive at 10 % over the card. A plain neutral step here would sit
+  // inside the grey ramp, close enough to a card-over-border blend that
+  // anything identifying this surface BY ITS COLOUR starts matching the wrong
+  // pixels (the ranking table's placement box does exactly that).
+  '--color-bg-accent': '#E5EBDC',       // Hero section, accent backgrounds
 
   // ─── Borders (3) ───────────────────────────────────────────────────────────
-  '--color-border': '#E9E9E9',          // Default borders, cards, inputs
-  '--color-border-muted': '#E0E0E0',    // Muted/secondary borders, toggles
-  '--color-border-accent': '#BCD6FF',   // Accent borders, hero, icon buttons
+  // The package draws its rules as the ink at an alpha (#173b4218 / #173b4230).
+  // Flattened over the card surface here, because these tokens also land in SVG
+  // presentation attributes where a translucent value composites over whatever
+  // sits behind it rather than over the card.
+  '--color-border': '#DBE1DC',          // Default borders, cards, inputs
+  '--color-border-muted': '#CCD4D0',    // Muted/secondary borders, toggles
+  '--color-border-accent': '#CAD6BE',   // Accent borders, hero, icon buttons
 
-  // ─── Accent — Blue (5) ─────────────────────────────────────────────────────
-  '--color-accent': '#1365EA',          // CTAs, toggles, active states, hero number
-  '--color-accent-dim': 'rgba(19,101,234,0.08)',  // Selected card backgrounds
-  '--color-accent-dark': '#073C93',     // Hover, dark accent text
-  '--color-accent-light': '#6A9EF2',    // Light accent, secondary interactive
+  // ─── Accent — Green (4) ────────────────────────────────────────────────────
+  // v3 (20.09.2026). The new design has exactly ONE accent, and it is the lime
+  // #D4FF24 — but only ever as a FILL under dark ink. As text on the package's
+  // own paper it reaches 1,03:1 (WCAG AA wants 4,5:1), so it cannot be this
+  // token: --color-accent is used as text and as stroke in more than half of
+  // its call sites. The package's own legible relative of that lime is
+  // #487123, the link-hover colour in overview.css — that is the value here.
+  // The lime lives on as the brand pair below (logo, header, footer), which is
+  // where the package itself puts it.
+  //
+  // Measured (WCAG 2.1): #487123 on --color-bg 5,36:1 · on --color-bg-muted
+  // 4,98:1 · white on it 5,73:1. The old blue #1365EA would have slipped to
+  // 4,47:1 on the new bg-muted — below AA — so keeping it was not an option
+  // either.
+  '--color-accent': '#487123',          // CTAs, toggles, active states, hero number
+  '--color-accent-dim': 'rgba(72,113,35,0.10)',   // Selected card backgrounds
+  '--color-accent-dark': '#35561A',     // Hover, dark accent text
+  '--color-accent-light': '#7FA855',    // Light accent, secondary interactive
 
   // ─── Brand (2) ─────────────────────────────────────────────────────────────
   // The logo mark's two blues. Kept apart from --color-accent even where the
@@ -30,9 +63,16 @@ export const tokens = {
   // the pair must always stay in the same order (brand above brand-deep), or
   // the mark's layering inverts. That is why the deep one is NOT
   // --color-accent-dark: that token means "the accent variant that contrasts
-  // with the background" and therefore flips to a light blue in dark mode.
-  '--color-brand': '#1365EA',
-  '--color-brand-deep': '#073C93',
+  // with the background" and therefore flips to a light accent in dark mode.
+  //
+  // v3 (20.09.2026): the mark is the lime. These two values are not chosen
+  // here — public/shared-nav/header.css and public/shared-footer/footer.css
+  // have forced exactly them onto the mark on every page since 19.09.; the
+  // base now says the same, so a logo rendered OUTSIDE the header and footer
+  // stops being the only blue one left. brand-deep is the package's
+  // color-mix(lime 55%, #fff), resolved.
+  '--color-brand': '#D4FF24',
+  '--color-brand-deep': '#E7FF87',
 
   // ─── Semantic (5) ──────────────────────────────────────────────────────────
   '--color-positive': '#00D950',        // Positive values (Rendite, Ersparnis)
@@ -55,8 +95,8 @@ export const tokens = {
   // ─── Chart (4) ─────────────────────────────────────────────────────────────
   '--color-chart-positive-bg': 'rgba(0,217,80,0.08)',
   '--color-chart-negative-bg': 'rgba(239,68,68,0.05)',
-  '--color-chart-grid': '#E9E9E9',
-  '--color-chart-zero': '#BEBEBE',
+  '--color-chart-grid': '#DBE1DC',
+  '--color-chart-zero': '#ACBAB7',
 
   // ─── Energy — Renewables (green shades) ─────────────────────────────────────
   '--color-energy-solar': '#4CAF50',        // Strong green — Solar
@@ -90,28 +130,37 @@ export const tokens = {
   '--color-energy-cat-other': '#BDBDBD',     // Grey — Sonstige (summary)
 
   // ─── Text (5) ──────────────────────────────────────────────────────────────
-  '--color-text-primary': '#3F3F3F',    // Headings, strong text, values
+  // v3 (20.09.2026): the package's ink #173B42 (overview.css body colour, and
+  // the same value header.css paints the wordmark with) instead of the neutral
+  // grey. Contrast is unchanged in practice — 11,27:1 on the new --color-bg
+  // against the old pair's 10,53:1 on white.
+  '--color-text-primary': '#173B42',    // Headings, strong text, values
   // A11y (WCAG 2.1 AA, BFSG): body/label greys clear 4.5:1 on --color-bg AND on
   // --color-bg-muted (the tinted surfaces are the tighter constraint), while
   // keeping secondary/muted visibly apart as a hierarchy (14 hex steps — the
   // first AA fix had collapsed them to 3 steps). Ratios (WCAG 2.1 formula):
-  //   secondary #646464 → 5.92:1 on #FFFFFF, 5.57:1 on #F8F8F8
-  //   muted     #727272 → 4.81:1 on #FFFFFF, 4.53:1 on #F8F8F8
-  // faint is placeholder-only (not essential text), 3.45:1. See audit
+  //   secondary #4A675E → 5.78:1 on #F6F8F1, 5.37:1 on #EDF0E8
+  //   muted     #527268 → 4.95:1 on #F6F8F1, 4.60:1 on #EDF0E8
+  // faint is placeholder-only (not essential text), 3.47:1 on #EDF0E8. See audit
   // docs/audit-backlog-2026-07-19.md §4. Dark/Dusk/Overcast nachgezogen (N8).
-  '--color-text-secondary': '#646464',  // Body text, labels, descriptions
-  '--color-text-muted': '#727272',      // Dimmed text, hints
-  '--color-text-faint': '#8A8A8A',      // Very light text, placeholders
+  //
+  // v3 (20.09.2026): secondary is the package's own #4A675E (overview.css
+  // .crumb, .intro p, .tool p — and header.css --color-text-faint on the
+  // wordmark). muted and faint are derived on ITS hue (161°, sat .28) and
+  // re-measured against the new grounds, not carried over from the grey scale.
+  '--color-text-secondary': '#4A675E',  // Body text, labels, descriptions
+  '--color-text-muted': '#527268',      // Dimmed text, hints
+  '--color-text-faint': '#61877B',      // Very light text, placeholders
   '--color-text-on-accent': '#FFFFFF',  // Text on accent-colored backgrounds
 
   // ─── Progress (1) ──────────────────────────────────────────────────────────
-  '--color-progress-inactive': '#E9E9E9',
+  '--color-progress-inactive': '#DBE1DC',
 
   // ─── Track (1) ─────────────────────────────────────────────────────────────
   // The unfilled part of a gauge/meter. Translucent so it composites over
   // whatever sits behind it, and flips ink per theme — "10 % white" only reads
   // on a dark ground, "10 % black" only on a light one.
-  '--color-track': 'rgba(0,0,0,0.10)',
+  '--color-track': 'rgba(23,59,66,0.12)',
 
   // ─── Shadows (3) ───────────────────────────────────────────────────────────
   // Tokenised so they invert for dark/dusk (black shadows vanish on dark grounds).
@@ -164,9 +213,14 @@ export const tokens = {
   '--font-size-display-xl': '56px',     // Die eine große Zahl einer Seite
 
   // ─── Radii (3) ─────────────────────────────────────────────────────────────
-  '--radius-sm': '6px',                 // Small: inputs, checkboxes, pills
-  '--radius-md': '12px',                // Medium: buttons, cards, panels
-  '--radius-lg': '20px',                // Large: hero cards, outer containers
+  // v3 (20.09.2026): the package rounds harder — measured on the released
+  // pages: input 10px, panel 18px, .tool card 24px. The scale follows.
+  // Its PILL buttons (border-radius 999px) are deliberately NOT in here:
+  // --radius-md carries buttons and cards alike, so a pill value would round
+  // every card into a capsule. That shape is a separate decision.
+  '--radius-sm': '10px',                // Small: inputs, checkboxes, pills
+  '--radius-md': '16px',                // Medium: buttons, cards, panels
+  '--radius-lg': '24px',                // Large: hero cards, outer containers
 
   // ─── Layout (3) ────────────────────────────────────────────────────────────
   '--page-max-width': '480px',       // Rechner/Tools — kompakte, fokussierte Spalte
@@ -334,20 +388,32 @@ export function getCssVariables(): string {
 // they are data, not chrome. Only chrome (surfaces, text, borders, shadows) and
 // the interactive accent shift, brightened for contrast on dark grounds.
 
-/** Nacht — cool dark slate. */
+/** Nacht — the package's dark teal. */
+// v3 (20.09.2026): the values are the shared footer's, which stands at the
+// bottom of EVERY page since 19.09. and does not follow the stage (its ground
+// is a fixed #08191C). A cool slate page above a dark teal footer was the one
+// seam visible at night; these tokens close it.
+// Ground and card are the package's OWN values, to the digit: #08191C is what
+// the footer paints on every page and what the municipal story cards use as
+// their dark surface. "Close enough" would have left a faint seam exactly where
+// the page meets the footer — the one place this whole change is about.
 const darkTokens: Partial<Record<TokenName, string>> = {
-  '--color-bg': '#12161C',
-  '--color-bg-muted': '#1B212A',
-  '--color-bg-accent': '#152238',
-  '--color-border': '#2A313C',
-  '--color-border-muted': '#232A34',
-  '--color-border-accent': '#31517F',
-  '--color-brand': '#4D8DF0',                       // mark, brightened for the dark ground
-  '--color-brand-deep': '#2D5FBF',                  // still a step below brand — layering holds
-  '--color-accent': '#4D8DF0',                      // brightened blue for dark contrast
-  '--color-accent-dim': 'rgba(77,141,240,0.16)',
-  '--color-accent-dark': '#8FBBF7',                 // "hover / accent text" → lighter on dark
-  '--color-accent-light': '#3E74CC',
+  '--color-bg': '#08191C',
+  '--color-bg-muted': '#163338',
+  '--color-bg-accent': '#12292E',
+  '--color-border': '#24413F',
+  '--color-border-muted': '#1C3539',
+  '--color-border-accent': '#3D5F3A',
+  '--color-brand': '#D4FF24',                       // the mark keeps its lime on dark
+  '--color-brand-deep': '#EAFFA0',                  // lighter, as header.css mixes it
+  '--color-accent': '#A8D96A',                      // the accent green, lifted for dark (10,56:1)
+  '--color-accent-dim': 'rgba(168,217,106,0.16)',
+  '--color-accent-dark': '#C6E89A',                 // "hover / accent text" → lighter on dark
+  '--color-accent-light': '#7FAF4F',
+  // On a light-green fill, white text reaches 1,7:1. The dark stage therefore
+  // sets its own ink for accent surfaces — the base's white would be unreadable.
+  // (It was already weak before this change: white on #4D8DF0 was 3,1:1.)
+  '--color-text-on-accent': '#08191C',
   '--color-positive': '#2BE06E',
   // Auf dunklem Grund sind die Markenfarben selbst schon kontraststark
   // (9,24:1 bzw. 5,6:1) — Text- und Flaechenfarbe fallen hier zusammen.
@@ -358,13 +424,16 @@ const darkTokens: Partial<Record<TokenName, string>> = {
   '--color-negative-border': 'rgba(242,109,109,0.32)',
   '--color-chart-positive-bg': 'rgba(43,224,110,0.13)',
   '--color-chart-negative-bg': 'rgba(242,109,109,0.10)',
-  '--color-chart-grid': '#2A313C',
-  '--color-chart-zero': '#4C5561',
-  '--color-text-primary': '#E7EBF1',
-  '--color-text-secondary': '#9AA6B4',
-  '--color-text-muted': '#838D9A',                 // A11y: 5.4:1 on dark bg (was 4.66)
-  '--color-text-faint': '#6C7683',                 // A11y: 3.9:1 placeholder tier (was 2.90)
-  '--color-progress-inactive': '#2A313C',
+  '--color-chart-grid': '#24413F',
+  '--color-chart-zero': '#47605D',
+  // The footer's own text scale (#E8EEE9 / #B6C9BE), continued downwards.
+  // Measured on --color-bg #08191C: primary 15,30:1 · secondary 10,37:1 ·
+  // muted 7,29:1 · faint 5,49:1 (on the card #163338: 11,40 / 7,72 / 5,44 / 4,09).
+  '--color-text-primary': '#E8EEE9',
+  '--color-text-secondary': '#B6C9BE',
+  '--color-text-muted': '#93AAA1',
+  '--color-text-faint': '#7C938B',
+  '--color-progress-inactive': '#24413F',
   '--color-track': 'rgba(255,255,255,0.10)',
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.45)',
   '--shadow-md': '0 4px 16px rgba(0,0,0,0.55)',
@@ -372,19 +441,25 @@ const darkTokens: Partial<Record<TokenName, string>> = {
 };
 
 /** Dämmerung — warm, dimmed twilight between day and night. */
+// v3 (20.09.2026): warm, dimmed — but in the new family, not the old plum.
+// The plum was chosen against a blue-accented, grey-texted base; carried
+// unchanged it would have left the one stage between day and night reading as
+// a different product. Warmth is kept by pulling the teal towards green and
+// stopping well above the night ground.
 const duskTokens: Partial<Record<TokenName, string>> = {
-  '--color-bg': '#26202B',                          // warm plum, dimmed (not deep dark)
-  '--color-bg-muted': '#302833',
-  '--color-bg-accent': '#342740',
-  '--color-border': '#3E3442',
-  '--color-border-muted': '#352C39',
-  '--color-border-accent': '#5A4A78',
-  '--color-brand': '#6E9CEE',
-  '--color-brand-deep': '#3F6BC4',
-  '--color-accent': '#6E9CEE',
-  '--color-accent-dim': 'rgba(110,156,238,0.16)',
-  '--color-accent-dark': '#A9C4F5',
-  '--color-accent-light': '#5A7FC8',
+  '--color-bg': '#1E2B26',                          // warm dim teal-green (not deep dark)
+  '--color-bg-muted': '#27352E',
+  '--color-bg-accent': '#2A3B31',
+  '--color-border': '#374840',
+  '--color-border-muted': '#2E3D36',
+  '--color-border-accent': '#4C6647',
+  '--color-brand': '#D4FF24',
+  '--color-brand-deep': '#E7FF87',
+  '--color-accent': '#B6DE7C',
+  '--color-accent-dim': 'rgba(182,222,124,0.16)',
+  '--color-accent-dark': '#D1EDA6',
+  '--color-accent-light': '#8FB55E',
+  '--color-text-on-accent': '#1E2B26',              // see darkTokens — white fails on a light-green fill
   '--color-positive': '#3BD97A',
   '--color-positive-text': '#3BD97A',                // 7,71:1 auf dem Daemmerungs-Grund
   '--color-negative-text': '#F07D72',
@@ -393,13 +468,15 @@ const duskTokens: Partial<Record<TokenName, string>> = {
   '--color-negative-border': 'rgba(240,125,114,0.30)',
   '--color-chart-positive-bg': 'rgba(59,217,122,0.12)',
   '--color-chart-negative-bg': 'rgba(240,125,114,0.10)',
-  '--color-chart-grid': '#3E3442',
-  '--color-chart-zero': '#5E5566',
-  '--color-text-primary': '#F0E6EC',                // warm off-white
-  '--color-text-secondary': '#B7A6B4',
-  '--color-text-muted': '#9E8D9B',                 // A11y: 5.1:1 on dusk bg (was 4.20)
-  '--color-text-faint': '#7C6E7A',                 // A11y: 3.3:1 placeholder tier (was 2.62)
-  '--color-progress-inactive': '#3E3442',
+  '--color-chart-grid': '#374840',
+  '--color-chart-zero': '#566A60',
+  // Measured on --color-bg #1E2B26: primary 12,74:1 · secondary 8,69:1 ·
+  // muted 6,14:1 · faint 4,64:1.
+  '--color-text-primary': '#EDF0E6',                // warm off-white
+  '--color-text-secondary': '#BCCBBD',
+  '--color-text-muted': '#9AAC9F',
+  '--color-text-faint': '#83958A',
+  '--color-progress-inactive': '#374840',
   '--color-track': 'rgba(255,255,255,0.10)',
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.35)',
   '--shadow-md': '0 4px 16px rgba(0,0,0,0.45)',
@@ -409,34 +486,37 @@ const duskTokens: Partial<Record<TokenName, string>> = {
 // Overcast day — a genuine medium grey, dark enough to read clearly as "dimmed"
 // against white. Text is darkened to match (a light page's greys would vanish
 // on this ground); dark text on the grey still clears 4.5:1.
+// v3 (20.09.2026): the same grey, pulled into the new family (sage instead of
+// blue-grey) so the dim daytime stages interpolate towards a neighbour of the
+// base rather than away from it.
 const overcastTokens: Partial<Record<TokenName, string>> = {
-  '--color-bg': '#BFC4CC',
-  '--color-bg-muted': '#B4BAC3',
-  '--color-bg-accent': '#B8C0CE',
-  '--color-border': '#969CA6',
-  '--color-border-muted': '#9EA4AE',
-  '--color-border-accent': '#7FA0CE',
-  // The interactive accent: base #1365EA only reaches 2.94:1 on this grey — real
+  '--color-bg': '#C2C8BF',
+  '--color-bg-muted': '#B7BEB4',
+  '--color-bg-accent': '#BBC3B8',
+  '--color-border': '#979E94',
+  '--color-border-muted': '#9FA69C',
+  '--color-border-accent': '#8CA47E',
+  // The interactive accent: the base green only reaches 3.0:1 on this grey — real
   // text (inline links, CTAs, accent spans) fails AA. Darkened until it clears
   // 4.5:1 on bg AND bg-muted; white text on accent surfaces gets even stronger.
-  //   accent #0A429D → 5.26:1 on #BFC4CC, 4.72:1 on #B4BAC3, white on it 9.21:1
-  // accent-dark (#073C93, hover) is darker still, so hover contrast only rises.
-  '--color-accent': '#0A429D',
-  '--color-text-primary': '#2C2F34',
+  //   accent #33530F → 5.16:1 on #C2C8BF, 4.63:1 on #B7BEB4, white on it 8.81:1
+  // accent-dark (#35561A, hover) is darker still, so hover contrast only rises.
+  '--color-accent': '#33530F',
+  '--color-text-primary': '#24312E',
   // A11y: both greys must clear 4.5:1 on bg #BFC4CC AND bg-muted #B4BAC3 — the
   // muted surface is the bottleneck, so "muted heller" is impossible here
   // (the old pair #494D53/#4C5056 sat at 4.35/4.15 on bg-muted = below AA and
   // only 3 steps apart). Spread restored by darkening both, secondary more
   // (14 hex steps apart, like light). Ratios (WCAG 2.1 formula):
-  //   secondary #383C41 → 6.34:1 on #BFC4CC, 5.69:1 on #B4BAC3
-  //   muted     #464A4F → 5.09:1 on #BFC4CC, 4.57:1 on #B4BAC3
-  '--color-text-secondary': '#383C41',
-  '--color-text-muted': '#464A4F',
-  '--color-text-faint': '#5E626A',                 // A11y: 3.5:1 placeholder tier (was 2.39)
-  '--color-chart-grid': '#969CA6',
-  '--color-chart-zero': '#7A7F87',
-  '--color-progress-inactive': '#969CA6',
-  '--color-track': 'rgba(0,0,0,0.18)',
+  //   secondary #313E38 → 6.56:1 on #C2C8BF, 5.88:1 on #B7BEB4
+  //   muted     #3F4C45 → 5.28:1 on #C2C8BF, 4.74:1 on #B7BEB4
+  '--color-text-secondary': '#313E38',
+  '--color-text-muted': '#3F4C45',
+  '--color-text-faint': '#56635B',                 // A11y: 3.3:1 placeholder tier
+  '--color-chart-grid': '#979E94',
+  '--color-chart-zero': '#7B8278',
+  '--color-progress-inactive': '#979E94',
+  '--color-track': 'rgba(23,59,66,0.20)',
   // Neon #00D950 (the brand green, kept everywhere else) sits at nearly the same
   // lightness as this medium grey, so it reads washed-out here. Only on s3 does
   // the positive green fall back a shade deeper. (Purely a look call — the

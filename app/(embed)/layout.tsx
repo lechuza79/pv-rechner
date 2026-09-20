@@ -74,14 +74,14 @@ const baseStyles = `
   html,body{margin:0;padding:0}
   :root{
     /* Public widget tokens — overridable via postMessage */
-    --widget-bg:#FFFFFF;
-    --widget-fg:#3F3F3F;
-    --widget-muted:#777777;
-    --widget-accent:#1365EA;
-    --widget-accent-fg:#FFFFFF;
+    --widget-bg:${tokens["--color-bg"]};
+    --widget-fg:${tokens["--color-text-primary"]};
+    --widget-muted:${tokens["--color-text-muted"]};
+    --widget-accent:${tokens["--color-accent"]};
+    --widget-accent-fg:${tokens["--color-text-on-accent"]};
     --widget-highlight:${tokens["--color-highlight"]};
     --widget-awareness:${tokens["--color-awareness"]};
-    --widget-border-radius:14px;
+    --widget-border-radius:${tokens["--radius-md"]};
     --widget-font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     /* Zahlen stehen in einer Schreibmaschinenschrift — als eigenes Token, damit
        eine eigene Seite auch sie mitgeben kann (die großen Kennzahlen stehen

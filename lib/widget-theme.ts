@@ -43,12 +43,17 @@ export interface WidgetThemeSelection {
   font: string; // key of WIDGET_FONTS
 }
 
+// Every value comes from lib/theme.ts. Three of them used to be re-typed hexes
+// sitting directly under the "no re-typed hex" comment, and they were still the
+// pre-v3 white/grey/blue after the base moved on 20.09.2026 — the widgets would
+// have stayed the last blue surface on their own pages. The radius follows the
+// scale's medium step for the same reason.
 export const WIDGET_THEME_DEFAULTS: WidgetThemeSelection = {
-  bg: "#FFFFFF",
-  fg: "#3F3F3F",
-  accent: "#1365EA",
+  bg: tokens["--color-bg"],
+  fg: tokens["--color-text-primary"],
+  accent: tokens["--color-accent"],
   highlight: tokens["--color-highlight"], // single source (theme.ts) — no re-typed hex
-  radius: "14px",
+  radius: tokens["--radius-md"],
   font: "system",
 };
 
