@@ -273,7 +273,7 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
 
   it("keeps unverified combinations explicit and out of the federal grant stack", () => {
     const unknown = Object.values(FUNDING_PROGRAMS).filter(p => p.combinableWith === null);
-    expect(unknown.map(p => p.id).sort()).toEqual(["altenkirchen-balkonkraftwerke", "altenkirchen-solarspeicher", "bad-marienberg-erneuerbare-energien", "bubenreuth-co2-einsparung", "burbach-klimaschutz-privat", "cochem-zell-solarstromspeicher", "delmenhorst-balkon-solar", "ekm-altenkirchen", "eppelheim-balkonkraftwerke", "floersheim-photovoltaik", "fritzlar-balkonkraftwerke-speicher", "gaildorf-balkonkraftwerke", "havelland-stecker-solar", "holzminden-solarfair", "kirchlengern-pv-kleinanlagen", "mauer-balkonkraftwerke", "pfaffenhofen-balkon", "radolfzell-sonnige-zukunft", "rheinisch-bergisch-balkonsolar", "wendelstein-pv", "wendlingen-energie"]);
+    expect(unknown.map(p => p.id).sort()).toEqual(["altenkirchen-balkonkraftwerke", "altenkirchen-solarspeicher", "bad-marienberg-erneuerbare-energien", "bubenreuth-co2-einsparung", "burbach-klimaschutz-privat", "cochem-zell-solarstromspeicher", "delmenhorst-balkon-solar", "ekm-altenkirchen", "eppelheim-balkonkraftwerke", "floersheim-photovoltaik", "fritzlar-balkonkraftwerke-speicher", "gaildorf-balkonkraftwerke", "havelland-stecker-solar", "holzminden-solarfair", "kirchlengern-pv-kleinanlagen", "leverkusen-photovoltaik", "mauer-balkonkraftwerke", "pfaffenhofen-balkon", "radolfzell-sonnige-zukunft", "rheinisch-bergisch-balkonsolar", "wendelstein-pv", "wendlingen-energie"]);
     expect(programmeNebenBundesfoerderung(unknown)).toEqual([]);
   });
   it("führt jeden Ausschluss ausdrücklich", () => {

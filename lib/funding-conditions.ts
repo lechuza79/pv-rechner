@@ -147,6 +147,13 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // deshalb trägt der Eintrag auch keinen strukturierten Satz und zieht nichts
   // ab. Die Bedingungen stehen vollständig auf der Karte.
   "weichering-solarberatung",
+  // Leverkusen, aufgenommen am 20.09.2026 als BEENDETES Programm. Eine Prüfform
+  // hält das Vorhaben des Nutzers gegen die Bedingungen eines Programms — bei
+  // einem aufgehobenen Programm gibt es nichts mehr zu prüfen, weil es nichts
+  // mehr zu beantragen gibt. Die Bedingungen stehen trotzdem vollständig am
+  // Eintrag: Sie beschreiben, was bis zum Ratsbeschluss vom 16.12.2024 galt, und
+  // sind damit der Vergleichsmaßstab, falls die Stadt neu auflegt.
+  "leverkusen-photovoltaik",
   // Landkreis Erlangen-Höchstadt, sechs Gemeindeprogramme, aufgenommen am
   // 20.09.2026. Jede Richtlinie ist im Volltext gelesen und jede Bedingung steht
   // am Programm — die Prüfformen fehlen noch, und sie sind hier nicht trivial:

@@ -3893,6 +3893,69 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "leverkusen-photovoltaik": {
+    id: "leverkusen-photovoltaik", name: "Förderprogramm Neuerrichtung von Photovoltaikanlagen",
+    traeger: "Stadt Leverkusen", level: "kommune", region: "Leverkusen", bundesland: "Nordrhein-Westfalen", agsCode: "05316",
+    url: "https://www.leverkusen.de/pressemodul/pressemitteilungen/januar/ende-foerderprogramme",
+    // NEU AUFGENOMMEN 20.09.2026 als BEENDETES Programm. Zwei amtliche Quellen,
+    // beide im Rohtext gelesen:
+    //
+    // (1) Pressemitteilung der Stadt vom 17.01.2025 („Städtische Förderprogramme
+    // werden nicht fortgeführt"): „Die im August 2024 ausgerufene kommunale
+    // Haushaltssperre hat auch Einfluss auf städtische Förderprogramme. Sie ist
+    // der Grund dafür, dass der Rat der Stadt Leverkusen in seiner Sitzung vom
+    // 16.12.2024 seine Beschlüsse zu den Förderprogrammen ‚Neuerrichtung von
+    // Photovoltaikanlagen‘ und ‚Entsiegelung, Dach- und Fassadenbegrünung‘
+    // aufgehoben hat. Bereits zugesagte Förderbescheide sind von der Sperre
+    // ausgenommen." Dieselbe Mitteilung beziffert das Programm: 654 Anträge im
+    // Jahr 2023, in 2023/2024 zusammen 439 Zuschüsse über 267.230 €, rund
+    // 2.500 kWp.
+    //
+    // (2) Ratsvorlage im Ratsinformationssystem (ris.leverkusen.de, __kvonr=12981,
+    // Beschlussentwurf über die Förderrichtlinie, zur Sitzung am 18.09.2023) für
+    // die Sätze: „Die Kosten von Steckersolargeräten werden in Höhe von 40 %,
+    // max. 400 € pro Anlage, gefördert. Bei Dach- und Fassadenanlagen ergibt sich
+    // eine pauschale Förderung je nach Kilowattpeak (kWp)-Leistung der Anlage:
+    // von 1 bis 2 kWp 450 € pauschal / über 2 bis 5 kWp 500 € pauschal / über 5
+    // bis 10 kWp 750 € pauschal / über 10 bis 30 kWp 750 € von den ersten 10 kWp
+    // + 50 €/vollendetes weiteres kWp / ab 30 kWp 1.750 € pauschal." Ebendort:
+    // Antragsberechtigt waren Eigentümer (natürliche und juristische Personen des
+    // privaten Rechts, KMU, gemeinnützige Organisationen einschließlich Kirchen),
+    // bei Steckersolargeräten auch Mieter; „die Förderung ist rückwirkend für alle
+    // Anlagen möglich, die nach dem 01.07.2023 in Betrieb genommen wurden";
+    // Haushaltsmittel 100.000 € in 2023 und 200.000 € in 2024.
+    //
+    // KEINE RECHENWERTE, aus zwei Gründen, die unabhängig voneinander tragen:
+    // Das Programm ist aufgehoben und darf ohnehin nichts abziehen — und die
+    // Dach-Staffel ist ein Stufenmodell mit Sockel plus Satz je weiterem kWp,
+    // das unser Modell nicht ausdrücken kann (dieselbe Lage wie in Schwebheim).
+    //
+    // KEIN `beginntIso`: Das Inkrafttreten der Richtlinie steht in keiner der
+    // beiden gelesenen Quellen. Der 01.07.2023 ist der Stichtag der rückwirkenden
+    // Förderfähigkeit, nicht der Beginn des Programms, und gehört deshalb in den
+    // Text statt in das Feld.
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2023-09-18",
+    endetIso: "2024-12-16",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss zur Neuinstallation von Photovoltaik auf Dächern und an Fassaden sowie von Balkonkraftwerken — Programm aufgehoben, keine Antragstellung mehr möglich",
+    rates: [
+      { label: "Dach- und Fassadenanlage", value: "Programm aufgehoben. Bis dahin pauschal nach Leistung: 450 € (1–2 kWp), 500 € (über 2–5 kWp), 750 € (über 5–10 kWp), 750 € plus 50 € je weiterem vollen kWp (über 10–30 kWp), 1.750 € (ab 30 kWp)", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "Programm aufgehoben. Bis dahin 40 % der Kosten, höchstens 400 € je Anlage", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Das Programm ist aufgehoben: Der Rat der Stadt hat seine Beschlüsse dazu am 16.12.2024 zurückgenommen, Grund war die kommunale Haushaltssperre vom August 2024; Anträge sind nicht mehr möglich",
+      "Bereits zugesagte Förderbescheide sind von der Sperre ausgenommen",
+      "Antragsberechtigt waren Eigentümer des Gebäudes im Stadtgebiet — natürliche und juristische Personen des privaten Rechts, kleine und mittlere Unternehmen sowie gemeinnützige Organisationen einschließlich Kirchen",
+      { text: "Bei Balkonkraftwerken konnten auch Mieterinnen und Mieter einen Antrag stellen", nur: ["balkon"] },
+      "Gefördert wurden Anlagen, die nach dem 01.07.2023 in Betrieb genommen wurden; der Antrag war auch nach der Umsetzung möglich",
+      "Das Programm war stark überzeichnet — allein 2023 gingen 654 Anträge ein, ausgezahlt wurden 2023 und 2024 zusammen 439 Zuschüsse über 267.230 €",
+    ],
+    // Die Richtlinie ist nicht mehr abrufbar (das FAQ-PDF der Stadt antwortet mit
+    // 404), eine Kumulierungsregel lässt sich deshalb nicht belegen.
+    combinableWith: null,
+    foerdert: ["pv", "balkon"],
+  },
   "krefeld-klimafreundlich": {
     id: "krefeld-klimafreundlich", name: "Klimafreundliches Wohnen in Krefeld",
     traeger: "Stadt Krefeld", level: "kommune", region: "Krefeld", bundesland: "Nordrhein-Westfalen", agsCode: "05114",
