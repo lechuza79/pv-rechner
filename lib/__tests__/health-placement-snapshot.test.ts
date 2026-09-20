@@ -29,9 +29,19 @@ it('keeps rapidly changing generations unknown instead of asserting a broken sna
 // sind darin per Bauart unsichtbar, darunter Hanau mit knapp 98.000 Einwohnern.
 it('sieht die sieben Ortsseiten, die die Generationsprüfung nicht sehen kann', () => {
   const [meldung] = ortsseitenOhneRangliste(10749, 10742);
-  expect(meldung).toContain('7 Ortsseiten ohne Rangliste');
+  expect(meldung).toContain('7 Ortsseiten ohne vorberechnete Platzierung');
   expect(meldung).toContain('10742');
   expect(meldung).toContain('10749');
+});
+
+it('behauptet NICHT, die Seite zeige keinen Vergleich — sie zeigt ihn', () => {
+  // Gemessen am 20.09.2026 an Gröde: Die Seite nennt ihre 0 Anlagen, ihren
+  // letzten Platz im Kreis (133 von 133) und die volle Dörfer-Rangliste.
+  // Die alte Fassung sagte "Diese Seiten zeigen keinen Vergleich" und schickte
+  // damit jeden Leser auf die Suche nach einem Schaden, den es nicht gibt.
+  const [meldung] = ortsseitenOhneRangliste(10749, 10746);
+  expect(meldung).not.toMatch(/zeigen keinen Vergleich/);
+  expect(meldung).toMatch(/Vergleich im Kreis steht trotzdem/);
 });
 
 it('schweigt, wenn jede Ortsseite ihre Rangliste hat', () => {

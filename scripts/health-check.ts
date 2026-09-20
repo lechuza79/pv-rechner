@@ -2207,11 +2207,14 @@ async function main() {
     lines.push(`Vorbereitete Ranglisten: ${snapshot.actual}/${snapshot.expected} Gemeinden, ${problems.length ? "Prüfung fehlgeschlagen" : "vollständig und aktuell"}.`);
     technical("placement-snapshot", true, ...problems);
     // Und dieselbe Frage von der ANDEREN Seite: Die Prüfung oben hält die
-    // Ranglisten gegen die Tabelle, aus der sie gebaut werden — sie kann eine
-    // Ortsseite ohne Rangliste gar nicht sehen. Gezählt wird deshalb gegen die
-    // Zahl der Seiten. Auffällig, nicht rot: Die Lücke entsteht in den Daten
-    // (ein Ort unter einem alten Schlüssel), und daran kann der Autofix nichts
-    // reparieren — Rot würde ihn täglich ins Leere schicken.
+    // Platzierungen gegen die Tabelle, aus der sie gebaut werden — sie kann eine
+    // Ortsseite ohne Platzierung gar nicht sehen. Gezählt wird deshalb gegen die
+    // Zahl der Seiten. Auffällig, nicht rot: Die Lücke entsteht in den Daten,
+    // und daran kann der Autofix nichts reparieren — Rot würde ihn täglich ins
+    // Leere schicken. Zur Ursache siehe lib/health-placement-snapshot.ts; sie
+    // ist NICHT immer ein veralteter Schlüssel (so stand es hier bis zum
+    // 20.09.2026), sondern am 20.09. schlicht eine Gemeinde ohne eine einzige
+    // gemeldete Anlage — dauerhaft, kein Datenlauf behebt das.
     const seiten = count(await read("mastr_regions?select=region_id&level=eq.gemeinde&slug=not.is.null", true));
     const luecke = ortsseitenOhneRangliste(seiten, snapshot.actual);
     lines.push(`Ortsseiten mit Rangliste: ${snapshot.actual} von ${seiten}.`);

@@ -39,9 +39,25 @@ export async function readCoherentPlacementSnapshot(reader: {
  * Fehler ins Protokoll, darunter Hanau mit knapp 98.000 Einwohnern.
  *
  * Gemessen wird deshalb gegen die Zahl der SEITEN (Gemeinden mit Adress-Kürzel).
- * Beide Richtungen zählen: Fehlt eine Rangliste, zeigt die Seite keinen
- * Vergleich; ist eine zu viel da, steht ein Ort in fremden Ranglisten, den es
- * als Seite nicht mehr gibt.
+ * Beide Richtungen zählen: Fehlt eine Platzierung, fehlen der Seite ihre
+ * Ortsgeschichten; ist eine zu viel da, steht ein Ort in fremden Ranglisten,
+ * den es als Seite nicht mehr gibt.
+ *
+ * WAS FEHLT, IST DIE VORBERECHNETE PLATZIERUNG — NICHT DER VERGLEICH AUF DER
+ * SEITE. Bis zum 20.09.2026 behauptete die Meldung „Diese Seiten zeigen keinen
+ * Vergleich". Nachgesehen an Gröde: Die Seite nennt ihre 0 Anlagen, ihren
+ * letzten Platz im Kreis (133 von 133) und die vollständige Dörfer-Rangliste.
+ * Wer die alte Meldung las, suchte einen Nutzerschaden, den es nicht gibt.
+ *
+ * DIE LÜCKE IST DAUERHAFT, NICHT VORÜBERGEHEND, und auch das stand hier falsch
+ * („ein Ort unter einem alten Schlüssel" — das war die Ursache vom 18.09.).
+ * Die Platzierungen entstehen aus `mastr_gemeinde_award`, und die entsteht über
+ * einen INNEREN Verbund mit den Anlagendaten: Eine Gemeinde ohne eine einzige
+ * gemeldete Anlage hat dort keine Zeile und fällt heraus. Die drei am
+ * 20.09.2026 betroffenen Orte — Gröde (7 Einwohner), Dierfeld (15), Sengerich
+ * (26) — haben Einwohner und ein Adress-Kürzel, erfüllen die Bedingungen also;
+ * sie scheitern allein daran, dass dort noch nichts steht. Kein Datenlauf
+ * behebt das, solange dort niemand eine Anlage baut.
  */
 export function ortsseitenOhneRangliste(seiten: number, platzierungen: number): string[] {
   if (!Number.isInteger(seiten) || !Number.isInteger(platzierungen) || seiten <= 0 || platzierungen <= 0) {
@@ -49,8 +65,9 @@ export function ortsseitenOhneRangliste(seiten: number, platzierungen: number): 
   }
   if (seiten > platzierungen) {
     return [
-      `${seiten - platzierungen} Ortsseiten ohne Rangliste (${platzierungen} Ranglisten, ${seiten} Seiten): ` +
-        `Diese Seiten zeigen keinen Vergleich und melden bei jedem Aufruf einen Fehler.`,
+      `${seiten - platzierungen} Ortsseiten ohne vorberechnete Platzierung (${platzierungen} Platzierungen, ` +
+        `${seiten} Seiten): Diesen Seiten fehlen die Ortsgeschichten, und sie melden bei jedem Aufruf einen ` +
+        `Fehler ins Protokoll. Der Vergleich im Kreis steht trotzdem auf der Seite — das ist eine andere Quelle.`,
     ];
   }
   if (platzierungen > seiten) {
