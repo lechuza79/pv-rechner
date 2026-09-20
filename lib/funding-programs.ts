@@ -9699,6 +9699,185 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
   },
 
+  // ───────────────────────────────────────────────────────────────────────────
+  // Zwei BEENDETE beziehungsweise angehaltene Programme im Landkreis
+  // Erlangen-Höchstadt, aufgenommen am 20.09.2026. „Gab es, ist vorbei" ist
+  // eine echte Auskunft: Wir merken eine Neuauflage, und für die
+  // Zubau-Auswertung ist gerade die abgelaufene Förderung der interessante Fall
+  // (Betreiber-Entscheidung 17.08.2026).
+  // ───────────────────────────────────────────────────────────────────────────
+
+  "bubenreuth-co2-einsparung": {
+    id: "bubenreuth-co2-einsparung", name: "Förderprogramm zur CO2-Einsparung",
+    traeger: "Gemeinde Bubenreuth", level: "kommune", region: "Bubenreuth",
+    bundesland: "Bayern", agsCode: "09572119",
+    url: "https://www.bubenreuth.de/kommunales-foerderprogramm-zur-co2-einsparung",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beginntIso: "2021-09-01",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschüsse zur Errichtung einer Photovoltaik-Dachanlage, zur Nachrüstung eines Stromspeichers und zu einem Balkonkraftwerk; daneben fördert dasselbe Programm Wärmedämmung, Fenster, Solarthermie, Haushaltsgeräte, Wallbox und Fahrradmobilität",
+    maxFoerderung: "insgesamt höchstens 5.000 € je Anwesen",
+    rates: [
+      { label: "Photovoltaik-Dachanlage am Privatgebäude", value: "300 € je kWp, gerechnet auf höchstens 10 kWp je Anwesen, max. 3.000 €", nur: ["pv"] },
+      { label: "Stromspeicher als Nachrüstung zu einer bestehenden Anlage", value: "100 € je kWh bis 8 kWh, max. 800 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "25 % der Anschaffungskosten, max. 250 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Die Gemeinde nimmt derzeit keine Anträge an: Die Fördermittel sind ausgeschöpft",
+      "Das Programm lief seit dem 1. September 2021 mit einer Laufzeit von drei Jahren",
+      { text: "Die Position für Photovoltaik-Dachanlagen gab es erst ab dem 1. Juli 2022, also knapp zehn Monate nach dem Start; Speicher und Balkonkraftwerk trugen von Anfang an einen Satz", nur: ["pv"] },
+      "Für Photovoltaik, Speicher und Balkonkraftwerk nennt die Richtlinie keine Antragsfrist: Die Regel „erst beantragen, dann beauftragen“ steht ausdrücklich nur beim Förderbereich Wärme, beim Förderbereich Mobilität gilt umgekehrt eine Frist von drei Monaten nach dem Kauf",
+      { text: "Für den Speicher waren mit dem Antrag Kostenvoranschlag, Rechnung, Überweisungsbeleg und Fachunternehmererklärung einzureichen", nur: ["pv"] },
+      "Antragsberechtigt waren Eigentümer, Erbbauberechtigte sowie Pächter und Mieter mit Anwesen in Bubenreuth; Mietende brauchten die schriftliche Zustimmung der Eigentümerseite",
+      { text: "Der Speicher wurde nur als Nachrüstung zu einer bereits vorhandenen Photovoltaikanlage gefördert", nur: ["pv"] },
+      "Die Zuschüsse waren freiwillige Leistungen im Rahmen der Haushaltsmittel; ein Rechtsanspruch bestand nicht",
+      "Der Deckel von 5.000 € gilt dem ganzen Programm, nicht der Photovoltaik allein: Wer ihn mit Dämmung, Fenstern, Solarthermie, Haushaltsgeräten oder einem Lastenrad ausschöpft, hat für die Anlage nichts mehr übrig",
+    ],
+    // NICHT BELEGT, deshalb null: Die Klausel zur Doppelförderung („außer BAFA
+    // und KfW, in Summe höchstens 60 % der Anschaffungskosten") steht in der
+    // Richtlinie im Förderablauf des Förderbereichs WÄRME. Für den
+    // Förderbereich Strom — also für die drei Positionen oben — sagt der Text
+    // nichts. Sie auf Strom zu übertragen wäre eine Verschärfung ohne
+    // Fundstelle; „nicht ermittelt" ist die ehrliche und zugleich die
+    // vorsichtige Richtung (ein Programm ohne Angabe gilt als ausschließend).
+    combinableWith: null,
+    foerdert: ["pv", "balkon"],
+    // KEINE RECHENWERTE, mit Absicht: Das Programm nimmt keine Anträge mehr an.
+    // Ein `pvPerKwp: 300` erzeugte einen Abzug für Geld, das niemand bekommt —
+    // und 300 €/kWp wäre der höchste Dachsatz im ganzen Katalog.
+    //
+    // QUELLEN, beide am 20.09.2026 gelesen:
+    // - Richtlinie „Förderprogramm zur CO2-Einsparung", Fassung vom 01.07.2022,
+    //   gezeichnet von Erstem Bürgermeister Norbert Stumpf. Volltext:
+    //   erlangen-hoechstadt.de/media/11467/220701-foerderprogramm-zur-co-2-einsparung.pdf
+    //   Nr. III.1 (Speicher), III.2 (Balkon), III.7 (PV-Anlagen), „Inkrafttreten"
+    //   (01.09.2021, Laufzeit drei Jahre), Allgemeine Bestimmungen (5.000 €
+    //   je Anwesen).
+    // - Der Zustand kommt NICHT aus der Richtlinie, sondern von der Gemeinde
+    //   selbst: bubenreuth.de/kommunales-foerderprogramm-zur-co2-einsparung
+    //   sagt im Wortlaut „+++ BITTE BEACHTEN SIE: DIE FÖRDERMITTEL SIND BEREITS
+    //   AUSGESCHÖPFT +++ EINE ANTRAGSTELLUNG IST DERZEIT NICHT MÖGLICH +++".
+    //
+    // KEIN `endetIso`, und das ist GEMESSEN, nicht angenommen. Der
+    // Gegenprüfer hat am 20.09.2026 vorgeschlagen, den 01.09.2024
+    // einzutragen — Beginn plus die dreijährige Laufzeit aus derselben
+    // Klausel. Das Feld verbietet genau diese Rechnung („`endetIso` ist NICHT
+    // die Befristung der Richtlinie … ein leerer Topf im August endet früher
+    // als sein Richtlinientext"), und hier ist der Fall eingetreten: Im
+    // Archiv der Gemeindeseite steht der Ausschöpfungshinweis schon am
+    // 20.04.2024, also mehr als vier Monate VOR dem Ablauf der Frist. Die
+    // Anträge endeten früher als die Richtlinie. WANN genau, sagt niemand —
+    // es gibt nur zwei Abzüge der Seite (20.04.2024 und 18.05.2026), und der
+    // frühere trägt den Hinweis bereits. Jedes Datum wäre geraten, auch das
+    // aus der Klausel.
+    //
+    // DIE ANTRAGSFRIST GILT NICHT PAUSCHAL — Befund des Councils am 20.09.2026,
+    // und der teuerste Fehlgriff dieses Eintrags: Die erste Fassung schrieb
+    // „Antrag vor der Beauftragung" als Bedingung für alle drei Positionen
+    // hin. Die Richtlinie regelt den Antragszeitpunkt aber JE FÖRDERBEREICH:
+    // vor der Beauftragung nur im Bereich Wärme, im Bereich Mobilität
+    // umgekehrt binnen drei Monaten NACH dem Kauf, im Bereich Strom
+    // überhaupt nicht. Beim Speicher verlangt sie mit dem Antrag sogar
+    // Kostenvoranschlag UND Rechnung zugleich — vor der Beauftragung gar
+    // nicht möglich. Es ist derselbe Schluss, den der Eintrag zwei Absätze
+    // weiter oben für die Doppelförderungs-Klausel schon zieht; ihn bei der
+    // Antragsfrist nicht zu ziehen war eine Inkonsequenz im selben Eintrag.
+    //
+    // NEBENBEI, für den nächsten Lauf: Die Gemeinde führt ein ZWEITES,
+    // eigenständiges Programm für Solarthermie (Fassung 18.07.2018), das auf
+    // derselben Seite weiter mit Antragsformular steht. Solarthermie ist keine
+    // unserer drei Techniken, deshalb kein Katalogeintrag.
+  },
+
+  "herzogenaurach-co2-minderung": {
+    id: "herzogenaurach-co2-minderung", name: "Förderprogramm zur CO2-Minderung",
+    traeger: "Stadt Herzogenaurach", level: "kommune", region: "Herzogenaurach",
+    bundesland: "Bayern", agsCode: "09572132",
+    url: "https://www.herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2",
+    stand: "September 2026", status: "pausiert", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss zum Austausch einer Öl-, Gas-, Kohle- oder Nachtspeicherheizung gegen eine Wärmequelle auf Basis erneuerbarer Energie; daneben fördert dasselbe Programm Gebäudesanierung, Neubau, Solarthermie, Regenwassernutzung, Begrünung, Lastenräder und Baumpflanzungen",
+    maxFoerderung: "2.000 € für die Heizungsumstellung, dazu 300 € je weiterer Wohneinheit",
+    rates: [
+      { label: "Heizungsumstellung auf erneuerbare Energie", value: "2.000 € pauschal; jede weitere Wohneinheit 300 €, höchstens elf weitere", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Die Stadt nimmt keine Anträge an: Der Antragsstopp gilt auf unbestimmte Zeit (Beschluss des Planungs- und Umweltausschusses vom 13. März 2024)",
+      "Verwendungsnachweise für bereits bewilligte Anträge können weiter eingereicht werden; abgerechnet wird vorbehaltlich der Mittelbereitstellung",
+      "Der Antrag musste vor Beginn der Maßnahme gestellt werden, und begonnen werden durfte erst nach der schriftlichen Förderzusage",
+      "Ersetzt werden musste eine vorhandene Öl-, Gas-, Kohle- oder Nachtspeicherheizung; gefördert war auch der erstmalige Anschluss an ein Nah- oder Fernwärmenetz",
+      "Das Gebäude musste ein Bestandsgebäude sein — die Richtlinie versteht darunter ein Gebäude, das nach seinem Fertigstellungsdatum mindestens zwei Jahre alt ist",
+      "Die neue Anlage musste den BEG-Förderrichtlinien des Bundes entsprechen; Scheitholzanlagen waren ausgeschlossen",
+      "Antragsberechtigt waren Eigentümer eines Gebäudes oder Grundstücks in Herzogenaurach sowie Wohnungseigentümer und Bewohner mit lebenslangem Nutzungsrecht",
+      "Je Antragsteller wurde ein Gebäude oder eine Wohnung im Kalenderjahr gefördert; nach Ausschöpfung des Höchstbetrags war ein neuer Antrag erst nach fünf Jahren möglich",
+      "Die Förderung erfolgte ohne Rechtsanspruch im Rahmen verfügbarer Haushaltsmittel",
+      "Andere Fördermittel durften daneben beantragt werden, soweit deren eigene Regeln das zulassen; prüfen musste das der Antragsteller selbst und einen zu hohen Anteil zurückzahlen",
+    ],
+    // BELEGT: „Die Ausgestaltung des Programms basiert auf anderen
+    // Förderprogrammen und eine Kumulierbarkeit ist ausdrücklich zugelassen,
+    // soweit dies die Regularien des zu Grunde liegenden Förderprogramms
+    // zulassen" (Richtlinie S. 25), dazu der Tipp, ergänzend die BEG-Förderung
+    // zu beantragen.
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // NUR WÄRMEPUMPE — und das ist der Befund, der die Vorarbeit korrigiert:
+    // Die ältere Fassung der Richtlinie hatte einen „Solarbonus" als
+    // Förderbaustein 5. Die GELTENDE Fassung vom 13.03.2023 hat ihn nicht mehr;
+    // Baustein 5 ist dort die Regenwasser-Nutzung, und im ganzen Katalog der
+    // zehn Bausteine kommt Photovoltaik nicht mehr vor. Wer vom alten
+    // Formularnamen „Verwendungsnachweis Förderbaustein 5 - Solarbonus" auf
+    // eine PV-Förderung schließt, trägt einen Satz ein, den die Stadt seit
+    // April 2023 nicht mehr zahlt.
+    //
+    // BEWUSST NICHT ERFASST: Derselbe Förderbaustein 7 trägt neben der
+    // Heizungsumstellung eine zweite, eigen gedeckelte Pauschale für
+    // Lüftungsanlagen mit Wärmerückgewinnung (800 € zentral, 100 € je Gerät
+    // bzw. Gerätepaar dezentral bis 500 €, je weiterer Wohneinheit 200 €).
+    // Eine Lüftungsanlage ist keine der drei Techniken des Katalogs; die
+    // Zahlen oben gehören ausschließlich zur Heizungsumstellung. Steht hier,
+    // damit der nächste Lauf sie nicht für eine Auslassung hält und die beiden
+    // Deckel zusammenwirft.
+    //
+    // FALLE FÜR DEN NÄCHSTEN LAUF: Im Dateiordner der Stadt liegt weiterhin ein
+    // „Verwendungsnachweis Förderbaustein 5 - Solarbonus". Er ist ein
+    // Überbleibsel der abgelösten Fassung von 2021 und steht in der geltenden
+    // Richtlinie nirgends mehr. Wer allein von dieser Datei ausgeht, trägt eine
+    // Photovoltaik-Förderung ein, die es hier seit April 2023 nicht gibt.
+    //
+    // KEINE RECHENWERTE: angehalten, zahlt nichts. `wpPauschale: 2000` wäre
+    // ein Abzug für ein Programm, dessen Antragsstopp seit anderthalb Jahren
+    // läuft.
+    //
+    // QUELLEN, beide am 20.09.2026 gelesen:
+    // - Zustand LIVE von der Stadt:
+    //   herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2 —
+    //   „Aufgrund der Haushaltssituation wurde der Antragsstopp auf unbestimmte
+    //   Zeit verlängert (Beschluss des Planungs- und Umweltausschusses vom
+    //   13. März 2024)."
+    // - Sätze und Bedingungen aus der Richtlinie „Förderprogramm zur
+    //   CO2-Minderung", Fassung vom 13. März 2023, gültig mit Veröffentlichung
+    //   im Amtsblatt vom 5. April 2023, 28 Seiten. Die Stadt hat sie mit dem
+    //   Antragsstopp von der Seite genommen; gelesen über das Archiv der
+    //   Amtsseite (Stand 12.05.2023). Baustein 7 auf S. 16, Antragszeitpunkt
+    //   S. 24, Antragsberechtigung und Kumulierung S. 25, Inkrafttreten S. 27.
+    //   Das Archiv belegt den INHALT, nicht die Aktualität — die Aktualität
+    //   liefert hier der Live-Abruf der Stadtseite, und der sagt: angehalten.
+    //   Die Seite ist bildbasiert ohne Textebene, gelesen als gerenderte Seiten.
+    //
+    // KEIN `beginntIso`, und auch das ist gemessen. Der Gegenprüfer hat am
+    // 20.09.2026 den 05.04.2023 vorgeschlagen — den Tag, an dem die heutige
+    // Fassung im Amtsblatt erschien. Das beantwortet eine ANDERE Frage als
+    // die, die das Feld stellt: Es fragt, seit wann die Stadt fördert, weil
+    // daran die Auswertung „Zubau vor und nach der Förderung" hängt. Die
+    // Programmseite der Stadt liegt im Archiv bis zum 20.08.2019 zurück, das
+    // Programm ist also mindestens dreieinhalb Jahre älter als die Fassung.
+    // Der 05.04.2023 läge damit nicht ein bisschen daneben, sondern würde die
+    // Kurve um vier Jahre verschieben — und ausgerechnet über den Zeitraum,
+    // in dem die abgelöste Fassung mit ihrem „Solarbonus" noch Photovoltaik
+    // und Batteriespeicher förderte. Wann das Programm wirklich begann, sagt
+    // keine der gelesenen Quellen; deshalb steht hier nichts.
+  },
+
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

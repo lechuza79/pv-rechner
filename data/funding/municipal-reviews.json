@@ -38110,5 +38110,145 @@
   ],
   "outcome": "keine-passende-foerderung",
   "conclusion": "Wallsbüll führt keinen kommunalen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen — weder die Ortsgemeinde noch das verwaltende Amt Schafflund. Die Gegenprobe über die Volltextsuche des Amtes, die beim letzten Anlauf als nur per JavaScript erreichbar galt, hat mit dem Solr-Parameter serverseitig geantwortet und nichts gefunden. Stand 20.09.2026."
+ },
+ {
+  "regionId": "09572119",
+  "name": "Bubenreuth",
+  "checkedAt": "2026-09-20T02:30:00Z",
+  "recheckAt": "2026-12-19T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "programme-geprueft",
+  "conclusion": "Die Gemeinde führt ein Förderprogramm zur CO2-Einsparung, das Photovoltaik-Dachanlagen (300 € je kWp bis 10 kWp, höchstens 3.000 €), die Speicher-Nachrüstung (100 € je kWh bis 8 kWh, höchstens 800 €) und Balkonkraftwerke (25 %, höchstens 250 €) fördert, insgesamt gedeckelt auf 5.000 € je Anwesen. Es nimmt derzeit keine Anträge an: Die Gemeinde weist die Fördermittel auf ihrer eigenen Programmseite als ausgeschöpft aus. Aufgenommen als „bubenreuth-co2-einsparung“ mit Status ausgeschöpft und ohne Rechenwerte — informiert, zieht nichts ab. Eine Wärmepumpen-Position gibt es nicht. Daneben besteht ein eigenständiges Solarthermie-Programm, das außerhalb unserer drei Techniken liegt.",
+  "searches": [
+   "bubenreuth.de Navigation und Übersichtsseite Förderprogramme im Klimabereich (20.09.2026): alle drei dort geführten Programme geöffnet und gelesen",
+   "Richtlinie des CO2-Programms über den Landkreis-Server im Volltext geprüft (20.09.2026), alle drei Förderbereiche Mobilität, Wärme und Strom durchgesehen",
+   "Volltextsuche der Richtlinie nach Pumpe, Wärmepumpe, Speicher, Balkon, Photovoltaik und kWp (20.09.2026)"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.bubenreuth.de/kommunales-foerderprogramm-zur-co2-einsparung",
+    "finding": "Programmseite der Gemeinde, am 20.09.2026 gelesen. Im Wortlaut: „+++ BITTE BEACHTEN SIE: DIE FÖRDERMITTEL SIND BEREITS AUSGESCHÖPFT +++ +++ EINE ANTRAGSTELLUNG IST DERZEIT NICHT MÖGLICH +++“. Damit ist der Zustand des Programms von der Gemeinde selbst belegt, nicht aus der Laufzeitklausel geschlossen."
+   },
+   {
+    "url": "https://www.erlangen-hoechstadt.de/media/11467/220701-foerderprogramm-zur-co-2-einsparung.pdf",
+    "finding": "Richtlinie „Förderprogramm zur CO2-Einsparung“ der Gemeinde Bubenreuth, Fassung vom 01.07.2022, gezeichnet von Erstem Bürgermeister Norbert Stumpf, sechs Seiten, am 20.09.2026 im Volltext gelesen. Förderbereich Strom: Nr. 1 Stromspeicher als Nachrüstung zu einer bestehenden Photovoltaikanlage bis 8 kWh mit 100 € je kWh, höchstens 800 €; Nr. 2 Balkon-PV-Anlage 25 % der Anschaffungskosten, höchstens 250 €; Nr. 7 PV-Anlagen ab 01.07.2022 mit 300 € je Kilowatt peak je Privatgebäude, begrenzt auf 10 kWp je Anwesen, höchstens 3.000 €. Allgemeine Bestimmungen: insgesamt höchstens 5.000 € je Anwesen. Inkrafttreten 01.09.2021, Laufzeit drei Jahre. Keine Wärmepumpen-Position — das Wort Pumpe kommt nur in der Umwälzpumpe des Wärmebereichs vor."
+   },
+   {
+    "url": "https://www.bubenreuth.de/gemeindliches-foerderprogramm-fuer-solarthermie",
+    "finding": "Zweites, eigenständiges Programm der Gemeinde: Zuschuss zu Sonnenkollektoren (Solarthermie) ab 3,5 m², 25 % der zuschussfähigen Kosten, höchstens 1.000 € für Brauchwasser und 1.500 € mit Heizungsunterstützung (Fassung vom 18.07.2018, im Text der CO2-Richtlinie unter II.4 zitiert). Solarthermie ist keine der drei Techniken des Katalogs (Photovoltaik, Balkonkraftwerk, Wärmepumpe); kein Katalogeintrag. Seite am 20.09.2026 gelesen."
+   },
+   {
+    "url": "https://www.bubenreuth.de/kommunales-foerderprogramm-fuer-das-sanierungsgebiet-bubenreuth-nord-alter-ort",
+    "finding": "Städtebauförderung für das Sanierungsgebiet „Bubenreuth Nord – Alter Ort“: höchstens 30 % der zuwendungsfähigen Kosten, höchstens 25.000 € je Einzelmaßnahme, gefördert werden Fassaden, Dächer, Treppen, Einfriedungen, Hof- und Vorräume. Keine Energieerzeugung, keine Heizung. Am 20.09.2026 gelesen."
+   },
+   {
+    "url": "https://www.bubenreuth.de/wirschaffendie0",
+    "finding": "Übersicht „Förderprogramme“ im Klimabereich der Gemeinde, am 20.09.2026 gelesen. Führt genau drei Programme: das CO2-Förderprogramm (mit dem Ausschöpfungshinweis), das Solarthermie-Programm und die Sanierungsgebiets-Förderung. Ein weiteres Haushaltsprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gibt es dort nicht."
+   }
+  ],
+  "sources": [
+   {
+    "url": "bubenreuth.de/wirschaffendie0",
+    "disposition": "reviewed",
+    "reason": "Übersichtsseite der Förderprogramme, am 20.09.2026 gelesen; führt die drei Programme der Gemeinde vollständig auf.",
+    "evidenceUrl": "https://www.bubenreuth.de/wirschaffendie0"
+   },
+   {
+    "url": "bubenreuth.de/gemeindliches-foerderprogramm-fuer-solarthermie",
+    "disposition": "reviewed",
+    "reason": "Eigenständiges Solarthermie-Programm; Solarthermie ist keine der drei Techniken des Katalogs. Am 20.09.2026 gelesen.",
+    "evidenceUrl": "https://www.bubenreuth.de/gemeindliches-foerderprogramm-fuer-solarthermie"
+   },
+   {
+    "url": "bubenreuth.de/antrag-foerderung-solarthermie",
+    "disposition": "replaced",
+    "reason": "Antragsformular zum Solarthermie-Programm; der Inhalt ist mit der gelesenen Programmseite erledigt, ein Formular trägt keine eigenen Fördersätze.",
+    "evidenceUrl": "https://www.bubenreuth.de/gemeindliches-foerderprogramm-fuer-solarthermie"
+   },
+   {
+    "url": "bubenreuth.de/verwendungsnachweis-sonnenkollektoren-solarthermie",
+    "disposition": "replaced",
+    "reason": "Verwendungsnachweis zum Solarthermie-Programm; mit der gelesenen Programmseite erledigt.",
+    "evidenceUrl": "https://www.bubenreuth.de/gemeindliches-foerderprogramm-fuer-solarthermie"
+   },
+   {
+    "url": "bubenreuth.de/foerderung-solarthermie-informationen-gemaess-datenschutz-grundverordnung",
+    "disposition": "replaced",
+    "reason": "Datenschutzhinweis zum Solarthermie-Programm; enthält keine Förderbedingungen und ist mit der gelesenen Programmseite erledigt.",
+    "evidenceUrl": "https://www.bubenreuth.de/gemeindliches-foerderprogramm-fuer-solarthermie"
+   },
+   {
+    "url": "bubenreuth.de/kommunales-foerderprogramm-fuer-das-sanierungsgebiet-bubenreuth-nord-alter-ort",
+    "disposition": "reviewed",
+    "reason": "Städtebauförderung für Fassaden, Dächer und Hofräume im Sanierungsgebiet; fördert keine Energieerzeugung und keine Heizung. Am 20.09.2026 gelesen.",
+    "evidenceUrl": "https://www.bubenreuth.de/kommunales-foerderprogramm-fuer-das-sanierungsgebiet-bubenreuth-nord-alter-ort"
+   }
+  ]
+ },
+ {
+  "regionId": "09572132",
+  "name": "Herzogenaurach",
+  "checkedAt": "2026-09-20T02:30:00Z",
+  "recheckAt": "2026-12-19T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "programme-geprueft",
+  "conclusion": "Die Stadt führt ein Förderprogramm zur CO2-Minderung mit zehn Bausteinen. Für unsere drei Techniken ist davon genau einer einschlägig: die Heizungsumstellung auf erneuerbare Energie mit pauschal 2.000 € und 300 € je weiterer Wohneinheit. Photovoltaik, Speicher und Balkonkraftwerke fördert die geltende Fassung der Richtlinie vom 13. März 2023 NICHT — der frühere „Solarbonus“ ist dort entfallen, Baustein 5 ist heute die Regenwasser-Nutzung. Anträge nimmt die Stadt nicht an: Der Antragsstopp gilt seit dem Beschluss vom 13. März 2024 auf unbestimmte Zeit. Aufgenommen als „herzogenaurach-co2-minderung“ mit Status pausiert und ohne Rechenwerte — informiert, zieht nichts ab. Die Herzo Werke bieten daneben eigene Zuschüsse an; das ist ein Versorger, kein kommunales Programm, und gehört nicht in diesen Katalog.",
+  "searches": [
+   "herzogenaurach.de Programmseite Klima & Energie und Gesamtübersicht der Förderprogramme (20.09.2026)",
+   "Volltextsuche der Stadt (Parameter q) nach Förderbaustein und Förderrichtlinie CO2 (20.09.2026): die Richtlinie steht nicht mehr auf der Seite",
+   "Archiv der Amtsseite: Schnappschuss-Liste über die CDX-Schnittstelle, Fassungen 2021 und 2023 der Richtlinie gefunden, die Fassung 2023 in voller Länge gelesen (20.09.2026)"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2",
+    "finding": "Programmseite der Stadt, am 20.09.2026 gelesen. Im Wortlaut: „Aufgrund der Haushaltssituation wurde der Antragsstopp auf unbestimmte Zeit verlängert (Beschluss des Planungs- und Umweltausschusses vom 13. März 2024).“ Dazu: „Die Fördermittel für das Jahr 2025 sind ausgeschöpft. Verwendungsnachweise für laufende Anträge können weiterhin eingereicht werden.“ Die Richtlinie selbst ist von der Seite genommen; verlinkt sind nur noch Verwendungsnachweise der Bausteine 2, 3, 4, 7 und 8."
+   },
+   {
+    "url": "https://web.archive.org/web/20230512085625if_/https://www.herzogenaurach.de/fileadmin/user_upload/Content/Planungsamt/Klimaschutz/Foerderprogramm_CO2/CO2_Foerderprogramm_2023_-_Richtlinien.pdf",
+    "finding": "Richtlinien „Förderprogramm zur CO2-Minderung“, Fassung vom 13. März 2023, gültig mit Veröffentlichung im Amtsblatt vom 5. April 2023, 28 Seiten. Am 20.09.2026 über das Archiv der Amtsseite gelesen (bildbasiert ohne Textebene, als gerenderte Seiten gelesen). Zehn Förderbausteine, darunter KEIN Baustein für Photovoltaik, Speicher oder Balkonkraftwerke — Baustein 5 ist die Regenwasser-Nutzung. Einzig für uns einschlägig: Baustein 7 „Förderung Heizungsumstellung auf erneuerbare Energie“, pauschal 2.000 EUR, jede weitere Wohneinheit 300 EUR bei höchstens elf zusätzlichen Wohneinheiten, nur Bestandsgebäude, Anlagen müssen den BEG-Förderrichtlinien entsprechen, Scheitholzanlagen ausgeschlossen. Antrag vor Beginn der Maßnahme, Beginn erst nach schriftlicher Förderzusage. Kumulierung ausdrücklich zugelassen. Inkrafttreten mit Veröffentlichung im Amtsblatt; die bisherige Fassung vom 25. Oktober 2021 trat außer Kraft."
+   },
+   {
+    "url": "https://www.herzogenaurach.de/rathaus/foerderprogramme",
+    "finding": "Gesamtübersicht der Förderprogramme der Stadt, am 20.09.2026 gelesen: Bewerbung um Baugrundstücke, Sozialticket, Fassadenprogramm Altstadt und Förderung von Einzeldenkmalgebäuden. Kein weiteres Programm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen neben dem CO2-Programm."
+   }
+  ],
+  "sources": [
+   {
+    "url": "herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2",
+    "disposition": "reviewed",
+    "reason": "Programmseite mit dem Antragsstopp, am 20.09.2026 gelesen; Sätze und Bedingungen aus der über das Archiv gelesenen Richtlinie.",
+    "evidenceUrl": "https://www.herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2"
+   },
+   {
+    "url": "herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2?type=0",
+    "disposition": "replaced",
+    "reason": "Dieselbe Programmseite mit einem Ausgabeparameter des Redaktionssystems; kein eigener Inhalt.",
+    "evidenceUrl": "https://www.herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2"
+   },
+   {
+    "url": "herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2?type=7001",
+    "disposition": "replaced",
+    "reason": "Dieselbe Programmseite in einer anderen Ausgabeform des Redaktionssystems; kein eigener Inhalt.",
+    "evidenceUrl": "https://www.herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2"
+   },
+   {
+    "url": "herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2?type=7002",
+    "disposition": "replaced",
+    "reason": "Dieselbe Programmseite in einer anderen Ausgabeform des Redaktionssystems; kein eigener Inhalt.",
+    "evidenceUrl": "https://www.herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2"
+   },
+   {
+    "url": "herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2?tx_web2pdf_pi1%5Baction%5D=&amp;tx_web2pdf_pi1%5Bargument%5D=printPage&amp;tx_web2pdf_pi1%5Bcontroller%5D=Pdf&amp;cHash=2b764460d2532078b9d090d7d66f12e0",
+    "disposition": "replaced",
+    "reason": "Druckausgabe derselben Programmseite als PDF; kein eigener Inhalt.",
+    "evidenceUrl": "https://www.herzogenaurach.de/stadtraum/klima-energie/foerderprogramm-co2"
+   },
+   {
+    "url": "herzogenaurach.de/rathaus/foerderprogramme",
+    "disposition": "reviewed",
+    "reason": "Gesamtübersicht der städtischen Förderprogramme, am 20.09.2026 gelesen; kein weiteres Energieprogramm für private Haushalte.",
+    "evidenceUrl": "https://www.herzogenaurach.de/rathaus/foerderprogramme"
+   }
+  ]
  }
 ]

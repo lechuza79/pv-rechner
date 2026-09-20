@@ -128,6 +128,13 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Dazu die beiden Nachträge aus der Gegenprüfung desselben Tages: Röttenbachs
   // zweite Richtlinie (Heizung) und Kalchreuth, dessen Geltung offen ist.
 "kalchreuth-regenerative-energien",
+  // Zwei nicht mehr antragsfähige Programme im selben Landkreis, aufgenommen am
+  // 20.09.2026. Eine Prüfform prüft das Vorhaben gegen ein Antragsverfahren —
+  // und genau das gibt es hier nicht: Bubenreuth weist die Mittel als
+  // ausgeschöpft aus, Herzogenaurach hat den Antragsstopp auf unbestimmte Zeit
+  // verlängert. Die Bedingungen stehen vollständig auf der Karte und
+  // informieren; geprüft werden sie erst, wenn wieder jemand beantragen kann.
+  "bubenreuth-co2-einsparung", "herzogenaurach-co2-minderung",
   // Aufgenommen am 18.09.2026 aus dem Quellen-Rückstand; Amtsseite und
   // Richtlinie jeweils im Volltext gelesen. Die Prüfformen fehlen noch, und bei
   // Würselen kennt das Modell eine Bedingung gar nicht: Gekauft werden darf erst
