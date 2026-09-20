@@ -1,7 +1,7 @@
 import { municipalReviewQueue, validateMunicipalReviews, type InquiryReceipt } from "../lib/funding-municipal-review";
 import municipalReviews from "../data/funding/municipal-reviews.json";
 import { groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
-import { seitenSchluessel } from "../lib/funding-seiten";
+import { seitenAbrufAdressen, seitenSchluessel } from "../lib/funding-seiten";
 import { FundingSourceReader, recordStage } from "./lib/funding-source-reader";
 /**
  * Abdeckungs-Screening: alle Gemeinden mit Förderseite systematisch durchsehen.
@@ -349,7 +349,30 @@ async function gelesen(): Promise<void> {
   const normalized = seitenSchluessel(sourceUrl);
   const { data: page, error: lookupError } = await sb.from("funding_seiten").select("url").eq("region_id", ids[0]).eq("url", normalized).maybeSingle();
   if (lookupError || !page) throw new Error(lookupError?.message ?? "Die genaue Förderseite ist nicht erfasst.");
-  const response = await sources.fetch(sourceUrl, { signal: AbortSignal.timeout(25000) });
+  // Der Abgleich identifiziert sich wie der Screening-Lauf zehn Zeilen weiter
+  // unten — ohne die Kennung antwortet ein Teil der Amtsseiten mit 403, und
+  // ein Abhaken darf an der Kennung nicht scheitern. `verify` statt `fetch`:
+  // ein gescheiterter GEGENLESE-Versuch ist keine Beobachtung über die Quelle
+  // und sperrt sie deshalb nicht (siehe FundingSourceReader.verify).
+  // Abgerufen wird ueber DENSELBEN Adressweg wie in den Seiten-Laeufen
+  // (`seitenAbrufAdressen`): Der gespeicherte Schluessel traegt weder Schema
+  // noch „www." und bei rund jeder neunten Adresse eine HTML-Maskierung
+  // (`&amp;`), die ein Server als Parameter namens „amp;…" liest. Wer hier
+  // die Rohadresse nimmt, laesst ein Abhaken an der Schreibweise scheitern —
+  // dieselbe Klasse wie die fehlende Kennung eine Zeile weiter unten.
+  let response: Response | undefined;
+  let letzterFehler: unknown;
+  for (const adresse of seitenAbrufAdressen(sourceUrl)) {
+    try {
+      response = await sources.verify(adresse, {
+        headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
+        redirect: "follow",
+        signal: AbortSignal.timeout(25000),
+      });
+      break;
+    } catch (fehler) { letzterFehler = fehler; }
+  }
+  if (!response) throw letzterFehler ?? new Error("Die Quelle war nicht lesbar.");
   const original = await response.text();
   if (!sichtbarerText(quote) || !sichtbarerText(original).includes(sichtbarerText(quote))) throw new Error("Der Beleg steht nicht im aktuell gelesenen Original.");
   const { error } = await sb.from("funding_seiten").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote, note: wert("notiz"), reviewed_at: new Date().toISOString() }) }).eq("region_id", ids[0]).eq("url", normalized);

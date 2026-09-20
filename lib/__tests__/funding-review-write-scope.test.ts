@@ -31,7 +31,15 @@ it("marks only the exact reviewed URL and leaves a different legacy source untou
   const recorded = vi.fn();
   vi.doMock("@supabase/supabase-js", () => ({ createClient: () => db }));
   vi.doMock("../../scripts/lib/funding-source-reader", () => ({
-    FundingSourceReader: class { async ready() {} async fetch() { return new Response("<p>Ein Zuschuss von 200 Euro ist möglich.</p>"); } },
+    // Der Pruefweg heisst `verify`, nicht `fetch`: Ein gescheiterter
+    // Gegenlese-Versuch darf die Quelle nicht fuer eine Woche sperren. Der
+    // Nachbau bietet `fetch` deshalb bewusst als Falle an — wer den
+    // Abhak-Befehl darauf zurueckdreht, macht diesen Test rot.
+    FundingSourceReader: class {
+      async ready() {}
+      async verify() { return new Response("<p>Ein Zuschuss von 200 Euro ist möglich.</p>"); }
+      async fetch(): Promise<Response> { throw new Error("Eine Pruefung liest ueber verify(), nicht ueber den Crawl-Weg."); }
+    },
     recordStage: recorded,
   }));
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.invalid");
