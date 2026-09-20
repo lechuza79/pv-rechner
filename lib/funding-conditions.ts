@@ -160,6 +160,14 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Vorhaben halten könnte. Die Bedingungen stehen vollständig am Eintrag und
   // sind der Vergleichsmaßstab, falls die Stadt eine neue Fassung beschließt.
   "florstadt-photovoltaik",
+  // Ehningen, aufgenommen am 20.09.2026. Richtlinie im Volltext gelesen, jede
+  // Bedingung steht am Programm. Die Prüfform fehlt, weil das Programm die Frage
+  // gar nicht stellt, die die vorhandenen Formen prüfen: Der Antrag darf „vor
+  // oder nach Kauf und Installation" gestellt werden — es gibt also keinen
+  // Antragszeitpunkt, gegen den sich ein Vorhaben halten ließe. Was zu prüfen
+  // wäre (fünf Jahre Eigentum, Sozialpass, Wechselrichter zwischen 300 und 800
+  // Watt), fragt kein Rechner dieses Projekts.
+  "ehningen-steckerfertige-pv",
   // Landkreis Erlangen-Höchstadt, sechs Gemeindeprogramme, aufgenommen am
   // 20.09.2026. Jede Richtlinie ist im Volltext gelesen und jede Bedingung steht
   // am Programm — die Prüfformen fehlen noch, und sie sind hier nicht trivial:

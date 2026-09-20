@@ -10488,6 +10488,55 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     //   keine. Ein Anruf im Rathaus klärt es in fünf Minuten; bis dahin sagt
     //   der Eintrag, was die Gemeinde schreibt, und nicht mehr.
   },
+  "ehningen-steckerfertige-pv": {
+    id: "ehningen-steckerfertige-pv", name: "Förderprogramm Steckerfertige PV-Anlagen",
+    traeger: "Gemeinde Ehningen", level: "kommune", region: "Ehningen",
+    bundesland: "Baden-Württemberg", agsCode: "08115013",
+    url: "https://www.ehningen.de/fileadmin/Dateien/Dateien/Bauamt_Hoch_und_Tiefbau/Foerderrichtlinie_steckerfertige_PV_Anlagen.pdf",
+    stand: "September 2026", status: "aktiv", capped: false, verified: true,
+    beginntIso: "2024-10-01",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten je Wohneinheit",
+    maxFoerderung: "50 % der förderfähigen Kosten, max. 200 € — mit Sozialpass 75 %, max. 500 €",
+    rates: [{ label: "Balkonkraftwerk", value: "50 % der förderfähigen Investitionskosten, höchstens 200 €; für Inhaber eines Sozialpasses 75 %, höchstens 500 €", nur: ["balkon"] }],
+    conditions: [
+      "Gefördert wird der Kauf oder die Erstinstallation je Wohneinheit; der Wechselrichter muss zwischen 300 und 800 Watt Ausgangsleistung haben",
+      "Antragsberechtigt sind einmalig Mieterinnen und Mieter sowie Wohnungseigentümerinnen und -eigentümer; Anlagen zur gewerblichen Nutzung sind ausgeschlossen",
+      "Der Antrag kann vor oder nach Kauf und Installation gestellt werden, per Mail oder schriftlich an die Kämmerei",
+      "Die Anlage muss mindestens fünf Jahre im Eigentum bleiben und genutzt werden",
+      "Die Anlage ist im Marktstammdatenregister zu registrieren und fachgerecht so zu befestigen, dass sie auch außergewöhnlichen Witterungsbedingungen standhält",
+      "Gefördert wird, solange Haushaltsmittel zur Verfügung stehen; ein Rechtsanspruch besteht nicht",
+      "Die Gemeinde behält sich vor, die Förderung auszusetzen, wenn dieselbe Maßnahme auch auf Landes-, Bundes- oder EU-Ebene gefördert wird",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.50, balkonCap: 200,
+    // NEU AUFGENOMMEN 20.09.2026. Die Förderrichtlinie der Gemeinde ist im
+    // Volltext gelesen (PDF unter ihrer eigenen Adresse, HTTP 200 am selben Tag).
+    // Abschnitt 6: „Dieses Förderungsprogramm tritt zum 01.10.2024 in Kraft und
+    // gilt solange Haushaltsmittel der Gemeinde Ehningen zur Verfügung stehen."
+    // Keine Befristung, kein Hinweis auf einen leeren Topf.
+    //
+    // GERECHNET WIRD NUR DIE GRUNDSTUFE (50 %, max. 200 €). Die Sozialpass-Stufe
+    // (75 %, max. 500 €) steht als Text am Eintrag und zieht nichts ab: Ob jemand
+    // einen Sozialpass hat, fragt kein Rechner dieses Projekts, und eine
+    // Einkommensgrenze kann das Modell nicht ausdrücken. Die vorsichtige Richtung
+    // ist hier die niedrigere Stufe — wer den Pass hat, bekommt mehr als
+    // angezeigt, und eine angenehme Überraschung ist besser als ein Zuschuss, den
+    // jemand einplant und nicht bekommt.
+    //
+    // `combinableWith: null`: Die Richtlinie sagt nicht, dass eine Kombination
+    // mit Bundesmitteln erlaubt ist — sie sagt das Gegenteil in der weichen Form,
+    // die Gemeinde behalte sich vor, die Förderung auszusetzen, wenn dieselbe
+    // Maßnahme auf Landes-, Bundes- oder EU-Ebene gefördert wird. Ein Vorbehalt
+    // ist kein Ausschluss, aber auch keine Zusage; unbelegt heißt hier: kein
+    // Stapel.
+    //
+    // WIE GEFUNDEN: nicht aus dem Treffer-Vorrat, sondern aus einer Stichprobe
+    // von 30 zufälligen Zeilen des offenen Quellenvorrats, die eigentlich messen
+    // sollte, wie viele erfasste Adressen auf eine Startseite umleiten (Antwort:
+    // eine von 30). Der Nebenbefund war wertvoller als die Messung.
+  },
   "mauer-balkonkraftwerke": {
     id: "mauer-balkonkraftwerke", name: "Förderprogramm Balkonkraftwerk",
     traeger: "Gemeinde Mauer", level: "kommune", region: "Mauer",
