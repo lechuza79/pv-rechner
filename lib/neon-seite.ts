@@ -250,6 +250,13 @@ const ATLAS_PUNKTE = [
   "Lokale Zahlen und Geschichten entdecken",
 ];
 
+const ORGANISATIONEN: { titel: string; text: string; href: string }[] = [
+  { titel: "Für Fachbetriebe", text: "Rechner im eigenen Auftritt · Pilot besprechen", href: "/kontakt" },
+  { titel: "Für Kommunen", text: "Lokale Energiedaten zeigen und teilen", href: "/energie-widgets" },
+  { titel: "Für Versorger", text: "Rechner und Förderdaten als Kundenservice", href: "/kontakt" },
+  { titel: "Für Medien & Creator", text: "Grafiken, Daten und Geschichten nutzen", href: "/presse" },
+];
+
 const RATGEBER: { kennung: string; bereich: string; titel: string; href: string }[] = [
   { kennung: "01", bereich: "PHOTOVOLTAIK", titel: "Lohnt sich eine Solaranlage mit Speicher?", href: "/ratgeber/lohnt-sich-pv-mit-speicher" },
   { kennung: "02", bereich: "HEIZEN", titel: "Gasheizung oder Wärmepumpe?", href: "/ratgeber/gasheizung-oder-waermepumpe" },
@@ -302,6 +309,9 @@ function statischeSektionen(): string {
       `<li><small>${esc(r.kennung)} · ${esc(r.bereich)}</small><h3><a href="${esc(r.href)}">${esc(r.titel)}</a></h3></li>`,
   ).join("");
   const punkte = ATLAS_PUNKTE.map((p) => `<li>${esc(p)}</li>`).join("");
+  const organisationen = ORGANISATIONEN.map(
+    (o) => `<li><h3><a href="${esc(o.href)}">${esc(o.titel)}</a></h3><p>${esc(o.text)}</p></li>`,
+  ).join("");
   return (
     `<style>${STATISCH_CSS}</style>` +
     `<div class="sc-statisch"><div class="sc-statisch-wrap">` +
@@ -318,12 +328,16 @@ function statischeSektionen(): string {
     `<h2 id="sc-statisch-ratgeber">Erst verstehen. Dann entscheiden.</h2>` +
     `<p><a href="/ratgeber">Alle Ratgeber →</a></p>` +
     `<ul class="sc-statisch-liste">${ratgeber}</ul></section>` +
+    `<section class="sc-statisch-block" aria-labelledby="sc-statisch-organisationen">` +
+    `<p class="sc-statisch-kicker">Solar Check für Unternehmen &amp; Organisationen</p>` +
+    `<h2 id="sc-statisch-organisationen">Unsere Tools. Für deine Kunden, deine Bürger, dein Publikum.</h2>` +
+    `<ul class="sc-statisch-liste">${organisationen}</ul></section>` +
     `</div></div>`
   );
 }
 
 /** What the drift guard reads; not used at render time. */
-export const STATISCHE_INHALTE = { WERKZEUGE, ATLAS_PUNKTE, RATGEBER };
+export const STATISCHE_INHALTE = { WERKZEUGE, ATLAS_PUNKTE, RATGEBER, ORGANISATIONEN };
 
 function vorFuss(seite: NeonSeite, faq: FaqEntry[]): string {
   const s = SEITEN[seite];
