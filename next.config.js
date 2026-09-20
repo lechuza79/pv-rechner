@@ -358,6 +358,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/ottobrunn", destination: "/photovoltaik-foerderung/bayern/ottobrunn", permanent: true },
       { source: "/photovoltaik-foerderung/putzbrunn", destination: "/photovoltaik-foerderung/bayern/putzbrunn", permanent: true },
       { source: "/photovoltaik-foerderung/unterhaching", destination: "/photovoltaik-foerderung/bayern/unterhaching", permanent: true },
+      { source: "/photovoltaik-foerderung/unterfoehring", destination: "/photovoltaik-foerderung/bayern/unterfoehring", permanent: true },
       { source: "/photovoltaik-foerderung/karlshuld", destination: "/photovoltaik-foerderung/bayern/karlshuld", permanent: true },
       { source: "/photovoltaik-foerderung/vilshofen", destination: "/photovoltaik-foerderung/bayern/vilshofen", permanent: true },
       { source: "/photovoltaik-foerderung/muehlhausen", destination: "/photovoltaik-foerderung/bayern/muehlhausen", permanent: true },

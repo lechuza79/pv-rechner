@@ -3674,6 +3674,69 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Anzeigetext da — der Balkon-Rechner konnte damit nichts anfangen.
     balkonPauschale: 200,
   },
+  "unterfoehring-energiesparfoerderprogramm": {
+    id: "unterfoehring-energiesparfoerderprogramm", name: "Energiesparförderprogramm",
+    traeger: "Gemeinde Unterföhring", level: "kommune", region: "Unterföhring",
+    bundesland: "Bayern", agsCode: "09184147",
+    url: "https://www.unterfoehring.de/mobilitaet-umwelt/umwelt/energiespar-foerderprogramme.html",
+    stand: "September 2025", beschlossenIso: "2025-09-29", beginntIso: "2025-10-01",
+    status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp für die Dachanlage mit Speicher, Anteil der Kosten fürs Balkonkraftwerk",
+    maxFoerderung: "max. 6.000 € für die Dachanlage, 800 € fürs Balkonkraftwerk",
+    rates: [
+      { label: "Dachanlage mit Stromspeicher", value: "300 €/kWp für die ersten 10 kWp, danach 150 €/kWp bis max. 30 kWp", nur: ["pv"] },
+      { label: "Speicher an einer bestehenden Anlage nachrüsten", value: "200 € je kWh, max. 1.000 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "30 % der Gesamtinvestitionskosten, max. 400 € ohne Speicher, max. 800 € mit Speicher", nur: ["balkon"] },
+      { label: "Speicher am Balkonkraftwerk nachrüsten", value: "100 € je kWh, höchstens für 5 kWh", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Der Antrag muss vor Auftragsvergabe und Beginn gestellt sein; maßgeblich ist der Eingangsstempel der Gemeindeverwaltung",
+      "Bei einer kombinierten Förderung mit BAFA oder KfW darf vorab ein Vertrag mit aufschiebender Förderbedingung geschlossen werden",
+      "Ein Rechtsanspruch besteht nicht; die Mittel werden in der Reihenfolge des Eingangs vollständiger Anträge vergeben",
+      "Gefördert werden ausschließlich private Wohngebäude im Gemeindegebiet; höchstens 25 % der Wohnfläche dürfen gewerblich genutzt sein",
+      "Höchstens 10.000 € je Gebäude innerhalb von fünf Jahren über alle Maßnahmen des Programms zusammen",
+      { text: "Antragsberechtigt sind Hauseigentümer, Hausverwaltungen und Eigentümergemeinschaften", nur: ["pv"] },
+      { text: "Die Dachanlage wird nur zusammen mit einem Stromspeicher gefördert; ohne Speicher zahlt die Gemeinde nichts", nur: ["pv"] },
+      { text: "Für die Nachrüstung eines Speichers muss die Anlage nach dem 31.12.2012 errichtet worden sein; gebrauchte Anlagen und Eigenbau sind ausgeschlossen", nur: ["pv"] },
+      { text: "Der Zuschuss gilt je Wohnung; Mieter brauchen das Einverständnis des Vermieters", nur: ["balkon"] },
+      { text: "Wir rechnen mit dem Deckel von 400 € — mit Speicher zahlt die Gemeinde bis zu 800 €", nur: ["balkon"] },
+      "Förderungen anderer Träger sind erlaubt; die Summe aller Mittel darf die tatsächlichen Kosten nicht übersteigen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // KEIN STRUKTURIERTER DACH-SATZ, und das ist die Kernaussage dieses Eintrags
+    // (Council 20.09.2026, drei Prüfer, einer adversarial). „300 €/kWp für die
+    // ersten 10 kWp, danach 150 €/kWp" ist eine GRENZSATZ-Staffel; das Modell
+    // rechnet `pvSockel + kwp × pvPerKwp`, also eine Gerade über die VOLLE
+    // kWp-Zahl. Durchgerechnet mit 3.000 € Sockel und 150 €/kWp kämen bei
+    // 8 kWp 4.200 € heraus, die Richtlinie zahlt dort 2.400 € — 1.800 € zu
+    // viel, und zwar im häufigsten Anlagenbereich. `pvTiers` hilft nicht: Die
+    // Stufen tragen feste Beträge, keinen Grenzsatz. Derselbe Fall wie
+    // Dietmannsried eine Zeile weiter oben.
+    //
+    // UND KEIN `speicherPerKwh`: Die 200 €/kWh gelten ausschließlich der
+    // NACHRÜSTUNG an einer bestehenden Anlage. Das Modell kennt diese
+    // Unterscheidung nicht und addierte den Betrag zur Neuanlage mit Speicher —
+    // dort zahlt Unterföhring ihn nicht, und Nr. 3.4 der Richtlinie verbietet
+    // die Doppelförderung innerhalb des Programms ausdrücklich.
+    //
+    // Der Balkon-Teil ist der einzige rechenbare: 30 % der Kosten. Der Deckel
+    // hängt am Speicher (400 € ohne, 800 € mit), das Modell kennt nur einen —
+    // gerechnet wird der NIEDRIGERE, und die Abweichung steht als Bedingung an
+    // der Karte, damit niemand sie für die ganze Wahrheit hält.
+    pvNurMitSpeicher: true,
+    balkonPercentOfCost: 0.30, balkonCap: 400,
+    // NICHT aufgenommen: der Aufschlag nach Nr. 2.1 („50 % auf die bewilligte
+    // Fördersumme des BAFA/der KfW, max. 10.000 €"), der Wärmepumpen
+    // einschließt. Direkt darunter steht: „Heizungserneuerungen werden nur in
+    // Kombination mit dem Anschluss ans Fernwärmenetz gefördert - sofern eine
+    // Versorgung mit Fern- oder zentraler Nahwärme (Geothermie) möglich ist."
+    // Unterföhring hat ein eigenes Geothermie-Netz; ob eine Wärmepumpe dort
+    // überhaupt aufgestockt wird, gibt der Satz nicht eindeutig her. Eine
+    // pauschale Wärmepumpen-Zahl wäre deshalb geraten — `foerdert` führt
+    // „waermepumpe" bewusst nicht.
+  },
   // ── Ausgelaufene Programme: aufgenommen, weil das eine Auskunft ist ────────
   //
   // Entscheidung des Betreibers (17.08.2026): Auch beendete oder ausgesetzte

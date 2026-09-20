@@ -123,6 +123,13 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // die eigentliche Arbeit und braucht einen eigenen Durchgang; halb erfasst
   // gibt es hier nicht. Bis dahin stehen die Bedingungen vollständig auf der
   // Karte, sie werden nur nicht gegen das Vorhaben geprüft.
+  // Unterföhring, aufgenommen am 20.09.2026. Die Richtlinie ist im Volltext
+  // gelesen, jede Bedingung steht am Programm. Die Prüfform fehlt noch und ist
+  // hier nicht trivial: Nr. 1.2 verlangt den Antrag vor Beginn, Nr. 4.2
+  // zusätzlich den Vorbescheid — die Richtlinie ist an dieser Stelle in sich
+  // uneinheitlich, und welche der beiden Fassungen geprüft wird, ist eine
+  // Entscheidung, keine Übersetzung.
+  "unterfoehring-energiesparfoerderprogramm",
   "buckenhof-klimaschutz", "marloffstein-klimaschutz", "uttenreuth-klimaschutz",
   "roettenbach-erh-pv-speicher", "eckental-balkon", "spardorf-solar",
   // Dazu die beiden Nachträge aus der Gegenprüfung desselben Tages: Röttenbachs
