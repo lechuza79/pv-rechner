@@ -346,4 +346,23 @@ const textdateien = [...kopiert.filter((f) => /\.(js|css|json|svg)$/.test(f)).ma
 const reste = textdateien.filter((f) => VORSCHAU.test(readFileSync(f, "utf8")));
 if (reste.length) throw new Error(`Vorschau-Verweise übrig in:\n  ${reste.join("\n  ")}`);
 
-console.log(`${kopiert.length} Dateien übernommen, ${PATCHES.length} Anpassungen angewendet, 2 Seitenvorlagen geschrieben.`);
+// ─── Sections as data ───────────────────────────────────────────────────────
+// The homepage renders the script-built sections server-side so a crawler
+// without JavaScript sees them (see lib/neon-seite.ts). Their wording is read
+// OUT OF the bundle we just copied, never written out a second time — a second
+// copy drifts the moment the package is rebuilt, and both sides look right on
+// their own. This runs here and not when a page is served: the bundle is
+// minified foreign JavaScript, so a miss must stop the takeover with a person
+// watching, not the homepage.
+const { lesen } = await import("./startseite-sektionen.mjs");
+const sektionen = lesen();
+writeFileSync(
+  join(ZIEL, "lib/startseite-sektionen.json"),
+  JSON.stringify(sektionen, null, 2) + "\n",
+);
+
+console.log(
+  `${kopiert.length} Dateien übernommen, ${PATCHES.length} Anpassungen angewendet, 2 Seitenvorlagen geschrieben, ` +
+    `${sektionen.werkzeuge.length} Werkzeuge + ${sektionen.ratgeber.eintraege.length} Ratgeber + ` +
+    `${sektionen.organisationen.eintraege.length} Organisations-Einträge aus dem Paket gelesen.`,
+);

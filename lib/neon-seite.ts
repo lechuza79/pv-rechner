@@ -8,6 +8,7 @@ import { organizationJsonLd, softwareAppJsonLd } from "./site-json-ld";
 import { standSeite } from "./stand";
 import { liveSatz } from "./stand-format";
 import { siteFussHtml } from "./site-fuss";
+import SEKTIONEN from "./startseite-sektionen.json";
 
 /**
  * The redesigned homepage and PV simulation, served as the approved documents.
@@ -24,9 +25,12 @@ import { siteFussHtml } from "./site-fuss";
  *                       package's own design tokens.
  *   <!--SC:STATISCH-->  homepage only: the body of the draft section
  *                       (#entdecken), which the takeover empties. The script
- *                       hides that section and builds tools, atlas and guides
- *                       in its place, so this is what a crawler without
- *                       JavaScript reads instead of the draft.
+ *                       hides that section and builds tools, atlas, guides and
+ *                       the organisations block in its place, so this is what a
+ *                       crawler without JavaScript reads instead of the draft.
+ *                       Its wording is read out of the package's own bundle at
+ *                       takeover time (lib/startseite-sektionen.json), never
+ *                       written out here a second time.
  * Nothing between the markers is touched.
  */
 
@@ -182,86 +186,34 @@ function simulationStand(): string {
  *
  * Why at all: without script the homepage's body carried ~900 characters —
  * hero, intro, FAQ, footer — plus the design draft's two placeholder cards.
- * Tools, the local atlas and the guides only exist after
- * public/dynamic-hero/dist/test.js has run, so every crawler that does not
- * execute JavaScript (most AI crawlers and the smaller search engines; Google
- * does render) read the DRAFT instead of the product.
+ * Tools, the local atlas, the guides and the section for organisations only
+ * exist after public/dynamic-hero/dist/test.js has run, so every crawler that
+ * does not execute JavaScript (most AI crawlers and the smaller search
+ * engines; Google does render) read the DRAFT instead of the product.
+ *
+ * THE WORDING IS NOT WRITTEN HERE. It is read out of the package's own bundle
+ * when the package is taken over (scripts/startseite-sektionen.mjs) and lies
+ * next to this file as data. Writing it out a second time is how the two sides
+ * drift: with script the page shows the bundle's version, without it a crawler
+ * reads ours, and nobody ever sees them side by side. The extraction runs where
+ * a miss stops the takeover with a person watching — not in the serving path,
+ * where the same miss would be the homepage.
  *
  * Where it goes: into the draft section (#entdecken) itself, whose body the
  * takeover replaces with <!--SC:STATISCH-->. That section is the one thing the
  * script already takes away again (it sets `hidden`), so with script running
  * nothing here is visible and nothing is duplicated — no second hiding
  * mechanism, no new markers in the scene.
- *
- * DRIFT IS THE RISK, NOT CORRECTNESS: this is a second copy of wording that
- * lives in the design package's bundle. lib/__tests__/startseite-statisch.test.ts
- * reads the bundle and holds every heading and every link of the three mirrored
- * sections against this list; sections we deliberately do not mirror are named
- * there with a reason. Whoever changes the wording in the package makes that
- * test red — that is the whole point of having it.
  */
 type StatischerLink = { text: string; href: string };
-type StatischeKarte = { kennung: string; titel: string; text: string; links: StatischerLink[]; hinweis?: string };
-
-const WERKZEUGE: StatischeKarte[] = [
-  {
-    kennung: "01 / PHOTOVOLTAIK",
-    titel: "Dein Dach kann mehr.",
-    text: "Finde die passende Anlage oder rechne deine konkrete Planung durch.",
-    links: [
-      { text: "Passende Anlage finden", href: "/pv-bedarf-berechnen" },
-      { text: "Anlage durchrechnen", href: "/photovoltaik-rechner" },
-    ],
-  },
-  {
-    kennung: "02 / BALKONKRAFTWERK",
-    titel: "Kleine Fläche. Eigener Strom.",
-    text: "Was bringt dein Balkon – und welches Set lohnt sich für dich?",
-    links: [{ text: "Balkonkraftwerk berechnen", href: "/balkonkraftwerk/rechner" }],
-  },
-  {
-    kennung: "03 / WÄRMEPUMPE",
-    titel: "Wie heizt du morgen?",
-    text: "Vergleiche Anschaffung und laufende Heizkosten mit deiner bisherigen Heizung.",
-    links: [{ text: "Wärmepumpe durchrechnen", href: "/waermepumpe-rechner" }],
-  },
-  {
-    kennung: "04 / FÖRDERCHECK",
-    titel: "Welche Förderung bekommst du?",
-    text: "Entdecke Zuschüsse für deine Solaranlage – passend zu deinem Bundesland und deinem Ort.",
-    links: [{ text: "Förderung finden", href: "/photovoltaik-foerderung" }],
-  },
-  {
-    // The waitlist is a dialog, so the script builds a button here and there is
-    // no page to link to (/warteliste only has confirm and unsubscribe routes).
-    // Without script the card therefore states the fact and offers no action —
-    // a link that leads nowhere would be worse than none.
-    kennung: "05 / ANGEBOTSCHECK",
-    hinweis: "Demnächst",
-    titel: "Schon ein Angebot auf dem Tisch?",
-    text: "Ordne Preis, Anlagengröße und Annahmen besser ein. Wir arbeiten am Angebotscheck.",
-    links: [],
-  },
-];
-
-const ATLAS_PUNKTE = [
-  "Solaranlagen und Speicher in deiner Gemeinde",
-  "Deinen Ort mit der Region vergleichen",
-  "Lokale Zahlen und Geschichten entdecken",
-];
-
-const ORGANISATIONEN: { titel: string; text: string; href: string }[] = [
-  { titel: "Für Fachbetriebe", text: "Rechner im eigenen Auftritt · Pilot besprechen", href: "/kontakt" },
-  { titel: "Für Kommunen", text: "Lokale Energiedaten zeigen und teilen", href: "/energie-widgets" },
-  { titel: "Für Versorger", text: "Rechner und Förderdaten als Kundenservice", href: "/kontakt" },
-  { titel: "Für Medien & Creator", text: "Grafiken, Daten und Geschichten nutzen", href: "/presse" },
-];
-
-const RATGEBER: { kennung: string; bereich: string; titel: string; href: string }[] = [
-  { kennung: "01", bereich: "PHOTOVOLTAIK", titel: "Lohnt sich eine Solaranlage mit Speicher?", href: "/ratgeber/lohnt-sich-pv-mit-speicher" },
-  { kennung: "02", bereich: "HEIZEN", titel: "Gasheizung oder Wärmepumpe?", href: "/ratgeber/gasheizung-oder-waermepumpe" },
-  { kennung: "03", bereich: "BALKONKRAFTWERK", titel: "Wann lohnt sich ein Balkonspeicher?", href: "/balkonkraftwerk/ratgeber/mit-speicher" },
-];
+type StatischeKarte = { kennung: string; hinweis: string | null; titel: string; text: string; links: StatischerLink[] };
+type StatischeSektionen = {
+  einleitung: { kicker: string; titel: string; text: string };
+  werkzeuge: StatischeKarte[];
+  atlas: { kicker: string; titel: string; text: string; punkte: string[]; link: StatischerLink };
+  ratgeber: { titel: string; alle: StatischerLink; eintraege: { kennung: string; bereich: string; titel: string; href: string }[] };
+  organisationen: { kicker: string; titel: string; eintraege: { titel: string; text: string; href: string }[] };
+};
 
 /**
  * Text only — the block is display:none as soon as the script runs, so this
@@ -293,51 +245,52 @@ const STATISCH_CSS = `
 .sc-statisch-liste small{font-size:var(--sc-type-eyebrow-size,12px);line-height:var(--sc-type-eyebrow-leading,1.5);letter-spacing:var(--sc-type-eyebrow-tracking,.08em);color:#9db7ab;display:block}
 `;
 
+const pfeil = (l: StatischerLink) => `<a href="${esc(l.href)}">${esc(l.text)} →</a>`;
+
 /** The server-side twin of the script-built sections. Homepage only. */
 function statischeSektionen(): string {
-  const karten = WERKZEUGE.map(
-    (k) =>
-      `<li class="sc-statisch-karte"><p class="sc-statisch-kennung">${esc(k.kennung)}${k.hinweis ? ` · ${esc(k.hinweis)}` : ""}</p>` +
-      `<h3>${esc(k.titel)}</h3><p>${esc(k.text)}</p>` +
-      (k.links.length
-        ? `<div class="sc-statisch-aktionen">${k.links.map((l) => `<a href="${esc(l.href)}">${esc(l.text)} →</a>`).join("")}</div>`
-        : "") +
-      `</li>`,
-  ).join("");
-  const ratgeber = RATGEBER.map(
-    (r) =>
-      `<li><small>${esc(r.kennung)} · ${esc(r.bereich)}</small><h3><a href="${esc(r.href)}">${esc(r.titel)}</a></h3></li>`,
-  ).join("");
-  const punkte = ATLAS_PUNKTE.map((p) => `<li>${esc(p)}</li>`).join("");
-  const organisationen = ORGANISATIONEN.map(
-    (o) => `<li><h3><a href="${esc(o.href)}">${esc(o.titel)}</a></h3><p>${esc(o.text)}</p></li>`,
-  ).join("");
+  const d = SEKTIONEN as StatischeSektionen;
+  const karten = d.werkzeuge
+    .map(
+      (k) =>
+        `<li class="sc-statisch-karte"><p class="sc-statisch-kennung">${esc(k.kennung)}${k.hinweis ? ` · ${esc(k.hinweis)}` : ""}</p>` +
+        `<h3>${esc(k.titel)}</h3><p>${esc(k.text)}</p>` +
+        // The waitlist is a dialog, so the script builds a button on the last
+        // card and there is no page to link to. Without script the card states
+        // the fact and offers no action — a link that leads nowhere is worse.
+        (k.links.length ? `<div class="sc-statisch-aktionen">${k.links.map(pfeil).join("")}</div>` : "") +
+        `</li>`,
+    )
+    .join("");
+  const punkte = d.atlas.punkte.map((p) => `<li>${esc(p)}</li>`).join("");
+  const ratgeber = d.ratgeber.eintraege
+    .map((r) => `<li><small>${esc(r.kennung)} · ${esc(r.bereich)}</small><h3><a href="${esc(r.href)}">${esc(r.titel)}</a></h3></li>`)
+    .join("");
+  const organisationen = d.organisationen.eintraege
+    .map((o) => `<li><h3><a href="${esc(o.href)}">${esc(o.titel)}</a></h3><p>${esc(o.text)}</p></li>`)
+    .join("");
   return (
     `<style>${STATISCH_CSS}</style>` +
     `<div class="sc-statisch"><div class="sc-statisch-wrap">` +
-    `<p class="sc-statisch-kicker">AUS SONNENLICHT WIRD KLARHEIT</p>` +
-    `<h2 id="feature-title">Eine gute Entscheidung beginnt mit deinen Zahlen.</h2>` +
-    `<p>Ein eigenes Dach? Ein freier Balkon? Oder eine neue Heizung? Finde heraus, was sich für dich rechnet.</p>` +
+    `<p class="sc-statisch-kicker">${esc(d.einleitung.kicker)}</p>` +
+    `<h2 id="feature-title">${esc(d.einleitung.titel)}</h2>` +
+    `<p>${esc(d.einleitung.text)}</p>` +
     `<ul class="sc-statisch-karten">${karten}</ul>` +
     `<section class="sc-statisch-block" aria-labelledby="sc-statisch-atlas">` +
-    `<p class="sc-statisch-kicker">DIE ENERGIEWENDE VOR DEINER HAUSTÜR</p>` +
-    `<h2 id="sc-statisch-atlas">Wie weit ist dein Ort?</h2>` +
-    `<p>Entdecke, wie viel Solarenergie schon in deiner Gemeinde steckt. Sieh dir lokale Zahlen an und finde heraus, wie dein Ort im Vergleich zur Umgebung dasteht.</p>` +
-    `<ul>${punkte}</ul><p><a href="/solar-atlas">Deinen Ort entdecken →</a></p></section>` +
+    `<p class="sc-statisch-kicker">${esc(d.atlas.kicker)}</p>` +
+    `<h2 id="sc-statisch-atlas">${esc(d.atlas.titel)}</h2>` +
+    `<p>${esc(d.atlas.text)}</p><ul>${punkte}</ul><p>${pfeil(d.atlas.link)}</p></section>` +
     `<section class="sc-statisch-block" aria-labelledby="sc-statisch-ratgeber">` +
-    `<h2 id="sc-statisch-ratgeber">Erst verstehen. Dann entscheiden.</h2>` +
-    `<p><a href="/ratgeber">Alle Ratgeber →</a></p>` +
+    `<h2 id="sc-statisch-ratgeber">${esc(d.ratgeber.titel)}</h2>` +
+    `<p>${pfeil(d.ratgeber.alle)}</p>` +
     `<ul class="sc-statisch-liste">${ratgeber}</ul></section>` +
     `<section class="sc-statisch-block" aria-labelledby="sc-statisch-organisationen">` +
-    `<p class="sc-statisch-kicker">Solar Check für Unternehmen &amp; Organisationen</p>` +
-    `<h2 id="sc-statisch-organisationen">Unsere Tools. Für deine Kunden, deine Bürger, dein Publikum.</h2>` +
+    `<p class="sc-statisch-kicker">${esc(d.organisationen.kicker)}</p>` +
+    `<h2 id="sc-statisch-organisationen">${esc(d.organisationen.titel)}</h2>` +
     `<ul class="sc-statisch-liste">${organisationen}</ul></section>` +
     `</div></div>`
   );
 }
-
-/** What the drift guard reads; not used at render time. */
-export const STATISCHE_INHALTE = { WERKZEUGE, ATLAS_PUNKTE, RATGEBER, ORGANISATIONEN };
 
 function vorFuss(seite: NeonSeite, faq: FaqEntry[]): string {
   const s = SEITEN[seite];
