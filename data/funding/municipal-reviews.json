@@ -38553,5 +38553,69 @@
     "evidenceUrl": "https://www.mohrkirch.de/feuerwehr/foerdernde-mitgliedschaft"
    }
   ]
+ },
+ {
+  "regionId": "12063",
+  "name": "Landkreis Havelland",
+  "checkedAt": "2026-09-20T10:45:00Z",
+  "recheckAt": "2027-03-01T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "programme-geprueft",
+  "conclusion": "Der Landkreis fördert Balkonkraftwerke pauschal mit 180 Euro je Haushalt (höchstens 800 W, ein Gerät je Haushalt), gefördert seit 2024, zuletzt geöffnet am 01.04.2025. Für 2026 nimmt er ausdrücklich noch keine Anträge an. Aufgenommen als havelland-stecker-solar mit Status pausiert — es informiert und zieht nichts ab. Eine Förderrichtlinie zu diesem Programm ist von der Programmseite aus nicht erreichbar: Das Wort „Förderrichtlinie\" im Fließtext ist kein Link, und im gesamten HTML führt kein Pfad mit „solar\" oder „stecker\" auf ein Dokument. Ungeprüft blieb genau ein Weg — die Volltextsuche der Domain antwortete mit HTTP 503. Dach-Photovoltaik, Speicher und Wärmepumpen fördert der Kreis nicht.",
+  "searches": [
+   "havelland.de Förderprogramm Stecker-Solargeräte Balkonkraftwerk"
+  ],
+  "evidence": [
+   {
+    "finding": "„Gefördert wird ein Balkonkraftwerk (mit maximal 800 Watt) pro Haushalt mit einer pauschalen Fördersumme in Höhe von 180 Euro.“",
+    "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/"
+   },
+   {
+    "finding": "„+++Achtung! Für 2026 ist noch keine Antragstellung für Balkonkraftwerke möglich+++“ — daher Status pausiert.",
+    "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/"
+   },
+   {
+    "finding": "„Nach der erfolgreichen Förderung im Jahr 2024 … Ab dem 1. April 2025 … erneut“ — gefördert wird seit 2024, deshalb trägt beginntIso die Jahresform.",
+    "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/"
+   }
+  ],
+  "sources": [
+   {
+    "url": "havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1",
+    "disposition": "reviewed",
+    "reason": "Programmseite im Volltext gelesen; Programm aufgenommen.",
+    "evidenceUrl": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/"
+   }
+  ]
+ },
+ {
+  "regionId": "06634005",
+  "name": "Fritzlar",
+  "checkedAt": "2026-09-20T10:55:00Z",
+  "recheckAt": "2026-10-01T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "programme-geprueft",
+  "conclusion": "Die Stadt fördert Balkonkraftwerke MIT Speicher mit 100 Euro je Wohneinheit, Laufzeit 2026–2027, für volljährige Privatpersonen mit Hauptwohnsitz in Fritzlar, Eigentümer wie Mieter. Das Programm ist an der Amtsseite im Volltext gelesen und damit geprüft; im Katalog steht es noch nicht. Ein aktives Programm zieht im Rechner Geld ab und braucht deshalb den vollen Council-Durchgang, und die Förderrichtlinie ist mit einem gewöhnlichen Abruf nicht erreichbar: Richtlinie und Antragsformular hängen an einem JavaScript-Baustein, im ausgelieferten HTML steht keine Dokument-Adresse. Ohne sie fehlt der Antragszeitpunkt, also die Bedingung, deren Verletzung die ganze Förderung kostet. Nächster Schritt: Seite im echten Browser öffnen, Richtlinie lesen, dann aufnehmen mit balkonNurMitSpeicher. Eine Rückfrage an die Stadt ist NICHT nötig — es fehlt ein Abrufweg, keine Auskunft.",
+  "searches": [
+   "fritzlar.de Förderung Balkonkraftwerk Zuschuss"
+  ],
+  "evidence": [
+   {
+    "finding": "„Die Stadt Fritzlar fördert die Anschaffung, Installation und Inbetriebnahme von: privaten Balkonkraftwerken mit Speicher – für die selbstbewohnte Wohnung bzw. das selbstbewohnte Wohngebäude - mit 100 Euro Zuschuss für Eigentümer oder Mieter.“",
+    "url": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk/"
+   },
+   {
+    "finding": "„Das Förderprogramm hat eine Laufzeit von 2026 – 2027.“ und „je Wohneinheit ist maximal ein Balkonkraftwerk mit Speicher förderfähig“",
+    "url": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk/"
+   }
+  ],
+  "sources": [
+   {
+    "url": "fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk",
+    "disposition": "reviewed",
+    "reason": "Programmseite im Volltext gelesen; Aufnahme im nächsten Lauf, Richtlinie braucht einen echten Browser.",
+    "evidenceUrl": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk/"
+   }
+  ]
  }
 ]
