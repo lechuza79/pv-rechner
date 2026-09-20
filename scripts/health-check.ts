@@ -27,6 +27,7 @@
  */
 
 import { collectColdProbes } from "../lib/health-cold-probe";
+import { atlasStichprobenPfade, istKreisfreieStadt } from "../lib/health-atlas-stichprobe";
 import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
 import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
 import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
@@ -474,19 +475,31 @@ async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kr
   const landIds = Array.from(new Set(kreise.map((k) => k.parent_region_id).filter(Boolean)));
   const laender = await q(`mastr_regions?select=region_id,slug&region_id=in.(${landIds.join(",")})`);
 
-  const kreisById = new Map(kreise.map((k) => [k.region_id!, k]));
-  const landById = new Map(laender.map((l) => [l.region_id!, l]));
-
-  const gemeindePfade: string[] = [];
-  const kreisPfade = new Set<string>();
-  for (const g of gem) {
-    const k = kreisById.get(g.parent_region_id ?? "");
-    const l = k ? landById.get(k.parent_region_id ?? "") : undefined;
-    if (!k?.slug || !l?.slug) continue;
-    if (g.slug) gemeindePfade.push(`/solar-atlas/${l.slug}/${k.slug}/${g.slug}`);
-    kreisPfade.add(`/solar-atlas/${l.slug}/${k.slug}`);
+  // KREISFREIE STÄDTE AUS DER KREIS-STICHPROBE NEHMEN. Sie stehen auf
+  // Kreis-Ebene, haben aber genau eine Gemeinde unter sich — sich selbst —, und
+  // ihre Kreis-Adresse leitet deshalb per Design auf diese eine Seite weiter
+  // (307). Gemessen am 19.09.2026: Die Ziehung erwischte Würzburg und meldete
+  // „Atlas-Seite antwortet mit 307" als Vorfall, während die Seite gesund war.
+  //
+  // Gefragt wird, was auch die Seite fragt: hat dieser Kreis mehr als ein Kind?
+  // NICHT über das Schlüsselformat geraten (Gemeinde = Kreis + „000") — das wäre
+  // eine zweite Wahrheit neben der Weiterleitung, die sie vorhersagen soll.
+  // `limit=2` je Kreis statt einer vollen Kinderliste: zwei Zeilen genügen als
+  // Beweis, und ein großer Landkreis schleppt sonst hundert Zeilen mit.
+  const einzelkind = new Set<string>();
+  for (const id of kreisIds) {
+    const kinder = await q(
+      `mastr_regions?select=region_id&level=eq.gemeinde&parent_region_id=eq.${id}&limit=2`,
+    );
+    if (istKreisfreieStadt(kinder.length)) einzelkind.add(String(id));
   }
-  return { gemeinde: gemeindePfade, kreis: Array.from(kreisPfade) };
+
+  return atlasStichprobenPfade({
+    gemeinden: gem,
+    kreisById: new Map(kreise.map((k) => [k.region_id!, k])),
+    landById: new Map(laender.map((l) => [l.region_id!, l])),
+    einzelkind,
+  });
 }
 
 /** Wie viele Gemeinden pro Lauf frisch aufgebaut werden.
