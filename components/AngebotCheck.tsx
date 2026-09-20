@@ -7,6 +7,11 @@ import { GEWERKE } from "../lib/angebot-gewerk";
 
 // ─── „Passt mein Angebot?" ────────────────────────────────────────────────────
 //
+// NOCH NIRGENDS EINGEBAUT. Wer diesen Baustein rendert, setzt im selben Zug den
+// Datenschutz-Abschnitt ein — er liegt fertig in docs/legal-oeffentlich/ und
+// steht bewusst noch nicht in der Erklärung: Solange niemand hochladen kann,
+// beschriebe er eine Verarbeitung, die es nicht gibt.
+//
 // Der Nutzer lädt sein Angebot vom Heizungsbauer hoch, ein Meister-Agent liest es,
 // und wir halten es gegen drei Maßstäbe: unsere eigene Heizlastrechnung, die
 // Positionsliste, die die Verbraucherzentrale von den Innungen fordert, und die
