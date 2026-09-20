@@ -43,6 +43,33 @@ test.describe("Shared navigation", () => {
     await expect(nav.getByRole("link", { name: /Atomstrom-Import/ })).toBeVisible();
   });
 
+  // The unit guard (lib/__tests__/nav-aktiv.test.ts) can only prove that every
+  // entry sits in the group that owns its page. Whether the mark is then really
+  // applied is decided by the design package's script, and only a browser sees
+  // it — without this test the guard would be green while nothing lights up,
+  // which is the very failure the rewrite of 20.09.2026 was about.
+  //
+  // WHEN YOU BREAK THIS ON PURPOSE TO CHECK IT, REBUILD. public/shared-nav/nav.js
+  // is served from disk for the standalone HTML pages, but React pages IMPORT it,
+  // so it is bundled at build time. Editing it under a running `next start`
+  // changes nothing, and all three sabotages pass — measured 20.09.2026, and the
+  // reason this note exists.
+  for (const [pfad, gruppe] of [
+    ["/photovoltaik-rechner", "tools"],
+    ["/ratgeber/lohnt-sich-pv-mit-speicher", "knowledge"],
+  ] as const) {
+    test(`marks ${gruppe} and the exact entry on ${pfad}`, async ({ page }) => {
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      await page.goto(pfad);
+      const nav = page.getByRole("navigation", { name: "Hauptnavigation" });
+      await expect(nav.locator(`[data-section="${gruppe}"] > summary`)).toHaveAttribute("aria-current", "true");
+      await expect(nav.locator(`[data-section="${gruppe}"] a[href="${pfad}"]`).first())
+        .toHaveAttribute("aria-current", "page");
+      // Exactly one group is marked — two lit menu points hide where the page lives.
+      await expect(nav.locator('[data-section] > summary[aria-current="true"]')).toHaveCount(1);
+    });
+  }
+
   for (const width of [375, 768, 1024, 1280, 1281, 1440]) {
     test(`no overflow after hydration at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });

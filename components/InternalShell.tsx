@@ -127,10 +127,10 @@ export default function InternalShell({
     <div
       style={{
         // Der interne Bereich ist breiter als die öffentlichen Seiten: dort
-        // begrenzt `--header-max-width` (960px) die Lesebreite, hier stehen
-        // Arbeitstabellen mit vielen Spalten. Mit 960px wurde die
-        // Kommunen-Tabelle abgeschnitten. 1440px plus Seiten-Gutter, aber nie
-        // breiter als das Fenster.
+        // begrenzt die Lesebreite den Inhalt, hier stehen Arbeitstabellen mit
+        // vielen Spalten. Mit der öffentlichen Breite wurde die Kommunen-Tabelle
+        // abgeschnitten. 1440px plus Seiten-Gutter, aber nie breiter als das
+        // Fenster.
         maxWidth: 1440,
         width: "100%",
         margin: "0 auto",

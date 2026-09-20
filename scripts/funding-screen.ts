@@ -1,6 +1,7 @@
 import { municipalReviewQueue, validateMunicipalReviews, type InquiryReceipt } from "../lib/funding-municipal-review";
 import municipalReviews from "../data/funding/municipal-reviews.json";
 import { ABSCHLIESSENDE_ERGEBNISSE, groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
+import { abschliessendesErgebnis, notizMitHerkunft } from "../lib/funding-altergebnis";
 import { seitenAbrufAdressen, seitenSchluessel } from "../lib/funding-seiten";
 import { FundingSourceReader, FundingSourceUnreadable, recordStage } from "./lib/funding-source-reader";
 /**
@@ -304,6 +305,59 @@ async function quellen(): Promise<void> {
 }
 
 /**
+ * Alte Freitext-Urteile in ein abschließendes Ergebnis umdeuten.
+ *
+ *   npm run foerder:screen -- --altergebnisse              # nur zeigen
+ *   npm run foerder:screen -- --altergebnisse --schreiben  # wirklich umdeuten
+ *
+ * Die Zuordnung steht in lib/funding-altergebnis.ts als exakte Tabelle und ist
+ * dort von Tests festgenagelt; hier wird nichts nachformuliert. Ohne `--schreiben`
+ * passiert nichts — ein versehentlicher Lauf soll nicht 267 fremde Urteile
+ * umdeuten.
+ */
+async function altergebnisse(): Promise<void> {
+  const rows = await alleZeilen<ReviewSource>(
+    "funding_seiten",
+    "region_id,url,gelesen_am,gelesen_ergebnis,gelesen_notiz,seite_geaendert_am",
+    (q) => q.order("region_id").order("url"),
+  );
+  const offen = pendingFundingSources(rows).filter((r) => r.gelesen_am);
+  const umzudeuten: { zeile: ReviewSource; neu: string }[] = [];
+  const vonHand = new Map<string, number>();
+  for (const zeile of offen) {
+    const neu = abschliessendesErgebnis({ ergebnis: zeile.gelesen_ergebnis, notiz: zeile.gelesen_notiz });
+    if (neu) umzudeuten.push({ zeile, neu });
+    else {
+      const wort = (zeile.gelesen_ergebnis ?? "").trim();
+      vonHand.set(wort, (vonHand.get(wort) ?? 0) + 1);
+    }
+  }
+  const schreiben = process.argv.includes("--schreiben");
+  console.log(`${offen.length} gelesene Zeilen liegen trotzdem im Vorrat.`);
+  console.log(`  ${umzudeuten.length} lassen sich nach der Tabelle abhaken, ${offen.length - umzudeuten.length} bleiben.\n`);
+  const nachWort = new Map<string, number>();
+  for (const { neu } of umzudeuten) nachWort.set(neu, (nachWort.get(neu) ?? 0) + 1);
+  for (const [wort, anzahl] of [...nachWort].sort((a, b) => b[1] - a[1])) console.log(`  → ${wort}: ${anzahl}`);
+  console.log("\nBleibt liegen (von Hand oder frisch messen):");
+  for (const [wort, anzahl] of [...vonHand].sort((a, b) => b[1] - a[1])) console.log(`  ${String(anzahl).padStart(4)}  ${wort}`);
+  if (!schreiben) {
+    console.log("\nProbelauf — nichts geschrieben. Mit --schreiben wird umgedeutet.");
+    return;
+  }
+  let geschrieben = 0;
+  for (const { zeile, neu } of umzudeuten) {
+    const { error } = await sb
+      .from("funding_seiten")
+      .update({ gelesen_ergebnis: neu, gelesen_notiz: notizMitHerkunft(zeile.gelesen_notiz, zeile.gelesen_ergebnis ?? "") })
+      .eq("region_id", zeile.region_id)
+      .eq("url", zeile.url);
+    if (error) throw new Error(`${zeile.region_id} ${zeile.url}: ${error.message}`);
+    geschrieben += 1;
+  }
+  console.log(`\n${geschrieben} Zeilen umgedeutet, der alte Wortlaut steht jeweils in der Notiz.`);
+}
+
+/**
  * Eine Fundstelle als gelesen abhaken.
  *
  *   npm run foerder:screen -- --gelesen 05370020 --url https://example.de/foerderung --ergebnis aufgenommen --beleg "150 € je Anlage"
@@ -446,6 +500,7 @@ async function gelesen(): Promise<void> {
 
 async function main(): Promise<void> {
   if (process.argv.includes("--quellen") || process.argv.includes("--kommunen")) return quellen();
+  if (process.argv.includes("--altergebnisse")) return altergebnisse();
   await sources.ready();
   if (process.argv.includes("--stand")) return stand();
   if (process.argv.includes("--gelesen")) return gelesen();

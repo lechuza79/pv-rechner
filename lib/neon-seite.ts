@@ -31,9 +31,14 @@ export type NeonSeite = "startseite" | "simulation";
  * Vercel Web Analytics, cookieless — with the same rule as the React site: the
  * query string is dropped before sending (it can carry a postcode or a token).
  */
+/** The part that drops the query string — must run BEFORE the script below. */
+export const ANALYTICS_SETUP =
+  'window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};window.va("beforeSend",function(e){try{var u=new URL(e.url);u.search="";e.url=u.toString();return e}catch(_){return null}});';
+
+export const ANALYTICS_SRC = "/_vercel/insights/script.js";
+
 export const ANALYTICS_HTML =
-  `<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};window.va("beforeSend",function(e){try{var u=new URL(e.url);u.search="";e.url=u.toString();return e}catch(_){return null}});</script>` +
-  `<script defer src="/_vercel/insights/script.js"></script>`;
+  `<script>${ANALYTICS_SETUP}</script>` + `<script defer src="${ANALYTICS_SRC}"></script>`;
 
 export const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -117,7 +122,7 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
  * type roles. Plain <details>, no script — readable before anything loads.
  */
 const FAQ_CSS = `
-.sc-faq{background:#08191c;color:#e8eee9;padding:72px var(--sc-page-inset,max(24px,5vw)) 88px;font-family:'DM Sans',sans-serif}
+.sc-faq{background:#08191c;color:#e8eee9;padding:var(--sc-space-section,72px) var(--sc-page-inset,max(24px,5vw)) 88px;font-family:'DM Sans',sans-serif}
 .sc-faq-wrap{max-width:var(--sc-layout-content,1120px);margin:0 auto}
 .sc-faq h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-secondary-label-size,13px);line-height:1.5;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#a7bcbb;margin:0 0 16px}
 .sc-faq details{border-bottom:1px solid #aec4bd30}
@@ -133,8 +138,8 @@ const FAQ_CSS = `
 .sc-faq a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 .sc-faq .sc-faq-cta{display:inline-block;margin:0 0 28px;font-size:var(--sc-type-action-size,14px);font-weight:500}
 @media(prefers-reduced-motion:reduce){.sc-faq summary,.sc-faq summary::after{transition:none}}
-.sc-live{background:var(--sc-surface-light);padding:72px var(--sc-page-inset,max(24px,5vw)) 0;font-family:'DM Sans',sans-serif;color:var(--ink)}
-.sc-live-wrap{max-width:760px;margin:0 auto}
+.sc-live{background:var(--sc-surface-light);padding:var(--sc-space-section,72px) var(--sc-page-inset,max(24px,5vw)) 0;font-family:'DM Sans',sans-serif;color:var(--ink)}
+.sc-live-wrap{max-width:var(--sc-layout-widget,760px);margin:0 auto}
 .sc-live h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-section-compact-size,clamp(26px,3vw,38px));line-height:1.25;margin:0 0 12px}
 .sc-live p{font-size:var(--sc-type-body-size,16px);line-height:1.6;margin:0 0 24px}
 .sc-live iframe{display:block;width:100%;border:0;min-height:560px}
@@ -170,12 +175,13 @@ function simulationStand(): string {
 function vorFuss(seite: NeonSeite, faq: FaqEntry[]): string {
   const s = SEITEN[seite];
   const aktuell = s.pfad || "/";
-  const live =
-    seite === "simulation"
-      ? `<section class="sc-live" data-sc-vor-fuss aria-labelledby="sc-live-titel"><div class="sc-live-wrap"><h2 id="sc-live-titel">Was produziert eine PV-Anlage gerade?</h2><p>Live aus aktuellen Wetterdaten: die Leistung verschiedener Beispielanlagen an deinem Standort, Stunde für Stunde.</p><iframe id="sc-live-rahmen" src="/embed/simulation?onsite=1&amp;embed=0" title="PV-Simulation live" loading="lazy"></iframe>${simulationStand()}</div></section>` +
+  // Deferred until the live-output redesign is ready; do not mount its iframe.
+  const showLiveOutput = false;
+  const live = showLiveOutput ?
+    `<section class="sc-live" data-sc-vor-fuss aria-labelledby="sc-live-titel"><div class="sc-live-wrap"><h2 id="sc-live-titel">Was produziert eine PV-Anlage gerade?</h2><p>Live aus aktuellen Wetterdaten: die Leistung verschiedener Beispielanlagen an deinem Standort, Stunde für Stunde.</p><div class="sc-live-entry"><p>Gib deine Postleitzahl ein, um die aktuelle Solarleistung an deinem Ort zu sehen.</p><div data-sc-location-slot></div></div><iframe id="sc-live-rahmen" hidden title="PV-Simulation live" loading="lazy"></iframe>${simulationStand()}</div></section>` +
         // The embed reports its height (widget:height); only same-origin messages count.
         `<script>addEventListener("message",function(e){if(e.origin!==location.origin)return;var d=e.data,f=document.getElementById("sc-live-rahmen");if(f&&d&&d.type==="widget:height"&&d.height>0&&e.source===f.contentWindow)f.style.height=Math.ceil(d.height)+"px"});</script>`
-      : "";
+    : "";
   const fragen = faq
     .map((f) => `<details><summary>${esc(f.q)}</summary><div class="sc-faq-answer">${antwortHtml(f, aktuell)}</div></details>`)
     .join("");

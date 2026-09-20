@@ -25,7 +25,7 @@ const WIDGET = WIDGETS.simulation;
 // but a plain embedded <iframe> has a fixed height with no way to report back.
 // So we pre-load a default location (overridable via ?plz=) and the demo sets a
 // generous fixed height that fits the fully expanded state.
-export default function SimulationWidget({ plz = "" }: { plz?: string }) {
+export default function SimulationWidget({ plz = "", sitePresentation = false }: { plz?: string; sitePresentation?: boolean }) {
   const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
     onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
@@ -34,7 +34,8 @@ export default function SimulationWidget({ plz = "" }: { plz?: string }) {
   const [initialPlz] = useState(() => (/^\d{5}$/.test(plz) ? plz : DEFAULT_PLZ));
 
   return (
-    <div style={{ position: "relative", maxWidth: 380, margin: "0 auto", padding: 16, paddingRight: 22 }}>
+    <div style={{ position: "relative", maxWidth: sitePresentation ? 760 : 380, margin: "0 auto", padding: sitePresentation ? 0 : 16, paddingRight: sitePresentation ? 0 : 22 }}>
+      {sitePresentation && <style>{`:root{--widget-font-family:var(--font-dm-sans),sans-serif;--widget-font-mono:var(--font-dm-sans),sans-serif}`}</style>}
       {/* Quelle vertikal an der rechten Kante (geteilter Baustein), nie als
           horizontaler Block. Auf einer eigenen Seite kreditiert die Seite. */}
       <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />

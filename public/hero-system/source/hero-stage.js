@@ -1,3 +1,4 @@
+import {bindStageButtons} from '../contrast-sampler.js';
 import {solarLight} from './solar-light.js';
 import {createSunOptics} from './sun-optics.js';
 import {createNightSky} from './night-sky.js';
@@ -11,6 +12,7 @@ export function mountHeroStage({root,stage,scene,state,quality='auto',motion=tru
  const existing=new Set(scene.children),media=matchMedia('(prefers-reduced-motion: reduce)');
  const sun=createSunOptics(scene,root),night=createNightSky(scene,assets),dust=createCinematicDust(scene,root),life=createSkyLife(scene,root);
  const events=new AbortController();
+ const disposeContrast=bindStageButtons(stage,scene);
  let renderer=null,disposed=false,booting=false,failed=false,visible=false,paused=false;
  let raf=0,bootFrame=0,scrollTimer=0,scrolling=false,clock=0,gustEnd=0,last=performance.now(),lastDraw=0,dirty=true;
  let tier=quality==='low'||(quality==='auto'&&stage.clientWidth<700)?'low':'high';
@@ -52,6 +54,7 @@ export function mountHeroStage({root,stage,scene,state,quality='auto',motion=tru
    if(quality!=='static'&&!failed){const stats=renderer?.render(clock,current,wind);if(stats){frames++;cpu+=stats.cpu;scene.dataset.drawCalls=String(stats.calls);}}
    dust.render(clock,Math.abs(wind),quality!=='static'&&!failed,current.phase!=='night'&&current.rain<.01&&current.cloud<.6);
    life.render(clock,active&&current.phase!=='night'&&current.rain<.01&&current.cloud<.6);
+   window.SolarSceneContrast?.afterFrame(scene);
    lastDraw=now;dirty=false;scene.dataset.renderCount=String(Number(scene.dataset.renderCount||0)+1);
   }
   if(now-reportAt>2500){
@@ -78,6 +81,7 @@ export function mountHeroStage({root,stage,scene,state,quality='auto',motion=tru
   if(quality==='static')scene.dataset.unifiedReady='false';
   if(quality!=='static')scheduleBoot();wake();
  }
+ scene.addEventListener('sc-contrast-request',wake,{signal:events.signal});
  const ro=new ResizeObserver(resize);ro.observe(stage);
  const io=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;root.dataset.moving=String(moving()&&canRun());if(visible){scheduleBoot();wake();}else stop();});io.observe(stage);
  const listen=(target,name,fn,options={})=>target.addEventListener(name,fn,{...options,signal:events.signal});
@@ -89,7 +93,7 @@ export function mountHeroStage({root,stage,scene,state,quality='auto',motion=tru
  const button=stage.querySelector('.hero-bottom button'),originalButton=button?.innerHTML;
  if(button)listen(button,'click',()=>{paused=!paused;button.setAttribute('aria-label',paused?'Bewegung fortsetzen':'Bewegung pausieren');button.setAttribute('aria-pressed',String(paused));button.innerHTML=paused?'▶ <span>Fortsetzen</span>':originalButton;update();});
  function dispose(){
-  if(disposed)return;disposed=true;events.abort();stop();cancelAnimationFrame(bootFrame);clearTimeout(scrollTimer);ro.disconnect();io.disconnect();renderer?.dispose();sun.dispose();night.dispose();
+  if(disposed)return;disposed=true;disposeContrast();events.abort();stop();cancelAnimationFrame(bootFrame);clearTimeout(scrollTimer);ro.disconnect();io.disconnect();renderer?.dispose();sun.dispose();night.dispose();
   for(const child of [...scene.children])if(!existing.has(child))child.remove();
   root.dataset.moving='false';root.dataset.sceneBoot='disposed';if(button)button.innerHTML=originalButton;
  }
