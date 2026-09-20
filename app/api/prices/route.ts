@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
+import { heuteInBerlin } from "../../../lib/zeit";
 
 // The public price payload = PV/battery/electricity (PriceConfig). Der
 // Wärmepumpen-Grundpreis liegt bewusst NICHT hier: er kommt aus der Config
@@ -41,7 +42,7 @@ export async function GET() {
       .select("*")
       .neq("source", "SCRAPE_ERROR")
       .gt("pv_price_small", 0)
-      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .lte("valid_from", heuteInBerlin())
       .order("valid_from", { ascending: false })
       .order("created_at", { ascending: false }) // tiebreaker: newest insertion wins on same-day rows
       .limit(1)

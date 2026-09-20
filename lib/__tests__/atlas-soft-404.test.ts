@@ -14,7 +14,7 @@ import { join } from "node:path";
 // `redirect()` bei kreisfreien Städten — die lieferten 200 statt einer
 // HTTP-Weiterleitung.
 //
-// Das zählt, weil der Solar-Atlas der SEO-Hebel des Projekts ist: Google wertet
+// Das zählt, weil der Energie-Atlas der SEO-Hebel des Projekts ist: Google wertet
 // einen Soft-404 als gültige Seite und crawlt erfundene Adressen weiter. Und der
 // Gesundheitscheck kann eine kaputte Atlas-Route am Statuscode nicht erkennen,
 // solange jede Adresse 200 sagt.
@@ -38,7 +38,7 @@ function loadingDateien(dir: string, gefunden: string[] = []): string[] {
   return gefunden;
 }
 
-describe("Solar-Atlas: kein Soft-404", () => {
+describe("Energie-Atlas: kein Soft-404", () => {
   it("hat kein loading.tsx unter den Atlas-Routen", () => {
     // Ein loading.tsx ist bequem, aber es macht JEDE Atlas-Adresse zu einem
     // Soft-404. Wer Lade-Feedback will, nimmt AtlasSkeleton in einem <Suspense>

@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { WP_M2_MAX, WP_M2_MIN } from "../constants";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
@@ -131,7 +132,15 @@ describe("Was aus einem fremden Link kommt, wird geprüft", () => {
   });
 
   it("die Wohnfläche bleibt in den Grenzen, die auch die Eingabe zieht", () => {
-    expect(wpAusParametern(new URLSearchParams("fl=99999")).wohnflaeche).toBe(1000);
+    // Bis 05.09.2026 stand hier `toBe(1000)` — die Grenze des alten Ergebnis-
+    // felds, die lib/constants.ts längst auf 500 gezogen hatte. Der Test verglich
+    // den Fehler mit sich selbst: Ein Link mit fl=800 rechnete 800 m², der
+    // Frageweg lehnte 800 ab. Die Grenze kommt seitdem aus derselben Quelle wie
+    // der Frageweg, und der Test liest sie von dort statt sie abzutippen.
+    expect(wpAusParametern(new URLSearchParams("fl=99999")).wohnflaeche).toBe(WP_M2_MAX);
+    expect(wpAusParametern(new URLSearchParams("fl=800")).wohnflaeche).toBe(WP_M2_MAX);
+    expect(wpAusParametern(new URLSearchParams("fl=10")).wohnflaeche).toBe(WP_M2_MIN);
+    expect(WP_M2_MAX).toBe(500);
     expect(wpAusParametern(new URLSearchParams("fl=1")).wohnflaeche).toBe(30);
   });
 
@@ -165,6 +174,15 @@ describe("Der Rechner benutzt wirklich diese eine Quelle", () => {
     // Ein Effekt, der die Adresse dauernd beobachtet, überschriebe die Eingaben
     // des Nutzers bei jeder Adressänderung.
     expect(rechner).toMatch(/linkGelesen\.current/);
+  });
+
+  it("baut den Link auf die Adresse des RECHNERS, nicht auf die der Seite", () => {
+    // Der Rechner wohnt auch in einem Fenster auf dem Förder-Ratgeber. Über den
+    // Pfad des Fensters gebaut, zeigte der Link dorthin — der Empfänger landete
+    // auf einem Artikel mit einer Query, die dort niemand liest. Genau dieser
+    // Fehler ist dem PV-Rechner schon einmal passiert.
+    expect(rechner).toMatch(/origin\}\/waermepumpe-rechner/);
+    expect(rechner).not.toMatch(/origin\}\$\{window\.location\.pathname\}/);
   });
 
   it("leert die Adresse beim Neu-Berechnen", () => {

@@ -21,7 +21,8 @@ export type EinspeisungModus = "aus" | "teil" | "voll";
 export interface ResultVerguetungProps extends ResultRegimeProps {
   modus: EinspeisungModus;
   setModus: (m: EinspeisungModus) => void;
-  /** Volleinspeisung nicht wählbar (z. B. weil ein Speicher gewählt ist). */
+  /** Volleinspeisung nicht wählbar — Speicher, Wärmepumpe oder E-Auto gewählt
+   *  (Regel: vollEinspeisungGesperrt in lib/calc.ts). */
   vollDisabled: boolean;
   /** Der heute geltende Satz in ct/kWh, editierbar. */
   effEinsp: number;
@@ -56,7 +57,7 @@ export default function ResultVerguetung(props: ResultVerguetungProps) {
     <ResultSection title="Einspeisung und Vergütung" summary={summary}>
       {/* Speise ich überhaupt ein — und zu welchem Satz? */}
       <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: space.md, marginBottom: space.lg }}>
-        <span style={{ fontSize: 13, color: v("--color-text-secondary") }}>
+        <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
           <GlossaryTerm id="einspeiseverguetung">Einspeisung</GlossaryTerm>
         </span>
         <div style={{ display: "flex", gap: 2, background: v("--color-bg-muted"), borderRadius: 8, padding: 2, marginLeft: "auto" }}>
@@ -68,8 +69,10 @@ export default function ResultVerguetung(props: ResultVerguetungProps) {
                 key={m}
                 onClick={() => { if (!isDisabled) { setModus(m); setOEinsp(null); } }}
                 aria-pressed={isActive}
+                aria-disabled={isDisabled || undefined}
+                title={isDisabled ? "Volleinspeisung nur ohne Speicher und ohne Wärmepumpe oder E-Auto — sonst würde Strom selbst verbraucht." : undefined}
                 style={{
-                  padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 600,
+                  padding: "4px 10px", borderRadius: 6, fontSize: v("--font-size-small"), fontWeight: 600,
                   cursor: isDisabled ? "not-allowed" : "pointer",
                   background: isActive ? v("--color-accent") : "transparent",
                   border: "none",

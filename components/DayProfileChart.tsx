@@ -5,7 +5,7 @@
 //
 // Semantic colors are FIXED (green = self-used, grey = grid), never themed —
 // same convention as the result page's energy views.
-import { v } from "../lib/theme";
+import { v, fsPx } from "../lib/theme";
 import type { DayHour } from "../lib/pv-sim";
 
 // Semantische Farben — identisch zu EnergyFlowModal, damit die Ansichten zusammen lesen.
@@ -17,7 +17,7 @@ export const DAY_C_SOC = "var(--color-accent)";            // Speicherstand-Lini
 
 export function DayLegendDot({ color, label }: { color: string; label: string }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, color: v("--color-text-muted") }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
       <span style={{ width: 9, height: 9, borderRadius: 2, background: color, flexShrink: 0 }} />
       {label}
     </span>
@@ -97,7 +97,7 @@ export default function DayProfileChart({
           </>
         )}
         {[0, 6, 12, 18].map((hr) => (
-          <text key={hr} x={hr * slot + slot / 2} y={H - 5} textAnchor="middle" fontSize={9.5} fill={v("--color-text-muted")} fontFamily={v("--font-text")}>{hr}:00</text>
+          <text key={hr} x={hr * slot + slot / 2} y={H - 5} textAnchor="middle" fontSize={fsPx("--font-size-micro")} fill={v("--color-text-muted")} fontFamily={v("--font-text")}>{hr}:00</text>
         ))}
       </svg>
       {showLegend && (

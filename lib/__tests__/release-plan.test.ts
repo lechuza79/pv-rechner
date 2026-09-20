@@ -14,7 +14,7 @@ import {
   schubFuer,
   type Schub,
 } from "../release-plan";
-import { publishedCities, ATLAS_CITIES } from "../atlas-cities";
+import { publishedCities, ATLAS_CITIES, foerderseiteTraegt } from "../atlas-cities";
 
 const repo = path.resolve(__dirname, "../..");
 
@@ -24,14 +24,36 @@ describe("Releaseplan", () => {
     expect(befunde.map((b) => `${b.schub}: ${b.text}`)).toEqual([]);
   });
 
-  it("kennt jede veröffentlichte Förderseite — entweder als Altbestand oder aus einem Schub", () => {
+  it("jede veröffentlichte Förderseite hat einen benannten Freigabeweg", () => {
     // Die Gegenrichtung zur Sperre: Wer an der Sperre vorbei veröffentlicht,
     // fällt hier auf. Ein Ort im Plan OHNE Seite ist dagegen erlaubt und der
     // Normalfall — der Plan entsteht vor der Seite.
-    const ohneZeile = publishedCities()
-      .filter((c) => !releaseFreigegeben("foerder-stadt", c.ags))
+    //
+    // ZWEI WEGE SEIT DEM 01.09.2026 (Betreiber-Entscheidung): Der Plan steuert
+    // nur noch die Atlas-Ortsseiten; eine Förderseite geht live, sobald ihr
+    // Programm aktiv ist und Dach-Photovoltaik fördert. Bis zum 05.09.2026 stand
+    // hier trotzdem nur der Plan — und der Test blieb grün, weil isCityPublished
+    // dieselbe überholte Annahme trug wie er. Er hat den Fehler mit sich selbst
+    // verglichen und dabei vier Tage lang 21 Adressen abgesichert, die in der
+    // Sitemap standen und mit HTTP 404 antworteten.
+    //
+    // Geprüft wird deshalb, dass jede veröffentlichte Seite einen der beiden
+    // BENANNTEN Wege hat. Ein dritter, unbenannter Weg fällt hier auf.
+    const ohneWeg = publishedCities()
+      .filter((c) => !releaseFreigegeben("foerder-stadt", c.ags) && !foerderseiteTraegt(c))
       .map((c) => `${c.name} (${c.ags})`);
-    expect(ohneZeile).toEqual([]);
+    expect(ohneWeg).toEqual([]);
+  });
+
+  it("beide Freigabewege sind besetzt — der Test darüber prüft sonst nichts", () => {
+    // Ohne diese Gegenprobe wäre die Prüfung darüber wertlos, sobald einer der
+    // Wege leerläuft: Sie ist dann für alle Städte über den anderen Weg wahr und
+    // wird still zur Tautologie. Dieselbe Lehre wie bei der Sitemap-Sperre eine
+    // Datei weiter — ein Test, der nichts mehr sehen KANN, sieht auch grün aus.
+    const ueberPlan = publishedCities().filter((c) => releaseFreigegeben("foerder-stadt", c.ags));
+    const ueberProgramm = publishedCities().filter((c) => !releaseFreigegeben("foerder-stadt", c.ags) && foerderseiteTraegt(c));
+    expect(ueberPlan.length, "kein Ort mehr über den Releaseplan freigegeben").toBeGreaterThan(0);
+    expect(ueberProgramm.length, "kein Ort mehr über foerderseiteTraegt freigegeben").toBeGreaterThan(0);
   });
 
   it("hält jeden Altbestands-Schlüssel an einem echten Eintrag fest", () => {

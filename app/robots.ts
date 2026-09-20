@@ -56,10 +56,25 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        // /api/og is the OpenGraph image generator — an image endpoint, never a
-        // page. Social scrapers ignore robots.txt, so previews keep working;
-        // this just keeps it out of Google's crawl/index. Data APIs and /_next
-        // stay open — Googlebot needs them to render the pages.
+        // /api/og — das Vorschaubild — steht hier NICHT MEHR, und die
+        // Begründung, mit der es hier stand, war falsch: „Social scrapers
+        // ignore robots.txt, so previews keep working". Metas eigene
+        // Crawler-Dokumentation sagt das Gegenteil — facebookexternalhit
+        // beachtet robots.txt und behält sich Ausnahmen nur für Sicherheits-
+        // und Integritätsprüfungen vor (developers.facebook.com/docs/sharing/
+        // webmasters/web-crawlers, am 09.09.2026 gelesen). Vercels eigene
+        // Anleitung zum Vorschaubild empfiehlt ausdrücklich `Allow: /api/og/*`,
+        // „so that search engine crawlers and social media platforms can access
+        // your OG image API routes". Wir haben also unseren Vorschaubild-Pfad
+        // gegenüber genau den Diensten gesperrt, für die es ihn gibt.
+        //
+        // Die Sperre war ohnehin für die falsche Sorge gebaut (ein Bild-
+        // Endpunkt im Google-Index schadet nicht, und Crawl-Budget ist unter
+        // rund 10.000 Seiten kein Argument — SEO-Grundregel 4). Die Kosten-
+        // sperre unten bleibt davon unberührt: Sie hat eine eigene Messung.
+        //
+        // Data APIs und /_next bleiben offen — Googlebot braucht sie, um die
+        // Seiten zu rendern.
         //
         // /solar-atlas/ranking ist die zweite Sperre, und sie ist eine KOSTEN-
         // entscheidung, keine SEO-Entscheidung. Gemessen am 26.08.2026 über 24 h:
@@ -88,7 +103,7 @@ export default function robots(): MetadataRoute.Robots {
         // sollen gefunden werden, dort wäre dieselbe Zeile ein SEO-Schaden.
         userAgent: "*",
         allow: "/",
-        disallow: ["/api/og", "/solar-atlas/ranking"],
+        disallow: ["/solar-atlas/ranking"],
       },
       {
         userAgent: TRAINING_CRAWLER,

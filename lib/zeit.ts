@@ -35,6 +35,18 @@ export function zeitpunktInBerlin(iso: string | null | undefined): string | null
   }).format(d);
 }
 
+/**
+ * Das laufende Kalenderjahr in Deutschland.
+ *
+ * `new Date().getUTCFullYear()` ist zwischen 00:00 und 01:00 am 1. Januar noch
+ * das Vorjahr. Auf den Gemeindeseiten (Vorhaltezeit eine Woche) nannte die
+ * Auslauf-Geschichte damit bis zu sieben Tage lang Jahrgang und Frist um ein
+ * Jahr daneben (Rechenmodell-Council 12.09.2026).
+ */
+export function jahrInBerlin(jetzt: Date = new Date()): number {
+  return Number(heuteInBerlin(jetzt).slice(0, 4));
+}
+
 /** „2026-08-19" — der laufende Kalendertag in Deutschland. */
 export function heuteInBerlin(jetzt: Date = new Date()): string {
   // `sv-SE` formatiert als YYYY-MM-DD; das ist der kürzeste zuverlässige Weg
@@ -57,8 +69,54 @@ export function berlinOffset(jetzt: Date = new Date()): string {
   return name.replace("GMT", "") || "+01:00";
 }
 
+/**
+ * Beginn und Ende des deutschen Kalendertags, in dem `jetzt` liegt, als
+ * UTC-Millisekunden. An den Umstellungstagen ist der Tag 23 bzw. 25 Stunden lang.
+ *
+ * Der Versatz wird drei Stunden VOR Mitternacht Weltzeit gelesen: Die deutsche
+ * Mitternacht liegt dann noch vor jeder Umstellung (die geschieht um 01:00 UTC),
+ * also gilt der Versatz des Vortags — genau der, den die Mitternacht trägt.
+ */
+export function berlinTagesgrenzen(jetzt: Date = new Date()): [number, number] {
+  const mitternacht = (tag: string) => {
+    const probe = new Date(Date.parse(`${tag}T00:00:00Z`) - 3 * 3600000);
+    return Date.parse(`${tag}T00:00:00${berlinOffset(probe)}`);
+  };
+  const heute = heuteInBerlin(jetzt);
+  const morgen = new Date(Date.parse(`${heute}T12:00:00Z`) + 86400000).toISOString().slice(0, 10);
+  return [mitternacht(heute), mitternacht(morgen)];
+}
+
 /** Wochentag in Deutschland, 0 = Sonntag. */
 export function wochentagInBerlin(jetzt: Date = new Date()): number {
   const kurz = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Berlin", weekday: "short" }).format(jetzt);
   return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(kurz);
+}
+
+/**
+ * Der GEMEINTE Kalendertag eines Arguments, das gegen einen deutschen Stichtag
+ * gehalten wird — die Unterscheidung, an der die naive Fassung scheitert.
+ *
+ * Ein Aufrufer übergibt eines von zwei Dingen, und sie brauchen verschiedene
+ * Behandlung:
+ *   • einen ZEITPUNKT (`new Date()`): Er meint „jetzt". Welcher Kalendertag das
+ *     ist, entscheidet die deutsche Uhr, nicht die Weltzeit — deshalb umrechnen.
+ *   • einen gemeinten TAG (`"2026-08-01"`): Er meint diesen Tag bereits. Ihn
+ *     noch einmal zu verschieben wäre der Fehler in der Gegenrichtung.
+ *
+ * Genau diese Vermischung stand hinter zwei gemessenen Fehlern. Der
+ * Einspeise-Plan und der BEG-Fahrplan bildeten ihren Vergleichstag mit
+ * `toISOString().slice(0, 10)` und lieferten deshalb zwischen 00:00 und 02:00
+ * deutscher Zeit AM Stichtag noch den überholten Satz — es geht um Geld, und
+ * von außen ist nichts zu sehen. Und `lib/stand.ts` reichte einen gemeinten Tag
+ * als `new Date("2026-08-01T00:00:00")` herein: ohne Zeitzone im String wird das
+ * in ORTSZEIT gelesen, in Deutschland kam dabei der 31.07. heraus und damit die
+ * VORIGE Vergütungsperiode, auf einem UTC-Server der 01.08. und die richtige.
+ * Derselbe Code, zwei Ergebnisse, je nach Uhr der Maschine (gemessen 08.09.2026).
+ *
+ * Die Faustregel dahinter: Ein deutscher Stichtag wird gegen eine deutsche Uhr
+ * gehalten. Ein ZEITSTEMPEL („wann ist etwas passiert") bleibt dagegen UTC.
+ */
+export function tagInBerlin(wann: Date | string): string {
+  return typeof wann === "string" ? wann.slice(0, 10) : heuteInBerlin(wann);
 }

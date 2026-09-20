@@ -1,4 +1,4 @@
-// Anzeige-Regeln des Solar-Atlas: Einheiten und Regionsnamen.
+// Anzeige-Regeln des Energie-Atlas: Einheiten und Regionsnamen.
 //
 // Bewusst ohne Datenbank- oder Next-Importe, damit Server-Seiten, Client-
 // Komponenten und Embed-Widgets dieselben Funktionen benutzen können. Genau das
@@ -92,6 +92,25 @@ export function wattProKopfTeile(w: number): Messwert {
 }
 export const fmtWattProKopf = (w: number): string => zusammen(wattProKopfTeile(w));
 
+/**
+ * Eine STÜCKZAHL von Anlagen.
+ *
+ * Keine physikalische Einheit, aber dieselbe Falle: Ab einer Million wird die
+ * Ziffernfolge unlesbar, und wer sie an der Stelle kürzt, an der er sie
+ * hinschreibt, kürzt sie beim nächsten Mal anders. Zwei Nachkommastellen, weil
+ * 1,45 Millionen Steckersolargeräte auf eine Stelle gerundet („1,5 Mio.") ihren
+ * Abstand zum Vorjahr verlieren.
+ *
+ * Der Singular ist mitgebaut, obwohl er im Bundesbestand nie vorkommt: Dieselbe
+ * Funktion beschriftet Segmente, und ein „1 Anlagen" ist derselbe Fehler wie
+ * eine falsche Einheit, nur in Worten.
+ */
+export function anlagenZahlTeile(n: number): Messwert {
+  if (n >= 1_000_000) return { value: dez(n / 1_000_000, 2), unit: "Mio. Anlagen" };
+  return { value: nf(n), unit: Math.round(n) === 1 ? "Anlage" : "Anlagen" };
+}
+export const fmtAnlagenZahl = (n: number): string => zusammen(anlagenZahlTeile(n));
+
 /** Speicherkapazität — kWh, ab vier Stellen MWh/GWh. */
 export function speicherKwhTeile(kwh: number): Messwert {
   if (kwh >= 1_000_000) return { value: dez(kwh / 1_000_000, 1), unit: "GWh" };
@@ -109,6 +128,21 @@ export const fmtSpeicherKwh = (kwh: number): string => zusammen(speicherKwhTeile
  */
 export const batterieMittelTeile = (kwh: number): Messwert => ({ value: dez(kwh, 1), unit: "kWh" });
 export const fmtBatterieMittel = (kwh: number): string => zusammen(batterieMittelTeile(kwh));
+
+/**
+ * Die Speichergröße EINES KONKRETEN PRODUKTS — mit Nachkommastelle, weil sie
+ * Teil der Produktbezeichnung ist.
+ *
+ * `speicherKwhTeile` rundet auf ganze kWh; das ist für Regions-Summen richtig
+ * und für ein Kaufangebot falsch. Der Shop führt Stufen von 2,11 kWh: gerundet
+ * standen bei uns „2" und „4" — und aus 10,55 wurde „11", eine Größe, die es
+ * dort gar nicht gibt. Dieselbe Klasse wie ein gerundeter Kaufpreis: Der Leser
+ * findet die Zahl im Shop nicht wieder.
+ */
+export const produktSpeicherTeile = (kwh: number): Messwert => ({
+  value: Number.isInteger(kwh) ? nf(kwh) : dez(kwh, 2),
+  unit: "kWh",
+});
 
 /**
  * Speicherdichte: Batteriekapazität je installiertem kWp DACHLEISTUNG.
@@ -215,6 +249,52 @@ export const fmtEuro = (euro: number): string => zusammen(euroTeile(euro));
  * Bundesland zu einer zehnstelligen Zahl).
  */
 export const fmtEuroVoll = (euro: number): string => `${nf(euro)} €`;
+
+/**
+ * Ein zu ZAHLENDER Preis, als Zahl und Einheit getrennt — auf den Cent genau.
+ *
+ * Zwei Fehler, die beide am selben Tag live standen (09.09.2026) und beide
+ * denselben Kern haben: Ein Preis ist keine Größenangabe, sondern der Betrag,
+ * den jemand gleich an der Kasse sieht.
+ *
+ * 1. NIE STAFFELN. `euroTeile` macht aus 1.499,99 € ein „1,5 Tsd. €" — für eine
+ *    Regions-Summe richtig, hier eine Zahl, die im Shop niemand wiederfindet.
+ * 2. NIE AUF EURO RUNDEN. Alle 294 Preise des Shops enden auf ,99; gerundet
+ *    zeigten wir durchgehend einen Preis, den der Händler gar nicht verlangt —
+ *    und ausgerechnet nach oben. Cent stehen deshalb da, wo es welche gibt, und
+ *    fallen bei glatten Beträgen weg (also „950 €", nicht „950,00 €").
+ *
+ * Für gerundete Beispielrechnungen bleibt `fmtEuroVoll` zuständig; dort IST die
+ * Rundung die Aussage.
+ */
+export const preisTeile = (euro: number): Messwert => ({
+  value: euro.toLocaleString("de-DE", {
+    minimumFractionDigits: Number.isInteger(euro) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }),
+  unit: "€",
+});
+
+/**
+ * Eine Jahresangabe im Dativ, mit deutschem Dezimalkomma: „4,0 Jahren".
+ *
+ * Die Ersetzung stand im Balkon-Rechner dreimal handgeschrieben, im
+ * Angebotsblock fehlte sie — dort erschien „bezahlt nach 4.0 Jahre", also
+ * englischer Dezimalpunkt UND falscher Fall. Eine Zahl, die anders aussieht als
+ * die Zahl daneben, liest sich wie eine andere Größe.
+ */
+export const jahreDativ = (jahre: number): string =>
+  `${jahre.toFixed(1).replace(".", ",")} Jahren`;
+
+/**
+ * Euro in Tausend, eine Nachkommastelle — für dichte Achsen und Marken, wo
+ * „14.200 €" zu breit ist: 14.200 → „14,2 k€", 14.000 → „14 k€".
+ */
+export const euroKTeile = (euro: number): { value: string; unit: string } => ({
+  value: (euro / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 }),
+  unit: "k€",
+});
+export const fmtEuroK = (euro: number): string => zusammen(euroKTeile(euro));
 
 /**
  * Der gerundete Prozentwert als ZAHL — für Entscheidungen, die an der

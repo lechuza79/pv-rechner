@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { ordneEin } from "../outreach-ruecklauf";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { notizZeile, notizMitText, liesNotiz, ANTWORT_MAX_ZEICHEN } from "../outreach-ruecklauf";
@@ -87,5 +88,126 @@ describe("Die Dublettenprüfung überlebt den mehrzeiligen Eintrag", () => {
     // Verglichen wird `neueNotiz` (die Zeile), angehängt `neuerEintrag`.
     expect(code).toMatch(/includes\(neueNotiz\)/);
     expect(code).toMatch(/notes\s*=\s*vorher\?\.notes\s*\?\s*`\$\{vorher\.notes\}\\n\$\{neuerEintrag\}`/);
+  });
+});
+
+// Der Outreach hat genau EINE Messgröße für „jemand hat gelesen und reagiert".
+// Eine Empfangsquittung darin macht sie wertlos — und die kommt aus demselben
+// Amtspostfach, mit unserem eigenen Betreff und ohne maschinelle Kopfzeile.
+describe("Eingangsbestätigung ist keine Antwort", () => {
+  const roemhild = {
+    von: "info@stadt-roemhild.de",
+    betreff: "Römhild bei privater Solarleistung auf Platz 1 von 79 in Thüringen",
+    text: [
+      "Sehr geehrte Damen und Herren,",
+      "",
+      "Ihre E-Mail ist in der Stadtverwaltung eingegangen.",
+      "Sollten Sie ein Anliegen an uns gerichtet haben, melden wir uns so bald wie möglich.",
+      "",
+      "Bitte antworten Sie nicht auf diese E-Mail.",
+      "",
+      "Mit freundlichen Grüßen",
+      "K. Rußwurm, Sekretariat",
+    ].join("\n"),
+    datum: "2026-09-01T10:12:00Z",
+  };
+
+  it("erkennt sie am Text, nicht am Betreff", () => {
+    // Der Betreff ist unser eigener, unverändert — daran ist nichts zu sehen.
+    expect(ordneEin(roemhild)).toBe("abwesenheit");
+  });
+
+  it("erkennt das Wort Eingangsbestätigung auch im Betreff", () => {
+    expect(
+      ordneEin({ ...roemhild, betreff: "Eingangsbestätigung", text: "Ihre Nachricht ist angekommen." }),
+    ).toBe("abwesenheit");
+  });
+
+  // DIE WICHTIGERE RICHTUNG: Eine echte Antwort darf nicht wegsortiert werden.
+  // „Ihre Mail ist eingegangen und wird geprüft" ist eine Zusage eines Menschen,
+  // keine Quittung — deshalb sind die Muster lang und wörtlich statt kurz.
+  it("hält eine echte Antwort für eine Antwort", () => {
+    expect(
+      ordneEin({
+        ...roemhild,
+        text: "Guten Tag, Ihre Meldung ist bei uns eingegangen. Wir prüfen sie und melden uns.",
+      }),
+    ).toBe("antwort");
+  });
+
+  // PORTA WESTFALICA, 03.09.2026 — dieselbe Sorte Quittung, zwei neue Wege
+  // daran vorbei: kein Abwesenheitswort, kein maschineller Kopf, Absender das
+  // gewöhnliche Amtspostfach. Sie stand deshalb monatelang als echte Antwort in
+  // der Auswertung, und der Betreiber musste sie wieder und wieder erklären.
+  const porta = {
+    von: "info@portawestfalica.de",
+    betreff: "noreply",
+    text: [
+      "Guten Tag,",
+      "",
+      "vielen Dank für Ihre E-Mail.",
+      "",
+      "Gerne klären wir Ihr Anliegen.",
+      "Wir werden Ihre Nachricht an die zuständige Stelle im Hause weiterleiten,",
+      "damit Sie schnellstmöglich von dort eine Rückmeldung erhalten.",
+      "",
+      "Mit freundlichen Grüßen",
+      "Ihre Stadtverwaltung",
+    ].join("\n"),
+    datum: "2026-09-03T09:00:00Z",
+  };
+
+  // JEDES SIGNAL WIRD EINZELN GEPRÜFT, sonst prüft der Test keines.
+  // Die echte Mail trägt beide (Betreff „noreply" UND die Bausteinformel); mit
+  // ihr als Vorlage blieb der Lauf beim absichtlichen Ausbau des Betreff-Zweigs
+  // GRÜN — die Textformel fing ihn auf, und der Test hätte den Rückbau nie
+  // gemeldet. Dieselbe Klasse wie eine Prüfung, die sich selbst belegt.
+  it("erkennt sie am Betreff noreply, den kein Mensch tippt", () => {
+    expect(
+      ordneEin({ ...porta, text: "Guten Tag, vielen Dank für Ihre Nachricht.\n\nIhre Stadtverwaltung" }),
+    ).toBe("abwesenheit");
+  });
+
+  it("erkennt sie ohne den Betreff an der Bausteinformel", () => {
+    expect(ordneEin({ ...porta, betreff: "Ihre Anfrage" })).toBe("abwesenheit");
+  });
+
+  // DIE GEGENRICHTUNG, und sie ist hier besonders eng: Ein Mensch, der dasselbe
+  // TUT, ist trotzdem eine Reaktion — und genau die will der Outreach messen.
+  it("hält die Weiterleitung durch einen Menschen für eine Antwort", () => {
+    expect(
+      ordneEin({
+        ...porta,
+        betreff: "AW: Porta Westfalica bei Balkonkraftwerken auf Platz 1",
+        text: "Guten Tag Herr Schäder,\n\nvielen Dank! Ich leite das an unsere Pressestelle weiter.\n\nS. Meier",
+      }),
+    ).toBe("antwort");
+  });
+
+  it("greift nicht bei noreply bloß im Absender", () => {
+    // Dort steht es auch über Systemmails, die inhaltlich etwas Neues sagen —
+    // als Signal taugt allein die Betreffzeile.
+    expect(
+      ordneEin({
+        von: "noreply@stadt-beispiel.de",
+        betreff: "AW: Ihre Anfrage zur Förderung",
+        text: "Guten Tag, das Programm läuft seit gestern wieder. Viele Grüße, A. Weber",
+      }),
+    ).toBe("antwort");
+  });
+
+  it("lässt sich nicht von unserem eigenen zitierten Brief täuschen", () => {
+    // Steht der Satz nur im ZITAT, ist es trotzdem eine Antwort.
+    expect(
+      ordneEin({
+        ...roemhild,
+        text: [
+          "Wir veröffentlichen das gern, danke!",
+          "",
+          "> Am 01.09.2026 schrieb Sebastian Schäder:",
+          "> Bitte antworten Sie nicht auf diese E-Mail.",
+        ].join("\n"),
+      }),
+    ).toBe("antwort");
   });
 });

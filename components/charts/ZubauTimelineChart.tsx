@@ -9,6 +9,7 @@
  */
 
 import { useMemo, useState, useCallback } from "react";
+import { fsPx } from "../../lib/theme";
 import { LinePath } from "@visx/shape";
 import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
@@ -291,7 +292,7 @@ function Inner({
               y={yLeft(t)}
               textAnchor="end"
               dominantBaseline="middle"
-              fontSize={10}
+              fontSize={fsPx("--font-size-micro")}
               fontFamily="var(--font-mono, monospace)"
               fill="var(--color-text-muted, #949494)"
             >
@@ -306,7 +307,7 @@ function Inner({
               y={yRight(t)}
               textAnchor="start"
               dominantBaseline="middle"
-              fontSize={10}
+              fontSize={fsPx("--font-size-micro")}
               fontFamily="var(--font-mono, monospace)"
               fill="var(--color-text-muted, #949494)"
             >
@@ -323,7 +324,7 @@ function Inner({
             tickStroke="var(--color-border, #E9E9E9)"
             tickLabelProps={() => ({
               fill: "var(--color-text-muted, #949494)",
-              fontSize: 10,
+              fontSize: "var(--font-size-micro)",
               fontFamily: "var(--font-mono, monospace)",
               textAnchor: "middle",
               dy: "0.25em",
@@ -398,7 +399,7 @@ function Tooltip({
         border: "1px solid var(--color-border, #E9E9E9)",
         borderRadius: 8,
         padding: "7px 9px",
-        fontSize: 11.5,
+        fontSize: "var(--font-size-caption)",
         fontFamily: "var(--font-text, sans-serif)",
         color: "var(--color-text-primary, #3F3F3F)",
         boxShadow: "var(--shadow-md, 0 4px 14px rgba(0,0,0,0.08))",

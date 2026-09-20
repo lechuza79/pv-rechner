@@ -66,13 +66,13 @@ function Schalter({ aktiv, onClick, titel, unter }: {
         background: aktiv ? v("--color-bg-accent") : "transparent",
         color: aktiv ? v("--color-accent-dark") : v("--color-text-secondary"),
         fontWeight: aktiv ? 700 : 500,
-        fontSize: 13,
+        fontSize: v("--font-size-small"),
         cursor: "pointer",
         lineHeight: 1.3,
       }}
     >
       {titel}
-      <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>{unter}</div>
+      <div style={{ fontSize: v("--font-size-caption"), fontWeight: 400, opacity: 0.8 }}>{unter}</div>
     </button>
   );
 }
@@ -94,10 +94,10 @@ export default function BegStandSchalter({
 
   return (
     <div style={{ marginBottom: space.md }}>
-      <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
+      <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
         Nach welchem Förderstand soll gerechnet werden?
       </div>
-      <div style={{ fontSize: 12, color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 10 }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 10 }}>
         Die Förderung ändert sich zu festen Stichtagen. Maßgeblich ist, wann der Antrag eingeht —
         nicht, wann eingebaut wird.
       </div>
@@ -118,7 +118,7 @@ export default function BegStandSchalter({
       </div>
 
       <div style={{
-        fontSize: 12, color: v("--color-text-secondary"), lineHeight: 1.7,
+        fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.7,
         borderTop: `1px dashed ${v("--color-border")}`, paddingTop: 10,
       }}>
         {naechste.aenderung}
@@ -160,7 +160,7 @@ export default function BegStandSchalter({
         }}>
           <label style={{
             display: "flex", alignItems: "flex-start", gap: 8, cursor: "pointer",
-            fontSize: 12.5, color: v("--color-text-primary"), lineHeight: 1.5,
+            fontSize: v("--font-size-small"), color: v("--color-text-primary"), lineHeight: 1.5,
           }}>
             <input
               type="checkbox"
@@ -170,7 +170,7 @@ export default function BegStandSchalter({
             />
             <span>
               <strong style={{ fontWeight: 700 }}>Wärmepumpe mit Ursprung in der EU</strong>
-              <span style={{ display: "block", fontSize: 12, color: v("--color-text-muted"), marginTop: 2 }}>
+              <span style={{ display: "block", fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 2 }}>
                 {verlustMitEu > 0 ? (
                   <>
                     Mit EU-Gerät bleiben{" "}
@@ -200,7 +200,7 @@ export default function BegStandSchalter({
       )}
 
       {kuenftig && verlustOhneEu > 0 && !euUrsprung && (
-        <div style={{ marginTop: 8, fontSize: 12, color: v("--color-text-secondary"), lineHeight: 1.6 }}>
+        <div style={{ marginTop: 8, fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.6 }}>
           Für deine Anlage sind das{" "}
           <strong style={{ fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
             {verlustOhneEu.toLocaleString("de-DE")} €
@@ -211,7 +211,7 @@ export default function BegStandSchalter({
 
       <div style={{
         marginTop: 10, paddingTop: 8, borderTop: `1px solid ${v("--color-border")}`,
-        fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6,
+        fontSize: v("--font-size-caption"), color: v("--color-text-muted"), lineHeight: 1.6,
       }}>
         {kuenftig ? (
           <>
@@ -237,7 +237,7 @@ export default function BegStandSchalter({
             </InfoTooltip>
           </>
         ) : (
-          <>Diese Sätze gelten für Anträge, die noch in diesem Jahr eingehen.</>
+          <>Diese Sätze gelten für Anträge bis {naechste.bezeichnung.replace(/^ab /i, "vor ")}.</>
         )}{" "}
         Ein Rechtsanspruch auf die Förderung besteht nicht; entschieden wird über den Antrag.
       </div>

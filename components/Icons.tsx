@@ -258,6 +258,15 @@ export function IconMore({ size = 16, color = "currentColor", style }: IconProps
   );
 }
 
+export function IconVideo({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <rect x="1.5" y="3.5" width="9" height="9" rx="1.5" stroke={color} strokeWidth="1.33" />
+      <path d="M10.5 6.5 14.5 4.5v7l-4-2" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function IconDownload({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
@@ -341,6 +350,39 @@ export function IconGlocke({ size = 16, color = "currentColor", style }: IconPro
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
       <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Das Google-Zeichen trägt seine vier Farben fest — sie sind Teil der Marke und
+// dürfen dem Tageslicht-Theme NICHT folgen, aus demselben Grund wie das
+// Ampel-Grün der EE-Ampel. Deshalb nimmt dieses Zeichen als einziges keinen
+// Farbwert an. Googles Gestaltungsvorgaben für den Anmeldeknopf verlangen das
+// unveränderte Zeichen.
+export function IconGoogle({ size = 16, style }: { size?: number; style?: React.CSSProperties }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }} aria-hidden="true">
+      <path d="M17.64 9.2045c0-.6381-.0573-1.2518-.1636-1.8409H9v3.4814h4.8436c-.2086 1.125-.8427 2.0782-1.7959 2.7164v2.2581h2.9087c1.7018-1.5668 2.6836-3.874 2.6836-6.615Z" fill="#4285F4" />
+      <path d="M9 18c2.43 0 4.4673-.806 5.9564-2.1805l-2.9087-2.2581c-.8059.54-1.8368.859-3.0477.859-2.344 0-4.3282-1.5831-5.0359-3.7104H.9573v2.3318C2.4382 15.9832 5.4818 18 9 18Z" fill="#34A853" />
+      <path d="M3.9641 10.71c-.18-.54-.2822-1.1168-.2822-1.71s.1023-1.17.2822-1.71V4.9582H.9573A8.9965 8.9965 0 0 0 0 9c0 1.4523.3477 2.8268.9573 4.0418L3.9641 10.71Z" fill="#FBBC05" />
+      <path d="M9 3.5795c1.3214 0 2.5077.4541 3.4405 1.346l2.5814-2.5814C13.4632.8918 11.426 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582L3.9641 7.29C4.6718 5.1627 6.6559 3.5795 9 3.5795Z" fill="#EA4335" />
+    </svg>
+  );
+}
+
+export function IconPlay({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M4.5 2.8v10.4c0 .6.65.97 1.16.66l8.2-5.2a.78.78 0 0 0 0-1.32l-8.2-5.2A.78.78 0 0 0 4.5 2.8Z" fill={color} />
+    </svg>
+  );
+}
+
+export function IconPause({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <rect x="3.5" y="2.5" width="3.4" height="11" rx="1" fill={color} />
+      <rect x="9.1" y="2.5" width="3.4" height="11" rx="1" fill={color} />
     </svg>
   );
 }

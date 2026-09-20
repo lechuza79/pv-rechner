@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { baueAuszeichnungen } from "../../../../lib/awards-server";
 import { ATLAS_REVALIDATE_ROUTEN, ATLAS_DATEN_TAG } from "../../../../lib/atlas-revalidate-routen";
 
 /**
@@ -94,6 +95,16 @@ export async function POST(req: NextRequest) {
 
   const erledigt: string[] = [];
   const fehler: { schritt: string; grund: string }[] = [];
+
+  // Prepare a complete, fresh ranking generation before exposing new pages.
+  // A failed batch leaves the previous snapshot and page caches untouched.
+  try {
+    const { orte } = await baueAuszeichnungen();
+    erledigt.push(`auszeichnungen:${orte}`);
+  } catch (e) {
+    fehler.push({ schritt: "auszeichnungen", grund: e instanceof Error ? e.message : String(e) });
+    return NextResponse.json({ ok: false, erledigt, fehler }, { status: 500 });
+  }
 
   // DER WIRKSAME WEG: über den Marker an den Daten.
   // Am 26.08.2026 auf Produktion nachgemessen — das Ungültig-Erklären über

@@ -41,8 +41,9 @@ test("Empfehlung flow ends on a recommendation with kWp + storage suggestion", a
   await page.waitForURL(/view=ergebnis/, { timeout: 10_000 });
 
   // Recommendation page: must show kWp suggestion + reasoning
-  await expect(page.getByText(/kWp/i).first()).toBeVisible({ timeout: 10_000 });
-  await expect(page.getByText(/Empfehlung|Anlage|Speicher/i).first()).toBeVisible();
+  // Visible matches only: the site menu carries the same words in its closed flyouts.
+  await expect(page.getByText(/kWp/i).filter({ visible: true }).first()).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText(/Empfehlung|Anlage|Speicher/i).filter({ visible: true }).first()).toBeVisible();
 
   const bodyText = await page.locator("body").innerText();
   // Must contain a kWp recommendation

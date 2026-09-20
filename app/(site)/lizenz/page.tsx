@@ -118,7 +118,7 @@ export default function LizenzPage() {
           <li style={S.li}>die Charts und Grafiken auf dieser Seite, auch als heruntergeladenes Bild,</li>
           <li style={S.li}>die einbettbaren Widgets und ihre Darstellung,</li>
           <li style={S.li}>
-            die Darstellung unserer Auswertungen im Solar-Atlas und in den Datengeschichten — also
+            die Darstellung unserer Auswertungen im Energie-Atlas und in den Datengeschichten — also
             die Karten, Tabellen und Diagramme,
           </li>
           <li style={S.li}>die Ratgeber- und Methodiktexte.</li>

@@ -159,6 +159,53 @@ export const ALLE_KOMBINATIONEN = !!process.env.FLOW_ALLE_KOMBINATIONEN;
  */
 export const MAX_WEGE_JE_FLOW = ALLE_KOMBINATIONEN ? 2500 : 150;
 
+/**
+ * Der Titel, unter dem ein Flow im Läufer steht — EINE Quelle für den Test
+ * selbst UND für die Aufteilung des nächtlichen Laufs auf mehrere Jobs.
+ *
+ * Der Titel stand bis zum 07.09.2026 nur als Vorlage im Läufer. Das trug,
+ * solange ihn niemand sonst brauchte; seit die Nacht je Flow einen eigenen Job
+ * startet und ihren Test über `--grep` auswählt, hätte er ein zweites Mal
+ * dagestanden — und eine umbenannte Zeile hätte den Job auf NULL Tests laufen
+ * lassen. Ein Lauf ohne Tests ist grün, und ein grüner Lauf, der nichts sieht,
+ * ist schlimmer als gar keiner (dieselbe Lehre wie bei den Wächtern, die ihre
+ * eigene Gegenprobe bestehen müssen).
+ */
+export function flowTestTitel(name: string): string {
+  return `Flow „${name}": jede Option führt zu einem Ergebnis`;
+}
+
+/**
+ * Derselbe Titel als Ausdruck für `--grep`, mit maskierten Sonderzeichen.
+ *
+ * Playwright liest `--grep` als regulären Ausdruck. Heute trägt kein Flow-Name
+ * ein Sonderzeichen; ein künftiger mit Klammer oder Punkt würde ohne Maskierung
+ * entweder zu viel treffen oder gar nichts — und „gar nichts" ist der teure
+ * Fall, siehe oben.
+ */
+export function flowGrep(name: string): string {
+  return flowTestTitel(name).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Woran ein Flow-Test zu erkennen ist. Der nächtliche Sammel-Job nimmt mit
+ * `--grep-invert` alles, was das NICHT enthält — damit läuft ein künftiger
+ * Buchhaltungs-Test automatisch mit, statt still liegenzubleiben.
+ *
+ * ABGELEITET, nicht getippt: Es ist genau das Stück, das `flowTestTitel` VOR
+ * den Namen setzt. Als eigene Zeichenkette wäre es die letzte verbliebene
+ * zweite Fassung des Titels — und beim ersten Umformulieren („Flow" → „Ablauf")
+ * schlösse der Sammel-Job nichts mehr aus und liefe den ganzen Bestand doppelt.
+ *
+ * OHNE ANKER, und das ist kein Versehen: Playwright vergleicht `--grep` nicht
+ * mit dem Testtitel, sondern mit dem ganzen Pfad davor — „[flows] ›
+ * e2e/flows.spec.ts:358:7 › Flow „…"". Ein `^` traf deshalb NIE, der Sammel-Job
+ * hätte alle neun Tests ein zweites Mal gelaufen. Gefunden von `--pruefen` im
+ * Matrix-Skript, bevor die Nacht es getan hätte.
+ */
+const NAMENS_PLATZHALTER = "\u0000";
+export const FLOW_TITEL_MARKE = flowTestTitel(NAMENS_PLATZHALTER).split(NAMENS_PLATZHALTER)[0];
+
 
 // ─── Geteilte Schritte durch einen Flow ──────────────────────────────────────
 //

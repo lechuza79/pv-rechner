@@ -9,6 +9,7 @@ import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import ArticleMeta from "../../../../components/ArticleMeta";
 import GruengasWidget from "../../../../components/charts/GruengasWidget";
+import HeizkostenrennenWidget from "../../../../components/charts/HeizkostenrennenWidget";
 import { greengasMusterVariants, PV_COVERAGE } from "../../../../lib/greengas-muster";
 import { DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
@@ -135,6 +136,19 @@ export default function GasheizungWaermepumpePage() {
         <GruengasWidget variants={variants} pvCoveragePct={pvPct} view="full" onsite branding={false} />
         <div style={{ margin: "8px 0 16px", fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
           <DataSourceNote source={DATA_SOURCES.iw} />
+        </div>
+
+        {/* ── Das Rennen: dasselbe unsanierte Haus, Tag für Tag (components/charts/
+             HeizkostenrennenWidget, auch unter /embed/heizkostenrennen). ── */}
+        <h2 id="heizkostenrennen" style={S.h2}>Tag für Tag: Wann hat die Wärmepumpe ihren Mehrpreis zurück?</h2>
+        <p style={S.p}>
+          Dieselbe Rechnung als Rennen: Beide Heizungen starten mit ihrer Anschaffung, dann zählt
+          jeder Tag Heizen — mit den Wintern der letzten 20 Jahre, wie sie der Deutsche Wetterdienst
+          gemessen hat. Wo die Gas-Linie die Wärmepumpe kreuzt, ist der Mehrpreis zurück.
+        </p>
+        <HeizkostenrennenWidget onsite branding={false} />
+        <div style={{ margin: "8px 0 16px", fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+          <DataSourceNote source={DATA_SOURCES.dwd} />
         </div>
 
         {/* ── Grüngas-Pflicht: Details ── */}

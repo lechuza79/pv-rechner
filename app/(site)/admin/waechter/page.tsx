@@ -42,11 +42,11 @@ export default async function WaechterReportsPage() {
       />
 
       {problem && (
-        <p style={{ fontSize: 13, color: v("--color-negative") }}>{problem}</p>
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative") }}>{problem}</p>
       )}
 
       {!problem && reports.length === 0 && (
-        <p style={{ fontSize: 13, color: v("--color-text-muted") }}>
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
           Noch kein Lauf abgelegt. Die Ablage füllt sich mit dem nächsten Wächter.
         </p>
       )}
@@ -66,23 +66,23 @@ export default async function WaechterReportsPage() {
               }}
             >
               <div style={{ display: "flex", gap: space.sm, alignItems: "baseline", flexWrap: "wrap" }}>
-                <span style={{ fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-muted") }}>{fmtDate(r.created_at)}</span>
-                {r.tag && <span style={{ fontSize: 12, color: v("--color-text-muted") }}>{r.tag}</span>}
+                <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>{fmtDate(r.created_at)}</span>
+                {r.tag && <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>{r.tag}</span>}
                 {decisions > 0 && (
-                  <span style={{ fontSize: 12, fontWeight: 700, color: v("--color-accent") }}>
+                  <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-accent") }}>
                     {decisions === 1 ? "1 Entscheidung" : `${decisions} Entscheidungen`}
                   </span>
                 )}
                 {done > 0 && (
-                  <span style={{ fontSize: 12, color: v("--color-positive") }}>
+                  <span style={{ fontSize: v("--font-size-small"), color: v("--color-positive") }}>
                     {done === 1 ? "1 selbst erledigt" : `${done} selbst erledigt`}
                   </span>
                 )}
                 {!r.delivered && (
-                  <span style={{ fontSize: 12, color: v("--color-text-muted") }}>keine Mail{r.skip_reason ? ` (${r.skip_reason})` : ""}</span>
+                  <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>keine Mail{r.skip_reason ? ` (${r.skip_reason})` : ""}</span>
                 )}
               </div>
-              <div style={{ fontSize: 15, fontWeight: 700, marginTop: space.xs, color: v("--color-text-primary") }}>{r.subject}</div>
+              <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, marginTop: space.xs, color: v("--color-text-primary") }}>{r.subject}</div>
             </Link>
           );
         })}

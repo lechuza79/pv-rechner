@@ -48,7 +48,7 @@ export interface Spalte<T> {
 
 export const thStyle: React.CSSProperties = {
   textAlign: "left",
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.05em",
@@ -196,7 +196,7 @@ export function DatenTabelle<T>({
                   {stufe && sortierung.length > 1 && (
                     <span
                       style={{
-                        fontSize: 9,
+                        fontSize: v("--font-size-micro"),
                         marginLeft: 1,
                         verticalAlign: "super",
                         color: v("--color-text-muted"),

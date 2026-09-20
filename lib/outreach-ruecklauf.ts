@@ -133,7 +133,67 @@ const ABWESENHEIT_BETREFF = [
   "automatic reply",
   "urlaub",
   "autoreply",
+  "eingangsbestätigung",
+  "eingangsbestaetigung",
 ];
+
+/**
+ * Sätze, mit denen sich eine Maschine im TEXT zu erkennen gibt.
+ *
+ * WOZU: Römhild antwortete am 01.09.2026 aus dem Amtspostfach, mit dem
+ * unveränderten Betreff unseres Briefes, ohne jede maschinelle Kopfzeile — und
+ * im Text stand „Bitte antworten Sie nicht auf diese E-Mail". Das ist eine
+ * Eingangsbestätigung, wurde aber als echte Antwort verbucht. Die Folge ist
+ * nicht kosmetisch: Der Outreach hat genau eine Messgröße für „jemand hat
+ * gelesen und reagiert", und eine Empfangsquittung darin macht sie wertlos.
+ *
+ * Gesucht wird im SELBST GESCHRIEBENEN Teil, nicht im ganzen Text — unser
+ * eigener Brief steht in jeder zitierten Antwort mit drin.
+ *
+ * Die Sätze sind bewusst lang und wörtlich. Ein kurzes Muster („eingegangen")
+ * träfe auch eine echte Antwort, die sagt, dass die Meldung eingegangen sei und
+ * jetzt geprüft werde — und die ist das Gegenteil.
+ */
+const EINGANGSBESTAETIGUNG_TEXT = [
+  "bitte antworten sie nicht auf diese e-mail",
+  "bitte antworten sie nicht auf diese mail",
+  "diese e-mail wurde automatisch erstellt",
+  "diese e-mail wurde automatisch generiert",
+  "dies ist eine automatisch erstellte",
+  "dies ist eine automatisch generierte",
+  "automatisch erzeugte nachricht",
+  "do not reply to this email",
+  "this is an automated",
+  // Porta Westfalica, 03.09.2026: „Wir werden Ihre Nachricht an die zuständige
+  // Stelle im Hause weiterleiten, damit Sie schnellstmöglich von dort eine
+  // Rückmeldung erhalten." Unterschrieben mit „Ihre Stadtverwaltung", ohne
+  // Namen — der Textbaustein einer Poststelle.
+  //
+  // ABGEGRENZT GEGEN DEN MENSCHEN, der dasselbe tut: „ich leite das an unsere
+  // Pressestelle weiter" IST eine echte Reaktion und soll gemeldet werden.
+  // Erkannt wird deshalb nur die unpersönliche Bausteinform („wir werden Ihre
+  // Nachricht"), nie ein bloßes „weiterleiten" oder „zuständige Stelle".
+  "wir werden ihre nachricht an die zuständige stelle",
+  "wir werden ihre nachricht an die zustaendige stelle",
+  "ihre nachricht wird an die zuständige stelle",
+  "ihre nachricht wird an die zustaendige stelle",
+];
+
+/**
+ * Betreffzeilen, die eine Maschine verraten, ohne ein Wort über Abwesenheit zu
+ * sagen.
+ *
+ * WOZU (10.09.2026): Porta Westfalicas Eingangsbestätigung trug den Betreff
+ * „noreply" — kein Abwesenheitswort, kein maschineller Kopf, Absender das
+ * gewöhnliche Amtspostfach. Sie wurde deshalb als ECHTE Antwort verbucht, und
+ * der Betreiber hat sie in der Auswertung ein ums andere Mal erklärt bekommen.
+ *
+ * `noreply` als BETREFF ist ein technisches Merkmal, keine Sprachdeutung: Kein
+ * Mensch tippt das in die Betreffzeile. Im ABSENDER wäre es kein taugliches
+ * Signal — es steht dort auch über Systemmails, die inhaltlich etwas Neues
+ * sagen; geprüft wird deshalb nur der Betreff.
+ */
+const MASCHINELL_BETREFF = ["noreply", "no-reply", "no reply", "kein absender"];
 
 /**
  * Einordnung einer eingegangenen Mail.
@@ -175,7 +235,14 @@ export function ordneEin(mail: RohMail): Ruecklaufart {
   }
 
   // Abwesenheitsnotiz — erkennbar am Kopf, der genau dafür gedacht ist.
-  if (autoSubmitted.includes("auto-replied") || enthaelt(betreff, ABWESENHEIT_BETREFF)) return "abwesenheit";
+  if (
+    autoSubmitted.includes("auto-replied") ||
+    enthaelt(betreff, ABWESENHEIT_BETREFF) ||
+    enthaelt(betreff, MASCHINELL_BETREFF) ||
+    enthaelt(eigen, EINGANGSBESTAETIGUNG_TEXT)
+  ) {
+    return "abwesenheit";
+  }
 
   // Widerspruch: nur aus dem selbst geschriebenen Teil.
   if (enthaelt(betreff, WIDERSPRUCH) || enthaelt(eigen, WIDERSPRUCH)) return "widerspruch";

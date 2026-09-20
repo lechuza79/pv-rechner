@@ -16,8 +16,13 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   // Stunden sind keine Echtzeit, und die Seite weiß es an anderer Stelle.
   energyCharts: "Strommix, Stromerzeugung und Grenzflüsse, stündlich aktualisiert",
   ember: "Ländervergleich: Zubau von Erneuerbaren und Atomkraft",
-  mastr: "Anlagenbestand in Deutschland (Solar-Atlas, Karten, Kennzahlen)",
-  openMeteo: "Wetterdaten der Live-Simulation und der Kühlgradstunden",
+  mastr: "Anlagenbestand in Deutschland (Energie-Atlas, Karten, Kennzahlen)",
+  nexGddp: "Klimaprojektion im Klimaanlagen-Rechner: wie stark die Kühlstunden in rund zwanzig Jahren zunehmen",
+  era5Archive: "Rückblickende Wetterstunden der kommunalen Energiecharts — Sonne, Temperatur und Wind je Ort",
+  iconD2Archive: "Live-Wetter, Live-Simulation und Solarleistung heute: Wolken, Sonne, Temperatur und Wind aus dem Wettermodell des Wetterdienstes",
+  wetterVorhersage: "Hitzewellen-Hinweis im Klimaanlagen-Rechner: Tageshöchstwerte der nächsten 16 Tage",
+  dwdRadar: "Live-Wetter: gemessener Regen und Schnee am Ort, alle fünf Minuten",
+  dwd: "Sonneneinstrahlung je Jahr seit 1991 — die Wetterjahre im Stromkosten-Rennen",
   pvgis: "Standortabhängiger Solarertrag je Kilowatt-Peak",
   eurostat: "Haushaltsstrompreise im europäischen Vergleich",
   eegVerguetung: "Gesetzliche Einspeisevergütung seit dem Jahr 2000",
@@ -25,6 +30,7 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   beg: "Fördersätze der Bundesförderung für effiziente Gebäude",
   iw: "Preisszenarien zum Gebäudemodernisierungsgesetz",
   bkg: "Verwaltungsgrenzen der Karten",
+  zensus: "Wohnungen je Gemeinde nach Gebäudegröße — der Nenner für die Frage, wie viele Dächer es überhaupt gibt",
   destatis: "Einwohnerzahlen der Gemeinden",
   uba: "Stromerzeugung und CO₂-Intensität im langen Rückblick seit 1990",
   kfwFoerderreport: "Wie viele Haushalte die Heizungsförderung wirklich bekommen haben",
@@ -36,8 +42,9 @@ export default function DataSourceList() {
   return (
     <ul style={S.list}>
       {eintraege.map(([schluessel, quelle]) => (
-        <li key={schluessel} style={S.item}>
+        <li key={schluessel} id={`quelle-${schluessel}`} style={S.item}>
           <DataSourceNote source={quelle} label={`${VERWENDUNG[schluessel]}:`} />
+          {"hinweis" in quelle && quelle.hinweis ? <div style={{ marginTop: space.xs }}>{quelle.hinweis}</div> : null}
         </li>
       ))}
     </ul>

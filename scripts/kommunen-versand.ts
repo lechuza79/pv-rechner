@@ -11,7 +11,8 @@
  *   npm run kommunen:versand -- --liste                      Schub-Liste ansehen
  *   npm run kommunen:versand -- --vorschau --n=5             fünf echte Briefe lesen
  *   npm run kommunen:versand -- --test=adresse@example.org   EINE Probemail an sich selbst
- *   npm run kommunen:versand -- --senden --limit=20          Schub senden
+ *   npm run kommunen:versand -- --senden --limit=20
+ *                                                        Geprüften Schub senden
  *
  * Voraussetzungen: SUPABASE_URL, SUPABASE_SERVICE_KEY, CRON_SECRET sowie für
  * das Senden OUTREACH_SMTP_HOST/PORT/USER/PASS und OUTREACH_MAIL_FROM — alle
@@ -46,8 +47,9 @@ import {
 import { versandfenster } from "../lib/schulferien";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
 import { berlinOffset, heuteInBerlin, wochentagInBerlin } from "../lib/zeit";
-import { ATLAS_CITIES } from "../lib/atlas-cities";
-import { ortSchluessel } from "../lib/release-plan";
+import { execFileSync } from "node:child_process";
+import { v2Urteil, type V2Urteil } from "../lib/contact-v2-gate";
+import { RECHECK_MAX_AGE_DAYS, REPO_ROOT, outDir, rulesVersion } from "./lib/contact-v2-config";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROTOKOLL_DIR = resolve(SCRIPT_DIR, ".cache", "versand");
@@ -135,8 +137,11 @@ function versandtag(datum: Date): { ok: boolean; grund?: string } {
 }
 
 /** Alle Bremsen für einen einzelnen Brief. Leeres Ergebnis = darf hinaus. */
-function bremsen(b: Brief, heute: string): string[] {
+function bremsen(b: Brief, heute: string, kontakt?: V2Urteil): string[] {
   const gruende: string[] = [];
+  // Die Kontaktsuche muss den Empfänger belegt und eben nachgeprüft haben.
+  if (!kontakt) gruende.push("keine Kontaktprüfung für diesen Empfänger");
+  else if (!kontakt.ok) gruende.push(`Kontaktprüfung: ${kontakt.grund}`);
   const fenster = versandfenster(b.region_id.slice(0, 2), heute);
   if (!fenster.frei) gruende.push(fenster.grund);
   const fehlt = fehlendePflichtangaben(b.body);
@@ -144,7 +149,7 @@ function bremsen(b: Brief, heute: string): string[] {
   // Auch hier, obwohl das Paket es schon geprüft hat: Es ist die einzige
   // Bremse, die entscheidet, ob eine natürliche Person angeschrieben wird, und
   // die einzige, die bis eben nur an einer Stelle stand.
-  const postfach = postfachBefund(b.empfaenger, b.name, b.verwaltung_domain);
+  const postfach = postfachBefund(b.empfaenger, b.name, b.verwaltung_domain, { belegteRolle: kontakt?.ok === true && kontakt.belegteRolle });
   if (!postfach.ok) gruende.push(postfach.grund);
   // Verlinkt der Brief auf eine Seite, die für Suchmaschinen gesperrt BLEIBT?
   //
@@ -155,16 +160,19 @@ function bremsen(b: Brief, heute: string): string[] {
   // 29.08.2026 aufgefallen ist, nur andersherum: eine Seite anbieten und
   // gleichzeitig sperren.
   //
-  // KEIN Abbruch, sondern eine Meldung: Ob der Brief trotzdem rausgeht, ist eine
-  // Abwägung (die Förderseite steht dort oft besser), und die gehört dem
-  // Betreiber, nicht diesem Lauf.
-  if (b.region_id.length === 8 && ATLAS_CITIES.some((c) => ortSchluessel(c.ags) === ortSchluessel(b.region_id))) {
-    gruende.push(
-      "HINWEIS: Dieser Ort hat eine eigene Förderseite, seine Atlas-Ortsseite bleibt deshalb " +
-        "gesperrt — der Brief verlinkt sie trotzdem. Entweder Brief auf die Förderseite zeigen " +
-        "lassen oder den Ort bewusst ausnehmen.",
-    );
-  }
+  // HIER STAND EINE BREMSE, DEREN VORAUSSETZUNG ES NICHT MEHR GIBT.
+  //
+  // Sie meldete: „Dieser Ort hat eine eigene Förderseite, seine Atlas-Ortsseite
+  // bleibt deshalb gesperrt." Diese Ausnahme wurde am 29.08.2026 abgeschafft
+  // (Begründung in lib/atlas-outreach-freigabe.ts: Googles Site-Diversity-Regel
+  // schließt das befürchtete Risiko aus, und die Ausnahme kostete eine zweite
+  // Datenquelle im Seitenaufbau). Die Ortsseite geht seitdem mit dem Versand
+  // live, ganz gleich ob der Ort eine Förderseite hat.
+  //
+  // Die Bremse beschrieb also einen Zustand, den es seit fünf Tagen nicht mehr
+  // gibt — und hielt am 03.09.2026 Düsseldorf und Ennepetal zurück, die größte
+  // Stadt des NRW-Schubs darunter. Wer eine Regel abschafft, sucht die Stellen,
+  // die sie noch behaupten.
   return gruende;
 }
 
@@ -318,6 +326,23 @@ function sperreNehmen(): () => void {
   };
 }
 
+function kontaktPruefung(briefe: Brief[]): Map<string, V2Urteil> {
+  const out = outDir();
+  const recipients = briefe.map(b => ({ organizationId: b.region_id, email: b.empfaenger }));
+  const file = resolve(out, `recheck-batch-${Date.now()}.json`);
+  mkdirSync(out, { recursive: true });
+  writeFileSync(file, JSON.stringify(recipients));
+  try {
+    execFileSync(resolve(REPO_ROOT, "node_modules/.bin/tsx"), [resolve(REPO_ROOT, "scripts/contact-municipal-v2.ts"), "--mode=recheck", `--recipients=${file}`], { stdio: "inherit", cwd: REPO_ROOT });
+  } finally {
+    rmSync(file, { force: true });
+  }
+  const read = (p: string) => (existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null);
+  const rules = rulesVersion();
+  const now = new Date();
+  return new Map(briefe.map(b => [b.region_id, v2Urteil(b.empfaenger, read(resolve(out, "results", `${b.region_id}.json`)), read(resolve(out, "recheck", `${b.region_id}.json`)), rules, now, RECHECK_MAX_AGE_DAYS)]));
+}
+
 async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
   const sperreFrei = sperreNehmen();
   try {
@@ -328,6 +353,11 @@ async function senden(p: Paket, limit: number, pauseMs: number): Promise<void> {
 }
 
 async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<void> {
+  // KONTAKTPRÜFUNG JE EMPFÄNGER, unmittelbar vor dem Versand: Die Seite, auf der
+  // die Adresse steht, wird noch einmal abgerufen. Ersetzt die erste
+  // Generation, die verlangte, dass bundesweit KEINE Gemeinde mehr offen ist —
+  // ein Zustand, der nie eintrat und den Versand dauerhaft sperrte.
+  const kontakt = kontaktPruefung(p.paket.slice(0, limit));
   const { transport, konfig } = await baueTransport();
   const absenderDomain = adresseAus(konfig.from).split("@")[1];
   const dkim = await dkimAktiv(absenderDomain);
@@ -376,7 +406,7 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
   let raus = 0;
 
   for (const [i, b] of zuSenden.entries()) {
-    const halt = bremsen(b, p.heute);
+    const halt = bremsen(b, p.heute, kontakt.get(b.region_id));
     if (halt.length) {
       log(`${b.name}: NICHT gesendet — ${halt.join(" · ")}`, "err");
       protokoll.push({ region_id: b.region_id, name: b.name, gesendet: false, grund: halt });
@@ -435,6 +465,8 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
           outreach_status: "kontaktiert",
           contacted_at: new Date().toISOString(),
           channel: "mail",
+          sent_to: b.empfaenger,
+          sent_message_id: info.messageId,
           versendet_variante: b.variante,
           // DEN VERSCHICKTEN TEXT AUFHEBEN.
           //
@@ -505,7 +537,7 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
           from: konfig.from,
           to: an,
           replyTo: konfig.replyTo,
-          subject: `[ZUSTELLPROBE ${new Date().toISOString().slice(0, 10)}] ${letzterBrief.subject}`,
+          subject: `[ZUSTELLPROBE ${heuteInBerlin()}] ${letzterBrief.subject}`,
           text:
             `Zustellungsprobe zum Schub ${p.kampagne}, Charge ${p.charge}, ${raus} Mails an diesem Tag.\n` +
             `Bitte nachsehen: Posteingang oder Spam? Der Text darunter ist der echte Brief.\n\n` +

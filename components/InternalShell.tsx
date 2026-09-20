@@ -68,6 +68,14 @@ export default function InternalShell({
       title: "Fachbetriebe",
       links: [{ href: "/admin/fachbetriebe", label: "Verzeichnis" }],
     });
+    // Presse steht als EIGENE Gruppe und nicht unter Outreach: Die Zielgruppe
+    // ist eine andere (Redaktionen statt Verwaltungen), der Rechtsrahmen auch —
+    // und der Bereich wächst um Regionalmedien und Creator. Dieselbe Begründung
+    // wie bei den Fachbetrieben eine Gruppe darüber.
+    sections.push({
+      title: "Presse",
+      links: [{ href: "/admin/presse", label: "Katalog" }],
+    });
     // Zwei Beitragsarten unter einem Dach. Sie teilen sich die Redaktion, aber
     // sonst wenig: Ein Post hat einen Wochentag und eine Bildform, ein Artikel
     // eine Suchfrage und eine Indexierung. Deshalb getrennte Gruppen statt einer
@@ -78,7 +86,15 @@ export default function InternalShell({
         {
           label: "Social Media",
           children: [
+            // Der Vorrat steht VOR der Entwicklung, weil er ihr vorausgeht:
+            // Erst wird gestöbert und ausgewählt, dann entsteht daraus ein
+            // Beitrag. Die Reihenfolge im Menü ist der Arbeitsweg.
+            { href: "/admin/redaktion/bucket", label: "Story-Bucket" },
             { href: "/admin/redaktion", label: "Entwicklung", exact: true },
+            // Die Templates stehen bei Social Media, weil ein Template dort
+            // seinen Zweck hat: Es ist die Bildform eines Posts, nicht die eines
+            // Artikels. Ein Blog-Beitrag trägt kein Kartenbild.
+            { href: "/admin/redaktion/templates", label: "Templates" },
             { href: "/admin/redaktion/planung", label: "Planung" },
             { href: "/admin/redaktion/auswertung", label: "Auswertung" },
           ],
@@ -96,7 +112,9 @@ export default function InternalShell({
       title: "System",
       links: [
         { href: "/admin", label: "Übersicht", exact: true },
-        { href: "/admin/theme", label: "Signalfarben-Theming" },
+        { href: "/admin/theme", label: "Designsystem" },
+        { href: "/admin/komponenten", label: "Komponenten" },
+        { href: "/admin/vorschauen", label: "Vorschauen" },
         { href: "/admin/prices", label: "Marktpreise" },
         { href: "/admin/charts", label: "Chart-Baukasten" },
         { href: "/admin/waechter", label: "Wächter-Berichte" },
@@ -214,7 +232,7 @@ function Sidebar({ sections, horizontal }: { sections: NavSection[]; horizontal:
 }
 
 const sectionTitleStyle: React.CSSProperties = {
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.06em",
@@ -224,7 +242,7 @@ const sectionTitleStyle: React.CSSProperties = {
 };
 
 const groupLabelStyle: React.CSSProperties = {
-  fontSize: 12,
+  fontSize: v("--font-size-small"),
   fontWeight: 700,
   color: v("--color-text-secondary"),
   padding: `0 ${space.sm}px`,
@@ -235,7 +253,7 @@ function itemStyle(active: boolean): React.CSSProperties {
   return {
     display: "block",
     textDecoration: "none",
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: active ? 700 : 600,
     color: active ? v("--color-accent") : v("--color-text-secondary"),
     background: active ? v("--color-accent-dim") : "transparent",
@@ -249,7 +267,7 @@ function pillStyle(active: boolean): React.CSSProperties {
   return {
     flex: "0 0 auto",
     textDecoration: "none",
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     fontWeight: active ? 700 : 600,
     color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
     background: active ? v("--color-accent") : v("--color-bg-muted"),

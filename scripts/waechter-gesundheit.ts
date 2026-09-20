@@ -21,10 +21,18 @@
  * Lauf das und urteilt nicht — „nicht nachgesehen" ist nicht „nichts gefunden".
  */
 import { envLaden } from "./env-laden";
+import { heuteInBerlin } from "../lib/zeit";
 import type { Urteil } from "../lib/waechter-register";
 
 const alle = process.argv.includes("--alle");
-const heute = new Date().toISOString().slice(0, 10);
+// Der DEUTSCHE Kalendertag, nicht der von UTC — dieselbe Korrektur wie am
+// 01.09.2026 an der Stand-Schranke, an `stand:faellig` und an der Förder-Probe;
+// dieser vierte Aufrufer wurde damals übersehen. Die Prüfdaten, gegen die hier
+// gerechnet wird, sind deutsche Kalendertage. Zwischen 00:00 und 02:00 deutscher
+// Sommerzeit liegt „heute" nach UTC einen Tag zurück: Am 02.09.2026 um 00:55 Uhr
+// überschrieb dieser Lauf seinen Bericht mit „Wächter am 2026-09-01" und maß
+// jedes Alter einen Tag zu kurz.
+const heute = heuteInBerlin();
 
 const MARKE: Record<Urteil["zustand"], string> = {
   laeuft: "ok      ",

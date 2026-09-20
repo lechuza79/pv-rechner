@@ -1,4 +1,4 @@
-import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "./calc";
+import { calc, calcEigenverbrauchExakt, estimateCost, calcWeightedFeedIn } from "./calc";
 import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { calcHeatPump } from "./heatpump";
@@ -32,7 +32,7 @@ export type FundingScenarios = {
 export function buildFundingScenarios(yieldKwhKwp: number, monthly: number[] | null = null): FundingScenarios {
   // PV: typical single-family home, 10 kWp, no battery, standard household.
   const pvKwp = 10;
-  const ev = calcEigenverbrauch({
+  const ev = calcEigenverbrauchExakt({
     personenIdx: 2, nutzungIdx: 1, speicherKwh: 0,
     wp: "nein", ea: "nein", eaKm: 15000, kwp: pvKwp, ertragKwp: yieldKwhKwp,
   });
@@ -50,6 +50,10 @@ export function buildFundingScenarios(yieldKwhKwp: number, monthly: number[] | n
   const wp = calcHeatPump({
     situation: "bestand", wohnflaeche: 140, insulationIdx: 1, personen: 2,
     heizsystem: "hk_neu", wpType: "lwwp",
+    // Die Karte sagt „gegenüber einer neuen Gasheizung" — und wer neu einbaut,
+    // trägt die Beimischungspflicht (§ 43 GModG). Ohne sie stand hier 20.950 €,
+    // der verlinkte Rechner öffnete mit 28.207 €.
+    greenGas: true,
   });
 
   // Balcony system: the recommended set for a typical tenant household.

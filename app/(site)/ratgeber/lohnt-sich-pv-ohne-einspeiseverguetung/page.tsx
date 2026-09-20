@@ -18,7 +18,7 @@ import { simulateSolarYear, monthlyFromAnnual } from "../../../../lib/balkon-sim
 import RenditeVergleich from "./_components/RenditeVergleich";
 import {
   calc,
-  calcEigenverbrauch,
+  calcEigenverbrauchExakt,
   calcWeightedFeedIn,
   estimateCost,
   batteryReplaceCost,
@@ -225,7 +225,7 @@ const SPEICHER_IDX: Record<number, number> = Object.fromEntries(
 
 function computeExample(speicherKwh: number, feedInActive: boolean, prices: PriceConfig): ExampleRow {
   const baseKwh = PERSONEN[EX.personenIdx].verbrauch;
-  const ev = calcEigenverbrauch({
+  const evExakt = calcEigenverbrauchExakt({
     personenIdx: EX.personenIdx,
     nutzungIdx: EX.nutzungIdx,
     speicherKwh,
@@ -244,7 +244,7 @@ function computeExample(speicherKwh: number, feedInActive: boolean, prices: Pric
     kwp: EX.kwp,
     kosten,
     strompreis: prices.electricityPrice,
-    eigenverbrauch: ev,
+    eigenverbrauch: evExakt,
     einspeisung: feedIn,
     stromSteigerung: prices.electricityIncrease,
     ertragKwp: EX.ertragKwp,
@@ -270,7 +270,7 @@ function computeExample(speicherKwh: number, feedInActive: boolean, prices: Pric
       kwp: EX.kwp,
       kosten,
       strompreis: prices.electricityPrice,
-      eigenverbrauch: Math.min(ev + s.evDelta, 95, (baseKwh / jahresertrag) * 100),
+      eigenverbrauch: Math.min(evExakt + s.evDelta, 95, (baseKwh / jahresertrag) * 100),
       einspeisung: feedIn,
       stromSteigerung: s.strom,
       ertragKwp: EX.ertragKwp,
@@ -293,7 +293,8 @@ function computeExample(speicherKwh: number, feedInActive: boolean, prices: Pric
   return {
     speicherKwh,
     kosten,
-    ev,
+    // Gezeigt in ganzen Prozent, gerechnet ungerundet — wie im Rechner.
+    ev: Math.round(evExakt),
     autarkie: sim.autarky,
     amortisation: result.be?.i ?? null,
     gewinn25: result.total,
@@ -753,9 +754,8 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           ]}
         />
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
-          Zuletzt aktualisiert: {new Date().toLocaleDateString("de-DE", { month: "long", year: "numeric" })} —
-          die Zahlen auf dieser Seite werden automatisch aus den aktuellen Marktpreisen
-          berechnet ({year}). Angaben zur geplanten EEG-Reform: Stand {REFORM_STAND}, ohne
+          Preisstand {formatPriceDate(prices.validFrom)} — die Zahlen auf dieser Seite werden
+          automatisch aus den aktuellen Marktpreisen berechnet ({year}). Angaben zur geplanten EEG-Reform: Stand {REFORM_STAND}, ohne
           Gewähr; verbindlich ist die offizielle Gesetzeslage.
         </p>
       </div>

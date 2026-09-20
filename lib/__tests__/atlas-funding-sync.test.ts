@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ATLAS_CITIES, fundingFor, fundingForFrom, publishedCities, indexedCities, cityIndexFreigegeben, liveCities, archivedCities } from "../atlas-cities";
+import { ATLAS_CITIES, fundingFor, fundingForFrom, publishedCities, indexedCities, cityIndexFreigegeben, liveCities, archivedCities, foerderseiteTraegt } from "../atlas-cities";
 import { allFundingPrograms } from "../funding-programs";
 import { ALTBESTAND, ortSchluessel } from "../release-plan";
 
@@ -32,7 +32,47 @@ const istAlt = (ags: string) => ALT.has(ortSchluessel(ags));
  * festgehalten, statt ihn zu befristen. Jetzt trägt das Verzeichnis
  * achtstellige Schlüssel, und die Regel ist weg.
  */
-const OHNE_SEITE: Record<string, string> = {};
+const OHNE_SEITE: Record<string, string> = {
+  "bad-marienberg-erneuerbare-energien": "OFFEN (bis 03/2027). Mixed-technology programme of the Verbandsgemeinde, budget for 2026 exhausted (official notice 16 September 2026); an exhausted programme carries no funding page. All 18 member municipalities are individually audited in data/funding/municipal-reviews.json (17 September 2026). Reachable through the postcode lookup and the balcony overview. Revisit when the Verbandsgemeinde announces whether the programme continues in 2027.",
+  "mainz-bingen-balkonkraftwerke": "OFFEN (bis 12/2026). Closed historical county programme (payments ended 30 April 2026); county-level pages are not released and a closed programme carries no funding page. Reachable through the postcode lookup.",
+  "vg-hachenburg-erneuerbare-energien": "OFFEN (bis 03/2027). Balcony and heat-pump programme of the Verbandsgemeinde (no roof photovoltaics); the KIPKI budget of 237,000 EUR is exhausted (programme page read 18 September 2026). An exhausted programme without roof PV carries no funding page. All 33 member municipalities are listed individually in the funding area. Reachable through the postcode lookup. Revisit when the Verbandsgemeinde reports new funds.",
+  "vg-wallmerod-lange-leben-im-dorf": "OFFEN (bis 03/2027). Building-renovation grant of the Verbandsgemeinde that covers a heating replacement among other measures and expressly excludes photovoltaics; a page titled \"Photovoltaik-Förderung\" would promise funding the programme refuses. All 21 member municipalities are listed individually in the funding area. Reachable through the postcode lookup. Revisit if the Verbandsgemeinde adds an energy-generation grant.",
+  "altenkirchen-balkonkraftwerke":"OFFEN (bis 12/2026). Closed historical county programme without a rate; county-level pages are not released. Reachable through the postcode lookup.",
+  "altenkirchen-solarspeicher": "OFFEN (bis 12/2026). Exhausted historical county programme without a rate; county-level pages are not released. Reachable through the postcode lookup.",
+  "erlangen-hoechstadt-waermepumpe": "OFFEN (bis 03/2027). Heat-pump-only county grant (250/500 EUR, no roof photovoltaics and no storage); a page titled \"Photovoltaik-Förderung\" would promise roof funding the county does not pay, and county-level pages are not released. Reachable through the postcode lookup. Revisit in January 2027: the time limit rolls forward with the county budget each year, and the page carried an expired one for six weeks in early 2025.",
+  "ekm-altenkirchen": "OFFEN (bis 03/2027). Heat-pump-only discretionary grant of the EKM gGmbH for the whole county, no rate; a page titled \"Photovoltaik-Förderung\" would promise roof funding the committee expressly excludes, and county-level pages are not released. Reachable through the postcode lookup.",
+  "mehren-balkonkraftwerke": "OFFEN (bis 03/2027). Active but balcony-only village programme (465 inhabitants): a page titled \"Photovoltaik-Förderung in Mehren\" would promise roof funding the village does not pay. Reachable through the postcode lookup.",
+  "holzminden-solarfair": "OFFEN (bis 03/2027). Active but balcony-only programme bound to Wohngeld/Bürgergeld: a page titled \"Photovoltaik-Förderung in Holzminden\" would promise roof funding the town does not pay. Reachable through the postcode lookup.",
+  "cochem-zell-solarstromspeicher": "OFFEN (bis 12/2026). Closed historical county programme (ended 31.03.2026); county-level pages are not released. Reachable through the postcode lookup.",
+  "mayen-koblenz-balkonkraftwerke": "OFFEN (bis 12/2026). Closed historical county programme; the county entry already carries the storage programme as its page programme, and county-level pages are not released. Reachable through the postcode lookup.",
+  "wuerselen-balkonkraftwerke": "OFFEN (bis 03/2027). Active but balcony-only: a page titled \"Photovoltaik-Förderung in Würselen\" would promise roof funding the city does not pay. Reachable through the postcode lookup, the balcony calculator and the balcony funding overview. Revisit if the city adds a roof or storage grant.",
+  "gronau-klima-umweltfonds": "OFFEN (bis 06/2027). Suspended since the budget freeze of 29 July 2026; applications are stopped for all four funding areas and the finance committee confirmed the freeze on 9 September 2026. A suspended programme pays nothing, so it carries no funding page. Reachable through the postcode lookup. Revisit when the city lifts the freeze or announces the 2027 fund.",
+  "herzogenrath-klimaschutzinvestitionen": "OFFEN (bis 03/2027). Exhausted for 2026 and balcony/heat-pump only — the guideline funds small plug-in systems up to the de-minimis limit, not roof photovoltaics, so a page titled \"Photovoltaik-Förderung in Herzogenrath\" would promise what the city does not pay. Reachable through the postcode lookup. Revisit when the city releases its 2027 budget.",
+  "bahrenhof-solar": "OFFEN (bis 12/2026). Closed village programme (guideline of 13 June 2023, expired 31 December 2023) in a municipality of 210 inhabitants. A closed programme carries no funding page, and the historical rates stay visible through the postcode lookup. Revisit if the municipality announces a new round.",
+  "wakendorf-i-solar": "OFFEN (bis 12/2026). Closed village programme in Amt Trave-Land (guideline of 18 January 2023, extended by the 2024 application form to 31 December 2024); a closed programme carries no funding page, and the historical rates stay visible through the postcode lookup. Revisit if the municipality announces a new round.",
+  "weede-mini-solar": "OFFEN (bis 12/2026). Closed village programme in Amt Trave-Land (guideline of 1 January 2023, extended by the 2024 application form to 31 December 2024); a closed programme carries no funding page, and the historical rates stay visible through the postcode lookup. Revisit if the municipality announces a new round.",
+  "kalchreuth-regenerative-energien": "OFFEN (bis 03/2027). Heat-pump-only municipal grant whose validity is open — the guideline ends \"with the current budget year\" (2023) but the municipality still publishes it with its application forms (20 September 2026). Carried as status \"unsicher\", so it informs and deducts nothing; a page titled \"Photovoltaik-Förderung in Kalchreuth\" would promise roof funding the municipality does not pay at all. Reachable through the postcode lookup. Revisit when the municipality answers the enquiry (queued 20 September 2026).",
+  "eckental-balkon": "OFFEN (bis 03/2027). Active but balcony-only market-town programme (50 EUR per household): a page titled \"Photovoltaik-Förderung in Eckental\" would promise roof funding the market town does not pay. Reachable through the postcode lookup, the balcony calculator and the balcony funding overview. Revisit if Eckental adds a roof or storage grant.",
+  "bubenreuth-co2-einsparung": "OFFEN (bis 03/2027). Exhausted municipal programme — the municipality itself states on its funding page that the funds are used up and that no application is possible at present (read 20 September 2026). An exhausted programme pays nothing, so it carries no funding page; the historical rates stay visible through the postcode lookup. Revisit when the municipality announces a new round or a new budget year.",
+  "herzogenaurach-co2-minderung": "OFFEN (bis 03/2027). Suspended municipal programme: the application stop has been extended indefinitely (council committee decision of 13 March 2024, live page read 20 September 2026), and the current guideline of 13 March 2023 funds no photovoltaics at all — only a flat heating-replacement grant. A page titled \"Photovoltaik-Förderung in Herzogenaurach\" would promise roof funding the town does not pay even when the programme runs. Reachable through the postcode lookup. Revisit when the town lifts the application stop.",
+  "geschendorf-solar": "OFFEN (bis 12/2026). Closed village programme in Amt Trave-Land (guideline of 30 May 2024, expired 31 December 2024); a closed programme carries no funding page, and the historical rates stay visible through the postcode lookup. Revisit if the municipality announces a new round.",
+};
+
+/**
+ * 30 Sekunden statt der voreingestellten fünf.
+ *
+ * Diese Prüfungen lesen den halben Bestand ein — den Förderkatalog, das
+ * Ortsverzeichnis, jede Datei des Repos. Auf einer ruhigen Maschine kosten sie
+ * Sekundenbruchteile; auf einer belegten reißen sie das Vorgabelimit, und zwar
+ * ohne dass irgendetwas am Code falsch wäre. Genau dafür gibt es im Projekt
+ * schon das Vorbild in `energy-api.test.ts` („generous headroom so CPU load
+ * can't trip the 5s default").
+ *
+ * Das Limit misst NICHTS Fachliches — es schützt vor einem hängenden Test.
+ * Es anzuheben schwächt die Prüfung also nicht; ein Fehlschlag daran kostet
+ * dagegen eine Stunde Suche nach einer Ursache, die es nicht gibt.
+ */
+const REPO_WEIT_MS = 30_000;
 
 describe("Förderkatalog und Stadtseiten bleiben synchron", () => {
   const regional = allFundingPrograms().filter((p) => p.level !== "bund");
@@ -88,7 +128,7 @@ describe("Förderkatalog und Stadtseiten bleiben synchron", () => {
   it("veröffentlicht wird nur, wo es auch ein Programm gibt", () => {
     for (const c of publishedCities()) expect(fundingFor(c), c.slug).toBeDefined();
   });
-});
+}, REPO_WEIT_MS);
 
 // Aus der Prüfrunde am 18.08.2026 — beide Fälle waren latent, kein Test hätte
 // angeschlagen, und beide hätten Geld bewegt bzw. eine indexierte Seite entfernt.
@@ -239,7 +279,34 @@ describe("Index-Freigabe", () => {
       // muss sichtbar dazukommen, sonst könnte ein stiller Tausch sie ersetzen.
       "nidda",
     ];
-    expect(indexedCities().map((c) => c.slug).sort()).toEqual([...SEIT_JUNI_IM_INDEX].sort());
+    // GEPRÜFT WIRD DIE TEILMENGE, NICHT DIE GLEICHHEIT (05.09.2026).
+    //
+    // Bis hierher stand hier toEqual — der Test war damit zugleich eine
+    // WACHSTUMSSPERRE. Das war bis zum 01.09.2026 richtig: Damals entschied der
+    // Releaseplan über jede Freischaltung, eine neue Seite ohne Schub wäre eine
+    // Nebenwirkung gewesen. Seitdem hat der Betreiber entschieden, dass eine
+    // Förderseite live geht, sobald ihr Programm aktiv ist und Dach-PV fördert.
+    // Der Test wurde bei dieser Umstellung nicht nachgezogen — und blieb grün,
+    // weil isCityPublished sie ebenfalls nicht mitbekam. Zwei überholte
+    // Annahmen, die einander bestätigten, während 21 Adressen in der Sitemap
+    // standen und mit HTTP 404 antworteten.
+    //
+    // Was der Test WEITERHIN leistet und leisten soll: Keine der Seiten, die
+    // seit Juni im Index stehen, darf ihre Freigabe still verlieren — genau der
+    // Fall, den die Hannover-Schlüsselkorrektur ausgelöst hätte. Das ist eine
+    // Teilmengen-Frage, keine Gleichheits-Frage.
+    const freigegeben = new Set(indexedCities().map((c) => c.slug));
+    const verloren = SEIT_JUNI_IM_INDEX.filter((s) => !freigegeben.has(s));
+    expect(verloren, "seit Juni im Index und jetzt nicht mehr freigegeben").toEqual([]);
+
+    // Und die Gegenrichtung, damit aus der Lockerung keine offene Tür wird: Was
+    // NEU dazukommt, kommt über den zweiten, benannten Weg — nicht über einen
+    // dritten, den niemand angemeldet hat.
+    const altbestand = new Set(SEIT_JUNI_IM_INDEX);
+    const ohneGrund = indexedCities()
+      .filter((c) => !altbestand.has(c.slug) && !foerderseiteTraegt(c))
+      .map((c) => c.slug);
+    expect(ohneGrund, "neu im Index, ohne dass das Programm die Schwelle trägt").toEqual([]);
   });
 
   it("was nicht in den Index darf, steht auch nicht in der Sitemap", () => {

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { v, iconSizes } from "../lib/theme";
 import {
   IconDownload,
+  IconVideo,
   IconShare,
   IconLink,
   IconWhatsApp,
@@ -44,6 +45,9 @@ function clippendeGrenze(el: HTMLElement): { left: number; right: number } {
 
 export interface ChartActionBarProps {
   onDownload: () => void;
+  /** Animierte Charts: die Animation als Video aufnehmen (läuft in Echtzeit). */
+  onDownloadVideo?: () => void;
+  isRecording?: boolean;
   onCopyLink: () => void;
   onWhatsApp: () => void;
   onTwitter: () => void;
@@ -54,6 +58,7 @@ export interface ChartActionBarProps {
   canNativeShare: boolean;
   /** Button edge length; the footer uses a slightly smaller size than pages. */
   size?: number;
+  secondary?: boolean;
   /**
    * "bar" (default) = the full button row (download + share dropdown + embed),
    * for wide widgets. "menu" = a single ⋯ button opening one dropdown with all
@@ -84,6 +89,8 @@ export interface ChartActionBarProps {
  */
 export default function ChartActionBar({
   onDownload,
+  onDownloadVideo,
+  isRecording = false,
   onCopyLink,
   onWhatsApp,
   onTwitter,
@@ -92,6 +99,7 @@ export default function ChartActionBar({
   isExporting,
   canNativeShare,
   size = 36,
+  secondary = false,
   variant = "bar",
   showDownload = true,
   menuUp = false,
@@ -151,7 +159,7 @@ export default function ChartActionBar({
     cursor: "pointer",
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border-accent")}`,
-    color: v("--color-accent"),
+    color: v(secondary ? "--color-text-primary" : "--color-accent"),
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -191,6 +199,17 @@ export default function ChartActionBar({
                   label={isExporting ? "Wird erstellt…" : "Als Bild speichern"}
                   onClick={run(onDownload)}
                   disabled={isExporting}
+                />
+                <div style={S.divider} />
+              </>
+            )}
+            {onDownloadVideo && (
+              <>
+                <MenuItem
+                  icon={IconVideo}
+                  label={isRecording ? "Wird aufgenommen…" : "Als Video speichern"}
+                  onClick={run(onDownloadVideo)}
+                  disabled={isRecording}
                 />
                 <div style={S.divider} />
               </>
@@ -237,6 +256,16 @@ export default function ChartActionBar({
           style={{ ...btn, opacity: isExporting ? 0.5 : 1, cursor: isExporting ? "wait" : "pointer" }}
         >
           <IconDownload size={icon} />
+        </button>
+      )}
+      {onDownloadVideo && (
+        <button
+          onClick={onDownloadVideo}
+          disabled={isRecording}
+          title={isRecording ? "Video wird aufgenommen – die Animation läuft dafür einmal durch" : "Als Video herunterladen"}
+          style={{ ...btn, opacity: isRecording ? 0.5 : 1, cursor: isRecording ? "wait" : "pointer" }}
+        >
+          <IconVideo size={icon} />
         </button>
       )}
 
@@ -345,7 +374,7 @@ const S: Record<string, React.CSSProperties> = {
     gap: 9,
     width: "100%",
     padding: "8px 10px",
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     fontWeight: 500,
     color: v("--color-text-primary"),
     background: "transparent",
@@ -357,7 +386,7 @@ const S: Record<string, React.CSSProperties> = {
     whiteSpace: "nowrap" as const,
   },
   itemAccent: { color: v("--color-accent"), fontWeight: 700 },
-  itemMuted: { color: v("--color-text-muted"), fontWeight: 400, fontSize: 12.5 },
+  itemMuted: { color: v("--color-text-muted"), fontWeight: 400, fontSize: v("--font-size-small") },
   divider: { height: 1, background: v("--color-border"), margin: "4px 2px" },
   toast: {
     position: "absolute",
@@ -371,7 +400,7 @@ const S: Record<string, React.CSSProperties> = {
     background: v("--color-text-primary"),
     color: v("--color-bg"),
     borderRadius: v("--radius-md"),
-    fontSize: 12.5,
+    fontSize: v("--font-size-small"),
     fontWeight: 600,
     whiteSpace: "nowrap" as const,
     boxShadow: v("--shadow-md"),

@@ -6,6 +6,7 @@ import {
   EINWILLIGUNGS_FASSUNGEN,
   einwilligungsFassung,
 } from "../abo-einwilligung";
+import { heuteInBerlin } from "../zeit";
 
 // Der Nachweis der Einwilligung umfasst den WORTLAUT, nicht nur den Zeitpunkt.
 //
@@ -57,7 +58,7 @@ describe("Das Archiv der Einwilligungstexte", () => {
     // die Eigenschaft, die auch bei einer Fassung gilt: Sie ist die jüngste,
     // und keine Fassung liegt in der Zukunft — ein Text, der erst morgen gilt,
     // kann heute niemandem vorgelegen haben.
-    const heute = new Date().toISOString().slice(0, 10);
+    const heute = heuteInBerlin();
     for (const f of EINWILLIGUNGS_FASSUNGEN) {
       // Als Wahrheitswert, nicht als Zahlenvergleich: `toBeLessThanOrEqual`
       // nimmt keine Zeichenketten, und der Test war dadurch DAUERHAFT rot —

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { heuteInBerlin } from "../../../../../lib/zeit";
 import { isAdminSession } from "../../../../../lib/admin-guard";
 
 // Ein Thema vor der Aufnahme prüfen: Wie viel wird gesucht, wie besetzt ist das
@@ -130,7 +131,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({
-      gemessenAm: new Date().toISOString().slice(0, 10),
+      gemessenAm: heuteInBerlin(),
       begriffe: gemessen,
       gesamtVolumen: gemessen.reduce((s, g) => s + (g.volumen ?? 0), 0),
       trefferlisteFuer: staerkster?.begriff ?? null,

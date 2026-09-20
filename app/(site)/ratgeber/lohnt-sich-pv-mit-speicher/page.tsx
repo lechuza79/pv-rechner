@@ -14,7 +14,7 @@ import { type PriceConfig } from "../../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
 import {
   calc,
-  calcEigenverbrauch,
+  calcEigenverbrauchExakt,
   calcWeightedFeedIn,
   estimateCost,
   batteryReplaceCost,
@@ -25,6 +25,8 @@ import { simulatePvYear } from "../../../../lib/pv-sim";
 import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, NATIONAL_AVG_YIELD } from "../../../../lib/constants";
 import { pageMetadata } from "../../../../lib/seo";
 import Chart from "../../photovoltaik-rechner/_components/Chart";
+import KostenrennenWidget from "../../../../components/charts/KostenrennenWidget";
+import { kostenrennen, RENNEN_OHNE_MIT_PV } from "../../../../lib/kostenrennen";
 
 // Figures on this page come live from the same models the calculator uses
 // (prices from Supabase market_prices with config fallback). ISR keeps them
@@ -218,7 +220,7 @@ const SPEICHER_IDX: Record<number, number> = Object.fromEntries(
 
 function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
   const baseKwh = PERSONEN[EX.personenIdx].verbrauch;
-  const ev = calcEigenverbrauch({
+  const evExakt = calcEigenverbrauchExakt({
     personenIdx: EX.personenIdx,
     nutzungIdx: EX.nutzungIdx,
     speicherKwh,
@@ -234,7 +236,7 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
     kwp: EX.kwp,
     kosten,
     strompreis: prices.electricityPrice,
-    eigenverbrauch: ev,
+    eigenverbrauch: evExakt,
     einspeisung: feedIn,
     stromSteigerung: prices.electricityIncrease,
     ertragKwp: EX.ertragKwp,
@@ -261,7 +263,7 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
       kwp: EX.kwp,
       kosten,
       strompreis: prices.electricityPrice,
-      eigenverbrauch: Math.min(ev + s.evDelta, 95, (baseKwh / jahresertrag) * 100),
+      eigenverbrauch: Math.min(evExakt + s.evDelta, 95, (baseKwh / jahresertrag) * 100),
       einspeisung: feedIn,
       stromSteigerung: s.strom,
       ertragKwp: EX.ertragKwp,
@@ -285,7 +287,8 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
   return {
     speicherKwh,
     kosten,
-    ev,
+    // Gezeigt in ganzen Prozent, gerechnet ungerundet — wie im Rechner.
+    ev: Math.round(evExakt),
     autarkie: sim.autarky,
     amortisation: result.be?.i ?? null,
     gewinn25: result.total,
@@ -308,14 +311,14 @@ function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; bad
     border: `1px solid ${v("--color-border")}`,
   } as const;
   const tileLabel = {
-    fontSize: 10.5,
+    fontSize: v("--font-size-micro"),
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
     letterSpacing: "0.04em",
     fontWeight: 600,
   } as const;
   const tileValue = {
-    fontSize: 17,
+    fontSize: v("--font-size-lead"),
     fontWeight: 800,
     fontFamily: v("--font-mono"),
     marginTop: 4,
@@ -332,8 +335,8 @@ function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; bad
       }}
     >
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
-        <strong style={{ fontSize: 14.5, fontWeight: 700, color: v("--color-text-primary") }}>{title}</strong>
-        <span style={{ fontSize: 11, fontWeight: 700, fontFamily: v("--font-mono"), color: v("--color-accent") }}>{badge}</span>
+        <strong style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary") }}>{title}</strong>
+        <span style={{ fontSize: v("--font-size-caption"), fontWeight: 700, fontFamily: v("--font-mono"), color: v("--color-accent") }}>{badge}</span>
       </div>
       <Chart scenarios={row.scenarios} kosten={row.kosten} highlightId="realistic" />
       <div
@@ -371,7 +374,7 @@ function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; bad
           marginTop: 12,
           padding: "9px 16px",
           borderRadius: v("--radius-md"),
-          fontSize: 13,
+          fontSize: v("--font-size-small"),
           fontWeight: 700,
           background: v("--color-accent"),
           color: v("--color-text-on-accent"),
@@ -422,7 +425,7 @@ export default async function LohntSichPvMitSpeicherPage() {
           description="Wann sich ein Batteriespeicher zur PV-Anlage rechnet — und wann nicht."
           path="/ratgeber/lohnt-sich-pv-mit-speicher"
           published="2026-07-19"
-          modified="2026-07-26"
+          modified="2026-09-05"
         />
 
         {/* ── Kurzantwort ── */}
@@ -598,6 +601,30 @@ export default async function LohntSichPvMitSpeicherPage() {
           </span>
         </div>
 
+        {/* ── Das Rennen: derselbe Haushalt (EX) ohne und mit Anlage, animiert
+            über 25 Jahre. Dasselbe Bauteil wie unter /embed/pv-kostenrennen;
+            hier direkt gerendert (onsite: keine Marke, Quelle beim Überfahren —
+            die Seite kreditiert zentral). Die Preise sind dieselben wie in der
+            Beispielrechnung darüber, sonst widersprächen sich zwei Zahlen auf
+            einer Seite. ── */}
+        <h2 id="kostenrennen" style={S.h2}>Das Rennen: mit oder ohne Anlage?</h2>
+        <p style={S.p}>
+          Derselbe Beispielhaushalt zweimal — einmal bleibt er beim Netzstrom, einmal legt er
+          sich die {EX.kwp}-kWp-Anlage aufs Dach. Die Linien zeichnen Tag für Tag, was jeder bis
+          dahin für Strom ausgegeben hat, mit dem Wetter, wie es in den letzten 25 Jahren
+          wirklich war: Kein Jahr gleicht dem anderen, eine Regenwoche bremst, eine
+          Hochdrucklage treibt. Der PV-Haushalt startet mit der Anschaffung vorn; wo die Linie
+          des anderen seine kreuzt, ist die Anlage bezahlt — das ist ihre Amortisation.
+        </p>
+        <div style={{ marginBottom: 24 }}>
+          <KostenrennenWidget
+            rennen={kostenrennen(RENNEN_OHNE_MIT_PV, { prices, feedIn: DEFAULT_FEED_IN })}
+            onsite
+            branding={false}
+            preiseStandIso={prices.validFrom}
+          />
+        </div>
+
         {/* ── Wann ja / wann nein (zwei Listen nebeneinander) ── */}
         <h2 style={S.h2}>Lohnt sich ein Speicher — für wen?</h2>
         <ProConLists
@@ -630,7 +657,7 @@ export default async function LohntSichPvMitSpeicherPage() {
         <div style={{ ...S.hero, marginTop: 28 }}>
           <span style={S.label}>Für deinen Fall durchrechnen</span>
           <p style={{ ...S.p, color: v("--color-text-primary"), marginBottom: 14 }}>
-            Vier Fragen, sofort das Ergebnis — ohne Anmeldung, ohne Verkaufsanrufe. Alle
+            Fünf Fragen, sofort das Ergebnis — ohne Anmeldung, ohne Verkaufsanrufe. Alle
             Annahmen sind im Ergebnis sichtbar und anpassbar.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -660,9 +687,8 @@ export default async function LohntSichPvMitSpeicherPage() {
           ]}
         />
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
-          Zuletzt aktualisiert: {new Date().toLocaleDateString("de-DE", { month: "long", year: "numeric" })} —
-          die Zahlen auf dieser Seite werden automatisch aus den aktuellen Marktpreisen
-          berechnet ({year}).
+          Preisstand {formatPriceDate(prices.validFrom)} — die Zahlen auf dieser Seite werden
+          automatisch aus den aktuellen Marktpreisen berechnet ({year}).
         </p>
       </div>
     </div>

@@ -16,13 +16,13 @@ import { DataSourceNote } from "./PoweredBy";
 
 const S = {
   h2: {
-    fontSize: 17,
+    fontSize: v("--font-size-lead"),
     fontWeight: 800 as const,
     letterSpacing: "-0.01em",
     margin: `${space.xxl}px 0 ${space.md}px`,
   },
   p: {
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     lineHeight: 1.7,
     color: v("--color-text-secondary"),
     margin: `0 0 ${space.md}px`,
@@ -47,7 +47,7 @@ export default function SolarTrendSection({
   const th = {
     textAlign: "right" as const,
     padding: "6px 8px",
-    fontSize: 10,
+    fontSize: v("--font-size-micro"),
     fontWeight: 600,
     color: v("--color-text-muted"),
     whiteSpace: "nowrap" as const,
@@ -55,7 +55,7 @@ export default function SolarTrendSection({
   const td = {
     textAlign: "right" as const,
     padding: "6px 8px",
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     fontFamily: v("--font-mono"),
     color: v("--color-text-secondary"),
     whiteSpace: "nowrap" as const,
@@ -115,7 +115,7 @@ export default function SolarTrendSection({
       {/* Lizenzpflicht (CC BY 4.0): Der Abschnitt bringt eine eigene Quelle mit,
           die die einbettende Seite NICHT trägt — die Zubau-Seite zitiert MaStR,
           EEG und Eurostat, dieser Block dagegen Energy-Charts. */}
-      <div style={{ marginTop: space.sm, fontSize: 11, color: v("--color-text-faint"), lineHeight: 1.6 }}>
+      <div style={{ marginTop: space.sm, fontSize: v("--font-size-caption"), color: v("--color-text-faint"), lineHeight: 1.6 }}>
         <DataSourceNote source={WIDGETS.solarTrend.sources} />
       </div>
     </section>

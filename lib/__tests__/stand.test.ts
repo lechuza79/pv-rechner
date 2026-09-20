@@ -249,6 +249,11 @@ describe("Stand-Zeile: dasselbe Datum steht in der Sitemap", () => {
       }
     };
     suchen(seiten);
+    // The redesigned homepage and simulation are served as documents; their
+    // stand line is built in lib/neon-seite.ts.
+    for (const m of readFileSync(join(ROOT, "lib", "neon-seite.ts"), "utf8").matchAll(/standSeite\("([^"]+)"\)/g)) {
+      gefunden.set(m[1], "lib/neon-seite.ts");
+    }
     expect([...gefunden.keys()].sort()).toEqual(Object.keys(STAND).sort());
   });
 

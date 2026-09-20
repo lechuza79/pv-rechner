@@ -24,7 +24,7 @@
 //     liefern zellgleich dieselben vier Werte — das ist die Quer-Validierung,
 //     mit der die 2006er Zeile hier steht.
 //   · Warum die Kette bei 2006 ANFÄNGT und nicht bei 2004: Dieses Modul dient
-//     der Bestandsbewertung im Solar-Atlas, und dort zählt ein Jahrgang nur,
+//     der Bestandsbewertung im Energie-Atlas, und dort zählt ein Jahrgang nur,
 //     solange seine 20 Jahre laufen (§ 25 EEG). Jahrgang 2005 ist Ende 2025
 //     ausgelaufen, 2006 läuft noch bis Ende 2026. Eine 2005er Zeile wäre also
 //     Datenpflege für einen Fall, den es nicht mehr gibt.
@@ -73,7 +73,7 @@
 //     versiegelte Flächen und Konversionsflächen (§ 32 Abs. 3 Satz 1 Nr. 1
 //     und 2 — 2011: 22,07 statt 21,11 ct; 2012: 18,76 statt 17,94 ct).
 //     Gespeichert ist immer die ALLGEMEINE, also niedrigere Freiflächenklasse.
-//   · Diese Sätze sind für die BESTANDSBEWERTUNG im Solar-Atlas gedacht —
+//   · Diese Sätze sind für die BESTANDSBEWERTUNG im Energie-Atlas gedacht —
 //     "was verdient der Anlagenbestand einer Gemeinde ungefähr". Der
 //     Einspeisevergütungs-RECHNER bietet für diese Jahrgänge weiterhin bewusst
 //     die manuelle Eingabe aus dem Bescheid an (Begründung im Kopf von

@@ -25,7 +25,7 @@ function arrowBase() {
     border: `1px solid ${v("--color-border")}`,
     background: v("--color-bg"),
     color: v("--color-text-secondary"),
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 600 as const,
     fontFamily: v("--font-text"),
     display: "flex" as const,
@@ -52,7 +52,7 @@ function TrendVergleich({
   if (!(max > 0)) return null;
   const row = (yearLabel: string, value: number, text: string, color: string, bold: boolean) => (
     <div style={{ display: "flex", alignItems: "center", gap: space.sm }}>
-      <span style={{ flexShrink: 0, width: 34, fontSize: 10, fontFamily: v("--font-mono"), color: v("--color-text-muted") }}>
+      <span style={{ flexShrink: 0, width: 34, fontSize: v("--font-size-micro"), fontFamily: v("--font-mono"), color: v("--color-text-muted") }}>
         {yearLabel}
       </span>
       <div style={{ flex: 1, height: 10, borderRadius: 3, background: v("--color-bg"), overflow: "hidden" }}>
@@ -60,7 +60,7 @@ function TrendVergleich({
       </div>
       <span
         style={{
-          flexShrink: 0, minWidth: 74, textAlign: "right", fontSize: 11,
+          flexShrink: 0, minWidth: 74, textAlign: "right", fontSize: v("--font-size-caption"),
           fontFamily: v("--font-mono"), fontWeight: bold ? 700 : 400,
           color: bold ? v("--color-text-primary") : v("--color-text-muted"),
         }}
@@ -71,7 +71,7 @@ function TrendVergleich({
   );
   return (
     <div style={{ flex: "1 1 180px", minWidth: 170 }}>
-      <div style={{ fontSize: 11, fontWeight: 600, color: v("--color-text-secondary"), marginBottom: space.xs }}>{label}</div>
+      <div style={{ fontSize: v("--font-size-caption"), fontWeight: 600, color: v("--color-text-secondary"), marginBottom: space.xs }}>{label}</div>
       <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
         {row(prevLabel, prevValue, prevText, v("--color-border"), false)}
         {row(curLabel, curValue, curText, barColor, true)}
@@ -167,13 +167,13 @@ export default function SolarTrendCard({ series }: { series: SolarMonat[] }) {
         borderRadius: v("--radius-md"),
         padding: pad("md", "lg"),
         marginBottom: 20,
-        fontSize: 13,
+        fontSize: v("--font-size-small"),
         lineHeight: 1.65,
         color: v("--color-text-secondary"),
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: space.md, marginBottom: space.sm }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-primary") }}>
+        <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary") }}>
           Solar-Trend: {monthLabel} {year} gegen {monthLabel} {year - 1}
         </div>
         <div style={{ display: "flex", gap: space.xs, flexShrink: 0 }}>

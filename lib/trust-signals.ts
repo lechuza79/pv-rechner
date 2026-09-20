@@ -18,7 +18,7 @@
 
 import { DATA_SOURCES } from "./data-sources";
 
-/** Welches Icon die Leiste vor dem Punkt zeigt. Auflösung in components/TrustBar. */
+/** Welches Icon die Leiste vor dem Punkt zeigt. Auflösung in lib/site-fuss.ts (Badge-Motiv). */
 export type TrustIcon = "check" | "quote" | "refresh" | "lock";
 
 export interface TrustSignal {

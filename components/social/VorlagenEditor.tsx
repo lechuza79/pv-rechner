@@ -82,7 +82,7 @@ export function VorlagenEditor({
           style={{
             width: "100%",
             fontFamily: v("--font-mono"),
-            fontSize: 13,
+            fontSize: v("--font-size-small"),
             lineHeight: 1.5,
             padding: pad("md", "md"),
             borderRadius: v("--radius-sm"),

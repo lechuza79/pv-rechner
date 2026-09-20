@@ -1,7 +1,9 @@
 "use client";
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { useAuth, signInWithMagicLink } from "../../../lib/auth";
+import { useAuth } from "../../../lib/auth";
+import Modal from "../../../components/Modal";
+import AnmeldeFormular from "../../../components/AnmeldeFormular";
 import { useSharedPlz, readLocation } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
 import { einspeiseVerlauf, einspeiseDeckelKw, profilFaktorAus, type EinspeiseRegime } from "../../../lib/einspeise-regime";
@@ -10,13 +12,15 @@ import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
 // ResultVerguetung umschließt ResultRegime — deshalb hier nur der äußere Import.
 import ResultVerguetung from "./_components/ResultVerguetung";
 import ResultSection from "../../../components/ResultSection";
+import ErgebnisAnBetrieb, { RUECKKANAL_OEFFNEN, RUECKKANAL_ZUSTAND, type PartnerAngabe } from "../../../components/ErgebnisAnBetrieb";
+import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN, LEISTE_SENDEN } from "../../../components/KlebenderKnopf";
 // HEIZSYSTEM/HEIZSYSTEM_SHORT/WP_M2_PRESETS brauchte der entfallene
 // Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
 // components/GebaeudeField.
-import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NATIONAL_AVG_YIELD, type Heizsystem } from "../../../lib/constants";
-import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
-import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
-import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
+import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NATIONAL_AVG_YIELD, EINSPEISESATZ_MAX_CT, type Heizsystem } from "../../../lib/constants";
+import { estimateCost, calcEigenverbrauch, calcEigenverbrauchExakt, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramFloatOrNull, paramStr, vollEinspeisungGesperrt } from "../../../lib/calc";
+import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS, BATTERY_ROUNDTRIP } from "../../../lib/pv-sim";
+import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge, heatPumpScenarioAdj } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
 import DachField, { DACH_FIELDS } from "../../../components/DachField";
 import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
@@ -29,12 +33,12 @@ import PresetNumberInput from "../../../components/PresetNumberInput";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import { calcExtraConsumption, calcEaAnnual, KLIMA_DEFAULT_M2, EA_KWH_PER_KM, type HouseholdProfile } from "../../../lib/consumption";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
-import { calcAircon } from "../../../lib/aircon";
+import { klimaSchnellschaetzungKwh } from "../../../lib/aircon";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { useCoolingDegree } from "../../../lib/useCoolingDegree";
 import KlimaDetailModal from "../../../components/KlimaDetailModal";
 import Chart from "./_components/Chart";
-import { v, iconSizes } from "../../../lib/theme";
+import { v, iconSizes, space } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { useFeedInRates } from "../../../lib/feedin";
@@ -74,6 +78,7 @@ const KLIMA_DEVICE_LABEL = (CFG.devices.find(d => d.id === CFG.defaultDeviceId)?
 export default function PVRechner({
   initialParams,
   sharePfad,
+  partner,
 }: {
   initialParams?: Record<string, string | string[] | undefined>;
   /**
@@ -87,6 +92,13 @@ export default function PVRechner({
    * der ins Leere führt, ist schlimmer als kein Teilen-Knopf.
    */
   sharePfad?: string;
+  /**
+   * Gesetzt auf der betriebseigenen Seite: Dann erscheint unter dem Ergebnis
+   * der Rückkanal — der Nutzer kann seine fertige Rechnung an genau den
+   * Betrieb schicken, von dessen Website er gekommen ist. Ohne diese Angabe
+   * verhält sich der Rechner unverändert.
+   */
+  partner?: PartnerAngabe;
 }) {
   // 'er' (Ertrag) und 'plz' sind reine Vorbefüll-Hinweise (z.B. von einer
   // regionalen Landingpage): sie seeden State, dürfen aber NICHT direkt ins
@@ -117,7 +129,7 @@ export default function PVRechner({
   const [speicher, setSpeicher] = useState(hasShare ? paramInt(initialParams, "s", 0, 0, SPEICHER.length - 1) : 0);
   // Freie Speichergröße aus dem Ergebnis heraus (Vorgaben sind Indizes, hier
   // steht die kWh-Zahl selbst). Null = es gilt die im Flow gewählte Vorgabe.
-  const [oSpKwh, setOSpKwh] = useState<number | null>(hasShare ? paramFloat(initialParams, "sk", 0, 0, 30) || null : null);
+  const [oSpKwh, setOSpKwh] = useState<number | null>(hasShare ? paramFloatOrNull(initialParams, "sk", 0, 30) : null);
   const [personen, setPersonen] = useState(hasShare ? paramInt(initialParams, "p", 1, 0, 3) : 1);
   const [nutzung, setNutzung] = useState(hasShare ? paramInt(initialParams, "n", 1, 0, 3) : 1);
   const [wp, setWp] = useState(hasShare ? paramStr(initialParams, "wp", "nein", ["nein", "geplant", "ja"]) : "nein");
@@ -207,7 +219,7 @@ export default function PVRechner({
   // Default unten per usePrices() auf den Live-Wert aus market_prices nachgezogen.
   const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", DEFAULT_PRICES.electricityPrice, 0.05, 1.0) : DEFAULT_PRICES.electricityPrice);
   const [oStromSynced, setOStromSynced] = useState(hasShare); // synced when share-URL — no auto-update
-  const [oEinsp, setOEinsp] = useState<number | null>(hasShare && initialParams?.ei ? (() => { const n = Number(initialParams.ei); return isFinite(n) && n >= 0 && n <= 20 ? n : null; })() : null);
+  const [oEinsp, setOEinsp] = useState<number | null>(hasShare && initialParams?.ei ? (() => { const n = Number(initialParams.ei); return isFinite(n) && n >= 0 && n <= EINSPEISESATZ_MAX_CT ? n : null; })() : null);
   const [einspeisungModus, setEinspeisungModus] = useState<"aus" | "teil" | "voll">(
     hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
   );
@@ -345,33 +357,15 @@ export default function PVRechner({
   // Auth + Save
   const authState = useAuth();
   const [showLogin, setShowLogin] = useState(false);
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginSent, setLoginSent] = useState(false);
-  const [loginError, setLoginError] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [savedCalcId, setSavedCalcId] = useState<string | null>(initialParams?.calc ? String(initialParams.calc) : null);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!loginEmail.trim()) return;
-    setLoginError("");
-    const { error } = await signInWithMagicLink(loginEmail.trim(), { next: isResult ? "/dashboard" : "/dashboard" });
-    if (error) {
-      setLoginError(error.message);
-    } else {
-      setLoginSent(true);
-      // Pending save: speichere Berechnung in localStorage für Auto-Save nach Login
-      if (isResult) {
-        const row = paramsToRow(
-          { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag: effErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
-          { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
-        );
-        const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
-        localStorage.setItem("pendingSave", JSON.stringify({ ...row, name: `${kwp} kWp${spLabel}` }));
-      }
-    }
-  };
+  // Merkt sich, dass die Anmeldung aus dem "Speichern"-Knopf kam. Meldet sich
+  // jemand hier im Fenster an, bleibt er auf seinem Ergebnis stehen — dann muss
+  // die Berechnung noch gespeichert werden, sobald der Anmelde-Zustand
+  // umgesprungen ist. Wer über Google geht, verlässt die Seite; für den greift
+  // die im Browser vorgemerkte Berechnung, die der eigene Bereich abholt.
+  const [speichernNachLogin, setSpeichernNachLogin] = useState(false);
 
   // Auto-save wird jetzt vom Dashboard übernommen (pendingSave in localStorage)
 
@@ -397,11 +391,7 @@ export default function PVRechner({
   // Rechner (calcAircon), mit Config-Defaults + gewählten Räumen + Standort-
   // Kühlgradstunden. So driften Schnellschätzung und Detail-Rechnung nie.
   const quickKlimaKwh = useMemo(
-    () => calcAircon({
-      deviceId: CFG.defaultDeviceId, rooms: klimaRooms, roomM2: CFG.defaultRoomM2,
-      exposure: CFG.defaultExposure, targetTemp: CFG.defaultTargetTemp, window: "day",
-      cdh: cooling.cdhSet.avg5, stromPrice: oStrom, pvActive: false,
-    }).electricityKwh,
+    () => klimaSchnellschaetzungKwh({ rooms: klimaRooms, cdh: cooling.cdhSet.avg5, stromPrice: oStrom }),
     [klimaRooms, cooling.cdhSet.avg5, oStrom],
   );
   // Effektiver Kühlstrom: übernommener Wert (Detail-Modal / Klimaanlagen-Rechner)
@@ -450,10 +440,16 @@ export default function PVRechner({
   const setErtragVonHand = (val: number) =>
     setOErtrag(Math.min(ERTRAG_OPTIMUM_MAX, Math.max(ERTRAG_OPTIMUM_MIN, Math.round(val / ertragFaktor))));
 
-  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: effErtrag, baseKwh: oVerbrauch });
+  const evEingaben = { personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: effErtrag, baseKwh: oVerbrauch };
+  const autoEv = calcEigenverbrauch(evEingaben);
   const effEv = oEv !== null ? oEv : autoEv;
+  // Angezeigt wird der ganze Prozentwert, gerechnet mit dem ungerundeten: Die
+  // Rundung kippte im Geld stufenweise, und eine größere Anlage wies dann weniger
+  // Gewinn aus als eine kleinere (Rechenmodell-Council 12.09.2026). Ein von Hand
+  // gesetzter Wert gilt so, wie er eingetippt wurde.
+  const effEvRechnung = oEv !== null ? oEv : calcEigenverbrauchExakt(evEingaben);
   // Volleinspeisung is incompatible with WP/E-Auto (they require self-consumption)
-  const vollDisabled = wp !== "nein" || ea !== "nein";
+  const vollDisabled = vollEinspeisungGesperrt({ wp, ea, speicherKwh: spKwh });
   const effEinspeisungModus = vollDisabled && einspeisungModus === "voll" ? "teil" : einspeisungModus;
   const jahresertrag = kwp * effErtrag;
   // Lastprofil für die Stundensimulation — dieselben Verbrauchswerte wie oben,
@@ -479,7 +475,16 @@ export default function PVRechner({
     () => simulatePvYear({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: effErtrag, household }),
     [kwp, spKwh, monthlyProfile, effErtrag, household],
   );
-  const autarkie = pvSim.autarky;
+  // Bei Volleinspeisung geht alles ins Netz und der Haushalt bezieht alles aus
+  // dem Netz — die Simulation kennt diesen Modus nicht und lieferte die
+  // Autarkie eines Teileinspeisers (30 % ohne Speicher).
+  const autarkie = effEinspeisungModus === "voll" ? 0 : pvSim.autarky;
+  // Die Monatsbalken kommen aus dem PVGIS-Optimum (Süd, ideale Neigung); jede
+  // andere Zahl der Seite rechnet mit dem Ertrag DIESES Dachs. Bis 05.09.2026
+  // zeigten die Balken bei Ost/West 10.500 kWh neben einem Jahresertrag von
+  // 8.400. Die Dach-Matrix skaliert nur die Menge, nicht die Form — ein Faktor
+  // genügt (lib/dach-ertrag.ts).
+  const balkenFaktor = oErtrag > 0 ? effErtrag / oErtrag : 1;
   // Beispieltage (24-h-Detail) für das Modal — sonniger/trüber Wintertag + Sommertag.
   const exampleDays = useMemo(
     () => EXAMPLE_DAYS.map(d => ({
@@ -508,7 +513,13 @@ export default function PVRechner({
     const skaliert = summe > 0 ? monthly.map((m) => (m * effErtrag) / summe) : monthly;
     const gemeinsam = {
       moduleKwp: kwp, inverterKw: kwp, monthlyYieldPerKwp: skaliert,
-      orientation: "sued_flach", household, batteryKwh: spKwh, roundtrip: 0.9,
+      // Bei Volleinspeisung hängt weder Haushalt noch Speicher an der Anlage —
+      // sonst trüge der Marktwert das Profil eines Teileinspeisers (Council
+      // 05.09.2026: Profilfaktor 0,82 statt 1,03 bei 10 kWh Speicher).
+      orientation: "sued_flach",
+      household: effEinspeisungModus === "voll" ? { ...household, baseKwh: 0, wpActive: false, eaActive: false, klimaActive: false } : household,
+      batteryKwh: effEinspeisungModus === "voll" ? 0 : spKwh,
+      roundtrip: BATTERY_ROUNDTRIP,
       priceShape: PREISFORM_MONAT_STUNDE,
     };
     const ohneDeckel = simulateSolarYear(gemeinsam);
@@ -517,7 +528,7 @@ export default function PVRechner({
       profilFaktor: profilFaktorAus(mitDeckel),
       einspeiseAnteil: ohneDeckel.feedInKwh > 0 ? mitDeckel.feedInKwh / ohneDeckel.feedInKwh : 1,
     };
-  }, [kwp, spKwh, monthlyProfile, effErtrag, household]);
+  }, [kwp, spKwh, monthlyProfile, effErtrag, household, effEinspeisungModus]);
 
   const einspeiseVerlaufJahre = useMemo(() => einspeiseVerlauf({
     regime,
@@ -554,13 +565,13 @@ export default function PVRechner({
         // optimistischen Kurve. jahresertrag=0 → Infinity → Cap greift nicht.
         eigenverbrauch: effEinspeisungModus === "voll"
           ? 0
-          : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
+          : Math.min(effEvRechnung + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
         einspeisung: effEinspeisungModus === "aus" ? 0 : effEinsp,
         stromSteigerung: s.strom, ertragKwp: effErtrag, monthly: monthlyProfile,
         batteryReplace: batteryReplaceCost(spKwh, prices),
         einspeiseModell: effEinspeisungModus === "aus" ? undefined : einspeiseModell,
       }),
-    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, effErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, einspeiseModell]);
+    })), [kwp, kosten, oStrom, effEvRechnung, effEinsp, effEinspeisungModus, effErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, einspeiseModell]);
 
   // (Die Liste der aktiven Großverbraucher ist entfallen: sie war die Kopfzeile
   // des gemeinsamen Verbrauchs-Abschnitts. Jeder Verbraucher hat jetzt seinen
@@ -578,7 +589,7 @@ export default function PVRechner({
       kwp, kosten, strompreis: oStrom,
       eigenverbrauch: effEinspeisungModus === "voll"
         ? 0
-        : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
+        : Math.min(effEvRechnung + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
       einspeisung: effEinsp,
       // Der Ertrag DIESER Anlage, nicht das Standort-Optimum: Hier stand `oErtrag`
       // und damit ein Bestfall-Dach, während jede andere Zahl der Seite mit dem
@@ -608,7 +619,7 @@ export default function PVRechner({
     // doch, wäre genau das die Auskunft, die an den Schalter gehört. Eine auf
     // null gekappte Zahl neben einer sinkenden Hauptzahl erklärt gar nichts.
     return total(true) - total(false);
-  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEv, effEinsp, effErtrag,
+  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEvRechnung, effEinsp, effErtrag,
       monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, marktSim, oMarktwert]);
 
   // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
@@ -782,6 +793,50 @@ export default function PVRechner({
     shareUrl: typeof window !== "undefined" ? buildShareUrl() : undefined,
   });
 
+  // ─── Die klebende Leiste am Ende des Ergebnisses ─────────────────────────
+  // Maße, Verlauf und die drei Knopfformen kommen aus dem geteilten Baustein;
+  // hier steht nur, was in der Leiste steht. Der primäre Knopf trägt denselben
+  // Zustand wie der im Fließtext.
+  const leisteBasis = LEISTE_BASIS;
+  const leisteNeben = LEISTE_NEBEN;
+  const leisteSenden = LEISTE_SENDEN;
+  const primaerLeiste = () => {
+    const gemeinsam = { ...leisteBasis, flex: 1, width: "100%" };
+    if (authState.status === "authed") {
+      return (
+        <button onClick={handleSave} disabled={saving} style={{
+          ...gemeinsam,
+          background: partner ? v("--color-bg") : v("--color-accent"),
+          color: partner ? v("--color-accent") : v("--color-text-on-accent"),
+          border: partner ? `1px solid ${v("--color-border-accent")}` : "none",
+          cursor: saving ? "wait" : "pointer",
+        }}>
+          {saving ? "Speichert…" : "Speichern"}
+        </button>
+      );
+    }
+    return (
+      <button onClick={oeffneAnmeldung} style={{
+        ...gemeinsam,
+        background: partner ? v("--color-bg") : v("--color-accent"),
+        color: partner ? v("--color-accent") : v("--color-text-on-accent"),
+        border: partner ? `1px solid ${v("--color-border-accent")}` : "none",
+      }}>
+        Speichern
+      </button>
+    );
+  };
+
+  // Solange das Rückkanal-Fenster offen ist, hat die klebende Leiste nichts zu
+  // suchen: Sie läge hinter der Abdunkelung und sähe aus wie ein Knopf, der
+  // nicht reagiert.
+  const [rueckkanalOffen, setRueckkanalOffen] = useState(false);
+  useEffect(() => {
+    const hoere = (e: Event) => setRueckkanalOffen(!!(e as CustomEvent).detail?.offen);
+    window.addEventListener(RUECKKANAL_ZUSTAND, hoere);
+    return () => window.removeEventListener(RUECKKANAL_ZUSTAND, hoere);
+  }, []);
+
   const handleCopy = async () => {
     trackEvent("pv_geteilt");
     try {
@@ -807,7 +862,7 @@ export default function PVRechner({
     try {
       const row = paramsToRow(
         { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag: effErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
-        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
+        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.total) }
       );
       const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
       const res = await fetch("/api/calculations", {
@@ -825,6 +880,45 @@ export default function PVRechner({
     } catch { /* silent */ }
     setSaving(false);
   }, [authState, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, effErtrag, plz, fuelType, kwp, spKwh, be, sel, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /**
+   * Anmeldefenster öffnen und die Berechnung schon einmal im Browser vormerken.
+   *
+   * Die Vormerkung greift für den Weg über Google: Dabei verlässt der Browser
+   * die Seite und kommt im eigenen Bereich wieder an, der sie dort abholt. Wer
+   * sich mit Passwort anmeldet, bleibt hier stehen — für den speichert der
+   * Effekt darunter, sobald der Anmelde-Zustand umgesprungen ist.
+   */
+  const oeffneAnmeldung = useCallback(() => {
+    if (isResult) {
+      const row = paramsToRow(
+        { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag: effErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
+        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.total) }
+      );
+      const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
+      try {
+        localStorage.setItem("pendingSave", JSON.stringify({ ...row, name: `${kwp} kWp${spLabel}` }));
+      } catch {
+        // Browser-Speicher gesperrt — dann greift nur der Weg über das Passwort.
+      }
+      setSpeichernNachLogin(true);
+    }
+    setShowLogin(true);
+  }, [isResult, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, effErtrag, plz, fuelType, flowType, htIdx, daIdx, kwp, spKwh, be, sel]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Anmeldung im Fenster abgeschlossen: jetzt speichern, was der Knopf
+  // versprochen hat. Hängt am Anmelde-Zustand, nicht am Klick — der Zustand
+  // springt erst um, nachdem die Sitzung steht.
+  useEffect(() => {
+    if (!speichernNachLogin || authState.status !== "authed") return;
+    setSpeichernNachLogin(false);
+    try {
+      localStorage.removeItem("pendingSave");
+    } catch {
+      // ignorieren
+    }
+    handleSave();
+  }, [speichernNachLogin, authState.status, handleSave]);
 
   // Empfehlungs-Kontext für "Warum diese Anlage?"
   const empfehlungKontext = flowType === "empfehlung" && htIdx >= 0 && daIdx >= 0 ? (() => {
@@ -856,59 +950,27 @@ export default function PVRechner({
           <div style={{ marginBottom: 24 }}>
             <button
               onClick={() => { if (typeof window !== "undefined") window.history.back(); }}
-              style={{ background: "none", border: "none", color: v('--color-accent'), cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: v('--font-text'), padding: 0, marginBottom: 10, display: "inline-flex", alignItems: "center", gap: 4 }}
+              style={{ background: "none", border: "none", color: v('--color-accent'), cursor: "pointer", fontSize: v("--font-size-small"), fontWeight: 600, fontFamily: v('--font-text'), padding: 0, marginBottom: 10, display: "inline-flex", alignItems: "center", gap: 4 }}
             >
               <span style={{ transform: "rotate(180deg)", display: "inline-flex" }}><IconArrowRight size={iconSizes.sm} /></span> Zurück zur Empfehlung
             </button>
             <div style={{ textAlign: "center" }}>
-              <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Deine Empfehlung im Detail</h1>
-              <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>So rechnet sich die empfohlene Anlage — alle Annahmen anpassbar.</p>
+              <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Deine Empfehlung im Detail</h1>
+              <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>So rechnet sich die empfohlene Anlage — alle Annahmen anpassbar.</p>
             </div>
           </div>
         ) : (
           <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
-            <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
-          </div>
-        )}
-
-        {/* Inline Login — only during question steps, sticky bar handles result page */}
-        {showLogin && authState.status === "anon" && !isResult && (
-          <div className="fu" style={{
-            background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "16px", marginBottom: 16,
-            border: `1px solid ${v('--color-border')}`,
-          }}>
-            {loginSent ? (
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: v('--color-accent'), marginBottom: 6 }}>Link gesendet!</div>
-                <div style={{ fontSize: 12, color: v('--color-text-secondary') }}>Prüfe deine E-Mails und klicke den Link zum Anmelden.</div>
-              </div>
-            ) : (
-              <form onSubmit={handleLogin} style={{ display: "flex", gap: 8 }}>
-                <input
-                  type="email"
-                  placeholder="E-Mail-Adresse"
-                  value={loginEmail}
-                  onChange={e => setLoginEmail(e.target.value)}
-                  style={{
-                    flex: 1, padding: "10px 12px", borderRadius: v('--radius-md'), fontSize: 14,
-                    background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-primary'),
-                    fontFamily: v('--font-text'), outline: "none",
-                  }}
-                />
-                <button type="submit" style={{
-                  padding: "10px 16px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
-                  background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
-                  fontFamily: v('--font-text'), whiteSpace: "nowrap",
-                }}>
-                  Link senden
-                </button>
-              </form>
+            {/* Auf einer betriebseigenen Seite trägt der Kopf schon den Namen des
+                Betriebs — „Lohnt sich Photovoltaik? · Ohne Verkaufsanrufe" wäre
+                darunter eine zweite Ansage und liest sich als unsere Werbung auf
+                seiner Seite. Im Ergebnis genügt dort die Überschrift. */}
+            <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>
+              {partner ? (isResult ? "Dein Ergebnis" : "Deine Anlage berechnen") : "Lohnt sich Photovoltaik?"}
+            </h1>
+            {!partner && (
+              <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
             )}
-            {loginError && <div style={{ fontSize: 12, color: v('--color-negative'), marginTop: 8 }}>{loginError}</div>}
-            <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
-              Passwordless per Magic Link · Keine Werbe-E-Mails
-            </div>
           </div>
         )}
 
@@ -924,11 +986,11 @@ export default function PVRechner({
         {/* ── QUESTIONS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: v('--color-text-primary') }}>{STEPS[step]}</h2>
+            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18, color: v('--color-text-primary') }}>{STEPS[step]}</h2>
 
             {step === 0 && (
               <div>
-                <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
+                <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
                   Die Leistung wird in <GlossaryTerm id="kwp">kWp</GlossaryTerm> angegeben.
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -938,7 +1000,7 @@ export default function PVRechner({
                 </div>
                 <div style={{
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  marginTop: 14, fontSize: 13, color: v('--color-text-muted'),
+                  marginTop: 14, fontSize: v("--font-size-small"), color: v('--color-text-muted'),
                 }}>
                   <span>oder</span>
                   <InlineEdit value={customKwp} onCommit={v => { setCustomKwp(Math.round(v)); setAnlage(4); setOKosten(null); setOEv(null); markBeantwortet("anlage"); }} unit=" kWp" step={1} min={1} max={50} width={48} />
@@ -948,7 +1010,7 @@ export default function PVRechner({
 
             {step === 1 && (
               <div>
-                <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
+                <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
                   Dachform und Ausrichtung entscheiden mit darüber, wie viel Strom die Anlage bringt —
                   zwischen einem Süddach und einem Norddach liegen über 40 Prozent.
                 </p>
@@ -978,7 +1040,7 @@ export default function PVRechner({
 
             {step === 2 && (
               <div>
-                <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
+                <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
                   Die <GlossaryTerm id="speicherkapazitaet">Speicherkapazität</GlossaryTerm> wird in <GlossaryTerm id="kwh">kWh</GlossaryTerm> gemessen.
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -1010,7 +1072,7 @@ export default function PVRechner({
                       // bliebe Weiter gesperrt und niemand sähe, woran es liegt.
                       if (opt.mode) markBeantwortet("personen");
                     }} style={{
-                      flex: 1, padding: "8px 4px", borderRadius: v('--radius-sm'), fontSize: 13, fontWeight: 600, cursor: "pointer",
+                      flex: 1, padding: "8px 4px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                       background: verbrauchMode === opt.mode ? v('--color-accent') : "transparent",
                       border: "none",
                       color: verbrauchMode === opt.mode ? v('--color-text-on-accent') : v('--color-text-muted'),
@@ -1021,7 +1083,7 @@ export default function PVRechner({
 
                 {!verbrauchMode ? (
                   <>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
+                    <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
                       {PERSONEN.map((p, i) => {
                         // Gewählt erst, wenn wirklich jemand gewählt hat — der
@@ -1036,7 +1098,7 @@ export default function PVRechner({
                         // Gruppe trennt sie vom Nutzungsprofil daneben.
                         <button key={i} data-flow-option={p.label === "1" ? "1 Person" : `${p.label} Personen`} data-flow-group="personen" aria-pressed={aktiv}
                           onClick={() => { setPersonen(i); setOEv(null); markBeantwortet("personen"); }} style={{
-                          padding: "10px 4px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, cursor: "pointer", textAlign: "center",
+                          padding: "10px 4px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700, cursor: "pointer", textAlign: "center",
                           background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
                           border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
                           color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
@@ -1047,21 +1109,21 @@ export default function PVRechner({
                   </>
                 ) : (
                   <div style={{ marginBottom: 20 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Jahresverbrauch Haushalt</div>
+                    <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Jahresverbrauch Haushalt</div>
                     <div style={{
                       display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
                       background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "14px 16px",
                       border: `1.5px solid ${v('--color-accent')}`,
                     }}>
-                      <span style={{ fontSize: 13, color: v('--color-text-secondary') }}>Dein Stromverbrauch pro Jahr</span>
+                      <span style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary') }}>Dein Stromverbrauch pro Jahr</span>
                       <InlineEdit value={oVerbrauch ?? PERSONEN[personen].verbrauch} onCommit={val => { setOVerbrauch(Math.round(val)); setOEv(null); }} unit=" kWh" step={100} min={500} max={30000} width={72} />
                     </div>
-                    <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>
+                    <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>
                       Der Wert von deiner Stromrechnung — ohne Wärmepumpe und E-Auto. Die rechnen wir im nächsten Schritt separat dazu.
                     </div>
                   </div>
                 )}
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {NUTZUNG.map((n, i) => (
                     <OptionCard key={i} group="nutzung" selected={beantwortet.has("nutzung") && nutzung === i} onClick={() => { setNutzung(i); setOEv(null); markBeantwortet("nutzung"); }} label={n.label} sub={n.sub} />
@@ -1079,7 +1141,7 @@ export default function PVRechner({
                   borderRadius: v('--radius-md'), padding: "12px 14px", marginBottom: 18,
                 }}>
                   <IconSun size={iconSizes.lg} color={v('--color-accent')} style={{ flexShrink: 0, marginTop: 1 }} />
-                  <span style={{ fontSize: 12.5, color: v('--color-text-secondary'), lineHeight: 1.55 }}>
+                  <span style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), lineHeight: 1.55 }}>
                     Alle drei erhöhen deinen Eigenverbrauch — Klimaanlagen besonders, weil sie genau dann
                     kühlen, wenn die Sonne scheint. Die Wärmepumpe zieht ihren Strom vor allem im Winter,
                     das E-Auto nur beim Laden tagsüber.
@@ -1090,7 +1152,7 @@ export default function PVRechner({
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
                 {wp !== "nein" && (
                   <div style={{ marginBottom: 28, marginTop: -4 }}>
-                    <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
+                    <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
                       Wie viel Heizstrom deine Wärmepumpe braucht, berechnen wir aus den Angaben zu deinem Gebäude.
                     </div>
                     <GebaeudeField
@@ -1126,7 +1188,7 @@ export default function PVRechner({
                             const active = gvAnswered.has("ea-km") && eaKm === km;
                             return (
                               <button key={km} onClick={() => { setEaKm(km); setOEv(null); markGvAnswered("ea-km"); }} style={{
-                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                                 background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
                                 border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
                                 color: active ? v('--color-accent') : v('--color-text-muted'),
@@ -1159,18 +1221,18 @@ export default function PVRechner({
                           display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap",
                         }}>
                           <div style={{ flex: "1 1 180px", minWidth: 0 }}>
-                            <div style={{ fontSize: 12.5, color: v('--color-text-secondary'), lineHeight: 1.5 }}>
+                            <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), lineHeight: 1.5 }}>
                               Kühlung im Sommer.{" "}
                               {klimaKwh !== null
                                 ? <>Übernommen: <strong style={{ color: v('--color-text-primary') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh/Jahr</strong>.</>
                                 : <>Verbrauch ca. <strong style={{ color: v('--color-text-primary') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh/Jahr</strong>.</>}
                             </div>
-                            <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 3, lineHeight: 1.4 }}>
+                            <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 3, lineHeight: 1.4 }}>
                               Angenommen: {KLIMA_DEVICE_LABEL}, ~{CFG.defaultRoomM2} m² je Raum.
                             </div>
                           </div>
                           <button onClick={() => setKlimaDetailOpen(true)} style={{
-                            flexShrink: 0, padding: "8px 14px", borderRadius: v('--radius-sm'), fontSize: 12.5, fontWeight: 700, cursor: "pointer",
+                            flexShrink: 0, padding: "8px 14px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer",
                             background: v('--color-bg'), border: `1.5px solid ${v('--color-accent')}`, color: v('--color-accent'),
                           }}>exakter berechnen</button>
                         </div>
@@ -1327,11 +1389,11 @@ export default function PVRechner({
               setAktiv={an => { setEa(an ? "ja" : "nein"); setOEv(null); }}
               aktivLabel="E-Auto mitrechnen"
             >
-              <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-secondary'), marginBottom: 8 }}>Laufleistung im Jahr</div>
+              <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-text-secondary'), marginBottom: 8 }}>Laufleistung im Jahr</div>
               <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
                 {EA_KM_PRESETS.map(km => (
                   <button key={km} onClick={() => { setEaKm(km); setOEv(null); }} style={{
-                    padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                    padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                     background: eaKm === km ? v('--color-accent-dim') : v('--color-bg-muted'),
                     border: eaKm === km ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
                     color: eaKm === km ? v('--color-accent') : v('--color-text-muted'),
@@ -1340,7 +1402,7 @@ export default function PVRechner({
                 <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km"
                   onCommit={n => { setEaKm(n); setOEv(null); }} />
               </div>
-              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
+              <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
                 Gerechnet mit {Math.round(EA_KWH_PER_KM * 100)} kWh je 100 km. Geladen wird zum Teil tagsüber — das hebt den Eigenverbrauch.
               </div>
             </ResultSection>
@@ -1352,14 +1414,14 @@ export default function PVRechner({
               setAktiv={an => { setKlima(an ? "ja" : "nein"); setOEv(null); }}
               aktivLabel="Klimaanlage mitrechnen"
             >
-              <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-secondary'), marginBottom: 8 }}>Gekühlte Räume</div>
+              <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-text-secondary'), marginBottom: 8 }}>Gekühlte Räume</div>
               <ChoiceButtons options={[1, 2, 3, 4, 5]} selected={klimaRooms - 1}
                 onSelect={i => { setKlimaRoomsManual(i + 1); setOEv(null); }} render={n => n} />
-              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
+              <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
                 Schnellschätzung aus Räumen und Standort. Kühlen fällt mittags an, wenn die Sonne scheint — das hebt den Eigenverbrauch am stärksten.
               </div>
               <button onClick={() => setKlimaDetailOpen(true)} style={{
-                marginTop: 10, padding: "7px 12px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700,
+                marginTop: 10, padding: "7px 12px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 700,
                 background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-accent'), cursor: "pointer",
               }}>Genauer berechnen</button>
             </ResultSection>
@@ -1378,7 +1440,7 @@ export default function PVRechner({
               <div style={{
                 background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16,
                 border: `1px solid ${v('--color-border')}`,
-                fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.8,
+                fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.8,
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <span>Haushalt</span>
@@ -1411,7 +1473,7 @@ export default function PVRechner({
                   <span style={{ fontFamily: v('--font-mono') }}>{gesamtVerbrauch.toLocaleString("de-DE")} kWh</span>
                 </div>
                 {klimaKwh !== null && (
-                  <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.4 }}>
+                  <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.4 }}>
                     * Kühlstrom aus den Details bzw. dem <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none" }}>Klimaanlagen-Rechner</Link> übernommen. Räume ändern für die Schnellschätzung.
                   </div>
                 )}
@@ -1437,11 +1499,11 @@ export default function PVRechner({
                 background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16,
                 border: `1px solid ${v('--color-border')}`,
               }}>
-                <summary style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <summary style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v('--color-text-primary'), cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span>Warum diese Anlage?</span>
-                  <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={iconSizes.xs} /></span>
+                  <span style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={iconSizes.xs} /></span>
                 </summary>
-                <div style={{ marginTop: 14, fontSize: 13, color: v('--color-text-muted'), lineHeight: 1.7 }}>
+                <div style={{ marginTop: 14, fontSize: v("--font-size-body"), color: v('--color-text-muted'), lineHeight: 1.7 }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 16px", marginBottom: 12 }}>
                     <div>
                       <span style={{ color: v('--color-text-secondary') }}>Grundverbrauch</span>
@@ -1462,7 +1524,7 @@ export default function PVRechner({
                       <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>~{empfehlungKontext.nutzbar} m² → max {empfehlungKontext.maxKwp} kWp</div>
                     </div>
                   </div>
-                  <div style={{ fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.6, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10 }}>
+                  <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), lineHeight: 1.6, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10 }}>
                     <strong style={{ color: v('--color-text-muted') }}>{empfehlungKontext.ht.label} + {empfehlungKontext.da.label}:</strong>{" "}
                     Deine Dachfläche bietet Platz für max. {empfehlungKontext.maxKwp} kWp.{" "}
                     {kwp < empfehlungKontext.maxKwp
@@ -1488,14 +1550,14 @@ export default function PVRechner({
               total={sel.data.total} kosten={kosten}
               wp={wp} wpKwh={wpKwh ?? 0} jaz={wpJaz} effEv={effEv} autarkie={autarkie} wpAutarky={pvSim.wpAutarky}
               jahresertrag={jahresertrag} gesamtVerbrauch={gesamtVerbrauch} speicherKwh={spKwh} monthly={pvSim.monthly} exampleDays={exampleDays}
-              stromSteigerung={sel.strom} fuelType={fuelType} setFuelType={setFuelType}
+              stromSteigerung={sel.strom} gasSteigerung={heatPumpScenarioAdj(sel.id).gasInflation} fuelType={fuelType} setFuelType={setFuelType}
             />
 
             {spKwh > 0 && effEinspeisungModus !== "voll" && (
               <div style={{
                 background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
                 borderRadius: v('--radius-md'), padding: "12px 14px", marginBottom: 16,
-                fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'),
+                fontSize: v("--font-size-body"), lineHeight: 1.6, color: v('--color-text-secondary'),
               }}>
                 Dein Speicher hebt den <GlossaryTerm id="eigenverbrauch">Eigenverbrauch</GlossaryTerm> auf{" "}
                 <strong style={{ color: v('--color-text-primary') }}>{Math.round(effEv)}%</strong> — so viel
@@ -1512,10 +1574,10 @@ export default function PVRechner({
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-lg'), padding: "14px 10px 6px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
               <div ref={chartExport.chartRef}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 6px", marginBottom: 6 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary') }}>Amortisation</span>
+                  <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-text-primary') }}>Amortisation</span>
                   <div style={{ display: "flex", gap: 12 }}>
                     {SCENARIOS.map(s => (
-                      <span key={s.id} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: s.id === scenario ? v('--color-text-secondary') : v('--color-text-muted'), fontWeight: s.id === scenario ? 700 : 400 }}>
+                      <span key={s.id} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: v("--font-size-micro"), color: s.id === scenario ? v('--color-text-secondary') : v('--color-text-muted'), fontWeight: s.id === scenario ? 700 : 400 }}>
                         <span style={{ width: 8, height: 3, borderRadius: 2, background: s.color, display: "inline-block", opacity: s.id === scenario ? 1 : 0.5 }} />
                         {s.label}
                       </span>
@@ -1548,37 +1610,37 @@ export default function PVRechner({
                   border: `1px dashed ${v('--color-border-muted')}`, textAlign: "center", cursor: "pointer",
                 }}
               >
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 4 }}>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 4 }}>
                   Standortgenaue Prognose & Fördermöglichkeiten
                 </div>
-                <div style={{ fontSize: 12, color: v('--color-text-faint') }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-faint') }}>
                   PLZ eingeben für exakten Ertrag, monatliche Berechnung und lokale Förderung
                 </div>
               </div>
             )}
             {monthlyProfile && (
               <div style={{ background: v('--color-bg'), borderRadius: v('--radius-lg'), padding: "14px 14px 10px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 10 }}>Monatsertrag</div>
+                <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-text-primary'), marginBottom: 10 }}>Monatsertrag</div>
                 <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 100, padding: "0 2px" }}>
                   {(() => { const max = Math.max(...monthlyProfile); return monthlyProfile.map((m, i) => {
                     const barH = Math.max(Math.round((m / max) * 70), 3);
                     return (
                       <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <span style={{ fontSize: 9, fontFamily: v('--font-mono'), color: v('--color-text-secondary'), marginBottom: 3 }}>{Math.round(m * kwp).toLocaleString("de-DE")}</span>
+                        <span style={{ fontSize: v("--font-size-micro"), fontFamily: v('--font-mono'), color: v('--color-text-secondary'), marginBottom: 3 }}>{Math.round(m * kwp * balkenFaktor).toLocaleString("de-DE")}</span>
                         <div style={{ width: "100%", height: barH, borderRadius: "3px 3px 0 0", background: i === new Date().getMonth() ? v('--color-accent') : v('--color-border-accent') }} />
-                        <span style={{ fontSize: 9, color: v('--color-text-faint'), marginTop: 3 }}>{["J","F","M","A","M","J","J","A","S","O","N","D"][i]}</span>
+                        <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), marginTop: 3 }}>{["J","F","M","A","M","J","J","A","S","O","N","D"][i]}</span>
                       </div>
                     );
                   }); })()}
                 </div>
-                <div style={{ fontSize: 10, color: v('--color-text-faint'), textAlign: "center", marginTop: 6 }}>kWh/Monat · {plz && `PLZ ${plz}`}</div>
+                <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), textAlign: "center", marginTop: 6 }}>kWh/Monat · {plz && `PLZ ${plz}`}</div>
               </div>
             )}
 
             {/* Methodology note */}
             <div style={{
               background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16,
-              border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6,
+              border: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.6,
             }}>
               <Link href="/methodik" onClick={() => trackEvent("pv_methodik")} style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
               {/* Der Nachsatz muss dem gewählten Regime folgen: „fix 20 J." ist
@@ -1593,20 +1655,76 @@ export default function PVRechner({
               }</span>
             </div>
 
-            <ResultActions
-              copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}
-              onCopy={handleCopy} onNativeShare={handleNativeShare} onWhatsApp={handleWhatsApp}
-              onSave={handleSave} onLoginClick={() => { setShowLogin(true); setLoginSent(false); setLoginError(""); }}
+            {/* Die drei nächsten Schritte am Ende des Ergebnisses — und
+                dieselben drei noch einmal in der klebenden Leiste, solange sie
+                nicht im Bild sind. Das Ergebnis ist lang; wer oben bei der
+                Amortisation liest, sähe sie sonst nie.
+
+                Reihenfolge: neu rechnen links (der Rückweg), speichern in der
+                Mitte, verschicken rechts (Betreiber, 01.09.2026). Ohne Partner
+                entfällt der dritte Knopf ersatzlos. */}
+            <KlebenderKnopf
+              aktiv={!saved && authState.status !== "loading" && !rueckkanalOffen}
+              leiste={
+                <>
+                  <button onClick={restart} style={leisteNeben}>
+                    <IconRefresh size={iconSizes.md} />
+                  </button>
+                  <div style={{ flex: 1, display: "flex" }}>{primaerLeiste()}</div>
+                  {partner && (
+                    <button
+                      onClick={() => window.dispatchEvent(new Event(RUECKKANAL_OEFFNEN))}
+                      style={leisteSenden}
+                    >
+                      {/* Der Name gehört auch hier drauf — „Anfragen" allein
+                          lässt offen, bei wem. Kürzer als in der Karte, weil
+                          neben ihm zwei weitere Knöpfe stehen; „unverbindlich"
+                          und der Hinweis auf die Übersicht stehen dort, wo
+                          Platz dafür ist. */}
+                      Bei {partner.name} anfragen
+                    </button>
+                  )}
+                </>
+              }
+              kinder={(ref) => (
+                <div ref={ref}>
+                  {/* Der Rückkanal steht ÜBER den allgemeinen Aktionen: Wer über die
+                      Seite eines Betriebs gekommen ist, für den ist „an diesen Betrieb
+                      schicken" der naheliegende nächste Schritt, nicht „Link kopieren". */}
+                  {partner && (
+                    <div style={{ marginTop: space.xl }}>
+                      <ErgebnisAnBetrieb
+                        partner={partner}
+                        ergebnisUrl={typeof window !== "undefined" ? buildShareUrl() : ""}
+                        plz={plz}
+                      />
+                    </div>
+                  )}
+
+                  <ResultActions
+                    copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}
+                    onCopy={handleCopy} onNativeShare={handleNativeShare} onWhatsApp={handleWhatsApp}
+                    onSave={handleSave} onLoginClick={oeffneAnmeldung}
+                  />
+
+                  {/* Restart */}
+                  <button onClick={restart} style={{
+                    width: "100%", padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
+                    background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
+                  }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={iconSizes.md} /> Neu berechnen</span></button>
+                </div>
+              )}
             />
 
-            {/* Restart */}
-            <button onClick={restart} style={{
-              width: "100%", padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
-              background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
-            }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={iconSizes.md} /> Neu berechnen</span></button>
-
-            <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
-              Keine Lead-Erfassung · Keine Werbebanner<br />
+            <div style={{ textAlign: "center", fontSize: v("--font-size-caption"), color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
+              {/* „Keine Lead-Erfassung" wäre auf einer Partnerseite unwahr:
+                  Dort gibt es genau darüber einen Knopf. Der Satz sagt deshalb
+                  dort, was wirklich gilt — der Nutzer entscheidet, und ohne ihn
+                  passiert nichts. Auf allen anderen Seiten bleibt die Zusage
+                  unverändert, weil sie dort weiterhin stimmt. */}
+              {partner
+                ? "Wir geben nichts weiter, außer du bittest uns darum · Keine Werbebanner"
+                : "Keine Lead-Erfassung · Keine Werbebanner"}<br />
               Alle Angaben ohne Gewähr · Keine Steuer- oder Anlageberatung
             </div>
           </div>
@@ -1614,56 +1732,31 @@ export default function PVRechner({
 
         {/* Footer kommt aus dem (site)-Layout. Hier nur Abstand, damit die
             sticky Login-Leiste den Seitenfuß nicht verdeckt. */}
-        {isResult && authState.status === "anon" && showLogin && <div style={{ height: 64 }} />}
       </div>
 
-      {/* Sticky Bottom Bar — Login-Formular für nicht-eingeloggte Nutzer */}
-      {isResult && authState.status === "anon" && showLogin && (
-        <div style={{
-          position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100,
-          background: `linear-gradient(to top, ${v('--color-bg')} 80%, transparent)`,
-          padding: "20px 16px 16px",
-        }}>
-          <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
-            {loginSent ? (
-              <div style={{
-                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px",
-                border: `1px solid ${v('--color-border')}`, textAlign: "center",
-              }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-accent') }}>Link gesendet!</div>
-                <div style={{ fontSize: 12, color: v('--color-text-secondary'), marginTop: 4 }}>Prüfe deine E-Mails.</div>
-              </div>
-            ) : (
-              <form onSubmit={handleLogin} style={{
-                display: "flex", gap: 8,
-                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px",
-                border: `1px solid ${v('--color-border')}`,
-              }}>
-                <input
-                  type="email"
-                  placeholder="E-Mail-Adresse"
-                  value={loginEmail}
-                  onChange={e => setLoginEmail(e.target.value)}
-                  autoFocus
-                  style={{
-                    flex: 1, padding: "10px 12px", borderRadius: v('--radius-md'), fontSize: 14,
-                    background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-primary'),
-                    fontFamily: v('--font-text'), outline: "none",
-                  }}
-                />
-                <button type="submit" style={{
-                  padding: "10px 16px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
-                  background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
-                  fontFamily: v('--font-text'), whiteSpace: "nowrap",
-                }}>
-                  Link senden
-                </button>
-              </form>
-            )}
-            {loginError && <div style={{ fontSize: 12, color: v('--color-negative'), marginTop: 6, textAlign: "center" }}>{loginError}</div>}
-          </div>
-        </div>
-      )}
+
+      {/* Anmelden aus dem Ergebnis heraus — dieselbe Maske wie auf der
+          Anmeldeseite, im Dialog statt als eigene Seite: Wer sein Ergebnis vor
+          sich hat, soll es beim Anmelden nicht verlassen müssen. */}
+      <Modal
+        open={showLogin && authState.status === "anon"}
+        onClose={() => {
+          setShowLogin(false);
+          // Ohne Anmeldung bleibt keine Vormerkung liegen. Sonst holt der
+          // eigene Bereich sie beim nächsten Anmelden ab und speichert eine
+          // Berechnung, die der Nutzer inzwischen verworfen hat.
+          setSpeichernNachLogin(false);
+          try {
+            localStorage.removeItem("pendingSave");
+          } catch {
+            // ignorieren
+          }
+        }}
+        title="Berechnung speichern"
+        intro="Dafür brauchst du ein Konto. Danach findest du deine Berechnungen jederzeit in deinem Bereich wieder."
+      >
+        <AnmeldeFormular kompakt next="/dashboard" onErfolg={() => setShowLogin(false)} />
+      </Modal>
     </div>
   );
 }

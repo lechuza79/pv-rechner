@@ -10,7 +10,7 @@
 // Vorher stand die Mechanik inline im PV-Rechner. Ein zweiter Toast wäre eine
 // zweite Fassung von Position, Farbe, Schließen und Auto-Ausblenden geworden.
 import { useEffect, useRef } from "react";
-import { v } from "../lib/theme";
+import { v, KLEBELEISTE_VAR } from "../lib/theme";
 
 export default function Toast({
   open,
@@ -60,7 +60,12 @@ export default function Toast({
       aria-live="polite"
       onClick={onClick}
       style={{
-        position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
+        // Über der klebenden Aktionsleiste, wenn eine da ist: Sie meldet ihre
+        // gemessene Höhe am Wurzelelement (siehe KlebenderKnopf). Ohne das lag
+        // die PLZ-Aufforderung genau darunter und war nicht mehr lesbar.
+        position: "fixed", bottom: `calc(20px + var(${KLEBELEISTE_VAR}, 0px))`,
+        left: "50%", transform: "translateX(-50%)",
+        transition: "bottom 0.28s ease",
         zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)",
         cursor: onClick ? "pointer" : "default",
         background: accent ? v("--color-accent") : v("--color-text-primary"),
@@ -68,7 +73,7 @@ export default function Toast({
         borderRadius: v("--radius-md"), padding: "12px 16px",
         boxShadow: "0 6px 24px rgba(0,0,0,0.25)",
         display: "flex", alignItems: "center", gap: 10,
-        fontSize: 13, fontWeight: 600, lineHeight: 1.4,
+        fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.4,
       }}
     >
       <span style={{ flex: 1 }}>{children}</span>
@@ -77,7 +82,7 @@ export default function Toast({
         aria-label="Schließen"
         style={{
           border: "none", background: "transparent", color: v("--color-text-on-accent"),
-          fontSize: 18, lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85,
+          fontSize: v("--font-size-h3"), lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85,
         }}
       >
         ×

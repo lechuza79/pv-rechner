@@ -159,10 +159,10 @@ export default function FoerderCheckWidget() {
           horizontaler Block. Auf einer eigenen Seite kreditiert die Seite. */}
       <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
       {/* ── Kopf: Titel als Überschrift + Trennlinie darunter ── */}
-      <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: 0.1, lineHeight: 1.2 }}>
+      <div style={{ fontSize: "var(--font-size-lead)", fontWeight: 800, letterSpacing: 0.1, lineHeight: 1.2 }}>
         Wärmepumpen-Förderung berechnen
       </div>
-      <div style={{ fontSize: 11.5, color: "var(--widget-muted)", marginTop: 3 }}>
+      <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", marginTop: 3 }}>
         {screen === "result"
           ? "Dein geschätzter BEG-Zuschuss der KfW."
           : "In wenigen Fragen zum BEG-Zuschuss der KfW."}
@@ -210,7 +210,7 @@ export default function FoerderCheckWidget() {
               marginBottom: 12,
               cursor: "pointer",
               color: "var(--widget-muted)",
-              fontSize: 12,
+              fontSize: "var(--font-size-small)",
               fontFamily: "inherit",
               display: "flex",
               alignItems: "center",
@@ -360,7 +360,7 @@ function FlowView({
         <details style={{ marginTop: 4 }}>
           <summary
             style={{
-              fontSize: 11,
+              fontSize: "var(--font-size-caption)",
               color: "var(--widget-accent)",
               cursor: "pointer",
               listStyle: "none",
@@ -369,7 +369,7 @@ function FlowView({
           >
             Woran erkenne ich das Alter?
           </summary>
-          <div style={{ fontSize: 11, color: "var(--widget-muted)", lineHeight: 1.5, marginTop: 6 }}>
+          <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", lineHeight: 1.5, marginTop: 6 }}>
             Auf dem Typenschild am Heizkessel steht das Bau- oder Herstellungsjahr. Alternativ findest du das
             Datum im letzten Schornsteinfeger-Protokoll oder auf der Rechnung bzw. dem Übergabeprotokoll der
             Heizungsinstallation.
@@ -461,8 +461,8 @@ function FlowView({
 function Question({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
     <div style={{ animation: "fu 0.3s ease-out" }}>
-      <div style={{ fontSize: 13, fontWeight: 700, marginBottom: hint ? 4 : 10 }}>{title}</div>
-      {hint && <div style={{ fontSize: 11, color: "var(--widget-muted)", lineHeight: 1.45, marginBottom: 10 }}>{hint}</div>}
+      <div style={{ fontSize: "var(--font-size-small)", fontWeight: 700, marginBottom: hint ? 4 : 10 }}>{title}</div>
+      {hint && <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", lineHeight: 1.45, marginBottom: 10 }}>{hint}</div>}
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>{children}</div>
     </div>
   );
@@ -498,10 +498,10 @@ function OptionRow({ label, sub, onClick }: { label: string; sub?: string; onCli
       }}
     >
       <span>
-        <span style={{ fontSize: 13, fontWeight: 600 }}>{label}</span>
-        {sub && <span style={{ display: "block", fontSize: 11, color: "var(--widget-muted)", marginTop: 1 }}>{sub}</span>}
+        <span style={{ fontSize: "var(--font-size-small)", fontWeight: 600 }}>{label}</span>
+        {sub && <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", marginTop: 1 }}>{sub}</span>}
       </span>
-      <span style={{ color: "var(--widget-accent)", fontSize: 13, flexShrink: 0 }}>→</span>
+      <span style={{ color: "var(--widget-accent)", fontSize: "var(--font-size-small)", flexShrink: 0 }}>→</span>
     </button>
   );
 }
@@ -540,8 +540,8 @@ function ResultView({
             marginBottom: 12,
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>Für den Neubau kein BEG-Zuschuss</div>
-          <div style={{ fontSize: 11, color: "var(--widget-muted)", lineHeight: 1.5 }}>
+          <div style={{ fontSize: "var(--font-size-small)", fontWeight: 700, marginBottom: 4 }}>Für den Neubau kein BEG-Zuschuss</div>
+          <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", lineHeight: 1.5 }}>
             Die BEG-Einzelmaßnahmen-Förderung (Zuschuss) gilt nur für den Heizungstausch im Bestand. Im Neubau läuft die
             Förderung über zinsgünstige KfW-Kredite (Programm „Klimafreundlicher Neubau"), nicht über einen Zuschuss.
           </div>
@@ -557,12 +557,12 @@ function ResultView({
               marginBottom: 12,
             }}
           >
-            <div style={{ fontSize: 11, color: "var(--widget-muted)", textTransform: "uppercase", letterSpacing: 0.4 }}>
+            <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", textTransform: "uppercase", letterSpacing: 0.4 }}>
               Deine Förderung
             </div>
             <div
               style={{
-                fontSize: 30,
+                fontSize: "var(--font-size-display-md)",
                 fontWeight: 800,
                 lineHeight: 1.1,
                 fontVariantNumeric: "tabular-nums",
@@ -572,7 +572,7 @@ function ResultView({
             >
               {nf(beg.amount)} €
             </div>
-            <div style={{ fontSize: 11, color: "var(--widget-muted)" }}>
+            <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)" }}>
               {Math.round(beg.rate * 100)} % {capped ? "von max. " : "der "}
               {capped ? `${nf(stufeHeute.maxCap)} € förderfähigen Kosten` : "Investition"}
             </div>
@@ -581,7 +581,7 @@ function ResultView({
               {beg.breakdown.map((b) => (
                 <div
                   key={b.label}
-                  style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "var(--widget-fg)" }}
+                  style={{ display: "flex", justifyContent: "space-between", fontSize: "var(--font-size-caption)", color: "var(--widget-fg)" }}
                 >
                   <span>{b.label}</span>
                   <span style={{ fontVariantNumeric: "tabular-nums", color: "var(--widget-muted)" }}>
@@ -599,7 +599,7 @@ function ResultView({
               extern führt der CTA am Fuß ohnehin dorthin. */}
           <div
             style={{
-              fontSize: 11,
+              fontSize: "var(--font-size-caption)",
               color: "var(--widget-fg)",
               lineHeight: 1.5,
               marginBottom: 12,
@@ -615,7 +615,7 @@ function ResultView({
           {alterUnbekannt && (
             <div
               style={{
-                fontSize: 11,
+                fontSize: "var(--font-size-caption)",
                 color: "var(--widget-fg)",
                 lineHeight: 1.5,
                 marginBottom: 12,
@@ -632,7 +632,7 @@ function ResultView({
           )}
 
           {!selbstnutzer && (
-            <div style={{ fontSize: 11, color: "var(--widget-muted)", lineHeight: 1.5, marginBottom: 12 }}>
+            <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", lineHeight: 1.5, marginBottom: 12 }}>
               Als Vermieter bleibt es bei der Grundförderung: Klima- und Einkommens-Bonus setzen beide voraus,
               dass du selbst im Gebäude wohnst.
             </div>
@@ -640,7 +640,7 @@ function ResultView({
 
           {/* Investitions-Slider */}
           <div style={{ marginBottom: 4 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 4 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "var(--font-size-small)", marginBottom: 4 }}>
               <span style={{ color: "var(--widget-muted)" }}>Investition Wärmepumpe</span>
               <span style={{ fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{nf(invest)} €</span>
             </div>
@@ -659,7 +659,7 @@ function ResultView({
             <details style={{ marginTop: 6 }}>
               <summary
                 style={{
-                  fontSize: 11,
+                  fontSize: "var(--font-size-caption)",
                   color: "var(--widget-accent)",
                   cursor: "pointer",
                   listStyle: "none",
@@ -668,7 +668,7 @@ function ResultView({
               >
                 Woher kommt dieser Betrag?
               </summary>
-              <div style={{ fontSize: 11, color: "var(--widget-muted)", lineHeight: 1.5, marginTop: 6 }}>
+              <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", lineHeight: 1.5, marginTop: 6 }}>
                 Der Startwert ist eine typische Komplettinvestition aus Gerät und Einbau für ein
                 Einfamilienhaus mit 10 Kilowatt Heizleistung. Er ist an einer Auswertung von 160 echten
                 Angeboten durch die Verbraucherzentrale Rheinland-Pfalz kalibriert (Bruttopreise, Median
@@ -702,7 +702,7 @@ function ResultView({
           borderRadius: "var(--radius-md)",
           background: "var(--widget-accent)",
           color: "var(--widget-accent-fg)",
-          fontSize: 13,
+          fontSize: "var(--font-size-small)",
           fontWeight: 700,
           textDecoration: "none",
         }}
@@ -721,7 +721,7 @@ function ResultView({
           border: "1px solid var(--color-border)",
           background: "none",
           color: "var(--widget-muted)",
-          fontSize: 12,
+          fontSize: "var(--font-size-small)",
           fontWeight: 600,
           cursor: "pointer",
           fontFamily: "inherit",
@@ -730,7 +730,7 @@ function ResultView({
         Neu berechnen
       </button>
 
-      <div style={{ fontSize: 10.5, color: "var(--widget-muted)", lineHeight: 1.5, marginTop: 10 }}>
+      <div style={{ fontSize: "var(--font-size-micro)", color: "var(--widget-muted)", lineHeight: 1.5, marginTop: 10 }}>
         Bezogen auf eine Wohneinheit — bei Mehrfamilienhäusern gelten je weiterer Wohnung eigene Höchstbeträge.
         Schätzung nach den aktuellen KfW-Sätzen (gültig ab {GUELTIG_AB}) — ohne Gewähr, verbindlich ist die
         Zusage der KfW. Boni hängen von deiner individuellen Situation ab.

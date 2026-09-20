@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { heuteInBerlin } from "../../../../../lib/zeit";
 import { isAdminSession } from "../../../../../lib/admin-guard";
 import { socialKennzahlen } from "../../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../../lib/social-posts";
@@ -46,7 +47,7 @@ export default async function RedaktionPlanung() {
   // Der Tag wird EINMAL gelesen und überall hineingereicht — die Rechenmodule
   // haben bewusst keine Uhr, sonst ließe sich die Übersicht nicht gegen einen
   // Stichtag prüfen.
-  const heuteIso = new Date().toISOString().slice(0, 10);
+  const heuteIso = heuteInBerlin();
 
   let fertig = 0;
   let wochen: ReturnType<typeof baueKalender> = [];

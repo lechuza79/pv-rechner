@@ -18,13 +18,13 @@ import { v, pad } from "./theme";
 export const adminTabelle: CSSProperties = {
   width: "100%",
   borderCollapse: "collapse",
-  fontSize: 13,
+  fontSize: v("--font-size-small"),
 };
 
 /** Kopfzelle: klein, gesperrt, auf gedämpftem Grund. */
 export const adminTh: CSSProperties = {
   textAlign: "left",
-  fontSize: 11,
+  fontSize: v("--font-size-caption"),
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.05em",

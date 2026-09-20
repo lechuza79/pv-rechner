@@ -1,0 +1,182 @@
+import { load } from "cheerio";
+import { sameDomain } from "./contact-evidence";
+import { entschluesseltOderRoh } from "./uri-sicher";
+
+const continuationLabel = /^(?:zur aufgerufenen seite|weiter (?:zur|zum) (?:startseite|homepage|internetauftritt)|continue to (?:the )?(?:website|site))\s*[»›→.!]*$/iu;
+function employeeDirectorySource(raw: string): boolean {
+  try {
+    const url = new URL(raw, "https://relative-source.invalid/");
+    return /^https?:$/.test(url.protocol) && /\/employee-list\.html$/i.test(url.pathname);
+  } catch { return false; }
+}
+
+/** A published PDF destination is a source lead, never extracted document evidence. */
+function embeddedPdf(raw: string, base = "https://relative-source.invalid/"): string | null {
+  try {
+    const viewer = new URL(raw, base);
+    if (!/^https?:$/.test(viewer.protocol)) return null;
+    if (/\.pdf$/i.test(viewer.pathname)) return viewer.href;
+    if (!/\/(?:pdfjs|pdf\.js)\/web\/viewer\.(?:html?|php)$/i.test(viewer.pathname)) return null;
+    const file = viewer.searchParams.get("file");
+    if (!file) return null;
+    const document = new URL(file, viewer);
+    return /^https?:$/.test(document.protocol) && /\.pdf$/i.test(document.pathname) ? document.href : null;
+  } catch { return null; }
+}
+
+/** Recognizable navigation/loading wrappers are not substantive negative evidence. */
+export function contactContentGap(html: string): "frameset" | "loading-shell" | "continuation-page" | "dynamic-directory" | "embedded-document" | null {
+  const $ = load(html);
+  if ($("frameset frame[src]").length) return "frameset";
+  // A populated article can still contain an unloaded staff directory. Its
+  // empty-state template is not an observed absence of employees.
+  if ($("integration-bim[result-url]").toArray().some(el => {
+    if (!employeeDirectorySource($(el).attr("result-url") ?? "")) return false;
+    const id = $(el).attr("id");
+    const result = $(el).siblings("[id]").filter((_, sibling) => $(sibling).attr("id") === `${id}-result`);
+    const loading = $(el).siblings("[id]").filter((_, sibling) => $(sibling).attr("id") === `${id}-loading`);
+    return !id || !result.text().trim() || loading.hasClass("is-active");
+  })) return "dynamic-directory";
+  if ($("iframe[src],embed[src],object[data]").toArray().some(el =>
+    embeddedPdf($(el).attr("src") ?? $(el).attr("data") ?? ""))) return "embedded-document";
+  $("script,style,nav,header,footer").remove();
+  const text = $("body").text().replace(/\s+/g, " ").trim();
+  if (text.length < 1200 && /(?:beitragsliste|inhalte?|content)\s+(?:wird|werden)\s+geladen|loading\s+(?:content|contacts)/iu.test(text)) return "loading-shell";
+  if (text.length < 1200 && $("a[href]").toArray().some(el => continuationLabel.test($(el).text().trim()))) return "continuation-page";
+  return null;
+}
+
+export type ContactDataset = "kommunen" | "fachbetriebe" | "presse" | "versorger";
+
+/** Remove presentation/tracking variants, preserving identifiers and filters. */
+export function contactUrl(raw: string, base?: string): string | null {
+  try {
+    const url = new URL(raw, base);
+    if (!/^https?:$/.test(url.protocol)) return null;
+    if (/\.(?:jpe?g|png|gif|svg|webp|ico|mp4|mp3|zip|css|js|woff2?|ttf)$/i.test(url.pathname)) return null;
+    url.hash = "";
+    for (const key of [...url.searchParams.keys()]) {
+      if (/^utm_/i.test(key) || /^(fbclid|gclid)$/i.test(key) ||
+          (key === "modus" && url.searchParams.get(key) === "drucken")) url.searchParams.delete(key);
+    }
+    url.searchParams.sort();
+    return url.href;
+  } catch { return null; }
+}
+
+/** Score the destination label and leaf, never an inherited folder name such as /team/news/. */
+export function contactLinkPriority(url: string, label: string, dataset: ContactDataset): number {
+  const parsed = new URL(url);
+  const leaf = entschluesseltOderRoh(parsed.pathname.split("/").filter(Boolean).at(-1) ?? "");
+  const text = `${label} ${leaf}`.replace(/[-_]/g, " ");
+  const directory = /\b(kontakt\w*|contact\w*|ansprechpartner\w*|ansprechperson\w*|mitarbeiter\w*|team|redaktion\w*|organigramm|dienststellen|abteilungen|rathaus|bürgerservice|buergerservice|verwaltung|mediadaten|verlag)\b|ämter|aemter/iu;
+  const climate = /\b(klimaschutz\w*|umweltschutz\w*|klima|umwelt|energiemanagement|energieberatung|nachhaltigkeit|erneuerbare)\b/iu;
+  const communications = /\b(presse\w*|kommunikation|öffentlichkeitsarbeit|oeffentlichkeitsarbeit|webredaktion)\b/iu;
+  let score = directory.test(text) ? 80 : 0;
+  if (/\b(gemeindevertretung|gemeindevertreter\w*|gemeinderat|b[üu]rgermeister\w*|buergermeister\w*|telefonliste|telefonverzeichnis)\b/iu.test(text)) score = 100;
+  if (dataset === "kommunen" && /(?:^|\s)(?:kümmer(?:er|in|stelle)\w*|kuemmer(?:er|in|stelle)\w*|ehrenamtskoordination)(?:\s|$)/iu.test(text)) score = Math.max(score, 100);
+  if (continuationLabel.test(label.trim())) score = 160;
+  if (/\b(kontakt\w*|contact\w*|ansprechpartner\w*|ansprechperson\w*)\b/iu.test(text)) score = 110;
+  if (/\bansprechperson\w*\b|\bansprechpartner\w*\b/iu.test(text)) score = 140;
+  if (communications.test(text)) score = Math.max(score, 120);
+  if (/\b(impressum|imprint)\b/i.test(text)) score = Math.max(score, 70);
+  if ((dataset === "kommunen" || dataset === "versorger") && climate.test(text)) score = Math.max(score, 125);
+  if (dataset === "fachbetriebe" && /\b(über uns|ueber uns|unternehmen|geschäftsführung|geschaeftsfuehrung|photovoltaik|solar)\b/iu.test(text)) score = Math.max(score, 85);
+  // News can contain contacts, but must not consume the budget ahead of directories.
+  if (/\/(nachrichten|news|aktuelles|pressemitteilungen)\/.+/i.test(parsed.pathname)) score = Math.min(score, 25);
+  return score;
+}
+
+/** Relative published links use the first HTML base, just as in the browser. */
+function publishedLinkBase($: ReturnType<typeof load>, documentUrl: string): string {
+  const href = $("base[href]").first().attr("href");
+  if (href === undefined) return documentUrl;
+  try {
+    const resolved = new URL(href, documentUrl);
+    return /^https?:$/.test(resolved.protocol) ? resolved.href : documentUrl;
+  } catch { return documentUrl; }
+}
+
+export function contactLinks(html: string, base: string, domain: string, dataset: ContactDataset): {url:string; priority:number}[] {
+  const $ = load(html);
+  const documentUrl = new URL(base);
+  const directoryPage = /kontakt|contact|ansprechpartner|ansprechperson|mitarbeiter|directory|ämter|aemter|dienststellen/iu.test($("h1").text());
+  const paginationKey = /^(?:ofs(?:_\d+)?|offset|page|seite|start|pageindex)$/i;
+  const directoryPath = (path:string) => path.replace(/\/(?:index\.(?:php|html?))?\/?$/i, "");
+  base = publishedLinkBase($, base);
+  const result = new Map<string, number>();
+  $("a[href]").each((_, el) => {
+    const href = $(el).attr("href")!.trim();
+    if (!href) return;
+    if (/^(mailto:|tel:|javascript:|#)/i.test(href)) return;
+    let target: URL;
+    try { target = new URL(href, base); } catch { return; }
+    const normalized = contactUrl(target.href);
+    if (!normalized) return;
+    target = new URL(normalized);
+    if (!/^https?:$/.test(target.protocol) || !sameDomain(target.hostname.replace(/^www\./,""),domain)) return;
+    let label = $(el).text().replace(/\s+/g," ").trim();
+    // A literal "here" document link needs its own short sentence, not the
+    // complete surrounding directory or unrelated navigation labels.
+    if (/^(?:hier|hier herunterladen|download|here)[.!]?$/iu.test(label)) {
+      const parent = $(el).parent();
+      const context = parent.text().replace(/\s+/g, " ").trim();
+      if (parent.is("p,li") && parent.find("a[href]").length === 1 && context.length <= 240) label = context;
+    }
+    let priority = contactLinkPriority(target.href, label,dataset);
+    // Numeric next-page controls belong to the current directory, not to every
+    // inherited contact folder or unrelated news/search category on the site.
+    const pageControl = /^(?:\d+|[»›>→]+|(?:nächste|naechste|next)(?: seite| page)?|weiter)$/iu.test(label);
+    const hasOffset = [...target.searchParams].some(([key,value]) => paginationKey.test(key) && /^\d+$/.test(value));
+    const sameFilter = [...documentUrl.searchParams].every(([key,value]) => paginationKey.test(key) || target.searchParams.get(key) === value);
+    if(directoryPage && pageControl && hasOffset && sameFilter && target.origin === documentUrl.origin && directoryPath(target.pathname) === directoryPath(documentUrl.pathname)) priority = Math.max(priority,130);
+    if (priority) result.set(target.href,Math.max(priority,result.get(target.href)??0));
+  });
+  // Follow only published frame destinations. Embedded third-party content
+  // does not establish municipal ownership and is not queued here.
+  $("frameset frame[src]").each((_, el) => {
+    const url = contactUrl($(el).attr("src") ?? "", base);
+    if (url && sameDomain(new URL(url).hostname.replace(/^www\./, ""), domain)) result.set(url, 150);
+  });
+  $("integration-bim[result-url]").each((_, el) => {
+    const published = $(el).attr("result-url") ?? "";
+    if (!employeeDirectorySource(published)) return;
+    const url = contactUrl(published, base);
+    if (url && sameDomain(new URL(url).hostname.replace(/^www\./, ""), domain)) result.set(url, 150);
+  });
+  $("iframe[src],embed[src],object[data]").each((_, el) => {
+    const published = embeddedPdf($(el).attr("src") ?? $(el).attr("data") ?? "", base);
+    const url = published && contactUrl(published);
+    if (url && sameDomain(new URL(url).hostname.replace(/^www\./, ""), domain))
+      result.set(url, Math.max(90, result.get(url) ?? 0));
+  });
+  return [...result].map(([url,priority])=>({url,priority}));
+}
+
+/** Spread a bounded crawl across sections instead of exhausting one promising branch. */
+export function contactBranch(url: string): string {
+  const parts = new URL(url).pathname.split('/').filter(Boolean);
+  if (/^(?:\d+|.*\.(?:html?|php|aspx))$/i.test(parts.at(-1) ?? '')) parts.pop();
+  return parts.slice(0,2).join('/');
+}
+
+export function nextContactUrl(pending: Map<string,number>, branchVisits: Map<string,number>): string {
+  const score = ([url,priority]:[string,number]) => priority - 15 * (branchVisits.get(contactBranch(url)) ?? 0);
+  return [...pending].sort((a,b)=>score(b)-score(a) || a[0].localeCompare(b[0]))[0][0];
+}
+
+/** Explicit outbound contact/publisher links are research leads, not ownership. */
+export function externalContactLinks(html: string, base: string, domain: string, dataset: ContactDataset) {
+  const $ = load(html);
+  base = publishedLinkBase($, base);
+  const links = new Map<string, number>();
+  $("a[href]").each((_, el) => {
+    const url = contactUrl($(el).attr("href") ?? "", base);
+    if (!url || sameDomain(new URL(url).hostname.replace(/^www\./, ""), domain)) return;
+    const label = $(el).text().replace(/\s+/g, " ").trim();
+    if (!/kontakt|ansprechpartner|ansprechperson|redaktion|mediadaten|verlag|verwaltungsgemeinschaft|verbandsgemeinde/iu.test(label)) return;
+    if (/facebook\.com|instagram\.com|linkedin\.com|youtube\.com/.test(new URL(url).hostname)) return;
+    links.set(url, contactLinkPriority(url, label, dataset));
+  });
+  return [...links].map(([url, priority]) => ({url, priority}));
+}

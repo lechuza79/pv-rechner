@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DataSourceNote } from "../../../../../../components/PoweredBy";
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -8,6 +9,7 @@ import RegionSearch from "../../../../../../components/atlas/RegionSearch";
 import { IconArrowRight, IconGlocke } from "../../../../../../components/Icons";
 import { v, space, pad } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
+import { atlasSeitenTitel } from "../../../../../../lib/atlas-titel";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
 import {
   atlasIsIndexable,
@@ -21,6 +23,16 @@ import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
 import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
+import GemeindeMeldungen from "../../../../../../components/atlas/GemeindeMeldungen";
+import { ortsStories } from "../../../../../../lib/orts-stories";
+// Aus den Geschichten werden Beiträge des Redaktionssystems: Farbschema,
+// Bildform und Quellenzeile kommen von dort, die redaktionelle Fassung je Ort
+// aus der Ablage.
+import { ortsPosts } from "../../../../../../lib/orts-posts";
+import { ladeFassungen } from "../../../../../../lib/social-vorlagen-db";
+import { fundeFuerOrt } from "../../../../../../lib/social-fundvorrat";
+import { hatAuszeichnung, vergleichsPlaetze } from "../../../../../../lib/awards-server";
+import { monatsZubau, wohnungsBestand } from "../../../../../../lib/orts-daten";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindeAboBox, { ABO_OEFFNEN } from "../../../../../../components/atlas/GemeindeAboBox";
@@ -61,6 +73,7 @@ import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
 import { landProgramBundeslaender } from "../../../../../../lib/funding-programs";
 import { DATA_SOURCES } from "../../../../../../lib/data-sources";
+import { jahrInBerlin } from "../../../../../../lib/zeit";
 
 // Haltbarkeit: sieben Tage, NICHT ein Tag (Umstellung 26.08.2026).
 //
@@ -162,7 +175,12 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
       //
       // Wirkung heute: null. Gemeindeseiten sind noindex, bis Welle 1 läuft.
       // Beleg: docs/seo/befund-2026-08-18-atlas-wellen.md
-      title: `Photovoltaik in ${region.name}: Solaranlagen, Bestand & Zubau`,
+      //
+      // Die VORLAGE selbst (Wortwahl plus Zeichen-Budget) steht seit dem
+      // 02.09.2026 in lib/atlas-titel.ts: Sie stand hier und in der
+      // Regionsseite doppelt getippt, und beide Fassungen waren so lang, dass
+      // Google sie auf drei von neun gemessenen Landesseiten verworfen hat.
+      title: atlasSeitenTitel({ name: region.name, level: "gemeinde" }),
       description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
       path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
     }),
@@ -426,7 +444,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
   });
 
   const crumbs: { label: string; href?: string }[] = [
-    { label: "Solar-Atlas", href: "/solar-atlas" },
+    { label: "Energie-Atlas", href: "/solar-atlas" },
     // In Berlin und Hamburg stünde der Name sonst dreimal hintereinander.
     ...(istStadtstaatRegion ? [] : [{ label: bl?.name ?? blAgs, href: `/solar-atlas/${params.bundesland}` }]),
     // Bei kreisfreien Städten stünde hier zweimal derselbe Name.
@@ -521,8 +539,84 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           )}
             </CollapsibleIntro>
           </div>
-          <GemeindePlatzierungen regionId={region.region_id} />
+          {/* Das Kennzeichen entscheidet nur, ob der Platz reserviert wird —
+              die Rangdaten selbst lädt die Kachel weiterhin im Browser nach. */}
+          <GemeindePlatzierungen
+            regionId={region.region_id}
+            erwartet={await hatAuszeichnung(region.region_id)}
+          />
         </div>
+
+        {/*
+          Die Geschichten über diesen Ort, nach den festen Familien des
+          Story-Katalogs (lib/orts-stories.ts) — als Karten mit Bild-Download.
+
+          NICHT aus der Ortsmeldungs-Rechnung, die die Abo-Mail speist: Deren
+          Meldungen BESCHREIBEN den Bestand, und der steht hier zwei Zentimeter
+          tiefer schon als Kachel und Ring. Gemessen am 05.09.2026 an Heringen —
+          drei von fünf Meldungen waren wörtlich das, was darunter stand.
+
+          OHNE FÖRDERUNG: Eine Förder-Geschichte braucht die Angabe, ob das
+          Programm gerade ZÄHLT, und die kommt allein aus fundingZaehlt(), also
+          aus einem Datenbank-Lesevorgang, den diese Seite heute nicht macht.
+          Sie aus der Liste der veröffentlichten Förderstädte abzuleiten wäre
+          eine zweite Quelle für dieselbe Frage.
+
+          OHNE PLATZIERUNG: steht als eigene Karte direkt darüber (siehe dort).
+        */}
+        {/*
+          Das Story-Visual steht seit dem 06.09.2026: dieselbe Karte wie im
+          Redaktionstisch, in der quadratischen Stufe und mit den Farben dieser
+          Seite. Die Geschichten sind damit Beiträge des Redaktionssystems —
+          sie greifen auf dieselben Templates zu, und ihre Fassung (Text,
+          Farbschema, Bildform) lässt sich vor einem Kommunen-Schub je ORT
+          einstellen; die Beitrags-Kennung trägt dafür den Gemeindeschlüssel.
+        */}
+        <GemeindeMeldungen
+          beitraege={ortsPosts({
+            ort: { regionId: region.region_id, name: region.name },
+            standIso: atlas.data_as_of,
+            fassungen: await ladeFassungen(),
+            stories: ortsStories({
+            daten: {
+              name: region.name,
+              regionId: region.region_id,
+              population: region.population ?? null,
+              solar: atlas.solar,
+              speicher: atlas.speicher,
+              standIso: atlas.data_as_of,
+              // Zwei schmale Zusatzquellen: der Zubau nach Monat (die
+              // Jahreszahl ist für „was ist gerade passiert" zu grob) und der
+              // Wohnungsbestand (der Nenner, den das Anlagenregister nicht
+              // kennt). Fehlt eine, entfallen genau ihre Geschichten.
+              monate: await monatsZubau(region.region_id),
+              wohnungen: await wohnungsBestand(region.region_id),
+            },
+            heuteJahr: jahrInBerlin(),
+            // Nur redaktionell VORGEMERKTE Funde. „offen" heißt, dass den
+            // Fund noch niemand angesehen hat — ein Kandidat, keine
+            // veröffentlichte Aussage; der Suchlauf legt ausdrücklich nur ab
+            // und entscheidet nicht.
+            // Ort, Landkreis, Land — in dieser Reihenfolge der Nähe. Nur der
+            // eigene Ortsname wäre zu eng: Die Muster suchen Auffälliges, und
+            // 313 Funde verteilen sich auf 197 Gemeinden; auf 98 % der
+            // Ortsseiten stünde damit nie einer.
+            // Wo der Ort unter GLEICH GROSSEN Orten seines Kreises bzw. Landes
+            // steht — die einzige Familie, die jeder Ort hat. Die gespeicherten
+            // Funde treffen nur das Auffällige (313 auf 197 von 11.000).
+            plaetze: await vergleichsPlaetze(region.region_id),
+            funde: await fundeFuerOrt({
+              ort: region.name,
+              kreisOrte: siblingData.regions.map((r) => r.name),
+              land: bl?.name ?? null,
+              stand: "vorgemerkt",
+            }),
+            }),
+          })}
+          name={region.name}
+          liveUrl={`${BASE_URL}${atlasPath}`}
+          standIso={atlas.data_as_of}
+        />
 
         {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
@@ -609,6 +703,9 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
                 liveUrl={`https://solar-check.io${gemeindePath}`}
                 onsite
                 showEmbed={false}
+                // Der Einbett-Knopf gibt hier den FERTIGEN Code für diesen Ort
+                // aus, statt in die Galerie zu springen (siehe Hülle).
+                einbetten={{ params: { ags: region.region_id }, height: 420 }}
               />
             </div>
 
@@ -622,6 +719,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
                   liveUrl={`https://solar-check.io${gemeindePath}`}
                   onsite
                   showEmbed={false}
+                  einbetten={{ params: { ags: region.region_id }, height: 420 }}
                 />
               </div>
             )}
@@ -702,19 +800,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           )}
           {geoLat !== null && geoLon !== null && (
             <>
-              Die simulierte Solarleistung nutzt Wetterdaten von{" "}
-              <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer" style={S.licLink}>
-                Open-Meteo
-              </a>{" "}
-              (DWD, NOAA), Lizenz{" "}
-              <a
-                href="https://creativecommons.org/licenses/by/4.0/"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={S.licLink}
-              >
-                CC BY 4.0
-              </a>
+              <DataSourceNote label="Die simulierte Solarleistung nutzt Wetterdaten. Datenbasis:" source={DATA_SOURCES.iconD2Archive} />
               .{" "}
             </>
           )}
@@ -778,9 +864,9 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: space.sm,
   },
   standDate: { fontWeight: 600, color: "inherit" },
-  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
-  h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.xs}px` },
-  sub: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` },
+  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  h2: { fontSize: v("--font-size-lead"), fontWeight: 700, margin: `0 0 ${space.xs}px` },
+  sub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` },
   section: { marginBottom: space.huge },
   // Erneuerbare-Mix + 24h-Sim nebeneinander; auf Mobil untereinander (flex-wrap).
   // stretch → beide Karten gleich hoch; sbsItem als flex, damit die Karte (height
@@ -795,7 +881,7 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-on-accent"),
     padding: pad("lg", "xl"),
     borderRadius: v("--radius-md"),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 600,
     textDecoration: "none",
   },
@@ -806,12 +892,12 @@ const S: Record<string, React.CSSProperties> = {
     padding: pad("lg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-md"),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     color: v("--color-text-primary"),
     textDecoration: "none",
   },
   disclaimer: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     color: v("--color-text-muted"),
     lineHeight: 1.6,
     borderTop: `1px solid ${v("--color-border")}`,

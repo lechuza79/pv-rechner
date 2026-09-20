@@ -7,11 +7,14 @@ import {
 } from "../../../lib/solar-now";
 import { SOLAR_STOCK_MW } from "../../../lib/mastr-data";
 import plzCoords from "../../../public/plz.json";
+import { modelWeatherAt, shardKey } from "../../../lib/icon-d2";
+import { loadIconD2Shard } from "../../../lib/icon-d2-store";
+import { nearestPlz } from "../../../lib/plz-nearest";
 
 // How much solar Germany (or one location) is making right now.
 //
-// Without ?plz: one irradiance sample per Bundesland — fetched in a SINGLE
-// upstream request (Open-Meteo takes comma-separated coordinates) and averaged
+// Without ?plz: one irradiance sample per Bundesland, read from the hourly DWD
+// ICON-D2 snapshot (no weather service is called per visitor) and averaged
 // weighted by installed capacity, so Bayern counts ~27 % and Bremen ~0.2 %.
 // With ?plz: the same maths for that one point.
 //
@@ -20,45 +23,34 @@ import plzCoords from "../../../public/plz.json";
 
 const cache = new Map<string, { data: SolarNowResponse; ts: number }>();
 const TTL = 5 * 60 * 1000;
-// 5 min fresh so the morning/evening ramp shows nearly live; every visitor
-// shares one edge-cached answer (Open-Meteo is fetched server-side, not per
-// visitor). stale-while-revalidate keeps a last-good answer for an hour, which
-// cushions an upstream outage or a hit rate limit — the theme never goes blank.
+// 5 min fresh so the morning/evening ramp shows nearly live (the value is
+// interpolated between model hours); every visitor shares one edge-cached
+// answer. stale-while-revalidate keeps a last-good answer for an hour, which
+// cushions a missing snapshot — the theme never goes blank.
 const CDN_CACHE = "public, s-maxage=300, stale-while-revalidate=3600";
 
 const COORDS = plzCoords as unknown as Record<string, [number, number]>;
 
-type OpenMeteoPoint = {
-  current?: {
-    shortwave_radiation?: number;
-    temperature_2m?: number;
-    cloud_cover_high?: number;
-  };
-};
-
+/**
+ * Model weather now at each point, from the hourly DWD ICON-D2 snapshot of the
+ * nearest postcode. Throws when a point has no value: a gauge averaged over
+ * the points that happened to load would show a Germany that does not exist.
+ */
 async function fetchPoints(
   points: { lat: number; lon: number }[],
 ): Promise<{ ghi: number; temp: number; cloudHigh: number }[]> {
-  const url = new URL("https://api.open-meteo.com/v1/forecast");
-  url.searchParams.set("latitude", points.map((p) => p.lat).join(","));
-  url.searchParams.set("longitude", points.map((p) => p.lon).join(","));
-  // cloud_cover_high corrects the cirrus the radiation model under-weights.
-  url.searchParams.set("current", "shortwave_radiation,temperature_2m,cloud_cover_high");
-  url.searchParams.set("timezone", "UTC");
-
-  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(5000) });
-  if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
-
-  const json = await res.json();
-  // Single-coordinate requests return an object, multi-coordinate an array.
-  const list: OpenMeteoPoint[] = Array.isArray(json) ? json : [json];
-  if (list.length !== points.length) throw new Error("Open-Meteo point count mismatch");
-
-  return list.map((p) => ({
-    ghi: p.current?.shortwave_radiation ?? 0,
-    temp: p.current?.temperature_2m ?? 15,
-    cloudHigh: p.current?.cloud_cover_high ?? 0,
-  }));
+  const now = new Date();
+  return Promise.all(
+    points.map(async (p) => {
+      const plz = nearestPlz(p.lat, p.lon);
+      const shard = plz ? await loadIconD2Shard(shardKey(plz)) : null;
+      const model = shard && plz ? modelWeatherAt(shard, plz, now) : null;
+      if (!model || model.shortwaveRadiation === null || model.temperature === null) {
+        throw new Error("model snapshot incomplete");
+      }
+      return { ghi: model.shortwaveRadiation, temp: model.temperature, cloudHigh: model.cloudCoverHigh ?? 0 };
+    }),
+  );
 }
 
 export async function GET(req: NextRequest) {

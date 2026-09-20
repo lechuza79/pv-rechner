@@ -236,16 +236,20 @@ selbst kontrollieren:
 - Jeder Auto-Fix-Commit trägt im Betreff `[auto]` und im Text die Quelle mit
   Erhebungszeitraum und Fundstelle.
 - Der **nächste Lauf desselben Wächters prüft zuerst seinen letzten Auto-Fix
-  nach.** Lässt sich die Quelle nicht reproduzieren oder trägt sie den Wert
-  nicht, wird der Fix zurückgenommen (Revert + Meldung) — bevor irgendetwas
-  Neues geprüft wird.
+  nach.** Ein Abruffehler wird zunächst protokolliert und durch die bestehende
+  Abruf-Eskalation geprüft; er widerlegt den Inhalt nicht. Trägt die beschaffte
+  Quelle den Wert nicht, wird der Fix korrigiert oder zurückgenommen
+  (Revert + Meldung), bevor neue Änderungen übernommen werden.
 - Der Betreiber bekommt **einen wöchentlichen Bericht „was habe ich selbst
   geändert"** (Sammel-Mail über alle Wächter) — zum Sehen, nicht zum Abnicken.
 
 ### Was nie automatisch geht
 
 - **Geld nach außen** und alles, was Nutzer zahlen oder wir einnehmen.
-- **Versand nach außen** (Outreach, Newsletter, Kontaktaufnahme).
+- **Neuen Versand nach außen einführen** (Outreach, Newsletter, Kontaktaufnahme).
+  Die bereits beauftragten Sachfragen über `foerder-anfragen.yml` bleiben die
+  eng begrenzte Ausnahme mit ihren bestehenden Versandregeln. Ein Wächter
+  startet weder einen zweiten Sender noch eigenmächtige Nachfassmails.
 - **Struktur von Rechtstexten** — Datenschutzerklärung, Impressum,
   Nutzungsbedingungen. Faktische Stände darin (Fristen, Sätze, Namen von
   Gesetzen) darf der Legal-Judge pflegen; ob ein Abschnitt hinzukommt oder
@@ -336,6 +340,13 @@ es eine — und dann gehört sie in **einen** Satz plus Empfehlung.
 Neuer Wächter → Zeile hier ergänzen, sonst gilt: nur Vorschlag.
 
 ### Ein Förderprogramm neu aufnehmen (01.09.2026)
+
+Der gemeinsame tägliche Ablauf steht in `scripts/funding-daily-review.md`. Er
+verbindet diese bestehenden Befugnisse mit Gegenprüfung, dem vorhandenen
+Rückfrage-/Antwortprozess und der öffentlichen Kontrolle nach Veröffentlichung.
+Für diesen integrierten Ablauf bleiben unabhängige Gegenprüfung aller geänderten
+Förderangaben und Legal-Judge bei Rechtsfolgen erforderlich; ältere Ausnahmen
+„ohne Council“ werden dort nicht als Abkürzung verwendet.
 
 **Aufnehmen ist erlaubt, weil das Geld an einer anderen Bedingung hängt als die
 Aufnahme.** Bis zum 01.09.2026 stand hier pauschal „neues Programm aufnehmen →

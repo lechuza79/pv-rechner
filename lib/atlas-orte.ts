@@ -1,4 +1,4 @@
-// Ortsangaben und Ebenen-Identität im Solar-Atlas — EINE Quelle.
+// Ortsangaben und Ebenen-Identität im Energie-Atlas — EINE Quelle.
 //
 // Warum das hier zentral steht (Juli 2026): Beides war über die Atlas-Seiten
 // verstreut und driftete auseinander. Die Präposition wurde einmal aus der

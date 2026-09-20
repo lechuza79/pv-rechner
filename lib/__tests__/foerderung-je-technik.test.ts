@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { FUNDING_TECHNIK_FUER } from "../funding-programs";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import {
@@ -39,12 +40,32 @@ describe("Bedingungen und Sätze je Technik", () => {
 
   it("was für alle gilt, steht in beiden", () => {
     // Der Normalfall und der Grund, warum ein blanker String nicht markiert
-    // werden muss: Antragsfrist, Haltedauer und Rechtsanspruch gelten immer.
+    // werden muss: Antragsfrist, Registrierung und Rechtsanspruch gelten immer.
+    // Beide Niddaer Richtlinien tragen diese Sätze wörtlich.
     for (const t of ["pv", "balkon"] as FundingTechnik[]) {
       const texte = bedingungenFuer(nidda.conditions, t).join(" ");
       expect(texte, t).toContain("binnen vier Wochen");
-      expect(texte, t).toContain("Haltedauer zehn Jahre");
+      expect(texte, t).toContain("Marktstammdatenregister");
     }
+  });
+
+  it("die Haltedauer ist KEINE gemeinsame Bedingung — Nidda trennt sie", () => {
+    // Hier stand bis zum 17.09.2026 „Haltedauer zehn Jahre" als Beispiel für
+    // eine Bedingung, die für alle gilt. Sie gilt nicht: Die PV-Richtlinie sagt
+    // „Haltedauer von PVA: 10 Jahre · Haltedauer von Stromspeichern: 10 Jahre",
+    // die Mini-PV-Richtlinie „eine Haltedauer von mindestens 3 Jahren im
+    // Stadtgebiet". Der Test hat den Fehler damit festgeschrieben statt ihn zu
+    // fangen — bei 200 € für ein Gerät, das man beim Umzug mitnimmt, ist „zehn
+    // Jahre, sonst Rückforderung" die teuerste denkbare Fehlauskunft.
+    const pv = bedingungenFuer(nidda.conditions, "pv").join(" ");
+    const balkon = bedingungenFuer(nidda.conditions, "balkon").join(" ");
+    expect(pv).toContain("Haltedauer zehn Jahre");
+    expect(balkon).toContain("Haltedauer drei Jahre");
+    expect(balkon).not.toContain("zehn Jahre");
+    // Und die Gegenrichtung: Eine gesetzliche Pflicht zum Balkonkraftwerk gibt
+    // es nicht, die GEG-Klausel steht nur in der PV-Richtlinie.
+    expect(pv).toContain("Gebäudeenergiegesetz");
+    expect(balkon).not.toContain("Gebäudeenergiegesetz");
   });
 
   it("jeder Reiter zeigt genau seine Sätze", () => {
@@ -148,5 +169,16 @@ describe("Wer ein Programm zeigt, nennt seine Technik", () => {
       const inhalt = readFileSync(join(ROOT, datei), "utf8");
       expect(inhalt, `${datei}: ${grund}`).toMatch(/<Funding(Conditions|Rates)\b/);
     }
+  });
+});
+
+describe("Grammatik der Technik-Beschriftung", () => {
+  it("liest sich nach einem 'fuer' in allen drei Techniken richtig", () => {
+    // "kein Foerderprogramm fuer Balkonkraftwerk" stand so im Balkon-Rechner und
+    // "fuer Waermepumpe" davor schon im Waermepumpen-Rechner. Der Plural passt in
+    // allen drei Faellen ohne Artikel.
+    expect(FUNDING_TECHNIK_FUER.balkon).toBe("Balkonkraftwerke");
+    expect(FUNDING_TECHNIK_FUER.waermepumpe).toBe("Wärmepumpen");
+    expect(FUNDING_TECHNIK_FUER.pv).toBe("Photovoltaik");
   });
 });

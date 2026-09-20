@@ -53,18 +53,18 @@ export default function ResultHeroCard({
       textAlign: "center", padding: "25px 11px 21px", marginBottom: 16,
       background: v('--color-bg'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border')}`,
     }}>
-      <div style={{ fontSize: 13, color: v('--color-text-secondary'), fontWeight: 400, marginBottom: 8 }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), fontWeight: 400, marginBottom: 8 }}>
         Deine PV-Anlage <GlossaryTerm id="amortisation">amortisiert sich</GlossaryTerm> in
       </div>
-      <div style={{ fontSize: 56, fontWeight: 800, color: v('--color-text-primary'), fontFamily: v('--font-mono'), lineHeight: 1 }}>
-        {be ? be.i : ">25"}<span style={{ fontSize: 22, fontWeight: 700, marginLeft: 4, color: v('--color-text-faint') }}>Jahren</span>
+      <div style={{ fontSize: v("--font-size-display-xl"), fontWeight: 800, color: v('--color-text-primary'), fontFamily: v('--font-mono'), lineHeight: 1 }}>
+        {be ? be.i : ">25"}<span style={{ fontSize: v("--font-size-display-sm"), fontWeight: 700, marginLeft: 4, color: v('--color-text-faint') }}>Jahren</span>
       </div>
 
       {/* Editable parameters grid */}
       <div style={{
         display: "flex", gap: 12,
         marginTop: 18, padding: "14px 12px", background: v('--color-bg-muted'),
-        borderRadius: v('--radius-md'), textAlign: "left", fontSize: 12,
+        borderRadius: v('--radius-md'), textAlign: "left", fontSize: v("--font-size-small"),
       }}>
         {/* Left column */}
         <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 13 }}>
@@ -77,7 +77,7 @@ export default function ResultHeroCard({
             <InlineEdit value={oStrom} onCommit={setOStrom} unit=" €" step={0.01} min={0.15} max={0.60} width={52} />
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ color: v('--color-text-secondary') }}><GlossaryTerm id="ertrag">Ertrag</GlossaryTerm>{plzLoading && <span style={{ color: v('--color-accent'), fontSize: 10, marginLeft: 4 }}>…</span>}</span>
+            <span style={{ color: v('--color-text-secondary') }}><GlossaryTerm id="ertrag">Ertrag</GlossaryTerm>{plzLoading && <span style={{ color: v('--color-accent'), fontSize: v("--font-size-micro"), marginLeft: 4 }}>…</span>}</span>
             <InlineEdit value={oErtrag} onCommit={setOErtrag} unit=" kWh/kWp" step={10} min={ertragMin} max={ertragMax} width={48} />
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -91,7 +91,7 @@ export default function ResultHeroCard({
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ color: v('--color-text-secondary') }}><GlossaryTerm id="eigenverbrauch">Eigenverbr.</GlossaryTerm></span>
             {effEinspeisungModus === "voll" ? (
-              <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-faint'), fontSize: 13 }}>0%</span>
+              <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-faint'), fontSize: v("--font-size-small") }}>0%</span>
             ) : (
               <InlineEdit value={effEv} onCommit={v => setOEv(v)} unit="%" step={1} min={10} max={90} width={40} />
             )}

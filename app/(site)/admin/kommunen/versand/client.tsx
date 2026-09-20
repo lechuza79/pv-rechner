@@ -37,11 +37,11 @@ export default function VersandAuswertung() {
       <AdminSeitenkopf titel="Übersicht" />
 
       {fehler && (
-        <p style={{ fontSize: 13, color: v("--color-negative") }}>
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative") }}>
           Die Auswertung konnte nicht geladen werden ({fehler}).
         </p>
       )}
-      {!wirkung && !fehler && <p style={{ fontSize: 13, color: v("--color-text-muted") }}>Lädt…</p>}
+      {!wirkung && !fehler && <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Lädt…</p>}
 
       {wirkung && (
         <>
@@ -61,7 +61,7 @@ export default function VersandAuswertung() {
             />
           </div>
 
-          <p style={{ fontSize: 11, color: v("--color-text-muted"), marginBottom: space.lg, maxWidth: 620, lineHeight: 1.4 }}>
+          <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: space.lg, maxWidth: 620, lineHeight: 1.4 }}>
             Untergrenzen: Eine Veröffentlichung ohne Link auf uns wird nicht gefunden, und wer sich einträgt, ohne
             das Kästchen „Ich arbeite für die Verwaltung" anzukreuzen, zählt hier als Bürger.
           </p>
@@ -73,7 +73,7 @@ export default function VersandAuswertung() {
               und der hat kein Datum, weil er noch nicht hinausging. Er steht
               deshalb als Zeile darüber statt als eigene Tabelle. */}
           {offeneSchuebe.length > 0 && (
-            <p style={{ fontSize: 12, fontFamily: v("--font-mono"), marginBottom: space.lg }}>
+            <p style={{ fontSize: v("--font-size-small"), fontFamily: v("--font-mono"), marginBottom: space.lg }}>
               <span style={{ color: v("--color-text-muted") }}>Noch offen: </span>
               {offeneSchuebe.map((k, i) => (
                 <span key={k.kampagne}>
@@ -158,7 +158,7 @@ export default function VersandAuswertung() {
                   })}
                 </tbody>
               </table>
-              <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.sm, maxWidth: 620, lineHeight: 1.4 }}>
+              <p style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.sm, maxWidth: 620, lineHeight: 1.4 }}>
                 Die Reaktionen zählen zum Versandtag, nicht zum Tag der Reaktion — eine Antwort gehört zu dem Schub,
                 der sie ausgelöst hat, auch wenn sie zwei Wochen später kommt. Frische Tage haben deshalb
                 zwangsläufig weniger Reaktionen und sind mit älteren erst nach ein paar Wochen vergleichbar.
@@ -179,7 +179,7 @@ const knopf: React.CSSProperties = {
   background: v("--color-bg"),
   color: v("--color-accent"),
   textDecoration: "none",
-  fontSize: 12,
+  fontSize: v("--font-size-small"),
   fontWeight: 600,
   whiteSpace: "nowrap",
 };
@@ -207,10 +207,10 @@ function Kennzahl({ label, wert, unten, gut }: { label: string; wert: number; un
         background: v("--color-bg-muted"),
       }}
     >
-      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") }}>{label}</div>
+      <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-secondary") }}>{label}</div>
       <div
         style={{
-          fontSize: 26,
+          fontSize: v("--font-size-h1"),
           fontWeight: 800,
           fontFamily: v("--font-mono"),
           color: gut && wert > 0 ? v("--color-positive") : v("--color-text-primary"),
@@ -218,13 +218,13 @@ function Kennzahl({ label, wert, unten, gut }: { label: string; wert: number; un
       >
         {wert.toLocaleString("de-DE")}
       </div>
-      {unten && <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 2 }}>{unten}</div>}
+      {unten && <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 2 }}>{unten}</div>}
     </div>
   );
 }
 
 const ueberschrift: React.CSSProperties = {
-  fontSize: 14,
+  fontSize: v("--font-size-body"),
   fontWeight: 700,
   marginBottom: space.sm,
 };

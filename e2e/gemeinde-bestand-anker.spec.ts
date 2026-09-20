@@ -158,7 +158,14 @@ test.describe("Bestandsblock: die Adresse stellt den Umschalter", () => {
   test("die Nachbarschafts-Liste wechselt auf die Landesgruppe", async ({ page }) => {
     await page.goto(ORT);
     await umschalterBedienbar(page);
-    const titel = page.locator("text=/^Gemeinden und Kleinstädte /").first();
+    // IN DER KARTE suchen, nicht auf der ganzen Seite (07.09.2026). Die
+    // Auszeichnungs-Kachel beginnt mit DENSELBEN Woertern
+    // („Gemeinden und Kleinstaedte im Landkreis … · 59 je 100 Daecher") und
+    // steht ausserhalb dieser Karte. `.first()` griff damit eine Ueberschrift,
+    // die auf den Umschalter gar nicht hoert — der Test wartete 15 Sekunden auf
+    // eine Aenderung am falschen Element. Im Browser gegengeprueft: Die Liste
+    // wechselt auf „in Hessen", Melsungen ist drin, der Nenner steht daneben.
+    const titel = karte(page).locator("text=/^Gemeinden und Kleinstädte /").first();
     await expect(titel).toContainText("Schwalm-Eder-Kreis");
 
     await page.click('a[href="#bestand-privat"]');

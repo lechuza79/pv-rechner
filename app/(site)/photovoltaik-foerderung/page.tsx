@@ -28,13 +28,13 @@ const LEVEL_LABEL: Record<FundingProgram["level"], string> = {
 const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
-  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
-  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 20px" } as React.CSSProperties,
+  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
+  intro: { fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 20px" } as React.CSSProperties,
   nav: { display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 } as React.CSSProperties,
-  navLink: { fontSize: 12, color: v("--color-accent"), background: v("--color-bg-accent"), border: `1px solid ${v("--color-border-accent")}`, borderRadius: 999, padding: "4px 12px", textDecoration: "none" } as React.CSSProperties,
-  h2: { fontSize: 18, fontWeight: 800, margin: "28px 0 12px", scrollMarginTop: 16 } as React.CSSProperties,
+  navLink: { fontSize: v("--font-size-small"), color: v("--color-accent"), background: v("--color-bg-accent"), border: `1px solid ${v("--color-border-accent")}`, borderRadius: 999, padding: "4px 12px", textDecoration: "none" } as React.CSSProperties,
+  h2: { fontSize: v("--font-size-h3"), fontWeight: 800, margin: "28px 0 12px", scrollMarginTop: 16 } as React.CSSProperties,
   card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "14px 16px", marginBottom: 10 } as React.CSSProperties,
-  label: { fontSize: 12, color: v("--color-text-secondary") } as React.CSSProperties,
+  label: { fontSize: v("--font-size-small"), color: v("--color-text-secondary") } as React.CSSProperties,
 };
 
 function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
@@ -48,11 +48,11 @@ function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
   return (
     <div style={S.card}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
-        <span style={{ fontSize: 15, fontWeight: 700 }}>{p.name}</span>
+        <span style={{ fontSize: v("--font-size-body"), fontWeight: 700 }}>{p.name}</span>
         <FundingStatusBadge status={p.status} />
       </div>
       <div style={{ ...S.label, marginBottom: 8 }}>{LEVEL_LABEL[p.level]} · {p.traeger}</div>
-      <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 8 }}>
+      <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 8 }}>
         Förderfähig: <span style={{ color: v("--color-text-primary") }}>{p.coveredCosts}</span>
       </div>
       <div style={{ marginBottom: 12 }}>
@@ -66,13 +66,13 @@ function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
         style={{
           display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none",
           background: v("--color-accent"), color: v("--color-text-on-accent"),
-          fontSize: 13, fontWeight: 700, padding: "8px 14px", borderRadius: v("--radius-md"),
+          fontSize: v("--font-size-small"), fontWeight: 700, padding: "8px 14px", borderRadius: v("--radius-md"),
         }}
       >
         {primaryLabel} <IconArrowRight size={iconSizes.sm} color={v("--color-text-on-accent")} />
       </Link>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12, marginTop: 10 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: v("--font-size-small"), marginTop: 10 }}>
         {city && (
           <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>Zur Quelle</a>
         )}
@@ -130,7 +130,7 @@ export default async function FoerderungPage() {
           <div key={bl}>
             <h2 id={slugify(bl)} style={S.h2}>{bl}</h2>
             {blWithPage.has(slugify(bl)) && (
-              <Link href={`/photovoltaik-foerderung/${slugify(bl)}`} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, color: v("--color-accent"), textDecoration: "none", marginBottom: 10 }}>
+              <Link href={`/photovoltaik-foerderung/${slugify(bl)}`} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: v("--font-size-small"), color: v("--color-accent"), textDecoration: "none", marginBottom: 10 }}>
                 {liveBundeslaender().some((b) => b.slug === slugify(bl)) ? `Alle Städte in ${bl}` : `${bl}-Förderung im Detail`} <IconArrowRight size={iconSizes.xs} />
               </Link>
             )}
@@ -138,7 +138,7 @@ export default async function FoerderungPage() {
           </div>
         ))}
 
-        <p style={{ fontSize: 12, color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 24 }}>
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 24 }}>
           Auswahl der wichtigsten Programme — kommunale Förderung ist dezentral und ändert sich laufend.
           Ohne Anspruch auf Vollständigkeit; verbindlich ist die jeweilige offizielle Quelle.
         </p>

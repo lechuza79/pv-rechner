@@ -12,6 +12,7 @@ import {
   type ArtikelVorhaben,
 } from "../artikelplan";
 import { RATGEBER } from "../ratgeber";
+import { heuteInBerlin } from "../zeit";
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -39,7 +40,7 @@ describe("Artikelplan", () => {
   });
 
   it("kein Erhebungstag in der Zukunft", () => {
-    const heute = new Date().toISOString().slice(0, 10);
+    const heute = heuteInBerlin();
     for (const v of ARTIKELPLAN) {
       expect(v.messung.gemessenAm.localeCompare(heute), `${v.thema}`).toBeLessThanOrEqual(0);
     }
@@ -112,7 +113,7 @@ describe("Artikelplan", () => {
     for (const v of liveVorhaben()) {
       expect(v.seit, `${v.thema}: kein Livegang-Datum`).toMatch(ISO);
       expect(
-        v.seit!.localeCompare(new Date().toISOString().slice(0, 10)),
+        v.seit!.localeCompare(heuteInBerlin()),
         `${v.thema}: Livegang in der Zukunft`,
       ).toBeLessThanOrEqual(0);
     }

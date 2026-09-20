@@ -180,7 +180,7 @@ function DeutschlandWert({
         alignItems: "baseline",
         gap: 6,
         fontFamily: "var(--font-mono)",
-        fontSize: 12,
+        fontSize: "var(--font-size-small)",
         fontWeight: 600,
         color: "var(--widget-fg)",
         borderRadius: 4,
@@ -265,7 +265,7 @@ export default function ZubauWidget() {
             Umschalten die ganze Karte: Der Titel wurde länger oder kürzer, auf
             schmalen Karten wechselte er zwischen einer und zwei Zeilen, und
             alles darunter rutschte mit. */}
-        <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
+        <div style={{ fontSize: "var(--font-size-small)", fontWeight: 600, letterSpacing: 0.2 }}>
           Erneuerbare vs. Atomkraft
         </div>
 
@@ -274,7 +274,7 @@ export default function ZubauWidget() {
             samt der Angabe, ob Deutschland eingeblendet ist. Was ein Umschalter
             bestimmt, muss im geteilten Bild lesbar sein. */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, marginTop: 6, marginBottom: 12 }}>
-          <span style={{ fontSize: 12, color: "var(--widget-muted)" }}>Zubau:</span>
+          <span style={{ fontSize: "var(--font-size-small)", color: "var(--widget-muted)" }}>Zubau:</span>
           <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
             <CountryMultitool idx={idx} onChange={setIdx} />
           </span>
@@ -309,7 +309,7 @@ export default function ZubauWidget() {
             geworden; das Gebiet stand nur im Wähler, den das Bild nicht hat —
             ein geteiltes Bild zeigte damit Zahlen, von denen niemand weiß,
             wofür sie gelten. Beide gehören an die Zahlen, die sie bestimmen. */}
-        <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--widget-muted)", marginBottom: 6 }}>
+        <div style={{ fontSize: "var(--font-size-micro)", fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--widget-muted)", marginBottom: 6 }}>
           Zubau gesamt {ERSTES_JAHR}–{LETZTES_JAHR}
         </div>
         {/* Zwei Kacheln, eine je Technik — auch im Vergleich. Deutschland steht
@@ -333,7 +333,7 @@ export default function ZubauWidget() {
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
                   <span style={{ width: 6, height: 6, borderRadius: "50%", background: `var(${k.colorToken})`, flexShrink: 0 }} />
-                  <span style={{ fontSize: 11, color: "var(--widget-muted)", whiteSpace: "nowrap" }}>
+                  <span style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", whiteSpace: "nowrap" }}>
                     {k.label}
                     {/* Das Land als Kürzel hinter der Sache, nicht als Fahne
                         davor: Es beantwortet „von wem ist diese Zahl", sobald
@@ -346,7 +346,7 @@ export default function ZubauWidget() {
                     )}
                   </span>
                 </div>
-                <div style={{ fontFamily: "var(--font-mono)", fontSize: 18, fontWeight: 800, lineHeight: 1, color: "var(--widget-fg)" }}>
+                <div style={{ fontFamily: "var(--font-mono)", fontSize: "var(--font-size-h3)", fontWeight: 800, lineHeight: 1, color: "var(--widget-fg)" }}>
                   {fmtGw(eigen)}
                 </div>
                 {/* Der Vergleich steht UNTER der Zahl, Zeile für Zeile: So wächst
@@ -369,7 +369,7 @@ export default function ZubauWidget() {
                     >
                       <DeutschlandWert wert={fmtGw(de)} abweichung={abw} bezug={land.code} />
                       {verhaeltnis && (
-                        <div style={{ fontSize: 11, color: "var(--widget-muted)", marginTop: 3 }}>
+                        <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", marginTop: 3 }}>
                           {verhaeltnis}
                         </div>
                       )}
@@ -396,7 +396,7 @@ export default function ZubauWidget() {
           <ExportBox key={view.id} style={{ animation: "sc-fade 0.35s ease" }}>
             <LineChart years={YEARS_ZUBAU} series={series} unit="GW" xDomain={[ERSTES_JAHR, LETZTES_JAHR]} height={300} />
           </ExportBox>
-          <div style={{ fontSize: 11, color: "var(--widget-muted)", marginTop: 2, paddingLeft: 48 }}>
+          <div style={{ fontSize: "var(--font-size-caption)", color: "var(--widget-muted)", marginTop: 2, paddingLeft: 48 }}>
             Neu ans Netz gebrachte Leistung pro Jahr (GW, netto inkl. Rückbau). Negativ = mehr abgebaut als zugebaut.
           </div>
         </div>
@@ -434,7 +434,7 @@ function CountryMultitool({ idx, onChange }: { idx: number; onChange: (i: number
 
   const view = VIEWS[idx];
   const btn: CSSProperties = {
-    fontSize: 12,
+    fontSize: "var(--font-size-small)",
     fontWeight: 600,
     border: "1px solid var(--color-border)",
     background: "var(--widget-bg)",
@@ -501,7 +501,7 @@ function CountryMultitool({ idx, onChange }: { idx: number; onChange: (i: number
                   border: "none",
                   background: i === idx ? "color-mix(in srgb,var(--widget-accent) 12%,transparent)" : "transparent",
                   color: i === idx ? "var(--widget-accent)" : "var(--widget-fg)",
-                  fontSize: 12,
+                  fontSize: "var(--font-size-small)",
                   fontWeight: i === idx ? 700 : 500,
                   fontFamily: "inherit",
                   cursor: "pointer",

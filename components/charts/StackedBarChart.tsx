@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useCallback, useRef, useState, useLayoutEffect } from "react";
+import { fsPx } from "../../lib/theme";
 import { BarStack } from "@visx/shape";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
@@ -264,8 +265,8 @@ function BarTooltipRow({ color, label, value }: { color: string; label: string; 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
       <div style={{ width: 8, height: 8, borderRadius: 2, background: color, flexShrink: 0 }} />
-      <span style={{ flex: 1, color: "var(--color-text-secondary)", fontSize: 11 }}>{label}</span>
-      <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600 }}>{value}</span>
+      <span style={{ flex: 1, color: "var(--color-text-secondary)", fontSize: "var(--font-size-caption)" }}>{label}</span>
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--font-size-caption)", fontWeight: 600 }}>{value}</span>
     </div>
   );
 }
@@ -273,8 +274,8 @@ function BarTooltipRow({ color, label, value }: { color: string; label: string; 
 function BarTooltipSummary({ color, label, value }: { color: string; label: string; value: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, marginTop: 6 }}>
-      <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color }}>{label}</span>
-      <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700, color }}>{value}</span>
+      <span style={{ flex: 1, fontWeight: 700, fontSize: "var(--font-size-small)", color }}>{label}</span>
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--font-size-small)", fontWeight: 700, color }}>{value}</span>
     </div>
   );
 }
@@ -354,7 +355,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh, compact
         border: "1px solid var(--color-border)",
         borderRadius: "var(--radius-sm)",
         padding: "10px 14px",
-        fontSize: 12,
+        fontSize: "var(--font-size-small)",
         fontFamily: "var(--font-text)",
         color: "var(--color-text-primary)",
         boxShadow: "var(--shadow-md, 0 4px 12px rgba(0,0,0,0.1))",
@@ -363,7 +364,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh, compact
         zIndex: 10,
       }}
     >
-      <div style={{ fontWeight: 700, marginBottom: 8, fontFamily: "var(--font-mono)", fontSize: 11 }}>
+      <div style={{ fontWeight: 700, marginBottom: 8, fontFamily: "var(--font-mono)", fontSize: "var(--font-size-caption)" }}>
         {data.label}
       </div>
 
@@ -412,8 +413,8 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh, compact
         return (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, marginBottom: 4 }}>
-              <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: CATEGORY_COLORS.nuclear }}>Kernenergie {nucPct}%</span>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700, color: CATEGORY_COLORS.nuclear }}>{fmt(nucTotal)}</span>
+              <span style={{ flex: 1, fontWeight: 700, fontSize: "var(--font-size-small)", color: CATEGORY_COLORS.nuclear }}>Kernenergie {nucPct}%</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: "var(--font-size-small)", fontWeight: 700, color: CATEGORY_COLORS.nuclear }}>{fmt(nucTotal)}</span>
             </div>
             {!compact && nuclearGWhLocal > 0.01 && (
               <BarTooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={fmt(nuclearGWhLocal)} />
@@ -718,7 +719,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
             tickStroke="var(--color-chart-grid)"
             tickLabelProps={() => ({
               fill: "var(--color-text-muted)",
-              fontSize: 10,
+              fontSize: "var(--font-size-micro)",
               fontFamily: "var(--font-mono)",
               textAnchor: "middle" as const,
               dy: "0.3em",
@@ -736,7 +737,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
             tickStroke="transparent"
             tickLabelProps={() => ({
               fill: "var(--color-text-muted)",
-              fontSize: 11,
+              fontSize: "var(--font-size-caption)",
               fontFamily: "var(--font-mono)",
               textAnchor: "end" as const,
               dx: "-0.4em",
@@ -748,7 +749,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
             x={-margin.left + 4}
             y={innerHeight + 30}
             fill="var(--color-text-faint)"
-            fontSize={9}
+            fontSize={fsPx("--font-size-micro")}
             fontFamily="var(--font-mono)"
           >
             {yMax >= 1000 ? "in TWh" : "in GWh"}
@@ -778,7 +779,7 @@ export default function StackedBarChart({ data, keys, height, mode, nuclearOverl
     return (
       <div style={{
         height: height || CHART_HEIGHT, display: "flex", alignItems: "center", justifyContent: "center",
-        color: "var(--color-text-muted)", fontSize: 13, fontFamily: "var(--font-text)",
+        color: "var(--color-text-muted)", fontSize: "var(--font-size-small)", fontFamily: "var(--font-text)",
       }}>
         Lade Daten...
       </div>

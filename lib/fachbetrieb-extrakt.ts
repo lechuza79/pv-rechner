@@ -1,3 +1,4 @@
+import { chooseOwnedMailbox } from "./contact-evidence";
 /**
  * Was aus einer Betriebs-Website herauszulesen ist — die reine Logik.
  *
@@ -15,6 +16,8 @@
  *
  * Herleitung und verworfene Quellen: docs/fachbetriebe-quellen.md
  */
+
+import { entschluesseltOderRoh } from "./uri-sicher";
 
 // ─── Ortssuche ───────────────────────────────────────────────────────────────
 
@@ -290,11 +293,7 @@ export function kontaktUrl(html: string, basis: string): string | null {
  * Vorsichtsmaßnahme, an die sich jeder Aufrufer erinnern muss, ist keine.
  */
 export function adresseLesbar(href: string): string {
-  try {
-    return decodeURIComponent(href);
-  } catch {
-    return href;
-  }
+  return entschluesseltOderRoh(href);
 }
 
 /**
@@ -835,16 +834,7 @@ export function mailBrauchbar(mail: string): boolean {
  * die erste im Text — und das war im Eichlauf zweimal die falsche.
  */
 export function besteMail(kandidaten: string[], domain: string): string | null {
-  const brauchbar = kandidaten
-    .map((m) => m.toLowerCase().replace(/[.,;:)]+$/, ""))
-    .filter(mailBrauchbar);
-  const kern = domain.split(".").slice(-2)[0];
-  return (
-    brauchbar.find((m) => m.endsWith("@" + domain)) ??
-    brauchbar.find((m) => m.includes("@" + kern)) ??
-    brauchbar[0] ??
-    null
-  );
+  return chooseOwnedMailbox(kandidaten.filter(mailBrauchbar), domain);
 }
 
 // ─── Gründungsjahr ───────────────────────────────────────────────────────────

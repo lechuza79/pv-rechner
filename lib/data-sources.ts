@@ -29,6 +29,13 @@ export interface DataSource {
   license?: string;
   /** Canonical homepage of the source, used for the credit link. */
   url?: string;
+  /**
+   * A notice the licensor requires in full wording (e.g. ECMWF's disclaimer).
+   * Too long for a credit line, so it stands on the sources page under the
+   * entry, and the credit line links there (CC BY 4.0 Sec. 3(a)(2) allows
+   * this "in any reasonable manner").
+   */
+  hinweis?: string;
   /** Licence homepage, if different from `url` (e.g. a govdata licence text page). */
   licenseUrl?: string;
   /**
@@ -114,19 +121,151 @@ export const DATA_SOURCES = {
     url: "https://www.marktstammdatenregister.de",
     note: "aggregiert",
   },
-  /** Live weather feed powering the PV simulation. */
-  openMeteo: {
-    // Ohne die Vorlieferanten (DWD, NOAA): Die Lizenz verlangt Open-Meteo als
-    // Rechteinhaber, nicht die Wetterdienste dahinter — und der Quellenvermerk
-    // steht in der schmalen senkrechten Kante, wo jedes Wort Höhe kostet.
-    name: "Open-Meteo",
+  /**
+   * Klimaprojektion im Klimaanlagen-Rechner: wie stark die Kühlgradstunden bis
+   * in rund zwanzig Jahren zunehmen, je 0,25°-Rasterfeld aus acht CMIP6-Modellen
+   * (lib/klima-projektion.ts). Ersetzt am 18.09.2026 die Werte aus der
+   * Klima-Schnittstelle von Open-Meteo, deren freier Zugang nur nicht-kommerziell
+   * genutzt werden darf.
+   *
+   * Lizenz (zwei Legal-Judges, 18.09.2026, Belege in docs/quellen/nex-gddp-cmip6/):
+   * Tragend ist NICHT die CC0-Erklärung der NASA — die NASA kann nur auf ihre
+   * eigenen Rechte verzichten —, sondern CC BY 4.0 jeder einzelnen Modellgruppe
+   * laut CMIP6-Lizenzliste, die nach den CMIP6-Nutzungsbedingungen 6-2 der
+   * Lizenzangabe im Dateikopf vorgeht. Die Dateien tragen dort noch das ältere
+   * „CC-BY-SA 4.0"; das ist überholter Altbestand, keine geltende Bedingung.
+   * Deshalb der Lizenzvermerk CC BY 4.0, die WCRP-Danksagung und die Modellliste
+   * im `hinweis`, und der Änderungshinweis: Wir zeigen keinen Modellwert,
+   * sondern die Veränderung, die wir aus ihnen rechnen.
+   */
+  nexGddp: {
+    name: "NASA NEX-GDDP-CMIP6 (acht CMIP6-Klimamodelle)",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://www.nccs.nasa.gov/data-collections/nex-gddp-cmip6/",
+    note: "Veränderung je Rasterfeld selbst berechnet",
+    hinweis:
+      "Klimaprojektion im mittleren Szenario (SSP2-4.5), Datenversion 2.0, Modelle: MPI-ESM1-2-HR, EC-Earth3, MRI-ESM2-0, IPSL-CM6A-LR, NorESM2-MM, CNRM-CM6-1, ACCESS-CM2, MIROC6. " +
+      "We acknowledge the World Climate Research Programme, which, through its Working Group on Coupled Modelling, coordinated and promoted CMIP6. " +
+      "We thank the climate modeling groups for producing and making available their model output, the Earth System Grid Federation (ESGF) for archiving the data and providing access, and the multiple funding agencies who support CMIP6 and ESGF. " +
+      "Die NASA stellt die Daten als vorläufig und ohne Gewähr bereit; es handelt sich um eine Modellprojektion, keinen Messwert.",
+  },
+
+  /**
+   * ERA5-Stundenwerte für die kommunalen Energiecharts.
+   *
+   * Nicht der gehostete Abruf von Open-Meteo, sondern deren offenes Datenarchiv
+   * (AWS Open Data, Bucket `openmeteo`), aus dem wir selbst lesen — deshalb ein
+   * eigener Eintrag: Lizenz und Bereitsteller sind dieselben, der Weg ist ein
+   * anderer.
+   *
+   * KOMMA statt Klammer, und anders als bei Anlagenregister oder Energy-Charts
+   * ist das hier keine Stilfrage: Dort steht in der Klammer das BETREIBENDE
+   * INSTITUT, hier stünde ein MITRECHTEINHABER. ERA5 steht seit dem 02.07.2025
+   * selbst unter CC BY 4.0, und die Zitieranleitung des EZMW verlangt die
+   * Nennung des Copernicus-Dienstes ausdrücklich — ein Pflichtbestandteil
+   * gehört nicht in eine Klammer, die sich wie ein Nachtrag liest.
+   *
+   * `url` zeigt auf open-meteo.com, nicht auf das Archiv-Repository: Die
+   * Lizenzseite von Open-Meteo gibt diese Form der Nennung vor („You must
+   * include a link next to any location Open-Meteo data are displayed"), und
+   * CC BY 4.0 Sec. 3(a)(1)(A)(i) bindet an die vom Lizenzgeber verlangte Form.
+   *
+   * `note` ist der Änderungshinweis nach Sec. 3(a)(1)(B) und deckt zugleich das
+   * „modified" der Copernicus-Fassung ab: Wir wählen die Rasterzelle selbst,
+   * rechnen die Temperatur auf die Ortshöhe um und bilden aus den beiden
+   * Windkomponenten den Betrag.
+   *
+   * OFFEN (bis zum Livegang der Kommunalcharts): der volle Copernicus-Vermerk
+   * samt Haftungssatz und der Gewährleistungshinweis von Open-Meteo gehören auf
+   * /datenstand, vom Kurzvermerk aus verlinkt — Sec. 3(a)(2) erlaubt dafür
+   * ausdrücklich einen Verweis. Die Jahresangabe darin wird fest verdrahtet,
+   * nie aus der laufenden Uhr gebildet.
+   */
+  era5Archive: {
+    name: "ERA5, Copernicus Climate Change Service, über Open-Meteo",
     license: "CC BY 4.0",
     licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
     url: "https://open-meteo.com",
-    // Sec. 3(a)(1)(B) wie bei den anderen CC-BY-Quellen: Aus Tages-Min/Max
-    // rechnet cdhFromDailyMinMax() einen synthetischen Tagesgang und daraus die
-    // Kühlgradstunden — das ist eine Ableitung, keine Weitergabe.
-    note: "abgeleitet",
+    note: "Rasterzelle und Höhenbezug abgeleitet",
+  },
+  /**
+   * Der DWD steht VORN, nicht Open-Meteo (Zweitprüfung 18.09.2026): Lizenzgeber
+   * bleibt der DWD — sein CC-BY-Angebot erreicht jeden Empfänger direkt (Sec.
+   * 2(a)(5)(A)), gleich über welchen Weg die Daten kommen — und § 7 DWD-Gesetz
+   * verlangt seine Nennung bei jeder Verbreitung. „über Open-Meteo" allein
+   * reichte nicht.
+   *
+   * Live-Wetter: das Wettermodell des DWD (ICON-D2), gelesen aus dem offenen
+   * Datenarchiv von Open-Meteo. Zwei Rechteinhaber, beide CC BY 4.0 — der DWD
+   * (Rechtliche Hinweise auf dwd.de: „alle frei zugänglichen Geodaten … unter
+   * den Bedingungen der Lizenz Creative Commons BY 4.0") und Open-Meteo für das
+   * Archiv, dessen Lizenzseite einen Link auf open-meteo.com verlangt.
+   * Verändert: Rasterzelle gewählt, Temperatur auf die Ortshöhe umgerechnet,
+   * zeitlich auf „jetzt" interpoliert. Wo die Seite den Vermerk selbst setzt,
+   * steht davor „Datenbasis:" (DWD-Vorlage für veränderte Daten), nicht „Quelle:".
+   */
+  iconD2Archive: {
+    name: "Deutscher Wetterdienst, Modell ICON-D2, über Open-Meteo",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://open-meteo.com",
+    note: "ausgewertet und bildlich wiedergegeben",
+  },
+  /**
+   * Hitzewellen-Hinweis: Tageshöchstwerte der nächsten 16 Tage aus drei
+   * Vorhersagemodellen in der Reihenfolge, in der auch die Open-Meteo-Schnittstelle
+   * sie für Deutschland nimmt — DWD ICON, dann ECMWF IFS, dann NOAA GFS —, gelesen
+   * aus dem offenen Datenarchiv von Open-Meteo (CC BY 4.0). ECMWF stellt seine
+   * offenen Vorhersagedaten unter CC BY 4.0, GFS ist als Werk der US-Regierung
+   * gemeinfrei; beide werden trotzdem genannt, weil der Leser sonst nicht wüsste,
+   * woher Tag 8 bis 16 stammen. Verändert: Rasterzelle gewählt, auf die Ortshöhe
+   * umgerechnet, zu Tageshöchstwerten verdichtet.
+   */
+  // Legal-Judge 18.09.2026: ECMWF verlangt Nennung mit www.ecmwf.int, den
+  // Lizenzhinweis, einen Änderungshinweis und seinen Haftungsausschluss im
+  // Wortlaut (Terms of Use, apps.ecmwf.int/datasets/licences/general/); der
+  // Ausschluss steht unter dem Eintrag auf /ueber (Quellenliste), die Zeile verlinkt
+  // dorthin. DWD: Form „Datenbasis: Deutscher Wetterdienst" bei veränderten
+  // Daten — deshalb rendert die Seite diesen Eintrag mit „Datenbasis:".
+  wetterVorhersage: {
+    name: "Deutscher Wetterdienst (ICON), ECMWF (www.ecmwf.int), NOAA (GFS), über Open-Meteo",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://open-meteo.com",
+    note: "zu Tageshöchstwerten verdichtet, höhenkorrigiert",
+    hinweis:
+      "Dieser Dienst beruht auf Daten und Produkten des Europäischen Zentrums für mittelfristige Wettervorhersage (ECMWF). " +
+      "ECMWF übernimmt keinerlei Haftung für Fehler oder Auslassungen in den Daten, deren Verfügbarkeit oder für Schäden aus ihrer Nutzung. " +
+      "— This service is based on data and products of the European Centre for Medium-Range Weather Forecasts (ECMWF). " +
+      "ECMWF does not accept any liability whatsoever for any error or omission in the data, their availability, or for any loss or damage arising from their use.",
+  },
+  /**
+   * Radar-Niederschlag (RADOLAN RY), direkt vom Open-Data-Server des DWD.
+   * Quellenvermerk nach den DWD-Vorgaben „Datenbasis: Deutscher Wetterdienst"
+   * mit Veränderungshinweis; § 7 DWD-Gesetz verlangt die Quellenangabe auch,
+   * wo ein einzelner Messwert urheberrechtlich nicht geschützt wäre.
+   */
+  dwdRadar: {
+    name: "Deutscher Wetterdienst, Radar",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://www.dwd.de",
+    note: "Radardaten ausgewertet und bildlich wiedergegeben",
+  },
+  /**
+   * Jahresraster der Globalstrahlung, Deutscher Wetterdienst (CDC-OpenData).
+   * CC BY 4.0 laut Nutzungsbedingungen des CDC-OpenData-Bereichs (Stand Mai
+   * 2024, https://opendata.dwd.de/climate_environment/CDC/Nutzungsbedingungen_German.pdf).
+   * Wir rechnen aus dem 1-km-Raster ein Gebietsmittel je Jahr
+   * (scripts/dwd-strahlung-sync.ts) — eine Ableitung, daher der Hinweis.
+   */
+  dwd: {
+    name: "Deutscher Wetterdienst (CDC)",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://opendata.dwd.de/climate_environment/CDC/",
+    note: "Gebietsmittel abgeleitet",
   },
   /** Location-based PV yield model. */
   pvgis: {
@@ -177,11 +316,14 @@ export const DATA_SOURCES = {
   /** GModG gas-price scenarios (Bio-Treppe, Biomethan/Netzentgelt/CO₂ paths). */
   iw: {
     name: "Institut der deutschen Wirtschaft (IW-Report 36/2026)",
+    // Kurzform für die senkrechte Kante: An einem Chart mit zwei Quellen wäre
+    // der volle Name sonst nur noch in 6 px unterzubringen.
+    shortName: "IW Köln (Report 36/2026)",
     url: "https://www.iwkoeln.de/studien/ralph-henger-malte-kueper-laurens-wuensch-wie-hoch-sind-die-mehrkostenrisiken-durch-das-gebaeudemodernisierungsgesetz.html",
-    note: "Preisszenarien Gebäudemodernisierungsgesetz",
+    note: "Preisszenarien zum GModG",
   },
   /**
-   * Administrative boundaries for the Solar-Atlas map (Bundesländer, Kreise, Gemeinden).
+   * Administrative boundaries for the Energie-Atlas map (Bundesländer, Kreise, Gemeinden).
    *
    * Der Quellenvermerk ist hier nicht frei formulierbar: Das BKG gibt ihn auf
    * der VG250-Produktseite wörtlich vor —
@@ -221,6 +363,41 @@ export const DATA_SOURCES = {
    * fallen also unter das zweite Regime; die Produktseite weist keine
    * abweichende Angabe aus.
    */
+  /**
+   * Wohnungsbestand je Gemeinde aus dem Zensus 2022 (Stichtag 15.05.2022).
+   *
+   * Der Nenner, den das Anlagenregister nicht kennt: wie viele Dächer es
+   * überhaupt gibt. Ohne ihn ist „hier wurde wenig gebaut" nicht von „hier gibt
+   * es kaum eigene Dächer" zu unterscheiden.
+   *
+   * KEIN dl-de/by-2-0 — die Angabe stand bis zum 06.09.2026 so im Importlauf
+   * und ist am Original widerlegt. Auf zensus2022.de trägt genau EIN Angebot
+   * die Datenlizenz: das Shapefile der Verwaltungsgrenzen, und dessen
+   * Quellenvermerk lautet „© GeoBasis-DE / BKG 2023" — es ist also die
+   * BKG-Karte, nicht die Statistik. Bei Destatis selbst gilt die Datenlizenz
+   * ausdrücklich nur für GENESIS-Online (eigene Copyright-Seite dafür); unsere
+   * Regionaltabelle ist ein statisches Download-Produkt. Dieselbe Abgrenzung,
+   * aus der `destatis` unten schon nicht unter der Datenlizenz steht.
+   *
+   * Was WIRKLICH gilt, im Volltext am 06.09.2026 gelesen (Destatis, Copyright
+   * allgemein): „Vervielfältigung und Verbreitung, auch auszugsweise, mit
+   * Quellennachweis gestattet … sowohl für nicht gewerbliche als auch
+   * gewerbliche Zwecke". Und der Grund für `note`: „Änderungen … neue
+   * Gestaltungen oder sonstige Abwandlungen sind als solche kenntlich zu machen
+   * bzw. im Quellennachweis mit dem Hinweis zu versehen, dass die Daten
+   * geändert, nur als Berechnungsgrundlage verwendet oder verändert dargestellt
+   * wurden." Wir rechnen aus den fünf Größenklassen der Quelle zwei Gruppen —
+   * also geschuldet, nicht Höflichkeit.
+   *
+   * Eigener Eintrag neben `destatis`, obwohl dieselben Bedingungen gelten: Der
+   * Quellennachweis verlangt die genaue Fundstelle, und „Statistisches
+   * Bundesamt" allein benennt weder den Zensus noch seinen Stichtag.
+   */
+  zensus: {
+    name: "Zensus 2022 (Statistisches Bundesamt)",
+    url: "https://www.zensus2022.de",
+    note: "als Berechnungsgrundlage verwendet",
+  },
   destatis: {
     name: "Statistisches Bundesamt (Destatis)",
     url: "https://www.destatis.de",

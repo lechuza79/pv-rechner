@@ -4,6 +4,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { IconBolt, IconRefresh, IconLink, IconChevronDown } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
+import { embedCode } from "../../../lib/embed-code";
 import {
   WIDGET_FONTS,
   WIDGET_THEME_DEFAULTS,
@@ -122,6 +123,30 @@ const SECTIONS: WidgetSection[] = [
     ],
   },
   {
+    id: "pv-kostenrennen",
+    label: "Stromkosten mit und ohne Solaranlage",
+    intro:
+      "Ein Haushalt, mit und ohne Solaranlage, 25 Jahre lang: Die Linien zeichnen Tag für Tag, was jeder Haushalt bis dahin für Strom ausgegeben hat – die Anlage startet mit ihrer Anschaffung vorn und wird überholt, sobald sie bezahlt ist. Das Wetter ist das echte der letzten 25 Jahre (Deutscher Wetterdienst, Monatsraster und Stationstage), sodass kein Jahr und keine Woche der anderen gleicht. Gerechnet mit denselben Annahmen und Marktpreisen wie unser PV-Rechner.",
+    attribution: {
+      path: "/ratgeber/lohnt-sich-pv-mit-speicher",
+      text: "Stromkosten mit und ohne Solaranlage: 25 Jahre mit echtem Wetter – Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [{ id: "pv-kostenrennen", label: "Amortisations-Rennen", src: "/embed/pv-kostenrennen", height: 600, fixedWidth: 560 }],
+  },
+  {
+    id: "heizkostenrennen",
+    label: "Heizkosten mit Gasheizung und Wärmepumpe",
+    intro:
+      "Ein unsaniertes Einfamilienhaus, neue Gasheizung gegen Wärmepumpe, 20 Jahre lang: Die Linien zeichnen Tag für Tag, was das Haus bis dahin fürs Heizen ausgegeben hat – die Wärmepumpe startet mit ihrer Anschaffung vorn und wird überholt, sobald der Mehrpreis zurück ist. Geheizt wird nach den Gradtagen der letzten 20 Winter (Deutscher Wetterdienst, Tagesmittel der Stationen), sodass kein Winter dem anderen gleicht. Gerechnet mit denselben Annahmen wie unser Wärmepumpen-Rechner, Gaspreis mit Grüngas-Pflicht nach dem IW-Report.",
+    attribution: {
+      path: "/ratgeber/gasheizung-oder-waermepumpe",
+      text: "Heizkosten mit Gasheizung und Wärmepumpe: 20 Jahre mit echtem Wetter – Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [{ id: "heizkostenrennen", label: "Heizkosten-Rennen", src: "/embed/heizkostenrennen", height: 600, fixedWidth: 560 }],
+  },
+  {
     id: "strommix-anteil",
     label: "Kernenergie im Strommix",
     intro:
@@ -170,6 +195,18 @@ const SECTIONS: WidgetSection[] = [
     variants: [{ id: "pv-zubau-deutschland", label: "PV-Zubau", src: "/embed/pv-zubau-deutschland", height: 760 }],
   },
   {
+    id: "anlagenbestand-deutschland",
+    label: "Solaranlagen in Deutschland",
+    intro:
+      "Wie viele Solaranlagen in Deutschland gemeldet sind, welche Leistung installiert ist und wie sich beides auf Balkonkraftwerke, private und gewerbliche Dächer und Freiflächen verteilt. Stückzahl und Leistung stehen nebeneinander, weil sie gegenläufig sind — nach Anzahl dominieren die kleinen Anlagen, nach Leistung die großen. Monatlich aus dem Marktstammdatenregister.",
+    attribution: {
+      path: "/photovoltaik-bestand-deutschland",
+      text: "Solaranlagen in Deutschland – Solar Check",
+    },
+    showFrameWidth: true,
+    variants: [{ id: "anlagenbestand-deutschland", label: "Anlagenbestand", src: "/embed/anlagenbestand-deutschland", height: 560 }],
+  },
+  {
     id: "karte",
     label: "Deutschland-Karte",
     intro:
@@ -200,7 +237,7 @@ const SECTIONS: WidgetSection[] = [
     id: "gemeinde-solar",
     label: "Solaranlagen einer Gemeinde",
     intro:
-      "Der Anlagenbestand einer einzelnen Gemeinde aus dem Marktstammdatenregister — Anlagen, Leistung und Leistung je Einwohner. Für Kommunen zum Einbetten auf der eigenen Website. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas.",
+      "Der Anlagenbestand einer einzelnen Gemeinde aus dem Marktstammdatenregister — Anlagen, Leistung und Leistung je Einwohner. Für Kommunen zum Einbetten auf der eigenen Website. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Energie-Atlas.",
     attribution: {
       path: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
       text: "Solaranlagen in Höchberg · Solar Check",
@@ -214,7 +251,7 @@ const SECTIONS: WidgetSection[] = [
     id: "gemeinde-erneuerbare",
     label: "Erneuerbare Leistung einer Gemeinde",
     intro:
-      "Die installierte erneuerbare Leistung einer Gemeinde nach Technologie (Solar, Wind, Biomasse, Wasserkraft) aus dem Marktstammdatenregister — als Donut. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas.",
+      "Die installierte erneuerbare Leistung einer Gemeinde nach Technologie (Solar, Wind, Biomasse, Wasserkraft) aus dem Marktstammdatenregister — als Donut. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Energie-Atlas.",
     attribution: {
       path: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
       text: "Erneuerbare Leistung in Höchberg · Solar Check",
@@ -228,7 +265,7 @@ const SECTIONS: WidgetSection[] = [
     id: "gemeinde-solarleistung",
     label: "Solarleistung einer Gemeinde (simuliert)",
     intro:
-      "Der Tagesverlauf der Solarleistung des Gemeinde-Bestands, simuliert aus dem heutigen Wetter am Standort — kein Messwert, aber standortgenau. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas.",
+      "Der Tagesverlauf der Solarleistung des Gemeinde-Bestands, simuliert aus dem heutigen Wetter am Standort — kein Messwert, aber standortgenau. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Energie-Atlas.",
     attribution: {
       path: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
       text: "Solarleistung in Höchberg · Solar Check",
@@ -367,7 +404,7 @@ function mitGemeinde(
       // "Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde …" —
       // der Satz stimmt nicht mehr, wenn die eigene Gemeinde drinsteht.
       intro: ersetze(s.intro).replace(
-        / Hier als Beispiel [^.;]+; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas\./,
+        / Hier als Beispiel [^.;]+; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Energie-Atlas\./,
         ` Hier mit den Zahlen von ${anzeige}.`,
       ),
       // AUCH DER LINK, nicht nur der Text: Sonst verlinkt eine Kommune unter
@@ -814,29 +851,21 @@ function EmbedSnippet({
   if (settings) {
     buildWidgetSettingsQuery(settings).forEach((val, key) => qs.set(key, val));
   }
-  const query = qs.toString();
-  const url = `${SITE_URL}${variant.src}${query ? `?${query}` : ""}`;
   const width = variant.fixedWidth ?? 480;
 
-  // The <a> below the iframe lives in the HOST page's HTML — that anchor, not
-  // the iframe src, is what search engines count as a backlink to solar-check.io.
-  // Zweite Verteidigungslinie: Auch wenn oben schon gesaeubert wird, gehoert in
-  // ein HTML-Attribut nichts Unmaskiertes. Der Code wird kopiert und auf einer
-  // FREMDEN Website eingefuegt — dort haften wir mit unserem Namen darunter.
-  const attr = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  const code = [
-    `<iframe`,
-    `  src="${url}"`,
-    `  width="${width}"`,
-    `  height="${variant.height}"`,
-    `  style="border:0;display:block;width:100%;max-width:${width}px"`,
-    `  title="${attr(variant.label)} — Solar Check"`,
-    `  loading="lazy"`,
-    `></iframe>`,
-    `<p style="margin:6px 0 0;font:13px/1.4 system-ui,sans-serif">`,
-    `  <a href="${SITE_URL}${attr(attribution.path)}" target="_blank" rel="noopener">${attr(attribution.text)}</a>`,
-    `</p>`,
-  ].join("\n");
+  // Der Code kommt aus dem geteilten Baustein (lib/embed-code.ts) — dieselbe
+  // Zeile, die die Karte auf der Ortsseite ausgibt. Zwei Fassungen davon liefen
+  // sonst auseinander, und er steht am Ende auf einer FREMDEN Website mit
+  // unserem Namen darunter.
+  const code = embedCode({
+    src: variant.src,
+    params: Object.fromEntries(qs),
+    width,
+    height: variant.height,
+    titel: variant.label,
+    attribution,
+    siteUrl: SITE_URL,
+  });
 
   const copy = async () => {
     try {
@@ -918,8 +947,8 @@ const S: Record<string, React.CSSProperties> = {
     minHeight: "100vh",
   },
   wrap: { maxWidth: 720, margin: "0 auto", padding: "0 16px 64px" },
-  h1: { fontSize: 28, fontWeight: 800, letterSpacing: "-0.02em", marginTop: 0, marginBottom: 10 },
-  subtitle: { fontSize: 15, color: v("--color-text-secondary"), marginBottom: 28, lineHeight: 1.55 },
+  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", marginTop: 0, marginBottom: 10 },
+  subtitle: { fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginBottom: 28, lineHeight: 1.55 },
   rules: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -933,8 +962,8 @@ const S: Record<string, React.CSSProperties> = {
     padding: 16,
   },
   ruleIcon: { marginBottom: 10 },
-  ruleTitle: { fontSize: 14, fontWeight: 700, marginBottom: 4, color: v("--color-text-primary") },
-  ruleBody: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.5 },
+  ruleTitle: { fontSize: v("--font-size-body"), fontWeight: 700, marginBottom: 4, color: v("--color-text-primary") },
+  ruleBody: { fontSize: v("--font-size-body"), color: v("--color-text-secondary"), lineHeight: 1.5 },
   privacySection: { marginBottom: 44, paddingBottom: 24, borderBottom: `1px solid ${v("--color-border")}` },
   themePanel: {
     marginBottom: 44,
@@ -956,12 +985,12 @@ const S: Record<string, React.CSSProperties> = {
     gap: "2px 10px",
     marginBottom: 14,
   },
-  themePanelTitle: { fontSize: 17, fontWeight: 700, margin: 0 },
-  themePanelHint: { fontSize: 12.5, color: v("--color-text-muted") },
+  themePanelTitle: { fontSize: v("--font-size-lead"), fontWeight: 700, margin: 0 },
+  themePanelHint: { fontSize: v("--font-size-small"), color: v("--color-text-muted") },
   resetBtn: {
     marginLeft: "auto",
     padding: "5px 12px",
-    fontSize: 12.5,
+    fontSize: v("--font-size-small"),
     fontWeight: 600,
     background: v("--color-bg"),
     color: v("--color-text-secondary"),
@@ -977,11 +1006,11 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "start",
   },
   section: { marginBottom: 44, paddingBottom: 24, borderBottom: `1px solid ${v("--color-border")}` },
-  h2: { fontSize: 20, fontWeight: 700, marginTop: 0, marginBottom: 8 },
-  sectionIntro: { fontSize: 14, color: v("--color-text-secondary"), lineHeight: 1.5, marginTop: 0, marginBottom: 16 },
-  hint: { fontSize: 12, color: v("--color-text-muted"), marginTop: 6, lineHeight: 1.5 },
+  h2: { fontSize: v("--font-size-h2"), fontWeight: 700, marginTop: 0, marginBottom: 8 },
+  sectionIntro: { fontSize: v("--font-size-body"), color: v("--color-text-secondary"), lineHeight: 1.5, marginTop: 0, marginBottom: 16 },
+  hint: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 6, lineHeight: 1.5 },
   label: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
@@ -1001,7 +1030,7 @@ const S: Record<string, React.CSSProperties> = {
   btnRow: { display: "flex", flexWrap: "wrap" as const, gap: 8 },
   btn: {
     padding: "8px 12px",
-    fontSize: 12.5,
+    fontSize: v("--font-size-small"),
     fontWeight: 600,
     background: v("--color-bg"),
     color: v("--color-text-primary"),
@@ -1025,7 +1054,7 @@ const S: Record<string, React.CSSProperties> = {
     background: "none",
     cursor: "pointer",
   },
-  colorValue: { fontSize: 12.5, fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
+  colorValue: { fontSize: v("--font-size-small"), fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
   slider: { width: "100%", accentColor: v("--color-accent"), cursor: "pointer", margin: "6px 0" },
   variantRow: {
     display: "flex",
@@ -1036,7 +1065,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   frameContainer: { width: "100%", transition: "max-width 0.2s ease-out" },
   variantLabel: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 600,
     color: v("--color-text-muted"),
     textTransform: "uppercase" as const,
@@ -1065,7 +1094,7 @@ const S: Record<string, React.CSSProperties> = {
     background: "none",
     border: 0,
     padding: 0,
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
@@ -1075,7 +1104,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   snippetCopyBtn: {
     padding: "3px 10px",
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 600,
     background: v("--color-accent"),
     color: v("--color-text-on-accent"),
@@ -1088,7 +1117,7 @@ const S: Record<string, React.CSSProperties> = {
     margin: 0,
     padding: "10px 12px",
     borderTop: `1px solid ${v("--color-border")}`,
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     lineHeight: 1.45,
     fontFamily: v("--font-mono"),
     color: v("--color-text-primary"),

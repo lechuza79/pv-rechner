@@ -89,7 +89,7 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-on-accent"),
     padding: pad("lg", "xl"),
     borderRadius: v("--radius-md"),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 600,
     textDecoration: "none",
   },

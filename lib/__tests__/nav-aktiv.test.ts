@@ -98,7 +98,7 @@ describe("Menü-Markierung: Zuordnung Pfad → Menüpunkt", () => {
 //
 // WARUM ES DIESEN TEST GIBT (19.08.2026): Eine neue Seite in einem Themen-Cluster
 // muss heute an DREI Stellen von Hand eingetragen werden — Menügruppe und
-// Markierungs-Kette in components/Header.tsx, Fußzeile in components/Footer.tsx,
+// Markierungs-Kette in components/Header.tsx, Fußzeile in lib/site-fuss.ts,
 // dazu die Ratgeber-Registry. Beim Speicher-Ratgeber sind zwei davon vergessen
 // worden, und keine davon fällt im Browser auf: Die Seite funktioniert, sie ist
 // nur nirgends verlinkt.
@@ -141,6 +141,9 @@ describe("Interne Links zeigen nie auf eine Weiterleitung", () => {
     expect(weitergeleitet.length).toBeGreaterThan(10);
   });
 
+  // 20 Sekunden statt fünf — siehe analytics-ereignisse.test.ts: Diese Prüfung
+  // liest den ganzen Quellbaum und wird unter paralleler Last langsam, ohne
+  // dass am Code etwas falsch wäre.
   it("keine Seite und kein Baustein verlinkt eine weitergeleitete Adresse", () => {
     const wurzeln = [resolve(__dirname, "../../app"), resolve(__dirname, "../../components"), resolve(__dirname, "../../lib")];
     const treffer: string[] = [];
@@ -162,11 +165,11 @@ describe("Interne Links zeigen nie auf eine Weiterleitung", () => {
     };
     wurzeln.forEach(suchen);
     expect(treffer, `interne Links auf weitergeleitete Adressen: ${treffer.join(", ")}`).toEqual([]);
-  });
+  }, 20_000);
 });
 
 describe("Themen-Cluster: jede Seite ist auch verlinkt", () => {
-  const footer = readFileSync(resolve(__dirname, "../../components/Footer.tsx"), "utf8");
+  const footer = readFileSync(resolve(__dirname, "../site-fuss.ts"), "utf8");
 
   /** Alle Seiten eines Clusters, direkt aus dem Dateibaum — auch die in
    *  Kategorie-Unterordnern (seit 19.08.2026 liegen die Ratgeber eine Ebene

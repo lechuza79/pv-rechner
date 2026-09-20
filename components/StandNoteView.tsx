@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { monatJahr, tagMonatJahr, type StandEintrag, type StandSeite } from "../lib/stand-format";
+import { liveSatz, monatJahr, tagMonatJahr, type StandEintrag, type StandSeite } from "../lib/stand-format";
 import { space, v } from "../lib/theme";
 
 /**
@@ -31,14 +31,6 @@ import { space, v } from "../lib/theme";
  * ein Live-Wert bekommt „kommt", mehrere bekommen „kommen", und die Aufzählung
  * endet mit „und" statt mit einem Komma.
  */
-function liveSatz(live: string[]): string | null {
-  if (!live.length) return null;
-  const liste =
-    live.length === 1
-      ? live[0]
-      : `${live.slice(0, -1).join(", ")} und ${live[live.length - 1]}`;
-  return `${liste} ${live.length === 1 ? "kommt" : "kommen"} bei jedem Aufruf live dazu.`;
-}
 
 /** „Werte von Juli 2026, geprüft am 28. Juli 2026" — beide Hälften, sobald es
  *  beide gibt. Monatsgenaue Einträge ohne eigenen Prüftag nennen nur den Stand. */

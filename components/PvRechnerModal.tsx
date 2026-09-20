@@ -23,7 +23,7 @@ import Modal from "./Modal";
 const PVRechner = dynamic(() => import("../app/(site)/photovoltaik-rechner/rechner"), {
   ssr: false,
   loading: () => (
-    <div style={{ padding: "48px 0", textAlign: "center", color: "var(--color-text-muted)", fontSize: 14 }}>
+    <div style={{ padding: "48px 0", textAlign: "center", color: "var(--color-text-muted)", fontSize: "var(--font-size-body)" }}>
       Rechner wird geladen …
     </div>
   ),

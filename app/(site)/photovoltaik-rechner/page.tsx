@@ -7,51 +7,34 @@ import { pageMetadata } from "../../../lib/seo";
 import { v } from "../../../lib/theme";
 import PVRechner from "./rechner";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
+/**
+ * DIE NACKTE RECHNER-ADRESSE IST FÜR ALLE GLEICH — und darf deshalb aus dem
+ * CDN kommen. Sie liest bewusst NICHTS aus dem Abfrageteil.
+ *
+ * Steht doch ein Parameter in der Adresse (geteiltes Ergebnis, Vorbefüllung von
+ * einer Förderseite, Rücksprung aus dem Empfehlungs-Flow), schiebt die
+ * Middleware die Anfrage auf `./ergebnis` — dieselbe Seite, dort am Server
+ * gebaut, mit persönlichem Vorschaubild. Die Adresse im Browser ändert sich
+ * dabei nicht.
+ *
+ * WER HIER `searchParams` WIEDER EINBAUT, macht die Seite in dem Moment
+ * vollständig dynamisch (`no-store`, voller Aufbau bei JEDEM Aufruf) — ohne
+ * dass irgendetwas kaputt aussähe. Genau so stand sie bis zum 05.09.2026 und
+ * kostete 2.612 Aufbauten am Tag bei neun Besuchern. Ein Test hält das fest.
+ */
+export const metadata: Metadata = pageMetadata({
+  path: "/photovoltaik-rechner",
+  title: "Photovoltaik-Rechner – Amortisation & Rendite sofort berechnen",
+  description:
+    "Kostenloser Photovoltaik-Rechner: Amortisation, Rendite und Eigenverbrauch sofort berechnen — ohne Anmeldung, ohne Verkaufsanrufe. Alle Annahmen transparent editierbar.",
+  ogTitle: "Photovoltaik-Rechner – Lohnt sich PV?",
+  ogDescription: "Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.",
+});
 
-export async function generateMetadata(
-  props: {
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  }
-): Promise<Metadata> {
-  const searchParams = await props.searchParams;
-  // Shared result links carry the calculation in query params — the OG route
-  // renders a personalized preview card from them. Without params, /api/og
-  // falls back to the generic brand card. This dynamic image is why the page
-  // uses generateMetadata instead of a static export.
-  const ogParams = new URLSearchParams();
-  for (const [key, value] of Object.entries(searchParams)) {
-    if (typeof value === "string") ogParams.set(key, value);
-  }
-  const ogQuery = ogParams.toString();
-  const ogUrl = ogQuery
-    ? `${BASE_URL}/api/og?${ogQuery}`
-    : `${BASE_URL}/api/og`;
-
-  // pageMetadata sets the canonical WITHOUT query params — share links append
-  // ?a=…&s=… etc., which would otherwise look like dozens of duplicate pages
-  // to search engines — plus consistent og:url/site_name/type like every
-  // other public page.
-  return pageMetadata({
-    path: "/photovoltaik-rechner",
-    title: "Photovoltaik-Rechner – Amortisation & Rendite sofort berechnen",
-    description:
-      "Kostenloser Photovoltaik-Rechner: Amortisation, Rendite und Eigenverbrauch sofort berechnen — ohne Anmeldung, ohne Verkaufsanrufe. Alle Annahmen transparent editierbar.",
-    ogTitle: "Photovoltaik-Rechner – Lohnt sich PV?",
-    ogDescription: "Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.",
-    ogImage: ogUrl,
-  });
-}
-
-export default async function RechnerPage(
-  props: {
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-  }
-) {
-  const searchParams = await props.searchParams;
+export default function RechnerPage() {
   return (
     <ErrorBoundary>
-      <PVRechner initialParams={searchParams} />
+      <PVRechner />
       <div style={{ maxWidth: v("--page-max-width"), margin: "0 auto", padding: "0 16px 32px" }}>
         <Faq items={pvRechnerFaq()} currentPath="/photovoltaik-rechner" />
         <StandNote pfad="/photovoltaik-rechner" />

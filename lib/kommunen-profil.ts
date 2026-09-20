@@ -1,3 +1,4 @@
+import { entschluesseltOderRoh } from "./uri-sicher";
 // Profil einer Organisations-Website für den Outreach: Wer ist ansprechbar,
 // welche Themen gibt es als Aufhänger, und wird die Stelle von woanders mit
 // verwaltet?
@@ -155,6 +156,9 @@ export function decodeEntities(s: string): string {
 /** HTML → Klartext mit erhaltenen Zeilenumbrüchen an Blockgrenzen. */
 export function toText(html: string): string {
   let t = html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " ");
+  t = t.replace(/<a\b[^>]*href=["']mailto:([^"'?]+)["'][^>]*>([\s\S]*?)<\/a>/gi, (_match, address: string, label: string) => {
+    try { return `${label} ${entschluesseltOderRoh(address)}`; } catch { return label; }
+  });
   t = decodeEntities(t);
   t = t.replace(/<br\s*\/?>/gi, "\n").replace(/<\/(p|div|li|tr|h[1-6]|td|section)>/gi, "\n");
   return t.replace(/<[^>]+>/g, " ").replace(/[ \t ]+/g, " ").replace(/\n{3,}/g, "\n\n");
@@ -274,20 +278,17 @@ type Adressen = { rollenEmail: string | null; personenEmail: string | null; verw
 /**
  * Adressen aus dem Impressum, getrennt nach eigener und fremder Domain.
  *
- * `eigeneDomain` ist die Domain der Organisation. Alles darauf gehört ihr; alles
- * darauf NICHT ist entweder ein Dienstleister (uninteressant) oder eine andere
- * Stelle derselben Gattung (= gemeinsame Verwaltung, sehr interessant).
- * `istVerwandteDomain` entscheidet, welcher der beiden Fälle vorliegt — der
- * Aufrufer reicht die bekannten Domains seiner Grundgesamtheit herein.
+ * Only the organization's own domain is attributed automatically. A known
+ * foreign municipality is a discovery candidate, not proof of shared administration.
  */
 export function extractAdressen(
   text: string,
   eigeneDomain: string | null,
-  istVerwandteDomain: (domain: string) => boolean,
+  _istVerwandteDomain: (domain: string) => boolean,
   vok: Vokabular = KOMMUNEN_VOKABULAR,
 ): Adressen {
   const out: Adressen = { rollenEmail: null, personenEmail: null, verwaltungDomain: null };
-  for (const roh of Array.from(new Set(entschleiere(text).match(MAIL_RE) ?? []))) {
+  for (const roh of Array.from(new Set(entschleiere(text).match(MAIL_RE) ?? [])).sort((a, b) => a.localeCompare(b))) {
     const mail = roh.trim().toLowerCase();
     if (vok.ungeeignet.test(mail)) continue;
     const dom = mail.split("@")[1];
@@ -299,7 +300,8 @@ export function extractAdressen(
       continue;
     }
     // Fremde Domain: nur wenn sie zur Grundgesamtheit gehört, ist sie ein Fund.
-    if (!out.verwaltungDomain && istVerwandteDomain(dom)) out.verwaltungDomain = dom;
+    // Another municipality appearing on a page does not prove a management relationship.
+    // Keep the address as an unconfirmed candidate in the shared evidence store.
   }
   return out;
 }
@@ -333,4 +335,47 @@ export function extractThemen(html: string, baseUrl: string, vok: Vokabular = KO
     }
   }
   return vok.themen.map((t) => gefunden.get(t.thema)).filter((x): x is Themenfund => !!x);
+}
+
+export function findLinkUrl(html: string, baseUrl: string, muster: RegExp): string | null {
+  const absolut = (roh: string): string | null => {
+    try {
+      const u = new URL(roh, baseUrl).toString();
+      return u.startsWith("http") ? u : null;
+    } catch {
+      return null;
+    }
+  };
+
+  // Erster Durchgang: nur die ADRESSE, am reinen Start-Tag. Er braucht den
+  // Linktext nicht und ist deshalb unabhängig davon, wie viel Auszeichnung in
+  // einem Menü-Link steckt. Genau daran ist der Durchgang unten gescheitert:
+  // Sein Muster verlangt einen Linktext von höchstens 120 Zeichen, und ein
+  // Menü-Link mit Symbol und verschachtelten Kästen ist länger — bei
+  // stadtwerke-lingen.de stand href="/kontakt" im HTML und wurde nicht gefunden
+  // (gemessen 23.08.2026).
+  for (const m of Array.from(html.matchAll(/<a[^>]+href=["']([^"']+)["']/gi))) {
+    // Dekodiert prüfen: `new URL()` liefert prozentkodierte Umlaute
+    // (/energietr%c3%a4germix), und daran ist die Förder-Suche schon einmal
+    // blind vorbeigelaufen.
+    let href: string;
+    try {
+      href = entschluesseltOderRoh(m[1].toLowerCase().replace(/&amp;/g, "&"));
+    } catch {
+      href = m[1].toLowerCase();
+    }
+    if (!muster.test(href)) continue;
+    const u = absolut(m[1]);
+    if (u) return u;
+  }
+
+  // Zweiter Durchgang: die BESCHRIFTUNG, für Links mit nichtssagender Adresse
+  // (`/cms/index.php?id=4711`).
+  for (const m of Array.from(html.matchAll(/<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]{0,200}?)<\/a>/gi))) {
+    const label = decodeEntities(m[2].replace(/<[^>]*>/g, " ")).replace(/\s+/g, " ").trim();
+    if (!muster.test(label)) continue;
+    const u = absolut(m[1]);
+    if (u) return u;
+  }
+  return null;
 }

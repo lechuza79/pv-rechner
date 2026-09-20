@@ -36,7 +36,7 @@ export default function StandortField({
           style={{
             // fontSize >= 16px prevents iOS Safari auto-zoom on focus. Width must fit
             // five monospace digits at that size — 56px clipped the first digit.
-            width: 68, textAlign: "center", fontSize: 16, fontWeight: 700,
+            width: 68, textAlign: "center", fontSize: v("--font-size-lead"), fontWeight: 700,
             fontFamily: v('--font-mono'),
             color: plz.length === 5 ? v('--color-accent') : v('--color-text-secondary'),
             background: plz.length === 5 ? v('--color-accent-dim') : v('--color-bg'),
@@ -46,13 +46,13 @@ export default function StandortField({
         />
         {plz.length === 5 && !loading && !confirmed && (
           <button type="submit" aria-label="Standort übernehmen" style={{
-            padding: "3px 6px", fontSize: 11, fontWeight: 700, lineHeight: 1,
+            padding: "3px 6px", fontSize: v("--font-size-caption"), fontWeight: 700, lineHeight: 1,
             background: v('--color-accent'), color: v('--color-text-on-accent'),
             border: "none", borderRadius: v('--radius-sm'), cursor: "pointer",
           }}><IconArrowRight size={iconSizes.sm} color={v('--color-text-on-accent')} /></button>
         )}
-        {loading && <span style={{ color: v('--color-accent'), fontSize: 10 }}>…</span>}
-        {confirmed && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{approximate ? "~" : <IconCheck size={iconSizes.xs} />}</span>}
+        {loading && <span style={{ color: v('--color-accent'), fontSize: v("--font-size-micro") }}>…</span>}
+        {confirmed && <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint') }}>{approximate ? "~" : <IconCheck size={iconSizes.xs} />}</span>}
       </form>
     </div>
   );

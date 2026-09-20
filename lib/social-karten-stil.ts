@@ -101,7 +101,31 @@ const HIGHLIGHT: Partial<Record<TokenName, string>> = {
  * Änderung an der einen die andere mit — und man konnte immer nur eines von
  * beidem richtig haben.
  */
-export function serienFarben(stil: KartenStil): { hervorgehoben: string; gedaempft: string } {
+/**
+ * Woher eine Karte ihre Farben nimmt.
+ *
+ * „eigene" — sie bringt ihr Farbschema mit. Richtig überall dort, wo sie als
+ * Bild endet: im fremden Feed, im heruntergeladenen PNG, in der Vorschau des
+ * Redaktionstischs. Was die Seite gerade für eine Tagesstufe hat, geht das Bild
+ * nichts an.
+ *
+ * „seite" — sie erbt die Tokens ihrer Umgebung. Der Fall Ortsseite: Dort steht
+ * die Karte MITTEN im Seiteninhalt, und eine mitgebrachte Palette machte aus
+ * ihr abends einen weißen Block auf dunklem Grund. Genau daran sind drei
+ * Anläufe auf der Gemeindeseite gescheitert (05.09.2026).
+ */
+export type KartenPalette = "eigene" | "seite";
+
+export function serienFarben(
+  stil: KartenStil,
+  palette: KartenPalette = "eigene",
+): { hervorgehoben: string; gedaempft: string } {
+  // Die Seiten-Palette hat kein Highlight-Blau und keine feste Grundstufe: Sie
+  // IST die Umgebung. Deshalb Tokens statt Hexwerte — sonst stünde die Karte
+  // abends mit Tagesfarben da, also mit demselben Fehler, nur andersherum.
+  if (palette === "seite") {
+    return { hervorgehoben: "var(--color-accent)", gedaempft: "var(--color-text-primary)" };
+  }
   if (stil === "highlight") return { hervorgehoben: "#FFFFFF", gedaempft: "#96BCF8" };
   const t = kartenTokens(stil);
   return { hervorgehoben: t["--color-accent"], gedaempft: t["--color-text-primary"] };

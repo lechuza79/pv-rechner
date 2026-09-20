@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   deuteMeldung,
+  inhaltDerMeldung,
   pruefeSignatur,
   projektSchalterUrl,
   schalteFilmprojekt,
@@ -117,6 +118,85 @@ describe("Ausgabenbremse: Schwellen", () => {
     const e = deuteMeldung({ teamId: "team_fremd", thresholdPercent: 100 });
     expect(e.aktion).toBe("unklar");
     expect(e.grund).toContain("fremden Team");
+  });
+});
+
+describe("Ausgabenbremse: Vercel packt die Meldung in eine Hülle", () => {
+  // Wortgetreu die Meldung, die am 05.09.2026 wirklich ankam (aus der Ablage des
+  // Wächter-Berichts). Sie ist der Grund für diesen Abschnitt: Signatur gültig,
+  // Empfänger erreichbar, Bremse trotzdem blind — weil die Felder eine Ebene
+  // tiefer stehen, als wir gesucht hatten. Nicht durch eine erfundene
+  // Beispielmeldung ersetzen.
+  const ECHTE_MELDUNG_50 = {
+    id: "GJCqVlAtct3m2h_3LGqP0",
+    payload: {
+      user: { id: null },
+      team: { id: VERCEL_TEAM_ID },
+      budgetAmount: 150,
+      currentSpend: 75.0359684751996,
+      teamId: VERCEL_TEAM_ID,
+      thresholdPercent: 50,
+    },
+    createdAt: 1788601092084,
+    type: "budget.reached",
+  };
+
+  it("ordnet die echte 50-%-Meldung ein, statt sie liegenzulassen", () => {
+    const e = deuteMeldung(ECHTE_MELDUNG_50);
+    expect(e.aktion).toBe("protokollieren");
+    expect(e.schwelle).toBe(50);
+    expect(e.budget).toBe(150);
+  });
+
+  it("pausiert bei einer echt geformten 100-%-Meldung", () => {
+    const e = deuteMeldung({
+      ...ECHTE_MELDUNG_50,
+      payload: { ...ECHTE_MELDUNG_50.payload, currentSpend: 150, thresholdPercent: 100 },
+    });
+    expect(e.aktion).toBe("pausieren");
+  });
+
+  it("entpaust bei einem Zyklusende in der Hülle", () => {
+    // Die Hülle trägt einen Ereignisnamen, der NICHT „endOfBillingCycle" heißt.
+    // Wer die äußere Ebene mitliest, lässt sie die innere verdecken — und dann
+    // bliebe das Filmprojekt für immer offline.
+    const e = deuteMeldung({
+      id: "evt_x",
+      type: "budget.reached",
+      createdAt: 1788601092084,
+      payload: { teamId: VERCEL_TEAM_ID, type: "endOfBillingCycle" },
+    });
+    expect(e.aktion).toBe("entpausen");
+  });
+
+  it("erkennt ein fremdes Team auch innerhalb der Hülle", () => {
+    const e = deuteMeldung({
+      id: "evt_x",
+      type: "budget.reached",
+      payload: { teamId: "team_fremd", thresholdPercent: 100 },
+    });
+    expect(e.aktion).toBe("unklar");
+    expect(e.grund).toContain("fremden Team");
+  });
+
+  it("versteht eine Meldung ohne Hülle unverändert weiter", () => {
+    // So zeigt die Ausgaben-Doku sie, und so kam sie vor der Umstellung an.
+    expect(deuteMeldung({ teamId: VERCEL_TEAM_ID, thresholdPercent: 100 }).aktion).toBe("pausieren");
+    expect(deuteMeldung({ teamId: VERCEL_TEAM_ID, type: "endOfBillingCycle" }).aktion).toBe("entpausen");
+  });
+
+  it("hält ein `payload`, das kein Objekt ist, nicht für den Inhalt", () => {
+    expect(inhaltDerMeldung({ teamId: VERCEL_TEAM_ID, thresholdPercent: 100, payload: "egal" })).toEqual({
+      teamId: VERCEL_TEAM_ID,
+      thresholdPercent: 100,
+      payload: "egal",
+    });
+    expect(deuteMeldung({ teamId: VERCEL_TEAM_ID, thresholdPercent: 100, payload: [] }).aktion).toBe("pausieren");
+  });
+
+  it("bleibt unentschieden, wenn in der Hülle nichts Verwertbares steht", () => {
+    const e = deuteMeldung({ id: "evt_x", type: "budget.reached", payload: { teamId: VERCEL_TEAM_ID } });
+    expect(e.aktion).toBe("unklar");
   });
 });
 

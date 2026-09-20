@@ -1,5 +1,6 @@
 "use client";
 import { YEAR } from "../../../../lib/constants";
+import { fsPx } from "../../../../lib/theme";
 
 interface ScenarioData {
   id: string;
@@ -29,11 +30,11 @@ export default function HeatPumpChart({ scenarios, horizon, highlightId = "reali
       {yTicks.map(val => (
         <g key={val}>
           <line x1={P.l} x2={W - P.r} y1={y(val)} y2={y(val)} stroke={val === 0 ? "var(--color-chart-zero)" : "var(--color-chart-grid)"} strokeWidth={val === 0 ? 1.5 : 0.5} />
-          <text x={P.l - 8} y={y(val)} textAnchor="end" dominantBaseline="middle" fontSize={10} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{(val / 1000).toFixed(0)}k</text>
+          <text x={P.l - 8} y={y(val)} textAnchor="end" dominantBaseline="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{(val / 1000).toFixed(0)}k</text>
         </g>
       ))}
       {xTicks.map(i => (
-        <text key={i} x={x(i)} y={H - 4} textAnchor="middle" fontSize={10} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{YEAR + i}</text>
+        <text key={i} x={x(i)} y={H - 4} textAnchor="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{YEAR + i}</text>
       ))}
       {scenarios.map(s => {
         const pts = s.years.map(yr => `${x(yr.i)},${y(yr.kum)}`).join(" ");
@@ -45,7 +46,7 @@ export default function HeatPumpChart({ scenarios, horizon, highlightId = "reali
             {be && (
               <>
                 <circle cx={x(be.i)} cy={y(be.kum)} r={4.5} fill={s.color} stroke="var(--color-bg)" strokeWidth={2} />
-                <text x={x(be.i)} y={y(be.kum) - 11} textAnchor="middle" fontSize={11} fontWeight="700" fill={s.color} fontFamily="var(--font-mono)">{be.i}J</text>
+                <text x={x(be.i)} y={y(be.kum) - 11} textAnchor="middle" fontSize={fsPx("--font-size-caption")} fontWeight="700" fill={s.color} fontFamily="var(--font-mono)">{be.i}J</text>
               </>
             )}
           </g>

@@ -25,13 +25,14 @@
  * nicht am Nachweis. Er beantwortet die andere Frage: Wirkt der Outreach?
  */
 import { envLaden } from "./env-laden";
+import { heuteInBerlin } from "../lib/zeit";
 envLaden();
 import { createClient } from "@supabase/supabase-js";
 
 const trocken = process.argv.includes("--trocken");
 const schreiben = process.argv.includes("--schreiben");
 /** Der Tag wird EINMAL genommen und durchgereicht — kein zweiter Aufruf mitten im Lauf. */
-const heute = new Date().toISOString().slice(0, 10);
+const heute = heuteInBerlin();
 const LOGIN = process.env.DATAFORSEO_LOGIN;
 const PASSWORT = process.env.DATAFORSEO_PASSWORD;
 const PREIS_JE_ABRUF = 0.002;

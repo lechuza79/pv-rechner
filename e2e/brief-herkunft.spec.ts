@@ -14,11 +14,50 @@ import { test, expect } from "@playwright/test";
 // Meldung, keine kaputte Seite. Nur eine Zahl, die für immer null bleibt — und
 // eine Aktion, die dann als wirkungslos gilt, obwohl niemand gemessen hat.
 //
-// Im Entwicklungsmodus sendet die Messbibliothek nichts, sie schreibt die
-// Ereignisse in die Browser-Konsole. Genau daran hängt dieser Test: Er liest
-// mit, was sie melden würde.
+// WIE MITGELESEN WIRD — und warum das seit 07.09.2026 anders laeuft:
+//
+// Frueher hing dieser Test am Entwicklungsmodus, in dem die Messbibliothek
+// nichts sendet, sondern die Ereignisse in die Konsole schreibt. Seit der
+// Smoke-Lauf gegen einen fertigen Build prueft, gibt es diesen Modus hier
+// nicht mehr — und das Messskript selbst liegt NUR auf Vercels Plattform, ist
+// gegen einen lokal gestarteten Build also gar nicht da. Die Bibliothek legt
+// ihre Aufrufe dann in eine Warteschlange, die nie jemand abarbeitet: Der Test
+// sah nichts, obwohl der Melder korrekt feuerte.
+//
+// Statt den Modus zurueckzudrehen wird das Skript ERSETZT: Ein Stueck Code an
+// derselben Adresse arbeitet die Warteschlange ab und schreibt jedes Ereignis
+// in die Konsole — genau die Zeile, auf die dieser Test ohnehin gehoert hat.
+// Das prueft mehr als vorher, nicht weniger: Es beweist, dass der Aufruf die
+// Warteschlange der Bibliothek wirklich erreicht, und nicht nur, dass eine
+// Entwicklungsausgabe erscheint.
 
 const KENNUNG = "utm_source=gemeinde";
+
+/** Legt das Messskript der Plattform durch einen Platzhalter, der jedes
+ *  Ereignis als `[event] <name>` in die Konsole schreibt. */
+async function messungMitlesen(page: import("@playwright/test").Page) {
+  await page.route("**/_vercel/insights/script.js", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/javascript",
+      body: `
+        (function () {
+          function melde(art, daten) {
+            if (art === "event") {
+              var name = daten && (daten.name || daten.n);
+              console.log("[event] " + name);
+            }
+          }
+          // Was vor dem Laden aufgelaufen ist, zuerst.
+          var warteschlange = window.vaq || [];
+          window.va = function () { melde.apply(null, arguments); };
+          warteschlange.forEach(function (a) { window.va.apply(null, a); });
+          window.vaq = { push: function (a) { window.va.apply(null, a); } };
+        })();
+      `,
+    }),
+  );
+}
 
 /** Sammelt die Ereignis-Meldungen der Messbibliothek aus der Konsole. */
 function ereignisse(page: import("@playwright/test").Page): string[] {
@@ -32,6 +71,7 @@ function ereignisse(page: import("@playwright/test").Page): string[] {
 
 test.describe("Herkunftskennung der Outreach-Briefe", () => {
   test("ein Aufruf MIT Kennung meldet das Ereignis", async ({ page }) => {
+    await messungMitlesen(page);
     const gesehen = ereignisse(page);
     await page.goto(`/photovoltaik-rechner?${KENNUNG}`);
     // Das Warten ist der Punkt des Tests: Der Melder darf ruhig später dran
@@ -50,6 +90,7 @@ test.describe("Herkunftskennung der Outreach-Briefe", () => {
   });
 
   test("ein Aufruf OHNE Kennung meldet nichts", async ({ page }) => {
+    await messungMitlesen(page);
     const gesehen = ereignisse(page);
     await page.goto("/photovoltaik-rechner");
     // Kein poll: Hier wird das Ausbleiben geprüft, also muss gewartet werden,

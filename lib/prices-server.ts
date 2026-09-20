@@ -5,6 +5,9 @@
 import { supabase } from "./supabase-server";
 import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
+// Deutscher Kalendertag: `valid_from` in der Preistabelle ist ein deutsches
+// Datum. Mit der Weltzeit gälten neue Preise am Stichtag zwei Stunden zu spät.
+import { heuteInBerlin } from "./zeit";
 
 export async function fetchMarketPrices(): Promise<PriceConfig> {
   if (!supabase) return DEFAULT_PRICES;
@@ -17,7 +20,7 @@ export async function fetchMarketPrices(): Promise<PriceConfig> {
         .select("*")
         .neq("source", "SCRAPE_ERROR")
         .gt("pv_price_small", 0)
-        .lte("valid_from", new Date().toISOString().split("T")[0])
+        .lte("valid_from", heuteInBerlin())
         .order("valid_from", { ascending: false })
         .limit(1)
         .single(),

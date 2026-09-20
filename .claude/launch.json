@@ -12,6 +12,17 @@
       "autoPort": true
     },
     {
+      "name": "neon-integration",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "next",
+        "dev",
+        "-p",
+        "3087"
+      ],
+      "port": 3087
+    },
+    {
       "name": "angebot-check",
       "runtimeExecutable": "npm",
       "runtimeArgs": [

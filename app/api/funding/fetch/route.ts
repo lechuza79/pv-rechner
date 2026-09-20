@@ -126,9 +126,17 @@ export async function GET(req: NextRequest) {
     versuche.push({ weg: "direkt", status: res?.status ?? "keine Antwort" });
     if (res?.ok) {
       const html = await res.text();
+      const fp = fingerprintOf(html);
+      // Antwort ohne Substanz — Hülle, Fehlerseite, Bot-Prüfung. Das ist ein
+      // gescheiterter Abruf und KEINE unveränderte Seite: Ein Abdruck über
+      // nichts wäre stabil und meldete für immer „nichts hat sich bewegt".
+      if (!fp) {
+        versuche.push({ weg: "direkt", status: "Antwort ohne lesbaren Inhalt" });
+        continue;
+      }
       return NextResponse.json({
         id, url, ok: true, weg: "live" as Abrufweg,
-        fingerprint: markiert("live", fingerprintOf(html)),
+        fingerprint: markiert("live", fp),
         laenge: html.length, versuche,
       });
     }
@@ -151,12 +159,16 @@ export async function GET(req: NextRequest) {
     if (res?.ok) {
       const html = await res.text();
       // Kurze Antworten sind Fehlerseiten des Archivs, keine Amtsseite.
-      if (html.length > 2_000) {
+      const fp = fingerprintOf(html);
+      if (html.length > 2_000 && fp) {
         return NextResponse.json({
           id, url, ok: true, weg: "archiv" as Abrufweg,
-          fingerprint: markiert("archiv", fingerprintOf(html)),
+          fingerprint: markiert("archiv", fp),
           laenge: html.length, versuche,
         });
+      }
+      if (html.length > 2_000 && !fp) {
+        versuche.push({ weg: "archiv", status: "Antwort ohne lesbaren Inhalt" });
       }
     }
   }

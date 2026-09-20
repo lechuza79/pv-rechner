@@ -8,6 +8,7 @@ import {
   safeCountry,
   ENERGY_DATA_FLOOR_YEAR,
 } from "../energy-api";
+import { heuteInBerlin } from "../zeit";
 
 // ─── Untrusted-input guards (DoS/amplification protection) ───────────────────
 
@@ -35,8 +36,24 @@ describe("clampAbsoluteRange", () => {
     const result = clampAbsoluteRange("0001-01-01", "9999-12-31");
     expect(result).not.toBeNull();
     expect(result!.start).toBe(`${ENERGY_DATA_FLOOR_YEAR}-01-01`);
-    // end is clamped to today, never a far-future date
-    expect(new Date(result!.end).getTime()).toBeLessThanOrEqual(Date.now());
+
+    // Der Deckel ist der laufende DEUTSCHE Kalendertag — genau das ist der Sinn
+    // der Funktion (siehe Kommentar dort und lib/zeit.ts). Er gegen `Date.now()`
+    // zu halten war falsch und machte diesen Test JEDE NACHT zwischen 00:00 und
+    // 02:00 deutscher Zeit rot: In diesem Fenster steht in der Weltzeit noch der
+    // Vortag, der deutsche Tagesbeginn liegt also in der Zukunft von `Date.now()`.
+    // Gemessen am 09.09.2026 um 00:45 Ortszeit — Erwartung 09.09. 00:00 UTC gegen
+    // einen Ist-Zeitpunkt vom 08.09. 22:45 UTC. Zwei Stunden Rot pro Nacht, zu
+    // einer Uhrzeit, zu der niemand Tests laufen lässt.
+    expect(result!.end).toBe(heuteInBerlin());
+
+    // Die eigentliche Zusage des Tests ist „nie ein Datum in ferner Zukunft" —
+    // und die wird unabhängig vom deutschen Kalender geprüft, damit hier nicht
+    // die Funktion mit sich selbst verglichen wird: Der Deckel darf höchstens
+    // einen Tag vor dem jetzigen Zeitpunkt liegen, nicht Jahrtausende.
+    const EIN_TAG_MS = 24 * 60 * 60 * 1000;
+    expect(new Date(result!.end).getTime()).toBeLessThanOrEqual(Date.now() + EIN_TAG_MS);
+    expect(new Date(result!.end).getTime()).toBeGreaterThan(Date.now() - EIN_TAG_MS);
   });
 
   it("returns null for an inverted range", () => {

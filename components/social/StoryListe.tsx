@@ -5,6 +5,7 @@ import { space } from "../../lib/theme";
 import type { Pruefung } from "../../lib/social-pruefung-kern";
 import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
 import type { SocialPost } from "../../lib/social-posts";
+import type { OrtsVorschau } from "./SeitenVorschau";
 
 // Die Stories einer Kategorie untereinander.
 //
@@ -25,11 +26,13 @@ export function StoryListe({
     abdruck: string;
     befunde: MechanikBefund[];
     gesendetAm: Record<string, string>;
+    /** Nur bei Ortsgeschichten: was sie auf ihrer Seite zeigt. */
+    orts?: OrtsVorschau;
   }[];
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: space.huge * 1.5 }}>
-      {eintraege.map(({ post, pruefungen, abdruck, befunde, gesendetAm }) => (
+      {eintraege.map(({ post, pruefungen, abdruck, befunde, gesendetAm, orts }) => (
         <StoryTisch
           key={post.id}
           post={post}
@@ -37,6 +40,7 @@ export function StoryListe({
           abdruck={abdruck}
           befunde={befunde}
           gesendetAm={gesendetAm}
+          orts={orts}
         />
       ))}
     </div>

@@ -16,8 +16,11 @@
 //    12. August 2026)", BMUKN-Gesetzesseite; Volltext in docs/quellen/
 //    BEHG-3-AendG_Regierungsentwurf_Kabinett_2026-08-12.pdf), am 14.08.2026 ging
 //    er als besonders eilbedürftige Vorlage nach Art. 76 Abs. 2 S. 4 GG an den
-//    Bundesrat (BR-Drs. 462/26, Fristablauf 25.09.2026). Im Bundestag ist er
-//    weder eingebracht noch beschlossen, nicht verkündet, nicht in Kraft.
+//    Bundesrat (BR-Drs. 462/26, Fristablauf 25.09.2026). Seit dem 07.09.2026 ist
+//    er im Bundestag eingebracht (BT-Drs. 21/7869, hib-Meldung vom 08.09.2026),
+//    dort aber nicht beschlossen, nicht verkündet, nicht in Kraft. (Bis zum
+//    15.09.2026 stand in diesem Kommentar noch „im Bundestag weder eingebracht"
+//    — die `source`-Zeile unten trug die Drucksache da schon.)
 //    Bis zum 12.08.2026 stand hier "Referentenentwurf, ohne Kabinettsbeschluss" —
 //    das ist seit dem Beschluss falsch (Wächter-Gate Regel 1: der Zustand ist eine
 //    eigene Änderung mit eigener Fundstelle; Council 3/3 + Legal-Judge 14.08.2026).
@@ -84,13 +87,39 @@ export const CO2_PRICE: Co2PriceConfig = {
   },
   annualIncrease: 8,
   validFrom: "2026-08-14",
-  // Startwert = `validFrom`: Am 14.08.2026 hat der Wächter-Lauf den
+  // Startwert war `validFrom`: Am 14.08.2026 hat der Wächter-Lauf den
   // Kabinettsentwurf zum Korridor gelesen und die Stützstellen daraus gesetzt.
-  geprueftIso: "2026-08-14",
+  // 03.09.2026: Lauf hat die Leitquellen wieder erreicht (BMUKN-Gesetzesseite,
+  // Terminplan der Länderkammer, UBA-Veröffentlichungsreihe) — Verfahrensstand
+  // und Stützstellen unverändert, deshalb wandert nur dieses Datum.
+  // 09.09.2026: Der Regierungsentwurf liegt seit dem 07.09.2026 als
+  // Bundestags-Drucksache 21/7869 vor — im Volltext gelesen. Die Werte sind
+  // zellgleich: „Für die Jahre 2026 und 2027 wird ein Preiskorridor mit einem
+  // Mindestpreis von 55 Euro pro Emissionszertifikat und einem Höchstpreis von
+  // 65 Euro pro Emissionszertifikat festgelegt." EINGEBRACHT IST NICHT
+  // BESCHLOSSEN: Der Zustand bleibt „Regierungsentwurf". Der Entwurf ging dem
+  // Bundesrat am 14.08.2026 „als besonders eilbedürftig" zu (Art. 76 Abs. 2
+  // Satz 4 GG), seine Stellungnahme steht noch aus und wird laut Drucksache
+  // „unverzüglich nachgereicht". Keine Lesung in dieser Sitzungswoche — die
+  // Tagesordnung der Sitzungen 91–94 (8.–11.09.2026) führt weder BEHG noch
+  // CO2-Preis. Wie beim EEG-Entwurf trägt die Drucksache quer den Vermerk
+  // „Vorabfassung – wird durch die lektorierte Fassung ersetzt"; wer daraus eine
+  // Absatznummer abschreibt, prüft sie an der endgültigen Fassung nach.
+  // 10.09.2026: unverändert, kein Wert und kein Zustand bewegt. Auch am
+  // Donnerstag dieser Sitzungswoche kein Punkt zum BEHG oder zum CO2-Preis —
+  // nachgesehen in der tagesaktuellen Tagesordnung (Stand 09.09.2026, 12.45 Uhr)
+  // und in der kompletten (Stand 08.09.2026, 14.15 Uhr). Neu ist ein amtlicher
+  // Termin auf der ANDEREN Seite: Die Bundesrats-Drucksache 462/26 steht als
+  // TOP 47 auf dem Tagesordnungs-ENTWURF der 1068. Sitzung am 25.09.2026
+  // (Entwurfsstand 08.09.2026) — das ist die noch ausstehende Stellungnahme des
+  // ersten Durchgangs, kein Beschluss. Nicht in einen sichtbaren Text übernommen:
+  // Der Bundesrat nennt seine Liste selbst „Entwurf Tagesordnung", sie kann sich
+  // bis zur Sitzung ändern.
+  geprueftIso: "2026-09-10",
   // Bewusst VOR dem erwarteten Bundestagsbeschluss (Herbst 2026): Ein Satz, der
   // "Bundestag steht aus" sagt, wird am Tag des Beschlusses von selbst falsch.
   reviewBy: "2026-11-30",
-  source: "BEHG für 2026 (Korridor-Boden 55 €/t); für 2027 die Korridor-Decke von 65 €/t aus dem Gesetzentwurf zum Einfrieren des Korridors 55–65 €/t — Regierungsentwurf, vom Bundeskabinett am 12.08.2026 beschlossen, seit 14.08.2026 im Bundesrat (BR-Drs. 462/26), Bundestagsbeschluss und Verkündung stehen aus; ab 2028 EU-Emissionshandel (Start 2028, EU-Umweltrat 11/2025) als konservative Forecast-Kurve",
+  source: "BEHG für 2026 (Korridor-Boden 55 €/t); für 2027 die Korridor-Decke von 65 €/t aus dem Gesetzentwurf zum Einfrieren des Korridors 55–65 €/t — Regierungsentwurf, vom Bundeskabinett am 12.08.2026 beschlossen, seit 14.08.2026 im Bundesrat (BR-Drs. 462/26) und seit 07.09.2026 im Bundestag (BT-Drs. 21/7869), Bundestagsbeschluss und Verkündung stehen aus; ab 2028 EU-Emissionshandel (Start 2028, EU-Umweltrat 11/2025) als konservative Forecast-Kurve",
 };
 
 /** CO2-Preis in €/t für ein absolutes Kalenderjahr (rollover-sicher). */

@@ -44,8 +44,15 @@ import { EEG_REFORM_STAND } from "./eeg-reform-config";
 /** Die Periode, die AM PRÜFTAG galt — nicht die von heute. `feedInRatesFor()`
  *  ohne Argument fragt die Uhr; damit käme das sichtbare „Werte von …" aus der
  *  Laufzeit, und am 01.02.2027 stünde ein Wertstand da, der jünger ist als sein
- *  eigenes Prüfdatum. */
-const FEED_IN_WERTSTAND = feedInRatesFor(new Date(`${FEED_IN_GEPRUEFT_ISO}T00:00:00`)).validFrom;
+ *  eigenes Prüfdatum.
+ *
+ *  Der Prüftag wird als TAG übergeben, nicht als Zeitpunkt. Bis 08.09.2026 stand
+ *  hier `new Date(`${FEED_IN_GEPRUEFT_ISO}T00:00:00`)` — ein String ohne
+ *  Zeitzone, also in Ortszeit gelesen: In Deutschland kam dabei der 31.07.2026
+ *  heraus und damit die VORIGE Vergütungsperiode (Februar statt August), auf
+ *  einem UTC-Server der 01.08. und die richtige. Dieselbe Datei zeigte lokal und
+ *  in der Produktion einen anderen Wertstand. */
+const FEED_IN_WERTSTAND = feedInRatesFor(FEED_IN_GEPRUEFT_ISO).validFrom;
 
 // Typen und Datums-Wortlaut liegen in `stand-format.ts` (config-frei, damit die
 // Client-Seite sie mitnehmen kann) und werden hier weitergereicht — für alle
@@ -173,6 +180,18 @@ export const STAND: Record<string, StandSeite> = {
   "/pv-simulation": {
     eintraege: [],
     live: ["Wetterdaten", "Standort-Ertrag"],
+  },
+
+  // Die Bestandsseite hat keinen einzigen Stichtagswert: Jede Zahl darauf kommt
+  // aus dem Registerauszug, den die Seite bei jedem Aufruf liest — samt seinem
+  // eigenen Datenstand, der sichtbar an den Zahlen steht. Ein Prüfdatum in
+  // dieser Liste wäre genau das erfundene, das die Regel oben verbietet: Wir
+  // prüfen die Werte nicht, wir holen sie. Folglich auch kein `lastmod`.
+  "/photovoltaik-bestand-deutschland": {
+    eintraege: [],
+    live: [
+      "Anlagenbestand aus dem Marktstammdatenregister (der Datenstand des Auszugs steht an den Zahlen)",
+    ],
   },
 };
 

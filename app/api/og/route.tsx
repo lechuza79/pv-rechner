@@ -1,12 +1,6 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, DACHARTEN, NATIONAL_AVG_YIELD } from "../../../lib/constants";
-import { dachErtragKwp } from "../../../lib/dach-ertrag";
-import { type TiltOrientation } from "../../../lib/tilt-config";
-import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
-import { calcWpAnnualElectricity } from "../../../lib/heatpump";
-import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
-import { DEFAULT_PRICES } from "../../../lib/prices-config";
+import { ogRechnung } from "../../../lib/og-rechnung";
 import { tokens } from "../../../lib/theme";
 import { zeitpunktInBerlin } from "../../../lib/zeit";
 
@@ -81,12 +75,32 @@ async function loadEnergyRadial(origin: string, bars: number): Promise<RadialDat
   }
 }
 
+/**
+ * Die Schrift des Bildes — aus dem BUNDLE, nie über die eigene Adresse geholt.
+ *
+ * Sie lag bis zum 09.09.2026 in `public/` und wurde von dieser Funktion per
+ * HTTP von der eigenen Domain zurückgeholt. Das ist eine Abhängigkeit von der
+ * öffentlichen Auslieferung, und sie ist gerissen, als am 08.09.2026 der
+ * Bot-Schutz scharf gestellt wurde: Eine Serverless-Function verhält sich nicht
+ * wie ein Browser, bekam die Prüfaufgabe als HTML zurück, und der Schriftleser
+ * scheiterte an deren ersten vier Zeichen („Unsupported OpenType signature
+ * <!DO"). Ausnahmen im Bot-Schutz wären die schlechtere Antwort gewesen — dann
+ * müsste jeder Pfad, den eine Funktion je selbst abruft, in einer Liste stehen,
+ * die beim nächsten Pfad still veraltet.
+ *
+ * `import.meta.url` löst gegen die gebaute Datei auf; die Schrift liegt deshalb
+ * NEBEN dieser Route und nicht mehr im öffentlichen Ordner (dort wurde sie von
+ * nichts anderem gebraucht). Auf der Edge-Laufzeit ist das der vorgesehene Weg —
+ * `fs` gibt es dort nicht.
+ */
+async function ladeSchrift(): Promise<ArrayBuffer> {
+  return fetch(new URL("./JetBrainsMono-Bold.ttf", import.meta.url)).then(r => r.arrayBuffer());
+}
+
 export async function GET(req: NextRequest) {
   const params = Object.fromEntries(req.nextUrl.searchParams.entries());
 
-  const jetBrainsMono = await fetch(
-    new URL("/fonts/JetBrainsMono-Bold.ttf", req.nextUrl.origin)
-  ).then(r => r.arrayBuffer());
+  const jetBrainsMono = await ladeSchrift();
   const fonts = [
     { name: "JetBrains Mono", data: jetBrainsMono, weight: 700 as const },
   ];
@@ -237,66 +251,10 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const anlageIdx = paramInt(params, "a", 2, 0, 4);
-  const speicherIdx = paramInt(params, "s", 0, 0, 3);
-  const personenIdx = paramInt(params, "p", 1, 0, 3);
-  const nutzungIdx = paramInt(params, "n", 1, 0, 3);
-  const wp = paramStr(params, "wp", "nein", ["nein", "geplant", "ja"]);
-  const ea = paramStr(params, "ea", "nein", ["nein", "geplant", "ja"]);
-  const eaKm = paramInt(params, "km", 15000, 1000, 50000);
-  const customKwp = paramFloat(params, "ck", 12, 1, 50);
-  // `er` ist das Standort-OPTIMUM (PVGIS mit optimaler Neigung nach Süden);
-  // `da`/`az` machen daraus den Ertrag DIESES Dachs. Ohne diesen Schritt zeigt
-  // das Vorschaubild eines Ost/West-Links die Amortisation eines Süddachs —
-  // dieselbe Regel wie im Rechner (lib/dach-ertrag.ts).
-  const ertragOptimum = paramInt(params, "er", NATIONAL_AVG_YIELD, 700, 1400);
-  const ogDachart = params.da !== undefined ? paramInt(params, "da", -1, 0, DACHARTEN.length - 1) : -1;
-  const ogAusrichtung = paramStr(params, "az", "", ["sued", "suedostwest", "ostwest", "nord"]) as TiltOrientation | "";
-  const ertragKwp = dachErtragKwp(ertragOptimum, ogDachart >= 0 ? ogDachart : null, ogAusrichtung || null);
-  const strompreis = paramFloat(params, "st", DEFAULT_PRICES.electricityPrice, 0.05, 1.0);
-  const einspeisungModus = params.eia === "2" ? "voll" : params.eia === "0" ? "aus" : "teil";
+  // Die ganze Rechnung steht in lib/og-rechnung.ts — dieselben Bausteine wie im
+  // Rechner, und ein Test hält jeden Schlüssel des Teilen-Links dagegen.
   const plz = params.plz || "";
-
-  const kwp = anlageIdx < 4 ? ANLAGEN[anlageIdx].kwp : customKwp;
-  const spKwh = SPEICHER[speicherIdx].kwh;
-
-  const oKosten = params.k ? paramFloat(params, "k", 0, 500, 200000) : null;
-  const oEv = params.ev ? paramInt(params, "ev", 0, 5, 95) : null;
-
-  // WP-Jahresstrom aus den Gebäudedaten (gleiche Physik wie der Rechner), damit
-  // das Vorschaubild bei WP-Links dieselbe Amortisation zeigt wie die Seite.
-  const wpKwh = wp !== "nein"
-    ? calcWpAnnualElectricity({
-        situation: "bestand",
-        wohnflaeche: paramInt(params, "wf", 140, 20, 1000),
-        insulationIdx: paramInt(params, "wi", 1, 0, INSULATION_BESTAND.length - 1),
-        personen: PERSONEN[personenIdx].count,
-        heizsystem: paramStr(params, "wh", "hk_neu", ["fbh", "hk_neu", "hk_alt"]) as "fbh" | "hk_neu" | "hk_alt",
-        wpType: "lwwp",
-        haustypFaktor: HAUSTYP_WP[paramInt(params, "wht", 0, 0, HAUSTYP_WP.length - 1)].faktor,
-      })
-    : null;
-
-  const ev = oEv ?? calcEigenverbrauch({
-    personenIdx, nutzungIdx, speicherKwh: spKwh, wp, ea, eaKm, wpKwh, kwp, ertragKwp,
-  });
-  const kosten = oKosten ?? estimateCost(kwp, spKwh);
-  const oEinsp = params.ei ? paramFloat(params, "ei", 0, 0, 20) : null;
-  const autoEinsp = einspeisungModus === "voll"
-    ? calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.vollUnder10, DEFAULT_FEED_IN.vollOver10)
-    : calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
-  const einsp = einspeisungModus === "aus" ? 0 : (oEinsp ?? autoEinsp);
-  const effEv = einspeisungModus === "voll" ? 0 : ev;
-
-  const result = calc({
-    kwp, kosten, strompreis, eigenverbrauch: effEv, einspeisung: einsp,
-    stromSteigerung: 0.03, ertragKwp, monthly: null,
-    batteryReplace: batteryReplaceCost(spKwh),
-  });
-
-  const amortYears = result.be ? result.be.i : null;
-  const rendite25j = result.total;
-  const avgSavings = Math.round(rendite25j / 25);
+  const { kwp, spKwh, ev, amortYears, gewinn25: rendite25j, avgSavings } = ogRechnung(params);
 
   const amortColor = amortYears !== null ? C_ACCENT : C_NEGATIVE;
   const amortText = amortYears !== null ? `${amortYears}` : ">25";
@@ -306,7 +264,7 @@ export async function GET(req: NextRequest) {
   const cards = [
     { value: `${kwp} kWp`, label: "ANLAGE" },
     { value: spKwh > 0 ? `${spKwh} kWh` : "Ohne", label: "SPEICHER" },
-    { value: `${ev}%`, label: "EIGENVERBR." },
+    { value: `${Math.round(ev)}%`, label: "EIGENVERBR." },
   ];
   if (plz) cards.push({ value: plz, label: "STANDORT" });
 
@@ -360,7 +318,7 @@ export async function GET(req: NextRequest) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
           <div style={{ display: "flex", gap: 40 }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>RENDITE 25 J.</span>
+              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>GEWINN 25 J.</span>
               <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: rendite25j > 0 ? C_POSITIVE : C_NEGATIVE }}>
                 {`${renditeStr} \u20AC`}
               </span>

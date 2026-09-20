@@ -115,6 +115,52 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // Landkreis Erlangen-Höchstadt, sechs Gemeindeprogramme, aufgenommen am
+  // 20.09.2026. Jede Richtlinie ist im Volltext gelesen und jede Bedingung steht
+  // am Programm — die Prüfformen fehlen noch, und sie sind hier nicht trivial:
+  // Fünf der sechs verlangen den Antrag VOR dem Kauf, Eckental dagegen NACH dem
+  // Kauf (Rechnung und Foto gehören zum Antrag). Beides zugleich abzubilden ist
+  // die eigentliche Arbeit und braucht einen eigenen Durchgang; halb erfasst
+  // gibt es hier nicht. Bis dahin stehen die Bedingungen vollständig auf der
+  // Karte, sie werden nur nicht gegen das Vorhaben geprüft.
+  "buckenhof-klimaschutz", "marloffstein-klimaschutz", "uttenreuth-klimaschutz",
+  "roettenbach-erh-pv-speicher", "eckental-balkon", "spardorf-solar",
+  // Dazu die beiden Nachträge aus der Gegenprüfung desselben Tages: Röttenbachs
+  // zweite Richtlinie (Heizung) und Kalchreuth, dessen Geltung offen ist.
+"kalchreuth-regenerative-energien",
+  // Zwei nicht mehr antragsfähige Programme im selben Landkreis, aufgenommen am
+  // 20.09.2026. Eine Prüfform prüft das Vorhaben gegen ein Antragsverfahren —
+  // und genau das gibt es hier nicht: Bubenreuth weist die Mittel als
+  // ausgeschöpft aus, Herzogenaurach hat den Antragsstopp auf unbestimmte Zeit
+  // verlängert. Die Bedingungen stehen vollständig auf der Karte und
+  // informieren; geprüft werden sie erst, wenn wieder jemand beantragen kann.
+  "bubenreuth-co2-einsparung", "herzogenaurach-co2-minderung",
+  // Aufgenommen am 18.09.2026 aus dem Quellen-Rückstand; Amtsseite und
+  // Richtlinie jeweils im Volltext gelesen. Die Prüfformen fehlen noch, und bei
+  // Würselen kennt das Modell eine Bedingung gar nicht: Gekauft werden darf erst
+  // nach der BEWILLIGUNG, nicht schon nach der Antragstellung — strenger als die
+  // übliche Regel „Antrag vor Kauf", die die Prüfform abbildet. Gronau ruht
+  // wegen der Haushaltssperre; halb erfasst gibt es hier nicht.
+  "wuerselen-balkonkraftwerke", "gronau-klima-umweltfonds", "herzogenrath-klimaschutzinvestitionen", "allendorf-eder-erneuerbare",
+  "hiddenhausen-spar-mit-solar", "herzebrock-clarholz-batteriespeicher",
+  // Closed municipal rounds: current closure verified, historical terms remain visible.
+  // Closed rounds added by the funding watcher on 2026-09-16 (source queue).
+  "rheinisch-bergisch-balkonsolar", "burbach-klimaschutz-privat",
+  // Exhausted 2026 round: conditions remain explicit information, no application flow.
+  "bad-marienberg-erneuerbare-energien",
+  // Closed since 31 December 2023 (guideline of 13 June 2023, read in full on
+  // 17 September 2026). The conditions stay as historical information; there is
+  // no application flow left to check them against.
+  "bahrenhof-solar",
+  // Closed 2023/2024 rounds in the same Amt (guidelines read in full on 19 Sep 2026).
+  "wakendorf-i-solar", "weede-mini-solar", "geschendorf-solar",
+  "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
+  // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
+  "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",
+  // Die beiden Landesprogramme für Balkonkraftwerke, aufgenommen am 02.09.2026.
+  // Ihre Bedingungen hängen an Mieter/Eigentümer — eine Unterscheidung, die das
+  // Modell (privat/gewerblich) nicht kennt. Erfassbar erst, wenn es sie kennt.
+  "sachsen-balkon-eeus", "mv-mini-solaranlagen",
   "berlin-solarplus", "stuttgart-solaroffensive", "karlsruhe-klimabonus",
   "regensburg-effizient", "wuerzburg-klimastadt", "darmstadt-pv",
   "badhomburg-energiespar", "koeln-pv", "duesseldorf-klimafreundlich",
@@ -125,7 +171,7 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "essen-solar", "schweinfurt-pv", "osnabrueck-saniert", "memmingen-ee",
   "baden-baden-pvplus", "schwerin-pv", "wolfsburg-pv", "bottrop-solaroffensive",
   "krefeld-klimafreundlich", "rhein-erft-energieoffensive", "viersen-klimaschutz",
-  "bergstrasse-speicher", "mayen-koblenz-speicher",
+  "bergstrasse-speicher", "mayen-koblenz-speicher", "ulm-energiefoerderprogramm",
   // Nach dem Merge von main dazugekommen — der Test hat sie gefunden, statt sie
   // still ungeprüft durchzulassen. Genau dafür ist die Liste da.
   "ludwigshafen-kipki", "waiblingen-klimaschutz", "herne-klimafoerderung",
@@ -168,6 +214,94 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "asbach-balkonkraftwerke", "parkstein-nachhaltigkeitszuschuss",
   "marburg-balkonkraftwerke", "schoenbrunn-balkon-pv",
   "hillscheid-energie", "schlierbach-energiespeicher",
+  // Aufgenommen am 03.09.2026, jede Zahl an der Amtsseite im Rohtext gelesen.
+  // Die Prüfformen fehlen noch — bei Hamburg und Böblingen hängt die volle
+  // Förderhöhe zusätzlich an einer Einkommensprüfung, die das Modell nicht
+  // kennt; das ist eine eigene Arbeit und halb erfasst gibt es hier nicht.
+  "hamburg-balkon-einkommen", "kiel-solarstadt", "boeblingen-balkonkraftwerke",
+  // Aufgenommen am 05.09.2026, Richtlinie und Service-Portal im Volltext
+  // gelesen. Die Prüfformen fehlen noch, und eine davon kennt das Modell gar
+  // nicht: Die Kumulierungsgrenze deckelt die SUMME aller öffentlichen Mittel
+  // auf 50 % der Gesamtkosten, nicht unseren Betrag allein.
+  "wetter-ruhr-balkonsolar",
+  // Aufgenommen am 06.09.2026, ausgeschöpft — Förderkulisse und Programmseite
+  // im Volltext gelesen. Die Prüfformen fehlen noch, und zwei davon kennt das
+  // Modell nicht: der Gesamtdeckel von 4.900 € je Liegenschaft über alle
+  // Maßnahmen hinweg und der Bonus für Wohngeld-, Bürgergeld-,
+  // Grundsicherungs- oder BAföG-Bezug.
+  "braunschweig-regenerative-energien",
+  // Aufgenommen am 07.09.2026, Förderübersicht der Stadt im Rohtext gelesen.
+  // Die Prüfformen fehlen noch: Der Stichtag „vor dem 1. Januar 2024 im
+  // Marktstammdatenregister angemeldet" hängt an einer Angabe, die der Rechner
+  // nicht erhebt, und die Deckelung auf 100 % des Kaufpreises ist eine Form,
+  // die das Modell nicht ausdrückt.
+  "gelsenkirchen-steckersolar",
+  // Aufgenommen am 09.09.2026, Amtsseite bzw. Richtlinie im Volltext gelesen.
+  // Die Prüfformen fehlen noch, und je eine Bedingung kennt das Modell gar
+  // nicht: In Konstanz der MONTAGEORT (gefördert wird nur, was am Balkon, an
+  // der Fassade oder auf einem Nebengebäude hängt — Dachmontage ist seit 2025
+  // ausgeschlossen), im Landkreis Oldenburg der Kaufstichtag „nicht vor dem
+  // 1. Januar 2026" und die Nachrangigkeit gegenüber EU-, Bundes- und
+  // Landesmitteln. Dass der Zuschuss den Speicher voraussetzt, steht dagegen
+  // seit heute IM Modell (`balkonNurMitSpeicher`) und nicht nur im Text.
+  "konstanz-breitenfoerderung", "landkreis-oldenburg-steckersolar",
+  // Die 47 Programme des 09.09.2026 — der abgearbeitete Arbeitsvorrat des
+  // Screenings. Jede Zahl an der Amtsseite gelesen, die Prüfformen fehlen noch.
+  // Sie sind hier die größere Arbeit als sonst: Ein Drittel dieser Programme
+  // verlangt den Antrag VOR dem Kauf, mehrere kennen zweistufige Verfahren, und
+  // vier hängen an Angaben, die das Modell gar nicht führt (Einkommensgrenze,
+  // Wohnberechtigungsschein, Zwei-Familien-Haus, Montageort).
+  "delbrueck-steckersolar", "denzlingen-klimaschutz", "kenzingen-aktiv-klimaschutz",
+  "kirchdorf-amper-mini-pv", "vg-bad-breisig-balkonkraftwerke", "waltrop-steckersolar",
+  "straelen-steckerfertige-pv", "kranenburg-steckerfertige-pv", "vg-brohltal-balkonkraftwerke",
+  "vg-alzey-land-balkon-speicher", "edewecht-klimabonus", "gerbrunn-stecker-solar",
+  "holzmaden-balkonkraftwerke", "vg-nahe-glan-balkonkraftwerke", "taunusstein-balkonsolar",
+  "schmelz-solar-balkonkraftwerk", "waldalgesheim-balkon-pv", "recklinghausen-stecker-solar",
+  "werne-steckersolar", "gerlingen-balkonmodule", "bissendorf-klimaschutz",
+  "kerken-stecker-solar", "gruenwald-umweltschutz", "aulendorf-plugin-solar",
+  "amstetten-steckerfertige-pv", "vg-rennerod-klimaschutz", "windhagen-balkonkraftwerke",
+  "koenigswinter-steckersolar", "delmenhorst-balkon-solar", "kronberg-klimaschutz",
+  "bad-duerkheim-stecker-solar", "sinsheim-balkonkraftwerke", "worms-balkon-pv",
+  "reichshof-pv", "bernkastel-wittlich-balkonkraftwerke", "trier-saarburg-balkonkraftwerke",
+  "witten-balkon-solarmodule", "neuenrade-stecker-solar", "wassenberg-stecker-solar",
+  "roggenburg-pv-kleinstanlagen", "altdorf-landshut-balkonkraftwerk", "feldkirchen-westerham-klimaschutz",
+  "roedinghausen-sonnenenergie", "leipzig-stecker-solar", "emsdetten-proklima",
+  "westerkappeln-balkonkraftwerke", "sprendlingen-gensingen-balkonsolar",
+  // Aufgenommen am 11.09.2026, Amtsseiten und beide Richtlinien der StädteRegion
+  // im Volltext gelesen. Die Prüfformen fehlen noch; die tragende Bedingung der
+  // Stadt Aachen (nur Mehrfamilienhaus oder Betriebsgebäude) kennt das Modell
+  // als GEBÄUDEART bereits, aber nicht als Ausschluss des Einfamilienhauses.
+  "aachen-solar", "staedteregion-aachen-ee",
+  // Added 17 Sep 2026 as a closed historical programme (no calculation fields).
+  "mainz-bingen-balkonkraftwerke",
+  "mayen-koblenz-balkonkraftwerke",
+  "altenkirchen-balkonkraftwerke",
+  "altenkirchen-solarspeicher",
+  "cochem-zell-solarstromspeicher",
+  // Added 19 Sep 2026: discretionary EKM grant without a rate; the committee
+  // decision, the start-after-receipt rule and the new-building exclusion have
+  // no test form.
+  "ekm-altenkirchen",
+  // Added 19 Sep 2026: guideline read in full; the one-year application window
+  // after installation and the one-per-dwelling limit have no test form.
+  "mehren-balkonkraftwerke",
+  // Added 19 Sep 2026: income condition (Wohngeld/Bürgergeld), green tariff,
+  // one-per-meter and the 3-year operating duty have no test form.
+  "holzminden-solarfair",
+  // Added 18 Sep 2026: exhausted VG programme, guideline read in full; the
+  // test forms (application before contract, 3-/12-month deadlines) are missing.
+  "vg-hachenburg-erneuerbare-energien",
+  // Added 18 Sep 2026: guideline read in full; building age (25 years) and the
+  // 15,000 EUR total-cost floor have no test form and no model field.
+  "vg-wallmerod-lange-leben-im-dorf",
+  // Added 18 Sep 2026: guideline read in full; owner-only eligibility, crediting of
+  // previously funded capacity and the commissioning-before-application order
+  // have no test form yet.
+  "neustadt-wied-pv-speicher",
+  // Added 18 Sep 2026: guidelines read in full; the prior energy check, the
+  // existing-building rule and the own-consumption sizing of the roof system have
+  // no test form yet (roof system is therefore not computed at all).
+  "staudt-energieeffizienz",
 ];
 
 /**
@@ -178,6 +312,54 @@ export const NOCH_NICHT_ERFASST: string[] = [
  * genau die stille Lücke, die der Test verhindern soll.
  */
 export const FUNDING_CHECKS: Record<string, FundingChecks> = {
+  // Landkreis Erlangen-Höchstadt, Wärmepumpen-Zuschuss (aufgenommen 20.09.2026).
+  // Prüfbar ist hier genau EINES: der Antragszeitpunkt. Alles andere sind
+  // Geräteeigenschaften (Kältemittel, Effizienzstufe, BAFA-Listung, Heizkreis),
+  // die der Rechner nicht kennt — deshalb Hinweis, nicht Prüfung, und deshalb
+  // trägt das Programm auch keinen Abzug.
+  "erlangen-hoechstadt-waermepumpe": {
+    pruefungen: [
+      {
+        ausBedingung: "Der Antrag muss spätestens zwei Monate nach dem Rechnungsdatum vorliegen — später eingereichte Anträge werden nach dem Antragsformular nicht berücksichtigt",
+        // Die Frist steht bewusst NICHT als `fristMonate`: Sie läuft ab dem
+        // RECHNUNGSDATUM, nicht ab Inbetriebnahme, und die Rechnung kann vorher
+        // liegen. Als Monatsfrist ab Inbetriebnahme gerechnet wäre sie zu
+        // großzügig — also die gefährliche Richtung. Der Zeitpunkt hier, die
+        // zwei Monate im Text daneben.
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "nach-inbetriebnahme" },
+      },
+    ],
+    durchRegion: [
+      "Die Wärmepumpe muss in einem Gebäude im Landkreis Erlangen-Höchstadt eingebaut und betrieben werden",
+    ],
+    hinweise: [
+      {
+        ausBedingung: "Anders als bei der Bundesförderung wird hier NACH dem Kauf beantragt: Der Kaufbeleg mit dem Wärmepumpen-Modell gehört als Anlage zum Antrag",
+        warum: "Die Reihenfolge steht schon als Prüfung; dieser Satz grenzt sie gegen die BEG-Regel „Antrag vor Vorhabenbeginn\" ab, die im selben Ergebnis daneben steht.",
+      },
+      {
+        ausBedingung: "Gefördert wird nur die Neu-Anschaffung — ein gebrauchtes Gerät ist ausgeschlossen",
+        warum: "Der Rechner rechnet ohnehin mit einer neuen Anlage; ob jemand ein gebrauchtes Gerät einbaut, weiß er nicht.",
+      },
+      {
+        ausBedingung: "Die Wärmepumpe muss in der Liste der förderfähigen Wärmepumpenanlagen des BAFA stehen und ihre Wärme an einen wassergeführten Heizkreis abgeben",
+        warum: "Geräteeigenschaft aus einer fremden Liste — der Rechner kennt weder das Modell noch den Heizkreis.",
+      },
+      {
+        ausBedingung: "Natürliches Kältemittel ohne Halogene — das Antragsformular lässt R290 Propan, R600a Isobutan, R1270 Propen, R717 Ammoniak, R718 Wasser und R744 Kohlendioxid zu. Die marktüblichen Kältemittel R32, R410A und R454C enthalten Fluor und sind damit ausgeschlossen",
+        warum: "Geräteeigenschaft; das Kältemittel steht im Datenblatt, nicht in den Angaben des Nutzers.",
+      },
+      {
+        ausBedingung: "Mindest-Effizienz nach der BAFA-Liste, jahreszeitbedingte Leistungszahl (SCOP) für mittleres Klima: Luft/Wasser 3,3 bei 55 °C bzw. 4,6 bei 35 °C (ηs 130 bzw. 180 %), Sole/Wasser 3,7 bzw. 5,3 (ηs 140 bzw. 205 %), Wasser/Wasser 4,2 bzw. 6,2 (ηs 160 bzw. 240 %). Diese Schwellen liegen über denen der Bundesförderung",
+        warum: "Geräteeigenschaft, und der genaue Anteil der Geräte, die diese Schwellen halten, ist nicht gemessen — genau deshalb zieht das Programm auch nichts ab.",
+      },
+      {
+        ausBedingung: "Befristet bis 31.12.2026, vorbehaltlich der im Landkreishaushalt 2026 verfügbaren Mittel",
+        warum: "Haushaltsvorbehalt des Trägers — nicht am Vorhaben des Nutzers prüfbar.",
+      },
+    ],
+  },
+
   "bund-nullsteuer": {
     ohneAntrag: {
       warum:
@@ -272,11 +454,18 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
         pruefung: { art: "antragsweg", weg: "online" },
       },
       {
-        ausBedingung: "Haltedauer zehn Jahre, sonst wird der Zuschuss zurückgefordert",
+        // JE TECHNIK GETRENNT seit 17.09.2026: Die PV-Richtlinie nennt zehn
+        // Jahre für Anlage und Speicher, die Mini-PV-Richtlinie drei Jahre.
+        // Hier stand eine gemeinsame Zeile mit zehn Jahren.
+        ausBedingung: "Haltedauer zehn Jahre für Anlage und Speicher, sonst wird der Zuschuss zurückgefordert",
         pruefung: { art: "bindung", jahre: 10 },
       },
       {
-        ausBedingung: "Nicht gefördert: Eigenleistung, gebrauchte Teile, Anlagen aus einer gesetzlichen Pflicht (etwa nach dem Gebäudeenergiegesetz)",
+        ausBedingung: "Haltedauer drei Jahre im Stadtgebiet, gerechnet ab der Auszahlung",
+        pruefung: { art: "bindung", jahre: 3 },
+      },
+      {
+        ausBedingung: "Nicht gefördert: Eigenleistung und gebrauchte Teile",
         pruefung: { art: "ausfuehrung", eigenleistungAusgeschlossen: true },
       },
     ],
@@ -288,6 +477,27 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
           "Gilt ohnehin für jede Anlage (§ 5 MaStRV) und ist keine zusätzliche Hürde " +
           "dieses Programms — die Stadt macht die Auszahlung nur ausdrücklich davon " +
           "abhängig. Unser Anmelde-Ratgeber führt durch den Vorgang.",
+      },
+      {
+        ausBedingung: "Gefördert wird nur, was im Förderzeitraum durchgeführt wird — er endet am 31. Dezember 2026",
+        warum:
+          "Der Rechner rechnet keine Inbetriebnahme mit Datum; das Ende des " +
+          "Förderzeitraums steht deshalb als `endetIso` am Programm und schaltet " +
+          "den Abzug ab. Als Bedingung bleibt es sichtbar, damit niemand im " +
+          "Dezember eine Anlage bestellt, die im Januar in Betrieb geht.",
+      },
+      {
+        ausBedingung: "Nicht gefördert werden Anlagen, die aus einer rechtlich bindenden Verpflichtung heraus installiert werden müssen, etwa nach dem Gebäudeenergiegesetz",
+        warum:
+          "Ob jemand aus einer gesetzlichen Pflicht heraus baut, steht in keiner " +
+          "Eingabe des Rechners. Die Klausel steht nur in der PV-Richtlinie — eine " +
+          "Pflicht zum Balkonkraftwerk gibt es nicht.",
+      },
+      {
+        ausBedingung: "Je Haushalt wird im Förderzeitraum nur eine Anlage gefördert",
+        warum:
+          "Ob dieser Haushalt im selben Jahr schon ein Balkonkraftwerk gefördert " +
+          "bekommen hat, weiß nur er selbst.",
       },
       {
         ausBedingung: "Kein Ersatzneukauf und keine Erweiterung einer bestehenden Anlage",

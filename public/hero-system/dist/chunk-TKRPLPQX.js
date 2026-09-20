@@ -1,0 +1,1 @@
+function t(i){let n=Math.max(0,Math.min(1,Number.isFinite(i.daylight)?i.daylight:i.phase==="night"?0:1)),a=Number.isFinite(i.solarElevation)?i.solarElevation:n*35-6;return{daylight:n,sun:Math.max(0,Math.min(1,a/6)),sky:.12+.88*n}}export{t as a};

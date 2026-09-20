@@ -3,6 +3,7 @@
 // Sources documented in-line so every number is defensible.
 
 import { FUEL_PRICE, INSULATION_BESTAND, INSULATION_NEUBAU, type KennwertArt } from "./constants";
+import { tagInBerlin } from "./zeit";
 
 export interface HeatPumpConfig {
   // Specific heating demand (kWh/m²·a) by insulation standard.
@@ -467,9 +468,19 @@ export const BEG_WERTSCHOEPFUNGS_BONUS = { abIso: "2027-01-01", satz: 0.15 } as 
 /** Welche Stufe des Fahrplans gerechnet wird. */
 export type BegStand = "jetzt" | "naechste";
 
-/** Die Stufe, die an einem gegebenen Tag gilt. */
-export function begStufeAm(datum: Date, fahrplan: BegStufe[] = BEG_FAHRPLAN): BegStufe {
-  const iso = datum.toISOString().slice(0, 10);
+/**
+ * Die Stufe, die an einem gegebenen Tag gilt.
+ *
+ * Das Argument ist entweder ein ZEITPUNKT (`new Date()` — „jetzt", wird in den
+ * deutschen Kalendertag umgerechnet) oder ein gemeinter TAG als ISO-String
+ * (gilt unverändert). Die Stichtage der Richtlinie sind deutsche Kalendertage;
+ * gegen die Weltzeit gehalten galt am Stichtag selbst zwischen 00:00 und 02:00
+ * noch der alte Fördersatz und der alte Höchstbetrag. Das gilt auch im Browser:
+ * Dort ist `new Date()` die Uhr des Besuchers, und wo er sitzt, ändert am
+ * deutschen Stichtag nichts. Siehe `tagInBerlin` in lib/zeit.ts.
+ */
+export function begStufeAm(datum: Date | string, fahrplan: BegStufe[] = BEG_FAHRPLAN): BegStufe {
+  const iso = tagInBerlin(datum);
   let treffer = fahrplan[0];
   for (const stufe of fahrplan) {
     if (stufe.abIso <= iso) treffer = stufe;
@@ -487,7 +498,7 @@ export function begStufeAm(datum: Date, fahrplan: BegStufe[] = BEG_FAHRPLAN): Be
  * anbietet, sieht kaputt aus. So wandert die Frage mit — sie lautet immer „was
  * ändert sich, wenn ich erst nach dem nächsten Stichtag beantrage?".
  */
-export function begNaechsteStufe(datum: Date, fahrplan: BegStufe[] = BEG_FAHRPLAN): BegStufe | undefined {
-  const iso = datum.toISOString().slice(0, 10);
+export function begNaechsteStufe(datum: Date | string, fahrplan: BegStufe[] = BEG_FAHRPLAN): BegStufe | undefined {
+  const iso = tagInBerlin(datum);
   return fahrplan.find((stufe) => stufe.abIso > iso);
 }

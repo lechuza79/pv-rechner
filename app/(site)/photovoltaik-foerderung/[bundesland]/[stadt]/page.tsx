@@ -99,7 +99,7 @@ const S = {
   metricsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 10, marginBottom: 28 } as React.CSSProperties,
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 } as React.CSSProperties,
   metricLabel: { fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginBottom: 4 } as React.CSSProperties,
-  metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 } as React.CSSProperties,
+  metricValue: { fontFamily: v("--font-mono"), fontSize: v("--font-size-display-sm"), fontWeight: 700 } as React.CSSProperties,
   h2: { fontSize: "var(--font-size-h3)", fontWeight: 700, margin: "0 0 4px" } as React.CSSProperties,
   sub: { fontSize: "var(--font-size-small)", color: v("--color-text-muted"), margin: "0 0 14px" } as React.CSSProperties,
   section: { marginBottom: sectionGap } as React.CSSProperties,
@@ -317,7 +317,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
               {atlasPfad ? (
                 <Link
                   href={atlasPfad}
-                  title={`Anlagenbestand in ${city.name} im Solar-Atlas`}
+                  title={`Anlagenbestand in ${city.name} im Energie-Atlas`}
                   style={{ color: "inherit", textDecorationColor: v("--color-border-accent"), textUnderlineOffset: 4 }}
                 >
                   {city.name}
@@ -543,7 +543,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
           <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 12 }}>
             {faq.map((item) => (
               <details key={item.q} style={{ background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: "12px 14px" }}>
-                <summary style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary"), cursor: "pointer", listStyle: "none" }}>{item.q}</summary>
+                <summary style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), cursor: "pointer", listStyle: "none" }}>{item.q}</summary>
                 <p style={{ fontSize: "var(--font-size-small)", lineHeight: 1.6, color: v("--color-text-secondary"), margin: "8px 0 0" }}>{item.a}</p>
               </details>
             ))}
@@ -569,7 +569,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                 den Ort gibt es bewusst nicht — die Gemeindeebene ist nicht
                 freigeschaltet, und ein Link ins Leere wäre schlimmer als keiner. */}
             <Link href={atlasPfad ?? `/solar-atlas/${params.bundesland}`} style={{ ...S.sekundaerKnopf, marginBottom: space.md }}>
-              {atlasPfad ? <>Alle Zahlen zu {city.name} im Solar-Atlas</> : <>Im Solar-Atlas {city.bundesland} vergleichen</>}
+              {atlasPfad ? <>Alle Zahlen zu {city.name} im Energie-Atlas</> : <>Im Energie-Atlas {city.bundesland} vergleichen</>}
               <IconArrowRight size={iconSizes.sm} />
             </Link>
             <div style={S.metricsGrid}>

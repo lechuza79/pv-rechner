@@ -61,12 +61,12 @@ const S = {
   },
   heroValue: {
     fontFamily: v("--font-mono"),
-    fontSize: 52,
+    fontSize: v("--font-size-display-xl"),
     fontWeight: 700,
     lineHeight: 1,
     color: v("--color-energy-nuclear-import"),
   },
-  heroUnit: { fontSize: 22, fontWeight: 700, color: v("--color-text-muted"), marginLeft: 6 },
+  heroUnit: { fontSize: v("--font-size-display-sm"), fontWeight: 700, color: v("--color-text-muted"), marginLeft: 6 },
   heroSub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 12, lineHeight: 1.6 },
   heroStand: {
     fontSize: v("--font-size-caption"),

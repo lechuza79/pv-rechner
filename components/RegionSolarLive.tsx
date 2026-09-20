@@ -11,7 +11,7 @@ import { fmtPvLeistung } from "../lib/atlas-format";
 // Landes-Variante des einbettbaren Solarleistungs-Widgets (analog zur Gemeinde-
 // Version in components/atlas, gleiche Shell + chromelose MastrLiveRadial). Es
 // gibt keine echten Erzeugungsdaten je Bundesland — daher aus dem heutigen
-// Wetter an einem repräsentativen Landes-Mittelpunkt (Open-Meteo via
+// Wetter an einem repräsentativen Landes-Mittelpunkt (DWD ICON-D2-Schnappschuss via
 // /api/weather) × installierter Leistung (NOCT-Modell) geschätzt und klar als
 // „simuliert" beschriftet. Einheit GW statt MW, weil der Landes-Bestand
 // GW-Größenordnung hat. Struktur bewusst identisch zur Gemeinde-Variante, damit
@@ -128,5 +128,5 @@ export default function RegionSolarLive({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  msg: { fontSize: 13, color: v("--color-text-muted"), textAlign: "center", padding: "40px 0" },
+  msg: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), textAlign: "center", padding: "40px 0" },
 };

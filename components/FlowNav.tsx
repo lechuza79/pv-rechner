@@ -125,7 +125,7 @@ export default function FlowNav({
           style={{
             padding: "10px 20px",
             borderRadius: v("--radius-md"),
-            fontSize: 14,
+            fontSize: v("--font-size-body"),
             fontWeight: 600,
             background: "transparent",
             border: `1px solid ${v("--color-border-muted")}`,
@@ -148,7 +148,7 @@ export default function FlowNav({
               marginBottom: 8,
               background: v("--color-text-primary"),
               color: v("--color-bg"),
-              fontSize: 12,
+              fontSize: v("--font-size-small"),
               fontWeight: 600,
               lineHeight: 1.4,
               padding: "6px 10px",
@@ -188,7 +188,7 @@ export default function FlowNav({
         style={{
           padding: "11px 22px",
           borderRadius: v("--radius-md"),
-          fontSize: 14,
+          fontSize: v("--font-size-body"),
           fontWeight: 700,
           background: weiterAktiv ? v("--color-accent") : v("--color-bg-muted"),
           color: weiterAktiv ? v("--color-text-on-accent") : v("--color-text-muted"),

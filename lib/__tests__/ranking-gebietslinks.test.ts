@@ -16,7 +16,7 @@ import { traegtRangliste, RANGLISTE_MIN_KOMMUNEN, vergleichsBasisPfad } from "..
 // Frankenthal, Neustadt an der Weinstraße) — und die Ranglisten-Seite des Landes
 // enthielt die toten Adressen nachweislich selbst im HTML.
 //
-// Das zählt doppelt: Ein Nutzer landet im Nichts, und der Solar-Atlas ist der
+// Das zählt doppelt: Ein Nutzer landet im Nichts, und der Energie-Atlas ist der
 // SEO-Hebel des Projekts — intern verlinkte 404er verbrennt der Crawler
 // stellvertretend für Seiten, die es gibt.
 //

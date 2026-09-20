@@ -21,15 +21,15 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { hasError
           alignItems: "center", justifyContent: "center", padding: 20,
         }}>
           <div style={{ textAlign: "center", maxWidth: 400 }}>
-            <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>
+            <div style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 12 }}>
               Berechnung konnte nicht geladen werden
             </div>
-            <div style={{ fontSize: 13, color: v('--color-text-secondary'), marginBottom: 20, lineHeight: 1.5 }}>
+            <div style={{ fontSize: v("--font-size-body"), color: v('--color-text-secondary'), marginBottom: 20, lineHeight: 1.5 }}>
               Die Daten in der URL sind ungültig. Starte eine neue Berechnung.
             </div>
             <a href="/photovoltaik-rechner" style={{
               display: "inline-block", padding: "10px 32px", borderRadius: v('--radius-md'),
-              fontSize: 14, fontWeight: 700, background: v('--color-accent'),
+              fontSize: v("--font-size-body"), fontWeight: 700, background: v('--color-accent'),
               color: v('--color-text-on-accent'), textDecoration: "none",
             }}>
               Neu berechnen

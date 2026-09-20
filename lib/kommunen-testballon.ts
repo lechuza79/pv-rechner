@@ -92,12 +92,41 @@ export type Schub = {
    */
   kanal: "rollen-postfach" | "beliebig";
   regeln: AuswahlRegeln;
+  /**
+   * Ab wann dieser Schub versendet werden soll (ISO-Tag).
+   *
+   * AM SCHUB, NICHT IM TEST. Die Ferienprüfung stand mit einem festen Stichtag
+   * im Testfile — dem Tag, an dem der DAMALIGE Schub festgelegt wurde. Beim
+   * nächsten Schub prüfte sie ihn gegen ein fremdes Datum und wurde rot, obwohl
+   * am neuen Schub nichts falsch war: Mecklenburg-Vorpommern hatte am
+   * 19.08.2026 noch Ferien, im September nicht mehr.
+   *
+   * Ein Test mit „heute" wäre die andere Falle — er würde irgendwann rot, ohne
+   * dass sich etwas geändert hat. Das Datum gehört deshalb an den Schub: Es ist
+   * seine Aussage, nicht die des Tests.
+   *
+   * Für die abgeschlossenen Schübe ist es der GEMESSENE erste Versandtag aus
+   * dem Kontaktregister, kein aus dem Gedächtnis geschriebenes Datum: Beim
+   * ersten Versuch stand für den August-Schub der 08.08. da, tatsächlich lief
+   * er am 20.08. — und der Test wurde zu Recht rot, weil Hessen am 08.08. noch
+   * Ferien hatte.
+   */
+  abIso: string;
   /** Warum GERADE dieses Gebiet, gerade jetzt. */
   grund: string;
 };
 
-/** Der Schub, der gerade dran ist. */
-export const AKTUELLER_SCHUB = "mail-he-rp-sl";
+/**
+ * Der Schub, der gerade dran ist.
+ *
+ * ER WIRD GEPFLEGT UND VERALTET TROTZDEM. Am 06.09.2026 zeigte er auf
+ * „mail-he-rp-sl", dessen 79 Gemeinden längst alle angeschrieben waren; vier
+ * der fünf Schübe waren durch. Wer sich darauf verlässt, arbeitet an Orten, an
+ * denen sich nichts mehr ändern lässt — die Templates-Ansicht leitet deshalb
+ * selbst ab, welcher Schub offene Gemeinden hat, statt dieser Angabe zu folgen.
+ * Sie bleibt als Voreinstellung für den Zug-Lauf, nicht als Wahrheit.
+ */
+export const AKTUELLER_SCHUB = "mail-sept-26";
 
 /**
  * Die alte Testballon-Auswahl aus Baden-Württemberg und Bayern.
@@ -110,11 +139,16 @@ export const AKTUELLER_SCHUB = "mail-he-rp-sl";
 export const GEPARKTE_KAMPAGNE_BWBY = "testballon-bwby-geparkt";
 
 export const SCHUEBE: Record<string, Schub> = {
-  [AKTUELLER_SCHUB]: {
-    kampagne: AKTUELLER_SCHUB,
+  // ABGESCHLOSSEN (alle 79 Gemeinden angeschrieben, gemessen 06.09.2026). Der
+  // Eintrag bleibt: Die Auswertung braucht ihn, und „welcher Schub war das?"
+  // muss beantwortbar bleiben. Er stand bis dahin als `AKTUELLER_SCHUB` da —
+  // die Markierung war einen Schub zu alt.
+  "mail-he-rp-sl": {
+    kampagne: "mail-he-rp-sl",
     bl: ["06", "07", "10"], // Hessen, Rheinland-Pfalz, Saarland
     kanal: "rollen-postfach",
     regeln: TESTBALLON_REGELN,
+    abIso: "2026-08-20",
     grund:
       "Sommerferien dort am 07.08.2026 zu Ende (KMK-Kalender), nächste Ferien erst ab 05.10.2026 — " +
       "das breiteste Versandfenster aller Länder im August/September.",
@@ -128,15 +162,64 @@ export const SCHUEBE: Record<string, Schub> = {
     // sieht im Paket, welche kein Rollen-Postfach haben; die bleiben liegen.
     kanal: "beliebig",
     regeln: TESTBALLON_REGELN,
+    // Bayerns Ferien enden am 14.09., und der erste Tag danach ist gesperrt
+    // (Betreiber, 01.09.2026: volles Postfach). Der 16.09. ist der erste
+    // Versandtag — der Test hat das gefunden, der Kommentar unten war um zwei
+    // Tage zu optimistisch.
+    abIso: "2026-09-16",
     grund:
       "Geparkt: In beiden Ländern laufen die Sommerferien bis 12.09. bzw. 14.09.2026. " +
       "Ab Mitte September die zweite Welle.",
+  },
+  /**
+   * Der Schub für das Fenster bis zu den Herbstferien (Betreiber, 06.09.2026:
+   * „ich würde was nehmen wo schon länger keine Ferien mehr sind").
+   *
+   * FÜNF LÄNDER, WEIL EINES NICHT REICHT — und das ist gemessen, nicht
+   * angenommen. Der erste Vorschlag war Rheinland-Pfalz allein: Dort waren 178
+   * erreichbare Gemeinden keiner Kampagne zugeordnet, mehr als in jedem anderen
+   * Land außer Bayern. Der Trockenlauf zog daraus **siebzehn**.
+   *
+   * Der Grund steht in CLAUDE.md und wurde hier ein zweites Mal bezahlt: Der
+   * Engpass ist nicht die Adresse, sondern der AUFHÄNGER. Die Auswahl nimmt nur
+   * Gemeinden, die in irgendetwas auf Platz 1 stehen; von den 128 mit Aufhänger
+   * hatten 111 kein Funktions-Postfach. Wer nach freien Adressen plant, plant
+   * mit einer Zahl, die zehnmal zu groß ist.
+   *
+   * DIE FÜNF sind nach FERIENABSTAND gewählt, nicht nach Geografie: In allen
+   * ist der Sommer seit mindestens 15 Tagen vorbei, in Rheinland-Pfalz seit 30
+   * (der längste Abstand aller Länder). Die nächsten Ferien beginnen am 05.10.
+   * in Rheinland-Pfalz und am 12./15.10. in den übrigen — die rheinland-
+   * pfälzischen Gemeinden gehen also in den ersten Chargen hinaus, lange davor.
+   * Baden-Württemberg und Bayern bleiben draußen, dort laufen die Sommerferien
+   * noch.
+   *
+   * Ertrag im Trockenlauf: 74 Gemeinden (63 kleine, 11 große) aus einem Pool
+   * von 442 mit Aufhänger. Bei zwanzig je Charge sind das knapp vier Wochen —
+   * genau das Fenster.
+   */
+  "mail-sept-26": {
+    kampagne: "mail-sept-26",
+    // Rheinland-Pfalz, Niedersachsen, Thüringen, Schleswig-Holstein,
+    // Mecklenburg-Vorpommern.
+    bl: ["07", "03", "16", "01", "13"],
+    kanal: "rollen-postfach",
+    regeln: TESTBALLON_REGELN,
+    // Dienstag: Der Versand läuft Di–Do, und heute (Sonntag) wäre kein
+    // Versandtag. Das Datum ist der erste, an dem der Schub laufen kann.
+    abIso: "2026-09-08",
+    grund:
+      "Ferienfreies Fenster bis Anfang Oktober: Sommerferien in allen fünf Ländern seit 15 bis " +
+      "30 Tagen vorbei (KMK-Kalender), nächste ab 05.10. (RP) bzw. 12./15.10. Ein Land allein " +
+      "trägt nicht — Rheinland-Pfalz ergab im Trockenlauf 17 Gemeinden, weil der Engpass der " +
+      "Aufhänger ist und nicht die Adresse.",
   },
   "mail-ni-hb": {
     kampagne: "mail-ni-hb",
     bl: ["03", "04"], // Niedersachsen, Bremen
     kanal: "rollen-postfach",
     regeln: TESTBALLON_REGELN,
+    abIso: "2026-08-27",
     grund: "Reserve für den zweiten Schub: Ferien seit 12.08.2026 vorbei, nächste ab 12.10.2026.",
   },
   "mail-nord-ost": {
@@ -146,6 +229,7 @@ export const SCHUEBE: Record<string, Schub> = {
     bl: ["01", "02", "11", "12", "13", "14", "15", "16"],
     kanal: "rollen-postfach",
     regeln: TESTBALLON_REGELN,
+    abIso: "2026-09-01",
     grund:
       "Acht Länder in einem Schub statt jede Woche einen neuen festzuschreiben. " +
       "Alle acht sind ab dem 27.08.2026 durchgehend ferienfrei; die nächsten Ferien " +
@@ -157,6 +241,7 @@ export const SCHUEBE: Record<string, Schub> = {
     bl: ["05"], // Nordrhein-Westfalen
     kanal: "rollen-postfach",
     regeln: TESTBALLON_REGELN,
+    abIso: "2026-09-03",
     grund:
       "Eigener Schub, weil die Sommerferien dort erst am 01.09.2026 enden — " +
       "einen Tag später als bei den übrigen. In einem gemeinsamen Schub hätte der " +

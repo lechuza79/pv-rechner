@@ -21,7 +21,10 @@ import { WIDGETS, WIDGET_MAX_WIDTH } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
 import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
-import { iconSizes } from "../../../../lib/theme";
+import { iconSizes, v } from "../../../../lib/theme";
+// Das Ende eines Datenbereichs ist ein deutscher Kalendertag — mit der Weltzeit
+// fehlten zwischen 00:00 und 02:00 die letzten Stunden (lib/zeit.ts).
+import { heuteInBerlin } from "../../../../lib/zeit";
 import {
   WIDGET_SETTINGS_DEFAULTS,
   WidgetSettings,
@@ -70,7 +73,7 @@ function getYearRange(year: number): { start: string; end: string } {
   const currentYear = new Date().getFullYear();
   const end =
     year === currentYear
-      ? new Date().toISOString().slice(0, 10)
+      ? heuteInBerlin()
       : `${year}-12-31`;
   return { start: `${year}-01-01`, end };
 }
@@ -95,7 +98,7 @@ function rangeButtonStyle(active: boolean): React.CSSProperties {
     border: `1px solid ${active ? "var(--widget-accent)" : "var(--color-border)"}`,
     background: active ? "var(--widget-accent)" : "transparent",
     color: active ? "var(--widget-accent-fg)" : "var(--widget-muted)",
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 600,
     cursor: "pointer",
     fontFamily: "inherit",
@@ -181,12 +184,12 @@ function TopBar({
         gap: 12,
       }}
     >
-      <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
+      <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, letterSpacing: 0.2 }}>
         Strommix Deutschland
       </div>
       {/* Im Bild ersetzt der gewählte Zeitraum die Umschalter — sonst zeigt das
           Bild eine Auswahl, die niemand mehr sehen kann. */}
-      <ExportOnly style={{ fontSize: 12, fontWeight: 700 }}>{tabLabel(tab)}</ExportOnly>
+      <ExportOnly style={{ fontSize: v("--font-size-small"), fontWeight: 700 }}>{tabLabel(tab)}</ExportOnly>
       {switchable && (
         <div data-sc-export-ignore="" style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <button
@@ -335,7 +338,7 @@ function YearGroup({
                     active && y === selectedYear
                       ? "var(--widget-accent)"
                       : "var(--widget-muted)",
-                  fontSize: 12,
+                  fontSize: v("--font-size-small"),
                   fontWeight: active && y === selectedYear ? 700 : 400,
                   fontFamily: "inherit",
                   cursor: "pointer",
@@ -492,7 +495,7 @@ function Headline({
       <div
         style={{
           height: 18,
-          fontSize: 11.5,
+          fontSize: v("--font-size-caption"),
           color: "var(--widget-muted)",
           marginBottom: 6,
         }}
@@ -505,7 +508,7 @@ function Headline({
         display: "flex",
         gap: 14,
         flexWrap: "wrap",
-        fontSize: 11.5,
+        fontSize: v("--font-size-caption"),
         marginBottom: 8,
       }}
     >
@@ -587,7 +590,7 @@ function CenteredMessage({
         alignItems: "center",
         justifyContent: "center",
         color: "var(--widget-muted)",
-        fontSize: 12,
+        fontSize: v("--font-size-small"),
       }}
     >
       <span>{text}</span>
@@ -597,7 +600,7 @@ function CenteredMessage({
           onClick={action.onClick}
           style={{
             padding: "5px 12px",
-            fontSize: 11,
+            fontSize: v("--font-size-caption"),
             fontWeight: 600,
             background: "var(--widget-accent)",
             color: "var(--widget-accent-fg)",

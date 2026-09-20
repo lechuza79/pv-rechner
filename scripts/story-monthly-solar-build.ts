@@ -1,0 +1,12 @@
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import {solarMonth} from '../lib/story-monthly-solar';
+const root='scripts/.cache/story-monthly-solar';mkdirSync(root,{recursive:true});
+const weather=JSON.parse(readFileSync('/tmp/trier-august-weather.json','utf8'));
+const detail=JSON.parse(readFileSync('scripts/.cache/bnetza/story-history-2026-09-10/cities/07211000.json','utf8'));
+const sourceUrl='https://archive-api.open-meteo.com/v1/archive?latitude=49.755&longitude=6.6516666667&start_date=2026-07-31&end_date=2026-08-31&hourly=temperature_2m,shortwave_radiation&models=era5&timezone=UTC';
+const file=root+'/07211000-2026-08.json';
+writeFileSync(file,JSON.stringify({sourceUrl,retrievedAt:new Date().toISOString(),weather}));
+const source=JSON.parse(readFileSync(file,'utf8'));
+const result=solarMonth(source.weather,detail.daily,'2026-08','2026-09-10',source.retrievedAt,sourceUrl);
+writeFileSync('lib/story-monthly-solar-data.json',JSON.stringify(result));
+console.log({days:result.days.length,mwh:result.totalMwh,winner:result.peakDay,peakMw:result.peakMw});

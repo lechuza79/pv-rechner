@@ -1,4 +1,4 @@
-import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "./calc";
+import { calc, calcEigenverbrauchExakt, estimateCost, calcWeightedFeedIn } from "./calc";
 import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { calcHeatPump } from "./heatpump";
@@ -32,7 +32,7 @@ export function computeGemeindePotential({
 
   // PV-Beispiel: typisches EFH, 10 kWp, ohne Speicher, Standard-Haushalt.
   const pvKwp = 10;
-  const ev = calcEigenverbrauch({
+  const ev = calcEigenverbrauchExakt({
     personenIdx: 2,
     nutzungIdx: 1,
     speicherKwh: 0,
@@ -67,6 +67,7 @@ export function computeGemeindePotential({
     personen: 2,
     heizsystem: "hk_neu",
     wpType: "lwwp",
+    greenGas: true, // Neueinbau ⇒ Beimischungspflicht, wie im Rechner-Default
   });
 
   // Balkon-Beispiel: das empfohlene Set für einen typischen Mieterhaushalt.

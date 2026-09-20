@@ -33,7 +33,7 @@ export function breadcrumbJsonLd(
 }
 
 /**
- * Dataset schema für die Solar-Atlas-Seiten (Übersicht + Gemeinde). Die
+ * Dataset schema für die Energie-Atlas-Seiten (Übersicht + Gemeinde). Die
  * konstanten, rechtlich relevanten Felder (Lizenz dl-de/by-2-0, creator, isBasedOn)
  * leben hier an EINER Stelle — die Seiten geben nur Name/Beschreibung/URL/Ort und
  * ihre Messgrößen. So driften Lizenz-/Attributions-Angaben zwischen den Seiten nicht.

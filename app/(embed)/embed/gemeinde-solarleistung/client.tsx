@@ -29,7 +29,7 @@ export default function GemeindeSolarleistungEmbed(props: SolarleistungEmbedProp
     typeof props.lon !== "number"
   ) {
     return (
-      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: 13 }}>
+      <div style={{ padding: 16, fontFamily: "var(--widget-font-family)", color: "var(--widget-muted)", fontSize: "var(--font-size-small)" }}>
         {props.error ?? "Für diese Gemeinde liegt kein Standort für die Simulation vor."}
       </div>
     );

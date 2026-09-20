@@ -42,7 +42,7 @@ function ZubauEinordnung() {
   return (
     <div
       style={{
-        fontSize: 13,
+        fontSize: v("--font-size-small"),
         lineHeight: 1.6,
         color: v("--color-text-secondary"),
         marginTop: 12,
@@ -84,14 +84,14 @@ function ChartHead({ title, unit, hint }: { title: string; unit: string; hint?: 
           Nebeneinander gestellt rutschte sie beim Umbruch allein an den rechten
           Rand der nächsten Zeile („Anteil Wind & Solar an der / Stromerzeugung
           [           in %]") — auf einem Handy bei jedem der drei Charts. */}
-      <div style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 2, lineHeight: 1.3 }}>
+      <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 2, lineHeight: 1.3 }}>
         {title}{" "}
-        <span style={{ fontSize: 12, fontWeight: 400, color: v("--color-text-muted"), whiteSpace: "nowrap" }}>
+        <span style={{ fontSize: v("--font-size-small"), fontWeight: 400, color: v("--color-text-muted"), whiteSpace: "nowrap" }}>
           in {unit}
         </span>
       </div>
       {hint && (
-        <div style={{ fontSize: 12.5, color: v("--color-text-secondary"), marginBottom: 4, lineHeight: 1.45 }}>
+        <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 4, lineHeight: 1.45 }}>
           {hint}
         </div>
       )}
@@ -140,13 +140,13 @@ export default function LaendervergleichClient() {
           padding: "22px 20px 18px",
         }}
       >
-        <div style={{ marginBottom: 4, fontSize: 12, color: v("--color-text-muted"), fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+        <div style={{ marginBottom: 4, fontSize: v("--font-size-small"), color: v("--color-text-muted"), fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>
           Energiewende im Ländervergleich
         </div>
-        <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", margin: "0 0 6px", color: v("--color-text-primary") }}>
+        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", margin: "0 0 6px", color: v("--color-text-primary") }}>
           Geht Deutschland einen Sonderweg?
         </h1>
-        <p style={{ fontSize: 14, lineHeight: 1.5, color: v("--color-text-secondary"), margin: "0 0 2px" }}>
+        <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.5, color: v("--color-text-secondary"), margin: "0 0 2px" }}>
           Datenexploration zum Stromsektor — was wir haben, um das Vorurteil
           einzuordnen.
         </p>
@@ -170,7 +170,7 @@ export default function LaendervergleichClient() {
           xDomain={[YEARS_ANTEIL[0], YEARS_ANTEIL[YEARS_ANTEIL.length - 1]]}
           height={280}
         />
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, paddingLeft: 48, lineHeight: 1.45, maxWidth: `calc(48px + var(--content-max-width))` }}>
+        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 4, paddingLeft: 48, lineHeight: 1.45, maxWidth: `calc(48px + var(--content-max-width))` }}>
           Hinweis: produktionsbasierte Werte (Ember). Frankreichs Wert liegt
           dadurch etwas höher als die verbrauchs-/lebenszyklusbasierten Zahlen des
           Netzbetreibers RTE (~20–30&nbsp;g/kWh) — dieselbe Größenordnung, andere
@@ -199,13 +199,13 @@ export default function LaendervergleichClient() {
           xDomain={[YEARS_PERCAPITA[0], YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1]]}
           height={300}
         />
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, paddingLeft: 48, lineHeight: 1.45, maxWidth: `calc(48px + var(--content-max-width))` }}>
+        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: 4, paddingLeft: 48, lineHeight: 1.45, maxWidth: `calc(48px + var(--content-max-width))` }}>
           Diese Reihe endet {YEARS_PERCAPITA[YEARS_PERCAPITA.length - 1]}, ein Jahr vor den
           übrigen: Sie braucht die Einwohnerzahl, und die führt der Datensatz seit der
           Umstellung im Juli 2026 nicht mehr mit.
         </div>
 
-        <div style={{ marginTop: 22, paddingTop: 12, borderTop: `1px solid ${v("--color-border")}`, fontSize: 11, lineHeight: 1.6, color: v("--color-text-muted") }}>
+        <div style={{ marginTop: 22, paddingTop: 12, borderTop: `1px solid ${v("--color-border")}`, fontSize: v("--font-size-caption"), lineHeight: 1.6, color: v("--color-text-muted") }}>
           <DataSourceNote source={DATA_SOURCES.ember} />. Bevölkerung für Pro-Kopf aus Embers
           früheren Verbrauchsdaten abgeleitet.
         </div>

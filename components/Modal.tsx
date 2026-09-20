@@ -55,7 +55,14 @@ const MOBILE_MAX_PX = 640;
  * Selbstmelde-Systematik wie bei den Export-Notizen: Der Baustein erkennt
  * seinen Kontext selbst, statt dass jede Aufrufstelle daran denken muss.
  */
-const ModalKontext = createContext<{ scrollt: boolean } | null>(null);
+const ModalKontext = createContext<{ scrollt: boolean; header: HTMLDivElement | null } | null>(null);
+
+/** Render contextual controls in the dialog header while retaining local state. */
+export function ModalHeader({ children }: { children: ReactNode }) {
+  const context = useContext(ModalKontext);
+  if (!context) return <>{children}</>;
+  return context.header ? createPortal(children, context.header) : null;
+}
 
 /** Seitliches Innenmaß des Dialogs — der klebende Fuß hebt es auf, um mit
  *  seinem Hintergrund bis an beide Kanten zu reichen. */
@@ -122,6 +129,8 @@ interface ModalProps {
   /** Kurzer Erklärtext unter der Überschrift. */
   intro?: ReactNode;
   maxWidth?: number;
+  className?: string;
+  scheme?: string;
   children: ReactNode;
 }
 
@@ -158,9 +167,12 @@ export default function Modal({
   ariaLabel,
   intro,
   maxWidth = 480,
+  className,
+  scheme,
   children,
 }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const [header, setHeader] = useState<HTMLDivElement | null>(null);
   // Aktuelles onClose ohne den Mechanik-Effekt neu zu starten: die Aufrufer
   // übergeben eine frische Inline-Funktion pro Render. Hinge der Effekt daran,
   // liefe sein Aufräumen mitten im Tippen und risse den Fokus aus dem Feld.
@@ -223,7 +235,29 @@ export default function Modal({
     document.body.style.overflow = "hidden";
     // Auf den Dialog selbst fokussieren, nicht auf das erste Feld: so liest ein
     // Screenreader erst Titel und Kontext vor.
-    dialogRef.current?.focus();
+    // Make the dialog focusable only for initial focus. A permanent negative
+    // tabindex also receives mouse focus when plain text is clicked, scrolling
+    // a long dialog back to its start. The attribute is removed once focus
+    // LEAVES the dialog itself — removing it right away (as a first version
+    // did) drops the focus back to <body> in Chromium, and a screen reader
+    // then never hears the dialog's title.
+    //
+    // The dialog is portalled in one render AFTER `open` turns true, so at this
+    // point it may not exist yet — focusing then silently hit nothing and the
+    // focus stayed on the trigger behind the backdrop. Wait for it a few frames.
+    let fokusFrame = 0;
+    let versuche = 0;
+    const fokussieren = () => {
+      const initialDialog = dialogRef.current;
+      if (!initialDialog) {
+        if (versuche++ < 10) fokusFrame = requestAnimationFrame(fokussieren);
+        return;
+      }
+      initialDialog.setAttribute("tabindex", "-1");
+      initialDialog.focus({ preventScroll: true });
+      initialDialog.addEventListener("blur", () => initialDialog.removeAttribute("tabindex"), { once: true });
+    };
+    fokussieren();
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -254,6 +288,7 @@ export default function Modal({
     };
     document.addEventListener("keydown", onKeyDown);
     return () => {
+      cancelAnimationFrame(fokusFrame);
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = prevOverflow;
       trigger?.focus();
@@ -335,8 +370,9 @@ export default function Modal({
     >
       <div
         ref={dialogRef}
-        tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
+        className={className}
+        data-story-scheme={scheme}
         role="dialog"
         aria-modal="true"
         aria-label={ariaLabel ?? (typeof title === "string" ? title : undefined)}
@@ -365,12 +401,13 @@ export default function Modal({
       >
         <div style={S.head}>
           <h2 style={S.h2}>{title}</h2>
+          <div ref={setHeader} style={{ marginLeft: "auto" }} />
           <button onClick={onClose} aria-label="Schließen" style={S.close}>
             ×
           </button>
         </div>
         {intro && <p style={S.intro}>{intro}</p>}
-        <ModalKontext.Provider value={{ scrollt }}>{children}</ModalKontext.Provider>
+        <ModalKontext.Provider value={{ scrollt, header }}>{children}</ModalKontext.Provider>
       </div>
     </div>,
     document.body,
@@ -390,7 +427,7 @@ const S: Record<string, React.CSSProperties> = {
     border: "none",
     background: "transparent",
     color: v("--color-text-muted"),
-    fontSize: 24,
+    fontSize: v("--font-size-h1"),
     lineHeight: 0.8,
     cursor: "pointer",
     padding: 0,
