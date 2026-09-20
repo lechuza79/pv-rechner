@@ -1815,14 +1815,16 @@
   {
     "regionId": "07143300",
     "name": "Unnau",
-    "checkedAt": "2026-09-17T17:30:02+00:00",
+    "checkedAt": "2026-09-20T22:27:00Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
-    "conclusion": "Ortsgemeindeseite und bekannte Quellen gelesen, gezielte Suche ohne eigenes Programm von Unnau. Anwendbar ist das VG-Programm, das 2026 ausgeschöpft und so veröffentlicht ist. Die Sanierungsgebiete Ortsmitte Unnau, Korb und Stangenrod tragen nur das steuerliche Bescheinigungsverfahren; die gesonderte Modernisierungsförderung gilt nach VG-Seite nur für die Innenstadt der Stadt. Ein Förderlisten-Eintrag Dritter zu Unnau nannte keinen Betrag und keine amtliche Fundstelle und ist nicht mehr abrufbar (HTTP 404); verworfen.",
+    "conclusion": "Ein Programm im Umfang, im Katalog geführt (bad-marienberg-erneuerbare-energien): das Förderprogramm der Verbandsgemeinde Bad Marienberg für 18 Mitgliedsgemeinden, darunter Unnau. Die Richtlinie 2026 heute als PDF im Volltext nachgelesen; Wärmepumpe (1.000 €), Brauchwasserwärmepumpe (500 €) und die Position „Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke“ (100 EUR je Kilowatt, höchstens 600 EUR) stehen zellgleich im Katalog. OFFEN UND BENANNT: Der am 16.09.2026 protokollierte Hinweis auf ausgeschöpfte Mittel für 2026 steht heute nicht mehr auf der Programmseite. Der Status bleibt trotzdem „ausgeschöpft“ — das Fehlen eines Hinweises belegt keine verfügbaren Mittel, und die Gegenrichtung würde einen Geldabzug wieder einschalten. Das gehört über den Vorschlagsweg entschieden, nicht per Selbstfix.",
     "searches": [
       "Unnau Westerwald Förderung Photovoltaik Balkonkraftwerk Zuschuss Ortsgemeinde",
-      "site:bad-marienberg.de Balkonkraftwerk Förderung Ortsgemeinde"
+      "site:bad-marienberg.de Balkonkraftwerk Förderung Ortsgemeinde",
+      "Richtlinien-PDF 2026 (Parameter-Variante) im Volltext gelesen und die drei Positionen im Umfang gegen den Katalogeintrag gehalten",
+      "Programmseite erneut gelesen und gezielt auf einen Ausschöpfungs-Hinweis durchsucht"
     ],
     "evidence": [
       {
@@ -1868,6 +1870,14 @@
       {
         "url": "https://www.balkonkraftwerke-foerdermittel.de/bundesland/Rheinland-Pfalz/ort/Unnau/",
         "finding": "Suchtreffer eines privaten Portals mit allgemeiner Behauptung einer Unnauer Balkonförderung ohne Betrag oder amtliche Fundstelle; Seite am 17.09.2026 nicht mehr abrufbar (HTTP 404). Nur Hinweisgeber, durch amtliche Ortsgemeinde- und VG-Seiten nicht bestätigt."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "finding": "Richtlinie 2026 im Volltext gelesen (954 Zeilen). Die drei Positionen im Umfang stehen zellgleich im Katalogeintrag: Nr. 3.5 Wärmepumpe 1.000 € pauschal, Nr. 3.6 Brauchwasserwärmepumpe 500 € pauschal, Nr. 3.8 „Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke“ 100 EUR je Kilowatt pauschal, maximal 600 EUR."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/",
+        "finding": "Programmseite heute im Volltext gelesen (15.428 Zeichen). Der am 16.09.2026 protokollierte Hinweis auf ausgeschöpfte Mittel steht dort NICHT mehr; die Wörter „ausgeschöpft“, „Budget“, „Kontingent“ und „Stopp“ kommen im Seitentext überhaupt nicht vor. Statt dessen liest sich die Seite offen: „Bitte warten Sie daher unbedingt den Eingang des Zuwendungsbescheides ab bevor Aufträge vergeben bzw. Stromspeicher angeschafft werden.“ Das Fehlen eines Hinweises ist jedoch kein Beleg für verfügbare Mittel, und ein Wechsel von „ausgeschöpft“ auf „aktiv“ würde einen Geldabzug wieder einschalten — das ist ein Vorschlag, kein Selbstfix. Status bleibt unverändert; offen als nächster Fall."
       }
     ],
     "sources": [
@@ -1930,6 +1940,12 @@
         "disposition": "replaced",
         "reason": "Extraktionsartefakt der Suchmaske: Das am 17.09.2026 erneut abgerufene Ursprungs-HTML der Programmseite enthält wörtlich data-ng-href=\"{{ website }}\" als Angular-Vorlage, keine reale Zielseite. Durch Prüfung des Originalattributs geklärt, nicht als Zielseite gelesen.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "disposition": "reviewed",
+        "reason": "Richtlinie 2026 als PDF mit Parameter; inhaltlich dieselbe wie unter der HTML-Adresse, alle drei Positionen im Umfang zellgleich mit dem Katalogeintrag.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
       }
     ]
   },
@@ -4868,14 +4884,15 @@
   {
     "regionId": "13076033",
     "name": "Dobin am See",
-    "checkedAt": "2026-09-20T18:50:00Z",
+    "checkedAt": "2026-09-20T22:27:00Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Dobin am See gehört zum Amt Crivitz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seiten, die der Suchlauf gefunden hat, sind Listen von Projekten, für die die Gemeinden selbst gefördert wurden (LED-Straßenbeleuchtung, Schulsozialarbeit). Die Infosammlung und das Klimaschutzkonzept 2026 des Amtes nennen für Balkonkraftwerke ausschließlich das Landesprogramm des LFI M-V und schlagen keinen eigenen Zuschuss vor. NACHGEPRÜFT 20.09.2026, weil die Seite sich bewegt hatte: Die geänderte Quelle ist der Verzeichniseintrag der Solartec Luma UG aus Banzkow — ein Solaranlagen-Installateur, der mit 400 Euro Cashback für Empfehlungen wirbt; das Amt weist am Fuß der Seite ausdrücklich darauf hin, dass das Unternehmen für den Inhalt selbst verantwortlich ist. Ein Fehltreffer des Screeners, kein Förderprogramm. Befund unverändert.",
+    "conclusion": "Dobin am See gehört zum Amt Crivitz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seiten, die der Suchlauf gefunden hat, sind Listen von Projekten, für die die Gemeinden selbst gefördert wurden (LED-Straßenbeleuchtung, Schulsozialarbeit). Die Infosammlung und das Klimaschutzkonzept 2026 des Amtes nennen für Balkonkraftwerke ausschließlich das Landesprogramm des LFI M-V und schlagen keinen eigenen Zuschuss vor. NACHGEPRÜFT 20.09.2026, weil die Seite sich bewegt hatte: Die geänderte Quelle ist der Verzeichniseintrag der Solartec Luma UG aus Banzkow — ein Solaranlagen-Installateur, der mit 400 Euro Cashback für Empfehlungen wirbt; das Amt weist am Fuß der Seite ausdrücklich darauf hin, dass das Unternehmen für den Inhalt selbst verantwortlich ist. Ein Fehltreffer des Screeners, kein Förderprogramm. Befund unverändert. Zusätzlich geprüft: der Eintrag „Solartec Luma“ im Verzeichnis externer Nutzer des Amtes Crivitz ist die Werbung eines gewerblichen Solarteurs, keine kommunale Förderung; die dort genannten 400 € Cashback sind eine Empfehlungsprämie des Unternehmens.",
     "searches": [
       "amt-crivitz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz, Stromspeicher",
-      "Amt Crivitz Gemeinde Zuschuss Balkonkraftwerk Photovoltaik Förderung (Websuche)"
+      "Amt Crivitz Gemeinde Zuschuss Balkonkraftwerk Photovoltaik Förderung (Websuche)",
+      "Eintrag Solartec Luma im Verzeichnis externer Nutzer gelesen und als gewerbliche Werbung eingeordnet"
     ],
     "evidence": [
       {
@@ -4921,6 +4938,10 @@
       {
         "url": "https://www.amt-crivitz.de/unsere-gemeinden/dobin-am-see/index.html",
         "finding": "Im Original gelesen: Gemeindeporträt Dobin am See mit Logos der geförderten Gemeindeprojekte (LED-Umrüstung, Nationale Klimaschutzinitiative) — keine Bürgerförderung."
+      },
+      {
+        "url": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "finding": "Werbeeintrag eines gewerblichen Solarteurs im Verzeichnis externer Nutzer des Amtes Crivitz: „Wählen Sie uns Solartec Luma für zuverlässige, effiziente und professionelle Solaranlagen-Installationsdienste“. Die dort genannten 400 € Cashback sind eine Empfehlungsprämie des Unternehmens, kein öffentlicher Zuschuss."
       }
     ],
     "sources": [
@@ -4965,6 +4986,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: Gemeindeporträt Dobin am See mit Logos der geförderten Gemeindeprojekte (LED-Umrüstung, Nationale Klimaschutzinitiative) — keine Bürgerförderung.",
         "evidenceUrl": "https://www.amt-crivitz.de/unsere-gemeinden/dobin-am-see/index.html"
+      },
+      {
+        "url": "amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "disposition": "reviewed",
+        "reason": "Werbeeintrag eines gewerblichen Solarteurs, keine öffentliche Förderung.",
+        "evidenceUrl": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma"
       }
     ]
   },
@@ -5250,14 +5277,15 @@
   {
     "regionId": "13076082",
     "name": "Leezen",
-    "checkedAt": "2026-09-20T18:50:00Z",
+    "checkedAt": "2026-09-20T22:27:00Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Leezen gehört zum Amt Crivitz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seiten, die der Suchlauf gefunden hat, sind Listen von Projekten, für die die Gemeinden selbst gefördert wurden (LED-Straßenbeleuchtung, Schulsozialarbeit). Die Infosammlung und das Klimaschutzkonzept 2026 des Amtes nennen für Balkonkraftwerke ausschließlich das Landesprogramm des LFI M-V und schlagen keinen eigenen Zuschuss vor. NACHGEPRÜFT 20.09.2026, weil die Seite sich bewegt hatte: Die geänderte Quelle ist der Verzeichniseintrag der Solartec Luma UG aus Banzkow — ein Solaranlagen-Installateur, der mit 400 Euro Cashback für Empfehlungen wirbt; das Amt weist am Fuß der Seite ausdrücklich darauf hin, dass das Unternehmen für den Inhalt selbst verantwortlich ist. Ein Fehltreffer des Screeners, kein Förderprogramm. Befund unverändert.",
+    "conclusion": "Leezen gehört zum Amt Crivitz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seiten, die der Suchlauf gefunden hat, sind Listen von Projekten, für die die Gemeinden selbst gefördert wurden (LED-Straßenbeleuchtung, Schulsozialarbeit). Die Infosammlung und das Klimaschutzkonzept 2026 des Amtes nennen für Balkonkraftwerke ausschließlich das Landesprogramm des LFI M-V und schlagen keinen eigenen Zuschuss vor. NACHGEPRÜFT 20.09.2026, weil die Seite sich bewegt hatte: Die geänderte Quelle ist der Verzeichniseintrag der Solartec Luma UG aus Banzkow — ein Solaranlagen-Installateur, der mit 400 Euro Cashback für Empfehlungen wirbt; das Amt weist am Fuß der Seite ausdrücklich darauf hin, dass das Unternehmen für den Inhalt selbst verantwortlich ist. Ein Fehltreffer des Screeners, kein Förderprogramm. Befund unverändert. Zusätzlich geprüft: der Eintrag „Solartec Luma“ im Verzeichnis externer Nutzer des Amtes Crivitz ist die Werbung eines gewerblichen Solarteurs, keine kommunale Förderung; die dort genannten 400 € Cashback sind eine Empfehlungsprämie des Unternehmens.",
     "searches": [
       "amt-crivitz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz, Stromspeicher",
-      "Amt Crivitz Gemeinde Zuschuss Balkonkraftwerk Photovoltaik Förderung (Websuche)"
+      "Amt Crivitz Gemeinde Zuschuss Balkonkraftwerk Photovoltaik Förderung (Websuche)",
+      "Eintrag Solartec Luma im Verzeichnis externer Nutzer gelesen und als gewerbliche Werbung eingeordnet"
     ],
     "evidence": [
       {
@@ -5303,6 +5331,10 @@
       {
         "url": "https://www.amt-crivitz.de/unsere-gemeinden/leezen/foerderprojekte-der-europaeischen-union",
         "finding": "Im Original gelesen: Energetische Sanierung der Straßenbeleuchtung der Gemeinde Leezen (NKI, 67K25473) — Förderung an die Gemeinde."
+      },
+      {
+        "url": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "finding": "Werbeeintrag eines gewerblichen Solarteurs im Verzeichnis externer Nutzer des Amtes Crivitz: „Wählen Sie uns Solartec Luma für zuverlässige, effiziente und professionelle Solaranlagen-Installationsdienste“. Die dort genannten 400 € Cashback sind eine Empfehlungsprämie des Unternehmens, kein öffentlicher Zuschuss."
       }
     ],
     "sources": [
@@ -5347,6 +5379,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: Energetische Sanierung der Straßenbeleuchtung der Gemeinde Leezen (NKI, 67K25473) — Förderung an die Gemeinde.",
         "evidenceUrl": "https://www.amt-crivitz.de/unsere-gemeinden/leezen/foerderprojekte-der-europaeischen-union"
+      },
+      {
+        "url": "amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "disposition": "reviewed",
+        "reason": "Werbeeintrag eines gewerblichen Solarteurs, keine öffentliche Förderung.",
+        "evidenceUrl": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma"
       }
     ]
   },
