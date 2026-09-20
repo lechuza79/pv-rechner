@@ -3893,6 +3893,66 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "florstadt-photovoltaik": {
+    id: "florstadt-photovoltaik", name: "Förderrichtlinien der Stadt Florstadt — Zuschüsse für die Installation von Photovoltaikanlagen",
+    traeger: "Stadt Florstadt", level: "kommune", region: "Florstadt (Wetteraukreis)", bundesland: "Hessen", agsCode: "06440007",
+    url: "https://florstadt.de/dokumente/foerderrichtlinien-zur-gewaehrung-von-zuschuessen-fuer-die-installation-von-photovoltaikanlagen-pdf/",
+    // NEU AUFGENOMMEN 20.09.2026 als beendetes Programm — der Katalog kennt
+    // keinen Status "ausgelaufen", "eingestellt" ist der zutreffende. Die Richtlinie ist
+    // im Volltext gelesen (PDF der Stadt, hochgeladen Januar 2026), und ihr
+    // Abschnitt 8 ist der Befund: „Diese Änderung der Richtlinie tritt am
+    // 12.12.2024 in Kraft und gilt bis zum 30.06.2025. Gleichzeitig wird die
+    // Richtlinie vom 01.01.2023 außer Kraft gesetzt." Unterzeichnet vom
+    // Bürgermeister am 12.12.2024, gestützt auf den Beschluss der
+    // Stadtverordnetenversammlung vom 11.12.2024 (Abschnitt 6.2).
+    //
+    // EINE NACHFOLGEREGELUNG IST NICHT VERÖFFENTLICHT: Das Dokumentverzeichnis
+    // der Stadt (`dokumente-sitemap.xml`, 112 Adressen, gelesen am 20.09.2026)
+    // führt genau EINE Photovoltaik-Richtlinie — diese. Das ist der
+    // maschinenlesbare Index der Stadt selbst; er belegt, dass ihr Ortsrecht
+    // keine neuere Fassung ausweist, nicht, dass der Magistrat keine beschlossen
+    // hat.
+    //
+    // WIE DIE FUNDSTELLE GEFUNDEN WURDE, und warum das hier steht: Die erfasste
+    // Adresse (`florstadt.de/aufgaben/photovoltaikanlagen-gewaehrung-von-…`)
+    // leitet seit dem Relaunch auf die Startseite um. Ein Vorlauf hat daraufhin
+    // die SEITEN-Sitemap durchgesehen — 90 Adressen, keine Förderseite — und den
+    // Fall als ungeklärt liegen lassen. Die Richtlinie liegt aber nicht unter
+    // den Seiten, sondern unter den DOKUMENTEN, und das Verzeichnis dieser Site
+    // ist ein Index aus 22 Teil-Sitemaps. Wer nur eine davon liest, liest ein
+    // Fünftel des Auftritts.
+    //
+    // KEINE RECHENWERTE: Das Programm ist ausgelaufen und darf nichts abziehen.
+    // Die Sätze stehen als Text, damit eine Neuauflage vergleichbar ist.
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-12-12",
+    endetIso: "2025-06-30",
+    beschlossenIso: "2024-12-11",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss für Photovoltaik auf Dach oder Fassade und für Balkonkraftwerke — die Richtlinie ist am 30. Juni 2025 außer Kraft getreten",
+    rates: [
+      { label: "Photovoltaikanlage", value: "Richtlinie ausgelaufen. Bis dahin 100 € je installiertem kWp, höchstens 1.000 € je Anlage", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "Richtlinie ausgelaufen. Bis dahin pauschal 250 €; bei Mehrfamilienhäusern höchstens 1.000 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Die Richtlinie galt vom 12. Dezember 2024 bis zum 30. Juni 2025 und ist seitdem außer Kraft; eine Nachfolgeregelung ist im Ortsrecht der Stadt nicht veröffentlicht",
+      { text: "Gefördert wurden Anlagen von 1 bis 10 kWp Spitzenleistung auf Dächern oder in der Fassade von Wohn- und Geschäftsgebäuden sowie landwirtschaftlichen Betrieben", nur: ["pv"] },
+      { text: "Als Balkonkraftwerk galten Solarmodule bis 800 Watt Abgabeleistung des Wechselrichters", nur: ["balkon"] },
+      "Eine Förderung war ausgeschlossen, wenn zusätzlich eine Drittförderung in Anspruch genommen wurde oder künftig wird — Förderung und Finanzierung der KfW waren davon ausgenommen",
+      "Der Antrag war vor Vorhabenbeginn beim Magistrat zu stellen, mit Anlagenbeschreibung und Kostenvoranschlag; Planungs- und Beratungsleistungen durften vorher erbracht werden",
+      "Antragsberechtigt waren Grundstückseigentümer und sonstige dinglich Berechtigte, je Eigentümer einmalig; bei Balkonkraftwerken waren Mehrfamilienhäuser davon ausgenommen",
+      "Eigenleistungen wurden nicht berücksichtigt; ausgeschlossen waren Anlagen, die vor dem erstmaligen Inkrafttreten der Richtlinien errichtet worden sind",
+      "Ein Rechtsanspruch auf die Zuwendung bestand nicht; bearbeitet wurde nach Eingang der Anträge im Rahmen der Haushaltsmittel",
+    ],
+    // Abschnitt 2 der Richtlinie schließt Drittförderung aus und nimmt die KfW
+    // ausdrücklich aus. Die BEG-Zuschüsse laufen über das BAFA und die KfW; für
+    // Photovoltaik gibt es ohnehin keinen Bundeszuschuss, sondern nur den
+    // KfW-Kredit 270 — und der ist nach dem Wortlaut erlaubt. Eine Kombination
+    // mit Bundesmitteln als Regel zu behaupten geht daraus trotzdem nicht
+    // hervor, deshalb bleibt sie unbelegt.
+    combinableWith: null,
+    foerdert: ["pv", "balkon"],
+  },
   "leverkusen-photovoltaik": {
     id: "leverkusen-photovoltaik", name: "Förderprogramm Neuerrichtung von Photovoltaikanlagen",
     traeger: "Stadt Leverkusen", level: "kommune", region: "Leverkusen", bundesland: "Nordrhein-Westfalen", agsCode: "05316",

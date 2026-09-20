@@ -154,6 +154,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Eintrag: Sie beschreiben, was bis zum Ratsbeschluss vom 16.12.2024 galt, und
   // sind damit der Vergleichsmaßstab, falls die Stadt neu auflegt.
   "leverkusen-photovoltaik",
+  // Florstadt, aufgenommen am 20.09.2026 als beendetes Programm. Dieselbe Lage
+  // wie in Leverkusen: Die Richtlinie ist seit dem 30.06.2025 außer Kraft, es
+  // gibt nichts mehr zu beantragen und damit nichts, wogegen eine Prüfform ein
+  // Vorhaben halten könnte. Die Bedingungen stehen vollständig am Eintrag und
+  // sind der Vergleichsmaßstab, falls die Stadt eine neue Fassung beschließt.
+  "florstadt-photovoltaik",
   // Landkreis Erlangen-Höchstadt, sechs Gemeindeprogramme, aufgenommen am
   // 20.09.2026. Jede Richtlinie ist im Volltext gelesen und jede Bedingung steht
   // am Programm — die Prüfformen fehlen noch, und sie sind hier nicht trivial:
