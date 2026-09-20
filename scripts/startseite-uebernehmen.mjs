@@ -281,7 +281,7 @@ for (const p of PATCHES) {
 // ─── Page templates ─────────────────────────────────────────────────────────
 // The head is replaced by ours (SEO, analytics); the preview-only switches are
 // set statically; the rest of the document stays byte-for-byte.
-function vorlage(quelle) {
+function vorlage(quelle, { entwurfErsetzen = false } = {}) {
   let s = readFileSync(join(QUELLE, quelle), "utf8");
   const kopfEnde = s.indexOf("</head>");
   const kopf = s.slice(0, kopfEnde);
@@ -305,6 +305,19 @@ function vorlage(quelle) {
   // real footer is built by script. Our additions go to the end of the body
   // (visible without script) and are moved before the built footer (see
   // lib/neon-seite.ts).
+  // The draft section (#entdecken) is the only part of the body the script
+  // takes away again: it sets hidden on it and builds the real tools, atlas
+  // and guides sections in its place. Without script it therefore stands as
+  // the ONLY thing a crawler reads about our tools — with the draft's older
+  // wording ("Oder schon eine konkrete Idee?" instead of "Oder eine neue
+  // Heizung?") and two entries instead of five. We replace its body with a
+  // marker and render the real sections into it (see lib/neon-seite.ts); the
+  // script keeps hiding the section, so with script nothing changes at all.
+  if (entwurfErsetzen) {
+    const entwurf = /(<section class="next-section"[^>]*>)[\s\S]*?(<\/section>)/;
+    if (!entwurf.test(rumpf)) throw new Error(`Keine Entwurfs-Sektion (.next-section) in ${quelle}`);
+    rumpf = rumpf.replace(entwurf, "$1<!--SC:STATISCH-->$2");
+  }
   if (!rumpf.includes("</body>")) throw new Error(`Kein </body> in ${quelle}`);
   rumpf = rumpf.replace("</body>", "<!--SC:VOR-FUSS--></body>");
   return (
@@ -316,7 +329,9 @@ function vorlage(quelle) {
   );
 }
 mkdirSync(join(ZIEL, "app/_neon"), { recursive: true });
-const start = vorlage("Solar-Check-Dynamisch.html");
+// Only the homepage gets the server-rendered sections; the simulation keeps
+// its draft section byte-for-byte (its own crawler text is a separate question).
+const start = vorlage("Solar-Check-Dynamisch.html", { entwurfErsetzen: true });
 const sim = vorlage("pv-simulation/index.html");
 for (const [name, t] of [["startseite", start], ["simulation", sim]]) {
   if (/localhost|127\.0\.0\.1|noindex/.test(t)) throw new Error(`Vorschau-Rest in ${name}: localhost/noindex`);

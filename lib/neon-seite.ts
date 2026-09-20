@@ -22,6 +22,11 @@ import { siteFussHtml } from "./site-fuss";
  *   <!--SC:VOR-FUSS-->  end of body: the FAQ (and on the simulation the live
  *                       output), moved above the script-built footer, in the
  *                       package's own design tokens.
+ *   <!--SC:STATISCH-->  homepage only: the body of the draft section
+ *                       (#entdecken), which the takeover empties. The script
+ *                       hides that section and builds tools, atlas and guides
+ *                       in its place, so this is what a crawler without
+ *                       JavaScript reads instead of the draft.
  * Nothing between the markers is touched.
  */
 
@@ -172,6 +177,154 @@ function simulationStand(): string {
   return `<p class="sc-stand"><strong>Stand:</strong> Diese Seite rechnet ohne Stichtag — ${esc(live ? live.replace(/\.$/, "") : "alle Werte werden live geholt")}. Womit wir rechnen, mit Stand und Quelle, steht auf der <a href="/datenstand">Datenstand-Seite</a>.</p>`;
 }
 
+/**
+ * The sections the page's own script builds at runtime, as server HTML.
+ *
+ * Why at all: without script the homepage's body carried ~900 characters —
+ * hero, intro, FAQ, footer — plus the design draft's two placeholder cards.
+ * Tools, the local atlas and the guides only exist after
+ * public/dynamic-hero/dist/test.js has run, so every crawler that does not
+ * execute JavaScript (most AI crawlers and the smaller search engines; Google
+ * does render) read the DRAFT instead of the product.
+ *
+ * Where it goes: into the draft section (#entdecken) itself, whose body the
+ * takeover replaces with <!--SC:STATISCH-->. That section is the one thing the
+ * script already takes away again (it sets `hidden`), so with script running
+ * nothing here is visible and nothing is duplicated — no second hiding
+ * mechanism, no new markers in the scene.
+ *
+ * DRIFT IS THE RISK, NOT CORRECTNESS: this is a second copy of wording that
+ * lives in the design package's bundle. lib/__tests__/startseite-statisch.test.ts
+ * reads the bundle and holds every heading and every link of the three mirrored
+ * sections against this list; sections we deliberately do not mirror are named
+ * there with a reason. Whoever changes the wording in the package makes that
+ * test red — that is the whole point of having it.
+ */
+type StatischerLink = { text: string; href: string };
+type StatischeKarte = { kennung: string; titel: string; text: string; links: StatischerLink[]; hinweis?: string };
+
+const WERKZEUGE: StatischeKarte[] = [
+  {
+    kennung: "01 / PHOTOVOLTAIK",
+    titel: "Dein Dach kann mehr.",
+    text: "Finde die passende Anlage oder rechne deine konkrete Planung durch.",
+    links: [
+      { text: "Passende Anlage finden", href: "/pv-bedarf-berechnen" },
+      { text: "Anlage durchrechnen", href: "/photovoltaik-rechner" },
+    ],
+  },
+  {
+    kennung: "02 / BALKONKRAFTWERK",
+    titel: "Kleine Fläche. Eigener Strom.",
+    text: "Was bringt dein Balkon – und welches Set lohnt sich für dich?",
+    links: [{ text: "Balkonkraftwerk berechnen", href: "/balkonkraftwerk/rechner" }],
+  },
+  {
+    kennung: "03 / WÄRMEPUMPE",
+    titel: "Wie heizt du morgen?",
+    text: "Vergleiche Anschaffung und laufende Heizkosten mit deiner bisherigen Heizung.",
+    links: [{ text: "Wärmepumpe durchrechnen", href: "/waermepumpe-rechner" }],
+  },
+  {
+    kennung: "04 / FÖRDERCHECK",
+    titel: "Welche Förderung bekommst du?",
+    text: "Entdecke Zuschüsse für deine Solaranlage – passend zu deinem Bundesland und deinem Ort.",
+    links: [{ text: "Förderung finden", href: "/photovoltaik-foerderung" }],
+  },
+  {
+    // The waitlist is a dialog, so the script builds a button here and there is
+    // no page to link to (/warteliste only has confirm and unsubscribe routes).
+    // Without script the card therefore states the fact and offers no action —
+    // a link that leads nowhere would be worse than none.
+    kennung: "05 / ANGEBOTSCHECK",
+    hinweis: "Demnächst",
+    titel: "Schon ein Angebot auf dem Tisch?",
+    text: "Ordne Preis, Anlagengröße und Annahmen besser ein. Wir arbeiten am Angebotscheck.",
+    links: [],
+  },
+];
+
+const ATLAS_PUNKTE = [
+  "Solaranlagen und Speicher in deiner Gemeinde",
+  "Deinen Ort mit der Region vergleichen",
+  "Lokale Zahlen und Geschichten entdecken",
+];
+
+const RATGEBER: { kennung: string; bereich: string; titel: string; href: string }[] = [
+  { kennung: "01", bereich: "PHOTOVOLTAIK", titel: "Lohnt sich eine Solaranlage mit Speicher?", href: "/ratgeber/lohnt-sich-pv-mit-speicher" },
+  { kennung: "02", bereich: "HEIZEN", titel: "Gasheizung oder Wärmepumpe?", href: "/ratgeber/gasheizung-oder-waermepumpe" },
+  { kennung: "03", bereich: "BALKONKRAFTWERK", titel: "Wann lohnt sich ein Balkonspeicher?", href: "/balkonkraftwerk/ratgeber/mit-speicher" },
+];
+
+/**
+ * Text only — the block is display:none as soon as the script runs, so this
+ * never competes with the design. It exists so the no-script page is readable
+ * rather than a stack of unstyled headings on the dark scene.
+ *
+ * Sizes come from the design package's type tokens (--sc-type-*), the same way
+ * the FAQ above does: these documents carry the package's scale, not the site
+ * theme's. One role, one size — 11px and 10px labels were typed here first and
+ * are now the eyebrow token, which is what that role already has.
+ */
+const STATISCH_CSS = `
+.sc-statisch{background:#08191c;color:#e8eee9;padding:72px max(24px,5vw);font-family:'DM Sans',sans-serif}
+.sc-statisch-wrap{max-width:1120px;margin:0 auto}
+.sc-statisch h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-section-size,clamp(26px,2.6vw,34px));line-height:var(--sc-type-section-leading,1.25);font-weight:450;margin:12px 0 16px}
+.sc-statisch h3{font-family:Montserrat,sans-serif;font-size:var(--sc-type-title-size,20px);line-height:var(--sc-type-title-leading,1.35);font-weight:500;margin:0 0 8px}
+.sc-statisch p{font-size:var(--sc-type-body-size,16px);line-height:var(--sc-type-body-leading,1.6);color:#a7bcbb;margin:0 0 12px;max-width:680px}
+.sc-statisch .sc-statisch-kicker{font-size:var(--sc-type-secondary-label-size,13px);letter-spacing:var(--sc-type-eyebrow-tracking,.08em);text-transform:uppercase;color:#a7bcbb;margin:0}
+.sc-statisch ul{list-style:none;margin:0 0 20px;padding:0}
+.sc-statisch li{font-size:var(--sc-type-body-size,16px);line-height:var(--sc-type-body-leading,1.6);color:#a7bcbb;padding:4px 0}
+.sc-statisch a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.sc-statisch-karten{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));margin:32px 0 0;padding:0;list-style:none}
+.sc-statisch-karte{border:1px solid #aec4bd30;border-radius:12px;padding:24px}
+.sc-statisch-kennung{font-size:var(--sc-type-eyebrow-size,12px);line-height:var(--sc-type-eyebrow-leading,1.5);letter-spacing:var(--sc-type-eyebrow-tracking,.08em);color:#a8c1bd;margin:0 0 12px}
+.sc-statisch-aktionen a{display:block;font-size:var(--sc-type-action-size,14px);padding:4px 0}
+.sc-statisch-block{margin-top:56px}
+.sc-statisch-liste{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid #aec4bd30}
+.sc-statisch-liste li{border-bottom:1px solid #aec4bd30;padding:20px 0}
+.sc-statisch-liste small{font-size:var(--sc-type-eyebrow-size,12px);line-height:var(--sc-type-eyebrow-leading,1.5);letter-spacing:var(--sc-type-eyebrow-tracking,.08em);color:#9db7ab;display:block}
+`;
+
+/** The server-side twin of the script-built sections. Homepage only. */
+function statischeSektionen(): string {
+  const karten = WERKZEUGE.map(
+    (k) =>
+      `<li class="sc-statisch-karte"><p class="sc-statisch-kennung">${esc(k.kennung)}${k.hinweis ? ` · ${esc(k.hinweis)}` : ""}</p>` +
+      `<h3>${esc(k.titel)}</h3><p>${esc(k.text)}</p>` +
+      (k.links.length
+        ? `<div class="sc-statisch-aktionen">${k.links.map((l) => `<a href="${esc(l.href)}">${esc(l.text)} →</a>`).join("")}</div>`
+        : "") +
+      `</li>`,
+  ).join("");
+  const ratgeber = RATGEBER.map(
+    (r) =>
+      `<li><small>${esc(r.kennung)} · ${esc(r.bereich)}</small><h3><a href="${esc(r.href)}">${esc(r.titel)}</a></h3></li>`,
+  ).join("");
+  const punkte = ATLAS_PUNKTE.map((p) => `<li>${esc(p)}</li>`).join("");
+  return (
+    `<style>${STATISCH_CSS}</style>` +
+    `<div class="sc-statisch"><div class="sc-statisch-wrap">` +
+    `<p class="sc-statisch-kicker">AUS SONNENLICHT WIRD KLARHEIT</p>` +
+    `<h2 id="feature-title">Eine gute Entscheidung beginnt mit deinen Zahlen.</h2>` +
+    `<p>Ein eigenes Dach? Ein freier Balkon? Oder eine neue Heizung? Finde heraus, was sich für dich rechnet.</p>` +
+    `<ul class="sc-statisch-karten">${karten}</ul>` +
+    `<section class="sc-statisch-block" aria-labelledby="sc-statisch-atlas">` +
+    `<p class="sc-statisch-kicker">DIE ENERGIEWENDE VOR DEINER HAUSTÜR</p>` +
+    `<h2 id="sc-statisch-atlas">Wie weit ist dein Ort?</h2>` +
+    `<p>Entdecke, wie viel Solarenergie schon in deiner Gemeinde steckt. Sieh dir lokale Zahlen an und finde heraus, wie dein Ort im Vergleich zur Umgebung dasteht.</p>` +
+    `<ul>${punkte}</ul><p><a href="/solar-atlas">Deinen Ort entdecken →</a></p></section>` +
+    `<section class="sc-statisch-block" aria-labelledby="sc-statisch-ratgeber">` +
+    `<h2 id="sc-statisch-ratgeber">Erst verstehen. Dann entscheiden.</h2>` +
+    `<p><a href="/ratgeber">Alle Ratgeber →</a></p>` +
+    `<ul class="sc-statisch-liste">${ratgeber}</ul></section>` +
+    `</div></div>`
+  );
+}
+
+/** What the drift guard reads; not used at render time. */
+export const STATISCHE_INHALTE = { WERKZEUGE, ATLAS_PUNKTE, RATGEBER };
+
 function vorFuss(seite: NeonSeite, faq: FaqEntry[]): string {
   const s = SEITEN[seite];
   const aktuell = s.pfad || "/";
@@ -197,6 +350,15 @@ export function neonSeiteHtml(seite: NeonSeite): string {
   if (!vorlage.includes("<!--SC:KOPF-->") || !vorlage.includes("<!--SC:VOR-FUSS-->")) {
     throw new Error(`Vorlage ${seite} ohne Einfügemarken — Übernahme neu ausführen`);
   }
+  // Only the homepage carries the third marker; the simulation keeps its draft
+  // section unchanged. A homepage template without it means the takeover ran
+  // without the patch — that must not pass silently.
+  if (seite === "startseite" && !vorlage.includes("<!--SC:STATISCH-->")) {
+    throw new Error("Startseiten-Vorlage ohne <!--SC:STATISCH--> — Übernahme neu ausführen");
+  }
   const faq = SEITEN[seite].faq();
-  return vorlage.replace("<!--SC:KOPF-->", kopf(seite, faq)).replace("<!--SC:VOR-FUSS-->", vorFuss(seite, faq));
+  return vorlage
+    .replace("<!--SC:KOPF-->", kopf(seite, faq))
+    .replace("<!--SC:STATISCH-->", seite === "startseite" ? statischeSektionen() : "")
+    .replace("<!--SC:VOR-FUSS-->", vorFuss(seite, faq));
 }
