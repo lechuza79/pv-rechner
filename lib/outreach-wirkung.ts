@@ -67,6 +67,17 @@ export function faelligeMesspunkte(
   return MESSPUNKTE.filter(t => t <= tageSeit && !schonGemessen.includes(t));
 }
 
+/**
+ * Wurde dieser Punkt am Tag gemessen, den er behauptet? Nachgeholte und
+ * rückwirkend aufgefüllte Punkte tragen den Stand von HEUTE — an Tag 3 stand
+ * womöglich weniger da. Wer das nicht dazuschreibt, verkauft eine Nachmessung
+ * als Verlaufskurve.
+ */
+export function nachtraeglich(versandAm: string, tage: number, gemessenAm: string): boolean {
+  const soll = Date.parse(versandAm) + tage * 86_400_000;
+  return Date.parse(gemessenAm) - soll > 86_400_000;
+}
+
 /** Kostet ein Lauf etwas? Nur der Verweis-Abruf, und nur wenn wirklich gemessen wird. */
 export function kostenHinweis(messpunkte: number): string {
   return messpunkte === 0

@@ -13,7 +13,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { MAIN_CHECKOUT } from "./lib/contact-v2-config";
 import {
-  MESSPUNKTE, WIRKUNG_DDL, WIRKUNG_UNSICHTBAR, faelligeMesspunkte, kostenHinweis,
+  MESSPUNKTE, WIRKUNG_DDL, WIRKUNG_UNSICHTBAR, faelligeMesspunkte, kostenHinweis, nachtraeglich,
   type Bestand,
 } from "../lib/outreach-wirkung";
 import { heuteInBerlin } from "../lib/zeit";
@@ -123,7 +123,8 @@ async function main() {
   if (nurBericht) {
     const { data } = await client.from("outreach_wirkung").select("*").order("versand_am").order("tage");
     for (const m of data ?? []) {
-      console.log(`${m.bestand} · Versand ${m.versand_am} · Tag ${String(m.tage).padStart(2)}: ${m.angeschrieben} angeschrieben · ${m.geantwortet} geantwortet · ${m.verlinkt} verlinken uns · ${m.angemeldet} angemeldet`);
+      const spaet = nachtraeglich(m.versand_am, m.tage, m.gemessen_am) ? `  (nachgemessen am ${m.gemessen_am})` : "";
+      console.log(`${m.bestand} · Versand ${m.versand_am} · Tag ${String(m.tage).padStart(2)}: ${m.angeschrieben} angeschrieben · ${m.geantwortet} geantwortet · ${m.verlinkt} verlinken uns · ${m.angemeldet} angemeldet${spaet}`);
     }
     console.log(WIRKUNG_UNSICHTBAR);
     return;

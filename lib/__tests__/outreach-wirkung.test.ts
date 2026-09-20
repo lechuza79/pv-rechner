@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MESSPUNKTE, faelligeMesspunkte, kostenHinweis } from "../outreach-wirkung";
+import { MESSPUNKTE, faelligeMesspunkte, kostenHinweis, nachtraeglich } from "../outreach-wirkung";
 
 describe("Messpunkte hängen am Versandtag, nicht am Kalender", () => {
   it("wird erst am Messpunkt fällig", () => {
@@ -26,5 +26,12 @@ describe("Messpunkte hängen am Versandtag, nicht am Kalender", () => {
   it("sagt, dass ein Lauf ohne fälligen Punkt nichts kostet", () => {
     expect(kostenHinweis(0)).toMatch(/keine Kosten/);
     expect(kostenHinweis(3)).toMatch(/Verweis-Abruf/);
+  });
+
+  it("kennzeichnet einen nachgemessenen Punkt", () => {
+    // Ein am 20.09. aufgefüllter Tag-3-Punkt trägt den Stand von heute, nicht den vom 23.08.
+    expect(nachtraeglich("2026-08-20", 3, "2026-09-20")).toBe(true);
+    expect(nachtraeglich("2026-08-20", 3, "2026-08-23")).toBe(false);
+    expect(nachtraeglich("2026-08-20", 3, "2026-08-24")).toBe(false);
   });
 });
