@@ -9,13 +9,15 @@ describe("Source-specific funding review stamps", () => {
   const review = source.slice(source.indexOf("async function gelesen()"), source.indexOf("async function main()"));
 
   it("requires one municipality, an exact source and a quote", () => {
-    expect(review).toContain('ids.length !== 1 || !sourceUrl || !quote');
+    // Seit 20.09.2026 darf statt des Belegs eine gemessene 404 stehen (--tot);
+    // Ort und genaue Adresse bleiben Pflicht, und eines von beiden Nachweisen.
+    expect(review).toContain('ids.length !== 1 || !sourceUrl || (!quote && !tot)');
     expect(review).not.toMatch(/\.in\("region_id"/);
     expect(review).toContain('.eq("url", normalized)');
   });
 
   it("checks the quote against the fetched original before writing", () => {
-    const check = review.indexOf('sichtbarerText(original).includes(sichtbarerText(quote))');
+    const check = review.indexOf('sichtbarerText(original).includes(sichtbarerText(quote!))');
     expect(check).toBeGreaterThan(review.indexOf('sources.verify(adresse'));
     expect(check).toBeLessThan(review.indexOf('.update('));
     expect(review).toContain('seitenSchluessel(coverage.url) === normalized');
@@ -87,4 +89,63 @@ describe("Every funding source read identifies itself", () => {
       }
     });
   }
+});
+
+// EINE TOTE ADRESSE IST EIN BEFUND, KEIN HINDERNIS (20.09.2026). Der
+// Abhak-Befehl verlangte bis dahin einen Beleg AUS der Seite; eine Adresse,
+// die mit 404 antwortet, konnte deshalb nie aus dem Vorrat heraus. Gemessen:
+// 1.767 der 13.401 offenen Quellzeilen (13 %) stehen auf Adressen, die der
+// Seiten-Wächter als unerreichbar führt.
+//
+// Die Gegenrichtung ist die gefährlichere und steht deshalb zuerst: In einer
+// Stichprobe von 14 solchen Adressen antworteten SECHS am selben Tag mit
+// HTTP 200, zwei davon mit einem Förderprogramm im Namen. Ein Werkzeug, das
+// dem abgelegten Zustand glaubt, wirft jede dritte lesbare Förderseite weg —
+// ohne Fehler, ohne roten Test, ohne dass die Zahl im Vorrat verdächtig
+// aussieht.
+describe("Removed addresses may be checked off, but only when measured", () => {
+  const source = readFileSync(resolve(process.cwd(), "scripts/funding-screen.ts"), "utf8");
+  const review = source.slice(source.indexOf("async function gelesen()"), source.indexOf("async function main()"));
+
+  it("never decides from the stored state, only from a read in this moment", () => {
+    // Kein Zugriff auf das Zustandsfeld der Seiten-Tabelle in diesem Befehl.
+    expect(review).not.toMatch(/\bzustand\b/);
+    expect(review).toContain("sources.verify(adresse");
+  });
+
+  it("accepts only 'missing' as a statement about the source", () => {
+    expect(review).toContain('gruende.every((g) => g === "missing")');
+    // Alles andere beschreibt unseren Versuch, nicht die Quelle.
+    for (const grund of ["blocked", "shell", "network", "server"]) {
+      expect(review).not.toContain(`=== "${grund}"`);
+    }
+  });
+
+  it("requires every address spelling to be gone, not just one", () => {
+    // `some` statt `every` hieße: ein Tippfehler in der Erfassung hakt die
+    // Zeile ab, während die richtige Schreibweise die Förderseite ausliefert.
+    expect(review).not.toMatch(/gruende\.some\(/);
+    expect(review).toContain("gruende.length > 0");
+  });
+
+  it("refuses --tot as soon as the address answers at all", () => {
+    const wache = review.indexOf("if (response) throw new Error");
+    expect(wache).toBeGreaterThan(-1);
+    expect(wache).toBeLessThan(review.indexOf(".update("));
+  });
+
+  it("keeps quote and --tot mutually exclusive, and still demands one of them", () => {
+    expect(review).toContain("tot && quote");
+    expect(review).toContain("!quote && !tot");
+  });
+
+  it("reads the reason from the typed error instead of parsing a message", () => {
+    expect(review).toContain("fehler instanceof FundingSourceUnreadable");
+    expect(review).not.toMatch(/Source unreadable/);
+  });
+
+  it("records what was measured, not an assumed quote", () => {
+    expect(review).toContain("HTTP 404/410 beim Gegenlesen am");
+    expect(review).toContain("quote: nachweis");
+  });
 });
