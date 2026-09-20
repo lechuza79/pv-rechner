@@ -9,6 +9,7 @@ import {
   istVorlagenRest,
   programmDecktSeite,
   seitenAbrufAdressen,
+  liestDieAngefragteSeite,
 } from "../funding-seiten";
 
 const seite = (p: Partial<FoerderSeite> & Pick<FoerderSeite, "url">): FoerderSeite => ({
@@ -306,5 +307,49 @@ describe("seitenAbrufAdressen", () => {
   it("round-trips: every fetch address maps back to the same page key", () => {
     const key = seitenSchluessel("https://www.vg-lw.de/foerderung?id=3");
     for (const a of seitenAbrufAdressen(key)) expect(seitenSchluessel(a)).toBe(key);
+  });
+});
+
+describe("Landet der Abruf auf der angefragten Seite?", () => {
+  it("erkennt den gemessenen Fall: ohne www auf die Startseite umgeleitet", () => {
+    // Albershausen, 20.09.2026: albershausen.de/... antwortet 307 und landet auf
+    // www.albershausen.de/de/startseite. Die Förderseite steht nur unter www.
+    const quelle = "albershausen.de/de/gemeinde-politik/oeffentliche-bekannmachungen/foerderprogramm";
+    expect(liestDieAngefragteSeite(quelle, "https://www.albershausen.de/de/startseite")).toBe(false);
+    expect(liestDieAngefragteSeite(quelle, "https://www.albershausen.de/de/gemeinde-politik/oeffentliche-bekannmachungen/foerderprogramm")).toBe(true);
+  });
+
+  it("hält eine gewöhnliche Umleitung NICHT für einen Ortswechsel", () => {
+    // Schema, www., Schrägstrich am Ende und Ansichts-Parameter — genau das,
+    // was jede normale Umleitung verändert.
+    const quelle = "stadt.de/umwelt/foerderung";
+    for (const ziel of [
+      "https://stadt.de/umwelt/foerderung",
+      "https://www.stadt.de/umwelt/foerderung",
+      "http://www.stadt.de/umwelt/foerderung/",
+      "https://www.stadt.de/umwelt/foerderung#zuschuss",
+      "https://www.stadt.de/umwelt/foerderung?utm_source=mail",
+    ]) {
+      expect(liestDieAngefragteSeite(quelle, ziel), ziel).toBe(true);
+    }
+  });
+
+  it("ohne bekanntes Ziel wird nichts behauptet", () => {
+    expect(liestDieAngefragteSeite("stadt.de/foerderung", "")).toBe(true);
+  });
+});
+
+describe("Das Abhak-Werkzeug sucht weiter, wenn es woanders gelandet ist", () => {
+  // Geprüft wird die VERWENDUNG: Eine Funktion, die niemand ruft, ändert nichts.
+  const quelle = readFileSync(resolve(__dirname, "..", "..", "scripts", "funding-screen.ts"), "utf8");
+
+  it("bricht die Schleife nur bei der angefragten Seite ab", () => {
+    expect(quelle).toMatch(/if\s*\(liestDieAngefragteSeite\(sourceUrl,\s*gelandetAuf\)\)\s*break;/);
+  });
+
+  it("sagt in der Fehlermeldung, wo wirklich gelesen wurde", () => {
+    // Sonst steht dort derselbe Satz wie bei einem falschen Zitat, und die
+    // Suche geht in die falsche Richtung.
+    expect(quelle).toMatch(/Gelesen wurde in Wahrheit/);
   });
 });

@@ -2,7 +2,7 @@ import { municipalReviewQueue, validateMunicipalReviews, type InquiryReceipt } f
 import municipalReviews from "../data/funding/municipal-reviews.json";
 import { ABSCHLIESSENDE_ERGEBNISSE, urteilPasstZurMessung, groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
 import { abschliessendesErgebnis, notizMitHerkunft } from "../lib/funding-altergebnis";
-import { seitenAbrufAdressen, seitenSchluessel } from "../lib/funding-seiten";
+import { liestDieAngefragteSeite, seitenAbrufAdressen, seitenSchluessel } from "../lib/funding-seiten";
 import { FundingSourceReader, FundingSourceUnreadable, recordStage } from "./lib/funding-source-reader";
 /**
  * Abdeckungs-Screening: alle Gemeinden mit Förderseite systematisch durchsehen.
@@ -458,15 +458,26 @@ async function gelesen(): Promise<void> {
   // dieselbe Klasse wie die fehlende Kennung eine Zeile weiter unten.
   let response: Response | undefined;
   let letzterFehler: unknown;
+  let gelandetAuf: string | undefined;
   const gruende: (string | null)[] = [];
   for (const adresse of seitenAbrufAdressen(sourceUrl)) {
     try {
-      response = await sources.verify(adresse, {
+      const antwort = await sources.verify(adresse, {
         headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
         redirect: "follow",
         signal: AbortSignal.timeout(25000),
       });
-      break;
+      // EINE ANTWORT VON WOANDERS BEENDET DIE SUCHE NICHT — gemessen am
+      // 20.09.2026 an Albershausen: Die Form ohne „www." antwortet mit 200 und
+      // liefert die STARTSEITE; die Form mit „www." liefert die Förderseite und
+      // wurde nie probiert, weil die Schleife beim ersten Erfolg abbrach.
+      // Behalten wird die letzte Antwort trotzdem: Passt keine Schreibweise,
+      // soll die Fehlermeldung sagen, wo wir gelandet sind, statt nur „der
+      // Beleg steht nicht drin" — das ist derselbe Satz wie bei einem falschen
+      // Zitat und schickt die Suche in die falsche Richtung.
+      response = antwort;
+      gelandetAuf = antwort.url || adresse;
+      if (liestDieAngefragteSeite(sourceUrl, gelandetAuf)) break;
     } catch (fehler) {
       letzterFehler = fehler;
       gruende.push(fehler instanceof FundingSourceUnreadable ? fehler.reason : null);
@@ -483,7 +494,12 @@ async function gelesen(): Promise<void> {
   } else {
     if (!response) throw letzterFehler ?? new Error("Die Quelle war nicht lesbar.");
     const original = await response.text();
-    if (!sichtbarerText(quote!) || !sichtbarerText(original).includes(sichtbarerText(quote!))) throw new Error("Der Beleg steht nicht im aktuell gelesenen Original.");
+    if (!sichtbarerText(quote!) || !sichtbarerText(original).includes(sichtbarerText(quote!))) {
+      const woanders = gelandetAuf && !liestDieAngefragteSeite(sourceUrl, gelandetAuf)
+        ? ` Gelesen wurde in Wahrheit ${gelandetAuf} — der Server leitet die angefragte Adresse dorthin um.`
+        : "";
+      throw new Error("Der Beleg steht nicht im aktuell gelesenen Original." + woanders);
+    }
   }
   // DAS URTEIL MUSS ZUR MESSUNG PASSEN — geprüft, NACHDEM gemessen wurde, weil
   // erst dann feststeht, ob die Adresse wirklich weg ist. Die Regel selbst
