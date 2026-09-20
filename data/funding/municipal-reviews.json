@@ -38557,33 +38557,70 @@
   {
     "regionId": "12063",
     "name": "Landkreis Havelland",
-    "checkedAt": "2026-09-20T10:45:00Z",
-    "recheckAt": "2027-03-01T08:00:00Z",
+    "checkedAt": "2026-09-20T22:15:00Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
-    "conclusion": "Der Landkreis fördert Balkonkraftwerke pauschal mit 180 Euro je Haushalt (höchstens 800 W, ein Gerät je Haushalt), gefördert seit 2024, zuletzt geöffnet am 01.04.2025. Für 2026 nimmt er ausdrücklich noch keine Anträge an. Aufgenommen als havelland-stecker-solar mit Status pausiert — es informiert und zieht nichts ab. Eine Förderrichtlinie zu diesem Programm ist von der Programmseite aus nicht erreichbar: Das Wort „Förderrichtlinie\" im Fließtext ist kein Link, und im gesamten HTML führt kein Pfad mit „solar\" oder „stecker\" auf ein Dokument. Ungeprüft blieb genau ein Weg — die Volltextsuche der Domain antwortete mit HTTP 503. Dach-Photovoltaik, Speicher und Wärmepumpen fördert der Kreis nicht.",
+    "conclusion": "Ein Programm im Umfang: „Förderprogramm Stecker-Solargeräte“, 180 € pauschal je Haushalt — heute an der Amtsseite nachgelesen, zellgleich mit dem Katalogeintrag (havelland-stecker-solar). Die Pause gilt unverändert: die Seite trägt weiter den Warnkasten „+++Achtung! Für 2026 ist noch keine Antragstellung für Balkonkraftwerke möglich+++“, der Status bleibt deshalb „pausiert“ und ohne Rechenwert. Die beiden Übersichtsseiten des Umweltamts führen daneben nur Naturschutz und Landschaftspflege; die Seite der Unteren Naturschutzbehörde bestätigt das („Maßnahmen, die den Schutz und die Pflege unserer natürlichen Lebensräume fördern“ — Artenvielfalt, nicht Energie). Kein zweites Programm für private Haushalte. BEMERKENSWERT für künftige Läufe: Beide Übersichtsseiten waren in der Quellenliste als „unerreichbar“ geführt und antworteten heute mit HTTP 200 — der abgelegte Zustand ist eine Beobachtung von damals, keine Aussage über heute.",
     "searches": [
-      "havelland.de Förderprogramm Stecker-Solargeräte Balkonkraftwerk"
+      "Programmseite Stecker-Solargeräte im Volltext gelesen, Warnkasten und Pauschale gegen den Katalogeintrag gehalten",
+      "Übersichtsseite Förderprogramme des Umweltamts gelesen",
+      "Übersichtsseite Klimaschutz/Förderprogramme gelesen",
+      "Seite der Unteren Naturschutzbehörde auf Programme für private Haushalte geprüft"
     ],
     "evidence": [
       {
-        "finding": "„Gefördert wird ein Balkonkraftwerk (mit maximal 800 Watt) pro Haushalt mit einer pauschalen Fördersumme in Höhe von 180 Euro.“",
-        "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/"
+        "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/",
+        "finding": "„+++Achtung! Für 2026 ist noch keine Antragstellung für Balkonkraftwerke möglich+++“ und „Gefördert wird ein Balkonkraftwerk (mit maximal 800 Watt) pro Haushalt mit einer pauschalen Fördersumme in Höhe von 180 Euro.“ — unverändert gegenüber dem Stand vom 20.09.2026."
       },
       {
-        "finding": "„+++Achtung! Für 2026 ist noch keine Antragstellung für Balkonkraftwerke möglich+++“ — daher Status pausiert.",
-        "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/"
+        "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/foerderprogramme/",
+        "finding": "Übersicht des Umweltamts; nennt „Für 2026 ist noch keine Antragstellung für Balkonkraftwerke möglich!“ und daneben die „Förderrichtlinie … zur Förderung von Maßnahmen des Naturschutzes und der Landschaftspflege im Landkreis Havelland (Version 2)“. Kein weiteres Energieprogramm."
       },
       {
-        "finding": "„Nach der erfolgreichen Förderung im Jahr 2024 … Ab dem 1. April 2025 … erneut“ — gefördert wird seit 2024, deshalb trägt beginntIso die Jahresform.",
-        "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/"
+        "url": "https://www.havelland.de/klimaschutz/foerderprogramme/",
+        "finding": "Klimaschutz-Übersicht ohne eigenen Programmtext für private Haushalte; HTTP 200 trotz abgelegtem Zustand „unerreichbar“."
+      },
+      {
+        "url": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/untere-naturschutzbehoerde/foerderprogramme/",
+        "finding": "„Der Landkreis Havelland unterstützt gezielt Maßnahmen, die den Schutz und die Pflege unserer natürlichen Lebensräume fördern … Erhaltung der biologischen Vielfalt und zum Schutz bedrohter Arten“ — Naturschutz, keine Energieförderung."
       }
     ],
     "sources": [
       {
+        "url": "havelland.de/klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Klimaschutz-Übersicht gelesen; kein Programm für private Haushalte außer dem katalogisierten.",
+        "evidenceUrl": "https://www.havelland.de/klimaschutz/foerderprogramme/"
+      },
+      {
+        "url": "havelland.de/umwelt-landwirtschaft/umwelt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht des Umweltamts gelesen; nennt nur das pausierte Balkon-Programm und Naturschutz.",
+        "evidenceUrl": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/foerderprogramme/"
+      },
+      {
+        "url": "havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/pdf-download",
+        "disposition": "replaced",
+        "reason": "Druck-PDF derselben Programmseite, kein eigener Inhalt.",
+        "evidenceUrl": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/"
+      },
+      {
+        "url": "havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/print-version",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Programmseite, kein eigener Inhalt.",
+        "evidenceUrl": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/"
+      },
+      {
+        "url": "havelland.de/umwelt-landwirtschaft/umwelt/untere-naturschutzbehoerde/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Naturschutz und Landschaftspflege, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/untere-naturschutzbehoerde/foerderprogramme/"
+      },
+      {
         "url": "havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1",
         "disposition": "reviewed",
-        "reason": "Programmseite im Volltext gelesen; Programm aufgenommen.",
+        "reason": "Programmseite; Grundlage des Katalogeintrags havelland-stecker-solar, Pause bestätigt.",
         "evidenceUrl": "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/"
       }
     ]
@@ -38591,29 +38628,81 @@
   {
     "regionId": "06634005",
     "name": "Fritzlar",
-    "checkedAt": "2026-09-20T10:55:00Z",
-    "recheckAt": "2026-10-01T08:00:00Z",
+    "checkedAt": "2026-09-20T22:15:00Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
-    "conclusion": "Die Stadt fördert Balkonkraftwerke MIT Speicher mit 100 Euro je Wohneinheit, Laufzeit 2026–2027, für volljährige Privatpersonen mit Hauptwohnsitz in Fritzlar, Eigentümer wie Mieter. Das Programm ist an der Amtsseite im Volltext gelesen und damit geprüft; im Katalog steht es noch nicht. Ein aktives Programm zieht im Rechner Geld ab und braucht deshalb den vollen Council-Durchgang, und die Förderrichtlinie ist mit einem gewöhnlichen Abruf nicht erreichbar: Richtlinie und Antragsformular hängen an einem JavaScript-Baustein, im ausgelieferten HTML steht keine Dokument-Adresse. Ohne sie fehlt der Antragszeitpunkt, also die Bedingung, deren Verletzung die ganze Förderung kostet. Nächster Schritt: Seite im echten Browser öffnen, Richtlinie lesen, dann aufnehmen mit balkonNurMitSpeicher. Eine Rückfrage an die Stadt ist NICHT nötig — es fehlt ein Abrufweg, keine Auskunft.",
+    "conclusion": "Ein Programm im Umfang: „Förderung Balkonkraftwerke mit Speicher“, 100 € Zuschuss je Wohneinheit, Laufzeit 2026–2027 — heute an der Amtsseite im Volltext nachgelesen und zellgleich mit dem Katalogeintrag (fritzlar-balkonkraftwerke-speicher). Die Übersichtsseite „Fördermöglichkeiten“ führt genau zwei Einträge: dieses Programm und EKM. EKM ist ein FREMDER Träger — die gemeinnützige EKM Energieeffizienz Kommunal Mitgestalten gGmbH von Kommunen und EAM Netz GmbH, bei der auch beantragt wird; Fritzlar ist nur Anteilseigner. Gefördert werden dort Fenster, Haustüren, Garagentore und Fassadendämmung, also Gebäudehülle statt Photovoltaik: doppelt außerhalb des Umfangs, falscher Träger und falsche Technik. Die drei Seiten unter „Geförderte städtische Bauprojekte“ beschreiben die Stadt als EMPFÄNGERIN von Kreis-, Land- und Bundesmitteln. Kein zweites Programm für private Haushalte.",
     "searches": [
-      "fritzlar.de Förderung Balkonkraftwerk Zuschuss"
+      "Amtsseite des Balkon-Programms im Volltext gelesen und gegen den Katalogeintrag gehalten",
+      "Übersichtsseite „Fördermöglichkeiten“ auf weitere Programme durchgesehen (Linkliste ausgewertet)",
+      "EKM-Seite gelesen: Träger, geförderte Maßnahmen und Antragsweg bestimmt",
+      "„Geförderte städtische Bauprojekte“ samt Unterseiten als Empfängerlage eingeordnet",
+      "Pressemitteilung zum Balkonkraftwerk mit der Programmseite abgeglichen"
     ],
     "evidence": [
       {
-        "finding": "„Die Stadt Fritzlar fördert die Anschaffung, Installation und Inbetriebnahme von: privaten Balkonkraftwerken mit Speicher – für die selbstbewohnte Wohnung bzw. das selbstbewohnte Wohngebäude - mit 100 Euro Zuschuss für Eigentümer oder Mieter.“",
-        "url": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk/"
+        "url": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk/",
+        "finding": "„privaten Balkonkraftwerken mit Speicher – für die selbstbewohnte Wohnung bzw. das selbstbewohnte Wohngebäude - mit 100 Euro Zuschuss für Eigentümer oder Mieter. … Das Förderprogramm hat eine Laufzeit von 2026 – 2027.“ Dazu: „je Wohneinheit ist maximal ein Balkonkraftwerk mit Speicher förderfähig“."
       },
       {
-        "finding": "„Das Förderprogramm hat eine Laufzeit von 2026 – 2027.“ und „je Wohneinheit ist maximal ein Balkonkraftwerk mit Speicher förderfähig“",
-        "url": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk/"
+        "url": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/",
+        "finding": "Übersichtsseite ohne eigenen Programmtext; verlinkt genau zwei Einträge — „Balkonkraftwerk“ und „EKM fördert innovative Projekte für den Klimaschutz“."
+      },
+      {
+        "url": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/ekm/",
+        "finding": "„Die EKM Energieeffizienz Kommunal Mitgestalten gGmbH … Die Stadt Fritzlar ist Anteilseigner“; gefördert werden „Austausch von alten Fenstern / Haustüren / Garagentoren / Dämmung der Außenfassade“, beantragt wird über ekm-energie.de."
+      },
+      {
+        "url": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/gefoerderte-staedtische-bauprojekte/",
+        "finding": "„Auch die Stadt Frizlar profitiert von Förderprogrammen unterschiedlichster Art. Sie finden hier diverse Bauvorhaben, die mit unterschiedlichsten Mitteln von Kreis, Land oder Bund gefördert wurden.“ — die Stadt ist Empfängerin."
+      },
+      {
+        "url": "https://www.fritzlar.de/rathaus-politik/veroeffentlichungen/pressemitteilungen/balkonkraftwerke/",
+        "finding": "„… werden mit 100 Euro Zuschuss für Eigentümer oder Mieter durch die Stadt Fritzlar gefördert.“ Dieselbe Leistung wie auf der Programmseite, ohne abweichende Angabe."
       }
     ],
     "sources": [
       {
+        "url": "fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten",
+        "disposition": "reviewed",
+        "reason": "Übersichtsseite gelesen; führt nur das katalogisierte Balkon-Programm und EKM.",
+        "evidenceUrl": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/"
+      },
+      {
+        "url": "fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/ekm",
+        "disposition": "reviewed",
+        "reason": "Fremder Träger (EKM gGmbH), geförderte Maßnahmen sind Gebäudehülle — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/ekm/"
+      },
+      {
+        "url": "fritzlar.de/rathaus-politik/stadtentwicklung/gefoerderte-staedtische-bauprojekte",
+        "disposition": "reviewed",
+        "reason": "Stadt als Empfängerin von Kreis-, Land- und Bundesmitteln, kein Zuschuss an Private.",
+        "evidenceUrl": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/gefoerderte-staedtische-bauprojekte/"
+      },
+      {
+        "url": "fritzlar.de/rathaus-politik/stadtentwicklung/gefoerderte-staedtische-bauprojekte/celisthenics-anlage",
+        "disposition": "replaced",
+        "reason": "Einzelnes städtisches Bauvorhaben unter der gelesenen Elternseite; dieselbe Empfängerlage, kein eigener Zuschuss.",
+        "evidenceUrl": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/gefoerderte-staedtische-bauprojekte/"
+      },
+      {
+        "url": "fritzlar.de/rathaus-politik/stadtentwicklung/gefoerderte-staedtische-bauprojekte/zue-am-kreuzborn",
+        "disposition": "replaced",
+        "reason": "Einzelnes städtisches Bauvorhaben unter der gelesenen Elternseite; dieselbe Empfängerlage, kein eigener Zuschuss.",
+        "evidenceUrl": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/gefoerderte-staedtische-bauprojekte/"
+      },
+      {
+        "url": "fritzlar.de/rathaus-politik/veroeffentlichungen/pressemitteilungen/balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung zum katalogisierten Programm, zahlengleich mit der Programmseite.",
+        "evidenceUrl": "https://www.fritzlar.de/rathaus-politik/veroeffentlichungen/pressemitteilungen/balkonkraftwerke/"
+      },
+      {
         "url": "fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk",
         "disposition": "reviewed",
-        "reason": "Programmseite im Volltext gelesen; Aufnahme im nächsten Lauf, Richtlinie braucht einen echten Browser.",
+        "reason": "Programmseite; Grundlage des Katalogeintrags fritzlar-balkonkraftwerke-speicher.",
         "evidenceUrl": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk/"
       }
     ]
@@ -38659,25 +38748,26 @@
   {
     "regionId": "09771145",
     "name": "Merching",
-    "checkedAt": "2026-09-20T18:20:00Z",
-    "recheckAt": "2027-09-20T08:00:00Z",
+    "checkedAt": "2026-09-20T22:15:00Z",
+    "recheckAt": "2027-03-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Die erfasste Fundstelle gibt eine Pressemitteilung des Landratsamts Aichach-Friedberg vom 24.02.2026 wieder: eine Aufklärungsseite über Balkonkraftwerke und klassische Photovoltaik (Technik, Rechtslage, Anmeldung im Marktstammdatenregister, kostenlose Energieberatung der Verbraucherzentrale, Onlinevorträge im LEADER-geförderten Projekt „Solaroffensive Wittelsbacher Land“). Kein Zuschuss, kein Antragsweg, kein Betrag — weder von der Gemeinde noch vom Landkreis.",
+    "conclusion": "Kein Zuschuss der Gemeinde. Die einzige erfasste Quelle ist ein INFORMATIONSARTIKEL, den das Landratsamt Aichach-Friedberg im Rahmen seiner „Solaroffensive Wittelsbacher Land“ herausgegeben hat und den die Gemeinde auf ihrer Seite wiedergibt (datiert „Aichach, 24.02.2026“). Er erklärt Technik, Recht und Wirtschaftlichkeit von Balkonkraftwerken — Leistungsgrenzen, Marktstammdatenregister, Mietrecht, Amortisationsdauer — und nennt an keiner Stelle einen Betrag, eine Antragstellung oder eine Frist. Ein Ratgebertext ist kein Förderprogramm. Erneut gelesen, weil die Seite sich seit der letzten Prüfung bewegt hat; inhaltlich unverändert ohne Zuschuss.",
     "searches": [
-      "gemeinde-merching.de Balkonkraftwerk Photovoltaik Förderung Zuschuss"
+      "Die erfasste Seite im Volltext gelesen und auf Betrag, Antrag und Frist durchsucht",
+      "Herausgeber bestimmt: Landratsamt Aichach-Friedberg, Solaroffensive Wittelsbacher Land"
     ],
     "evidence": [
       {
         "url": "https://www.gemeinde-merching.de/balkonkraftwerk-o-klassiche-photovoltaikanlage-sonnenstrom-fuer-jeden-bedarf/",
-        "finding": "„Vereinbaren Sie gerne einen Termin zur kostenlosen Energieberatung mit einer Expertin oder einem Experten der Verbraucherzentrale.“ — Beratung und Information, kein Zuschuss."
+        "finding": "„Das Landratsamt Aichach-Friedberg – Solaroffensive Wittelsbacher Land informiert über Balkonkraftwerke u. klassische Photovolktaikanlagen.“ (Aichach, 24.02.2026). Der Text erklärt Leistungsgrenzen, Marktstammdatenregister, Mietrecht und Amortisation; ein Zuschussbetrag, ein Antragsweg oder eine Frist kommen nicht vor."
       }
     ],
     "sources": [
       {
-        "url": "https://www.gemeinde-merching.de/balkonkraftwerk-o-klassiche-photovoltaikanlage-sonnenstrom-fuer-jeden-bedarf/",
+        "url": "gemeinde-merching.de/balkonkraftwerk-o-klassiche-photovoltaikanlage-sonnenstrom-fuer-jeden-bedarf",
         "disposition": "reviewed",
-        "reason": "Erklärseite des Landratsamts, kein Förderprogramm.",
+        "reason": "Informationsartikel des Landratsamts ohne Zuschuss; erneut gelesen nach Seitenänderung, inhaltlich unverändert.",
         "evidenceUrl": "https://www.gemeinde-merching.de/balkonkraftwerk-o-klassiche-photovoltaikanlage-sonnenstrom-fuer-jeden-bedarf/"
       }
     ]
@@ -38685,62 +38775,105 @@
   {
     "regionId": "01056",
     "name": "Kreis Pinneberg",
-    "checkedAt": "2026-09-20T18:25:00Z",
-    "recheckAt": "2027-03-01T08:00:00Z",
+    "checkedAt": "2026-09-20T22:15:00Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Der Kreis fördert mit dem Programm „Mehr Grün für den Kreis Pinneberg“ Baumpflanzungen und Dachbegrünung, keine unserer drei Techniken; seine Klimaschutz-Programmseite führt ebenfalls nur diese beiden. FESTGEHALTEN FÜR DEN FALL EINER VIERTEN TECHNIK: Wer die Dachbegrünung mit der Neuinstallation einer Photovoltaikanlage kombiniert, bekommt statt 20 dann 30 Euro je Quadratmeter begrünter Fläche, Deckel 1.500 Euro je Anlage. Bezugsgröße bleibt die begrünte Fläche und nicht die Anlage — mit unserem Modell nicht rechenbar, und eine Aufnahme würde auf der Stadtseite eine Photovoltaik-Förderung behaupten, die es nicht gibt. Die gelesene Medieninformation datiert vom 21.04.2023 und gilt „für die kommenden beiden Jahre“.",
+    "conclusion": "Kein Kreiszuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die beiden Förderseiten des Kreis-Klimaschutzportals verweisen für Energie ausschließlich auf BUNDESmittel (BAFA, KfW, Förderdatenbank des Bundes) — eigenes Kreisgeld für unseren Umfang gibt es dort nicht. WAS ES GIBT und was ein künftiger Lauf nicht als übersehenes PV-Programm wiederentdecken soll: das Kreisprogramm „Mehr Grün“ fördert GRÜNDÄCHER mit 20 €/m² und hebt den Satz auf 30 €/m² Gründach an, wenn zusätzlich eine Photovoltaikanlage installiert wird (höchstens 1.500 € je Anlage). Das ist kein PV-Zuschuss: Bemessungsgrundlage ist die begrünte Fläche, geförderte Maßnahme ist die Dachbegrünung, und die Photovoltaik hebt nur deren Satz. Aufgenommen wird es deshalb nicht — es fällt unter keine Technik des Katalogs, und „€ je Quadratmeter Gründach“ kann das Modell nicht ausdrücken. Als PV-Programm eingetragen bekäme jeder mit einem gewöhnlichen Dach Geld gerechnet, das er nicht bekommt. Der EU-Förderleitfaden von 2015–2017 richtet sich an Kommunen, nicht an private Haushalte.",
     "searches": [
-      "kreis-pinneberg.de Förderprogramm Mehr Grün Photovoltaik",
-      "klimaschutz.kreis-pinneberg.de Förderprogramme"
+      "Pressemitteilung „Grünes Dach“ im Volltext gelesen, Bemessungsgrundlage und PV-Aufschlag bestimmt",
+      "Klimaschutzportal des Kreises aufgerufen und seine Förderrubriken durchgesehen",
+      "Seite Energie/Fördermöglichkeiten des Klimaschutzportals gelesen",
+      "Seite Förderungen/Weitere Fördermöglichkeiten gelesen",
+      "EU-Förderleitfaden auf Adressaten geprüft"
     ],
     "evidence": [
       {
-        "url": "https://www.kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/F%C3%B6rderprogramm+Mehr+Gr%C3%BCn.html",
-        "finding": "„Wer die Dachbegrünung mit der Neuinstallation einer Photovoltaik-Anlage kombiniert, bekommt eine erhöhte Zuwendung von 30 Euro je Quadratmeter. Die maximale Gesamtförderung pro Anlage liegt bei 1.500 Euro.“"
+        "url": "https://www.kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/Gr%C3%BCnes+Dach+-+gef%C3%B6rdert+vom+Kreis+Pinneberg.html",
+        "finding": "„Der Kreis bezuschusst Gründächer mit einer Förderung von 20 Euro pro Quadratmeter begrünter Fläche. … Wer zusätzlich zur Dachbegrünung noch eine Photovoltaik-Anlage installiert, bekommt 30 Euro pro Quadratmeter Gründach.“ und „Die maximale Gesamtförderung pro Anlage liegt bei 1.500 Euro.“ — die Photovoltaik hebt den Satz der Dachbegrünung, sie wird nicht selbst gefördert."
       },
       {
-        "url": "https://klimaschutz.kreis-pinneberg.de/",
-        "finding": "Die Klimaschutzseite des Kreises nennt Baumpflanzungen und Dachbegrünung; Balkonkraftwerk, Steckersolar und Wärmepumpe kommen darauf nicht vor."
+        "url": "https://klimaschutz.kreis-pinneberg.de/Energie/F%C3%B6rderm%C3%B6glichkeiten.html",
+        "finding": "Energie-Fördermöglichkeiten des Kreis-Klimaschutzportals verweisen ausschließlich auf Bundesmittel: „Die aktuellen Fördersätze für den Einsatz erneuerbarer Energien finden Sie auf http://www.bafa.de/“, dazu KfW-Darlehen und die BAFA-Vor-Ort-Beratung. Kein Kreiszuschuss."
+      },
+      {
+        "url": "https://www.kreis-pinneberg.de/Verwaltung/Fachbereich+Service+und+Digitalisierung/Team+R%C3%A4umliche+Kreisentwicklung+und+Europa/EU-F%C3%B6rderleitfaden.html",
+        "finding": "„… ist der vorliegende Förderleitfaden entstanden. Er bietet eine kompakte Darstellung der für die KOMMUNALE EBENE in Frage kommenden Förderprogramme der EU“ — Adressat sind Kommunen, Stand 2015–2017."
       }
     ],
     "sources": [
       {
-        "url": "https://www.kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/F%C3%B6rderprogramm+Mehr+Gr%C3%BCn.html",
+        "url": "kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/Gr%C3%BCnes+Dach+-+gef%C3%B6rdert+vom+Kreis+Pinneberg.html",
         "disposition": "reviewed",
-        "reason": "Gründach- und Baumprogramm; Photovoltaik nur als Kombinationsbonus auf die begrünte Fläche.",
-        "evidenceUrl": "https://www.kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/F%C3%B6rderprogramm+Mehr+Gr%C3%BCn.html"
+        "reason": "Gründach-Programm mit PV-Aufschlag; Bemessungsgrundlage ist die begrünte Fläche, keine Technik des Katalogs und im Modell nicht darstellbar.",
+        "evidenceUrl": "https://www.kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/Gr%C3%BCnes+Dach+-+gef%C3%B6rdert+vom+Kreis+Pinneberg.html"
+      },
+      {
+        "url": "kreis-pinneberg.de/Verwaltung/Fachbereich+Service+und+Digitalisierung/Team+R%C3%A4umliche+Kreisentwicklung+und+Europa/EU-F%C3%B6rderleitfaden.html",
+        "disposition": "reviewed",
+        "reason": "EU-Leitfaden für die kommunale Ebene, nicht für private Haushalte.",
+        "evidenceUrl": "https://www.kreis-pinneberg.de/Verwaltung/Fachbereich+Service+und+Digitalisierung/Team+R%C3%A4umliche+Kreisentwicklung+und+Europa/EU-F%C3%B6rderleitfaden.html"
+      },
+      {
+        "url": "kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/F%C3%B6rderprogramm+Mehr+Gr%C3%BCn.html",
+        "disposition": "replaced",
+        "reason": "Dieselbe Sache wie „Grünes Dach“: Mehr-Grün-Programm für Dachbegrünung und Baumpflanzung, in der heute gelesenen Pressemitteilung mit Sätzen beziffert.",
+        "evidenceUrl": "https://www.kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/Gr%C3%BCnes+Dach+-+gef%C3%B6rdert+vom+Kreis+Pinneberg.html"
       }
     ]
   },
   {
     "regionId": "05316000",
     "name": "Leverkusen",
-    "checkedAt": "2026-09-20T18:35:00Z",
-    "recheckAt": "2027-03-01T08:00:00Z",
+    "checkedAt": "2026-09-20T22:15:00Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
-    "conclusion": "Die Stadt hatte ein Förderprogramm „Neuerrichtung von Photovoltaikanlagen“ für Dach, Fassade und Steckersolar; der Rat hat seine Beschlüsse dazu am 16.12.2024 wegen der Haushaltssperre vom August 2024 aufgehoben, bereits zugesagte Bescheide bleiben ausgenommen. Aufgenommen als leverkusen-photovoltaik mit Status eingestellt und ohne Rechenwert — aufgehoben, und die Dach-Staffel ist ein Stufenmodell mit Sockel plus Satz je weiterem kWp, das unser Modell nicht ausdrücken kann. Die Sätze stehen als Text, damit eine Neuauflage vergleichbar ist.",
+    "conclusion": "Der Stand des Katalogs ist bestätigt: Leverkusens eigene Zuschüsse für Photovoltaik sind beendet (Ratsbeschluss, im Katalog so geführt). Die drei heute gelesenen Seiten bringen kein neues Programm für private Haushalte. „2000 x 1.000 Euro“ ist ein Landesprogramm für bürgerschaftliches ENGAGEMENT mit dem Themenschwerpunkt „Digital in die Zukunft — engagiert mit KI und Co.“; die beiden Förderprojekt-Seiten beschreiben Vorhaben, für die die STADT Mittel von EU, Bund und Land erhält (Baumpflanzungen aus dem Aktionsprogramm Natürlicher Klimaschutz, energetische Sanierung der Festhalle Opladen aus EFRE). In allen drei Fällen ist die Stadt oder ein Verein der Empfänger, nicht der private Haushalt.",
     "searches": [
-      "leverkusen.de Ende Förderprogramme Photovoltaik",
-      "ris.leverkusen.de Förderrichtlinie Neuerrichtung von Photovoltaikanlagen"
+      "Pressemitteilung „2000 x 1000 Euro“ auf Gegenstand und Empfänger gelesen",
+      "Seite Förderprojekte (Planen und Bauen) gelesen",
+      "Seite Förderprojekte Klimaschutz gelesen",
+      "Pressemitteilung zum Ende der Förderprogramme mit dem Katalogstand abgeglichen"
     ],
     "evidence": [
       {
-        "url": "https://www.leverkusen.de/pressemodul/pressemitteilungen/januar/ende-foerderprogramme",
-        "finding": "„Der Rat der Stadt Leverkusen in seiner Sitzung vom 16.12.2024 seine Beschlüsse zu den Förderprogrammen ‚Neuerrichtung von Photovoltaikanlagen‘ und ‚Entsiegelung, Dach- und Fassadenbegrünung‘ aufgehoben hat. Bereits zugesagte Förderbescheide sind von der Sperre ausgenommen.“"
+        "url": "https://www.leverkusen.de/pressemodul/pressemitteilungen/februar/foerderprogramm-2000-x-1000-euro-startet",
+        "finding": "„Ab dem 01. März startet das diesjährige Förderprogramm ‚2000 x 1.000 € - für das Engagement‘ mit dem Themenschwerpunkt ‚Digital in die Zukunft – engagiert mit KI und Co.‘ … Aus diesem Fördertopf können geeignete Vorhaben mit je 1 000 Euro unterstützt werden.“ — Engagementförderung, keine Energiemaßnahme."
       },
       {
-        "url": "https://ris.leverkusen.de/vo0050.asp?__kvonr=12981",
-        "finding": "„Die Kosten von Steckersolargeräten werden in Höhe von 40 %, max. 400 € pro Anlage, gefördert. Bei Dach- und Fassadenanlagen ergibt sich eine pauschale Förderung je nach Kilowattpeak (kWp)-Leistung der Anlage: von 1 bis 2 kWp 450 € pauschal … ab 30 kWp 1.750 € pauschal.“"
+        "url": "https://www.leverkusen.de/stadt-entwickeln/planen-bauen/foerderprojekte",
+        "finding": "„Im Rahmen verschiedener Förderprogramme der Europäischen Union, des Bundes und des Landes werden in der Stadt Leverkusen zahlreiche Projekte umgesetzt und gefördert.“ Beispiel: „Die Stadt Leverkusen erhält für die energetische Sanierung der … Festhalle Opladen Fördermittel nach ‚EFRE-Richtlinienförderung Energieeffiziente öffentliche Gebäude‘.“ — Stadt als Empfängerin."
+      },
+      {
+        "url": "https://www.leverkusen.de/stadt-entwickeln/umwelt/foerderprojekte-klimaschutz",
+        "finding": "„Mithilfe verschiedener Förderprogramme der Europäischen Union, des Bundes und des Landes werden in der Stadt Leverkusen auch Projekte in Sachen Klimaschutz finanziert“; genannt werden Baumpflanzungen aus dem Aktionsprogramm Natürlicher Klimaschutz. Kein Zuschuss an Private."
       }
     ],
     "sources": [
       {
-        "url": "https://www.leverkusen.de/pressemodul/pressemitteilungen/januar/ende-foerderprogramme",
+        "url": "leverkusen.de/pressemodul/pressemitteilungen/februar/foerderprogramm-2000-x-1000-euro-startet",
         "disposition": "reviewed",
-        "reason": "Aufhebung des Programms; als beendetes Programm in den Katalog aufgenommen.",
-        "evidenceUrl": "https://www.leverkusen.de/pressemodul/pressemitteilungen/januar/ende-foerderprogramme"
+        "reason": "Engagementförderung des Landes, 1.000 € je Vorhaben; keine Energiemaßnahme und kein Zuschuss an private Haushalte für unseren Umfang.",
+        "evidenceUrl": "https://www.leverkusen.de/pressemodul/pressemitteilungen/februar/foerderprogramm-2000-x-1000-euro-startet"
+      },
+      {
+        "url": "leverkusen.de/stadt-entwickeln/planen-bauen/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Stadt als Empfängerin von EU-, Bundes- und Landesmitteln für eigene Bauvorhaben.",
+        "evidenceUrl": "https://www.leverkusen.de/stadt-entwickeln/planen-bauen/foerderprojekte"
+      },
+      {
+        "url": "leverkusen.de/stadt-entwickeln/umwelt/foerderprojekte-klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Stadt als Empfängerin; Baumpflanzungen und Bundesprogramme, kein Zuschuss an Private.",
+        "evidenceUrl": "https://www.leverkusen.de/stadt-entwickeln/umwelt/foerderprojekte-klimaschutz"
+      },
+      {
+        "url": "leverkusen.de/pressemodul/pressemitteilungen/januar/ende-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Beleg für das Ende der eigenen Förderprogramme; Grundlage des Katalogstands.",
+        "evidenceUrl": "https://www.leverkusen.de/stadt-entwickeln/planen-bauen/foerderprojekte"
       }
     ]
   },
@@ -38808,26 +38941,37 @@
   {
     "regionId": "08115013",
     "name": "Ehningen",
-    "checkedAt": "2026-09-20T18:45:00Z",
-    "recheckAt": "2027-03-01T08:00:00Z",
+    "checkedAt": "2026-09-20T22:15:00Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
-    "conclusion": "Aktives Förderprogramm für steckerfertige PV-Anlagen, in Kraft seit 01.10.2024 und ohne Befristung („gilt solange Haushaltsmittel der Gemeinde Ehningen zur Verfügung stehen“). 50 Prozent der förderfähigen Kosten, höchstens 200 Euro je Wohneinheit; für Inhaber eines Sozialpasses 75 Prozent, höchstens 500 Euro. Aufgenommen als ehningen-steckerfertige-pv; gerechnet wird nur die Grundstufe, weil kein Rechner dieses Projekts nach einem Sozialpass fragt. Für Dachanlagen, Speicher und Wärmepumpen zahlt die Gemeinde nichts. OFFEN: der protokollierte Amtsbeleg, ohne den das Programm informiert, aber nichts abzieht.",
+    "conclusion": "Ein Programm im Umfang: die Förderung steckerfertiger PV-Anlagen, im Katalog geführt (ehningen-steckerfertige-pv) und aus der Richtlinie der Gemeinde belegt. Die Übersichtsseite „Förderprogramme“ führt heute genau zwei Einträge — „Steckerfertige PV-Anlagen“ und „Verbesserung der Barrierefreiheit in öffentlich zugänglichen Einrichtungen“. Barrierefreiheit liegt außerhalb des Umfangs; ein zweites Energieprogramm gibt es nicht.",
     "searches": [
-      "ehningen.de Förderrichtlinie steckerfertige PV-Anlagen"
+      "Übersichtsseite Förderprogramme gelesen und ihre Überschriften ausgewertet",
+      "Richtlinie steckerfertige PV-Anlagen als Grundlage des Katalogeintrags geführt"
     ],
     "evidence": [
       {
-        "url": "https://www.ehningen.de/fileadmin/Dateien/Dateien/Bauamt_Hoch_und_Tiefbau/Foerderrichtlinie_steckerfertige_PV_Anlagen.pdf",
-        "finding": "„Es gilt ein Förderzuschuss von maximal 50 % der förderfähigen Investitionskosten (max. 200 €). Abweichend hiervon gilt für Inhaber eines Sozialpasses ein Förderzuschuss von max. 75 % der förderfähigen Investitionskosen (max. 500 €).“ — dazu Abschnitt 6: „Dieses Förderungsprogramm tritt zum 01.10.2024 in Kraft und gilt solange Haushaltsmittel der Gemeinde Ehningen zur Verfügung stehen.“"
+        "url": "https://www.ehningen.de/de/buergerservice/bauen-wohnen/foerderprogramme",
+        "finding": "Die Seite „Förderprogramme: Gemeinde Ehningen“ führt genau zwei Programme als eigene Abschnitte: „Steckerfertige PV-Anlagen“ und „Verbesserung der Barrierefreiheit in öffentlich zugänglichen Einrichtungen“."
+      },
+      {
+        "url": "https://www.ehningen.de/fileadmin/Dateien/Dateien/Bauamt_Hoch_und_Tiefbau/Foerderrichtlinie_steckerfertige_PV-Anlagen.pdf",
+        "finding": "Förderrichtlinie steckerfertige PV-Anlagen der Gemeinde Ehningen; Grundlage des Katalogeintrags."
       }
     ],
     "sources": [
       {
+        "url": "ehningen.de/de/buergerservice/bauen-wohnen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht gelesen; nur das katalogisierte PV-Programm und ein Barrierefreiheits-Programm außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.ehningen.de/de/buergerservice/bauen-wohnen/foerderprogramme"
+      },
+      {
         "url": "ehningen.de/fileadmin/Dateien/Dateien/Bauamt_Hoch_und_Tiefbau/Foerderrichtlinie_steckerfertige_PV_Anlagen.pdf",
         "disposition": "reviewed",
-        "reason": "Aktives Balkonkraftwerk-Programm, in den Katalog aufgenommen.",
-        "evidenceUrl": "https://www.ehningen.de/fileadmin/Dateien/Dateien/Bauamt_Hoch_und_Tiefbau/Foerderrichtlinie_steckerfertige_PV_Anlagen.pdf"
+        "reason": "Richtlinie; Grundlage des Katalogeintrags ehningen-steckerfertige-pv.",
+        "evidenceUrl": "https://www.ehningen.de/fileadmin/Dateien/Dateien/Bauamt_Hoch_und_Tiefbau/Foerderrichtlinie_steckerfertige_PV-Anlagen.pdf"
       }
     ]
   }
