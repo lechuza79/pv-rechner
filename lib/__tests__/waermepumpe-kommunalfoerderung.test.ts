@@ -292,7 +292,7 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
     //   Volltext gelesen). Der Ausschluss gilt allen fremden Mitteln, also
     //   auch den Bundesmitteln.
     // Official combination clauses reviewed on 2026-09-16; unknown is distinct from prohibition.
-    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "herzberg-balkonkraftwerke", "herzebrock-clarholz-batteriespeicher", "luedinghausen-klimaschutzfonds", "mainz-bingen-balkonkraftwerke" /* guideline 5.6.5: no cumulation with federal, state or municipal funds */, "mayen-koblenz-balkonkraftwerke" /* guideline no. 7: "Kumulierung … grundsätzlich nicht zulässig" */, "meschede-balkon-speicher", "neuwied-balkonkraftwerke", "tegernheim-stecker-pv", "vaterstetten-pv-begleitung", "weyhe-klimaschutz", "wolfratshausen-pv"];
+    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "herzberg-balkonkraftwerke", "herzebrock-clarholz-batteriespeicher", "luedinghausen-klimaschutzfonds", "mainz-bingen-balkonkraftwerke" /* guideline 5.6.5: no cumulation with federal, state or municipal funds */, "mayen-koblenz-balkonkraftwerke" /* guideline no. 7: "Kumulierung … grundsätzlich nicht zulässig" */, "meschede-balkon-speicher", "neuwied-balkonkraftwerke", "rauschenberg-balkon-solaranlagen" /* guideline sec. 3: "Die kommunalen Fördermittel können nicht mit anderen Fördermitteln kumuliert werden" */, "tegernheim-stecker-pv", "vaterstetten-pv-begleitung", "weyhe-klimaschutz", "wolfratshausen-pv"];
     const ausschluss = Object.values(FUNDING_PROGRAMS).filter(p => Array.isArray(p.combinableWith) && p.combinableWith.length === 0);
     expect(
       ausschluss.map(p => p.id).sort(),

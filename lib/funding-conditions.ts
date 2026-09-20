@@ -132,6 +132,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // hinaus keine Frist — es gibt damit schlicht kein Antragsverfahren, gegen
   // das eine Prüfform das Vorhaben halten könnte.
   "mauer-balkonkraftwerke",
+  // Rauschenberg, aufgenommen am 20.09.2026. Amtliche Bekanntmachung im
+  // Volltext gelesen. Auch hier wird erst gekauft und dann beantragt, und eine
+  // Frist nennt die Richtlinie nicht — es gibt kein Antragsverfahren, gegen das
+  // eine Prüfform das Vorhaben halten könnte.
+  "rauschenberg-balkon-solaranlagen",
   // Landkreis Erlangen-Höchstadt, sechs Gemeindeprogramme, aufgenommen am
   // 20.09.2026. Jede Richtlinie ist im Volltext gelesen und jede Bedingung steht
   // am Programm — die Prüfformen fehlen noch, und sie sind hier nicht trivial:

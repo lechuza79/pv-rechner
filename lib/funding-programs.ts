@@ -10365,6 +10365,58 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // der beiden Quellen etwas. Im Ergebnis wirkt das wie ein Ausschluss von
     // Bundesmitteln, also die vorsichtige Richtung.
   },
+  "rauschenberg-balkon-solaranlagen": {
+    id: "rauschenberg-balkon-solaranlagen", name: "Richtlinien Balkon-Solaranlagen",
+    traeger: "Stadt Rauschenberg", level: "kommune", region: "Rauschenberg",
+    bundesland: "Hessen", agsCode: "06534017",
+    url: "https://www.rauschenberg.de/rathaus-politik-buergerservice/satzungen",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // § 8: „Die Änderung dieser Richtlinie tritt zum 1. Januar 2026 in Kraft".
+    // Ausgefertigt am 15.12.2025, bekannt gemacht am 20.12.2025. KEIN Enddatum:
+    // Die Richtlinie nennt keins. Die Frist „bis zum 10.12.2025", die in der
+    // Rathaus-Meldung steht, gehört zur VORIGEN Runde und wäre hier falsch.
+    beginntIso: "2026-01-01", beschlossenIso: "2025-12-15",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Anlage, dazu einmalig eine Pauschale für nachgerüstete Speichermodule",
+    maxFoerderung: "100 € je Anlage (plus 100 € für Speichermodule)",
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "100 € pauschal, einmal je Wohneinheit", nur: ["balkon"] }],
+    conditions: [
+      "Beantragt wird nach dem Kauf: die Rechnungskopie gehört zum Antrag an den Magistrat",
+      "Gefördert werden ausschließlich Anlagen, die 800 Watt Einspeiseleistung nicht überschreiten",
+      "Förderfähig sind nur Anlagen, die ab dem 1. Januar 2026 gekauft UND installiert wurden",
+      "Je Wohneinheit gibt es den Zuschuss einmal; antragsberechtigt sind Eigentümer wie Mieter",
+      "Die Wohnung muss nach der Inbetriebnahme ganzjährig bewohnt sein",
+      "Gewerbebetriebe werden aus diesen Mitteln nicht gefördert",
+      "Die Anlage ist mindestens fünf Jahre zu betreiben, sonst kann der Zuschuss zurückgefordert werden",
+      "Stehen Mittel aus Programmen des Landkreises, des Landes oder des Bundes zur Verfügung, sind diese vorrangig zu nutzen; eine Kumulierung mit dem städtischen Zuschuss ist ausgeschlossen",
+      "Entschieden wird nach Eingang im Rahmen der vorhandenen Haushaltsmittel; ein Rechtsanspruch besteht nicht",
+      // Dieselbe Bauform wie in Kenzingen: Die zweite Pauschale steht in der
+      // Richtlinie, das Modell kennt dafür kein Feld, und geschätzt wird nicht.
+      // Die Richtung ist die vorsichtige — wir weisen weniger aus, als die Stadt
+      // zahlt.
+      "Für zusätzlich eingebaute Speichermodule zahlt die Stadt einmalig weitere 100 € — wir rechnen sie nicht mit, weil die Richtlinie sie an die NACHRÜSTUNG bindet und der Rechner ein Set mit Speicher als Ganzes kauft",
+    ],
+    // AUSSCHLUSS, NICHT UNGEKLÄRT: § 3 sagt wörtlich „Die kommunalen
+    // Fördermittel können nicht mit anderen Fördermitteln kumuliert werden."
+    combinableWith: [],
+    foerdert: ["balkon"],
+    balkonPauschale: 100,
+    // NEU AUFGENOMMEN 20.09.2026 aus dem Treffer-Vorrat. Die Rathaus-Meldung,
+    // über die wir gestolpert sind, beschreibt die Runde 2025 und endet mit
+    // einer abgelaufenen Frist — sie allein hätte zu „beendet" geführt. Erst
+    // die amtliche Bekanntmachung unter „Satzungen" zeigt die Fortsetzung:
+    // „Richtlinien Balkon-Solaranlagen 2026", ausgefertigt 15.12.2025, im
+    // Volltext gelesen (drei Seiten). Daneben liegt das Antragsformular
+    // „Förderung_Mini-Balkon-Solaranlage 2026".
+    //   LEHRE FÜR DEN VORRAT: Eine Nachricht ist datiert, eine Satzung gilt.
+    //   Wer bei einem Treffer nur die Meldung liest, schreibt den Stand des
+    //   Vorjahrs fort.
+    //
+    // KEIN PROBE-EINTRAG in diesem Lauf: Das Programm ist aktiv und würde Geld
+    // abziehen, und dafür fehlt ihm der Council-Durchgang. Bis dahin
+    // informiert es auf der Stadtseite und rechnet nichts — genau die Bremse,
+    // für die es `fundingBelegAktuell()` gibt.
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
