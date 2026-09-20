@@ -7,10 +7,19 @@ import { GEWERKE } from "../lib/angebot-gewerk";
 
 // ─── „Passt mein Angebot?" ────────────────────────────────────────────────────
 //
-// NOCH NIRGENDS EINGEBAUT. Wer diesen Baustein rendert, setzt im selben Zug den
-// Datenschutz-Abschnitt ein — er liegt fertig in docs/legal-oeffentlich/ und
-// steht bewusst noch nicht in der Erklärung: Solange niemand hochladen kann,
-// beschriebe er eine Verarbeitung, die es nicht gibt.
+// NOCH NIRGENDS EINGEBAUT. Sein Platz steht schon fest: Unter /angebot-pruefen
+// wartet die Warteliste-Seite, die genau diese Funktion ankündigt — wer den
+// Baustein einbaut, ersetzt dort den Wartelisten-Inhalt.
+//
+// Eine zweite eigene Seite gab es kurzzeitig und sie ist wieder weg: Sie lief
+// unter derselben Adresse und brachte den Produktionsbau zum Scheitern. Typen
+// und Testlauf sahen davon nichts — zwei Seiten auf einem Pfad fallen erst beim
+// Bauen auf. Wer hier eine Adresse belegt, baut einmal produktiv.
+//
+// Wer ihn rendert, setzt im selben Zug den Datenschutz-Abschnitt ein — er liegt
+// fertig in docs/legal-oeffentlich/ und steht bewusst noch nicht in der
+// Erklärung: Solange niemand hochladen kann, beschriebe er eine Verarbeitung,
+// die es nicht gibt.
 //
 // Der Nutzer lädt sein Angebot vom Heizungsbauer hoch, ein Meister-Agent liest es,
 // und wir halten es gegen drei Maßstäbe: unsere eigene Heizlastrechnung, die
