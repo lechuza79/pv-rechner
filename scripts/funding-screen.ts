@@ -1,6 +1,6 @@
 import { municipalReviewQueue, validateMunicipalReviews, type InquiryReceipt } from "../lib/funding-municipal-review";
 import municipalReviews from "../data/funding/municipal-reviews.json";
-import { ABSCHLIESSENDE_ERGEBNISSE, groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
+import { ABSCHLIESSENDE_ERGEBNISSE, urteilPasstZurMessung, groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
 import { abschliessendesErgebnis, notizMitHerkunft } from "../lib/funding-altergebnis";
 import { seitenAbrufAdressen, seitenSchluessel } from "../lib/funding-seiten";
 import { FundingSourceReader, FundingSourceUnreadable, recordStage } from "./lib/funding-source-reader";
@@ -361,7 +361,7 @@ async function altergebnisse(): Promise<void> {
  * Eine Fundstelle als gelesen abhaken.
  *
  *   npm run foerder:screen -- --gelesen 05370020 --url https://example.de/foerderung --ergebnis aufgenommen --beleg "150 € je Anlage"
- *   npm run foerder:screen -- --gelesen 13074001 --url beispiel.de/weg --ergebnis "Adresse entfernt" --tot
+ *   npm run foerder:screen -- --gelesen 13074001 --url beispiel.de/weg --ergebnis quelle-entfernt --tot
  *   Reviews require one municipality and one currently readable source.
  *
  * `ergebnis` ist bewusst frei und nicht auf eine Auswahl festgelegt: Was beim
@@ -485,6 +485,11 @@ async function gelesen(): Promise<void> {
     const original = await response.text();
     if (!sichtbarerText(quote!) || !sichtbarerText(original).includes(sichtbarerText(quote!))) throw new Error("Der Beleg steht nicht im aktuell gelesenen Original.");
   }
+  // DAS URTEIL MUSS ZUR MESSUNG PASSEN — geprüft, NACHDEM gemessen wurde, weil
+  // erst dann feststeht, ob die Adresse wirklich weg ist. Die Regel selbst
+  // steht als eigene Funktion in lib/funding-source-review.
+  const unpassend = urteilPasstZurMessung(ergebnis, tot);
+  if (unpassend) throw new Error(unpassend);
   const nachweis = tot ? "HTTP 404/410 beim Gegenlesen am " + heuteInBerlin() : quote!;
   const { error } = await sb.from("funding_seiten").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote: nachweis, entfernt: tot || undefined, note: wert("notiz"), reviewed_at: new Date().toISOString() }) }).eq("region_id", ids[0]).eq("url", normalized);
   if (error) throw new Error(error.message);
