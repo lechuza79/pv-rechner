@@ -176,7 +176,6 @@ export const tokens = {
   // wird, aber schmaler als die Kopfzeile. Der Fließtext DARIN bleibt auf
   // --content-max-width — 880 px lange Zeilen liest niemand gern.
   '--chart-max-width': '880px',
-  '--header-max-width': '1040px',
 
   // Redaktionelle Kopf-Luft NUR auf Lese-/Textseiten — zusätzlich zum zentralen
   // headerContentGap (48). Bewusst mehr als bei Tool-/Datenseiten, damit lange

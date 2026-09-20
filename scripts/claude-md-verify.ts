@@ -154,16 +154,6 @@ const ZAHLEN: Zahlenpruefung[] = [
     behauptung: () => greif(claudeMd, /vier Display-Stufen \(([\d\u00b7 ]+)\)/),
   },
   {
-    was: "Maximale Breite der Kopfzeile",
-    wahrheit: () => greif(lies("lib/theme.ts"), /'--header-max-width':\s*'(\d+)px'/),
-    behauptung: () => greif(claudeMd, /`--header-max-width`\s*\((\d+)\s*px\)/),
-  },
-  {
-    was: "Umschaltpunkt Kopfzeile (Menue statt Burger)",
-    wahrheit: () => greif(lies("components/Header.tsx"), /matchMedia\("\(min-width:\s*(\d+)px\)"\)/),
-    behauptung: () => greif(claudeMd, /NICHT gegen den Umschaltpunkt \((\d+)\s*px\)/),
-  },
-  {
     was: "Zeitlimit der Datenbank-Notbremse",
     wahrheit: () => {
       const ms = greif(lies("lib/db-timeout.ts"), /DB_READ_TIMEOUT_MS\s*=\s*(\d+)/);

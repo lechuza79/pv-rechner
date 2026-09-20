@@ -423,18 +423,6 @@ export const BAUSTEINE: Baustein[] = [
       "Ein Seitenrahmen — ein zweiter in der Galerie wäre kein Beispiel, sondern ein Fehler.",
   },
   {
-    datei: "components/Header.tsx",
-    name: "Header",
-    zweck:
-      "Die alte Kopfzeile mit Navigation, Sonnenanzeige und Anmeldung — AUSSER BETRIEB seit dem Release der neuen Oberfläche am 19.09.2026, keine Seite rendert sie noch, und ihre CSS-Regeln sind seit dem 20.09.2026 aus dem Theme entfernt. Die Kopfzeile jeder Seite ist SharedSiteHeader. Sie liegt nur noch da, weil lib/__tests__/nav-aktiv.test.ts sie als Quelle für die Menü-Markierung liest (offener Punkt, siehe CLAUDE.md).",
-    gruppe: "struktur",
-    ebene: "baustein",
-    stand: "verbindlich",
-    bestehtAus: ["Icons", "Logo", "ThemeController"],
-    keinBeispielWeil:
-      "Der Seitenrahmen selbst — auf dieser Seite steht er bereits oben. Ein zweiter darin wäre kein Beispiel, sondern ein Fehler.",
-  },
-  {
     datei: "components/SiteFuss.tsx",
     name: "SiteFuss",
     zweck:
