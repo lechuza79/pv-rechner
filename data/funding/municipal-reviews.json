@@ -38250,5 +38250,308 @@
     "evidenceUrl": "https://www.herzogenaurach.de/rathaus/foerderprogramme"
    }
   ]
+ },
+ {
+  "regionId": "01059",
+  "name": "Kreis Schleswig-Flensburg",
+  "checkedAt": "2026-09-20T04:20:00Z",
+  "recheckAt": "2027-09-20T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle sechs im Bestand erfassten Förder-Fundstellen des Kreises; alle sechs sind Einträge des Dienstleistungskatalogs „Was erledige ich wo?“.",
+  "outcome": "keine-passende-foerderung",
+  "conclusion": "Der Kreis führt kein eigenes Förderprogramm für unsere Techniken. Die drei energienahen Fundstellen (Balkonkraftwerke, steckerfertige Photovoltaikanlagen, nicht-fossile Heizungssysteme) sind Einträge aus dem Zuständigkeitsfinder Schleswig-Holstein, die der Kreis nur spiegelt — die Seiten sagen es an jedem Abschnitt selbst: „Die Informationen in diesem Abschnitt stammen nicht vom Kreis Schleswig-Flensburg“. Träger ist die Investitionsbank Schleswig-Holstein mit dem LANDESprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, Wärmepumpe max. 2.000 €, Solarthermie 900 €, Wärmenetz-Anschluss 500 €, Biomasse 900 €). Das Programm nimmt seit dem vorläufigen Antragsstopp am 16.11.2023 keine Anträge mehr an; nur eingegangene Verfahren werden noch beschieden. Die Einträge „Balkonkraftwerke“ und „steckerfertige Photovoltaikanlagen“ beschreiben dieselbe Leistung unter zwei Namen. Die übrigen drei Fundstellen sind fremde Träger ohne Bezug zu unseren Techniken.",
+  "searches": [
+   "schleswig-flensburg.de Was erledige ich wo Förderung Photovoltaik Balkonkraftwerk",
+   "Kreis Schleswig-Flensburg eigenes Förderprogramm Solar Wärmepumpe 2026"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+    "finding": "Dienstleistungs-Eintrag des Zuständigkeitsfinders Schleswig-Holstein, ausdrücklich „nicht vom Kreis Schleswig-Flensburg“; dieselbe Landesleistung wie der Eintrag zu steckerfertigen Anlagen."
+   },
+   {
+    "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+    "finding": "„Alle bis zum vorläufigen Stopp des Förderprogramms am 16.11.2023 eingegangenen Anträge … werden aktuell bearbeitet“; „PV-Balkon-Anlage: max. Förderung 200 Euro“; „An wen muss ich mich wenden? Investitionsbank Schleswig-Holstein“."
+   },
+   {
+    "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+    "finding": "„Wärmepumpe: max. Förderung 2000 Euro, Solarthermieanlage: max. Förderung 900 Euro, Anschluss an ein Wärmenetz: max. Förderung 500 Euro, Biomasseheizung: max. Förderung 900 Euro“ — Träger Investitionsbank Schleswig-Holstein, Antragstopp 16.11.2023."
+   },
+   {
+    "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+    "finding": "„Zuwendungen aus dem Förderprogramm ‚Umweltschutz und Sicherheit‘ für Unternehmen des Güterkraftverkehrs beantragen“ — Bundesprogramm für Speditionen."
+   },
+   {
+    "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+    "finding": "„KMU-innovativ: Ressourceneffizienz und Klimaschutz“ — BMBF-Forschungsförderung für Unternehmen, keine Anlagenförderung für Haushalte."
+   },
+   {
+    "url": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+    "finding": "„Heizkostenzuschuss für nicht leitungsgebundene Energieträger beantragen“ — einmalige Kostenerstattung für Öl und Pellets 2022/23, keine Investitionsförderung."
+   }
+  ],
+  "sources": [
+   {
+    "url": "schleswig-flensburg.de/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+    "disposition": "reviewed",
+    "reason": "Landesprogramm der IB.SH, seit 16.11.2023 ohne Antragsannahme; kein Kreisprogramm.",
+    "evidenceUrl": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php"
+   },
+   {
+    "url": "schleswig-flensburg.de/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+    "disposition": "reviewed",
+    "reason": "Dieselbe Landesleistung unter zweitem Namen; Träger IB.SH, Antragstopp 16.11.2023.",
+    "evidenceUrl": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php"
+   },
+   {
+    "url": "schleswig-flensburg.de/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+    "disposition": "reviewed",
+    "reason": "Landesprogramm der IB.SH für Wärmepumpe, Solarthermie, Wärmenetz und Biomasse.",
+    "evidenceUrl": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php"
+   },
+   {
+    "url": "schleswig-flensburg.de/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+    "disposition": "reviewed",
+    "reason": "Bundesprogramm für Speditionen, keine unserer Techniken.",
+    "evidenceUrl": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php"
+   },
+   {
+    "url": "schleswig-flensburg.de/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+    "disposition": "reviewed",
+    "reason": "BMBF-Forschungsprogramm für Unternehmen.",
+    "evidenceUrl": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php"
+   },
+   {
+    "url": "schleswig-flensburg.de/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+    "disposition": "reviewed",
+    "reason": "Einmalige Heizkostenerstattung, keine Investitionsförderung.",
+    "evidenceUrl": "https://www.schleswig-flensburg.de/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php"
+   }
+  ]
+ },
+ {
+  "regionId": "01059183",
+  "name": "Handewitt",
+  "checkedAt": "2026-09-20T04:20:00Z",
+  "recheckAt": "2027-09-20T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "keine-passende-foerderung",
+  "conclusion": "Die einzige erfasste Fundstelle ist eine Nachricht vom 27.04.2023, die auf die Heizkostenerstattung des LANDES für nicht leitungsgebundene Energieträger verweist (Verbraucherschutzministerium MLLEV). Das ist eine einmalige Kostenentlastung für Öl und Pellets, keine Investitionsförderung und kein Gemeindeprogramm. Die Seite antwortete heute mit HTTP 200; im Vorlauf vom 20.09.2026 02:03 UTC war sie mit HTTP 503 nicht erreichbar.",
+  "searches": [
+   "gemeinde-handewitt.de Förderung Photovoltaik Balkonkraftwerk Wärmepumpe"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.gemeinde-handewitt.de/de/politik-verwaltung/nachrichten-meldungen-bekanntmachungen/aktuelle-news/2023/heizkostenzuschuss-heizoel",
+    "finding": "„Die Antragsplattform wird in Schleswig-Holstein ab dem 4. Mai zur Verfügung stehen … www.schleswig-holstein.de/heizkostenerstattung“ — Landesleistung, keine Gemeindeförderung."
+   }
+  ],
+  "sources": [
+   {
+    "url": "gemeinde-handewitt.de/de/politik-verwaltung/nachrichten-meldungen-bekanntmachungen/aktuelle-news/2023/heizkostenzuschuss-heizoel",
+    "disposition": "reviewed",
+    "reason": "Verweis auf die Heizkostenerstattung des Landes; keine kommunale Förderung.",
+    "evidenceUrl": "https://www.gemeinde-handewitt.de/de/politik-verwaltung/nachrichten-meldungen-bekanntmachungen/aktuelle-news/2023/heizkostenzuschuss-heizoel"
+   }
+  ]
+ },
+ {
+  "regionId": "01059045",
+  "name": "Kappeln",
+  "checkedAt": "2026-09-20T04:20:00Z",
+  "recheckAt": "2027-09-20T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich drei Fundstellen auf kappeln.de.",
+  "outcome": "keine-passende-foerderung",
+  "conclusion": "Alle drei erfassten Fundstellen tragen keinen Förderinhalt: zwei sind Bebauungsplan-Adressen (B-Plan Nr. 43, Östlich der Eckernförder Straße), die nur den Navigationsrahmen ohne Seiteninhalt ausliefern, die dritte ist eine Weiterleitung der Stadtseite, deren Ziel tot ist. Kein Wort zu Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Weiterleitungs-Adresse ist im Bestand HTML-maskiert erfasst (Und-Zeichen als Entität); der Abruf entmaskiert sie über den Adressweg.",
+  "searches": [
+   "kappeln.de Förderung Photovoltaik Balkonkraftwerk Zuschuss"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.kappeln.de/Quicknavigation/B-Plan-Nr-43-%C3%96stlEckernf%C3%B6rderStr-S%C3%BCdl-amWinkel-.php",
+    "finding": "Seite liefert nur den Navigationsrahmen („Quicknavigation … Seiteninhalt“) ohne Inhalt; keine Förderangabe."
+   },
+   {
+    "url": "https://www.kappeln.de/Quicknavigation/4-%C3%84nderung-des-Bebauungsplanes-Nr-43-%C3%96stlich-der-Eckernf%C3%B6rder-Stra%C3%9Fe-S%C3%BCdlich-Am-Winkel-Wohngebiet-Faaborgweg-.php",
+    "finding": "Vierte Änderung desselben Bebauungsplans, ebenfalls ohne Seiteninhalt."
+   },
+   {
+    "url": "https://www.kappeln.de/redirect.phtml?extlink=1&La=1&url_fid=2989.174.1",
+    "finding": "„Dieser Link ist zur Zeit nicht erreichbar. Eine Meldung an den Administratior wurde versendet.“"
+   }
+  ],
+  "sources": [
+   {
+    "url": "kappeln.de/Quicknavigation/B-Plan-Nr-43-%C3%96stlEckernf%C3%B6rderStr-S%C3%BCdl-amWinkel-.php",
+    "disposition": "reviewed",
+    "reason": "Bebauungsplan-Adresse ohne Seiteninhalt.",
+    "evidenceUrl": "https://www.kappeln.de/Quicknavigation/B-Plan-Nr-43-%C3%96stlEckernf%C3%B6rderStr-S%C3%BCdl-amWinkel-.php"
+   },
+   {
+    "url": "kappeln.de/Quicknavigation/4-%C3%84nderung-des-Bebauungsplanes-Nr-43-%C3%96stlich-der-Eckernf%C3%B6rder-Stra%C3%9Fe-S%C3%BCdlich-Am-Winkel-Wohngebiet-Faaborgweg-.php",
+    "disposition": "reviewed",
+    "reason": "Bebauungsplan-Adresse ohne Seiteninhalt.",
+    "evidenceUrl": "https://www.kappeln.de/Quicknavigation/4-%C3%84nderung-des-Bebauungsplanes-Nr-43-%C3%96stlich-der-Eckernf%C3%B6rder-Stra%C3%9Fe-S%C3%BCdlich-Am-Winkel-Wohngebiet-Faaborgweg-.php"
+   },
+   {
+    "url": "kappeln.de/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=2989.174.1",
+    "disposition": "reviewed",
+    "reason": "Weiterleitung mit totem Ziel.",
+    "evidenceUrl": "https://www.kappeln.de/redirect.phtml?extlink=1&La=1&url_fid=2989.174.1"
+   }
+  ]
+ },
+ {
+  "regionId": "01059067",
+  "name": "Oersberg",
+  "checkedAt": "2026-09-20T04:20:00Z",
+  "recheckAt": "2027-09-20T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich drei Fundstellen auf kappeln.de.",
+  "outcome": "keine-passende-foerderung",
+  "conclusion": "Alle drei erfassten Fundstellen tragen keinen Förderinhalt: zwei sind Bebauungsplan-Adressen (B-Plan Nr. 43, Östlich der Eckernförder Straße), die nur den Navigationsrahmen ohne Seiteninhalt ausliefern, die dritte ist eine Weiterleitung der Stadtseite, deren Ziel tot ist. Kein Wort zu Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Weiterleitungs-Adresse ist im Bestand HTML-maskiert erfasst (Und-Zeichen als Entität); der Abruf entmaskiert sie über den Adressweg.",
+  "searches": [
+   "kappeln.de Förderung Photovoltaik Balkonkraftwerk Zuschuss"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.kappeln.de/Quicknavigation/B-Plan-Nr-43-%C3%96stlEckernf%C3%B6rderStr-S%C3%BCdl-amWinkel-.php",
+    "finding": "Seite liefert nur den Navigationsrahmen („Quicknavigation … Seiteninhalt“) ohne Inhalt; keine Förderangabe."
+   },
+   {
+    "url": "https://www.kappeln.de/Quicknavigation/4-%C3%84nderung-des-Bebauungsplanes-Nr-43-%C3%96stlich-der-Eckernf%C3%B6rder-Stra%C3%9Fe-S%C3%BCdlich-Am-Winkel-Wohngebiet-Faaborgweg-.php",
+    "finding": "Vierte Änderung desselben Bebauungsplans, ebenfalls ohne Seiteninhalt."
+   },
+   {
+    "url": "https://www.kappeln.de/redirect.phtml?extlink=1&La=1&url_fid=2989.174.1",
+    "finding": "„Dieser Link ist zur Zeit nicht erreichbar. Eine Meldung an den Administratior wurde versendet.“"
+   }
+  ],
+  "sources": [
+   {
+    "url": "kappeln.de/Quicknavigation/B-Plan-Nr-43-%C3%96stlEckernf%C3%B6rderStr-S%C3%BCdl-amWinkel-.php",
+    "disposition": "reviewed",
+    "reason": "Bebauungsplan-Adresse ohne Seiteninhalt.",
+    "evidenceUrl": "https://www.kappeln.de/Quicknavigation/B-Plan-Nr-43-%C3%96stlEckernf%C3%B6rderStr-S%C3%BCdl-amWinkel-.php"
+   },
+   {
+    "url": "kappeln.de/Quicknavigation/4-%C3%84nderung-des-Bebauungsplanes-Nr-43-%C3%96stlich-der-Eckernf%C3%B6rder-Stra%C3%9Fe-S%C3%BCdlich-Am-Winkel-Wohngebiet-Faaborgweg-.php",
+    "disposition": "reviewed",
+    "reason": "Bebauungsplan-Adresse ohne Seiteninhalt.",
+    "evidenceUrl": "https://www.kappeln.de/Quicknavigation/4-%C3%84nderung-des-Bebauungsplanes-Nr-43-%C3%96stlich-der-Eckernf%C3%B6rder-Stra%C3%9Fe-S%C3%BCdlich-Am-Winkel-Wohngebiet-Faaborgweg-.php"
+   },
+   {
+    "url": "kappeln.de/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=2989.174.1",
+    "disposition": "reviewed",
+    "reason": "Weiterleitung mit totem Ziel.",
+    "evidenceUrl": "https://www.kappeln.de/redirect.phtml?extlink=1&La=1&url_fid=2989.174.1"
+   }
+  ]
+ },
+ {
+  "regionId": "01059068",
+  "name": "Rabenkirchen-Faulück",
+  "checkedAt": "2026-09-20T04:20:00Z",
+  "recheckAt": "2027-09-20T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich drei Fundstellen auf kappeln.de.",
+  "outcome": "keine-passende-foerderung",
+  "conclusion": "Alle drei erfassten Fundstellen tragen keinen Förderinhalt: zwei sind Bebauungsplan-Adressen (B-Plan Nr. 43, Östlich der Eckernförder Straße), die nur den Navigationsrahmen ohne Seiteninhalt ausliefern, die dritte ist eine Weiterleitung der Stadtseite, deren Ziel tot ist. Kein Wort zu Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Weiterleitungs-Adresse ist im Bestand HTML-maskiert erfasst (Und-Zeichen als Entität); der Abruf entmaskiert sie über den Adressweg.",
+  "searches": [
+   "kappeln.de Förderung Photovoltaik Balkonkraftwerk Zuschuss"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.kappeln.de/Quicknavigation/B-Plan-Nr-43-%C3%96stlEckernf%C3%B6rderStr-S%C3%BCdl-amWinkel-.php",
+    "finding": "Seite liefert nur den Navigationsrahmen („Quicknavigation … Seiteninhalt“) ohne Inhalt; keine Förderangabe."
+   },
+   {
+    "url": "https://www.kappeln.de/Quicknavigation/4-%C3%84nderung-des-Bebauungsplanes-Nr-43-%C3%96stlich-der-Eckernf%C3%B6rder-Stra%C3%9Fe-S%C3%BCdlich-Am-Winkel-Wohngebiet-Faaborgweg-.php",
+    "finding": "Vierte Änderung desselben Bebauungsplans, ebenfalls ohne Seiteninhalt."
+   },
+   {
+    "url": "https://www.kappeln.de/redirect.phtml?extlink=1&La=1&url_fid=2989.174.1",
+    "finding": "„Dieser Link ist zur Zeit nicht erreichbar. Eine Meldung an den Administratior wurde versendet.“"
+   }
+  ],
+  "sources": [
+   {
+    "url": "kappeln.de/Quicknavigation/B-Plan-Nr-43-%C3%96stlEckernf%C3%B6rderStr-S%C3%BCdl-amWinkel-.php",
+    "disposition": "reviewed",
+    "reason": "Bebauungsplan-Adresse ohne Seiteninhalt.",
+    "evidenceUrl": "https://www.kappeln.de/Quicknavigation/B-Plan-Nr-43-%C3%96stlEckernf%C3%B6rderStr-S%C3%BCdl-amWinkel-.php"
+   },
+   {
+    "url": "kappeln.de/Quicknavigation/4-%C3%84nderung-des-Bebauungsplanes-Nr-43-%C3%96stlich-der-Eckernf%C3%B6rder-Stra%C3%9Fe-S%C3%BCdlich-Am-Winkel-Wohngebiet-Faaborgweg-.php",
+    "disposition": "reviewed",
+    "reason": "Bebauungsplan-Adresse ohne Seiteninhalt.",
+    "evidenceUrl": "https://www.kappeln.de/Quicknavigation/4-%C3%84nderung-des-Bebauungsplanes-Nr-43-%C3%96stlich-der-Eckernf%C3%B6rder-Stra%C3%9Fe-S%C3%BCdlich-Am-Winkel-Wohngebiet-Faaborgweg-.php"
+   },
+   {
+    "url": "kappeln.de/redirect.phtml?extlink=1&amp;La=1&amp;url_fid=2989.174.1",
+    "disposition": "reviewed",
+    "reason": "Weiterleitung mit totem Ziel.",
+    "evidenceUrl": "https://www.kappeln.de/redirect.phtml?extlink=1&La=1&url_fid=2989.174.1"
+   }
+  ]
+ },
+ {
+  "regionId": "01059075",
+  "name": "Schleswig",
+  "checkedAt": "2026-09-20T04:20:00Z",
+  "recheckAt": "2027-09-20T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "keine-passende-foerderung",
+  "conclusion": "Die beiden erfassten Fundstellen gehören zu einem Radweg-Bauprojekt der Stadt („Förderprojekt Alte Kreisbahntrasse“, Fördermittelgeber Bundesministerium für Umwelt, Fördermittelkennzeichen 67KBR0096, Laufzeit 01.03.2020–31.01.2025). Die Stadt ist dort Empfängerin von Bundesmitteln, nicht Geberin; für Bürgerinnen und Bürger gibt es daraus nichts. Keine Nennung von Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+  "searches": [
+   "schleswig.de Förderung Photovoltaik Balkonkraftwerk Zuschuss Bürger"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.schleswig.de/bauen-stadtentwicklung/tiefbau-verkehrsplanung/foerderprojekt-alte-kreisbahntrasse",
+    "finding": "„Ausbau der alten Kreisbahntrasse zur schnellen Radverbindung … Fördermittelgeber Bundesministerium für Umwelt, Naturschutz und nukleare Sicherheit“ — Stadt als Empfängerin."
+   },
+   {
+    "url": "https://www.schleswig.de/bauen-stadtentwicklung/tiefbau-verkehrsplanung/foerderprojekt-alte-kreisbahntrasse/aktuelle-baumassnahmen-und-umleitung",
+    "finding": "„Am 3. Juni startet der Ausbau der ehemaligen Kreisbahntrasse hin zur schnellen und sicheren Fuß- und Radwegeverbindung“ — Bauabschnitt und Umleitung desselben Projekts."
+   }
+  ],
+  "sources": [
+   {
+    "url": "schleswig.de/bauen-stadtentwicklung/tiefbau-verkehrsplanung/foerderprojekt-alte-kreisbahntrasse",
+    "disposition": "reviewed",
+    "reason": "Radweg-Projekt mit Bundesmitteln; keine Bürgerförderung.",
+    "evidenceUrl": "https://www.schleswig.de/bauen-stadtentwicklung/tiefbau-verkehrsplanung/foerderprojekt-alte-kreisbahntrasse"
+   },
+   {
+    "url": "schleswig.de/bauen-stadtentwicklung/tiefbau-verkehrsplanung/foerderprojekt-alte-kreisbahntrasse/aktuelle-baumassnahmen-und-umleitung",
+    "disposition": "reviewed",
+    "reason": "Unterseite desselben Radweg-Projekts.",
+    "evidenceUrl": "https://www.schleswig.de/bauen-stadtentwicklung/tiefbau-verkehrsplanung/foerderprojekt-alte-kreisbahntrasse/aktuelle-baumassnahmen-und-umleitung"
+   }
+  ]
+ },
+ {
+  "regionId": "01059060",
+  "name": "Mohrkirch",
+  "checkedAt": "2026-09-20T04:20:00Z",
+  "recheckAt": "2027-09-20T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "keine-passende-foerderung",
+  "conclusion": "Die einzige erfasste Fundstelle ist die fördernde Mitgliedschaft in der Freiwilligen Feuerwehr („Der Jahresbetrag ist frei wählbar sollte aber mindestens 6 Euro betragen“) — eine Zahlung AN die Gemeinde, keine Förderung von ihr. Kein Energiebezug.",
+  "searches": [
+   "mohrkirch.de Förderung Photovoltaik Balkonkraftwerk Zuschuss"
+  ],
+  "evidence": [
+   {
+    "url": "https://www.mohrkirch.de/feuerwehr/foerdernde-mitgliedschaft",
+    "finding": "„Es besteht die Möglichkeit, die Freiwillige Feuerwehr als förderndes Mitglied zu unterstützen.“ — Mitgliedsbeitrag, keine Förderung."
+   }
+  ],
+  "sources": [
+   {
+    "url": "mohrkirch.de/feuerwehr/foerdernde-mitgliedschaft",
+    "disposition": "reviewed",
+    "reason": "Fördernde Mitgliedschaft der Feuerwehr; keine Förderung.",
+    "evidenceUrl": "https://www.mohrkirch.de/feuerwehr/foerdernde-mitgliedschaft"
+   }
+  ]
  }
 ]
