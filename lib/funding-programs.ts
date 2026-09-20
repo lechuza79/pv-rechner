@@ -3674,6 +3674,69 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Anzeigetext da — der Balkon-Rechner konnte damit nichts anfangen.
     balkonPauschale: 200,
   },
+  "unterfoehring-energiesparfoerderprogramm": {
+    id: "unterfoehring-energiesparfoerderprogramm", name: "Energiesparförderprogramm",
+    traeger: "Gemeinde Unterföhring", level: "kommune", region: "Unterföhring",
+    bundesland: "Bayern", agsCode: "09184147",
+    url: "https://www.unterfoehring.de/mobilitaet-umwelt/umwelt/energiespar-foerderprogramme.html",
+    stand: "September 2025", beschlossenIso: "2025-09-29", beginntIso: "2025-10-01",
+    status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp für die Dachanlage mit Speicher, Anteil der Kosten fürs Balkonkraftwerk",
+    maxFoerderung: "max. 6.000 € für die Dachanlage, 800 € fürs Balkonkraftwerk",
+    rates: [
+      { label: "Dachanlage mit Stromspeicher", value: "300 €/kWp für die ersten 10 kWp, danach 150 €/kWp bis max. 30 kWp", nur: ["pv"] },
+      { label: "Speicher an einer bestehenden Anlage nachrüsten", value: "200 € je kWh, max. 1.000 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "30 % der Gesamtinvestitionskosten, max. 400 € ohne Speicher, max. 800 € mit Speicher", nur: ["balkon"] },
+      { label: "Speicher am Balkonkraftwerk nachrüsten", value: "100 € je kWh, höchstens für 5 kWh", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Der Antrag muss vor Auftragsvergabe und Beginn gestellt sein; maßgeblich ist der Eingangsstempel der Gemeindeverwaltung",
+      "Bei einer kombinierten Förderung mit BAFA oder KfW darf vorab ein Vertrag mit aufschiebender Förderbedingung geschlossen werden",
+      "Ein Rechtsanspruch besteht nicht; die Mittel werden in der Reihenfolge des Eingangs vollständiger Anträge vergeben",
+      "Gefördert werden ausschließlich private Wohngebäude im Gemeindegebiet; höchstens 25 % der Wohnfläche dürfen gewerblich genutzt sein",
+      "Höchstens 10.000 € je Gebäude innerhalb von fünf Jahren über alle Maßnahmen des Programms zusammen",
+      { text: "Antragsberechtigt sind Hauseigentümer, Hausverwaltungen und Eigentümergemeinschaften", nur: ["pv"] },
+      { text: "Die Dachanlage wird nur zusammen mit einem Stromspeicher gefördert; ohne Speicher zahlt die Gemeinde nichts", nur: ["pv"] },
+      { text: "Für die Nachrüstung eines Speichers muss die Anlage nach dem 31.12.2012 errichtet worden sein; gebrauchte Anlagen und Eigenbau sind ausgeschlossen", nur: ["pv"] },
+      { text: "Der Zuschuss gilt je Wohnung; Mieter brauchen das Einverständnis des Vermieters", nur: ["balkon"] },
+      { text: "Wir rechnen mit dem Deckel von 400 € — mit Speicher zahlt die Gemeinde bis zu 800 €", nur: ["balkon"] },
+      "Förderungen anderer Träger sind erlaubt; die Summe aller Mittel darf die tatsächlichen Kosten nicht übersteigen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // KEIN STRUKTURIERTER DACH-SATZ, und das ist die Kernaussage dieses Eintrags
+    // (Council 20.09.2026, drei Prüfer, einer adversarial). „300 €/kWp für die
+    // ersten 10 kWp, danach 150 €/kWp" ist eine GRENZSATZ-Staffel; das Modell
+    // rechnet `pvSockel + kwp × pvPerKwp`, also eine Gerade über die VOLLE
+    // kWp-Zahl. Durchgerechnet mit 3.000 € Sockel und 150 €/kWp kämen bei
+    // 8 kWp 4.200 € heraus, die Richtlinie zahlt dort 2.400 € — 1.800 € zu
+    // viel, und zwar im häufigsten Anlagenbereich. `pvTiers` hilft nicht: Die
+    // Stufen tragen feste Beträge, keinen Grenzsatz. Derselbe Fall wie
+    // Dietmannsried eine Zeile weiter oben.
+    //
+    // UND KEIN `speicherPerKwh`: Die 200 €/kWh gelten ausschließlich der
+    // NACHRÜSTUNG an einer bestehenden Anlage. Das Modell kennt diese
+    // Unterscheidung nicht und addierte den Betrag zur Neuanlage mit Speicher —
+    // dort zahlt Unterföhring ihn nicht, und Nr. 3.4 der Richtlinie verbietet
+    // die Doppelförderung innerhalb des Programms ausdrücklich.
+    //
+    // Der Balkon-Teil ist der einzige rechenbare: 30 % der Kosten. Der Deckel
+    // hängt am Speicher (400 € ohne, 800 € mit), das Modell kennt nur einen —
+    // gerechnet wird der NIEDRIGERE, und die Abweichung steht als Bedingung an
+    // der Karte, damit niemand sie für die ganze Wahrheit hält.
+    pvNurMitSpeicher: true,
+    balkonPercentOfCost: 0.30, balkonCap: 400,
+    // NICHT aufgenommen: der Aufschlag nach Nr. 2.1 („50 % auf die bewilligte
+    // Fördersumme des BAFA/der KfW, max. 10.000 €"), der Wärmepumpen
+    // einschließt. Direkt darunter steht: „Heizungserneuerungen werden nur in
+    // Kombination mit dem Anschluss ans Fernwärmenetz gefördert - sofern eine
+    // Versorgung mit Fern- oder zentraler Nahwärme (Geothermie) möglich ist."
+    // Unterföhring hat ein eigenes Geothermie-Netz; ob eine Wärmepumpe dort
+    // überhaupt aufgestockt wird, gibt der Satz nicht eindeutig her. Eine
+    // pauschale Wärmepumpen-Zahl wäre deshalb geraten — `foerdert` führt
+    // „waermepumpe" bewusst nicht.
+  },
   // ── Ausgelaufene Programme: aufgenommen, weil das eine Auskunft ist ────────
   //
   // Entscheidung des Betreibers (17.08.2026): Auch beendete oder ausgesetzte
@@ -5648,14 +5711,54 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Hückelhoven", level: "kommune", region: "Hückelhoven",
     bundesland: "Nordrhein-Westfalen", agsCode: "05370020",
     url: "https://www.hueckelhoven.de/erfolgreiche-foerderprogramme-gehen-weiter/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Pauschale je Balkonkraftwerk bis 800 W",
+    // Der BETRAG steht nicht in der Förderrichtlinie, sondern in der Mitteilung
+    // der Stadt vom 09.05.2025 (die URL oben): „Balkonkraftwerke mit einer
+    // Leistung bis zu 800 Watt mit 150 Euro je Anlage". Die Richtlinie selbst
+    // trägt an der Stelle eine Lücke in der Textebene („wird auf ⟨⟩
+    // festgelegt:") und kündigt mit „abhängig von der Art der Maßnahme und
+    // Größe der Anlage" eine Staffelung an, die dort nicht lesbar ist. OFFEN
+    // (bis 12/2026): ob es unterhalb der 150 € eine Stufe gibt. Nicht als
+    // „steht in der Richtlinie" ausgeben — sie belegt den Betrag nicht.
+    coveredCosts: "Pauschale je Balkonkraftwerk bis 800 VA am Wechselrichter",
     maxFoerderung: "max. 150 € je Anlage",
-    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "150 € je Anlage" }],
+    rates: [{ label: "Balkonkraftwerk bis 800 VA", value: "150 € je Anlage" }],
     conditions: [
-      "Gefördert werden Anlagen mit höchstens 800 W Leistung",
-      "Das Programm läuft seit 2024; im ersten Jahr wurden 139 Anträge bewilligt",
+      // 20.09.2026 aus der amtlichen Förderrichtlinie (1. Anpassung, in Kraft
+      // seit 15.05.2024) im Volltext ergänzt; Council mit adversarialem Prüfer.
+      //
+      // DIE ERSTE BEDINGUNG WAR EINE VERSCHÄRFUNG OHNE FUNDSTELLE. Hier stand
+      // „Anlagen mit höchstens 800 W Leistung". Die Richtlinie sagt aber
+      // „maximale Leistung (AM WECHSELRICHTER) von 800 VA" — die Modulleistung
+      // begrenzt sie mit keinem Wort. Ein übliches Set hat 1.600–2.000 Wp
+      // Module hinter einem 800-VA-Wechselrichter; wer unsere alte Fassung las
+      // und auf sein Datenblatt sah, hielt sich für ausgeschlossen und stellte
+      // keinen Antrag. Der Fehler kostete nicht die Stadt, sondern den Bürger —
+      // und er betraf den Normalfall, nicht den Ausnahmefall.
+      "Der Wechselrichter darf höchstens 800 VA abgeben; wie viel die Module leisten, ist nicht begrenzt",
+      // Die teuerste Bedingung des Programms, und strenger als die
+      // Bundesförderung: Dort genügt der Antrag vor Beginn, hier muss die
+      // BEWILLIGUNG da sein. Und gefördert wird die „Anschaffung", der Beginn
+      // der „Umsetzung" ist gesperrt — wer vorher kauft, ist ebenfalls raus.
+      "Wer vor der Bewilligung kauft oder einbaut, bekommt nichts — eine nachträgliche Förderung ist ausgeschlossen",
+      "Die Anlage muss auf einem Gebäude im Stadtgebiet stehen",
+      "Je Wohneinheit wird höchstens eine Anlage gefördert, und jede Anlage nur ein einziges Mal",
+      "Mieter brauchen die Genehmigung ihres Vermieters",
+      "Gebrauchte, geleaste und gemietete Anlagen sind ausgeschlossen; die Anlage muss fachgerecht installiert sein",
+      "Alle baurechtlichen Genehmigungen müssen vorliegen, und die Vorgaben des Netzbetreibers sind einzuhalten",
+      "Die Anlage muss fünf Jahre im geförderten Zustand erhalten und zugänglich bleiben",
+      // Die Frist bindet nicht nur die Papiere, sondern die Ausführung selbst:
+      // „Bei verspäteter Mitteilung ODER MASSNAHMENDURCHFÜHRUNG ist eine
+      // Auszahlung nicht mehr möglich." Ausgezahlt wird erst danach — der
+      // Bürger geht in Vorkasse.
+      "Anlage fertig, Rechnung und Foto spätestens zwölf Monate nach der Bewilligung — sonst wird nichts ausgezahlt",
+      // Der Zusatz ist der scharfe Teil: Im Windhundverfahren verliert ein
+      // nachgebesserter Antrag seinen Platz in der Reihe, und nach 30 Tagen
+      // gilt er als zurückgezogen — ohne weiteren Bescheid.
+      "Vergabe nach Eingang der Anträge, bis der Jahrestopf leer ist; wer nachbessern muss, hat dafür 30 Tage und rückt mit dem Tag der Vollständigkeit ans Ende der Reihe",
+      "Ein Rechtsanspruch auf die Förderung besteht nicht",
+      "Das Programm läuft seit 2024; im ersten Jahr wurden 139 Anträge über zusammen rund 20.000 € bewilligt",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],

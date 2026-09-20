@@ -2,7 +2,7 @@ import { municipalReviewQueue, validateMunicipalReviews, type InquiryReceipt } f
 import municipalReviews from "../data/funding/municipal-reviews.json";
 import { groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
 import { seitenAbrufAdressen, seitenSchluessel } from "../lib/funding-seiten";
-import { FundingSourceReader, recordStage } from "./lib/funding-source-reader";
+import { FundingSourceReader, FundingSourceUnreadable, recordStage } from "./lib/funding-source-reader";
 /**
  * Abdeckungs-Screening: alle Gemeinden mit Förderseite systematisch durchsehen.
  *
@@ -307,6 +307,7 @@ async function quellen(): Promise<void> {
  * Eine Fundstelle als gelesen abhaken.
  *
  *   npm run foerder:screen -- --gelesen 05370020 --url https://example.de/foerderung --ergebnis aufgenommen --beleg "150 € je Anlage"
+ *   npm run foerder:screen -- --gelesen 13074001 --url beispiel.de/weg --ergebnis "Adresse entfernt" --tot
  *   Reviews require one municipality and one currently readable source.
  *
  * `ergebnis` ist bewusst frei und nicht auf eine Auswahl festgelegt: Was beim
@@ -334,7 +335,7 @@ async function gelesen(): Promise<void> {
   const roh = wert("gelesen");
   const ergebnis = wert("ergebnis");
   if (!roh || !ergebnis) {
-    console.error("Aufruf: --gelesen <region_id> --url <url> --beleg <quote> --ergebnis <text> [--notiz <text>]");
+    console.error("Aufruf: --gelesen <region_id> --url <url> (--beleg <quote> | --tot) --ergebnis <text> [--notiz <text>]");
     process.exit(1);
   }
   const ids = roh.split(",").map((x) => x.trim()).filter(Boolean);
@@ -345,7 +346,26 @@ async function gelesen(): Promise<void> {
   };
   const sourceUrl = wert("url");
   const quote = wert("beleg");
-  if (ids.length !== 1 || !sourceUrl || !quote) throw new Error("Ein Ort, --url und --beleg sind für eine Quellenprüfung erforderlich.");
+  // EINE TOTE ADRESSE IST EIN BEFUND, KEIN HINDERNIS (20.09.2026). Bis heute
+  // verlangte jedes Abhaken einen Beleg AUS der Seite — eine Adresse, die mit
+  // 404 antwortet, konnte deshalb nie aus dem Vorrat heraus. Gemessen an
+  // diesem Tag: 1.767 der 13.401 offenen Quellzeilen (13 %) stehen auf
+  // Adressen, die der Seiten-Wächter selbst als unerreichbar führt. Ein
+  // Vorrat, aus dem nichts herausgenommen werden kann, wächst nur.
+  //   GEMESSEN WIRD TROTZDEM, NIE GEGLAUBT: Der abgelegte Zustand taugt dafür
+  //   nicht. In einer Stichprobe von 14 solchen Adressen antworteten SECHS
+  //   heute mit HTTP 200 — darunter zwei, deren Name ein Förderprogramm
+  //   verspricht. Wer nach dem Zustandsfeld abhakt, wirft jede dritte lesbare
+  //   Förderseite weg, ohne sie gesehen zu haben.
+  //   Deshalb: `--tot` ersetzt den Beleg nicht durch eine Annahme, sondern
+  //   durch eine MESSUNG im selben Augenblick. Sie muss `missing` ergeben
+  //   (HTTP 404/410) — das ist die einzige Antwort, die etwas über die Quelle
+  //   sagt. `blocked`, `shell`, `network` und `server` sagen etwas über
+  //   unseren Versuch und lassen die Zeile stehen; antwortet die Adresse gar
+  //   normal, gilt wieder die Belegpflicht.
+  const tot = process.argv.includes("--tot");
+  if (ids.length !== 1 || !sourceUrl || (!quote && !tot)) throw new Error("Ein Ort, --url und --beleg sind für eine Quellenprüfung erforderlich (--tot statt --beleg nur für eine nachweislich entfernte Adresse).");
+  if (tot && quote) throw new Error("--tot und --beleg schließen einander aus: entweder steht der Beleg in der Seite oder die Seite ist weg.");
   const normalized = seitenSchluessel(sourceUrl);
   const { data: page, error: lookupError } = await sb.from("funding_seiten").select("url").eq("region_id", ids[0]).eq("url", normalized).maybeSingle();
   if (lookupError || !page) throw new Error(lookupError?.message ?? "Die genaue Förderseite ist nicht erfasst.");
@@ -362,6 +382,7 @@ async function gelesen(): Promise<void> {
   // dieselbe Klasse wie die fehlende Kennung eine Zeile weiter unten.
   let response: Response | undefined;
   let letzterFehler: unknown;
+  const gruende: (string | null)[] = [];
   for (const adresse of seitenAbrufAdressen(sourceUrl)) {
     try {
       response = await sources.verify(adresse, {
@@ -370,21 +391,35 @@ async function gelesen(): Promise<void> {
         signal: AbortSignal.timeout(25000),
       });
       break;
-    } catch (fehler) { letzterFehler = fehler; }
+    } catch (fehler) {
+      letzterFehler = fehler;
+      gruende.push(fehler instanceof FundingSourceUnreadable ? fehler.reason : null);
+    }
   }
-  if (!response) throw letzterFehler ?? new Error("Die Quelle war nicht lesbar.");
-  const original = await response.text();
-  if (!sichtbarerText(quote) || !sichtbarerText(original).includes(sichtbarerText(quote))) throw new Error("Der Beleg steht nicht im aktuell gelesenen Original.");
-  const { error } = await sb.from("funding_seiten").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote, note: wert("notiz"), reviewed_at: new Date().toISOString() }) }).eq("region_id", ids[0]).eq("url", normalized);
+  // JEDE Schreibweise muss „weg" ergeben, nicht irgendeine. `seitenAbrufAdressen`
+  // probiert mehrere Formen derselben Adresse; genügte eine 404 darunter, hakte
+  // ein Tippfehler in der Erfassung die Zeile ab, während die richtige Form
+  // die Förderseite ausliefert.
+  const entfernt = !response && gruende.length > 0 && gruende.every((g) => g === "missing");
+  if (tot) {
+    if (response) throw new Error("Die Adresse antwortet — kein Fall für --tot, sondern für --beleg.");
+    if (!entfernt) throw letzterFehler ?? new Error("Die Quelle war nicht lesbar.");
+  } else {
+    if (!response) throw letzterFehler ?? new Error("Die Quelle war nicht lesbar.");
+    const original = await response.text();
+    if (!sichtbarerText(quote!) || !sichtbarerText(original).includes(sichtbarerText(quote!))) throw new Error("Der Beleg steht nicht im aktuell gelesenen Original.");
+  }
+  const nachweis = tot ? "HTTP 404/410 beim Gegenlesen am " + heuteInBerlin() : quote!;
+  const { error } = await sb.from("funding_seiten").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote: nachweis, entfernt: tot || undefined, note: wert("notiz"), reviewed_at: new Date().toISOString() }) }).eq("region_id", ids[0]).eq("url", normalized);
   if (error) throw new Error(error.message);
-  recordStage("review", { region_id: ids[0], url: sourceUrl, quote, reviewed_at: new Date().toISOString(), result: ergebnis });
+  recordStage("review", { region_id: ids[0], url: sourceUrl, quote: nachweis, entfernt: tot, reviewed_at: new Date().toISOString(), result: ergebnis });
   // Preserve the legacy one-page view only when it refers to this exact URL.
   const { data: coverage } = await sb.from("funding_coverage").select("url").eq("region_id", ids[0]).maybeSingle();
   if (coverage?.url && seitenSchluessel(coverage.url) === normalized) {
-    const { error: coverageError } = await sb.from("funding_coverage").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote }) }).eq("region_id", ids[0]).eq("url", coverage.url);
+    const { error: coverageError } = await sb.from("funding_coverage").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote: nachweis, entfernt: tot || undefined }) }).eq("region_id", ids[0]).eq("url", coverage.url);
     if (coverageError) throw new Error(coverageError.message);
   }
-  console.log("Eine konkrete Quelle als gelesen vermerkt.");
+  console.log(tot ? "Eine entfernte Quelle als geprüft vermerkt (Adresse antwortet mit 404/410)." : "Eine konkrete Quelle als gelesen vermerkt.");
 }
 
 async function main(): Promise<void> {

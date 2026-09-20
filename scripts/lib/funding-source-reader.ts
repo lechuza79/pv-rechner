@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { createHash } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { fundingPdfText, fundingContentGap, renderFundingSource, htmlText } from "./funding-document";
-import { sourceFailure, retryAt } from "../../lib/funding-source-policy";
+import { sourceFailure, retryAt, type SourceFailure } from "../../lib/funding-source-policy";
 
 export const EVIDENCE_RUN = process.env.FUNDING_RUN_ID ?? `local-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 export const EVIDENCE_DIR = resolve(process.env.FUNDING_EVIDENCE_DIR ?? `scripts/.cache/funding-evidence/${EVIDENCE_RUN}`);
@@ -17,6 +17,21 @@ export function recordStage(stage: string, data: Record<string, unknown>): void 
 
 type PersistenceError = { message: string; code?: string; details?: string; hint?: string };
 export class FundingPersistenceError extends Error {}
+
+/**
+ * Warum nicht nur `Error`: Ein Aufrufer muss „die Adresse ist WEG" von „ich
+ * konnte sie nicht lesen" unterscheiden können, und zwar ohne eine
+ * Fehlermeldung zu zerlegen. Nur `missing` (HTTP 404/410) ist eine Aussage
+ * ÜBER die Quelle; `blocked`, `shell`, `network` und `server` sind Aussagen
+ * über unseren Versuch. Wer beides gleich behandelt, hakt irgendwann eine
+ * Förderseite ab, die bloß gerade nicht antwortete.
+ */
+export class FundingSourceUnreadable extends Error {
+  constructor(readonly reason: SourceFailure | null, readonly url: string) {
+    super(`Source unreadable: ${reason}`);
+    this.name = "FundingSourceUnreadable";
+  }
+}
 
 /** Retry only transient failures of idempotent database writes. */
 export async function persistFundingWrite(
@@ -155,7 +170,7 @@ export class FundingSourceReader {
     if (!verifying) this.state.set(input, state);
     const navigableShell = this.enhanced && reason === "shell" && navigation && response;
     if (navigableShell) this.context.getStore()?.push(input);
-    if ((reason && !navigableShell) || !response) throw new Error(`Source unreadable: ${reason}`);
+    if ((reason && !navigableShell) || !response) throw new FundingSourceUnreadable(reason, input);
     // The network signal may close the original stream while persistence runs.
     // Serve the already captured bytes, not a clone of that live stream.
     const payload = derived ? content : Buffer.from(bytes);

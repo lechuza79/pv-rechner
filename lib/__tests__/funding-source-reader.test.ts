@@ -85,3 +85,15 @@ it("verifies a source without writing the retry lock and without being stopped b
     expect(observations.map(o => o.url)).toContain("https://example.org/andere");
   } finally { vi.unstubAllGlobals(); delete process.env.FUNDING_EVIDENCE_DIR; rmSync(dir, { recursive: true }); }
 });
+
+// Ein Aufrufer muss „die Adresse ist WEG" von „ich konnte sie nicht lesen"
+// unterscheiden können, ohne eine Fehlermeldung zu zerlegen. Eine Meldung ist
+// Text und ändert sich beim nächsten Umformulieren still; der Grund ist eine
+// Angabe und bleibt.
+it("throws a typed error carrying the failure reason, not just a message", () => {
+  const reader = readFileSync(join(process.cwd(), "scripts/lib/funding-source-reader.ts"), "utf8");
+  expect(reader).toContain("export class FundingSourceUnreadable extends Error");
+  expect(reader).toContain("readonly reason: SourceFailure | null");
+  expect(reader).toContain("throw new FundingSourceUnreadable(reason, input)");
+  expect(reader).not.toContain("throw new Error(`Source unreadable");
+});
