@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { klickBisWirkung } from "./klick";
 
 // ─── Die Ortsgeschichte als Karte, im Browser gemessen ───────────────────────
 //
@@ -36,9 +37,20 @@ for (const groesse of BREITEN) {
     // sein zugänglicher Name ist deshalb Kategorie plus Schlagzeile plus
     // „Ansehen". Ein exakter Vergleich fand gar nichts, und der Klick ging ins
     // Leere — ohne Fehlermeldung, weil `.first()` auf ein anderes Element fiel.
-    await page.getByRole("button", { name: /Ansehen$/ }).first().click();
+    //
+    // GEKLICKT WIRD, BIS ES WIRKT. Der Teaser steht schon im servergerenderten
+    // HTML und ist damit anklickbar, bevor React ihn übernommen hat; ein Klick
+    // in dieses Fenster wird stumm verschluckt, und längeres Warten holt ihn
+    // nicht zurück. Gemessen wurde genau das: Im grünen Lauf kam der Klick
+    // 32 ms NACH dem Handler, im roten 87 ms davor — mit zwei Arbeitern rutscht
+    // die Übernahme nach hinten, weil beide Browser dieselben Skriptpakete
+    // gleichzeitig holen. Herleitung und Zahlen stehen in `klick.ts`.
     const dialog = page.getByRole("dialog");
-    await expect(dialog).toBeVisible();
+    await klickBisWirkung(
+      page.getByRole("button", { name: /Ansehen$/ }).first(),
+      dialog,
+      "das Fenster mit der Geschichte",
+    );
 
     // IM FENSTER gesucht, nicht auf der Seite: Seit die Teaser ein
     // Vorschaubildchen tragen, steht dieselbe Karte mehrfach im Dokument, und
@@ -89,8 +101,11 @@ test("Die Karte erbt die Farben der Seite, statt eine eigene Palette mitzubringe
   // überschrieb die Tokens der Seite und stand abends als weißer Block auf
   // dunklem Grund.
   await page.goto(ORT, { waitUntil: "domcontentloaded" });
-  await page.getByRole("button", { name: /Ansehen$/ }).first().click();
-  await expect(page.getByRole("dialog")).toBeVisible();
+  await klickBisWirkung(
+    page.getByRole("button", { name: /Ansehen$/ }).first(),
+    page.getByRole("dialog"),
+    "das Fenster mit der Geschichte",
+  );
 
   const eigenePalette = await page.evaluate(() => {
     const k = document
