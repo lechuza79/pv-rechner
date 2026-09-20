@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { seitenwertDomain, seitenwerteFuer } from "../../../../lib/seitenwert-laden";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { isAdminSession } from "../../../../lib/admin-guard";
 import { istStand } from "../../../../lib/presse-stand";
@@ -183,7 +184,10 @@ export async function GET(req: NextRequest) {
     .from("presse_medien")
     .select("*", { count: "exact", head: true });
 
-  return NextResponse.json({ medien, kontakte, gesamt: count ?? 0, bestand: bestand ?? 0 });
+  // Seitenwerte in EINEM Aufruf für die gezeigten Medien.
+  const werte = await seitenwerteFuer(serviceDb, domains);
+  const medienMitWert = medien.map((m) => ({ ...m, seitenwert: werte.get(seitenwertDomain(m.domain) ?? "") ?? null }));
+  return NextResponse.json({ medien: medienMitWert, kontakte, gesamt: count ?? 0, bestand: bestand ?? 0 });
 }
 
 export async function PATCH(req: NextRequest) {

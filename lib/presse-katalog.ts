@@ -21,6 +21,8 @@ import type { Themenfund } from "./presse-extrakt";
 // ─── Was aus der Datenbank kommt ─────────────────────────────────────────────
 
 export interface MediumZeile {
+  /** Fremdschätzung zur Größe der Seite (lib/seitenwert.ts); fehlt bis zur Erhebung. */
+  seitenwert?: { rang: number | null; besucher: number | null; groesse: string } | null;
   /** In welche Ansprache das Medium fällt — bestimmt den AUFHÄNGER, nicht die
    *  Eignung. Werte und Beschriftungen in `RUBRIK_TEXT` (lib/presse-stand.ts). */
   rubrik?: string | null;

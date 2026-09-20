@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { seitenwertDomain, seitenwerteFuer } from "../../../../lib/seitenwert-laden";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { isAdminSession } from "../../../../lib/admin-guard";
 import { istStand } from "../../../../lib/fachbetrieb-stand";
@@ -99,7 +100,13 @@ export async function GET(req: NextRequest) {
     const k = kreisAuskunft((r.kreis_id as string | null) ?? null);
     return { ...r, kreis_name: k?.name ?? null, bundesland_kurz: k?.bundeslandKurz ?? null, kreis_art: k?.art ?? null, bundesland: k?.bundesland ?? null };
   });
-  return NextResponse.json({ zeilen, gesamt: count ?? 0, seite, proSeite: SEITE });
+  // Seitenwerte in EINEM Aufruf für die sichtbare Seite, nicht je Zeile.
+  const werte = await seitenwerteFuer(serviceDb, zeilen.map(z => (z as Record<string, unknown>).domain as string | null));
+  const mitWert = zeilen.map(z => ({
+    ...z,
+    seitenwert: werte.get(seitenwertDomain((z as Record<string, unknown>).domain as string | null) ?? "") ?? null,
+  }));
+  return NextResponse.json({ zeilen: mitWert, gesamt: count ?? 0, seite, proSeite: SEITE });
 }
 
 export async function PATCH(req: NextRequest) {

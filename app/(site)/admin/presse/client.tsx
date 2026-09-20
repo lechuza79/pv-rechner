@@ -638,6 +638,12 @@ export default function PresseAnsicht() {
                         ? `nein — ${m.medium_grund}`
                         : "unklar — zu wenige Merkmale"}
                   </Feld>
+                  <Feld titel="Relevanz">
+                    {/* Fremdschätzung, kein gemessener Wert — deshalb steht es dran. */}
+                    {m.seitenwert
+                      ? `${m.seitenwert.groesse}${m.seitenwert.besucher != null ? ` · ${m.seitenwert.besucher.toLocaleString("de-DE")} Besucher/Mon. (geschätzt)` : ""}${m.seitenwert.rang != null ? ` · Rang ${m.seitenwert.rang}` : ""}`
+                      : "—"}
+                  </Feld>
                   <Feld titel="Art des Mediums">
                     <span style={{ display: "flex", alignItems: "center", gap: space.xs }}>
                       <span style={{ flex: "0 0 150px" }}>

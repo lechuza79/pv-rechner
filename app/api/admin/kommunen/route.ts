@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { seitenwertDomain, seitenwerteFuer } from "../../../../lib/seitenwert-laden";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { briefFuerGemeinde, istBriefFehler } from "../../../../lib/kommunen-brief";
 import { isOutreachStatus, UNBEANTWORTET, UNBEANTWORTET_TAGE } from "../../../../lib/outreach-status";
@@ -18,7 +19,7 @@ const PAGE_SIZE = 50;
 
 // Eine Quelle für das Zeilen-Shape (GET, PATCH, POST liefern dasselbe zurück).
 const SELECT =
-  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, draft_manuell, gruene_pct, linke_pct, spd_pct, kampagne, charge, rollen_email, verantwortlich_funktion, verantwortlich_operativ, verwaltung_domain, thema_solar_url, thema_klima_url, thema_blatt_url, ask_variante, variante_manuell, versendet_variante, widget_anfrage, ref_token, ref_klicks, mastr_regions!inner(name, bezeichnung, population)";
+  "region_id, website, email, kontakt_url, klima_email, klima_beleg_url, presse_kontakt_email, presse_kontakt_beleg_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, draft_manuell, gruene_pct, linke_pct, spd_pct, kampagne, charge, rollen_email, verantwortlich_funktion, verantwortlich_operativ, verwaltung_domain, thema_solar_url, thema_klima_url, thema_blatt_url, ask_variante, variante_manuell, versendet_variante, widget_anfrage, ref_token, ref_klicks, mastr_regions!inner(name, bezeichnung, population)";
 
 export async function GET(req: NextRequest) {
   if (!(await isAdminSession())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -120,11 +121,15 @@ export async function GET(req: NextRequest) {
     if (aboRows.length) aboSpiegel = zaehleAbos(aboRows as AboZeile[]);
   }
 
+  // Seitenwert der Gemeinde-Website: EIN Aufruf für die gezeigte Seite.
+  const werte = await seitenwerteFuer(serviceDb, zeilen.map((z) => (z as Record<string, unknown>).website as string | null));
+
   return NextResponse.json({
     rows: zeilen.map((z) => ({
       ...z,
       atlas_path: atlasPfad(z.region_id),
       abo: aboSpiegel.get(z.region_id) ?? null,
+      seitenwert: werte.get(seitenwertDomain((z as Record<string, unknown>).website as string | null) ?? "") ?? null,
     })),
     total: count ?? 0,
     page,
