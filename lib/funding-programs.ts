@@ -10330,6 +10330,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Beantragt wird erst nach dem Kauf: die Rechnungskopie gehört zum Antrag",
       "Gefördert werden nur Anlagen, die VDE-konform sind — Erzeugungsanlage und Anschluss müssen den aktuell gültigen Regeln der Technik entsprechen",
       "Maßgeblich sind der Nachweis und der Zeitpunkt der Installation",
+      // Steht NUR im Formular, nicht auf der Seite — und deshalb fehlte sie beim
+      // Aufnehmen: Wer die Bedingungen aus dem Fließtext der Amtsseite zieht,
+      // übersieht, was der Antragsteller unterschreiben muss.
+      "Die Anlage muss fachmännisch installiert sein; das unterschreibt der Antragsteller im Formular",
       "Die Anlage ist beim Netzbetreiber und im Marktstammdatenregister anzumelden",
       "Ein Rechtsanspruch auf die Förderung besteht nicht",
     ],
@@ -10351,9 +10355,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Beschlusssatz noch das Formular nennen eine Leistungsgrenze. Sie als
     // Bedingung zu schreiben würde die Quelle härten und zwei der drei Sets des
     // Rechners grundlos ausschließen; sie wegzulassen ist trotzdem nicht
-    // stillschweigend, sondern steht hier. Was die Gemeinde wirklich verlangt,
-    // ist VDE-Konformität nach den AKTUELL gültigen Regeln — und die erlauben
-    // heute 800 VA.
+    // stillschweigend, sondern steht hier. Belegt ist damit „die Gemeinde nennt
+    // keine Leistungsgrenze" — NICHT „800 W sind gedeckt": Die Seite bezieht die
+    // „aktuell gültigen Regeln der Technik" auf Erzeugungsanlage und Anschluss,
+    // nicht auf eine Obergrenze. Eine frühere Fassung dieses Kommentars hat
+    // daraus „und die erlauben heute 800 VA" gemacht und der Quelle damit eine
+    // Aussage zugeschrieben, die sie nicht trägt (Gegenprüfer, 20.09.2026).
+    //
+    // WIE ALT DER BESCHLUSS IST, SAGT DIE SEITE NICHT — das Antragsformular
+    // schon: erzeugt am 28.07.2023 und seitdem unverändert. Zusammen mit den
+    // 600 W deutet das auf einen Beschluss von 2023. Das ist KEIN Grund, das
+    // Programm anzuzweifeln — die Quelle nennt weder Enddatum noch Topf noch
+    // Frist, es gibt also nichts, das von selbst verfallen könnte, und der
+    // Katalog führt mehrere aktive Programme mit älterem Beschluss. Es ist ein
+    // Grund, beim nächsten Prüflauf die Seite und nicht nur den Fingerabdruck
+    // anzusehen.
     //
     // KEIN TOPF GENANNT: Weder Seite noch Formular nennen ein Budget oder eine
     // Reihenfolge nach Eingang, deshalb `capped: false`. Auch kein Enddatum und
@@ -10375,17 +10391,29 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Ausgefertigt am 15.12.2025, bekannt gemacht am 20.12.2025. KEIN Enddatum:
     // Die Richtlinie nennt keins. Die Frist „bis zum 10.12.2025", die in der
     // Rathaus-Meldung steht, gehört zur VORIGEN Runde und wäre hier falsch.
-    beginntIso: "2026-01-01", beschlossenIso: "2025-12-15",
+    //   KEIN `beschlossenIso`. Der 15.12.2025 ist das Datum des
+    //   AUSFERTIGUNGSVERMERKS („Rauschenberg, den 15.12.2025 / Der Magistrat"),
+    //   und der bestätigt nur die Übereinstimmung „mit den hierzu ergangenen
+    //   Beschlüssen der Stadtverordnetenversammlung" — die Beschlüsse selbst
+    //   sind undatiert und liegen davor. Er stand hier bis zum 20.09.2026 als
+    //   Beschlussdatum; dasselbe geratene Datum hatte der Mauer-Eintrag am
+    //   selben Tag mit ausgeschriebener Begründung weggelassen.
+    beginntIso: "2026-01-01",
     eligibility: ["privat"],
-    coveredCosts: "Pauschale je Anlage, dazu einmalig eine Pauschale für nachgerüstete Speichermodule",
+    coveredCosts: "Pauschale je Anlage, dazu einmalig eine Pauschale für zusätzlich eingebaute Speichermodule",
     maxFoerderung: "100 € je Anlage (plus 100 € für Speichermodule)",
-    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "100 € pauschal, einmal je Wohneinheit", nur: ["balkon"] }],
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "100 € pauschal, einmal je berechtigter Person", nur: ["balkon"] }],
     conditions: [
       "Beantragt wird nach dem Kauf: die Rechnungskopie gehört zum Antrag an den Magistrat",
       "Gefördert werden ausschließlich Anlagen, die 800 Watt Einspeiseleistung nicht überschreiten",
       "Förderfähig sind nur Anlagen, die ab dem 1. Januar 2026 gekauft UND installiert wurden",
-      "Je Wohneinheit gibt es den Zuschuss einmal; antragsberechtigt sind Eigentümer wie Mieter",
+      // § 3 sagt „Jeder Grundstückseigentümer bzw. Mieter eines Hauses oder
+      // einer Wohneinheit kann den Zuschuss jeweils einmal erhalten" — einmal je
+      // BERECHTIGTER PERSON. „Einmal je Wohneinheit" stand hier bis zum
+      // 20.09.2026 und liest sich im Haus mit Eigentümer und Mieter anders.
+      "Den Zuschuss bekommt jede berechtigte Person einmal; antragsberechtigt sind Eigentümer wie Mieter",
       "Die Wohnung muss nach der Inbetriebnahme ganzjährig bewohnt sein",
+      "Bei der Installation sind die einschlägigen Vorschriften und DIN-Normen zu beachten",
       "Gewerbebetriebe werden aus diesen Mitteln nicht gefördert",
       "Die Anlage ist mindestens fünf Jahre zu betreiben, sonst kann der Zuschuss zurückgefordert werden",
       "Stehen Mittel aus Programmen des Landkreises, des Landes oder des Bundes zur Verfügung, sind diese vorrangig zu nutzen; eine Kumulierung mit dem städtischen Zuschuss ist ausgeschlossen",
@@ -10394,7 +10422,15 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       // Richtlinie, das Modell kennt dafür kein Feld, und geschätzt wird nicht.
       // Die Richtung ist die vorsichtige — wir weisen weniger aus, als die Stadt
       // zahlt.
-      "Für zusätzlich eingebaute Speichermodule zahlt die Stadt einmalig weitere 100 € — wir rechnen sie nicht mit, weil die Richtlinie sie an die NACHRÜSTUNG bindet und der Rechner ein Set mit Speicher als Ganzes kauft",
+      //   DIE BEGRÜNDUNG HAT DIE QUELLE GEHÄRTET, und alle drei Council-Prüfer
+      //   haben es unabhängig gefunden (20.09.2026): Hier stand „weil die
+      //   Richtlinie sie an die NACHRÜSTUNG bindet". Das Wort Nachrüstung kommt
+      //   in der Richtlinie nirgends vor; § 2 und § 3 sagen beide
+      //   „ZUSÄTZLICH" („der Einbau von zusätzlichen Speichermodulen").
+      //   Ob damit „später nachgerüstet" oder „zusätzlich zum Modul" gemeint
+      //   ist, entscheidet die Quelle NICHT — der Satz gab unsere Lesart als
+      //   Tatsache der Stadt aus und konnte den Leser 100 € kosten.
+      "Für zusätzlich eingebaute Speichermodule zahlt die Stadt einmalig weitere 100 € — ob es sie zusammen mit der Grundpauschale für ein Set mit Speicher gibt, sagt die Richtlinie nicht, deshalb rechnen wir sie nicht mit",
     ],
     // AUSSCHLUSS, NICHT UNGEKLÄRT: § 3 sagt wörtlich „Die kommunalen
     // Fördermittel können nicht mit anderen Fördermitteln kumuliert werden."
@@ -10411,6 +10447,16 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     //   LEHRE FÜR DEN VORRAT: Eine Nachricht ist datiert, eine Satzung gilt.
     //   Wer bei einem Treffer nur die Meldung liest, schreibt den Stand des
     //   Vorjahrs fort.
+    //
+    // OFFEN (bis 12/2026): DIE ANTRAGSFRIST STEHT NICHT IN DER RICHTLINIE.
+    // Für die Runde 2025 hat die Stadt sie gesondert in den Rauschenberger
+    // Nachrichten bekannt gegeben („Förderanträge können noch bis zum
+    // 10.12.2025 gestellt werden."); die Richtlinie 2026 nennt keine. Daraus
+    // „ganzjährig offen" zu lesen ist unbelegt. Heute ändert das nichts, ab
+    // Mitte Dezember 2026 kann der Eintrag STILL FALSCH WERDEN, OHNE DASS SICH
+    // DIE RICHTLINIE BEWEGT — und der Fingerabdruck-Wächter sieht es nicht, weil
+    // er auf die Satzungsseite zeigt, nicht auf die Nachrichten. Also im
+    // Dezember die Nachrichtenseite ansehen, nicht den Fingerabdruck abwarten.
     //
     // KEIN PROBE-EINTRAG in diesem Lauf: Das Programm ist aktiv und würde Geld
     // abziehen, und dafür fehlt ihm der Council-Durchgang. Bis dahin
