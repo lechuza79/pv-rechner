@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { createHash } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { fundingPdfText, fundingContentGap, renderFundingSource, htmlText } from "./funding-document";
-import { sourceFailure, retryAt } from "../../lib/funding-source-policy";
+import { sourceFailure, retryAt, type SourceFailure } from "../../lib/funding-source-policy";
 
 export const EVIDENCE_RUN = process.env.FUNDING_RUN_ID ?? `local-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 export const EVIDENCE_DIR = resolve(process.env.FUNDING_EVIDENCE_DIR ?? `scripts/.cache/funding-evidence/${EVIDENCE_RUN}`);
@@ -17,6 +17,21 @@ export function recordStage(stage: string, data: Record<string, unknown>): void 
 
 type PersistenceError = { message: string; code?: string; details?: string; hint?: string };
 export class FundingPersistenceError extends Error {}
+
+/**
+ * Warum nicht nur `Error`: Ein Aufrufer muss „die Adresse ist WEG" von „ich
+ * konnte sie nicht lesen" unterscheiden können, und zwar ohne eine
+ * Fehlermeldung zu zerlegen. Nur `missing` (HTTP 404/410) ist eine Aussage
+ * ÜBER die Quelle; `blocked`, `shell`, `network` und `server` sind Aussagen
+ * über unseren Versuch. Wer beides gleich behandelt, hakt irgendwann eine
+ * Förderseite ab, die bloß gerade nicht antwortete.
+ */
+export class FundingSourceUnreadable extends Error {
+  constructor(readonly reason: SourceFailure | null, readonly url: string) {
+    super(`Source unreadable: ${reason}`);
+    this.name = "FundingSourceUnreadable";
+  }
+}
 
 /** Retry only transient failures of idempotent database writes. */
 export async function persistFundingWrite(
@@ -86,9 +101,34 @@ export class FundingSourceReader {
     this.inFlight.set(key, pending);
     try { return (await pending).clone(); } catch (error) { this.context.getStore()?.push(input); throw error; } finally { this.inFlight.delete(key); }
   }
-  private async read(input: string, init?: RequestInit, navigation = false): Promise<Response> {
+  /**
+   * Eine Quelle für eine PRÜFUNG lesen, nicht für den Crawl — BLOCKER.
+   *
+   * Der Unterschied ist nicht die Abfrage, sondern was ein Fehlschlag KOSTET.
+   * Ein Crawl-Abruf, der scheitert, sperrt die Adresse eine Woche; das ist dort
+   * richtig, weil sonst jede Nacht dieselbe tote Seite gehämmert wird. Eine
+   * Prüfung ist das Gegenteil: Ein Mensch hat die Seite bereits gelesen und
+   * will seinen Beleg quittieren. Scheitert dabei unser Abruf, ist das „ich
+   * konnte nicht gegenlesen" — keine Beobachtung über die Quelle.
+   *
+   * Gemessen am 20.09.2026: Der Abhak-Befehl rief den Reader OHNE die
+   * Browser-Kennung auf, die jeder andere Aufrufer mitgibt. herzogenaurach.de
+   * antwortet darauf mit 403 und mit Kennung mit 200 (130 kB). Der Abhaken
+   * schrieb diesen 403 als Crawl-Beobachtung fort und sperrte sich damit FÜNF
+   * Adressen bis zum 27.09. selbst — für eine Gemeinde, deren Programm längst
+   * im Katalog stand. Der Vorrat wuchs also durch das Werkzeug, das ihn
+   * abbauen soll.
+   *
+   * Deshalb: kein Schreiben in den Quellen-Zustand, und eine bestehende Sperre
+   * hält diesen Weg nicht auf. Der Beleg-Abgleich beim Aufrufer bleibt davon
+   * unberührt — was hier nicht gelesen werden kann, wird auch nicht quittiert.
+   */
+  async verify(input: string, init?: RequestInit): Promise<Response> {
+    return this.read(input, init, false, true);
+  }
+  private async read(input: string, init?: RequestInit, navigation = false, verifying = false): Promise<Response> {
     await this.ready();
-    if (!this.due(input)) throw new Error("Source retry deferred; previous observation preserved");
+    if (!verifying && !this.due(input)) throw new Error("Source retry deferred; previous observation preserved");
     const attemptedAt = new Date().toISOString();
     let response: Response | undefined;
     let body = "";
@@ -123,14 +163,14 @@ export class FundingSourceReader {
       content_type: response?.headers.get("content-type") ?? null, sha256: hash, failure_reason: reason, readable: !reason, derived };
     recordStage(this.stage, observation);
     const state = { url: input, next_retry_at: reason ? retryAt(reason, attemptedAt) : null, failure_reason: reason };
-    if (!this.dry) {
+    if (!this.dry && !verifying) {
       await persistFundingWrite(() => this.db.from("funding_source_state").upsert({ ...state, attempted_at: attemptedAt, final_url: observation.final_url, sha256: hash }),
         { operation: "source-state", url: input, source_stage: this.stage, observed_at: attemptedAt });
     }
-    this.state.set(input, state);
+    if (!verifying) this.state.set(input, state);
     const navigableShell = this.enhanced && reason === "shell" && navigation && response;
     if (navigableShell) this.context.getStore()?.push(input);
-    if ((reason && !navigableShell) || !response) throw new Error(`Source unreadable: ${reason}`);
+    if ((reason && !navigableShell) || !response) throw new FundingSourceUnreadable(reason, input);
     // The network signal may close the original stream while persistence runs.
     // Serve the already captured bytes, not a clone of that live stream.
     const payload = derived ? content : Buffer.from(bytes);

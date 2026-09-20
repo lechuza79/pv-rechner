@@ -111,9 +111,11 @@ export default function DatenschutzPage() {
         <p style={S.p}>
           Der Schutz deiner Daten ist uns wichtig. Diese Website wurde bewusst so
           gebaut, dass so wenig personenbezogene Daten wie möglich erhoben
-          werden. Es gibt keine Verkaufsanrufe, kein Werbe-Tracking durch
-          Drittanbieter und keine Werbung — du bekommst dein Ergebnis sofort,
-          ohne Registrierung. Die eigentliche Berechnung läuft in deinem Browser.
+          werden. Es gibt keine Verkaufsanrufe und kein Werbe-Tracking durch
+          Drittanbieter — du bekommst dein Ergebnis sofort, ohne Registrierung.
+          Am Ende des Wärmepumpen-Rechners stehen als Anzeige gekennzeichnete
+          Produktempfehlungen mit Provisionslinks; sie setzen bei uns keine
+          Cookies und übertragen erst beim Klick Daten an den Händler. Die eigentliche Berechnung läuft in deinem Browser.
           {/* Bewusst NICHT "in drei Fällen … alle drei": Hosting-Logfiles
               (Abschnitt 3) und Reichweitenmessung (Abschnitt 5) sind ebenfalls
               Übermittlungen. Eine abgezählte Aufzählung, die nicht alles
@@ -241,7 +243,7 @@ export default function DatenschutzPage() {
           Gerät abgelegt und von dort gelesen. Eine Einwilligung ist dafür
           trotzdem nicht nötig, weil die Messung auf das beschränkt bleibt, was
           zum Betrieb dieses Angebots nötig ist (§ 25 Abs. 2 Nr. 2 TDDDG): Wir
-          verkaufen keine Werbung und keine Kontaktdaten, wir verfolgen dich
+          vermarkten keine Werbeflächen und verkaufen keine Kontaktdaten, wir verfolgen dich
           nicht über andere Websites hinweg, die Ereignisse sind bloße Zähler
           ohne Begleitangaben, und die Kennung, die einen Besuch zusammenfasst,
           lebt einen Tag. Ein Cookie-Banner wird daher nicht benötigt.

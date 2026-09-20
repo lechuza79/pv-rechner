@@ -115,6 +115,55 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // Fritzlar, aufgenommen am 20.09.2026. Richtlinie im Volltext gelesen, jede
+  // Bedingung steht am Programm. Die Prüfform fehlt noch und ist hier nicht
+  // trivial, weil das Antragsverfahren das UMGEKEHRTE ist: „Es handelt sich um
+  // ein nachträgliches Zuschussverfahren, d. h. die Maßnahme bedarf keiner
+  // Bewilligung." Die vorhandenen Prüfformen bilden die übliche Regel „Antrag
+  // vor Kauf" ab; sie hier anzuwenden würde dem Nutzer eine Bewilligung
+  // abverlangen, die es gar nicht gibt. Dazu kommt eine Frist, die das Modell
+  // nicht kennt: Die Rechnung darf beim Antrag höchstens drei Monate alt sein
+  // — also eine Frist NACH dem Kauf statt davor. Halb erfasst gibt es hier
+  // nicht; bis dahin stehen die Bedingungen vollständig auf der Karte.
+  "fritzlar-balkonkraftwerke-speicher",
+  // Mauer, aufgenommen am 20.09.2026. Amtsseite und Antragsformular im
+  // Volltext gelesen. Auch hier ist das Antragsverfahren das nachträgliche
+  // (die Rechnungskopie gehört zum Antrag), und die Gemeinde nennt darüber
+  // hinaus keine Frist — es gibt damit schlicht kein Antragsverfahren, gegen
+  // das eine Prüfform das Vorhaben halten könnte.
+  "mauer-balkonkraftwerke",
+  // Rauschenberg, aufgenommen am 20.09.2026. Amtliche Bekanntmachung im
+  // Volltext gelesen. Auch hier wird erst gekauft und dann beantragt, und eine
+  // Frist nennt die Richtlinie nicht — es gibt kein Antragsverfahren, gegen das
+  // eine Prüfform das Vorhaben halten könnte.
+  "rauschenberg-balkon-solaranlagen",
+  // Landkreis Erlangen-Höchstadt, sechs Gemeindeprogramme, aufgenommen am
+  // 20.09.2026. Jede Richtlinie ist im Volltext gelesen und jede Bedingung steht
+  // am Programm — die Prüfformen fehlen noch, und sie sind hier nicht trivial:
+  // Fünf der sechs verlangen den Antrag VOR dem Kauf, Eckental dagegen NACH dem
+  // Kauf (Rechnung und Foto gehören zum Antrag). Beides zugleich abzubilden ist
+  // die eigentliche Arbeit und braucht einen eigenen Durchgang; halb erfasst
+  // gibt es hier nicht. Bis dahin stehen die Bedingungen vollständig auf der
+  // Karte, sie werden nur nicht gegen das Vorhaben geprüft.
+  // Unterföhring, aufgenommen am 20.09.2026. Die Richtlinie ist im Volltext
+  // gelesen, jede Bedingung steht am Programm. Die Prüfform fehlt noch und ist
+  // hier nicht trivial: Nr. 1.2 verlangt den Antrag vor Beginn, Nr. 4.2
+  // zusätzlich den Vorbescheid — die Richtlinie ist an dieser Stelle in sich
+  // uneinheitlich, und welche der beiden Fassungen geprüft wird, ist eine
+  // Entscheidung, keine Übersetzung.
+  "unterfoehring-energiesparfoerderprogramm",
+  "buckenhof-klimaschutz", "marloffstein-klimaschutz", "uttenreuth-klimaschutz",
+  "roettenbach-erh-pv-speicher", "eckental-balkon", "spardorf-solar",
+  // Dazu die beiden Nachträge aus der Gegenprüfung desselben Tages: Röttenbachs
+  // zweite Richtlinie (Heizung) und Kalchreuth, dessen Geltung offen ist.
+"kalchreuth-regenerative-energien",
+  // Zwei nicht mehr antragsfähige Programme im selben Landkreis, aufgenommen am
+  // 20.09.2026. Eine Prüfform prüft das Vorhaben gegen ein Antragsverfahren —
+  // und genau das gibt es hier nicht: Bubenreuth weist die Mittel als
+  // ausgeschöpft aus, Herzogenaurach hat den Antragsstopp auf unbestimmte Zeit
+  // verlängert. Die Bedingungen stehen vollständig auf der Karte und
+  // informieren; geprüft werden sie erst, wenn wieder jemand beantragen kann.
+  "bubenreuth-co2-einsparung", "herzogenaurach-co2-minderung",
   // Aufgenommen am 18.09.2026 aus dem Quellen-Rückstand; Amtsseite und
   // Richtlinie jeweils im Volltext gelesen. Die Prüfformen fehlen noch, und bei
   // Würselen kennt das Modell eine Bedingung gar nicht: Gekauft werden darf erst
@@ -134,6 +183,18 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "bahrenhof-solar",
   // Closed 2023/2024 rounds in the same Amt (guidelines read in full on 19 Sep 2026).
   "wakendorf-i-solar", "weede-mini-solar", "geschendorf-solar",
+  // Closed on 31 December 2025 (official page read in full on 20 September
+  // 2026). No application flow is left to check the conditions against, and the
+  // programme has a shape the check form cannot express anyway: the application
+  // came AFTER the purchase (invoice and registry entry are part of it), so the
+  // usual "apply before you buy" form would be the wrong test, not a missing one.
+  "gaildorf-balkonkraftwerke",
+  // Paused county round (no applications for 2026, page read 20 September 2026).
+  // There is no application flow to check the conditions against, and the
+  // programme has the reversed order anyway: the application follows purchase,
+  // mounting and registry entry, so the usual "apply before you buy" form would
+  // be the wrong test rather than a missing one.
+  "havelland-stecker-solar",
   "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",
@@ -265,6 +326,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 19 Sep 2026: guideline read in full; the one-year application window
   // after installation and the one-per-dwelling limit have no test form.
   "mehren-balkonkraftwerke",
+  // Added 19 Sep 2026: income condition (Wohngeld/Bürgergeld), green tariff,
+  // one-per-meter and the 3-year operating duty have no test form.
+  "holzminden-solarfair",
   // Added 18 Sep 2026: exhausted VG programme, guideline read in full; the
   // test forms (application before contract, 3-/12-month deadlines) are missing.
   "vg-hachenburg-erneuerbare-energien",
@@ -289,6 +353,54 @@ export const NOCH_NICHT_ERFASST: string[] = [
  * genau die stille Lücke, die der Test verhindern soll.
  */
 export const FUNDING_CHECKS: Record<string, FundingChecks> = {
+  // Landkreis Erlangen-Höchstadt, Wärmepumpen-Zuschuss (aufgenommen 20.09.2026).
+  // Prüfbar ist hier genau EINES: der Antragszeitpunkt. Alles andere sind
+  // Geräteeigenschaften (Kältemittel, Effizienzstufe, BAFA-Listung, Heizkreis),
+  // die der Rechner nicht kennt — deshalb Hinweis, nicht Prüfung, und deshalb
+  // trägt das Programm auch keinen Abzug.
+  "erlangen-hoechstadt-waermepumpe": {
+    pruefungen: [
+      {
+        ausBedingung: "Der Antrag muss spätestens zwei Monate nach dem Rechnungsdatum vorliegen — später eingereichte Anträge werden nach dem Antragsformular nicht berücksichtigt",
+        // Die Frist steht bewusst NICHT als `fristMonate`: Sie läuft ab dem
+        // RECHNUNGSDATUM, nicht ab Inbetriebnahme, und die Rechnung kann vorher
+        // liegen. Als Monatsfrist ab Inbetriebnahme gerechnet wäre sie zu
+        // großzügig — also die gefährliche Richtung. Der Zeitpunkt hier, die
+        // zwei Monate im Text daneben.
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "nach-inbetriebnahme" },
+      },
+    ],
+    durchRegion: [
+      "Die Wärmepumpe muss in einem Gebäude im Landkreis Erlangen-Höchstadt eingebaut und betrieben werden",
+    ],
+    hinweise: [
+      {
+        ausBedingung: "Anders als bei der Bundesförderung wird hier NACH dem Kauf beantragt: Der Kaufbeleg mit dem Wärmepumpen-Modell gehört als Anlage zum Antrag",
+        warum: "Die Reihenfolge steht schon als Prüfung; dieser Satz grenzt sie gegen die BEG-Regel „Antrag vor Vorhabenbeginn\" ab, die im selben Ergebnis daneben steht.",
+      },
+      {
+        ausBedingung: "Gefördert wird nur die Neu-Anschaffung — ein gebrauchtes Gerät ist ausgeschlossen",
+        warum: "Der Rechner rechnet ohnehin mit einer neuen Anlage; ob jemand ein gebrauchtes Gerät einbaut, weiß er nicht.",
+      },
+      {
+        ausBedingung: "Die Wärmepumpe muss in der Liste der förderfähigen Wärmepumpenanlagen des BAFA stehen und ihre Wärme an einen wassergeführten Heizkreis abgeben",
+        warum: "Geräteeigenschaft aus einer fremden Liste — der Rechner kennt weder das Modell noch den Heizkreis.",
+      },
+      {
+        ausBedingung: "Natürliches Kältemittel ohne Halogene — das Antragsformular lässt R290 Propan, R600a Isobutan, R1270 Propen, R717 Ammoniak, R718 Wasser und R744 Kohlendioxid zu. Die marktüblichen Kältemittel R32, R410A und R454C enthalten Fluor und sind damit ausgeschlossen",
+        warum: "Geräteeigenschaft; das Kältemittel steht im Datenblatt, nicht in den Angaben des Nutzers.",
+      },
+      {
+        ausBedingung: "Mindest-Effizienz nach der BAFA-Liste, jahreszeitbedingte Leistungszahl (SCOP) für mittleres Klima: Luft/Wasser 3,3 bei 55 °C bzw. 4,6 bei 35 °C (ηs 130 bzw. 180 %), Sole/Wasser 3,7 bzw. 5,3 (ηs 140 bzw. 205 %), Wasser/Wasser 4,2 bzw. 6,2 (ηs 160 bzw. 240 %). Diese Schwellen liegen über denen der Bundesförderung",
+        warum: "Geräteeigenschaft, und der genaue Anteil der Geräte, die diese Schwellen halten, ist nicht gemessen — genau deshalb zieht das Programm auch nichts ab.",
+      },
+      {
+        ausBedingung: "Befristet bis 31.12.2026, vorbehaltlich der im Landkreishaushalt 2026 verfügbaren Mittel",
+        warum: "Haushaltsvorbehalt des Trägers — nicht am Vorhaben des Nutzers prüfbar.",
+      },
+    ],
+  },
+
   "bund-nullsteuer": {
     ohneAntrag: {
       warum:

@@ -56,6 +56,10 @@ const GESETZE: { muster: RegExp; kuerzel: string; name: string }[] = [
   { muster: /\bBEHG\b/, kuerzel: "BEHG", name: "Brennstoffemissionshandelsgesetz" },
   { muster: /\bDSGVO\b/, kuerzel: "DSGVO", name: "Datenschutz-Grundverordnung" },
   { muster: /\bUStAE\b/, kuerzel: "UStAE", name: "Umsatzsteuer-Anwendungserlass" },
+  // Seit 27.08.2026: Die Gerätekacheln nennen Preise, damit trifft uns die
+  // Preisangabenverordnung — sie gilt jedem, der "unter Angabe von Preisen für
+  // Waren wirbt" (§ 1 Abs. 1 PAngV), nicht nur dem Verkäufer.
+  { muster: /\bPAngV\b|\bPreisangabenverordnung\b/, kuerzel: "PAngV", name: "Preisangabenverordnung" },
 ];
 
 const NENNUNG =

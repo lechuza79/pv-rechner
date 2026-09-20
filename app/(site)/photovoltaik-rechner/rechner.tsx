@@ -1723,8 +1723,8 @@ export default function PVRechner({
                   passiert nichts. Auf allen anderen Seiten bleibt die Zusage
                   unverändert, weil sie dort weiterhin stimmt. */}
               {partner
-                ? "Wir geben nichts weiter, außer du bittest uns darum · Keine Werbung"
-                : "Keine Lead-Erfassung · Keine Werbung"}<br />
+                ? "Wir geben nichts weiter, außer du bittest uns darum · Keine Werbebanner"
+                : "Keine Lead-Erfassung · Keine Werbebanner"}<br />
               Alle Angaben ohne Gewähr · Keine Steuer- oder Anlageberatung
             </div>
           </div>

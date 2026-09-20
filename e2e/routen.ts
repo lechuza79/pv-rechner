@@ -114,6 +114,7 @@ export const FLOW_PFADE: string[] = [
   "/pv-simulation",
   "/strommix-deutschland",
   "/waermepumpe-rechner",
+  "/angebot-pruefen",
 ];
 
 /** Alles, was vor dem ersten Test einmal übersetzt sein muss. */

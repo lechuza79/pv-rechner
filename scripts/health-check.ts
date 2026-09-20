@@ -27,6 +27,7 @@
  */
 
 import { collectColdProbes } from "../lib/health-cold-probe";
+import { atlasStichprobenPfade, istKreisfreieStadt } from "../lib/health-atlas-stichprobe";
 import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
 import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
 import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
@@ -114,6 +115,13 @@ const PAGES = [
 /** Adresse, die es garantiert nie geben wird — sie muss 404 antworten, nicht 200.
  *  Drei Segmente, damit sie die Gemeinde-Route trifft (die tiefste und teuerste). */
 const SOFT_404_PFAD = "/solar-atlas/kein-land/kein-kreis/keine-gemeinde";
+
+/** Dieselbe Frage für eine Adresse, die auf GAR KEINE Route passt. Sie geht
+ *  einen anderen Weg als die oben (dort wirft eine echte Seite notFound(), hier
+ *  findet das Framework schon keine Route) und wird seit 20.09.2026 von
+ *  app/global-not-found.tsx beantwortet — einer eigenen Seite, die jemand
+ *  versehentlich auf 200 stellen kann, ohne dass sie kaputt aussieht. */
+const UNBEKANNTE_ADRESSE = "/gibt-es-nicht-und-wird-es-nie-geben";
 
 /** Notnagel, falls die DB gerade nicht erreichbar ist — echte, dauerhaft
  *  existierende Gemeinden. Bewusst klein: der Regelweg ist die Zufallsauswahl. */
@@ -474,19 +482,31 @@ async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kr
   const landIds = Array.from(new Set(kreise.map((k) => k.parent_region_id).filter(Boolean)));
   const laender = await q(`mastr_regions?select=region_id,slug&region_id=in.(${landIds.join(",")})`);
 
-  const kreisById = new Map(kreise.map((k) => [k.region_id!, k]));
-  const landById = new Map(laender.map((l) => [l.region_id!, l]));
-
-  const gemeindePfade: string[] = [];
-  const kreisPfade = new Set<string>();
-  for (const g of gem) {
-    const k = kreisById.get(g.parent_region_id ?? "");
-    const l = k ? landById.get(k.parent_region_id ?? "") : undefined;
-    if (!k?.slug || !l?.slug) continue;
-    if (g.slug) gemeindePfade.push(`/solar-atlas/${l.slug}/${k.slug}/${g.slug}`);
-    kreisPfade.add(`/solar-atlas/${l.slug}/${k.slug}`);
+  // KREISFREIE STÄDTE AUS DER KREIS-STICHPROBE NEHMEN. Sie stehen auf
+  // Kreis-Ebene, haben aber genau eine Gemeinde unter sich — sich selbst —, und
+  // ihre Kreis-Adresse leitet deshalb per Design auf diese eine Seite weiter
+  // (307). Gemessen am 19.09.2026: Die Ziehung erwischte Würzburg und meldete
+  // „Atlas-Seite antwortet mit 307" als Vorfall, während die Seite gesund war.
+  //
+  // Gefragt wird, was auch die Seite fragt: hat dieser Kreis mehr als ein Kind?
+  // NICHT über das Schlüsselformat geraten (Gemeinde = Kreis + „000") — das wäre
+  // eine zweite Wahrheit neben der Weiterleitung, die sie vorhersagen soll.
+  // `limit=2` je Kreis statt einer vollen Kinderliste: zwei Zeilen genügen als
+  // Beweis, und ein großer Landkreis schleppt sonst hundert Zeilen mit.
+  const einzelkind = new Set<string>();
+  for (const id of kreisIds) {
+    const kinder = await q(
+      `mastr_regions?select=region_id&level=eq.gemeinde&parent_region_id=eq.${id}&limit=2`,
+    );
+    if (istKreisfreieStadt(kinder.length)) einzelkind.add(String(id));
   }
-  return { gemeinde: gemeindePfade, kreis: Array.from(kreisPfade) };
+
+  return atlasStichprobenPfade({
+    gemeinden: gem,
+    kreisById: new Map(kreise.map((k) => [k.region_id!, k])),
+    landById: new Map(laender.map((l) => [l.region_id!, l])),
+    einzelkind,
+  });
 }
 
 /** Wie viele Gemeinden pro Lauf frisch aufgebaut werden.
@@ -2019,6 +2039,18 @@ async function main() {
     );
   }
 
+  // Und die Adresse, die auf keine Route passt — der zweite Weg zu einer 404
+  // und der, der unsere eigene Seite rendert.
+  const unbekannt = await probe("Unbekannte Adresse", UNBEKANNTE_ADRESSE);
+  lines.push(`Unbekannte Adresse: HTTP ${unbekannt.status || "keine Antwort"} (erwartet 404)`);
+  if (unbekannt.status !== 404) {
+    technical("unbekannte-adresse-soft404", false,
+      `Soft-404: ${UNBEKANNTE_ADRESSE} antwortet mit ${unbekannt.status || "keiner Antwort"} statt 404. ` +
+        `Google behandelt damit jede erfundene Adresse als gültige Seite. Zuerst app/global-not-found.tsx ` +
+        `und den Schalter experimental.globalNotFound in next.config.js prüfen.`,
+    );
+  }
+
   // ── Zeiten ────────────────────────────────────────────────────────────────
   const auslieferungsAlter = await auslieferungsAlterMinuten();
   const slowest = pageProbes.reduce((a, b) => (b.seconds > a.seconds ? b : a), pageProbes[0]);
@@ -2194,11 +2226,14 @@ async function main() {
     lines.push(`Vorbereitete Ranglisten: ${snapshot.actual}/${snapshot.expected} Gemeinden, ${problems.length ? "Prüfung fehlgeschlagen" : "vollständig und aktuell"}.`);
     technical("placement-snapshot", true, ...problems);
     // Und dieselbe Frage von der ANDEREN Seite: Die Prüfung oben hält die
-    // Ranglisten gegen die Tabelle, aus der sie gebaut werden — sie kann eine
-    // Ortsseite ohne Rangliste gar nicht sehen. Gezählt wird deshalb gegen die
-    // Zahl der Seiten. Auffällig, nicht rot: Die Lücke entsteht in den Daten
-    // (ein Ort unter einem alten Schlüssel), und daran kann der Autofix nichts
-    // reparieren — Rot würde ihn täglich ins Leere schicken.
+    // Platzierungen gegen die Tabelle, aus der sie gebaut werden — sie kann eine
+    // Ortsseite ohne Platzierung gar nicht sehen. Gezählt wird deshalb gegen die
+    // Zahl der Seiten. Auffällig, nicht rot: Die Lücke entsteht in den Daten,
+    // und daran kann der Autofix nichts reparieren — Rot würde ihn täglich ins
+    // Leere schicken. Zur Ursache siehe lib/health-placement-snapshot.ts; sie
+    // ist NICHT immer ein veralteter Schlüssel (so stand es hier bis zum
+    // 20.09.2026), sondern am 20.09. schlicht eine Gemeinde ohne eine einzige
+    // gemeldete Anlage — dauerhaft, kein Datenlauf behebt das.
     const seiten = count(await read("mastr_regions?select=region_id&level=eq.gemeinde&slug=not.is.null", true));
     const luecke = ortsseitenOhneRangliste(seiten, snapshot.actual);
     lines.push(`Ortsseiten mit Rangliste: ${snapshot.actual} von ${seiten}.`);

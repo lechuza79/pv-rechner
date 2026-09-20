@@ -476,6 +476,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "ottobrunn", name: "Ottobrunn", ags: "09184136", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1130 },
   { slug: "putzbrunn", name: "Putzbrunn", ags: "09184140", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1124 },
   { slug: "unterhaching", name: "Unterhaching", ags: "09184148", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1138 },
+  { slug: "unterfoehring", name: "Unterföhring", ags: "09184147", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1144 },
   { slug: "karlshuld", name: "Karlshuld", ags: "09185139", kreis: "Landkreis Neuburg-Schrobenhausen", bundesland: "Bayern", yieldKwhKwp: 1107 },
   { slug: "vilshofen", name: "Vilshofen an der Donau", ags: "09275154", kreis: "Landkreis Passau", bundesland: "Bayern", yieldKwhKwp: 1118 },
   { slug: "muehlhausen", name: "Mühlhausen", ags: "09373146", kreis: "Landkreis Neumarkt i.d.OPf.", bundesland: "Bayern", yieldKwhKwp: 1079 },
@@ -525,6 +526,18 @@ export const ATLAS_CITIES: AtlasCity[] = [
   {"slug": "hiddenhausen", "name": "Hiddenhausen", "ags": "05758016", "bundesland": "Nordrhein-Westfalen", "kreis": "05758", "yieldKwhKwp": 1018},
   {"slug": "burbach", "name": "Burbach", "ags": "05970008", "bundesland": "Nordrhein-Westfalen", "kreis": "05970", "yieldKwhKwp": 1013},
   {"slug": "herzebrock-clarholz", "name": "Herzebrock-Clarholz", "ags": "05754020", "bundesland": "Nordrhein-Westfalen", "kreis": "05754", "yieldKwhKwp": 1039},
+
+  // Landkreis Erlangen-Höchstadt, 20.09.2026: fünf Gemeindeprogramme aus der
+  // Förder-Übersicht des Landkreises, jedes an der Richtlinie der Gemeinde
+  // selbst belegt. Standort-Ertrag gemessen über /api/pvgis an der
+  // repräsentativen Lage der Gemeinde, nicht geschätzt.
+  { slug: "buckenhof", name: "Buckenhof", ags: "09572120", kreis: "Landkreis Erlangen-Höchstadt", bundesland: "Bayern", yieldKwhKwp: 1068 },
+  { slug: "marloffstein", name: "Marloffstein", ags: "09572141", kreis: "Landkreis Erlangen-Höchstadt", bundesland: "Bayern", yieldKwhKwp: 1060 },
+  { slug: "uttenreuth", name: "Uttenreuth", ags: "09572158", kreis: "Landkreis Erlangen-Höchstadt", bundesland: "Bayern", yieldKwhKwp: 1060 },
+  { slug: "spardorf", name: "Spardorf", ags: "09572154", kreis: "Landkreis Erlangen-Höchstadt", bundesland: "Bayern", yieldKwhKwp: 1060 },
+  // Röttenbach gibt es zweimal in Mittelfranken; der Slug nennt deshalb den
+  // Landkreis, sonst kollidiert er mit dem Röttenbach im Landkreis Roth.
+  { slug: "roettenbach-erlangen-hoechstadt", name: "Röttenbach", ags: "09572149", kreis: "Landkreis Erlangen-Höchstadt", bundesland: "Bayern", yieldKwhKwp: 1076 },
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {

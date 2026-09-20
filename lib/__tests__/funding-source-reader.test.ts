@@ -50,3 +50,50 @@ it("returns captured HTML after the network request is aborted during persistenc
     expect(observation).toMatchObject({ readable: true, failure_reason: null });
   } finally { server.closeAllConnections(); await new Promise<void>(resolve => server.close(() => resolve())); delete process.env.FUNDING_EVIDENCE_DIR; rmSync(dir, { recursive: true }); }
 });
+
+// Eine PRÜFUNG ist kein Crawl: Sie darf den Vorrat nicht sperren, und eine
+// bestehende Sperre darf sie nicht aufhalten. Gemessen am 20.09.2026 an fünf
+// Adressen von herzogenaurach.de, die der Abhak-Befehl sich selbst für eine
+// Woche gesperrt hatte.
+it("verifies a source without writing the retry lock and without being stopped by one", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "funding-verify-"));
+  process.env.FUNDING_EVIDENCE_DIR = dir;
+  vi.resetModules();
+  const { FundingSourceReader } = await import("../../scripts/lib/funding-source-reader");
+  const saved: unknown[] = [];
+  // Die Adresse ist bereits gesperrt — genau der Zustand, den ein
+  // fehlgeschlagener Abhak-Versuch hinterlässt.
+  const gesperrt = [{ url: "https://example.org/funding", next_retry_at: "2099-01-01T00:00:00.000Z", failure_reason: "blocked" }];
+  const db = { from: () => ({ select: () => ({ range: async () => ({ data: gesperrt, error: null }) }), upsert: async (row: unknown) => { saved.push(row); return { error: null }; } }) } as unknown as SupabaseClient;
+  const network = vi.fn(async () => new Response("<main>Zuschuss von 500 Euro je Anlage.</main>", { status: 200, headers: { "content-type": "text/html" } }));
+  vi.stubGlobal("fetch", network);
+  try {
+    const reader = new FundingSourceReader(db, "test");
+    // Der Crawl-Weg respektiert die Sperre weiterhin — das ist dort richtig.
+    await expect(reader.fetch("https://example.org/funding")).rejects.toThrow("deferred");
+    // Der Prüf-Weg kommt durch und schreibt nichts in den Quellen-Zustand.
+    const antwort = await reader.verify("https://example.org/funding");
+    expect(await antwort.text()).toContain("500 Euro");
+    expect(saved).toHaveLength(0);
+    // Auch ein gescheiterter Gegenlese-Versuch bleibt folgenlos.
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("nein", { status: 403, headers: { "content-type": "text/html" } })));
+    await expect(reader.verify("https://example.org/andere")).rejects.toThrow("blocked");
+    expect(saved).toHaveLength(0);
+    // Die Beobachtung steht trotzdem in der Laufakte — nur eben nicht als
+    // Zustand der Quelle.
+    const observations = readFileSync(join(dir, "test.jsonl"), "utf8").trim().split("\n").map(s => JSON.parse(s));
+    expect(observations.map(o => o.url)).toContain("https://example.org/andere");
+  } finally { vi.unstubAllGlobals(); delete process.env.FUNDING_EVIDENCE_DIR; rmSync(dir, { recursive: true }); }
+});
+
+// Ein Aufrufer muss „die Adresse ist WEG" von „ich konnte sie nicht lesen"
+// unterscheiden können, ohne eine Fehlermeldung zu zerlegen. Eine Meldung ist
+// Text und ändert sich beim nächsten Umformulieren still; der Grund ist eine
+// Angabe und bleibt.
+it("throws a typed error carrying the failure reason, not just a message", () => {
+  const reader = readFileSync(join(process.cwd(), "scripts/lib/funding-source-reader.ts"), "utf8");
+  expect(reader).toContain("export class FundingSourceUnreadable extends Error");
+  expect(reader).toContain("readonly reason: SourceFailure | null");
+  expect(reader).toContain("throw new FundingSourceUnreadable(reason, input)");
+  expect(reader).not.toContain("throw new Error(`Source unreadable");
+});

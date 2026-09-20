@@ -21,6 +21,18 @@
         "3087"
       ],
       "port": 3087
+    },
+    {
+      "name": "angebot-check",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "3648"
+      ],
+      "port": 3648
     }
   ]
 }

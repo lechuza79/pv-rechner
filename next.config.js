@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    // Lets app/global-not-found.tsx replace Next's bare default 404. Needed
+    // because this app has no app/layout.tsx — every route group brings its own
+    // root layout, and a root not-found.tsx without one is refused by Next
+    // (HTTP 500 on every unknown address, measured 20.09.2026). The flag only
+    // changes which component answers an unmatched address; drop the flag and
+    // Next falls back to its own page, nothing else breaks.
+    globalNotFound: true,
+  },
   // Dev server uses .next-dev/, build uses .next/ (Vercel-compatible)
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
   env: {
@@ -87,6 +96,12 @@ const nextConfig = {
       {"source": "/photovoltaik-foerderung/pfaffenhofen-a-d-ilm", "destination": "/photovoltaik-foerderung/bayern/pfaffenhofen-a-d-ilm", "permanent": true},
       {"source": "/photovoltaik-foerderung/hiddenhausen", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/hiddenhausen", "permanent": true},
       {"source": "/photovoltaik-foerderung/herzebrock-clarholz", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/herzebrock-clarholz", "permanent": true},
+      // Landkreis Erlangen-Höchstadt, 20.09.2026
+      { source: "/photovoltaik-foerderung/buckenhof", destination: "/photovoltaik-foerderung/bayern/buckenhof", permanent: true },
+      { source: "/photovoltaik-foerderung/marloffstein", destination: "/photovoltaik-foerderung/bayern/marloffstein", permanent: true },
+      { source: "/photovoltaik-foerderung/uttenreuth", destination: "/photovoltaik-foerderung/bayern/uttenreuth", permanent: true },
+      { source: "/photovoltaik-foerderung/spardorf", destination: "/photovoltaik-foerderung/bayern/spardorf", permanent: true },
+      { source: "/photovoltaik-foerderung/roettenbach-erlangen-hoechstadt", destination: "/photovoltaik-foerderung/bayern/roettenbach-erlangen-hoechstadt", permanent: true },
       {"source": "/photovoltaik-foerderung/burbach", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/burbach", "permanent": true},
       {"source": "/photovoltaik-foerderung/rheinisch-bergischer-kreis", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/rheinisch-bergischer-kreis", "permanent": true},
       {
@@ -352,6 +367,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/ottobrunn", destination: "/photovoltaik-foerderung/bayern/ottobrunn", permanent: true },
       { source: "/photovoltaik-foerderung/putzbrunn", destination: "/photovoltaik-foerderung/bayern/putzbrunn", permanent: true },
       { source: "/photovoltaik-foerderung/unterhaching", destination: "/photovoltaik-foerderung/bayern/unterhaching", permanent: true },
+      { source: "/photovoltaik-foerderung/unterfoehring", destination: "/photovoltaik-foerderung/bayern/unterfoehring", permanent: true },
       { source: "/photovoltaik-foerderung/karlshuld", destination: "/photovoltaik-foerderung/bayern/karlshuld", permanent: true },
       { source: "/photovoltaik-foerderung/vilshofen", destination: "/photovoltaik-foerderung/bayern/vilshofen", permanent: true },
       { source: "/photovoltaik-foerderung/muehlhausen", destination: "/photovoltaik-foerderung/bayern/muehlhausen", permanent: true },

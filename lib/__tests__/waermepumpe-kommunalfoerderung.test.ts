@@ -273,7 +273,7 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
 
   it("keeps unverified combinations explicit and out of the federal grant stack", () => {
     const unknown = Object.values(FUNDING_PROGRAMS).filter(p => p.combinableWith === null);
-    expect(unknown.map(p => p.id).sort()).toEqual(["altenkirchen-balkonkraftwerke", "altenkirchen-solarspeicher", "bad-marienberg-erneuerbare-energien", "burbach-klimaschutz-privat", "cochem-zell-solarstromspeicher", "delmenhorst-balkon-solar", "ekm-altenkirchen", "eppelheim-balkonkraftwerke", "floersheim-photovoltaik", "kirchlengern-pv-kleinanlagen", "pfaffenhofen-balkon", "radolfzell-sonnige-zukunft", "rheinisch-bergisch-balkonsolar", "wendelstein-pv", "wendlingen-energie"]);
+    expect(unknown.map(p => p.id).sort()).toEqual(["altenkirchen-balkonkraftwerke", "altenkirchen-solarspeicher", "bad-marienberg-erneuerbare-energien", "bubenreuth-co2-einsparung", "burbach-klimaschutz-privat", "cochem-zell-solarstromspeicher", "delmenhorst-balkon-solar", "ekm-altenkirchen", "eppelheim-balkonkraftwerke", "floersheim-photovoltaik", "fritzlar-balkonkraftwerke-speicher", "gaildorf-balkonkraftwerke", "havelland-stecker-solar", "holzminden-solarfair", "kirchlengern-pv-kleinanlagen", "mauer-balkonkraftwerke", "pfaffenhofen-balkon", "radolfzell-sonnige-zukunft", "rheinisch-bergisch-balkonsolar", "wendelstein-pv", "wendlingen-energie"]);
     expect(programmeNebenBundesfoerderung(unknown)).toEqual([]);
   });
   it("führt jeden Ausschluss ausdrücklich", () => {
@@ -292,7 +292,7 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
     //   Volltext gelesen). Der Ausschluss gilt allen fremden Mitteln, also
     //   auch den Bundesmitteln.
     // Official combination clauses reviewed on 2026-09-16; unknown is distinct from prohibition.
-    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "herzberg-balkonkraftwerke", "herzebrock-clarholz-batteriespeicher", "luedinghausen-klimaschutzfonds", "mainz-bingen-balkonkraftwerke" /* guideline 5.6.5: no cumulation with federal, state or municipal funds */, "mayen-koblenz-balkonkraftwerke" /* guideline no. 7: "Kumulierung … grundsätzlich nicht zulässig" */, "meschede-balkon-speicher", "neuwied-balkonkraftwerke", "tegernheim-stecker-pv", "vaterstetten-pv-begleitung", "weyhe-klimaschutz", "wolfratshausen-pv"];
+    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "herzberg-balkonkraftwerke", "herzebrock-clarholz-batteriespeicher", "luedinghausen-klimaschutzfonds", "mainz-bingen-balkonkraftwerke" /* guideline 5.6.5: no cumulation with federal, state or municipal funds */, "mayen-koblenz-balkonkraftwerke" /* guideline no. 7: "Kumulierung … grundsätzlich nicht zulässig" */, "meschede-balkon-speicher", "neuwied-balkonkraftwerke", "rauschenberg-balkon-solaranlagen" /* guideline sec. 3: "Die kommunalen Fördermittel können nicht mit anderen Fördermitteln kumuliert werden" */, "tegernheim-stecker-pv", "vaterstetten-pv-begleitung", "weyhe-klimaschutz", "wolfratshausen-pv"];
     const ausschluss = Object.values(FUNDING_PROGRAMS).filter(p => Array.isArray(p.combinableWith) && p.combinableWith.length === 0);
     expect(
       ausschluss.map(p => p.id).sort(),

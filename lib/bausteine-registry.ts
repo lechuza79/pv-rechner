@@ -345,6 +345,26 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Icons", "Switch"],
   },
   {
+    datei: "components/AngebotCheck.tsx",
+    name: "AngebotCheck",
+    zweck:
+      "Nimmt das Angebot des Handwerkers entgegen und hält es gegen drei Maßstäbe: die gerechnete Anlagengröße, die Positionen, die ein vollständiges Angebot nennen sollte, und die Preise vergleichbarer Anlagen. Ab dem zweiten Angebot stellt er sie nebeneinander.",
+    gruppe: "struktur",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: [],
+  },
+  {
+    datei: "components/NichtGefundenInhalt.tsx",
+    name: "NichtGefundenInhalt",
+    zweck:
+      "Alles, was ein Besucher auf einer 404 sieht — Überschrift, Satz und die vier Wege weiter. Next rendert eine 404 aus zwei Dateien (Adresse ohne Route, Seite ohne Inhalt dahinter), die sich nicht zusammenlegen lassen; dieser Baustein sorgt dafür, dass beide trotzdem dasselbe sagen und gleich aussehen. Die Worte kommen aus lib/nicht-gefunden.ts, das Aussehen aus einem verlinkten Stylesheet, dessen Regeln alle gekapselt sind.",
+    gruppe: "struktur",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: [],
+  },
+  {
     datei: "components/EinbettenDialog.tsx",
     name: "EinbettenDialog",
     zweck:
@@ -411,17 +431,6 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Logo"],
     keinBeispielWeil:
       "Ein Seitenrahmen — ein zweiter in der Galerie wäre kein Beispiel, sondern ein Fehler.",
-  },
-  {
-    datei: "components/Header.tsx",
-    name: "Header",
-    zweck: "Die Kopfzeile mit Navigation, Sonnenanzeige und Anmeldung.",
-    gruppe: "struktur",
-    ebene: "baustein",
-    stand: "verbindlich",
-    bestehtAus: ["Icons", "Logo", "ThemeController"],
-    keinBeispielWeil:
-      "Der Seitenrahmen selbst — auf dieser Seite steht er bereits oben. Ein zweiter darin wäre kein Beispiel, sondern ein Fehler.",
   },
   {
     datei: "components/SiteFuss.tsx",

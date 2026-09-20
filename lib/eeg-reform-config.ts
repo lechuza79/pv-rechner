@@ -542,6 +542,23 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   Entwurf am 10.09.2026 weiter als Vorlage der Bundesregierung ohne
   //   Beschluss; die erste Lesung am 24.09.2026 steht bevor. Zustand unverändert:
   //   Regierungsentwurf, eingebracht.
+  // 20.09.2026: Drucksache 21/7867 (dserver.bundestag.de/btd/21/078/2107867.pdf)
+  //   erneut geladen und im Volltext durchsucht; alle fünf Entwurfswerte stehen
+  //   unverändert da: „In der Angabe vor Nummer 1 wird die Angabe ‚7 Cent' durch
+  //   die Angabe ‚6,2 Cent' ersetzt" (Z. 2168), „Die Höhe des Bonus nach Absatz 1
+  //   beträgt 1,5 Cent pro eingespeiste Kilowattstunde" (Z. 2295), „maximal 36
+  //   Monate" (Z. 125), „mit einer installierten Leistung von weniger als 7
+  //   Kilowatt, die vor dem 1. Januar 2031 in …" (Z. 1093) und „maximal 50
+  //   Prozent der installierten Leistung … des zweiten Segments" (Z. 960). Das
+  //   Deckblatt trägt weiter „Vorabfassung – wird durch die lektorierte Fassung
+  //   ersetzt"; Primärquelle bleibt deshalb die BR-Drucksache 470/26. Deren
+  //   Seite beim Bundesrat führt unverändert allein die Grunddrucksache ohne
+  //   Plenarabschnitt und ohne Stellungnahme. Der 20.09.2026 ist ein Sonntag —
+  //   zwischen dem Stand von gestern und heute hat keine der beiden Kammern
+  //   getagt, ein Verfahrensschritt ist ausgeschlossen. Die erste Lesung im
+  //   Bundestag steht weiter für Donnerstag, 24.09.2026 an, die Sitzung des
+  //   Bundesrates für den 25.09.2026. Zustand unverändert: Regierungsentwurf,
+  //   eingebracht.
   // 19.09.2026: Drucksache 21/7867 erneut geladen, die vier Werte stehen
   //   unverändert im Satzzusammenhang da („6,2 Cent" Z. 2168, „1,5 Cent pro
   //   eingespeiste Kilowattstunde" Z. 2295, „maximal 36 Monate" Z. 125, „vor dem
@@ -549,7 +566,7 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   (kw39-de-energie-stromsektor-1211294) führt die erste Lesung weiter für
   //   Donnerstag, 24.09.2026 — sie steht bevor. Zustand unverändert:
   //   Regierungsentwurf, eingebracht.
-  geprueftIso: "2026-09-19",
+  geprueftIso: "2026-09-20",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
