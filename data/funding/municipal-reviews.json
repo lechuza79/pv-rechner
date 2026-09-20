@@ -38813,26 +38813,37 @@
   {
     "regionId": "01056",
     "name": "Kreis Pinneberg",
-    "checkedAt": "2026-09-20T22:15:00Z",
+    "checkedAt": "2026-09-20T22:34:00Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
-    "outcome": "keine-passende-foerderung",
-    "conclusion": "Kein Kreiszuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die beiden Förderseiten des Kreis-Klimaschutzportals verweisen für Energie ausschließlich auf BUNDESmittel (BAFA, KfW, Förderdatenbank des Bundes) — eigenes Kreisgeld für unseren Umfang gibt es dort nicht. WAS ES GIBT und was ein künftiger Lauf nicht als übersehenes PV-Programm wiederentdecken soll: das Kreisprogramm „Mehr Grün“ fördert GRÜNDÄCHER mit 20 €/m² und hebt den Satz auf 30 €/m² Gründach an, wenn zusätzlich eine Photovoltaikanlage installiert wird (höchstens 1.500 € je Anlage). Das ist kein PV-Zuschuss: Bemessungsgrundlage ist die begrünte Fläche, geförderte Maßnahme ist die Dachbegrünung, und die Photovoltaik hebt nur deren Satz. Aufgenommen wird es deshalb nicht — es fällt unter keine Technik des Katalogs, und „€ je Quadratmeter Gründach“ kann das Modell nicht ausdrücken. Als PV-Programm eingetragen bekäme jeder mit einem gewöhnlichen Dach Geld gerechnet, das er nicht bekommt. Der EU-Förderleitfaden von 2015–2017 richtet sich an Kommunen, nicht an private Haushalte.",
+    "outcome": "klaerung",
+    "conclusion": "KORREKTUR EINER FALSCHEN EINORDNUNG AUS DEMSELBEN LAUF. Zuerst stand hier, das Gründach-Programm des Kreises falle „unter keine Technik des Katalogs“ und gehöre deshalb nicht aufgenommen. Das ist widerlegt: Der Katalog führt mit „Gründachförderung mit PV-Befestigungszuschlag“ (Lübeck, luebeck-solargruendach) genau diese Bauform bereits — als `foerdert: [\"pv\"]`, Sätze im Wortlaut, OHNE Rechenwert. Die zweite Hälfte des Schlusses trägt weiter: „Euro je Quadratmeter Gründach“ kann das Modell nicht ausdrücken, ein Rechenwert kommt also nicht in Frage. Aber ein fehlender Eintrag ist hier NICHT die sichere Richtung — auf der Kreisseite stünde sonst „keine kommunale Förderung“, wo es eine gibt.\nDER BELEG IST JETZT VOLLSTÄNDIG: Programmseite und Förderrichtlinie „Dachbegrünung und Baumpflanzung“ (Teil 1, 291 Zeilen) heute im Volltext gelesen. 20,00 € je m² begrünter Dachfläche; wird auf dem begrünten Dach zusätzlich eine Photovoltaikanlage installiert, 30,00 € je m² für die GESAMTE begrünte Fläche, höchstens 1.500 € je Anlage. Nr. 4.1 sagt ausdrücklich: „Die PV-Anlage selbst wird nicht bezuschusst.“ Nr. 2.4 schließt Steckersolar ausdrücklich aus („Installation von Stecker-Solaranlagen (‚Balkonmodulen‘); dies sind keine PV-Anlagen im Sinne der Ziffer 4.1“) — die Technik ist also PV, ausdrücklich NICHT Balkon.\nWAS FEHLT, IST NUR DAS TOR: Eine Neuaufnahme verlangt nach dem Wächter-Gate Council mit adversarialem Prüfer. Der Beleg liegt in der Akte; die Aufnahme gehört in den nächsten Lauf. Die Energie-Förderseiten des Kreises verweisen für Photovoltaik, Speicher und Wärmepumpen weiterhin ausschließlich auf Bundesmittel — dafür gibt es keinen Kreiszuschuss.",
     "searches": [
-      "Pressemitteilung „Grünes Dach“ im Volltext gelesen, Bemessungsgrundlage und PV-Aufschlag bestimmt",
+      "Pressemitteilung „Grünes Dach“ gelesen, Bemessungsgrundlage und PV-Aufschlag bestimmt",
       "Klimaschutzportal des Kreises aufgerufen und seine Förderrubriken durchgesehen",
-      "Seite Energie/Fördermöglichkeiten des Klimaschutzportals gelesen",
+      "Seite Energie/Fördermöglichkeiten gelesen: verweist nur auf Bundesmittel",
       "Seite Förderungen/Weitere Fördermöglichkeiten gelesen",
-      "EU-Förderleitfaden auf Adressaten geprüft"
+      "EU-Förderleitfaden auf Adressaten geprüft",
+      "Programmseite „Förderprogramm für MEHR GRÜN“ gefunden und im Volltext gelesen",
+      "Förderrichtlinie Dachbegrünung und Baumpflanzung als PDF im Volltext gelesen (291 Zeilen)",
+      "Katalog auf einen Präzedenzfall für Gründach mit PV-Zuschlag durchsucht (Lübeck gefunden)"
     ],
     "evidence": [
       {
+        "url": "https://klimaschutz.kreis-pinneberg.de/MehrGr%C3%BCnImKreisPinneberg.html",
+        "finding": "„Die Höhe der Förderung beträgt 20,00 Euro je m² begrünter Fläche. Wird die Dachbegrünung mit der Neuinstallation einer Photovoltaik-Anlage kombiniert, wird eine erhöhte Zuwendung von 30,00 Euro je m² gezahlt. Die maximale Gesamtförderung pro Anlage beträgt 1500 Euro.“ Antrag per E-Mail an klimaschutz@kreis-pinneberg.de; Programm für 2025 und 2026 neu aufgelegt."
+      },
+      {
+        "url": "https://klimaschutz.kreis-pinneberg.de/media/Dokumente/F%C3%B6rderprogramme+Mehr+Gr%C3%BCn/F%C3%B6rderrichtlinie+Dachbegr%C3%BCnung+und+Baumpflanzung.pdf",
+        "finding": "Förderrichtlinie Teil 1 Dachbegrünung. Nr. 4.1: „Die Höhe der Förderung beträgt 20,00 Euro je m² begrünter Dachfläche. Wird auf dem begrünten Dach zusätzlich eine Photovoltaik-Anlage installiert, wird eine erhöhte Zuwendung von 30,00 Euro je m2 für die gesamte begrünte Dachfläche gezahlt. Die maximale Gesamtförderung einer Anlage beträgt 1500 Euro. Die PV-Anlage selbst wird nicht bezuschusst.“ Nr. 2.4 schließt aus: „Installation von Stecker-Solaranlagen (‚Balkonmodulen‘); dies sind keine PV-Anlagen im Sinne der Ziffer 4.1.“ Nr. 2.2: mindestens 15 m² Nettovegetationsfläche; Nr. 2.1: mindestens 8 cm Substrat, eine Förderung je Wohneinheit/Grundstück; Nr. 2.3: ausgeschlossen, wenn die Begrünung in einem Bebauungsplan oder einer Baugenehmigung gefordert ist; Nr. 3: Eigentümer, dinglich Verfügungsberechtigte, Mieter mit Zustimmung, gemeinnützige Einrichtungen und Gewerbetreibende, nicht Kommunen; Nr. 4.3: Eigenleistung mit höchstens 50 % der Materialkosten."
+      },
+      {
         "url": "https://www.kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/Gr%C3%BCnes+Dach+-+gef%C3%B6rdert+vom+Kreis+Pinneberg.html",
-        "finding": "„Der Kreis bezuschusst Gründächer mit einer Förderung von 20 Euro pro Quadratmeter begrünter Fläche. … Wer zusätzlich zur Dachbegrünung noch eine Photovoltaik-Anlage installiert, bekommt 30 Euro pro Quadratmeter Gründach.“ und „Die maximale Gesamtförderung pro Anlage liegt bei 1.500 Euro.“ — die Photovoltaik hebt den Satz der Dachbegrünung, sie wird nicht selbst gefördert."
+        "finding": "„Der Kreis bezuschusst Gründächer mit einer Förderung von 20 Euro pro Quadratmeter begrünter Fläche. … Wer zusätzlich zur Dachbegrünung noch eine Photovoltaik-Anlage installiert, bekommt 30 Euro pro Quadratmeter Gründach.“ und „Die maximale Gesamtförderung pro Anlage liegt bei 1.500 Euro.“"
       },
       {
         "url": "https://klimaschutz.kreis-pinneberg.de/Energie/F%C3%B6rderm%C3%B6glichkeiten.html",
-        "finding": "Energie-Fördermöglichkeiten des Kreis-Klimaschutzportals verweisen ausschließlich auf Bundesmittel: „Die aktuellen Fördersätze für den Einsatz erneuerbarer Energien finden Sie auf http://www.bafa.de/“, dazu KfW-Darlehen und die BAFA-Vor-Ort-Beratung. Kein Kreiszuschuss."
+        "finding": "Energie-Fördermöglichkeiten des Kreis-Klimaschutzportals verweisen ausschließlich auf Bundesmittel: „Die aktuellen Fördersätze für den Einsatz erneuerbarer Energien finden Sie auf http://www.bafa.de/“, dazu KfW-Darlehen und die BAFA-Vor-Ort-Beratung. Kein Kreiszuschuss für Photovoltaik, Speicher oder Wärmepumpen."
       },
       {
         "url": "https://www.kreis-pinneberg.de/Verwaltung/Fachbereich+Service+und+Digitalisierung/Team+R%C3%A4umliche+Kreisentwicklung+und+Europa/EU-F%C3%B6rderleitfaden.html",
@@ -38843,7 +38854,7 @@
       {
         "url": "kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/Gr%C3%BCnes+Dach+-+gef%C3%B6rdert+vom+Kreis+Pinneberg.html",
         "disposition": "reviewed",
-        "reason": "Gründach-Programm mit PV-Aufschlag; Bemessungsgrundlage ist die begrünte Fläche, keine Technik des Katalogs und im Modell nicht darstellbar.",
+        "reason": "Pressemitteilung zum Gründach-Programm mit PV-Aufschlag; die maßgebliche Quelle ist die Förderrichtlinie, die heute zusätzlich gelesen wurde.",
         "evidenceUrl": "https://www.kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/Gr%C3%BCnes+Dach+-+gef%C3%B6rdert+vom+Kreis+Pinneberg.html"
       },
       {
@@ -38855,10 +38866,15 @@
       {
         "url": "kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/F%C3%B6rderprogramm+Mehr+Gr%C3%BCn.html",
         "disposition": "replaced",
-        "reason": "Dieselbe Sache wie „Grünes Dach“: Mehr-Grün-Programm für Dachbegrünung und Baumpflanzung, in der heute gelesenen Pressemitteilung mit Sätzen beziffert.",
-        "evidenceUrl": "https://www.kreis-pinneberg.de/Ver%C3%B6ffentlichungen/Pressemitteilungen/Gr%C3%BCnes+Dach+-+gef%C3%B6rdert+vom+Kreis+Pinneberg.html"
+        "reason": "Dieselbe Sache; durch Programmseite und Förderrichtlinie abschließend belegt.",
+        "evidenceUrl": "https://klimaschutz.kreis-pinneberg.de/MehrGr%C3%BCnImKreisPinneberg.html"
       }
-    ]
+    ],
+    "nextAction": {
+      "kind": "manual",
+      "dueAt": "2026-09-23T08:00:00Z",
+      "detail": "Gründach-Programm des Kreises Pinneberg über das Wächter-Gate aufnehmen: foerdert [\"pv\"] nach dem Vorbild luebeck-solargruendach, Sätze im Wortlaut, KEIN Rechenwert (Euro je Quadratmeter Gründach ist im Modell nicht darstellbar). Bedingungen aus der Richtlinie: mindestens 15 m² Nettovegetationsfläche, mindestens 8 cm Substrat, eine Förderung je Wohneinheit/Grundstück, Steckersolar ausdrücklich ausgeschlossen, keine Förderung bei bauordnungsrechtlicher Pflicht, Eigenleistung höchstens 50 % der Materialkosten, die PV-Anlage selbst wird nicht bezuschusst. Council mit adversarialem Prüfer ist Pflicht. Belege liegen in der Akte 20260920T2203Z. Vorher prüfen, ob ein aktives PV-Programm auf einem Kreisschlüssel eine Förder-Stadtseite auslöst, die wir hier nicht wollen."
+    }
   },
   {
     "regionId": "05316000",
