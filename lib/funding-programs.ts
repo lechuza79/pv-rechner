@@ -5711,14 +5711,54 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Stadt Hückelhoven", level: "kommune", region: "Hückelhoven",
     bundesland: "Nordrhein-Westfalen", agsCode: "05370020",
     url: "https://www.hueckelhoven.de/erfolgreiche-foerderprogramme-gehen-weiter/",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Pauschale je Balkonkraftwerk bis 800 W",
+    // Der BETRAG steht nicht in der Förderrichtlinie, sondern in der Mitteilung
+    // der Stadt vom 09.05.2025 (die URL oben): „Balkonkraftwerke mit einer
+    // Leistung bis zu 800 Watt mit 150 Euro je Anlage". Die Richtlinie selbst
+    // trägt an der Stelle eine Lücke in der Textebene („wird auf ⟨⟩
+    // festgelegt:") und kündigt mit „abhängig von der Art der Maßnahme und
+    // Größe der Anlage" eine Staffelung an, die dort nicht lesbar ist. OFFEN
+    // (bis 12/2026): ob es unterhalb der 150 € eine Stufe gibt. Nicht als
+    // „steht in der Richtlinie" ausgeben — sie belegt den Betrag nicht.
+    coveredCosts: "Pauschale je Balkonkraftwerk bis 800 VA am Wechselrichter",
     maxFoerderung: "max. 150 € je Anlage",
-    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "150 € je Anlage" }],
+    rates: [{ label: "Balkonkraftwerk bis 800 VA", value: "150 € je Anlage" }],
     conditions: [
-      "Gefördert werden Anlagen mit höchstens 800 W Leistung",
-      "Das Programm läuft seit 2024; im ersten Jahr wurden 139 Anträge bewilligt",
+      // 20.09.2026 aus der amtlichen Förderrichtlinie (1. Anpassung, in Kraft
+      // seit 15.05.2024) im Volltext ergänzt; Council mit adversarialem Prüfer.
+      //
+      // DIE ERSTE BEDINGUNG WAR EINE VERSCHÄRFUNG OHNE FUNDSTELLE. Hier stand
+      // „Anlagen mit höchstens 800 W Leistung". Die Richtlinie sagt aber
+      // „maximale Leistung (AM WECHSELRICHTER) von 800 VA" — die Modulleistung
+      // begrenzt sie mit keinem Wort. Ein übliches Set hat 1.600–2.000 Wp
+      // Module hinter einem 800-VA-Wechselrichter; wer unsere alte Fassung las
+      // und auf sein Datenblatt sah, hielt sich für ausgeschlossen und stellte
+      // keinen Antrag. Der Fehler kostete nicht die Stadt, sondern den Bürger —
+      // und er betraf den Normalfall, nicht den Ausnahmefall.
+      "Der Wechselrichter darf höchstens 800 VA abgeben; wie viel die Module leisten, ist nicht begrenzt",
+      // Die teuerste Bedingung des Programms, und strenger als die
+      // Bundesförderung: Dort genügt der Antrag vor Beginn, hier muss die
+      // BEWILLIGUNG da sein. Und gefördert wird die „Anschaffung", der Beginn
+      // der „Umsetzung" ist gesperrt — wer vorher kauft, ist ebenfalls raus.
+      "Wer vor der Bewilligung kauft oder einbaut, bekommt nichts — eine nachträgliche Förderung ist ausgeschlossen",
+      "Die Anlage muss auf einem Gebäude im Stadtgebiet stehen",
+      "Je Wohneinheit wird höchstens eine Anlage gefördert, und jede Anlage nur ein einziges Mal",
+      "Mieter brauchen die Genehmigung ihres Vermieters",
+      "Gebrauchte, geleaste und gemietete Anlagen sind ausgeschlossen; die Anlage muss fachgerecht installiert sein",
+      "Alle baurechtlichen Genehmigungen müssen vorliegen, und die Vorgaben des Netzbetreibers sind einzuhalten",
+      "Die Anlage muss fünf Jahre im geförderten Zustand erhalten und zugänglich bleiben",
+      // Die Frist bindet nicht nur die Papiere, sondern die Ausführung selbst:
+      // „Bei verspäteter Mitteilung ODER MASSNAHMENDURCHFÜHRUNG ist eine
+      // Auszahlung nicht mehr möglich." Ausgezahlt wird erst danach — der
+      // Bürger geht in Vorkasse.
+      "Anlage fertig, Rechnung und Foto spätestens zwölf Monate nach der Bewilligung — sonst wird nichts ausgezahlt",
+      // Der Zusatz ist der scharfe Teil: Im Windhundverfahren verliert ein
+      // nachgebesserter Antrag seinen Platz in der Reihe, und nach 30 Tagen
+      // gilt er als zurückgezogen — ohne weiteren Bescheid.
+      "Vergabe nach Eingang der Anträge, bis der Jahrestopf leer ist; wer nachbessern muss, hat dafür 30 Tage und rückt mit dem Tag der Vollständigkeit ans Ende der Reihe",
+      "Ein Rechtsanspruch auf die Förderung besteht nicht",
+      "Das Programm läuft seit 2024; im ersten Jahr wurden 139 Anträge über zusammen rund 20.000 € bewilligt",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
