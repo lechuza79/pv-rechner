@@ -132,6 +132,28 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // hinaus keine Frist — es gibt damit schlicht kein Antragsverfahren, gegen
   // das eine Prüfform das Vorhaben halten könnte.
   "mauer-balkonkraftwerke",
+  // Schwarzenfeld, aufgenommen am 20.09.2026. Förderhinweise vom 01.10.2024 im
+  // Volltext gelesen. Dasselbe umgekehrte Verfahren wie bei Mauer: „Der
+  // unterschriebene Antrag kann NACH Beschaffung der PV-Anlage eingereicht
+  // werden", Rechnungskopie und Zahlungsnachweis gehören dazu. Eine Prüfform
+  // hielte das Vorhaben gegen eine Bewilligung, die es hier nicht gibt.
+  // Die EINE Frist, die der Markt nennt, ist eine Jahresfrist am Antrag („im
+  // Jahr der Rechnungsausstellung") und keine Bedingung an das Vorhaben — sie
+  // steht vollständig auf der Karte.
+  "schwarzenfeld-balkon-pv",
+  // Kumhausen, aufgenommen am 20.09.2026. Förderkriterien 2026 im Volltext
+  // gelesen. Hier WÄRE eine Prüfform möglich, und nur deshalb steht der Eintrag
+  // hier statt bei den unmöglichen Fällen: Die Gemeinde verlangt den Antrag vor
+  // der Installation („Bereits installierte Anlagen sind von der Antragstellung
+  // ausgenommen"), also die übliche Regel. Sie ist in diesem Lauf nicht mehr
+  // erfasst worden; halb erfasst gibt es nicht, und bis dahin stehen die
+  // Bedingungen vollständig auf der Karte.
+  "kumhausen-balkon-pv",
+  // Mutterstadt, aufgenommen am 20.09.2026. Richtlinie im Volltext auf der
+  // Gemeindeseite gelesen. Wieder das nachträgliche Verfahren: „Die
+  // Antragstellung erfolgt nach der Umsetzung der Maßnahmen." Es gibt kein
+  // Antragsverfahren vor dem Kauf, gegen das eine Prüfform etwas halten könnte.
+  "mutterstadt-balkonkraftwerke",
   // Rauschenberg, aufgenommen am 20.09.2026. Amtliche Bekanntmachung im
   // Volltext gelesen. Auch hier wird erst gekauft und dann beantragt, und eine
   // Frist nennt die Richtlinie nicht — es gibt kein Antragsverfahren, gegen das

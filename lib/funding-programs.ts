@@ -10687,6 +10687,156 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // informiert es auf der Stadtseite und rechnet nichts — genau die Bremse,
     // für die es `fundingBelegAktuell()` gibt.
   },
+  "schwarzenfeld-balkon-pv": {
+    id: "schwarzenfeld-balkon-pv", name: "Förderung von Balkon-PV-Anlagen",
+    traeger: "Markt Schwarzenfeld", level: "kommune", region: "Schwarzenfeld",
+    bundesland: "Bayern", agsCode: "09376163",
+    url: "https://www.schwarzenfeld.de/leben-arbeiten-wohnen/bauen-wohnen/balkonkraftwerke",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-01-01",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Anteil des Rechnungsbetrags je Anlage",
+    maxFoerderung: "10 % des Rechnungsbetrags, max. 100 €",
+    rates: [{ label: "Balkonkraftwerk", value: "10 % des eingereichten Rechnungsbetrages, höchstens 100 € pro Antrag", nur: ["balkon"] }],
+    conditions: [
+      "Gefördert werden Stecker-Solaranlagen bis 800 Watt Nennleistung; es muss ein Neuprodukt sein, das die Normen für fest installierte Stromerzeugungsgeräte erfüllt",
+      "Antragsberechtigt sind volljährige Personen mit Hauptwohnsitz sowie Vereine und Gewerbebetriebe mit Sitz im Gemeindegebiet",
+      "Je Haushalt, Betrieb oder Verein wird nur eine Anlage gefördert; sie muss dauerhaft am Hauptwohnsitz oder Betriebssitz genutzt werden",
+      "Beantragt wird erst nach der Beschaffung — zum Antrag gehören Rechnungskopie, Zahlungsnachweis und ein Foto der installierten Anlage",
+      "Antragsteller und Käufer müssen dieselbe Person sein: Wer sich die Anlage von jemand anderem kaufen lässt, bekommt den Zuschuss nicht",
+      "Die Förderung ist an das laufende Haushaltsjahr gebunden: Die Unterlagen müssen im Jahr der Rechnungsausstellung eingereicht werden",
+      "Freiwillige Leistung unter Haushaltsvorbehalt; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.10, balkonCap: 100,
+    // NEU AUFGENOMMEN 20.09.2026, aus dem Treffer-Vorrat. Die Förderhinweise des
+    // Marktes sind im Volltext gelesen (PDF unter der eigenen Adresse der
+    // Gemeinde, HTTP 200 am selben Tag): Abschnitt B nennt „10 % des
+    // eingereichten Rechnungsbetrages, maximal 100 € pro Antrag", datiert
+    // „Markt Schwarzenfeld, 01. Oktober 2024".
+    //
+    // KEINE BEFRISTUNG, aber eine jährliche Antragsfrist: „Die Förderung ist an
+    // das laufende Haushaltsjahr gebunden. Die vollständigen Unterlagen müssen
+    // im Jahr der Rechnungsausstellung eingereicht werden … vom 01.01. bis zum
+    // 31.12. DES JEWEILIGEN JAHRES." Das ist eine jährlich wiederkehrende Frist
+    // am einzelnen Antrag, keine Laufzeit des Programms — deshalb kein
+    // `endetIso`, sondern eine Bedingung.
+    //
+    // `beginntIso` KOMMT VON DER SEITE, NICHT VOM DATUM DES HINWEISBLATTS.
+    // Das PDF ist auf den 01.10.2024 datiert, die Seite sagt aber „fördert der
+    // Markt Schwarzenfeld ab dem Jahr 2024" und „für alle Anlagen mit
+    // Rechnungsdatum ab 2024". Ein Datumsstempel unter einem Dokument ist der
+    // Tag, an dem es unterschrieben wurde, nicht der Tag, ab dem gefördert wird
+    // — hier lägen neun Monate dazwischen, und zwar genau auf der Zeitachse,
+    // für die es das Feld gibt.
+    //
+    // `combinableWith: null`: Die Hinweise sagen zur Kombination mit anderen
+    // Fördermitteln nichts. Unbelegt heißt kein Stapel.
+  },
+  "kumhausen-balkon-pv": {
+    id: "kumhausen-balkon-pv", name: "Bezuschussung von Balkon-Photovoltaikanlagen",
+    traeger: "Gemeinde Kumhausen", level: "kommune", region: "Kumhausen",
+    bundesland: "Bayern", agsCode: "09274146",
+    url: "https://www.kumhausen.de/wohnen-und-leben/bauen-und-wohnen/balkon-photovoltaikanlagen",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-01-01", beschlossenIso: "2023-09-12",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Pauschale, begrenzt auf einen Anteil der Anschaffungskosten",
+    maxFoerderung: "100 € pauschal, höchstens 20 % der Anschaffungskosten",
+    rates: [{ label: "Balkonkraftwerk", value: "pauschal 100 €, begrenzt auf 20 % der Anschaffungskosten", nur: ["balkon"] }],
+    conditions: [
+      "Zuschussfähig sind Balkonkraftwerke bis 800 Wp; Prototypen und Eigenbau sind ausgenommen, ebenso bereits installierte Anlagen",
+      "Antragsberechtigt sind natürliche und juristische Personen mit Hauptwohnsitz in Kumhausen — als Eigentümer, Erbbauberechtigte oder Mieter",
+      "Die technischen Anschlussbedingungen und die VDE-Richtlinie für Erzeugungsanlagen am Niederspannungsnetz sind einzuhalten",
+      "Der erzeugte Strom wird selbst verbraucht; für eingespeisten Strom wird keine Vergütung nach EEG oder KWKG beansprucht",
+      "Nach der Förderzusage ist die Installation binnen sechs Monaten nachzuweisen; ausgezahlt wird erst nach Nachweis der Eintragung im Marktstammdatenregister",
+      "Die Anlage darf fünf Jahre lang nicht veräußert werden; wird sie in dieser Zeit nach einem Schaden zurückgebaut, sind die Fördermittel zurückzuzahlen",
+      "Freiwillige Leistung im Rahmen der Haushaltsmittel, in der Reihenfolge des Eingangs vollständiger Anträge; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: ["bund-nullsteuer", "bund-kfw270"],
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.20, balkonCap: 100,
+    // NEU AUFGENOMMEN 20.09.2026, aus dem Treffer-Vorrat. Die Förderkriterien
+    // sind im Volltext gelesen (PDF „Förderkriterien für Balkon 2026" unter der
+    // eigenen Adresse der Gemeinde, HTTP 200 am selben Tag). Abschnitt 4: „Die
+    // kommunale Förderung beträgt pauschal 100,00 Euro, ist aber auf 20% der
+    // Anschaffungskosten begrenzt."
+    //
+    // DIE PAUSCHALE IST KEINE `balkonPauschale`. „Pauschal 100 €, begrenzt auf
+    // 20 % der Kosten" ist rechnerisch der gedeckelte Prozentsatz: Bei einem
+    // 500-€-Set sind 20 % genau 100 €, bei einem 300-€-Set nur 60 €. Als feste
+    // Pauschale eingetragen bekäme das billigste Set zu viel — bei Balkon-Sets
+    // ab rund 350 € ist das der Normalfall, nicht der Randfall.
+    //
+    // `combinableWith`: Abschnitt 7 nennt die Kombination mit KfW,
+    // BAFA und dem Freistaat Bayern ausdrücklich als zulässig („schließt eine
+    // Förderung durch andere Fördermittelgeber nicht aus").
+    //
+    // `capped: true`: Die Seite nennt einen Fördertopf von 10.000 € je
+    // Haushaltsjahr, und Abschnitt 2 vergibt „in der Reihenfolge des Eingangs
+    // der vollständigen Förderanträge". Ob er gerade leer ist, sagt die Seite
+    // nicht; die Kriterien tragen die Jahreszahl 2026 im Dateinamen, also ist
+    // das Programm für dieses Jahr aufgelegt. Der Hinweis „Mittel begrenzt"
+    // gehört an die Stadtseite — bei 10.000 € sind das rund hundert Anlagen.
+  },
+  "mutterstadt-balkonkraftwerke": {
+    id: "mutterstadt-balkonkraftwerke", name: "Förderung von Stecker-Solargeräten",
+    traeger: "Gemeinde Mutterstadt", level: "kommune", region: "Mutterstadt",
+    bundesland: "Rheinland-Pfalz", agsCode: "07338019",
+    url: "https://www.mutterstadt.de/wirtschaft-wohnen-infrastruktur/balkonkraftwerke/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-07-01", endetIso: "2026-12-31",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Pauschale je Balkonkraftwerk",
+    maxFoerderung: "200 € einmalig je Balkonkraftwerk",
+    rates: [{ label: "Balkonkraftwerk", value: "einmalig 200 € pro Balkonkraftwerk", nur: ["balkon"] }],
+    conditions: [
+      "Die Anlage muss ab dem 01.07.2025 neu gekauft und errichtet worden sein; maßgeblich ist das Rechnungsdatum",
+      "Gefördert werden Balkonkraftwerke samt Wechselrichter mit mindestens 300 und höchstens 800 Watt Peak, angeschlossen über eine geeignete Steckdose am Hausnetz",
+      "Antragsberechtigt sind natürliche und juristische Personen des privaten Rechts: Hauseigentümer, deren Vertretungsberechtigte, Hausverwaltungen und Mieter; das Gebäude muss im Ortsgebiet liegen",
+      "In der Umgebung eines Kulturdenkmals ist eine denkmalrechtliche Genehmigung nötig; unmittelbar an oder neben einem Kulturdenkmal soll gar nicht installiert werden",
+      "Gefördert wird eine Anlage je Haushalt",
+      "Registrierung im Marktstammdatenregister ist Pflicht; die Anlage muss von einem anerkannten Prüfinstitut nach DIN oder ISO zertifiziert sein",
+      "Geförderte verpflichten sich, 20 Jahre lang unentgeltlich einzuspeisen, also keine EEG-Vergütung in Anspruch zu nehmen",
+      "Beantragt wird nach der Umsetzung; ausgezahlt wird nach Prüfung der Unterlagen und einem Bewilligungsbescheid",
+      "Freiwillige Leistung im Rahmen der bereitgestellten Haushaltsmittel; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    balkonPauschale: 200,
+    // NEU AUFGENOMMEN 20.09.2026, aus dem Treffer-Vorrat. Die Richtlinie steht
+    // in voller Länge auf der Seite der Gemeinde selbst (acht Abschnitte,
+    // HTTP 200 am selben Tag) — kein PDF nötig. Abschnitt 5: „Die Höhe der
+    // Förderung beträgt einmalig 200 € pro Balkonkraftwerk."
+    //
+    // `endetIso: "2026-12-31"` kommt aus Abschnitt 2: „Die Förderung erfolgt im
+    // Rahmen der für diesen Zweck jährlich bis zum 31.12.2026 durch den
+    // Gemeinderat bereitgestellten Haushaltsmittel." Das ist das Ende der
+    // MITTELBEREITSTELLUNG, kein von der Gemeinde genannter letzter Antragstag
+    // — die Feldbeschreibung oben verlangt genau den. Der Wert ist die beste
+    // verfügbare Näherung und trägt deshalb diesen Vorbehalt.
+    //
+    // UND ER SCHALTET NICHTS AB. Das Feld hat außerhalb dieser Datei genau
+    // einen Leser (die Fund-Suche der Datengeschichten); weder `fundingZaehlt`
+    // noch `fundingAmount` lesen es. Gestoppt wird ausschließlich über `status`
+    // — Böblingen trägt beides nebeneinander. Ohne diesen Absatz stünde hier
+    // die bequeme Annahme „läuft am Stichtag von selbst aus", und genau dann
+    // sieht im Januar 2027 niemand nach, während der Eintrag weiter 200 €
+    // abzieht. IM JANUAR 2027 NACHSEHEN, ob der Rat verlängert hat, und sonst
+    // `status` umstellen.
+    //
+    // HIER IST DIE PAUSCHALE WIRKLICH EINE PAUSCHALE: Die Richtlinie nennt
+    // keinen Prozentsatz und keinen Anteil, sondern einen festen Betrag je
+    // Anlage. Der Unterschied zu Kumhausen im selben Lauf ist der Grund, warum
+    // beide Felder nebeneinander existieren.
+    //
+    // NICHT MODELLIERT: die Selbstverpflichtung auf 20 Jahre unentgeltliche
+    // Einspeisung. Sie ist für ein Balkonkraftwerk fast folgenlos — der Rechner
+    // setzt dort ohnehin keine Einspeisevergütung an —, gehört aber als
+    // Bedingung sichtbar an den Eintrag: Wer sie nicht will, bekommt den
+    // Zuschuss nicht.
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
