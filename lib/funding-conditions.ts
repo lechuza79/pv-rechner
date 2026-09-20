@@ -161,6 +161,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "bahrenhof-solar",
   // Closed 2023/2024 rounds in the same Amt (guidelines read in full on 19 Sep 2026).
   "wakendorf-i-solar", "weede-mini-solar", "geschendorf-solar",
+  // Closed on 31 December 2025 (official page read in full on 20 September
+  // 2026). No application flow is left to check the conditions against, and the
+  // programme has a shape the check form cannot express anyway: the application
+  // came AFTER the purchase (invoice and registry entry are part of it), so the
+  // usual "apply before you buy" form would be the wrong test, not a missing one.
+  "gaildorf-balkonkraftwerke",
   "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",

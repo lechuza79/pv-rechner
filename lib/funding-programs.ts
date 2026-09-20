@@ -3700,6 +3700,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { text: "Die Dachanlage wird nur zusammen mit einem Stromspeicher gefördert; ohne Speicher zahlt die Gemeinde nichts", nur: ["pv"] },
       { text: "Für die Nachrüstung eines Speichers muss die Anlage nach dem 31.12.2012 errichtet worden sein; gebrauchte Anlagen und Eigenbau sind ausgeschlossen", nur: ["pv"] },
       { text: "Der Zuschuss gilt je Wohnung; Mieter brauchen das Einverständnis des Vermieters", nur: ["balkon"] },
+      // Nachgetragen am 20.09.2026 aus der Richtlinie (Nr. 2.3) und der
+      // Programmseite, die sie „zwingend" nennt. Sie fehlte, und sie ist eine
+      // Antragsunterlage: Wer sie vergisst, hat keinen vollständigen Antrag —
+      // und vergeben wird in der Reihenfolge der VOLLSTÄNDIGEN Anträge.
+      { text: "Dem Antrag ist eine Selbsterklärung beizulegen, dass die Anlage den Sicherheitsstandard der Deutschen Gesellschaft für Sonnenenergie erfüllt", nur: ["balkon"] },
+      { text: "Das Gerät muss so befestigt sein, dass auch bei außergewöhnlichem Wetter nichts herabfallen kann; Balkon oder Geländer müssen dafür standsicher und brandschutztechnisch geeignet sein", nur: ["balkon"] },
       { text: "Wir rechnen mit dem Deckel von 400 € — mit Speicher zahlt die Gemeinde bis zu 800 €", nur: ["balkon"] },
       "Förderungen anderer Träger sind erlaubt; die Summe aller Mittel darf die tatsächlichen Kosten nicht übersteigen",
     ],
@@ -6097,6 +6103,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     bundesland: "Niedersachsen", agsCode: "03159019",
     url: "https://www.herzberg.de/service/themen/klima-und-umwelt/klimaschutz/foerderung-balkonkraftwerke/",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // „Der Rat der Stadt Herzberg am Harz beschloss am 17.09.2025 ein
+    // Förderprogramm für Balkonkraftwerke" — nachgetragen am 20.09.2026. Es ist
+    // der Beschlusstag, NICHT der Antragsstart; den nennt die Richtlinie nicht.
+    beschlossenIso: "2025-09-17",
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Balkonkraftwerk",
     maxFoerderung: "bis zu 100 € je Anlage",
@@ -6107,6 +6117,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Je Wohneinheit und Zähler wird eine Anlage gefördert, bei Mietobjekten bis zu fünf je Antragsteller",
       "Maßnahmen, die bereits durch andere Fördermittel gefördert werden, sind ausgeschlossen; Bundes- und Landesprogramme sind Beispiele",
       "Der Topf umfasst 20.000 € für 200 Anlagen; vergeben wird nach Eingang",
+      // Nachgetragen am 20.09.2026 aus Nr. 4.4 der Richtlinie. Sie fehlte, und
+      // sie ist nach dem Antragszeitpunkt die teuerste Bedingung des Programms:
+      // Sie bindet die AUSFÜHRUNG, nicht die Papiere, und das Geld fließt erst
+      // danach. Dieselbe Bauform wie in Hückelhoven.
+      "Die Anlage muss binnen zwölf Monaten nach der Bewilligung fertig sein; bei unverschuldeter Verzögerung sind höchstens drei Monate Verlängerung möglich",
+      "Die Anlage ist im Marktstammdatenregister anzumelden — der Nachweis gehört zur Auszahlungsanforderung",
+      "Ausgeschlossen sind Inselanlagen ohne Netzanschluss, Anlagen in Kleingartenanlagen und gebrauchte Bauteile",
     ],
     // Guideline sections 3 and 4.3, source-reviewed 17 September 2026.
     // No supported KfW combination; this does not assert a VAT zero-rate ban.
@@ -6130,9 +6147,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     maxFoerderung: "max. 100 € je Wohneinheit",
     rates: [{ label: "Balkonkraftwerk", value: "50 € je Modul, höchstens zwei Module" }],
     conditions: [
+      // DER ANTRAGSZEITPUNKT IST HIER DER UMGEKEHRTE als sonst, und er fehlte
+      // ganz (20.09.2026, aus der Richtlinie „ab 2026"). Fast jedes Programm
+      // des Katalogs verlangt den Antrag VOR dem Kauf; hier gehören Rechnung,
+      // Registereintrag und ein Foto der fertigen Anlage zum Antrag — es wird
+      // also erst gebaut und dann beantragt. Wer die übliche Regel annimmt,
+      // wartet auf eine Bewilligung, die es vor dem Kauf gar nicht gibt.
+      "Beantragt wird erst nach dem Einbau: Rechnung, Registereintrag und ein Foto der fertigen Anlage gehören zum Antrag",
       "Antragsberechtigt ist, wer in Herbrechtingen seinen Hauptwohnsitz hat",
       "Je Wohneinheit mit abgeschlossenem Stromkreis werden höchstens zwei Module mit je mindestens 250 Watt gefördert; je Modul höchstens bis zu dessen Preis",
+      // Der Stichtag stand nirgends bei uns, obwohl er entscheidet, ob ein
+      // Antrag überhaupt in Frage kommt: „Bezuschusst werden Fotovoltaikanlagen,
+      // die nach dem 1.1.2024 installiert wurden."
+      "Gefördert werden nur Anlagen, die nach dem 1. Januar 2024 eingebaut wurden",
       "Dem Antrag sind die Originalrechnung und die Anmeldung im Marktstammdatenregister beizulegen",
+      "Auf dem Foto müssen die installierte Anlage und das Gebäude erkennbar sein",
       "Bei einer Miet- oder Eigentumswohnung ist die Erlaubnis der Vermieterseite oder der Eigentümergemeinschaft nötig",
       "Die Anlage muss mindestens zwei Jahre an der Wohneinheit betrieben werden; über 800 Watt ist ein Nachweis der fachgerechten Installation durch einen Elektrobetrieb nötig",
       "Es besteht kein Rechtsanspruch; gefördert wird im Rahmen der Haushaltsmittel",
@@ -6143,6 +6172,18 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Ein-Modul-Set liegt bei rund 500 Wp, ab zwei Modulen darüber. Der Deckel
     // von zwei Modulen ist damit als Höchstbetrag abgebildet.
     balkonTiers: [{ upTo: 600, amount: 50 }, { upTo: 999999, amount: 100 }],
+    // GEPRÜFT am 20.09.2026 an der Amtsseite UND an der von dort verlinkten
+    // Richtlinie „Zuschussprogramm Balkonkraftwerke ab 2026" (PDF ohne
+    // Textebene, als gerenderte Seite gelesen; Kopie in der Laufakte). Anlass
+    // war der bewegte Fingerabdruck der Programmseite — der Grund ist die neue
+    // Richtlinienfassung, nicht ein geänderter Satz: „Der Zuschuss beträgt
+    // einmalig 50 Euro je Modul. Pro Wohneinheit mit abgeschlossenem Stromkreis
+    // können maximal 2 Module gefördert werden" steht zellgleich wie vorher,
+    // ebenso die 250-Watt-Untergrenze, die 800-Watt-Schwelle, die zwei Jahre
+    // Betriebspflicht und der fehlende Rechtsanspruch. Neu erfasst sind der
+    // Einbau-Stichtag 1.1.2024, das Foto als Antragsunterlage und die
+    // Antragsreihenfolge (erst bauen, dann beantragen) — drei Bedingungen, die
+    // bei uns fehlten, ohne dass am Geld etwas falsch war.
   },
 
   "weyhe-klimaschutz": {
@@ -9981,6 +10022,85 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // keine der gelesenen Quellen; deshalb steht hier nichts.
   },
 
+  /**
+   * BEENDET zum 31.12.2025 — aufgenommen, weil "gab es, ist beendet" eine echte
+   * Auskunft ist (Betreiber, 17.08.2026). Es zieht kein Geld ab, erzeugt keine
+   * Stadtseite (die verlangt ein aktives Programm für Dach-Photovoltaik), und
+   * wenn Gaildorf neu auflegt, merken wir es.
+   *
+   * DAS PROGRAMM IST VORBEI, SEINE RÜCKZAHLUNGSPFLICHT NICHT. Wer im Dezember
+   * 2025 gekauft hat, steht bis Dezember 2027 in der Zwei-Jahres-Bindung.
+   * Deshalb steht diese eine Bedingung im Präsens, während die übrigen im
+   * Präteritum stehen — der Wechsel ist Absicht, kein Versehen.
+   */
+  "gaildorf-balkonkraftwerke": {
+    id: "gaildorf-balkonkraftwerke", name: "Förderung von Balkonkraftwerken",
+    traeger: "Stadt Gaildorf", level: "kommune", region: "Gaildorf",
+    bundesland: "Baden-Württemberg", agsCode: "08127025",
+    url: "https://www.gaildorf.de/Bauen-Wohnen/Foerderprogramme-2/Balkonkraftwerke",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-01-01",
+    endetIso: "2025-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Kaufpreis eines Balkonkraftwerks — die Installation ausdrücklich nicht",
+    maxFoerderung: "max. 100 € je Antragsteller",
+    rates: [
+      { label: "Balkonkraftwerk", value: "50 € je Modul, höchstens zwei Module je Antragsteller" },
+    ],
+    conditions: [
+      // DER VORBEHALT GEHÖRT AN DIE ZAHL, NICHT IN DEN KOMMENTAR. Die Stadt
+      // schreibt: „Sollten die bereitgestellten Gelder aufgebraucht sein, endet
+      // der Projektförderzeitraum früher." Ob der Topf von 10.000 € vor dem
+      // Stichtag leer war, sagt sie nirgends — und ein Datum, das wir nicht
+      // kennen, darf die Zeile nicht als sicher ausgeben.
+      "Die Stadt nimmt keine Anträge mehr an: Das Programm lief zum 31.12.2025 aus, bei leerem Fördertopf von 10.000 € auch früher",
+      "Der Antrag war erst nach dem Kauf zu stellen — beizulegen waren die Kaufrechnung und der Nachweis der Registrierung im Marktstammdatenregister",
+      "Der Kauf durfte beim Antrag höchstens sechs Monate zurückliegen, und die Rechnung nicht vor dem 01.07.2023 datieren",
+      "Antragsberechtigt waren Eigentümer eines Wohngebäudes oder eines wohnähnlich genutzten Gebäudes und deren Bevollmächtigte — also auch Mieter mit Zustimmung des Eigentümers — jeweils mit Erstwohnsitz in Gaildorf",
+      "Hausverwaltungen und Gewerbebetriebe waren ausgeschlossen",
+      "Die Module durften zusammen höchstens 2.000 Watt leisten, der Wechselrichter höchstens 800 Voltampere",
+      "Das Balkonkraftwerk musste auf Gaildorfer Gemarkung stehen",
+      "Bei einem Kulturdenkmal war die denkmalschutzrechtliche Genehmigung schon mit dem Antrag vorzulegen",
+      "Ausgezahlt wurde in der Reihenfolge des Antragseingangs",
+      "Einen Rechtsanspruch auf die Förderung gab es nicht",
+      // PRÄSENS, und das ist der Punkt: Diese Frist läuft noch. Und sie greift
+      // WEITER als ein Wegzug — die Quelle sagt „nicht mehr auf dem Gebiet der
+      // Stadt Gaildorf in Betrieb", das trifft auch den, der die Anlage in
+      // Gaildorf abhängt und liegen lässt.
+      "Ist die Anlage binnen zwei Jahren nach dem Kauf nicht mehr in Gaildorf in Betrieb, ist der Zuschuss zurückzuzahlen",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    // GELESEN am 20.09.2026 im Volltext an der Amtsseite (HTTP 200, Live-Abruf;
+    // Kopie in der Laufakte). Wortlaut des Auslaufens: „Achtung! Wichtiger
+    // Hinweis: Das Programm läuft zum 31.12.25 aus. Sollten die
+    // bereitgestellten Gelder aufgebraucht sein, endet der
+    // Projektförderzeitraum früher." Fördertopf 10.000 €, „Gelder für bis zu
+    // 200 Module" — 10.000 / 50 geht auf.
+    //
+    // `endetIso` ist hier der Tag, den die Stadt selbst als PROGRAMMENDE nennt,
+    // nicht die Befristung eines Richtlinienpapiers: Die Seite verlinkt weder
+    // Richtlinie noch Formular, das Datum steht im Fließtext über dem Programm.
+    // Genau danach fragt das Feld. Die Restunsicherheit ist allein der leere
+    // Topf, und die steht oben sichtbar in der ersten Bedingung.
+    //
+    // KEIN RECHENWERT, weil das Programm beendet ist — dieselbe Linie wie
+    // `bahrenhof-solar`, `wakendorf-i-solar` und `weede-mini-solar`. NICHT,
+    // weil das Modell den Satz nicht ausdrücken könnte: Herbrechtingen trägt
+    // wörtlich dieselbe Regel („50 € je Modul, höchstens zwei Module") als
+    // `balkonTiers` über die Wattpeak-Achse, und der Rechner kennt nur drei
+    // Sets (500 / 960 / 2.000 Wp = 1 / 2 / 4 Module), die die Staffel exakt
+    // trifft. Wer das Programm je wieder einschaltet, hat die Bauform also
+    // schon; sie hier einzutragen hieße nur, einen Wert zu pflegen, den
+    // `fundingZaehlt` bei `status !== "aktiv"` ohnehin nie abruft.
+    //
+    // `combinableWith: null` heißt nach der Feld-Doku „nicht geklärt": Die
+    // Seite sagt zur Kumulierung mit Bundesmitteln kein Wort, und eine leere
+    // Liste wäre das ausdrückliche „nur allein", das hier niemand geschrieben
+    // hat. Im ERGEBNIS behandelt der Code beide gleich (wer nichts angibt,
+    // gilt als ausschließend) — der Unterschied ist die Aussage, nicht die
+    // Wirkung, und eine Neuauflage müsste ihn ohnehin neu klären.
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
