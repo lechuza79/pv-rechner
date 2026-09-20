@@ -10313,6 +10313,58 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // 25.09.2025 hat die Stadtverordnetenversammlung … den Magistrat
     // beauftragt". Der Start steht getrennt davon im Inkrafttreten.
   },
+  "weichering-solarberatung": {
+    id: "weichering-solarberatung", name: "Förderung der Nutzung von Solarenergie",
+    traeger: "Gemeinde Weichering", level: "kommune", region: "Weichering",
+    bundesland: "Bayern", agsCode: "09185168",
+    url: "https://www.weichering.de/foerderung-der-nutzung-von-solarenergie_id1003",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // BEZUSCHUSST WIRD DIE PLANUNG, NICHT DIE ANLAGE — und das ist der ganze
+    // Eintrag. Die Gemeinde schreibt: „Bereits seit 2019 fördert die Gemeinde
+    // Weichering die Beratung, Vorplanung und Planung von Solar- und
+    // Photovoltaikanlagen. Der einmalige Zuschuss beträgt 400,00 Euro."
+    // Wer eine Anlage baut, bekommt dafür nichts; wer planen lässt, bekommt
+    // 400 € — auch dann, wenn am Ende nichts gebaut wird.
+    //   DESHALB KEIN STRUKTURIERTER SATZ. Unser Modell rechnet Zuschüsse auf
+    //   die Anschaffung, und ob jemand eine bezahlte Planung beauftragt hat,
+    //   weiß der Rechner nicht. Das Programm informiert auf der Stadtseite und
+    //   zieht nichts ab — dieselbe Bauform wie bei jedem Zuschuss, den das
+    //   Modell nicht ausdrücken kann.
+    // 2019 ALS JAHRESFORM, nicht als Tagesdatum: „bereits seit 2019" ist alles,
+    // was die Quelle sagt.
+    beginntIso: "2019",
+    eligibility: ["privat"],
+    coveredCosts: "Beratung, Vorplanung und Planung einer Solar- oder Photovoltaikanlage — nicht die Anlage selbst",
+    maxFoerderung: "400 € einmalig je Antragsteller",
+    // `rates` BESCHRIFTET NUR, es rechnet nicht — der Abzug hängt an den
+    // strukturierten Feldern, und die bleiben hier absichtlich leer.
+    rates: [{ label: "Beratung und Planung", value: "400 € einmalig", nur: ["pv"] }],
+    conditions: [
+      "Bezuschusst wird ausschließlich die Beratung, Vorplanung und Planung — für Kauf und Montage der Anlage zahlt die Gemeinde nichts",
+      "Der Zuschuss beträgt einmalig 400 €",
+      "Im Haushaltsjahr stehen insgesamt 4.000 € bereit, also rechnerisch zehn Zuschüsse — wer zu spät kommt, geht leer aus",
+      // DIE RICHTLINIE IST NICHT MEHR ERREICHBAR, und das steht hier, statt
+      // still zu fehlen. Die Programmseite verweist auf die Formularseite der
+      // Gemeinde; die führt heute elf Formulare, keines davon zur Solarenergie.
+      // Das vollständige Ortsrecht (33 Dokumente, am 20.09.2026 gelesen) enthält
+      // ebenfalls keine Förderrichtlinie. Damit ist die Programmseite der
+      // einzige Beleg.
+      "Antragsformular und Richtlinie sind auf der verlinkten Formularseite der Gemeinde nicht mehr zu finden — Konditionen im Einzelnen beim Rathaus erfragen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // NEU AUFGENOMMEN 20.09.2026 aus dem Treffer-Vorrat, und bewusst OHNE
+    // Probe-Eintrag: Ohne strukturierten Satz bewegt der Eintrag ohnehin kein
+    // Geld, und der Stand ist schwächer belegt als bei den Programmen dieser
+    // Woche.
+    //   WAS FEHLT, IST DIE BESTÄTIGUNG DES HEUTIGEN STANDES. Die Seite ist live
+    //   (HTTP 200, keine Umleitung), formuliert im Präsens und nennt kein Ende
+    //   — aber ihr Artikeldatum ist der 25.10.2022, und die Richtlinie, die sie
+    //   verlinkt, ist weg. Das ist die Rauschenberg-Lehre andersherum: Dort
+    //   bestätigte die Satzung die Fortsetzung, hier führt das Ortsrecht gar
+    //   keine. Ein Anruf im Rathaus klärt es in fünf Minuten; bis dahin sagt
+    //   der Eintrag, was die Gemeinde schreibt, und nicht mehr.
+  },
   "mauer-balkonkraftwerke": {
     id: "mauer-balkonkraftwerke", name: "Förderprogramm Balkonkraftwerk",
     traeger: "Gemeinde Mauer", level: "kommune", region: "Mauer",

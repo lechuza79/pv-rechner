@@ -137,6 +137,16 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Frist nennt die Richtlinie nicht — es gibt kein Antragsverfahren, gegen das
   // eine Prüfform das Vorhaben halten könnte.
   "rauschenberg-balkon-solaranlagen",
+  // Weichering, aufgenommen am 20.09.2026 — und der einzige Eintrag hier, dem
+  // eine Prüfform nicht bloß fehlt, sondern für den es keine geben kann: Die
+  // Gemeinde bezuschusst die BERATUNG UND PLANUNG, nicht die Anlage. Eine
+  // Prüfform hält das Vorhaben des Nutzers gegen die Bedingungen des
+  // Programms; hier beschreiben die Bedingungen einen anderen Gegenstand als
+  // den, den der Rechner beschreibt. Was zu prüfen wäre — ob jemand eine
+  // bezahlte Planung beauftragt hat —, fragt kein Rechner dieses Projekts, und
+  // deshalb trägt der Eintrag auch keinen strukturierten Satz und zieht nichts
+  // ab. Die Bedingungen stehen vollständig auf der Karte.
+  "weichering-solarberatung",
   // Landkreis Erlangen-Höchstadt, sechs Gemeindeprogramme, aufgenommen am
   // 20.09.2026. Jede Richtlinie ist im Volltext gelesen und jede Bedingung steht
   // am Programm — die Prüfformen fehlen noch, und sie sind hier nicht trivial:

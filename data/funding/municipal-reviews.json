@@ -38617,5 +38617,43 @@
     "evidenceUrl": "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk/"
    }
   ]
+ },
+ {
+  "regionId": "09185168",
+  "name": "Weichering",
+  "checkedAt": "2026-09-20T14:55:00Z",
+  "recheckAt": "2027-03-01T08:00:00Z",
+  "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+  "outcome": "programme-geprueft",
+  "conclusion": "Die Gemeinde zahlt einmalig 400 Euro für die BERATUNG, VORPLANUNG UND PLANUNG einer Solar- oder Photovoltaikanlage — für Kauf und Montage der Anlage selbst zahlt sie nichts. Im Haushaltsjahr stehen 4.000 Euro bereit, rechnerisch also zehn Zuschüsse. Aufgenommen als weichering-solarberatung mit Status aktiv und OHNE strukturierten Satz: Unser Modell rechnet Zuschüsse auf die Anschaffung, und ob jemand eine bezahlte Planung beauftragt hat, weiß der Rechner nicht. Das Programm informiert und zieht nichts ab; ein Probe-Eintrag ist bewusst nicht gesetzt. Was fehlt, ist die Bestätigung des heutigen Standes: Die Programmseite ist live (HTTP 200, keine Umleitung) und im Präsens formuliert, ihr Artikeldatum ist aber der 25.10.2022, und die Richtlinie, auf die sie verweist, ist weg — die verlinkte Formularseite führt elf Formulare, keines zur Solarenergie, und das vollständige Ortsrecht (33 Dokumente, heute gelesen) enthält keine Förderrichtlinie. Das ist die Rauschenberg-Lehre andersherum: Dort bestätigte die Satzung die Fortsetzung der Meldung, hier führt das Ortsrecht gar keine. Nächster Schritt: im Rathaus erfragen, ob der Zuschuss noch läuft — eine Auskunftsfrage, kein fehlender Abrufweg. Balkonkraftwerke, Speicher und Wärmepumpen fördert die Gemeinde nicht.",
+  "searches": [
+   "weichering.de Förderung Solarenergie Zuschuss"
+  ],
+  "evidence": [
+   {
+    "finding": "„Bereits seit 2019 fördert die Gemeinde Weichering die Beratung, Vorplanung und Planung von Solar- und Photovoltaikanlagen.“",
+    "url": "https://www.weichering.de/foerderung-der-nutzung-von-solarenergie_id1003"
+   },
+   {
+    "finding": "„Der einmalige Zuschuss beträgt 400,00 Euro. Im Haushaltsjahr steht ein Betrag von 4.000 Euro zur Verfügung.“",
+    "url": "https://www.weichering.de/foerderung-der-nutzung-von-solarenergie_id1003"
+   },
+   {
+    "finding": "Die von der Programmseite verlinkte Formularseite führt elf Formulare (Hund, Gartenwasserzähler, Meldewesen, Bauamt) und keines zur Solarenergie — die Richtlinie ist von dort nicht erreichbar.",
+    "url": "https://www.weichering.de/rathaus/formulare"
+   },
+   {
+    "finding": "Das vollständige Ortsrecht der Gemeinde führt 33 Dokumente (Entwässerung, Friedhof, Hunde, Stellplätze, Geschäftsordnung u. a.) und darunter keine Förderrichtlinie zur Solarenergie.",
+    "url": "https://www.weichering.de/rathaus/ortsrecht"
+   }
+  ],
+  "sources": [
+   {
+    "url": "weichering.de/foerderung-der-nutzung-von-solarenergie_id1003",
+    "disposition": "reviewed",
+    "reason": "Programmseite im Volltext gelesen; Programm aufgenommen, Betrag bewusst nicht gerechnet (Planungszuschuss).",
+    "evidenceUrl": "https://www.weichering.de/foerderung-der-nutzung-von-solarenergie_id1003"
+   }
+  ]
  }
 ]
