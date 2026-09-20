@@ -10101,6 +10101,106 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // gilt als ausschließend) — der Unterschied ist die Aussage, nicht die
     // Wirkung, und eine Neuauflage müsste ihn ohnehin neu klären.
   },
+
+  /**
+   * PAUSIERT für 2026 — und der Eintrag existiert genau deshalb. Der Landkreis
+   * hat 2024 und 2025 gefördert und schreibt für 2026 selbst, dass noch keine
+   * Anträge möglich sind. „Gab es, ruht gerade" ist eine echte Auskunft; ohne
+   * den Eintrag stünde auf unserer Seite „keine kommunale Förderung", wo es
+   * eine gibt, die wahrscheinlich wiederkommt.
+   *
+   * EIN KREISPROGRAMM, und deshalb der fünfstellige Schlüssel: Das Fördergebiet
+   * IST der Landkreis, nicht eine Gemeinde darin.
+   *
+   * Eine Förder-Stadtseite entsteht daraus aus DREI Gründen nicht, und „die
+   * Kreisebene ist gesperrt" ist keiner davon (die Sperre betrifft die
+   * Atlas-Ortsseiten, nicht die Förderseiten — im Council nachgesehen): Das
+   * Programm ruht, es fördert nur Balkonkraftwerke, und im Ortsverzeichnis
+   * steht keine einzige Gemeinde des Kreises. Erreichbar ist es über die
+   * Postleitzahl und die Balkon-Förderübersicht.
+   */
+  "havelland-stecker-solar": {
+    id: "havelland-stecker-solar", name: "Förderprogramm Stecker-Solargeräte",
+    traeger: "Landkreis Havelland", level: "landkreis", region: "Landkreis Havelland",
+    bundesland: "Brandenburg", agsCode: "12063",
+    url: "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/",
+    stand: "September 2026", status: "pausiert", capped: true, verified: true,
+    // JAHRESFORM, UND DAS IST DER GENAUE WERT. Der 01.04.2025 wäre der bequeme
+    // Eintrag und um ein Jahr falsch: Die Seite beginnt mit „Nach der
+    // erfolgreichen Förderung IM JAHR 2024 … ab dem 1. April 2025 … ERNEUT".
+    // Der Landkreis fördert also seit 2024; wann diese erste Runde begann, sagt
+    // keine gelesene Quelle. Das Feld trägt die Auswertung „Zubau vor und nach
+    // der Förderung" — ein erfundener Start verschiebt die ganze Kurve. Der
+    // 01.04.2025 steht da, wo er hingehört: in der Bedingung zum förderfähigen
+    // Kaufdatum.
+    beginntIso: "2024",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk, ein Gerät je Haushalt",
+    maxFoerderung: "180 € je Haushalt",
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "180 € pauschal, ein Gerät je Haushalt" }],
+    conditions: [
+      "Für 2026 nimmt der Landkreis noch keine Anträge an",
+      // Der Antragszeitpunkt ist hier der umgekehrte als sonst — wie in
+      // Herbrechtingen wird erst gekauft und montiert, dann beantragt.
+      "Beantragt wird erst nach Kauf, vollständiger Montage und Anmeldung im Marktstammdatenregister",
+      "Gefördert werden nur Geräte, die nach dem 1. April 2025 neu angeschafft wurden",
+      "Antragsberechtigt sind Eigentümer und Mieter im Landkreis",
+      // DIE QUELLE IST HIER IN SICH UNSAUBER, und das wird benannt statt
+      // aufgelöst. Der Fördersatz sagt nur „(mit maximal 800 Watt)". Zwei
+      // Absätze tiefer erklärt dieselbe Seite „2.000 Watt liefern und eine
+      // Wechselrichterleistung von 800 Watt (AC) nicht überschreiten" — dort
+      // sind die 800 W also der Wechselrichter. Ihre eigene Beispielrechnung
+      // rechnet sie dagegen als Modulleistung. „Wechselrichter" hinzuschreiben,
+      // als stünde es in der Richtlinie, wäre erfundene Genauigkeit; es
+      // wegzulassen schlösse ein förderfähiges 2.000-Wp-Set aus. Also beides.
+      "Je Haushalt wird ein Balkonkraftwerk mit höchstens 800 Watt gefördert — die Seite meint damit an anderer Stelle die Leistung des Wechselrichters, sagt es im Fördersatz aber nicht",
+      "Beantragt wird ausschließlich über ein Online-Formular",
+      "Dem Antrag sind Rechnung mit Modultyp, ein Sicherheitsnachweis des Geräts (etwa CE, TÜV oder VDE), die Meldenummer aus dem Marktstammdatenregister und ein Foto der montierten Anlage beizulegen",
+      // „gegebenenfalls" steht so in der Unterlagenliste der Quelle. Wer daraus
+      // „Mieter brauchen das Einverständnis" macht, härtet die Aussage: Die
+      // Seite sagt weder, wen es trifft, noch dass es immer nötig ist.
+      "Gegebenenfalls ist das Einverständnis der Vermieterseite beizulegen",
+      "Nur vollständige Anträge werden berücksichtigt",
+      "Bearbeitet wird nach dem Eingangsdatum",
+      "Sind die Mittel erschöpft, endet das Programm",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    // GELESEN am 20.09.2026 an der Amtsseite im Volltext (HTTP 200).
+    // Wortlaut der Pause: „+++Achtung! Für 2026 ist noch keine Antragstellung
+    // für Balkonkraftwerke möglich+++". Satz: „Gefördert wird ein
+    // Balkonkraftwerk (mit maximal 800 Watt) pro Haushalt mit einer pauschalen
+    // Fördersumme in Höhe von 180 Euro."
+    //
+    // DIE RICHTLINIE IST NICHT ERREICHBAR, und das ist ein Fehler DES
+    // LANDKREISES, keine Lücke unserer Prüfung: Die Seite sagt „Die genauen
+    // Förderbedingungen entnehmen Sie bitte der Förderrichtlinie" — und das
+    // Wort ist dort GAR KEIN LINK, sondern ausgezeichneter Text
+    // (`<strong><em>Förderrichtlinie</em></strong>`, am 20.09.2026 im Rohtext
+    // nachgesehen). Im ganzen HTML führt kein Pfad mit „solar" oder „stecker"
+    // auf ein Dokument. Alles oben steht deshalb in der Seite selbst.
+    //   Eine erste Fassung dieses Kommentars behauptete, die Seite verlinke auf
+    //   `/demografie/foerderrichtlinie/`. Das war falsch: Diese Adresse ist ein
+    //   Navigationseintrag, der auf JEDER Seite der Domain steht. Der Gegenprüfer
+    //   hat es gefunden — eine Aussage über eine fremde Seite gehört am Rohtext
+    //   geprüft, nicht an einer Trefferliste von Verweisen.
+    //
+    // KEIN RECHENWERT, obwohl die Pauschale es hergäbe (`balkonPauschale: 180`):
+    // Das Programm nimmt keine Anträge an, und `fundingZaehlt` verlangt
+    // `status === "aktiv"` — der Wert würde nie abgerufen. Wer das Programm
+    // wieder einschaltet, trägt ihn im selben Zug ein.
+    //
+    // `combinableWith: null` heißt „nicht geklärt": Die Seite sagt zur
+    // Kumulierung nichts, und ohne die Richtlinie gibt es keinen Beleg. Im
+    // ERGEBNIS behandelt der Code es wie einen Ausschluss von Bundesmitteln —
+    // die vorsichtige Richtung. Der Unterschied ist die Aussage, nicht die
+    // Wirkung.
+    //
+    // UNGEPRÜFT GEBLIEBEN ist genau ein Weg: Die Volltextsuche der Domain
+    // antwortete am 20.09.2026 mit HTTP 503. Der verlinkte Online-Antrag
+    // (`formulare.hvlnet.de/formcycle/form/provide/754/`) antwortet heute mit
+    // HTTP 404 — passend zur Pause, aber nicht als Beleg dafür genommen.
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
