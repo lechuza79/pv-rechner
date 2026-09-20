@@ -1,3 +1,18 @@
+// Use the scene's existing reverse transition instead of reloading the sky.
+document.addEventListener('click', event => {
+  const logo = event.target instanceof Element ? event.target.closest('.site-header a.brand, .site-header a.sc-menu-brand') : null;
+  if (!logo || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const back = document.querySelector('.hs-journey-back');
+  if (document.querySelector('.homepage-study.hs-simulation-route') && back) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    back.click();
+  } else if (location.pathname === '/') {
+    event.preventDefault();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}, true);
+
 // Preserve native details semantics and a readable no-script fallback.
 for (const details of document.querySelectorAll('.sc-faq details')) {
   const summary = details.querySelector('summary');
@@ -92,7 +107,7 @@ function bindHeroContrast() {
   const policy = window.SolarHeroContrast;
   if (!root || !scene || !policy) return false;
   let frame=0, until=0;
-  const targets=()=>[...root.querySelectorAll('.site-header,.hero-copy,.hero-copy h1,.hero-description,.hero-copy .eyebrow,.hs-journey,.hs-location-step h2,.hs-location-explanation,.hs-journey-back,.hero-actions')];
+  const targets=()=>[...root.querySelectorAll('.site-header,.hero-copy,.hero-copy h1,.hero-description,.hero-copy .eyebrow,.hs-journey,.hs-location-step h2,.hs-location-explanation,.hs-journey-back,.hero-actions,.hero-actions .secondary-cta,.hs-retro-actions .hs-retro-secondary,.hs-retro-values,.hs-location-step .hs-location-form')];
   function sync() {
     frame=0;
     const bounds=scene.getBoundingClientRect();
@@ -102,7 +117,7 @@ function bindHeroContrast() {
       return {node,image:css.backgroundImage,opacity:parseFloat(css.opacity),brightness:parseFloat(css.filter.match(/brightness\(([^)]+)\)/)?.[1]||'1'),z:parseInt(css.zIndex)||0};
     }).filter(layer=>layer.opacity>.001 && layer.image!=='none').sort((a,b)=>a.z-b.z);
     for(const node of targets()) {
-      if (!node.getClientRects().length) continue;
+      if (!node.getClientRects().length || node.dataset.contrastMeasured === 'true') continue;
       // Read where glyphs sit, excluding the large empty gap in the mobile hero.
       let regions=node.matches('.hero-copy')?[...node.querySelectorAll('h1,.hero-description,.eyebrow')].filter(e=>e.getClientRects().length):[node];
       if (!regions.length) continue;
@@ -116,6 +131,15 @@ function bindHeroContrast() {
             const image=layer.image.includes('linear-gradient')?layer.image.slice(layer.image.lastIndexOf('linear-gradient')):layer.image;
             const color=policy.sample(image,y);
             if(color) bg=policy.over(bg,color.map((v,i)=>i<3?Math.min(255,Math.max(0,v*layer.brightness)):v),layer.opacity);
+          }
+          const wash=root.querySelector('.hs-transition-wash');
+          if(wash) {
+            const box=wash.getBoundingClientRect(),css=getComputedStyle(wash);
+            const screenY=rect.top+rect.height*t;
+            if(css.display!=='none' && screenY>=box.top && screenY<=box.bottom) {
+              const color=policy.sample(css.backgroundImage,(screenY-box.top)/box.height);
+              if(color)bg=policy.over(bg,color,parseFloat(css.opacity));
+            }
           }
           return bg;
         });
@@ -132,12 +156,23 @@ function bindHeroContrast() {
   }
   const observer=new MutationObserver(()=>schedule(true));
   observer.observe(root,{attributes:true,attributeFilter:['style','data-mode','data-phase','data-weather','data-dark','class']});
+  // Result actions are inserted after postcode submission without a route change.
+  const contentObserver=new MutationObserver(()=>schedule(true));
+  contentObserver.observe(root,{childList:true,subtree:true});
   const resize=new ResizeObserver(()=>schedule());resize.observe(scene);
   const onScroll=()=>schedule();
   addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll,{passive:true});
   document.fonts?.ready.then(()=>schedule());
+  document.addEventListener('sc-hero-content-ready',sync);
+  import('/hero-system/contrast-sampler.js').then(({bindSceneContrast})=>{
+    const hero=scene.closest('.hero');
+    const dispose=bindSceneContrast({hero,scene,
+      targets:()=>[...hero.querySelectorAll('.hero-actions .secondary-cta,.hs-retro-actions .hs-retro-secondary')],
+      layers:()=>[...hero.children].filter(n=>n.matches('.scene,.hs-transition-wash,.hs-foreground-layer'))});
+    addEventListener('pagehide',event=>{if(!event.persisted)dispose();});
+  });
   sync();schedule(true);
-  addEventListener('pagehide',event=>{if(event.persisted)return;observer.disconnect();resize.disconnect();cancelAnimationFrame(frame);removeEventListener('scroll',onScroll);removeEventListener('resize',onScroll);});
+  addEventListener('pagehide',event=>{if(event.persisted)return;document.removeEventListener('sc-hero-content-ready',sync);observer.disconnect();contentObserver.disconnect();resize.disconnect();cancelAnimationFrame(frame);removeEventListener('scroll',onScroll);removeEventListener('resize',onScroll);});
   return true;
 }
 if (!bindHeroContrast()) {
@@ -172,3 +207,87 @@ if (!bindToolsOverview()) {
   observer.observe(document.body, { childList: true, subtree: true });
   addEventListener('pagehide', () => observer.disconnect(), { once: true });
 }
+
+// All entry points submit through the scene's existing postcode validation.
+function bindSimulationEntry() {
+  const root = document.querySelector('.homepage-study');
+  if (!root) return false;
+  const dock = document.createElement('aside');
+  dock.className = 'sc-location-dock';
+  dock.setAttribute('aria-label', 'Standort für die Simulation');
+  dock.hidden = true;
+  document.body.append(dock);
+  let original, postcode = '', framePostcode = '';
+  const entry = document.querySelector('.sc-live-entry');
+  const frame = document.getElementById('sc-live-rahmen');
+  const intersections = new Map();
+  const visibility = new IntersectionObserver(entries => {
+    entries.forEach(item => intersections.set(item.target, item.isIntersecting));
+    updateDock();
+  });
+  function updateDock() {
+    dock.hidden = !root.classList.contains('hs-simulation-route') || root.classList.contains('sc-location-ready') || !original || intersections.get(original) !== false || intersections.get(entry) === true;
+  }
+  function copyForm(target, suffix) {
+    target.replaceChildren();
+    const form = document.createElement('form');
+    form.className = 'hs-location-form';
+    form.innerHTML = `<label for="sc-plz-${suffix}">Postleitzahl</label><div><input id="sc-plz-${suffix}" name="plz" inputmode="numeric" enterkeyhint="go" autocomplete="postal-code" pattern="[0-9]{5}" maxlength="5" required placeholder="PLZ eingeben"><button type="submit" class="hs-location-submit" aria-label="Berechnen">${original.querySelector('[type=submit]')?.innerHTML || '→'}</button></div><p role="status"></p>`;
+    const input = form.querySelector('input');
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const source = original?.querySelector('input');
+      if (!source?.isConnected) return;
+      postcode = input.value.trim();
+      input.blur();
+      source.value = postcode;
+      source.dispatchEvent(new Event('input', { bubbles: true }));
+      source.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    });
+    target.append(form);
+  }
+  function sync() {
+    const form = root.querySelector('.hs-location-step .hs-location-form');
+    if (form && form !== original) {
+      if (original) visibility.unobserve(original);
+      original = form;
+      visibility.observe(form);
+      if (entry) { copyForm(entry.querySelector('[data-sc-location-slot]'), 'live'); visibility.observe(entry); }
+      copyForm(dock, 'sticky');
+      form.addEventListener('submit', () => { postcode = form.querySelector('input').value.trim(); }, true);
+      form.querySelector('input').addEventListener('keydown', () => { postcode = form.querySelector('input').value.trim(); });
+    }
+    const ready = !!root.querySelector('.hs-retro-hero');
+    if (root.classList.contains('sc-location-ready') !== ready) {
+      root.classList.toggle('sc-location-ready', ready);
+
+    }
+    const message = original?.querySelector('[role=status]')?.textContent || '';
+    for (const node of document.querySelectorAll('.sc-location-dock [role=status],.sc-live-entry [role=status]')) if (node.textContent !== message) node.textContent = message;
+    if (entry) entry.hidden = ready;
+    if (frame) {
+      frame.hidden = !ready;
+      if (ready && /^\d{5}$/.test(postcode) && framePostcode !== postcode) {
+        framePostcode = postcode;
+        const params = new URLSearchParams({plz:postcode,onsite:'1',embed:'0',branding:'0',presentation:'site',bg:'#e8ece2',fg:'#153740',muted:'#45645e',accent:'#153740',accentfg:'#e8ece2',highlight:'#cfff20',ink:'#153740'});
+        frame.src = '/embed/simulation?' + params;
+      }
+    }
+    updateDock();
+  }
+  const observer = new MutationObserver(sync);
+  observer.observe(root, {childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['class']});
+  sync();
+  addEventListener('pagehide', () => { observer.disconnect(); visibility.disconnect(); dock.remove(); }, {once:true});
+  return true;
+}
+if (!bindSimulationEntry()) {
+  const observer = new MutationObserver(() => { if (bindSimulationEntry()) observer.disconnect(); });
+  observer.observe(document.body, {childList:true,subtree:true});
+}
+
+// One scroll, before the result replaces the input; no second restart on render.
+document.addEventListener('sc-simulation-scroll-top', () => {
+  if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
+  window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+});

@@ -114,6 +114,36 @@ const RUECKBLICK_QUELLE =
   `Durchschnittsstrompreise von ${quelleLink(EUROSTAT.url, EUROSTAT.name)} (${EUROSTAT.note}).`;
 const DOMAIN_WEG = { from: /https:\/\/solar-check\.io(?=[/"'`])/g, to: "", why: "Links auf die eigene Seite relativ statt auf die Live-Domain (die Vorschau lief auf localhost)." };
 const PATCHES = [
+{"datei": "dynamic-hero/dist/test.js", "from": ":{cloud:0,rain:0,wind:z,direction:270,code:0};U=Ze(_(),d,o)", "to": ":{cloud:100,rain:0,wind:0,direction:270,code:3};a.dataset.weatherAvailable=String(u!==\"live\"||!!h),U=Ze(_(),d,o)", "why": "Missing weather is an explicitly unavailable neutral sky, never invented sunshine."},
+{"datei": "dynamic-hero/dist/test.js", "from": "let o=++L;W?.abort(),W=new AbortController;", "to": "let o=++L;clearTimeout(ne.retryTimer),W?.abort(),W=new AbortController;", "why": "Cancel scheduled retries when a newer location request starts."},
+{"datei": "dynamic-hero/dist/test.js", "from": "h=null,l=null,te(),Y(\"Aktuelle Daten f", "to": "d.plz!==s||!h||Date.now()-h.asOf>45*6e4?(h=null,l=null):void 0,te(),Y(\"Aktuelle Daten f", "why": "Keep recent weather during refresh only for the same postcode."},
+{"datei": "dynamic-hero/dist/test.js", "from": "try{let w=await fetch(\"/scene-data?plz=\"+s,{signal:W.signal});", "to": "try{let coordinates=(await scPostcodes())[s];if(o!==L)return;if(coordinates&&d.plz!==s)d={plz:s,name:\"PLZ \"+s,lat:coordinates[0],lon:coordinates[1]};V();let w=await fetch(\"/scene-data?plz=\"+s,{signal:m.signal});", "why": "Apply accepted postcode coordinates before waiting for weather, including fallback sun times."},
+{"datei": "dynamic-hero/dist/test.js", "from": "finally{clearTimeout(c),o===L&&V()}}i(\"test-3d-loss\")", "to": "finally{clearTimeout(c),o===L&&(V(),h||(ne.retryTimer=setTimeout(ne,30000)))}}i(\"test-3d-loss\")", "why": "Retry missing weather after thirty seconds instead of leaving the fallback for ten minutes."},
+{"datei": "dynamic-hero/dist/test.js", "from": "clearInterval(j),clearInterval(Z),clearInterval(y),W?.abort()", "to": "clearInterval(j),clearInterval(Z),clearInterval(y),clearTimeout(ne.retryTimer),W?.abort()", "why": "Dispose weather retry together with the stage."},
+{"datei": "dynamic-hero/dist/test.js", "to": "import{postcodes as scPostcodes,retrospective as scRetrospective}from\"/homepage-study/simulation-data.js\";import{a as _e,b as ye,c as ue}", "why": "Share and bound simulation reads instead of duplicate or seventy-second requests.", "from": "import{a as _e,b as ye,c as ue}"},
+{"datei": "dynamic-hero/dist/test.js", "to": "scPostcodes()", "why": "Coalesce postcode requests and retry one transient failure.", "from": "fetch(\"/dynamic-hero/plz-coordinates.json\",{signal:AbortSignal.timeout(1e4)}).then(C=>{if(!C.ok)throw Error(\"Standortliste nicht erreichbar. Bitte erneut versuchen.\");return C.json()})"},
+{"datei": "dynamic-hero/dist/test.js", "to": "I().catch(()=>{}),y.oninput=()=>{H=!1,R()}", "why": "Warm the postcode list when the input opens, before the user finishes typing.", "from": "y.oninput=()=>{H=!1,R()}"},
+{"datei": "dynamic-hero/dist/test.js", "to": "A=B,scRetrospective(B).catch(()=>{}),s.textContent=H?", "why": "Start the prepared result read as soon as a valid postcode is known.", "from": "A=B,s.textContent=H?"},
+{"datei": "dynamic-hero/dist/test.js", "to": "let C=await scRetrospective(H);", "why": "Reuse the prefetched result and bound retries to avoid lingering placeholders.", "from": "let R=await fetch(\"/simulation-retrospective?plz=\"+H,{signal:AbortSignal.timeout(7e4)});if(!R.ok)throw Error(\"Quelle derzeit nicht erreichbar\");let C=await R.json();"},
+{"datei": "dynamic-hero/dist/test.js", "to": "Deine Solarbilanz wird geladen \\u2026", "why": "The server reads prepared results; no historical weather calculation runs here.", "from": "Historische Wetterdaten werden geladen und berechnet \\u2026"},
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: 'function R(){W=!0,a.dataset.sceneBoot=',
+    to: 'e.addEventListener("sc-contrast-request",I,{signal:E.signal});function R(){W=!0,a.dataset.sceneBoot=',
+    why: "Allow a single measurement frame for paused and reduced-motion scenes.",
+  },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: 'ne=M,j=!1,e.dataset.renderCount=',
+    to: 'window.SolarSceneContrast?.afterFrame(e),ne=M,j=!1,e.dataset.renderCount=',
+    why: "Sample the complete background only on demand after a painted frame.",
+  },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: "y.blur(),window.scrollTo({top:0,behavior:\"instant\"}),a.scrollTop=0,await U(",
+    to: "y.blur(),document.dispatchEvent(new Event(\"sc-simulation-scroll-top\")),await U(",
+    why: "Use one smooth scroll owner after postcode submission.",
+  },
   {
     datei: "dynamic-hero/dist/test.js",
     from: 'new URLSearchParams(window.location.search).has("homepage")',
@@ -167,6 +197,24 @@ const PATCHES = [
     from: /"\/rechner-uebersicht\/"/g,
     to: '"/#hs-rechner"',
     why: "Eine Rechner-Übersicht gibt es (noch) nicht; derselbe Ersatz wie im Menü.",
+  },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: "if(me()){if(history.state?.solarFromHome){history.back();return}history.replaceState({},\"\",p)}",
+    to: "if(me())history.replaceState({},\"\",p);",
+    why: "Keep route transitions in the mounted scene and measure contrast before reveal.",
+  },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: "r.inert=!0,Y(),await W(z(),!0)",
+    to: "r.inert=!0,Y(),document.dispatchEvent(new Event(\"sc-hero-content-ready\")),await W(z(),!0)",
+    why: "Keep route transitions in the mounted scene and measure contrast before reveal.",
+  },
+  {
+    datei: "dynamic-hero/dist/test.js",
+    from: 'x.after(v.querySelector(".sc-footer"))',
+    to: 'v.querySelector(".sc-footer")&&x.after(v.querySelector(".sc-footer"))',
+    why: "The server owns the footer; appending a missing node would print null.",
   },
   {
     datei: "dynamic-hero/dist/test.js",
