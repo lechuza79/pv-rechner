@@ -23,7 +23,6 @@ import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
 import OptionCard from "../../../components/OptionCard";
 import ResultSection from "../../../components/ResultSection";
-import AngebotCheck from "../../../components/AngebotCheck";
 import GebaeudeField, { GEBAEUDE_FIELDS } from "../../../components/GebaeudeField";
 import StandNoteView from "../../../components/StandNoteView";
 import { type StandSeite } from "../../../lib/stand-format";
@@ -1360,18 +1359,6 @@ export default function Waermepumpe({
                     setBearbeitet={setGebaeudeEditing}
                     daemmstufen={insulationOptions}
                   />
-                </ResultSection>
-              </div>
-
-              {/* Angebot prüfen — steht bewusst NEBEN dem Gebäude-Abschnitt und
-                  nicht im Frageweg: Wer noch kein Angebot hat, soll nicht durch
-                  einen Schritt müssen, den er nicht beantworten kann. Die beiden
-                  Gebäudewerte kommen aus derselben Rechnung, die auch die Anlage
-                  dimensioniert — deshalb ist die Prüfung überhaupt möglich, ohne
-                  dass der Nutzer irgendetwas zusätzlich eingibt. */}
-              <div style={{ marginTop: 18 }}>
-                <ResultSection title="Passt mein Angebot?" summary="noch keins geprüft">
-                  <AngebotCheck heizlastKw={result.heizlastKw} auslegungKw={result.auslegungKw} gewerk="waermepumpe" einheit="kW" />
                 </ResultSection>
               </div>
 
