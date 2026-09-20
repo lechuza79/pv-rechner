@@ -425,7 +425,8 @@ export const BAUSTEINE: Baustein[] = [
   {
     datei: "components/Header.tsx",
     name: "Header",
-    zweck: "Die Kopfzeile mit Navigation, Sonnenanzeige und Anmeldung.",
+    zweck:
+      "Die alte Kopfzeile mit Navigation, Sonnenanzeige und Anmeldung — AUSSER BETRIEB seit dem Release der neuen Oberfläche am 19.09.2026, keine Seite rendert sie noch, und ihre CSS-Regeln sind seit dem 20.09.2026 aus dem Theme entfernt. Die Kopfzeile jeder Seite ist SharedSiteHeader. Sie liegt nur noch da, weil lib/__tests__/nav-aktiv.test.ts sie als Quelle für die Menü-Markierung liest (offener Punkt, siehe CLAUDE.md).",
     gruppe: "struktur",
     ebene: "baustein",
     stand: "verbindlich",
