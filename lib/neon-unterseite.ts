@@ -4,6 +4,23 @@ import { ANALYTICS_HTML, esc } from "./neon-seite";
 import { siteFussHtml } from "./site-fuss";
 
 /**
+ * The three pieces of the frame that app/global-not-found.tsx needs as well.
+ * It cannot call the function below (Next renders it as a React tree, not as a
+ * string), so they are exported instead of typed a second time — a second copy
+ * of the header or the stylesheet list would drift the moment the design
+ * package ships a new file, and only on the page nobody looks at.
+ */
+export const NEON_STYLESHEETS = ["/shared-nav/nav.css", "/rechner-uebersicht/overview.css", "/shared-footer/footer.css"];
+
+/** Inside of <header class="site-header"> — the brand, before the nav script fills the rest in. */
+export const NEON_KOPF_INNEN =
+  '<a class="brand" href="/"><img src="/shared-nav/logo-result.svg" alt="Solar Check" width="210" height="40"></a>';
+
+/** Body of the module script that mounts the shared menu into that header. */
+export const NEON_NAV_SKRIPT =
+  "import {mountGlobalNav} from '/shared-nav/nav.js';mountGlobalNav(document.querySelector('header'));";
+
+/**
  * A plain content page in the new design, built on the design package's own
  * template for such pages (rechner-uebersicht: header mounted by the shared
  * nav script, breadcrumb, intro, simple footer; stylesheet taken over one to
@@ -35,15 +52,15 @@ export function neonUnterseiteHtml(o: {
     `<meta name="theme-color" content="#FFFFFF">`,
     `<link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any">`,
     `<link rel="apple-touch-icon" href="/apple-icon.png" type="image/png" sizes="180x180">`,
-    `<link rel="stylesheet" href="/shared-nav/nav.css"><link rel="stylesheet" href="/rechner-uebersicht/overview.css"><link rel="stylesheet" href="/shared-footer/footer.css">`,
+    NEON_STYLESHEETS.map((href) => `<link rel="stylesheet" href="${href}">`).join(""),
     ANALYTICS_HTML,
     `</head><body>`,
-    `<header class="site-header"><a class="brand" href="/"><img src="/shared-nav/logo-result.svg" alt="Solar Check" width="210" height="40"></a></header>`,
+    `<header class="site-header">${NEON_KOPF_INNEN}</header>`,
     `<main><nav class="crumb" aria-label="Brotkrümel"><a href="/">Startseite</a><span aria-hidden="true">/</span>${esc(o.krume)}</nav>`,
     o.inhalt,
     `</main>`,
     siteFussHtml(),
-    `<script type="module">import {mountGlobalNav} from '/shared-nav/nav.js';mountGlobalNav(document.querySelector('header'));</script>`,
+    `<script type="module">${NEON_NAV_SKRIPT}</script>`,
     o.skript ? `<script>${o.skript}</script>` : "",
     `</body></html>`,
   ].join("");

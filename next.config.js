@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    // Lets app/global-not-found.tsx replace Next's bare default 404. Needed
+    // because this app has no app/layout.tsx — every route group brings its own
+    // root layout, and a root not-found.tsx without one is refused by Next
+    // (HTTP 500 on every unknown address, measured 20.09.2026). The flag only
+    // changes which component answers an unmatched address; drop the flag and
+    // Next falls back to its own page, nothing else breaks.
+    globalNotFound: true,
+  },
   // Dev server uses .next-dev/, build uses .next/ (Vercel-compatible)
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
   env: {

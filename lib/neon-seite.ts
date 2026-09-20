@@ -31,9 +31,14 @@ export type NeonSeite = "startseite" | "simulation";
  * Vercel Web Analytics, cookieless — with the same rule as the React site: the
  * query string is dropped before sending (it can carry a postcode or a token).
  */
+/** The part that drops the query string — must run BEFORE the script below. */
+export const ANALYTICS_SETUP =
+  'window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};window.va("beforeSend",function(e){try{var u=new URL(e.url);u.search="";e.url=u.toString();return e}catch(_){return null}});';
+
+export const ANALYTICS_SRC = "/_vercel/insights/script.js";
+
 export const ANALYTICS_HTML =
-  `<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};window.va("beforeSend",function(e){try{var u=new URL(e.url);u.search="";e.url=u.toString();return e}catch(_){return null}});</script>` +
-  `<script defer src="/_vercel/insights/script.js"></script>`;
+  `<script>${ANALYTICS_SETUP}</script>` + `<script defer src="${ANALYTICS_SRC}"></script>`;
 
 export const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
