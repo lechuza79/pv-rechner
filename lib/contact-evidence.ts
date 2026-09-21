@@ -2,7 +2,7 @@ import { entschluesseltOderRoh } from "./uri-sicher";
 import { load } from "cheerio";
 import { entwirreAdressen } from "./personen-fund";
 import { publishedJoomlaMail } from "./published-joomla-mail";
-import { deobfuscatePublishedMail, repairGluedAddress } from "./mail-deobfuscation";
+import { decodeGipsMailto, deobfuscatePublishedMail, repairGluedAddress } from "./mail-deobfuscation";
 
 export type ContactCandidate = {
   email: string;
@@ -30,6 +30,10 @@ function decodePublishedMailLinks($: ReturnType<typeof load>): void {
     if (!script.includes("addy") || !script.includes("document.write")) return;
     const email = publishedJoomlaMail(script);
     if (email) $(el).replaceWith($("<a>").attr("href", `mailto:${email}`).text(email));
+  });
+  $("a[data-encrypted][href^='mailto:']").each((_, el) => {
+    const email = decodeGipsMailto(($(el).attr("href") ?? "").slice(7));
+    if (email) $(el).attr("href", `mailto:${email}`).text(email);
   });
   $("a[data-mailto-token][data-mailto-vector]").each((_, el) => {
     const raw = $(el).attr("data-mailto-vector") ?? "";

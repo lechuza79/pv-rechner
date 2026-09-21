@@ -6,6 +6,14 @@ import { readMail } from "../../scripts/lib/read-mail";
 import { ordneEin } from "../outreach-ruecklauf";
 
 describe("contact evidence counterexamples", () => {
+  it("reads GIPS-encrypted mail links of municipal utilities, and nothing that does not decode to an address", () => {
+    // Real markup from the Erlanger Stadtwerke press page (21.09.2026).
+    const html = '<h3>Ihr Ansprechpartner für Presse</h3><p>Claus Göbel<br>Pressesprecher<br><a data-encrypted href="mailto:mpvRiIuMmr+Tmp2akJjRjIqek5w=">E-Mail</a></p>';
+    const mails = contactCandidates(html, 'https://www.estw.de/presse', 'estw.de').map(r => r.email);
+    expect(mails).toEqual(['claus.goebel@estw.de']);
+    expect(contactCandidates('<a data-encrypted href="mailto:bm90LWEtbWFpbA==">E-Mail</a>', 'https://www.estw.de/', 'estw.de')).toEqual([]);
+  });
+
   it("reads published TYPO3 mail links and keeps responsibility within their table row", () => {
     const html = '<h1>Kontakt</h1><table><tr><td>Klimaschutzmanagement Yunus Göksen</td><td><a href="#" data-mailto-token="ocknvq,awpwu0iqgmugpBpgwowgpuvgt0fg" data-mailto-vector="2">E-Mail</a></td></tr><tr><td>Stabsstellenleitung Julia Schirrmacher</td><td><a href="#" data-mailto-token="ocknvq,lwnkc0uejkttocejgtBpgwowgpuvgt0fg" data-mailto-vector="2">E-Mail</a></td></tr></table>';
     expect(confirmedContactPage(html)).toBe(true);
