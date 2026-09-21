@@ -39940,5 +39940,83 @@
         "evidenceUrl": "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html"
       }
     ]
+  },
+  {
+    "regionId": "03355",
+    "name": "Landkreis Lüneburg",
+    "checkedAt": "2026-09-21T06:17:41Z",
+    "recheckAt": "2026-12-15T08:00:00Z",
+    "scope": "Private Haushalte: Zuschüsse des Landkreises für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; Programme der kreisangehörigen Gemeinden gesondert bei den Gemeinden erfasst.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Das eigene Programm des Landkreises für Privathaushalte fördert Dämmung, Fenster, Außentüren und die Optimierung bestehender Heizungen (30 %, höchstens 1.000 € je Wohneinheit); „Der Einbau einer Wärmepumpe wird nicht gefördert“, Photovoltaik, Speicher und Balkonkraftwerke kommen nicht vor, und der Topf ist ausgeschöpft (Warteliste). Damit keine passende Kreisförderung. Die fünf Ortsprogramme, die dieselbe Seite nennt (Adendorf, Samtgemeinden Ilmenau, Ostheide und Scharnebeck, Hansestadt Lüneburg), sind je bei ihren Gemeinden im Katalog. Die übrigen Förderseiten des Kreises richten sich an Kommunen, Unternehmen oder den Naturschutz.",
+    "searches": [
+      "Förderprogramme für Privathaushalte des Landkreises",
+      "Förderseiten des Kreises für Kommunen, Unternehmen, biologische Vielfalt",
+      "FördermittelCheck des Kreises"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-in-Privathaushalten/foerderprogramme-fuer-privathaushalte.html",
+        "finding": "Abgerufen 21.09.2026: 30 % bis 1.000 € je Wohneinheit für Dämmung, Fenster, Türen, Heizungsoptimierung; „Der Einbau einer Wärmepumpe wird nicht gefördert.“; „Bitte beachten Sie, dass der Fördertopf des Landkreises ausgeschöpft ist. Aktuell wird eine Warteliste geführt“. Nennt zusätzlich fünf Programme kreisangehöriger Gemeinden."
+      },
+      {
+        "url": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-gemeinden/foerderprogramme-kommunen.html",
+        "finding": "Abgerufen und gelesen am 21.09.2026: Förderung für Kommunen (Machbarkeitsstudien Wärmeplanung, Ladeinfrastruktur); kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-in-Privathaushalten/energiespar-checks/foerdermittel-check.html",
+        "finding": "Abgerufen und gelesen am 21.09.2026: Verweis auf einen allgemeinen Online-Fördermittelratgeber; kein eigenes Programm."
+      },
+      {
+        "url": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-unternehmen/foerderprogramme-klimaschutz-in-unternehmen.html",
+        "finding": "Abgerufen und gelesen am 21.09.2026: Übersicht für Unternehmen mit Verweisen auf Landes- und Bundesprogramme; kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/naturschutz-wald-und-artenschutz/foerderprogramme-biologische-vielfalt.html",
+        "finding": "Abgerufen und gelesen am 21.09.2026: Obstwiesen-, Hecken- und Kopfweidenpflege; kein Energieprogramm."
+      },
+      {
+        "url": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/naturschutz-wald-und-artenschutz/foerderprogramme-biologische-vielfalt/kopfweidenpflege.html",
+        "finding": "Abgerufen und gelesen am 21.09.2026: Zuschuss zur Kopfweidenpflege; kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-in-Privathaushalten/foerderprogramme-fuer-privathaushalte.html",
+        "disposition": "reviewed",
+        "reason": "Haushaltsprogramm des Kreises am 21.09.2026 erneut gelesen: nur Dämmung, Fenster, Türen, Heizungsoptimierung, Wärmepumpe ausdrücklich nicht, Topf ausgeschöpft; Hinweisgeber für die fünf Ortsprogramme.",
+        "evidenceUrl": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-in-Privathaushalten/foerderprogramme-fuer-privathaushalte.html"
+      },
+      {
+        "url": "landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-gemeinden/foerderprogramme-kommunen.html",
+        "disposition": "reviewed",
+        "reason": "Förderung für Kommunen (Machbarkeitsstudien Wärmeplanung, Ladeinfrastruktur); kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-gemeinden/foerderprogramme-kommunen.html"
+      },
+      {
+        "url": "landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-in-Privathaushalten/energiespar-checks/foerdermittel-check.html",
+        "disposition": "reviewed",
+        "reason": "Verweis auf einen allgemeinen Online-Fördermittelratgeber; kein eigenes Programm.",
+        "evidenceUrl": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-in-Privathaushalten/energiespar-checks/foerdermittel-check.html"
+      },
+      {
+        "url": "landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-unternehmen/foerderprogramme-klimaschutz-in-unternehmen.html",
+        "disposition": "reviewed",
+        "reason": "Übersicht für Unternehmen mit Verweisen auf Landes- und Bundesprogramme; kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/klimaschutz-unternehmen/foerderprogramme-klimaschutz-in-unternehmen.html"
+      },
+      {
+        "url": "landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/naturschutz-wald-und-artenschutz/foerderprogramme-biologische-vielfalt.html",
+        "disposition": "reviewed",
+        "reason": "Obstwiesen-, Hecken- und Kopfweidenpflege; kein Energieprogramm.",
+        "evidenceUrl": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/naturschutz-wald-und-artenschutz/foerderprogramme-biologische-vielfalt.html"
+      },
+      {
+        "url": "landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/naturschutz-wald-und-artenschutz/foerderprogramme-biologische-vielfalt/kopfweidenpflege.html",
+        "disposition": "reviewed",
+        "reason": "Zuschuss zur Kopfweidenpflege; kein Energieprogramm.",
+        "evidenceUrl": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/naturschutz-wald-und-artenschutz/foerderprogramme-biologische-vielfalt/kopfweidenpflege.html"
+      }
+    ]
   }
 ]
