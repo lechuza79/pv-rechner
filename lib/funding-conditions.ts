@@ -424,6 +424,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 22 Sep 2026: tenants and condominium residents only (house owners
   // excluded), four-week invoice window and first-come budget have no test form.
   "cremlingen-balkonkraftwerk",
+  // Added 22 Sep 2026: purchase only after the receipt confirmation, 400 W module
+  // minimum, three-year own use and council budget release have no test form.
+  "goedenstorf-stecker-solar",
   "altenkirchen-balkonkraftwerke",
   "altenkirchen-solarspeicher",
   "cochem-zell-solarstromspeicher",

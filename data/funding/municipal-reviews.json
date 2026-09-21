@@ -42285,5 +42285,49 @@
         "evidenceUrl": "https://www.glueckstadt.de/?ffmod=suche&NavID=2279.5&such=F%C3%B6rderprogramm"
       }
     ]
+  },
+  {
+    "regionId": "03353013",
+    "name": "Gödenstorf",
+    "checkedAt": "2026-09-21T22:31:00Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Gödenstorf fördert Balkonkraftwerke mit 150 € pauschal je Anlage (Richtlinie Fassung 13.06.2024, in Kraft 24.06.2024, gilt solange Haushaltsmittel da sind; kein Ausschöpfungshinweis). Aufgenommen als aktives Programm goedenstorf-stecker-solar ohne Rechenwert, weil die Auszahlung erst nach Freigabe der Mittel durch den Gemeinderat erfolgt und diese Freigabe für 2026 in keiner Quelle steht. Die Förderrichtlinien-Seite der Gemeinde listet nur dieses Programm; die Samtgemeinde Salzhausen fördert Jugend-, Kultur- und Sportzwecke, keine Energietechnik. Kein Zuschuss für Dach-PV, Speicher oder Wärmepumpen.",
+    "searches": [
+      "Förderrichtlinien-Seite Gödenstorf und Klimaschutz-Seite „Förderung von Stecker-Solar-Geräten“ gelesen (22.09.2026)",
+      "Richtlinie (eingescanntes PDF, drei Seiten) als Bild gelesen; Antrags- und Auszahlungsformular gesichtet",
+      "Samtgemeinde Salzhausen: Förderprojekte und Förderprogramme (Jugendförderung, Förderrichtlinien der Gemeinde Salzhausen) — keine Energietechnik für Haushalte",
+      "Adversarialer Prüfer (22.09.2026): Betrag und Bedingungen bestätigt, Abzug im Rechner nicht belegbar wegen Ratsvorbehalt",
+      "Gemeindeschlüssel 03353013 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://goedenstorf.salzhausen.de/buerger/klimaschutz/foerderung-von-stecker-solar-geraeten",
+        "finding": "Förderrichtlinien der Gemeinde Gödenstorf: „Förderrichtlinie Stecker-Solar-Geräte Gödenstorf“, Antragsformular und Umsetzungsformular; kein Hinweis auf Ausschöpfung (22.09.2026)."
+      },
+      {
+        "url": "https://goedenstorf.salzhausen.de/wirtschaft/foerderrichtlinien-foerderprojekte/foerderrichtlinien-goedenstorf",
+        "finding": "Richtlinie Nr. 5 (b): „Die Förderhöhe beträgt pauschal 150 € pro Anlage“; Nr. 5 (a): Auszahlung „erst nach Freigabe der entsprechenden Haushaltsmittel in Rahmen eines Gemeinderatsbeschlusses“; Nr. 9: in Kraft 24.06.2024, gültig solange Haushaltsmittel zur Verfügung stehen."
+      },
+      {
+        "url": "https://www.salzhausen.de/wirtschaft-bauen/foerderprojekte-und-foerderprogramme",
+        "finding": "Samtgemeinde Salzhausen: eigene Förderrichtlinien für Kultur, Jugendarbeit und Sportstätten; kein Energietechnik-Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "goedenstorf.salzhausen.de/buerger/klimaschutz/foerderung-von-stecker-solar-geraeten",
+        "disposition": "reviewed",
+        "reason": "Balkonkraftwerk-Programm, aufgenommen als goedenstorf-stecker-solar.",
+        "evidenceUrl": "https://goedenstorf.salzhausen.de/wirtschaft/foerderrichtlinien-foerderprojekte/foerderrichtlinien-goedenstorf"
+      },
+      {
+        "url": "goedenstorf.salzhausen.de/wirtschaft/foerderrichtlinien-foerderprojekte/foerderrichtlinien-goedenstorf",
+        "disposition": "replaced",
+        "reason": "Dieselbe Förderrichtlinien-Übersicht wie die Klimaschutz-Seite; einziges Programm ist die Stecker-Solar-Richtlinie, gelesen im Original.",
+        "evidenceUrl": "https://goedenstorf.salzhausen.de/buerger/klimaschutz/foerderung-von-stecker-solar-geraeten"
+      }
+    ]
   }
 ]

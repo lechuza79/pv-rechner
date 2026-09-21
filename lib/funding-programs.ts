@@ -6897,6 +6897,41 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // Added 22.09.2026. Guideline "Richtlinie zum Förderprogramm
+  // 'Stecker-Solar-Geräte'" (Fassung 13.06.2024, in force 24.06.2024) read in
+  // full as a scanned PDF from the municipality's funding page. No. 5 (b):
+  // "Die Förderhöhe beträgt pauschal 150 € pro Anlage"; No. 3 owners, heritable
+  // building right holders and tenants; No. 4 (e) excludes modules under 400 W
+  // and inverters over 800 W; No. 6 (d) purchase only after the receipt
+  // confirmation. No. 9: valid "solange … Haushaltsmittel hierfür zur
+  // Verfügung stehen"; the page lists it without an exhaustion notice.
+  // No calculation fields: No. 5 (a) pays "erst nach Freigabe der
+  // entsprechenden Haushaltsmittel in Rahmen eines Gemeinderatsbeschlusses",
+  // and no source shows that release for 2026 (adversarial reviewer,
+  // 22.09.2026). Council: own reading plus one adversarial reviewer.
+  "goedenstorf-stecker-solar": {
+    id: "goedenstorf-stecker-solar", name: "Förderprogramm Stecker-Solar-Geräte",
+    traeger: "Gemeinde Gödenstorf", level: "kommune", region: "Gödenstorf",
+    bundesland: "Niedersachsen", agsCode: "03353013",
+    url: "https://goedenstorf.salzhausen.de/buerger/klimaschutz/foerderung-von-stecker-solar-geraeten",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-06-24", beschlossenIso: "2024-06-13",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Balkonkraftwerk",
+    maxFoerderung: "150 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "150 € pauschal je Anlage" }],
+    conditions: [
+      "Antragsberechtigt sind volljährige Eigentümer, Erbbauberechtigte und Mieter mit Wohnsitz in Gödenstorf; eine Anlage je Person und Haushalt",
+      "Gekauft werden darf erst nach der Eingangsbestätigung des Antrags; vorher gekaufte Geräte sind ausgeschlossen",
+      "Neugeräte aus Deutschland mit deutscher Rechnung; ausgeschlossen sind Anlagen mit weniger als 400 W Modulleistung oder mehr als 800 W Wechselrichterleistung sowie Insel- und Akkuanlagen",
+      "Kauf binnen vier Monaten nach der Bewilligung nachweisen, samt Eintrag im Marktstammdatenregister und Foto der Anlage",
+      "Das Gerät muss drei Jahre selbst genutzt werden; Vergabe nach Eingang, solange Haushaltsmittel da sind",
+      "Ausgezahlt wird erst, wenn der Gemeinderat die Haushaltsmittel freigegeben hat; einen Rechtsanspruch gibt es nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
   // Added 21.09.2026 as a closed historical programme. City press releases
   // read in the original: 28.03.2023 (start 3 April 2023, 100 € for 250-430 W,
   // 200 € for 430-600 W, 10,000 € budget), 03.07.2023 ("Innerhalb kürzester
