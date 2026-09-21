@@ -42149,5 +42149,141 @@
         "evidenceUrl": "https://www.nettetal.de/rathaus-verwaltung/pressemitteilungen/klimaschutz-stadt-wirbt-fuer-foerderprogramme"
       }
     ]
+  },
+  {
+    "regionId": "03158006",
+    "name": "Cremlingen",
+    "checkedAt": "2026-09-21T22:13:00Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Cremlingen fördert seit 01.07.2023 Balkonkraftwerke mit 30 % des Nettokaufpreises, höchstens 300 €, nur für Mieter und Bewohner von Eigentumswohnungen (Gesamtvolumen 15.000 € ohne Jahresangabe, Windhund; Auszahlungsformular Januar 2026, kein Ausschöpfungshinweis). Aufgenommen als aktives Programm cremlingen-balkonkraftwerk ohne Rechenwerte, weil der Rechner den Ausschluss von Hauseigentümern bei zugelassenen Wohnungseigentümern nicht abbilden kann. Die Vorgänger-Richtlinie für PV mit Batteriespeicher (29.06.2022) trat am 30.06.2023 außer Kraft; ihre Konditionen sind im Original nicht mehr abrufbar (Seite 404, Webarchiv am 22.09.2026 offline). Das Programm Altbaumodernisierung fördert allgemeine energetische Modernisierung von Gebäuden vor 1984 nach CO2-Einsparung (0,20 €/kg, bis 25 %, max. 5.000 €, Vor-Ort-Beratung Pflicht) und nennt keine Technik — nicht als Wärmepumpen-, PV- oder Speicherprogramm erfasst. Kein Zuschuss für Dach-PV, Speicher oder Wärmepumpen.",
+    "searches": [
+      "cremlingen.de Suche (22.09.2026): Batteriespeicher, Photovoltaik, Wärmepumpe, Balkonkraftwerk, Förderung, Zuschuss — nur Menüpunkte Förderprogramm Balkonkraftwerke/Altbaumodernisierung, Meldungen Wärmeplanung und Stellenanzeigen",
+      "Förderseite Balkonkraftwerke, Richtlinie Stand 16.05.2023, Auszahlungsantrag 2026 und Richtlinie Altbaumodernisierung (Fassung 01.06.2022) im Original gelesen",
+      "Council 3/3 (22.09.2026, ein adversarialer Prüfer): Eintrag bestätigt, Berechtigtenkreis und Budget präzisiert; Landkreis Wolfenbüttel Photovoltaik-Seite ohne Förderprogramm",
+      "Gemeindeschlüssel 03158006 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.cremlingen.de/bauen/foerderprogramm-balkonkraftwerke",
+        "finding": "„Gefördert werden steckerfertige Fotovoltaikanlagen (Balkonkraftwerke) mit einem Gesamtvolumen von 15000 Euro“; nur Mieter und Bewohner von Eigentumswohnungen; „Maximal 30 Prozent des Nettokaufpreises … maximal 300 Euro“; „Anträge können seit dem 1. Juli gestellt werden“."
+      },
+      {
+        "url": "https://www.cremlingen.de/images/Richtlinien/20230516_Fo_rderrichtlinie_Photovoltaik_beschlossen.pdf",
+        "finding": "Richtlinie Stand 16.05.2023, in Kraft 01.07.2023: Nr. 5 „bis zu 30% der Nettokosten des Kaufpreises … maximal jedoch 300€“; Windhundprinzip; hebt die PV-plus-Speicher-Richtlinie vom 29.06.2022 zum 30.06.2023 auf."
+      },
+      {
+        "url": "https://www.cremlingen.de/bauen/foerderprogramm-altbaumodernisierung",
+        "finding": "Altbaumodernisierung: Erstberatung und energetische Modernisierung für Gebäude bis Baujahr 1983, 0,20 € je kg CO2-Minderung, max. 5.000 €, Vor-Ort-Beratung Voraussetzung."
+      },
+      {
+        "url": "https://www.cremlingen.de/images/Richtlinien/Richtlinie_Fassung_v._01.06.2022_1.pdf",
+        "finding": "Richtlinie Altbaumodernisierung (Fassung 01.06.2022): energetische Modernisierung nach Beratungsbericht, bis 25 % der Ausgaben, max. 5.000 € je Gebäude; keine Nennung von Photovoltaik, Speicher oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.cremlingen.de/component/finder/search?Itemid=101&q=W%C3%A4rmepumpe",
+        "finding": "Suche Wärmepumpe (22.09.2026): nur Meldungen zur kommunalen Wärmeplanung und eine Gartenveranstaltung, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "cremlingen.de/bauen/foerderprogramm-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Aktives Balkonkraftwerk-Programm, aufgenommen als cremlingen-balkonkraftwerk.",
+        "evidenceUrl": "https://www.cremlingen.de/bauen/foerderprogramm-balkonkraftwerke"
+      },
+      {
+        "url": "cremlingen.de/bauen/foerderprogramm-altbaumodernisierung",
+        "disposition": "reviewed",
+        "reason": "Allgemeine energetische Altbaumodernisierung nach CO2-Einsparung, nicht technikbezogen; kein PV-, Speicher-, Balkon- oder Wärmepumpenprogramm.",
+        "evidenceUrl": "https://www.cremlingen.de/images/Richtlinien/Richtlinie_Fassung_v._01.06.2022_1.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "01061029",
+    "name": "Glückstadt",
+    "checkedAt": "2026-09-21T22:13:00Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Glückstadt hat kein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte gefunden. Die beiden Treffer „Förderung von haushaltsbezogenen Solarpanelen (Balkonkraftwerke) beantragen“ und „Kommunale Förderung für den Klimaschutz beantragen“ sind Einträge des landesweiten Leistungskatalogs; für Glückstadt melden sie „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden“. Die Klimaschutzseite der Stadt wird überarbeitet, die Städtebauförderung „Jetzt modernisieren!“ betrifft Modernisierung in den Fördergebieten Nord und Stadtkern/Bahnhof, kein Technikzuschuss. Die Stadtwerke nennen auf ihrer Startseite keinen Zuschuss. Die übrigen erfassten Seiten betreffen Kindertagespflege, Hörfrühförderung, Hochwasserschutz, Pflegepersonen und Güterkraftverkehr. Wiederprüfung, sobald die Klimaschutzseite neu erscheint.",
+    "searches": [
+      "glueckstadt.de Volltextsuche (22.09.2026): Förderprogramm, Förderung, Balkonkraftwerk, Photovoltaik, Wärmepumpe, Zuschuss, Klimaschutz, Stromspeicher — nur Städtebauförderung, Landes-Dienstleistungen und Bauleitplanung",
+      "Bürgerservice-Suche „Solar“ und „Klimaschutz“ (22.09.2026): Balkonkraftwerk- und Klimaschutz-Förderung nur als Landeskatalog ohne zuständige Stelle; Solaranlagen-Seite betrifft die Ortsgestaltungssatzung",
+      "Klimaschutzseite (in Überarbeitung), Städtebauförderung „Jetzt modernisieren!“ und Startseite der Stadtwerke Glückstadt gelesen",
+      "Gemeindeschlüssel 01061029 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php?object=tx,2279.4.1&ModID=10&FID=2985.4909.1&NavID=2279.48&ort=2279.1",
+        "finding": "Landeskatalog-Eintrag „Förderung von haushaltsbezogenen Solarpanelen (»Balkonkraftwerke«) beantragen“: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ (im Browser gelesen, 22.09.2026)"
+      },
+      {
+        "url": "https://www.glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php?object=tx,2279.4.1&ModID=10&FID=2985.4742.1&NavID=2279.48&ort=2279.1",
+        "finding": "Landeskatalog-Eintrag „Kommunale Förderung für den Klimaschutz beantragen“: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“"
+      },
+      {
+        "url": "https://www.glueckstadt.de/?ffmod=suche&NavID=2279.5&such=F%C3%B6rderprogramm",
+        "finding": "Volltextsuche Förderprogramm: Städtebauförderung (Nord, Stadtkern/Bahnhof) und Landes-/Bundesleistungen für Landwirtschaft, Forschung und Güterkraftverkehr; kein Haushaltszuschuss für Energietechnik."
+      },
+      {
+        "url": "https://www.glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/index.php?ModID=10&object=tx,2279.4.1&La=1&NavID=2279.48&text=Solar&kat=1,&ort=2279.1&k_sub=1",
+        "finding": "Bürgerservice-Suche Solar: Balkonkraftwerk-Katalogeintrag, Solaranlagen (Ortsgestaltungssatzung, Prüfauftrag) und Solarkataster — keine städtische Förderung."
+      },
+      {
+        "url": "https://www.glueckstadt.de/Stadtentwicklung-Wirtschaft/Stadtentwicklung/St%C3%A4dtebauf%C3%B6rderung/Jetzt-modernisieren-/",
+        "finding": "„Jetzt modernisieren!“: Modernisierungsmaßnahmen in den Städtebaufördergebieten Glückstadt Nord und Stadtkern/Bahnhof (PDF), kein Technikzuschuss."
+      },
+      {
+        "url": "https://www.glueckstadt.de/Stadtentwicklung-Wirtschaft/Stadtentwicklung/Klimaschutz/",
+        "finding": "Klimaschutzseite: „Diese Seite wird derzeit überarbeitet.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Landeskatalog-Eintrag, für Glückstadt keine zuständige Stelle.",
+        "evidenceUrl": "https://www.glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-Balkonkraftwerke-beantragen.php?object=tx,2279.4.1&ModID=10&FID=2985.4909.1&NavID=2279.48&ort=2279.1"
+      },
+      {
+        "url": "glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Landeskatalog-Eintrag, für Glückstadt keine zuständige Stelle.",
+        "evidenceUrl": "https://www.glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php?object=tx,2279.4.1&ModID=10&FID=2985.4742.1&NavID=2279.48&ort=2279.1"
+      },
+      {
+        "url": "glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/F%C3%B6rderungen-als-Person-in-der-Kindertagespflege-erhalten.php",
+        "disposition": "reviewed",
+        "reason": "Kindertagespflege, keine Energietechnik (in der Volltextsuche Zuschuss gelistet).",
+        "evidenceUrl": "https://www.glueckstadt.de/?ffmod=suche&NavID=2279.5&such=F%C3%B6rderprogramm"
+      },
+      {
+        "url": "glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/Fr%C3%BChf%C3%B6rderung-f%C3%BCr-H%C3%B6rgesch%C3%A4digte-in-Anspruch-nehmen.php",
+        "disposition": "reviewed",
+        "reason": "Frühförderung für Hörgeschädigte, keine Energietechnik.",
+        "evidenceUrl": "https://www.glueckstadt.de/?ffmod=suche&NavID=2279.5&such=F%C3%B6rderprogramm"
+      },
+      {
+        "url": "glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/Hochwasserschutz-F%C3%B6rderung-von-Ma%C3%9Fnahmen.php",
+        "disposition": "reviewed",
+        "reason": "Hochwasserschutz-Maßnahmen, keine Energietechnik.",
+        "evidenceUrl": "https://www.glueckstadt.de/?ffmod=suche&NavID=2279.5&such=F%C3%B6rderprogramm"
+      },
+      {
+        "url": "glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/Zuschuss-zu-Altersabsicherung-als-Pflegeperson-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Altersabsicherung von Pflegepersonen, keine Energietechnik.",
+        "evidenceUrl": "https://www.glueckstadt.de/?ffmod=suche&NavID=2279.5&such=F%C3%B6rderprogramm"
+      },
+      {
+        "url": "glueckstadt.de/Verwaltung-Politik/Verwaltung/B%C3%BCrgerservice/Zuwendungen-aus-dem-F%C3%B6rderprogramm-Umweltschutz-und-Sicherheit-f%C3%BCr-Unternehmen-des-G%C3%BCterkraftverkehrs-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Güterkraftverkehrs-Unternehmen, keine Haushalte.",
+        "evidenceUrl": "https://www.glueckstadt.de/?ffmod=suche&NavID=2279.5&such=F%C3%B6rderprogramm"
+      }
+    ]
   }
 ]

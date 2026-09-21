@@ -421,6 +421,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "niederkruechten-klimaschutz",
   // Added 21 Sep 2026 as a closed historical programme (no calculation fields).
   "nettetal-steckermodule",
+  // Added 22 Sep 2026: tenants and condominium residents only (house owners
+  // excluded), four-week invoice window and first-come budget have no test form.
+  "cremlingen-balkonkraftwerk",
   "altenkirchen-balkonkraftwerke",
   "altenkirchen-solarspeicher",
   "cochem-zell-solarstromspeicher",

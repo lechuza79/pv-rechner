@@ -6860,6 +6860,43 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     pvPerKwp: 100, pvCap: 400, pvMin: 1, vollEinheiten: true,
   },
 
+  // Added 22.09.2026. Service page and guideline read in the original
+  // (cremlingen.de, "Förderrichtlinie zum Ausbau von steckerfertigen
+  // Photovoltaikanlagen (Balkonkraftwerken)", Stand 16.05.2023, in force
+  // 01.07.2023). No. 5: "bis zu 30% der Nettokosten des Kaufpreises …
+  // maximal jedoch 300€"; No. 3: only residents who rent a house or flat or
+  // live in a condominium ("Bewohner*innen einer Eigentumswohnung") — owners
+  // of a house are excluded. The calculator's housing question cannot express
+  // that split (a condominium owner is an owner), so no calculation fields.
+  // Page: total volume 15,000 € (no year given), applications possible; a
+  // payment form created January 2026 is published, no exhaustion notice —
+  // "aktiv" rests on that. Council 3/3 (22.09.2026, one adversarial):
+  // eligibility wording sharpened, budget marked as undated. The guideline replaced the 2022 PV-plus-
+  // battery guideline (29.06.2022), repealed on 30.06.2023.
+  "cremlingen-balkonkraftwerk": {
+    id: "cremlingen-balkonkraftwerk", name: "Förderprogramm steckerfertige Fotovoltaikanlagen (Balkonkraftwerke)",
+    traeger: "Gemeinde Cremlingen", level: "kommune", region: "Cremlingen",
+    bundesland: "Niedersachsen", agsCode: "03158006",
+    url: "https://www.cremlingen.de/bauen/foerderprogramm-balkonkraftwerke",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-07-01", beschlossenIso: "2023-05-16",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil am Nettokaufpreis eines Balkonkraftwerks",
+    maxFoerderung: "max. 300 €",
+    rates: [{ label: "Balkonkraftwerk", value: "30 % des Nettokaufpreises, max. 300 €" }],
+    conditions: [
+      "Nur für Personen mit Wohnsitz in Cremlingen, die zur Miete wohnen oder eine Eigentumswohnung bewohnen (auch selbstnutzende Wohnungseigentümer); wer ein eigenes Haus bewohnt, ist nicht antragsberechtigt",
+      "Eine Anlage je Haushalt",
+      "Die Rechnung darf höchstens vier Wochen vor dem Antrag datieren; bei Antragstellung schon betriebene Anlagen sind ausgeschlossen",
+      "Keine Eigenbauten, Prototypen oder gebrauchten Teile; keine Anlagen, denen Bau-, Planungs- oder Denkmalrecht entgegensteht",
+      "Die Leistung darf die beim Antrag für Steckersolargeräte zulässige Grenze nicht überschreiten; Vorgaben und Kosten des Netzbetreibers trägt der Haushalt",
+      "Gesamtvolumen 15.000 € ohne Jahresangabe, vergeben nach Eingang der Anträge; wie viel davon noch frei ist, nennt die Gemeinde nicht",
+      "Umsetzung und Abrechnung binnen eines Jahres ab Bescheid, Verwendungsnachweis spätestens drei Monate danach; Anmeldung beim Netzbetreiber und im Marktstammdatenregister mit dem Auszahlungsantrag nachweisen, soweit erforderlich",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
   // Added 21.09.2026 as a closed historical programme. City press releases
   // read in the original: 28.03.2023 (start 3 April 2023, 100 € for 250-430 W,
   // 200 € for 430-600 W, 10,000 € budget), 03.07.2023 ("Innerhalb kürzester
