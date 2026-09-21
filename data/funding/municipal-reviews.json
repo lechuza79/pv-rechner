@@ -665,7 +665,7 @@
   {
     "regionId": "07143243",
     "name": "Hof",
-    "checkedAt": "2026-09-17T08:17:21.948987+00:00",
+    "checkedAt": "2026-09-21T10:43:03Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -757,6 +757,12 @@
         "disposition": "replaced",
         "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozgleistung mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "disposition": "reviewed",
+        "reason": "Richtlinie vom 26.01.2026 am 21.09.2026 erneut geladen, SHA256 dea94c2b… byte-gleich zur geprüften Fassung; Programm bad-marienberg-erneuerbare-energien, 2026 ausgeschöpft.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
       }
     ]
   },
@@ -39177,7 +39183,7 @@
   {
     "regionId": "03355036",
     "name": "Thomasburg",
-    "checkedAt": "2026-09-21T00:25:35Z",
+    "checkedAt": "2026-09-21T10:43:03Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -39207,6 +39213,18 @@
         "disposition": "reviewed",
         "reason": "Förderseite der Samtgemeinde im Original gelesen; sie verlinkt alle vier Richtlinien.",
         "evidenceUrl": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html"
+      },
+      {
+        "url": "ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Solarstromerzeugung der Samtgemeinde, am 21.09.2026 erneut als eigene Quelle erfasst und abgehakt; im Katalog als ostheide-solarstrom.",
+        "evidenceUrl": "https://www.ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf"
+      },
+      {
+        "url": "ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Solarthermie: Wärme statt Strom, keine Technik des Katalogs.",
+        "evidenceUrl": "https://www.ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf"
       }
     ]
   },
@@ -39242,7 +39260,7 @@
   {
     "regionId": "03355040",
     "name": "Wendisch Evern",
-    "checkedAt": "2026-09-21T00:25:35Z",
+    "checkedAt": "2026-09-21T10:43:03Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -39272,6 +39290,18 @@
         "disposition": "reviewed",
         "reason": "Förderseite der Samtgemeinde im Original gelesen; sie verlinkt alle vier Richtlinien.",
         "evidenceUrl": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html"
+      },
+      {
+        "url": "ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Solarstromerzeugung der Samtgemeinde, am 21.09.2026 erneut als eigene Quelle erfasst und abgehakt; im Katalog als ostheide-solarstrom.",
+        "evidenceUrl": "https://www.ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf"
+      },
+      {
+        "url": "ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Solarthermie: Wärme statt Strom, keine Technik des Katalogs.",
+        "evidenceUrl": "https://www.ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf"
       }
     ]
   },
