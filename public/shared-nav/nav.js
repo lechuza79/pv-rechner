@@ -87,13 +87,11 @@ export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='/solar-
    setGroup(group,expanded);
   });
  });
- // A link to another page keeps the menu open until that page replaces this one: closing it at once looked like a lost click while the next page was still loading. Same-page links, new tabs and modifier clicks close it, since nothing else will.
- nav.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;const u=new URL(a.href,location.href);if(e.defaultPrevented||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||u.origin!==location.origin||(u.pathname===location.pathname&&u.search===location.search))close();});
- const restored=e=>{if(e.persisted)close(true);};window.addEventListener('pageshow',restored);
+ nav.addEventListener('click',e=>{if(e.target.closest('a'))close();});
  const outside=e=>{if(!header.contains(e.target)&&!nav.contains(e.target))close();};
  const keyboard=e=>{if(e.key==='Escape'&&(header.classList.contains('sc-menu-open')||nav.querySelector('details[open]'))){const active=document.activeElement;close(false,mobile.matches);if(!mobile.matches)active?.closest('details')?.querySelector('summary')?.focus();}if(e.key==='Tab'&&mobile.matches&&header.classList.contains('sc-menu-open')){const items=[toggle,...nav.querySelectorAll('a,summary,button')].filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden'&&!el.closest('[inert]'));const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}};
  document.addEventListener('click',outside);document.addEventListener('keydown',keyboard);
  const waitlist=nav.querySelector('[data-waitlist]');waitlist.onclick=()=>{close(true);location.href='/angebot-pruefen';};
 
- return ()=>{document.removeEventListener('click',outside);document.removeEventListener('keydown',keyboard);window.removeEventListener('pageshow',restored);mobile.removeEventListener('change',configure);close(true);nav.remove();login.remove();toggle.remove();delete header.dataset.globalNav;};
+ return ()=>{document.removeEventListener('click',outside);document.removeEventListener('keydown',keyboard);mobile.removeEventListener('change',configure);close(true);nav.remove();login.remove();toggle.remove();delete header.dataset.globalNav;};
 }
