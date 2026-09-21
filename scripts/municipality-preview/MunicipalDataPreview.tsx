@@ -24,7 +24,7 @@ import ZubauChart from '../../components/atlas/ZubauChart';
 import register from '../../public/atlas-design-preview/current-register.json';
 import ranking from '../../public/atlas-design-preview/ranking-data.json';
 
-export function CurrentPower(){
+export function CurrentPower({compact=false}:{compact?:boolean}={}){
  const [reading,setReading]=useState<any>(null);
  const [failed,setFailed]=useState(false);
  useEffect(()=>{
@@ -41,7 +41,7 @@ export function CurrentPower(){
  const points=reading?.points?.map((point:any)=>({ts:point.time,mw:kwp*point.powerPct/100000}))??[];
  const current=points.filter((point:any)=>Date.parse(point.ts)<=Date.now()).at(-1);
  return <WidgetFrame title="Solarleistung heute" kind="radial" context={<>Aus dem Wetter am Standort simuliert{reading?.power?.asOf?' · Stand '+new Date(reading.power.asOf).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Berlin'})+' Uhr':''}</>}>
- <div className="monitor-native-chart monitor-current-power">{failed?<p>Wetterdaten derzeit nicht verfügbar.</p>:!reading?<p>Wetterdaten werden geladen …</p>:<MastrLiveRadial energietraeger="solar" installedKwp={kwp} injected={points} highlightTs={current?.ts} secondaryBars unit="MW" className="monitor-live-radial" bare fuelltBreite/>}</div></WidgetFrame>;
+ <div className="monitor-native-chart monitor-current-power">{failed?<p>Wetterdaten derzeit nicht verfügbar.</p>:!reading?<p>Wetterdaten werden geladen …</p>:<MastrLiveRadial energietraeger="solar" installedKwp={kwp} injected={points} highlightTs={current?.ts} secondaryBars size={compact?"compact":"default"} unit="MW" className="monitor-live-radial" bare fuelltBreite/>}</div></WidgetFrame>;
 }
 function LocalMap(){
  const [selected,setSelected]=useState('09679147');
