@@ -2987,6 +2987,42 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "sh-balkon-klimaschutz-bub": {
+    // Read 21.09.2026 in the original: guideline "Richtlinie zur Förderung von
+    // Photovoltaik-Balkonanlagen" (Amtsblatt S-H 2023, Nr. 27, pp. 1581-1585;
+    // in force 01.07.2023, No. 2: 250-600 W; No. 3: natural persons and
+    // non-profits; No. 5.2.1 "bis zu 200,00 EUR", No. 5.2.2 "+ bis zu 150,00 EUR"
+    // for Bürgergeld/Grundsicherung/Wohngeld, No. 5.2.3 max. 50 % of costs;
+    // No. 5.3.3 no stacking with other state programmes). Programme start
+    // 16.01.2023 per the ministry article of 16.06.2023 ("Die Richtlinien
+    // traten zum 16.01.2023 in Kraft"); the January version paid at most 200 EUR
+    // (press release 05.01.2023), the supplement came with the July version.
+    // Stop: state page (updated 30.04.2024) "bis zum vorläufigen Stopp des
+    // Förderprogramms am 16.11.2023" and "beschlossen, das gestoppte
+    // Förderprogramm ... nicht fortzuführen". endetIso is the end of
+    // applications; pending applications were still decided afterwards.
+    // Council 3/3 (incl. adversarial) 21.09.2026: add with these corrections.
+    // combinableWith stays null: the guideline allows other funding only "sofern
+    // die Förderrichtlinien der betroffenen Programme dies zulassen", which
+    // establishes no specific combination. State programme of a territorial
+    // state: no city page (see CLAUDE.md), informs only.
+    id: "sh-balkon-klimaschutz-bub", name: "Klimaschutz für Bürgerinnen und Bürger — Zuschuss für PV-Balkonanlagen",
+    traeger: "Land Schleswig-Holstein, Bewilligung: Investitionsbank Schleswig-Holstein", level: "land", region: "Schleswig-Holstein", bundesland: "Schleswig-Holstein", agsCode: "01",
+    url: "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub", stand: "September 2026",
+    status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-01-16", endetIso: "2023-11-16",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Anschaffung und Installation eines Balkonkraftwerks (ab Juli 2023: 250 bis 600 W Wechselrichterleistung)",
+    rates: [{ label: "Zuschuss", value: "eingestellt — seit dem 16. November 2023 keine Anträge mehr; zuvor bis 200 €, ab Juli 2023 bei Bürgergeld, Grundsicherung oder Wohngeld bis 350 €, höchstens die Hälfte der Kosten" }],
+    conditions: [
+      "Seit dem vorläufigen Stopp am 16. November 2023 sind keine Anträge mehr möglich; die Landesregierung hat beschlossen, das Programm nicht fortzuführen",
+      "Anträge gab es nur in festen Antragsfenstern mit begrenzter Antragszahl",
+      "Antragsberechtigt waren Privatpersonen mit Erstwohnsitz in Schleswig-Holstein, ab Juli 2023 auch gemeinnützige Organisationen; ein Antrag je Haushalt",
+      "Nicht mit anderen Landesprogrammen kombinierbar; mit anderen Förderungen nur, soweit deren Richtlinie es zulässt",
+    ],
+    combinableWith: null,
+  },
   /**
    * AKTIV, aber nur für Mieter — der Betrag rechnet deshalb NUR mit
    * `nurWohnform: "mieter"`, und ohne beantwortete Wohnform gar nicht.

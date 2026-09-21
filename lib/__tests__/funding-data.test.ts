@@ -105,8 +105,11 @@ describe("fundingForAgs geo-matching", () => {
 
   it("does not bleed funding across city borders", () => {
     // Flensburg (01001000, Schleswig-Holstein) has no own program → only bund
+    // and Schleswig-Holstein's own state programmes, never another city's or
+    // county's grant and never another state's.
     const flensburg = fundingForAgs("01001000");
-    expect(flensburg.every((p) => p.level === "bund")).toBe(true);
+    expect(flensburg.every((p) => p.level === "bund" || (p.level === "land" && p.agsCode === "01"))).toBe(true);
+    expect(flensburg.some((p) => p.level === "kommune" || p.level === "landkreis")).toBe(false);
   });
 
   it("orders results broadest-first (bund → land → kreis → kommune)", () => {
