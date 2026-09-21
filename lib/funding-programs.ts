@@ -11051,6 +11051,75 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "scharnebeck-steckersolar": {
+    id: "scharnebeck-steckersolar", name: "Richtlinie der Samtgemeinde Scharnebeck zur Förderung von Stecker-Solar-Geräten",
+    traeger: "Samtgemeinde Scharnebeck", level: "kommune", region: "Samtgemeinde Scharnebeck",
+    bundesland: "Niedersachsen",
+    // The eight member municipalities as the Samtgemeinde's own menu lists them
+    // ("Mitgliedsgemeinden", scharnebeck.de, read 21 Sep 2026), each key looked
+    // up singly in the population register - never the shared prefix, which is
+    // Landkreis Lüneburg: Artlenburg, Brietlingen, Echem, Hittbergen,
+    // Hohnstorf (Elbe), Lüdersburg, Rullstorf, Scharnebeck. "Scharnebeck"
+    // here is the member municipality 03355033, not the Samtgemeinde.
+    agsCodes: ["03355003", "03355011", "03355015", "03355018", "03355019", "03355021", "03355032", "03355033"],
+    // The climate page carries the grant only as menu links (no page of its
+    // own), so the guideline PDF is the programme URL - it is also what the
+    // page watcher should fingerprint: a new version replaces this file.
+    url: "https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf",
+    // Guideline read in full as the PDF the Samtgemeinde's climate page links
+    // (3 pages, read 21 Sep 2026; archived copy identical to the 02:03Z read):
+    // https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf
+    // "Richtlinie ... vom 06.07.2023 geändert am 12.12.2024", in force since
+    // 06.07.2023 (§ 7), no end date. The rate, § 5 (2): "Die Förderhöhe
+    // beträgt je Haushalt 75,- Euro."
+    //
+    // combinableWith IS EMPTY ON PURPOSE, like Adendorf next door: § 5 (3)
+    // "schließt eine Förderung mit anderen öffentlichen Mitteln aus (Ausschluss
+    // einer Doppelförderung)". The cautious direction is the one that does not
+    // stack.
+    //
+    // APPLICATION TIMING IS NOT UNIFORM, and the condition says so instead of
+    // picking one: guideline § 6 (1)/(2) grants after purchase, installation
+    // and registration, at the latest six months after the invoice date; the
+    // form of the same version ("Antrag-Steckersolar-ab-12.12.2024") asks for
+    // the expected purchase price and lets receipt and registration proofs
+    // follow "spätestens 6 Monate nach Förderzusage", and additionally asks
+    // for proof of registration with the grid operator. Found by two council
+    // reviewers, checked against the form on 21 Sep 2026. An older 2023
+    // version (600 VA) still sits in the Samtgemeinde's Ortsrecht; same rate.
+    //
+    // RUNNING: the climate page links the guideline, the application form and a
+    // live online service (service.scharnebeck.de/balkonkraftwerk, BundID
+    // login), and no "ausgeschöpft" notice was found. The 2023 flyer that still
+    // circulates names an older rate and is superseded by the 12.12.2024
+    // version.
+    //
+    // THE SAMTGEMEINDE'S OTHER GRANTS ARE NOT IN SCOPE: solar thermal for hot
+    // water (300 EUR per dwelling, not a technique this catalogue carries) and
+    // green roofs (5 EUR/m², at most 500 EUR, with no raised rate for a PV
+    // system - unlike Kreis Pinneberg). Both guidelines read 21 Sep 2026.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-07-06",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Zuschuss zum Kauf eines Balkonkraftwerks",
+    maxFoerderung: "75 € je Haushalt",
+    balkonPauschale: 75,
+    rates: [
+      { label: "Balkonkraftwerk", value: "75 € je Haushalt", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Nicht mit anderen öffentlichen Fördermitteln kombinierbar — die Richtlinie schließt eine Doppelförderung ausdrücklich aus",
+      "Antragsberechtigt sind volljährige Privatpersonen mit Wohnsitz in der Samtgemeinde, die Haus- bzw. Wohnungseigentümer oder Mieter sind; Mieter legen die schriftliche Zustimmung des Vermieters vor",
+      "Je Haushalt wird höchstens eine Anlage gefördert",
+      "Höchstens 800 Voltampere Wechselrichter-Ausgangsleistung; das Gerät muss fabrikneu sein, ausschließlich privat genutzt, im Gebiet der Samtgemeinde betrieben und im Marktstammdatenregister angemeldet werden",
+      "Antrag spätestens sechs Monate nach dem Kauf (maßgeblich ist das Rechnungsdatum) — Richtlinie und Antragsformular sind beim Zeitpunkt uneinheitlich: Die Richtlinie bewilligt nach Kauf, Installation und Anmeldung, das Formular fragt nach dem voraussichtlichen Kaufpreis und lässt Kaufbeleg und Nachweise bis sechs Monate nach der Förderzusage nachreichen; wer vor dem Kauf mit dem Angebot beantragt, ist auf der sicheren Seite, denn der Kauf geschieht auf eigenes Risiko",
+      "Zum Antrag gehören Angebot oder Beschreibung (Modell, Modulleistung, Preis), Kaufbeleg mit den technischen Merkmalen und der Nachweis der Anmeldung im Marktstammdatenregister; das Antragsformular verlangt zusätzlich den Nachweis der Anmeldung beim Netzbetreiber; ausgezahlt wird nach Abnahme der Anlage durch die Samtgemeinde",
+      "Nicht gefördert werden Insel-Anlagen mit Akkubetrieb und geleaste Geräte",
+      "Kein Rechtsanspruch; die Samtgemeinde entscheidet im Rahmen der verfügbaren Mittel nach der Reihenfolge des Antragseingangs, vollständige Anträge werden bevorzugt bearbeitet",
+    ],
+    combinableWith: [],
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

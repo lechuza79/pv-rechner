@@ -39444,5 +39444,380 @@
         "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/ResourceImage.aspx?raid=26660"
       }
     ]
+  },
+  {
+    "regionId": "03355003",
+    "name": "Artlenburg",
+    "checkedAt": "2026-09-21T04:09:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Artlenburg ist Mitgliedsgemeinde der Samtgemeinde Scharnebeck, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie zur Förderung von Stecker-Solar-Geräten (Fassung 12.12.2024) zahlt 75 € je Haushalt für ein Balkonkraftwerk, läuft seit 06.07.2023 ohne Enddatum und schließt andere öffentliche Mittel aus; aufgenommen als scharnebeck-steckersolar mit allen acht Mitgliedsgemeinden als Fördergebiet. Die übrigen Programme der Samtgemeinde fördern Solarthermie für Warmwasser und Dachbegrünung ohne PV-Aufschlag; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "klimaschutz-scharnebeck.de Fördermittel der Samtgemeinde (Menü) gelesen",
+      "Ortsrecht der Samtgemeinde: Förderrichtlinien Solaranlagen und Dachbegrünung gelesen",
+      "Mitgliedsgemeinden im Menü von scharnebeck.de gelesen",
+      "Gemeindeschlüssel 03355003 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf",
+        "finding": "Richtlinie, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt je Haushalt 75,- Euro.“ (§ 5 Abs. 2); Ausschluss einer Doppelförderung (§ 5 Abs. 3); Antrag spätestens sechs Monate nach dem Kauf (§ 6 Abs. 2); in Kraft seit 06.07.2023 (§ 7)."
+      },
+      {
+        "url": "https://service.scharnebeck.de/balkonkraftwerk",
+        "finding": "Online-Antrag „Balkonkraftwerk Förderung“ erreichbar (Anmeldung über BundID); kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://www.scharnebeck.de/",
+        "finding": "Menü „Mitgliedsgemeinden“: Flecken Artlenburg, Brietlingen, Echem, Hittbergen, Hohnstorf, Lüdersburg, Rullstorf, Scharnebeck."
+      },
+      {
+        "url": "https://www.scharnebeck.de/PortalData/7/Resources/system-dateien/dokumente/infos_zur_samtgemeinde/ortsrecht/Foerderrichtlinie_Dachbegruenung.pdf",
+        "finding": "Dachbegrünung 5,00 €/m², höchstens 500 € je Dach; kein Aufschlag für Photovoltaik."
+      },
+      {
+        "url": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung",
+        "finding": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen."
+      },
+      {
+        "url": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-2",
+        "finding": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen."
+      },
+      {
+        "url": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-3",
+        "finding": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen."
+      },
+      {
+        "url": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-4",
+        "finding": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen."
+      },
+      {
+        "url": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-5",
+        "finding": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen."
+      },
+      {
+        "url": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-6",
+        "finding": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung",
+        "disposition": "reviewed",
+        "reason": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen.",
+        "evidenceUrl": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung"
+      },
+      {
+        "url": "artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-2",
+        "disposition": "reviewed",
+        "reason": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen.",
+        "evidenceUrl": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-2"
+      },
+      {
+        "url": "artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-3",
+        "disposition": "reviewed",
+        "reason": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen.",
+        "evidenceUrl": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-3"
+      },
+      {
+        "url": "artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-4",
+        "disposition": "reviewed",
+        "reason": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen.",
+        "evidenceUrl": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-4"
+      },
+      {
+        "url": "artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-5",
+        "disposition": "reviewed",
+        "reason": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen.",
+        "evidenceUrl": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-5"
+      },
+      {
+        "url": "artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-6",
+        "disposition": "reviewed",
+        "reason": "Termineintrag „JJ´s Pony: Mit Herz und Huf – spielerische Förderung“ (Ponyreiten für Kinder), kein Förderprogramm; im Original gelesen.",
+        "evidenceUrl": "https://artlenburg.de/termine/jjs-pony-mit-herz-und-huf-spielerische-foerderung-6"
+      }
+    ]
+  },
+  {
+    "regionId": "03355011",
+    "name": "Brietlingen",
+    "checkedAt": "2026-09-21T04:09:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Brietlingen ist Mitgliedsgemeinde der Samtgemeinde Scharnebeck, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie zur Förderung von Stecker-Solar-Geräten (Fassung 12.12.2024) zahlt 75 € je Haushalt für ein Balkonkraftwerk, läuft seit 06.07.2023 ohne Enddatum und schließt andere öffentliche Mittel aus; aufgenommen als scharnebeck-steckersolar mit allen acht Mitgliedsgemeinden als Fördergebiet. Die übrigen Programme der Samtgemeinde fördern Solarthermie für Warmwasser und Dachbegrünung ohne PV-Aufschlag; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "klimaschutz-scharnebeck.de Fördermittel der Samtgemeinde (Menü) gelesen",
+      "Ortsrecht der Samtgemeinde: Förderrichtlinien Solaranlagen und Dachbegrünung gelesen",
+      "Mitgliedsgemeinden im Menü von scharnebeck.de gelesen",
+      "Gemeindeschlüssel 03355011 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf",
+        "finding": "Richtlinie, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt je Haushalt 75,- Euro.“ (§ 5 Abs. 2); Ausschluss einer Doppelförderung (§ 5 Abs. 3); Antrag spätestens sechs Monate nach dem Kauf (§ 6 Abs. 2); in Kraft seit 06.07.2023 (§ 7)."
+      },
+      {
+        "url": "https://service.scharnebeck.de/balkonkraftwerk",
+        "finding": "Online-Antrag „Balkonkraftwerk Förderung“ erreichbar (Anmeldung über BundID); kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://www.scharnebeck.de/",
+        "finding": "Menü „Mitgliedsgemeinden“: Flecken Artlenburg, Brietlingen, Echem, Hittbergen, Hohnstorf, Lüdersburg, Rullstorf, Scharnebeck."
+      },
+      {
+        "url": "https://www.scharnebeck.de/PortalData/7/Resources/system-dateien/dokumente/infos_zur_samtgemeinde/ortsrecht/Foerderrichtlinie_Dachbegruenung.pdf",
+        "finding": "Dachbegrünung 5,00 €/m², höchstens 500 € je Dach; kein Aufschlag für Photovoltaik."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03355015",
+    "name": "Echem",
+    "checkedAt": "2026-09-21T04:09:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Echem ist Mitgliedsgemeinde der Samtgemeinde Scharnebeck, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie zur Förderung von Stecker-Solar-Geräten (Fassung 12.12.2024) zahlt 75 € je Haushalt für ein Balkonkraftwerk, läuft seit 06.07.2023 ohne Enddatum und schließt andere öffentliche Mittel aus; aufgenommen als scharnebeck-steckersolar mit allen acht Mitgliedsgemeinden als Fördergebiet. Die übrigen Programme der Samtgemeinde fördern Solarthermie für Warmwasser und Dachbegrünung ohne PV-Aufschlag; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "klimaschutz-scharnebeck.de Fördermittel der Samtgemeinde (Menü) gelesen",
+      "Ortsrecht der Samtgemeinde: Förderrichtlinien Solaranlagen und Dachbegrünung gelesen",
+      "Mitgliedsgemeinden im Menü von scharnebeck.de gelesen",
+      "Gemeindeschlüssel 03355015 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf",
+        "finding": "Richtlinie, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt je Haushalt 75,- Euro.“ (§ 5 Abs. 2); Ausschluss einer Doppelförderung (§ 5 Abs. 3); Antrag spätestens sechs Monate nach dem Kauf (§ 6 Abs. 2); in Kraft seit 06.07.2023 (§ 7)."
+      },
+      {
+        "url": "https://service.scharnebeck.de/balkonkraftwerk",
+        "finding": "Online-Antrag „Balkonkraftwerk Förderung“ erreichbar (Anmeldung über BundID); kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://www.scharnebeck.de/",
+        "finding": "Menü „Mitgliedsgemeinden“: Flecken Artlenburg, Brietlingen, Echem, Hittbergen, Hohnstorf, Lüdersburg, Rullstorf, Scharnebeck."
+      },
+      {
+        "url": "https://www.scharnebeck.de/PortalData/7/Resources/system-dateien/dokumente/infos_zur_samtgemeinde/ortsrecht/Foerderrichtlinie_Dachbegruenung.pdf",
+        "finding": "Dachbegrünung 5,00 €/m², höchstens 500 € je Dach; kein Aufschlag für Photovoltaik."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03355018",
+    "name": "Hittbergen",
+    "checkedAt": "2026-09-21T04:09:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hittbergen ist Mitgliedsgemeinde der Samtgemeinde Scharnebeck, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie zur Förderung von Stecker-Solar-Geräten (Fassung 12.12.2024) zahlt 75 € je Haushalt für ein Balkonkraftwerk, läuft seit 06.07.2023 ohne Enddatum und schließt andere öffentliche Mittel aus; aufgenommen als scharnebeck-steckersolar mit allen acht Mitgliedsgemeinden als Fördergebiet. Die übrigen Programme der Samtgemeinde fördern Solarthermie für Warmwasser und Dachbegrünung ohne PV-Aufschlag; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "klimaschutz-scharnebeck.de Fördermittel der Samtgemeinde (Menü) gelesen",
+      "Ortsrecht der Samtgemeinde: Förderrichtlinien Solaranlagen und Dachbegrünung gelesen",
+      "Mitgliedsgemeinden im Menü von scharnebeck.de gelesen",
+      "Gemeindeschlüssel 03355018 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf",
+        "finding": "Richtlinie, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt je Haushalt 75,- Euro.“ (§ 5 Abs. 2); Ausschluss einer Doppelförderung (§ 5 Abs. 3); Antrag spätestens sechs Monate nach dem Kauf (§ 6 Abs. 2); in Kraft seit 06.07.2023 (§ 7)."
+      },
+      {
+        "url": "https://service.scharnebeck.de/balkonkraftwerk",
+        "finding": "Online-Antrag „Balkonkraftwerk Förderung“ erreichbar (Anmeldung über BundID); kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://www.scharnebeck.de/",
+        "finding": "Menü „Mitgliedsgemeinden“: Flecken Artlenburg, Brietlingen, Echem, Hittbergen, Hohnstorf, Lüdersburg, Rullstorf, Scharnebeck."
+      },
+      {
+        "url": "https://www.scharnebeck.de/PortalData/7/Resources/system-dateien/dokumente/infos_zur_samtgemeinde/ortsrecht/Foerderrichtlinie_Dachbegruenung.pdf",
+        "finding": "Dachbegrünung 5,00 €/m², höchstens 500 € je Dach; kein Aufschlag für Photovoltaik."
+      },
+      {
+        "url": "https://hittbergen-barfoerde.de/barfoerder-weihnachtsmarkt",
+        "finding": "Ortsteil Barförde, Weihnachtsmarkt; kein Förderprogramm; im Original gelesen."
+      },
+      {
+        "url": "https://hittbergen-barfoerde.de/einladung-zum-barfoerder-weihnachtsmarkt",
+        "finding": "Ortsteil Barförde, Weihnachtsmarkt; kein Förderprogramm; im Original gelesen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hittbergen-barfoerde.de/barfoerder-weihnachtsmarkt",
+        "disposition": "reviewed",
+        "reason": "Ortsteil Barförde, Weihnachtsmarkt; kein Förderprogramm; im Original gelesen.",
+        "evidenceUrl": "https://hittbergen-barfoerde.de/barfoerder-weihnachtsmarkt"
+      },
+      {
+        "url": "hittbergen-barfoerde.de/einladung-zum-barfoerder-weihnachtsmarkt",
+        "disposition": "reviewed",
+        "reason": "Ortsteil Barförde, Weihnachtsmarkt; kein Förderprogramm; im Original gelesen.",
+        "evidenceUrl": "https://hittbergen-barfoerde.de/einladung-zum-barfoerder-weihnachtsmarkt"
+      }
+    ]
+  },
+  {
+    "regionId": "03355019",
+    "name": "Hohnstorf (Elbe)",
+    "checkedAt": "2026-09-21T04:09:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hohnstorf (Elbe) ist Mitgliedsgemeinde der Samtgemeinde Scharnebeck, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie zur Förderung von Stecker-Solar-Geräten (Fassung 12.12.2024) zahlt 75 € je Haushalt für ein Balkonkraftwerk, läuft seit 06.07.2023 ohne Enddatum und schließt andere öffentliche Mittel aus; aufgenommen als scharnebeck-steckersolar mit allen acht Mitgliedsgemeinden als Fördergebiet. Die übrigen Programme der Samtgemeinde fördern Solarthermie für Warmwasser und Dachbegrünung ohne PV-Aufschlag; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "klimaschutz-scharnebeck.de Fördermittel der Samtgemeinde (Menü) gelesen",
+      "Ortsrecht der Samtgemeinde: Förderrichtlinien Solaranlagen und Dachbegrünung gelesen",
+      "Mitgliedsgemeinden im Menü von scharnebeck.de gelesen",
+      "Gemeindeschlüssel 03355019 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf",
+        "finding": "Richtlinie, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt je Haushalt 75,- Euro.“ (§ 5 Abs. 2); Ausschluss einer Doppelförderung (§ 5 Abs. 3); Antrag spätestens sechs Monate nach dem Kauf (§ 6 Abs. 2); in Kraft seit 06.07.2023 (§ 7)."
+      },
+      {
+        "url": "https://service.scharnebeck.de/balkonkraftwerk",
+        "finding": "Online-Antrag „Balkonkraftwerk Förderung“ erreichbar (Anmeldung über BundID); kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://www.scharnebeck.de/",
+        "finding": "Menü „Mitgliedsgemeinden“: Flecken Artlenburg, Brietlingen, Echem, Hittbergen, Hohnstorf, Lüdersburg, Rullstorf, Scharnebeck."
+      },
+      {
+        "url": "https://www.scharnebeck.de/PortalData/7/Resources/system-dateien/dokumente/infos_zur_samtgemeinde/ortsrecht/Foerderrichtlinie_Dachbegruenung.pdf",
+        "finding": "Dachbegrünung 5,00 €/m², höchstens 500 € je Dach; kein Aufschlag für Photovoltaik."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03355021",
+    "name": "Lüdersburg",
+    "checkedAt": "2026-09-21T04:09:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Lüdersburg ist Mitgliedsgemeinde der Samtgemeinde Scharnebeck, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie zur Förderung von Stecker-Solar-Geräten (Fassung 12.12.2024) zahlt 75 € je Haushalt für ein Balkonkraftwerk, läuft seit 06.07.2023 ohne Enddatum und schließt andere öffentliche Mittel aus; aufgenommen als scharnebeck-steckersolar mit allen acht Mitgliedsgemeinden als Fördergebiet. Die übrigen Programme der Samtgemeinde fördern Solarthermie für Warmwasser und Dachbegrünung ohne PV-Aufschlag; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "klimaschutz-scharnebeck.de Fördermittel der Samtgemeinde (Menü) gelesen",
+      "Ortsrecht der Samtgemeinde: Förderrichtlinien Solaranlagen und Dachbegrünung gelesen",
+      "Mitgliedsgemeinden im Menü von scharnebeck.de gelesen",
+      "Gemeindeschlüssel 03355021 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf",
+        "finding": "Richtlinie, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt je Haushalt 75,- Euro.“ (§ 5 Abs. 2); Ausschluss einer Doppelförderung (§ 5 Abs. 3); Antrag spätestens sechs Monate nach dem Kauf (§ 6 Abs. 2); in Kraft seit 06.07.2023 (§ 7)."
+      },
+      {
+        "url": "https://service.scharnebeck.de/balkonkraftwerk",
+        "finding": "Online-Antrag „Balkonkraftwerk Förderung“ erreichbar (Anmeldung über BundID); kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://www.scharnebeck.de/",
+        "finding": "Menü „Mitgliedsgemeinden“: Flecken Artlenburg, Brietlingen, Echem, Hittbergen, Hohnstorf, Lüdersburg, Rullstorf, Scharnebeck."
+      },
+      {
+        "url": "https://www.scharnebeck.de/PortalData/7/Resources/system-dateien/dokumente/infos_zur_samtgemeinde/ortsrecht/Foerderrichtlinie_Dachbegruenung.pdf",
+        "finding": "Dachbegrünung 5,00 €/m², höchstens 500 € je Dach; kein Aufschlag für Photovoltaik."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03355032",
+    "name": "Rullstorf",
+    "checkedAt": "2026-09-21T04:09:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Rullstorf ist Mitgliedsgemeinde der Samtgemeinde Scharnebeck, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie zur Förderung von Stecker-Solar-Geräten (Fassung 12.12.2024) zahlt 75 € je Haushalt für ein Balkonkraftwerk, läuft seit 06.07.2023 ohne Enddatum und schließt andere öffentliche Mittel aus; aufgenommen als scharnebeck-steckersolar mit allen acht Mitgliedsgemeinden als Fördergebiet. Die übrigen Programme der Samtgemeinde fördern Solarthermie für Warmwasser und Dachbegrünung ohne PV-Aufschlag; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "klimaschutz-scharnebeck.de Fördermittel der Samtgemeinde (Menü) gelesen",
+      "Ortsrecht der Samtgemeinde: Förderrichtlinien Solaranlagen und Dachbegrünung gelesen",
+      "Mitgliedsgemeinden im Menü von scharnebeck.de gelesen",
+      "Gemeindeschlüssel 03355032 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf",
+        "finding": "Richtlinie, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt je Haushalt 75,- Euro.“ (§ 5 Abs. 2); Ausschluss einer Doppelförderung (§ 5 Abs. 3); Antrag spätestens sechs Monate nach dem Kauf (§ 6 Abs. 2); in Kraft seit 06.07.2023 (§ 7)."
+      },
+      {
+        "url": "https://service.scharnebeck.de/balkonkraftwerk",
+        "finding": "Online-Antrag „Balkonkraftwerk Förderung“ erreichbar (Anmeldung über BundID); kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://www.scharnebeck.de/",
+        "finding": "Menü „Mitgliedsgemeinden“: Flecken Artlenburg, Brietlingen, Echem, Hittbergen, Hohnstorf, Lüdersburg, Rullstorf, Scharnebeck."
+      },
+      {
+        "url": "https://www.scharnebeck.de/PortalData/7/Resources/system-dateien/dokumente/infos_zur_samtgemeinde/ortsrecht/Foerderrichtlinie_Dachbegruenung.pdf",
+        "finding": "Dachbegrünung 5,00 €/m², höchstens 500 € je Dach; kein Aufschlag für Photovoltaik."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03355033",
+    "name": "Scharnebeck",
+    "checkedAt": "2026-09-21T04:09:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Scharnebeck ist Mitgliedsgemeinde der Samtgemeinde Scharnebeck, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie zur Förderung von Stecker-Solar-Geräten (Fassung 12.12.2024) zahlt 75 € je Haushalt für ein Balkonkraftwerk, läuft seit 06.07.2023 ohne Enddatum und schließt andere öffentliche Mittel aus; aufgenommen als scharnebeck-steckersolar mit allen acht Mitgliedsgemeinden als Fördergebiet. Die übrigen Programme der Samtgemeinde fördern Solarthermie für Warmwasser und Dachbegrünung ohne PV-Aufschlag; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "klimaschutz-scharnebeck.de Fördermittel der Samtgemeinde (Menü) gelesen",
+      "Ortsrecht der Samtgemeinde: Förderrichtlinien Solaranlagen und Dachbegrünung gelesen",
+      "Mitgliedsgemeinden im Menü von scharnebeck.de gelesen",
+      "Gemeindeschlüssel 03355033 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf",
+        "finding": "Richtlinie, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt je Haushalt 75,- Euro.“ (§ 5 Abs. 2); Ausschluss einer Doppelförderung (§ 5 Abs. 3); Antrag spätestens sechs Monate nach dem Kauf (§ 6 Abs. 2); in Kraft seit 06.07.2023 (§ 7)."
+      },
+      {
+        "url": "https://service.scharnebeck.de/balkonkraftwerk",
+        "finding": "Online-Antrag „Balkonkraftwerk Förderung“ erreichbar (Anmeldung über BundID); kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://www.scharnebeck.de/",
+        "finding": "Menü „Mitgliedsgemeinden“: Flecken Artlenburg, Brietlingen, Echem, Hittbergen, Hohnstorf, Lüdersburg, Rullstorf, Scharnebeck."
+      },
+      {
+        "url": "https://www.scharnebeck.de/PortalData/7/Resources/system-dateien/dokumente/infos_zur_samtgemeinde/ortsrecht/Foerderrichtlinie_Dachbegruenung.pdf",
+        "finding": "Dachbegrünung 5,00 €/m², höchstens 500 € je Dach; kein Aufschlag für Photovoltaik."
+      },
+      {
+        "url": "https://gemeinde-scharnebeck.de/foerderkreis-inselsee-scharnebeck-e-v",
+        "finding": "Förderverein bzw. Spendenprojekt für den Badesee Inselsee; kein Förderprogramm; im Original gelesen."
+      },
+      {
+        "url": "https://gemeinde-scharnebeck.de/unterstuetzung-fuer-den-foerderkreis-inselsee",
+        "finding": "Förderverein bzw. Spendenprojekt für den Badesee Inselsee; kein Förderprogramm; im Original gelesen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-scharnebeck.de/foerderkreis-inselsee-scharnebeck-e-v",
+        "disposition": "reviewed",
+        "reason": "Förderverein bzw. Spendenprojekt für den Badesee Inselsee; kein Förderprogramm; im Original gelesen.",
+        "evidenceUrl": "https://gemeinde-scharnebeck.de/foerderkreis-inselsee-scharnebeck-e-v"
+      },
+      {
+        "url": "gemeinde-scharnebeck.de/unterstuetzung-fuer-den-foerderkreis-inselsee",
+        "disposition": "reviewed",
+        "reason": "Förderverein bzw. Spendenprojekt für den Badesee Inselsee; kein Förderprogramm; im Original gelesen.",
+        "evidenceUrl": "https://gemeinde-scharnebeck.de/unterstuetzung-fuer-den-foerderkreis-inselsee"
+      }
+    ]
   }
 ]

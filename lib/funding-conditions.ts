@@ -258,6 +258,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Reihenfolge: Antrag nach dem Kauf, spätestens drei Monate danach (Nr. 4 a,
   // 6 b), mit Rechnung, Foto und Anmeldenachweisen.
   "ilmenau-steckersolar",
+  // Samtgemeinde Scharnebeck, aufgenommen am 21.09.2026. Die Richtlinie
+  // erlaubt den Antrag nach Kauf, Installation und Anmeldung, spätestens sechs
+  // Monate nach dem Rechnungsdatum (§ 6 Abs. 1 und 2); das Formular lässt ihn
+  // auch vorher zu. „Vor dem Kauf beantragen" als Pflicht wäre der falsche Test.
+  "scharnebeck-steckersolar",
   // Kreis Pinneberg, aufgenommen am 21.09.2026. Das Vorhaben ist eine
   // Dachbegrünung, nicht eine Photovoltaikanlage — eine Prüfform, die eine
   // Anlage gegen ein Antragsverfahren hält, hat hier nichts zu prüfen. Die
