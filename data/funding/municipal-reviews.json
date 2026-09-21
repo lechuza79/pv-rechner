@@ -42014,5 +42014,42 @@
         "evidenceUrl": "https://www.niederkruechten.de/system/files/2026-07/Richtlinie%20zum%20F%C3%B6rderprogramm%20Klimaschutz_2026.pdf"
       }
     ]
+  },
+  {
+    "regionId": "03452007",
+    "name": "Großheide",
+    "checkedAt": "2026-09-21T20:50:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "klaerung",
+    "conclusion": "Großheide fördert Balkonkraftwerke bis 800 W mit 200 € Festbetrag (Richtlinie in Kraft 31.03.2023, geändert 21.11.2024); laut Programmseite stehen seit 18.02.2025 keine Mittel mehr zur Verfügung. Die übrigen Gemeindeprogramme fördern Wohneigentum; kein Zuschuss für Dach-PV, Speicher oder Wärmepumpen. Sachlich geklärt; offen ist nur die Aufnahme in den Katalog (siehe nächster Schritt).",
+    "searches": [
+      "grossheide.de Menü Bauen, Wohnen, Wirtschaft: Seiten Förderprogramme und Fördermaßnahmen im Browser gelesen (21.09.2026)",
+      "Richtlinien Förderprogramm Photovoltaik (4 Seiten), Bauen im Grünen und Jung kauft Alt gelesen",
+      "Gemeindeschlüssel 03452007 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.grossheide.de/resources/01%20Website/Unterseiten/F%C3%B6rderprogramme/foerderprogramm-photovoltaik-fassung-102024-1-aend.pdf",
+        "finding": "Nr. 3.4: „ein einmaliger, nicht rückzahlbarer Zuschuss in Höhe von 200,00 Euro als Festbetrag“ für Balkonmodule bis 800 W; Nr. 6.5 Antrag nach Abschluss der Maßnahme, bis 3 Monate nach Anmeldung beim Netzbetreiber."
+      },
+      {
+        "url": "https://www.grossheide.de/Wirtschaft-Bauen-Wohnen/Bauen-in-Grossheide/Foerderprogramme",
+        "finding": "Im zugeklappten Programmabschnitt: „Hinweis 18.02.2025: Aktuell stehen keine Fördermittel mehr zur Verfügung. Es können derzeit keine neuen Anträge mehr gestellt bzw. berücksichtigt werden.“ Gleicher Hinweis bei Bauen im Grünen und Jung kauft Alt (Wohneigentum)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "grossheide.de/resources/01%20Website/Unterseiten/F%C3%B6rderprogramme/foerderprogramm-photovoltaik-fassung-102024-1-aend.pdf",
+        "disposition": "reviewed",
+        "reason": "Balkonrichtlinie im Volltext gelesen, Programm ausgeschöpft seit 18.02.2025; Katalogeintrag folgt.",
+        "evidenceUrl": "https://www.grossheide.de/resources/01%20Website/Unterseiten/F%C3%B6rderprogramme/foerderprogramm-photovoltaik-fassung-102024-1-aend.pdf"
+      }
+    ],
+    "nextAction": {
+      "kind": "manual",
+      "dueAt": "2026-09-22T20:00:00Z",
+      "detail": "Katalogeintrag grossheide-balkonmodule (ausgeschöpft, ohne Rechenwert) aufnehmen, sobald die Suchmessung (funding-suche-gegenprobe, Quote 191/245 = 78,0 % gegen Schwelle >78 %) geklärt ist: Programmseite und Richtlinie sind für die Adresserkennung nicht erkennbar (Ressort-Regel bzw. PDF-Ausschluss)."
+    }
   }
 ]
