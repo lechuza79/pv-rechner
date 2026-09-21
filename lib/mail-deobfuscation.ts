@@ -59,6 +59,18 @@ export function decodeGipsMailto(encoded: string): string | null {
   return ADDRESS.test(plain) ? plain : null;
 }
 
+/**
+ * A widespread craft-business site builder shows a shuffled address as link
+ * text and carries the real one as colon-separated character codes
+ * (`data-q-uncrypt="105:110:102:111:64:…"`). Without this the shuffled text
+ * itself was taken as an address (measured 21.09.2026 on two businesses).
+ */
+export function decodeCharCodeMail(encoded: string): string | null {
+  if (!/^\d{2,3}(?::\d{2,3}){5,200}$/.test(encoded)) return null;
+  const plain = String.fromCharCode(...encoded.split(":").map(Number));
+  return ADDRESS.test(plain) ? plain : null;
+}
+
 export function deobfuscatePublishedMail(html: string): string {
   html = html.replace(
     /href=(["'])javascript:linkTo_UnCryptMailto\((?:%27|'|&#39;)([^'&]+?)(?:%27|'|&#39;)(?:,\s*-?\d+)?\);?\1/g,

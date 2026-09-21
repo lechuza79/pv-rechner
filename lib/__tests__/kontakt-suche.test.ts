@@ -15,15 +15,27 @@ const BETRIEB: Rollenwerk = {
 const SCOPE: ScopeRegeln = { fremdeBehoerde: /kammer|innung/, eigenbetrieb: /shop|akademie/, namensvarianten: /gmbh|ag/ };
 const asOf = "2026-09-20T10:00:00Z";
 
-function pruefe(html: string, url: string, website: string) {
+function pruefe(html: string, url: string, website: string, scope: ScopeRegeln = SCOPE) {
   const context = headingContext(html);
   const org = { id: "b1", name: "Muster Solar", website };
   const evidence = contactCandidates(html, url, new URL(website).hostname).map(c =>
     judgeEvidence(c, context.headings.get(c.email) ?? [], { url, digest: "d", valid: true }, org, asOf, BETRIEB));
-  return consolidate(applyScope(evidence, new Map([[url, context.title]]), org, null, SCOPE), BETRIEB);
+  return consolidate(applyScope(evidence, new Map([[url, context.title]]), org, null, scope), BETRIEB);
 }
 
 describe("Kontaktsuche für einen anderen Bestand", () => {
+  it("nimmt ein Gratis-Postfach aus dem eigenen Impressum nur, wenn der Bestand es erlaubt", () => {
+    const html = `<main><h1>Impressum</h1><p>Inhaber Alex Muster <a href="mailto:alex.muster@web.de">alex.muster@web.de</a></p></main>`;
+    const url = "https://www.muster-solar.de/impressum/";
+    const ohne = pruefe(html, url, "https://www.muster-solar.de/");
+    expect(ohne.find(b => b.email === "alex.muster@web.de")?.reasons).toContain("mailbox-foreign-domain");
+    const mit = pruefe(html, url, "https://www.muster-solar.de/", { ...SCOPE, eigeneAdresseAuf: p => /impressum/.test(p) });
+    expect(mit.find(b => b.email === "alex.muster@web.de")?.reasons).not.toContain("mailbox-foreign-domain");
+    // Auf einer beliebigen anderen Seite bleibt die fremde Domain fremd.
+    const blog = pruefe(html, "https://www.muster-solar.de/blog/tipps", "https://www.muster-solar.de/", { ...SCOPE, eigeneAdresseAuf: p => /impressum/.test(p) });
+    expect(blog.find(b => b.email === "alex.muster@web.de")?.reasons).toContain("mailbox-foreign-domain");
+  });
+
   it("belegt die konfigurierte Rolle und lässt alles andere liegen", () => {
     const html = `<main><p>Max Muster Vertriebsleiter <a href="mailto:m.muster@muster-solar.de">m.muster@muster-solar.de</a></p>
       <p>Anna Muster Buchhaltung <a href="mailto:a.muster@muster-solar.de">a.muster@muster-solar.de</a></p>

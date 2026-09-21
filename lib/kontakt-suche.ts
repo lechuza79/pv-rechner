@@ -70,6 +70,7 @@ export const host = (u: string) => { try { return new URL(u).hostname.replace(/^
 /** German sites use plain second-level domains; two labels are the registrable part. */
 /** Zwei Labels sind der registrierbare Teil; Großschreibung ist bedeutungslos (Name@Blog.TV). */
 export const siteOf = (h: string) => h.toLowerCase().split(".").slice(-2).join(".");
+const pathOf = (u: string) => { try { return new URL(u).pathname; } catch { return ""; } };
 export const fold = (t: string) => t.toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[^a-z]/g, "");
 
 const HISTORICAL = /ehemalig|nicht (?:mehr )?zuständig|nicht mehr erreichbar|außer dienst|\ba\.\s?d\./iu;
@@ -162,6 +163,15 @@ export type ScopeRegeln = {
   eigenbetrieb: RegExp;
   /** Prefixes/suffixes a domain may add around the own name ("stadt…", "…gemeinde"). */
   namensvarianten: RegExp;
+  /**
+   * Pages of the own site whose addresses belong to the organisation whatever
+   * their mail domain. A small business publishes its web.de or t-online
+   * mailbox in its legally required imprint; rejecting it as a foreign domain
+   * lost the only address of such businesses (measured 21.09.2026). Left unset
+   * for administrations, where a foreign mailbox on the own site is usually
+   * another body's.
+   */
+  eigeneAdresseAuf?: (pfad: string) => boolean;
 };
 
 export function applyScope(evidence: Evidence[], titles: Map<string, string>, o: Organisation, verbund: Verbund | null, r: ScopeRegeln): Evidence[] {
@@ -189,9 +199,10 @@ export function applyScope(evidence: Evidence[], titles: Map<string, string>, o:
   return evidence.map(e => {
     const site = siteOf(host(e.url));
     const domain = siteOf(e.email.split("@")[1] ?? "");
+    const publishedAsOwn = site === own && !otherAuthority(domain) && !company(domain) && !!r.eigeneAdresseAuf?.(pathOf(e.url));
     const reasons = e.reasons.filter(rr =>
       !(rr === "source-not-official-site" && adminSites.has(site)) &&
-      !(rr === "mailbox-foreign-domain" && (institutional.has(domain) || (verbund && tokens.some(w => fold(domain).includes(w))))));
+      !(rr === "mailbox-foreign-domain" && (publishedAsOwn || institutional.has(domain) || (verbund && tokens.some(w => fold(domain).includes(w))))));
     const viaAdmin = !!verbund && (adminSites.has(site) || (domain !== own && institutional.has(domain)));
     return { ...e, reasons, channels: reasons.length ? [] : e.rawChannels,
       scope: viaAdmin ? `shared-administration:${verbund!.name}` : "organisation" };
