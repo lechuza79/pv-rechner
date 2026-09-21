@@ -145,6 +145,9 @@ async function apply() {
       ALTER TABLE utilities ADD COLUMN IF NOT EXISTS presse_geprueft_am date;
       NOTIFY pgrst, 'reload schema';` });
     if (error) throw new Error(error.message);
+    // The API picks up new columns only after it reloads its schema; writing
+    // right away failed on the first run (21.09.2026).
+    await new Promise(r => setTimeout(r, 3000));
   }
   const rows = ergebnisse();
   let mitPresse = 0, geschrieben = 0;
