@@ -11120,6 +11120,72 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: [],
   },
+  "lueneburg-regenerative-energien": {
+    id: "lueneburg-regenerative-energien", name: "Förderprogramm der Hansestadt Lüneburg zur Nutzung regenerativer Energien",
+    traeger: "Hansestadt Lüneburg", level: "kommune", region: "Lüneburg",
+    bundesland: "Niedersachsen", agsCode: "03355022",
+    url: "https://www.lueneburg-klimaschutz.de/klimafonds/",
+    // Guideline read in full as the PDF the city's Klimafonds page links (6
+    // pages, read 21 Sep 2026): "Förderprogramm der Hansestadt Lüneburg zur
+    // Nutzung regenerativer Energien", in force 01.01.2026 (§ 8), revised by
+    // council on 13.11.2025 (press release "Hansestadt aktualisiert
+    // Klimaschutz-Förderprogramme").
+    // https://www.lueneburg-klimaschutz.de/wp-content/uploads/2025/12/FoerderRL-Regenerative-Energien-gueltig-ab-01.01.2026.pdf
+    //
+    // THE 2026 POT IS EMPTY, in the city's own words on the programme page:
+    // "Der Fördermitteltopf für das Jahr 2026 ist leer. Es können keine
+    // Anträge mehr angenommen werden. Neuanträge können ab dem 01.01.2027
+    // gestellt werden." Hence "ausgeschoepft" and NO structured value: the
+    // amounts stand as information and deduct nothing, like the other empty
+    // pots in this catalogue. When the 2027 round opens, the balcony amount
+    // would need nurWohnform "mieter" (§ 3 (3): only tenants may apply).
+    //
+    // WHAT IS FUNDED (§ 2): solar collectors, plug-in solar devices with an
+    // inverter, and ground-source heat installations. Batteries are expressly
+    // excluded (§ 2 (2)), and roof PV is no longer funded from 2026 (press
+    // release: "Nicht mehr förderfähig sind künftig PV-Dachanlagen") - until the
+    // 2024 guideline it had paid 450-4,625 EUR by output, web.archive.org
+    // snapshot of the Klimafonds page of 22.09.2025) - so this
+    // is NOT a roof PV grant and gets no city page. Solar thermal (70/100
+    // EUR/m², capped 500-1,500 EUR) is outside the catalogue's techniques and
+    // is left out of the rates.
+    //
+    // combinableWith IS THE FEDERAL LIST: § 4 (13) allows other federal, state
+    // or institutional funds unless their own rules forbid it; § 6 (4) caps
+    // all grants together at 49 % of the gross cost.
+    //
+    // TWO LIMITS THE COUNCIL FOUND IN THE WORDING, both taken: § 4 (4) requires
+    // the building to belong to a natural person, for every measure - so a
+    // tenant of a housing company or cooperative is outside it even for the
+    // balcony grant; and "waermepumpe" here means ground-source only, the
+    // guideline funds no air-source heat pump. The Klimafonds page still hints
+    // at extra money for PV on a green roof; neither 2026 guideline contains
+    // the word, so it is treated as a leftover of the old version.
+    //
+    // Found as an unread source row (the press release) filed under
+    // Lüneburg; the fifth local programme the Landkreis Lüneburg page named.
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beschlossenIso: "2025-11-13", beginntIso: "2026-01-01",
+    eligibility: ["privat"],
+    foerdert: ["balkon", "waermepumpe"],
+    coveredCosts: "Festbeträge für Balkonkraftwerke von Mietern und für Erdwärmeanlagen, dazu ein Zuschuss für Solarkollektoren zur Warmwasserbereitung — der Fördertopf 2026 ist leer",
+    rates: [
+      { label: "Balkonkraftwerk (nur Mieter)", value: "350 € je Wohneinheit", nur: ["balkon"] },
+      { label: "Erdwärmeanlage mit Kollektoren", value: "1.000 € (mit Erdkühle 1.500 €)", nur: ["waermepumpe"] },
+      { label: "Erdwärmeanlage mit Sonde(n)", value: "2.500 € (mit Erdkühle 3.750 €)", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Der Fördertopf für 2026 ist leer; die Stadt nimmt keine Anträge mehr an, Neuanträge sind ab dem 01.01.2027 möglich",
+      { text: "Für Balkonkraftwerke sind nur Mieter antragsberechtigt; gefördert wird ein Gerät je Wohneinheit, eine Energieberatung ist nicht nötig", nur: ["balkon"] },
+      "Das Gebäude muss ein Wohngebäude im Stadtgebiet sein und einer Privatperson gehören — das gilt auch für Mieter, die ein Balkonkraftwerk beantragen; wer bei einer Wohnungsgesellschaft oder Genossenschaft mietet, fällt nach dem Wortlaut nicht darunter",
+      { text: "Gefördert werden nur Erdwärmeanlagen (Kollektoren oder Sonden) bis 30 kW, keine Luft-Wärmepumpen; antragsberechtigt ist der Eigentümer oder eine von ihm bevollmächtigte Person; vor Beauftragung des Betriebs muss eine unabhängige Energieberatung stattgefunden haben; in Gebieten mit bestehender oder geplanter zentraler Wärmeversorgung gibt es keine Förderung", nur: ["waermepumpe"] },
+      "Gefördert wird nur, was bei Zugang des Zuwendungsbescheids noch nicht ausgeführt ist, und nur fabrikneue Anlagen; die Anlage muss binnen zwölf Monaten nach dem Bescheid in Betrieb gehen",
+      "Alle Zuschüsse zusammen höchstens 49 % der Bruttokosten; andere Fördermittel sind zulässig, soweit deren Regeln es erlauben",
+      "Batteriespeicher und — seit 2026 — Photovoltaik-Dachanlagen werden nicht gefördert",
+      "Kein Rechtsanspruch; vergeben wird nach Eingang des vollständigen Antrags im Rahmen der Haushaltsmittel",
+    ],
+    combinableWith: BUND,
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

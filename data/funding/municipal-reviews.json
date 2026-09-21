@@ -39819,5 +39819,62 @@
         "evidenceUrl": "https://gemeinde-scharnebeck.de/unterstuetzung-fuer-den-foerderkreis-inselsee"
       }
     ]
+  },
+  {
+    "regionId": "03355022",
+    "name": "Lüneburg",
+    "checkedAt": "2026-09-21T04:16:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Hansestadt fördert seit 01.01.2026 nach ihrem Programm zur Nutzung regenerativer Energien Balkonkraftwerke von Mietern mit 350 €, Erdwärmeanlagen mit 1.000 bzw. 2.500 € und Solarkollektoren; Photovoltaik-Dachanlagen und Batteriespeicher fördert sie seit 2026 nicht mehr. Der Topf für 2026 ist laut Programmseite leer, Neuanträge ab 01.01.2027; aufgenommen als lueneburg-regenerative-energien mit Status ausgeschöpft und ohne Rechenwert. Die energetische Sanierung (Topf ebenfalls leer) fördert Dämmung, Fenster und Heizungsoptimierung, keine Wärmepumpe. Wiedervorlage im Januar 2027, wenn die neue Runde öffnet.",
+    "searches": [
+      "lueneburg-klimaschutz.de Klimafonds (Förderprogramme 2026) gelesen",
+      "Richtlinien Regenerative Energien und Energetische Sanierung ab 01.01.2026 im Volltext gelesen",
+      "Pressemitteilung zum Ratsbeschluss vom 13.11.2025 gelesen",
+      "Gemeindeschlüssel 03355022 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.lueneburg-klimaschutz.de/wp-content/uploads/2025/12/FoerderRL-Regenerative-Energien-gueltig-ab-01.01.2026.pdf",
+        "finding": "Richtlinie, 6 Seiten im Volltext: Balkonkraftwerk 350 € nur für Mieter (§ 3 Abs. 3, § 5 Abs. 2); Erdwärme 1.000/2.500 € bis 30 kW (§ 5 Abs. 3); Batteriespeicher ausgeschlossen (§ 2 Abs. 2); Deckel 49 % (§ 6 Abs. 4); in Kraft 01.01.2026 (§ 8)."
+      },
+      {
+        "url": "https://www.lueneburg-klimaschutz.de/klimafonds/",
+        "finding": "„Der Fördermitteltopf für das Jahr 2026 ist leer. Es können keine Anträge mehr angenommen werden. Neuanträge können ab dem 01.01.2027 gestellt werden.“ — auch für Energetische Sanierung und Dachbegrünung."
+      },
+      {
+        "url": "https://www.hansestadt-lueneburg.de/rathaus/aktuelles/pressemitteilungen/hansestadt-aktualisiert-klimaschutz-foerderprogramme-anschubberatung-wird-fortgefuehrt.html",
+        "finding": "Ratsbeschluss 13.11.2025; „Für Balkonkraftwerke gibt es künftig eine Förderung in Form eines Festbetrags von 350 Euro“; „Nicht mehr förderfähig sind künftig PV-Dachanlagen.“"
+      },
+      {
+        "url": "https://www.hansestadt-lueneburg.de/rathaus/aktuelles/pressemitteilungen/zusaetzliche-sitzmoebel-fuer-die-innenstadt-aus-dem-foerderprogramm-resiliente-innenstaedte.html",
+        "finding": "Städtebauförderung für Sitzmöbel in der Innenstadt; kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.hansestadt-lueneburg.de/themenseiten/lueneburger-buergerstiftung/foerderung.html",
+        "finding": "Projektförderung der Lüneburger Bürgerstiftung für Generationenprojekte; kein Energieprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hansestadt-lueneburg.de/rathaus/aktuelles/pressemitteilungen/hansestadt-aktualisiert-klimaschutz-foerderprogramme-anschubberatung-wird-fortgefuehrt.html",
+        "disposition": "reviewed",
+        "reason": "Pressemitteilung im Original gelesen; führte zum Programm, das nach Richtlinie und Programmseite aufgenommen ist.",
+        "evidenceUrl": "https://www.hansestadt-lueneburg.de/rathaus/aktuelles/pressemitteilungen/hansestadt-aktualisiert-klimaschutz-foerderprogramme-anschubberatung-wird-fortgefuehrt.html"
+      },
+      {
+        "url": "hansestadt-lueneburg.de/rathaus/aktuelles/pressemitteilungen/zusaetzliche-sitzmoebel-fuer-die-innenstadt-aus-dem-foerderprogramm-resiliente-innenstaedte.html",
+        "disposition": "reviewed",
+        "reason": "Sitzmöbel aus der Städtebauförderung; kein Förderprogramm für Haushalte.",
+        "evidenceUrl": "https://www.hansestadt-lueneburg.de/rathaus/aktuelles/pressemitteilungen/zusaetzliche-sitzmoebel-fuer-die-innenstadt-aus-dem-foerderprogramm-resiliente-innenstaedte.html"
+      },
+      {
+        "url": "hansestadt-lueneburg.de/themenseiten/lueneburger-buergerstiftung/foerderung.html",
+        "disposition": "reviewed",
+        "reason": "Bürgerstiftung, Generationenprojekte; kein Energieprogramm.",
+        "evidenceUrl": "https://www.hansestadt-lueneburg.de/themenseiten/lueneburger-buergerstiftung/foerderung.html"
+      }
+    ]
   }
 ]

@@ -230,6 +230,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "rheinisch-bergisch-balkonsolar", "burbach-klimaschutz-privat",
   // Exhausted 2026 round: conditions remain explicit information, no application flow.
   "bad-marienberg-erneuerbare-energien",
+  // Hansestadt Lüneburg, aufgenommen am 21.09.2026 mit leerem Topf 2026
+  // (Neuanträge ab 01.01.2027). Zwei Techniken mit verschiedenen
+  // Antragstellern (Balkon nur Mieter, Erdwärme nur Eigentümer) — die
+  // Bedingungen stehen je Technik auf der Karte, eine Antragsstrecke gibt es
+  // bis zur nächsten Runde nicht.
+  "lueneburg-regenerative-energien",
   // Closed since 31 December 2023 (guideline of 13 June 2023, read in full on
   // 17 September 2026). The conditions stay as historical information; there is
   // no application flow left to check them against.
