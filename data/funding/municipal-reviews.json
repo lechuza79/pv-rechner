@@ -39876,5 +39876,69 @@
         "evidenceUrl": "https://www.hansestadt-lueneburg.de/themenseiten/lueneburger-buergerstiftung/foerderung.html"
       }
     ]
+  },
+  {
+    "regionId": "03359027",
+    "name": "Horneburg",
+    "checkedAt": "2026-09-21T06:12:52Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Horneburg hat ein eigenes Förderprogramm nachhaltiger Projekte (in Kraft seit 01.04.2025): 10 % der Kosten für Photovoltaik ab 5 kWp und für Batteriespeicher ab 5 kWh; die Richtlinie nennt „maximal 300 € pro Projekt“, das Antragsformular je 300 €. Aufgenommen als horneburg-nachhaltige-projekte; gerechnet wird nur, was unter beiden Lesarten gilt (10 %, höchstens 300 €, ab 5 kWp). Wallbox, Zisternen und Gründächer desselben Programms betreffen unsere Techniken nicht. Kein Zuschuss für Balkonkraftwerke oder Wärmepumpen auf den Klimaschutzseiten der Samtgemeinde Horneburg und der Klimaschutzkooperation Altes Land & Horneburg gefunden; letztere verweist nur auf Bund und KfW.",
+    "searches": [
+      "horneburg.de Klimaschutz → Nachhaltige Projekte, Energiebericht, Wärmeplanung",
+      "klimaschutz-altesland-horneburg.de Fördermöglichkeiten",
+      "Gemeindeschlüssel 03359027 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+        "finding": "Programmseite der Samtgemeinde für Flecken Horneburg und Gemeinde Nottensdorf, abgerufen am 21.09.2026: kein Enddatum, kein Hinweis auf leeren Topf; verlinkt je Gemeinde Richtlinie und Antragsformular (Stand 01.04.2025). Das Formular führt Photovoltaik und Speicher als getrennte Zeilen, je „10% - max. 300€“."
+      },
+      {
+        "url": "https://www.klimaschutz-altesland-horneburg.de/beratungsangebote-und-foerdermoeglichkeiten/foerdermoeglichkeiten/",
+        "finding": "Fördermöglichkeiten der Klimaschutzkooperation: nur Verweise auf Förderdatenbank des Bundes und KfW, kein eigenes Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+        "disposition": "reviewed",
+        "reason": "Programmseite und die Horneburger-Richtlinie im Volltext gelesen; führte zum aufgenommenen Programm horneburg-nachhaltige-projekte.",
+        "evidenceUrl": "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03359034",
+    "name": "Nottensdorf",
+    "checkedAt": "2026-09-21T06:12:52Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Nottensdorf hat ein eigenes Förderprogramm nachhaltiger Projekte (in Kraft seit 03.04.2025): 10 % der Kosten für Photovoltaik ab 5 kWp und für Batteriespeicher ab 5 kWh; die Richtlinie nennt „maximal 300 € pro Projekt“, das Antragsformular je 300 €. Aufgenommen als nottensdorf-nachhaltige-projekte; gerechnet wird nur, was unter beiden Lesarten gilt (10 %, höchstens 300 €, ab 5 kWp). Wallbox, Zisternen und Gründächer desselben Programms betreffen unsere Techniken nicht. Kein Zuschuss für Balkonkraftwerke oder Wärmepumpen auf den Klimaschutzseiten der Samtgemeinde Horneburg und der Klimaschutzkooperation Altes Land & Horneburg gefunden; letztere verweist nur auf Bund und KfW.",
+    "searches": [
+      "horneburg.de Klimaschutz → Nachhaltige Projekte, Energiebericht, Wärmeplanung",
+      "klimaschutz-altesland-horneburg.de Fördermöglichkeiten",
+      "Gemeindeschlüssel 03359034 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+        "finding": "Programmseite der Samtgemeinde für Flecken Horneburg und Gemeinde Nottensdorf, abgerufen am 21.09.2026: kein Enddatum, kein Hinweis auf leeren Topf; verlinkt je Gemeinde Richtlinie und Antragsformular (Stand 01.04.2025). Das Formular führt Photovoltaik und Speicher als getrennte Zeilen, je „10% - max. 300€“."
+      },
+      {
+        "url": "https://www.klimaschutz-altesland-horneburg.de/beratungsangebote-und-foerdermoeglichkeiten/foerdermoeglichkeiten/",
+        "finding": "Fördermöglichkeiten der Klimaschutzkooperation: nur Verweise auf Förderdatenbank des Bundes und KfW, kein eigenes Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+        "disposition": "reviewed",
+        "reason": "Programmseite und die Nottensdorfer-Richtlinie im Volltext gelesen; führte zum aufgenommenen Programm nottensdorf-nachhaltige-projekte.",
+        "evidenceUrl": "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html"
+      }
+    ]
   }
 ]

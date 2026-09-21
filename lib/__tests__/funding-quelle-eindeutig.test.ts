@@ -28,7 +28,13 @@ import { FUNDING_PROGRAMS } from "../funding-programs";
 // Eine Ausnahme braucht einen ausgeschriebenen Grund in der Liste unten — die
 // Regel aufzuweichen ist nie die Lösung.
 const GETEILTE_ADRESSE_ERLAUBT: Record<string, string> = {
-  // (leer — Stand 22.08.2026 nennt jedes der 109 Programme eine eigene Adresse)
+  // Flecken Horneburg und Gemeinde Nottensdorf (21.09.2026): Die Samtgemeinde
+  // Horneburg führt für beide Programme EINE Seite und verlinkt von dort je
+  // Gemeinde eine eigene Richtlinie. Eine eigene Seite je Gemeinde gibt es
+  // nicht; die Richtlinien liegen unter Download-Adressen ohne ein einziges
+  // Wort, die die Suche nach bekannten Programmen nicht wiedererkennt.
+  "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html":
+    "Eine Seite der Samtgemeinde für zwei Gemeindeprogramme, je eigene Richtlinie verlinkt",
 };
 
 describe("Jedes Programm nennt seine eigene Amtsseite", () => {

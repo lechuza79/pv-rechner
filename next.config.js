@@ -105,6 +105,9 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/thomasburg", destination: "/photovoltaik-foerderung/niedersachsen/thomasburg", permanent: true },
       { source: "/photovoltaik-foerderung/vastorf", destination: "/photovoltaik-foerderung/niedersachsen/vastorf", permanent: true },
       { source: "/photovoltaik-foerderung/wendisch-evern", destination: "/photovoltaik-foerderung/niedersachsen/wendisch-evern", permanent: true },
+      // Flecken Horneburg und Gemeinde Nottensdorf, 21.09.2026
+      { source: "/photovoltaik-foerderung/horneburg", destination: "/photovoltaik-foerderung/niedersachsen/horneburg", permanent: true },
+      { source: "/photovoltaik-foerderung/nottensdorf", destination: "/photovoltaik-foerderung/niedersachsen/nottensdorf", permanent: true },
       { source: "/photovoltaik-foerderung/marloffstein", destination: "/photovoltaik-foerderung/bayern/marloffstein", permanent: true },
       { source: "/photovoltaik-foerderung/uttenreuth", destination: "/photovoltaik-foerderung/bayern/uttenreuth", permanent: true },
       { source: "/photovoltaik-foerderung/spardorf", destination: "/photovoltaik-foerderung/bayern/spardorf", permanent: true },

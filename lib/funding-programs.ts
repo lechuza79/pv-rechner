@@ -10886,6 +10886,106 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "horneburg-nachhaltige-projekte": {
+    id: "horneburg-nachhaltige-projekte", name: "Förderprogramm nachhaltiger Projekte (Teil Photovoltaik und Speicher)",
+    traeger: "Flecken Horneburg", level: "kommune", region: "Flecken Horneburg",
+    bundesland: "Niedersachsen", agsCode: "03359027",
+    // The Samtgemeinde keeps ONE page for both programmes and links a separate
+    // guideline per municipality (Horneburg: https://www.horneburg.de/downloads/datei/MzFjYTE2YjRlYmUzMGJhMGFCMSt3RnRjb1loWm8rMXd3Ylg5bVlsSVVGUDdyelV2L0NyUnNYbXU5ZTdqc2U5WEMvZGFpSkRxSDZXbGgxRjR5STNtU1BzSXBISjdJSHlJMFJFdXBOWlM4OXAxeS9lRVVvdHVUZVl2MHQ1d3BHem5ZTjVnTUh0VlFXNTdKVUR4cVlHVVNmUWZXdStsV09yNUlFVHFLcXlwa3Z2VmpxYm1EN0Y2aW9LNEpPUT0).
+    // The page is the source: the download address carries no words, and the
+    // page watcher should see a changed programme where people see it.
+    url: "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+    // Guideline read in full on 21 Sep 2026 (Richtlinie nachhaltige Projekte im Flecken Horneburg, a 4-page scan read page by page), in force
+    // 01.04.2025 by council decision, signed 26.03.2025. No. 5 reads: "10 % der Investitionskosten für
+    // Photovoltaikanlagen und 10% der Investitionskosten für Batteriespeicher,
+    // maximal 300 € pro Projekt" - on its own it leaves open whether the 300 EUR
+    // covers PV and storage together or each. The application form of the same
+    // version ("Stand: 01.04.2025", linked from the same page) lists them as two
+    // lines, "10% - max. 300€" each, and says "Die Kombination mit anderen
+    // Förderprogrammen ist möglich".
+    //
+    // WHAT IS COMPUTED is the reading that holds under both: 10 % of the cost,
+    // at most 300 EUR, from 5 kWp. The storage line of the form (another 300 EUR)
+    // stays as a rate the card shows, not a deduction - if the guideline's
+    // combined reading is the one the Flecken applies, we would otherwise
+    // promise 300 EUR it does not pay. A wallbox (10 %, max 200 EUR), rainwater
+    // tanks and green roofs are outside our techniques. No end date on the
+    // programme page (21 Sep 2026), no exhausted notice; paid by budget and in
+    // order of receipt.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-04-01",
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Zuschuss zu Photovoltaikanlage und Batteriespeicher an Wohngebäuden",
+    maxFoerderung: "300 € für Anlage und Speicher nach der Richtlinie, je 300 € laut Antragsformular",
+    percentOfCost: 0.10,
+    pvCap: 300,
+    pvMin: 5,
+    rates: [
+      { label: "Photovoltaikanlage (mindestens 5 kWp)", value: "10 % der Kosten, höchstens 300 €" },
+      { label: "Batteriespeicher (mindestens 5 kWh)", value: "10 % der Kosten, höchstens 300 € laut Antragsformular" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer und Eigentümergemeinschaften von Wohngebäuden im Gemeindegebiet sowie Vereine und gemeinnützige Organisationen mit Sitz im Ort",
+      "Photovoltaik erst ab 5 kWp, Batteriespeicher erst ab 5 kWh",
+      "Die Richtlinie nennt „maximal 300 € pro Projekt“, ohne zu sagen, ob das für Photovoltaik und Speicher zusammen oder je Maßnahme gilt; das Antragsformular nennt je 300 € — gerechnet wird deshalb nur der Anteil, der in beiden Lesarten gilt",
+      "Schriftlicher Antrag mit Kostenvoranschlag VOR Beginn; beauftragt werden darf erst nach der Zusage",
+      "Ausführung binnen 12 Monaten nach der Zusage (einmal um 6 Monate verlängerbar), danach Nachweis mit Rechnungen und Fotos",
+      "Über alle Maßnahmen des Programms (auch Wallbox, Zisterne, Gründach) höchstens 1.000 € je Antragsteller",
+      "Vergabe nach Haushaltslage in der Reihenfolge des Eingangs, im Ermessen des Rates; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+  },
+  "nottensdorf-nachhaltige-projekte": {
+    id: "nottensdorf-nachhaltige-projekte", name: "Förderprogramm nachhaltiger Projekte (Teil Photovoltaik und Speicher)",
+    traeger: "Gemeinde Nottensdorf", level: "kommune", region: "Gemeinde Nottensdorf",
+    bundesland: "Niedersachsen", agsCode: "03359034",
+    // The Samtgemeinde keeps ONE page for both programmes and links a separate
+    // guideline per municipality (Nottensdorf: https://www.horneburg.de/downloads/datei/YWQ2ZTYyN2Q5Mzk0ZmQ3NE9GWDZXZGdnVnlxdVp0TjRlRDA1K1NEa2FZV1U2UXhmZnYrUi9YbSs2aG1YTVhSRnVPVXVraEQvWnpodWpnOC9RVXo5ZFp6TTREeXZEMjhQVzRIQ0FvWEljT1U5bXllNDF2aUM0MnpHak02NVdlVTdsVWVRWjAxTXF3T1dSazc1SWd3VFI0ZmZrYUlHSU1lNDZ5N2xSam5CMFE1K0tRN3d0U0d1SXVaTnFaN21nQmRnY1VPVnF3b3VqL0FqdVJlNlVHOFh0TjkvK3JkaEpoY2RQdHJhR2FTa0d0bTdJeHJlMEVUQ1dSb2lJczVIWVQzNXlvUEwrQjZhdVh5a2FCcTk).
+    // The page is the source: the download address carries no words, and the
+    // page watcher should see a changed programme where people see it.
+    url: "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+    // Guideline read in full on 21 Sep 2026 (Richtlinie nachhaltige Projekte in der Gemeinde Nottensdorf, text PDF), in force
+    // 03.04.2025 by council decision, signed 02.04.2025. No. 5 reads: "10 % der Investitionskosten für
+    // Photovoltaikanlagen und 10% der Investitionskosten für Batteriespeicher,
+    // maximal 300 € pro Projekt" - on its own it leaves open whether the 300 EUR
+    // covers PV and storage together or each. The application form of the same
+    // version ("Stand: 01.04.2025", linked from the same page) lists them as two
+    // lines, "10% - max. 300€" each, and says "Die Kombination mit anderen
+    // Förderprogrammen ist möglich".
+    //
+    // WHAT IS COMPUTED is the reading that holds under both: 10 % of the cost,
+    // at most 300 EUR, from 5 kWp. The storage line of the form (another 300 EUR)
+    // stays as a rate the card shows, not a deduction - if the guideline's
+    // combined reading is the one the municipality applies, we would otherwise
+    // promise 300 EUR it does not pay. A wallbox (10 %, max 200 EUR), rainwater
+    // tanks and green roofs are outside our techniques. No end date on the
+    // programme page (21 Sep 2026), no exhausted notice; paid by budget and in
+    // order of receipt.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-04-03",
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Zuschuss zu Photovoltaikanlage und Batteriespeicher an Wohngebäuden",
+    maxFoerderung: "300 € für Anlage und Speicher nach der Richtlinie, je 300 € laut Antragsformular",
+    percentOfCost: 0.10,
+    pvCap: 300,
+    pvMin: 5,
+    rates: [
+      { label: "Photovoltaikanlage (mindestens 5 kWp)", value: "10 % der Kosten, höchstens 300 €" },
+      { label: "Batteriespeicher (mindestens 5 kWh)", value: "10 % der Kosten, höchstens 300 € laut Antragsformular" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer und Eigentümergemeinschaften von Wohngebäuden im Gemeindegebiet sowie Vereine und gemeinnützige Organisationen mit Sitz im Ort",
+      "Photovoltaik erst ab 5 kWp, Batteriespeicher erst ab 5 kWh",
+      "Die Richtlinie nennt „maximal 300 € pro Projekt“, ohne zu sagen, ob das für Photovoltaik und Speicher zusammen oder je Maßnahme gilt; das Antragsformular nennt je 300 € — gerechnet wird deshalb nur der Anteil, der in beiden Lesarten gilt",
+      "Schriftlicher Antrag mit Kostenvoranschlag VOR Beginn; beauftragt werden darf erst nach der Zusage",
+      "Ausführung binnen 12 Monaten nach der Zusage (einmal um 6 Monate verlängerbar), danach Nachweis mit Rechnungen und Fotos",
+      "Über alle Maßnahmen des Programms (auch Wallbox, Zisterne, Gründach) höchstens 1.000 € je Antragsteller",
+      "Vergabe nach Haushaltslage in der Reihenfolge des Eingangs, im Ermessen des Rates; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+  },
   "pinneberg-gruendach-pv": {
     id: "pinneberg-gruendach-pv", name: "Förderprogramm für MEHR GRÜN im Kreis Pinneberg (Teil Dachbegrünung)",
     traeger: "Kreis Pinneberg", level: "landkreis", region: "Kreis Pinneberg",
@@ -11144,10 +11244,9 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // inverter, and ground-source heat installations. Batteries are expressly
     // excluded (§ 2 (2)), and roof PV is no longer funded from 2026 (press
     // release: "Nicht mehr förderfähig sind künftig PV-Dachanlagen") - until the
-    // 2024 guideline it had paid 450-4,625 EUR by output, web.archive.org
-    // snapshot of the Klimafonds page of 22.09.2025) - so this
-    // is NOT a roof PV grant and gets no city page. Solar thermal (70/100
-    // EUR/m², capped 500-1,500 EUR) is outside the catalogue's techniques and
+    // 2024 guideline it had paid 450-4,625 EUR by output (web.archive.org
+    // snapshot of the Klimafonds page of 22.09.2025) - so this is NOT a roof
+    // PV grant and gets no city page. Solar thermal (70/100 EUR/m², capped 500-1,500 EUR) is outside the catalogue's techniques and
     // is left out of the rates.
     //
     // combinableWith IS THE FEDERAL LIST: § 4 (13) allows other federal, state

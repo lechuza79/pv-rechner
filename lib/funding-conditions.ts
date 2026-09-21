@@ -279,6 +279,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // eine Abnahme durch die Samtgemeinde — eine Prüfform dafür gibt es noch
   // nicht; die Bedingungen stehen vollständig auf der Karte.
   "ostheide-solarstrom",
+  // Flecken Horneburg und Gemeinde Nottensdorf, aufgenommen am 21.09.2026.
+  // Antrag VOR Beginn, Auftrag erst nach der Zusage; dazu ein Deckel, den
+  // Richtlinie und Antragsformular verschieden fassen. Eine Prüfform müsste
+  // eine der beiden Fassungen wählen — das ist eine Entscheidung, keine
+  // Übersetzung. Die Bedingungen stehen vollständig auf der Karte.
+  "horneburg-nachhaltige-projekte", "nottensdorf-nachhaltige-projekte",
   "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",
