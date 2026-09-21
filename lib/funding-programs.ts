@@ -3619,9 +3619,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     eligibility: ["privat"],
     coveredCosts: "Pauschalbonus für Stromkunden der Stadtwerke (Kauf/Pacht über die Stadtwerke)",
     rates: [{ label: "PV-Anlage", value: "1.000 € (über 4 Jahre als Stromgutschrift)" }],
+    // CORRECTED 21.09.2026 against the Stadtwerke's own conditions
+    // ("Förderprogramm 2026 … Allgemeine Förderbedingungen", Stand April 2026,
+    // Foerderbedingungen.pdf) and the application form. "Bestandskunden" was
+    // too narrow: the existing/new customer split only sets the heat-pump
+    // amount (1.000 / 700 €); for PV the rule is "Belieferung mit Strom durch
+    // die SWBAD". Council 3/3 (one adversarial), wording of the owner and
+    // budget lines taken from the adversarial reviewer.
     conditions: [
-      "Nur Strom-Bestandskunden der Stadtwerke Baden-Baden",
-      "PV-Anlage bei den Stadtwerken kaufen oder pachten",
+      "Nur Privatpersonen, die Strom von den Stadtwerken Baden-Baden beziehen (auch Neukunden) und Eigentümer des Anwesens sind, auf dem die Anlage entsteht",
+      "PV-Anlage bei den Stadtwerken kaufen oder pachten (Produkt PV plus)",
+      "Gefördert wird im Netzgebiet der Stadtwerke, im Rebland sowie in Iffezheim und Hügelsheim",
+      "Der Antrag muss spätestens drei Monate nach Inbetriebnahme eingehen; zu spät gestellte Anträge werden nicht berücksichtigt",
+      "Die 1.000 € werden über vier Jahre zu je einem Viertel mit der Stromrechnung verrechnet; wer vorher den Stromanbieter wechselt, verliert die ausstehenden Teile",
+      "Gilt bis 31.12.2026; endet früher, wenn der gemeinsame Topf von 50.000 € für alle Maßnahmen ausgeschöpft ist oder ein Nachfolgeprogramm in Kraft tritt",
       "Nicht für frei beauftragte Anlagen — daher nicht pauschal eingerechnet",
     ],
     combinableWith: BUND,
@@ -6777,6 +6788,76 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["balkon"],
     balkonPauschale: 150,
+  },
+
+  // Added 21.09.2026 as a closed historical programme. City page, guideline
+  // ("Stand: 08.06.2023", in force 01.07.2023) and the press release of
+  // 18.07.2023 read in the original: 200 € flat per dwelling for a plug-in
+  // system up to 600 W, 40,000 € budget for 2023, exhausted after 200
+  // applications. The city page still carries the exhaustion notice; no new
+  // round announced. No calculation fields (closed).
+  "kaarst-stecker-pv": {
+    id: "kaarst-stecker-pv", name: "Förderprogramm Stecker-PV-Anlagen",
+    traeger: "Stadt Kaarst", level: "kommune", region: "Kaarst",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05162016",
+    url: "https://www.kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen/stecker-pv-anlagen",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-07-01",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Wohneinheit",
+    maxFoerderung: "200 € je Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk bis 600 W", value: "200 € pauschal je Wohneinheit — Programm beendet" }],
+    conditions: [
+      "Das Förderkontingent von 200 Anträgen war im Juli 2023 erschöpft; seitdem können keine Anträge mehr gestellt werden",
+      "Für 2023 standen 40.000 € bereit; eine neue Runde ist nicht angekündigt",
+      "Antragsberechtigt waren Eigentümer und Mieter einer Wohneinheit in Kaarst; jede Wohneinheit wurde nur einmal gefördert",
+      "Gefördert wurden nur Geräte, die nach dem Bewilligungsbescheid gekauft wurden",
+      "Das Gerät musste beim Netzbetreiber angemeldet und im Marktstammdatenregister registriert sein",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
+  // Added 21.09.2026. Guideline "Richtlinie zum Förderprogramm Klimaschutz"
+  // (signed 01.02.2026, in force 01.07.2026) read in full, plus the two
+  // service pages. No. 6: PV "ab einer Leistung von 1 kWp jeweils 100,00 € pro
+  // 1 kWp. Der Höchstbetrag der Förderung beträgt 400,00 €"; plug-in "80 v. H.
+  // des Kaufpreises, jedoch maximal 200,00 € je Wohneinheit". The PV page
+  // reopened applications on 27.07.2026; the plug-in page says "Die
+  // Fördergelder für Stecker-PV-Anlagen sind bereits ausgeschöpft" — so the
+  // balcony part carries no calculation fields. "pro 1 kWp" is read
+  // conservatively as whole kWp (vollEinheiten); at 400 € the cap binds from
+  // 4 kWp anyway. The building-age rule (completed by 31.12.2022) stays a
+  // visible condition, as for Bonn. Council 3/3 (21.09.2026, one adversarial):
+  // rounding and status confirmed; eligibility narrowed to natural persons
+  // and the commercial-plot exclusion and 12-month proof deadline added.
+  "niederkruechten-klimaschutz": {
+    id: "niederkruechten-klimaschutz", name: "Förderprogramm Klimaschutz",
+    traeger: "Gemeinde Niederkrüchten", level: "kommune", region: "Niederkrüchten",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05166020",
+    url: "https://www.niederkruechten.de/serviceportal/dienstleistungen/foerderung-von-pv-anlagen",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-07-01", beschlossenIso: "2026-02-01",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp für Dach-PV an Wohnhäusern; Balkonkraftwerke derzeit ausgeschöpft",
+    maxFoerderung: "max. 400 € je Wohngrundstück (Dach-PV)",
+    rates: [
+      { label: "PV-Anlage ab 1 kWp", value: "100 € je kWp, max. 400 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk bis 800 W", value: "80 % des Kaufpreises, max. 200 € je Wohneinheit — Mittel derzeit ausgeschöpft", nur: ["balkon"] },
+    ],
+    conditions: [
+      { text: "Antragsberechtigt sind Privatpersonen, die ein Wohngrundstück in Niederkrüchten besitzen; gefördert wird eine neue Anlage an einem Wohnhaus, je Wohngrundstück eine", nur: ["pv"] },
+      { text: "Nur auf einem Bestandsgebäude, das bis zum 31. Dezember 2022 fertiggestellt wurde; Erweiterungen bestehender Anlagen werden nicht gefördert", nur: ["pv"] },
+      { text: "Die Anlage muss von einem Fachbetrieb installiert werden; der Nachweis (Rechnung, Foto, Marktstammdatenregister, Netzbetreiber) ist binnen zwölf Monaten nach der Bewilligung einzureichen, sonst verfällt sie", nur: ["pv"] },
+      "Der Antrag muss vor dem Kauf bei der Gemeinde eingehen; eine bereits gekaufte Anlage wird nicht gefördert",
+      "Vergabe nach Reihenfolge des Antragseingangs im Rahmen der verfügbaren Mittel; ein Rechtsanspruch besteht nicht",
+      { text: "Die Mittel für Balkonkraftwerke sind derzeit ausgeschöpft; antragsberechtigt waren auch Mieter, je Wohneinheit eine Anlage", nur: ["balkon"] },
+      { text: "Zusammen mit anderen Zuschüssen höchstens 80 % des Kaufpreises", nur: ["balkon"] },
+      "Nicht gefördert werden Anlagen, zu denen eine rechtliche Pflicht besteht, etwa durch einen Bebauungsplan, und Anlagen auf gewerblich oder industriell genutzten Grundstücken",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    pvPerKwp: 100, pvCap: 400, pvMin: 1, vollEinheiten: true,
   },
 
   "klempau-balkonkraftwerke": {

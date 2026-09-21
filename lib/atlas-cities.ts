@@ -557,6 +557,10 @@ export const ATLAS_CITIES: AtlasCity[] = [
   // Ertrag über /api/pvgis an der repräsentativen Lage gemessen (beide PLZ 21640).
   { slug: "horneburg", name: "Horneburg", ags: "03359027", kreis: "Landkreis Stade", bundesland: "Niedersachsen", yieldKwhKwp: 993 },
   { slug: "nottensdorf", name: "Nottensdorf", ags: "03359034", kreis: "Landkreis Stade", bundesland: "Niedersachsen", yieldKwhKwp: 993 },
+
+  // Gemeinde Niederkrüchten (Kreis Viersen), 21.09.2026: Förderprogramm Klimaschutz
+  // 2026. Standort-Ertrag über /api/pvgis an der repräsentativen Lage gemessen (PLZ 41366).
+  { slug: "niederkruechten", name: "Niederkrüchten", ags: "05166020", kreis: "Kreis Viersen", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1065 },
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {

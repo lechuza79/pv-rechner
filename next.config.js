@@ -108,6 +108,8 @@ const nextConfig = {
       // Flecken Horneburg und Gemeinde Nottensdorf, 21.09.2026
       { source: "/photovoltaik-foerderung/horneburg", destination: "/photovoltaik-foerderung/niedersachsen/horneburg", permanent: true },
       { source: "/photovoltaik-foerderung/nottensdorf", destination: "/photovoltaik-foerderung/niedersachsen/nottensdorf", permanent: true },
+      // Gemeinde Niederkrüchten, 21.09.2026
+      { source: "/photovoltaik-foerderung/niederkruechten", destination: "/photovoltaik-foerderung/nordrhein-westfalen/niederkruechten", permanent: true },
       { source: "/photovoltaik-foerderung/marloffstein", destination: "/photovoltaik-foerderung/bayern/marloffstein", permanent: true },
       { source: "/photovoltaik-foerderung/uttenreuth", destination: "/photovoltaik-foerderung/bayern/uttenreuth", permanent: true },
       { source: "/photovoltaik-foerderung/spardorf", destination: "/photovoltaik-foerderung/bayern/spardorf", permanent: true },

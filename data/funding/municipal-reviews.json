@@ -41878,5 +41878,141 @@
     ],
     "outcome": "keine-passende-foerderung",
     "conclusion": "Ritterhude führt unter „Förderprogramme“ ausschließlich Wirtschaftsförderung für Unternehmen (EU/NBank, Kreisrichtlinie Osterholz, KfW-Unternehmerkredit). Einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gibt es weder auf der Gemeindeseite noch in der Volltextsuche. In den Sanierungsgebieten ist energetische Sanierung steuerlich absetzbar; das ist keine kommunale Förderung und wird im Rechner nicht abgebildet."
+  },
+  {
+    "regionId": "05162016",
+    "name": "Kaarst",
+    "checkedAt": "2026-09-21T20:28:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Kaarst förderte ab 01.07.2023 Balkonkraftwerke bis 600 W mit 200 € je Wohneinheit; das Kontingent von 200 Anträgen (40.000 €) war am 18.07.2023 erschöpft, eine neue Runde ist nicht angekündigt. Aufgenommen als beendetes Programm kaarst-stecker-pv, ohne Rechenwerte. Die zweite städtische Förderung gilt Dach-, Fassaden- und Vorgartenbegrünung. Das Kreisprogramm des Rhein-Kreises Neuss für Balkonkraftwerke wurde laut Stadtseite zum 30.04.2025 eingestellt. Kein Zuschuss für Dach-PV, Speicher oder Wärmepumpen (Suche: nur Info-Veranstaltungen).",
+    "searches": [
+      "kaarst.de Volltextsuche (21.09.2026): Photovoltaik (23), Balkonkraftwerk (7), Wärmepumpe (12), Batteriespeicher (4), Förderprogramm (49) — nur Info-Abende, Kreisprogramm, Begrünung, Stecker-PV",
+      "Übersicht Förderungen, Förderrichtlinie Stecker-PV (Stand 08.06.2023) und Pressemitteilung Förderstopp 18.07.2023 im Volltext gelesen",
+      "Gemeindeschlüssel 05162016 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen",
+        "finding": "Übersicht Förderungen (21.09.2026): zwei städtische Programme — Stecker-PV-Anlagen und Dach-, Fassaden- und Vorgartenbegrünung."
+      },
+      {
+        "url": "https://www.kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen/stecker-pv-anlagen/foerderrichtlinie-stecker-pv-anlagen",
+        "finding": "Richtlinie Nr. 6: „Der Zuschuss beträgt pauschal 200 € je Wohneinheit“, bis 600 W; Nr. 5: nicht förderfähig sind Geräte, die vor dem Bewilligungsbescheid gekauft wurden; Antragsverfahren ab 01.07.2023."
+      },
+      {
+        "url": "https://www.kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen/stecker-pv-anlagen",
+        "finding": "„Das Förderkontingent von 200 Anträgen für Stecker-PV-Anlagen ist erschöpft.“ (Stand 18.7.2023); Hinweis 06.06.2025: Rhein-Kreis Neuss hat sein Programm zum 30.04.2025 eingestellt."
+      },
+      {
+        "url": "https://www.kaarst.de/verwaltung-buergerservice-und-politik/verwaltung/presse/aktuelle-pressemitteilungen/detail/foerderstopp-fuer-stecker-pv-anlagen",
+        "finding": "18.07.2023: Kontingent mit 200 Anträgen ausgeschöpft; Rat hatte für 2023 einen Fördertopf von 40.000 € bereitgestellt."
+      },
+      {
+        "url": "https://www.kaarst.de/suche?tx_solr%5Bq%5D=W%C3%A4rmepumpe",
+        "finding": "Suche Wärmepumpe/Batteriespeicher/Photovoltaik: Infoabende und Seminare, kein städtischer Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Übersicht: nur Stecker-PV und Begrünung.",
+        "evidenceUrl": "https://www.kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen"
+      },
+      {
+        "url": "kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen/begruenung",
+        "disposition": "reviewed",
+        "reason": "Dach-, Fassaden- und Vorgartenbegrünung, keine Energietechnik.",
+        "evidenceUrl": "https://www.kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen"
+      },
+      {
+        "url": "kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen/stecker-pv-anlagen",
+        "disposition": "reviewed",
+        "reason": "Beendetes Stecker-PV-Programm 2023, aufgenommen als kaarst-stecker-pv.",
+        "evidenceUrl": "https://www.kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen/stecker-pv-anlagen"
+      }
+    ]
+  },
+  {
+    "regionId": "05166020",
+    "name": "Niederkrüchten",
+    "checkedAt": "2026-09-21T20:28:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Niederkrüchten fördert nach der Richtlinie zum Förderprogramm Klimaschutz (in Kraft 01.07.2026) Dach-PV an Wohnhäusern mit 100 € je kWp ab 1 kWp, höchstens 400 € je Wohngrundstück (Anträge seit 27.07.2026 wieder möglich, nur Eigentümer, Bestandsgebäude bis 31.12.2022, Antrag vor Kauf) und Balkonkraftwerke mit 80 % bis 200 € — diese Mittel sind derzeit ausgeschöpft. Aufgenommen als niederkruechten-klimaschutz. Speicher und Wärmepumpen fördert die Gemeinde nicht; das Kreisprogramm Kreis Viersen steht bereits im Katalog. Übrige Förderungen: Wallboxen, Gründächer, Klimabäume.",
+    "searches": [
+      "niederkruechten.de Volltextsuche (21.09.2026): Wärmepumpe, Batteriespeicher, Speicher, Balkonkraftwerk, Förderung — keine Wärmepumpen- oder Speicherförderung der Gemeinde; Speicher nur im Kreisprogramm Viersen",
+      "Richtlinie zum Förderprogramm Klimaschutz 2026 (7 Seiten) und Dienstleistungsseiten PV und Stecker-PV im Volltext gelesen",
+      "Gemeindeschlüssel 05166020 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.niederkruechten.de/leben-niederkruechten/klimaschutz/foerderprogramme",
+        "finding": "Übersicht (21.09.2026): Gründächer, Klimabäume und Obststräucher, PV-Anlagen, Stecker-PV-Anlagen, Wallboxen; Richtlinie zum Förderprogramm verlinkt."
+      },
+      {
+        "url": "https://www.niederkruechten.de/system/files/2026-07/Richtlinie%20zum%20F%C3%B6rderprogramm%20Klimaschutz_2026.pdf",
+        "finding": "Nr. 6: „ab einer Leistung von 1 kWp jeweils 100,00 € pro 1 kWp. Der Höchstbetrag der Förderung beträgt 400,00 €“; Stecker-PV „80 v. H. des Kaufpreises, jedoch maximal 200,00 € je Wohneinheit“; Nr. 4: Bestandsgebäude fertiggestellt bis 31.12.2022; Nr. 12: in Kraft 01.07.2026. Fördergegenstände: PV, Stecker-PV, Wallboxen, Gründächer, Klimabäume — keine Speicher, keine Wärmepumpen."
+      },
+      {
+        "url": "https://www.niederkruechten.de/serviceportal/dienstleistungen/foerderung-von-pv-anlagen",
+        "finding": "„Ab Montag, dem 27.07.2026, ab 16 Uhr können wieder Förderanträge gestellt werden.“ Online-Antrag verlinkt."
+      },
+      {
+        "url": "https://www.niederkruechten.de/serviceportal/dienstleistungen/foerderung-von-stecker-pv-anlagen",
+        "finding": "„Die Fördergelder für Stecker-PV-Anlagen sind bereits ausgeschöpft.“"
+      },
+      {
+        "url": "https://www.niederkruechten.de/search?keywords=W%C3%A4rmepumpe",
+        "finding": "Treffer nur Veranstaltungen (Tag des offenen Heizungskellers, Messe), BürgerSolarBerater; kein Wärmepumpenzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "niederkruechten.de/leben-niederkruechten/klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht der fünf Gemeindeprogramme, Richtlinie verlinkt.",
+        "evidenceUrl": "https://www.niederkruechten.de/leben-niederkruechten/klimaschutz/foerderprogramme"
+      },
+      {
+        "url": "niederkruechten.de/serviceportal/dienstleistungen/foerderung-von-gruendaechern",
+        "disposition": "reviewed",
+        "reason": "Gründachförderung (400 €), keine Energietechnik; in der Richtlinie gelesen.",
+        "evidenceUrl": "https://www.niederkruechten.de/system/files/2026-07/Richtlinie%20zum%20F%C3%B6rderprogramm%20Klimaschutz_2026.pdf"
+      },
+      {
+        "url": "niederkruechten.de/serviceportal/dienstleistungen/foerderung-von-klimabaeumen-und-obststraeuchern",
+        "disposition": "reviewed",
+        "reason": "Ausgabe von Bäumen/Sträuchern, keine Energietechnik; in der Richtlinie gelesen.",
+        "evidenceUrl": "https://www.niederkruechten.de/system/files/2026-07/Richtlinie%20zum%20F%C3%B6rderprogramm%20Klimaschutz_2026.pdf"
+      },
+      {
+        "url": "niederkruechten.de/serviceportal/dienstleistungen/foerderung-von-pv-anlagen",
+        "disposition": "reviewed",
+        "reason": "Dach-PV-Förderung, aufgenommen als niederkruechten-klimaschutz.",
+        "evidenceUrl": "https://www.niederkruechten.de/serviceportal/dienstleistungen/foerderung-von-pv-anlagen"
+      },
+      {
+        "url": "niederkruechten.de/serviceportal/dienstleistungen/foerderung-von-stecker-pv-anlagen",
+        "disposition": "reviewed",
+        "reason": "Stecker-PV-Förderung, Mittel ausgeschöpft; im selben Eintrag ohne Rechenwert.",
+        "evidenceUrl": "https://www.niederkruechten.de/serviceportal/dienstleistungen/foerderung-von-stecker-pv-anlagen"
+      },
+      {
+        "url": "niederkruechten.de/serviceportal/dienstleistungen/foerderung-von-wallboxen",
+        "disposition": "reviewed",
+        "reason": "Wallbox-Förderung (400 €), nicht im Prüfumfang; in der Richtlinie gelesen.",
+        "evidenceUrl": "https://www.niederkruechten.de/system/files/2026-07/Richtlinie%20zum%20F%C3%B6rderprogramm%20Klimaschutz_2026.pdf"
+      },
+      {
+        "url": "niederkruechten.de/system/files/2026-07/Richtlinie%20zum%20F%C3%B6rderprogramm%20Klimaschutz_2026.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie im Volltext gelesen.",
+        "evidenceUrl": "https://www.niederkruechten.de/system/files/2026-07/Richtlinie%20zum%20F%C3%B6rderprogramm%20Klimaschutz_2026.pdf"
+      }
+    ]
   }
 ]

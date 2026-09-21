@@ -414,6 +414,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 17 Sep 2026 as a closed historical programme (no calculation fields).
   "mainz-bingen-balkonkraftwerke",
   "mayen-koblenz-balkonkraftwerke",
+  // Added 21 Sep 2026 as a closed historical programme (no calculation fields).
+  "kaarst-stecker-pv",
+  // Added 21 Sep 2026: building-age rule (completed by 31.12.2022), specialist
+  // installation and the 80 % combined cap for balcony kits have no test form.
+  "niederkruechten-klimaschutz",
   "altenkirchen-balkonkraftwerke",
   "altenkirchen-solarspeicher",
   "cochem-zell-solarstromspeicher",
