@@ -61,11 +61,17 @@
   function mount() {
     const tile=document.querySelector('.v3-rank-intro');
     if(!tile){setTimeout(mount,100);return;}
-    const observer=new IntersectionObserver(entries=>{
-      if(document.hidden||!entries.some(entry=>entry.isIntersecting&&entry.intersectionRatio>=.75))return;
-      observer.disconnect();
-      play();
-    },{threshold:.75});
+    let visible=false,timer=0,celebrated=false;
+    const ready=()=>document.documentElement.dataset.atlasBoot==='ready'
+      &&document.querySelector('.site-header')?.dataset.navReady==='true'
+      &&document.querySelector('.v3-monitor-card')?.dataset.ready==='true'
+      &&(document.querySelector('.scene')?.dataset.unifiedReady==='true'||document.querySelector('.solar-page')?.dataset.sceneBoot==='failed');
+    const schedule=()=>{if(celebrated)return;if(!visible||document.hidden||reduced.matches||!ready()){clearTimeout(timer);timer=0;return;}if(!timer)timer=setTimeout(()=>{timer=0;if(!visible||document.hidden||!ready())return;celebrated=true;observer.disconnect();loading.disconnect();play(tile);},2200);};
+    const observer=new IntersectionObserver(entries=>{visible=entries.some(entry=>entry.isIntersecting&&entry.intersectionRatio>=.75);schedule();},{threshold:.75});
+    const loading=new MutationObserver(schedule);
+    loading.observe(document.documentElement,{subtree:true,attributes:true,attributeFilter:['data-atlas-boot','data-nav-ready','data-ready','data-unified-ready','data-scene-boot']});
+    document.addEventListener('visibilitychange',schedule);reduced.addEventListener('change',schedule);
+    addEventListener('pagehide',()=>{clearTimeout(timer);observer.disconnect();loading.disconnect();},{once:true});
     observer.observe(tile);
   }
   mount();

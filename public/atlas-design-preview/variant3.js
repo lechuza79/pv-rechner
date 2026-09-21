@@ -1,4 +1,10 @@
 (async()=>{
+let initialNavigationTouched=false;for(const event of ['wheel','touchstart','pointerdown','keydown'])window.addEventListener(event,()=>{initialNavigationTouched=true;},{once:true,passive:true});
+const restoreInitialAnchor=()=>{if(initialNavigationTouched||!['#atlas-stories','#atlas-ranking','#atlas-data'].includes(location.hash))return;document.querySelector(location.hash)?.scrollIntoView({behavior:'instant',block:'start'});};
+window.addEventListener('load',restoreInitialAnchor,{once:true});
+let anchorTimer=0;
+window.addEventListener('message',event=>{if(event.origin!==location.origin||initialNavigationTouched||!['story-preview-layout','municipal-data-layout'].includes(event.data?.type))return;const frames=[...document.querySelectorAll('#atlas-stories iframe,.v3-permanent-charts iframe')];if(!frames.some(frame=>frame.contentWindow===event.source))return;clearTimeout(anchorTimer);anchorTimer=setTimeout(restoreInitialAnchor,120);});
+window.addEventListener('pagehide',()=>clearTimeout(anchorTimer),{once:true});
 const live='https://solar-check.io/solar-atlas/bayern/landkreis-wuerzburg/hoechberg';
 const [registerResponse,rankingResponse]=await Promise.all([fetch('/atlas-design-preview/current-register.json'),fetch('/atlas-design-preview/ranking-data.json')]);
 if(!registerResponse.ok||!rankingResponse.ok)throw Error('Current municipal snapshot unavailable');
@@ -17,20 +23,39 @@ const content=document.querySelector('.atlas-content'), teasers=document.querySe
 if(!content||!teasers||!document.querySelector('#atlas-ranking')){setTimeout(mount,100);return;}
 teasers.style.display='none';
 const copy=document.querySelector('.hero-copy');
-const rank=document.createElement('a');rank.className='v3-rank-intro';rank.href='#atlas-ranking';rank.innerHTML='<img src="/atlas-design-preview/rank-badges/roof-2-no-banner.svg" alt="" width="80" height="80"><div><strong>Platz '+peerRank+'</strong><span>Anzahl der Solaranlagen</span><small class="v3-rank-more">Mehr ↓</small></div>';const stack=document.createElement('div');stack.className='v3-hero-stack';stack.append(rank);document.querySelector('.hero').append(stack);
+const rank=document.createElement('a');rank.className='v3-rank-intro';rank.href='#atlas-ranking';rank.innerHTML='<img src="/atlas-design-preview/rank-badges/roof-2-no-banner.svg" alt="" width="80" height="80"><div><strong>Platz '+peerRank+'</strong><span>Anzahl der Solaranlagen</span></div>';const stack=document.createElement('div');stack.className='v3-hero-stack';stack.append(rank);document.querySelector('.hero').append(stack);
 const hero=document.createElement('aside');hero.className='v3-hero-card v3-monitor-card';
 hero.innerHTML='<iframe title="Energiemonitor Höchberg" src="/embed/story-preview?view=hero&widget=feed-in-value"></iframe><nav aria-label="Energiekachel"><button type="button" aria-label="Einspeisevergütung" aria-pressed="true"><span></span></button><button type="button" aria-label="Solarleistung heute" aria-pressed="false"><span></span></button><button type="button" aria-label="Solarerzeugung im Tagesverlauf" aria-pressed="false"><span></span></button></nav>';stack.append(hero);
 const heroWidgets=['feed-in-value','live','radial'];
-hero.querySelectorAll('nav button').forEach((button,index)=>{button.onclick=()=>{hero.querySelector('iframe').src='/embed/story-preview?view=hero&widget='+heroWidgets[index];hero.querySelectorAll('nav button').forEach((item,i)=>item.setAttribute('aria-pressed',String(i===index)));};});
+window.addEventListener('message',event=>{if(event.origin===location.origin&&event.source===hero.querySelector('iframe').contentWindow&&event.data?.type==='atlas-hero-ready')hero.dataset.ready='true';});
+const widgetFrame=hero.querySelector('iframe'),widgetButtons=[...hero.querySelectorAll('nav button')];
+let widgetIndex=0,widgetTimer=0,heroVisible=true,widgetPaused=false;
+const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
+const switchWidget=index=>{widgetIndex=index;widgetFrame.contentWindow?.postMessage({type:'atlas-hero-widget',widget:heroWidgets[index]},location.origin);widgetButtons.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));};
+const scheduleWidget=()=>{clearTimeout(widgetTimer);if(!document.hidden&&heroVisible&&!widgetPaused&&!reducedMotion.matches&&!hero.matches(':hover,:focus-within'))widgetTimer=setTimeout(()=>{switchWidget((widgetIndex+1)%heroWidgets.length);scheduleWidget();},7000);};
+widgetButtons.forEach((button,index)=>{button.onclick=()=>{switchWidget(index);scheduleWidget();};});
+const pauseWidget=document.createElement('button');pauseWidget.type='button';pauseWidget.className='v3-widget-pause';pauseWidget.textContent='Ⅱ';pauseWidget.setAttribute('aria-label','Automatischen Widgetwechsel pausieren');pauseWidget.setAttribute('aria-pressed','false');hero.querySelector('nav').append(pauseWidget);
+pauseWidget.onclick=()=>{widgetPaused=!widgetPaused;pauseWidget.textContent=widgetPaused?'▷':'Ⅱ';pauseWidget.setAttribute('aria-pressed',String(widgetPaused));pauseWidget.setAttribute('aria-label',widgetPaused?'Automatischen Widgetwechsel fortsetzen':'Automatischen Widgetwechsel pausieren');scheduleWidget();};
+widgetFrame.addEventListener('load',()=>{switchWidget(widgetIndex);scheduleWidget();});
+hero.addEventListener('mouseenter',()=>clearTimeout(widgetTimer));hero.addEventListener('mouseleave',scheduleWidget);hero.addEventListener('focusin',()=>clearTimeout(widgetTimer));hero.addEventListener('focusout',()=>setTimeout(scheduleWidget,0));document.addEventListener('visibilitychange',scheduleWidget);reducedMotion.addEventListener('change',scheduleWidget);
+const widgetVisibility=new IntersectionObserver(([entry])=>{heroVisible=entry.isIntersecting;scheduleWidget();});widgetVisibility.observe(hero);
+window.addEventListener('pagehide',()=>{clearTimeout(widgetTimer);widgetVisibility.disconnect();},{once:true});
 copy.querySelector('.hero-description').textContent='Entdecke die Energiewende in Höchberg: Insights erklären die Entwicklung, das Ranking zeigt den Vergleich mit anderen Orten und der Energiemonitor macht die Zahlen sichtbar.';
 copy.querySelector('.hero-actions')?.remove();
-const scrollHint=document.createElement('a');scrollHint.className='v3-scroll-indicator';scrollHint.href='#atlas-stories';scrollHint.setAttribute('aria-label','Insights entdecken');scrollHint.innerHTML='<span>Entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg>';document.querySelector('.hero').append(scrollHint);
-const hintTimer=setTimeout(()=>scrollHint.classList.add('is-visible'),4000);window.addEventListener('pagehide',()=>clearTimeout(hintTimer),{once:true});
+const scrollHint=document.createElement('a');scrollHint.className='v3-scroll-indicator';scrollHint.href='#atlas-stories';scrollHint.setAttribute('aria-label','Insights entdecken');scrollHint.innerHTML='<span>Entdecken</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 4v16m-6-6 6 6 6-6"/></svg>';copy.append(scrollHint);
+scrollHint.setAttribute('data-sc-contrast','');
+let hintTimer=0;
+const heroRoot=document.querySelector('.solar-page'),scene=document.querySelector('.hero .scene');
+const hintObserver=new MutationObserver(showHintWhenReady);
+function showHintWhenReady(){if(document.documentElement.dataset.atlasBoot==='ready'&&(scene?.dataset.unifiedReady==='true'||heroRoot.dataset.sceneBoot==='failed')){hintObserver.disconnect();hintTimer=setTimeout(()=>scrollHint.classList.add('is-visible'),1800);}}
+hintObserver.observe(heroRoot,{attributes:true,subtree:true,attributeFilter:['data-unified-ready','data-scene-boot']});
+window.addEventListener('pagehide',()=>{clearTimeout(hintTimer);hintObserver.disconnect();},{once:true});
 const intro=document.createElement('section');intro.className='v3-intro atlas-wrap';intro.innerHTML='<nav class="v3-section-nav" aria-label="Auf dieser Seite"><a href="#atlas-stories">Insights</a><a href="#atlas-ranking">Ranking</a><a href="#atlas-data">Energiemonitor</a></nav><div class="v3-intro-grid"><div><p class="atlas-kicker">Stand '+date(register.sourceDate)+'</p><h2>So steht es um Solar<br>in Höchberg.</h2></div><div><p>'+number(solarCount)+' Solaranlagen mit '+number(solarKwp/1000,1)+' MWp Leistung sind hier in Betrieb. Dazu kommen '+number(batteryCount)+' Batteriespeicher. Entdecken Sie den Anlagenbestand und die Entwicklung im Ort.</p></div></div>';content.prepend(intro);
 const sectionNav=intro.querySelector('nav');content.prepend(sectionNav);
 const pageActions=document.createElement('div');pageActions.className='atlas-page-actions';
-pageActions.innerHTML='<button type="button" data-page-subscribe aria-label="Höchberg abonnieren" title="Abonnieren"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span>Abonnieren</span></button><button type="button" data-page-copy aria-label="Link zur Seite kopieren" title="Link kopieren"></button><button type="button" data-page-share aria-label="Seite teilen" title="Seite teilen"></button><span class="atlas-page-status" role="status"></span>';
-pageActions.querySelector('[data-page-subscribe]').onclick=()=>document.querySelector('.hero .secondary-cta').click();
+pageActions.innerHTML='<button type="button" data-page-subscribe aria-label="Höchberg abonnieren" title="Abonnieren"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span>Höchberg abonnieren</span></button><button type="button" data-page-copy aria-label="Link zur Seite kopieren" title="Link kopieren"></button><button type="button" data-page-share aria-label="Seite teilen" title="Seite teilen"></button><span class="atlas-page-status" role="status"></span>';
+const subscribeTrigger=document.querySelector('.hero .secondary-cta');subscribeTrigger?.remove();
+pageActions.querySelector('[data-page-subscribe]').onclick=()=>subscribeTrigger?.click();
 sectionNav.append(pageActions);
 const navLinks=[...sectionNav.querySelectorAll('a')];
 let navFrame=0;
@@ -91,4 +116,5 @@ content.append(sources);
 // The weather attribution is already present at its chart and in the source list.
 draftStatus.remove();
 
-}mount();})();
+Promise.all([document.fonts.load('700 48px "Montserrat Bold"'),document.fonts.ready]).catch(()=>{}).then(()=>{requestAnimationFrame(()=>{document.documentElement.dataset.atlasBoot='ready';restoreInitialAnchor();showHintWhenReady();});});
+}mount();})().catch(error=>{document.documentElement.dataset.atlasBoot='failed';console.error('Atlas preview setup failed',error);});

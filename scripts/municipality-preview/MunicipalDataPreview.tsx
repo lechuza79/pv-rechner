@@ -40,7 +40,7 @@ export function CurrentPower({compact=false}:{compact?:boolean}={}){
  const kwp=register.chartMix.values.reduce((sum,row)=>sum+row.value,0);
  const points=reading?.points?.map((point:any)=>({ts:point.time,mw:kwp*point.powerPct/100000}))??[];
  const current=points.filter((point:any)=>Date.parse(point.ts)<=Date.now()).at(-1);
- return <WidgetFrame title="Solarleistung heute" kind="radial" context={<>Aus dem Wetter am Standort simuliert{reading?.power?.asOf?' · Stand '+new Date(reading.power.asOf).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Berlin'})+' Uhr':''}</>}>
+ return <WidgetFrame title="Solarleistung heute" kind="radial" context={compact?undefined:<>Aus dem Wetter am Standort simuliert{reading?.power?.asOf?' · Stand '+new Date(reading.power.asOf).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Berlin'})+' Uhr':''}</>}>
  <div className="monitor-native-chart monitor-current-power">{failed?<p>Wetterdaten derzeit nicht verfügbar.</p>:!reading?<p>Wetterdaten werden geladen …</p>:<MastrLiveRadial energietraeger="solar" installedKwp={kwp} injected={points} highlightTs={current?.ts} secondaryBars size={compact?"compact":"default"} unit="MW" className="monitor-live-radial" bare fuelltBreite/>}</div></WidgetFrame>;
 }
 function LocalMap(){

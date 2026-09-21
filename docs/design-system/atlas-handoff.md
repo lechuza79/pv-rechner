@@ -80,3 +80,54 @@ The user requested intermediate commits so Claude can continue toward a shareabl
 - Browser checked: 2024 annual selection, June 2025 solar profile, January 2026 monetary value and December 2025 composition stock all change the rendered numbers.
 
 Additional weather downloads and missing historical tariff coverage remain follow-up work. The current prototype exposes only complete calculable periods. Deployment/portability and subscription integration are still outstanding as described above.
+
+## Claude release handoff — 2026-09-21, final hero review
+
+Continue from branch `codex/kommunenseite-design` in this worktree. The last hero checkpoint before this change is `323bb52`. Preserve the reviewed design; do not redesign the charts or replace the live data with placeholders.
+
+### Changes in this handoff
+
+- Hero cards keep the story surface color, responsive 340–400 px height and compact charts without dashboard controls. Copy and card stack share a centered 1080 px rail. Description width is capped at 520 px.
+- Rank card has no “Mehr”/arrow. Breadcrumb subscription was removed; the sticky subscription still invokes the existing prototype dialog through its retained trigger.
+- The breadcrumb separator is a 10%-opacity pseudo-element, so automatic contrast sampling cannot accidentally make its border opaque.
+- The hero cycles every seven seconds using same-origin messages inside ONE iframe (no iframe navigation/re-download per slide). Hover, focus, hidden tab, offscreen hero, explicit pause and reduced motion stop automatic cycling. Manual dots remain available.
+- “Entdecken” is in the text block with contrast sampling; it waits for the scene's first completed frame (or renderer failure) plus 1.8 seconds.
+- The host hides temporary hero markup until fonts and final copy are mounted; global navigation has its own ready flag. Text entrance animations are disabled. An eight-second failure escape prevents permanently hidden copy. This is a local adapter fix, not an SSR implementation.
+- Initial known section hashes disable native scroll restoration and are restored after mounting/loading and trusted iframe height reports unless the visitor has already interacted.
+- Monthly chart footer has 24 px bottom padding; monthly and annual controls have 16 px title spacing. The selected-day label stays inline.
+
+### Verified locally / measured limits
+
+- Browser: centered desktop rail, mobile gutters, subtle divider, no breadcrumb subscription, automatic change through all three cards, one hero iframe, scene-ready hint, one H1. Prior footer spacing measured 24 px bottom / 16 px above controls.
+- Local desktop reload samples (1280 x 720, real machine under other work): final copy shell 0.51–0.80 s; document load 5.17–6.08 s; first finished 3D scene 15.82–17.25 s; layout shift score 0.0966–0.1234. These are NOT Lighthouse, mobile-network or production measurements. The last recorded shift was `sun-halo` moving 50 px, contributing 0.042 in one run. Do not claim the scene loading is already production-fast.
+- Initial monitor reload checks exposed late iframe-height scroll restoration (including one CLS score of 1.03); the final adapter disables native restoration for known hashes and realigns after trusted layout messages. Verify anchor restoration again after integration because server rendering and final iframe heights differ.
+- One browser log reported an unlocated MutationObserver error; it did not recur during subsequent instrumented reloads. `load-metrics.js` records local timing, CLS and uncaught-error diagnostics in HTML data attributes only, without network reporting. Recheck clean-browser console on the deployed preview.
+- Current development chart bundle: 2,229,962 bytes raw / 453,934 bytes gzip estimate. HTML: about 84 KB raw / 18 KB gzip estimate. The local server sets `no-store` and does not compress responses. These gzip figures are calculated file sizes, NOT observed transferred bytes.
+- Scene preparation logic already includes the extracted homepage shader preparation and first-frame readiness. The municipality's multiple post-load DOM scripts were NOT equivalent to a fully integrated homepage lifecycle. Do not describe this preview as a one-to-one production integration.
+
+### Go-live sequence
+
+1. Make a separate public PREVIEW deployment, not an overwrite of the existing municipal production route. Keep `noindex` both in markup and response headers for the review prototype.
+2. Remove absolute local dependencies from `server.ts` / build adapters. Vendor or integrate the story source, site chrome, fonts and asset manifest from the documented source roots. The asset tarball and manifest above are necessary; pushing this branch alone is insufficient. Do not use the localhost server as a public production server.
+3. Build with production React/minification, split the hero/story/monitor entry points, serve hashed assets with compression and caching. Keep model datasets and pricing/provenance unchanged. Avoid downloading all monitor data merely to show the first hero card.
+4. Render the actual municipal heading, introduction, sources and metadata on the server. The current prototype constructs substantial content in browser scripts. It currently has NO meta description, canonical or Open Graph tags and a draft title. For the shareable preview add a descriptive title/description and share image using its real preview URL. Only add the final production canonical, indexing and sitemap entry when replacing the real municipal route deliberately.
+5. Subscription is a non-sending prototype. Label or connect it appropriately before external circulation; do not imply successful email signup. Check copy/share with the actual deployed URL, not localhost.
+6. Run a cold-cache mobile/desktop Lighthouse and browser check on the deployed preview: initial + hash reload, layout stability, slow/offline weather, fonts, first 3D frame and static fallback, reduced motion, keyboard carousel/pause, all dataset selectors, source links, 404s and console. The 16–17 s local 3D readiness is an explicit performance follow-up, not an accepted release budget.
+7. Present the deployed preview and remaining limitations for visual acceptance. Production integration/release has not been performed by this task.
+
+Use the actual commit returned by the final checkpoint for this section. Do not assume `323bb52` includes the later spacing, alignment or lifecycle fixes.
+
+### Previous checkpoint failure and retry
+
+The final commit was rejected by the normal pre-commit hook on 2026-09-21. No checks were bypassed. TypeScript passed; the seven targeted hero/data checks passed; the full suite took 975.39 seconds and reported 317/319 files and 4155/4158 tests passing. Failures were in unchanged files: `flowlauf-keine-wiederholung.test.ts` (5 s timeout), `funding-source-reader.test.ts` (5 s timeout and captured HTML marked blocked instead of readable), plus a worker reporting timeout. Their causes were not repaired or assumed away.
+
+At that failed attempt, all changes were staged and the last successful commit was `323bb52b`. A complete staged patch is also saved at `/tmp/atlas-prototype-final.patch` for local handoff. Apply it only to a checkout based on that checkpoint that does not already contain these edits. Resolve/recheck the unrelated test failures before a normal commit and release. The user then requested a regular commit retry; inspect the latest Git commit to determine its final status. Nothing has been deployed.
+
+
+### Latest sizing and readiness revision
+
+Hero cards now measure 400 px wide on desktop, 320 px on tablet and viewport width minus 48 px on mobile. Heights clamp between 340 and 400 px; iframe content fills its viewport, including enlarged live-chart numbers. The wider desktop stack moves 60 px left while preserving the common centered rail. Checked at 1280, 768, 390 and 320 px; no horizontal document overflow at either mobile width.
+
+Titles are “Solarerzeugung August”, “Einspeisevergütung August” and “Solarleistung heute”, with no subtitle; the chart period remains the reviewed August 2026 dataset. Sticky action text is “Höchberg abonnieren”. Hero confetti waits for the mounted host, global navigation, chart fonts/images, and first rendered scene (or explicit fallback), then 2.2 s while the rank tile is at least 75% visible. Reduced motion suppresses it. Readiness attribute updates do not restart the delay every render frame.
+
+The two test files implicated in the previous failure were rerun with one worker and permission to open their local test server: all seven tests passed in 2.69 s. The sandbox-only attempt could not bind localhost; that is not a product failure. The requested new regular commit still runs the complete hook with all safeguards; its result is reported in the task and repository log.
