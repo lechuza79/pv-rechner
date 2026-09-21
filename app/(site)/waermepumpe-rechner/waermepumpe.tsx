@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FlowNav from "../../../components/FlowNav";
+import FlowSchritte from "../../../components/FlowSchritte";
 import {
   SITUATION, WOHNFLAECHEN, WP_M2_MIN, WP_M2_MAX, INSULATION_BESTAND, INSULATION_NEUBAU,
   PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP, YEAR,
@@ -721,18 +722,11 @@ export default function Waermepumpe({
         )}
 
         {/* Progress */}
-        {!isResult && (
-          <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
-            {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: v("--radius-pill"), background: i <= step ? v('--color-cta') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
-            ))}
-          </div>
-        )}
+        {!isResult && <FlowSchritte schritte={STEPS} aktiv={step} onSprung={setStep} />}
 
         {/* ── STEPS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ marginBottom: 18 }}>{STEPS[step]}</h2>
 
             {/* 0: Situation */}
             {step === 0 && (

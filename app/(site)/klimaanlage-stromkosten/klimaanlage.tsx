@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import OptionCard from "../../../components/OptionCard";
 import FlowNav from "../../../components/FlowNav";
+import FlowSchritte from "../../../components/FlowSchritte";
 import StandNoteView from "../../../components/StandNoteView";
 import { type StandSeite } from "../../../lib/stand-format";
 import InlineEdit from "../../../components/InlineEdit";
@@ -226,18 +227,11 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
         </div>
 
         {/* Progress */}
-        {!isResult && (
-          <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
-            {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: v("--radius-pill"), background: i <= step ? v('--color-cta') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
-            ))}
-          </div>
-        )}
+        {!isResult && <FlowSchritte schritte={STEPS} aktiv={step} onSprung={setStep} />}
 
         {/* ── STEPS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ marginBottom: 18 }}>{STEPS[step]}</h2>
 
             {/* 0: Gerätetyp */}
             {step === 0 && (

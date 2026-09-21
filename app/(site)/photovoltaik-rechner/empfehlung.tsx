@@ -26,6 +26,7 @@ import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import { IconArrowRight, IconChevronDown, IconRefresh } from "../../../components/Icons";
 import FlowNav from "../../../components/FlowNav";
+import FlowSchritte from "../../../components/FlowSchritte";
 import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN } from "../../../components/KlebenderKnopf";
 
 // ─── URL slug mappings (sprechende Werte statt Indizes) ─────────────────────
@@ -560,18 +561,11 @@ export default function Empfehlung({
         </div>
 
         {/* Progress */}
-        {!isRecommendation && (
-          <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
-            {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: v("--radius-pill"), background: i <= step ? v('--color-cta') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
-            ))}
-          </div>
-        )}
+        {!isRecommendation && <FlowSchritte schritte={STEPS} aktiv={step} onSprung={setWizardStep} />}
 
         {/* ── STEPS ── */}
         {!isRecommendation && (
           <div className="fu" key={step}>
-            <h2 style={{ marginBottom: 12, color: v('--color-text-primary'), fontSize: v('--font-size-h3') }}>{STEPS[step]}</h2>
 
             {/* Step 0: Haus + Dach */}
             {step === 0 && (

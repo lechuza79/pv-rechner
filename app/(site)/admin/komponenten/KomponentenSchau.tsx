@@ -23,6 +23,7 @@ import Logo from "../../../../components/Logo";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import DataSourceList from "../../../../components/DataSourceList";
 import FlowNav from "../../../../components/FlowNav";
+import FlowSchritte from "../../../../components/FlowSchritte";
 import StandortField from "../../../../components/StandortField";
 import StandNoteView from "../../../../components/StandNoteView";
 import { AuswahlSkipper } from "../../../../components/AuswahlSkipper";
@@ -351,6 +352,16 @@ function DreifachBeispiel() {
   );
 }
 
+
+function FlowSchritteBeispiel() {
+  const [schritt, setSchritt] = useState(1);
+  return (
+    <div>
+      <FlowSchritte schritte={["Dein Haus", "Dein Haushalt", "Großverbraucher"]} aktiv={schritt} onSprung={setSchritt} />
+      <button type="button" onClick={() => setSchritt(s => (s + 1) % 3)}>Nächster Schritt</button>
+    </div>
+  );
+}
 
 function FlowNavBeispiel() {
   const [gewaehlt, setGewaehlt] = useState(false);
@@ -724,6 +735,7 @@ const BEISPIELE: Record<string, Beispiel> = {
   ),
   Logo: () => <Logo />,
   FlowNav: FlowNavBeispiel,
+  FlowSchritte: FlowSchritteBeispiel,
   StandortField: StandortBeispiel,
   AuswahlSkipper: SkipperBeispiel,
   ErrorBoundary: AbsturzBeispiel,

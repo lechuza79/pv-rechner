@@ -45,6 +45,7 @@ import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { useFeedInRates } from "../../../lib/feedin";
 import { IconArrowRight, IconChevronDown, IconRefresh, IconSun } from "../../../components/Icons";
 import FlowNav from "../../../components/FlowNav";
+import FlowSchritte from "../../../components/FlowSchritte";
 import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import ScenarioTabs from "../../../components/ScenarioTabs";
 import { useChartExport } from "../../../lib/useChartExport";
@@ -631,6 +632,9 @@ export default function PVRechner({
   const be = sel.data.be;
 
   const STEPS = ["Wie groß soll die Anlage werden?", "Dein Dach", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
+  // Short names for the step indicator; where a step asks a longer question
+  // (STEPS), that question follows as the heading.
+  const SCHRITT_NAMEN = ["Anlage", "Dein Dach", "Speicher", "Dein Haushalt", "Großverbraucher"];
   const isResult = step >= STEPS.length;
   const fundingActive = fundingPrograms.some((p) => p.level !== "bund");
 
@@ -963,12 +967,14 @@ export default function PVRechner({
             </div>
           </div>
         ) : (
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
             {/* Auf einer betriebseigenen Seite trägt der Kopf schon den Namen des
                 Betriebs — „Lohnt sich Photovoltaik? · Ohne Verkaufsanrufe" wäre
                 darunter eine zweite Ansage und liest sich als unsere Werbung auf
                 seiner Seite. Im Ergebnis genügt dort die Überschrift. */}
-            <h1 style={{ color: v('--color-text-primary') }}>
+            {/* In the question steps as small as the recommendation flow's head:
+                the focus belongs to the first question, not the title. */}
+            <h1 style={{ color: v('--color-text-primary'), ...(isResult ? {} : { fontSize: v('--font-size-h2') }) }}>
               {partner ? (isResult ? "Dein Ergebnis" : "Deine Anlage berechnen") : "PV-Rechner"}
             </h1>
             {!partner && (
@@ -978,18 +984,11 @@ export default function PVRechner({
         )}
 
         {/* Progress */}
-        {!isResult && (
-          <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
-            {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: v("--radius-pill"), background: i <= step ? v('--color-cta') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
-            ))}
-          </div>
-        )}
+        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} onSprung={setStep} frage={STEPS[step] === SCHRITT_NAMEN[step] ? undefined : STEPS[step]} />}
 
         {/* ── QUESTIONS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ marginBottom: 18, color: v('--color-text-primary') }}>{STEPS[step]}</h2>
 
             {step === 0 && (
               <div>

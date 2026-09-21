@@ -3,6 +3,7 @@ import { useState, useMemo, useCallback, useEffect, useRef, Fragment } from "rea
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import FlowNav from "../../../../components/FlowNav";
+import FlowSchritte from "../../../../components/FlowSchritte";
 import OptionCard from "../../../../components/OptionCard";
 import InlineEdit from "../../../../components/InlineEdit";
 import InfoTooltip from "../../../../components/InfoTooltip";
@@ -382,18 +383,11 @@ export default function Balkon() {
         </div>
 
         {/* Progress */}
-        {!isResult && (
-          <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
-            {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: v("--radius-pill"), background: i <= step ? v('--color-cta') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
-            ))}
-          </div>
-        )}
+        {!isResult && <FlowSchritte schritte={STEPS} aktiv={step} onSprung={setStep} />}
 
         {/* ── STEPS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ marginBottom: 18 }}>{STEPS[step]}</h2>
 
             {/* 0: Haushalt & Standort */}
             {step === 0 && (
