@@ -385,3 +385,31 @@ export function programmDecktSeite(agsProgramm: string, agsSeite: string): boole
   if (p.length > s.length) return false;
   return s.startsWith(p);
 }
+
+/**
+ * Hat der Abruf wirklich die angefragte Seite gelesen — oder ist er woanders
+ * gelandet?
+ *
+ * GEMESSEN AM 20.09.2026 an Albershausen: Der gespeicherte Schlüssel trägt kein
+ * „www.", also wird zuerst `albershausen.de/de/…/foerderprogramm` abgerufen —
+ * und dieser Server leitet Adressen ohne „www." nicht auf dieselbe Seite mit
+ * „www." um, sondern auf `www.albershausen.de/de/startseite`. Der Abruf
+ * antwortet mit HTTP 200, die Schleife über die Schreibweisen bricht beim ersten
+ * Erfolg ab, und gelesen wird die Startseite. Die zweite Schreibweise, die die
+ * Förderseite wirklich ausliefert, wird nie probiert.
+ *
+ * DIE FEHLERKLASSE IST DIE TEURE: Nichts sieht kaputt aus. Dass ein richtiger
+ * Beleg von der echten Förderseite abgewiesen wird, fällt auf. Was NICHT
+ * auffällt, ist die Gegenrichtung — ein Satz, der zufällig auf der Startseite
+ * steht (ein Menüpunkt genügt), belegt dann ein Urteil über eine Seite, die
+ * niemand gelesen hat.
+ *
+ * VERGLICHEN WIRD ÜBER `seitenSchluessel`, nicht über die rohe Adresse: Schema,
+ * „www.", Schrägstrich am Ende und reine Ansichts-Parameter sind genau die
+ * Unterschiede, die eine gewöhnliche Umleitung erzeugt, und die sollen hier
+ * nicht als „woanders gelandet" gelten.
+ */
+export function liestDieAngefragteSeite(angefragt: string, gelandet: string): boolean {
+  if (!gelandet) return true;
+  return seitenSchluessel(angefragt) === seitenSchluessel(gelandet);
+}

@@ -552,7 +552,19 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // ist kostenpflichtig; daneben wieder nur Gesamtpreis-Charts für Heizöl und
   // HVO-Kraftstoffpreise gegen Diesel (anderer Markt, andere Steuern). Die Lücke
   // im Öl-Ergebnis bleibt samt ihrer benannten Fehlerrichtung stehen.
-  geprueftRechtIso: "2026-09-20",
+  // 21.09.2026: Verkündung und Inkrafttreten erneut bestätigt (BGBl. 2026 I
+  // Nr. 226 vom 28.07.2026, in Kraft seit 29.07.2026) — `verkuendet` und
+  // `inKraftSeitIso` stehen richtig. § 42a unverändert: Auftrag an die
+  // Bundesregierung, bis zum 1. Dezember 2026 ein Quotengesetz vorzulegen,
+  // ohne Prozentsätze und ohne Startjahre; vorgelegt ist keines, die Frist
+  // läuft noch gut zehn Wochen. Die Bio-Treppe trägt unverändert ihre Stufen.
+  // Siebenundzwanzigste Bioheizöl-Gegensuche: weiterhin KEINE Trägerquelle mit
+  // einer Preisreihe für den Bio-Anteil. Was die Suche liefert, sind
+  // Kanzlei- und Verbandsdarstellungen des § 42a, die alle dasselbe sagen —
+  // „die konkrete Ausgestaltung der Quote bleibt diesem Gesetz vorbehalten"
+  // (Ankündigung, ab 2028 zu greifen). Eine Ankündigung ist keine Preisreihe;
+  // die Lücke im Öl-Ergebnis bleibt samt ihrer benannten Fehlerrichtung stehen.
+  geprueftRechtIso: "2026-09-21",
   reviewBy: "2027-07-25",
 };
 

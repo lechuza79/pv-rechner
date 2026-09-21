@@ -75,6 +75,13 @@ export type Bestand = {
   ergebnisForm?(basis: Ergebnis, mailboxes: Mailbox[]): Record<string, unknown>;
   /** Wie viele Kanäle ein Eintrag haben kann — erreicht er sie alle, wird nicht weiter gesucht. */
   fertigWenn?(ergebnis: Ergebnis): boolean;
+  /**
+   * Welche Seite zuerst geholt wird. Die Grundwertung ist auf Verwaltungen
+   * geeicht (Ansprechpartner-Verzeichnisse zuerst, Impressum zuletzt). Bei
+   * einem redaktionellen Angebot ist es umgekehrt: Dort steht die
+   * Pflichtangabe im Impressum, und Verzeichnisse gibt es gar nicht.
+   */
+  linkVorrang?(url: string, grundwert: number): number;
 };
 
 export type Ergebnis = {
@@ -245,9 +252,10 @@ export async function recherchieren(b: Bestand, e: Eintrag, budget: number) {
   const fetched: any[] = [];
   const started = Date.now();
   while (fetched.length < budget && !fertig(result)) {
+    const wert = (u: string, p: number) => b.linkVorrang?.(u, linkScore(u, p)) ?? linkScore(u, p);
     const next = [...queue].filter(([u]) => !done.has(u) && allowed.has(siteOf(host(u))))
-      .sort((a, b2) => linkScore(b2[0], b2[1]) - linkScore(a[0], a[1]))[0];
-    if (!next || linkScore(next[0], next[1]) < 0) break;
+      .sort((a, b2) => wert(b2[0], b2[1]) - wert(a[0], a[1]))[0];
+    if (!next || wert(next[0], next[1]) < 0) break;
     done.add(next[0]);
     const f = await fetchPage(b, next[0], e.id);
     fetched.push({ url: f.url, status: f.status, ms: f.ms, error: f.error, skipped: (f as any).skipped ?? null });

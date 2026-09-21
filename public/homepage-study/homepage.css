@@ -1,7 +1,13 @@
 /* Shared typography roles. Migrate sections to these roles instead of adding local sizes. */
 :root{
  --sc-layout-content:1000px;
+ --sc-surface-chart:#163338;
  --sc-layout-reading:680px;
+ --sc-layout-widget:760px;
+ --sc-layout-form:440px;
+ --sc-space-section:72px;
+ --sc-type-form-heading-size:clamp(20px,2vw,28px);
+ --sc-type-metric-size:clamp(24px,8cqi,36px);
  --sc-type-hero-size:clamp(34px,3.8vw,48px);
  --sc-type-section-size:clamp(26px,2.6vw,34px);
  --sc-type-section-compact-size:clamp(24px,2.2vw,30px);
@@ -129,7 +135,7 @@ body:has(:is(.homepage-study,html[data-homepage-preview])) .wetfilm-compare{disp
 .hs-balcony-panel{width:42%;height:125px;border:3px solid #7f9691;border-radius:2px;transform:rotateX(9deg);background:repeating-linear-gradient(0deg,transparent 0 23px,#92a9ac22 24px 25px),repeating-linear-gradient(90deg,#1a343e 0 29px,#6a869044 30px 31px);box-shadow:0 9px 14px #0003}
 .hs-race{position:relative;padding-bottom:0;background:#10282c;z-index:2}
 .hs-race-head{display:block}.hs-race-head h2{max-width:1100px;margin:0 0 50px;font-size:clamp(34px,4.4vw,66px);font-weight:430;letter-spacing:-.045em;line-height:1.08}
-.hs-race-card{position:relative;isolation:isolate;padding:30px 38px 32px;border:1px solid #aec4bd35;border-radius:22px;background:#163338;box-shadow:0 28px 60px #03141524;margin-bottom:-110px;opacity:0;transform:translateY(55px);transition:opacity .85s ease,transform .85s cubic-bezier(.2,.7,.2,1)}
+.hs-race-card{position:relative;isolation:isolate;padding:30px 38px 32px;border:1px solid #aec4bd35;border-radius:22px;background:var(--sc-surface-chart);box-shadow:0 28px 60px #03141524;margin-bottom:-110px;opacity:0;transform:translateY(55px);transition:opacity .85s ease,transform .85s cubic-bezier(.2,.7,.2,1)}
 .hs-race-card.hs-revealed{opacity:1;transform:none}
 .hs-race-card .hs-race-tabs{margin:0 0 25px}
 .hs-race+.hs-audiences{padding-top:210px}
@@ -189,7 +195,8 @@ body:has(:is(.homepage-study,html[data-homepage-preview])) .wetfilm-compare{disp
 @media(prefers-reduced-motion:reduce){.hs-hero-portal .hero>canvas,.hs-hero-portal .hero .scene{transform:none}}
 /* Journey movement is sequenced by the controller; keep the weather stage continuous. */
 .hs-scene-simulation{animation:none}
-:is(.homepage-study,html[data-homepage-preview]).hs-journey-transition .hs-transition-wash{opacity:0}
+/* Route fades affect content only; the atmospheric edge stays visible. */
+:is(.homepage-study,html[data-homepage-preview]).hs-journey-transition .hs-transition-wash{opacity:1}
 :is(.homepage-study,html[data-homepage-preview]).hs-journey-transition .hero-copy,:is(.homepage-study,html[data-homepage-preview]).hs-journey-transition .hs-reading,:is(.homepage-study,html[data-homepage-preview]).hs-journey-transition .hero-bottom{opacity:1}
 /* Shared typography roles, agreed 2026-09-08; integrate into lib/theme.ts on handoff. */
 @font-face{font-family:Montserrat;src:url('/homepage-study/montserrat-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:block}
@@ -205,32 +212,32 @@ body:has(:is(.homepage-study,html[data-homepage-preview])) .wetfilm-compare{disp
 /* Location is shared context, rather than a weather-only question. */
 .hs-scene-simulation .hs-location-step{max-width:700px}
 .hs-location-explanation{max-width:610px;font-size:18px;line-height:1.65;margin:0 0 30px}
-.hs-scene-simulation .hs-location-form input{background:transparent;border:1px solid currentColor;border-radius:4px;box-shadow:none;color:inherit;caret-color:currentColor;font-family:'DM Sans',sans-serif;font-size:28px;font-weight:400;letter-spacing:2px;padding:14px 18px;width:170px;outline:none}
-.hs-scene-simulation .hs-location-form input:focus{outline:2px solid currentColor;outline-offset:4px;box-shadow:none}
-.hs-scene-simulation .hs-location-form input::placeholder{color:inherit;opacity:.42}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input{background:transparent;border:1px solid currentColor;border-radius:4px;box-shadow:none;color:inherit;caret-color:currentColor;font-family:'DM Sans',sans-serif;font-size:28px;font-weight:400;letter-spacing:2px;padding:14px 18px;width:170px;outline:none}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input:focus{outline:2px solid currentColor;outline-offset:4px;box-shadow:none}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input::placeholder{color:inherit;opacity:.42}
 .hs-location-prototype{font-size:11px;line-height:1.5;max-width:550px;opacity:.7;margin-top:18px}
-@media(max-width:700px){.hs-location-explanation{font-size:16px}.hs-scene-simulation .hs-location-step h2{font-size:34px}.hs-scene-simulation .hs-location-form input{width:100%;max-width:240px}}
-.hs-scene-simulation .hs-location-form input:focus{outline:none;border-width:2px;padding:13px 17px}
+@media(max-width:700px){.hs-location-explanation{font-size:16px}.hs-scene-simulation .hs-location-step h2{font-size:34px}:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input{width:100%;max-width:240px}}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input:focus{outline:none;border-width:2px;padding:13px 17px}
 /* Minimal postcode line; action appears only after postcode validation. */
-.hs-scene-simulation .hs-location-form>label{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%)}
-.hs-scene-simulation .hs-location-form>div{display:flex;flex-direction:row;align-items:center;gap:12px;max-width:430px;border-bottom:1px solid currentColor}
-.hs-scene-simulation .hs-location-form input,.hs-scene-simulation .hs-location-form input:focus{border:0;border-radius:0;outline:none;box-shadow:none;padding:14px 0;width:100%;max-width:none;min-width:0;letter-spacing:normal}
-.hs-scene-simulation .hs-location-form>div:focus-within{border-bottom-width:2px}
-.hs-scene-simulation .hs-location-form input::placeholder{opacity:.65}
-.hs-scene-simulation .hs-location-form .hs-locate{background:none;color:inherit;padding:10px;display:grid;place-items:center;border:0;flex:none;border-radius:50%}
-.hs-scene-simulation .hs-location-form .hs-locate:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>label{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%)}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div{display:flex;flex-direction:row;align-items:center;gap:12px;max-width:430px;border-bottom:1px solid currentColor}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input,:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input:focus{border:0;border-radius:0;outline:none;box-shadow:none;padding:14px 0;width:100%;max-width:none;min-width:0;letter-spacing:normal}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div:focus-within{border-bottom-width:2px}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input::placeholder{opacity:.65}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-locate{background:none;color:inherit;padding:10px;display:grid;place-items:center;border:0;flex:none;border-radius:50%}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-locate:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 .hs-location-submit[hidden]{display:none!important}.hs-location-submit:not([hidden]){animation:hs-journey-in .3s ease both}
 .hs-scene-simulation .hs-location-status{color:inherit;font-size:12px;margin-top:12px}
 @media(prefers-reduced-motion:reduce){.hs-location-submit:not([hidden]){animation:none}}
 /* Visible empty-field caret and inline save action. */
-.hs-scene-simulation .hs-location-form>div{position:relative;max-width:560px;gap:10px}
-.hs-scene-simulation .hs-location-form .hs-location-submit{display:inline-flex;align-items:center;gap:9px;flex:none;background:none;color:inherit;border:0;padding:12px 4px;white-space:nowrap;font-size:14px}
-.hs-scene-simulation .hs-location-form .hs-location-submit[hidden]{display:none!important}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div{position:relative;max-width:560px;gap:10px}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit{display:inline-flex;align-items:center;gap:9px;flex:none;background:none;color:inherit;border:0;padding:12px 4px;white-space:nowrap;font-size:14px}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit[hidden]{display:none!important}
 .hs-location-submit:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 @keyframes hs-caret-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
-@media(max-width:700px){.hs-scene-simulation .hs-location-form>div{gap:5px}.hs-scene-simulation .hs-location-form .hs-locate{padding:8px}.hs-scene-simulation .hs-location-form .hs-location-submit{font-size:12px;gap:5px}}
-.hs-scene-simulation .hs-location-form .hs-location-submit{background:#1265e8;color:#fff;padding:12px 16px;border-radius:6px;margin-bottom:7px}
-.hs-scene-simulation .hs-location-form .hs-location-submit:hover{background:#0a55cf}
+@media(max-width:700px){:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div{gap:5px}:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-locate{padding:8px}:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit{font-size:12px;gap:5px}}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit{background:#1265e8;color:#fff;padding:12px 16px;border-radius:6px;margin-bottom:7px}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit:hover{background:#0a55cf}
 .hs-scene-simulation .hs-location-status:empty{display:none}
 /* The retrospective is the stage's main content, not a card on top of it. */
 .hs-scene-simulation .hs-retro-hero{position:relative;max-width:940px;padding:55px 0 0;background:none;border:0;border-radius:0;backdrop-filter:none;box-shadow:none;color:inherit}
@@ -243,7 +250,7 @@ body:has(:is(.homepage-study,html[data-homepage-preview])) .wetfilm-compare{disp
 @media(max-width:700px){.hs-scene-simulation .hs-retro-hero{padding-top:35px}.hs-retro-hero .hs-retro-values{gap:25px}.hs-retro-hero .hs-retro-values p{font-size:13px}.hs-scene-simulation .hs-retro-hero h2{font-size:34px}}
 .hs-scene-simulation .hs-retro-hero h2{max-width:740px;font-size:clamp(34px,3.8vw,55px);line-height:1.16}
 .hs-place-edit{font:inherit;letter-spacing:inherit;color:inherit;background:none;border:0;border-bottom:2px solid currentColor;padding:0;cursor:pointer}
-.hs-inline-help{display:inline-grid;place-items:center;vertical-align:middle;width:25px;height:25px;margin-left:12px;padding:0;border:1px solid currentColor;border-radius:50%;background:none;color:inherit;font:400 13px 'DM Sans',sans-serif;cursor:pointer}
+.hs-inline-help{display:inline-grid;place-items:center;vertical-align:middle;width:25px;height:25px;margin-left:12px;padding:0;border:1px solid currentColor;border-radius:50%;background:none;color:inherit;opacity:.55;font:400 13px 'DM Sans',sans-serif;cursor:pointer}
 .hs-retro-help[hidden]{display:none}.hs-retro-help>div{position:relative;top:auto;margin-bottom:24px}
 .hs-retro-hero .hs-retro-values .hs-currency{font-size:.42em;font-weight:400;opacity:.65;font-family:'DM Sans',sans-serif}
 .hs-scene-simulation .hs-local-atlas{display:block;padding:25px 28px;max-width:560px;border:1px solid #ffffff80;border-radius:18px;background:linear-gradient(135deg,#f9fff799,#e4f0ed66);backdrop-filter:blur(18px) saturate(.88);color:#173b42;box-shadow:inset 0 1px 0 #ffffff80,0 12px 32px #16343e0c}
@@ -285,7 +292,7 @@ html:has(:is(.homepage-study,html[data-homepage-preview])){scroll-behavior:smoot
 :is(.homepage-study,html[data-homepage-preview]).hs-simulation-route.hs-journey-open .hero>.scene{transform:translateY(var(--hs-scene-shift,0%)) scale(var(--hs-scene-scale,1));transform-origin:50% 85%}
 .hs-simulation-route #hs-simulation-race{margin-top:calc(-42vh - 110px);background:linear-gradient(to bottom,transparent 110px,#08191c 110px)}
 #hs-simulation-race .hs-race{background:transparent;padding-top:0}
-#hs-simulation-race .hs-race-card{background:#08191c;opacity:0;transform:translateY(45px);border-color:#aec4bd35}
+#hs-simulation-race .hs-race-card{background:var(--sc-surface-chart);opacity:0;transform:translateY(45px);border-color:#aec4bd35}
 #hs-simulation-race .hs-race-card.hs-revealed{opacity:1;transform:none}
 @media(max-width:700px){:is(.homepage-study,html[data-homepage-preview]).hs-simulation-route.hs-journey-open .hs-hero-portal::after{height:25vh}.hs-simulation-route #hs-simulation-race{margin-top:calc(-25vh - 65px);background:linear-gradient(to bottom,transparent 65px,#08191c 65px)}}
 @media(prefers-reduced-motion:reduce){:is(.homepage-study,html[data-homepage-preview]).hs-simulation-route.hs-journey-open .hs-hero-portal>.hero{position:relative}:is(.homepage-study,html[data-homepage-preview]).hs-simulation-route.hs-journey-open .hs-hero-portal::after{height:0}.hs-simulation-route #hs-simulation-race{margin-top:-65px}.hs-simulation-route .hs-scene-simulation{opacity:1}#hs-simulation-race .hs-race-card{opacity:1;transform:none}}
@@ -295,8 +302,8 @@ html:has(:is(.homepage-study,html[data-homepage-preview])){scroll-behavior:smoot
 @media(prefers-reduced-motion:reduce){.hs-hero-portal .scene,.hs-transition-wash{will-change:auto}}
 
 /* Keep the postcode baseline quiet without a focus-induced layout shift. */
-.hs-scene-simulation .hs-location-form>div{border-bottom:1px solid color-mix(in srgb,currentColor 18%,transparent)}
-.hs-scene-simulation .hs-location-form>div:focus-within{border-bottom-width:1px;border-bottom-color:color-mix(in srgb,currentColor 30%,transparent)}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div{border-bottom:1px solid color-mix(in srgb,currentColor 18%,transparent)}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div:focus-within{border-bottom-width:1px;border-bottom-color:color-mix(in srgb,currentColor 30%,transparent)}
 .hs-town-stats{margin:0 0 72px;padding:34px 0 44px;border-bottom:1px solid #ffffff18}
 .hs-town-stats h2{font-size:clamp(28px,3vw,42px);margin:0 0 24px}
 .hs-town-stats dl{display:flex;flex-wrap:wrap;gap:28px 52px;margin:28px 0}
@@ -328,9 +335,9 @@ html:has(:is(.homepage-study,html[data-homepage-preview])){scroll-behavior:smoot
 @keyframes hs-scroll-nudge{0%,55%,100%{transform:translateY(0)}25%{transform:translateY(9px)}38%{transform:translateY(-3px)}47%{transform:translateY(3px)}}
 @media(prefers-reduced-motion:reduce){.hs-scroll-invitation{transition:none;transform:none}.hs-scroll-invitation.is-ready span{animation:none}}
 /* Keep browser-autofilled postcodes on the transparent scene background. */
-.hs-scene-simulation .hs-location-form input:is(:autofill,:-webkit-autofill),
-.hs-scene-simulation .hs-location-form input:is(:autofill,:-webkit-autofill):hover,
-.hs-scene-simulation .hs-location-form input:is(:autofill,:-webkit-autofill):focus{
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input:is(:autofill,:-webkit-autofill),
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input:is(:autofill,:-webkit-autofill):hover,
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input:is(:autofill,:-webkit-autofill):focus{
  -webkit-background-clip:text;
  background-clip:text;
  -webkit-text-fill-color:currentColor;
@@ -686,8 +693,8 @@ html:has(:is(.homepage-study,html[data-homepage-preview])){scroll-behavior:smoot
 @media(prefers-reduced-motion:reduce){.hs-system-race-frame{transition:none}}
 
 /* Simulation actions share the homepage pill and icon language. */
-.hs-scene-simulation .hs-location-form .hs-location-submit{background:#d4ff24;color:#132527;border-radius:999px;padding:12px 22px;font-family:Montserrat,sans-serif;font-weight:600}
-.hs-scene-simulation .hs-location-form .hs-location-submit:hover{background:#e0ff62}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit{background:#d4ff24;color:#132527;border-radius:999px;padding:12px 22px;font-family:Montserrat,sans-serif;font-weight:600}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit:hover{background:#e0ff62}
 .hs-retro .hs-profit-cta{gap:10px!important;max-width:100%;white-space:normal;text-align:center}
 .hs-retro .hs-profit-cta svg{flex:none}
 .hs-retro-note,.hs-retro-status{font-size:13px;line-height:1.5;max-width:620px}
@@ -724,7 +731,7 @@ html[data-homepage-preview] .hero-actions .secondary-cta:active{
 }
 
 /* Keep the simulation follow-up compact and its secondary action self-contained. */
-.hs-simulation-route .hs-simulation-content{padding-top:28px;padding-bottom:clamp(100px,12vw,160px)}
+.hs-simulation-route .hs-simulation-content{padding:var(--sc-space-section) var(--sc-page-inset)}
 .hs-simulation-route .hs-town-stats{padding:0 0 28px;margin-bottom:32px}
 .hs-town-stats .hs-atlas-cta{display:inline-flex;align-items:center;gap:10px;border:1px solid #aec3bd80;border-radius:999px;padding:12px 20px;font:600 14px/1.4 Montserrat,sans-serif;text-decoration:none;max-width:100%;box-sizing:border-box}
 .hs-atlas-cta svg{flex:none;display:block}
@@ -734,7 +741,7 @@ html[data-homepage-preview] .hero-actions .secondary-cta:active{
 .hs-simulation-calculator{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);align-items:center;gap:32px;margin-top:48px}
 .hs-simulation-calculator>solar-illustration{display:block;width:100%;height:auto;max-height:360px;object-fit:contain}
 .hs-simulation-calculator h3{margin-top:0}
-.hs-retro-secondary.hs-scroll-invitation{border:1px solid currentColor;border-radius:999px;background:color-mix(in srgb,currentColor 10%,transparent);padding:17px 24px;font:600 14px/1.4 Montserrat,sans-serif;box-sizing:border-box}
+.hs-retro-secondary.hs-scroll-invitation{backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border:1px solid currentColor;border-radius:999px;background:color-mix(in srgb,currentColor 10%,transparent);padding:17px 24px;font:600 14px/1.4 Montserrat,sans-serif;box-sizing:border-box}
 .hs-retro-secondary.hs-scroll-invitation.is-ready{opacity:1}
 .hs-retro-secondary.hs-scroll-invitation:hover{background:color-mix(in srgb,currentColor 16%,transparent)}
 @media(max-width:540px){.hs-simulation-calculator{grid-template-columns:1fr;gap:24px;margin-top:32px}.hs-simulation-calculator>solar-illustration{max-width:280px;justify-self:center}.hs-retro-secondary.hs-scroll-invitation{margin-left:0}}
@@ -762,9 +769,9 @@ html[data-homepage-preview] .hero-actions .secondary-cta:active{
 .hs-simulation-lightbox .hs-simulation-calculator>.primary-cta{grid-column:1/-1;justify-self:center;width:fit-content;margin:0;gap:12px}
 /* Preserve pointer parallax and let decorative layers float outside the card. */
 .hs-simulation-lightbox .hs-simulation-calculator{overflow:visible;row-gap:20px}
-.hs-simulation-lightbox .hs-simulation-calculator>solar-illustration{width:165%;max-width:none;justify-self:end;transform:translate(12%,-12%);pointer-events:auto;margin-bottom:-32%}
+.hs-simulation-lightbox .hs-simulation-calculator>solar-illustration{width:100%;max-width:220px;justify-self:center;transform:none;pointer-events:auto;margin:0}
 /* Match the homepage cards: keep the artwork size, collapse its transparent spacing. */
-@media(max-width:540px){.hs-simulation-lightbox .hs-simulation-calculator>solar-illustration{width:200px;max-width:100%;justify-self:center;transform:none;margin-top:-15px;margin-bottom:-40px}}
+@media(max-width:540px){.hs-simulation-lightbox .hs-simulation-calculator>solar-illustration{width:180px;max-width:100%;margin:0}}
 
 .hs-data-stamp a,.hs-journey-back{display:inline-flex;align-items:center;gap:6px}
 .hs-data-stamp .hs-arrow{width:14px;height:14px;flex:none}
@@ -827,41 +834,41 @@ html[data-homepage-preview] .hero-actions .secondary-cta:active{
 }
 @media(max-width:600px) and (max-height:700px){:is(.homepage-study,html[data-homepage-preview]).hs-simulation-route .hs-scene-simulation{padding-top:26px}.hs-scene-simulation>.hs-journey-back{top:0}}
 /* Accent treatment for the simulation postcode entry. */
-.hs-scene-simulation .hs-location-form>div{
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div{
  border:1px solid rgba(212,255,36,.72);
  border-radius:16px;
  background:rgba(212,255,36,.14);
  padding:6px 14px;
  transition:background .2s ease,border-color .2s ease,box-shadow .2s ease;
 }
-.hs-scene-simulation .hs-location-form>div:focus-within{
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div:focus-within{
  border:1px solid #d4ff24;
  background:rgba(212,255,36,.22);
  box-shadow:0 0 0 3px rgba(212,255,36,.12);
 }
-.hs-scene-simulation .hs-location-form input,
-.hs-scene-simulation .hs-location-form input:focus{background:transparent;padding:12px 0}
-.hs-scene-simulation .hs-location-form .hs-location-submit{margin-bottom:0}
-@media(max-width:600px){.hs-scene-simulation .hs-location-form>div{flex-wrap:wrap}.hs-scene-simulation .hs-location-form input{flex:1;min-width:100px}.hs-scene-simulation .hs-location-form .hs-location-submit:not([hidden]){flex-basis:100%;margin-bottom:6px}}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input,
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input:focus{background:transparent;padding:12px 0}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit{margin-bottom:0}
+@media(max-width:600px){:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div{flex-wrap:wrap}:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input{flex:1;min-width:100px}:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit:not([hidden]){flex-basis:100%;margin-bottom:6px}}
 /* Postcode entry shares the pill geometry of the primary actions. */
-.hs-scene-simulation .hs-location-form>div{border-radius:999px;min-height:57px;box-sizing:border-box;padding:6px 8px 6px 22px;gap:10px}
-.hs-scene-simulation .hs-location-form input,
-.hs-scene-simulation .hs-location-form input:focus{padding:6px 0;font-size:18px;line-height:1.4}
-.hs-scene-simulation .hs-location-form .hs-locate{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;min-width:42px;padding:0;border:0;border-radius:50%;background:#d4ff24;color:#153740;margin:0}
-.hs-scene-simulation .hs-location-form .hs-locate:hover{background:#e0ff62}
-.hs-scene-simulation .hs-location-form .hs-locate:focus-visible{outline:2px solid currentColor;outline-offset:3px}
-@media(max-width:600px){.hs-scene-simulation .hs-location-form>div{flex-wrap:nowrap}.hs-scene-simulation .hs-location-form{position:relative}.hs-scene-simulation .hs-location-form .hs-location-submit:not([hidden]){position:absolute;top:calc(100% + 12px);left:0;width:100%;margin:0}.hs-scene-simulation .hs-location-form:has(.hs-location-submit:not([hidden])){margin-bottom:76px}}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div{border-radius:999px;min-height:57px;box-sizing:border-box;padding:6px 8px 6px 22px;gap:10px}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input,
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input:focus{padding:6px 0;font-size:18px;line-height:1.4}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-locate{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;min-width:42px;padding:0;border:0;border-radius:50%;background:#d4ff24;color:#153740;margin:0}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-locate:hover{background:#e0ff62}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-locate:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+@media(max-width:600px){:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div{flex-wrap:nowrap}:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form{position:relative}:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit:not([hidden]){position:absolute;top:calc(100% + 12px);left:0;width:100%;margin:0}:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form:has(.hs-location-submit:not([hidden])){margin-bottom:76px}}
 
 /* Use the native caret so its position follows the actual input text. */
-.hs-scene-simulation .hs-location-form input{caret-color:currentColor;text-indent:0}
-.hs-scene-simulation .hs-location-form input::placeholder{color:color-mix(in srgb,currentColor 78%,transparent);opacity:1;padding:0}
-.hs-scene-simulation .hs-location-form>div:focus-within{background:rgba(234,241,238,.94);border-color:#6b8589;color:#153740;box-shadow:0 0 0 3px rgba(234,241,238,.18)}
-.hs-scene-simulation .hs-location-form>div:focus-within input::placeholder{color:#506b70;opacity:1}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input{caret-color:currentColor;text-indent:0}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form input::placeholder{color:color-mix(in srgb,currentColor 78%,transparent);opacity:1;padding:0}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div:focus-within{background:rgba(234,241,238,.94);border-color:#6b8589;color:#153740;box-shadow:0 0 0 3px rgba(234,241,238,.18)}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form>div:focus-within input::placeholder{color:#506b70;opacity:1}
 
 /* One action at the end of the postcode pill: locate or calculate. */
-.hs-scene-simulation .hs-location-form .hs-location-submit:not([hidden]){position:static;display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;min-width:42px;min-height:42px;padding:0;margin:0;border:0;border-radius:50%;background:#d4ff24;color:#153740}
-.hs-scene-simulation .hs-location-form .hs-locate[hidden],.hs-scene-simulation .hs-location-form .hs-location-submit[hidden]{display:none}
-.hs-scene-simulation .hs-location-form:has(.hs-location-submit:not([hidden])){margin-bottom:0}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit:not([hidden]){position:static;display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;min-width:42px;min-height:42px;padding:0;margin:0;border:0;border-radius:50%;background:#d4ff24;color:#153740}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-locate[hidden],:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form .hs-location-submit[hidden]{display:none}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form:has(.hs-location-submit:not([hidden])){margin-bottom:0}
 
 /* Keep the entry heading and introduction together below the back link. */
 :is(.homepage-study,html[data-homepage-preview]) .hs-scene-simulation .hs-location-step h2{font-family:var(--font-display,Montserrat,sans-serif);font-size:clamp(30px,3.5vw,44px);line-height:1.15;letter-spacing:-.025em;font-weight:700;margin:0 0 12px}
@@ -886,7 +893,7 @@ html[data-homepage-preview] .hero-actions .secondary-cta:active{
 @media(max-width:600px){.hs-scene-simulation>.hs-journey-back{top:30px}}
 @media(max-width:600px) and (max-height:700px){.hs-scene-simulation>.hs-journey-back{top:0}}
 /* Shared hero action dimensions and responsive simulation introduction. */
-:root{--sc-hero-action-height:57px;--sc-sim-intro-size:28px}
+:root{--sc-hero-action-height:57px;--sc-sim-intro-size:var(--sc-type-form-heading-size)}
 html[data-homepage-preview] .hero-actions{display:grid;grid-template-columns:minmax(0,1fr);width:max-content;max-width:100%;gap:16px;align-items:stretch}
 html[data-homepage-preview] .hero-actions :is(.primary-cta,.secondary-cta){box-sizing:border-box;width:100%;height:var(--sc-hero-action-height);min-height:var(--sc-hero-action-height);font:600 14px/21px Montserrat,system-ui,sans-serif;justify-content:center;padding:16px 28px;gap:10px}
 html[data-homepage-preview] .hero-actions .secondary-cta .play-icon{color:#d4ff24}
@@ -952,7 +959,7 @@ body[data-lab-accent] .av-stories .av-story-card{border-radius:20px!important;fo
 @media(prefers-reduced-motion:reduce){.av-story-card{transition:none}}
 
 /* Keep hero copy and its input in one readable column, including the result. */
-:root{--sc-sim-copy-max:440px;--sc-page-inset:max(24px,5vw);--sc-hero-content-inset:calc(max(var(--sc-page-inset),calc((100% - var(--sc-layout-content)) / 2)) + 24px)}
+:root{--sc-sim-copy-max:var(--sc-layout-form);--sc-page-inset:max(24px,5vw);--sc-hero-content-inset:calc(max(var(--sc-page-inset),calc((100% - var(--sc-layout-content)) / 2)) + 24px)}
 /* Full-bleed scene; text aligns with the centered content rail. */
 html[data-sc-shell][data-homepage-preview] .site-header{padding-inline:var(--sc-page-inset)}
 html[data-homepage-preview] .hero-copy{margin-inline:var(--sc-hero-content-inset) 0;max-width:calc(100% - 2 * var(--sc-hero-content-inset));padding-inline:0}
@@ -960,7 +967,7 @@ html[data-homepage-preview] .hero-copy{margin-inline:var(--sc-hero-content-inset
 /* Match the homepage hero inset instead of centering a capped stage container. */
 :is(.homepage-study,html[data-homepage-preview]).hs-simulation-route .hs-scene-simulation{width:auto;max-width:none;margin-inline:var(--sc-hero-content-inset)}
 .hs-scene-simulation :is(.hs-location-step,.hs-retro-hero){width:100%;max-width:var(--sc-sim-copy-max);margin-inline:0;box-sizing:border-box}
-.hs-scene-simulation .hs-location-form{width:100%;max-width:100%;box-sizing:border-box}
+:is(.hs-scene-simulation,.sc-location-dock,.sc-live-entry) .hs-location-form{width:100%;max-width:100%;box-sizing:border-box}
 .hs-organisation-grid .hs-audience-icon{width:72px;height:72px;margin-bottom:16px}
 @media(max-width:600px){.hs-organisation-grid .hs-audience-icon{width:64px;height:64px;margin-bottom:12px}}
 
@@ -1012,7 +1019,7 @@ solar-illustration.hs-audience-art::before{content:none}
 /* Calm content hierarchy; the hero remains the main visual emphasis. */
 .homepage-study .hs-tool h3{font-size:clamp(22px,2vw,26px);line-height:1.3}
 .homepage-study .hs-guide h3{font-size:var(--sc-type-title-size);line-height:1.4}
-.homepage-study .hs-section{padding-block:72px;padding-inline:var(--sc-page-inset)}
+.homepage-study .hs-section{padding-block:var(--sc-space-section);padding-inline:var(--sc-page-inset)}
 @media(min-width:851px){
  .homepage-study .hero-copy .hero-actions{--sc-hero-action-height:52px;gap:12px}
  .homepage-study .hs-person-section .sc-person-picture{max-width:280px}
@@ -1103,3 +1110,73 @@ html[data-sc-shell][data-homepage-preview] .homepage-study .site-header[data-her
 
 /* Native button semantics with the existing text-link appearance. */
 .homepage-study button.hs-all-calculators{font:inherit;color:inherit;background:none;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:10px}
+
+/* A route swaps content, never the renderer's viewport or camera framing. */
+html[data-homepage-preview] .homepage-study .hs-hero-portal>.hero>.scene{height:100svh!important;min-height:0!important;inset:0 0 auto!important}
+html[data-homepage-preview] .homepage-study .hs-hero-portal>.hero{min-height:max(740px,100svh)!important;height:auto!important}
+@media(max-width:600px){html[data-homepage-preview] .homepage-study .hs-hero-portal>.hero{min-height:100svh!important}}
+.homepage-study .hs-count-number{display:inline-block;inline-size:auto!important;font-variant-numeric:tabular-nums;text-align:left}
+.homepage-study .hs-retro-status{min-height:3.2em}
+.homepage-study:not(.sc-location-ready) .hs-simulation-content{display:none}
+.homepage-study:not(.hs-simulation-route) .sc-live{display:none}
+.sc-live iframe[hidden],.sc-live-entry[hidden]{display:none}
+.sc-live-entry{padding-block:24px}
+.sc-location-dock{position:fixed;z-index:35;inset:auto var(--sc-page-inset) 16px;margin-inline:auto;max-width:440px;color:var(--ink);padding:0}
+.sc-location-dock[hidden]{display:none}
+.sc-location-dock .hs-location-form{margin:0}
+.sc-location-dock .hs-location-form>div{background:var(--sc-surface-light)}
+.sc-location-dock .hs-location-form>div,.sc-live-entry .hs-location-form>div{width:100%}
+.sc-location-dock .hs-location-form input,.sc-live-entry .hs-location-form input{color:var(--ink)}
+.sc-location-dock .hs-location-form input::placeholder,.sc-live-entry .hs-location-form input::placeholder{color:var(--ink-soft)}
+.homepage-study .hs-retro-hero .hs-retro-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));container-type:inline-size;width:100%;gap:24px}
+.homepage-study .hs-retro-hero .hs-retro-values strong{font-size:var(--sc-type-metric-size)}
+.homepage-study .hs-retro-hero .hs-retro-values p+p{padding-left:0;border-left:0;position:relative}
+.homepage-study .hs-retro-hero .hs-retro-values p+p::before{content:"";position:absolute;inset:0 auto 0 -12px;border-left:1px solid color-mix(in srgb,currentColor 28%,transparent)}
+.homepage-study .hs-retro-hero .hs-retro-values strong{justify-content:flex-start;text-align:left}
+
+.sc-location-dock [role=status]:empty{display:none}
+.sc-location-dock [role=status]{font-size:12px;margin:8px 4px}
+/* Clearing loading text must not pull the result actions upward. */
+.homepage-study .hs-retro-status:empty{display:block}
+
+/* Completed results must not overlap the following chart. */
+.homepage-study.hs-simulation-route.sc-location-ready #hs-simulation-race{margin-top:0;background:#08191c}
+
+/* Simulation uses the same restrained typography roles as the homepage. */
+.homepage-study .hs-simulation-content>.hs-wrap{max-width:var(--sc-layout-reading);width:100%;margin-inline:auto}
+.homepage-study .hs-simulation-lightbox{padding:clamp(24px,3vw,40px);border-radius:24px}
+.homepage-study .hs-simulation-lightbox h2{margin:12px 0 20px}
+.homepage-study .hs-simulation-lightbox .hs-simulation-calculator{grid-template-columns:minmax(0,220px) minmax(0,1fr);align-items:center;gap:24px 32px;margin-top:28px;padding:24px}
+.homepage-study .hs-simulation-lightbox .hs-simulation-calculator>solar-illustration{grid-row:1 / span 2}
+.homepage-study .hs-simulation-calculator h3{margin:0 0 12px}
+.homepage-study .hs-simulation-calculator p{margin:0}
+.homepage-study .hs-simulation-calculator>.primary-cta{grid-column:2;justify-self:start;margin:0;padding:12px 22px;min-height:46px;font-size:var(--sc-type-action-size)}
+@media(max-width:600px){
+ .homepage-study .hs-simulation-lightbox .hs-simulation-calculator{grid-template-columns:minmax(0,1fr);gap:20px;padding:20px}
+ .homepage-study .hs-simulation-lightbox .hs-simulation-calculator>solar-illustration{grid-row:auto}
+ .homepage-study .hs-simulation-calculator>.primary-cta{grid-column:1;justify-self:start}
+}
+
+.homepage-study .hs-simulation-content h2{font-size:var(--sc-type-section-size);line-height:var(--sc-type-section-leading);letter-spacing:-.035em}
+.homepage-study .hs-simulation-content h3{font-size:var(--sc-type-title-size);line-height:var(--sc-type-title-leading)}
+.homepage-study .hs-simulation-content p:not(.hs-kicker),
+.homepage-study .hs-scene-simulation :is(.hs-location-step,.hs-retro-hero)>p{font-size:var(--sc-type-body-size);line-height:var(--sc-type-body-leading)}
+.homepage-study .hs-simulation-content .hs-simulation-lightbox>p{max-width:var(--sc-layout-reading)}
+
+/* Both transparent hero actions own a contrast region at their actual position. */
+html[data-sc-shell][data-homepage-preview] .homepage-study :is(.hero-actions .secondary-cta,.hs-retro-actions .hs-retro-secondary)[data-hero-tone]{color:var(--sc-region-ink)!important;border-color:currentColor;transition:background-color .2s}
+html[data-sc-shell][data-homepage-preview] .homepage-study .hs-retro-secondary[data-hero-tone] :is(span,svg){color:inherit;stroke:currentColor}
+
+.homepage-study .hs-inline-help:is(:hover,:focus-visible){opacity:1}
+
+/* The same atmospheric edge is present before, during and after route changes. */
+html[data-homepage-preview] .homepage-study .hs-hero-portal>.hero::after{content:"";position:absolute;inset:auto 0 0;height:320px;z-index:1;pointer-events:none;background:linear-gradient(to bottom,transparent,rgba(0,0,0,.24));mix-blend-mode:multiply}
+
+html[data-sc-shell][data-homepage-preview] .homepage-study .hs-location-form[data-hero-tone] input{color:var(--sc-region-ink);transition:none}
+html[data-sc-shell][data-homepage-preview] .homepage-study .hs-location-form[data-hero-tone]>div:focus-within input{color:#153740}
+
+/* Contrast updates must not replace the invitation's opacity transition. */
+html[data-sc-shell][data-homepage-preview] .homepage-study .hs-retro-secondary.hs-scroll-invitation[data-hero-tone]{transition:opacity .65s ease,transform .65s ease,background-color .2s}
+@media(prefers-reduced-motion:reduce){html[data-sc-shell][data-homepage-preview] .homepage-study .hs-retro-secondary.hs-scroll-invitation[data-hero-tone]{transition:none}}
+
+@media(prefers-reduced-transparency:reduce){.homepage-study .hs-retro-secondary.hs-scroll-invitation{backdrop-filter:none;-webkit-backdrop-filter:none}}

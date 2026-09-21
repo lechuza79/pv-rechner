@@ -355,6 +355,23 @@ jobs:
           npm run foerder:screen -- --treffer --technik pv
           npm run foerder:suche -- --externe
 
+      # Getaktet nach dem Versand (Tag 3/7/14/28), nicht nach dem Kalender.
+      # Ist nichts fällig, wird nichts abgerufen und nichts bezahlt.
+      - name: Wirkung der Ansprache messen
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
+        run: |
+          if [ -z "$DATAFORSEO_LOGIN" ] || [ -z "$DATAFORSEO_PASSWORD" ]; then
+            echo "::warning::Kein DataForSEO-Zugang hinterlegt - Wirkung wurde NICHT gemessen."
+            exit 0
+          fi
+          npm run wirkung -- --schreiben
+
       - name: Abschlussbericht der Erfassung
         if: always()
         env:

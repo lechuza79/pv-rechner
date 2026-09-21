@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { GROESSE_LABEL } from "../../../../lib/seitenwert";
+import type { SeitenwertZeile } from "../../../../lib/seitenwert-laden";
 import { v, space, pad } from "../../../../lib/theme";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import { GEWERKE } from "../../../../lib/fachbetrieb-extrakt";
@@ -27,6 +29,8 @@ import SelectField from "../../../../components/SelectField";
 
 type Zeile = {
   domain: string;
+  /** Fremdschätzung zur Größe der Seite; fehlt, solange sie nicht erhoben ist. */
+  seitenwert?: SeitenwertZeile | null;
   firmenname: string | null;
   rechtsform: string | null;
   hr_nummer: string | null;
@@ -120,6 +124,18 @@ const SPALTEN: {
     ),
   },
   { text: "Merkmale", breite: "0 0 210px" },
+  {
+    text: "Relevanz",
+    breite: "0 0 96px",
+    hilfe: (
+      <>
+        Wie groß die Seite ist: geschätzte Besucher im Monat aus der Google-Suche, dazu
+        ein Rangwert über die Verlinkung (0–1000). Beides eine Fremdschätzung
+        (DataForSEO), keine Messung — sie ordnet, welcher Betrieb Reichweite hat, und
+        taugt nicht als Zahl für eine Aussage nach außen.
+      </>
+    ),
+  },
   {
     text: "belegt",
     breite: "0 0 62px",
@@ -518,6 +534,25 @@ export default function FachbetriebeAnsicht() {
                   {MERKMALE.filter((m) => m.kurz && m.wert(z)).map((m) => (
                     <Marke key={m.name} text={m.kurz!(z)} />
                   ))}
+                </span>
+
+                {/* Relevanz: Größe der Seite, geschätzt. Die Zahl steht klein
+                    darunter — der Rang ordnet, die Besucher erklären ihn. */}
+                <span style={{ flex: "0 0 96px", minWidth: 0, lineHeight: 1.25 }}>
+                  <span style={{ ...einzeilig, color: v("--color-text-muted") }}>
+                    {z.seitenwert ? GROESSE_LABEL[z.seitenwert.groesse] : "—"}
+                  </span>
+                  {z.seitenwert?.besucher != null && (
+                    <span
+                      style={{
+                        ...einzeilig,
+                        fontSize: v("--font-size-caption"),
+                        color: v("--color-text-muted"),
+                      }}
+                    >
+                      {z.seitenwert.besucher.toLocaleString("de-DE")}/Mon.
+                    </span>
+                  )}
                 </span>
 
                 <span

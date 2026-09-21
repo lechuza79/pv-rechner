@@ -1,0 +1,142 @@
+{
+  "_hinweis": "Erzeugt aus public/dynamic-hero/dist/test.js — nicht von Hand ändern. Neu erzeugen: node scripts/startseite-sektionen.mjs",
+  "gespiegelt": [
+    "hs-tools",
+    "hs-local-atlas",
+    "hs-guides",
+    "hs-organisation-links"
+  ],
+  "einleitung": {
+    "kicker": "AUS SONNENLICHT WIRD KLARHEIT",
+    "titel": "Eine gute Entscheidung beginnt mit deinen Zahlen.",
+    "text": "Ein eigenes Dach? Ein freier Balkon? Oder eine neue Heizung? Finde heraus, was sich für dich rechnet."
+  },
+  "werkzeuge": [
+    {
+      "kennung": "01 / PHOTOVOLTAIK",
+      "hinweis": null,
+      "titel": "Dein Dach kann mehr.",
+      "text": "Finde die passende Anlage oder rechne deine konkrete Planung durch.",
+      "links": [
+        {
+          "text": "Passende Anlage finden",
+          "href": "/pv-bedarf-berechnen"
+        },
+        {
+          "text": "Anlage durchrechnen",
+          "href": "/photovoltaik-rechner"
+        }
+      ]
+    },
+    {
+      "kennung": "02 / BALKONKRAFTWERK",
+      "hinweis": null,
+      "titel": "Kleine Fläche. Eigener Strom.",
+      "text": "Was bringt dein Balkon – und welches Set lohnt sich für dich?",
+      "links": [
+        {
+          "text": "Balkonkraftwerk berechnen",
+          "href": "/balkonkraftwerk/rechner"
+        }
+      ]
+    },
+    {
+      "kennung": "03 / WÄRMEPUMPE",
+      "hinweis": null,
+      "titel": "Wie heizt du morgen?",
+      "text": "Vergleiche Anschaffung und laufende Heizkosten mit deiner bisherigen Heizung.",
+      "links": [
+        {
+          "text": "Wärmepumpe durchrechnen",
+          "href": "/waermepumpe-rechner"
+        }
+      ]
+    },
+    {
+      "kennung": "04 / FÖRDERCHECK",
+      "hinweis": null,
+      "titel": "Welche Förderung bekommst du?",
+      "text": "Entdecke Zuschüsse für deine Solaranlage – passend zu deinem Bundesland und deinem Ort.",
+      "links": [
+        {
+          "text": "Förderung finden",
+          "href": "/photovoltaik-foerderung"
+        }
+      ]
+    },
+    {
+      "kennung": "05 / ANGEBOTSCHECK",
+      "hinweis": "Demnächst",
+      "titel": "Schon ein Angebot auf dem Tisch?",
+      "text": "Ordne Preis, Anlagengröße und Annahmen besser ein. Wir arbeiten am Angebotscheck.",
+      "links": []
+    }
+  ],
+  "atlas": {
+    "kicker": "DIE ENERGIEWENDE VOR DEINER HAUSTÜR",
+    "titel": "Wie weit ist dein Ort?",
+    "text": "Entdecke, wie viel Solarenergie schon in deiner Gemeinde steckt. Sieh dir lokale Zahlen an und finde heraus, wie dein Ort im Vergleich zur Umgebung dasteht.",
+    "punkte": [
+      "Solaranlagen und Speicher in deiner Gemeinde",
+      "Deinen Ort mit der Region vergleichen",
+      "Lokale Zahlen und Geschichten entdecken"
+    ],
+    "link": {
+      "text": "Deinen Ort entdecken",
+      "href": "/solar-atlas"
+    }
+  },
+  "ratgeber": {
+    "titel": "Erst verstehen. Dann entscheiden.",
+    "alle": {
+      "text": "Alle Ratgeber",
+      "href": "/ratgeber"
+    },
+    "eintraege": [
+      {
+        "kennung": "01",
+        "bereich": "PHOTOVOLTAIK",
+        "titel": "Lohnt sich eine Solaranlage mit Speicher?",
+        "href": "/ratgeber/lohnt-sich-pv-mit-speicher"
+      },
+      {
+        "kennung": "02",
+        "bereich": "HEIZEN",
+        "titel": "Gasheizung oder Wärmepumpe?",
+        "href": "/ratgeber/gasheizung-oder-waermepumpe"
+      },
+      {
+        "kennung": "03",
+        "bereich": "BALKONKRAFTWERK",
+        "titel": "Wann lohnt sich ein Balkonspeicher?",
+        "href": "/balkonkraftwerk/ratgeber/mit-speicher"
+      }
+    ]
+  },
+  "organisationen": {
+    "kicker": "Solar Check für Unternehmen & Organisationen",
+    "titel": "Unsere Tools. Für deine Kunden, deine Bürger, dein Publikum.",
+    "eintraege": [
+      {
+        "titel": "Für Fachbetriebe",
+        "text": "Rechner im eigenen Auftritt · Pilot besprechen",
+        "href": "/kontakt"
+      },
+      {
+        "titel": "Für Kommunen",
+        "text": "Lokale Energiedaten zeigen und teilen",
+        "href": "/energie-widgets"
+      },
+      {
+        "titel": "Für Versorger",
+        "text": "Rechner und Förderdaten als Kundenservice",
+        "href": "/kontakt"
+      },
+      {
+        "titel": "Für Medien & Creator",
+        "text": "Grafiken, Daten und Geschichten nutzen",
+        "href": "/presse"
+      }
+    ]
+  }
+}

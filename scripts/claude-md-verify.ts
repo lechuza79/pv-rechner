@@ -138,7 +138,13 @@ const ZAHLEN: Zahlenpruefung[] = [
     wahrheit: () => {
       const t = lies("lib/theme.ts");
       const stufen = ["micro", "caption", "small", "body", "lead", "h3", "h2", "h1"];
-      const werte = stufen.map((n) => greif(t, new RegExp(`'--font-size-${n}':\\s*'(\\d+)px'`)));
+      // Die Überschriften wachsen seit 09/2026 mit ihrer Spalte (clamp); die
+      // Skala nennt deren Obergrenze, also die größte Stufe, die vorkommt.
+      const werte = stufen.map(
+        (n) =>
+          greif(t, new RegExp(`'--font-size-${n}':\\s*'(\\d+)px'`)) ??
+          greif(t, new RegExp(`'--font-size-${n}':\\s*'clamp\\(\\d+px,[^,]+,(\\d+)px\\)'`)),
+      );
       return werte.some((w) => w === null) ? null : werte.join(" · ");
     },
     behauptung: () => greif(claudeMd, /Acht Textstufen \(([\d\u00b7 ]+),/),
@@ -152,16 +158,6 @@ const ZAHLEN: Zahlenpruefung[] = [
       return werte.some((w) => w === null) ? null : werte.join(" · ");
     },
     behauptung: () => greif(claudeMd, /vier Display-Stufen \(([\d\u00b7 ]+)\)/),
-  },
-  {
-    was: "Maximale Breite der Kopfzeile",
-    wahrheit: () => greif(lies("lib/theme.ts"), /'--header-max-width':\s*'(\d+)px'/),
-    behauptung: () => greif(claudeMd, /`--header-max-width`\s*\((\d+)\s*px\)/),
-  },
-  {
-    was: "Umschaltpunkt Kopfzeile (Menue statt Burger)",
-    wahrheit: () => greif(lies("components/Header.tsx"), /matchMedia\("\(min-width:\s*(\d+)px\)"\)/),
-    behauptung: () => greif(claudeMd, /NICHT gegen den Umschaltpunkt \((\d+)\s*px\)/),
   },
   {
     was: "Zeitlimit der Datenbank-Notbremse",

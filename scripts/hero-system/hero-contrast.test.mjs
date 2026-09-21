@@ -38,3 +38,35 @@ test('host has no backing surface and mobile/legacy colors cannot override regio
  assert.match(js,/getComputedStyle\(node\)/);
  assert.match(css,/\.hero-actions\[data-hero-tone\] \.secondary-cta\{color:var\(--sc-region-ink\)!important/);
 });
+
+test('transparent actions on both routes receive their own contrast decision after insertion',()=>{
+ const js=read('public/homepage-study/interactions.js'),css=read('public/homepage-study/homepage.css');
+ const targets=js.match(/const targets=\(\)=>[^;]+/)[0];
+ for(const selector of ['.hero-actions .secondary-cta','.hs-retro-actions .hs-retro-secondary'])assert.ok(targets.includes(selector));
+ assert.match(js,/contentObserver\.observe\(root,\{childList:true,subtree:true\}\)/);
+ assert.match(css,/:is\(\.hero-actions \.secondary-cta,\.hs-retro-actions \.hs-retro-secondary\)\[data-hero-tone\]\{color:var\(--sc-region-ink\)!important;border-color:currentColor/);
+});
+
+const samplerSource=read('public/hero-system/contrast-sampler.js');
+const {chooseTone}=await import('data:text/javascript;base64,'+Buffer.from(samplerSource).toString('base64'));
+test('painted-background policy covers the full brightness range and replaces unsafe stale tones',()=>{
+ for(let value=0;value<=255;value++){
+  const samples=Array.from({length:100},()=>[value,value,value]);
+  const result=chooseTone(samples,value<128?'dark':'light');
+  assert.ok(result.ratio>=4.5,`gray ${value}: ${JSON.stringify(result)}`);
+ }
+ assert.equal(chooseTone(Array.from({length:100},()=>[20,25,30]),'dark').tone,'light');
+ assert.equal(chooseTone(Array.from({length:100},()=>[220,225,230]),'light').tone,'dark');
+});
+test('isolated particles do not flip a dark scene but a broad light region does',()=>{
+ const dark=Array.from({length:98},()=>[20,20,20]);
+ assert.equal(chooseTone([...dark,[255,255,255],[255,255,255]]).tone,'light');
+ assert.equal(chooseTone(Array.from({length:100},()=>[235,235,235])).tone,'dark');
+});
+test('both rendering hosts measure after paint and can wake a paused scene',()=>{
+ for(const path of ['public/dynamic-hero/dist/test.js','public/hero-system/dist/hero-stage.js','public/hero-system/source/hero-stage.js']){
+  const source=read(path);assert.match(source,/SolarSceneContrast\?\.afterFrame/);assert.match(source,/sc-contrast-request/);
+ }
+ assert.match(samplerSource,/version!==revision/);
+ assert.match(samplerSource,/Incomplete background capture/);
+});

@@ -566,7 +566,29 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   (kw39-de-energie-stromsektor-1211294) führt die erste Lesung weiter für
   //   Donnerstag, 24.09.2026 — sie steht bevor. Zustand unverändert:
   //   Regierungsentwurf, eingebracht.
-  geprueftIso: "2026-09-20",
+  // 21.09.2026: Drucksache 21/7867 erneut geladen (5,3 MB, 15 015 Zeilen
+  //   Textfassung) und alle fünf Entwurfswerte im Satzzusammenhang gefunden,
+  //   zellgleich und an denselben Stellen wie gestern: „In der Angabe vor
+  //   Nummer 1 wird die Angabe ‚7 Cent‘ durch die Angabe ‚6,2 Cent‘ ersetzt"
+  //   (Z. 2168), „Die Höhe des Bonus nach Absatz 1 beträgt 1,5 Cent pro
+  //   eingespeiste Kilowattstunde" (Z. 2295), „temporär für maximal 36 Monate
+  //   gewährt" (Z. 125), „mit einer installierten Leistung von weniger als 7
+  //   Kilowatt, die vor dem 1. Januar 2031 in …" (Z. 1093) und „maximal 50
+  //   Prozent der installierten Leistung … des zweiten Segments" (Z. 960). Das
+  //   Deckblatt trägt weiter „Vorabfassung – wird durch die lektorierte Fassung
+  //   ersetzt"; Primärquelle bleibt die BR-Drucksache 470/26.
+  //   Der 21.09.2026 ist der MONTAG der Sitzungswoche, und es ist 00:05 Uhr —
+  //   seit dem gestrigen Stand hat keine der beiden Kammern getagt. Die erste
+  //   Lesung im Bundestag steht für Donnerstag, 24.09.2026 an, die Sitzung des
+  //   Bundesrates für den 25.09.2026; beide liegen noch vor uns.
+  //   EINE SUCHFALLE, die heute zugeschnappt ist und deshalb hier steht: Eine
+  //   Suchzusammenfassung meldete „der Bundestag BERIET den Entwurf am
+  //   24. September 2026 in erster Lesung" — im Perfekt, über einen Termin, der
+  //   drei Tage in der Zukunft liegt. Ein angekündigter Termin liest sich in
+  //   einer Zusammenfassung wie ein erledigter Verfahrensschritt; nur das Datum
+  //   gegen den Kalender gehalten deckt es auf. Zustand unverändert:
+  //   Regierungsentwurf, eingebracht.
+  geprueftIso: "2026-09-21",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

@@ -1,7 +1,8 @@
 import { municipalReviewQueue, validateMunicipalReviews, type InquiryReceipt } from "../lib/funding-municipal-review";
 import municipalReviews from "../data/funding/municipal-reviews.json";
-import { groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
-import { seitenAbrufAdressen, seitenSchluessel } from "../lib/funding-seiten";
+import { ABSCHLIESSENDE_ERGEBNISSE, urteilPasstZurMessung, groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
+import { abschliessendesErgebnis, notizMitHerkunft } from "../lib/funding-altergebnis";
+import { liestDieAngefragteSeite, seitenAbrufAdressen, seitenSchluessel } from "../lib/funding-seiten";
 import { FundingSourceReader, FundingSourceUnreadable, recordStage } from "./lib/funding-source-reader";
 /**
  * Abdeckungs-Screening: alle Gemeinden mit Förderseite systematisch durchsehen.
@@ -304,10 +305,63 @@ async function quellen(): Promise<void> {
 }
 
 /**
+ * Alte Freitext-Urteile in ein abschließendes Ergebnis umdeuten.
+ *
+ *   npm run foerder:screen -- --altergebnisse              # nur zeigen
+ *   npm run foerder:screen -- --altergebnisse --schreiben  # wirklich umdeuten
+ *
+ * Die Zuordnung steht in lib/funding-altergebnis.ts als exakte Tabelle und ist
+ * dort von Tests festgenagelt; hier wird nichts nachformuliert. Ohne `--schreiben`
+ * passiert nichts — ein versehentlicher Lauf soll nicht 267 fremde Urteile
+ * umdeuten.
+ */
+async function altergebnisse(): Promise<void> {
+  const rows = await alleZeilen<ReviewSource>(
+    "funding_seiten",
+    "region_id,url,gelesen_am,gelesen_ergebnis,gelesen_notiz,seite_geaendert_am",
+    (q) => q.order("region_id").order("url"),
+  );
+  const offen = pendingFundingSources(rows).filter((r) => r.gelesen_am);
+  const umzudeuten: { zeile: ReviewSource; neu: string }[] = [];
+  const vonHand = new Map<string, number>();
+  for (const zeile of offen) {
+    const neu = abschliessendesErgebnis({ ergebnis: zeile.gelesen_ergebnis, notiz: zeile.gelesen_notiz });
+    if (neu) umzudeuten.push({ zeile, neu });
+    else {
+      const wort = (zeile.gelesen_ergebnis ?? "").trim();
+      vonHand.set(wort, (vonHand.get(wort) ?? 0) + 1);
+    }
+  }
+  const schreiben = process.argv.includes("--schreiben");
+  console.log(`${offen.length} gelesene Zeilen liegen trotzdem im Vorrat.`);
+  console.log(`  ${umzudeuten.length} lassen sich nach der Tabelle abhaken, ${offen.length - umzudeuten.length} bleiben.\n`);
+  const nachWort = new Map<string, number>();
+  for (const { neu } of umzudeuten) nachWort.set(neu, (nachWort.get(neu) ?? 0) + 1);
+  for (const [wort, anzahl] of [...nachWort].sort((a, b) => b[1] - a[1])) console.log(`  → ${wort}: ${anzahl}`);
+  console.log("\nBleibt liegen (von Hand oder frisch messen):");
+  for (const [wort, anzahl] of [...vonHand].sort((a, b) => b[1] - a[1])) console.log(`  ${String(anzahl).padStart(4)}  ${wort}`);
+  if (!schreiben) {
+    console.log("\nProbelauf — nichts geschrieben. Mit --schreiben wird umgedeutet.");
+    return;
+  }
+  let geschrieben = 0;
+  for (const { zeile, neu } of umzudeuten) {
+    const { error } = await sb
+      .from("funding_seiten")
+      .update({ gelesen_ergebnis: neu, gelesen_notiz: notizMitHerkunft(zeile.gelesen_notiz, zeile.gelesen_ergebnis ?? "") })
+      .eq("region_id", zeile.region_id)
+      .eq("url", zeile.url);
+    if (error) throw new Error(`${zeile.region_id} ${zeile.url}: ${error.message}`);
+    geschrieben += 1;
+  }
+  console.log(`\n${geschrieben} Zeilen umgedeutet, der alte Wortlaut steht jeweils in der Notiz.`);
+}
+
+/**
  * Eine Fundstelle als gelesen abhaken.
  *
  *   npm run foerder:screen -- --gelesen 05370020 --url https://example.de/foerderung --ergebnis aufgenommen --beleg "150 € je Anlage"
- *   npm run foerder:screen -- --gelesen 13074001 --url beispiel.de/weg --ergebnis "Adresse entfernt" --tot
+ *   npm run foerder:screen -- --gelesen 13074001 --url beispiel.de/weg --ergebnis quelle-entfernt --tot
  *   Reviews require one municipality and one currently readable source.
  *
  * `ergebnis` ist bewusst frei und nicht auf eine Auswahl festgelegt: Was beim
@@ -335,7 +389,29 @@ async function gelesen(): Promise<void> {
   const roh = wert("gelesen");
   const ergebnis = wert("ergebnis");
   if (!roh || !ergebnis) {
-    console.error("Aufruf: --gelesen <region_id> --url <url> (--beleg <quote> | --tot) --ergebnis <text> [--notiz <text>]");
+    console.error(`Aufruf: --gelesen <region_id> --url <url> (--beleg <quote> | --tot) --ergebnis <${[...ABSCHLIESSENDE_ERGEBNISSE].join(" | ")}> [--notiz <text>]`);
+    process.exit(1);
+  }
+  // EIN FREITEXT-ERGEBNIS HAKT NICHTS AB — BLOCKER (20.09.2026).
+  // Eine Zeile verlässt den Vorrat nur, wenn ihr Ergebnis eines der
+  // abschließenden Wörter ist (`pendingFundingSources`). Jedes andere Wort
+  // schreibt zwar Datum und Beleg, lässt die Zeile aber stehen — von einer
+  // NIE gelesenen Zeile ist sie danach nicht zu unterscheiden, und genau so
+  // sinkt der Vorrat nicht, obwohl gearbeitet wurde.
+  //   Gemessen an diesem Tag: 625 der 2.375 gelesenen Zeilen (26 %) tragen
+  //   Freitext — „verworfen", „Adresse entfernt (404/410 beim Gegenlesen)" —
+  //   und liegen deshalb weiter im Vorrat von 13.905. Mir selbst ist es in
+  //   diesem Lauf mit drei Zeilen passiert, bevor ich es gemessen habe.
+  //   Dieselbe Fehlerklasse wie der Vorrat, aus dem nichts herausgenommen
+  //   werden konnte: von außen unsichtbar, weil die Zahl dabei genau so
+  //   aussieht wie bei ehrlicher Arbeit.
+  // Die Prosa gehört in `--notiz`; `--ergebnis` trägt das Urteil.
+  if (!ABSCHLIESSENDE_ERGEBNISSE.has(ergebnis.trim().toLowerCase())) {
+    console.error(
+      `„${ergebnis}" ist kein abschließendes Ergebnis — die Zeile bliebe im Vorrat stehen, als wäre sie nie gelesen worden.\n` +
+        `Erlaubt: ${[...ABSCHLIESSENDE_ERGEBNISSE].join(", ")}\n` +
+        `Die Begründung gehört in --notiz.`,
+    );
     process.exit(1);
   }
   const ids = roh.split(",").map((x) => x.trim()).filter(Boolean);
@@ -382,15 +458,26 @@ async function gelesen(): Promise<void> {
   // dieselbe Klasse wie die fehlende Kennung eine Zeile weiter unten.
   let response: Response | undefined;
   let letzterFehler: unknown;
+  let gelandetAuf: string | undefined;
   const gruende: (string | null)[] = [];
   for (const adresse of seitenAbrufAdressen(sourceUrl)) {
     try {
-      response = await sources.verify(adresse, {
+      const antwort = await sources.verify(adresse, {
         headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
         redirect: "follow",
         signal: AbortSignal.timeout(25000),
       });
-      break;
+      // EINE ANTWORT VON WOANDERS BEENDET DIE SUCHE NICHT — gemessen am
+      // 20.09.2026 an Albershausen: Die Form ohne „www." antwortet mit 200 und
+      // liefert die STARTSEITE; die Form mit „www." liefert die Förderseite und
+      // wurde nie probiert, weil die Schleife beim ersten Erfolg abbrach.
+      // Behalten wird die letzte Antwort trotzdem: Passt keine Schreibweise,
+      // soll die Fehlermeldung sagen, wo wir gelandet sind, statt nur „der
+      // Beleg steht nicht drin" — das ist derselbe Satz wie bei einem falschen
+      // Zitat und schickt die Suche in die falsche Richtung.
+      response = antwort;
+      gelandetAuf = antwort.url || adresse;
+      if (liestDieAngefragteSeite(sourceUrl, gelandetAuf)) break;
     } catch (fehler) {
       letzterFehler = fehler;
       gruende.push(fehler instanceof FundingSourceUnreadable ? fehler.reason : null);
@@ -407,8 +494,18 @@ async function gelesen(): Promise<void> {
   } else {
     if (!response) throw letzterFehler ?? new Error("Die Quelle war nicht lesbar.");
     const original = await response.text();
-    if (!sichtbarerText(quote!) || !sichtbarerText(original).includes(sichtbarerText(quote!))) throw new Error("Der Beleg steht nicht im aktuell gelesenen Original.");
+    if (!sichtbarerText(quote!) || !sichtbarerText(original).includes(sichtbarerText(quote!))) {
+      const woanders = gelandetAuf && !liestDieAngefragteSeite(sourceUrl, gelandetAuf)
+        ? ` Gelesen wurde in Wahrheit ${gelandetAuf} — der Server leitet die angefragte Adresse dorthin um.`
+        : "";
+      throw new Error("Der Beleg steht nicht im aktuell gelesenen Original." + woanders);
+    }
   }
+  // DAS URTEIL MUSS ZUR MESSUNG PASSEN — geprüft, NACHDEM gemessen wurde, weil
+  // erst dann feststeht, ob die Adresse wirklich weg ist. Die Regel selbst
+  // steht als eigene Funktion in lib/funding-source-review.
+  const unpassend = urteilPasstZurMessung(ergebnis, tot);
+  if (unpassend) throw new Error(unpassend);
   const nachweis = tot ? "HTTP 404/410 beim Gegenlesen am " + heuteInBerlin() : quote!;
   const { error } = await sb.from("funding_seiten").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote: nachweis, entfernt: tot || undefined, note: wert("notiz"), reviewed_at: new Date().toISOString() }) }).eq("region_id", ids[0]).eq("url", normalized);
   if (error) throw new Error(error.message);
@@ -424,6 +521,7 @@ async function gelesen(): Promise<void> {
 
 async function main(): Promise<void> {
   if (process.argv.includes("--quellen") || process.argv.includes("--kommunen")) return quellen();
+  if (process.argv.includes("--altergebnisse")) return altergebnisse();
   await sources.ready();
   if (process.argv.includes("--stand")) return stand();
   if (process.argv.includes("--gelesen")) return gelesen();

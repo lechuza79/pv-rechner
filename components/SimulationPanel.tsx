@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
 import { IconArrowRight, IconCheck } from "./Icons";
 import { useChartExport } from "../lib/useChartExport";
@@ -495,13 +495,25 @@ function WeatherStat({ label, value, unit }: { label: string; value: string; uni
 // ─── DailyChart (SVG) ───────────────────────────────────────────────────────
 
 function DailyChart({ points, kwp }: { points: HourlyPoint[]; kwp: number }) {
-  const W = 640, H = 220;
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(320);
+  useEffect(() => {
+    const element = chartRef.current;
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry.contentRect.width > 0) setWidth(entry.contentRect.width);
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  // One SVG unit equals one CSS pixel: labels never scale with the container.
+  const W = width, H = 220;
   const P = { t: 16, r: 12, b: 40, l: 42 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
 
   // Filter to daylight hours (5–21)
   const dayPoints = points.filter(p => p.hour >= 5 && p.hour <= 21);
-  if (dayPoints.length === 0) return null;
+  if (dayPoints.length === 0) return <div ref={chartRef} />;
 
   const hasConsumption = dayPoints.some(p => p.consumptionKw > 0);
   const maxKw = Math.max(kwp, ...dayPoints.map(p => p.kw), ...dayPoints.map(p => p.consumptionKw));
@@ -538,7 +550,8 @@ function DailyChart({ points, kwp }: { points: HourlyPoint[]; kwp: number }) {
   for (let val = 0; val <= yMax; val += tStep) yTicks.push(val);
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+    <div ref={chartRef} style={{ width: "100%", minWidth: 0 }}>
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: H, display: "block" }}>
       {/* Grid */}
       {yTicks.map(val => (
         <g key={val}>
@@ -583,18 +596,15 @@ function DailyChart({ points, kwp }: { points: HourlyPoint[]; kwp: number }) {
         kW
       </text>
 
-      {/* Legend — im exportierten Bild ausgeblendet: der Bildrahmen setzt die
-          Legende ohnehin größer darunter, doppelt liest sich wie ein Fehler. */}
-      {hasConsumption && (
-        <g {...{ [EXPORT_IGNORE_ATTR]: "" }} transform={`translate(${P.l}, ${H - 6})`}>
-          <line x1={0} x2={16} y1={0} y2={0} stroke="var(--color-accent)" strokeWidth={2} />
-          <text x={20} y={0} dominantBaseline="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)">Erzeugung</text>
-          <line x1={90} x2={106} y1={0} y2={0} stroke="var(--color-negative)" strokeWidth={1.5} strokeDasharray="4,3" opacity={0.7} />
-          <text x={110} y={0} dominantBaseline="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)">Verbrauch</text>
-          <rect x={195} y={-4} width={10} height={8} rx={1} fill="var(--color-positive)" opacity={0.3} />
-          <text x={209} y={0} dominantBaseline="middle" fontSize={fsPx("--font-size-micro")} fill="var(--color-text-muted)">Eigenverbrauch</text>
-        </g>
-      )}
+
     </svg>
+    {hasConsumption && <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", flexWrap: "wrap", gap: "8px 16px", fontSize: "var(--font-size-micro)", color: "var(--color-text-muted)" }}>
+      {([
+        ["Erzeugung", "var(--color-accent)"],
+        ["Verbrauch", "var(--color-negative)"],
+        ["Eigenverbrauch", "var(--color-positive)"],
+      ] as const).map(([label, color]) => <span key={label} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><span aria-hidden="true" style={{ width: 12, height: 3, background: color }} />{label}</span>)}
+    </div>}
+    </div>
   );
 }

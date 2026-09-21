@@ -1,20 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { readWeatherNow } from "../../lib/weather-now-service";
+import { readSolarNow } from "../../lib/solar-now-service";
 import plzCoords from "../../public/plz.json";
 import plzAgs from "../../public/plz-ags.json";
 import { szeneWetter, type WeatherNow } from "../../lib/szene-wetter";
 
-/**
- * Scene data for the homepage/simulation stage, in the exact shape the approved
- * page expects (it was served by the design package's local helper).
- *
- *   weather — our DWD live weather (/api/weather-now) mapped to the fields the
- *             stage validates. If ANY required field is missing, `weather` is
- *             left out: the stage then shows its "Wetterdaten fehlen" state
- *             instead of a sky nobody measured.
- *   power   — /api/solar-now, passed through unchanged.
- *
- * Both sources are our own, CDN-cached per postcode; nothing here calls a
- * third-party weather service.
+/** Shared server readers avoid HTTP requests back into our own deployment.
+ * Local review may explicitly use the public snapshot-backed endpoints.
  */
 
 const COORDS = plzCoords as unknown as Record<string, [number, number]>;
@@ -31,10 +23,12 @@ export async function GET(req: NextRequest) {
   if (!/^\d{5}$/.test(plz) || !c) return NextResponse.json({ error: "Unknown postcode" }, { status: 400 });
   // Local review can read live weather from production (the hourly DWD
   // snapshots exist only there); ignored on Vercel.
-  const basis = (!process.env.VERCEL && process.env.SZENE_DATEN_BASIS) || req.nextUrl.origin;
+  const basis = (!process.env.VERCEL && process.env.SZENE_DATEN_BASIS);
   const holen = (pfad: string) =>
-    fetch(basis + pfad, { signal: AbortSignal.timeout(6000) }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-  const [wetter, leistung] = await Promise.all([holen(`/api/weather-now?plz=${plz}`), holen(`/api/solar-now?plz=${plz}`)]);
+    fetch(basis + pfad, { signal: AbortSignal.timeout(6000), cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  const [wetter, leistung] = await Promise.all(basis
+    ? [holen(`/api/weather-now?plz=${plz}`), holen(`/api/solar-now?plz=${plz}`)]
+    : [readWeatherNow(plz).catch(() => null), readSolarNow(plz).catch(() => null)]);
   const body: Record<string, unknown> = {
     location: { name: ortsname(plz), lat: c[0], lon: c[1], plz },
     fetchedAt: Date.now(),
@@ -44,5 +38,5 @@ export async function GET(req: NextRequest) {
   else body.weatherError = "Quelle derzeit nicht erreichbar";
   if (leistung) body.power = leistung;
   else body.powerError = "Quelle derzeit nicht erreichbar";
-  return NextResponse.json(body, { headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=900" } });
+  return NextResponse.json(body, { headers: { "Cache-Control": w && leistung ? "public, s-maxage=300, stale-while-revalidate=900" : "no-store" } });
 }

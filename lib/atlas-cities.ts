@@ -538,6 +538,25 @@ export const ATLAS_CITIES: AtlasCity[] = [
   // Röttenbach gibt es zweimal in Mittelfranken; der Slug nennt deshalb den
   // Landkreis, sonst kollidiert er mit dem Röttenbach im Landkreis Roth.
   { slug: "roettenbach-erlangen-hoechstadt", name: "Röttenbach", ags: "09572149", kreis: "Landkreis Erlangen-Höchstadt", bundesland: "Bayern", yieldKwhKwp: 1076 },
+
+  // Samtgemeinde Ostheide, 21.09.2026: ihre sechs Mitgliedsgemeinden, aus dem
+  // Menü der Samtgemeinde selbst übernommen und einzeln gegen das Melderegister
+  // geprüft. Sie teilen EIN Programm (10 % auf Solarstromanlagen, höchstens
+  // 500 €), tragen aber je eigene Seiten — eine Samtgemeinde ist kein Ort.
+  // Standort-Ertrag über /api/pvgis an der repräsentativen Lage gemessen.
+  { slug: "barendorf", name: "Barendorf", ags: "03355005", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1007 },
+  { slug: "neetze", name: "Neetze", ags: "03355026", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1005 },
+  { slug: "reinstorf", name: "Reinstorf", ags: "03355030", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1004 },
+  { slug: "thomasburg", name: "Thomasburg", ags: "03355036", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1003 },
+  { slug: "vastorf", name: "Vastorf", ags: "03355038", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 1007 },
+  { slug: "wendisch-evern", name: "Wendisch Evern", ags: "03355040", kreis: "Landkreis Lüneburg", bundesland: "Niedersachsen", yieldKwhKwp: 994 },
+
+  // Flecken Horneburg und Gemeinde Nottensdorf (Samtgemeinde Horneburg,
+  // Landkreis Stade), 21.09.2026: zwei gleichlautende Richtlinien, je ein
+  // eigenes Programm. Die übrigen Mitgliedsgemeinden haben keines. Standort-
+  // Ertrag über /api/pvgis an der repräsentativen Lage gemessen (beide PLZ 21640).
+  { slug: "horneburg", name: "Horneburg", ags: "03359027", kreis: "Landkreis Stade", bundesland: "Niedersachsen", yieldKwhKwp: 993 },
+  { slug: "nottensdorf", name: "Nottensdorf", ags: "03359034", kreis: "Landkreis Stade", bundesland: "Niedersachsen", yieldKwhKwp: 993 },
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {

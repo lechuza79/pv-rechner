@@ -115,6 +115,81 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // Fritzlar, aufgenommen am 20.09.2026. Richtlinie im Volltext gelesen, jede
+  // Bedingung steht am Programm. Die Prüfform fehlt noch und ist hier nicht
+  // trivial, weil das Antragsverfahren das UMGEKEHRTE ist: „Es handelt sich um
+  // ein nachträgliches Zuschussverfahren, d. h. die Maßnahme bedarf keiner
+  // Bewilligung." Die vorhandenen Prüfformen bilden die übliche Regel „Antrag
+  // vor Kauf" ab; sie hier anzuwenden würde dem Nutzer eine Bewilligung
+  // abverlangen, die es gar nicht gibt. Dazu kommt eine Frist, die das Modell
+  // nicht kennt: Die Rechnung darf beim Antrag höchstens drei Monate alt sein
+  // — also eine Frist NACH dem Kauf statt davor. Halb erfasst gibt es hier
+  // nicht; bis dahin stehen die Bedingungen vollständig auf der Karte.
+  "fritzlar-balkonkraftwerke-speicher",
+  // Mauer, aufgenommen am 20.09.2026. Amtsseite und Antragsformular im
+  // Volltext gelesen. Auch hier ist das Antragsverfahren das nachträgliche
+  // (die Rechnungskopie gehört zum Antrag), und die Gemeinde nennt darüber
+  // hinaus keine Frist — es gibt damit schlicht kein Antragsverfahren, gegen
+  // das eine Prüfform das Vorhaben halten könnte.
+  "mauer-balkonkraftwerke",
+  // Schwarzenfeld, aufgenommen am 20.09.2026. Förderhinweise vom 01.10.2024 im
+  // Volltext gelesen. Dasselbe umgekehrte Verfahren wie bei Mauer: „Der
+  // unterschriebene Antrag kann NACH Beschaffung der PV-Anlage eingereicht
+  // werden", Rechnungskopie und Zahlungsnachweis gehören dazu. Eine Prüfform
+  // hielte das Vorhaben gegen eine Bewilligung, die es hier nicht gibt.
+  // Die EINE Frist, die der Markt nennt, ist eine Jahresfrist am Antrag („im
+  // Jahr der Rechnungsausstellung") und keine Bedingung an das Vorhaben — sie
+  // steht vollständig auf der Karte.
+  "schwarzenfeld-balkon-pv",
+  // Kumhausen, aufgenommen am 20.09.2026. Förderkriterien 2026 im Volltext
+  // gelesen. Hier WÄRE eine Prüfform möglich, und nur deshalb steht der Eintrag
+  // hier statt bei den unmöglichen Fällen: Die Gemeinde verlangt den Antrag vor
+  // der Installation („Bereits installierte Anlagen sind von der Antragstellung
+  // ausgenommen"), also die übliche Regel. Sie ist in diesem Lauf nicht mehr
+  // erfasst worden; halb erfasst gibt es nicht, und bis dahin stehen die
+  // Bedingungen vollständig auf der Karte.
+  "kumhausen-balkon-pv",
+  // Mutterstadt, aufgenommen am 20.09.2026. Richtlinie im Volltext auf der
+  // Gemeindeseite gelesen. Wieder das nachträgliche Verfahren: „Die
+  // Antragstellung erfolgt nach der Umsetzung der Maßnahmen." Es gibt kein
+  // Antragsverfahren vor dem Kauf, gegen das eine Prüfform etwas halten könnte.
+  "mutterstadt-balkonkraftwerke",
+  // Rauschenberg, aufgenommen am 20.09.2026. Amtliche Bekanntmachung im
+  // Volltext gelesen. Auch hier wird erst gekauft und dann beantragt, und eine
+  // Frist nennt die Richtlinie nicht — es gibt kein Antragsverfahren, gegen das
+  // eine Prüfform das Vorhaben halten könnte.
+  "rauschenberg-balkon-solaranlagen",
+  // Weichering, aufgenommen am 20.09.2026 — und der einzige Eintrag hier, dem
+  // eine Prüfform nicht bloß fehlt, sondern für den es keine geben kann: Die
+  // Gemeinde bezuschusst die BERATUNG UND PLANUNG, nicht die Anlage. Eine
+  // Prüfform hält das Vorhaben des Nutzers gegen die Bedingungen des
+  // Programms; hier beschreiben die Bedingungen einen anderen Gegenstand als
+  // den, den der Rechner beschreibt. Was zu prüfen wäre — ob jemand eine
+  // bezahlte Planung beauftragt hat —, fragt kein Rechner dieses Projekts, und
+  // deshalb trägt der Eintrag auch keinen strukturierten Satz und zieht nichts
+  // ab. Die Bedingungen stehen vollständig auf der Karte.
+  "weichering-solarberatung",
+  // Leverkusen, aufgenommen am 20.09.2026 als BEENDETES Programm. Eine Prüfform
+  // hält das Vorhaben des Nutzers gegen die Bedingungen eines Programms — bei
+  // einem aufgehobenen Programm gibt es nichts mehr zu prüfen, weil es nichts
+  // mehr zu beantragen gibt. Die Bedingungen stehen trotzdem vollständig am
+  // Eintrag: Sie beschreiben, was bis zum Ratsbeschluss vom 16.12.2024 galt, und
+  // sind damit der Vergleichsmaßstab, falls die Stadt neu auflegt.
+  "leverkusen-photovoltaik",
+  // Florstadt, aufgenommen am 20.09.2026 als beendetes Programm. Dieselbe Lage
+  // wie in Leverkusen: Die Richtlinie ist seit dem 30.06.2025 außer Kraft, es
+  // gibt nichts mehr zu beantragen und damit nichts, wogegen eine Prüfform ein
+  // Vorhaben halten könnte. Die Bedingungen stehen vollständig am Eintrag und
+  // sind der Vergleichsmaßstab, falls die Stadt eine neue Fassung beschließt.
+  "florstadt-photovoltaik",
+  // Ehningen, aufgenommen am 20.09.2026. Richtlinie im Volltext gelesen, jede
+  // Bedingung steht am Programm. Die Prüfform fehlt, weil das Programm die Frage
+  // gar nicht stellt, die die vorhandenen Formen prüfen: Der Antrag darf „vor
+  // oder nach Kauf und Installation" gestellt werden — es gibt also keinen
+  // Antragszeitpunkt, gegen den sich ein Vorhaben halten ließe. Was zu prüfen
+  // wäre (fünf Jahre Eigentum, Sozialpass, Wechselrichter zwischen 300 und 800
+  // Watt), fragt kein Rechner dieses Projekts.
+  "ehningen-steckerfertige-pv",
   // Landkreis Erlangen-Höchstadt, sechs Gemeindeprogramme, aufgenommen am
   // 20.09.2026. Jede Richtlinie ist im Volltext gelesen und jede Bedingung steht
   // am Programm — die Prüfformen fehlen noch, und sie sind hier nicht trivial:
@@ -155,12 +230,61 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "rheinisch-bergisch-balkonsolar", "burbach-klimaschutz-privat",
   // Exhausted 2026 round: conditions remain explicit information, no application flow.
   "bad-marienberg-erneuerbare-energien",
+  // Hansestadt Lüneburg, aufgenommen am 21.09.2026 mit leerem Topf 2026
+  // (Neuanträge ab 01.01.2027). Zwei Techniken mit verschiedenen
+  // Antragstellern (Balkon nur Mieter, Erdwärme nur Eigentümer) — die
+  // Bedingungen stehen je Technik auf der Karte, eine Antragsstrecke gibt es
+  // bis zur nächsten Runde nicht.
+  "lueneburg-regenerative-energien",
   // Closed since 31 December 2023 (guideline of 13 June 2023, read in full on
   // 17 September 2026). The conditions stay as historical information; there is
   // no application flow left to check them against.
   "bahrenhof-solar",
   // Closed 2023/2024 rounds in the same Amt (guidelines read in full on 19 Sep 2026).
   "wakendorf-i-solar", "weede-mini-solar", "geschendorf-solar",
+  // Closed on 31 December 2025 (official page read in full on 20 September
+  // 2026). No application flow is left to check the conditions against, and the
+  // programme has a shape the check form cannot express anyway: the application
+  // came AFTER the purchase (invoice and registry entry are part of it), so the
+  // usual "apply before you buy" form would be the wrong test, not a missing one.
+  "gaildorf-balkonkraftwerke",
+  // Paused county round (no applications for 2026, page read 20 September 2026).
+  // There is no application flow to check the conditions against, and the
+  // programme has the reversed order anyway: the application follows purchase,
+  // mounting and registry entry, so the usual "apply before you buy" form would
+  // be the wrong test rather than a missing one.
+  "havelland-stecker-solar",
+  // Adendorf, aufgenommen am 21.09.2026. Dieselbe umgekehrte Reihenfolge wie
+  // Havelland und Eckental: Die Richtlinie verlangt den Antrag NACH dem Kauf,
+  // spätestens sechs Monate danach (Nr. 6.2), und die Bewilligung folgt auf
+  // Kauf, Installation und Registrierung (Nr. 6.1). Die übliche Prüfform
+  // „vor dem Kauf beantragen" wäre hier der falsche Test, nicht ein fehlender.
+  "adendorf-steckersolar",
+  // Samtgemeinde Ilmenau, aufgenommen am 21.09.2026. Dieselbe umgekehrte
+  // Reihenfolge: Antrag nach dem Kauf, spätestens drei Monate danach (Nr. 4 a,
+  // 6 b), mit Rechnung, Foto und Anmeldenachweisen.
+  "ilmenau-steckersolar",
+  // Samtgemeinde Scharnebeck, aufgenommen am 21.09.2026. Die Richtlinie
+  // erlaubt den Antrag nach Kauf, Installation und Anmeldung, spätestens sechs
+  // Monate nach dem Rechnungsdatum (§ 6 Abs. 1 und 2); das Formular lässt ihn
+  // auch vorher zu. „Vor dem Kauf beantragen" als Pflicht wäre der falsche Test.
+  "scharnebeck-steckersolar",
+  // Kreis Pinneberg, aufgenommen am 21.09.2026. Das Vorhaben ist eine
+  // Dachbegrünung, nicht eine Photovoltaikanlage — eine Prüfform, die eine
+  // Anlage gegen ein Antragsverfahren hält, hat hier nichts zu prüfen. Die
+  // Bedingungen stehen vollständig auf der Karte.
+  "pinneberg-gruendach-pv",
+  // Samtgemeinde Ostheide, aufgenommen am 21.09.2026. Die Richtlinie verlangt
+  // den formlosen Antrag VOR der Auftragserteilung und knüpft die Auszahlung an
+  // eine Abnahme durch die Samtgemeinde — eine Prüfform dafür gibt es noch
+  // nicht; die Bedingungen stehen vollständig auf der Karte.
+  "ostheide-solarstrom",
+  // Flecken Horneburg und Gemeinde Nottensdorf, aufgenommen am 21.09.2026.
+  // Antrag VOR Beginn, Auftrag erst nach der Zusage; dazu ein Deckel, den
+  // Richtlinie und Antragsformular verschieden fassen. Eine Prüfform müsste
+  // eine der beiden Fassungen wählen — das ist eine Entscheidung, keine
+  // Übersetzung. Die Bedingungen stehen vollständig auf der Karte.
+  "horneburg-nachhaltige-projekte", "nottensdorf-nachhaltige-projekte",
   "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",

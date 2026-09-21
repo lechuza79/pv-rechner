@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    // Lets app/global-not-found.tsx replace Next's bare default 404. Needed
+    // because this app has no app/layout.tsx — every route group brings its own
+    // root layout, and a root not-found.tsx without one is refused by Next
+    // (HTTP 500 on every unknown address, measured 20.09.2026). The flag only
+    // changes which component answers an unmatched address; drop the flag and
+    // Next falls back to its own page, nothing else breaks.
+    globalNotFound: true,
+  },
   // Dev server uses .next-dev/, build uses .next/ (Vercel-compatible)
   distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
   env: {
@@ -89,6 +98,16 @@ const nextConfig = {
       {"source": "/photovoltaik-foerderung/herzebrock-clarholz", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/herzebrock-clarholz", "permanent": true},
       // Landkreis Erlangen-Höchstadt, 20.09.2026
       { source: "/photovoltaik-foerderung/buckenhof", destination: "/photovoltaik-foerderung/bayern/buckenhof", permanent: true },
+      // Samtgemeinde Ostheide, 21.09.2026
+      { source: "/photovoltaik-foerderung/barendorf", destination: "/photovoltaik-foerderung/niedersachsen/barendorf", permanent: true },
+      { source: "/photovoltaik-foerderung/neetze", destination: "/photovoltaik-foerderung/niedersachsen/neetze", permanent: true },
+      { source: "/photovoltaik-foerderung/reinstorf", destination: "/photovoltaik-foerderung/niedersachsen/reinstorf", permanent: true },
+      { source: "/photovoltaik-foerderung/thomasburg", destination: "/photovoltaik-foerderung/niedersachsen/thomasburg", permanent: true },
+      { source: "/photovoltaik-foerderung/vastorf", destination: "/photovoltaik-foerderung/niedersachsen/vastorf", permanent: true },
+      { source: "/photovoltaik-foerderung/wendisch-evern", destination: "/photovoltaik-foerderung/niedersachsen/wendisch-evern", permanent: true },
+      // Flecken Horneburg und Gemeinde Nottensdorf, 21.09.2026
+      { source: "/photovoltaik-foerderung/horneburg", destination: "/photovoltaik-foerderung/niedersachsen/horneburg", permanent: true },
+      { source: "/photovoltaik-foerderung/nottensdorf", destination: "/photovoltaik-foerderung/niedersachsen/nottensdorf", permanent: true },
       { source: "/photovoltaik-foerderung/marloffstein", destination: "/photovoltaik-foerderung/bayern/marloffstein", permanent: true },
       { source: "/photovoltaik-foerderung/uttenreuth", destination: "/photovoltaik-foerderung/bayern/uttenreuth", permanent: true },
       { source: "/photovoltaik-foerderung/spardorf", destination: "/photovoltaik-foerderung/bayern/spardorf", permanent: true },

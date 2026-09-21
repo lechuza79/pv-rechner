@@ -116,6 +116,13 @@ const PAGES = [
  *  Drei Segmente, damit sie die Gemeinde-Route trifft (die tiefste und teuerste). */
 const SOFT_404_PFAD = "/solar-atlas/kein-land/kein-kreis/keine-gemeinde";
 
+/** Dieselbe Frage für eine Adresse, die auf GAR KEINE Route passt. Sie geht
+ *  einen anderen Weg als die oben (dort wirft eine echte Seite notFound(), hier
+ *  findet das Framework schon keine Route) und wird seit 20.09.2026 von
+ *  app/global-not-found.tsx beantwortet — einer eigenen Seite, die jemand
+ *  versehentlich auf 200 stellen kann, ohne dass sie kaputt aussieht. */
+const UNBEKANNTE_ADRESSE = "/gibt-es-nicht-und-wird-es-nie-geben";
+
 /** Notnagel, falls die DB gerade nicht erreichbar ist — echte, dauerhaft
  *  existierende Gemeinden. Bewusst klein: der Regelweg ist die Zufallsauswahl. */
 const FALLBACK_GEMEINDEN = [
@@ -2029,6 +2036,18 @@ async function main() {
         `Google behandelt damit erfundene Adressen als gültige Seiten. Zuerst prüfen, ob wieder ein ` +
         `loading.tsx unter app/(site)/solar-atlas/ liegt oder die Routing-Entscheidung hinter das ` +
         `<Suspense> gerutscht ist.`,
+    );
+  }
+
+  // Und die Adresse, die auf keine Route passt — der zweite Weg zu einer 404
+  // und der, der unsere eigene Seite rendert.
+  const unbekannt = await probe("Unbekannte Adresse", UNBEKANNTE_ADRESSE);
+  lines.push(`Unbekannte Adresse: HTTP ${unbekannt.status || "keine Antwort"} (erwartet 404)`);
+  if (unbekannt.status !== 404) {
+    technical("unbekannte-adresse-soft404", false,
+      `Soft-404: ${UNBEKANNTE_ADRESSE} antwortet mit ${unbekannt.status || "keiner Antwort"} statt 404. ` +
+        `Google behandelt damit jede erfundene Adresse als gültige Seite. Zuerst app/global-not-found.tsx ` +
+        `und den Schalter experimental.globalNotFound in next.config.js prüfen.`,
     );
   }
 

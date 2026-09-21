@@ -211,6 +211,13 @@ export function contactCandidates(html: string, sourceUrl: string, domain: strin
       add(email, local.length <= 600 ? local : $(el).text(), localEvidence(el, email));
     } catch { /* Malformed source. */ }
   });
+  // Die Seitenbeschreibung ist veroeffentlichter Text derselben Seite und
+  // manchmal der EINZIGE Ort, an dem die Adresse steht (gemessen an einem
+  // Serienblog, dessen Kontaktseite den Text nur ueber Skript aufbaut).
+  for (const sel of ["meta[name='description']", "meta[property='og:description']"]) {
+    const inhalt = entwirreAdressen($(sel).attr("content") ?? "").replace(/\(ad\)/gi, "@");
+    for (const m of inhalt.matchAll(/[\w.+%-]+@[\w-]+(?:\.[\w-]+)+/g)) add(m[0], inhalt, inhalt.length <= 600 ? inhalt : "");
+  }
   $("p,li,td,div,article,section,body").each((_, el) => {
     // Prefer the smallest local block; ancestors only add addresses not seen yet.
     const text = entwirreAdressen($(el).clone().children("div,p,li,td,article,section").remove().end().text().replace(/\(ad\)/gi, "@"));

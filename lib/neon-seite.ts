@@ -8,6 +8,7 @@ import { organizationJsonLd, softwareAppJsonLd } from "./site-json-ld";
 import { standSeite } from "./stand";
 import { liveSatz } from "./stand-format";
 import { siteFussHtml } from "./site-fuss";
+import SEKTIONEN from "./startseite-sektionen.json";
 
 /**
  * The redesigned homepage and PV simulation, served as the approved documents.
@@ -22,6 +23,14 @@ import { siteFussHtml } from "./site-fuss";
  *   <!--SC:VOR-FUSS-->  end of body: the FAQ (and on the simulation the live
  *                       output), moved above the script-built footer, in the
  *                       package's own design tokens.
+ *   <!--SC:STATISCH-->  homepage only: the body of the draft section
+ *                       (#entdecken), which the takeover empties. The script
+ *                       hides that section and builds tools, atlas, guides and
+ *                       the organisations block in its place, so this is what a
+ *                       crawler without JavaScript reads instead of the draft.
+ *                       Its wording is read out of the package's own bundle at
+ *                       takeover time (lib/startseite-sektionen.json), never
+ *                       written out here a second time.
  * Nothing between the markers is touched.
  */
 
@@ -31,9 +40,14 @@ export type NeonSeite = "startseite" | "simulation";
  * Vercel Web Analytics, cookieless — with the same rule as the React site: the
  * query string is dropped before sending (it can carry a postcode or a token).
  */
+/** The part that drops the query string — must run BEFORE the script below. */
+export const ANALYTICS_SETUP =
+  'window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};window.va("beforeSend",function(e){try{var u=new URL(e.url);u.search="";e.url=u.toString();return e}catch(_){return null}});';
+
+export const ANALYTICS_SRC = "/_vercel/insights/script.js";
+
 export const ANALYTICS_HTML =
-  `<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};window.va("beforeSend",function(e){try{var u=new URL(e.url);u.search="";e.url=u.toString();return e}catch(_){return null}});</script>` +
-  `<script defer src="/_vercel/insights/script.js"></script>`;
+  `<script>${ANALYTICS_SETUP}</script>` + `<script defer src="${ANALYTICS_SRC}"></script>`;
 
 export const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -117,7 +131,7 @@ function kopf(seite: NeonSeite, faq: FaqEntry[]): string {
  * type roles. Plain <details>, no script — readable before anything loads.
  */
 const FAQ_CSS = `
-.sc-faq{background:#08191c;color:#e8eee9;padding:72px var(--sc-page-inset,max(24px,5vw)) 88px;font-family:'DM Sans',sans-serif}
+.sc-faq{background:#08191c;color:#e8eee9;padding:var(--sc-space-section,72px) var(--sc-page-inset,max(24px,5vw)) 88px;font-family:'DM Sans',sans-serif}
 .sc-faq-wrap{max-width:var(--sc-layout-content,1120px);margin:0 auto}
 .sc-faq h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-secondary-label-size,13px);line-height:1.5;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#a7bcbb;margin:0 0 16px}
 .sc-faq details{border-bottom:1px solid #aec4bd30}
@@ -133,8 +147,8 @@ const FAQ_CSS = `
 .sc-faq a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 .sc-faq .sc-faq-cta{display:inline-block;margin:0 0 28px;font-size:var(--sc-type-action-size,14px);font-weight:500}
 @media(prefers-reduced-motion:reduce){.sc-faq summary,.sc-faq summary::after{transition:none}}
-.sc-live{background:var(--sc-surface-light);padding:72px var(--sc-page-inset,max(24px,5vw)) 0;font-family:'DM Sans',sans-serif;color:var(--ink)}
-.sc-live-wrap{max-width:760px;margin:0 auto}
+.sc-live{background:var(--sc-surface-light);padding:var(--sc-space-section,72px) var(--sc-page-inset,max(24px,5vw)) 0;font-family:'DM Sans',sans-serif;color:var(--ink)}
+.sc-live-wrap{max-width:var(--sc-layout-widget,760px);margin:0 auto}
 .sc-live h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-section-compact-size,clamp(26px,3vw,38px));line-height:1.25;margin:0 0 12px}
 .sc-live p{font-size:var(--sc-type-body-size,16px);line-height:1.6;margin:0 0 24px}
 .sc-live iframe{display:block;width:100%;border:0;min-height:560px}
@@ -167,15 +181,127 @@ function simulationStand(): string {
   return `<p class="sc-stand"><strong>Stand:</strong> Diese Seite rechnet ohne Stichtag — ${esc(live ? live.replace(/\.$/, "") : "alle Werte werden live geholt")}. Womit wir rechnen, mit Stand und Quelle, steht auf der <a href="/datenstand">Datenstand-Seite</a>.</p>`;
 }
 
+/**
+ * The sections the page's own script builds at runtime, as server HTML.
+ *
+ * Why at all: without script the homepage's body carried ~900 characters —
+ * hero, intro, FAQ, footer — plus the design draft's two placeholder cards.
+ * Tools, the local atlas, the guides and the section for organisations only
+ * exist after public/dynamic-hero/dist/test.js has run, so every crawler that
+ * does not execute JavaScript (most AI crawlers and the smaller search
+ * engines; Google does render) read the DRAFT instead of the product.
+ *
+ * THE WORDING IS NOT WRITTEN HERE. It is read out of the package's own bundle
+ * when the package is taken over (scripts/startseite-sektionen.mjs) and lies
+ * next to this file as data. Writing it out a second time is how the two sides
+ * drift: with script the page shows the bundle's version, without it a crawler
+ * reads ours, and nobody ever sees them side by side. The extraction runs where
+ * a miss stops the takeover with a person watching — not in the serving path,
+ * where the same miss would be the homepage.
+ *
+ * Where it goes: into the draft section (#entdecken) itself, whose body the
+ * takeover replaces with <!--SC:STATISCH-->. That section is the one thing the
+ * script already takes away again (it sets `hidden`), so with script running
+ * nothing here is visible and nothing is duplicated — no second hiding
+ * mechanism, no new markers in the scene.
+ */
+type StatischerLink = { text: string; href: string };
+type StatischeKarte = { kennung: string; hinweis: string | null; titel: string; text: string; links: StatischerLink[] };
+type StatischeSektionen = {
+  einleitung: { kicker: string; titel: string; text: string };
+  werkzeuge: StatischeKarte[];
+  atlas: { kicker: string; titel: string; text: string; punkte: string[]; link: StatischerLink };
+  ratgeber: { titel: string; alle: StatischerLink; eintraege: { kennung: string; bereich: string; titel: string; href: string }[] };
+  organisationen: { kicker: string; titel: string; eintraege: { titel: string; text: string; href: string }[] };
+};
+
+/**
+ * Text only — the block is display:none as soon as the script runs, so this
+ * never competes with the design. It exists so the no-script page is readable
+ * rather than a stack of unstyled headings on the dark scene.
+ *
+ * Sizes come from the design package's type tokens (--sc-type-*), the same way
+ * the FAQ above does: these documents carry the package's scale, not the site
+ * theme's. One role, one size — 11px and 10px labels were typed here first and
+ * are now the eyebrow token, which is what that role already has.
+ */
+const STATISCH_CSS = `
+.sc-statisch{background:#08191c;color:#e8eee9;padding:72px max(24px,5vw);font-family:'DM Sans',sans-serif}
+.sc-statisch-wrap{max-width:1120px;margin:0 auto}
+.sc-statisch h2{font-family:Montserrat,sans-serif;font-size:var(--sc-type-section-size,clamp(26px,2.6vw,34px));line-height:var(--sc-type-section-leading,1.25);font-weight:450;margin:12px 0 16px}
+.sc-statisch h3{font-family:Montserrat,sans-serif;font-size:var(--sc-type-title-size,20px);line-height:var(--sc-type-title-leading,1.35);font-weight:500;margin:0 0 8px}
+.sc-statisch p{font-size:var(--sc-type-body-size,16px);line-height:var(--sc-type-body-leading,1.6);color:#a7bcbb;margin:0 0 12px;max-width:680px}
+.sc-statisch .sc-statisch-kicker{font-size:var(--sc-type-secondary-label-size,13px);letter-spacing:var(--sc-type-eyebrow-tracking,.08em);text-transform:uppercase;color:#a7bcbb;margin:0}
+.sc-statisch ul{list-style:none;margin:0 0 20px;padding:0}
+.sc-statisch li{font-size:var(--sc-type-body-size,16px);line-height:var(--sc-type-body-leading,1.6);color:#a7bcbb;padding:4px 0}
+.sc-statisch a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.sc-statisch-karten{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));margin:32px 0 0;padding:0;list-style:none}
+.sc-statisch-karte{border:1px solid #aec4bd30;border-radius:12px;padding:24px}
+.sc-statisch-kennung{font-size:var(--sc-type-eyebrow-size,12px);line-height:var(--sc-type-eyebrow-leading,1.5);letter-spacing:var(--sc-type-eyebrow-tracking,.08em);color:#a8c1bd;margin:0 0 12px}
+.sc-statisch-aktionen a{display:block;font-size:var(--sc-type-action-size,14px);padding:4px 0}
+.sc-statisch-block{margin-top:56px}
+.sc-statisch-liste{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid #aec4bd30}
+.sc-statisch-liste li{border-bottom:1px solid #aec4bd30;padding:20px 0}
+.sc-statisch-liste small{font-size:var(--sc-type-eyebrow-size,12px);line-height:var(--sc-type-eyebrow-leading,1.5);letter-spacing:var(--sc-type-eyebrow-tracking,.08em);color:#9db7ab;display:block}
+`;
+
+const pfeil = (l: StatischerLink) => `<a href="${esc(l.href)}">${esc(l.text)} →</a>`;
+
+/** The server-side twin of the script-built sections. Homepage only. */
+function statischeSektionen(): string {
+  const d = SEKTIONEN as StatischeSektionen;
+  const karten = d.werkzeuge
+    .map(
+      (k) =>
+        `<li class="sc-statisch-karte"><p class="sc-statisch-kennung">${esc(k.kennung)}${k.hinweis ? ` · ${esc(k.hinweis)}` : ""}</p>` +
+        `<h3>${esc(k.titel)}</h3><p>${esc(k.text)}</p>` +
+        // The waitlist is a dialog, so the script builds a button on the last
+        // card and there is no page to link to. Without script the card states
+        // the fact and offers no action — a link that leads nowhere is worse.
+        (k.links.length ? `<div class="sc-statisch-aktionen">${k.links.map(pfeil).join("")}</div>` : "") +
+        `</li>`,
+    )
+    .join("");
+  const punkte = d.atlas.punkte.map((p) => `<li>${esc(p)}</li>`).join("");
+  const ratgeber = d.ratgeber.eintraege
+    .map((r) => `<li><small>${esc(r.kennung)} · ${esc(r.bereich)}</small><h3><a href="${esc(r.href)}">${esc(r.titel)}</a></h3></li>`)
+    .join("");
+  const organisationen = d.organisationen.eintraege
+    .map((o) => `<li><h3><a href="${esc(o.href)}">${esc(o.titel)}</a></h3><p>${esc(o.text)}</p></li>`)
+    .join("");
+  return (
+    `<style>${STATISCH_CSS}</style>` +
+    `<div class="sc-statisch"><div class="sc-statisch-wrap">` +
+    `<p class="sc-statisch-kicker">${esc(d.einleitung.kicker)}</p>` +
+    `<h2 id="feature-title">${esc(d.einleitung.titel)}</h2>` +
+    `<p>${esc(d.einleitung.text)}</p>` +
+    `<ul class="sc-statisch-karten">${karten}</ul>` +
+    `<section class="sc-statisch-block" aria-labelledby="sc-statisch-atlas">` +
+    `<p class="sc-statisch-kicker">${esc(d.atlas.kicker)}</p>` +
+    `<h2 id="sc-statisch-atlas">${esc(d.atlas.titel)}</h2>` +
+    `<p>${esc(d.atlas.text)}</p><ul>${punkte}</ul><p>${pfeil(d.atlas.link)}</p></section>` +
+    `<section class="sc-statisch-block" aria-labelledby="sc-statisch-ratgeber">` +
+    `<h2 id="sc-statisch-ratgeber">${esc(d.ratgeber.titel)}</h2>` +
+    `<p>${pfeil(d.ratgeber.alle)}</p>` +
+    `<ul class="sc-statisch-liste">${ratgeber}</ul></section>` +
+    `<section class="sc-statisch-block" aria-labelledby="sc-statisch-organisationen">` +
+    `<p class="sc-statisch-kicker">${esc(d.organisationen.kicker)}</p>` +
+    `<h2 id="sc-statisch-organisationen">${esc(d.organisationen.titel)}</h2>` +
+    `<ul class="sc-statisch-liste">${organisationen}</ul></section>` +
+    `</div></div>`
+  );
+}
+
 function vorFuss(seite: NeonSeite, faq: FaqEntry[]): string {
   const s = SEITEN[seite];
   const aktuell = s.pfad || "/";
-  const live =
-    seite === "simulation"
-      ? `<section class="sc-live" data-sc-vor-fuss aria-labelledby="sc-live-titel"><div class="sc-live-wrap"><h2 id="sc-live-titel">Was produziert eine PV-Anlage gerade?</h2><p>Live aus aktuellen Wetterdaten: die Leistung verschiedener Beispielanlagen an deinem Standort, Stunde für Stunde.</p><iframe id="sc-live-rahmen" src="/embed/simulation?onsite=1&amp;embed=0" title="PV-Simulation live" loading="lazy"></iframe>${simulationStand()}</div></section>` +
+  // Deferred until the live-output redesign is ready; do not mount its iframe.
+  const showLiveOutput = false;
+  const live = showLiveOutput ?
+    `<section class="sc-live" data-sc-vor-fuss aria-labelledby="sc-live-titel"><div class="sc-live-wrap"><h2 id="sc-live-titel">Was produziert eine PV-Anlage gerade?</h2><p>Live aus aktuellen Wetterdaten: die Leistung verschiedener Beispielanlagen an deinem Standort, Stunde für Stunde.</p><div class="sc-live-entry"><p>Gib deine Postleitzahl ein, um die aktuelle Solarleistung an deinem Ort zu sehen.</p><div data-sc-location-slot></div></div><iframe id="sc-live-rahmen" hidden title="PV-Simulation live" loading="lazy"></iframe>${simulationStand()}</div></section>` +
         // The embed reports its height (widget:height); only same-origin messages count.
         `<script>addEventListener("message",function(e){if(e.origin!==location.origin)return;var d=e.data,f=document.getElementById("sc-live-rahmen");if(f&&d&&d.type==="widget:height"&&d.height>0&&e.source===f.contentWindow)f.style.height=Math.ceil(d.height)+"px"});</script>`
-      : "";
+    : "";
   const fragen = faq
     .map((f) => `<details><summary>${esc(f.q)}</summary><div class="sc-faq-answer">${antwortHtml(f, aktuell)}</div></details>`)
     .join("");
@@ -191,6 +317,15 @@ export function neonSeiteHtml(seite: NeonSeite): string {
   if (!vorlage.includes("<!--SC:KOPF-->") || !vorlage.includes("<!--SC:VOR-FUSS-->")) {
     throw new Error(`Vorlage ${seite} ohne Einfügemarken — Übernahme neu ausführen`);
   }
+  // Only the homepage carries the third marker; the simulation keeps its draft
+  // section unchanged. A homepage template without it means the takeover ran
+  // without the patch — that must not pass silently.
+  if (seite === "startseite" && !vorlage.includes("<!--SC:STATISCH-->")) {
+    throw new Error("Startseiten-Vorlage ohne <!--SC:STATISCH--> — Übernahme neu ausführen");
+  }
   const faq = SEITEN[seite].faq();
-  return vorlage.replace("<!--SC:KOPF-->", kopf(seite, faq)).replace("<!--SC:VOR-FUSS-->", vorFuss(seite, faq));
+  return vorlage
+    .replace("<!--SC:KOPF-->", kopf(seite, faq))
+    .replace("<!--SC:STATISCH-->", seite === "startseite" ? statischeSektionen() : "")
+    .replace("<!--SC:VOR-FUSS-->", vorFuss(seite, faq));
 }

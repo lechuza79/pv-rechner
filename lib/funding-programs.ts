@@ -2840,10 +2840,25 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "mainz-kipki-speicher", name: "Photovoltaik-Batteriespeicher (KIPKI)",
     traeger: "Mainzer Stiftung für Klimaschutz / Stadt Mainz", level: "kommune", region: "Mainz", bundesland: "Rheinland-Pfalz", agsCode: "07315",
     // DIE PROGRAMMSEITE GIBT ES NICHT MEHR (12.09.2026, am Server gemessen).
-    // Die Stiftung baut ihre Website um: JEDER Pfad der Domain — auch die Wurzel
-    // und die Übersicht der Förderprogramme — antwortet mit HTTP 200 und leitet
-    // auf „Über uns" um, wo im Seitenkopf „Diese Seite befindet sich im Umbau"
-    // steht. Über das Programm steht dort kein Wort.
+    // Die Stiftung baut ihre Website um: die Wurzel, die Übersicht der
+    // Förderprogramme und die Programmseite selbst antworten mit HTTP 200 und
+    // leiten auf „Über uns" um, wo im Seitenkopf „Diese Seite befindet sich im
+    // Umbau" steht. Über das Programm steht dort kein Wort.
+    //   NACHGEMESSEN AM 20.09.2026, und die frühere Fassung dieses Kommentars
+    //   war zu weit: Sie schrieb „JEDER Pfad der Domain" leite um. Das stimmt
+    //   nicht — ein erfundener Pfad antwortet mit 404, `/impressum/` bleibt
+    //   stehen, `/wp-sitemap.xml` antwortet mit 410. Die Umleitung trifft
+    //   also GENAU die alten Förderpfade, und das ist der stärkere Befund:
+    //   Sie ist eine Entscheidung der Stiftung für diese Adressen, nicht ein
+    //   Auffangnetz einer Baustelle. (Eine Aussage über eine fremde Seite
+    //   gehört gemessen, nicht verallgemeinert — dieselbe Lehre wie bei
+    //   Havelland.)
+    //   IHRE EIGENE SEITENKARTE FÜHRT VIER ADRESSEN, und keine davon ist ein
+    //   Förderprogramm: Datenschutz, Barrierefreiheit, Impressum, „Über uns"
+    //   (`/sitemap.xml`, von ihrer robots.txt benannt, gelesen am 20.09.2026).
+    //   Das ist der maschinenlesbare Index des Betreibers selbst und damit der
+    //   beste Beleg dafür, dass die Fundstelle weg ist. Er sagt NICHT, dass das
+    //   PROGRAMM beendet ist — nur, dass diese Website es nicht mehr führt.
     //   DIE ADRESSE BLEIBT TROTZDEM STEHEN, und zwar mit Absicht: Es gibt keine
     //   bessere. Sie auf die Wurzel zu setzen wäre kein Gewinn (dieselbe
     //   Umleitung, dasselbe Ziel) und würde nur verbergen, dass die belegte
@@ -3700,6 +3715,12 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { text: "Die Dachanlage wird nur zusammen mit einem Stromspeicher gefördert; ohne Speicher zahlt die Gemeinde nichts", nur: ["pv"] },
       { text: "Für die Nachrüstung eines Speichers muss die Anlage nach dem 31.12.2012 errichtet worden sein; gebrauchte Anlagen und Eigenbau sind ausgeschlossen", nur: ["pv"] },
       { text: "Der Zuschuss gilt je Wohnung; Mieter brauchen das Einverständnis des Vermieters", nur: ["balkon"] },
+      // Nachgetragen am 20.09.2026 aus der Richtlinie (Nr. 2.3) und der
+      // Programmseite, die sie „zwingend" nennt. Sie fehlte, und sie ist eine
+      // Antragsunterlage: Wer sie vergisst, hat keinen vollständigen Antrag —
+      // und vergeben wird in der Reihenfolge der VOLLSTÄNDIGEN Anträge.
+      { text: "Dem Antrag ist eine Selbsterklärung beizulegen, dass die Anlage den Sicherheitsstandard der Deutschen Gesellschaft für Sonnenenergie erfüllt", nur: ["balkon"] },
+      { text: "Das Gerät muss so befestigt sein, dass auch bei außergewöhnlichem Wetter nichts herabfallen kann; Balkon oder Geländer müssen dafür standsicher und brandschutztechnisch geeignet sein", nur: ["balkon"] },
       { text: "Wir rechnen mit dem Deckel von 400 € — mit Speicher zahlt die Gemeinde bis zu 800 €", nur: ["balkon"] },
       "Förderungen anderer Träger sind erlaubt; die Summe aller Mittel darf die tatsächlichen Kosten nicht übersteigen",
     ],
@@ -3871,6 +3892,129 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "PV nur in Kombination mit Batteriespeicher; Antrag vor Maßnahmenbeginn",
     ],
     combinableWith: BUND,
+  },
+  "florstadt-photovoltaik": {
+    id: "florstadt-photovoltaik", name: "Förderrichtlinien der Stadt Florstadt — Zuschüsse für die Installation von Photovoltaikanlagen",
+    traeger: "Stadt Florstadt", level: "kommune", region: "Florstadt (Wetteraukreis)", bundesland: "Hessen", agsCode: "06440007",
+    url: "https://florstadt.de/dokumente/foerderrichtlinien-zur-gewaehrung-von-zuschuessen-fuer-die-installation-von-photovoltaikanlagen-pdf/",
+    // NEU AUFGENOMMEN 20.09.2026 als beendetes Programm — der Katalog kennt
+    // keinen Status "ausgelaufen", "eingestellt" ist der zutreffende. Die Richtlinie ist
+    // im Volltext gelesen (PDF der Stadt, hochgeladen Januar 2026), und ihr
+    // Abschnitt 8 ist der Befund: „Diese Änderung der Richtlinie tritt am
+    // 12.12.2024 in Kraft und gilt bis zum 30.06.2025. Gleichzeitig wird die
+    // Richtlinie vom 01.01.2023 außer Kraft gesetzt." Unterzeichnet vom
+    // Bürgermeister am 12.12.2024, gestützt auf den Beschluss der
+    // Stadtverordnetenversammlung vom 11.12.2024 (Abschnitt 6.2).
+    //
+    // EINE NACHFOLGEREGELUNG IST NICHT VERÖFFENTLICHT: Das Dokumentverzeichnis
+    // der Stadt (`dokumente-sitemap.xml`, 112 Adressen, gelesen am 20.09.2026)
+    // führt genau EINE Photovoltaik-Richtlinie — diese. Das ist der
+    // maschinenlesbare Index der Stadt selbst; er belegt, dass ihr Ortsrecht
+    // keine neuere Fassung ausweist, nicht, dass der Magistrat keine beschlossen
+    // hat.
+    //
+    // WIE DIE FUNDSTELLE GEFUNDEN WURDE, und warum das hier steht: Die erfasste
+    // Adresse (`florstadt.de/aufgaben/photovoltaikanlagen-gewaehrung-von-…`)
+    // leitet seit dem Relaunch auf die Startseite um. Ein Vorlauf hat daraufhin
+    // die SEITEN-Sitemap durchgesehen — 90 Adressen, keine Förderseite — und den
+    // Fall als ungeklärt liegen lassen. Die Richtlinie liegt aber nicht unter
+    // den Seiten, sondern unter den DOKUMENTEN, und das Verzeichnis dieser Site
+    // ist ein Index aus 22 Teil-Sitemaps. Wer nur eine davon liest, liest ein
+    // Fünftel des Auftritts.
+    //
+    // KEINE RECHENWERTE: Das Programm ist ausgelaufen und darf nichts abziehen.
+    // Die Sätze stehen als Text, damit eine Neuauflage vergleichbar ist.
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-12-12",
+    endetIso: "2025-06-30",
+    beschlossenIso: "2024-12-11",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss für Photovoltaik auf Dach oder Fassade und für Balkonkraftwerke — die Richtlinie ist am 30. Juni 2025 außer Kraft getreten",
+    rates: [
+      { label: "Photovoltaikanlage", value: "Richtlinie ausgelaufen. Bis dahin 100 € je installiertem kWp, höchstens 1.000 € je Anlage", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "Richtlinie ausgelaufen. Bis dahin pauschal 250 €; bei Mehrfamilienhäusern höchstens 1.000 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Die Richtlinie galt vom 12. Dezember 2024 bis zum 30. Juni 2025 und ist seitdem außer Kraft; eine Nachfolgeregelung ist im Ortsrecht der Stadt nicht veröffentlicht",
+      { text: "Gefördert wurden Anlagen von 1 bis 10 kWp Spitzenleistung auf Dächern oder in der Fassade von Wohn- und Geschäftsgebäuden sowie landwirtschaftlichen Betrieben", nur: ["pv"] },
+      { text: "Als Balkonkraftwerk galten Solarmodule bis 800 Watt Abgabeleistung des Wechselrichters", nur: ["balkon"] },
+      "Eine Förderung war ausgeschlossen, wenn zusätzlich eine Drittförderung in Anspruch genommen wurde oder künftig wird — Förderung und Finanzierung der KfW waren davon ausgenommen",
+      "Der Antrag war vor Vorhabenbeginn beim Magistrat zu stellen, mit Anlagenbeschreibung und Kostenvoranschlag; Planungs- und Beratungsleistungen durften vorher erbracht werden",
+      "Antragsberechtigt waren Grundstückseigentümer und sonstige dinglich Berechtigte, je Eigentümer einmalig; bei Balkonkraftwerken waren Mehrfamilienhäuser davon ausgenommen",
+      "Eigenleistungen wurden nicht berücksichtigt; ausgeschlossen waren Anlagen, die vor dem erstmaligen Inkrafttreten der Richtlinien errichtet worden sind",
+      "Ein Rechtsanspruch auf die Zuwendung bestand nicht; bearbeitet wurde nach Eingang der Anträge im Rahmen der Haushaltsmittel",
+    ],
+    // Abschnitt 2 der Richtlinie schließt Drittförderung aus und nimmt die KfW
+    // ausdrücklich aus. Die BEG-Zuschüsse laufen über das BAFA und die KfW; für
+    // Photovoltaik gibt es ohnehin keinen Bundeszuschuss, sondern nur den
+    // KfW-Kredit 270 — und der ist nach dem Wortlaut erlaubt. Eine Kombination
+    // mit Bundesmitteln als Regel zu behaupten geht daraus trotzdem nicht
+    // hervor, deshalb bleibt sie unbelegt.
+    combinableWith: null,
+    foerdert: ["pv", "balkon"],
+  },
+  "leverkusen-photovoltaik": {
+    id: "leverkusen-photovoltaik", name: "Förderprogramm Neuerrichtung von Photovoltaikanlagen",
+    traeger: "Stadt Leverkusen", level: "kommune", region: "Leverkusen", bundesland: "Nordrhein-Westfalen", agsCode: "05316",
+    url: "https://www.leverkusen.de/pressemodul/pressemitteilungen/januar/ende-foerderprogramme",
+    // NEU AUFGENOMMEN 20.09.2026 als BEENDETES Programm. Zwei amtliche Quellen,
+    // beide im Rohtext gelesen:
+    //
+    // (1) Pressemitteilung der Stadt vom 17.01.2025 („Städtische Förderprogramme
+    // werden nicht fortgeführt"): „Die im August 2024 ausgerufene kommunale
+    // Haushaltssperre hat auch Einfluss auf städtische Förderprogramme. Sie ist
+    // der Grund dafür, dass der Rat der Stadt Leverkusen in seiner Sitzung vom
+    // 16.12.2024 seine Beschlüsse zu den Förderprogrammen ‚Neuerrichtung von
+    // Photovoltaikanlagen‘ und ‚Entsiegelung, Dach- und Fassadenbegrünung‘
+    // aufgehoben hat. Bereits zugesagte Förderbescheide sind von der Sperre
+    // ausgenommen." Dieselbe Mitteilung beziffert das Programm: 654 Anträge im
+    // Jahr 2023, in 2023/2024 zusammen 439 Zuschüsse über 267.230 €, rund
+    // 2.500 kWp.
+    //
+    // (2) Ratsvorlage im Ratsinformationssystem (ris.leverkusen.de, __kvonr=12981,
+    // Beschlussentwurf über die Förderrichtlinie, zur Sitzung am 18.09.2023) für
+    // die Sätze: „Die Kosten von Steckersolargeräten werden in Höhe von 40 %,
+    // max. 400 € pro Anlage, gefördert. Bei Dach- und Fassadenanlagen ergibt sich
+    // eine pauschale Förderung je nach Kilowattpeak (kWp)-Leistung der Anlage:
+    // von 1 bis 2 kWp 450 € pauschal / über 2 bis 5 kWp 500 € pauschal / über 5
+    // bis 10 kWp 750 € pauschal / über 10 bis 30 kWp 750 € von den ersten 10 kWp
+    // + 50 €/vollendetes weiteres kWp / ab 30 kWp 1.750 € pauschal." Ebendort:
+    // Antragsberechtigt waren Eigentümer (natürliche und juristische Personen des
+    // privaten Rechts, KMU, gemeinnützige Organisationen einschließlich Kirchen),
+    // bei Steckersolargeräten auch Mieter; „die Förderung ist rückwirkend für alle
+    // Anlagen möglich, die nach dem 01.07.2023 in Betrieb genommen wurden";
+    // Haushaltsmittel 100.000 € in 2023 und 200.000 € in 2024.
+    //
+    // KEINE RECHENWERTE, aus zwei Gründen, die unabhängig voneinander tragen:
+    // Das Programm ist aufgehoben und darf ohnehin nichts abziehen — und die
+    // Dach-Staffel ist ein Stufenmodell mit Sockel plus Satz je weiterem kWp,
+    // das unser Modell nicht ausdrücken kann (dieselbe Lage wie in Schwebheim).
+    //
+    // KEIN `beginntIso`: Das Inkrafttreten der Richtlinie steht in keiner der
+    // beiden gelesenen Quellen. Der 01.07.2023 ist der Stichtag der rückwirkenden
+    // Förderfähigkeit, nicht der Beginn des Programms, und gehört deshalb in den
+    // Text statt in das Feld.
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beschlossenIso: "2023-09-18",
+    endetIso: "2024-12-16",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss zur Neuinstallation von Photovoltaik auf Dächern und an Fassaden sowie von Balkonkraftwerken — Programm aufgehoben, keine Antragstellung mehr möglich",
+    rates: [
+      { label: "Dach- und Fassadenanlage", value: "Programm aufgehoben. Bis dahin pauschal nach Leistung: 450 € (1–2 kWp), 500 € (über 2–5 kWp), 750 € (über 5–10 kWp), 750 € plus 50 € je weiterem vollen kWp (über 10–30 kWp), 1.750 € (ab 30 kWp)", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "Programm aufgehoben. Bis dahin 40 % der Kosten, höchstens 400 € je Anlage", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Das Programm ist aufgehoben: Der Rat der Stadt hat seine Beschlüsse dazu am 16.12.2024 zurückgenommen, Grund war die kommunale Haushaltssperre vom August 2024; Anträge sind nicht mehr möglich",
+      "Bereits zugesagte Förderbescheide sind von der Sperre ausgenommen",
+      "Antragsberechtigt waren Eigentümer des Gebäudes im Stadtgebiet — natürliche und juristische Personen des privaten Rechts, kleine und mittlere Unternehmen sowie gemeinnützige Organisationen einschließlich Kirchen",
+      { text: "Bei Balkonkraftwerken konnten auch Mieterinnen und Mieter einen Antrag stellen", nur: ["balkon"] },
+      "Gefördert wurden Anlagen, die nach dem 01.07.2023 in Betrieb genommen wurden; der Antrag war auch nach der Umsetzung möglich",
+      "Das Programm war stark überzeichnet — allein 2023 gingen 654 Anträge ein, ausgezahlt wurden 2023 und 2024 zusammen 439 Zuschüsse über 267.230 €",
+    ],
+    // Die Richtlinie ist nicht mehr abrufbar (das FAQ-PDF der Stadt antwortet mit
+    // 404), eine Kumulierungsregel lässt sich deshalb nicht belegen.
+    combinableWith: null,
+    foerdert: ["pv", "balkon"],
   },
   "krefeld-klimafreundlich": {
     id: "krefeld-klimafreundlich", name: "Klimafreundliches Wohnen in Krefeld",
@@ -6097,6 +6241,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     bundesland: "Niedersachsen", agsCode: "03159019",
     url: "https://www.herzberg.de/service/themen/klima-und-umwelt/klimaschutz/foerderung-balkonkraftwerke/",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // „Der Rat der Stadt Herzberg am Harz beschloss am 17.09.2025 ein
+    // Förderprogramm für Balkonkraftwerke" — nachgetragen am 20.09.2026. Es ist
+    // der Beschlusstag, NICHT der Antragsstart; den nennt die Richtlinie nicht.
+    beschlossenIso: "2025-09-17",
     eligibility: ["privat"],
     coveredCosts: "Pauschale je Balkonkraftwerk",
     maxFoerderung: "bis zu 100 € je Anlage",
@@ -6107,6 +6255,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Je Wohneinheit und Zähler wird eine Anlage gefördert, bei Mietobjekten bis zu fünf je Antragsteller",
       "Maßnahmen, die bereits durch andere Fördermittel gefördert werden, sind ausgeschlossen; Bundes- und Landesprogramme sind Beispiele",
       "Der Topf umfasst 20.000 € für 200 Anlagen; vergeben wird nach Eingang",
+      // Nachgetragen am 20.09.2026 aus Nr. 4.4 der Richtlinie. Sie fehlte, und
+      // sie ist nach dem Antragszeitpunkt die teuerste Bedingung des Programms:
+      // Sie bindet die AUSFÜHRUNG, nicht die Papiere, und das Geld fließt erst
+      // danach. Dieselbe Bauform wie in Hückelhoven.
+      "Die Anlage muss binnen zwölf Monaten nach der Bewilligung fertig sein; bei unverschuldeter Verzögerung sind höchstens drei Monate Verlängerung möglich",
+      "Die Anlage ist im Marktstammdatenregister anzumelden — der Nachweis gehört zur Auszahlungsanforderung",
+      "Ausgeschlossen sind Inselanlagen ohne Netzanschluss, Anlagen in Kleingartenanlagen und gebrauchte Bauteile",
     ],
     // Guideline sections 3 and 4.3, source-reviewed 17 September 2026.
     // No supported KfW combination; this does not assert a VAT zero-rate ban.
@@ -6130,9 +6285,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     maxFoerderung: "max. 100 € je Wohneinheit",
     rates: [{ label: "Balkonkraftwerk", value: "50 € je Modul, höchstens zwei Module" }],
     conditions: [
+      // DER ANTRAGSZEITPUNKT IST HIER DER UMGEKEHRTE als sonst, und er fehlte
+      // ganz (20.09.2026, aus der Richtlinie „ab 2026"). Fast jedes Programm
+      // des Katalogs verlangt den Antrag VOR dem Kauf; hier gehören Rechnung,
+      // Registereintrag und ein Foto der fertigen Anlage zum Antrag — es wird
+      // also erst gebaut und dann beantragt. Wer die übliche Regel annimmt,
+      // wartet auf eine Bewilligung, die es vor dem Kauf gar nicht gibt.
+      "Beantragt wird erst nach dem Einbau: Rechnung, Registereintrag und ein Foto der fertigen Anlage gehören zum Antrag",
       "Antragsberechtigt ist, wer in Herbrechtingen seinen Hauptwohnsitz hat",
       "Je Wohneinheit mit abgeschlossenem Stromkreis werden höchstens zwei Module mit je mindestens 250 Watt gefördert; je Modul höchstens bis zu dessen Preis",
+      // Der Stichtag stand nirgends bei uns, obwohl er entscheidet, ob ein
+      // Antrag überhaupt in Frage kommt: „Bezuschusst werden Fotovoltaikanlagen,
+      // die nach dem 1.1.2024 installiert wurden."
+      "Gefördert werden nur Anlagen, die nach dem 1. Januar 2024 eingebaut wurden",
       "Dem Antrag sind die Originalrechnung und die Anmeldung im Marktstammdatenregister beizulegen",
+      "Auf dem Foto müssen die installierte Anlage und das Gebäude erkennbar sein",
       "Bei einer Miet- oder Eigentumswohnung ist die Erlaubnis der Vermieterseite oder der Eigentümergemeinschaft nötig",
       "Die Anlage muss mindestens zwei Jahre an der Wohneinheit betrieben werden; über 800 Watt ist ein Nachweis der fachgerechten Installation durch einen Elektrobetrieb nötig",
       "Es besteht kein Rechtsanspruch; gefördert wird im Rahmen der Haushaltsmittel",
@@ -6143,6 +6310,18 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Ein-Modul-Set liegt bei rund 500 Wp, ab zwei Modulen darüber. Der Deckel
     // von zwei Modulen ist damit als Höchstbetrag abgebildet.
     balkonTiers: [{ upTo: 600, amount: 50 }, { upTo: 999999, amount: 100 }],
+    // GEPRÜFT am 20.09.2026 an der Amtsseite UND an der von dort verlinkten
+    // Richtlinie „Zuschussprogramm Balkonkraftwerke ab 2026" (PDF ohne
+    // Textebene, als gerenderte Seite gelesen; Kopie in der Laufakte). Anlass
+    // war der bewegte Fingerabdruck der Programmseite — der Grund ist die neue
+    // Richtlinienfassung, nicht ein geänderter Satz: „Der Zuschuss beträgt
+    // einmalig 50 Euro je Modul. Pro Wohneinheit mit abgeschlossenem Stromkreis
+    // können maximal 2 Module gefördert werden" steht zellgleich wie vorher,
+    // ebenso die 250-Watt-Untergrenze, die 800-Watt-Schwelle, die zwei Jahre
+    // Betriebspflicht und der fehlende Rechtsanspruch. Neu erfasst sind der
+    // Einbau-Stichtag 1.1.2024, das Foto als Antragsunterlage und die
+    // Antragsreihenfolge (erst bauen, dann beantragen) — drei Bedingungen, die
+    // bei uns fehlten, ohne dass am Geld etwas falsch war.
   },
 
   "weyhe-klimaschutz": {
@@ -9981,6 +10160,1131 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // keine der gelesenen Quellen; deshalb steht hier nichts.
   },
 
+  /**
+   * BEENDET zum 31.12.2025 — aufgenommen, weil "gab es, ist beendet" eine echte
+   * Auskunft ist (Betreiber, 17.08.2026). Es zieht kein Geld ab, erzeugt keine
+   * Stadtseite (die verlangt ein aktives Programm für Dach-Photovoltaik), und
+   * wenn Gaildorf neu auflegt, merken wir es.
+   *
+   * DAS PROGRAMM IST VORBEI, SEINE RÜCKZAHLUNGSPFLICHT NICHT. Wer im Dezember
+   * 2025 gekauft hat, steht bis Dezember 2027 in der Zwei-Jahres-Bindung.
+   * Deshalb steht diese eine Bedingung im Präsens, während die übrigen im
+   * Präteritum stehen — der Wechsel ist Absicht, kein Versehen.
+   */
+  "gaildorf-balkonkraftwerke": {
+    id: "gaildorf-balkonkraftwerke", name: "Förderung von Balkonkraftwerken",
+    traeger: "Stadt Gaildorf", level: "kommune", region: "Gaildorf",
+    bundesland: "Baden-Württemberg", agsCode: "08127025",
+    url: "https://www.gaildorf.de/Bauen-Wohnen/Foerderprogramme-2/Balkonkraftwerke",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-01-01",
+    endetIso: "2025-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Kaufpreis eines Balkonkraftwerks — die Installation ausdrücklich nicht",
+    maxFoerderung: "max. 100 € je Antragsteller",
+    rates: [
+      { label: "Balkonkraftwerk", value: "50 € je Modul, höchstens zwei Module je Antragsteller" },
+    ],
+    conditions: [
+      // DER VORBEHALT GEHÖRT AN DIE ZAHL, NICHT IN DEN KOMMENTAR. Die Stadt
+      // schreibt: „Sollten die bereitgestellten Gelder aufgebraucht sein, endet
+      // der Projektförderzeitraum früher." Ob der Topf von 10.000 € vor dem
+      // Stichtag leer war, sagt sie nirgends — und ein Datum, das wir nicht
+      // kennen, darf die Zeile nicht als sicher ausgeben.
+      "Die Stadt nimmt keine Anträge mehr an: Das Programm lief zum 31.12.2025 aus, bei leerem Fördertopf von 10.000 € auch früher",
+      "Der Antrag war erst nach dem Kauf zu stellen — beizulegen waren die Kaufrechnung und der Nachweis der Registrierung im Marktstammdatenregister",
+      "Der Kauf durfte beim Antrag höchstens sechs Monate zurückliegen, und die Rechnung nicht vor dem 01.07.2023 datieren",
+      "Antragsberechtigt waren Eigentümer eines Wohngebäudes oder eines wohnähnlich genutzten Gebäudes und deren Bevollmächtigte — also auch Mieter mit Zustimmung des Eigentümers — jeweils mit Erstwohnsitz in Gaildorf",
+      "Hausverwaltungen und Gewerbebetriebe waren ausgeschlossen",
+      "Die Module durften zusammen höchstens 2.000 Watt leisten, der Wechselrichter höchstens 800 Voltampere",
+      "Das Balkonkraftwerk musste auf Gaildorfer Gemarkung stehen",
+      "Bei einem Kulturdenkmal war die denkmalschutzrechtliche Genehmigung schon mit dem Antrag vorzulegen",
+      "Ausgezahlt wurde in der Reihenfolge des Antragseingangs",
+      "Einen Rechtsanspruch auf die Förderung gab es nicht",
+      // PRÄSENS, und das ist der Punkt: Diese Frist läuft noch. Und sie greift
+      // WEITER als ein Wegzug — die Quelle sagt „nicht mehr auf dem Gebiet der
+      // Stadt Gaildorf in Betrieb", das trifft auch den, der die Anlage in
+      // Gaildorf abhängt und liegen lässt.
+      "Ist die Anlage binnen zwei Jahren nach dem Kauf nicht mehr in Gaildorf in Betrieb, ist der Zuschuss zurückzuzahlen",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    // GELESEN am 20.09.2026 im Volltext an der Amtsseite (HTTP 200, Live-Abruf;
+    // Kopie in der Laufakte). Wortlaut des Auslaufens: „Achtung! Wichtiger
+    // Hinweis: Das Programm läuft zum 31.12.25 aus. Sollten die
+    // bereitgestellten Gelder aufgebraucht sein, endet der
+    // Projektförderzeitraum früher." Fördertopf 10.000 €, „Gelder für bis zu
+    // 200 Module" — 10.000 / 50 geht auf.
+    //
+    // `endetIso` ist hier der Tag, den die Stadt selbst als PROGRAMMENDE nennt,
+    // nicht die Befristung eines Richtlinienpapiers: Die Seite verlinkt weder
+    // Richtlinie noch Formular, das Datum steht im Fließtext über dem Programm.
+    // Genau danach fragt das Feld. Die Restunsicherheit ist allein der leere
+    // Topf, und die steht oben sichtbar in der ersten Bedingung.
+    //
+    // KEIN RECHENWERT, weil das Programm beendet ist — dieselbe Linie wie
+    // `bahrenhof-solar`, `wakendorf-i-solar` und `weede-mini-solar`. NICHT,
+    // weil das Modell den Satz nicht ausdrücken könnte: Herbrechtingen trägt
+    // wörtlich dieselbe Regel („50 € je Modul, höchstens zwei Module") als
+    // `balkonTiers` über die Wattpeak-Achse, und der Rechner kennt nur drei
+    // Sets (500 / 960 / 2.000 Wp = 1 / 2 / 4 Module), die die Staffel exakt
+    // trifft. Wer das Programm je wieder einschaltet, hat die Bauform also
+    // schon; sie hier einzutragen hieße nur, einen Wert zu pflegen, den
+    // `fundingZaehlt` bei `status !== "aktiv"` ohnehin nie abruft.
+    //
+    // `combinableWith: null` heißt nach der Feld-Doku „nicht geklärt": Die
+    // Seite sagt zur Kumulierung mit Bundesmitteln kein Wort, und eine leere
+    // Liste wäre das ausdrückliche „nur allein", das hier niemand geschrieben
+    // hat. Im ERGEBNIS behandelt der Code beide gleich (wer nichts angibt,
+    // gilt als ausschließend) — der Unterschied ist die Aussage, nicht die
+    // Wirkung, und eine Neuauflage müsste ihn ohnehin neu klären.
+  },
+
+  /**
+   * PAUSIERT für 2026 — und der Eintrag existiert genau deshalb. Der Landkreis
+   * hat 2024 und 2025 gefördert und schreibt für 2026 selbst, dass noch keine
+   * Anträge möglich sind. „Gab es, ruht gerade" ist eine echte Auskunft; ohne
+   * den Eintrag stünde auf unserer Seite „keine kommunale Förderung", wo es
+   * eine gibt, die wahrscheinlich wiederkommt.
+   *
+   * EIN KREISPROGRAMM, und deshalb der fünfstellige Schlüssel: Das Fördergebiet
+   * IST der Landkreis, nicht eine Gemeinde darin.
+   *
+   * Eine Förder-Stadtseite entsteht daraus aus DREI Gründen nicht, und „die
+   * Kreisebene ist gesperrt" ist keiner davon (die Sperre betrifft die
+   * Atlas-Ortsseiten, nicht die Förderseiten — im Council nachgesehen): Das
+   * Programm ruht, es fördert nur Balkonkraftwerke, und im Ortsverzeichnis
+   * steht keine einzige Gemeinde des Kreises. Erreichbar ist es über die
+   * Postleitzahl und die Balkon-Förderübersicht.
+   */
+  "havelland-stecker-solar": {
+    id: "havelland-stecker-solar", name: "Förderprogramm Stecker-Solargeräte",
+    traeger: "Landkreis Havelland", level: "landkreis", region: "Landkreis Havelland",
+    bundesland: "Brandenburg", agsCode: "12063",
+    url: "https://www.havelland.de/umwelt-landwirtschaft/umwelt/klimaschutz/erneuerbare-energien/foerderprogramm-stecker-solargeraete-1/",
+    stand: "September 2026", status: "pausiert", capped: true, verified: true,
+    // JAHRESFORM, UND DAS IST DER GENAUE WERT. Der 01.04.2025 wäre der bequeme
+    // Eintrag und um ein Jahr falsch: Die Seite beginnt mit „Nach der
+    // erfolgreichen Förderung IM JAHR 2024 … ab dem 1. April 2025 … ERNEUT".
+    // Der Landkreis fördert also seit 2024; wann diese erste Runde begann, sagt
+    // keine gelesene Quelle. Das Feld trägt die Auswertung „Zubau vor und nach
+    // der Förderung" — ein erfundener Start verschiebt die ganze Kurve. Der
+    // 01.04.2025 steht da, wo er hingehört: in der Bedingung zum förderfähigen
+    // Kaufdatum.
+    beginntIso: "2024",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk, ein Gerät je Haushalt",
+    maxFoerderung: "180 € je Haushalt",
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "180 € pauschal, ein Gerät je Haushalt" }],
+    conditions: [
+      "Für 2026 nimmt der Landkreis noch keine Anträge an",
+      // Der Antragszeitpunkt ist hier der umgekehrte als sonst — wie in
+      // Herbrechtingen wird erst gekauft und montiert, dann beantragt.
+      "Beantragt wird erst nach Kauf, vollständiger Montage und Anmeldung im Marktstammdatenregister",
+      "Gefördert werden nur Geräte, die nach dem 1. April 2025 neu angeschafft wurden",
+      "Antragsberechtigt sind Eigentümer und Mieter im Landkreis",
+      // DIE QUELLE IST HIER IN SICH UNSAUBER, und das wird benannt statt
+      // aufgelöst. Der Fördersatz sagt nur „(mit maximal 800 Watt)". Zwei
+      // Absätze tiefer erklärt dieselbe Seite „2.000 Watt liefern und eine
+      // Wechselrichterleistung von 800 Watt (AC) nicht überschreiten" — dort
+      // sind die 800 W also der Wechselrichter. Ihre eigene Beispielrechnung
+      // rechnet sie dagegen als Modulleistung. „Wechselrichter" hinzuschreiben,
+      // als stünde es in der Richtlinie, wäre erfundene Genauigkeit; es
+      // wegzulassen schlösse ein förderfähiges 2.000-Wp-Set aus. Also beides.
+      "Je Haushalt wird ein Balkonkraftwerk mit höchstens 800 Watt gefördert — die Seite meint damit an anderer Stelle die Leistung des Wechselrichters, sagt es im Fördersatz aber nicht",
+      "Beantragt wird ausschließlich über ein Online-Formular",
+      "Dem Antrag sind Rechnung mit Modultyp, ein Sicherheitsnachweis des Geräts (etwa CE, TÜV oder VDE), die Meldenummer aus dem Marktstammdatenregister und ein Foto der montierten Anlage beizulegen",
+      // „gegebenenfalls" steht so in der Unterlagenliste der Quelle. Wer daraus
+      // „Mieter brauchen das Einverständnis" macht, härtet die Aussage: Die
+      // Seite sagt weder, wen es trifft, noch dass es immer nötig ist.
+      "Gegebenenfalls ist das Einverständnis der Vermieterseite beizulegen",
+      "Nur vollständige Anträge werden berücksichtigt",
+      "Bearbeitet wird nach dem Eingangsdatum",
+      "Sind die Mittel erschöpft, endet das Programm",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    // GELESEN am 20.09.2026 an der Amtsseite im Volltext (HTTP 200).
+    // Wortlaut der Pause: „+++Achtung! Für 2026 ist noch keine Antragstellung
+    // für Balkonkraftwerke möglich+++". Satz: „Gefördert wird ein
+    // Balkonkraftwerk (mit maximal 800 Watt) pro Haushalt mit einer pauschalen
+    // Fördersumme in Höhe von 180 Euro."
+    //
+    // DIE RICHTLINIE IST NICHT ERREICHBAR, und das ist ein Fehler DES
+    // LANDKREISES, keine Lücke unserer Prüfung: Die Seite sagt „Die genauen
+    // Förderbedingungen entnehmen Sie bitte der Förderrichtlinie" — und das
+    // Wort ist dort GAR KEIN LINK, sondern ausgezeichneter Text
+    // (`<strong><em>Förderrichtlinie</em></strong>`, am 20.09.2026 im Rohtext
+    // nachgesehen). Im ganzen HTML führt kein Pfad mit „solar" oder „stecker"
+    // auf ein Dokument. Alles oben steht deshalb in der Seite selbst.
+    //   Eine erste Fassung dieses Kommentars behauptete, die Seite verlinke auf
+    //   `/demografie/foerderrichtlinie/`. Das war falsch: Diese Adresse ist ein
+    //   Navigationseintrag, der auf JEDER Seite der Domain steht. Der Gegenprüfer
+    //   hat es gefunden — eine Aussage über eine fremde Seite gehört am Rohtext
+    //   geprüft, nicht an einer Trefferliste von Verweisen.
+    //
+    // KEIN RECHENWERT, obwohl die Pauschale es hergäbe (`balkonPauschale: 180`):
+    // Das Programm nimmt keine Anträge an, und `fundingZaehlt` verlangt
+    // `status === "aktiv"` — der Wert würde nie abgerufen. Wer das Programm
+    // wieder einschaltet, trägt ihn im selben Zug ein.
+    //
+    // `combinableWith: null` heißt „nicht geklärt": Die Seite sagt zur
+    // Kumulierung nichts, und ohne die Richtlinie gibt es keinen Beleg. Im
+    // ERGEBNIS behandelt der Code es wie einen Ausschluss von Bundesmitteln —
+    // die vorsichtige Richtung. Der Unterschied ist die Aussage, nicht die
+    // Wirkung.
+    //
+    // UNGEPRÜFT GEBLIEBEN ist genau ein Weg: Die Volltextsuche der Domain
+    // antwortete am 20.09.2026 mit HTTP 503. Der verlinkte Online-Antrag
+    // (`formulare.hvlnet.de/formcycle/form/provide/754/`) antwortet heute mit
+    // HTTP 404 — passend zur Pause, aber nicht als Beleg dafür genommen.
+  },
+  "fritzlar-balkonkraftwerke-speicher": {
+    id: "fritzlar-balkonkraftwerke-speicher", name: "Förderung Balkonkraftwerke mit Speicher",
+    traeger: "Stadt Fritzlar", level: "kommune", region: "Fritzlar",
+    bundesland: "Hessen", agsCode: "06634005",
+    url: "https://www.fritzlar.de/rathaus-politik/stadtentwicklung/foerdermoeglichkeiten/balkonkraftwerk/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // TAGESGENAU AUS DER RICHTLINIE, nicht aus der Jahresangabe der Seite.
+    // Die Programmseite sagt nur „Laufzeit von 2026 – 2027"; die Richtlinie
+    // sagt „Diese Richtlinie tritt am 01.01.2026 in Kraft … Sie ist bis
+    // 31.12.2027 gültig."
+    //   `endetIso` MEINT DEN ANNAHMESCHLUSS, nicht die Befristung der
+    //   Richtlinie — hier fallen beide zusammen, weil derselbe Satz die
+    //   Geltung an die Anträge bindet („gilt für alle Anträge, die ab diesem
+    //   Zeitpunkt … gestellt werden"). Der Topf kann trotzdem früher leer sein:
+    //   100 Plätze, Windhundprinzip, deshalb `capped: true`. Etwas Genaueres
+    //   ist nicht belegbar.
+    //   `beschlossenIso` IST EINE BRÜCKE, keine Gleichsetzung: Belegt ist ein
+    //   AUFTRAG der Stadtverordnetenversammlung vom 25.09.2025, die Richtlinie
+    //   selbst trägt nur „Stand: November 2025". Dass es ihr Beschluss ist,
+    //   folgt aus ihrer Schlussklausel — die Laufzeit lasse sich „mit ERNEUTEM
+    //   Beschluss der Stadtverordnetenversammlung" verlängern.
+    beginntIso: "2026-01-01", endetIso: "2027-12-31", beschlossenIso: "2025-09-25",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk mit Speicher, ein Gerät je Wohneinheit",
+    maxFoerderung: "100 € je Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk mit Speicher", value: "100 € pauschal (brutto), ein Gerät je Wohneinheit", nur: ["balkon"] }],
+    conditions: [
+      "Gefördert wird ausschließlich das Balkonkraftwerk zusammen mit einem Speicher — ohne Speicher gibt es nichts",
+      // DER ANTRAGSZEITPUNKT IST DER UMGEKEHRTE als sonst, und er stand auf der
+      // Programmseite mit keinem Wort. Fast jedes Programm des Katalogs
+      // verlangt den Antrag VOR dem Kauf; hier ausdrücklich nicht: „Es handelt
+      // sich um ein nachträgliches Zuschussverfahren, d. h. die Maßnahme bedarf
+      // keiner Bewilligung." Wer die übliche Regel annimmt, wartet auf eine
+      // Bewilligung, die es gar nicht gibt. Dieselbe Bauform wie in
+      // Herbrechtingen und im Landkreis Havelland.
+      "Beantragt wird erst nach dem Einbau: eine Bewilligung vorab gibt es nicht",
+      "Der Speicher muss mindestens 1 kWh fassen, die Module höchstens 2.000 Wattpeak und der Wechselrichter höchstens 800 Voltampere liefern",
+      "Das Set muss von einem einzigen Anbieter gekauft sein; Rechnungen einzelner Bauteile verschiedener Anbieter sind ausgeschlossen",
+      // EIGENE BEDINGUNG, nicht im Ausschluss der Inselanlagen enthalten: Ein
+      // netzgekoppeltes Set mit NULLEINSPEISUNG ist keine Inselanlage, verstößt
+      // aber gegen diese Voraussetzung — und genau diese Betriebsart bieten die
+      // gängigen Balkonspeicher serienmäßig an. Gefunden im Council.
+      "Überschuss, den der Speicher nicht mehr aufnimmt, muss ins öffentliche Netz eingespeist werden — eine Nulleinspeisung ist nicht förderfähig",
+      "Die Rechnung darf beim Antrag höchstens drei Monate alt sein und nicht vor dem 1. Januar 2026 ausgestellt worden sein",
+      "Antragsberechtigt sind volljährige Personen mit erstem Wohnsitz in Fritzlar — Eigentümer wie Mieter, für die selbstbewohnte Wohnung",
+      "Je Wohneinheit wird höchstens ein Balkonkraftwerk gefördert; im Haushalt darf noch keine geförderte Anlage stehen",
+      "Mieter brauchen vorab die Zustimmung der Vermieterseite, Eigentumswohnungen die der Eigentümergemeinschaft",
+      "Die Anlage muss zwei Jahre lang im Stadtgebiet Fritzlar betrieben werden",
+      "Die Anlage ist im Marktstammdatenregister anzumelden; der Nachweis muss den Status In Betrieb zeigen und gehört zum Antrag, dazu Rechnung, Zahlungsbeleg und ein Foto der angeschlossenen Anlage",
+      "Liegt der Aufstellungsort im Bereich eines Kulturdenkmals oder einer denkmalgeschützten Gesamtanlage, ist vorab eine denkmalschutzrechtliche Genehmigung einzuholen",
+      "Ausgeschlossen sind Eigenbauten und Prototypen, gebrauchte Geräte, fest mit dem Gebäude verbundene Anlagen, Leasing- und Ratenkauf, Inselanlagen ohne Einspeisung und gewerblich genutzte Gebäude",
+      "Die Anlagenteile müssen den einschlägigen nationalen Normen entsprechen (etwa CE) und fachgerecht montiert sein",
+      "Der Topf umfasst je 5.000 € für 2026 und 2027, zusammen 10.000 € für höchstens 100 Anlagen; vergeben wird nach Eingang",
+      "Ein Rechtsanspruch besteht nicht — die Förderung ist eine freiwillige Leistung der Stadt",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    balkonPauschale: 100, balkonNurMitSpeicher: true,
+    // NEU AUFGENOMMEN 20.09.2026. Gefunden im Treffer-Vorrat, Amtsseite und
+    // Richtlinie am selben Tag im Volltext gelesen („Richtlinie zur Förderung
+    // von steckerfertigen Photovoltaikanlagen (sogenannten Balkonkraftwerken)
+    // mit Speicher in 2026 und 2027", Stand November 2025, vier Seiten).
+    // Satz: „Die Förderhöhe beträgt pauschal 100 Euro (brutto) pro
+    // Balkonkraftwerk."
+    //
+    // DIE RICHTLINIE STEHT NICHT ALS LINK AUF DER SEITE, sie steht im
+    // Datenblock des Download-Bausteins: Ein `href` auf das PDF gibt es nicht,
+    // der Pfad kommt aber fünfmal im ausgelieferten HTML vor, HTML-maskiert
+    // innerhalb eines JSON-Blocks. Ein einfacher Abruf genügt also, wenn man
+    // den ROHTEXT durchsucht statt die Ankerliste.
+    //   EINE ERSTE FASSUNG BEHAUPTETE HIER „braucht einen echten Browser" —
+    //   am 20.09.2026 vom Gegenprüfer widerlegt und nachgemessen. Der Irrtum
+    //   entstand aus derselben Wurzel wie der Havelland-Fehlgriff zwei Tage
+    //   zuvor: nach Verweisen gesucht statt im Rohtext. Eine falsche Aussage
+    //   über unser eigenes Vorgehen kostet die nächste Sitzung einen Browser,
+    //   wo ein Abruf reicht.
+    // Ohne die Richtlinie hätte der Eintrag zum Antragszeitpunkt schweigen
+    // müssen — also zur teuersten Bedingung des Programms.
+    //
+    // `balkonNurMitSpeicher` IST HIER PFLICHT, nicht Beiwerk: Die Stadt zahlt
+    // ausschließlich für Sets MIT Speicher. Ohne das Feld bekäme jedes Set ohne
+    // Speicher 100 € abgezogen, die es nicht gibt. Nachgesehen und deshalb
+    // ohne eigenes Feld gelassen: Die Mindestspeichergröße von 1 kWh kann der
+    // Rechner nicht unterschreiten — seine beiden Speicher messen 1,6 und
+    // 2,7 kWh —, und keines seiner drei Sets überschreitet 2.000 Wp oder
+    // 800 VA. Die drei Grenzen stehen deshalb im Bedingungstext, wo sie den
+    // Nutzer betreffen, und nicht in der Rechnung, wo sie nie greifen würden.
+    //
+    // `combinableWith: null` heißt „nicht geklärt": Die Richtlinie sagt zur
+    // Kumulierung mit anderen Fördermitteln nichts — weder erlaubend noch
+    // ausschließend. Im Ergebnis behandelt der Code das wie einen Ausschluss
+    // von Bundesmitteln, also die vorsichtige Richtung.
+    //
+    // DER BESCHLUSSTAG IST NICHT DER ANTRAGSSTART: „Mit Beschluss vom
+    // 25.09.2025 hat die Stadtverordnetenversammlung … den Magistrat
+    // beauftragt". Der Start steht getrennt davon im Inkrafttreten.
+  },
+  "weichering-solarberatung": {
+    id: "weichering-solarberatung", name: "Förderung der Nutzung von Solarenergie",
+    traeger: "Gemeinde Weichering", level: "kommune", region: "Weichering",
+    bundesland: "Bayern", agsCode: "09185168",
+    url: "https://www.weichering.de/foerderung-der-nutzung-von-solarenergie_id1003",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // BEZUSCHUSST WIRD DIE PLANUNG, NICHT DIE ANLAGE — und das ist der ganze
+    // Eintrag. Die Gemeinde schreibt: „Bereits seit 2019 fördert die Gemeinde
+    // Weichering die Beratung, Vorplanung und Planung von Solar- und
+    // Photovoltaikanlagen. Der einmalige Zuschuss beträgt 400,00 Euro."
+    // Wer eine Anlage baut, bekommt dafür nichts; wer planen lässt, bekommt
+    // 400 € — auch dann, wenn am Ende nichts gebaut wird.
+    //   DESHALB KEIN STRUKTURIERTER SATZ. Unser Modell rechnet Zuschüsse auf
+    //   die Anschaffung, und ob jemand eine bezahlte Planung beauftragt hat,
+    //   weiß der Rechner nicht. Das Programm informiert auf der Stadtseite und
+    //   zieht nichts ab — dieselbe Bauform wie bei jedem Zuschuss, den das
+    //   Modell nicht ausdrücken kann.
+    // 2019 ALS JAHRESFORM, nicht als Tagesdatum: „bereits seit 2019" ist alles,
+    // was die Quelle sagt.
+    beginntIso: "2019",
+    eligibility: ["privat"],
+    coveredCosts: "Beratung, Vorplanung und Planung einer Solar- oder Photovoltaikanlage — nicht die Anlage selbst",
+    maxFoerderung: "400 € einmalig je Antragsteller",
+    // `rates` BESCHRIFTET NUR, es rechnet nicht — der Abzug hängt an den
+    // strukturierten Feldern, und die bleiben hier absichtlich leer.
+    rates: [{ label: "Beratung und Planung", value: "400 € einmalig", nur: ["pv"] }],
+    conditions: [
+      "Bezuschusst wird ausschließlich die Beratung, Vorplanung und Planung — für Kauf und Montage der Anlage zahlt die Gemeinde nichts",
+      "Der Zuschuss beträgt einmalig 400 €",
+      "Im Haushaltsjahr stehen insgesamt 4.000 € bereit, also rechnerisch zehn Zuschüsse — wer zu spät kommt, geht leer aus",
+      // DIE RICHTLINIE IST NICHT MEHR ERREICHBAR, und das steht hier, statt
+      // still zu fehlen. Die Programmseite verweist auf die Formularseite der
+      // Gemeinde; die führt heute elf Formulare, keines davon zur Solarenergie.
+      // Das vollständige Ortsrecht (33 Dokumente, am 20.09.2026 gelesen) enthält
+      // ebenfalls keine Förderrichtlinie. Damit ist die Programmseite der
+      // einzige Beleg.
+      "Antragsformular und Richtlinie sind auf der verlinkten Formularseite der Gemeinde nicht mehr zu finden — Konditionen im Einzelnen beim Rathaus erfragen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    // NEU AUFGENOMMEN 20.09.2026 aus dem Treffer-Vorrat, und bewusst OHNE
+    // Probe-Eintrag: Ohne strukturierten Satz bewegt der Eintrag ohnehin kein
+    // Geld, und der Stand ist schwächer belegt als bei den Programmen dieser
+    // Woche.
+    //   WAS FEHLT, IST DIE BESTÄTIGUNG DES HEUTIGEN STANDES. Die Seite ist live
+    //   (HTTP 200, keine Umleitung), formuliert im Präsens und nennt kein Ende
+    //   — aber ihr Artikeldatum ist der 25.10.2022, und die Richtlinie, die sie
+    //   verlinkt, ist weg. Das ist die Rauschenberg-Lehre andersherum: Dort
+    //   bestätigte die Satzung die Fortsetzung, hier führt das Ortsrecht gar
+    //   keine. Ein Anruf im Rathaus klärt es in fünf Minuten; bis dahin sagt
+    //   der Eintrag, was die Gemeinde schreibt, und nicht mehr.
+  },
+  "ehningen-steckerfertige-pv": {
+    id: "ehningen-steckerfertige-pv", name: "Förderprogramm Steckerfertige PV-Anlagen",
+    traeger: "Gemeinde Ehningen", level: "kommune", region: "Ehningen",
+    bundesland: "Baden-Württemberg", agsCode: "08115013",
+    url: "https://www.ehningen.de/fileadmin/Dateien/Dateien/Bauamt_Hoch_und_Tiefbau/Foerderrichtlinie_steckerfertige_PV_Anlagen.pdf",
+    stand: "September 2026", status: "aktiv", capped: false, verified: true,
+    beginntIso: "2024-10-01",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten je Wohneinheit",
+    maxFoerderung: "50 % der förderfähigen Kosten, max. 200 € — mit Sozialpass 75 %, max. 500 €",
+    rates: [{ label: "Balkonkraftwerk", value: "50 % der förderfähigen Investitionskosten, höchstens 200 €; für Inhaber eines Sozialpasses 75 %, höchstens 500 €", nur: ["balkon"] }],
+    conditions: [
+      "Gefördert wird der Kauf oder die Erstinstallation je Wohneinheit; der Wechselrichter muss zwischen 300 und 800 Watt Ausgangsleistung haben",
+      "Antragsberechtigt sind einmalig Mieterinnen und Mieter sowie Wohnungseigentümerinnen und -eigentümer; Anlagen zur gewerblichen Nutzung sind ausgeschlossen",
+      "Der Antrag kann vor oder nach Kauf und Installation gestellt werden, per Mail oder schriftlich an die Kämmerei",
+      "Die Anlage muss mindestens fünf Jahre im Eigentum bleiben und genutzt werden",
+      "Die Anlage ist im Marktstammdatenregister zu registrieren und fachgerecht so zu befestigen, dass sie auch außergewöhnlichen Witterungsbedingungen standhält",
+      "Gefördert wird, solange Haushaltsmittel zur Verfügung stehen; ein Rechtsanspruch besteht nicht",
+      "Die Gemeinde behält sich vor, die Förderung auszusetzen, wenn dieselbe Maßnahme auch auf Landes-, Bundes- oder EU-Ebene gefördert wird",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.50, balkonCap: 200,
+    // NEU AUFGENOMMEN 20.09.2026. Die Förderrichtlinie der Gemeinde ist im
+    // Volltext gelesen (PDF unter ihrer eigenen Adresse, HTTP 200 am selben Tag).
+    // Abschnitt 6: „Dieses Förderungsprogramm tritt zum 01.10.2024 in Kraft und
+    // gilt solange Haushaltsmittel der Gemeinde Ehningen zur Verfügung stehen."
+    // Keine Befristung, kein Hinweis auf einen leeren Topf.
+    //
+    // GERECHNET WIRD NUR DIE GRUNDSTUFE (50 %, max. 200 €). Die Sozialpass-Stufe
+    // (75 %, max. 500 €) steht als Text am Eintrag und zieht nichts ab: Ob jemand
+    // einen Sozialpass hat, fragt kein Rechner dieses Projekts, und eine
+    // Einkommensgrenze kann das Modell nicht ausdrücken. Die vorsichtige Richtung
+    // ist hier die niedrigere Stufe — wer den Pass hat, bekommt mehr als
+    // angezeigt, und eine angenehme Überraschung ist besser als ein Zuschuss, den
+    // jemand einplant und nicht bekommt.
+    //
+    // `combinableWith: null`: Die Richtlinie sagt nicht, dass eine Kombination
+    // mit Bundesmitteln erlaubt ist — sie sagt das Gegenteil in der weichen Form,
+    // die Gemeinde behalte sich vor, die Förderung auszusetzen, wenn dieselbe
+    // Maßnahme auf Landes-, Bundes- oder EU-Ebene gefördert wird. Ein Vorbehalt
+    // ist kein Ausschluss, aber auch keine Zusage; unbelegt heißt hier: kein
+    // Stapel.
+    //
+    // WIE GEFUNDEN: nicht aus dem Treffer-Vorrat, sondern aus einer Stichprobe
+    // von 30 zufälligen Zeilen des offenen Quellenvorrats, die eigentlich messen
+    // sollte, wie viele erfasste Adressen auf eine Startseite umleiten (Antwort:
+    // eine von 30). Der Nebenbefund war wertvoller als die Messung.
+  },
+  "mauer-balkonkraftwerke": {
+    id: "mauer-balkonkraftwerke", name: "Förderprogramm Balkonkraftwerk",
+    traeger: "Gemeinde Mauer", level: "kommune", region: "Mauer",
+    bundesland: "Baden-Württemberg", agsCode: "08226048",
+    url: "https://www.gemeinde-mauer.de/seite/662274/klimaschutz.html",
+    stand: "September 2026", status: "aktiv", capped: false, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Anschaffungskosten je Anlage",
+    maxFoerderung: "10 % der Anschaffungskosten, max. 100 €",
+    rates: [{ label: "Balkonkraftwerk", value: "10 % der Anschaffungskosten, max. 100 €", nur: ["balkon"] }],
+    conditions: [
+      // Der Antragszeitpunkt ist auch hier der umgekehrte: Das Formular
+      // verlangt die Rechnungskopie als Anlage, eine Bewilligung vorab kommt
+      // weder auf der Seite noch im Formular vor.
+      "Beantragt wird erst nach dem Kauf: die Rechnungskopie gehört zum Antrag",
+      "Gefördert werden nur Anlagen, die VDE-konform sind — Erzeugungsanlage und Anschluss müssen den aktuell gültigen Regeln der Technik entsprechen",
+      "Maßgeblich sind der Nachweis und der Zeitpunkt der Installation",
+      // Steht NUR im Formular, nicht auf der Seite — und deshalb fehlte sie beim
+      // Aufnehmen: Wer die Bedingungen aus dem Fließtext der Amtsseite zieht,
+      // übersieht, was der Antragsteller unterschreiben muss.
+      "Die Anlage muss fachmännisch installiert sein; das unterschreibt der Antragsteller im Formular",
+      "Die Anlage ist beim Netzbetreiber und im Marktstammdatenregister anzumelden",
+      "Ein Rechtsanspruch auf die Förderung besteht nicht",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.10, balkonCap: 100,
+    // NEU AUFGENOMMEN 20.09.2026 aus dem Treffer-Vorrat. Amtsseite und
+    // Antragsformular am selben Tag im Volltext gelesen. Satz der Seite: „Der
+    // Gemeinderat hat eine Förderung in Höhe von 10 % der
+    // Anschaffungskosten/Anlage (max. 100 €) beschlossen." Das Formular
+    // („Antrag für Förderprogramm ‚Balkonkraftwerk'", Bürgermeisteramt Mauer)
+    // wiederholt den Satz wörtlich und verlangt die Rechnungskopie.
+    //
+    // DIE 600 W DER SEITE SIND KEINE BEDINGUNG, und das ist die einzige
+    // Entscheidung dieses Eintrags. Die Seite schreibt im erklärenden Absatz
+    // darüber: „Mini-Photovoltaik-Anlagen … Sie sind auf eine Maximalleistung
+    // von 600W begrenzt". Das ist eine (seit 2024 überholte) Beschreibung
+    // dessen, was ein Balkonkraftwerk ist — kein Fördermerkmal: Weder der
+    // Beschlusssatz noch das Formular nennen eine Leistungsgrenze. Sie als
+    // Bedingung zu schreiben würde die Quelle härten und zwei der drei Sets des
+    // Rechners grundlos ausschließen; sie wegzulassen ist trotzdem nicht
+    // stillschweigend, sondern steht hier. Belegt ist damit „die Gemeinde nennt
+    // keine Leistungsgrenze" — NICHT „800 W sind gedeckt": Die Seite bezieht die
+    // „aktuell gültigen Regeln der Technik" auf Erzeugungsanlage und Anschluss,
+    // nicht auf eine Obergrenze. Eine frühere Fassung dieses Kommentars hat
+    // daraus „und die erlauben heute 800 VA" gemacht und der Quelle damit eine
+    // Aussage zugeschrieben, die sie nicht trägt (Gegenprüfer, 20.09.2026).
+    //
+    // WIE ALT DER BESCHLUSS IST, SAGT DIE SEITE NICHT — das Antragsformular
+    // schon: erzeugt am 28.07.2023 und seitdem unverändert. Zusammen mit den
+    // 600 W deutet das auf einen Beschluss von 2023. Das ist KEIN Grund, das
+    // Programm anzuzweifeln — die Quelle nennt weder Enddatum noch Topf noch
+    // Frist, es gibt also nichts, das von selbst verfallen könnte, und der
+    // Katalog führt mehrere aktive Programme mit älterem Beschluss. Es ist ein
+    // Grund, beim nächsten Prüflauf die Seite und nicht nur den Fingerabdruck
+    // anzusehen.
+    //
+    // KEIN TOPF GENANNT: Weder Seite noch Formular nennen ein Budget oder eine
+    // Reihenfolge nach Eingang, deshalb `capped: false`. Auch kein Enddatum und
+    // kein Beschlussdatum — der Satz nennt nur „der Gemeinderat hat beschlossen"
+    // ohne Tag. Ein geratenes Datum trüge die Auswertung „Zubau vor und nach der
+    // Förderung" und verschöbe sie.
+    //
+    // `combinableWith: null` heißt „nicht geklärt": Zur Kumulierung sagt keine
+    // der beiden Quellen etwas. Im Ergebnis wirkt das wie ein Ausschluss von
+    // Bundesmitteln, also die vorsichtige Richtung.
+  },
+  "rauschenberg-balkon-solaranlagen": {
+    id: "rauschenberg-balkon-solaranlagen", name: "Richtlinien Balkon-Solaranlagen",
+    traeger: "Stadt Rauschenberg", level: "kommune", region: "Rauschenberg",
+    bundesland: "Hessen", agsCode: "06534017",
+    url: "https://www.rauschenberg.de/rathaus-politik-buergerservice/satzungen",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // § 8: „Die Änderung dieser Richtlinie tritt zum 1. Januar 2026 in Kraft".
+    // Ausgefertigt am 15.12.2025, bekannt gemacht am 20.12.2025. KEIN Enddatum:
+    // Die Richtlinie nennt keins. Die Frist „bis zum 10.12.2025", die in der
+    // Rathaus-Meldung steht, gehört zur VORIGEN Runde und wäre hier falsch.
+    //   KEIN `beschlossenIso`. Der 15.12.2025 ist das Datum des
+    //   AUSFERTIGUNGSVERMERKS („Rauschenberg, den 15.12.2025 / Der Magistrat"),
+    //   und der bestätigt nur die Übereinstimmung „mit den hierzu ergangenen
+    //   Beschlüssen der Stadtverordnetenversammlung" — die Beschlüsse selbst
+    //   sind undatiert und liegen davor. Er stand hier bis zum 20.09.2026 als
+    //   Beschlussdatum; dasselbe geratene Datum hatte der Mauer-Eintrag am
+    //   selben Tag mit ausgeschriebener Begründung weggelassen.
+    beginntIso: "2026-01-01",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Anlage, dazu einmalig eine Pauschale für zusätzlich eingebaute Speichermodule",
+    maxFoerderung: "100 € je Anlage (plus 100 € für Speichermodule)",
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "100 € pauschal, einmal je berechtigter Person", nur: ["balkon"] }],
+    conditions: [
+      "Beantragt wird nach dem Kauf: die Rechnungskopie gehört zum Antrag an den Magistrat",
+      "Gefördert werden ausschließlich Anlagen, die 800 Watt Einspeiseleistung nicht überschreiten",
+      "Förderfähig sind nur Anlagen, die ab dem 1. Januar 2026 gekauft UND installiert wurden",
+      // § 3 sagt „Jeder Grundstückseigentümer bzw. Mieter eines Hauses oder
+      // einer Wohneinheit kann den Zuschuss jeweils einmal erhalten" — einmal je
+      // BERECHTIGTER PERSON. „Einmal je Wohneinheit" stand hier bis zum
+      // 20.09.2026 und liest sich im Haus mit Eigentümer und Mieter anders.
+      "Den Zuschuss bekommt jede berechtigte Person einmal; antragsberechtigt sind Eigentümer wie Mieter",
+      "Die Wohnung muss nach der Inbetriebnahme ganzjährig bewohnt sein",
+      "Bei der Installation sind die einschlägigen Vorschriften und DIN-Normen zu beachten",
+      "Gewerbebetriebe werden aus diesen Mitteln nicht gefördert",
+      "Die Anlage ist mindestens fünf Jahre zu betreiben, sonst kann der Zuschuss zurückgefordert werden",
+      "Stehen Mittel aus Programmen des Landkreises, des Landes oder des Bundes zur Verfügung, sind diese vorrangig zu nutzen; eine Kumulierung mit dem städtischen Zuschuss ist ausgeschlossen",
+      "Entschieden wird nach Eingang im Rahmen der vorhandenen Haushaltsmittel; ein Rechtsanspruch besteht nicht",
+      // Dieselbe Bauform wie in Kenzingen: Die zweite Pauschale steht in der
+      // Richtlinie, das Modell kennt dafür kein Feld, und geschätzt wird nicht.
+      // Die Richtung ist die vorsichtige — wir weisen weniger aus, als die Stadt
+      // zahlt.
+      //   DIE BEGRÜNDUNG HAT DIE QUELLE GEHÄRTET, und alle drei Council-Prüfer
+      //   haben es unabhängig gefunden (20.09.2026): Hier stand „weil die
+      //   Richtlinie sie an die NACHRÜSTUNG bindet". Das Wort Nachrüstung kommt
+      //   in der Richtlinie nirgends vor; § 2 und § 3 sagen beide
+      //   „ZUSÄTZLICH" („der Einbau von zusätzlichen Speichermodulen").
+      //   Ob damit „später nachgerüstet" oder „zusätzlich zum Modul" gemeint
+      //   ist, entscheidet die Quelle NICHT — der Satz gab unsere Lesart als
+      //   Tatsache der Stadt aus und konnte den Leser 100 € kosten.
+      "Für zusätzlich eingebaute Speichermodule zahlt die Stadt einmalig weitere 100 € — ob es sie zusammen mit der Grundpauschale für ein Set mit Speicher gibt, sagt die Richtlinie nicht, deshalb rechnen wir sie nicht mit",
+    ],
+    // AUSSCHLUSS, NICHT UNGEKLÄRT: § 3 sagt wörtlich „Die kommunalen
+    // Fördermittel können nicht mit anderen Fördermitteln kumuliert werden."
+    combinableWith: [],
+    foerdert: ["balkon"],
+    balkonPauschale: 100,
+    // NEU AUFGENOMMEN 20.09.2026 aus dem Treffer-Vorrat. Die Rathaus-Meldung,
+    // über die wir gestolpert sind, beschreibt die Runde 2025 und endet mit
+    // einer abgelaufenen Frist — sie allein hätte zu „beendet" geführt. Erst
+    // die amtliche Bekanntmachung unter „Satzungen" zeigt die Fortsetzung:
+    // „Richtlinien Balkon-Solaranlagen 2026", ausgefertigt 15.12.2025, im
+    // Volltext gelesen (drei Seiten). Daneben liegt das Antragsformular
+    // „Förderung_Mini-Balkon-Solaranlage 2026".
+    //   LEHRE FÜR DEN VORRAT: Eine Nachricht ist datiert, eine Satzung gilt.
+    //   Wer bei einem Treffer nur die Meldung liest, schreibt den Stand des
+    //   Vorjahrs fort.
+    //
+    // OFFEN (bis 12/2026): DIE ANTRAGSFRIST STEHT NICHT IN DER RICHTLINIE.
+    // Für die Runde 2025 hat die Stadt sie gesondert in den Rauschenberger
+    // Nachrichten bekannt gegeben („Förderanträge können noch bis zum
+    // 10.12.2025 gestellt werden."); die Richtlinie 2026 nennt keine. Daraus
+    // „ganzjährig offen" zu lesen ist unbelegt. Heute ändert das nichts, ab
+    // Mitte Dezember 2026 kann der Eintrag STILL FALSCH WERDEN, OHNE DASS SICH
+    // DIE RICHTLINIE BEWEGT — und der Fingerabdruck-Wächter sieht es nicht, weil
+    // er auf die Satzungsseite zeigt, nicht auf die Nachrichten. Also im
+    // Dezember die Nachrichtenseite ansehen, nicht den Fingerabdruck abwarten.
+    //
+    // KEIN PROBE-EINTRAG in diesem Lauf: Das Programm ist aktiv und würde Geld
+    // abziehen, und dafür fehlt ihm der Council-Durchgang. Bis dahin
+    // informiert es auf der Stadtseite und rechnet nichts — genau die Bremse,
+    // für die es `fundingBelegAktuell()` gibt.
+  },
+  "schwarzenfeld-balkon-pv": {
+    id: "schwarzenfeld-balkon-pv", name: "Förderung von Balkon-PV-Anlagen",
+    traeger: "Markt Schwarzenfeld", level: "kommune", region: "Schwarzenfeld",
+    bundesland: "Bayern", agsCode: "09376163",
+    url: "https://www.schwarzenfeld.de/leben-arbeiten-wohnen/bauen-wohnen/balkonkraftwerke",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-01-01",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Anteil des Rechnungsbetrags je Anlage",
+    maxFoerderung: "10 % des Rechnungsbetrags, max. 100 €",
+    rates: [{ label: "Balkonkraftwerk", value: "10 % des eingereichten Rechnungsbetrages, höchstens 100 € pro Antrag", nur: ["balkon"] }],
+    conditions: [
+      "Gefördert werden Stecker-Solaranlagen bis 800 Watt Nennleistung; es muss ein Neuprodukt sein, das die Normen für fest installierte Stromerzeugungsgeräte erfüllt",
+      "Antragsberechtigt sind volljährige Personen mit Hauptwohnsitz sowie Vereine und Gewerbebetriebe mit Sitz im Gemeindegebiet",
+      "Je Haushalt, Betrieb oder Verein wird nur eine Anlage gefördert; sie muss dauerhaft am Hauptwohnsitz oder Betriebssitz genutzt werden",
+      "Beantragt wird erst nach der Beschaffung — zum Antrag gehören Rechnungskopie, Zahlungsnachweis und ein Foto der installierten Anlage",
+      "Antragsteller und Käufer müssen dieselbe Person sein: Wer sich die Anlage von jemand anderem kaufen lässt, bekommt den Zuschuss nicht",
+      "Die Förderung ist an das laufende Haushaltsjahr gebunden: Die Unterlagen müssen im Jahr der Rechnungsausstellung eingereicht werden",
+      "Freiwillige Leistung unter Haushaltsvorbehalt; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.10, balkonCap: 100,
+    // NEU AUFGENOMMEN 20.09.2026, aus dem Treffer-Vorrat. Die Förderhinweise des
+    // Marktes sind im Volltext gelesen (PDF unter der eigenen Adresse der
+    // Gemeinde, HTTP 200 am selben Tag): Abschnitt B nennt „10 % des
+    // eingereichten Rechnungsbetrages, maximal 100 € pro Antrag", datiert
+    // „Markt Schwarzenfeld, 01. Oktober 2024".
+    //
+    // KEINE BEFRISTUNG, aber eine jährliche Antragsfrist: „Die Förderung ist an
+    // das laufende Haushaltsjahr gebunden. Die vollständigen Unterlagen müssen
+    // im Jahr der Rechnungsausstellung eingereicht werden … vom 01.01. bis zum
+    // 31.12. DES JEWEILIGEN JAHRES." Das ist eine jährlich wiederkehrende Frist
+    // am einzelnen Antrag, keine Laufzeit des Programms — deshalb kein
+    // `endetIso`, sondern eine Bedingung.
+    //
+    // `beginntIso` KOMMT VON DER SEITE, NICHT VOM DATUM DES HINWEISBLATTS.
+    // Das PDF ist auf den 01.10.2024 datiert, die Seite sagt aber „fördert der
+    // Markt Schwarzenfeld ab dem Jahr 2024" und „für alle Anlagen mit
+    // Rechnungsdatum ab 2024". Ein Datumsstempel unter einem Dokument ist der
+    // Tag, an dem es unterschrieben wurde, nicht der Tag, ab dem gefördert wird
+    // — hier lägen neun Monate dazwischen, und zwar genau auf der Zeitachse,
+    // für die es das Feld gibt.
+    //
+    // `combinableWith: null`: Die Hinweise sagen zur Kombination mit anderen
+    // Fördermitteln nichts. Unbelegt heißt kein Stapel.
+  },
+  "kumhausen-balkon-pv": {
+    id: "kumhausen-balkon-pv", name: "Bezuschussung von Balkon-Photovoltaikanlagen",
+    traeger: "Gemeinde Kumhausen", level: "kommune", region: "Kumhausen",
+    bundesland: "Bayern", agsCode: "09274146",
+    url: "https://www.kumhausen.de/wohnen-und-leben/bauen-und-wohnen/balkon-photovoltaikanlagen",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-01-01", beschlossenIso: "2023-09-12",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Pauschale, begrenzt auf einen Anteil der Anschaffungskosten",
+    maxFoerderung: "100 € pauschal, höchstens 20 % der Anschaffungskosten",
+    rates: [{ label: "Balkonkraftwerk", value: "pauschal 100 €, begrenzt auf 20 % der Anschaffungskosten", nur: ["balkon"] }],
+    conditions: [
+      "Zuschussfähig sind Balkonkraftwerke bis 800 Wp; Prototypen und Eigenbau sind ausgenommen, ebenso bereits installierte Anlagen",
+      "Antragsberechtigt sind natürliche und juristische Personen mit Hauptwohnsitz in Kumhausen — als Eigentümer, Erbbauberechtigte oder Mieter",
+      "Die technischen Anschlussbedingungen und die VDE-Richtlinie für Erzeugungsanlagen am Niederspannungsnetz sind einzuhalten",
+      "Der erzeugte Strom wird selbst verbraucht; für eingespeisten Strom wird keine Vergütung nach EEG oder KWKG beansprucht",
+      "Nach der Förderzusage ist die Installation binnen sechs Monaten nachzuweisen; ausgezahlt wird erst nach Nachweis der Eintragung im Marktstammdatenregister",
+      "Die Anlage darf fünf Jahre lang nicht veräußert werden; wird sie in dieser Zeit nach einem Schaden zurückgebaut, sind die Fördermittel zurückzuzahlen",
+      "Freiwillige Leistung im Rahmen der Haushaltsmittel, in der Reihenfolge des Eingangs vollständiger Anträge; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: ["bund-nullsteuer", "bund-kfw270"],
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.20, balkonCap: 100,
+    // NEU AUFGENOMMEN 20.09.2026, aus dem Treffer-Vorrat. Die Förderkriterien
+    // sind im Volltext gelesen (PDF „Förderkriterien für Balkon 2026" unter der
+    // eigenen Adresse der Gemeinde, HTTP 200 am selben Tag). Abschnitt 4: „Die
+    // kommunale Förderung beträgt pauschal 100,00 Euro, ist aber auf 20% der
+    // Anschaffungskosten begrenzt."
+    //
+    // DIE PAUSCHALE IST KEINE `balkonPauschale`. „Pauschal 100 €, begrenzt auf
+    // 20 % der Kosten" ist rechnerisch der gedeckelte Prozentsatz: Bei einem
+    // 500-€-Set sind 20 % genau 100 €, bei einem 300-€-Set nur 60 €. Als feste
+    // Pauschale eingetragen bekäme das billigste Set zu viel — bei Balkon-Sets
+    // ab rund 350 € ist das der Normalfall, nicht der Randfall.
+    //
+    // `combinableWith`: Abschnitt 7 nennt die Kombination mit KfW,
+    // BAFA und dem Freistaat Bayern ausdrücklich als zulässig („schließt eine
+    // Förderung durch andere Fördermittelgeber nicht aus").
+    //
+    // `capped: true`: Die Seite nennt einen Fördertopf von 10.000 € je
+    // Haushaltsjahr, und Abschnitt 2 vergibt „in der Reihenfolge des Eingangs
+    // der vollständigen Förderanträge". Ob er gerade leer ist, sagt die Seite
+    // nicht; die Kriterien tragen die Jahreszahl 2026 im Dateinamen, also ist
+    // das Programm für dieses Jahr aufgelegt. Der Hinweis „Mittel begrenzt"
+    // gehört an die Stadtseite — bei 10.000 € sind das rund hundert Anlagen.
+  },
+  "mutterstadt-balkonkraftwerke": {
+    id: "mutterstadt-balkonkraftwerke", name: "Förderung von Stecker-Solargeräten",
+    traeger: "Gemeinde Mutterstadt", level: "kommune", region: "Mutterstadt",
+    bundesland: "Rheinland-Pfalz", agsCode: "07338019",
+    url: "https://www.mutterstadt.de/wirtschaft-wohnen-infrastruktur/balkonkraftwerke/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-07-01", endetIso: "2026-12-31",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Pauschale je Balkonkraftwerk",
+    maxFoerderung: "200 € einmalig je Balkonkraftwerk",
+    rates: [{ label: "Balkonkraftwerk", value: "einmalig 200 € pro Balkonkraftwerk", nur: ["balkon"] }],
+    conditions: [
+      "Die Anlage muss ab dem 01.07.2025 neu gekauft und errichtet worden sein; maßgeblich ist das Rechnungsdatum",
+      "Gefördert werden Balkonkraftwerke samt Wechselrichter mit mindestens 300 und höchstens 800 Watt Peak, angeschlossen über eine geeignete Steckdose am Hausnetz",
+      "Antragsberechtigt sind natürliche und juristische Personen des privaten Rechts: Hauseigentümer, deren Vertretungsberechtigte, Hausverwaltungen und Mieter; das Gebäude muss im Ortsgebiet liegen",
+      "In der Umgebung eines Kulturdenkmals ist eine denkmalrechtliche Genehmigung nötig; unmittelbar an oder neben einem Kulturdenkmal soll gar nicht installiert werden",
+      "Gefördert wird eine Anlage je Haushalt",
+      "Registrierung im Marktstammdatenregister ist Pflicht; die Anlage muss von einem anerkannten Prüfinstitut nach DIN oder ISO zertifiziert sein",
+      "Geförderte verpflichten sich, 20 Jahre lang unentgeltlich einzuspeisen, also keine EEG-Vergütung in Anspruch zu nehmen",
+      "Beantragt wird nach der Umsetzung; ausgezahlt wird nach Prüfung der Unterlagen und einem Bewilligungsbescheid",
+      "Freiwillige Leistung im Rahmen der bereitgestellten Haushaltsmittel; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: null,
+    foerdert: ["balkon"],
+    balkonPauschale: 200,
+    // NEU AUFGENOMMEN 20.09.2026, aus dem Treffer-Vorrat. Die Richtlinie steht
+    // in voller Länge auf der Seite der Gemeinde selbst (acht Abschnitte,
+    // HTTP 200 am selben Tag) — kein PDF nötig. Abschnitt 5: „Die Höhe der
+    // Förderung beträgt einmalig 200 € pro Balkonkraftwerk."
+    //
+    // `endetIso: "2026-12-31"` kommt aus Abschnitt 2: „Die Förderung erfolgt im
+    // Rahmen der für diesen Zweck jährlich bis zum 31.12.2026 durch den
+    // Gemeinderat bereitgestellten Haushaltsmittel." Das ist das Ende der
+    // MITTELBEREITSTELLUNG, kein von der Gemeinde genannter letzter Antragstag
+    // — die Feldbeschreibung oben verlangt genau den. Der Wert ist die beste
+    // verfügbare Näherung und trägt deshalb diesen Vorbehalt.
+    //
+    // UND ER SCHALTET NICHTS AB. Das Feld hat außerhalb dieser Datei genau
+    // einen Leser (die Fund-Suche der Datengeschichten); weder `fundingZaehlt`
+    // noch `fundingAmount` lesen es. Gestoppt wird ausschließlich über `status`
+    // — Böblingen trägt beides nebeneinander. Ohne diesen Absatz stünde hier
+    // die bequeme Annahme „läuft am Stichtag von selbst aus", und genau dann
+    // sieht im Januar 2027 niemand nach, während der Eintrag weiter 200 €
+    // abzieht. IM JANUAR 2027 NACHSEHEN, ob der Rat verlängert hat, und sonst
+    // `status` umstellen.
+    //
+    // HIER IST DIE PAUSCHALE WIRKLICH EINE PAUSCHALE: Die Richtlinie nennt
+    // keinen Prozentsatz und keinen Anteil, sondern einen festen Betrag je
+    // Anlage. Der Unterschied zu Kumhausen im selben Lauf ist der Grund, warum
+    // beide Felder nebeneinander existieren.
+    //
+    // NICHT MODELLIERT: die Selbstverpflichtung auf 20 Jahre unentgeltliche
+    // Einspeisung. Sie ist für ein Balkonkraftwerk fast folgenlos — der Rechner
+    // setzt dort ohnehin keine Einspeisevergütung an —, gehört aber als
+    // Bedingung sichtbar an den Eintrag: Wer sie nicht will, bekommt den
+    // Zuschuss nicht.
+  },
+  "ostheide-solarstrom": {
+    id: "ostheide-solarstrom", name: "Förderrichtlinien für die Bezuschussung von Solarstromerzeugung",
+    traeger: "Samtgemeinde Ostheide", level: "kommune", region: "Samtgemeinde Ostheide",
+    bundesland: "Niedersachsen",
+    // The six member municipalities as the Samtgemeinde itself lists them,
+    // each key looked up in the population register - never the shared prefix,
+    // which here is the county. Barendorf, Neetze, Reinstorf, Thomasburg,
+    // Vastorf, Wendisch Evern.
+    agsCodes: ["03355005", "03355026", "03355030", "03355036", "03355038", "03355040"],
+    url: "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+    // Guideline read in full as the PDF the Samtgemeinde links (21 Sep 2026),
+    // decided by the council on 12 March 2024, effective from 2024:
+    // "Solaranlagen zur Stromerzeugung auf Bestandsgebäuden, die vor dem
+    // 01.01.2024 bezogen worden sind, werden mit 10%, maximal mit 500,00 €,
+    // bezuschusst." And, in as many words: "Balkonkraftwerke zur
+    // Solaranlagenerzeugung werden nicht bezuschusst."
+    //
+    // WHAT THE MODEL CANNOT HOLD, and why it is a condition rather than a
+    // silent cut: the grant is for EXISTING buildings occupied before
+    // 01.01.2024. A new build gets nothing, and the calculator cannot know
+    // which case it is looking at.
+    //
+    // Found through the page of Landkreis Lüneburg, which names five local
+    // programmes the catalogue did not have; this is the second one read at its
+    // own authority source, after Adendorf.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-03-12", beginntIso: "2024-01-01",
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Zuschuss zu Solaranlagen zur Stromerzeugung auf Bestandsgebäuden",
+    maxFoerderung: "500 € je Anlage",
+    percentOfCost: 0.10,
+    pvCap: 500,
+    rates: [
+      { label: "Solarstromanlage auf einem Bestandsgebäude", value: "10 % der Kosten, höchstens 500 €" },
+    ],
+    conditions: [
+      "Nur für Bestandsgebäude, die vor dem 01.01.2024 bezogen worden sind",
+      "Balkonkraftwerke werden ausdrücklich nicht bezuschusst",
+      "Antrag formlos VOR Auftragserteilung; maßgeblich ist das Datum der Auftragserteilung",
+      "Dem Antrag sind Nachweise über die technische Ausführung und ein Kostenvoranschlag beizufügen",
+      "Nach der Zuschusszusage ist die Anlage innerhalb eines Jahres in Betrieb zu nehmen, sonst verfällt der Anspruch",
+      "Nur fabrikneue Anlagen im Gebiet der Samtgemeinde, nach den anerkannten Regeln der Technik",
+      "Die Samtgemeinde kann eine Förderung ablehnen, wenn die Lage oder die Auslegung eine schlechte Ausnutzung erwarten lässt oder das Verhältnis von Kosten und Nutzen außergewöhnlich abweicht",
+      "Auszahlung erst nach Abnahme durch die Samtgemeinde, mit Abnahmeprotokoll und Schlussrechnung",
+      "Kein Rechtsanspruch auf Förderung",
+    ],
+    combinableWith: BUND,
+  },
+  "horneburg-nachhaltige-projekte": {
+    id: "horneburg-nachhaltige-projekte", name: "Förderprogramm nachhaltiger Projekte (Teil Photovoltaik und Speicher)",
+    traeger: "Flecken Horneburg", level: "kommune", region: "Flecken Horneburg",
+    bundesland: "Niedersachsen", agsCode: "03359027",
+    // The Samtgemeinde keeps ONE page for both programmes and links a separate
+    // guideline per municipality (Horneburg: https://www.horneburg.de/downloads/datei/MzFjYTE2YjRlYmUzMGJhMGFCMSt3RnRjb1loWm8rMXd3Ylg5bVlsSVVGUDdyelV2L0NyUnNYbXU5ZTdqc2U5WEMvZGFpSkRxSDZXbGgxRjR5STNtU1BzSXBISjdJSHlJMFJFdXBOWlM4OXAxeS9lRVVvdHVUZVl2MHQ1d3BHem5ZTjVnTUh0VlFXNTdKVUR4cVlHVVNmUWZXdStsV09yNUlFVHFLcXlwa3Z2VmpxYm1EN0Y2aW9LNEpPUT0).
+    // The page is the source: the download address carries no words, and the
+    // page watcher should see a changed programme where people see it.
+    url: "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+    // Guideline read in full on 21 Sep 2026 (Richtlinie nachhaltige Projekte im Flecken Horneburg, a 4-page scan read page by page), in force
+    // 01.04.2025 by council decision, signed 26.03.2025. No. 5 reads: "10 % der Investitionskosten für
+    // Photovoltaikanlagen und 10% der Investitionskosten für Batteriespeicher,
+    // maximal 300 € pro Projekt" - on its own it leaves open whether the 300 EUR
+    // covers PV and storage together or each. The application form of the same
+    // version ("Stand: 01.04.2025", linked from the same page) lists them as two
+    // lines, "10% - max. 300€" each, and says "Die Kombination mit anderen
+    // Förderprogrammen ist möglich".
+    //
+    // WHAT IS COMPUTED is the reading that holds under both: 10 % of the cost,
+    // at most 300 EUR, from 5 kWp. The storage line of the form (another 300 EUR)
+    // stays as a rate the card shows, not a deduction - if the guideline's
+    // combined reading is the one the Flecken applies, we would otherwise
+    // promise 300 EUR it does not pay. A wallbox (10 %, max 200 EUR), rainwater
+    // tanks and green roofs are outside our techniques. No end date on the
+    // programme page (21 Sep 2026), no exhausted notice; paid by budget and in
+    // order of receipt.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-04-01",
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Zuschuss zu Photovoltaikanlage und Batteriespeicher an Wohngebäuden",
+    maxFoerderung: "300 € für Anlage und Speicher nach der Richtlinie, je 300 € laut Antragsformular",
+    percentOfCost: 0.10,
+    pvCap: 300,
+    pvMin: 5,
+    rates: [
+      { label: "Photovoltaikanlage (mindestens 5 kWp)", value: "10 % der Kosten, höchstens 300 €" },
+      { label: "Batteriespeicher (mindestens 5 kWh)", value: "10 % der Kosten, höchstens 300 € laut Antragsformular" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer und Eigentümergemeinschaften von Wohngebäuden im Gemeindegebiet sowie Vereine und gemeinnützige Organisationen mit Sitz im Ort",
+      "Photovoltaik erst ab 5 kWp, Batteriespeicher erst ab 5 kWh",
+      "Die Richtlinie nennt „maximal 300 € pro Projekt“, ohne zu sagen, ob das für Photovoltaik und Speicher zusammen oder je Maßnahme gilt; das Antragsformular nennt je 300 € — gerechnet wird deshalb nur der Anteil, der in beiden Lesarten gilt",
+      "Schriftlicher Antrag mit Kostenvoranschlag VOR Beginn; beauftragt werden darf erst nach der Zusage",
+      "Ausführung binnen 12 Monaten nach der Zusage (einmal um 6 Monate verlängerbar), danach Nachweis mit Rechnungen und Fotos",
+      "Über alle Maßnahmen des Programms (auch Wallbox, Zisterne, Gründach) höchstens 1.000 € je Antragsteller",
+      "Vergabe nach Haushaltslage in der Reihenfolge des Eingangs, im Ermessen des Rates; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+  },
+  "nottensdorf-nachhaltige-projekte": {
+    id: "nottensdorf-nachhaltige-projekte", name: "Förderprogramm nachhaltiger Projekte (Teil Photovoltaik und Speicher)",
+    traeger: "Gemeinde Nottensdorf", level: "kommune", region: "Gemeinde Nottensdorf",
+    bundesland: "Niedersachsen", agsCode: "03359034",
+    // The Samtgemeinde keeps ONE page for both programmes and links a separate
+    // guideline per municipality (Nottensdorf: https://www.horneburg.de/downloads/datei/YWQ2ZTYyN2Q5Mzk0ZmQ3NE9GWDZXZGdnVnlxdVp0TjRlRDA1K1NEa2FZV1U2UXhmZnYrUi9YbSs2aG1YTVhSRnVPVXVraEQvWnpodWpnOC9RVXo5ZFp6TTREeXZEMjhQVzRIQ0FvWEljT1U5bXllNDF2aUM0MnpHak02NVdlVTdsVWVRWjAxTXF3T1dSazc1SWd3VFI0ZmZrYUlHSU1lNDZ5N2xSam5CMFE1K0tRN3d0U0d1SXVaTnFaN21nQmRnY1VPVnF3b3VqL0FqdVJlNlVHOFh0TjkvK3JkaEpoY2RQdHJhR2FTa0d0bTdJeHJlMEVUQ1dSb2lJczVIWVQzNXlvUEwrQjZhdVh5a2FCcTk).
+    // The page is the source: the download address carries no words, and the
+    // page watcher should see a changed programme where people see it.
+    url: "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+    // Guideline read in full on 21 Sep 2026 (Richtlinie nachhaltige Projekte in der Gemeinde Nottensdorf, text PDF), in force
+    // 03.04.2025 by council decision, signed 02.04.2025. No. 5 reads: "10 % der Investitionskosten für
+    // Photovoltaikanlagen und 10% der Investitionskosten für Batteriespeicher,
+    // maximal 300 € pro Projekt" - on its own it leaves open whether the 300 EUR
+    // covers PV and storage together or each. The application form of the same
+    // version ("Stand: 01.04.2025", linked from the same page) lists them as two
+    // lines, "10% - max. 300€" each, and says "Die Kombination mit anderen
+    // Förderprogrammen ist möglich".
+    //
+    // WHAT IS COMPUTED is the reading that holds under both: 10 % of the cost,
+    // at most 300 EUR, from 5 kWp. The storage line of the form (another 300 EUR)
+    // stays as a rate the card shows, not a deduction - if the guideline's
+    // combined reading is the one the municipality applies, we would otherwise
+    // promise 300 EUR it does not pay. A wallbox (10 %, max 200 EUR), rainwater
+    // tanks and green roofs are outside our techniques. No end date on the
+    // programme page (21 Sep 2026), no exhausted notice; paid by budget and in
+    // order of receipt.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-04-03",
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Zuschuss zu Photovoltaikanlage und Batteriespeicher an Wohngebäuden",
+    maxFoerderung: "300 € für Anlage und Speicher nach der Richtlinie, je 300 € laut Antragsformular",
+    percentOfCost: 0.10,
+    pvCap: 300,
+    pvMin: 5,
+    rates: [
+      { label: "Photovoltaikanlage (mindestens 5 kWp)", value: "10 % der Kosten, höchstens 300 €" },
+      { label: "Batteriespeicher (mindestens 5 kWh)", value: "10 % der Kosten, höchstens 300 € laut Antragsformular" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Eigentümer und Eigentümergemeinschaften von Wohngebäuden im Gemeindegebiet sowie Vereine und gemeinnützige Organisationen mit Sitz im Ort",
+      "Photovoltaik erst ab 5 kWp, Batteriespeicher erst ab 5 kWh",
+      "Die Richtlinie nennt „maximal 300 € pro Projekt“, ohne zu sagen, ob das für Photovoltaik und Speicher zusammen oder je Maßnahme gilt; das Antragsformular nennt je 300 € — gerechnet wird deshalb nur der Anteil, der in beiden Lesarten gilt",
+      "Schriftlicher Antrag mit Kostenvoranschlag VOR Beginn; beauftragt werden darf erst nach der Zusage",
+      "Ausführung binnen 12 Monaten nach der Zusage (einmal um 6 Monate verlängerbar), danach Nachweis mit Rechnungen und Fotos",
+      "Über alle Maßnahmen des Programms (auch Wallbox, Zisterne, Gründach) höchstens 1.000 € je Antragsteller",
+      "Vergabe nach Haushaltslage in der Reihenfolge des Eingangs, im Ermessen des Rates; kein Rechtsanspruch",
+    ],
+    combinableWith: BUND,
+  },
+  "pinneberg-gruendach-pv": {
+    id: "pinneberg-gruendach-pv", name: "Förderprogramm für MEHR GRÜN im Kreis Pinneberg (Teil Dachbegrünung)",
+    traeger: "Kreis Pinneberg", level: "landkreis", region: "Kreis Pinneberg",
+    bundesland: "Schleswig-Holstein", agsCode: "01056",
+    url: "https://klimaschutz.kreis-pinneberg.de/MehrGr%C3%BCnImKreisPinneberg.html",
+    // Guideline "Förderrichtlinie Dachbegrünung und Baumpflanzung", part 1, read
+    // in full (7 pages, nos. 1-16). No. 4.1: "Die Höhe der Förderung beträgt
+    // 20,00 Euro je m² begrünter Dachfläche. Wird auf dem begrünten Dach
+    // zusätzlich eine Photovoltaik-Anlage installiert, wird eine erhöhte
+    // Zuwendung von 30,00 Euro je m² für die gesamte begrünte Dachfläche
+    // gezahlt. Die maximale Gesamtförderung einer Anlage beträgt 1500 Euro. Die
+    // PV-Anlage selbst wird nicht bezuschusst."
+    //
+    // WHY IT IS IN HERE AT ALL, since the county says it does not subsidise the
+    // panels: the county pays 10 EUR/m² MORE the moment a photovoltaic system
+    // goes onto the green roof, over the whole green area. At 50 m² that is
+    // 500 EUR that flows only because of the PV decision. Same shape as
+    // `luebeck-solargruendach` — but weaker, because Lübeck funds a PV cost
+    // item (the mounting) and Pinneberg raises the green-roof rate. That is why
+    // the entry informs and why it must never carry a calculation value.
+    //
+    // NO CALCULATION VALUE ON PURPOSE. The reference quantity is square metres
+    // of green roof; the model cannot express it. Measured during the council
+    // review of 21 Sep 2026: fundingAmount -> {total: 0, computable: false},
+    // stackFunding -> applied: [].
+    //
+    // foerdert ["pv"] and deliberately NOT "balkon": no. 2.4 excludes plug-in
+    // solar by name ("Installation von Stecker-Solaranlagen („Balkonmodulen");
+    // dies sind keine PV-Anlagen im Sinne der Ziffer 4.1"). A balcony unit on a
+    // green roof therefore leaves the rate at 20 EUR/m².
+    //
+    // ACTIVE UNTIL WHEN IS OPEN. The guideline itself says it runs "bis auf
+    // Weiteres" (no. 16); the programme page says the county relaunched its
+    // programmes "auch für die Jahre 2025 und 2026" (read 21 Sep 2026). That is
+    // a stated horizon, not an end date, so no endetIso is invented here — but
+    // January 2027 is the moment to look again.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2025-05-21", beginntIso: "2025-05-21",
+    eligibility: ["privat", "gewerblich"],
+    foerdert: ["pv"],
+    coveredCosts: "Dachbegrünung; erhöhter Satz, wenn auf dem begrünten Dach eine Photovoltaikanlage installiert wird",
+    maxFoerderung: "1.500 € je Gründach",
+    rates: [
+      { label: "Dachbegrünung mit Photovoltaikanlage", value: "30 €/m² begrünter Dachfläche, höchstens 1.500 € je Gründach" },
+      { label: "Dachbegrünung ohne Photovoltaikanlage", value: "20 €/m² begrünter Dachfläche, höchstens 1.500 € je Gründach" },
+    ],
+    conditions: [
+      "Die Photovoltaikanlage selbst wird nicht bezuschusst — gefördert wird die Dachbegrünung darunter, der erhöhte Satz gilt dann für die gesamte begrünte Fläche",
+      "Ein Balkonkraftwerk löst den erhöhten Satz nicht aus; die Richtlinie zählt Stecker-Solaranlagen ausdrücklich nicht zu den Photovoltaikanlagen",
+      "Mit der Maßnahme soll erst nach der BEWILLIGUNG begonnen werden; über Ausnahmen entscheidet das Klimamanagement, und nur wenn der Beginn höchstens sechs Monate vor der Antragstellung liegt",
+      "Mindestens 15 m² Nettovegetationsfläche und mindestens 8 cm Substrat",
+      "Die Fördersumme darf die Gesamtkosten der Dachbegrünung nicht überschreiten; bei Eigenleistung sind höchstens 50 % der Materialkosten förderfähig",
+      "Eine Förderung je Wohneinheit/Grundstück",
+      "Keine Förderung, wenn die Begrünung im Bebauungsplan, in der Baugenehmigung oder sonst baurechtlich gefordert ist",
+      "Keine Förderung für die Sanierung vorhandener Gründächer",
+      "Antragsberechtigt sind Eigentümer, sonst dinglich Verfügungsberechtigte, Mieter mit Zustimmung, gemeinnützige Einrichtungen und Gewerbetreibende; Kommunen nicht, und Gebäude in kommunalem Besitz sind nicht förderfähig",
+      "Umsetzung innerhalb von zwölf Monaten nach dem Bescheid, auf Antrag einmalig um drei Monate verlängerbar; Zweckbindung zehn Jahre",
+      "Kumulierung mit Fördermitteln Dritter ist möglich, zusammen aber höchstens bis zu den Gesamtkosten des Gründachs OHNE die Photovoltaikanlage",
+      "Kein Rechtsanspruch, auch bei Erfüllung aller Voraussetzungen; Bewilligung im Rahmen der verfügbaren Haushaltsmittel in der Reihenfolge des Eingangs",
+    ],
+    combinableWith: BUND,
+  },
+  "adendorf-steckersolar": {
+    id: "adendorf-steckersolar", name: "Stecker-Solar-Geräte-Förderprogramm der Gemeinde Adendorf",
+    traeger: "Gemeinde Adendorf", level: "kommune", region: "Adendorf",
+    bundesland: "Niedersachsen", agsCode: "03355001",
+    url: "https://www.adendorf.de/1/klimaschutz/foerderprogramme-der-gemeinde-adendorf/",
+    // Guideline read in full as the PDF the municipality links (3 pages, 21 Sep
+    // 2026): "Die Förderhöhe beträgt je Haushalt 100,- Euro." (3.2). In force
+    // since 10.11.2023, adjusted on 28.01.2025 "entsprechend der gesetzlichen
+    // Änderungen"; no end date.
+    //
+    // FOUND THROUGH THE COUNTY, NOT THROUGH THE VILLAGE. The page of Landkreis
+    // Lüneburg names five local programmes we did not have; this is the first of
+    // them to be read at its own authority source.
+    //
+    // combinableWith IS EMPTY ON PURPOSE, and that is the catalogue's way of
+    // saying "only on its own": 3.3 excludes any funding from other public
+    // money ("Ausschluss einer Doppelförderung"). Whether a tax rate counts as
+    // public money is not for us to decide — the cautious direction is the one
+    // that does not stack.
+    //
+    // The municipality's OTHER roof programme is NOT in scope: its green-roof
+    // guideline pays 5,00 €/m², at most 200 €, and — unlike Kreis Pinneberg and
+    // Lübeck — knows no raised rate for a photovoltaic system on the green roof.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-11-10",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Zuschuss zum Kauf eines Balkonkraftwerks",
+    maxFoerderung: "100 € je Haushalt",
+    balkonPauschale: 100,
+    rates: [
+      { label: "Balkonkraftwerk", value: "100 € je Haushalt", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Nicht mit anderen öffentlichen Fördermitteln kombinierbar — die Richtlinie schließt eine Doppelförderung ausdrücklich aus",
+      "Antragsberechtigt sind Haus- und Wohnungseigentümer sowie Mieter; Mieter legen die schriftliche Zustimmung des Vermieters vor, in einer Eigentümergemeinschaft deren Zustimmung",
+      "Je Haushalt wird höchstens eine Anlage gefördert",
+      "Höchstens 800 Voltampere Wechselrichter-Ausgangsleistung; das Gerät muss fabrikneu sein, im Gemeindegebiet betrieben und im Marktstammdatenregister sowie beim Netzbetreiber angemeldet werden",
+      "Antrag NACH dem Kauf, spätestens sechs Monate danach — maßgeblich ist das Rechnungsdatum; Geräte, die vor dem 10.11.2023 gekauft wurden, sind nicht förderfähig",
+      "Zum Antrag gehören Angebot oder Beschreibung, Kaufbeleg, Nachweis der Registrierung und ein Foto der installierten Anlage",
+      "Nicht gefördert werden Insel-Anlagen mit Akkubetrieb und geleaste Geräte",
+      "Kein Rechtsanspruch; die Gemeinde entscheidet im Rahmen der verfügbaren Mittel nach der Reihenfolge des Antragseingangs",
+      "Bei einem Kulturdenkmal ist die denkmalschutzrechtliche Genehmigung nachzuweisen",
+    ],
+    combinableWith: [],
+  },
+  "ilmenau-steckersolar": {
+    id: "ilmenau-steckersolar", name: "Förderrichtlinie für die Bezuschussung von Stecker-Solar-Anlagen (sog. Balkonkraftwerken)",
+    traeger: "Samtgemeinde Ilmenau", level: "kommune", region: "Samtgemeinde Ilmenau",
+    bundesland: "Niedersachsen",
+    // The four member municipalities as the Samtgemeinde's own menu lists them
+    // ("Mitgliedsgemeinden"), each key looked up singly in the population
+    // register - never the shared prefix, which here is Landkreis Lüneburg:
+    // Barnstedt, Deutsch Evern, Embsen, Melbeck.
+    //   NOT THE CITY OF ILMENAU: a register search for "Ilmenau" returns the
+    //   Thuringian town, which has nothing to do with this programme.
+    agsCodes: ["03355006", "03355014", "03355016", "03355024"],
+    url: "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx",
+    // Guideline read in full as the PDF the programme page links (3 pages, file
+    // number 65 50 024, signed 15.03.2024, read 21 Sep 2026). Council decision
+    // of 12.12.2023, in force retroactively from 01.01.2024, valid "solange die
+    // Samtgemeinde Ilmenau keine Änderung der Inhalte beschließt und
+    // Haushaltsmittel hierfür zur Verfügung stehen" (no. 9). The rate, no.
+    // 5(b): "Die Förderhöhe beträgt pauschal 100 € je Haushalt."
+    //
+    // combinableWith IS THE FEDERAL LIST, and that is the guideline's own
+    // word, not a default: no. 5(c) says the grant "schließt eine Finanzierung
+    // mit anderen öffentlichen Mitteln nicht aus" - the opposite of Adendorf's
+    // 3.3 next door.
+    //
+    // THE YEARLY CAP MOVES AND 2026 IS NOT PUBLISHED: no. 5(a) names 2,500 EUR
+    // for 25 systems "im Jahr 2024"; the Samtgemeinde's own news channel
+    // announced 55 systems for 2025 ("Die Samtgemeinde Ilmenau fördert auch in
+    // 2025 wieder Balkonkraftwerke", samtgemeinde-ilmenau.orts.app, read 21 Sep
+    // 2026). No 2026 notice was found, no "ausgeschöpft" either; the page still
+    // offers the guideline and a live online form, and no. 9 keeps the
+    // guideline in force while funds exist - so the programme counts as
+    // running. Found by the adversarial council reviewer, checked here.
+    //
+    // Found as an unread source row filed under Melbeck; the fifth local
+    // programme the Landkreis Lüneburg page named.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2023-12-12", beginntIso: "2024-01-01",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Pauschaler Zuschuss zum Kauf eines Balkonkraftwerks",
+    maxFoerderung: "100 € je Haushalt",
+    balkonPauschale: 100,
+    rates: [
+      { label: "Balkonkraftwerk", value: "100 € je Haushalt", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Antrag NACH dem Kauf, spätestens drei Monate nach dem Rechnungsdatum — als Eingang zählt erst der vollständige Antrag; nur online über das Formular der Samtgemeinde",
+      "Antragsberechtigt sind volljährige Privatpersonen, die bei Antragstellung Haus- bzw. Wohnungseigentümer oder Mieter im Gebiet der Samtgemeinde sind",
+      "Je Haushalt wird höchstens eine Anlage gefördert, unabhängig von der Zahl der Module",
+      "Das Gerät muss fabrikneu sein und bei einem Fachhändler gekauft werden; Gebrauchtkauf, Ratenkauf und Leasing schließen die Förderung aus",
+      "Anmeldung im Marktstammdatenregister und beim Netzbetreiber ist Voraussetzung; zum Antrag gehören Angebot oder Beschreibung, eine auf den Antragsteller ausgestellte Rechnung, ein Foto der installierten Anlage und beide Anmeldenachweise",
+      "Nicht gefördert werden Insel-Anlagen mit Akkubetrieb und fest mit dem Gebäude verbundene Solar- oder Photovoltaikanlagen",
+      "Zweckbindung 60 Monate; bei vorzeitigem Verkauf, Vermietung oder dauerhafter Unbrauchbarkeit kann der Zuschuss anteilig zurückgefordert werden",
+      "Kein Rechtsanspruch; vergeben wird nach Eingangsreihenfolge im Rahmen der Haushaltsmittel, die Zahl der Anlagen ist je Jahr begrenzt (2024: 25, 2025: 55; für 2026 hat die Samtgemeinde keine Zahl veröffentlicht), ausgezahlt erst nach Inkraftsetzung des jeweiligen Haushalts",
+    ],
+    combinableWith: BUND,
+  },
+  "scharnebeck-steckersolar": {
+    id: "scharnebeck-steckersolar", name: "Richtlinie der Samtgemeinde Scharnebeck zur Förderung von Stecker-Solar-Geräten",
+    traeger: "Samtgemeinde Scharnebeck", level: "kommune", region: "Samtgemeinde Scharnebeck",
+    bundesland: "Niedersachsen",
+    // The eight member municipalities as the Samtgemeinde's own menu lists them
+    // ("Mitgliedsgemeinden", scharnebeck.de, read 21 Sep 2026), each key looked
+    // up singly in the population register - never the shared prefix, which is
+    // Landkreis Lüneburg: Artlenburg, Brietlingen, Echem, Hittbergen,
+    // Hohnstorf (Elbe), Lüdersburg, Rullstorf, Scharnebeck. "Scharnebeck"
+    // here is the member municipality 03355033, not the Samtgemeinde.
+    agsCodes: ["03355003", "03355011", "03355015", "03355018", "03355019", "03355021", "03355032", "03355033"],
+    // The climate page carries the grant only as menu links (no page of its
+    // own), so the guideline PDF is the programme URL - it is also what the
+    // page watcher should fingerprint: a new version replaces this file.
+    url: "https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf",
+    // Guideline read in full as the PDF the Samtgemeinde's climate page links
+    // (3 pages, read 21 Sep 2026; archived copy identical to the 02:03Z read):
+    // https://klimaschutz-scharnebeck.de/wp-content/uploads/2025/01/Richtlinie-Zuschuss-Balkonkraftwerk-ab-12.2024.pdf
+    // "Richtlinie ... vom 06.07.2023 geändert am 12.12.2024", in force since
+    // 06.07.2023 (§ 7), no end date. The rate, § 5 (2): "Die Förderhöhe
+    // beträgt je Haushalt 75,- Euro."
+    //
+    // combinableWith IS EMPTY ON PURPOSE, like Adendorf next door: § 5 (3)
+    // "schließt eine Förderung mit anderen öffentlichen Mitteln aus (Ausschluss
+    // einer Doppelförderung)". The cautious direction is the one that does not
+    // stack.
+    //
+    // APPLICATION TIMING IS NOT UNIFORM, and the condition says so instead of
+    // picking one: guideline § 6 (1)/(2) grants after purchase, installation
+    // and registration, at the latest six months after the invoice date; the
+    // form of the same version ("Antrag-Steckersolar-ab-12.12.2024") asks for
+    // the expected purchase price and lets receipt and registration proofs
+    // follow "spätestens 6 Monate nach Förderzusage", and additionally asks
+    // for proof of registration with the grid operator. Found by two council
+    // reviewers, checked against the form on 21 Sep 2026. An older 2023
+    // version (600 VA) still sits in the Samtgemeinde's Ortsrecht; same rate.
+    //
+    // RUNNING: the climate page links the guideline, the application form and a
+    // live online service (service.scharnebeck.de/balkonkraftwerk, BundID
+    // login), and no "ausgeschöpft" notice was found. The 2023 flyer that still
+    // circulates names an older rate and is superseded by the 12.12.2024
+    // version.
+    //
+    // THE SAMTGEMEINDE'S OTHER GRANTS ARE NOT IN SCOPE: solar thermal for hot
+    // water (300 EUR per dwelling, not a technique this catalogue carries) and
+    // green roofs (5 EUR/m², at most 500 EUR, with no raised rate for a PV
+    // system - unlike Kreis Pinneberg). Both guidelines read 21 Sep 2026.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-07-06",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Zuschuss zum Kauf eines Balkonkraftwerks",
+    maxFoerderung: "75 € je Haushalt",
+    balkonPauschale: 75,
+    rates: [
+      { label: "Balkonkraftwerk", value: "75 € je Haushalt", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Nicht mit anderen öffentlichen Fördermitteln kombinierbar — die Richtlinie schließt eine Doppelförderung ausdrücklich aus",
+      "Antragsberechtigt sind volljährige Privatpersonen mit Wohnsitz in der Samtgemeinde, die Haus- bzw. Wohnungseigentümer oder Mieter sind; Mieter legen die schriftliche Zustimmung des Vermieters vor",
+      "Je Haushalt wird höchstens eine Anlage gefördert",
+      "Höchstens 800 Voltampere Wechselrichter-Ausgangsleistung; das Gerät muss fabrikneu sein, ausschließlich privat genutzt, im Gebiet der Samtgemeinde betrieben und im Marktstammdatenregister angemeldet werden",
+      "Antrag spätestens sechs Monate nach dem Kauf (maßgeblich ist das Rechnungsdatum) — Richtlinie und Antragsformular sind beim Zeitpunkt uneinheitlich: Die Richtlinie bewilligt nach Kauf, Installation und Anmeldung, das Formular fragt nach dem voraussichtlichen Kaufpreis und lässt Kaufbeleg und Nachweise bis sechs Monate nach der Förderzusage nachreichen; wer vor dem Kauf mit dem Angebot beantragt, ist auf der sicheren Seite, denn der Kauf geschieht auf eigenes Risiko",
+      "Zum Antrag gehören Angebot oder Beschreibung (Modell, Modulleistung, Preis), Kaufbeleg mit den technischen Merkmalen und der Nachweis der Anmeldung im Marktstammdatenregister; das Antragsformular verlangt zusätzlich den Nachweis der Anmeldung beim Netzbetreiber; ausgezahlt wird nach Abnahme der Anlage durch die Samtgemeinde",
+      "Nicht gefördert werden Insel-Anlagen mit Akkubetrieb und geleaste Geräte",
+      "Kein Rechtsanspruch; die Samtgemeinde entscheidet im Rahmen der verfügbaren Mittel nach der Reihenfolge des Antragseingangs, vollständige Anträge werden bevorzugt bearbeitet",
+    ],
+    combinableWith: [],
+  },
+  "lueneburg-regenerative-energien": {
+    id: "lueneburg-regenerative-energien", name: "Förderprogramm der Hansestadt Lüneburg zur Nutzung regenerativer Energien",
+    traeger: "Hansestadt Lüneburg", level: "kommune", region: "Lüneburg",
+    bundesland: "Niedersachsen", agsCode: "03355022",
+    url: "https://www.lueneburg-klimaschutz.de/klimafonds/",
+    // Guideline read in full as the PDF the city's Klimafonds page links (6
+    // pages, read 21 Sep 2026): "Förderprogramm der Hansestadt Lüneburg zur
+    // Nutzung regenerativer Energien", in force 01.01.2026 (§ 8), revised by
+    // council on 13.11.2025 (press release "Hansestadt aktualisiert
+    // Klimaschutz-Förderprogramme").
+    // https://www.lueneburg-klimaschutz.de/wp-content/uploads/2025/12/FoerderRL-Regenerative-Energien-gueltig-ab-01.01.2026.pdf
+    //
+    // THE 2026 POT IS EMPTY, in the city's own words on the programme page:
+    // "Der Fördermitteltopf für das Jahr 2026 ist leer. Es können keine
+    // Anträge mehr angenommen werden. Neuanträge können ab dem 01.01.2027
+    // gestellt werden." Hence "ausgeschoepft" and NO structured value: the
+    // amounts stand as information and deduct nothing, like the other empty
+    // pots in this catalogue. When the 2027 round opens, the balcony amount
+    // would need nurWohnform "mieter" (§ 3 (3): only tenants may apply).
+    //
+    // WHAT IS FUNDED (§ 2): solar collectors, plug-in solar devices with an
+    // inverter, and ground-source heat installations. Batteries are expressly
+    // excluded (§ 2 (2)), and roof PV is no longer funded from 2026 (press
+    // release: "Nicht mehr förderfähig sind künftig PV-Dachanlagen") - until the
+    // 2024 guideline it had paid 450-4,625 EUR by output (web.archive.org
+    // snapshot of the Klimafonds page of 22.09.2025) - so this is NOT a roof
+    // PV grant and gets no city page. Solar thermal (70/100 EUR/m², capped 500-1,500 EUR) is outside the catalogue's techniques and
+    // is left out of the rates.
+    //
+    // combinableWith IS THE FEDERAL LIST: § 4 (13) allows other federal, state
+    // or institutional funds unless their own rules forbid it; § 6 (4) caps
+    // all grants together at 49 % of the gross cost.
+    //
+    // TWO LIMITS THE COUNCIL FOUND IN THE WORDING, both taken: § 4 (4) requires
+    // the building to belong to a natural person, for every measure - so a
+    // tenant of a housing company or cooperative is outside it even for the
+    // balcony grant; and "waermepumpe" here means ground-source only, the
+    // guideline funds no air-source heat pump. The Klimafonds page still hints
+    // at extra money for PV on a green roof; neither 2026 guideline contains
+    // the word, so it is treated as a leftover of the old version.
+    //
+    // Found as an unread source row (the press release) filed under
+    // Lüneburg; the fifth local programme the Landkreis Lüneburg page named.
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beschlossenIso: "2025-11-13", beginntIso: "2026-01-01",
+    eligibility: ["privat"],
+    foerdert: ["balkon", "waermepumpe"],
+    coveredCosts: "Festbeträge für Balkonkraftwerke von Mietern und für Erdwärmeanlagen, dazu ein Zuschuss für Solarkollektoren zur Warmwasserbereitung — der Fördertopf 2026 ist leer",
+    rates: [
+      { label: "Balkonkraftwerk (nur Mieter)", value: "350 € je Wohneinheit", nur: ["balkon"] },
+      { label: "Erdwärmeanlage mit Kollektoren", value: "1.000 € (mit Erdkühle 1.500 €)", nur: ["waermepumpe"] },
+      { label: "Erdwärmeanlage mit Sonde(n)", value: "2.500 € (mit Erdkühle 3.750 €)", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Der Fördertopf für 2026 ist leer; die Stadt nimmt keine Anträge mehr an, Neuanträge sind ab dem 01.01.2027 möglich",
+      { text: "Für Balkonkraftwerke sind nur Mieter antragsberechtigt; gefördert wird ein Gerät je Wohneinheit, eine Energieberatung ist nicht nötig", nur: ["balkon"] },
+      "Das Gebäude muss ein Wohngebäude im Stadtgebiet sein und einer Privatperson gehören — das gilt auch für Mieter, die ein Balkonkraftwerk beantragen; wer bei einer Wohnungsgesellschaft oder Genossenschaft mietet, fällt nach dem Wortlaut nicht darunter",
+      { text: "Gefördert werden nur Erdwärmeanlagen (Kollektoren oder Sonden) bis 30 kW, keine Luft-Wärmepumpen; antragsberechtigt ist der Eigentümer oder eine von ihm bevollmächtigte Person; vor Beauftragung des Betriebs muss eine unabhängige Energieberatung stattgefunden haben; in Gebieten mit bestehender oder geplanter zentraler Wärmeversorgung gibt es keine Förderung", nur: ["waermepumpe"] },
+      "Gefördert wird nur, was bei Zugang des Zuwendungsbescheids noch nicht ausgeführt ist, und nur fabrikneue Anlagen; die Anlage muss binnen zwölf Monaten nach dem Bescheid in Betrieb gehen",
+      "Alle Zuschüsse zusammen höchstens 49 % der Bruttokosten; andere Fördermittel sind zulässig, soweit deren Regeln es erlauben",
+      "Batteriespeicher und — seit 2026 — Photovoltaik-Dachanlagen werden nicht gefördert",
+      "Kein Rechtsanspruch; vergeben wird nach Eingang des vollständigen Antrags im Rahmen der Haushaltsmittel",
+    ],
+    combinableWith: BUND,
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

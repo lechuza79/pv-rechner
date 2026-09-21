@@ -44,6 +44,16 @@ export type Rollenwerk = {
   allgemein: RegExp;
   /** Mailbox names that make an equally proven candidate the stronger one. */
   starkesPostfach: RegExp;
+  /**
+   * Eine SEITE kann die Rolle tragen, nicht nur der Textblock: Bei einem
+   * redaktionellen Angebot muss das Impressum eine verantwortliche Person mit
+   * Adresse nennen (§ 5 DDG, § 18 Abs. 2 MStV) — dort steht die Rolle im
+   * Seitenzweck, nicht neben der Adresse. Gibt die Funktion einen Kanal
+   * zurück, zählt eine nicht ausgeschlossene Adresse dieser Seite dafür.
+   * Bei Gemeinden ist das bewusst NICHT gesetzt: dort steht im Impressum das
+   * allgemeine Rathaus-Postfach neben der Webagentur.
+   */
+  seitenRolle?: (pfad: string) => string | null;
 };
 
 export type Organisation = { id: string; name: string; website: string | null };
@@ -58,7 +68,8 @@ export type Evidence = {
 const stripMail = (t: string) => t.replace(/[\w.+%-]+\s*(?:@|\(at\)|\[at\])\s*[\w.-]+/giu, "");
 export const host = (u: string) => { try { return new URL(u).hostname.replace(/^www\./, "").toLowerCase(); } catch { return ""; } };
 /** German sites use plain second-level domains; two labels are the registrable part. */
-export const siteOf = (h: string) => h.split(".").slice(-2).join(".");
+/** Zwei Labels sind der registrierbare Teil; Großschreibung ist bedeutungslos (Name@Blog.TV). */
+export const siteOf = (h: string) => h.toLowerCase().split(".").slice(-2).join(".");
 export const fold = (t: string) => t.toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[^a-z]/g, "");
 
 const HISTORICAL = /ehemalig|nicht (?:mehr )?zuständig|nicht mehr erreichbar|außer dienst|\ba\.\s?d\./iu;
@@ -117,9 +128,17 @@ export function judgeEvidence(c: ContactCandidate, headings: string[], src: Sour
   for (const rolle of w.rollen) {
     if (!general && (fromText(rolle.text) || usable.some(h => rolle.heading.test(h)))) rawChannels.push(rolle.kanal);
   }
-  if (rawChannels.length && limits.includes("dated-source-needs-current-confirmation")) reasons.push("dated-source");
+  // Die Seite selbst trägt die Rolle (Impressum eines redaktionellen Angebots).
+  const ausSeite = !general && path ? w.seitenRolle?.(path) ?? null : null;
+  if (ausSeite && !rawChannels.includes(ausSeite) && !reasons.includes("excluded-purpose")) rawChannels.push(ausSeite);
+  // Ein altes Datum IM Text spricht gegen eine Rolle, die aus diesem Text
+  // stammt — nicht gegen eine Pflichtangabe der Seite: Ein Impressum trägt
+  // regelmäßig das Jahr seiner letzten Überarbeitung und muss trotzdem aktuell
+  // sein. Deshalb gilt der Vorbehalt nur für aus Text oder Überschrift
+  // abgeleitete Rollen.
+  if (rawChannels.some(k => k !== ausSeite) && limits.includes("dated-source-needs-current-confirmation")) reasons.push("dated-source");
   const local = c.email.split("@")[0];
-  const strong = w.starkesPostfach.test(local) || w.eigenerTitel.test(roleText) || (usable.length > 0 && !/\|/.test(block));
+  const strong = w.starkesPostfach.test(local) || w.eigenerTitel.test(roleText) || !!ausSeite || (usable.length > 0 && !/\|/.test(block));
   return { email: c.email, url: src.url, digest: src.digest, block: block.slice(0, 500), headings: headings.map(h => h.slice(0, 160)),
     reasons, rawChannels, channels: reasons.length ? [] : rawChannels, scope: "organisation", strong };
 }

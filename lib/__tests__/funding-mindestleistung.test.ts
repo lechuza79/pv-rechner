@@ -5,6 +5,7 @@ import {
   fundingAmount,
   type FundingProgram,
 } from "../funding-programs";
+import { DEFAULT_BALKON_CONFIG } from "../balkon-config";
 
 /**
  * Die Mindestleistung einer Dachanlage — die Bedingung, die im Text stand und in
@@ -205,10 +206,80 @@ describe("Balkonkraftwerk nur zusammen mit Speicher", () => {
     // demselben Satz im Text und ohne das Feld baut den Fehler neu.
     for (const p of Object.values(FUNDING_PROGRAMS)) {
       if (!p.balkonPauschale && !p.balkonProWp && !p.balkonPercentOfCost && !p.balkonTiers) continue;
-      const text = (p.conditions ?? []).map(bedingungText).join(" ");
-      if (/(Balkonkraftwerk|Steckersolar\w*)[^.]*(nur|ausschließlich)[^.]*(zusammen|gemeinsam) mit[^.]*Speicher/i.test(text)) {
+      const bedingungen = (p.conditions ?? []).map(bedingungText);
+      // DIE WORTSTELLUNG DARF NICHT ENTSCHEIDEN. Bis 20.09.2026 verlangte das
+      // Muster das Gerätewort VOR dem Ausschlusswort und übersah deshalb
+      // „Gefördert wird ausschließlich das Balkonkraftwerk zusammen mit einem
+      // Speicher" — gemessen an Fritzlar, gefunden vom Gegenprüfer: Das Feld
+      // ließ sich entfernen, ohne dass dieser Wächter rot wurde. Geprüft wird
+      // jetzt SATZWEISE auf drei Bestandteile in beliebiger Reihenfolge.
+      // GEPRÜFT WIRD JE BEDINGUNG, nicht über den verklebten Gesamttext. Die
+      // erste Fassung dieser Erweiterung fügte alle Bedingungen mit Leerzeichen
+      // zusammen und trennte an Satzzeichen — Bedingungen ohne Schlusspunkt
+      // verschmolzen dadurch zu einem Satz. Buckenhof wurde so rot, weil seine
+      // Speicher-Bedingung (für die DACHANLAGE) mit der Norm-Bedingung des
+      // Balkonkraftwerks zu einem Satz wurde. Eine Bedingung ist die Einheit,
+      // in der wir sie schreiben; sie ist auch die Einheit, in der sie gilt.
+      const speicherpflichtImText = bedingungen
+        .flatMap((b) => b.split(/(?<=[.;])\s+/))
+        .some(
+          (satz) =>
+            /(Balkonkraftwerk|Steckersolar\w*|Stecker-?PV)/i.test(satz) &&
+            /\b(nur|ausschließlich)\b/i.test(satz) &&
+            /(zusammen|gemeinsam|inklusive|samt)\s+mit\s+[^.;]*Speicher|mit\s+Speicher/i.test(satz) &&
+            // DIE RICHTUNG ENTSCHEIDET, und sie stand beim Erweitern des Musters
+            // sofort auf dem Spiel: Kenzingen schreibt „Der SPEICHERZUSCHUSS …
+            // kommt nur zusammen mit einem geförderten Balkonkraftwerk". Dort ist
+            // das Gerät die Bedingung des Zuschusses, nicht der Speicher die
+            // Bedingung des Geräts — die Stadt zahlt ihre 50 € auch ohne
+            // Speicher. `balkonNurMitSpeicher` dort zu verlangen hätte einen
+            // echten Zuschuss auf null gesetzt. Gemessen am 20.09.2026.
+            !/(Speicherzuschuss|Speicherbonus|Zuschuss für den Speicher)/i.test(satz),
+        );
+      if (speicherpflichtImText) {
         expect(p.balkonNurMitSpeicher, p.id).toBe(true);
       }
+    }
+  });
+});
+
+/**
+ * DIE GRENZEN EINES PROGRAMMS UND DAS ANGEBOT DES RECHNERS HÄNGEN AN NICHTS —
+ * bis auf diesen Anker (20.09.2026, aus dem Council zur Aufnahme von Fritzlar).
+ *
+ * Fritzlar zahlt nur für Sets mit mindestens 1 kWh Speicher, höchstens
+ * 2.000 Wattpeak Modulleistung und höchstens 800 Voltampere Wechselrichter.
+ * Ausdrücken kann das Modell nur die Speicherpflicht (ja/nein), nicht die drei
+ * Zahlen — der Eintrag begründet das damit, dass der Rechner sie gar nicht
+ * verletzen KANN. Das stimmt heute und wurde nachgemessen; es hängt aber allein
+ * an der Konfiguration des Balkonrechners, und die beiden Stellen wissen
+ * nichts voneinander.
+ *
+ * Wächst das größte Set über 2.000 Wp (vier Module zu 550 Wp sind marktüblich)
+ * oder kommt eine Speicherstufe unter 1 kWh zurück, zieht der Rechner 100 € ab,
+ * die Fritzlar nicht zahlt — ohne Typfehler, ohne roten Test, ohne kaputte
+ * Seite. Genau diese Fehlerklasse fängt dieser Anker: Er geht rot, sobald
+ * jemand die Konfiguration ändert, und zwingt dazu, das Programm mit anzusehen.
+ */
+describe("Technische Grenzen eines Programms gegen das Angebot des Rechners", () => {
+  // Aus der Förderrichtlinie der Stadt Fritzlar (Volltext gelesen 20.09.2026),
+  // Abschnitt „Fördergegenstand".
+  const FRITZLAR = { minSpeicherKwh: 1, maxModulWp: 2000, maxWechselrichterW: 800 };
+
+  it("kein Set des Rechners überschreitet Fritzlars Modul- oder Wechselrichtergrenze", () => {
+    for (const set of DEFAULT_BALKON_CONFIG.sets) {
+      expect(set.moduleWp, set.id).toBeLessThanOrEqual(FRITZLAR.maxModulWp);
+      expect(set.inverterW, set.id).toBeLessThanOrEqual(FRITZLAR.maxWechselrichterW);
+    }
+  });
+
+  it("keine Speicherstufe des Rechners liegt zwischen null und Fritzlars Mindestgröße", () => {
+    // „Ohne Speicher" ist der ausdrücklich vorgesehene Fall und zahlt null.
+    // Gefährlich wäre eine Stufe DAZWISCHEN: Sie sähe nach Speicher aus und
+    // bekäme 100 €, die die Stadt für sie nicht zahlt.
+    for (const stufe of DEFAULT_BALKON_CONFIG.storage) {
+      if (stufe.kwh === 0) continue;
+      expect(stufe.kwh, stufe.id).toBeGreaterThanOrEqual(FRITZLAR.minSpeicherKwh);
     }
   });
 });

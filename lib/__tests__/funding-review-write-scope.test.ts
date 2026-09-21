@@ -45,7 +45,12 @@ it("marks only the exact reviewed URL and leaves a different legacy source untou
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://example.invalid");
   vi.stubEnv("SUPABASE_SERVICE_KEY", "test-only");
   const originalArgs = process.argv;
-  process.argv = ["node", "funding-screen.ts", "--gelesen", "test-region", "--url", first, "--beleg", "Zuschuss von 200 Euro", "--ergebnis", "confirmed"];
+  // „aufgenommen" statt des früheren „confirmed": Nur die acht abschließenden
+  // Ergebnisse nehmen eine Zeile wirklich aus dem Vorrat, und seit dem
+  // 20.09.2026 weist das Werkzeug jedes andere Wort ab. Das alte Fixture hätte
+  // eine Zeile geschrieben, die danach weiter als ungelesen gegolten hätte —
+  // der Fehler, gegen den die Sperre steht, stand also im Test selbst.
+  process.argv = ["node", "funding-screen.ts", "--gelesen", "test-region", "--url", first, "--beleg", "Zuschuss von 200 Euro", "--ergebnis", "aufgenommen"];
   vi.spyOn(console, "log").mockImplementation(() => {});
   try {
     await import("../../scripts/funding-screen");

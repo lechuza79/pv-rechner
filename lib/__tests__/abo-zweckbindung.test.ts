@@ -74,6 +74,10 @@ describe("Der Versand liest nur bestätigte Abos", () => {
         "Bereitschaftsmeldung: fragt EINE Zeile ab, um zu prüfen, ob die Spalten " +
         "angelegt sind — liest keine Empfänger und verschickt nichts. Der Status " +
         "ist dafür bedeutungslos, ein Filter darauf wäre irreführend.",
+      "scripts/outreach-wirkung.ts":
+        "Wirkungsmessung: ZÄHLT bestätigte Anmeldungen je angeschriebenem Ort, " +
+        "um sie neben Antworten und Verweise zu stellen. Verschickt nichts und " +
+        "liest keine Adresse — die Gegenprobe unten hält das fest.",
       "scripts/outreach-evaluation.ts": "Read-only feedback counts without subscriber addresses; guarded below.",
       "scripts/kommunen-stand.ts":
         "Auskunft über den Outreach: ZÄHLT bestätigte und offene Anmeldungen, um " +
@@ -127,7 +131,7 @@ describe("Der Versand liest nur bestätigte Abos", () => {
     // Die Anlege-Route steht bewusst NICHT hier: Sie nennt die Tabelle nur in
     // SQL-Anweisungen und fragt sie nie ab. Eine Prüfung, die dort etwas sucht,
     // fände nichts und müsste dafür aufgeweicht werden.
-    const ohneAdresse = ["app/api/abo/bereit/route.ts", "scripts/kommunen-stand.ts", "scripts/outreach-evaluation.ts"];
+    const ohneAdresse = ["app/api/abo/bereit/route.ts", "scripts/kommunen-stand.ts", "scripts/outreach-evaluation.ts", "scripts/outreach-wirkung.ts"];
     for (const pfad of ohneAdresse) {
       expect(abfragenAufAbos(lies(pfad)), `${pfad}: keine Abfrage gefunden`).not.toHaveLength(0);
       for (const a of abfragenAufAbos(lies(pfad))) {
