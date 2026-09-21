@@ -75,6 +75,27 @@ async function pruefeUeberdeckung(page: import("@playwright/test").Page, schritt
   }, schritte);
 }
 
+/** Misst, ob die schwebende Kopie Spalte für Spalte mit der echten Zeile fluchtet. */
+function messeFlucht(page: import("@playwright/test").Page) {
+  return page.evaluate((tol: number) => {
+    const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
+    const echt = document.querySelector<HTMLElement>('[data-marked="true"]')!;
+    // Die schwebende Kopie ist die einzige Zeile AUSSERHALB des
+    // Scrollkastens — sie erscheint nur, wenn die echte aus dem Blick ist.
+    const kopie = [...document.querySelectorAll<HTMLElement>(".atlas-rank-row")].find((el) => !sc.contains(el));
+    const pos = Math.round(sc.scrollLeft);
+    if (!kopie) return { pos, gemessen: false, raus: [] as { pos: number; spalte: number; delta: number }[] };
+    const raus: { pos: number; spalte: number; delta: number }[] = [];
+    for (let s = 0; s < echt.children.length; s++) {
+      const a = (echt.children[s] as HTMLElement).getBoundingClientRect();
+      const b = (kopie.children[s] as HTMLElement).getBoundingClientRect();
+      const delta = Math.abs(a.left - b.left);
+      if (delta > tol) raus.push({ pos, spalte: s, delta: Math.round(delta) });
+    }
+    return { pos, gemessen: true, raus };
+  }, 1.5);
+}
+
 for (const [name, viewport] of [
   ["Telefon", { width: 375, height: 812 }],
   ["Desktop", { width: 1280, height: 800 }],
@@ -170,28 +191,24 @@ for (const [name, viewport] of [
         await page.evaluate((x: number) => {
           (document.querySelector(".atlas-tabelle-scroller") as HTMLElement).scrollLeft = x;
         }, Math.round((max * i) / 8));
-        // Die Kopie folgt über einen React-Zustand aus dem Scroll-Ereignis. Der
-        // braucht ein Ereignis UND ein Rendern — deshalb hier eine echte Pause
-        // statt zweier Bilder in derselben evaluate-Schleife.
-        await page.waitForTimeout(150);
-
-        const schritt = await page.evaluate((tol: number) => {
-          const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
-          const echt = document.querySelector<HTMLElement>('[data-marked="true"]')!;
-          // Die schwebende Kopie ist die einzige Zeile AUSSERHALB des
-          // Scrollkastens — sie erscheint nur, wenn die echte aus dem Blick ist.
-          const kopie = [...document.querySelectorAll<HTMLElement>(".atlas-rank-row")].find((el) => !sc.contains(el));
-          const pos = Math.round(sc.scrollLeft);
-          if (!kopie) return { pos, gemessen: false, raus: [] as { pos: number; spalte: number; delta: number }[] };
-          const raus: { pos: number; spalte: number; delta: number }[] = [];
-          for (let s = 0; s < echt.children.length; s++) {
-            const a = (echt.children[s] as HTMLElement).getBoundingClientRect();
-            const b = (kopie.children[s] as HTMLElement).getBoundingClientRect();
-            const delta = Math.abs(a.left - b.left);
-            if (delta > tol) raus.push({ pos, spalte: s, delta: Math.round(delta) });
-          }
-          return { pos, gemessen: true, raus };
-        }, 1.5);
+        // Die Kopie folgt über einen React-Zustand aus dem Scroll-Ereignis: ein
+        // Ereignis, dann ein Rendern. Eine feste Pause davor war unter Last zu
+        // kurz (21.09.2026: 2 von 5 Läufen rot, an genau EINER Stellung jede
+        // Spalte um den Scrollweg daneben — die Kopie stand noch auf der
+        // vorigen Stellung). Deshalb wird gewartet, bis die Messung ruhig ist:
+        // dreimal in Folge dieselbe Stellung und dieselben Abweichungen. Erst
+        // dann wird geurteilt — eine echte, bleibende Abweichung ist ruhig und
+        // fällt weiter durch; ein Nachhinken ist es nicht.
+        let schritt = await messeFlucht(page);
+        let ruhig = 0;
+        const bis = Date.now() + 5_000;
+        while (ruhig < 3 && Date.now() < bis) {
+          await page.waitForTimeout(50);
+          const neu = await messeFlucht(page);
+          ruhig = JSON.stringify(neu) === JSON.stringify(schritt) ? ruhig + 1 : 0;
+          schritt = neu;
+        }
+        expect(ruhig, `Stellung ${schritt.pos}: die Kopie kam in 5 s nicht zur Ruhe`).toBe(3);
 
         if (schritt.gemessen) gemessen++;
         abweichungen.push(...schritt.raus);
