@@ -72,7 +72,11 @@ export default function SharedSiteHeader() {
         aufraeumen.push(() => {
           document.removeEventListener("click", schliessen);
           document.removeEventListener("keydown", schliessen);
-          konto.replaceWith(link);
+          // The menu's own cleanup runs first on a page change and has already
+          // taken its login link out; putting it back then would leave a second
+          // icon next to the new menu. Restore only while that menu still stands.
+          if (node.dataset.globalNav) konto.replaceWith(link);
+          else konto.remove();
         });
       } else {
         const vorher = { text: link.textContent, href: link.href, label: link.getAttribute("aria-label") };
