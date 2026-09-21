@@ -564,7 +564,11 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // „die konkrete Ausgestaltung der Quote bleibt diesem Gesetz vorbehalten"
   // (Ankündigung, ab 2028 zu greifen). Eine Ankündigung ist keine Preisreihe;
   // die Lücke im Öl-Ergebnis bleibt samt ihrer benannten Fehlerrichtung stehen.
-  geprueftRechtIso: "2026-09-21",
+  // 22.09.2026: § 42a und § 43 im Rohtext (gesetze-im-internet.de) sowie das
+  // GModG-Infoportal des BBSR gelesen — Wortlaut und Stufen unverändert, kein
+  // Quotengesetz vorgelegt. Achtundzwanzigste Bioheizöl-Gegensuche ohne
+  // Trägerquelle für eine Preisreihe.
+  geprueftRechtIso: "2026-09-22",
   reviewBy: "2027-07-25",
 };
 
