@@ -102,7 +102,7 @@ test.describe("Ein Klick darf keine andere Antwort aus der Adresse werfen", () =
     // Die Nord-Ausrichtung ist verworfen und die Frage wieder offen — sonst
     // rechnete der Flow still mit dem Bestfall weiter.
     await expect(page).not.toHaveURL(/az=nord/);
-    await expect(page.getByRole("button", { name: "Süd", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: /^Süd\b/ })).toBeVisible();
   });
 });
 
