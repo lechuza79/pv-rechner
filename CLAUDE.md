@@ -759,7 +759,7 @@ Seit 01.09.2026 hat auch dieser Rechner einen teilbaren Zustand (`lib/wp-share-s
 
 **`components/FlowNav.tsx` ist der Standard für jeden Schritt-Flow** (Betreiber-Vorgabe 05.08.2026): Kein Schritt startet mit einer Vorauswahl · ein Klick auf eine Option **wählt nur aus**, er springt nicht weiter · der Weiter-Button ist ausgegraut, bis eine gültige Auswahl existiert · **Zurück sitzt immer links, Weiter immer rechts** — auch im ersten Schritt ohne Zurück bleibt Weiter rechts. Die Auto-Advance-Variante (Klick auf Option springt direkt) existiert als zentraler Schalter `FLOW_ADVANCE_ON_SELECT` im Baustein — sie wird nie pro Seite gebaut, sondern nur dort umgelegt.
 
-**Über jedem Flow steht `components/FlowSchritte.tsx`** (seit 21.09.2026): Zahl plus EIN Wort je Schritt (die Schritt-Überschrift steht darunter und darf länger sein), Linien und erledigte Schritte neutral, nur der aktuelle trägt den Akzent; erledigte sind zum Zurückspringen anklickbar. Auf schmalen Bildschirmen behält nur der aktuelle Schritt seinen Namen. Vorwärts springen geht nicht, das umginge die Freigabe des Weiter-Knopfes.
+**Über jedem Flow steht `components/FlowSchritte.tsx`** (seit 21.09.2026): Zahl plus EIN Wort je Schritt, und der Name des aktuellen Schritts IST die Schritt-Überschrift (keine zweite darunter), Linien und erledigte Schritte neutral, nur der aktuelle trägt den Akzent; erledigte sind zum Zurückspringen anklickbar. Auf schmalen Bildschirmen behält nur der aktuelle Schritt seinen Namen. Vorwärts springen geht nicht, das umginge die Freigabe des Weiter-Knopfes.
 
 **Jeder Flow nutzt den Baustein** — festgehalten dadurch, dass die Ausnahmeliste `NOCH_OHNE_FLOWNAV` (`e2e/flows.ts`) leer ist; der Flow-Läufer prüft deshalb jeden.
 

@@ -368,7 +368,7 @@ export default function Empfehlung({
   };
 
   const STEPS = ["Dein Haus", "Dein Haushalt", "Großverbraucher"];
-  // One word each for the step indicator; STEPS stay the step headings.
+  // One word each for the step indicator; the current one is the step heading.
   const SCHRITT_NAMEN = ["Haus", "Haushalt", "Verbraucher"];
   // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
   // Bis 29.08.2026 meldete dieser Flow NUR das Ergebnis — wo jemand abbricht,
@@ -563,7 +563,7 @@ export default function Empfehlung({
         </div>
 
         {/* Progress */}
-        {!isRecommendation && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} titel={STEPS[step]} onSprung={setWizardStep} />}
+        {!isRecommendation && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} onSprung={setWizardStep} />}
 
         {/* ── STEPS ── */}
         {!isRecommendation && (

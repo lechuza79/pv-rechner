@@ -632,7 +632,7 @@ export default function PVRechner({
   const be = sel.data.be;
 
   const STEPS = ["Wie groß soll die Anlage werden?", "Dein Dach", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
-  // One word each for the step indicator; STEPS stay the step headings.
+  // One word each for the step indicator; the current one is the step heading.
   const SCHRITT_NAMEN = ["Anlage", "Dach", "Speicher", "Haushalt", "Verbraucher"];
   const isResult = step >= STEPS.length;
   const fundingActive = fundingPrograms.some((p) => p.level !== "bund");
@@ -983,7 +983,7 @@ export default function PVRechner({
         )}
 
         {/* Progress */}
-        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} onSprung={setStep} titel={STEPS[step]} />}
+        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} onSprung={setStep} />}
 
         {/* ── QUESTIONS ── */}
         {!isResult && (
@@ -991,7 +991,7 @@ export default function PVRechner({
 
             {step === 0 && (
               <div>
-                <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
+                <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: 0, marginBottom: 14, lineHeight: 1.5 }}>
                   Die Leistung wird in <GlossaryTerm id="kwp">kWp</GlossaryTerm> angegeben.
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -1011,7 +1011,7 @@ export default function PVRechner({
 
             {step === 1 && (
               <div>
-                <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
+                <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: 0, marginBottom: 14, lineHeight: 1.5 }}>
                   Dachform und Ausrichtung entscheiden mit darüber, wie viel Strom die Anlage bringt —
                   zwischen einem Süddach und einem Norddach liegen über 40 Prozent.
                 </p>
@@ -1041,7 +1041,7 @@ export default function PVRechner({
 
             {step === 2 && (
               <div>
-                <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
+                <p style={{ fontSize: v("--font-size-body"), color: v('--color-text-muted'), marginTop: 0, marginBottom: 14, lineHeight: 1.5 }}>
                   Die <GlossaryTerm id="speicherkapazitaet">Speicherkapazität</GlossaryTerm> wird in <GlossaryTerm id="kwh">kWh</GlossaryTerm> gemessen.
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
