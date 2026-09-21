@@ -182,7 +182,7 @@ export default function ResultFunding({
             <button key={c.ags} onClick={() => onChooseAgs(c.ags)} style={{
               padding: "6px 12px", fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
               background: v("--color-bg-muted"), color: v("--color-text-primary"),
-              border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-sm"),
+              border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-pill"),
             }}>
               {c.ort}
             </button>

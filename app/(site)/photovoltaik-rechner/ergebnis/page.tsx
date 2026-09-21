@@ -69,7 +69,7 @@ export default async function RechnerErgebnisPage(props: {
   return (
     <ErrorBoundary>
       <PVRechner initialParams={searchParams} />
-      <div style={{ maxWidth: v("--page-max-width"), margin: "0 auto", padding: "0 16px 32px" }}>
+      <div style={{ maxWidth: v("--page-max-width"), containerType: "inline-size", margin: "0 auto", padding: "0 16px 32px" }}>
         <Faq items={pvRechnerFaq()} currentPath="/photovoltaik-rechner" />
         <StandNote pfad="/photovoltaik-rechner" />
       </div>

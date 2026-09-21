@@ -586,7 +586,7 @@ export default function GemeindeHero({
             onClick={() => setOwner(o.key)}
             style={{
               ...S.chip,
-              background: owner === o.key ? v("--color-accent") : "transparent",
+              background: owner === o.key ? v("--color-cta") : "transparent",
               color: owner === o.key ? v("--color-text-on-accent") : v("--color-text-secondary"),
             }}
           >
@@ -796,7 +796,7 @@ function PeerZeile({
             style={{
               ...S.fill,
               width: `${Math.min(100, Math.max(2, Math.round((row.value / scale) * 100)))}%`,
-              background: row.isSelf ? v("--color-accent") : v("--color-accent-light"),
+              background: row.isSelf ? v("--color-cta") : v("--color-accent-light"),
             }}
           />
         </span>

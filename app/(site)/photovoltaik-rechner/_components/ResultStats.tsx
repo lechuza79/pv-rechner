@@ -160,7 +160,7 @@ export default function ResultStats({
               <div style={{ display: "flex", gap: 4 }}>
                 {(["gas", "oil"] as const).map(ft => (
                   <button key={ft} onClick={() => setFuelType(ft)} style={{
-                    padding: "3px 8px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-micro"), fontWeight: 600, cursor: "pointer",
+                    padding: "3px 8px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-micro"), fontWeight: 600, cursor: "pointer",
                     background: fuelType === ft ? v('--color-negative-dim') : "transparent",
                     border: fuelType === ft ? `1px solid ${v('--color-negative-border')}` : `1px solid ${v('--color-border-muted')}`,
                     color: fuelType === ft ? v('--color-negative') : v('--color-text-muted'),

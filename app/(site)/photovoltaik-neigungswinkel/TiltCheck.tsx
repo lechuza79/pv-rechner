@@ -71,7 +71,7 @@ export default function TiltCheck() {
       </div>
       <Link
         href="/pv-simulation"
-        style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: v("--font-size-body"), fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent"), textDecoration: "none" }}
+        style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "10px 18px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700, background: v("--color-cta"), color: v("--color-text-on-accent"), textDecoration: "none" }}
       >
         Live-Ertrag an deinem Standort ansehen <IconArrowRight size={iconSizes.sm} />
       </Link>

@@ -246,7 +246,7 @@ export default function FachbetriebeAnsicht() {
 
   return (
     <div style={{ maxWidth: 1320, margin: "0 auto", paddingBottom: space.xxl }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.xs }}>PV-Fachbetriebe</h1>
+      <h1 style={{ marginBottom: space.xs }}>PV-Fachbetriebe</h1>
       <p
         style={{
           color: v("--color-text-muted"),
@@ -674,11 +674,11 @@ export default function FachbetriebeAnsicht() {
                         title={s.hinweis}
                         style={{
                           padding: pad("xs", "sm"),
-                          borderRadius: v("--radius-sm"),
+                          borderRadius: v("--radius-pill"),
                           border: `1px solid ${
                             z.stand === s.wert ? v("--color-accent") : v("--color-border")
                           }`,
-                          background: z.stand === s.wert ? v("--color-accent") : "transparent",
+                          background: z.stand === s.wert ? v("--color-cta") : "transparent",
                           color:
                             z.stand === s.wert
                               ? v("--color-text-on-accent")

@@ -251,7 +251,7 @@ export function StoryTisch({
           </a>
         )}
         {!ohneTitel && (
-          <h3 style={{ fontSize: v("--font-size-h3"), margin: 0, marginTop: kategorieHinweis ? space.xs : 0 }}>
+          <h3 style={{ margin: 0, marginTop: kategorieHinweis ? space.xs : 0 }}>
             {post.titel}
           </h3>
         )}
@@ -360,9 +360,9 @@ export function StoryTisch({
             onClick={speichern}
             style={{
               padding: pad("xs", "lg"),
-              borderRadius: v("--radius-sm"),
+              borderRadius: v("--radius-pill"),
               border: "none",
-              background: geaendert ? v("--color-accent") : v("--color-border"),
+              background: geaendert ? v("--color-cta") : v("--color-border"),
               color: geaendert ? v("--color-text-on-accent") : v("--color-text-muted"),
               cursor: geaendert ? "pointer" : "default",
               fontSize: v("--font-size-small"),

@@ -806,7 +806,7 @@ export default function PVRechner({
       return (
         <button onClick={handleSave} disabled={saving} style={{
           ...gemeinsam,
-          background: partner ? v("--color-bg") : v("--color-accent"),
+          background: partner ? v("--color-bg") : v("--color-cta"),
           color: partner ? v("--color-accent") : v("--color-text-on-accent"),
           border: partner ? `1px solid ${v("--color-border-accent")}` : "none",
           cursor: saving ? "wait" : "pointer",
@@ -818,7 +818,7 @@ export default function PVRechner({
     return (
       <button onClick={oeffneAnmeldung} style={{
         ...gemeinsam,
-        background: partner ? v("--color-bg") : v("--color-accent"),
+        background: partner ? v("--color-bg") : v("--color-cta"),
         color: partner ? v("--color-accent") : v("--color-text-on-accent"),
         border: partner ? `1px solid ${v("--color-border-accent")}` : "none",
       }}>
@@ -943,7 +943,7 @@ export default function PVRechner({
           onApply={kwh => { setKlimaKwh(kwh); setOEv(null); }}
         />
 
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
+      <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
 
         {/* Title — aus der Empfehlung kommend als Fortsetzung framen, nicht als neuer Rechner */}
         {flowType === "empfehlung" ? (
@@ -955,7 +955,7 @@ export default function PVRechner({
               <span style={{ transform: "rotate(180deg)", display: "inline-flex" }}><IconArrowRight size={iconSizes.sm} /></span> Zurück zur Empfehlung
             </button>
             <div style={{ textAlign: "center" }}>
-              <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Deine Empfehlung im Detail</h1>
+              <h1 style={{ color: v('--color-text-primary') }}>Deine Empfehlung im Detail</h1>
               <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>So rechnet sich die empfohlene Anlage — alle Annahmen anpassbar.</p>
             </div>
           </div>
@@ -965,7 +965,7 @@ export default function PVRechner({
                 Betriebs — „Lohnt sich Photovoltaik? · Ohne Verkaufsanrufe" wäre
                 darunter eine zweite Ansage und liest sich als unsere Werbung auf
                 seiner Seite. Im Ergebnis genügt dort die Überschrift. */}
-            <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>
+            <h1 style={{ color: v('--color-text-primary') }}>
               {partner ? (isResult ? "Dein Ergebnis" : "Deine Anlage berechnen") : "Lohnt sich Photovoltaik?"}
             </h1>
             {!partner && (
@@ -978,7 +978,7 @@ export default function PVRechner({
         {!isResult && (
           <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
             {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? v('--color-accent') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
+              <div key={i} style={{ flex: 1, height: 3, borderRadius: v("--radius-pill"), background: i <= step ? v('--color-cta') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
             ))}
           </div>
         )}
@@ -986,7 +986,7 @@ export default function PVRechner({
         {/* ── QUESTIONS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18, color: v('--color-text-primary') }}>{STEPS[step]}</h2>
+            <h2 style={{ marginBottom: 18, color: v('--color-text-primary') }}>{STEPS[step]}</h2>
 
             {step === 0 && (
               <div>
@@ -1072,8 +1072,8 @@ export default function PVRechner({
                       // bliebe Weiter gesperrt und niemand sähe, woran es liegt.
                       if (opt.mode) markBeantwortet("personen");
                     }} style={{
-                      flex: 1, padding: "8px 4px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
-                      background: verbrauchMode === opt.mode ? v('--color-accent') : "transparent",
+                      flex: 1, padding: "8px 4px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
+                      background: verbrauchMode === opt.mode ? v('--color-cta') : "transparent",
                       border: "none",
                       color: verbrauchMode === opt.mode ? v('--color-text-on-accent') : v('--color-text-muted'),
                       transition: "all 0.15s",
@@ -1232,7 +1232,7 @@ export default function PVRechner({
                             </div>
                           </div>
                           <button onClick={() => setKlimaDetailOpen(true)} style={{
-                            flexShrink: 0, padding: "8px 14px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer",
+                            flexShrink: 0, padding: "8px 14px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer",
                             background: v('--color-bg'), border: `1.5px solid ${v('--color-accent')}`, color: v('--color-accent'),
                           }}>exakter berechnen</button>
                         </div>
@@ -1421,7 +1421,7 @@ export default function PVRechner({
                 Schnellschätzung aus Räumen und Standort. Kühlen fällt mittags an, wenn die Sonne scheint — das hebt den Eigenverbrauch am stärksten.
               </div>
               <button onClick={() => setKlimaDetailOpen(true)} style={{
-                marginTop: 10, padding: "7px 12px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 700,
+                marginTop: 10, padding: "7px 12px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700,
                 background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-accent'), cursor: "pointer",
               }}>Genauer berechnen</button>
             </ResultSection>
@@ -1627,7 +1627,7 @@ export default function PVRechner({
                     return (
                       <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
                         <span style={{ fontSize: v("--font-size-micro"), fontFamily: v('--font-mono'), color: v('--color-text-secondary'), marginBottom: 3 }}>{Math.round(m * kwp * balkenFaktor).toLocaleString("de-DE")}</span>
-                        <div style={{ width: "100%", height: barH, borderRadius: "3px 3px 0 0", background: i === new Date().getMonth() ? v('--color-accent') : v('--color-border-accent') }} />
+                        <div style={{ width: "100%", height: barH, borderRadius: "3px 3px 0 0", background: i === new Date().getMonth() ? v('--color-cta') : v('--color-border-accent') }} />
                         <span style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint'), marginTop: 3 }}>{["J","F","M","A","M","J","J","A","S","O","N","D"][i]}</span>
                       </div>
                     );

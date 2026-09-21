@@ -51,7 +51,7 @@ export default function ZubauChart({
                   background: partial
                     ? `repeating-linear-gradient(135deg, ${v("--color-accent-light")} 0 4px, transparent 4px 8px)`
                     : r.year === peak?.year
-                      ? v("--color-accent")
+                      ? v("--color-cta")
                       : v("--color-accent-light"),
                   border: partial ? `1px solid ${v("--color-accent-light")}` : "none",
                 }}

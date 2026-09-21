@@ -109,7 +109,7 @@ export default function StorySlider({
                 aria-current={i === aktiv ? "true" : undefined}
                 style={{
                   ...S.punkt,
-                  background: i === aktiv ? v("--color-accent") : v("--color-border"),
+                  background: i === aktiv ? v("--color-cta") : v("--color-border"),
                 }}
               />
             ))}

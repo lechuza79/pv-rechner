@@ -124,7 +124,7 @@ export default function FlowNav({
           onClick={onZurueck}
           style={{
             padding: "10px 20px",
-            borderRadius: v("--radius-md"),
+            borderRadius: v("--radius-pill"),
             fontSize: v("--font-size-body"),
             fontWeight: 600,
             background: "transparent",
@@ -187,10 +187,10 @@ export default function FlowNav({
         aria-label={weiterAktiv ? undefined : `${weiterLabel} — ${inaktivHinweis}`}
         style={{
           padding: "11px 22px",
-          borderRadius: v("--radius-md"),
+          borderRadius: v("--radius-pill"),
           fontSize: v("--font-size-body"),
           fontWeight: 700,
-          background: weiterAktiv ? v("--color-accent") : v("--color-bg-muted"),
+          background: weiterAktiv ? v("--color-cta") : v("--color-bg-muted"),
           color: weiterAktiv ? v("--color-text-on-accent") : v("--color-text-muted"),
           border: weiterAktiv ? "none" : `1px solid ${v("--color-border")}`,
           cursor: weiterAktiv ? "pointer" : "not-allowed",

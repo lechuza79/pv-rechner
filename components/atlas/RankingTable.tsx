@@ -1026,7 +1026,7 @@ export default function RankingTable({
               onClick={() => setOwner(o.key)}
               style={{
                 ...S.chip,
-                background: owner === o.key ? v("--color-accent") : "transparent",
+                background: owner === o.key ? v("--color-cta") : "transparent",
                 color: owner === o.key ? v("--color-text-on-accent") : v("--color-text-secondary"),
               }}
             >
@@ -1873,7 +1873,7 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     gap: 6,
     border: `1px solid ${v("--color-border-accent")}`,
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     padding: "6px 12px",
     background: v("--color-bg-accent"),
     fontFamily: "inherit",
@@ -2241,7 +2241,7 @@ const S: Record<string, React.CSSProperties> = {
     whiteSpace: "nowrap",
   },
   // Aktive Kommune voll in unserem Blau (weiße Schrift via rowCells onAccent).
-  rowHome: { background: v("--color-accent"), borderRadius: v("--radius-md") },
+  rowHome: { background: v("--color-cta"), borderRadius: v("--radius-md") },
   // Die Platzziffer gehört auf die Namenslinie, nicht in die Mitte zwischen
   // Name und Einwohnerzahl: sie benennt den Ort, nicht die Zeile als Ganzes.
   rank: {
@@ -2355,9 +2355,9 @@ const S: Record<string, React.CSSProperties> = {
     borderBottom: "none",
     // Voll in unserem Blau — die schwebende Kopie sieht aus wie die aktive Zeile
     // in der Liste, nur mit Schlagschatten abgehoben.
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     border: `1px solid ${v("--color-accent-dark")}`,
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
   },
   rowLink: { textDecoration: "none", color: "inherit", cursor: "pointer" },
@@ -2445,8 +2445,8 @@ const S: Record<string, React.CSSProperties> = {
     fontWeight: 600,
     fontFamily: "inherit",
     border: "none",
-    borderRadius: v("--radius-md"),
-    background: v("--color-accent"),
+    borderRadius: v("--radius-pill"),
+    background: v("--color-cta"),
     color: v("--color-text-on-accent"),
     cursor: "pointer",
   },
@@ -2455,7 +2455,7 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 12,
     fontFamily: "inherit",
     border: `1px solid ${v("--color-border")}`,
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     background: v("--color-bg"),
     color: v("--color-text-primary"),
     cursor: "pointer",

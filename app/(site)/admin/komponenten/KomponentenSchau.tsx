@@ -915,7 +915,7 @@ export default function KomponentenSchau() {
         return (
           <div key={g.schluessel} id={`gruppe-${g.schluessel}`} style={{ marginBottom: space.huge }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: space.sm, marginBottom: space.md }}>
-              <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, margin: 0 }}>{g.titel}</h2>
+              <h2 style={{ margin: 0 }}>{g.titel}</h2>
               <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>{g.text}</span>
             </div>
             <div
@@ -939,7 +939,7 @@ export default function KomponentenSchau() {
 
       <div id="gruppe-zusammensetzungen" style={{ marginBottom: space.huge }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: space.sm, marginBottom: space.md }}>
-          <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, margin: 0 }}>Zusammensetzungen</h2>
+          <h2 style={{ margin: 0 }}>Zusammensetzungen</h2>
           <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
             Kennen ein Fach und sind deshalb nicht allgemein einsetzbar — hier ohne Beispiel, weil eines
             ohne echte Daten eine Attrappe wäre.

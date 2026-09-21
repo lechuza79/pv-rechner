@@ -270,7 +270,7 @@ function pillStyle(active: boolean): React.CSSProperties {
     fontSize: v("--font-size-small"),
     fontWeight: active ? 700 : 600,
     color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
-    background: active ? v("--color-accent") : v("--color-bg-muted"),
+    background: active ? v("--color-cta") : v("--color-bg-muted"),
     border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
     borderRadius: 999,
     padding: pad("xs", "md"),

@@ -20,7 +20,7 @@ export default function LoginForm({ next = "/dashboard" }: { next?: string }) {
   return (
     <div style={{ background: v("--color-bg"), minHeight: "70vh", padding: "0 16px 40px", fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
       <div style={{ maxWidth: 420, margin: "0 auto" }}>
-        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", marginBottom: space.sm }}>Anmelden</h1>
+        <h1 style={{ marginBottom: space.sm }}>Anmelden</h1>
         <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-muted"), marginBottom: space.xxl, lineHeight: 1.5 }}>
           Ein Konto brauchst du nur, um Berechnungen zu speichern und später wieder aufzurufen. Rechnen kannst du ohne.
         </p>
@@ -58,10 +58,10 @@ const card: React.CSSProperties = {
 const weiterKnopf: React.CSSProperties = {
   display: "inline-block",
   padding: pad("lg", "xxl"),
-  borderRadius: v("--radius-md"),
+  borderRadius: v("--radius-pill"),
   fontSize: v("--font-size-body"),
   fontWeight: 700,
-  background: v("--color-accent"),
+  background: v("--color-cta"),
   color: v("--color-text-on-accent"),
   textDecoration: "none",
 };

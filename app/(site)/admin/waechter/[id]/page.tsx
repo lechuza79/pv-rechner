@@ -30,7 +30,7 @@ export default async function WaechterReportPage({ params }: { params: Promise<{
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary"), maxWidth: 760 }}>
       <Link href="/admin/waechter" style={{ fontSize: v("--font-size-small"), color: v("--color-accent"), textDecoration: "none" }}>← Alle Berichte</Link>
 
-      <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, margin: `${space.md}px 0 ${space.xs}px` }}>{r.subject}</h1>
+      <h1 style={{ margin: `${space.md}px 0 ${space.xs}px` }}>{r.subject}</h1>
       <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.xl }}>
         {new Date(r.created_at).toLocaleString("de-DE")}
         {r.tag ? ` · ${r.tag}` : ""}

@@ -335,8 +335,8 @@ export function SocialKarte({
                       top: 0,
                       bottom: 0,
                       width: `${Math.max(anteil * 100, 2)}%`,
-                      background: s.hervorgehoben ? v("--color-accent") : v("--color-border"),
-                      borderRadius: v("--radius-sm"),
+                      background: s.hervorgehoben ? v("--color-cta") : v("--color-border"),
+                      borderRadius: v("--radius-pill"),
                     }}
                   />
                 </div>

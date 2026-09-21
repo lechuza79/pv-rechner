@@ -129,7 +129,7 @@ const S: Record<string, React.CSSProperties> = {
     padding: space.xl,
     background: v("--color-bg"),
   },
-  h2: { fontSize: v("--font-size-h3"), fontWeight: 700, margin: 0, lineHeight: 1.25 },
+  h2: { margin: 0 },
   absatz: {
     fontSize: v("--font-size-body"),
     lineHeight: 1.6,

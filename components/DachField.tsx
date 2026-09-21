@@ -190,7 +190,7 @@ export default function DachField({
                   {...flowWahl(neigungFrage, si, aktiv)}
                   title={s.sub}
                   style={{
-                    padding: "7px 12px", borderRadius: v("--radius-sm"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
+                    padding: "7px 12px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                     background: aktiv ? v("--color-accent-dim") : v("--color-bg-muted"),
                     border: aktiv ? `1.5px solid ${v("--color-accent")}` : `1.5px solid ${v("--color-border")}`,
                     color: aktiv ? v("--color-accent") : v("--color-text-muted"),

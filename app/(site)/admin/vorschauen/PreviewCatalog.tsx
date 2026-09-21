@@ -38,7 +38,7 @@ export default function PreviewCatalog() {
         </a>
         <div style={{ padding: 22, display: 'flex', flexDirection: 'column', flex: 1 }}>
         <small style={{ color: v('--color-text-muted') }}>{entry.group} · {entry.status}</small>
-        <h2 style={{ fontSize: v('--font-size-h3'), margin: '12px 0 8px' }}>{entry.title}</h2>
+        <h2 style={{ margin: '12px 0 8px' }}>{entry.title}</h2>
         <p style={{ color: v('--color-text-muted'), lineHeight: 1.5, flex: 1 }}>{entry.description}</p>
         <a href={`http://localhost:4299/open/${entry.id}`} target="_blank" rel="noopener noreferrer" style={{ color: v('--color-accent'), fontWeight: 700 }}>Vorschau öffnen ↗</a>
         </div>

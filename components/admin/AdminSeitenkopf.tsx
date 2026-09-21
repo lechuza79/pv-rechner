@@ -1,5 +1,5 @@
 import InfoTooltip from "../InfoTooltip";
-import { v, space } from "../../lib/theme";
+import { space } from "../../lib/theme";
 
 // ─── Der Kopf einer Admin-Seite: der Titel, sonst nichts. ────────────────────
 //
@@ -27,7 +27,7 @@ export default function AdminSeitenkopf({
 }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: space.sm, marginBottom: space.xl }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, margin: 0 }}>{titel}</h1>
+      <h1 style={{ margin: 0 }}>{titel}</h1>
       {hilfe ? (
         <InfoTooltip title={titel} ariaLabel={`Was zeigt „${titel}"?`} exportNote={false}>
           {hilfe}

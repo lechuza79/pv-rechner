@@ -108,7 +108,7 @@ export function TemplateGalerie({
     <div style={{ display: "flex", flexDirection: "column", gap: space.huge }}>
       {zeilen.map(({ form, post, traeger, gesamt, auswahl }) => (
         <section key={form.art} id={form.art} style={{ borderTop: `1px solid ${v("--color-border-muted")}`, paddingTop: space.xl }}>
-          <h2 style={{ fontSize: v("--font-size-h3"), margin: 0 }}>{form.name}</h2>
+          <h2 style={{ margin: 0 }}>{form.name}</h2>
           <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), margin: `${space.xs}px 0 0`, maxWidth: 760, lineHeight: 1.45 }}>
             {form.wofuer}
           </p>
@@ -195,8 +195,8 @@ export function TemplateGalerie({
                       style={{
                         fontSize: v("--font-size-micro"),
                         padding: "1px 6px",
-                        borderRadius: 8,
-                        background: abgenommen ? v("--color-accent") : v("--color-bg-muted"),
+                        borderRadius: v("--radius-pill"),
+                        background: abgenommen ? v("--color-cta") : v("--color-bg-muted"),
                         // Sekundär statt gedämpft: Bei dieser Schriftgröße
                         // (Mikro) trägt gedämpft auf gedämpftem Grund nur
                         // 4,5:1 — gerade die Untergrenze, und die gilt für

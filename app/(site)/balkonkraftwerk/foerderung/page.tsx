@@ -54,7 +54,7 @@ const S = {
   zeile: { fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), lineHeight: 1.6, marginTop: 2 } as React.CSSProperties,
   betrag: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-positive") } as React.CSSProperties,
   ortLink: { display: "inline-block", marginTop: space.xs, fontSize: "var(--font-size-small)", fontWeight: 600, color: v("--color-accent"), textDecoration: "none" } as React.CSSProperties,
-  cta: { display: "inline-block", marginTop: space.md, padding: pad("sm", "lg"), borderRadius: v("--radius-md"), fontSize: "var(--font-size-body)", fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent"), textDecoration: "none" } as React.CSSProperties,
+  cta: { display: "inline-block", marginTop: space.md, padding: pad("sm", "lg"), borderRadius: v("--radius-pill"), fontSize: "var(--font-size-body)", fontWeight: 700, background: v("--color-cta"), color: v("--color-text-on-accent"), textDecoration: "none" } as React.CSSProperties,
   hinweis: { background: v("--color-bg-muted"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: pad("md", "lg"), fontSize: "var(--font-size-small)", lineHeight: 1.6, color: v("--color-text-secondary") } as React.CSSProperties,
 };
 

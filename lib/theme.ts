@@ -16,6 +16,14 @@ export const tokens = {
   // The old system uses ONE token for page and card, and bg-muted for the tier
   // below it. That relation is kept: bg is the card white, bg-muted one step
   // down, bg-accent the package's page ground.
+  // Seitengrund. GLEICHER Wert wie die Fläche darüber, und das ist Absicht:
+  // Die Seiten malen ihren eigenen Container über die volle Breite mit
+  // --color-bg aus. Ein dunklerer Grund darunter ergibt deshalb keine Tiefe,
+  // sondern eine Kante quer durch die Seite — gemessen an einer 1840 px breiten
+  // Ansicht, wo der Balken unter der Kopfzeile endete. Zwei Flächen bekommt das
+  // Design erst, wenn die Seiten ihre Inhalte als Karten setzen statt als Band;
+  // das gehört ins Detail-Redesign.
+  '--color-bg-page': '#F6F8F1',         // Seitengrund, NUR am body
   '--color-bg': '#F6F8F1',              // Page, cards, panels, chart
   '--color-bg-muted': '#EDF0E8',        // Inputs, subtle areas, overlays
   // The ACCENT surface, not a third neutral: it has always been the accent's
@@ -35,24 +43,35 @@ export const tokens = {
   '--color-border-muted': '#CCD4D0',    // Muted/secondary borders, toggles
   '--color-border-accent': '#CAD6BE',   // Accent borders, hero, icon buttons
 
-  // ─── Accent — Green (4) ────────────────────────────────────────────────────
-  // v3 (20.09.2026). The new design has exactly ONE accent, and it is the lime
-  // #D4FF24 — but only ever as a FILL under dark ink. As text on the package's
-  // own paper it reaches 1,03:1 (WCAG AA wants 4,5:1), so it cannot be this
-  // token: --color-accent is used as text and as stroke in more than half of
-  // its call sites. The package's own legible relative of that lime is
-  // #487123, the link-hover colour in overview.css — that is the value here.
-  // The lime lives on as the brand pair below (logo, header, footer), which is
-  // where the package itself puts it.
+  // ─── Accent — the package's ink (4) ────────────────────────────────────────
+  // v3 (20.09.2026). THE NEW DESIGN HAS NO COLOURED INTERACTIVE TEXT. Measured
+  // on the released pages: a filled action is the lime #D4FF24 under near-black
+  // ink, a second-level action is the dark petrol #163338 under light text, an
+  // outlined one is a 1 px ink border — and a link in running text is simply the
+  // ink with an underline. There is no third colour anywhere.
   //
-  // Measured (WCAG 2.1): #487123 on --color-bg 5,36:1 · on --color-bg-muted
-  // 4,98:1 · white on it 5,73:1. The old blue #1365EA would have slipped to
-  // 4,47:1 on the new bg-muted — below AA — so keeping it was not an option
-  // either.
-  '--color-accent': '#487123',          // CTAs, toggles, active states, hero number
-  '--color-accent-dim': 'rgba(72,113,35,0.10)',   // Selected card backgrounds
-  '--color-accent-dark': '#35561A',     // Hover, dark accent text
-  '--color-accent-light': '#7FA855',    // Light accent, secondary interactive
+  // This token is therefore the INK, because that is what more than two thirds
+  // of its call sites are: text, strokes and borders (231 text uses and 7
+  // strokes against 80 fills, counted 20.09.2026). The fills take --color-cta
+  // below instead.
+  //
+  // An earlier pass put #487123 here. That value is real but it is the LINK
+  // HOVER of one stylesheet — promoting a hover tint to the resting colour of
+  // every button, tab and toggle invented a colour the design does not have.
+  // Not again: if a role has no value in the package, the answer is to split
+  // the role, not to mix a new colour.
+  '--color-accent': '#173B42',          // Links, active states, lines, borders
+  '--color-accent-dim': 'rgba(23,59,66,0.08)',    // Selected card backgrounds
+  '--color-accent-dark': '#0E262B',     // Hover — a step deeper, as text gets darker
+  '--color-accent-light': '#4A675E',    // Light accent, secondary interactive
+
+  // ─── Call to action (2) ────────────────────────────────────────────────────
+  // The filled action: lime plate, near-black ink, measured on the homepage's
+  // primary button and the waiting-list form (#D4FF24 / #132527, pill).
+  // Ink on lime is 13,72:1 — the pair only works in this order, never inverted,
+  // and the lime is never text (1,03:1 on our own paper).
+  '--color-cta': '#D4FF24',
+  '--color-cta-ink': '#132527',
 
   // ─── Brand (2) ─────────────────────────────────────────────────────────────
   // The logo mark's two blues. Kept apart from --color-accent even where the
@@ -151,7 +170,7 @@ export const tokens = {
   '--color-text-secondary': '#4A675E',  // Body text, labels, descriptions
   '--color-text-muted': '#527268',      // Dimmed text, hints
   '--color-text-faint': '#61877B',      // Very light text, placeholders
-  '--color-text-on-accent': '#FFFFFF',  // Text on accent-colored backgrounds
+  '--color-text-on-accent': '#132527',  // Text on accent-colored backgrounds (the lime plate)
 
   // ─── Progress (1) ──────────────────────────────────────────────────────────
   '--color-progress-inactive': '#DBE1DC',
@@ -172,6 +191,9 @@ export const tokens = {
   // Font families resolve to the self-hosted next/font variables (set on <html>
   // in app/(site)/layout.tsx), with system fallbacks before they load.
   '--font-text': "var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
+  // Headings are Montserrat 700 in the new design — on the homepage, on the
+  // content template and in the shared footer, which every page already carries.
+  '--font-display': "var(--font-montserrat),Montserrat,var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
   '--font-mono': "var(--font-jetbrains-mono),'JetBrains Mono',monospace",
 
   // ─── Typografie-Skala (8) ──────────────────────────────────────────────────
@@ -196,9 +218,53 @@ export const tokens = {
   '--font-size-small': '12px',          // Sekundärtext, Chips, Tabellenzellen
   '--font-size-body': '14px',           // Basis: Fließtext, Nav, Fußzeile, Eingabefelder
   '--font-size-lead': '16px',           // Lead/Einleitung, Kartentitel
+  // v3 (20.09.2026): h1/h2 taken from the released homepage (48 / 34 px in
+  // Montserrat 700). The legacy 24/20 were sized for a 640 px column and read as
+  // bold body text next to the new pages.
   '--font-size-h3': '18px',             // Kleine Überschrift
-  '--font-size-h2': '20px',             // Sektions-Überschrift
-  '--font-size-h1': '24px',             // Seiten-Titel
+  // MITWACHSEND, nicht fest — und zwar IM TOKEN, nicht in einer Regel daneben:
+  // Die Seiten schreiben ihre Überschriftsgröße direkt ans Element
+  // (`fontSize: v("--font-size-h1")`), und eine Angabe am Element schlägt jede
+  // Regel im Stylesheet. Eine globale Regel hätte also genau nichts bewirkt.
+  // Zahlen abgelesen an der Startseite: 38,9 px bei 1024 und 48 px bei 1440
+  // (h1), 26,6 und 34 (h2) — daraus die 3,8 % bzw. 2,6 % der Fensterbreite.
+  // DIE ÜBERSCHRIFT BEMISST SICH AN IHRER SPALTE, NICHT AM FENSTER — das ist
+  // der Punkt, an dem zwei Anläufe gescheitert sind.
+  //
+  // Die Spalten dieser Seite sind verschieden breit: ein Rechner läuft in
+  // 480 px, eine Leseseite in 680. Eine Größe, die am Fenster hängt, ist damit
+  // zwangsläufig für eine der beiden falsch — bei 52 px brach „Photovoltaik" in
+  // der Rechner-Spalte mitten im Wort um, während dieselbe Größe auf der
+  // Leseseite gerade richtig war.
+  //
+  // `cqi` heißt „ein Prozent der Bezugsspalte". Bezugsrahmen ist jeder
+  // Container, der eine der Spaltenbreiten setzt; die Grenzen fangen den Fall
+  // ab, dass eine Überschrift einmal außerhalb einer solchen Spalte steht.
+  //
+  // Die Anteile sind BEWUSST KLEINER als im Paket: Dessen Inhaltsseite setzt
+  // 7,5 % der Spalte (51 px auf 680), und genau das war auf unseren Seiten zu
+  // groß — dort steht unter der Überschrift ein langer Fachtext, keine
+  // Anmeldemaske mit drei Zeilen. 5 % ergibt 34 px auf der Leseseite und 24 px
+  // in der Rechner-Spalte; letzteres ist der Wert, der dort vorher stand.
+  '--font-size-h2': 'clamp(16px,3.2cqi,24px)',  // Sektions-Überschrift
+  '--font-size-h1': 'clamp(22px,5cqi,38px)',    // Seiten-Titel
+  // Die UNTERE Stufe derselben Überschrift. h1 und h2 wachsen zwischen diesen
+  // beiden Werten mit dem Fenster (die globale Regel setzt das clamp() daraus
+  // zusammen) — genau so macht es das Original, dort steht an jeder Überschrift
+  // ein clamp().
+  //
+  // WARUM NICHT EIN FESTER WERT: Bei 48 px fest stand die Seitenüberschrift auf
+  // einem 1024er Schirm deutlich größer da als auf der Startseite, die dort
+  // 38,9 px zeigt — und auf dem Handy sprengte „Wärmepumpen-Förderung" die
+  // Spalte (17 Seiten liefen über, gemessen 20.09.2026).
+  //
+  // WARUM NICHT DAS clamp() IM TOKEN: Aus diesen Token wird auch eine ZAHL
+  // gelesen — die Video-Aufnahme des Rennens malt ihre Überschrift auf eine
+  // Leinwand und braucht px, kein CSS.
+  // Die untere Stufe derselben Überschrift, einzeln abrufbar — sie steckt zwar
+  // schon im clamp() oben, wird aber dort gebraucht, wo eine ZAHL nötig ist.
+  '--font-size-h1-eng': '22px',         // h1, untere Stufe
+  '--font-size-h2-eng': '16px',         // h2, untere Stufe
 
   // ─── Display-Stufen (2) ────────────────────────────────────────────────────
   // KEINE Textstufen. Sie stehen dort, wo eine große Zahl neben ihrer Einheit
@@ -212,25 +278,54 @@ export const tokens = {
   '--font-size-display-lg': '42px',     // Hero-Zahl der Rechner-Ergebnisse
   '--font-size-display-xl': '56px',     // Die eine große Zahl einer Seite
 
+  // ─── Laufweite und Zeilenabstand der Überschriften (5) ─────────────────────
+  // Als Token, nicht als Zahl in der globalen Regel: Wer die Display-Schrift
+  // austauscht, dreht hier — sonst steht der Ausgleich für genau eine Schrift
+  // in einer CSS-Zeile, die niemand als Design-Entscheidung liest.
+  // Gemessen am Original: Startseite -1,19px auf 34px = -0,035em, die
+  // Inhaltsvorlage des Pakets -0,04em auf der Seitenüberschrift; kleine
+  // Überschriften laufen dort normal.
+  '--tracking-display': '-0.035em',     // h1/h2 — große Grade in Montserrat
+  '--tracking-heading': '-0.01em',      // h3/h4 — fast normal
+  '--leading-display': '1.15',          // h1/h2
+  '--leading-heading': '1.35',          // h3/h4
+  '--underline-offset': '3px',          // Links im Fließtext
+
   // ─── Radii (3) ─────────────────────────────────────────────────────────────
   // v3 (20.09.2026): the package rounds harder — measured on the released
   // pages: input 10px, panel 18px, .tool card 24px. The scale follows.
   // Its PILL buttons (border-radius 999px) are deliberately NOT in here:
   // --radius-md carries buttons and cards alike, so a pill value would round
   // every card into a capsule. That shape is a separate decision.
+  // Die Pille: das Paket rundet JEDE Aktion voll aus (999 px, gemessen an der
+  // Startseite und der Warteliste-Seite). Eigenes Token, weil --radius-md
+  // Karten und Knöpfe zugleich trägt — als Pille geschrieben würde jede Karte
+  // zur Kapsel.
+  '--radius-pill': '999px',             // Knöpfe und Aktionen
   '--radius-sm': '10px',                // Small: inputs, checkboxes, pills
   '--radius-md': '16px',                // Medium: buttons, cards, panels
   '--radius-lg': '24px',                // Large: hero cards, outer containers
 
   // ─── Layout (3) ────────────────────────────────────────────────────────────
+  // v3 (20.09.2026): measured on the released homepage at 1440 px — its frame,
+  // its footer and its trust grid all sit on 1000 px (--sc-layout-content), and
+  // the package's own content template gives running text a 680 px measure.
+  // The legacy pages ran a 640 px column inside a 1040 px frame; under a 1000 px
+  // footer that is a visible step at both edges, which is where this whole
+  // change started.
   '--page-max-width': '480px',       // Rechner/Tools — kompakte, fokussierte Spalte
-  '--content-max-width': '640px',    // Redaktionelle Lese-/Textseiten (Ratgeber, Methodik, …)
+  '--content-max-width': '680px',    // Redaktionelle Lese-/Textseiten (Ratgeber, Methodik, …)
   // Datenseiten mit breiten Charts (Zubau-Story, Ländervergleich): breiter als
   // die Lesespalte, damit eine Zeitreihe über 25 Jahre nicht zusammengedrückt
   // wird, aber schmaler als die Kopfzeile. Der Fließtext DARIN bleibt auf
   // --content-max-width — 880 px lange Zeilen liest niemand gern.
   '--chart-max-width': '880px',
-  '--header-max-width': '1040px',
+  '--header-max-width': '1000px',
+  // Der RAHMEN der Kopfzeile — nicht dasselbe wie die Inhaltsbreite darunter:
+  // die Kopfzeile läuft im Original über die volle Breite bis zu diesem Deckel,
+  // der Inhalt steht in der schmalen Spalte.
+  '--header-frame-max': '1600px',
+  '--header-frame-pad': '5%',
 
   // Redaktionelle Kopf-Luft NUR auf Lese-/Textseiten — zusätzlich zum zentralen
   // headerContentGap (48). Bewusst mehr als bei Tool-/Datenseiten, damit lange
@@ -327,7 +422,9 @@ export function pad(y: keyof typeof space, x?: keyof typeof space): string {
  * Durchsehen einer Seite fiel jedes Mal auf, dass Abschnitte zu dicht
  * aufeinandersitzen. Wer hier dreht, dreht überall.
  */
-export const sectionGap = 44;
+// v3 (20.09.2026): the homepage sets 72 px above and below a section (its big
+// panel 100). 44 was the legacy value and reads cramped beside it.
+export const sectionGap = 72;
 
 export const headerContentGap = space.huge; // 48
 
@@ -369,7 +466,19 @@ export const v = (name: TokenName): string => `var(${name})`;
  * bleibt dieselbe; wer die Stufe ändert, ändert beides zugleich.
  */
 export type FontSizeName = Extract<TokenName, `--font-size-${string}`>;
-export const fsPx = (name: FontSizeName): number => parseFloat(tokens[name]);
+/**
+ * Eine Stufe der Skala steht seit 20.09.2026 teils als clamp() im Token, weil
+ * sie mit dem Fenster wächst. Wo eine ZAHL gebraucht wird, gibt es kein
+ * Fenster — die Leinwand der Video-Aufnahme hat feste Maße. Genommen wird
+ * deshalb der OBERE Wert des clamp(): Das Video wird in voller Breite
+ * aufgenommen, dort gilt ohnehin der Deckel.
+ */
+export const fsPx = (name: FontSizeName): number => {
+  const roh = tokens[name];
+  const zahlen = roh.match(/[\d.]+(?=px)/g);
+  if (!zahlen) return parseFloat(roh);
+  return Math.max(...zahlen.map(Number));
+};
 
 /** Generate :root CSS block from tokens */
 export function getCssVariables(): string {
@@ -398,6 +507,7 @@ export function getCssVariables(): string {
 // their dark surface. "Close enough" would have left a faint seam exactly where
 // the page meets the footer — the one place this whole change is about.
 const darkTokens: Partial<Record<TokenName, string>> = {
+  '--color-bg-page': '#08191C',         // Grund und Karte fallen nachts zusammen
   '--color-bg': '#08191C',
   '--color-bg-muted': '#163338',
   '--color-bg-accent': '#12292E',
@@ -447,6 +557,7 @@ const darkTokens: Partial<Record<TokenName, string>> = {
 // a different product. Warmth is kept by pulling the teal towards green and
 // stopping well above the night ground.
 const duskTokens: Partial<Record<TokenName, string>> = {
+  '--color-bg-page': '#1E2B26',
   '--color-bg': '#1E2B26',                          // warm dim teal-green (not deep dark)
   '--color-bg-muted': '#27352E',
   '--color-bg-accent': '#2A3B31',
@@ -490,6 +601,7 @@ const duskTokens: Partial<Record<TokenName, string>> = {
 // blue-grey) so the dim daytime stages interpolate towards a neighbour of the
 // base rather than away from it.
 const overcastTokens: Partial<Record<TokenName, string>> = {
+  '--color-bg-page': '#C2C8BF',
   '--color-bg': '#C2C8BF',
   '--color-bg-muted': '#B7BEB4',
   '--color-bg-accent': '#BBC3B8',
@@ -620,6 +732,44 @@ export function stageDefaults(i: number): Record<TokenName, string> {
 export const globalStyles = `
   html{scroll-behavior:smooth}
   *{box-sizing:border-box;margin:0;padding:0}
+  /* Überschriften tragen die Display-Schrift — EINE Regel statt einer
+     font-family an jeder Überschrift. Die enge Laufweite ist am Original
+     gemessen (Startseite: -1,19px auf 34px = -0,035em; die Inhaltsvorlage des
+     Pakets setzt -0,04em auf die Seitenüberschrift). Ohne sie wirkt Montserrat
+     in großen Graden auseinandergezogen. */
+  /* Schrift, Gewicht, Laufweite und Größe einer Überschrift stehen HIER und
+     nirgends sonst. Die Seiten trugen sie bis 20.09.2026 einzeln am Element
+     (meist 800 und -0.02em, dazu die Größe) — solange das so war, konnte kein
+     Token die Typografie regieren, und ein !important dagegen wäre die
+     Bekämpfung des Symptoms gewesen. Die Angaben sind an 98 Stellen entfernt;
+     kleine Labels, die bewusst eine Bildunterschrift-Größe tragen und nur
+     zufällig als Überschrift ausgezeichnet sind, behalten ihre.
+
+     KEINE automatische Silbentrennung: Sie hat aus „Photovoltaik" ein
+     „Photo-voltaik" über zwei Zeilen gemacht. In einer Überschrift ist ein
+     Trennstrich mitten im Wort immer falsch; umbrochen wird zwischen Wörtern,
+     und nur wenn ein einzelnes Wort wirklich breiter ist als die Spalte,
+     greift der harte Umbruch. */
+  h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;letter-spacing:var(--tracking-display);line-height:var(--leading-display);overflow-wrap:break-word}
+  h1{font-size:var(--font-size-h1)}
+  h2{font-size:var(--font-size-h2)}
+  h3,h4{font-size:var(--font-size-h3);letter-spacing:var(--tracking-heading);line-height:var(--leading-heading)}
+
+  /* Ein Link im Fließtext trägt im neuen Design KEINE eigene Farbe, sondern
+     eine Unterstreichung — die Interaktionsfarbe ist die Füllung eines Knopfes,
+     nicht die Farbe einer Textzeile. Ohne diese Regel wäre ein Link nach der
+     Umstellung von seinem Absatz nicht mehr zu unterscheiden. */
+  a[href]{text-underline-offset:var(--underline-offset)}
+  /* Kopfzeile wie im Original: voller Breite mit 5 % Seitenrand, nicht auf die
+     Inhaltsspalte eingezogen. Gemessen auf der Startseite bei 1024 px — Logo
+     bei x=51 (5 %), Deckel 1600. Unsere Seiten hatten 16 px festen Rand, das
+     Logo saß deshalb sichtbar weiter außen als auf den neuen Seiten. */
+  .sc-react-header{max-width:var(--header-frame-max)}
+  /* Das Logo auf hellem Grund ist NEUTRAL, nicht limette: Marke in gedecktem
+     Petrol, Wortmarke in der Textfarbe. Die drei Werte stehen so im Kopf der
+     neuen Seiten (components/DesignHeader.css) und sind von dort übernommen —
+     die Limette gehört auf den dunklen Grund von Startseite und Fußzeile. */
+  .sc-react-header .brand svg{--color-accent:var(--color-text-primary);--color-brand:color-mix(in srgb,var(--color-bg-accent) 45%,var(--color-text-primary));--color-brand-deep:color-mix(in srgb,var(--color-bg-accent) 70%,var(--color-text-primary))}
   /* Redaktionelle Kopf-Luft (Lese-Seiten) auf schmalen Schirmen zurücknehmen:
      60px über der Überschrift wirken auf dem Handy wie ein Fehler, auf dem
      Desktop wie gewollte Ruhe. Siehe --content-lede-top. */
@@ -814,7 +964,7 @@ export const globalStyles = `
   /* "Mehr erfahren" sitzt AM PUNKT, nicht unter der Leiste: Es steht nur dort,
      wo es hinter der Zusage auch etwas zu lesen gibt. Ein Punkt ohne den Hinweis
      ist bewusst kein Knopf (.trust-item-still). */
-  .trust-item-mehr{display:inline-flex;align-items:center;gap:${space.xs}px;margin-top:${space.sm}px;background:none;border:0;padding:0;font:inherit;font-size:var(--font-size-small);font-weight:600;color:var(--color-accent);cursor:pointer}
+  .trust-item-mehr{display:inline-flex;align-items:center;gap:${space.xs}px;margin-top:${space.sm}px;background:none;border:0;padding:0;font:inherit;font-size:var(--font-size-small);font-weight:600;color:var(--color-cta);cursor:pointer}
   .trust-item-mehr:hover{color:var(--color-accent-dark)}
   .trust-item-mehr:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px;border-radius:6px}
   /* Modal-Inhalt: je Punkt ein Abschnitt, darunter die Prüftermine. */
@@ -926,7 +1076,7 @@ export const globalStyles = `
      beschnitten. */
   .intro-clamp{margin:0 0 48px}
   .intro-text{font-size:var(--font-size-body);line-height:1.6;color:var(--color-text-secondary);margin:0}
-  .intro-more{display:none;background:none;border:none;padding:0;margin-top:10px;font-family:inherit;font-size:var(--font-size-body);font-weight:700;color:var(--color-accent);cursor:pointer}
+  .intro-more{display:none;background:none;border:none;padding:0;margin-top:10px;font-family:inherit;font-size:var(--font-size-body);font-weight:700;color:var(--color-cta);cursor:pointer}
   @media (max-width:640px){
     .intro-clamp:not(.intro-open) .intro-text{
       /* 5,5 Zeilen = 14px * 1.6 * 5.5. Partnerkonstante zu --font-size-body:

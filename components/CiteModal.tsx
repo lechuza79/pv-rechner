@@ -75,9 +75,9 @@ function Feld({ titel, hinweis, text }: { titel: string; hinweis: string; text: 
           style={{
             flexShrink: 0,
             padding: "6px 12px",
-            borderRadius: v("--radius-md"),
+            borderRadius: v("--radius-pill"),
             border: "none",
-            background: kopiert ? v("--color-positive") : v("--color-accent"),
+            background: kopiert ? v("--color-positive") : v("--color-cta"),
             color: v("--color-text-on-accent"),
             fontSize: v("--font-size-small"),
             fontWeight: 700,

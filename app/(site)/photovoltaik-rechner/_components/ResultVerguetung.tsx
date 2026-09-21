@@ -72,9 +72,9 @@ export default function ResultVerguetung(props: ResultVerguetungProps) {
                 aria-disabled={isDisabled || undefined}
                 title={isDisabled ? "Volleinspeisung nur ohne Speicher und ohne Wärmepumpe oder E-Auto — sonst würde Strom selbst verbraucht." : undefined}
                 style={{
-                  padding: "4px 10px", borderRadius: 6, fontSize: v("--font-size-small"), fontWeight: 600,
+                  padding: "4px 10px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600,
                   cursor: isDisabled ? "not-allowed" : "pointer",
-                  background: isActive ? v("--color-accent") : "transparent",
+                  background: isActive ? v("--color-cta") : "transparent",
                   border: "none",
                   color: isDisabled ? v("--color-text-faint") : isActive ? v("--color-text-on-accent") : v("--color-text-muted"),
                   opacity: isDisabled ? 0.4 : 1,

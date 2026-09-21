@@ -194,7 +194,7 @@ const S: Record<string, React.CSSProperties> = {
     overflow: "hidden",
   },
   header: { marginBottom: 10 },
-  title: { fontSize: v("--font-size-h3"), fontWeight: 800, letterSpacing: "-0.01em", margin: "0 0 3px", lineHeight: 1.25, color: v("--color-text-primary") },
+  title: { margin: "0 0 3px", color: v("--color-text-primary") },
   sub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), margin: 0, lineHeight: 1.4 },
 
   summe: {

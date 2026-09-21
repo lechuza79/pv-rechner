@@ -92,7 +92,7 @@ export default function FundingTechnikTabs({
                   ...knopfStil,
                   cursor: "pointer",
                   ...(an
-                    ? { border: "1px solid transparent", background: v("--color-accent"), color: v("--color-text-on-accent") }
+                    ? { border: "1px solid transparent", background: v("--color-cta"), color: v("--color-text-on-accent") }
                     : {}),
                 }}
               >

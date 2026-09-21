@@ -133,10 +133,10 @@ export default function Faq({
                     style={{
                       display: "inline-block",
                       padding: "8px 16px",
-                      borderRadius: v("--radius-md"),
+                      borderRadius: v("--radius-pill"),
                       fontSize: v("--font-size-small"),
                       fontWeight: 700,
-                      background: v("--color-accent"),
+                      background: v("--color-cta"),
                       color: v("--color-text-on-accent"),
                       textDecoration: "none",
                     }}

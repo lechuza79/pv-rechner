@@ -147,7 +147,7 @@ const S = {
     background: v("--color-bg-muted"),
   },
   kopfInner: {
-    maxWidth: v("--content-max-width"),
+    maxWidth: v("--content-max-width"), containerType: "inline-size",
     margin: "0 auto",
     padding: pad("md", "lg"),
     display: "flex",
@@ -209,7 +209,7 @@ const S = {
     fontWeight: 700,
   },
   wrap: {
-    maxWidth: v("--content-max-width"),
+    maxWidth: v("--content-max-width"), containerType: "inline-size",
     margin: "0 auto",
     // Mehr Luft unter dem Kopf: Er ist jetzt mittig und wirkt als eigener
     // Block — direkt auf den Rechner gesetzt klebte er daran.

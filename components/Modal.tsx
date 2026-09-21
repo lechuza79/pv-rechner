@@ -422,7 +422,7 @@ const S: Record<string, React.CSSProperties> = {
     gap: space.lg,
     marginBottom: space.xs,
   },
-  h2: { fontSize: v("--font-size-h3"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.25 },
+  h2: {},
   close: {
     border: "none",
     background: "transparent",

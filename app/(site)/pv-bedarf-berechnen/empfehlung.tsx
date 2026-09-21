@@ -540,10 +540,10 @@ export default function Empfehlung({
         {folgeToast}
       </Toast>
 
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
+      <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
 
         <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Was passt zu dir?</h1>
+          <h1 style={{ color: v('--color-text-primary') }}>Was passt zu dir?</h1>
           <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>Wir empfehlen dir die optimale Anlage.</p>
         </div>
 
@@ -551,7 +551,7 @@ export default function Empfehlung({
         {!isRecommendation && (
           <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
             {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? v('--color-accent') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
+              <div key={i} style={{ flex: 1, height: 3, borderRadius: v("--radius-pill"), background: i <= step ? v('--color-cta') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
             ))}
           </div>
         )}
@@ -559,7 +559,7 @@ export default function Empfehlung({
         {/* ── STEPS ── */}
         {!isRecommendation && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18, color: v('--color-text-primary') }}>{STEPS[step]}</h2>
+            <h2 style={{ marginBottom: 18, color: v('--color-text-primary') }}>{STEPS[step]}</h2>
 
             {/* Step 0: Haus + Dach */}
             {step === 0 && (
@@ -1055,9 +1055,9 @@ function ErgebnisKnopf({ onClick }: { onClick: () => void }) {
     <button
       onClick={onClick}
       style={{
-        width: "100%", padding: "14px", borderRadius: v("--radius-md"),
+        width: "100%", padding: "14px", borderRadius: v("--radius-pill"),
         fontSize: v("--font-size-body"), fontWeight: 700,
-        background: v("--color-accent"), border: "none",
+        background: v("--color-cta"), border: "none",
         color: v("--color-text-on-accent"), cursor: "pointer",
         fontFamily: v("--font-text"),
       }}

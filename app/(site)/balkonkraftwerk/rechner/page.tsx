@@ -21,14 +21,8 @@ export const metadata: Metadata = pageMetadata({
 
 // Textabschnitte unter dem Rechner: dieselben Tokens wie die Ratgeber-Seiten.
 const S = {
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto", padding: "0 16px 32px" },
-  h2: {
-    fontSize: v("--font-size-h2"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-    marginTop: 32,
-    marginBottom: 10,
-  },
+  wrap: { maxWidth: v("--page-max-width"), containerType: "inline-size", margin: "0 auto", padding: "0 16px 32px" },
+  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
   p: {
     fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),

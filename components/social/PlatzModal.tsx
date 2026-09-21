@@ -334,9 +334,9 @@ export function PlatzModal({
             onClick={() => speichern()}
             style={{
               padding: pad("xs", "lg"),
-              borderRadius: v("--radius-sm"),
+              borderRadius: v("--radius-pill"),
               border: "none",
-              background: bereit ? v("--color-accent") : v("--color-border"),
+              background: bereit ? v("--color-cta") : v("--color-border"),
               color: bereit ? v("--color-text-on-accent") : v("--color-text-muted"),
               cursor: bereit ? "pointer" : "default",
               fontSize: v("--font-size-small"),

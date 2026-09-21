@@ -1072,7 +1072,7 @@ function Tab({ active, label, onClick }: { active: boolean; label: string; onCli
         ...secondaryBtn,
         fontWeight: 700,
         color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
-        background: active ? v("--color-accent") : v("--color-bg-muted"),
+        background: active ? v("--color-cta") : v("--color-bg-muted"),
         borderColor: active ? v("--color-accent") : v("--color-border"),
       }}
     >
@@ -1108,7 +1108,7 @@ const primaryBtn: React.CSSProperties = {
   cursor: "pointer",
   fontWeight: 700,
   color: v("--color-text-on-accent"),
-  background: v("--color-accent"),
+  background: v("--color-cta"),
   borderColor: v("--color-accent"),
 };
 
@@ -1154,7 +1154,7 @@ function themaChip(thema: string): React.CSSProperties {
     textDecoration: "none",
     whiteSpace: "nowrap",
     color: foerder ? v("--color-text-on-accent") : v("--color-text-secondary"),
-    background: foerder ? v("--color-accent") : v("--color-bg"),
+    background: foerder ? v("--color-cta") : v("--color-bg"),
     border: `1px solid ${foerder ? v("--color-accent") : v("--color-border")}`,
   };
 }

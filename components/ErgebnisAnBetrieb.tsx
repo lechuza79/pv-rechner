@@ -467,8 +467,8 @@ const feldBasis: React.CSSProperties = {
 const balken = (an: boolean): React.CSSProperties => ({
   flex: 1,
   height: 3,
-  borderRadius: 2,
-  background: an ? v("--color-accent") : v("--color-progress-inactive"),
+  borderRadius: v("--radius-pill"),
+  background: an ? v("--color-cta") : v("--color-progress-inactive"),
   transition: "background 0.3s",
 });
 
@@ -476,9 +476,9 @@ const S: Record<string, React.CSSProperties> = {
   aufmachen: {
     width: "100%",
     padding: pad("md", "lg"),
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     border: "none",
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     color: v("--color-text-on-accent"),
     fontSize: v("--font-size-body"),
     fontWeight: 700,

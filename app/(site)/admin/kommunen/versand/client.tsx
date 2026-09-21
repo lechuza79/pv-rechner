@@ -131,8 +131,8 @@ export default function VersandAuswertung() {
                               height: 8,
                               width: `${Math.round((100 * t.verschickt) / (groesster || 1))}%`,
                               minWidth: 3,
-                              background: v("--color-accent"),
-                              borderRadius: v("--radius-sm"),
+                              background: v("--color-cta"),
+                              borderRadius: v("--radius-pill"),
                             }}
                           />
                         </td>

@@ -30,7 +30,7 @@ export default function AtlasError({ error, reset }: { error: Error; reset: () =
         {/* Ein Emoji als Bild, keine Schrift — die Größe ist hier eine Bildgröße
             und folgt trotzdem der Skala, damit sie nicht als 40 vs. 42 driftet. */}
         <div style={{ fontSize: v("--font-size-display-lg"), marginBottom: 12 }}>🛰️</div>
-        <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 700, color: v("--color-text-primary"), margin: "0 0 10px" }}>
+        <h1 style={{ color: v("--color-text-primary"), margin: "0 0 10px" }}>
           Die Atlas-Daten sind gerade nicht erreichbar
         </h1>
         <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" }}>
@@ -42,10 +42,10 @@ export default function AtlasError({ error, reset }: { error: Error; reset: () =
             type="button"
             onClick={reset}
             style={{
-              background: v("--color-accent"),
+              background: v("--color-cta"),
               color: v("--color-text-on-accent"),
               border: "none",
-              borderRadius: v("--radius-md"),
+              borderRadius: v("--radius-pill"),
               padding: "11px 20px",
               fontSize: v("--font-size-body"),
               fontWeight: 600,

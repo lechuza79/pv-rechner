@@ -22,16 +22,9 @@ const S = {
     minHeight: "100vh",
     padding: "0 16px 20px",
   } as React.CSSProperties,
-  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto", paddingTop: "var(--content-lede-top)" } as React.CSSProperties,
+  wrap: { maxWidth: v('--content-max-width'), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" } as React.CSSProperties,
   person: { margin: "20px 0 4px" } as React.CSSProperties,
-  h1: {
-    fontSize: v('--font-size-h1'),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: v('--color-text-primary'),
-    lineHeight: 1.2,
-    marginBottom: 24,
-  } as React.CSSProperties,
+  h1: { color: v('--color-text-primary'), marginBottom: 24 } as React.CSSProperties,
   p: {
     fontSize: v('--font-size-body'),
     lineHeight: 1.7,

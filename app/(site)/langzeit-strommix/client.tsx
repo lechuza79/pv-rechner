@@ -89,7 +89,7 @@ export default function LangzeitStrommixClient() {
         <div style={{ marginBottom: 4, fontSize: v("--font-size-small"), color: v("--color-text-muted"), fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>
           Stromerzeugung Deutschland
         </div>
-        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", margin: "0 0 6px", color: v("--color-text-primary") }}>
+        <h1 style={{ margin: "0 0 6px", color: v("--color-text-primary") }}>
           Der deutsche Strommix 1990–2025 im Zusammenhang
         </h1>
         <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.5, color: v("--color-text-secondary"), margin: "0 0 4px" }}>

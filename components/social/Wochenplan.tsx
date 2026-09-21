@@ -424,7 +424,7 @@ export function Wochenplan({
                                 width: 22,
                                 height: 22,
                                 borderRadius: 999,
-                                background: v("--color-accent"),
+                                background: v("--color-cta"),
                                 color: v("--color-text-on-accent"),
                                 fontSize: v("--font-size-caption"),
                                 fontWeight: 700,

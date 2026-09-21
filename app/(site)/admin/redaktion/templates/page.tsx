@@ -228,7 +228,7 @@ export default async function RedaktionTemplates({
 
       {neu && ohneDesign.length > 0 && (
         <section style={{ marginTop: space.huge, borderTop: `1px solid ${v("--color-border-muted")}`, paddingTop: space.xl }}>
-          <h2 style={{ fontSize: v("--font-size-h3"), margin: 0 }}>
+          <h2 style={{ margin: 0 }}>
             Beiträge ohne abgenommenes Design ({ohneDesign.length})
           </h2>
           <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), maxWidth: 760, marginTop: space.xs }}>

@@ -48,10 +48,10 @@ export async function generateMetadata(): Promise<Metadata> {
 // ─── Styles (content-page conventions) ───────────────────────────────────────
 const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v("--color-text-primary"), lineHeight: 1.25, marginBottom: 10 },
+  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  h1: { color: v("--color-text-primary"), marginBottom: 10 },
   subtitle: { fontSize: v("--font-size-lead"), color: v("--color-text-muted"), marginBottom: 24, lineHeight: 1.6 },
-  h2: { fontSize: v("--font-size-h2"), fontWeight: 700, color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
+  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
   p: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: 12 },
   strong: { fontWeight: 700, color: v("--color-text-primary") },
   hero: { background: v("--color-bg-accent"), borderRadius: v("--radius-lg"), padding: "16px 18px", marginBottom: 8, fontSize: v("--font-size-body"), color: v("--color-text-primary"), lineHeight: 1.7 },
@@ -59,7 +59,7 @@ const S = {
   label: { fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-text-secondary"), textTransform: "uppercase" as const, letterSpacing: "0.04em", marginBottom: 6, display: "block" },
   accent: { color: v("--color-accent"), fontWeight: 600 },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
-  ctaButton: { display: "inline-block", padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: v("--font-size-body"), fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent"), textDecoration: "none" },
+  ctaButton: { display: "inline-block", padding: "10px 18px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700, background: v("--color-cta"), color: v("--color-text-on-accent"), textDecoration: "none" },
   small: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6 },
 };
 

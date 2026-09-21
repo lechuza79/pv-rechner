@@ -38,7 +38,7 @@ export default function Switch({
         width: breite,
         height: hoehe,
         borderRadius: hoehe / 2,
-        background: an ? v("--color-accent") : v("--color-border"),
+        background: an ? v("--color-cta") : v("--color-border"),
         transition: "background .2s ease",
         position: "relative",
         display: "block",

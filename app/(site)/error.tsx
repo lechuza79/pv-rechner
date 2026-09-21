@@ -40,10 +40,10 @@ export default function SiteError({ error, reset }: { error: Error & { digest?: 
             onClick={() => reset()}
             style={{
               padding: "10px 24px",
-              borderRadius: v('--radius-md'),
+              borderRadius: v("--radius-pill"),
               fontSize: v("--font-size-body"),
               fontWeight: 700,
-              background: v('--color-accent'),
+              background: v('--color-cta'),
               color: v('--color-text-on-accent'),
               border: "none",
               cursor: "pointer",

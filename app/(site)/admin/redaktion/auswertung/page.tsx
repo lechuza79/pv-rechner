@@ -38,7 +38,7 @@ export default async function RedaktionAuswertung() {
   return (
     <div style={{ maxWidth: 900, margin: "0 auto" }}>
       <section style={{ ...karte, marginBottom: space.xxxl }}>
-        <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Zugang</h2>
+        <h2 style={{ marginTop: 0 }}>Zugang</h2>
         {konto && befund ? (
           <p style={{ margin: 0, fontSize: v("--font-size-body") }}>
             Verbunden als <strong>{konto.anzeigename}</strong>. Der Zugang läuft in{" "}
@@ -54,7 +54,7 @@ export default async function RedaktionAuswertung() {
       </section>
 
       <section style={{ ...karte, marginBottom: space.xxxl }}>
-        <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0 }}>Veröffentlichte Beiträge</h2>
+        <h2 style={{ marginTop: 0 }}>Veröffentlichte Beiträge</h2>
         {versand.length === 0 ? (
           <p style={{ margin: 0, fontSize: v("--font-size-body"), color: v("--color-text-secondary") }}>
             Noch nichts rausgegangen. Die Ablage entsteht mit dem ersten Beitrag, der über den
@@ -108,7 +108,7 @@ export default async function RedaktionAuswertung() {
       </section>
 
       <section style={karte}>
-        <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0, display: "flex", alignItems: "center", gap: space.xs }}>
+        <h2 style={{ marginTop: 0, display: "flex", alignItems: "center", gap: space.xs }}>
           Nicht messbar
           <InfoTooltip ariaLabel="Warum Reichweitenzahlen fehlen" exportNote={false}>
             Aufrufe, Reaktionen und Kommentare liegen bei LinkedIn. Die Leseberechtigung dafür ist

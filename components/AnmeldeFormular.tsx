@@ -312,7 +312,7 @@ const S: Record<string, React.CSSProperties> = {
     ...feldBasis,
     marginTop: space.xl,
     fontWeight: 700,
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     border: "none",
     color: v("--color-text-on-accent"),
   },

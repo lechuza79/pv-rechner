@@ -369,9 +369,9 @@ export default function Balkon() {
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
+      <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+          <h1 style={{}}>
             {isResult ? "Deine Empfehlung" : "Lohnt sich ein Balkonkraftwerk?"}
           </h1>
           {!isResult && (
@@ -385,7 +385,7 @@ export default function Balkon() {
         {!isResult && (
           <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
             {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? v('--color-accent') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
+              <div key={i} style={{ flex: 1, height: 3, borderRadius: v("--radius-pill"), background: i <= step ? v('--color-cta') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
             ))}
           </div>
         )}
@@ -393,7 +393,7 @@ export default function Balkon() {
         {/* ── STEPS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18 }}>{STEPS[step]}</h2>
+            <h2 style={{ marginBottom: 18 }}>{STEPS[step]}</h2>
 
             {/* 0: Haushalt & Standort */}
             {step === 0 && (
@@ -442,9 +442,9 @@ export default function Balkon() {
                     }}
                   />
                   <button type="submit" disabled={plz.length !== 5 || plzLoading || plzConfirmed} style={{
-                    padding: "0 18px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
+                    padding: "0 18px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
                     border: "none", cursor: plz.length === 5 && !plzConfirmed ? "pointer" : "default",
-                    background: plzConfirmed ? v('--color-positive') : plz.length === 5 ? v('--color-accent') : v('--color-bg-muted'),
+                    background: plzConfirmed ? v('--color-positive') : plz.length === 5 ? v('--color-cta') : v('--color-bg-muted'),
                     color: plzConfirmed || plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
                   }}>
                     {plzLoading ? "…" : plzConfirmed
@@ -503,8 +503,8 @@ export default function Balkon() {
             style={{
               position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
               zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)", cursor: "pointer",
-              background: v('--color-accent'), color: v('--color-text-on-accent'),
-              borderRadius: v('--radius-md'), padding: "12px 16px",
+              background: v('--color-cta'), color: v('--color-text-on-accent'),
+              borderRadius: v("--radius-pill"), padding: "12px 16px",
               boxShadow: "0 6px 24px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 10,
               fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.4,
             }}
@@ -562,8 +562,8 @@ export default function Balkon() {
                 display: "inline-flex", alignItems: "center", gap: 6,
               }}>
                 <span aria-hidden style={{
-                  width: 38, height: 22, borderRadius: 11, flexShrink: 0, position: "relative", display: "inline-block",
-                  background: storageOn ? v('--color-accent') : v('--color-border-muted'), transition: "background 0.2s",
+                  width: 38, height: 22, borderRadius: v("--radius-pill"), flexShrink: 0, position: "relative", display: "inline-block",
+                  background: storageOn ? v('--color-cta') : v('--color-border-muted'), transition: "background 0.2s",
                 }}>
                   <span style={{
                     position: "absolute", top: 3, left: storageOn ? 19 : 3, width: 16, height: 16, borderRadius: "50%",
@@ -678,7 +678,7 @@ export default function Balkon() {
                         aria-pressed={wohnform === id}
                         onClick={() => setWohnform(wohnform === id ? null : id)}
                         style={{
-                          padding: "6px 12px", borderRadius: v("--radius-md"), cursor: "pointer", fontSize: v("--font-size-small"),
+                          padding: "6px 12px", borderRadius: v("--radius-pill"), cursor: "pointer", fontSize: v("--font-size-small"),
                           border: `1px solid ${wohnform === id ? v("--color-accent") : v("--color-border")}`,
                           background: wohnform === id ? v("--color-bg-accent") : v("--color-bg"),
                           color: v("--color-text-primary"),
@@ -789,7 +789,7 @@ export default function Balkon() {
 
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-              <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
+              <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Eigenes Dach? Große Anlage rechnen <IconArrowRight size={iconSizes.sm} /></span>
               </Link>
               <button onClick={resetAll} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>

@@ -343,7 +343,7 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
   const katStil = (aktiv: boolean, klein = false): React.CSSProperties => ({
     ...S.kat,
     ...(klein ? S.katKlein : null),
-    background: aktiv ? v("--color-accent") : "transparent",
+    background: aktiv ? v("--color-cta") : "transparent",
     color: aktiv ? v("--color-text-on-accent") : v("--color-text-secondary"),
     borderColor: aktiv ? v("--color-accent") : v("--color-border"),
   });
@@ -729,7 +729,7 @@ const S: Record<string, React.CSSProperties> = {
     padding: "0 16px 20px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  h1: { marginTop: space.lg, fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  h1: { marginTop: space.lg, margin: `0 0 ${space.md}px` },
   intro: { fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
   navReihe: { display: "flex", flexWrap: "wrap", gap: space.xl, marginBottom: space.md },

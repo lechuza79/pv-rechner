@@ -171,7 +171,7 @@ export const LEISTE_SENDEN = {
   flex: 1,
   minWidth: 0,
   padding: "0 12px",
-  background: v("--color-accent"),
+  background: v("--color-cta"),
   color: v("--color-text-on-accent"),
   overflow: "hidden" as const,
   textOverflow: "ellipsis" as const,

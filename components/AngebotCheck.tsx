@@ -320,8 +320,8 @@ export default function AngebotCheck({
           onClick={pruefen}
           disabled={zustand.art === "laeuft" || !einwilligung}
           style={{
-            padding: pad("sm", "lg"), borderRadius: v("--radius-md"), border: "none",
-            background: einwilligung ? v("--color-accent") : v("--color-border"),
+            padding: pad("sm", "lg"), borderRadius: v("--radius-pill"), border: "none",
+            background: einwilligung ? v("--color-cta") : v("--color-border"),
             color: einwilligung ? v("--color-text-on-accent") : v("--color-text-muted"),
             fontSize: v("--font-size-body"), fontWeight: 600,
             cursor: einwilligung && zustand.art !== "laeuft" ? "pointer" : "not-allowed",
@@ -347,7 +347,7 @@ export default function AngebotCheck({
 
       {gepruefte.map((g, i) => (
         <div key={i} style={{ marginTop: space.xl }}>
-          <h3 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary"), margin: `0 0 ${space.sm}px` }}>
+          <h3 style={{ color: v("--color-text-primary"), margin: `0 0 ${space.sm}px` }}>
             {beschriftung(g, i)}
           </h3>
           <Befund {...g} befund={mitGroesse(g.befund, auslegungKw)} einheit={einheit} />
@@ -403,7 +403,7 @@ function Vergleich({ gepruefte, einheit }: { gepruefte: Geprueft[]; einheit: str
 
   return (
     <div style={{ marginTop: space.xl }}>
-      <h3 style={{ fontSize: v("--font-size-h2"), fontWeight: 700, color: v("--color-text-primary"), margin: `0 0 ${space.sm}px` }}>Die Angebote nebeneinander</h3>
+      <h3 style={{ color: v("--color-text-primary"), margin: `0 0 ${space.sm}px` }}>Die Angebote nebeneinander</h3>
       <div style={{ overflowX: "auto" }}>
         <table style={{ borderCollapse: "collapse", fontSize: v("--font-size-body"), color: v("--color-text-primary"), minWidth: 320, width: "100%" }}>
           <thead>
