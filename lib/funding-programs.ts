@@ -10837,6 +10837,55 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Bedingung sichtbar an den Eintrag: Wer sie nicht will, bekommt den
     // Zuschuss nicht.
   },
+  "ostheide-solarstrom": {
+    id: "ostheide-solarstrom", name: "Förderrichtlinien für die Bezuschussung von Solarstromerzeugung",
+    traeger: "Samtgemeinde Ostheide", level: "kommune", region: "Samtgemeinde Ostheide",
+    bundesland: "Niedersachsen",
+    // The six member municipalities as the Samtgemeinde itself lists them,
+    // each key looked up in the population register - never the shared prefix,
+    // which here is the county. Barendorf, Neetze, Reinstorf, Thomasburg,
+    // Vastorf, Wendisch Evern.
+    agsCodes: ["03355005", "03355026", "03355030", "03355036", "03355038", "03355040"],
+    url: "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+    // Guideline read in full as the PDF the Samtgemeinde links (21 Sep 2026),
+    // decided by the council on 12 March 2024, effective from 2024:
+    // "Solaranlagen zur Stromerzeugung auf Bestandsgebäuden, die vor dem
+    // 01.01.2024 bezogen worden sind, werden mit 10%, maximal mit 500,00 €,
+    // bezuschusst." And, in as many words: "Balkonkraftwerke zur
+    // Solaranlagenerzeugung werden nicht bezuschusst."
+    //
+    // WHAT THE MODEL CANNOT HOLD, and why it is a condition rather than a
+    // silent cut: the grant is for EXISTING buildings occupied before
+    // 01.01.2024. A new build gets nothing, and the calculator cannot know
+    // which case it is looking at.
+    //
+    // Found through the page of Landkreis Lüneburg, which names five local
+    // programmes the catalogue did not have; this is the second one read at its
+    // own authority source, after Adendorf.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-03-12", beginntIso: "2024-01-01",
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Zuschuss zu Solaranlagen zur Stromerzeugung auf Bestandsgebäuden",
+    maxFoerderung: "500 € je Anlage",
+    percentOfCost: 0.10,
+    pvCap: 500,
+    rates: [
+      { label: "Solarstromanlage auf einem Bestandsgebäude", value: "10 % der Kosten, höchstens 500 €" },
+    ],
+    conditions: [
+      "Nur für Bestandsgebäude, die vor dem 01.01.2024 bezogen worden sind",
+      "Balkonkraftwerke werden ausdrücklich nicht bezuschusst",
+      "Antrag formlos VOR Auftragserteilung; maßgeblich ist das Datum der Auftragserteilung",
+      "Dem Antrag sind Nachweise über die technische Ausführung und ein Kostenvoranschlag beizufügen",
+      "Nach der Zuschusszusage ist die Anlage innerhalb eines Jahres in Betrieb zu nehmen, sonst verfällt der Anspruch",
+      "Nur fabrikneue Anlagen im Gebiet der Samtgemeinde, nach den anerkannten Regeln der Technik",
+      "Die Samtgemeinde kann eine Förderung ablehnen, wenn die Lage oder die Auslegung eine schlechte Ausnutzung erwarten lässt oder das Verhältnis von Kosten und Nutzen außergewöhnlich abweicht",
+      "Auszahlung erst nach Abnahme durch die Samtgemeinde, mit Abnahmeprotokoll und Schlussrechnung",
+      "Kein Rechtsanspruch auf Förderung",
+    ],
+    combinableWith: BUND,
+  },
   "pinneberg-gruendach-pv": {
     id: "pinneberg-gruendach-pv", name: "Förderprogramm für MEHR GRÜN im Kreis Pinneberg (Teil Dachbegrünung)",
     traeger: "Kreis Pinneberg", level: "landkreis", region: "Kreis Pinneberg",

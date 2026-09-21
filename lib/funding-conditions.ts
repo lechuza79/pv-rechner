@@ -259,6 +259,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Anlage gegen ein Antragsverfahren hält, hat hier nichts zu prüfen. Die
   // Bedingungen stehen vollständig auf der Karte.
   "pinneberg-gruendach-pv",
+  // Samtgemeinde Ostheide, aufgenommen am 21.09.2026. Die Richtlinie verlangt
+  // den formlosen Antrag VOR der Auftragserteilung und knüpft die Auszahlung an
+  // eine Abnahme durch die Samtgemeinde — eine Prüfform dafür gibt es noch
+  // nicht; die Bedingungen stehen vollständig auf der Karte.
+  "ostheide-solarstrom",
   "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",

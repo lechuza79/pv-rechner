@@ -39060,5 +39060,219 @@
         "evidenceUrl": "https://www.adendorf.de/1/klimaschutz/foerderprogramme-der-gemeinde-adendorf/"
       }
     ]
+  },
+  {
+    "regionId": "03355005",
+    "name": "Barendorf",
+    "checkedAt": "2026-09-21T00:25:35Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Barendorf ist Mitgliedsgemeinde der Samtgemeinde Ostheide, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie für Solarstromerzeugung zahlt 10 % der Kosten, höchstens 500 €, für Solaranlagen auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen wurden; aufgenommen als ostheide-solarstrom mit allen sechs Mitgliedsgemeinden als Fördergebiet. Balkonkraftwerke sind in der Richtlinie ausdrücklich ausgeschlossen, deshalb trägt der Eintrag nur die Dach-Photovoltaik. Die drei übrigen Richtlinien der Samtgemeinde treffen unsere Techniken nicht: Solarthermie (300 € je Wohneinheit, höchstens 900 €) erzeugt Wärme statt Strom, dazu Heckenpflanzung und Regenwasseranlagen. Kein Zuschuss für Speicher oder Wärmepumpen, keine eigene Förderung der Ortsgemeinde neben der der Samtgemeinde gefunden.",
+    "searches": [
+      "ostheide.de Förderprogramme der Samtgemeinde",
+      "Mitgliedsgemeinden der Samtgemeinde Ostheide im eigenen Menü gelesen",
+      "Gemeindeschlüssel 03355005 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+        "finding": "Förderseite der Samtgemeinde Ostheide mit vier Richtlinien: Hecken, Solarthermie, Regenwasseranlage und Solarstromerzeugung. Die Mitgliedsgemeinden nennt die Samtgemeinde im eigenen Menü: Barendorf, Neetze, Reinstorf, Thomasburg, Vastorf, Wendisch Evern."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarstromerzeugung, Samtgemeinderat-Beschluss vom 12.03.2024, gilt ab 2024: „Solaranlagen zur Stromerzeugung auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen worden sind, werden mit 10%, maximal mit 500,00 €, bezuschusst.“ Ausdrücklich: „Balkonkraftwerke zur Solaranlagenerzeugung werden nicht bezuschusst.“ Antrag formlos vor Auftragserteilung, Inbetriebnahme binnen eines Jahres nach der Zusage, nur fabrikneue Anlagen im Gebiet der Samtgemeinde, kein Rechtsanspruch, Auszahlung nach Abnahme durch die Samtgemeinde."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarthermie derselben Sitzung: „Solaranlagen zur Brauchwasserbereitung werden pro Wohneinheit mit 300,00 € bezuschusst“, höchstens drei Wohneinheiten, Obergrenze 900 €. Solarthermie erzeugt Wärme, keine unserer drei Techniken — nicht aufgenommen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03355026",
+    "name": "Neetze",
+    "checkedAt": "2026-09-21T00:25:35Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Neetze ist Mitgliedsgemeinde der Samtgemeinde Ostheide, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie für Solarstromerzeugung zahlt 10 % der Kosten, höchstens 500 €, für Solaranlagen auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen wurden; aufgenommen als ostheide-solarstrom mit allen sechs Mitgliedsgemeinden als Fördergebiet. Balkonkraftwerke sind in der Richtlinie ausdrücklich ausgeschlossen, deshalb trägt der Eintrag nur die Dach-Photovoltaik. Die drei übrigen Richtlinien der Samtgemeinde treffen unsere Techniken nicht: Solarthermie (300 € je Wohneinheit, höchstens 900 €) erzeugt Wärme statt Strom, dazu Heckenpflanzung und Regenwasseranlagen. Kein Zuschuss für Speicher oder Wärmepumpen, keine eigene Förderung der Ortsgemeinde neben der der Samtgemeinde gefunden.",
+    "searches": [
+      "ostheide.de Förderprogramme der Samtgemeinde",
+      "Mitgliedsgemeinden der Samtgemeinde Ostheide im eigenen Menü gelesen",
+      "Gemeindeschlüssel 03355026 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+        "finding": "Förderseite der Samtgemeinde Ostheide mit vier Richtlinien: Hecken, Solarthermie, Regenwasseranlage und Solarstromerzeugung. Die Mitgliedsgemeinden nennt die Samtgemeinde im eigenen Menü: Barendorf, Neetze, Reinstorf, Thomasburg, Vastorf, Wendisch Evern."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarstromerzeugung, Samtgemeinderat-Beschluss vom 12.03.2024, gilt ab 2024: „Solaranlagen zur Stromerzeugung auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen worden sind, werden mit 10%, maximal mit 500,00 €, bezuschusst.“ Ausdrücklich: „Balkonkraftwerke zur Solaranlagenerzeugung werden nicht bezuschusst.“ Antrag formlos vor Auftragserteilung, Inbetriebnahme binnen eines Jahres nach der Zusage, nur fabrikneue Anlagen im Gebiet der Samtgemeinde, kein Rechtsanspruch, Auszahlung nach Abnahme durch die Samtgemeinde."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarthermie derselben Sitzung: „Solaranlagen zur Brauchwasserbereitung werden pro Wohneinheit mit 300,00 € bezuschusst“, höchstens drei Wohneinheiten, Obergrenze 900 €. Solarthermie erzeugt Wärme, keine unserer drei Techniken — nicht aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Samtgemeinde im Original gelesen; sie verlinkt alle vier Richtlinien.",
+        "evidenceUrl": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html"
+      },
+      {
+        "url": "ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Solarstromerzeugung im Volltext gelesen und aufgenommen.",
+        "evidenceUrl": "https://www.ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf"
+      },
+      {
+        "url": "ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie Solarthermie im Volltext gelesen; Wärme statt Strom, keine unserer Techniken.",
+        "evidenceUrl": "https://www.ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03355030",
+    "name": "Reinstorf",
+    "checkedAt": "2026-09-21T00:25:35Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Reinstorf ist Mitgliedsgemeinde der Samtgemeinde Ostheide, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie für Solarstromerzeugung zahlt 10 % der Kosten, höchstens 500 €, für Solaranlagen auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen wurden; aufgenommen als ostheide-solarstrom mit allen sechs Mitgliedsgemeinden als Fördergebiet. Balkonkraftwerke sind in der Richtlinie ausdrücklich ausgeschlossen, deshalb trägt der Eintrag nur die Dach-Photovoltaik. Die drei übrigen Richtlinien der Samtgemeinde treffen unsere Techniken nicht: Solarthermie (300 € je Wohneinheit, höchstens 900 €) erzeugt Wärme statt Strom, dazu Heckenpflanzung und Regenwasseranlagen. Kein Zuschuss für Speicher oder Wärmepumpen, keine eigene Förderung der Ortsgemeinde neben der der Samtgemeinde gefunden.",
+    "searches": [
+      "ostheide.de Förderprogramme der Samtgemeinde",
+      "Mitgliedsgemeinden der Samtgemeinde Ostheide im eigenen Menü gelesen",
+      "Gemeindeschlüssel 03355030 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+        "finding": "Förderseite der Samtgemeinde Ostheide mit vier Richtlinien: Hecken, Solarthermie, Regenwasseranlage und Solarstromerzeugung. Die Mitgliedsgemeinden nennt die Samtgemeinde im eigenen Menü: Barendorf, Neetze, Reinstorf, Thomasburg, Vastorf, Wendisch Evern."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarstromerzeugung, Samtgemeinderat-Beschluss vom 12.03.2024, gilt ab 2024: „Solaranlagen zur Stromerzeugung auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen worden sind, werden mit 10%, maximal mit 500,00 €, bezuschusst.“ Ausdrücklich: „Balkonkraftwerke zur Solaranlagenerzeugung werden nicht bezuschusst.“ Antrag formlos vor Auftragserteilung, Inbetriebnahme binnen eines Jahres nach der Zusage, nur fabrikneue Anlagen im Gebiet der Samtgemeinde, kein Rechtsanspruch, Auszahlung nach Abnahme durch die Samtgemeinde."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarthermie derselben Sitzung: „Solaranlagen zur Brauchwasserbereitung werden pro Wohneinheit mit 300,00 € bezuschusst“, höchstens drei Wohneinheiten, Obergrenze 900 €. Solarthermie erzeugt Wärme, keine unserer drei Techniken — nicht aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Samtgemeinde im Original gelesen; sie verlinkt alle vier Richtlinien.",
+        "evidenceUrl": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03355036",
+    "name": "Thomasburg",
+    "checkedAt": "2026-09-21T00:25:35Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Thomasburg ist Mitgliedsgemeinde der Samtgemeinde Ostheide, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie für Solarstromerzeugung zahlt 10 % der Kosten, höchstens 500 €, für Solaranlagen auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen wurden; aufgenommen als ostheide-solarstrom mit allen sechs Mitgliedsgemeinden als Fördergebiet. Balkonkraftwerke sind in der Richtlinie ausdrücklich ausgeschlossen, deshalb trägt der Eintrag nur die Dach-Photovoltaik. Die drei übrigen Richtlinien der Samtgemeinde treffen unsere Techniken nicht: Solarthermie (300 € je Wohneinheit, höchstens 900 €) erzeugt Wärme statt Strom, dazu Heckenpflanzung und Regenwasseranlagen. Kein Zuschuss für Speicher oder Wärmepumpen, keine eigene Förderung der Ortsgemeinde neben der der Samtgemeinde gefunden.",
+    "searches": [
+      "ostheide.de Förderprogramme der Samtgemeinde",
+      "Mitgliedsgemeinden der Samtgemeinde Ostheide im eigenen Menü gelesen",
+      "Gemeindeschlüssel 03355036 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+        "finding": "Förderseite der Samtgemeinde Ostheide mit vier Richtlinien: Hecken, Solarthermie, Regenwasseranlage und Solarstromerzeugung. Die Mitgliedsgemeinden nennt die Samtgemeinde im eigenen Menü: Barendorf, Neetze, Reinstorf, Thomasburg, Vastorf, Wendisch Evern."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarstromerzeugung, Samtgemeinderat-Beschluss vom 12.03.2024, gilt ab 2024: „Solaranlagen zur Stromerzeugung auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen worden sind, werden mit 10%, maximal mit 500,00 €, bezuschusst.“ Ausdrücklich: „Balkonkraftwerke zur Solaranlagenerzeugung werden nicht bezuschusst.“ Antrag formlos vor Auftragserteilung, Inbetriebnahme binnen eines Jahres nach der Zusage, nur fabrikneue Anlagen im Gebiet der Samtgemeinde, kein Rechtsanspruch, Auszahlung nach Abnahme durch die Samtgemeinde."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarthermie derselben Sitzung: „Solaranlagen zur Brauchwasserbereitung werden pro Wohneinheit mit 300,00 € bezuschusst“, höchstens drei Wohneinheiten, Obergrenze 900 €. Solarthermie erzeugt Wärme, keine unserer drei Techniken — nicht aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Samtgemeinde im Original gelesen; sie verlinkt alle vier Richtlinien.",
+        "evidenceUrl": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03355038",
+    "name": "Vastorf",
+    "checkedAt": "2026-09-21T00:25:35Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Vastorf ist Mitgliedsgemeinde der Samtgemeinde Ostheide, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie für Solarstromerzeugung zahlt 10 % der Kosten, höchstens 500 €, für Solaranlagen auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen wurden; aufgenommen als ostheide-solarstrom mit allen sechs Mitgliedsgemeinden als Fördergebiet. Balkonkraftwerke sind in der Richtlinie ausdrücklich ausgeschlossen, deshalb trägt der Eintrag nur die Dach-Photovoltaik. Die drei übrigen Richtlinien der Samtgemeinde treffen unsere Techniken nicht: Solarthermie (300 € je Wohneinheit, höchstens 900 €) erzeugt Wärme statt Strom, dazu Heckenpflanzung und Regenwasseranlagen. Kein Zuschuss für Speicher oder Wärmepumpen, keine eigene Förderung der Ortsgemeinde neben der der Samtgemeinde gefunden.",
+    "searches": [
+      "ostheide.de Förderprogramme der Samtgemeinde",
+      "Mitgliedsgemeinden der Samtgemeinde Ostheide im eigenen Menü gelesen",
+      "Gemeindeschlüssel 03355038 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+        "finding": "Förderseite der Samtgemeinde Ostheide mit vier Richtlinien: Hecken, Solarthermie, Regenwasseranlage und Solarstromerzeugung. Die Mitgliedsgemeinden nennt die Samtgemeinde im eigenen Menü: Barendorf, Neetze, Reinstorf, Thomasburg, Vastorf, Wendisch Evern."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarstromerzeugung, Samtgemeinderat-Beschluss vom 12.03.2024, gilt ab 2024: „Solaranlagen zur Stromerzeugung auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen worden sind, werden mit 10%, maximal mit 500,00 €, bezuschusst.“ Ausdrücklich: „Balkonkraftwerke zur Solaranlagenerzeugung werden nicht bezuschusst.“ Antrag formlos vor Auftragserteilung, Inbetriebnahme binnen eines Jahres nach der Zusage, nur fabrikneue Anlagen im Gebiet der Samtgemeinde, kein Rechtsanspruch, Auszahlung nach Abnahme durch die Samtgemeinde."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarthermie derselben Sitzung: „Solaranlagen zur Brauchwasserbereitung werden pro Wohneinheit mit 300,00 € bezuschusst“, höchstens drei Wohneinheiten, Obergrenze 900 €. Solarthermie erzeugt Wärme, keine unserer drei Techniken — nicht aufgenommen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03355040",
+    "name": "Wendisch Evern",
+    "checkedAt": "2026-09-21T00:25:35Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Wendisch Evern ist Mitgliedsgemeinde der Samtgemeinde Ostheide, und die Samtgemeinde ist hier der Träger. Ihre Richtlinie für Solarstromerzeugung zahlt 10 % der Kosten, höchstens 500 €, für Solaranlagen auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen wurden; aufgenommen als ostheide-solarstrom mit allen sechs Mitgliedsgemeinden als Fördergebiet. Balkonkraftwerke sind in der Richtlinie ausdrücklich ausgeschlossen, deshalb trägt der Eintrag nur die Dach-Photovoltaik. Die drei übrigen Richtlinien der Samtgemeinde treffen unsere Techniken nicht: Solarthermie (300 € je Wohneinheit, höchstens 900 €) erzeugt Wärme statt Strom, dazu Heckenpflanzung und Regenwasseranlagen. Kein Zuschuss für Speicher oder Wärmepumpen, keine eigene Förderung der Ortsgemeinde neben der der Samtgemeinde gefunden.",
+    "searches": [
+      "ostheide.de Förderprogramme der Samtgemeinde",
+      "Mitgliedsgemeinden der Samtgemeinde Ostheide im eigenen Menü gelesen",
+      "Gemeindeschlüssel 03355040 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+        "finding": "Förderseite der Samtgemeinde Ostheide mit vier Richtlinien: Hecken, Solarthermie, Regenwasseranlage und Solarstromerzeugung. Die Mitgliedsgemeinden nennt die Samtgemeinde im eigenen Menü: Barendorf, Neetze, Reinstorf, Thomasburg, Vastorf, Wendisch Evern."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarstromerzeugung, Samtgemeinderat-Beschluss vom 12.03.2024, gilt ab 2024: „Solaranlagen zur Stromerzeugung auf Bestandsgebäuden, die vor dem 01.01.2024 bezogen worden sind, werden mit 10%, maximal mit 500,00 €, bezuschusst.“ Ausdrücklich: „Balkonkraftwerke zur Solaranlagenerzeugung werden nicht bezuschusst.“ Antrag formlos vor Auftragserteilung, Inbetriebnahme binnen eines Jahres nach der Zusage, nur fabrikneue Anlagen im Gebiet der Samtgemeinde, kein Rechtsanspruch, Auszahlung nach Abnahme durch die Samtgemeinde."
+      },
+      {
+        "url": "https://www.ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf",
+        "finding": "Förderrichtlinie Solarthermie derselben Sitzung: „Solaranlagen zur Brauchwasserbereitung werden pro Wohneinheit mit 300,00 € bezuschusst“, höchstens drei Wohneinheiten, Obergrenze 900 €. Solarthermie erzeugt Wärme, keine unserer drei Techniken — nicht aufgenommen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Samtgemeinde im Original gelesen; sie verlinkt alle vier Richtlinien.",
+        "evidenceUrl": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html"
+      }
+    ]
   }
 ]
