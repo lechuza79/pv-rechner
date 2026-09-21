@@ -40066,5 +40066,121 @@
         "evidenceUrl": "https://www.landkreis-stade.de/medien/dokumente/vn_2022_seite_1.ods"
       }
     ]
+  },
+  {
+    "regionId": "03359001",
+    "name": "Agathenburg",
+    "checkedAt": "2026-09-21T08:53:10Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Agathenburg gehört zur Samtgemeinde Horneburg (Landkreis Stade). Das Förderprogramm nachhaltiger Projekte gilt nur für Horneburg und Nottensdorf; weder die Gemeinde noch die Samtgemeinde noch der Landkreis führen ein Programm, das private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen in Agathenburg bezuschusst.",
+    "searches": [
+      "horneburg.de Volltextsuche: Förderprogramm, Photovoltaik, Balkonkraftwerk, Wärmepumpe, Zuschuss, Agathenburg",
+      "Agathenburg - Ortsrecht und Satzungen (Dokumentliste)",
+      "Websuche „Agathenburg OR Bliedersdorf OR Dollern Förderung Photovoltaik Balkonkraftwerk Zuschuss Gemeinde“ (21.09.2026): keine gemeindlichen Programme",
+      "Landkreis Stade Klimafonds (Kreisprüfung 21.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+        "finding": "Richtlinie „Förderprogramm nachhaltiger Projekte“ am 21.09.2026 erneut geladen (Dateistand unverändert seit 20.09.): gilt ausdrücklich nur für den Flecken Horneburg und die Gemeinde Nottensdorf; die übrigen Mitgliedsgemeinden der Samtgemeinde sind nicht Träger und nicht Fördergebiet."
+      },
+      {
+        "url": "https://www.horneburg.de/portal/suche.html",
+        "finding": "Volltextsuche der Samtgemeinde am 21.09.2026 nach Förderprogramm, Photovoltaik, Balkonkraftwerk, Wärmepumpe, Zuschuss sowie nach dem Gemeindenamen: einziges Förderprogramm für Haushalte ist das Horneburg/Nottensdorfer; sonst Städtebausanierung Horneburg, kommunale Wärmeplanung, Datenschutz."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/portal/seiten/klimafonds-2026-foerderung-heizungsoptimierung-901001318-20350.html",
+        "finding": "Landkreis Stade am 21.09.2026 (Lauf 06:03Z) geschlossen: Klimafonds fördert nur Heizungsoptimierung, keine PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.horneburg.de/portal/seiten/agathenburg-ortsrecht-und-satzungen-900000028-20450.html",
+        "finding": "Seite „Agathenburg - Ortsrecht und Satzungen“ am 21.09.2026 gelesen: Hauptsatzung, Hebesatz-, Hundesteuer-, Erschließungsbeitrags-, Kindergartengebühren-, Vergnügungssteuersatzung u. a. — keine Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+        "disposition": "reviewed",
+        "reason": "Programm des Fleckens Horneburg und der Gemeinde Nottensdorf; Agathenburg ist weder Träger noch Fördergebiet.",
+        "evidenceUrl": "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03359007",
+    "name": "Bliedersdorf",
+    "checkedAt": "2026-09-21T08:53:10Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bliedersdorf gehört zur Samtgemeinde Horneburg (Landkreis Stade). Das Förderprogramm nachhaltiger Projekte gilt nur für Horneburg und Nottensdorf; weder die Gemeinde noch die Samtgemeinde noch der Landkreis führen ein Programm, das private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen in Bliedersdorf bezuschusst.",
+    "searches": [
+      "horneburg.de Volltextsuche: Förderprogramm, Photovoltaik, Balkonkraftwerk, Wärmepumpe, Zuschuss, Bliedersdorf",
+      "Bliedersdorf - Ortsrecht und Satzungen (Dokumentliste)",
+      "Websuche „Agathenburg OR Bliedersdorf OR Dollern Förderung Photovoltaik Balkonkraftwerk Zuschuss Gemeinde“ (21.09.2026): keine gemeindlichen Programme",
+      "Landkreis Stade Klimafonds (Kreisprüfung 21.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+        "finding": "Richtlinie „Förderprogramm nachhaltiger Projekte“ am 21.09.2026 erneut geladen (Dateistand unverändert seit 20.09.): gilt ausdrücklich nur für den Flecken Horneburg und die Gemeinde Nottensdorf; die übrigen Mitgliedsgemeinden der Samtgemeinde sind nicht Träger und nicht Fördergebiet."
+      },
+      {
+        "url": "https://www.horneburg.de/portal/suche.html",
+        "finding": "Volltextsuche der Samtgemeinde am 21.09.2026 nach Förderprogramm, Photovoltaik, Balkonkraftwerk, Wärmepumpe, Zuschuss sowie nach dem Gemeindenamen: einziges Förderprogramm für Haushalte ist das Horneburg/Nottensdorfer; sonst Städtebausanierung Horneburg, kommunale Wärmeplanung, Datenschutz."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/portal/seiten/klimafonds-2026-foerderung-heizungsoptimierung-901001318-20350.html",
+        "finding": "Landkreis Stade am 21.09.2026 (Lauf 06:03Z) geschlossen: Klimafonds fördert nur Heizungsoptimierung, keine PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.horneburg.de/portal/seiten/bliedersdorf-ortsrecht-und-satzungen-900000033-20450.html",
+        "finding": "Seite „Bliedersdorf - Ortsrecht und Satzungen“ am 21.09.2026 gelesen: Hauptsatzung, Hebesatz-, Hundesteuer-, Erschließungsbeitrags-, Kindergartengebühren-, Vergnügungssteuersatzung u. a. — keine Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+        "disposition": "reviewed",
+        "reason": "Programm des Fleckens Horneburg und der Gemeinde Nottensdorf; Bliedersdorf ist weder Träger noch Fördergebiet.",
+        "evidenceUrl": "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03359012",
+    "name": "Dollern",
+    "checkedAt": "2026-09-21T08:53:10Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dollern gehört zur Samtgemeinde Horneburg (Landkreis Stade). Das Förderprogramm nachhaltiger Projekte gilt nur für Horneburg und Nottensdorf; weder die Gemeinde noch die Samtgemeinde noch der Landkreis führen ein Programm, das private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen in Dollern bezuschusst.",
+    "searches": [
+      "horneburg.de Volltextsuche: Förderprogramm, Photovoltaik, Balkonkraftwerk, Wärmepumpe, Zuschuss, Dollern",
+      "Dollern - Ortsrecht und Satzungen (Dokumentliste)",
+      "Websuche „Agathenburg OR Bliedersdorf OR Dollern Förderung Photovoltaik Balkonkraftwerk Zuschuss Gemeinde“ (21.09.2026): keine gemeindlichen Programme",
+      "Landkreis Stade Klimafonds (Kreisprüfung 21.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html",
+        "finding": "Richtlinie „Förderprogramm nachhaltiger Projekte“ am 21.09.2026 erneut geladen (Dateistand unverändert seit 20.09.): gilt ausdrücklich nur für den Flecken Horneburg und die Gemeinde Nottensdorf; die übrigen Mitgliedsgemeinden der Samtgemeinde sind nicht Träger und nicht Fördergebiet."
+      },
+      {
+        "url": "https://www.horneburg.de/portal/suche.html",
+        "finding": "Volltextsuche der Samtgemeinde am 21.09.2026 nach Förderprogramm, Photovoltaik, Balkonkraftwerk, Wärmepumpe, Zuschuss sowie nach dem Gemeindenamen: einziges Förderprogramm für Haushalte ist das Horneburg/Nottensdorfer; sonst Städtebausanierung Horneburg, kommunale Wärmeplanung, Datenschutz."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/portal/seiten/klimafonds-2026-foerderung-heizungsoptimierung-901001318-20350.html",
+        "finding": "Landkreis Stade am 21.09.2026 (Lauf 06:03Z) geschlossen: Klimafonds fördert nur Heizungsoptimierung, keine PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.horneburg.de/portal/seiten/dollern-ortsrecht-und-satzungen-900000038-20450.html",
+        "finding": "Seite „Dollern - Ortsrecht und Satzungen“ am 21.09.2026 gelesen: Hauptsatzung, Hebesatz-, Hundesteuer-, Erschließungsbeitrags-, Kindergartengebühren-, Vergnügungssteuersatzung u. a. — keine Förderrichtlinie."
+      }
+    ],
+    "sources": []
   }
 ]
