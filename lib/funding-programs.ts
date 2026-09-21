@@ -6860,6 +6860,38 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     pvPerKwp: 100, pvCap: 400, pvMin: 1, vollEinheiten: true,
   },
 
+  // Added 21.09.2026 as a closed historical programme. City press releases
+  // read in the original: 28.03.2023 (start 3 April 2023, 100 € for 250-430 W,
+  // 200 € for 430-600 W, 10,000 € budget), 03.07.2023 ("Innerhalb kürzester
+  // Zeit war der Fördertopf ausgeschöpft"), 19.02.2024 (a round for rented
+  // property: 50 % of the cost, at most 100 €/200 €). The city's funding page
+  // (read 21.09.2026) now lists only rainwater precautions. No calc fields.
+  // Council (own reading + verifier + adversarial): "eingestellt" is an
+  // inference from the funding page, stated as such in the condition.
+  "nettetal-steckermodule": {
+    id: "nettetal-steckermodule", name: "Förderprogramm „Photovoltaik-Steckermodule“",
+    traeger: "Stadt Nettetal", level: "kommune", region: "Nettetal",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05166016",
+    url: "https://www.nettetal.de/rathaus-verwaltung/pressemitteilungen/foerderprogramm-photovoltaik-steckermodule-fuer-mietobjekte",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-04-03",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je Balkonkraftwerk nach Geräteleistung",
+    maxFoerderung: "200 €",
+    rates: [
+      { label: "Balkonkraftwerk 250–430 W", value: "100 € (2024 für Mietobjekte: 50 % der Kosten, höchstens 100 €) — Programm beendet" },
+      { label: "Balkonkraftwerk 430–600 W", value: "200 € (2024 für Mietobjekte: 50 % der Kosten, höchstens 200 €) — Programm beendet" },
+    ],
+    conditions: [
+      "Nicht mehr angeboten (Stand 21.09.2026): Als eigenes Programm führt die Förderseite der Stadt nur noch die Starkregenvorsorge; ein Ende der Runde 2024 ist nirgends ausdrücklich gemeldet",
+      "2023 gab es feste Beträge; 10.000 € standen bereit, und der Topf war kurz nach dem Start am 3. April 2023 ausgeschöpft",
+      "Ab 19. Februar 2024 folgte eine Runde für Mietobjekte, beantragen konnten Mieter wie Vermieter: 50 % der Kosten, höchstens 100 € bzw. 200 €",
+      "Gefördert wurden Wechselrichter mit mindestens 250 W und höchstens 600 W; 2024 war ein auf 600 W gedrosseltes 800-W-Gerät zugelassen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
   "klempau-balkonkraftwerke": {
     id: "klempau-balkonkraftwerke", name: "Förderung von Balkonkraftwerken",
     traeger: "Gemeinde Klempau", level: "kommune", region: "Klempau",

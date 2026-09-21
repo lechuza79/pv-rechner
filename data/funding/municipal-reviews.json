@@ -42051,5 +42051,103 @@
       "dueAt": "2026-09-22T20:00:00Z",
       "detail": "Katalogeintrag grossheide-balkonmodule (ausgeschöpft, ohne Rechenwert) aufnehmen, sobald die Suchmessung (funding-suche-gegenprobe, Quote 191/245 = 78,0 % gegen Schwelle >78 %) geklärt ist: Programmseite und Richtlinie sind für die Adresserkennung nicht erkennbar (Ressort-Regel bzw. PDF-Ausschluss)."
     }
+  },
+  {
+    "regionId": "05166016",
+    "name": "Nettetal",
+    "checkedAt": "2026-09-21T21:05:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Nettetal förderte Balkonkraftwerke 2023 (100 €/200 € nach Leistung, 10.000 €, kurz nach dem Start am 3. April 2023 ausgeschöpft) und ab 19.02.2024 in einer Runde für Mietobjekte (50 %, höchstens 100 €/200 €). Die Förderseite führt heute als eigenes Programm nur die Starkregenvorsorge; aufgenommen als beendetes Programm nettetal-steckermodule ohne Rechenwert. Kein Zuschuss für Dach-PV, Speicher oder Wärmepumpen; das Kreisprogramm Kreis Viersen steht bereits im Katalog. Die übrigen Treffer sind Lastenrad-Förderung und Beratungstermine.",
+    "searches": [
+      "nettetal.de Förderprogramme-Übersicht und alle erfassten Unterseiten gelesen (21.09.2026)",
+      "Pressemitteilungen 28.03.2023, 03.07.2023 und 19.02.2024 im Volltext gelesen",
+      "Gemeindeschlüssel 05166016 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.nettetal.de/leben-nettetal/klima-umweltschutz/foerderprogramme",
+        "finding": "Förderprogramme (21.09.2026): als eigenes Programm nur „Förderprogramm Starkregenvorsorge“, dazu ein Verweis auf die Förderdatenbank des Bundes."
+      },
+      {
+        "url": "https://www.nettetal.de/rathaus-verwaltung/pressemitteilungen/foerderprogramm-photovoltaik-steckermodule-antragstellung-ab",
+        "finding": "28.03.2023: Start 3. April 2023; 250–430 W 100 €, 430–600 W 200 €; „Insgesamt stehen 10.000 Euro im Haushalt zur Verfügung.“"
+      },
+      {
+        "url": "https://www.nettetal.de/rathaus-verwaltung/pressemitteilungen/klimaschutz-stadt-wirbt-fuer-foerderprogramme",
+        "finding": "03.07.2023: „Innerhalb kürzester Zeit war der Fördertopf ausgeschöpft.“ Weitere Programme: Nettetal grünt und blüht, Altbaum, E-Lastenräder."
+      },
+      {
+        "url": "https://www.nettetal.de/rathaus-verwaltung/pressemitteilungen/foerderprogramm-photovoltaik-steckermodule-fuer-mietobjekte",
+        "finding": "19.02.2024: Runde für Mieter bzw. Vermieter, 50 %, höchstens 100 € bzw. 200 €; kein späterer Hinweis auf eine Fortsetzung."
+      },
+      {
+        "url": "https://www.nettetal.de/leben-nettetal/veranstaltungen/foerdermittel-unterwegs-vor-ort-beratung-der-wfg-kreis-viersen",
+        "finding": "Veranstaltungen „Fördermittel unterwegs“ (WFG Kreis Viersen) richten sich an Unternehmen; Vortrag der Verbraucherzentrale zu Bundesfördermitteln — keine städtische Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "nettetal.de/leben-nettetal/klima-umweltschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht gelesen: heute nur Starkregenvorsorge.",
+        "evidenceUrl": "https://www.nettetal.de/leben-nettetal/klima-umweltschutz/foerderprogramme"
+      },
+      {
+        "url": "nettetal.de/leben-nettetal/klima-umweltschutz/foerderprogramme/foerderprogramm-e-lastenraeder",
+        "disposition": "reviewed",
+        "reason": "Lastenrad-Förderung 2024, nicht im Prüfumfang.",
+        "evidenceUrl": "https://www.nettetal.de/rathaus-verwaltung/pressemitteilungen/klimaschutz-stadt-wirbt-fuer-foerderprogramme"
+      },
+      {
+        "url": "nettetal.de/leben-nettetal/klima-umweltschutz/foerderprogramme/foerderprogramm-starkregenvorsorge",
+        "disposition": "reviewed",
+        "reason": "Starkregenvorsorge, nicht im Prüfumfang.",
+        "evidenceUrl": "https://www.nettetal.de/leben-nettetal/klima-umweltschutz/foerderprogramme"
+      },
+      {
+        "url": "nettetal.de/leben-nettetal/veranstaltungen/foerdermittel-unterwegs-bei-baum-bonheur",
+        "disposition": "reviewed",
+        "reason": "Fördermittelberatung für Unternehmen (WFG).",
+        "evidenceUrl": "https://www.nettetal.de/leben-nettetal/veranstaltungen/foerdermittel-unterwegs-vor-ort-beratung-der-wfg-kreis-viersen"
+      },
+      {
+        "url": "nettetal.de/leben-nettetal/veranstaltungen/foerdermittel-unterwegs-vor-ort-beratung-der-wfg-kreis-viersen",
+        "disposition": "reviewed",
+        "reason": "Fördermittelberatung für Unternehmen (WFG).",
+        "evidenceUrl": "https://www.nettetal.de/leben-nettetal/veranstaltungen/foerdermittel-unterwegs-vor-ort-beratung-der-wfg-kreis-viersen"
+      },
+      {
+        "url": "nettetal.de/leben-nettetal/veranstaltungen/foerdermittel-unterwegs-vor-ort-beratung-der-wfg-kreis-viersen-0",
+        "disposition": "reviewed",
+        "reason": "Fördermittelberatung für Unternehmen (WFG), Termin 2023.",
+        "evidenceUrl": "https://www.nettetal.de/leben-nettetal/veranstaltungen/foerdermittel-unterwegs-vor-ort-beratung-der-wfg-kreis-viersen"
+      },
+      {
+        "url": "nettetal.de/leben-nettetal/veranstaltungen/vortrag-foerdermittel-fuer-die-energetische-sanierung",
+        "disposition": "reviewed",
+        "reason": "Vortrag der Verbraucherzentrale zu Bundesförderung.",
+        "evidenceUrl": "https://www.nettetal.de/leben-nettetal/veranstaltungen/foerdermittel-unterwegs-vor-ort-beratung-der-wfg-kreis-viersen"
+      },
+      {
+        "url": "nettetal.de/rathaus-verwaltung/pressemitteilungen/foerderprogramm-photovoltaik-steckermodule-antragstellung-ab",
+        "disposition": "reviewed",
+        "reason": "Stecker-PV-Runde 2023, aufgenommen als nettetal-steckermodule (beendet).",
+        "evidenceUrl": "https://www.nettetal.de/rathaus-verwaltung/pressemitteilungen/foerderprogramm-photovoltaik-steckermodule-antragstellung-ab"
+      },
+      {
+        "url": "nettetal.de/rathaus-verwaltung/pressemitteilungen/foerderprogramm-photovoltaik-steckermodule-fuer-mietobjekte",
+        "disposition": "reviewed",
+        "reason": "Stecker-PV-Runde 2024 für Mietobjekte, im selben Eintrag.",
+        "evidenceUrl": "https://www.nettetal.de/rathaus-verwaltung/pressemitteilungen/foerderprogramm-photovoltaik-steckermodule-fuer-mietobjekte"
+      },
+      {
+        "url": "nettetal.de/rathaus-verwaltung/pressemitteilungen/klimaschutz-stadt-wirbt-fuer-foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Bericht: Topf 2023 ausgeschöpft.",
+        "evidenceUrl": "https://www.nettetal.de/rathaus-verwaltung/pressemitteilungen/klimaschutz-stadt-wirbt-fuer-foerderprogramme"
+      }
+    ]
   }
 ]

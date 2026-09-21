@@ -419,6 +419,8 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 21 Sep 2026: building-age rule (completed by 31.12.2022), specialist
   // installation and the 80 % combined cap for balcony kits have no test form.
   "niederkruechten-klimaschutz",
+  // Added 21 Sep 2026 as a closed historical programme (no calculation fields).
+  "nettetal-steckermodule",
   "altenkirchen-balkonkraftwerke",
   "altenkirchen-solarspeicher",
   "cochem-zell-solarstromspeicher",
