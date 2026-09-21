@@ -14,7 +14,7 @@ const [year,month]=register.sourceDate.split('-').map(Number);
 const observations=Array.from({length:25},(_,index)=>{
  const end=new Date(Date.UTC(year,month-1-index,0)).toISOString().slice(0,10);
  const systems=solar.filter(row=>row.day<=end),stores=batteries.filter(row=>row.month<=end.slice(0,7));
- return {end,solarMix:['gebaeude','steckersolar'].map(segment=>({label:segment==='gebaeude'?'Gebäudeanlagen':'Balkonkraftwerke',value:sum(systems.filter(row=>row.segment===segment),'kwp')})),solarCount:sum(systems,'count'),solarKwp:sum(systems,'kwp'),solarAdditions:sum(systems.filter(row=>row.day.slice(0,4)===end.slice(0,4)),'count'),batteryCount:sum(stores,'count'),batteryKwh:sum(stores,'kwh')};
+ return {end,solarCounts:Object.fromEntries(['gebaeude','steckersolar'].map(segment=>[segment,sum(systems.filter(row=>row.segment===segment),'count')])),solarMix:['gebaeude','steckersolar'].map(segment=>({label:segment==='gebaeude'?'Gebäudeanlagen':'Balkonkraftwerke',value:sum(systems.filter(row=>row.segment===segment),'kwp')})),solarCount:sum(systems,'count'),solarKwp:sum(systems,'kwp'),solarAdditions:sum(systems.filter(row=>row.day.slice(0,4)===end.slice(0,4)),'count'),batteryCount:sum(stores,'count'),batteryKwh:sum(stores,'kwh')};
 });
 writeFileSync(new URL('./monitor-history.json',import.meta.url),JSON.stringify({sourceDate:register.sourceDate,method:'active-register-by-commissioning-date',regionId:'09679147',population:register.register.population,populationDate:register.populationDate,observations},null,2)+'\n');
 console.log('Prepared 25 reconciled monthly observations for the monitor.');

@@ -6,7 +6,9 @@ import {formatStoryDate} from '@solar-check/story-source/lib/story-format';
 import {WidgetSetting} from '../../components/dashboard/WidgetSetting';
 import styles from './MonitorAnnualEnergyChart.module.css';
 
-export function MonitorAnnualEnergyChart({data, compact=false}:{data:EnergyYear;compact?:boolean}) {
+export function MonitorAnnualEnergyChart({data:initialData, datasets=[initialData], compact=false}:{data:EnergyYear;datasets?:EnergyYear[];compact?:boolean}) {
+ const [year,setYear]=useState(initialData.year);
+ const data=datasets.find(item=>item.year===year)??initialData;
  const [mode,setMode]=useState<'both'|'solar'|'wind'>('both');
  const [selected,setSelected]=useState<number|null>(null);
  const [hover,setHover]=useState<number|null>(null);
@@ -20,7 +22,7 @@ export function MonitorAnnualEnergyChart({data, compact=false}:{data:EnergyYear;
  const point=(i:number,v:number)=>{const angle=i/data.days.length*Math.PI*2-Math.PI/2,r=82+v/maximum*145;return [260+Math.cos(angle)*r,260+Math.sin(angle)*r];};
  const segment=(i:number,a:number,b:number)=>{const p=point(i,a),q=point(i,b);return `M${p.join(',')} L${q.join(',')}`;};
  const controls=<div className={styles.settings}>
-  <WidgetSetting hideLabel label="Jahr" value={String(data.year)} onChange={()=>undefined} stepper options={[{value:String(data.year),label:String(data.year)}]}/>
+  <WidgetSetting hideLabel label="Jahr" value={String(data.year)} onChange={value=>{setYear(Number(value));setSelected(null);setHover(null);}} stepper options={datasets.map(item=>({value:String(item.year),label:String(item.year)}))}/>
   <WidgetSetting hideLabel label="Energieart" value={mode} onChange={value=>setMode(value as typeof mode)} options={[{value:'both',label:'Solar und Wind'},{value:'solar',label:'Solar'},{value:'wind',label:'Wind'}]}/>
  </div>;
  return <div className={`${styles.chart} ${compact?styles.compact:''}`} data-legend-visible={selected!==null||hover!==null}>

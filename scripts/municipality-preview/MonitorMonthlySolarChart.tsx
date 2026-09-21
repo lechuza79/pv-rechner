@@ -7,7 +7,7 @@ import {formatStoryDate} from '@solar-check/story-source/lib/story-format';
 import {WidgetSetting} from '../../components/dashboard/WidgetSetting';
 import styles from './MonitorMonthlySolarChart.module.css';
 
-export function MonitorMonthlySolarChart({data,compact=false,autoPlay=false}:{data:SolarMonth;compact?:boolean;autoPlay?:boolean}) {
+function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=false}:{data:SolarMonth;months:SolarMonth[];onMonthChange:(value:string)=>void;compact?:boolean;autoPlay?:boolean}) {
  const gradientId=useId();
  const [selected,setSelected]=useState(data.peakDay),[focused,setFocused]=useState(false),[hovered,setHovered]=useState<string|null>(null),[playing,setPlaying]=useState(false),[frame,setFrame]=useState<number|null>(null);
  const firstDate=data.days[0]?.date;
@@ -23,7 +23,7 @@ export function MonitorMonthlySolarChart({data,compact=false,autoPlay=false}:{da
  const chartViewBox=compact?radialPreviewViewBox(data.days.flatMap(day=>day.mw.map((value,i)=>point(i+.5,value))),280,90):'0 0 560 560';const [viewX,viewY,viewSize]=chartViewBox.split(' ').map(Number);const backdropX=compact?280-viewSize:viewX,backdropY=compact?280-viewSize:viewY,backdropSize=compact?viewSize*2:viewSize;
  const selectedIndex=data.days.findIndex(day=>day.date===selected);
  const shiftDay=(direction:number)=>{const index=selectedIndex>=0?selectedIndex:data.days.findIndex(day=>day.date===data.peakDay);const next=Math.max(0,Math.min(data.days.length-1,index+direction));if(data.days[next])chooseDay(data.days[next].date)};
- const controls=<div className={styles.settings}><WidgetSetting hideLabel label="Monat" value={data.month} onChange={()=>undefined} stepper options={[{value:data.month,label:formatStoryDate(data.month)}]}/></div>;
+ const controls=<div className={styles.settings}><WidgetSetting hideLabel label="Monat" value={data.month} onChange={onMonthChange} stepper options={months.map(item=>({value:item.month,label:formatStoryDate(item.month)}))}/></div>;
  const footer=<div className={styles.footer}><div className={styles.dayControls}><button type="button" aria-label="Vorheriger Tag" onClick={()=>shiftDay(-1)} disabled={selectedIndex<=0}><IconChevronLeft size={16}/></button><button type="button" className={styles.bestDay} data-selected={focused||undefined} onClick={()=>chooseDay(data.peakDay)}>{focused&&active?<><span>Bester Tag</span><small>{formatStoryDate(active.date)}</small></>:<span>Bester Tag</span>}</button><button type="button" aria-label="Nächster Tag" onClick={()=>shiftDay(1)} disabled={selectedIndex<0||selectedIndex>=data.days.length-1}><IconChevronRight size={16}/></button></div><div className={styles.transport}><button type="button" aria-label={playing?'Wiedergabe pausieren':'Monat abspielen'} aria-pressed={playing} onClick={togglePlayback}>{playing?<IconPause size={14}/>:<IconPlay size={14}/>}</button><button type="button" aria-label="Zurücksetzen" onClick={clearDay}><IconRefresh size={14}/></button></div></div>;
  return <div data-solar-month-preview={compact?true:undefined} className={`${styles.chart} ${compact?styles.compact:''}`}>{!compact&&<>{controls}</>}
   <svg viewBox={chartViewBox} role={compact?'img':'group'} aria-label={`Solarleistung in ${data.town??'der Gemeinde'}, ${formatStoryDate(data.month)}. ${data.days.length} Tageslinien, 24 Stunden. Modellierter Monatsertrag ${(data.totalMwh/1000).toFixed(2)} GWh.`}><defs><filter id={`${gradientId}-mono`} colorInterpolationFilters="sRGB"><feColorMatrix type="saturate" values="0"/></filter><linearGradient id={`${gradientId}-fade`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="white"/><stop offset="35%" stopColor="white"/><stop offset="100%" stopColor="black"/></linearGradient><mask id={`${gradientId}-backdrop`} maskUnits="userSpaceOnUse" x={backdropX} y={backdropY} width={backdropSize} height={backdropSize}><rect x={backdropX} y={backdropY} width={backdropSize} height={backdropSize} fill={`url(#${gradientId}-fade)`}/></mask></defs>
@@ -38,4 +38,9 @@ export function MonitorMonthlySolarChart({data,compact=false,autoPlay=false}:{da
  </div>;
 }
 
+export function MonitorMonthlySolarChart({data,datasets=[data],compact=false,autoPlay=false}:{data:SolarMonth;datasets?:SolarMonth[];compact?:boolean;autoPlay?:boolean}){
+ const [month,setMonth]=useState(data.month);
+ const selected=datasets.find(item=>item.month===month)??data;
+ return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={setMonth} compact={compact} autoPlay={autoPlay}/>;
+}
 export default MonitorMonthlySolarChart;

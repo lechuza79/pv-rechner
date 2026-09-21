@@ -7,6 +7,10 @@
   "observations": [
     {
       "end": "2026-08-31",
+      "solarCounts": {
+        "gebaeude": 705,
+        "steckersolar": 239
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -25,6 +29,10 @@
     },
     {
       "end": "2026-07-31",
+      "solarCounts": {
+        "gebaeude": 699,
+        "steckersolar": 236
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -43,6 +51,10 @@
     },
     {
       "end": "2026-06-30",
+      "solarCounts": {
+        "gebaeude": 689,
+        "steckersolar": 231
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -61,6 +73,10 @@
     },
     {
       "end": "2026-05-31",
+      "solarCounts": {
+        "gebaeude": 681,
+        "steckersolar": 225
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -79,6 +95,10 @@
     },
     {
       "end": "2026-04-30",
+      "solarCounts": {
+        "gebaeude": 675,
+        "steckersolar": 221
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -97,6 +117,10 @@
     },
     {
       "end": "2026-03-31",
+      "solarCounts": {
+        "gebaeude": 666,
+        "steckersolar": 214
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -115,6 +139,10 @@
     },
     {
       "end": "2026-02-28",
+      "solarCounts": {
+        "gebaeude": 663,
+        "steckersolar": 210
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -133,6 +161,10 @@
     },
     {
       "end": "2026-01-31",
+      "solarCounts": {
+        "gebaeude": 658,
+        "steckersolar": 207
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -151,6 +183,10 @@
     },
     {
       "end": "2025-12-31",
+      "solarCounts": {
+        "gebaeude": 652,
+        "steckersolar": 207
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -169,6 +205,10 @@
     },
     {
       "end": "2025-11-30",
+      "solarCounts": {
+        "gebaeude": 648,
+        "steckersolar": 206
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -187,6 +227,10 @@
     },
     {
       "end": "2025-10-31",
+      "solarCounts": {
+        "gebaeude": 640,
+        "steckersolar": 204
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -205,6 +249,10 @@
     },
     {
       "end": "2025-09-30",
+      "solarCounts": {
+        "gebaeude": 634,
+        "steckersolar": 203
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -223,6 +271,10 @@
     },
     {
       "end": "2025-08-31",
+      "solarCounts": {
+        "gebaeude": 625,
+        "steckersolar": 199
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -241,6 +293,10 @@
     },
     {
       "end": "2025-07-31",
+      "solarCounts": {
+        "gebaeude": 624,
+        "steckersolar": 195
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -259,6 +315,10 @@
     },
     {
       "end": "2025-06-30",
+      "solarCounts": {
+        "gebaeude": 619,
+        "steckersolar": 187
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -277,6 +337,10 @@
     },
     {
       "end": "2025-05-31",
+      "solarCounts": {
+        "gebaeude": 616,
+        "steckersolar": 186
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -295,6 +359,10 @@
     },
     {
       "end": "2025-04-30",
+      "solarCounts": {
+        "gebaeude": 610,
+        "steckersolar": 176
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -313,6 +381,10 @@
     },
     {
       "end": "2025-03-31",
+      "solarCounts": {
+        "gebaeude": 606,
+        "steckersolar": 171
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -331,6 +403,10 @@
     },
     {
       "end": "2025-02-28",
+      "solarCounts": {
+        "gebaeude": 601,
+        "steckersolar": 161
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -349,6 +425,10 @@
     },
     {
       "end": "2025-01-31",
+      "solarCounts": {
+        "gebaeude": 596,
+        "steckersolar": 157
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -367,6 +447,10 @@
     },
     {
       "end": "2024-12-31",
+      "solarCounts": {
+        "gebaeude": 592,
+        "steckersolar": 155
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -385,6 +469,10 @@
     },
     {
       "end": "2024-11-30",
+      "solarCounts": {
+        "gebaeude": 583,
+        "steckersolar": 149
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -403,6 +491,10 @@
     },
     {
       "end": "2024-10-31",
+      "solarCounts": {
+        "gebaeude": 574,
+        "steckersolar": 148
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -421,6 +513,10 @@
     },
     {
       "end": "2024-09-30",
+      "solarCounts": {
+        "gebaeude": 567,
+        "steckersolar": 147
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",
@@ -439,6 +535,10 @@
     },
     {
       "end": "2024-08-31",
+      "solarCounts": {
+        "gebaeude": 561,
+        "steckersolar": 147
+      },
       "solarMix": [
         {
           "label": "Gebäudeanlagen",

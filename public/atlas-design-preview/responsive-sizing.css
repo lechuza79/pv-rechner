@@ -224,3 +224,5 @@
 
 .v3-conclusion .v3-result-amount.sc-delta{font-size:inherit;padding:8px 12px;line-height:1.15;gap:8px;}
 .v3-conclusion .sc-delta .v3-result-plus{color:color-mix(in srgb,currentColor 62%,transparent);}
+
+.solar-page .atlas-hero-local-nav{border-top-color:rgba(24,50,62,.08)!important;}

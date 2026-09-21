@@ -67,3 +67,16 @@ The user requested intermediate commits so Claude can continue toward a shareabl
 **Still open, explicitly ordered last by the user:** acquire and validate additional year/month data; wire functional period selection for annual/monthly profiles, electricity value/feed-in value and composition widgets. Do not invent historical values. The old source-worktree weather scripts intentionally throw; use the main checkout's ERA5 archive implementation through a local adapter, without modifying that checkout. Current monthly profile is August 2026 and annual profile is 2025.
 
 **Publication boundary:** no deployment performed. The preview still depends on external local source paths and the binary asset archive above. For a public prototype, package those dependencies or integrate into the application; do not claim that pushing this branch alone produces a working deployment. Subscription is still a non-sending prototype dialog. Review hero/widget fit in the full page at target widths before sharing.
+
+## Period-selection follow-up — supersedes the open period-selection item above
+
+`prepare-monitor-periods.cjs` now reads the existing main ERA5 archive **offline**, without writing to that checkout or calling a weather API. It writes `monitor-periods.json` in this preview. Run with `node --import tsx scripts/municipality-preview/prepare-monitor-periods.cjs`; it requires the same local source roots as the preview (override `SOLAR_SITE_ROOT` / `STORY_SOURCE_ROOT` if needed).
+
+- Annual selector: complete 2023, 2024, 2025. The active registered solar cohort is reconstructed at each year end. Wind remains zero for this municipality; the preparer refuses to extrapolate a nonzero historical wind stock.
+- Monthly solar selector: January–December 2025, January and August 2026. February–July 2026 weather blocks are absent locally and are not offered as valid months.
+- Electricity value/feed-in selectors: January and August 2026. Older months fail the existing tariff completeness guard and are omitted, not assigned zero or an invented tariff. Price and private-self-consumption assumptions remain the saved 2026 assumptions, explicitly stated in the widget help; these are modeled reference values, not reconstructed historical market prices.
+- Composition selectors share the reconciled monthly stock history, now including building/balcony counts. Both count grids and power shares update.
+- `monitor-periods.test.cjs`: complete UTC years including leap day, complete local month/day profiles, energy reconciliation, preservation of August euro baselines and stock-count bounds.
+- Browser checked: 2024 annual selection, June 2025 solar profile, January 2026 monetary value and December 2025 composition stock all change the rendered numbers.
+
+Additional weather downloads and missing historical tariff coverage remain follow-up work. The current prototype exposes only complete calculable periods. Deployment/portability and subscription integration are still outstanding as described above.
