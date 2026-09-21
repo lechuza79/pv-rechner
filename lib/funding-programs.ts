@@ -10924,7 +10924,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "horneburg-nachhaltige-projekte": {
     id: "horneburg-nachhaltige-projekte", name: "Förderprogramm nachhaltiger Projekte (Teil Photovoltaik und Speicher)",
-    traeger: "Flecken Horneburg", level: "kommune", region: "Flecken Horneburg",
+    traeger: "Flecken Horneburg", level: "kommune", region: "Horneburg",
     bundesland: "Niedersachsen", agsCode: "03359027",
     // The Samtgemeinde keeps ONE page for both programmes and links a separate
     // guideline per municipality (Horneburg: https://www.horneburg.de/downloads/datei/MzFjYTE2YjRlYmUzMGJhMGFCMSt3RnRjb1loWm8rMXd3Ylg5bVlsSVVGUDdyelV2L0NyUnNYbXU5ZTdqc2U5WEMvZGFpSkRxSDZXbGgxRjR5STNtU1BzSXBISjdJSHlJMFJFdXBOWlM4OXAxeS9lRVVvdHVUZVl2MHQ1d3BHem5ZTjVnTUh0VlFXNTdKVUR4cVlHVVNmUWZXdStsV09yNUlFVHFLcXlwa3Z2VmpxYm1EN0Y2aW9LNEpPUT0).
@@ -10974,7 +10974,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "nottensdorf-nachhaltige-projekte": {
     id: "nottensdorf-nachhaltige-projekte", name: "Förderprogramm nachhaltiger Projekte (Teil Photovoltaik und Speicher)",
-    traeger: "Gemeinde Nottensdorf", level: "kommune", region: "Gemeinde Nottensdorf",
+    traeger: "Gemeinde Nottensdorf", level: "kommune", region: "Nottensdorf",
     bundesland: "Niedersachsen", agsCode: "03359034",
     // The Samtgemeinde keeps ONE page for both programmes and links a separate
     // guideline per municipality (Nottensdorf: https://www.horneburg.de/downloads/datei/YWQ2ZTYyN2Q5Mzk0ZmQ3NE9GWDZXZGdnVnlxdVp0TjRlRDA1K1NEa2FZV1U2UXhmZnYrUi9YbSs2aG1YTVhSRnVPVXVraEQvWnpodWpnOC9RVXo5ZFp6TTREeXZEMjhQVzRIQ0FvWEljT1U5bXllNDF2aUM0MnpHak02NVdlVTdsVWVRWjAxTXF3T1dSazc1SWd3VFI0ZmZrYUlHSU1lNDZ5N2xSam5CMFE1K0tRN3d0U0d1SXVaTnFaN21nQmRnY1VPVnF3b3VqL0FqdVJlNlVHOFh0TjkvK3JkaEpoY2RQdHJhR2FTa0d0bTdJeHJlMEVUQ1dSb2lJczVIWVQzNXlvUEwrQjZhdVh5a2FCcTk).
