@@ -711,8 +711,10 @@ export default function Waermepumpe({
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: embedded ? undefined : "100vh", padding: embedded ? 0 : "0 16px 20px" }}>
       <div style={{ maxWidth: embedded ? "100%" : v('--page-max-width'), margin: "0 auto" }}>
         {!embedded && (
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <h1 style={{}}>
+          <div style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
+            {/* In the question steps as small as the PV calculator's head: the focus
+                belongs to the first question, not the title. */}
+            <h1 style={isResult ? {} : { fontSize: v('--font-size-h2') }}>
               {isResult ? "Deine Wärmepumpen-Prognose" : "Wärmepumpen-Rechner"}
             </h1>
             {!isResult && (
