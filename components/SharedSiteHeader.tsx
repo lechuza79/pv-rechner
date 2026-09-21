@@ -27,28 +27,69 @@ export default function SharedSiteHeader() {
   }, [pathname]);
 
   // Login state only rewrites the account links; the menu itself stays.
+  // Signed in, the person icon opens a small account menu (Mein Konto, Admin,
+  // Abmelden) instead of adding entries to the main bar; in the mobile menu
+  // the same entries sit next to the account link.
   useEffect(() => {
     const node = header.current;
     if (!node || auth.status !== "authed") return;
-    node.querySelectorAll<HTMLAnchorElement>(".sc-nav-login").forEach(link => {
-      if (!link.parentElement?.matches("header")) link.textContent = "Mein Konto";
-      link.setAttribute("aria-label", "Mein Konto");
-      link.href = "/dashboard";
-    });
-    const logout = document.createElement("button");
-    logout.type = "button";
-    logout.className = "sc-nav-signout";
-    logout.textContent = "Abmelden";
-    logout.onclick = async () => {
-      logout.disabled = true;
-      try { await signOut(); window.location.assign("/"); }
-      catch { logout.disabled = false; logout.textContent = "Erneut abmelden"; }
+    const logoutKnopf = () => {
+      const knopf = document.createElement("button");
+      knopf.type = "button";
+      knopf.className = "sc-nav-signout";
+      knopf.textContent = "Abmelden";
+      knopf.onclick = async () => {
+        knopf.disabled = true;
+        try { await signOut(); window.location.assign("/"); }
+        catch { knopf.disabled = false; knopf.textContent = "Erneut abmelden"; }
+      };
+      return knopf;
     };
-    // The admin entry the old header had; only for admins, checked server-side.
-    const admin = isAdmin ? Object.assign(document.createElement("a"), { href: "/admin", className: "sc-nav-signout", textContent: "Admin" }) : null;
-    if (admin) node.querySelector(".sc-global-nav")?.append(admin);
-    node.querySelector(".sc-global-nav")?.append(logout);
-    return () => { logout.remove(); admin?.remove(); };
+    // The admin entry only for admins, checked server-side.
+    const adminLink = () => Object.assign(document.createElement("a"), { href: "/admin", className: "sc-nav-signout", textContent: "Admin" });
+    const aufraeumen: (() => void)[] = [];
+
+    node.querySelectorAll<HTMLAnchorElement>(".sc-nav-login").forEach(link => {
+      if (link.parentElement?.matches("header")) {
+        const konto = document.createElement("details");
+        konto.className = "sc-account";
+        const kopf = document.createElement("summary");
+        kopf.className = link.className;
+        kopf.setAttribute("aria-label", "Mein Konto");
+        kopf.innerHTML = link.innerHTML;
+        const panel = document.createElement("div");
+        panel.className = "sc-account-panel";
+        panel.append(Object.assign(document.createElement("a"), { href: "/dashboard", textContent: "Mein Konto" }));
+        if (isAdmin) panel.append(adminLink());
+        panel.append(logoutKnopf());
+        konto.append(kopf, panel);
+        link.replaceWith(konto);
+        const schliessen = (e: Event) => {
+          if (e instanceof KeyboardEvent ? e.key === "Escape" : !konto.contains(e.target as Node)) konto.open = false;
+        };
+        document.addEventListener("click", schliessen);
+        document.addEventListener("keydown", schliessen);
+        aufraeumen.push(() => {
+          document.removeEventListener("click", schliessen);
+          document.removeEventListener("keydown", schliessen);
+          konto.replaceWith(link);
+        });
+      } else {
+        const vorher = { text: link.textContent, href: link.href, label: link.getAttribute("aria-label") };
+        link.lastChild!.textContent = "Mein Konto";
+        link.setAttribute("aria-label", "Mein Konto");
+        link.href = "/dashboard";
+        const extras = [...(isAdmin ? [adminLink()] : []), logoutKnopf()];
+        link.after(...extras);
+        aufraeumen.push(() => {
+          extras.forEach(e => e.remove());
+          link.lastChild!.textContent = vorher.text?.trim() ?? "Login";
+          link.href = vorher.href;
+          if (vorher.label) link.setAttribute("aria-label", vorher.label); else link.removeAttribute("aria-label");
+        });
+      }
+    });
+    return () => aufraeumen.forEach(f => f());
   }, [auth.status, isAdmin, pathname]);
 
   return <header ref={header} className="site-header sc-react-header">

@@ -300,11 +300,11 @@
 .sc-nav-tool-actions a:not(:first-child){position:relative;z-index:1}
 /* Die Zeile trägt die Pille bündig: gleicher Innenabstand links wie rechts,
    um genau diesen Betrag nach außen gezogen, damit Text und Pfeil stehen
-   bleiben, wo sie waren. Die Trennlinie ist ein Hintergrundstreifen, eingerückt um denselben Betrag
+   bleiben, wo sie waren — 8px, damit die Pille 6px Luft zum Kachelrand behält. Die Trennlinie ist ein Hintergrundstreifen, eingerückt um denselben Betrag
    — sonst liefe sie mit der verbreiterten Zeile bis an den Kachelrand. Als
    Hintergrund statt als eigenes Element, weil der erste Link seine
    Pseudo-Elemente für die Klickfläche der Kachel braucht. */
-.sc-global-nav .sc-nav-tool-actions a{width:calc(100% + 28px);max-width:none;margin-inline:-14px;padding-inline:14px;box-sizing:border-box;border-top-color:transparent;background:linear-gradient(var(--sc-nav-line),var(--sc-nav-line)) 14px 0/calc(100% - 28px) 1px no-repeat;transition:background-color 160ms ease}
+.sc-global-nav .sc-nav-tool-actions a{width:calc(100% + 16px);max-width:none;margin-inline:-8px;padding-inline:8px;box-sizing:border-box;border-top-color:transparent;background:linear-gradient(var(--sc-nav-line),var(--sc-nav-line)) 8px 0/calc(100% - 16px) 1px no-repeat;transition:background-color 160ms ease}
 .sc-global-nav .sc-nav-panel .sc-nav-tool-actions a[aria-current=page]{border-radius:999px;background:#d4e5d8}
 @media(min-width:1281px) and (hover:hover){
   /* Hover: Hintergrund als Pille wie unsere Knöpfe, die Trennlinie darüber
@@ -312,7 +312,7 @@
      unten an eine Linie. Über der Kachel (nicht über einem zweiten Link)
      zeigt der erste Link den Hover, weil die ganze Fläche zu ihm führt. */
   .sc-nav-tool-actions a:hover,
-  .sc-nav-tool:hover:not(:has(.sc-nav-tool-actions a:not(:first-child):hover)) .sc-nav-tool-actions a:first-child{background:#cbded3;border-radius:999px;color:inherit}
+  .sc-nav-tool:hover:not(:has(.sc-nav-tool-actions a:not(:first-child):hover)) .sc-nav-tool-actions a:first-child{background:#d4ff24;border-radius:999px;color:#132527}
   .sc-global-nav .sc-nav-tool-actions a:hover+a,
   .sc-nav-tool:hover:not(:has(.sc-nav-tool-actions a:not(:first-child):hover)) .sc-nav-tool-actions a:first-child+a{background-image:none}
 }
@@ -327,3 +327,23 @@
   .sc-nav-group>summary[aria-current=true]{box-shadow:none}
   .sc-nav-group>summary[aria-current=true]::before{content:"";position:absolute;inset:8px -12px;z-index:-1;border-radius:999px;background:color-mix(in srgb,currentColor 9%,transparent)}
 }
+
+/* Alle Kacheln des Tools-Menüs gleich hoch: Beide Blöcke strecken sich auf die
+   Höhe des Panels, ihre Raster verteilen die Höhe auf gleich große Reihen —
+   links zwei Reihen, rechts zwei Kacheln, also dieselben Kanten. */
+@media(min-width:1281px){
+  .sc-nav-section-tools .sc-nav-calculator-block,.sc-nav-section-tools .sc-nav-tool-more{display:flex;flex-direction:column}
+  .sc-nav-section-tools .sc-nav-calculator-block>.sc-nav-tools,.sc-nav-section-tools .sc-nav-tool-more>.sc-nav-tools{flex:1}
+  /* Das Flyout beginnt unter dem geöffneten Menüpunkt samt Pille, nicht auf
+     ihm — sonst verdeckt es die untere Hälfte der Markierung. */
+  .sc-global-nav .sc-nav-group>.sc-nav-panel{margin-top:24px}
+}
+
+/* Nutzermenü hinter dem Personen-Symbol (angemeldet): Mein Konto, Admin,
+   Abmelden — statt als eigene Punkte in der Hauptleiste. */
+.sc-account{position:relative}
+.sc-account>summary{list-style:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.sc-account>summary::-webkit-details-marker{display:none}
+.sc-account-panel{position:absolute;right:0;top:calc(100% + 12px);z-index:40;min-width:200px;display:grid;gap:2px;padding:8px;border-radius:14px;background:#edf3ef;color:#153740;box-shadow:0 14px 45px #071d2933}
+.sc-account-panel a,.sc-account-panel button{display:block;width:100%;box-sizing:border-box;padding:10px 14px;border:0;border-radius:999px;background:none;font:500 var(--sc-nav-copy,14px)/1.4 'DM Sans',sans-serif;color:inherit;text-align:left;text-decoration:none;cursor:pointer}
+.sc-account-panel a:hover,.sc-account-panel button:hover,.sc-account-panel a:focus-visible,.sc-account-panel button:focus-visible{background:#d4ff24;color:#132527}
