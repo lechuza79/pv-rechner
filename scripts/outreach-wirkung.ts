@@ -73,21 +73,14 @@ async function angeschriebene(bestand: Bestand, client: Client): Promise<Angesch
         "kommunen_kontakt", "region_id, website, contacted_at, responded_at", q => q.not("contacted_at", "is", null));
       return rows.map(r => ({ domain: domainAus(r.website), id: r.region_id, versandTag: r.contacted_at.slice(0, 10), geantwortet: !!r.responded_at }));
     }
-    case "fachbetriebe": {
-      const rows = await seiten<{ domain: string; kontakt_at: string; stand: string | null }>(
-        "fachbetriebe", "domain, kontakt_at, stand", q => q.not("kontakt_at", "is", null));
-      return rows.map(r => ({ domain: domainAus(r.domain), versandTag: r.kontakt_at.slice(0, 10), geantwortet: r.stand === "geantwortet" }));
-    }
-    case "presse": {
-      const rows = await seiten<{ domain: string; stand: string | null; stand_at: string | null }>(
-        "presse_kontakte", "domain, stand, stand_at", q => q.in("stand", ["angeschrieben", "geantwortet"]));
-      return rows.filter(r => r.stand_at).map(r => ({ domain: domainAus(r.domain), versandTag: r.stand_at!.slice(0, 10), geantwortet: r.stand === "geantwortet" }));
-    }
-    case "versorger": {
-      const rows = await seiten<{ website: string | null; status: string | null; updated_at: string | null }>(
-        "utilities", "website, status, updated_at", q => q.in("status", ["angeschrieben", "geantwortet"]));
-      return rows.filter(r => r.updated_at).map(r => ({ domain: domainAus(r.website), versandTag: r.updated_at!.slice(0, 10), geantwortet: r.status === "geantwortet" }));
-    }
+    // No send path exists for these yet. `fachbetriebe.kontakt_at` is the day the
+    // contact page was CRAWLED, not a send: reading it as one reported 1,260
+    // "contacted" trades that nobody ever wrote to. Whoever builds a send path
+    // writes a send timestamp and wires it in here.
+    case "fachbetriebe":
+    case "presse":
+    case "versorger":
+      return [];
   }
 }
 
