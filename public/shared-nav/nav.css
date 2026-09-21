@@ -360,3 +360,11 @@
    Vor Ort, Wissen) — sonst zeigt jedes Menü einen anderen Zustand. */
 @media(hover:hover){.sc-global-nav .sc-nav-column>a:hover{background:#d4ff24;color:#132527;box-shadow:none}}
 .sc-global-nav .sc-nav-column>a:focus-visible{outline:none;background:#d4ff24;color:#132527}
+/* The logged-in account toggle replaces the header login link inside a <details>; give it the same round, faint-ring icon and keep it at least as far from "Wissen" as the menu items are from each other. */
+@media(min-width:1281px){
+ .sc-account{margin-left:clamp(20px,2.4vw,36px)}
+ .sc-account>.sc-nav-login{width:34px;height:34px;min-height:34px;padding:0!important;border:1px solid color-mix(in srgb,currentColor 28%,transparent);border-radius:50%;opacity:1}
+ .sc-account>.sc-nav-login:hover,.sc-account[open]>.sc-nav-login{border-color:color-mix(in srgb,currentColor 55%,transparent);text-decoration:none}
+ .sc-account>.sc-nav-login svg{width:18px;height:18px;opacity:1}
+ .sc-account-panel{top:calc(100% + 24px)}
+}
