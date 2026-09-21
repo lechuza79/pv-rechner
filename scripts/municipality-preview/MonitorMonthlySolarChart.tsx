@@ -7,7 +7,7 @@ import {formatStoryDate} from '@solar-check/story-source/lib/story-format';
 import {WidgetSetting} from '../../components/dashboard/WidgetSetting';
 import styles from './MonitorMonthlySolarChart.module.css';
 
-function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=false}:{data:SolarMonth;months:SolarMonth[];onMonthChange:(value:string)=>void;compact?:boolean;autoPlay?:boolean}) {
+function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=false,paused=false}:{data:SolarMonth;months:SolarMonth[];onMonthChange:(value:string)=>void;compact?:boolean;autoPlay?:boolean;paused?:boolean}) {
  const gradientId=useId();
  const [selected,setSelected]=useState(data.peakDay),[focused,setFocused]=useState(false),[hovered,setHovered]=useState<string|null>(null),[playing,setPlaying]=useState(false),[frame,setFrame]=useState<number|null>(null);
  const firstDate=data.days[0]?.date;
@@ -15,7 +15,7 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
  const displayDate=focused?selected:hovered,active=data.days.find(day=>day.date===displayDate)??data.days[0],hasActive=displayDate!==null;
  const chooseDay=(date:string)=>{setPlaying(false);setFrame(null);setHovered(null);setSelected(date);setFocused(true)};
  const clearDay=()=>{setPlaying(false);setFrame(null);setHovered(null);setFocused(false)};
- useEffect(()=>{if(!playing||frame===null)return;const timer=window.setTimeout(()=>{if(frame>=data.days.length-1){setPlaying(false);setFrame(null);setFocused(false);return;}setFrame(frame+1);setSelected(data.days[frame+1].date)},650);return()=>window.clearTimeout(timer)},[playing,frame,data.days]);
+ useEffect(()=>{if(!playing||paused||frame===null)return;const timer=window.setTimeout(()=>{if(frame>=data.days.length-1){setPlaying(false);setFrame(null);setFocused(false);return;}setFrame(frame+1);setSelected(data.days[frame+1].date)},650);return()=>window.clearTimeout(timer)},[playing,paused,frame,data.days]);
  const togglePlayback=()=>{if(playing){setPlaying(false);return;}const nextFrame=frame??0;setHovered(null);setFrame(nextFrame);setSelected(data.days[nextFrame].date);setFocused(true);setPlaying(true)};
  const max=Math.max(...data.days.flatMap(day=>day.mw),Number.EPSILON);
  const point=(hour:number,value:number)=>{const angle=hour/24*Math.PI*2+Math.PI/2,r=90+value/max*150;return [280+Math.cos(angle)*r,280+Math.sin(angle)*r]};
@@ -27,7 +27,7 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
  const footer=<div className={styles.footer}><div className={styles.dayControls}><button type="button" aria-label="Vorheriger Tag" onClick={()=>shiftDay(-1)} disabled={selectedIndex<=0}><IconChevronLeft size={16}/></button><button type="button" className={styles.bestDay} data-selected={focused||undefined} onClick={()=>chooseDay(data.peakDay)}>{focused&&active?<><span>Bester Tag</span><small>{formatStoryDate(active.date)}</small></>:<span>Bester Tag</span>}</button><button type="button" aria-label="Nächster Tag" onClick={()=>shiftDay(1)} disabled={selectedIndex<0||selectedIndex>=data.days.length-1}><IconChevronRight size={16}/></button></div><div className={styles.transport}><button type="button" aria-label={playing?'Wiedergabe pausieren':'Monat abspielen'} aria-pressed={playing} onClick={togglePlayback}>{playing?<IconPause size={14}/>:<IconPlay size={14}/>}</button><button type="button" aria-label="Zurücksetzen" onClick={clearDay}><IconRefresh size={14}/></button></div></div>;
  return <div data-solar-month-preview={compact?true:undefined} className={`${styles.chart} ${compact?styles.compact:''}`}>{!compact&&<>{controls}</>}
   <svg viewBox={chartViewBox} role={compact?'img':'group'} aria-label={`Solarleistung in ${data.town??'der Gemeinde'}, ${formatStoryDate(data.month)}. ${data.days.length} Tageslinien, 24 Stunden. Modellierter Monatsertrag ${(data.totalMwh/1000).toFixed(2)} GWh.`}><defs><filter id={`${gradientId}-mono`} colorInterpolationFilters="sRGB"><feColorMatrix type="saturate" values="0"/></filter><linearGradient id={`${gradientId}-fade`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="white"/><stop offset="35%" stopColor="white"/><stop offset="100%" stopColor="black"/></linearGradient><mask id={`${gradientId}-backdrop`} maskUnits="userSpaceOnUse" x={backdropX} y={backdropY} width={backdropSize} height={backdropSize}><rect x={backdropX} y={backdropY} width={backdropSize} height={backdropSize} fill={`url(#${gradientId}-fade)`}/></mask></defs>
-   <g mask={`url(#${gradientId}-backdrop)`} opacity=".16" pointerEvents="none" aria-hidden="true"><image href="/brand/feed-in-v4-splashes.svg" x={compact?280-viewSize*.8:viewX-viewSize*.3} y={compact?280-viewSize*.8:viewY-viewSize*.2} width={viewSize*1.6} height={viewSize*1.6} filter={`url(#${gradientId}-mono)`}/><image href="/brand/pv-modules-mono-contained.svg" x={compact?280-viewSize*1.05:viewX+viewSize*.06} y={compact?280-viewSize*1.05:viewY+viewSize*.06} width={viewSize*(compact?2.1:.88)} height={viewSize*(compact?2.1:.88)}/></g>
+   <g mask={`url(#${gradientId}-backdrop)`} opacity=".16" pointerEvents="none" aria-hidden="true"><image href="/brand/feed-in-v4-splashes.svg" x={compact?280-viewSize*.8:viewX-viewSize*.3} y={compact?280-viewSize*.8:viewY-viewSize*.2} width={viewSize*1.6} height={viewSize*1.6} filter={`url(#${gradientId}-mono)`}/><image href="/brand/pv-modules-mono-contained.svg" x={viewX+viewSize*.06} y={viewY+viewSize*.06} width={viewSize*.88} height={viewSize*.88}/></g>
    <defs><radialGradient id={gradientId} gradientUnits="userSpaceOnUse" cx="280" cy="280" r="240"><stop offset="37.5%" stopColor={hasActive?'var(--atlas-text)':'var(--atlas-action)'} stopOpacity={hasActive?.06:.12}/><stop offset="100%" stopColor={hasActive?'var(--atlas-text)':'var(--atlas-action)'} stopOpacity={hasActive?.3:.75}/></radialGradient></defs>
    {(compact?[0]:[0,max/3,max*2/3,max]).map((value,i)=><g key={i}><circle cx="280" cy="280" r={90+value/max*150} fill="none" stroke="var(--atlas-text)" strokeOpacity={i===0?.22:.1} strokeDasharray={i%2===0?'2 6':undefined}/>{!compact&&i===2&&<g transform={`translate(280,${280-90-value/max*150})`}><rect x="-22" y="-15" width="44" height="40" rx="2" fill="var(--atlas-card)"/><text textAnchor="middle" dominantBaseline="middle" className={styles.scale}><tspan x="0" y="-3">{value.toLocaleString('de-DE',{maximumSignificantDigits:2})}</tspan><tspan x="0" y="15">MW</tspan></text></g>}</g>)}
    {!compact&&[0,6,12,18].map(hour=>{const angle=hour/24*Math.PI*2+Math.PI/2;return <text key={hour} x={280+Math.cos(angle)*260} y={280+Math.sin(angle)*260+5} textAnchor="middle" className={styles.hour}>{String(hour).padStart(2,'0')}{hour===0?' Uhr':''}</text>})}
@@ -38,9 +38,9 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
  </div>;
 }
 
-export function MonitorMonthlySolarChart({data,datasets=[data],compact=false,autoPlay=false}:{data:SolarMonth;datasets?:SolarMonth[];compact?:boolean;autoPlay?:boolean}){
+export function MonitorMonthlySolarChart({data,datasets=[data],compact=false,autoPlay=false,paused=false}:{data:SolarMonth;datasets?:SolarMonth[];compact?:boolean;autoPlay?:boolean;paused?:boolean}){
  const [month,setMonth]=useState(data.month);
  const selected=datasets.find(item=>item.month===month)??data;
- return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={setMonth} compact={compact} autoPlay={autoPlay}/>;
+ return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={setMonth} compact={compact} autoPlay={autoPlay} paused={paused}/>;
 }
 export default MonitorMonthlySolarChart;

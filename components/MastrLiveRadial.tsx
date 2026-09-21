@@ -841,7 +841,7 @@ export function MastrLiveRadial({
 
           <g aria-hidden="true" className="sc-mastr-live-radial-clock">
             {([['12', 12], ['18', 18], ['00', 0], ['06', 6]] as const).map(([label, hour]) => {
-              const [x, y] = pointAt(CX, CY, visualAngleFromHour(hour), OUTER_R + (isCompact ? 12 : 15));
+              const [x, y] = pointAt(CX, CY, visualAngleFromHour(hour), OUTER_R + (isCompact ? 1 : 8));
               return <text key={label} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fill={labelColor} fontSize={isCompact ? 8 : 10}>{label}</text>;
             })}
           </g>

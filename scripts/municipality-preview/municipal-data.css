@@ -61,3 +61,12 @@
 .monitor-hero .monitor-live-radial div:has(>svg[aria-label="24-Stunden-Verlauf"]){container-type:inline-size;}
 .monitor-hero .monitor-live-radial div:has(>svg[aria-label="24-Stunden-Verlauf"])>div>div:first-child{font-size:clamp(28px,12cqi,40px)!important;}
 .monitor-hero .monitor-live-radial div:has(>svg[aria-label="24-Stunden-Verlauf"])>div>div:nth-child(2){font-size:13px!important;}
+
+.hero-monitor-link{display:block;color:inherit;text-decoration:none;height:100vh;}
+.hero-monitor-link:focus-visible{outline:2px solid #d4ff24;outline-offset:-3px;border-radius:24px;}
+.monitor-hero .hero-story-visual:has([data-solar-month-preview])>div{width:88%;height:88%;max-height:300px;}
+.monitor-hero .monitor-live-radial div:has(>svg[aria-label="24-Stunden-Verlauf"]){width:min(88%,280px)!important;}
+.sc-widget:has(.monitor-current-power)>.sc-widget-body{display:flex;}
+.monitor-current-power{flex:1;height:auto;}
+.monitor-current-power .monitor-live-radial{flex:1;height:100%;}
+.monitor-live-radial>div>div{height:100%;}

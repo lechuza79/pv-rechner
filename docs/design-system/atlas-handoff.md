@@ -131,3 +131,12 @@ Hero cards now measure 400 px wide on desktop, 320 px on tablet and viewport wid
 Titles are “Solarerzeugung August”, “Einspeisevergütung August” and “Solarleistung heute”, with no subtitle; the chart period remains the reviewed August 2026 dataset. Sticky action text is “Höchberg abonnieren”. Hero confetti waits for the mounted host, global navigation, chart fonts/images, and first rendered scene (or explicit fallback), then 2.2 s while the rank tile is at least 75% visible. Reduced motion suppresses it. Readiness attribute updates do not restart the delay every render frame.
 
 The two test files implicated in the previous failure were rerun with one worker and permission to open their local test server: all seven tests passed in 2.69 s. The sandbox-only attempt could not bind localhost; that is not a product failure. The requested new regular commit still runs the complete hook with all safeguards; its result is reported in the task and repository log.
+
+### Hero polish follow-up — 21 September
+
+- Lower hero copy, move the card rail left, reduce the radial charts, and contain the monthly solar panel illustration.
+- Register the preview's mounted navigation with the scene contrast sampler.
+- Remove the hero play button; monthly solar starts automatically, pauses on hover/focus, and the card opens the monitor without reloading the parent page.
+- Keep the citizen delta period inside its green box; enlarge/crop building and balcony backgrounds.
+- Move live clock labels inward and stretch the live-card height chain so utilization stays at the bottom.
+- Validation: preview bundle builds; 20 focused existing tests pass. Desktop browser confirmed card rotation, solar playback and same-page monitor navigation. Browser viewport override did not take effect, so this follow-up has not received a fresh mobile visual check. One fresh monitor tab temporarily reported unavailable weather; the existing embedded monitor returned live values.
