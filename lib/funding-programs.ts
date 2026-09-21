@@ -2987,6 +2987,93 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "sh-waermepumpe-klimaschutz-bub": {
+    // Read 21.09.2026 in the original: "Richtlinie zur Förderung nicht-fossiler
+    // Heizsysteme im Rahmen des Förderprogramms 'Klimaschutz für Bürgerinnen und
+    // Bürger'" (Amtsblatt S-H 2023, Nr. 27, pp. 1575-1580, Bekanntmachung
+    // 08.06.2023, in force 01.07.2023). No. 2.1 heat pump; No. 3 natural persons
+    // with first residence in S-H and non-profits; No. 4.1 existing buildings,
+    // BEG EM technical minimums, BAFA grant decision a precondition; No. 4.5
+    // BAFA application not before 30.12.2022; No. 7.2.3/7.2.6 state application
+    // after the BAFA application, BAFA decision to be filed within a year;
+    // No. 5.2.1 "bis zu 2.000,00 EUR"; No. 5.2.5 factor 2.0 for Bürgergeld /
+    // Grundsicherung / Wohngeld; No. 5.2.6 state grant max 50 %, state + BEG EM
+    // max 60 %; No. 5.3.4 no stacking with other state programmes; No. 7.2.8f.
+    // application windows with a cap.
+    // The January version (juris: status 12.12.2022, in force 16.01.2023) was
+    // NOT read. Its heat-pump amount is carried by the ministry press release of
+    // 05.01.2023 ("Wärmepumpen mit bis zu 2.000 Euro"); the doubling and the
+    // non-profits came with phase 2 (press release 15.08.2023: "gibt es nun auch
+    // die Möglichkeit für gemeinnützige Organisationen" / "Verdopplung der
+    // Zuschüsse möglich"), hence "ab August 2023" in the texts below.
+    // Stop: state page (updated 30.04.2024) "bis zum vorläufigen Stopp des
+    // Förderprogramms am 16.11.2023", "beschlossen, das gestoppte
+    // Förderprogramm ... nicht fortzuführen". Council 3/3 (incl. adversarial)
+    // 21.09.2026: add with corrections, applied. State programme of a
+    // territorial state: no city page, informs only.
+    id: "sh-waermepumpe-klimaschutz-bub", name: "Klimaschutz für Bürgerinnen und Bürger — Zuschuss für Wärmepumpen",
+    traeger: "Land Schleswig-Holstein, Bewilligung: Investitionsbank Schleswig-Holstein", level: "land", region: "Schleswig-Holstein", bundesland: "Schleswig-Holstein", agsCode: "01",
+    url: "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub", stand: "September 2026",
+    status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-01-16", endetIso: "2023-11-16",
+    eligibility: ["privat"],
+    foerdert: ["waermepumpe"],
+    coveredCosts: "Einbau einer Wärmepumpe in einem Bestandsgebäude, zusätzlich zur Bundesförderung (BEG Einzelmaßnahmen); anerkannt nur Kosten, die auch die Bundesförderung anerkennt",
+    rates: [{ label: "Zuschuss", value: "eingestellt — seit dem 16. November 2023 keine Anträge mehr; zuvor bis 2.000 €, ab August 2023 bei Bürgergeld, Grundsicherung oder Wohngeld das Doppelte, höchstens die Hälfte der förderfähigen Kosten" }],
+    conditions: [
+      "Seit dem vorläufigen Stopp am 16. November 2023 sind keine Anträge mehr möglich; die Landesregierung hat beschlossen, das Programm nicht fortzuführen",
+      "Nur für Bestandsgebäude und nur zusammen mit der Bundesförderung: Sie musste vor dem Landesantrag beantragt sein, der Bescheid des BAFA war nachzureichen und Voraussetzung für die Auszahlung",
+      "Landeszuschuss und Bundesförderung durften zusammen höchstens 60 % der förderfähigen Kosten erreichen",
+      "Anträge gab es nur in festen Antragsfenstern mit begrenzter Antragszahl",
+      "Antragsberechtigt waren Privatpersonen mit Erstwohnsitz in Schleswig-Holstein, ab August 2023 auch gemeinnützige Organisationen; Einbau durch ein Fachunternehmen, kein Vertragsabschluss vor dem Antrag",
+      "Nicht mit anderen Landesprogrammen kombinierbar",
+    ],
+    combinableWith: null,
+  },
+  "sh-speicher-klimaschutz-bub": {
+    // Read 21.09.2026 in the original: "Richtlinie zur Förderung von
+    // Batteriespeichern" as the state's CONSOLIDATED text (guideline of
+    // 08.06.2023 plus the amendment of 02.10.2023, Amtsblatt 2023 Nr. 43
+    // p. 2417; "Rechtliche Gültigkeit besitzen die jeweiligen
+    // Originalfassungen"). The June wording and what the amendment changed were
+    // NOT read; the conditions below are therefore the version from October
+    // 2023. No. 2.1 stationary battery systems; No. 3.1 natural persons with
+    // first residence in S-H, non-profits, freelancers, small/micro enterprises
+    // (No. 3.3 excludes fishery, aquaculture, primary agriculture); No. 4.1 at
+    // least 2 kWh usable; No. 4.2/4.4 coupling with a renewable generator of
+    // 3-30 kW(p) commissioned after 01.01.2022 (any renewable, not only PV; the
+    // 3 kW floor rules out balcony sets); No. 4.12 a binding offer sufficed if
+    // not yet installed; No. 7.2.7 "Mit der Maßnahme darf erst nach Zustellung
+    // des Zuwendungsbescheides begonnen werden"; No. 5.2.1 "bis zu 750,00 EUR";
+    // No. 5.2.2 "bis zu 1.500,00 EUR" for Bürgergeld/Grundsicherung/Wohngeld;
+    // No. 5.2.3 max 50 %; No. 5.3.3 no stacking with other state programmes.
+    // No. 8: in force 01.07.2023, valid "bis einschließlich 30.06.2024" unless
+    // extended. beginntIso is the first application window, not the entry into
+    // force: press release 15.08.2023 "Das Antragsfenster für die Förderung von
+    // Batteriespeichern wird am 22. August geöffnet" (350 applications that
+    // quarter). Stop: state page (updated 30.04.2024), 16.11.2023, "nicht
+    // fortzuführen". The 2024 S-H storage guideline for SMEs (EU regional fund)
+    // is a different programme, not a continuation. foerdert "pv": the catalog
+    // has no separate storage technique. Council 3/3 21.09.2026, corrections applied.
+    id: "sh-speicher-klimaschutz-bub", name: "Klimaschutz für Bürgerinnen und Bürger — Zuschuss für Batteriespeicher",
+    traeger: "Land Schleswig-Holstein, Bewilligung: Investitionsbank Schleswig-Holstein", level: "land", region: "Schleswig-Holstein", bundesland: "Schleswig-Holstein", agsCode: "01",
+    url: "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub", stand: "September 2026",
+    status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-08-22", endetIso: "2023-11-16",
+    eligibility: ["privat", "gewerblich"],
+    foerdert: ["pv"],
+    coveredCosts: "Anschaffung und Installation eines stationären Batteriespeichers (mindestens 2 kWh nutzbar), gekoppelt an eine Anlage für erneuerbaren Strom von 3 bis 30 kW",
+    rates: [{ label: "Zuschuss", value: "eingestellt — seit dem 16. November 2023 keine Anträge mehr; zuvor bis 750 €, bei Bürgergeld, Grundsicherung oder Wohngeld bis 1.500 €, höchstens die Hälfte der Kosten" }],
+    conditions: [
+      "Seit dem vorläufigen Stopp am 16. November 2023 sind keine Anträge mehr möglich; die Landesregierung hat beschlossen, das Programm nicht fortzuführen",
+      "Der Speicher musste mit einer Anlage für erneuerbaren Strom von 3 bis 30 kW gekoppelt sein, die nach dem 1. Januar 2022 in Betrieb ging und selbst nicht gefördert wurde; nach der Fassung ab Oktober 2023 genügte bei Antragstellung ein verbindliches Angebot für diese Anlage",
+      "Anträge gab es nur in festen Antragsfenstern mit begrenzter Antragszahl; das erste öffnete am 22. August 2023",
+      "Antragsberechtigt waren Privatpersonen mit Erstwohnsitz in Schleswig-Holstein, gemeinnützige Organisationen, Freiberufler sowie kleine und Kleinstunternehmen; ein Antrag je Haushalt",
+      "Einbau durch ein Fachunternehmen, nur neue Speicher; begonnen werden durfte erst nach Zustellung des Zuwendungsbescheids",
+      "Nicht mit anderen Landesprogrammen kombinierbar",
+    ],
+    combinableWith: null,
+  },
   "sh-balkon-klimaschutz-bub": {
     // Read 21.09.2026 in the original: guideline "Richtlinie zur Förderung von
     // Photovoltaik-Balkonanlagen" (Amtsblatt S-H 2023, Nr. 27, pp. 1581-1585;

@@ -292,9 +292,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Ihre Bedingungen hängen an Mieter/Eigentümer — eine Unterscheidung, die das
   // Modell (privat/gewerblich) nicht kennt. Erfassbar erst, wenn es sie kennt.
   "sachsen-balkon-eeus", "mv-mini-solaranlagen",
-  // Schleswig-Holstein state balcony grant, added 21.09.2026 as a closed programme
+  // Schleswig-Holstein state grants (balcony, heat pump, battery), added 21.09.2026 as closed programmes
   // (applications ended 16.11.2023). Nothing left to check against a system.
-  "sh-balkon-klimaschutz-bub",
+  "sh-balkon-klimaschutz-bub", "sh-waermepumpe-klimaschutz-bub", "sh-speicher-klimaschutz-bub",
   "berlin-solarplus", "stuttgart-solaroffensive", "karlsruhe-klimabonus",
   "regensburg-effizient", "wuerzburg-klimastadt", "darmstadt-pv",
   "badhomburg-energiespar", "koeln-pv", "duesseldorf-klimafreundlich",
