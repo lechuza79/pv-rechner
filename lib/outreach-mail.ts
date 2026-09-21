@@ -286,8 +286,16 @@ export function postfachBefund(
   // Verwaltung belegt ist. Das Kennzeichen allein reicht nicht mehr — es sagt
   // nur, dass die Domain nach Verwaltung aussieht, nicht, dass sie zu diesem
   // Ort gehört.
-  const belegt =
-    !!verwaltungDomain && domain.toLowerCase().endsWith(verwaltungDomain.trim().toLowerCase().replace(/^www\./, ""));
+  // Callers hand over the verified website as a full URL ("https://www.x.de")
+  // as often as a bare domain. Compared as a string, the URL never matched, and
+  // every enquiry to a shared administration was rejected (21.09.2026).
+  const belegteDomain = verwaltungDomain
+    ?.trim()
+    .toLowerCase()
+    .replace(/^[a-z]+:\/\//, "")
+    .replace(/[/?#].*$/, "")
+    .replace(/^www\./, "");
+  const belegt = !!belegteDomain && (domain === belegteDomain || domain.endsWith(`.${belegteDomain}`));
   if (!passt && !belegt) {
     return {
       ok: false,
