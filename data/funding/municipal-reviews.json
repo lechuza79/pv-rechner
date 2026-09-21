@@ -40212,5 +40212,494 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "07143001",
+    "name": "Alsbach",
+    "checkedAt": "2026-09-21T12:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Alsbach ist Ortsgemeinde der Verbandsgemeinde Ransbach-Baumbach, und die Verbandsgemeinde ist hier der Träger. Sie fördert 2026 erneut Balkonkraftwerke (bis 2.000 Wp Module, 800 W Wechselrichter) mit 200 € pauschal je Hausgrundstück bzw. Mieteinheit; Antrag vor dem Kauf, Vergabe nach Antragseingang im Rahmen der Haushaltsmittel; aufgenommen als ransbach-baumbach-balkonkraftwerke mit allen elf Gemeinden als Fördergebiet. Die übrigen eigenen Förderungen gelten Regenwasserzisternen und einer Vor-Ort-Energieberatung; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "ransbach-baumbach.de Klimaschutz, Abschnitt „Eigene Förderungen“ gelesen",
+      "Förderrichtlinie Mini-Solaranlage (März 2025) im Volltext gelesen",
+      "Gemeindeliste im Menü von ransbach-baumbach.de gelesen",
+      "Gemeindeschlüssel 07143001 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Richtlinie, 2 Seiten im Volltext gelesen: „einmalige Pauschalförderung von 200€ der Anschaffungskosten der Module - je Hausgrundstück bzw. Mieteinheit“ (§ 4); nur Geräte, die nach Erhalt der Förderzusage angeschafft wurden (§ 3 Abs. 1); „Eine Doppelförderung ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "finding": "„Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die Anschaffungskosten von Balkonkraftwerken … pauschal mit 200,00€“; Online-Antrag über das Serviceportal des Landes verlinkt; kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
+        "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      },
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      }
+    ]
+  },
+  {
+    "regionId": "07143006",
+    "name": "Breitenau",
+    "checkedAt": "2026-09-21T12:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Breitenau ist Ortsgemeinde der Verbandsgemeinde Ransbach-Baumbach, und die Verbandsgemeinde ist hier der Träger. Sie fördert 2026 erneut Balkonkraftwerke (bis 2.000 Wp Module, 800 W Wechselrichter) mit 200 € pauschal je Hausgrundstück bzw. Mieteinheit; Antrag vor dem Kauf, Vergabe nach Antragseingang im Rahmen der Haushaltsmittel; aufgenommen als ransbach-baumbach-balkonkraftwerke mit allen elf Gemeinden als Fördergebiet. Die übrigen eigenen Förderungen gelten Regenwasserzisternen und einer Vor-Ort-Energieberatung; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "ransbach-baumbach.de Klimaschutz, Abschnitt „Eigene Förderungen“ gelesen",
+      "Förderrichtlinie Mini-Solaranlage (März 2025) im Volltext gelesen",
+      "Gemeindeliste im Menü von ransbach-baumbach.de gelesen",
+      "Gemeindeschlüssel 07143006 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Richtlinie, 2 Seiten im Volltext gelesen: „einmalige Pauschalförderung von 200€ der Anschaffungskosten der Module - je Hausgrundstück bzw. Mieteinheit“ (§ 4); nur Geräte, die nach Erhalt der Förderzusage angeschafft wurden (§ 3 Abs. 1); „Eine Doppelförderung ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "finding": "„Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die Anschaffungskosten von Balkonkraftwerken … pauschal mit 200,00€“; Online-Antrag über das Serviceportal des Landes verlinkt; kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
+        "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      },
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      }
+    ]
+  },
+  {
+    "regionId": "07143007",
+    "name": "Caan",
+    "checkedAt": "2026-09-21T12:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Caan ist Ortsgemeinde der Verbandsgemeinde Ransbach-Baumbach, und die Verbandsgemeinde ist hier der Träger. Sie fördert 2026 erneut Balkonkraftwerke (bis 2.000 Wp Module, 800 W Wechselrichter) mit 200 € pauschal je Hausgrundstück bzw. Mieteinheit; Antrag vor dem Kauf, Vergabe nach Antragseingang im Rahmen der Haushaltsmittel; aufgenommen als ransbach-baumbach-balkonkraftwerke mit allen elf Gemeinden als Fördergebiet. Die übrigen eigenen Förderungen gelten Regenwasserzisternen und einer Vor-Ort-Energieberatung; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "ransbach-baumbach.de Klimaschutz, Abschnitt „Eigene Förderungen“ gelesen",
+      "Förderrichtlinie Mini-Solaranlage (März 2025) im Volltext gelesen",
+      "Gemeindeliste im Menü von ransbach-baumbach.de gelesen",
+      "Gemeindeschlüssel 07143007 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Richtlinie, 2 Seiten im Volltext gelesen: „einmalige Pauschalförderung von 200€ der Anschaffungskosten der Module - je Hausgrundstück bzw. Mieteinheit“ (§ 4); nur Geräte, die nach Erhalt der Förderzusage angeschafft wurden (§ 3 Abs. 1); „Eine Doppelförderung ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "finding": "„Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die Anschaffungskosten von Balkonkraftwerken … pauschal mit 200,00€“; Online-Antrag über das Serviceportal des Landes verlinkt; kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
+        "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07143009",
+    "name": "Deesen",
+    "checkedAt": "2026-09-21T12:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Deesen ist Ortsgemeinde der Verbandsgemeinde Ransbach-Baumbach, und die Verbandsgemeinde ist hier der Träger. Sie fördert 2026 erneut Balkonkraftwerke (bis 2.000 Wp Module, 800 W Wechselrichter) mit 200 € pauschal je Hausgrundstück bzw. Mieteinheit; Antrag vor dem Kauf, Vergabe nach Antragseingang im Rahmen der Haushaltsmittel; aufgenommen als ransbach-baumbach-balkonkraftwerke mit allen elf Gemeinden als Fördergebiet. Die übrigen eigenen Förderungen gelten Regenwasserzisternen und einer Vor-Ort-Energieberatung; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "ransbach-baumbach.de Klimaschutz, Abschnitt „Eigene Förderungen“ gelesen",
+      "Förderrichtlinie Mini-Solaranlage (März 2025) im Volltext gelesen",
+      "Gemeindeliste im Menü von ransbach-baumbach.de gelesen",
+      "Gemeindeschlüssel 07143009 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Richtlinie, 2 Seiten im Volltext gelesen: „einmalige Pauschalförderung von 200€ der Anschaffungskosten der Module - je Hausgrundstück bzw. Mieteinheit“ (§ 4); nur Geräte, die nach Erhalt der Förderzusage angeschafft wurden (§ 3 Abs. 1); „Eine Doppelförderung ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "finding": "„Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die Anschaffungskosten von Balkonkraftwerken … pauschal mit 200,00€“; Online-Antrag über das Serviceportal des Landes verlinkt; kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
+        "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "07143038",
+    "name": "Hundsdorf",
+    "checkedAt": "2026-09-21T12:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hundsdorf ist Ortsgemeinde der Verbandsgemeinde Ransbach-Baumbach, und die Verbandsgemeinde ist hier der Träger. Sie fördert 2026 erneut Balkonkraftwerke (bis 2.000 Wp Module, 800 W Wechselrichter) mit 200 € pauschal je Hausgrundstück bzw. Mieteinheit; Antrag vor dem Kauf, Vergabe nach Antragseingang im Rahmen der Haushaltsmittel; aufgenommen als ransbach-baumbach-balkonkraftwerke mit allen elf Gemeinden als Fördergebiet. Die übrigen eigenen Förderungen gelten Regenwasserzisternen und einer Vor-Ort-Energieberatung; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "ransbach-baumbach.de Klimaschutz, Abschnitt „Eigene Förderungen“ gelesen",
+      "Förderrichtlinie Mini-Solaranlage (März 2025) im Volltext gelesen",
+      "Gemeindeliste im Menü von ransbach-baumbach.de gelesen",
+      "Gemeindeschlüssel 07143038 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Richtlinie, 2 Seiten im Volltext gelesen: „einmalige Pauschalförderung von 200€ der Anschaffungskosten der Module - je Hausgrundstück bzw. Mieteinheit“ (§ 4); nur Geräte, die nach Erhalt der Förderzusage angeschafft wurden (§ 3 Abs. 1); „Eine Doppelförderung ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "finding": "„Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die Anschaffungskosten von Balkonkraftwerken … pauschal mit 200,00€“; Online-Antrag über das Serviceportal des Landes verlinkt; kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
+        "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      },
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      }
+    ]
+  },
+  {
+    "regionId": "07143050",
+    "name": "Nauort",
+    "checkedAt": "2026-09-21T12:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Nauort ist Ortsgemeinde der Verbandsgemeinde Ransbach-Baumbach, und die Verbandsgemeinde ist hier der Träger. Sie fördert 2026 erneut Balkonkraftwerke (bis 2.000 Wp Module, 800 W Wechselrichter) mit 200 € pauschal je Hausgrundstück bzw. Mieteinheit; Antrag vor dem Kauf, Vergabe nach Antragseingang im Rahmen der Haushaltsmittel; aufgenommen als ransbach-baumbach-balkonkraftwerke mit allen elf Gemeinden als Fördergebiet. Die übrigen eigenen Förderungen gelten Regenwasserzisternen und einer Vor-Ort-Energieberatung; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "ransbach-baumbach.de Klimaschutz, Abschnitt „Eigene Förderungen“ gelesen",
+      "Förderrichtlinie Mini-Solaranlage (März 2025) im Volltext gelesen",
+      "Gemeindeliste im Menü von ransbach-baumbach.de gelesen",
+      "Gemeindeschlüssel 07143050 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Richtlinie, 2 Seiten im Volltext gelesen: „einmalige Pauschalförderung von 200€ der Anschaffungskosten der Module - je Hausgrundstück bzw. Mieteinheit“ (§ 4); nur Geräte, die nach Erhalt der Förderzusage angeschafft wurden (§ 3 Abs. 1); „Eine Doppelförderung ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "finding": "„Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die Anschaffungskosten von Balkonkraftwerken … pauschal mit 200,00€“; Online-Antrag über das Serviceportal des Landes verlinkt; kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
+        "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      },
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      }
+    ]
+  },
+  {
+    "regionId": "07143059",
+    "name": "Oberhaid",
+    "checkedAt": "2026-09-21T12:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Oberhaid ist Ortsgemeinde der Verbandsgemeinde Ransbach-Baumbach, und die Verbandsgemeinde ist hier der Träger. Sie fördert 2026 erneut Balkonkraftwerke (bis 2.000 Wp Module, 800 W Wechselrichter) mit 200 € pauschal je Hausgrundstück bzw. Mieteinheit; Antrag vor dem Kauf, Vergabe nach Antragseingang im Rahmen der Haushaltsmittel; aufgenommen als ransbach-baumbach-balkonkraftwerke mit allen elf Gemeinden als Fördergebiet. Die übrigen eigenen Förderungen gelten Regenwasserzisternen und einer Vor-Ort-Energieberatung; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "ransbach-baumbach.de Klimaschutz, Abschnitt „Eigene Förderungen“ gelesen",
+      "Förderrichtlinie Mini-Solaranlage (März 2025) im Volltext gelesen",
+      "Gemeindeliste im Menü von ransbach-baumbach.de gelesen",
+      "Gemeindeschlüssel 07143059 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Richtlinie, 2 Seiten im Volltext gelesen: „einmalige Pauschalförderung von 200€ der Anschaffungskosten der Module - je Hausgrundstück bzw. Mieteinheit“ (§ 4); nur Geräte, die nach Erhalt der Förderzusage angeschafft wurden (§ 3 Abs. 1); „Eine Doppelförderung ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "finding": "„Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die Anschaffungskosten von Balkonkraftwerken … pauschal mit 200,00€“; Online-Antrag über das Serviceportal des Landes verlinkt; kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
+        "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      },
+      {
+        "url": "https://www.ransbach-baumbach.de/Kurzmen%C3%BC/Startseite/",
+        "finding": "Die alten Kurzmenü-Adressen (Förderung, Eigene Förderungen, Regenwassernutzung, Energieberatung) leiten am 21.09.2026 auf die Startseite um; die Programme stehen jetzt auf der Klimaschutzseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ransbach-baumbach.de/Kurzmen%C3%BC/Eigene-F%C3%B6rderungen.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse leitet auf die Startseite um; Inhalt auf der Klimaschutzseite",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/Kurzmen%C3%BC/Startseite/"
+      },
+      {
+        "url": "ransbach-baumbach.de/Kurzmen%C3%BC/F%C3%B6rderung-Regenwassernutzungsanlage.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse leitet auf die Startseite um; Inhalt auf der Klimaschutzseite",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/Kurzmen%C3%BC/Startseite/"
+      },
+      {
+        "url": "ransbach-baumbach.de/Kurzmen%C3%BC/F%C3%B6rderung-einer-Vor-Ort-Energieberatung-Wohngeb%C3%A4ude.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse leitet auf die Startseite um; Inhalt auf der Klimaschutzseite",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/Kurzmen%C3%BC/Startseite/"
+      },
+      {
+        "url": "ransbach-baumbach.de/Kurzmen%C3%BC/F%C3%B6rderung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse leitet auf die Startseite um; Inhalt auf der Klimaschutzseite",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/Kurzmen%C3%BC/Startseite/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143062",
+    "name": "Ransbach-Baumbach",
+    "checkedAt": "2026-09-21T12:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Ransbach-Baumbach ist Stadt und Sitz der Verbandsgemeinde Ransbach-Baumbach, und die Verbandsgemeinde ist hier der Träger. Sie fördert 2026 erneut Balkonkraftwerke (bis 2.000 Wp Module, 800 W Wechselrichter) mit 200 € pauschal je Hausgrundstück bzw. Mieteinheit; Antrag vor dem Kauf, Vergabe nach Antragseingang im Rahmen der Haushaltsmittel; aufgenommen als ransbach-baumbach-balkonkraftwerke mit allen elf Gemeinden als Fördergebiet. Die übrigen eigenen Förderungen gelten Regenwasserzisternen und einer Vor-Ort-Energieberatung; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "ransbach-baumbach.de Klimaschutz, Abschnitt „Eigene Förderungen“ gelesen",
+      "Förderrichtlinie Mini-Solaranlage (März 2025) im Volltext gelesen",
+      "Gemeindeliste im Menü von ransbach-baumbach.de gelesen",
+      "Gemeindeschlüssel 07143062 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Richtlinie, 2 Seiten im Volltext gelesen: „einmalige Pauschalförderung von 200€ der Anschaffungskosten der Module - je Hausgrundstück bzw. Mieteinheit“ (§ 4); nur Geräte, die nach Erhalt der Förderzusage angeschafft wurden (§ 3 Abs. 1); „Eine Doppelförderung ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "finding": "„Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die Anschaffungskosten von Balkonkraftwerken … pauschal mit 200,00€“; Online-Antrag über das Serviceportal des Landes verlinkt; kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
+        "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      },
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      }
+    ]
+  },
+  {
+    "regionId": "07143068",
+    "name": "Sessenbach",
+    "checkedAt": "2026-09-21T12:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Sessenbach ist Ortsgemeinde der Verbandsgemeinde Ransbach-Baumbach, und die Verbandsgemeinde ist hier der Träger. Sie fördert 2026 erneut Balkonkraftwerke (bis 2.000 Wp Module, 800 W Wechselrichter) mit 200 € pauschal je Hausgrundstück bzw. Mieteinheit; Antrag vor dem Kauf, Vergabe nach Antragseingang im Rahmen der Haushaltsmittel; aufgenommen als ransbach-baumbach-balkonkraftwerke mit allen elf Gemeinden als Fördergebiet. Die übrigen eigenen Förderungen gelten Regenwasserzisternen und einer Vor-Ort-Energieberatung; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "ransbach-baumbach.de Klimaschutz, Abschnitt „Eigene Förderungen“ gelesen",
+      "Förderrichtlinie Mini-Solaranlage (März 2025) im Volltext gelesen",
+      "Gemeindeliste im Menü von ransbach-baumbach.de gelesen",
+      "Gemeindeschlüssel 07143068 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Richtlinie, 2 Seiten im Volltext gelesen: „einmalige Pauschalförderung von 200€ der Anschaffungskosten der Module - je Hausgrundstück bzw. Mieteinheit“ (§ 4); nur Geräte, die nach Erhalt der Förderzusage angeschafft wurden (§ 3 Abs. 1); „Eine Doppelförderung ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "finding": "„Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die Anschaffungskosten von Balkonkraftwerken … pauschal mit 200,00€“; Online-Antrag über das Serviceportal des Landes verlinkt; kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
+        "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      },
+      {
+        "url": "https://sessenbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Dieselbe Richtlinie wie auf ransbach-baumbach.de (gleiche Dokumentnummer 3768.1216.1), Mini-Solaranlage 200 € pauschal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      },
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      },
+      {
+        "url": "sessenbach.de/loadDocument.phtml?FID=3768.1216.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Förderrichtlinie der Verbandsgemeinde",
+        "evidenceUrl": "https://sessenbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF"
+      }
+    ]
+  },
+  {
+    "regionId": "07143082",
+    "name": "Wirscheid",
+    "checkedAt": "2026-09-21T12:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Wirscheid ist Ortsgemeinde der Verbandsgemeinde Ransbach-Baumbach, und die Verbandsgemeinde ist hier der Träger. Sie fördert 2026 erneut Balkonkraftwerke (bis 2.000 Wp Module, 800 W Wechselrichter) mit 200 € pauschal je Hausgrundstück bzw. Mieteinheit; Antrag vor dem Kauf, Vergabe nach Antragseingang im Rahmen der Haushaltsmittel; aufgenommen als ransbach-baumbach-balkonkraftwerke mit allen elf Gemeinden als Fördergebiet. Die übrigen eigenen Förderungen gelten Regenwasserzisternen und einer Vor-Ort-Energieberatung; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "ransbach-baumbach.de Klimaschutz, Abschnitt „Eigene Förderungen“ gelesen",
+      "Förderrichtlinie Mini-Solaranlage (März 2025) im Volltext gelesen",
+      "Gemeindeliste im Menü von ransbach-baumbach.de gelesen",
+      "Gemeindeschlüssel 07143082 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Richtlinie, 2 Seiten im Volltext gelesen: „einmalige Pauschalförderung von 200€ der Anschaffungskosten der Module - je Hausgrundstück bzw. Mieteinheit“ (§ 4); nur Geräte, die nach Erhalt der Förderzusage angeschafft wurden (§ 3 Abs. 1); „Eine Doppelförderung ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "finding": "„Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die Anschaffungskosten von Balkonkraftwerken … pauschal mit 200,00€“; Online-Antrag über das Serviceportal des Landes verlinkt; kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
+        "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      },
+      {
+        "url": "https://www.ransbach-baumbach.de/Kurzmen%C3%BC/Startseite/",
+        "finding": "Die alten Kurzmenü-Adressen (Förderung, Eigene Förderungen, Regenwassernutzung, Energieberatung) leiten am 21.09.2026 auf die Startseite um; die Programme stehen jetzt auf der Klimaschutzseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ransbach-baumbach.de/Kurzmen%C3%BC/Eigene-F%C3%B6rderungen.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse leitet auf die Startseite um; Inhalt auf der Klimaschutzseite",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/Kurzmen%C3%BC/Startseite/"
+      },
+      {
+        "url": "ransbach-baumbach.de/Kurzmen%C3%BC/F%C3%B6rderung-Regenwassernutzungsanlage.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse leitet auf die Startseite um; Inhalt auf der Klimaschutzseite",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/Kurzmen%C3%BC/Startseite/"
+      },
+      {
+        "url": "ransbach-baumbach.de/Kurzmen%C3%BC/F%C3%B6rderung-einer-Vor-Ort-Energieberatung-Wohngeb%C3%A4ude.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse leitet auf die Startseite um; Inhalt auf der Klimaschutzseite",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/Kurzmen%C3%BC/Startseite/"
+      },
+      {
+        "url": "ransbach-baumbach.de/Kurzmen%C3%BC/F%C3%B6rderung.php",
+        "disposition": "replaced",
+        "reason": "Alte Adresse leitet auf die Startseite um; Inhalt auf der Klimaschutzseite",
+        "evidenceUrl": "https://www.ransbach-baumbach.de/Kurzmen%C3%BC/Startseite/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143084",
+    "name": "Wittgert",
+    "checkedAt": "2026-09-21T12:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Wittgert ist Ortsgemeinde der Verbandsgemeinde Ransbach-Baumbach, und die Verbandsgemeinde ist hier der Träger. Sie fördert 2026 erneut Balkonkraftwerke (bis 2.000 Wp Module, 800 W Wechselrichter) mit 200 € pauschal je Hausgrundstück bzw. Mieteinheit; Antrag vor dem Kauf, Vergabe nach Antragseingang im Rahmen der Haushaltsmittel; aufgenommen als ransbach-baumbach-balkonkraftwerke mit allen elf Gemeinden als Fördergebiet. Die übrigen eigenen Förderungen gelten Regenwasserzisternen und einer Vor-Ort-Energieberatung; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "ransbach-baumbach.de Klimaschutz, Abschnitt „Eigene Förderungen“ gelesen",
+      "Förderrichtlinie Mini-Solaranlage (März 2025) im Volltext gelesen",
+      "Gemeindeliste im Menü von ransbach-baumbach.de gelesen",
+      "Gemeindeschlüssel 07143084 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF",
+        "finding": "Richtlinie, 2 Seiten im Volltext gelesen: „einmalige Pauschalförderung von 200€ der Anschaffungskosten der Module - je Hausgrundstück bzw. Mieteinheit“ (§ 4); nur Geräte, die nach Erhalt der Förderzusage angeschafft wurden (§ 3 Abs. 1); „Eine Doppelförderung ist ausgeschlossen.“"
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "finding": "„Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die Anschaffungskosten von Balkonkraftwerken … pauschal mit 200,00€“; Online-Antrag über das Serviceportal des Landes verlinkt; kein Hinweis auf ausgeschöpfte Mittel."
+      },
+      {
+        "url": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Gemeinden/",
+        "finding": "Gemeinden: Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid, Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      },
+      {
+        "url": "ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz/Klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Verbandsgemeinde mit dem Balkonkraftwerk-Programm gelesen",
+        "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
+      }
+    ]
   }
 ]

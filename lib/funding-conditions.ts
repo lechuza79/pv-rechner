@@ -269,6 +269,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Monate nach dem Rechnungsdatum (§ 6 Abs. 1 und 2); das Formular lässt ihn
   // auch vorher zu. „Vor dem Kauf beantragen" als Pflicht wäre der falsche Test.
   "scharnebeck-steckersolar",
+  // Verbandsgemeinde Ransbach-Baumbach, aufgenommen am 21.09.2026. Antrag VOR
+  // dem Kauf: gefördert werden nur Geräte, die nach der Förderzusage
+  // angeschafft werden (Richtlinie § 3 Abs. 1). Die Bedingung steht wörtlich am
+  // Programm; die Prüfform folgt mit der nächsten Erfassungsrunde.
+  "ransbach-baumbach-balkonkraftwerke",
   // Kreis Pinneberg, aufgenommen am 21.09.2026. Das Vorhaben ist eine
   // Dachbegrünung, nicht eine Photovoltaikanlage — eine Prüfform, die eine
   // Anlage gegen ein Antragsverfahren hält, hat hier nichts zu prüfen. Die

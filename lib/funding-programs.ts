@@ -11408,6 +11408,74 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "ransbach-baumbach-balkonkraftwerke": {
+    id: "ransbach-baumbach-balkonkraftwerke", name: "Förderprogramm für Balkonkraftwerke der Verbandsgemeinde Ransbach-Baumbach",
+    traeger: "Verbandsgemeinde Ransbach-Baumbach", level: "kommune", region: "Verbandsgemeinde Ransbach-Baumbach",
+    bundesland: "Rheinland-Pfalz",
+    // FÖRDERGEBIET: the eleven municipalities as the Verbandsgemeinde's own
+    // menu lists them ("Gemeinden", ransbach-baumbach.de, read 21 Sep 2026):
+    // Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid,
+    // Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert - each key looked
+    // up singly in the population register. The shared prefix 07143 is the
+    // Westerwaldkreis and would be wrong. "Ransbach-Baumbach" here is the town
+    // 07143062, not the Verbandsgemeinde.
+    agsCodes: [
+      "07143001", "07143006", "07143007", "07143009", "07143038", "07143050",
+      "07143059", "07143062", "07143068", "07143082", "07143084",
+    ],
+    url: "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+    // Programme page and guideline read in full on 21 Sep 2026. The page
+    // (section "Eigene Förderungen: Förderprogramm für Balkonkraftwerke"):
+    // "Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die
+    // Anschaffungskosten von Balkonkraftwerken (Mini-Solaranlagen) mit einer
+    // maximalen Modulleistung von 2000Watt/peak und einer
+    // Wechselrichterleistung von maximal 800Watt pauschal mit 200,00€", once
+    // per household, with a live RLP online application form linked. The
+    // guideline it links ("Richtlinie über die Gewährung eines Zuschusses über
+    // Kauf und Inbetriebnahme einer Mini-Solaranlage", 2 pages, dated "im März
+    // 2025", link title "... 2026"):
+    // https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF
+    // § 4: "einmalige Pauschalförderung von 200€ der Anschaffungskosten der
+    // Module - je Hausgrundstück bzw. Mieteinheit."
+    //
+    // APPLY BEFORE BUYING - § 3 (1): "Es werden nur Geräte gefördert, die nach
+    // dem Erhalt der Förderzusage angeschafft wurden. Bestehende, bereits
+    // bestellte oder gekaufte Anlagen werden nicht gefördert." First come,
+    // first served by date of receipt, within the budget of the year.
+    //
+    // combinableWith IS EMPTY ON PURPOSE: § 3 (1) "Eine Doppelförderung ist
+    // ausgeschlossen." The clause does not say whether it means any other
+    // public money or only a second grant from the Verbandsgemeinde; the
+    // cautious reading is the one that does not stack. No federal or state
+    // balcony grant exists in Rhineland-Palatinate today, so the reading
+    // changes no amount.
+    //
+    // NO beginntIso: the guideline carries only its signing month (March
+    // 2025) and the page says "erneut", so the programme is older than this
+    // version; a date would read as the programme start. No "ausgeschöpft"
+    // notice on 21 Sep 2026.
+    //
+    // THE VERBANDSGEMEINDE'S OTHER GRANTS ARE NOT IN SCOPE: rainwater cisterns
+    // (up to 150 EUR, KIPKI money) and an on-site energy advice for dwellings.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Pauschaler Zuschuss zum Kauf eines Balkonkraftwerks",
+    maxFoerderung: "200 € je Haushalt",
+    balkonPauschale: 200,
+    rates: [
+      { label: "Balkonkraftwerk", value: "200 € pauschal je Hausgrundstück bzw. Mieteinheit", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Vor dem Kauf beantragen: Gefördert werden nur Geräte, die nach Erhalt der Förderzusage angeschafft werden — bereits bestellte oder gekaufte Anlagen sind ausgeschlossen",
+      "Antragsberechtigt sind Hauseigentümer und Mieter von Wohnraum in der Verbandsgemeinde; laut Programmseite brauchen Mieter die Zustimmung des Vermieters",
+      "Höchstens 2.000 Wp Modulleistung und 800 W Wechselrichterleistung; gefördert werden frei aufgestellte und fest montierte Anlagen",
+      "Einmal je Haushalt — die Richtlinie nennt als Bezug zugleich „je Hausgrundstück bzw. Mieteinheit“; eine Doppelförderung ist ausgeschlossen",
+      "Ausgezahlt wird nach Vorlage der Rechnung, eines Fotos der installierten Anlage und des Nachweises der Anmeldung im Marktstammdatenregister",
+      "Kein Rechtsanspruch; vergeben wird im Rahmen der jährlichen Haushaltsmittel nach der Reihenfolge des Antragseingangs",
+    ],
+    combinableWith: [],
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
