@@ -123,8 +123,8 @@ export function pvRechnerFaq(): FaqEntry[] {
     {
       q: "Wie groß sollte meine PV-Anlage sein?",
       a: "Als Faustregel passt die Anlage zu deinem Jahresverbrauch und der Dachfläche — mehr Verbrauch durch Wärmepumpe oder E-Auto rechtfertigt eine größere Anlage. Wenn du unsicher bist, welche Größe zu Haushalt und Dach passt, führt dich die Empfehlung Schritt für Schritt zur optimalen Auslegung.",
-      links: [{ phrase: "die Empfehlung", href: "/pv-bedarf-berechnen" }],
-      cta: { label: "Passende Größe finden", href: "/pv-bedarf-berechnen" },
+      links: [{ phrase: "die Empfehlung", href: "/photovoltaik-rechner" }],
+      cta: { label: "Passende Größe finden", href: "/photovoltaik-rechner" },
     },
     {
       q: "Lohnt sich Photovoltaik zusammen mit einer Wärmepumpe?",
@@ -233,7 +233,7 @@ export function pvSimulationFaq(): FaqEntry[] {
       a: "Wenig — sie zeigt die Momentleistung, nicht die Wirtschaftlichkeit. Ob sich eine Anlage lohnt, hängt von Jahresertrag, Eigenverbrauch, Kosten und Strompreis ab. Dafür gibt es den Photovoltaik-Rechner mit Amortisation, Rendite und Szenarien, und die Empfehlung, wenn du noch keine Anlagengröße im Kopf hast.",
       links: [
         { phrase: "Photovoltaik-Rechner", href: "/photovoltaik-rechner" },
-        { phrase: "die Empfehlung", href: "/pv-bedarf-berechnen" },
+        { phrase: "die Empfehlung", href: "/photovoltaik-rechner" },
       ],
       cta: { label: "Lohnt sich PV für mich?", href: "/photovoltaik-rechner" },
     },
@@ -265,8 +265,8 @@ export function pvSpeicherFaq(prices?: PriceConfig): FaqEntry[] {
       // führend sein". Wo Text und Rechnung auseinandergehen, weicht der Text —
       // festgehalten von `lib/__tests__/faq-gegen-werkzeug.test.ts`.
       a: "Das hängt weniger am Haus als am Verbrauch: Ein Speicher lohnt sich erst, wenn abends und nachts genug Strom gebraucht wird, um ihn wieder zu leeren. Bei einem kleinen Haushalt ohne Wärmepumpe und ohne E-Auto ist das oft gar nicht der Fall — dann rechnet sich die Anlage ohne Speicher besser. Kommen große Verbraucher dazu, ändert sich das schnell. Ab einer gewissen Größe bringt mehr Kapazität ohnehin kaum noch etwas: Der Speicher ist im Sommer voll, und im Winter fehlt die Sonne zum Laden. Die Empfehlung rechnet die wirtschaftlich sinnvolle Kombination aus Anlagengröße und Speicher für deinen Haushalt durch.",
-      links: [{ phrase: "Die Empfehlung", href: "/pv-bedarf-berechnen" }],
-      cta: { label: "Passende Größe finden", href: "/pv-bedarf-berechnen" },
+      links: [{ phrase: "Die Empfehlung", href: "/photovoltaik-rechner" }],
+      cta: { label: "Passende Größe finden", href: "/photovoltaik-rechner" },
     },
     {
       q: "Wie lange hält ein Batteriespeicher?",

@@ -648,10 +648,10 @@ export default async function LohntSichPvMitSpeicherPage() {
             Annahmen sind im Ergebnis sichtbar und anpassbar.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/photovoltaik-rechner" style={S.ctaButton}>
+            <Link href="/photovoltaik-rechner?direkt=1" style={S.ctaButton}>
               Anlage mit Speicher rechnen →
             </Link>
-            <Link href="/pv-bedarf-berechnen" style={S.ctaSecondary}>
+            <Link href="/photovoltaik-rechner" style={S.ctaSecondary}>
               Was passt zu mir?
             </Link>
           </div>

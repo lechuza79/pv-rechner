@@ -128,7 +128,7 @@ export default async function FachbetriebSeite(props: {
              sieben Config-Modulen, die im Browser-Bündel nichts zu suchen
              haben. Es ist der Stand des Empfehlungswegs — den zeigt diese
              Seite als Erstes. */
-          stand={standSeite("/pv-bedarf-berechnen")}
+          stand={standSeite("/photovoltaik-rechner")}
         />
       </div>
     </div>

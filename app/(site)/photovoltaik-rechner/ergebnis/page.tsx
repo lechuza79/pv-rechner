@@ -53,7 +53,7 @@ export async function generateMetadata(props: {
   // die interne Umschreib-Adresse tauchte in Suchergebnissen auf.
   return pageMetadata({
     path: "/photovoltaik-rechner",
-    title: "Photovoltaik-Rechner – Amortisation & Rendite sofort berechnen",
+    title: "Photovoltaik-Rechner: Amortisation & Rendite berechnen",
     description:
       "Kostenloser Photovoltaik-Rechner: Amortisation, Rendite und Eigenverbrauch sofort berechnen — ohne Anmeldung, ohne Verkaufsanrufe. Alle Annahmen transparent editierbar.",
     ogTitle: "Photovoltaik-Rechner – Lohnt sich PV?",

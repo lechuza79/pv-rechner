@@ -6,7 +6,7 @@ import Waermepumpe from "./waermepumpe";
 
 export const metadata: Metadata = pageMetadata({
   path: "/waermepumpe-rechner",
-  title: "Wärmepumpen-Rechner – Stromverbrauch, Kosten & Ersparnis berechnen",
+  title: "Wärmepumpen-Rechner: Stromverbrauch, Kosten & Ersparnis",
   // Genannt werden nur Stellen, von denen wirklich eine Zahl stammt: Fraunhofer
   // ISE liefert die Jahresarbeitszahlen, die Verbraucherzentrale RLP die
   // Investitionskosten (Auswertung von 160 Angeboten, Volltext in docs/quellen).

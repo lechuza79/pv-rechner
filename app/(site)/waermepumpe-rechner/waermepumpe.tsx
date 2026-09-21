@@ -710,11 +710,11 @@ export default function Waermepumpe({
         {!embedded && (
           <div style={{ textAlign: "center", marginBottom: 24 }}>
             <h1 style={{}}>
-              {isResult ? "Deine Wärmepumpen-Prognose" : "Lohnt sich eine Wärmepumpe?"}
+              {isResult ? "Deine Wärmepumpen-Prognose" : "Wärmepumpen-Rechner"}
             </h1>
             {!isResult && (
               <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
-                Fünf Fragen, ehrlich berechnet. Keine Anmeldung.
+                Lohnt sich eine Wärmepumpe für dich? Fünf Fragen, ehrlich berechnet, keine Anmeldung.
               </p>
             )}
           </div>

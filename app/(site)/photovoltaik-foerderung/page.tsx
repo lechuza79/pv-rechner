@@ -14,7 +14,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = pageMetadata({
   path: "/photovoltaik-foerderung",
-  title: `PV-Förderung ${new Date().getFullYear()} – Übersicht aller Programme nach Bundesland`,
+  title: `Photovoltaik-Förderung ${new Date().getFullYear()}: alle Programme nach Bundesland`,
   description:
     "Welche Förderung gibt es für Photovoltaik und Batteriespeicher? Übersicht der Programme von Bund, Ländern und Kommunen — mit Beträgen, Bedingungen und Status.",
   ogImageTitle: "PV-Förderung im Überblick",
@@ -109,9 +109,9 @@ export default async function FoerderungPage() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <h1 style={S.h1}>PV-Förderung im Überblick</h1>
+        <h1 style={S.h1}>Photovoltaik-Förderung im Überblick</h1>
         <p style={S.intro}>
-          Förderung für Photovoltaik und Speicher gibt es auf drei Ebenen: Bund, Land und Kommune.
+          Photovoltaik-Förderung gibt es auf drei Ebenen: Bund, Land und Kommune — für die Anlage selbst und oft auch für den Speicher.
           Die Programme lassen sich meist <strong style={{ color: v("--color-text-primary"), fontWeight: 600 }}>miteinander kombinieren</strong>,
           die kommunalen Töpfe sind aber oft gedeckelt. Der Antrag muss in der Regel <strong style={{ color: v("--color-text-primary"), fontWeight: 600 }}>vor dem Kauf oder der Montage</strong> gestellt werden.
         </p>

@@ -46,7 +46,6 @@ const RECHNER_ITEMS: NavItem[] = [
   // auf jeder Seite des Clusters zwei Menüpunkte, und man sähe nicht mehr, wo
   // die Seite hängt.
   { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Steckersolar für Miete und Eigentum", page: "balkon-rechner", zweitnennung: true },
-  { href: "/pv-bedarf-berechnen", label: "PV-Bedarf berechnen", desc: "Welche Anlage passt zu mir?", page: "empfehlung" },
   { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge im Tagesverlauf", page: "simulation" },
 ];
 
@@ -151,7 +150,6 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     // NICHT, weil hier nur auf das Präfix /ratgeber geprüft wurde. Über die
     // Registry gilt es automatisch auch für jeden künftigen Ratgeber.
     pathname.startsWith("/ratgeber") || ratgeberBySlug(pathname) ? "ratgeber" :
-    pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""
   );
   const [menuOpen, setMenuOpen] = useState(false);

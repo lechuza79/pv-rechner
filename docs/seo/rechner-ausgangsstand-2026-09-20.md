@@ -148,3 +148,21 @@ Seitentext **gar nicht vor** — 860 Woerter ueber Photovoltaik ohne ein einzige
  }
 ]
 ```
+
+## Nachtrag 2026-09-21: Förderseiten, Suchvolumen, Konkurrenz
+
+Suchvolumen aus Google Ads (DataForSEO), Deutschland, Jahresmittel. Monat für Monat
+geprüft: stabil, kein einzelner Ausschlag. Die Werte sind gerundet (Google liefert
+nur Stufen).
+
+| Seite | Zielbegriff | Suchen/Monat | im Titel | in der Überschrift | im Text | unsere Position | wer vorn steht |
+|---|---|---|---|---|---|---|---|
+| `/photovoltaik-foerderung` | photovoltaik förderung | 6.600 | nein | nein | 3× | 57 | KfW, Sparkasse, E.ON, NRW-Tool, NBank |
+| `/ratgeber/waermepumpe-foerderung` | wärmepumpe förderung | 33.100 | ja | ja | 9× | nie erschienen | KfW (2×), Klimaschutz Nds., Bosch, tagesschau, BWP, BAFA |
+| `/balkonkraftwerk/foerderung` | balkonkraftwerk förderung | 880 | ja | ja | 19× | 76 | Finanztip, SAB Sachsen, thega, co2online, Stadt München |
+| `/einspeiseverguetung-tabelle` | einspeisevergütung 2026 | 18.100 | ja | ja | 1× | nie erschienen (Seite selbst Ø 8,6 auf Nebenbegriffen) | photovoltaik.org, Bundesnetzagentur, Solarwatt, ADAC |
+
+Alle vier Seiten sind indexiert, Kanonisierung stimmt (Index-Status 2026-09-21).
+Der Wärmepumpen-Förder-Ratgeber hat den Begriff in Titel, Überschrift und 9× im
+Text und erscheint auf dem 33.100er-Begriff trotzdem nie. Dort ist die Wortwahl
+NICHT der Grund; das Feld gehört KfW, BAFA und Nachrichtenseiten.

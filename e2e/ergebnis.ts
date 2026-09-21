@@ -55,7 +55,7 @@ export const ERGEBNISSE: ErgebnisUnterTest[] = [
   },
   {
     name: "PV-Bedarf / Empfehlung",
-    pfad: "/pv-bedarf-berechnen?view=ergebnis&haus=efh&dach=satteldach&az=sued&personen=4",
+    pfad: "/photovoltaik-rechner?view=ergebnis&haus=efh&dach=satteldach&az=sued&personen=4",
     enthaelt: "Die Empfehlung basiert auf",
     kernzahlen: [/([\d.,]+)\s*kWp/, /Amortisation in ca\.\s*([\d.,]+)/, /Gewinn nach 25 Jahren:\s*\+?([\d.,]+)/],
   },

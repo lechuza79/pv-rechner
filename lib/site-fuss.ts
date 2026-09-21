@@ -33,8 +33,8 @@ export const FUSS_GRUPPEN: FussGruppe[] = [
   {
     titel: "Rechner",
     links: [
-      { href: "/pv-bedarf-berechnen", label: "PV-Anlage planen" },
-      { href: "/photovoltaik-rechner", label: "PV durchrechnen" },
+      { href: "/photovoltaik-rechner", label: "PV-Anlage planen" },
+      { href: "/photovoltaik-rechner?direkt=1", label: "PV durchrechnen" },
       { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk" },
       { href: "/waermepumpe-rechner", label: "Wärmepumpe" },
       { href: "/klimaanlage-stromkosten", label: "Klimaanlage" },

@@ -47,6 +47,7 @@ export default function DachField({
   setBearbeitet,
   hinweis,
   onWeissNicht,
+  karten = false,
 }: {
   dachartIdx: number | null;
   setDachartIdx: (i: number) => void;
@@ -68,6 +69,10 @@ export default function DachField({
   hinweis?: string;
   /** Gesetzt → „Weiß ich nicht" erscheint. Im Ergebnis weglassen. */
   onWeissNicht?: () => void;
+  /** Dachform und Ausrichtung als Karten mit Erklärung statt als schmale
+   *  Knöpfe — für den Frage-Flow, in dem sie Hauptfragen sind. In der
+   *  Verfeinerung des Ergebnisses bleibt es bei der schmalen Fassung. */
+  karten?: boolean;
 }) {
   const hat = (k: string) => beantwortet.has(k);
   const stufen = neigungsStufen(dachartIdx);
@@ -136,6 +141,7 @@ export default function DachField({
             markiereBeantwortet(F_FORM);
           }}
           render={d => d.label}
+          sub={karten ? d => d.sub : undefined}
         />
       </AccordionField>
 
@@ -161,10 +167,13 @@ export default function DachField({
             markiereBeantwortet(F_AUSRICHTUNG);
           }}
           render={o => o.label}
+          sub={karten ? o => AUSRICHTUNG_SUB[o.key] : undefined}
         />
-        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-faint"), marginTop: space.sm, lineHeight: 1.5 }}>
-          {ausrichtung ? AUSRICHTUNG_SUB[ausrichtung] : "Wohin zeigt die Fläche mit den Modulen?"}
-        </div>
+        {!karten && (
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-faint"), marginTop: space.sm, lineHeight: 1.5 }}>
+            {ausrichtung ? AUSRICHTUNG_SUB[ausrichtung] : "Wohin zeigt die Fläche mit den Modulen?"}
+          </div>
+        )}
       </AccordionField>
 
       {hat(F_AUSRICHTUNG) && stufen.length > 0 && (

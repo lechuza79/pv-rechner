@@ -124,7 +124,10 @@ const nextConfig = {
       { source: "/balkonkraftwerk/anmelden", destination: "/balkonkraftwerk/ratgeber/anmelden", permanent: true },
       { source: "/waermepumpe", destination: "/waermepumpe-rechner", permanent: true },
       { source: "/energie", destination: "/strommix-deutschland", permanent: true },
-      { source: "/empfehlung", destination: "/pv-bedarf-berechnen", permanent: true },
+      { source: "/empfehlung", destination: "/photovoltaik-rechner", permanent: true },
+      // Seit 21.09.2026 wohnt der Empfehlungsweg unter der Rechner-Adresse.
+      // Seine Parameter (haus, dach, az …) reisen mit und werden dort gelesen.
+      { source: "/pv-bedarf-berechnen", destination: "/photovoltaik-rechner", permanent: true },
       { source: "/simulation", destination: "/pv-simulation", permanent: true },
       { source: "/embed-demo", destination: "/energie-widgets", permanent: true },
       // Ratgeber unter /ratgeber/ gebündelt (Slug-Umstellung Juli 2026) — alte flache Pfade dauerhaft umleiten

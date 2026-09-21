@@ -297,7 +297,13 @@ async function gehe(
     // Zuständen weiterläuft, prüft etwas, das kein Nutzer je sieht.
     await oeffne(page, flowPfad, startKnopf);
     for (const vorher of pfad) {
-      if (vorher === VORBELEGT) await fuelleFelder(page);
+      if (vorher === VORBELEGT) {
+        // Ein „vorbelegter" Schritt kann Akkordeon-Fragen tragen, von denen
+        // eine Pflicht ist (Haustyp im Empfehlungsweg seit 21.09.2026). Ohne
+        // sie hier mitzubeantworten, bliebe Weiter beim Nachspielen gesperrt.
+        await fuelleFelder(page);
+        await uebrigeFragenBeantworten(page);
+      }
       else {
         await waehle(page, vorher);
         await uebrigeFragenBeantworten(page);

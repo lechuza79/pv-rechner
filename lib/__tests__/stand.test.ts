@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { STAND, standGeprueftIso, standLastModIso, monatJahr, tagMonatJahr } from "../stand";
+import { STAND, standSeite, standGeprueftIso, standLastModIso, monatJahr, tagMonatJahr } from "../stand";
+import { PRUEFSTAND } from "../pruefstand";
+import { istAktuell } from "../stand-format";
 import { DEFAULT_BALKON_CONFIG, BALKON_RECHT } from "../balkon-config";
 import { DEFAULT_AIRCON_CONFIG } from "../aircon-config";
 import { DEFAULT_HEATPUMP_CONFIG } from "../heatpump-config";
@@ -292,5 +294,37 @@ describe("Stand-Zeile: Formulierung", () => {
   it("schreibt Monat und Tag aus, statt ISO zu zeigen", () => {
     expect(monatJahr("2026-07")).toBe("Juli 2026");
     expect(tagMonatJahr("2026-08-16")).toBe("16. August 2026");
+  });
+});
+
+// „aktuell" ist eine Werbeaussage auf jeder Rechner-Seite (§ 5 UWG). Sie darf
+// nur an einer Frist hängen, die es wirklich gibt — der aus dem Prüfstand, gegen
+// die auch `npm run stand:faellig` meldet —, und muss nach ihr verschwinden.
+describe("Stand-Zeile: die Auszeichnung „aktuell“", () => {
+  it("jede taggenaue Zeile nennt ihr Prüfdatum im Prüfstand, und es ist dasselbe Datum", () => {
+    for (const [pfad, seite] of Object.entries(STAND)) {
+      for (const e of seite.eintraege.filter(x => x.praezision === "tag")) {
+        const pruef = PRUEFSTAND.find(p => p.feld === e.feld);
+        expect(pruef, `${pfad}: „${e.was}" ohne Eintrag im Prüfstand`).toBeDefined();
+        expect(pruef!.geprueftIso, `${pfad}: „${e.was}" zeigt ein anderes Datum als der Prüfstand`).toBe(e.iso);
+      }
+    }
+  });
+
+  it("gilt bis zum letzten Tag der Frist und keinen Tag länger", () => {
+    const e = standSeite("/photovoltaik-rechner")!.eintraege[0];
+    const frist = PRUEFSTAND.find(p => p.feld === e.feld)!.maxAlterTage;
+    const letzter = new Date(`${e.iso}T12:00:00Z`);
+    letzter.setUTCDate(letzter.getUTCDate() + frist);
+    const letzterIso = letzter.toISOString().slice(0, 10);
+    const danach = new Date(letzter);
+    danach.setUTCDate(danach.getUTCDate() + 1);
+    expect(istAktuell(e, e.iso)).toBe(true);
+    expect(istAktuell(e, letzterIso)).toBe(true);
+    expect(istAktuell(e, danach.toISOString().slice(0, 10))).toBe(false);
+  });
+
+  it("ohne Frist gibt es keine Auszeichnung", () => {
+    expect(istAktuell({ was: "x", iso: "2026-08-01", praezision: "tag" }, "2026-08-01")).toBe(false);
   });
 });

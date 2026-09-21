@@ -27,7 +27,7 @@ const JAHR = new Date().getFullYear();
 
 export const metadata: Metadata = pageMetadata({
   path: "/balkonkraftwerk/foerderung",
-  title: `Balkonkraftwerk-Förderung ${JAHR}: Welche Kommunen zahlen einen Zuschuss?`,
+  title: `Balkonkraftwerk-Förderung ${JAHR}: Welche Kommunen zahlen?`,
   description:
     "Kommunale Zuschüsse für Balkonkraftwerke, nach Bundesland sortiert: wer fördert, wie viel es für ein übliches Set gibt und wann zuletzt geprüft wurde. Vom Bund gibt es keine Förderung.",
   ogImageTitle: "Balkonkraftwerk-Förderung",

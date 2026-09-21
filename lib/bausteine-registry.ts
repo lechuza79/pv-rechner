@@ -601,7 +601,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Icons"],
   },
   // ─── Weitere Bausteine ─────────────────────────────────────────────────────
   {

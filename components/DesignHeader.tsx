@@ -6,7 +6,7 @@ import './DesignHeader.css';
 import Logo from './Logo';
 
 const groups = [
-  { title: 'Rechner', links: [['Passende PV-Anlage finden', '/pv-bedarf-berechnen'], ['PV-Anlage durchrechnen', '/photovoltaik-rechner'], ['Balkonkraftwerk', '/balkonkraftwerk/rechner'], ['Wärmepumpe', '/waermepumpe-rechner'], ['Klimaanlage', '/klimaanlage-stromkosten'], ['Einspeisevergütung', '/einspeiseverguetung-rechner']] },
+  { title: 'Rechner', links: [['Passende PV-Anlage finden', '/photovoltaik-rechner'], ['PV-Anlage durchrechnen', '/photovoltaik-rechner?direkt=1'], ['Balkonkraftwerk', '/balkonkraftwerk/rechner'], ['Wärmepumpe', '/waermepumpe-rechner'], ['Klimaanlage', '/klimaanlage-stromkosten'], ['Einspeisevergütung', '/einspeiseverguetung-rechner']] },
   { title: 'Förderung', links: [['Photovoltaik', '/photovoltaik-foerderung'], ['Balkonkraftwerk', '/balkonkraftwerk/foerderung'], ['Wärmepumpe', '/ratgeber/waermepumpe-foerderung']] },
   { title: 'Themen & Ratgeber', links: [['Alle Ratgeber', '/ratgeber'], ['Balkonkraftwerk', '/balkonkraftwerk']] },
   { title: 'Energiemonitor', links: [['Strommix Deutschland', '/strommix-deutschland'], ['Live-Simulation', '/pv-simulation'], ['Energie-Widgets', '/energie-widgets']] },

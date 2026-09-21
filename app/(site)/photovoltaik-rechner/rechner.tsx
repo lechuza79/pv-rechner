@@ -18,6 +18,7 @@ import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN, LEISTE_SENDEN } from "../..
 // Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
 // components/GebaeudeField.
 import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NATIONAL_AVG_YIELD, EINSPEISESATZ_MAX_CT, type Heizsystem } from "../../../lib/constants";
+import { DIREKT_KEY } from "../../../lib/share-keys";
 import { estimateCost, calcEigenverbrauch, calcEigenverbrauchExakt, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramFloatOrNull, paramStr, vollEinspeisungGesperrt } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS, BATTERY_ROUNDTRIP } from "../../../lib/pv-sim";
 import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge, heatPumpScenarioAdj } from "../../../lib/heatpump";
@@ -103,7 +104,9 @@ export default function PVRechner({
   // 'er' (Ertrag) und 'plz' sind reine Vorbefüll-Hinweise (z.B. von einer
   // regionalen Landingpage): sie seeden State, dürfen aber NICHT direkt ins
   // Ergebnis springen — das tut nur eine echte Konfiguration (a/s/p/n/…).
-  const RESULT_KEYS = SHARE_KEYS.filter(k => k !== "er" && k !== "plz" && k !== "foe");
+  // `direkt` öffnet nur die Direkteingabe statt des Empfehlungswegs und
+  // beginnt deshalb bei der ersten Frage.
+  const RESULT_KEYS = SHARE_KEYS.filter(k => k !== "er" && k !== "plz" && k !== "foe" && k !== DIREKT_KEY);
   const hasShare = !!initialParams && RESULT_KEYS.some(k => k in initialParams);
 
   // 5, nicht 4: Der Dach-Schritt ist inzwischen dazugekommen (Parallel-Session).
@@ -966,10 +969,10 @@ export default function PVRechner({
                 darunter eine zweite Ansage und liest sich als unsere Werbung auf
                 seiner Seite. Im Ergebnis genügt dort die Überschrift. */}
             <h1 style={{ color: v('--color-text-primary') }}>
-              {partner ? (isResult ? "Dein Ergebnis" : "Deine Anlage berechnen") : "Lohnt sich Photovoltaik?"}
+              {partner ? (isResult ? "Dein Ergebnis" : "Deine Anlage berechnen") : "PV-Rechner"}
             </h1>
             {!partner && (
-              <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
+              <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>Lohnt sich Photovoltaik für dich? Direktes Ergebnis, ohne Anmeldung, ohne Verkaufsanrufe.</p>
             )}
           </div>
         )}

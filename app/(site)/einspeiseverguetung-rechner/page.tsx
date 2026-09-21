@@ -14,7 +14,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = pageMetadata({
   path: "/einspeiseverguetung-rechner",
-  title: `Einspeisevergütung-Rechner ${new Date().getFullYear()} – aktueller Satz & Jahresvergütung`,
+  title: `Einspeisevergütung-Rechner ${new Date().getFullYear()}: Satz & Jahresbetrag`,
   description:
     "Wie viel bringt die Einspeisevergütung? Aktuelle EEG-Sätze für Teil- und Volleinspeisung, historische Sätze für Bestandsanlagen seit 2012 und die geschätzte Jahresvergütung — kostenlos, ohne Anmeldung.",
   ogImageTitle: "Was bringt die Einspeisevergütung?",

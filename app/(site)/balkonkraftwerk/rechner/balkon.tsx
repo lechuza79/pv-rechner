@@ -372,11 +372,11 @@ export default function Balkon() {
       <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <h1 style={{}}>
-            {isResult ? "Deine Empfehlung" : "Lohnt sich ein Balkonkraftwerk?"}
+            {isResult ? "Deine Empfehlung" : "Balkonkraftwerk-Rechner"}
           </h1>
           {!isResult && (
             <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
-              Für Miete und Eigentum ohne eigenes Dach. Wir empfehlen dir die passende Größe — mit oder ohne Speicher.
+              Lohnt sich ein Balkonkraftwerk für dich? Für Miete und Eigentum ohne eigenes Dach — wir empfehlen dir die passende Größe, mit oder ohne Speicher.
             </p>
           )}
         </div>

@@ -198,7 +198,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: BASE_URL, changeFrequency: "monthly", priority: 1 },
     { url: `${BASE_URL}/photovoltaik-rechner`, lastModified: rechnerStand("/photovoltaik-rechner"), changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/pv-bedarf-berechnen`, lastModified: rechnerStand("/pv-bedarf-berechnen"), changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/waermepumpe-rechner`, lastModified: rechnerStand("/waermepumpe-rechner"), changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/klimaanlage-stromkosten`, lastModified: rechnerStand("/klimaanlage-stromkosten"), changeFrequency: "monthly", priority: 0.8 },
     // Themen-Einstieg des Balkon-Clusters — die Wurzel, unter der Rechner und

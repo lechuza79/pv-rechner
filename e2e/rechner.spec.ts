@@ -8,10 +8,13 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Rechner flow", () => {
   test("clicks through 5 steps and lands on a result with payback info", async ({ page }) => {
-    await page.goto("/photovoltaik-rechner");
+    // Die Direkteingabe: Die nackte Adresse zeigt seit 21.09.2026 den Empfehlungsweg.
+    await page.goto("/photovoltaik-rechner?direkt=1");
 
     // Step 0: Anlagengröße — pick the standard 10 kWp option
-    await expect(page.getByRole("heading", { name: /Lohnt sich Photovoltaik/i })).toBeVisible();
+    // The page heading carries the search term the page ranks for ("PV-Rechner");
+    // the question moved into the line below it (SEO pass, 21.09.2026).
+    await expect(page.getByRole("heading", { level: 1, name: /PV-Rechner/i })).toBeVisible();
     await page.getByText("10 kWp", { exact: false }).first().click();
     await page.getByRole("button", { name: /weiter/i }).click();
 

@@ -216,11 +216,11 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
       <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <h1 style={{}}>
-            {isResult ? "Deine Klimaanlage im Betrieb" : "Was kostet eine Klimaanlage?"}
+            {isResult ? "Deine Klimaanlage im Betrieb" : "Was kostet eine Klimaanlage an Strom?"}
           </h1>
           {!isResult && (
             <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
-              Stromverbrauch, Kosten und CO₂ — ehrlich aus Wetterdaten. Ohne Anmeldung.
+              Die Stromkosten deiner Klimaanlage, Verbrauch und CO₂ — ehrlich aus Wetterdaten. Ohne Anmeldung.
             </p>
           )}
         </div>

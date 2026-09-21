@@ -686,7 +686,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           ]}
           conItems={[
             { term: "Volleinspeisung", desc: <>Konzepte, die den gesamten Strom einspeisen (z. B. große Dächer ohne Eigenverbrauch), leben komplett von der Vergütung — ohne sie tragen sie sich nicht.</> },
-            { term: "Überdimensionierung", desc: <>„Das Dach voll machen" lohnt ohne Vergütung weniger. Was über den eigenen Verbrauch hinausgeht, bringt nichts mehr ein — die Anlage passend zum Verbrauch auszulegen wird wichtiger. Die <Link href="/pv-bedarf-berechnen" style={S.link}>Empfehlung</Link> rechnet die passende Größe aus.</> },
+            { term: "Überdimensionierung", desc: <>„Das Dach voll machen" lohnt ohne Vergütung weniger. Was über den eigenen Verbrauch hinausgeht, bringt nichts mehr ein — die Anlage passend zum Verbrauch auszulegen wird wichtiger. Die <Link href="/photovoltaik-rechner" style={S.link}>Empfehlung</Link> rechnet die passende Größe aus.</> },
             { term: "Sehr niedriger Verbrauch", desc: <>Ein 1-Personen-Haushalt mit 1.800 kWh/Jahr kann nur wenig Solarstrom selbst nutzen — hier verlängert sich die Amortisation deutlich. Ein <Link href="/balkonkraftwerk/rechner" style={S.link}>Balkonkraftwerk</Link> passt dann oft besser als eine große Dachanlage.</> },
             { term: "Überteuerte Angebote", desc: <>Die Rechnung oben gilt für Marktpreise. Ohne den Vergütungs-Puffer kippt sie bei deutlich überhöhten Angebotspreisen schneller — Vergleichsangebote werden wichtiger.</> },
           ]}
@@ -718,7 +718,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
             <Link href={mitSpNull.href} style={S.ctaButton}>
               Ohne Vergütung rechnen →
             </Link>
-            <Link href="/pv-bedarf-berechnen" style={S.ctaSecondary}>
+            <Link href="/photovoltaik-rechner" style={S.ctaSecondary}>
               Was passt zu mir?
             </Link>
           </div>

@@ -37,7 +37,7 @@ const PVRechner = dynamic(() => import("../../../(site)/photovoltaik-rechner/rec
   loading: () => <Laedt />,
 });
 
-const Empfehlung = dynamic(() => import("../../../(site)/pv-bedarf-berechnen/empfehlung"), {
+const Empfehlung = dynamic(() => import("../../../(site)/photovoltaik-rechner/empfehlung"), {
   ssr: false,
   loading: () => <Laedt />,
 });

@@ -187,7 +187,7 @@ export default function NeigungswinkelPage() {
         <p style={S.p}>
           <span style={S.strong}>Wichtiger als der Winkel sind in der Praxis:</span> Verschattung
           (Bäume, Gauben, Nachbargebäude), die nutzbare Fläche — und die Frage, wie viel vom
-          Solarstrom du selbst verbrauchst. Eine <Link href="/pv-bedarf-berechnen" style={S.link}>passend
+          Solarstrom du selbst verbrauchst. Eine <Link href="/photovoltaik-rechner" style={S.link}>passend
           dimensionierte Anlage</Link> auf einem 90-%-Dach schlägt eine zu kleine Anlage auf dem
           perfekten Dach.
         </p>
@@ -205,8 +205,7 @@ export default function NeigungswinkelPage() {
           currentPath="/photovoltaik-neigungswinkel"
           links={[
             { href: "/pv-simulation", label: "PV-Simulation: Was produziert ein Dach gerade?", desc: "Live-Leistung einer PV-Anlage an deinem Standort, gerechnet aus aktuellen Wetterdaten." },
-            { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Amortisation, Rendite und Eigenverbrauch für deine Anlage — alle Annahmen transparent und anpassbar." },
-            { href: "/pv-bedarf-berechnen", label: "Welche Anlage passt zu mir?", desc: "In wenigen Fragen zur passenden Anlagengröße — mit Empfehlung und Begründung." },
+            { href: "/photovoltaik-rechner", label: "PV-Rechner: Welche Anlage passt zu mir?", desc: "In wenigen Fragen zur passenden Anlagengröße — mit Amortisation, Rendite und Begründung." },
             { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Für Miete oder ohne eigenes Dach: was Steckersolar bringt und wann es sich amortisiert." },
             { href: "/glossar", label: "Glossar" },
           ]}

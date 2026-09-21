@@ -36,12 +36,14 @@ export const FLOWS: FlowUnterTest[] = [
   },
   {
     name: "PV-Rechner",
-    pfad: "/photovoltaik-rechner",
+    // Die nackte Adresse zeigt seit 21.09.2026 den Empfehlungsweg (Eintrag
+    // darunter); die Direkteingabe erreicht man über ?direkt=1.
+    pfad: "/photovoltaik-rechner?direkt=1",
     ergebnisEnthaelt: "amortisiert sich in",
   },
   {
     name: "PV-Bedarf / Empfehlung",
-    pfad: "/pv-bedarf-berechnen",
+    pfad: "/photovoltaik-rechner",
     ergebnisEnthaelt: "Die Empfehlung basiert auf",
   },
   {
