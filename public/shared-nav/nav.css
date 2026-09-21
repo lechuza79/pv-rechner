@@ -289,3 +289,41 @@
    not carry — without this the logo showed the old site's blue. */
 .sc-react-header .brand svg{--color-brand:var(--sc-brand-accent,var(--lab-accent,#d4ff24));--color-brand-deep:color-mix(in srgb,var(--sc-brand-accent,var(--lab-accent,#d4ff24)) 55%,#fff);--color-accent:#173b42;--color-text-faint:#4a675e}
 .sc-react-header .brand svg>path{fill:var(--color-accent)}
+
+/* ─── Kacheln ganz klickbar, Hover als Pille, aktiver Bereich oben (21.09.2026) ───
+   Die ganze Kachel führt zu ihrem ersten Ziel: Der erste Link spannt eine
+   unsichtbare Fläche über die Kachel, weitere Links liegen darüber und bleiben
+   einzeln anklickbar (Photovoltaik: „Anlage durchrechnen"). Kein zweiter Link
+   um die Kachel herum — verschachtelte Links sind kein gültiges Markup. */
+.sc-nav-tool{position:relative;cursor:pointer}
+.sc-nav-tool-actions a:first-child::after{content:"";position:absolute;inset:0;border-radius:inherit}
+.sc-nav-tool-actions a:not(:first-child){position:relative;z-index:1}
+/* Die Zeile trägt die Pille bündig: gleicher Innenabstand links wie rechts,
+   um genau diesen Betrag nach außen gezogen, damit Text und Pfeil stehen
+   bleiben, wo sie waren. Die Trennlinie ist ein Hintergrundstreifen, eingerückt um denselben Betrag
+   — sonst liefe sie mit der verbreiterten Zeile bis an den Kachelrand. Als
+   Hintergrund statt als eigenes Element, weil der erste Link seine
+   Pseudo-Elemente für die Klickfläche der Kachel braucht. */
+.sc-global-nav .sc-nav-tool-actions a{width:calc(100% + 28px);max-width:none;margin-inline:-14px;padding-inline:14px;box-sizing:border-box;border-top-color:transparent;background:linear-gradient(var(--sc-nav-line),var(--sc-nav-line)) 14px 0/calc(100% - 28px) 1px no-repeat;transition:background-color 160ms ease}
+.sc-global-nav .sc-nav-panel .sc-nav-tool-actions a[aria-current=page]{border-radius:999px;background:#d4e5d8}
+@media(min-width:1281px) and (hover:hover){
+  /* Hover: Hintergrund als Pille wie unsere Knöpfe, die Trennlinie darüber
+     blendet aus — und die der nächsten Zeile auch, sonst stößt die Pille
+     unten an eine Linie. Über der Kachel (nicht über einem zweiten Link)
+     zeigt der erste Link den Hover, weil die ganze Fläche zu ihm führt. */
+  .sc-nav-tool-actions a:hover,
+  .sc-nav-tool:hover:not(:has(.sc-nav-tool-actions a:not(:first-child):hover)) .sc-nav-tool-actions a:first-child{background:#cbded3;border-radius:999px;color:inherit}
+  .sc-global-nav .sc-nav-tool-actions a:hover+a,
+  .sc-nav-tool:hover:not(:has(.sc-nav-tool-actions a:not(:first-child):hover)) .sc-nav-tool-actions a:first-child+a{background-image:none}
+}
+@media(prefers-reduced-motion:reduce){.sc-nav-tool-actions a{transition:none}}
+
+/* Aktiver Bereich: Linie ÜBER dem Menüpunkt, in Lime, 15 px Abstand zur
+   Schrift. Nur auf dem Desktop — mobil trägt der Punkt den Fettdruck. */
+@media(min-width:1281px){
+  .sc-nav-group>summary{position:relative}
+  .sc-nav-group>summary[aria-current=true]{box-shadow:none}
+  .sc-nav-group>summary[aria-current=true]::before{content:"";position:absolute;left:0;right:0;height:2px;border-radius:2px;background:#d4ff24;top:calc(16px - 15px - 2px)}
+  /* 16px = oberer Innenabstand des Menüpunkts (Regel ganz oben): Unterkante
+     der Linie liegt damit genau 15px über der Zeile mit der Schrift. */
+}
