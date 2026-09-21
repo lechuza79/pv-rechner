@@ -1,0 +1,2 @@
+import {mountGlobalNav} from '/api/admin/design-shared/nav.js';
+function mount(){const header=document.querySelector('.site-header');if(!header||!document.querySelector('.atlas-hero-local-nav')){setTimeout(mount,60);return;}mountGlobalNav(header,{active:'atlas',artBase:'/api/admin/design-shared/illustrations',homeHref:'https://solar-check.io/',atlasHref:'https://solar-check.io/solar-atlas',calculatorsHref:'https://solar-check.io/#hs-rechner'});header.querySelectorAll('a[href^="/"]').forEach(link=>{link.href='https://solar-check.io'+link.getAttribute('href');});}mount();

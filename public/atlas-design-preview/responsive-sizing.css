@@ -1,0 +1,176 @@
+/* Shared homepage sizing roles; see homepage-study/docs/design/responsive-sizing.md.
+   Keep chart and story internals in their own sizing scope. */
+.solar-page {
+  --sc-layout-content: 1000px;
+  --sc-layout-reading: 680px;
+  --sc-space-section: 72px;
+  --sc-page-inset: max(24px, 5vw);
+  --sc-type-hero-size: clamp(34px, 3.8vw, 48px);
+  --sc-type-section-size: clamp(26px, 2.6vw, 34px);
+  --sc-type-title-size: 20px;
+  --sc-type-body-size: 16px;
+  --sc-type-body-leading: 1.6;
+  --sc-type-action-size: 14px;
+}
+.solar-page .atlas-wrap {
+  width: min(var(--sc-layout-content), calc(100% - 2 * var(--sc-page-inset)));
+}
+.solar-page .atlas-section { padding-block: var(--sc-space-section); }
+.solar-page .atlas-content h2 {
+  font-size: var(--sc-type-section-size) !important;
+  line-height: 1.2 !important;
+  letter-spacing: -.035em !important;
+}
+.solar-page .atlas-head { gap: 24px; margin-bottom: 32px; }
+.solar-page .atlas-content :is(.atlas-head > p, .v3-intro p, .ranking-intro) {
+  font-size: var(--sc-type-body-size);
+  line-height: var(--sc-type-body-leading);
+  max-width: var(--sc-layout-reading);
+}
+.solar-page .atlas-kicker { font-size: 12px; line-height: 1.5; letter-spacing: .08em; }
+.solar-page .v3-intro-grid { gap: 32px; padding-top: 40px; }
+.solar-page .v3-section-nav {
+  font-size: var(--sc-type-action-size);
+  gap: 24px;
+  padding: 16px max(var(--sc-page-inset), calc((100% - var(--sc-layout-content)) / 2));
+}
+.solar-page #atlas-ranking,
+.solar-page .atlas-content .v3-conclusion {
+  width: min(var(--sc-layout-content), calc(100% - 2 * var(--sc-page-inset)));
+  padding: clamp(24px, 3vw, 40px);
+  margin: 48px auto;
+}
+.solar-page :is(#atlas-ranking, .v3-conclusion) > .atlas-wrap { width: 100%; max-width: none; }
+.solar-page .v3-widget-grid h3,
+.solar-page .v3-growth h3 { font-size: var(--sc-type-title-size); line-height: 1.35; }
+.solar-page .v3-data { padding-top: var(--sc-space-section); }
+.solar-page .v3-conclusion .sc-feature-card {
+  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+  gap: 24px;
+  --sc-feature-copy-size: var(--sc-type-body-size);
+  --sc-feature-amount-size: clamp(24px, 3vw, 36px);
+}
+.solar-page .v3-conclusion .sc-feature-card > .sc-feature-visual {
+  width: 100%; max-width: 220px; margin: 0; align-self: start;
+}
+.solar-page .v3-conclusion .sc-feature-card > .sc-feature-action {
+  min-height: 46px; padding: 12px 22px !important;
+  font-size: var(--sc-type-action-size);
+}
+.solar-page .atlas-sticky :is(button, a) { font-size: var(--sc-type-action-size); }
+@media (min-width: 851px) {
+  .solar-page .hero .hero-copy h1 {
+    font-size: var(--sc-type-hero-size) !important;
+    line-height: 1.1 !important;
+    max-width: min(680px, calc(100% - 360px)) !important;
+  }
+  .solar-page .hero .hero-description {
+    font-size: var(--sc-type-body-size) !important;
+    line-height: var(--sc-type-body-leading) !important;
+    max-width: min(680px, calc(100% - 360px)) !important;
+  }
+  .solar-page .hero-copy .hero-actions { --sc-hero-action-height: 52px; gap: 12px !important; }
+  .solar-page .hero-actions :is(.primary-cta, .secondary-cta) {
+    min-height: 52px; font-size: var(--sc-type-action-size) !important;
+  }
+}
+@container sc-features (max-width: 42rem) {
+  .solar-page .v3-conclusion .sc-feature-card { grid-template-columns: minmax(0, 180px) minmax(0, 1fr); }
+  .solar-page .v3-conclusion .sc-feature-card > .sc-feature-visual { max-width: 180px; }
+}
+@container sc-features (max-width: 28rem) {
+  .solar-page .v3-conclusion .sc-feature-card { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}
+@media (max-width: 600px) {
+  .solar-page { --sc-space-section: 48px; }
+  .solar-page .v3-intro-grid { gap: 8px; padding-top: 24px; }
+  .solar-page .v3-section-nav { gap: 16px; font-size: 12px; }
+  .solar-page #atlas-ranking, .solar-page .atlas-content .v3-conclusion { margin-block: 32px; padding: 24px 20px; }
+}
+/* Ranking's legacy ID rules otherwise override the shared reading role. */
+.solar-page #atlas-ranking .ranking-intro {
+  font-size: var(--sc-type-body-size);
+  line-height: var(--sc-type-body-leading);
+  max-width: var(--sc-layout-reading);
+}
+/* The legacy hero stylesheet sets negative tracking on every h2. */
+[data-sc-fuss] .sc-footer h2 { letter-spacing: normal; }
+
+/* Municipality household examples use the shared dark surfaces. */
+.solar-page .atlas-content .v3-conclusion {
+  --atlas-bg: #10282c;
+  --atlas-paper: #163338;
+  --atlas-ink: #e8eee9;
+  --atlas-muted: #a7bcbb;
+  --atlas-line: #b0c8c325;
+  --sc-surface-light-inset: #163338;
+  --sc-illustration-circle-light: #29413f;
+  --sc-profit-ink: #e8eee9;
+}
+.solar-page .v3-conclusion .sc-feature-card { color: var(--atlas-ink); }
+.solar-page .v3-conclusion .sc-feature-action {
+  color: var(--atlas-ink) !important;
+  border-color: #b0c8c366;
+}
+.solar-page .v3-conclusion .sc-feature-action:hover { background: #e8eee90c; }
+.solar-page .atlas-content #atlas-sources h2 {
+  font-size: 16px !important;
+  line-height: 1.4 !important;
+  letter-spacing: normal !important;
+}
+.solar-page .hero-bottom button { display: none !important; }
+/* Use the homepage content rail and its reading-card breakpoints. */
+.solar-page { --sc-hero-content-inset: calc(max(var(--sc-page-inset), calc((100% - var(--sc-layout-content)) / 2)) + 24px); }
+.solar-page .hero-copy {
+  margin-left: var(--sc-hero-content-inset) !important;
+  margin-right: 0 !important;
+  padding: 75px 0 0 !important;
+  width: calc(100% - 2 * var(--sc-hero-content-inset));
+}
+.solar-page .v3-hero-stack { top: 260px; right: 5%; left: auto; width: 340px; z-index: 4; }
+@media (min-width:1100px) and (max-width:1279px) {
+  .solar-page .v3-hero-stack { right: 4%; width: 300px; }
+}
+@media (min-width:701px) and (max-width:1099px) {
+  .solar-page .hero-copy { padding-top:60px !important; }
+  .solar-page .v3-hero-stack { top:250px; right:5%; width:260px; }
+  .solar-page .hero .hero-copy h1, .solar-page .hero .hero-description { max-width: min(360px, calc(100vw - 380px)) !important; width:auto !important; }
+}
+@media (max-width:700px) {
+  .solar-page .hero-copy { margin-left:24px !important; width:calc(100% - 48px); padding-top:40px !important; }
+  .solar-page .v3-hero-stack { top:auto; bottom:75px; right:24px; left:24px; width:auto; max-width:340px; }
+}
+/* The monitor starts with the same six KPI roles for every municipality. */
+#atlas-data .atlas-overview-grid { display:block; }
+#atlas-data .atlas-summary { max-width:680px;margin-bottom:32px; }
+#atlas-data .atlas-numbers { display:grid;grid-template-columns:2fr 1fr;gap:20px; }
+.monitor-kpi-group { min-width:0;background:#163338;border-radius:24px;padding:24px; }
+.solar-page .monitor-kpi-group h3 { font-size:14px;line-height:1.4;margin:0 0 22px; }
+.monitor-kpi-group>div { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px; }
+#atlas-data .monitor-kpi-group .atlas-number { min-width:0;border:0;padding:0; }
+#atlas-data .monitor-kpi-group .atlas-number>span { display:block;font-size:13px;line-height:1.4;min-height:36px; }
+#atlas-data .monitor-kpi-group .atlas-number strong { display:block;font-size:32px;line-height:1.25;margin-top:8px; }
+#atlas-data .monitor-kpi-group .v3-number-unit { font-size:14px;line-height:1.5; }
+#atlas-data .v3-data { padding-top:32px; }
+@media(min-width:1000px){.monitor-kpi-group:first-child>div {grid-template-columns:repeat(4,minmax(0,1fr));}}
+@media(max-width:650px){#atlas-data .atlas-numbers {grid-template-columns:1fr;}}
+#atlas-data .atlas-summary { display:block;max-width:none; }
+#atlas-data .atlas-summary>div:first-child { max-width:680px;margin-bottom:32px; }
+
+.v3-conclusion .atlas-head { position:relative;padding-right:36px; }
+.v3-calculation-help { position:absolute;top:0;right:0;z-index:2; }
+.v3-calculation-help summary {display:grid;place-items:center;width:24px;height:24px;border:1.5px solid currentColor;border-radius:50%;cursor:pointer;list-style:none;font-size:16px;line-height:1;font-weight:600;}
+.v3-calculation-help summary::-webkit-details-marker {display:none}
+.v3-calculation-help>div {position:absolute;right:0;top:34px;width:min(340px,75vw);padding:20px;background:#163338;color:#e8eee9;border:1px solid #496266;border-radius:16px;box-shadow:0 12px 32px #0005;}
+.v3-calculation-help>div p {font-size:14px;line-height:1.6;margin-bottom:0;}
+#atlas-sources {margin-block:32px;padding-block:24px;}
+
+.v3-conclusion .v3-calculation-help summary::before,.v3-conclusion .v3-calculation-help summary::after{display:none!important;}
+.v3-conclusion .v3-calculation-help summary{padding:0;gap:0;}
+
+/* Keep the monitor introduction attached to its comparison controls. */
+#atlas-data .atlas-summary, #atlas-data .atlas-summary>div:first-child { margin-bottom:0; }
+#atlas-data .v3-data { padding-top:24px; }
+#atlas-data .monitor-update{font-size:12px;line-height:1.5;color:var(--atlas-secondary);margin:12px 0 20px;}
+
+.v3-conclusion .v3-calculation-help summary{display:grid!important;place-items:center!important;justify-content:center!important;text-align:center;box-sizing:border-box;}

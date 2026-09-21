@@ -150,6 +150,7 @@ export function MastrLiveRadial({
   unit = "GW",
   injected = null,
   highlightTs,
+  secondaryBars = false,
   bare = false,
   fuelltBreite = false,
   exportFooter = null,
@@ -165,6 +166,8 @@ export function MastrLiveRadial({
   injected?: { ts: string; mw: number }[] | null;
   /** Welcher Balken „jetzt" ist (Mitte + Highlight). Standard: der letzte. */
   highlightTs?: string;
+  /** Use widget-muted bars with the current reading in the widget accent color. */
+  secondaryBars?: boolean;
   /** Chromeless: kein eigener Rahmen/Kopf/Branding-Footer — für die Einbettung
    *  in eine geteilte Widget-Hülle (Gemeinde-Seite), die den Rahmen zeichnet. */
   bare?: boolean;
@@ -467,8 +470,12 @@ export function MastrLiveRadial({
     return bestD <= 2.6 ? best : null;
   };
 
-  const accentBars = v("--color-accent");
-  const accentLatest = v("--color-highlight");
+  const accentBars = secondaryBars
+    ? "var(--widget-muted, var(--color-text-secondary))"
+    : v("--color-accent");
+  const accentLatest = secondaryBars
+    ? "var(--widget-accent, var(--color-highlight))"
+    : v("--color-highlight");
   // Muted text token instead of fixed black so the unit label stays legible on
   // a dark widget background (where it resolves to a light tone).
   const labelColor = v("--color-text-muted");

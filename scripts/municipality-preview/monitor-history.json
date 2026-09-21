@@ -1,0 +1,459 @@
+{
+  "sourceDate": "2026-09-10",
+  "method": "active-register-by-commissioning-date",
+  "regionId": "09679147",
+  "population": 9564,
+  "populationDate": "2026-06-30",
+  "observations": [
+    {
+      "end": "2026-08-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 9113.189000000006
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 221.665
+        }
+      ],
+      "solarCount": 944,
+      "solarKwp": 9334.853999999976,
+      "solarAdditions": 85,
+      "batteryCount": 540,
+      "batteryKwh": 5897.004999999999
+    },
+    {
+      "end": "2026-07-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 9046.319000000005
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 218.465
+        }
+      ],
+      "solarCount": 935,
+      "solarKwp": 9264.783999999974,
+      "solarAdditions": 76,
+      "batteryCount": 530,
+      "batteryKwh": 5826.076999999999
+    },
+    {
+      "end": "2026-06-30",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 8945.449000000004
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 212.34
+        }
+      ],
+      "solarCount": 920,
+      "solarKwp": 9157.788999999973,
+      "solarAdditions": 61,
+      "batteryCount": 517,
+      "batteryKwh": 5689.032999999999
+    },
+    {
+      "end": "2026-05-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 8836.425000000003
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 203.28000000000003
+        }
+      ],
+      "solarCount": 906,
+      "solarKwp": 9039.70499999997,
+      "solarAdditions": 47,
+      "batteryCount": 504,
+      "batteryKwh": 5100.284999999999
+    },
+    {
+      "end": "2026-04-30",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 8748.885000000004
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 198.20000000000002
+        }
+      ],
+      "solarCount": 896,
+      "solarKwp": 8947.084999999974,
+      "solarAdditions": 37,
+      "batteryCount": 495,
+      "batteryKwh": 5023.044999999999
+    },
+    {
+      "end": "2026-03-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 8627.505000000001
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 192.412
+        }
+      ],
+      "solarCount": 880,
+      "solarKwp": 8819.916999999972,
+      "solarAdditions": 21,
+      "batteryCount": 484,
+      "batteryKwh": 4926.976999999999
+    },
+    {
+      "end": "2026-02-28",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 8595.905000000002
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 186.732
+        }
+      ],
+      "solarCount": 873,
+      "solarKwp": 8782.636999999975,
+      "solarAdditions": 14,
+      "batteryCount": 480,
+      "batteryKwh": 4897.9569999999985
+    },
+    {
+      "end": "2026-01-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 8527.850000000002
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 183.172
+        }
+      ],
+      "solarCount": 865,
+      "solarKwp": 8711.021999999975,
+      "solarAdditions": 6,
+      "batteryCount": 471,
+      "batteryKwh": 4827.453999999999
+    },
+    {
+      "end": "2025-12-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 8206.185000000001
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 183.172
+        }
+      ],
+      "solarCount": 859,
+      "solarKwp": 8389.356999999975,
+      "solarAdditions": 112,
+      "batteryCount": 465,
+      "batteryKwh": 4740.183999999998
+    },
+    {
+      "end": "2025-11-30",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 8168.56
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 182.282
+        }
+      ],
+      "solarCount": 854,
+      "solarKwp": 8350.841999999975,
+      "solarAdditions": 107,
+      "batteryCount": 460,
+      "batteryKwh": 4694.483999999999
+    },
+    {
+      "end": "2025-10-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 8071.38
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 178.282
+        }
+      ],
+      "solarCount": 844,
+      "solarKwp": 8249.66199999999,
+      "solarAdditions": 97,
+      "batteryCount": 450,
+      "batteryKwh": 4599.403999999999
+    },
+    {
+      "end": "2025-09-30",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 8007.875000000001
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 177.11200000000002
+        }
+      ],
+      "solarCount": 837,
+      "solarKwp": 8184.987000000008,
+      "solarAdditions": 90,
+      "batteryCount": 441,
+      "batteryKwh": 4517.685999999999
+    },
+    {
+      "end": "2025-08-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 7909.355
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 172.30700000000002
+        }
+      ],
+      "solarCount": 824,
+      "solarKwp": 8081.6620000000075,
+      "solarAdditions": 77,
+      "batteryCount": 429,
+      "batteryKwh": 4416.649999999999
+    },
+    {
+      "end": "2025-07-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 7893.03
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 167.33700000000005
+        }
+      ],
+      "solarCount": 819,
+      "solarKwp": 8060.3670000000075,
+      "solarAdditions": 72,
+      "batteryCount": 426,
+      "batteryKwh": 4393.219999999998
+    },
+    {
+      "end": "2025-06-30",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 7757.655
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 155.997
+        }
+      ],
+      "solarCount": 806,
+      "solarKwp": 7913.652000000007,
+      "solarAdditions": 59,
+      "batteryCount": 418,
+      "batteryKwh": 4334.839999999998
+    },
+    {
+      "end": "2025-05-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 7732.8150000000005
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 155.11700000000002
+        }
+      ],
+      "solarCount": 802,
+      "solarKwp": 7887.932000000008,
+      "solarAdditions": 55,
+      "batteryCount": 415,
+      "batteryKwh": 4302.6399999999985
+    },
+    {
+      "end": "2025-04-30",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 7658.185
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 145.24699999999999
+        }
+      ],
+      "solarCount": 786,
+      "solarKwp": 7803.432000000007,
+      "solarAdditions": 39,
+      "batteryCount": 406,
+      "batteryKwh": 4233.587999999999
+    },
+    {
+      "end": "2025-03-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 7609.505
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 140.91699999999997
+        }
+      ],
+      "solarCount": 777,
+      "solarKwp": 7750.422000000006,
+      "solarAdditions": 30,
+      "batteryCount": 401,
+      "batteryKwh": 4181.167999999999
+    },
+    {
+      "end": "2025-02-28",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 7578.525000000001
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 130.66199999999992
+        }
+      ],
+      "solarCount": 762,
+      "solarKwp": 7709.187000000006,
+      "solarAdditions": 15,
+      "batteryCount": 396,
+      "batteryKwh": 4158.167999999999
+    },
+    {
+      "end": "2025-01-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 7515.335
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 126.88199999999993
+        }
+      ],
+      "solarCount": 753,
+      "solarKwp": 7642.217000000005,
+      "solarAdditions": 6,
+      "batteryCount": 390,
+      "batteryKwh": 4108.687999999999
+    },
+    {
+      "end": "2024-12-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 7217.0650000000005
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 125.28199999999994
+        }
+      ],
+      "solarCount": 747,
+      "solarKwp": 7342.347000000005,
+      "solarAdditions": 194,
+      "batteryCount": 380,
+      "batteryKwh": 3534.067999999999
+    },
+    {
+      "end": "2024-11-30",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 7107.055
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 118.74199999999995
+        }
+      ],
+      "solarCount": 732,
+      "solarKwp": 7225.797000000005,
+      "solarAdditions": 179,
+      "batteryCount": 369,
+      "batteryKwh": 3433.7099999999987
+    },
+    {
+      "end": "2024-10-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 7011.56
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 117.84199999999994
+        }
+      ],
+      "solarCount": 722,
+      "solarKwp": 7129.4020000000055,
+      "solarAdditions": 169,
+      "batteryCount": 362,
+      "batteryKwh": 3354.1099999999988
+    },
+    {
+      "end": "2024-09-30",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 6937.615000000002
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 117.44199999999994
+        }
+      ],
+      "solarCount": 714,
+      "solarKwp": 7055.057000000007,
+      "solarAdditions": 161,
+      "batteryCount": 354,
+      "batteryKwh": 3267.529999999999
+    },
+    {
+      "end": "2024-08-31",
+      "solarMix": [
+        {
+          "label": "Gebäudeanlagen",
+          "value": 6862.795000000002
+        },
+        {
+          "label": "Balkonkraftwerke",
+          "value": 117.44199999999994
+        }
+      ],
+      "solarCount": 708,
+      "solarKwp": 6980.237000000007,
+      "solarAdditions": 155,
+      "batteryCount": 351,
+      "batteryKwh": 3230.429999999999
+    }
+  ]
+}

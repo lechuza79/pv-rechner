@@ -1,0 +1,258 @@
+[
+  {
+    "path": "public/atlas-design-preview/dynamic-hero/atlas-image-0.webp",
+    "sha256": "7e10b4a05c48f888ea5cfc2af518de156612510e8f80562510567bffdffe6f06"
+  },
+  {
+    "path": "public/atlas-design-preview/dynamic-hero/atlas-image-1.gif",
+    "sha256": "3b7b8a4b411ddf8db9bacc2f3aabf406f8e4c0c087829b336ca331c40adfdff1"
+  },
+  {
+    "path": "public/atlas-design-preview/dynamic-hero/atlas-shell-0.woff2",
+    "sha256": "468d56b6b25b05b70190b6c233d773f6f1770e8579827ce022a57f03fa8002fb"
+  },
+  {
+    "path": "public/atlas-design-preview/dynamic-hero/atlas-shell-1.woff2",
+    "sha256": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4"
+  },
+  {
+    "path": "public/atlas-design-preview/dynamic-hero/moon-lroc-1k.jpg",
+    "sha256": "b246064f217f8d479df78c49c7c8595a8f5fbda008a72fd539978d2e121e0109"
+  },
+  {
+    "path": "public/atlas-design-preview/dynamic-hero/panel-fallback-0.webp",
+    "sha256": "7e10b4a05c48f888ea5cfc2af518de156612510e8f80562510567bffdffe6f06"
+  },
+  {
+    "path": "public/atlas-design-preview/dynamic-hero/panel-fallback-mobile.webp",
+    "sha256": "967de30d6b433db4c7ef889a8c8e5bd0e5afaa9757b22aab443c357b341a4709"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/bangers-0.woff2",
+    "sha256": "86f90cb0810af8aedd50eb6d9203b5870576b2e59c1e02b731cfac07281e22e7"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/bevan-0.woff2",
+    "sha256": "5a53203787130335928b977b38b46d38223b37ed6ffc6ac8e16a7e5fad86979f"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/bigshot-one-0.woff2",
+    "sha256": "83263d7f63af05ac90f2fd6ebe5d69e190f69e2978b0c049fd3789c970c93add"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/bowlby-one-0.woff2",
+    "sha256": "f4960fe4b1796a9871a4645148954f0eaa216a2a3503d7678e4b38c8eea6d0da"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/ceviche-one-0.woff2",
+    "sha256": "fe89e292f8174080c193728fd84bad5b79731dda9ba424602d02b8bda24bceba"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-00.woff2",
+    "sha256": "9056778b506c1d14b31fda3cefbb886e7debdf729d116ae77488036249de6eee"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-01.woff2",
+    "sha256": "31369b9c55626b0e2f6d19b6ae82aa9b36f0f9e6de78b0d33d1e7f6eb2a8a338"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-02.woff2",
+    "sha256": "622efe2457c9742985a6d7947942b624efe78b3c5c859c4b446592c68a560b26"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-03.woff2",
+    "sha256": "cc86e1326fdbf59bc9b3764a3d7973b05ca1dcab434cc5b4da0bf57a7983a909"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-04.woff2",
+    "sha256": "99235cbc8e953ebbed084c1352e41942a551e61207c7bd8f38676a123bd58eb9"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-05.woff2",
+    "sha256": "31b10e8e0665e542363d6945614e9ebaa09c6ae5b5de5619caa0c5893d57ca7e"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-06.woff2",
+    "sha256": "ee72e28a4cee7176a5de06ebabe8ac16b41266dce9d0f80538c42cf13fa78eb9"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-07.woff2",
+    "sha256": "23a054ca70a6dcd4b49846bfc63d7f1f405362c8e512d5be11115d7120f2773b"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-08.woff2",
+    "sha256": "80997664b4bb416bebf9296761754183095ed4e01d9ea2ace23a535914216f01"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-09.woff2",
+    "sha256": "e6d2757436fef17bf50a5161c566aaa9e903e6666bb2c8b61f44138a5f651317"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-10.woff2",
+    "sha256": "cfa690c1a9e0d44d7f2dad47783ea1a22ed30192e46b4efd014f272c8f8b4a86"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-11.woff2",
+    "sha256": "c35ad836f71455e4b90d615f143c914eedcdc61d344e23ad54ce42ec9053d46c"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-12.woff2",
+    "sha256": "e121eb8d4bc03ad827fe76c16bc48df6cade8761b01cbb1f0cb0b4b37975241f"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-13.woff2",
+    "sha256": "e9bbc1e65f14b8b92e57880df1db77cab45878c32b0bf307f5f788eeb8acce80"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-14.woff2",
+    "sha256": "134bae013f67dbbe414dd6de3a69534c7af997885bc802910ed12ac743830e13"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-15.woff2",
+    "sha256": "235e529ae10a3c09eda2fe455166e2ba7ae56dac4f6c1ec9adad100dd00e1f51"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-16.woff2",
+    "sha256": "6ad279fe780b0bf6f7e9552dd7f6495c6c30375befd231c7b507fe01d0f359b8"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-17.woff2",
+    "sha256": "8f7bedc9664045e68a31a3561ed81e16cf9cf5407e1125988350083165d4f671"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-18.woff2",
+    "sha256": "a96d1d307b06cfb5e8e7cb65bf0d336c45a83d331015a79c68f08270ab90574e"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/display-19.woff2",
+    "sha256": "a3d2a250948e5148f204420e147dfef1d52a0d5c31e2560adb41afa4d1f07d3e"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/gloock-0.woff2",
+    "sha256": "d5846bf65bd309e5d2951ecdbcf36d21adaa4ea08cc343cdd93da139d5ef8776"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/goblin-one-0.woff2",
+    "sha256": "e5bc35603ce58a401061c03c288ac725065054e9bcc7bf602a186fa559a76cc0"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/jetbrains-mono-bold-0.woff2",
+    "sha256": "a52508191a3ce4de652a8a411551bf5082e40e4767e5b84c156d3192e8461f34"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/lily-script-one-0.woff2",
+    "sha256": "ae586969c7efe85410790bb8cc5607ce289d3e9b28824b82874db5d8aeafeee1"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/lobster-0.woff2",
+    "sha256": "78510b16c8ccd4bebc9cf219d6b80217813d65a07ebfbe46811e7e417d5b55f4"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/montserrat-black-0.woff2",
+    "sha256": "11bc258e371e1be63b0396c469c06a0a84f4cf4fe81eae1dfd0b16f121782d2e"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/montserrat-bold-0.woff2",
+    "sha256": "42d5be7d4027ef646f156a64db70e99b28ee3c3d8aec8ced002d044d4f3e18e0"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/paytone-one-0.woff2",
+    "sha256": "afc0abcb8d2c1298ccb7413426e8cc6d0fcad2668698bedea7d8908d7daf3132"
+  },
+  {
+    "path": "public/atlas-design-preview/fonts/protest-riot-0.woff2",
+    "sha256": "1c888f889b9f709806f08514ba450d2269296bb1a120beb5622abe38ca9d0c67"
+  },
+  {
+    "path": "public/atlas-design-preview/karte-bestand.png",
+    "sha256": "d99e485ad42057437afd32499690ca43bc8239effed0abe16b23299ea8467b5a"
+  },
+  {
+    "path": "public/atlas-design-preview/rank-badges/battery-1.png",
+    "sha256": "fede5766c54a90a4321eedd56dec9fd39470ff31e97afce944b5868f53a3262e"
+  },
+  {
+    "path": "public/atlas-design-preview/rank-badges/battery-2.png",
+    "sha256": "94024fde69670e14f746625abfe1e4021d0df7e2b1fd6cbb9343315bd64e13d8"
+  },
+  {
+    "path": "public/atlas-design-preview/rank-badges/battery-3.png",
+    "sha256": "567329b87a83dd49bc1af1ebfa5fd986528d647f9d0596a6a492cd4a550d91c4"
+  },
+  {
+    "path": "public/atlas-design-preview/rank-badges/rank-mystery.png",
+    "sha256": "b1d74bd006d3180e7f93a4d96f5721b2e112bb33eb8c6c55c75a4fb25596ee9a"
+  },
+  {
+    "path": "public/atlas-design-preview/rank-badges/roof-1.png",
+    "sha256": "288109065aa270dfccbb56627ddea2656c9bb6ca8eddb3c8292cd33a1725ed4d"
+  },
+  {
+    "path": "public/atlas-design-preview/rank-badges/roof-2.png",
+    "sha256": "22d7aca8552774aebf545627d8561fae56a4c18a2e5783a3fb1119a8192f018a"
+  },
+  {
+    "path": "public/atlas-design-preview/rank-badges/roof-3.png",
+    "sha256": "d2d59048030015cfb1d669d9c1a2684359444dbd8ae7f1dac57765cffc9a9d03"
+  },
+  {
+    "path": "public/atlas-design-preview/sebastian-portrait.png",
+    "sha256": "6f6ed6a27a030d446602004fd32bd52673eda3a1bef07ce92841b250fb70c70f"
+  },
+  {
+    "path": "public/atlas-design-preview/sebastian-schaeder.webp",
+    "sha256": "153962e338a0371eb46e21e277c7881f3717b88557aeacffcb1fff0b8120a887"
+  },
+  {
+    "path": "public/atlas-design-preview/solar-check-hoechberg-entwurf.jpg",
+    "sha256": "170a199e33dcf699a3871e66c5bc2a5dc8a640d69dfca7382e1853457bf1d40d"
+  },
+  {
+    "path": "public/atlas-design-preview/solar-check-hoechberg-entwurf.png",
+    "sha256": "b565acb68af4478ab79d6a669fca02db204529cd7e0460d314299be96ae3573c"
+  },
+  {
+    "path": "public/atlas-design-preview/solar-check-hoechberg-erster-entwurf.jpg",
+    "sha256": "93901009a10bb04238368e23fabd1e9be91a3ed35d245e8d22b5b91512d351b3"
+  },
+  {
+    "path": "public/brand/rank-balcony-modern.webp",
+    "sha256": "346be352d12196448ad8b8c8658678f9aad2861ff3797d2ddd800d865a8e8d0f"
+  },
+  {
+    "path": "public/brand/rank-battery.webp",
+    "sha256": "19326379481958fdfb92b3d3a9216520137af951457a9e1deeb72bbbd7099fc2"
+  },
+  {
+    "path": "public/brand/rank-house.webp",
+    "sha256": "3a6944a48655703db1309ea6633d3562b14a97a135140cd3782e63d5ed198788"
+  },
+  {
+    "path": "public/fonts/atlas-montserrat-bold.ttf",
+    "sha256": "247f052d2f5b84a5bbe7831c3b08a71ca391ff54f1dfb9be88a3d3da569e3a38"
+  },
+  {
+    "path": "public/hero-system/moon-lroc-1k.jpg",
+    "sha256": "b246064f217f8d479df78c49c7c8595a8f5fbda008a72fd539978d2e121e0109"
+  },
+  {
+    "path": "scripts/municipality-preview/shared/shared-nav/illustrations/aircon-neon.webp",
+    "sha256": "2298b182a19c4af321f61ff9ee489d8ade502cc6483ed8464ff9233e97544507"
+  },
+  {
+    "path": "scripts/municipality-preview/shared/shared-nav/illustrations/balcony-modern-neon.webp",
+    "sha256": "e2e75eebb4138c556baf2642dc182947f56e3b12e71bb85082a37a070df09131"
+  },
+  {
+    "path": "scripts/municipality-preview/shared/shared-nav/illustrations/feed-in-neon.webp",
+    "sha256": "e62a3f7120a541a98b48abeccb71c0e04be1120f5e3cd7c2b89cb434ec9be931"
+  },
+  {
+    "path": "scripts/municipality-preview/shared/shared-nav/illustrations/heatpump-modern-neon.webp",
+    "sha256": "15e2c302647fc871b18c203a0c5560d4f4571d0c1b4bacb5e35c499863fd0cb4"
+  },
+  {
+    "path": "scripts/municipality-preview/shared/shared-nav/illustrations/house-neon.webp",
+    "sha256": "ed31c59fe102454edc7ecdebc7fe2f73c259647f2d0ea25abcf4d412dbd0ba99"
+  }
+]

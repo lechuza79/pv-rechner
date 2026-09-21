@@ -1,0 +1,2 @@
+import {mountPerson} from './person.js';
+function mount(){const target=document.querySelector('.atlas-editor-note');if(!target||!document.querySelector('.v3-section-divider')){setTimeout(mount,80);return;}mountPerson(target,{variant:'municipality',town:'Höchberg',portrait:'/atlas-design-preview/sebastian-portrait.png',avatar:'/atlas-design-preview/sebastian-schaeder.webp',primaryElement:target.querySelector('[data-abo]')});}mount();

@@ -1,0 +1,13 @@
+.chart{color:var(--atlas-text);font-family:var(--atlas-body);width:100%}
+.chart header h2{font:700 var(--atlas-card-title-size)/1.2 var(--atlas-display);max-width:85%;margin:0 0 20px}
+.chart header p,.chart footer{font:400 var(--atlas-caption-size)/1.5 var(--atlas-body);color:var(--atlas-secondary)}
+.chart svg{width:100%;display:block;margin:24px 0}
+.chart.chart svg text.label{font:400 12px var(--atlas-body);fill:var(--atlas-secondary)}
+.chart.chart svg text.total{font:700 36px var(--atlas-display);fill:var(--atlas-text);font-variant-numeric:proportional-nums}
+.legend,.controls{display:flex;justify-content:center;align-items:center;gap:12px;margin:16px 0;flex-wrap:wrap}
+.legend{font-size:var(--atlas-label-size);color:var(--atlas-secondary)}
+.legend span{display:flex;align-items:center;gap:7px}.legend i{width:8px;height:8px;border-radius:50%;background:var(--atlas-action)}.legend span+span i{background:var(--atlas-text)}
+.controls button,.controls select{font:400 var(--atlas-body-size)/1.2 var(--atlas-body);border:1px solid var(--atlas-secondary);border-radius:999px;background:transparent;color:var(--atlas-text);min-height:44px;padding:10px 16px;cursor:pointer}
+.controls button[aria-pressed=true]{background:var(--atlas-action);color:var(--atlas-card);border-color:var(--atlas-action)}
+.controls button svg{margin:0;width:14px;height:14px}.controls select{max-width:210px;background:var(--atlas-card)}
+.chart footer{border-top:1px solid var(--atlas-border);padding-top:16px;margin-top:28px}.chart a{color:inherit}
