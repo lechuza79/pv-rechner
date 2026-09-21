@@ -40018,5 +40018,53 @@
         "evidenceUrl": "https://www.landkreis-lueneburg.de/fuer-unsere-buergerinnen-und-buerger/umwelt-und-klimaschutz/naturschutz-wald-und-artenschutz/foerderprogramme-biologische-vielfalt/kopfweidenpflege.html"
       }
     ]
+  },
+  {
+    "regionId": "03359",
+    "name": "Landkreis Stade",
+    "checkedAt": "2026-09-21T06:24:19Z",
+    "recheckAt": "2026-12-15T08:00:00Z",
+    "scope": "Private Haushalte: Zuschüsse des Landkreises für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; Programme der kreisangehörigen Gemeinden gesondert bei den Gemeinden erfasst.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Klimafonds 2026 des Landkreises fördert nur Heizungsoptimierung in Wohngebäuden (hydraulischer Abgleich, Heizungspumpen, Thermostatventile; 30 %, höchstens 700 € je Gebäude). Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen kommen weder auf der Seite noch in den Fördergrundsätzen (Fassung 28.01.2026) vor. Die Kontaktseite Klimaschutz nennt als kommunale Förderung nur ein Ehrenamtsprogramm der Stadt Buxtehude und verweist sonst auf Beratung und Bundesangebote. Die drei offenen Quellzeilen sind Verwendungsnachweis-Formulare für Jugendhilfe-Zuschüsse an Kommunen.",
+    "searches": [
+      "Klimaschutzseiten des Landkreises (Klimakonzept, Klimafonds, Kontakte und Informationen, Solarkataster)",
+      "Fördergrundsätze Klimafonds 2026 im Volltext",
+      "Startseiten-Navigation nach Klima/Förder/Energie"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landkreis-stade.de/portal/seiten/klimafonds-2026-foerderung-heizungsoptimierung-901001318-20350.html",
+        "finding": "Abgerufen 21.09.2026: „Gefördert werden folgende Maßnahmen zur Heizungsoptimierung: Hydraulischer Abgleich, Austausch von Heizungspumpen, Austausch von Thermostatventilen. Der Fördersatz beträgt 30% der Maßnahmenkosten, maximal jedoch 700,-€ je Gebäude/Heizungsanlage.“ Fördergrundsätze (Fassung 28.01.2026): „Gefördert werden Maßnahmen zur Heizungsoptimierung in Wohngebäuden“, nichts zu Wärmepumpe oder Photovoltaik."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/umwelt-gesundheit-verbraucherschutz/klimaschutz/kontakte-und-informationen/",
+        "finding": "Kommunale Förderungen: nur Förderung ehrenamtlicher Projekte (Stadtforum Buxtehude); sonst Verweise auf Klimaschutzmanagements, Verbraucherzentrale, KEAN, BMWE, HTW-Rechner."
+      },
+      {
+        "url": "https://www.landkreis-stade.de/medien/dokumente/vn_2022_seite_1.ods",
+        "finding": "Drei Formulardateien des Verwendungsnachweises über Kreiszuschüsse aus Jugendhilfemitteln an Samtgemeinden/Gemeinden, geöffnet und gelesen am 21.09.2026."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landkreis-stade.de/medien/dokumente/vn_2022_seite_1.ods?20250306121809",
+        "disposition": "reviewed",
+        "reason": "Verwendungsnachweis-Formular für Kreiszuschüsse aus Jugendhilfemitteln an Kommunen; kein Förderprogramm für Haushalte.",
+        "evidenceUrl": "https://www.landkreis-stade.de/medien/dokumente/vn_2022_seite_1.ods"
+      },
+      {
+        "url": "landkreis-stade.de/medien/dokumente/vn_2022_seite_2.odt?20241114070551",
+        "disposition": "reviewed",
+        "reason": "Seite 2 desselben Verwendungsnachweises (Erläuterung, Überweisungsdaten, Unterschrift der Samtgemeinde/Gemeinde); kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.landkreis-stade.de/medien/dokumente/vn_2022_seite_1.ods"
+      },
+      {
+        "url": "landkreis-stade.de/medien/dokumente/vn_anlage_zahlenm_nachweis.ods?20250605150230",
+        "disposition": "reviewed",
+        "reason": "Anlage zum Verwendungsnachweis (zahlenmäßiger Nachweis nach DIN 276); kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.landkreis-stade.de/medien/dokumente/vn_2022_seite_1.ods"
+      }
+    ]
   }
 ]
