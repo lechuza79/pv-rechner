@@ -17,6 +17,7 @@ import {
   type Bestand,
 } from "../lib/outreach-wirkung";
 import { heuteInBerlin } from "../lib/zeit";
+import { domainAus, verlinkendeDomains } from "./lib/verweise";
 
 const schreiben = process.argv.includes("--schreiben");
 const nurBericht = process.argv.includes("--bericht");
@@ -32,11 +33,6 @@ function env(key: string): string | undefined {
   return process.env[key];
 }
 
-const domainAus = (wert: string | null | undefined): string | null => {
-  if (!wert) return null;
-  const roh = wert.trim().toLowerCase().replace(/^https?:\/\//, "").split("/")[0].replace(/^www\./, "");
-  return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(roh) ? roh : null;
-};
 
 async function db() {
   const url = env("SUPABASE_URL") ?? env("NEXT_PUBLIC_SUPABASE_URL");
@@ -85,24 +81,12 @@ async function angeschriebene(bestand: Bestand, client: Client): Promise<Angesch
 }
 
 /** Die Domains, die uns verlinken — ein Abruf für alle Bestände zusammen. */
-async function verlinkendeDomains(): Promise<Set<string>> {
+async function verlinkendeSet(): Promise<Set<string>> {
   const login = env("DATAFORSEO_LOGIN"), pass = env("DATAFORSEO_PASSWORD");
   if (!login || !pass) throw new Error("DataForSEO-Zugang fehlt");
-  const res = await fetch("https://api.dataforseo.com/v3/backlinks/backlinks/live", {
-    method: "POST",
-    headers: { Authorization: "Basic " + Buffer.from(`${login}:${pass}`).toString("base64"), "Content-Type": "application/json" },
-    body: JSON.stringify([{ target: "solar-check.io", mode: "as_is", limit: 1000, backlinks_status_type: "live", exclude_internal_backlinks: true }]),
-  });
-  const j: any = await res.json();
-  const task = j.tasks?.[0];
-  if (task?.status_code !== 20000) throw new Error(`Verweise: ${task?.status_message ?? res.status}`);
-  console.log(`  Verweise abgerufen · ${(j.cost ?? 0).toFixed(3)} $`);
-  const out = new Set<string>();
-  for (const it of task.result?.[0]?.items ?? []) {
-    const d = domainAus(it.domain_from);
-    if (d) out.add(d);
-  }
-  return out;
+  const { domains, kosten } = await verlinkendeDomains(login, pass);
+  console.log(`  Verweise abgerufen · ${kosten.toFixed(3)} $`);
+  return new Set(domains.keys());
 }
 
 async function main() {
@@ -156,7 +140,7 @@ async function main() {
     console.error("DataForSEO-Zugang fehlt — nicht gemessen. Ein Messpunkt ohne Verweis-Abruf wäre eine erfundene Null.");
     process.exit(1);
   }
-  const verlinken = await verlinkendeDomains();
+  const verlinken = await verlinkendeSet();
   // Abo-Anmeldungen zählen nur bei Kommunen: die anderen Bestände haben keins.
   const { data: abos } = await client.from("gemeinde_abos").select("region_id").eq("status", "bestaetigt");
   const aboOrte = new Set((abos ?? []).map((a: any) => a.region_id));
