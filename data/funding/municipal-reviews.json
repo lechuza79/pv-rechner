@@ -40701,5 +40701,315 @@
         "evidenceUrl": "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz"
       }
     ]
+  },
+  {
+    "regionId": "03354004",
+    "name": "Dannenberg (Elbe)",
+    "checkedAt": "2026-09-21T14:40:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dannenberg (Elbe) gehört zur Samtgemeinde Elbtalaue (Landkreis Lüchow-Dannenberg), deren Website die Mitgliedsgemeinden mitführt. Die Samtgemeinde fördert über LEADER und Städtebau Projekte nach der regionalen Entwicklungsstrategie, aber keine privaten Photovoltaik-, Speicher-, Balkonkraftwerk- oder Wärmepumpenanlagen; der Landkreis bietet nur Energieberatung und Wärmepumpen-Dialoge, keine Zuschüsse. Ein Landesprogramm Niedersachsens für diese Techniken führt der Katalog nicht.",
+    "searches": [
+      "elbtalaue.de Volltextsuche: Balkonkraftwerk, Photovoltaik (keine Treffer), Zuschuss, Wärmepumpe (21.09.2026)",
+      "elbtalaue.de LEADER-Förderung, Förderschwerpunkte, Entwicklungsplanung & Fördermaßnahmen, Umwelt- & Klimaschutz gelesen",
+      "luechow-dannenberg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Wärmepumpe (21.09.2026)",
+      "Websuche „Dannenberg OR Hitzacker OR Elbtalaue Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026“: keine gemeindlichen Programme",
+      "Gemeindeschlüssel 03354004 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "finding": "LEADER Elbtalaue: Projektförderung nach Entwicklungsstrategie, private Antragsteller mit Regelfördersatz 48 % auf Nettokosten; kein Programm für Solar, Speicher oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "finding": "Kommunale Förderkonzepte (Städtebauförderung Dannenberg/Hitzacker, Dorfentwicklung, Zukunft Stadtgrün) und kommunale Förderprojekte; keine Zuschüsse für Haushalte."
+      },
+      {
+        "url": "https://www.luechow-dannenberg.de/portal/suche.html",
+        "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03354009",
+    "name": "Hitzacker (Elbe)",
+    "checkedAt": "2026-09-21T14:40:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hitzacker (Elbe) gehört zur Samtgemeinde Elbtalaue (Landkreis Lüchow-Dannenberg), deren Website die Mitgliedsgemeinden mitführt. Die Samtgemeinde fördert über LEADER und Städtebau Projekte nach der regionalen Entwicklungsstrategie, aber keine privaten Photovoltaik-, Speicher-, Balkonkraftwerk- oder Wärmepumpenanlagen; der Landkreis bietet nur Energieberatung und Wärmepumpen-Dialoge, keine Zuschüsse. Ein Landesprogramm Niedersachsens für diese Techniken führt der Katalog nicht.",
+    "searches": [
+      "elbtalaue.de Volltextsuche: Balkonkraftwerk, Photovoltaik (keine Treffer), Zuschuss, Wärmepumpe (21.09.2026)",
+      "elbtalaue.de LEADER-Förderung, Förderschwerpunkte, Entwicklungsplanung & Fördermaßnahmen, Umwelt- & Klimaschutz gelesen",
+      "luechow-dannenberg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Wärmepumpe (21.09.2026)",
+      "Websuche „Dannenberg OR Hitzacker OR Elbtalaue Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026“: keine gemeindlichen Programme",
+      "Gemeindeschlüssel 03354009 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "finding": "LEADER Elbtalaue: Projektförderung nach Entwicklungsstrategie, private Antragsteller mit Regelfördersatz 48 % auf Nettokosten; kein Programm für Solar, Speicher oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "finding": "Kommunale Förderkonzepte (Städtebauförderung Dannenberg/Hitzacker, Dorfentwicklung, Zukunft Stadtgrün) und kommunale Förderprojekte; keine Zuschüsse für Haushalte."
+      },
+      {
+        "url": "https://www.luechow-dannenberg.de/portal/suche.html",
+        "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03354003",
+    "name": "Damnatz",
+    "checkedAt": "2026-09-21T14:40:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Damnatz gehört zur Samtgemeinde Elbtalaue (Landkreis Lüchow-Dannenberg), deren Website die Mitgliedsgemeinden mitführt. Die Samtgemeinde fördert über LEADER und Städtebau Projekte nach der regionalen Entwicklungsstrategie, aber keine privaten Photovoltaik-, Speicher-, Balkonkraftwerk- oder Wärmepumpenanlagen; der Landkreis bietet nur Energieberatung und Wärmepumpen-Dialoge, keine Zuschüsse. Ein Landesprogramm Niedersachsens für diese Techniken führt der Katalog nicht.",
+    "searches": [
+      "elbtalaue.de Volltextsuche: Balkonkraftwerk, Photovoltaik (keine Treffer), Zuschuss, Wärmepumpe (21.09.2026)",
+      "elbtalaue.de LEADER-Förderung, Förderschwerpunkte, Entwicklungsplanung & Fördermaßnahmen, Umwelt- & Klimaschutz gelesen",
+      "luechow-dannenberg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Wärmepumpe (21.09.2026)",
+      "Websuche „Dannenberg OR Hitzacker OR Elbtalaue Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026“: keine gemeindlichen Programme",
+      "Gemeindeschlüssel 03354003 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "finding": "LEADER Elbtalaue: Projektförderung nach Entwicklungsstrategie, private Antragsteller mit Regelfördersatz 48 % auf Nettokosten; kein Programm für Solar, Speicher oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "finding": "Kommunale Förderkonzepte (Städtebauförderung Dannenberg/Hitzacker, Dorfentwicklung, Zukunft Stadtgrün) und kommunale Förderprojekte; keine Zuschüsse für Haushalte."
+      },
+      {
+        "url": "https://www.luechow-dannenberg.de/portal/suche.html",
+        "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03354006",
+    "name": "Göhrde",
+    "checkedAt": "2026-09-21T14:40:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Göhrde gehört zur Samtgemeinde Elbtalaue (Landkreis Lüchow-Dannenberg), deren Website die Mitgliedsgemeinden mitführt. Die Samtgemeinde fördert über LEADER und Städtebau Projekte nach der regionalen Entwicklungsstrategie, aber keine privaten Photovoltaik-, Speicher-, Balkonkraftwerk- oder Wärmepumpenanlagen; der Landkreis bietet nur Energieberatung und Wärmepumpen-Dialoge, keine Zuschüsse. Ein Landesprogramm Niedersachsens für diese Techniken führt der Katalog nicht.",
+    "searches": [
+      "elbtalaue.de Volltextsuche: Balkonkraftwerk, Photovoltaik (keine Treffer), Zuschuss, Wärmepumpe (21.09.2026)",
+      "elbtalaue.de LEADER-Förderung, Förderschwerpunkte, Entwicklungsplanung & Fördermaßnahmen, Umwelt- & Klimaschutz gelesen",
+      "luechow-dannenberg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Wärmepumpe (21.09.2026)",
+      "Websuche „Dannenberg OR Hitzacker OR Elbtalaue Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026“: keine gemeindlichen Programme",
+      "Gemeindeschlüssel 03354006 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "finding": "LEADER Elbtalaue: Projektförderung nach Entwicklungsstrategie, private Antragsteller mit Regelfördersatz 48 % auf Nettokosten; kein Programm für Solar, Speicher oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "finding": "Kommunale Förderkonzepte (Städtebauförderung Dannenberg/Hitzacker, Dorfentwicklung, Zukunft Stadtgrün) und kommunale Förderprojekte; keine Zuschüsse für Haushalte."
+      },
+      {
+        "url": "https://www.luechow-dannenberg.de/portal/suche.html",
+        "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03354008",
+    "name": "Gusborn",
+    "checkedAt": "2026-09-21T14:40:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gusborn gehört zur Samtgemeinde Elbtalaue (Landkreis Lüchow-Dannenberg), deren Website die Mitgliedsgemeinden mitführt. Die Samtgemeinde fördert über LEADER und Städtebau Projekte nach der regionalen Entwicklungsstrategie, aber keine privaten Photovoltaik-, Speicher-, Balkonkraftwerk- oder Wärmepumpenanlagen; der Landkreis bietet nur Energieberatung und Wärmepumpen-Dialoge, keine Zuschüsse. Ein Landesprogramm Niedersachsens für diese Techniken führt der Katalog nicht.",
+    "searches": [
+      "elbtalaue.de Volltextsuche: Balkonkraftwerk, Photovoltaik (keine Treffer), Zuschuss, Wärmepumpe (21.09.2026)",
+      "elbtalaue.de LEADER-Förderung, Förderschwerpunkte, Entwicklungsplanung & Fördermaßnahmen, Umwelt- & Klimaschutz gelesen",
+      "luechow-dannenberg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Wärmepumpe (21.09.2026)",
+      "Websuche „Dannenberg OR Hitzacker OR Elbtalaue Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026“: keine gemeindlichen Programme",
+      "Gemeindeschlüssel 03354008 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "finding": "LEADER Elbtalaue: Projektförderung nach Entwicklungsstrategie, private Antragsteller mit Regelfördersatz 48 % auf Nettokosten; kein Programm für Solar, Speicher oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "finding": "Kommunale Förderkonzepte (Städtebauförderung Dannenberg/Hitzacker, Dorfentwicklung, Zukunft Stadtgrün) und kommunale Förderprojekte; keine Zuschüsse für Haushalte."
+      },
+      {
+        "url": "https://www.luechow-dannenberg.de/portal/suche.html",
+        "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03354011",
+    "name": "Jameln",
+    "checkedAt": "2026-09-21T14:40:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Jameln gehört zur Samtgemeinde Elbtalaue (Landkreis Lüchow-Dannenberg), deren Website die Mitgliedsgemeinden mitführt. Die Samtgemeinde fördert über LEADER und Städtebau Projekte nach der regionalen Entwicklungsstrategie, aber keine privaten Photovoltaik-, Speicher-, Balkonkraftwerk- oder Wärmepumpenanlagen; der Landkreis bietet nur Energieberatung und Wärmepumpen-Dialoge, keine Zuschüsse. Ein Landesprogramm Niedersachsens für diese Techniken führt der Katalog nicht.",
+    "searches": [
+      "elbtalaue.de Volltextsuche: Balkonkraftwerk, Photovoltaik (keine Treffer), Zuschuss, Wärmepumpe (21.09.2026)",
+      "elbtalaue.de LEADER-Förderung, Förderschwerpunkte, Entwicklungsplanung & Fördermaßnahmen, Umwelt- & Klimaschutz gelesen",
+      "luechow-dannenberg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Wärmepumpe (21.09.2026)",
+      "Websuche „Dannenberg OR Hitzacker OR Elbtalaue Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026“: keine gemeindlichen Programme",
+      "Gemeindeschlüssel 03354011 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "finding": "LEADER Elbtalaue: Projektförderung nach Entwicklungsstrategie, private Antragsteller mit Regelfördersatz 48 % auf Nettokosten; kein Programm für Solar, Speicher oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "finding": "Kommunale Förderkonzepte (Städtebauförderung Dannenberg/Hitzacker, Dorfentwicklung, Zukunft Stadtgrün) und kommunale Förderprojekte; keine Zuschüsse für Haushalte."
+      },
+      {
+        "url": "https://www.luechow-dannenberg.de/portal/suche.html",
+        "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03354012",
+    "name": "Karwitz",
+    "checkedAt": "2026-09-21T14:40:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Karwitz gehört zur Samtgemeinde Elbtalaue (Landkreis Lüchow-Dannenberg), deren Website die Mitgliedsgemeinden mitführt. Die Samtgemeinde fördert über LEADER und Städtebau Projekte nach der regionalen Entwicklungsstrategie, aber keine privaten Photovoltaik-, Speicher-, Balkonkraftwerk- oder Wärmepumpenanlagen; der Landkreis bietet nur Energieberatung und Wärmepumpen-Dialoge, keine Zuschüsse. Ein Landesprogramm Niedersachsens für diese Techniken führt der Katalog nicht.",
+    "searches": [
+      "elbtalaue.de Volltextsuche: Balkonkraftwerk, Photovoltaik (keine Treffer), Zuschuss, Wärmepumpe (21.09.2026)",
+      "elbtalaue.de LEADER-Förderung, Förderschwerpunkte, Entwicklungsplanung & Fördermaßnahmen, Umwelt- & Klimaschutz gelesen",
+      "luechow-dannenberg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Wärmepumpe (21.09.2026)",
+      "Websuche „Dannenberg OR Hitzacker OR Elbtalaue Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026“: keine gemeindlichen Programme",
+      "Gemeindeschlüssel 03354012 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "finding": "LEADER Elbtalaue: Projektförderung nach Entwicklungsstrategie, private Antragsteller mit Regelfördersatz 48 % auf Nettokosten; kein Programm für Solar, Speicher oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "finding": "Kommunale Förderkonzepte (Städtebauförderung Dannenberg/Hitzacker, Dorfentwicklung, Zukunft Stadtgrün) und kommunale Förderprojekte; keine Zuschüsse für Haushalte."
+      },
+      {
+        "url": "https://www.luechow-dannenberg.de/portal/suche.html",
+        "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03354014",
+    "name": "Langendorf",
+    "checkedAt": "2026-09-21T14:40:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Langendorf gehört zur Samtgemeinde Elbtalaue (Landkreis Lüchow-Dannenberg), deren Website die Mitgliedsgemeinden mitführt. Die Samtgemeinde fördert über LEADER und Städtebau Projekte nach der regionalen Entwicklungsstrategie, aber keine privaten Photovoltaik-, Speicher-, Balkonkraftwerk- oder Wärmepumpenanlagen; der Landkreis bietet nur Energieberatung und Wärmepumpen-Dialoge, keine Zuschüsse. Ein Landesprogramm Niedersachsens für diese Techniken führt der Katalog nicht.",
+    "searches": [
+      "elbtalaue.de Volltextsuche: Balkonkraftwerk, Photovoltaik (keine Treffer), Zuschuss, Wärmepumpe (21.09.2026)",
+      "elbtalaue.de LEADER-Förderung, Förderschwerpunkte, Entwicklungsplanung & Fördermaßnahmen, Umwelt- & Klimaschutz gelesen",
+      "luechow-dannenberg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Wärmepumpe (21.09.2026)",
+      "Websuche „Dannenberg OR Hitzacker OR Elbtalaue Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026“: keine gemeindlichen Programme",
+      "Gemeindeschlüssel 03354014 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "finding": "LEADER Elbtalaue: Projektförderung nach Entwicklungsstrategie, private Antragsteller mit Regelfördersatz 48 % auf Nettokosten; kein Programm für Solar, Speicher oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "finding": "Kommunale Förderkonzepte (Städtebauförderung Dannenberg/Hitzacker, Dorfentwicklung, Zukunft Stadtgrün) und kommunale Förderprojekte; keine Zuschüsse für Haushalte."
+      },
+      {
+        "url": "https://www.luechow-dannenberg.de/portal/suche.html",
+        "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03354019",
+    "name": "Neu Darchau",
+    "checkedAt": "2026-09-21T14:40:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neu Darchau gehört zur Samtgemeinde Elbtalaue (Landkreis Lüchow-Dannenberg), deren Website die Mitgliedsgemeinden mitführt. Die Samtgemeinde fördert über LEADER und Städtebau Projekte nach der regionalen Entwicklungsstrategie, aber keine privaten Photovoltaik-, Speicher-, Balkonkraftwerk- oder Wärmepumpenanlagen; der Landkreis bietet nur Energieberatung und Wärmepumpen-Dialoge, keine Zuschüsse. Ein Landesprogramm Niedersachsens für diese Techniken führt der Katalog nicht.",
+    "searches": [
+      "elbtalaue.de Volltextsuche: Balkonkraftwerk, Photovoltaik (keine Treffer), Zuschuss, Wärmepumpe (21.09.2026)",
+      "elbtalaue.de LEADER-Förderung, Förderschwerpunkte, Entwicklungsplanung & Fördermaßnahmen, Umwelt- & Klimaschutz gelesen",
+      "luechow-dannenberg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Wärmepumpe (21.09.2026)",
+      "Websuche „Dannenberg OR Hitzacker OR Elbtalaue Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026“: keine gemeindlichen Programme",
+      "Gemeindeschlüssel 03354019 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "finding": "LEADER Elbtalaue: Projektförderung nach Entwicklungsstrategie, private Antragsteller mit Regelfördersatz 48 % auf Nettokosten; kein Programm für Solar, Speicher oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "finding": "Kommunale Förderkonzepte (Städtebauförderung Dannenberg/Hitzacker, Dorfentwicklung, Zukunft Stadtgrün) und kommunale Förderprojekte; keine Zuschüsse für Haushalte."
+      },
+      {
+        "url": "https://www.luechow-dannenberg.de/portal/suche.html",
+        "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03354027",
+    "name": "Zernien",
+    "checkedAt": "2026-09-21T14:40:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Zernien gehört zur Samtgemeinde Elbtalaue (Landkreis Lüchow-Dannenberg), deren Website die Mitgliedsgemeinden mitführt. Die Samtgemeinde fördert über LEADER und Städtebau Projekte nach der regionalen Entwicklungsstrategie, aber keine privaten Photovoltaik-, Speicher-, Balkonkraftwerk- oder Wärmepumpenanlagen; der Landkreis bietet nur Energieberatung und Wärmepumpen-Dialoge, keine Zuschüsse. Ein Landesprogramm Niedersachsens für diese Techniken führt der Katalog nicht.",
+    "searches": [
+      "elbtalaue.de Volltextsuche: Balkonkraftwerk, Photovoltaik (keine Treffer), Zuschuss, Wärmepumpe (21.09.2026)",
+      "elbtalaue.de LEADER-Förderung, Förderschwerpunkte, Entwicklungsplanung & Fördermaßnahmen, Umwelt- & Klimaschutz gelesen",
+      "luechow-dannenberg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Wärmepumpe (21.09.2026)",
+      "Websuche „Dannenberg OR Hitzacker OR Elbtalaue Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde 2026“: keine gemeindlichen Programme",
+      "Gemeindeschlüssel 03354027 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "finding": "LEADER Elbtalaue: Projektförderung nach Entwicklungsstrategie, private Antragsteller mit Regelfördersatz 48 % auf Nettokosten; kein Programm für Solar, Speicher oder Wärmepumpe privater Haushalte."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "finding": "Kommunale Förderkonzepte (Städtebauförderung Dannenberg/Hitzacker, Dorfentwicklung, Zukunft Stadtgrün) und kommunale Förderprojekte; keine Zuschüsse für Haushalte."
+      },
+      {
+        "url": "https://www.luechow-dannenberg.de/portal/suche.html",
+        "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": []
   }
 ]
