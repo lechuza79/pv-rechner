@@ -45,7 +45,7 @@ const S = {
     color: v("--color-accent"),
     textDecoration: "none",
     background: v("--color-accent-dim"),
-    borderRadius: v("--radius-sm"),
+    borderRadius: v("--radius-pill"),
     padding: "4px 9px",
   },
   entry: {

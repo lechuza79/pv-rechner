@@ -39,6 +39,9 @@ export default function RelatedLinks({
             style={{
               display: "block",
               textDecoration: "none",
+              // Ohne eigene Farbe erbt der Link das Browser-Blau — sichtbar am
+              // Fokusrahmen und an allem, was currentColor nimmt.
+              color: v("--color-accent"),
               border: `1px solid ${v("--color-border")}`,
               borderRadius: v("--radius-md"),
               padding: `${space.md}px ${space.lg}px`,
