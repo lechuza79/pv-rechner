@@ -24,6 +24,8 @@ import projektionJahre from "../../../lib/klima-projektion-jahre.json";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 
 const STEPS = ["Gerätetyp", "Räume & Größe", "Nutzung & Standort"];
+// One word each for the step indicator; STEPS stay the step headings.
+const SCHRITT_NAMEN = ["Gerät", "Räume", "Nutzung"];
 
 const WINDOWS: { id: CoolingWindow; label: string; sub: string }[] = [
   { id: "allday", label: "Den ganzen Tag", sub: "Durchgehend gekühlt" },
@@ -227,7 +229,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
         </div>
 
         {/* Progress */}
-        {!isResult && <FlowSchritte schritte={STEPS} aktiv={step} onSprung={setStep} />}
+        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} titel={STEPS[step]} onSprung={setStep} />}
 
         {/* ── STEPS ── */}
         {!isResult && (

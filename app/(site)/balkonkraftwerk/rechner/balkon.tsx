@@ -26,6 +26,8 @@ import { DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 
 const STEPS = ["Haushalt & Standort", "Ausrichtung"];
+// One word each for the step indicator; STEPS stay the step headings.
+const SCHRITT_NAMEN = ["Haushalt", "Ausrichtung"];
 
 // Klartext-Beschreibung einer Konfiguration (Set + Speicher-Entscheidung).
 function storageName(id: BalkonStorageId): string {
@@ -383,7 +385,7 @@ export default function Balkon() {
         </div>
 
         {/* Progress */}
-        {!isResult && <FlowSchritte schritte={STEPS} aktiv={step} onSprung={setStep} />}
+        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} titel={STEPS[step]} onSprung={setStep} />}
 
         {/* ── STEPS ── */}
         {!isResult && (

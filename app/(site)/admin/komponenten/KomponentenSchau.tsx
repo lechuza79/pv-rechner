@@ -357,7 +357,7 @@ function FlowSchritteBeispiel() {
   const [schritt, setSchritt] = useState(1);
   return (
     <div>
-      <FlowSchritte schritte={["Dein Haus", "Dein Haushalt", "Großverbraucher"]} aktiv={schritt} onSprung={setSchritt} />
+      <FlowSchritte schritte={["Haus", "Haushalt", "Verbraucher"]} aktiv={schritt} titel={["Dein Haus", "Dein Haushalt", "Großverbraucher"][schritt]} onSprung={setSchritt} />
       <button type="button" onClick={() => setSchritt(s => (s + 1) % 3)}>Nächster Schritt</button>
     </div>
   );

@@ -632,9 +632,8 @@ export default function PVRechner({
   const be = sel.data.be;
 
   const STEPS = ["Wie groß soll die Anlage werden?", "Dein Dach", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
-  // Short names for the step indicator; where a step asks a longer question
-  // (STEPS), that question follows as the heading.
-  const SCHRITT_NAMEN = ["Anlage", "Dein Dach", "Speicher", "Dein Haushalt", "Großverbraucher"];
+  // One word each for the step indicator; STEPS stay the step headings.
+  const SCHRITT_NAMEN = ["Anlage", "Dach", "Speicher", "Haushalt", "Verbraucher"];
   const isResult = step >= STEPS.length;
   const fundingActive = fundingPrograms.some((p) => p.level !== "bund");
 
@@ -984,7 +983,7 @@ export default function PVRechner({
         )}
 
         {/* Progress */}
-        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} onSprung={setStep} frage={STEPS[step] === SCHRITT_NAMEN[step] ? undefined : STEPS[step]} />}
+        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} onSprung={setStep} titel={STEPS[step]} />}
 
         {/* ── QUESTIONS ── */}
         {!isResult && (

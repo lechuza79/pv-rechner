@@ -57,6 +57,8 @@ import SelectField from "../../../components/SelectField";
 type VerbrauchEinheit = "gas" | "oel";
 
 const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizsystem"];
+// One word each for the step indicator; STEPS stay the step headings.
+const SCHRITT_NAMEN = ["Situation", "Haus", "Dämmung", "Haushalt", "Heizung"];
 
 // `embedded` = gerendert in einem Modal (z. B. aus dem Förder-Ratgeber), nicht
 // als eigene Seite: dann ohne 100vh-Höhe, ohne Seitentitel und volle Breite —
@@ -722,7 +724,7 @@ export default function Waermepumpe({
         )}
 
         {/* Progress */}
-        {!isResult && <FlowSchritte schritte={STEPS} aktiv={step} onSprung={setStep} />}
+        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} titel={STEPS[step]} onSprung={setStep} />}
 
         {/* ── STEPS ── */}
         {!isResult && (
