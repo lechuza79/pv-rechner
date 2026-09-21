@@ -39274,5 +39274,175 @@
         "evidenceUrl": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html"
       }
     ]
+  },
+  {
+    "regionId": "03355006",
+    "name": "Barnstedt",
+    "checkedAt": "2026-09-21T02:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Barnstedt ist Mitgliedsgemeinde der Samtgemeinde Ilmenau, und die Samtgemeinde ist hier der Träger. Ihre Förderrichtlinie für Stecker-Solar-Anlagen zahlt pauschal 100 € je Haushalt für ein Balkonkraftwerk, gilt seit 01.01.2024, solange Haushaltsmittel da sind, und ist mit anderen öffentlichen Mitteln kombinierbar; aufgenommen als ilmenau-steckersolar mit allen vier Mitgliedsgemeinden als Fördergebiet. Fest installierte Solar- und Photovoltaikanlagen schließt die Richtlinie ausdrücklich aus. Die Förderseite der Samtgemeinde führt kein weiteres Programm; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "samtgemeinde-ilmenau.de Förderungen (Planen und Bauen)",
+      "Mitgliedsgemeinden der Samtgemeinde Ilmenau im eigenen Menü gelesen",
+      "Gemeindeschlüssel 03355006 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx",
+        "finding": "Förderseite der Samtgemeinde mit genau einem Programm (Stecker-Solar-Anlagen), Richtlinie und Online-Antragsformular. Mitgliedsgemeinden laut eigenem Menü: Barnstedt, Embsen, Melbeck, Deutsch Evern."
+      },
+      {
+        "url": "https://www.samtgemeinde-ilmenau.de/ResourceImage.aspx?raid=26660",
+        "finding": "Förderrichtlinie, Ratsbeschluss 12.12.2023, unterzeichnet 15.03.2024, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt pauschal 100 € je Haushalt.“ (Nr. 5 b); kombinierbar (Nr. 5 c); Antrag spätestens drei Monate nach dem Kauf (Nr. 6 b)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ilmenau.de/de/buergerservice/aktuelles/veroeffentlichungen/pressemitteilungen/pressearchiv-2024/innenstadtfoerderrichtlinie-projekte-zur-belebung-der-ilmenauer-innenstadt-fuer-das-erste-halbjahr-koennen-noch-bis-zum-31-januar-2024-beantragt-werden",
+        "disposition": "replaced",
+        "reason": "Seite der Stadt Ilmenau in Thüringen (Innenstadtförderung, Studierendenzuschuss, Städtebau) — gleichnamig, aber nicht die Samtgemeinde Ilmenau im Landkreis Lüneburg; ersetzt durch die Förderseite der Samtgemeinde.",
+        "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx"
+      },
+      {
+        "url": "ilmenau.de/de/buergerservice/familie-und-soziales/bildung-schule/informationen-fuer-studierende/studierendenzuschuss",
+        "disposition": "replaced",
+        "reason": "Seite der Stadt Ilmenau in Thüringen (Innenstadtförderung, Studierendenzuschuss, Städtebau) — gleichnamig, aber nicht die Samtgemeinde Ilmenau im Landkreis Lüneburg; ersetzt durch die Förderseite der Samtgemeinde.",
+        "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx"
+      },
+      {
+        "url": "ilmenau.de/de/buergerservice/planen-und-bauen/stadtplanung-stadtentwicklung-und-stadtsanierung/foerderprojekte",
+        "disposition": "replaced",
+        "reason": "Seite der Stadt Ilmenau in Thüringen (Innenstadtförderung, Studierendenzuschuss, Städtebau) — gleichnamig, aber nicht die Samtgemeinde Ilmenau im Landkreis Lüneburg; ersetzt durch die Förderseite der Samtgemeinde.",
+        "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx"
+      }
+    ]
+  },
+  {
+    "regionId": "03355014",
+    "name": "Deutsch Evern",
+    "checkedAt": "2026-09-21T02:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Deutsch Evern ist Mitgliedsgemeinde der Samtgemeinde Ilmenau, und die Samtgemeinde ist hier der Träger. Ihre Förderrichtlinie für Stecker-Solar-Anlagen zahlt pauschal 100 € je Haushalt für ein Balkonkraftwerk, gilt seit 01.01.2024, solange Haushaltsmittel da sind, und ist mit anderen öffentlichen Mitteln kombinierbar; aufgenommen als ilmenau-steckersolar mit allen vier Mitgliedsgemeinden als Fördergebiet. Fest installierte Solar- und Photovoltaikanlagen schließt die Richtlinie ausdrücklich aus. Die Förderseite der Samtgemeinde führt kein weiteres Programm; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "samtgemeinde-ilmenau.de Förderungen (Planen und Bauen)",
+      "Mitgliedsgemeinden der Samtgemeinde Ilmenau im eigenen Menü gelesen",
+      "Gemeindeschlüssel 03355014 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx",
+        "finding": "Förderseite der Samtgemeinde mit genau einem Programm (Stecker-Solar-Anlagen), Richtlinie und Online-Antragsformular. Mitgliedsgemeinden laut eigenem Menü: Barnstedt, Embsen, Melbeck, Deutsch Evern."
+      },
+      {
+        "url": "https://www.samtgemeinde-ilmenau.de/ResourceImage.aspx?raid=26660",
+        "finding": "Förderrichtlinie, Ratsbeschluss 12.12.2023, unterzeichnet 15.03.2024, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt pauschal 100 € je Haushalt.“ (Nr. 5 b); kombinierbar (Nr. 5 c); Antrag spätestens drei Monate nach dem Kauf (Nr. 6 b)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ilmenau.de/de/buergerservice/aktuelles/veroeffentlichungen/pressemitteilungen/pressearchiv-2024/innenstadtfoerderrichtlinie-projekte-zur-belebung-der-ilmenauer-innenstadt-fuer-das-erste-halbjahr-koennen-noch-bis-zum-31-januar-2024-beantragt-werden",
+        "disposition": "replaced",
+        "reason": "Seite der Stadt Ilmenau in Thüringen (Innenstadtförderung, Studierendenzuschuss, Städtebau) — gleichnamig, aber nicht die Samtgemeinde Ilmenau im Landkreis Lüneburg; ersetzt durch die Förderseite der Samtgemeinde.",
+        "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx"
+      },
+      {
+        "url": "ilmenau.de/de/buergerservice/familie-und-soziales/bildung-schule/informationen-fuer-studierende/studierendenzuschuss",
+        "disposition": "replaced",
+        "reason": "Seite der Stadt Ilmenau in Thüringen (Innenstadtförderung, Studierendenzuschuss, Städtebau) — gleichnamig, aber nicht die Samtgemeinde Ilmenau im Landkreis Lüneburg; ersetzt durch die Förderseite der Samtgemeinde.",
+        "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx"
+      },
+      {
+        "url": "ilmenau.de/de/buergerservice/planen-und-bauen/stadtplanung-stadtentwicklung-und-stadtsanierung/foerderprojekte",
+        "disposition": "replaced",
+        "reason": "Seite der Stadt Ilmenau in Thüringen (Innenstadtförderung, Studierendenzuschuss, Städtebau) — gleichnamig, aber nicht die Samtgemeinde Ilmenau im Landkreis Lüneburg; ersetzt durch die Förderseite der Samtgemeinde.",
+        "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx"
+      }
+    ]
+  },
+  {
+    "regionId": "03355016",
+    "name": "Embsen",
+    "checkedAt": "2026-09-21T02:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Embsen ist Mitgliedsgemeinde der Samtgemeinde Ilmenau, und die Samtgemeinde ist hier der Träger. Ihre Förderrichtlinie für Stecker-Solar-Anlagen zahlt pauschal 100 € je Haushalt für ein Balkonkraftwerk, gilt seit 01.01.2024, solange Haushaltsmittel da sind, und ist mit anderen öffentlichen Mitteln kombinierbar; aufgenommen als ilmenau-steckersolar mit allen vier Mitgliedsgemeinden als Fördergebiet. Fest installierte Solar- und Photovoltaikanlagen schließt die Richtlinie ausdrücklich aus. Die Förderseite der Samtgemeinde führt kein weiteres Programm; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "samtgemeinde-ilmenau.de Förderungen (Planen und Bauen)",
+      "Mitgliedsgemeinden der Samtgemeinde Ilmenau im eigenen Menü gelesen",
+      "Gemeindeschlüssel 03355016 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx",
+        "finding": "Förderseite der Samtgemeinde mit genau einem Programm (Stecker-Solar-Anlagen), Richtlinie und Online-Antragsformular. Mitgliedsgemeinden laut eigenem Menü: Barnstedt, Embsen, Melbeck, Deutsch Evern."
+      },
+      {
+        "url": "https://www.samtgemeinde-ilmenau.de/ResourceImage.aspx?raid=26660",
+        "finding": "Förderrichtlinie, Ratsbeschluss 12.12.2023, unterzeichnet 15.03.2024, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt pauschal 100 € je Haushalt.“ (Nr. 5 b); kombinierbar (Nr. 5 c); Antrag spätestens drei Monate nach dem Kauf (Nr. 6 b)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeinde-ilmenau.de/home/themenseite/desktopdefault.aspx/tabid-2458/4244_read-7498",
+        "disposition": "replaced",
+        "reason": "Liefert am 21.09.2026 die 404-Fehlerseite der Samtgemeinde; ersetzt durch deren aktuelle Förderseite.",
+        "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx"
+      },
+      {
+        "url": "samtgemeinde-ilmenau.de/home/themenseite/home/themenseite/gemeinde-embsen/gemeinde-embsen-sichert-hausaerztliche-versorgung.aspx",
+        "disposition": "reviewed",
+        "reason": "Meldung zur hausärztlichen Versorgung in Embsen; keine Förderung für unsere Techniken.",
+        "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx"
+      }
+    ]
+  },
+  {
+    "regionId": "03355024",
+    "name": "Melbeck",
+    "checkedAt": "2026-09-21T02:40:00Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Melbeck ist Mitgliedsgemeinde der Samtgemeinde Ilmenau, und die Samtgemeinde ist hier der Träger. Ihre Förderrichtlinie für Stecker-Solar-Anlagen zahlt pauschal 100 € je Haushalt für ein Balkonkraftwerk, gilt seit 01.01.2024, solange Haushaltsmittel da sind, und ist mit anderen öffentlichen Mitteln kombinierbar; aufgenommen als ilmenau-steckersolar mit allen vier Mitgliedsgemeinden als Fördergebiet. Fest installierte Solar- und Photovoltaikanlagen schließt die Richtlinie ausdrücklich aus. Die Förderseite der Samtgemeinde führt kein weiteres Programm; kein Zuschuss für Dach-Photovoltaik, Speicher oder Wärmepumpen gefunden.",
+    "searches": [
+      "samtgemeinde-ilmenau.de Förderungen (Planen und Bauen)",
+      "Mitgliedsgemeinden der Samtgemeinde Ilmenau im eigenen Menü gelesen",
+      "Gemeindeschlüssel 03355024 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx",
+        "finding": "Förderseite der Samtgemeinde mit genau einem Programm (Stecker-Solar-Anlagen), Richtlinie und Online-Antragsformular. Mitgliedsgemeinden laut eigenem Menü: Barnstedt, Embsen, Melbeck, Deutsch Evern."
+      },
+      {
+        "url": "https://www.samtgemeinde-ilmenau.de/ResourceImage.aspx?raid=26660",
+        "finding": "Förderrichtlinie, Ratsbeschluss 12.12.2023, unterzeichnet 15.03.2024, 3 Seiten im Volltext gelesen: „Die Förderhöhe beträgt pauschal 100 € je Haushalt.“ (Nr. 5 b); kombinierbar (Nr. 5 c); Antrag spätestens drei Monate nach dem Kauf (Nr. 6 b)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Samtgemeinde im Original gelesen; ein Programm (Stecker-Solar) mit Richtlinie und Online-Antrag.",
+        "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx"
+      },
+      {
+        "url": "samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx",
+        "disposition": "replaced",
+        "reason": "Doppelt aufgelöster Pfad derselben Förderseite (die Seite setzt eine Basisadresse); ersetzt durch die richtige Adresse.",
+        "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx"
+      },
+      {
+        "url": "samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/ResourceImage.aspx?raid=26660",
+        "disposition": "replaced",
+        "reason": "Falsch aufgelöster Pfad der Richtlinie (404); die Richtlinie liegt unter der Wurzel der Domain und ist dort im Volltext gelesen.",
+        "evidenceUrl": "https://www.samtgemeinde-ilmenau.de/ResourceImage.aspx?raid=26660"
+      }
+    ]
   }
 ]

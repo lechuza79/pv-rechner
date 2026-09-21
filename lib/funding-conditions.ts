@@ -254,6 +254,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Kauf, Installation und Registrierung (Nr. 6.1). Die übliche Prüfform
   // „vor dem Kauf beantragen" wäre hier der falsche Test, nicht ein fehlender.
   "adendorf-steckersolar",
+  // Samtgemeinde Ilmenau, aufgenommen am 21.09.2026. Dieselbe umgekehrte
+  // Reihenfolge: Antrag nach dem Kauf, spätestens drei Monate danach (Nr. 4 a,
+  // 6 b), mit Rechnung, Foto und Anmeldenachweisen.
+  "ilmenau-steckersolar",
   // Kreis Pinneberg, aufgenommen am 21.09.2026. Das Vorhaben ist eine
   // Dachbegrünung, nicht eine Photovoltaikanlage — eine Prüfform, die eine
   // Anlage gegen ein Antragsverfahren hält, hat hier nichts zu prüfen. Die

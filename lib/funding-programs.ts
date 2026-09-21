@@ -10994,6 +10994,63 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: [],
   },
+  "ilmenau-steckersolar": {
+    id: "ilmenau-steckersolar", name: "Förderrichtlinie für die Bezuschussung von Stecker-Solar-Anlagen (sog. Balkonkraftwerken)",
+    traeger: "Samtgemeinde Ilmenau", level: "kommune", region: "Samtgemeinde Ilmenau",
+    bundesland: "Niedersachsen",
+    // The four member municipalities as the Samtgemeinde's own menu lists them
+    // ("Mitgliedsgemeinden"), each key looked up singly in the population
+    // register - never the shared prefix, which here is Landkreis Lüneburg:
+    // Barnstedt, Deutsch Evern, Embsen, Melbeck.
+    //   NOT THE CITY OF ILMENAU: a register search for "Ilmenau" returns the
+    //   Thuringian town, which has nothing to do with this programme.
+    agsCodes: ["03355006", "03355014", "03355016", "03355024"],
+    url: "https://www.samtgemeinde-ilmenau.de/home/ihre-samtgemeinde/planen-und-bauen/foerderungen.aspx",
+    // Guideline read in full as the PDF the programme page links (3 pages, file
+    // number 65 50 024, signed 15.03.2024, read 21 Sep 2026). Council decision
+    // of 12.12.2023, in force retroactively from 01.01.2024, valid "solange die
+    // Samtgemeinde Ilmenau keine Änderung der Inhalte beschließt und
+    // Haushaltsmittel hierfür zur Verfügung stehen" (no. 9). The rate, no.
+    // 5(b): "Die Förderhöhe beträgt pauschal 100 € je Haushalt."
+    //
+    // combinableWith IS THE FEDERAL LIST, and that is the guideline's own
+    // word, not a default: no. 5(c) says the grant "schließt eine Finanzierung
+    // mit anderen öffentlichen Mitteln nicht aus" - the opposite of Adendorf's
+    // 3.3 next door.
+    //
+    // THE YEARLY CAP MOVES AND 2026 IS NOT PUBLISHED: no. 5(a) names 2,500 EUR
+    // for 25 systems "im Jahr 2024"; the Samtgemeinde's own news channel
+    // announced 55 systems for 2025 ("Die Samtgemeinde Ilmenau fördert auch in
+    // 2025 wieder Balkonkraftwerke", samtgemeinde-ilmenau.orts.app, read 21 Sep
+    // 2026). No 2026 notice was found, no "ausgeschöpft" either; the page still
+    // offers the guideline and a live online form, and no. 9 keeps the
+    // guideline in force while funds exist - so the programme counts as
+    // running. Found by the adversarial council reviewer, checked here.
+    //
+    // Found as an unread source row filed under Melbeck; the fifth local
+    // programme the Landkreis Lüneburg page named.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2023-12-12", beginntIso: "2024-01-01",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Pauschaler Zuschuss zum Kauf eines Balkonkraftwerks",
+    maxFoerderung: "100 € je Haushalt",
+    balkonPauschale: 100,
+    rates: [
+      { label: "Balkonkraftwerk", value: "100 € je Haushalt", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Antrag NACH dem Kauf, spätestens drei Monate nach dem Rechnungsdatum — als Eingang zählt erst der vollständige Antrag; nur online über das Formular der Samtgemeinde",
+      "Antragsberechtigt sind volljährige Privatpersonen, die bei Antragstellung Haus- bzw. Wohnungseigentümer oder Mieter im Gebiet der Samtgemeinde sind",
+      "Je Haushalt wird höchstens eine Anlage gefördert, unabhängig von der Zahl der Module",
+      "Das Gerät muss fabrikneu sein und bei einem Fachhändler gekauft werden; Gebrauchtkauf, Ratenkauf und Leasing schließen die Förderung aus",
+      "Anmeldung im Marktstammdatenregister und beim Netzbetreiber ist Voraussetzung; zum Antrag gehören Angebot oder Beschreibung, eine auf den Antragsteller ausgestellte Rechnung, ein Foto der installierten Anlage und beide Anmeldenachweise",
+      "Nicht gefördert werden Insel-Anlagen mit Akkubetrieb und fest mit dem Gebäude verbundene Solar- oder Photovoltaikanlagen",
+      "Zweckbindung 60 Monate; bei vorzeitigem Verkauf, Vermietung oder dauerhafter Unbrauchbarkeit kann der Zuschuss anteilig zurückgefordert werden",
+      "Kein Rechtsanspruch; vergeben wird nach Eingangsreihenfolge im Rahmen der Haushaltsmittel, die Zahl der Anlagen ist je Jahr begrenzt (2024: 25, 2025: 55; für 2026 hat die Samtgemeinde keine Zahl veröffentlicht), ausgezahlt erst nach Inkraftsetzung des jeweiligen Haushalts",
+    ],
+    combinableWith: BUND,
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
