@@ -6,7 +6,7 @@
  --chart-bar-radius:6px;--chart-bar-width:72%;--chart-bar-gap:8px;--chart-plot-height:220px;
  color:var(--widget-ink);container-type:inline-size;
 }
-.sc-widget-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--widget-gap);align-items:start;}
+.sc-widget-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--widget-gap);align-items:stretch;}
 .sc-widget {min-width:0;border-radius:var(--widget-radius);background:var(--widget-surface);grid-column:span 1;container-type:inline-size;}
 .sc-widget[data-columns="2"]{grid-column:span 2;}
 .sc-widget[data-columns="3"]{grid-column:1/-1;}
@@ -56,7 +56,7 @@
 .sc-kpi-zero {stroke:var(--widget-muted);stroke-opacity:.4;stroke-width:1;}
 .sc-kpi-trend text {font-size:10px;fill:var(--widget-muted);}
 .sc-kpi-delta {position:relative;align-self:flex-start;appearance:none;background:none;border:0;border-radius:4px;padding:4px 0;color:var(--widget-muted);font:inherit;font-size:14px;line-height:1.5;cursor:pointer;text-align:left;}
-.sc-kpi-delta[data-positive="true"] {color:var(--color-positive,#00D950);}
+.sc-kpi-delta[data-positive] {color:var(--color-positive,#00D950);border:1px solid currentColor;border-radius:6px;padding:4px 8px;opacity:1;}
 .sc-kpi-delta:focus-visible {outline:2px solid currentColor;outline-offset:4px;}
 .sc-kpi-delta-alternative {display:none;position:absolute;bottom:100%;left:0;white-space:nowrap;padding:8px 12px;border:1px solid var(--widget-muted);border-radius:8px;background:var(--widget-surface);color:var(--widget-ink);z-index:2;box-shadow:0 4px 16px #0003;}
 .sc-kpi-delta:hover .sc-kpi-delta-alternative,.sc-kpi-delta:focus-visible .sc-kpi-delta-alternative,.sc-kpi-delta-alternative[data-open="true"] {display:block;}
@@ -102,7 +102,14 @@
 .sc-kpi-main .sc-kpi-value{min-height:0;display:block;}
 .sc-kpi-main .sc-kpi-value strong{font-size:32px;}
 .sc-kpi-main .sc-kpi-plot{margin:0;min-width:0;}
-.sc-kpi-main .sc-kpi-trend{width:100%;height:52px;display:block;}
+.sc-kpi-main .sc-kpi-trend{width:100%;height:58px;display:block;}
 .sc-kpi>.sc-kpi-comparison{margin-top:8px;}
 .sc-kpi .sc-kpi-label{min-height:0;margin-bottom:16px;}
 @container(max-width:540px){.sc-kpi-main{grid-template-columns:minmax(0,1fr) 72px;gap:8px;}.sc-kpi-main .sc-kpi-value strong{font-size:26px;}}
+
+/* Compact size of the shared period control; the medium donut control stays unchanged. */
+.sc-widget-setting[data-size="sm"] .sc-setting-stepper>button{width:32px;}
+.sc-widget-setting[data-size="sm"] .sc-setting-stepper>button svg{width:16px;height:16px;}
+.sc-widget-setting[data-size="sm"] .sc-setting-stepper>span{min-width:64px;}
+.sc-widget-setting[data-size="sm"] .sc-setting-stepper select{height:34px;font-size:13px!important;line-height:18px;padding:8px 26px 8px 10px!important;}
+.sc-widget-setting[data-size="sm"] .sc-setting-select select{height:36px;font-size:13px!important;line-height:18px;border-radius:12px!important;}

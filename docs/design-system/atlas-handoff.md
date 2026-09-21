@@ -52,3 +52,18 @@ The archive is local, not committed. Restore from the repository root with `tar 
 ## Type-check boundary
 
 The local `scripts/municipality-preview` adapter is excluded from the production TypeScript project because its esbuild aliases resolve into external design workspaces. Application components and `lib/dashboard` remain in the normal strict production check. The preview client is separately bundled with the same aliases as its server; its focused data tests are run separately. Portability and strict typing of that adapter remain integration work.
+
+## UI checkpoint — afternoon, 21 September
+
+The user requested intermediate commits so Claude can continue toward a shareable prototype. This checkpoint includes all previously uncommitted section navigation and monitor refinements plus the following review fixes:
+
+- Section navigation owns page copy/share/subscribe; floating page footer removed. Insights heading uses the page rail.
+- Hero cards use the same React monitor widgets (feed-in value, live power, monthly solar) through `view=hero`; no separate hardcoded chart/value implementation.
+- Monthly radial orientation: noon at top. Day selection/play/reset are below the chart; annual legend appears on hover/focus/touch.
+- Reusable `Delta` for KPI comparisons and matching citizen-example appearance. `public/atlas-design-preview/delta.css` mirrors the component stylesheet; keep them synchronized.
+- Composition artwork, ring endpoint, share-donut inner shade, live clock labels and utilization footer adjusted.
+- Update captions removed from the reviewed monitor widgets. Existing prepared periods are still used.
+
+**Still open, explicitly ordered last by the user:** acquire and validate additional year/month data; wire functional period selection for annual/monthly profiles, electricity value/feed-in value and composition widgets. Do not invent historical values. The old source-worktree weather scripts intentionally throw; use the main checkout's ERA5 archive implementation through a local adapter, without modifying that checkout. Current monthly profile is August 2026 and annual profile is 2025.
+
+**Publication boundary:** no deployment performed. The preview still depends on external local source paths and the binary asset archive above. For a public prototype, package those dependencies or integrate into the application; do not claim that pushing this branch alone produces a working deployment. Subscription is still a non-sending prototype dialog. Review hero/widget fit in the full page at target widths before sharing.

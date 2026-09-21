@@ -20,6 +20,5 @@ const ranking=document.createElement('section');ranking.id='atlas-ranking';ranki
 document.getElementById('atlas-overview').before(ranking);
 
 const credit=document.createElement('a');credit.href='https://open-meteo.com/';credit.target='_blank';credit.rel='noopener';credit.textContent=' Wettermodell: Open-Meteo (CC BY 4.0).';content.querySelector('.atlas-status').append(credit);
-const sticky=document.createElement('div');sticky.className='atlas-sticky';sticky.hidden=true;sticky.innerHTML='<div><strong>Höchberg</strong><span>Solar-Atlas</span></div><button class="atlas-sticky-abo atlas-secondary">'+bell+' <span>Abonnieren</span></button><button type="button" data-ranking-share class="atlas-button">Platzierung teilen <span aria-hidden="true">↗</span></button>';document.body.append(sticky);sticky.querySelector('button').onclick=abo;const observer=new IntersectionObserver(([entry])=>{sticky.hidden=entry.isIntersecting;},{threshold:0});observer.observe(stage);window.addEventListener('pagehide',()=>observer.disconnect(),{once:true});
 
 }refine();})();

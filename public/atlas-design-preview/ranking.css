@@ -214,7 +214,7 @@
 #atlas-ranking .ranking-stage h3{margin:0;font-size:24px;line-height:1.25;min-height:0;}
 #atlas-ranking .ranking-stage-subline{margin:4px 0 0;font-size:14px;line-height:1.2;color:var(--atlas-muted);}
 #atlas-ranking .ranking-stage>.ranking-detail{margin:3px 0 0;font-size:13px;line-height:1.2;color:var(--atlas-muted);}
-#atlas-ranking .ranking-stage .ranking-podium{height:260px!important;min-height:260px!important;flex:none;margin:auto 0 0!important;}
+#atlas-ranking .ranking-stage .ranking-podium{height:260px!important;min-height:260px!important;flex:none;margin:auto auto 0!important;align-self:center;width:100%;max-width:414px;}
 #atlas-ranking .ranking-category-panel{box-sizing:border-box;display:flex;flex-direction:column;min-width:0;min-height:0;overflow:hidden;order:0;}
 #atlas-ranking .ranking-category-panel>.atlas-kicker{flex:none;margin:0 0 12px;font-size:12px;line-height:1.4;}
 #atlas-ranking .ranking-choices{display:flex;flex-flow:column nowrap;flex:1;gap:0;margin:0;min-height:0;min-width:0;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;overscroll-behavior:contain;scrollbar-width:thin;background:transparent!important;border-radius:0!important;}

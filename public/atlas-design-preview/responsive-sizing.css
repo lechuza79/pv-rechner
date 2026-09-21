@@ -30,10 +30,20 @@
 .solar-page .atlas-kicker { font-size: 12px; line-height: 1.5; letter-spacing: .08em; }
 .solar-page .v3-intro-grid { gap: 32px; padding-top: 40px; }
 .solar-page .v3-section-nav {
-  font-size: var(--sc-type-action-size);
-  gap: 24px;
-  padding: 16px max(var(--sc-page-inset), calc((100% - var(--sc-layout-content)) / 2));
+ display:flex;align-items:center;justify-content:center;gap:4px;
+ position:sticky;top:calc(var(--v3-nav-top,0px) + 8px);z-index:50;
+ width:max-content;max-width:calc(100% - 24px);box-sizing:border-box;
+ margin:8px auto 24px;padding:6px;border:1px solid var(--atlas-line);
+ border-radius:999px;background:var(--atlas-paper)!important;
+ font-size:14px;line-height:1.3;
 }
+.solar-page .v3-section-nav a{display:block;padding:10px 16px;border:0;border-radius:999px;color:var(--atlas-muted);text-decoration:none;white-space:nowrap;transition:background-color .18s,color .18s;}
+.solar-page .v3-section-nav a[aria-current="location"]{background:var(--theme-action,#d4ff24);color:var(--theme-action-ink,#132527);}
+.solar-page .v3-section-nav a:hover{color:var(--atlas-ink);}
+.solar-page .v3-section-nav a[aria-current="location"]:hover{color:var(--theme-action-ink,#132527);}
+.solar-page .v3-section-nav a:focus-visible{outline:2px solid var(--atlas-muted);outline-offset:2px;}
+@media(max-width:600px){.solar-page .v3-section-nav{font-size:12px;gap:2px;padding:5px;}.solar-page .v3-section-nav a{padding:9px 12px;}}
+@media(prefers-reduced-motion:reduce){.solar-page .v3-section-nav a{transition:none;}}
 .solar-page #atlas-ranking,
 .solar-page .atlas-content .v3-conclusion {
   width: min(var(--sc-layout-content), calc(100% - 2 * var(--sc-page-inset)));
@@ -114,7 +124,7 @@
 }
 .solar-page .v3-conclusion .sc-feature-action:hover { background: #e8eee90c; }
 .solar-page .atlas-content #atlas-sources h2 {
-  font-size: 16px !important;
+  font-size: 20px !important;
   line-height: 1.4 !important;
   letter-spacing: normal !important;
 }
@@ -174,3 +184,43 @@
 #atlas-data .monitor-update{font-size:12px;line-height:1.5;color:var(--atlas-secondary);margin:12px 0 20px;}
 
 .v3-conclusion .v3-calculation-help summary{display:grid!important;place-items:center!important;justify-content:center!important;text-align:center;box-sizing:border-box;}
+
+/* Page actions and attribution use the same content rail as the monitor. */
+.atlas-page-status{position:absolute;right:0;top:calc(100% + 12px);white-space:nowrap;font-size:12px;background:var(--atlas-paper);border-radius:8px;}
+.atlas-page-status:not(:empty){padding:8px 12px;border:1px solid var(--atlas-line);}
+.solar-page .atlas-content .v3-conclusion{background:transparent!important;}
+.solar-page #atlas-sources{box-sizing:border-box;margin:32px auto;padding:24px 0;}
+.solar-page #atlas-sources h2{margin:0 0 16px;max-width:none;transform:none;}
+
+/* Page actions share the section navigation and stay within mobile gutters. */
+.solar-page .v3-section-nav{gap:4px;}
+.v3-section-nav .atlas-page-actions{display:flex;align-items:center;gap:4px;position:relative;border-left:1px solid var(--atlas-line);padding-left:8px;margin-left:4px;}
+.v3-section-nav .atlas-page-actions button{box-sizing:border-box;display:grid;place-items:center;flex:none;width:36px;height:36px;min-width:36px;padding:0;border:1px solid var(--atlas-line);border-radius:999px;background:transparent;color:var(--atlas-ink);cursor:pointer;}
+.v3-section-nav .atlas-page-actions button:hover{background:color-mix(in srgb,var(--atlas-ink) 8%,transparent);}
+.v3-section-nav .atlas-page-actions svg{width:16px!important;height:16px!important;margin:0;}
+.solar-page #atlas-stories .atlas-insights-head{padding-top:0;padding-bottom:24px;}
+.solar-page #atlas-stories .atlas-insights-head h2{font-size:var(--sc-type-section-size);line-height:1.25;letter-spacing:normal;margin:0;}
+@media(max-width:600px){
+ .solar-page .v3-section-nav{gap:0;padding:5px;max-width:calc(100% - 24px);font-size:11px;}
+ .solar-page .v3-section-nav a{padding:9px 8px;}
+ .v3-section-nav .atlas-page-actions{gap:2px;padding-left:4px;margin-left:2px;}
+ .v3-section-nav .atlas-page-actions button{width:28px;height:32px;min-width:28px;}
+}
+
+/* Prototype review: hero widgets reuse the monitor, with one shared content rail. */
+.solar-page .hero .site-header{border-bottom-color:rgba(24,50,62,.12)!important;}
+.solar-page .hero .site-header::after{opacity:.35;}
+.solar-page .v3-intro .atlas-kicker{text-transform:none;letter-spacing:normal;}
+.solar-page #atlas-stories .atlas-insights-head{border-top:1px solid var(--atlas-line);padding-top:24px;}
+.solar-page .v3-hero-stack .v3-monitor-card{padding:0!important;overflow:visible;background:transparent;border:0;box-shadow:none;backdrop-filter:none;}
+.v3-monitor-card iframe{display:block;width:100%;height:560px;border:0;border-radius:24px;background:transparent;}
+@media(min-width:1100px){.solar-page .v3-hero-stack{right:max(5%,calc((100vw - 1080px)/2));top:220px;}.solar-page .hero{min-height:1020px!important;}}
+.v3-scroll-indicator{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;z-index:7;color:var(--atlas-ink);text-decoration:none;font-size:13px;opacity:0;visibility:hidden;transition:opacity .4s;}
+.v3-scroll-indicator.is-visible{opacity:1;visibility:visible;}
+.v3-scroll-indicator svg{width:20px;height:20px;animation:atlas-scroll-hint 1.8s ease-in-out infinite;}
+@keyframes atlas-scroll-hint{50%{transform:translateY(4px)}}
+@media(prefers-reduced-motion:reduce){.v3-scroll-indicator{transition:none;}.v3-scroll-indicator svg{animation:none;}}
+@media(max-width:700px){.solar-page .hero{min-height:1350px!important;}.solar-page .v3-hero-stack{bottom:85px;}.v3-monitor-card iframe{height:560px;}}
+
+.v3-conclusion .v3-result-amount.sc-delta{font-size:inherit;padding:8px 12px;line-height:1.15;gap:8px;}
+.v3-conclusion .sc-delta .v3-result-plus{color:color-mix(in srgb,currentColor 62%,transparent);}

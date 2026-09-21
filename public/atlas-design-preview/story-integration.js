@@ -5,6 +5,8 @@
   if(!section||!section.querySelector('.v3-section-divider')||mounted)return;
   mounted=true;
   section.replaceChildren();
+  const heading=document.createElement('div');heading.className='atlas-wrap atlas-insights-head';
+  heading.innerHTML='<h2>Insights aus Höchberg</h2>';section.append(heading);
   const frame=document.createElement('iframe');
   const params=new URLSearchParams({city:'09679147',theme:'dark'});const story=new URLSearchParams(location.search).get('story');if(story)params.set('story',story);frame.src='/embed/story-preview?'+params;
   frame.title='Geschichten aus Höchberg';
