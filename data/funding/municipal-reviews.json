@@ -40729,9 +40729,62 @@
       {
         "url": "https://www.luechow-dannenberg.de/portal/suche.html",
         "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "finding": "LEADER-Förderseite der Samtgemeinde: verweist auf Ablauf, Förderschwerpunkte und Regionalmanagement; kein Zuschussprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "finding": "LEADER-Antragsweg: Projektförderung mit öffentlicher Kofinanzierung nach regionaler Entwicklungsstrategie; kein Haushaltsprogramm (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "finding": "Regionalentwicklung: Städtebaukonzepte, Dorfentwicklung, LEADER und Landkreisprozesse; keine Zuschüsse für Haushalte (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
+        "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
       }
     ],
-    "sources": []
+    "sources": [
+      {
+        "url": "elbtalaue.de/barrierefreiheit/barriere_melden.html?naviID=reset1&amp;url=https%3A%2F%2Fwww.elbtalaue.de%2Fbauen-wohnen%2Fleader%2Ffoerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular der Website, kein Förderinhalt. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "disposition": "reviewed",
+        "reason": "Übersicht kommunaler Förderkonzepte, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "disposition": "reviewed",
+        "reason": "Regionalentwicklung, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderung für Projekte, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderschwerpunkte, kein Programm für private Solar-, Speicher- oder Wärmepumpenanlagen. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Antragsweg mit öffentlicher Kofinanzierung, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung"
+      }
+    ]
   },
   {
     "regionId": "03354009",
@@ -40760,9 +40813,62 @@
       {
         "url": "https://www.luechow-dannenberg.de/portal/suche.html",
         "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "finding": "LEADER-Förderseite der Samtgemeinde: verweist auf Ablauf, Förderschwerpunkte und Regionalmanagement; kein Zuschussprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "finding": "LEADER-Antragsweg: Projektförderung mit öffentlicher Kofinanzierung nach regionaler Entwicklungsstrategie; kein Haushaltsprogramm (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "finding": "Regionalentwicklung: Städtebaukonzepte, Dorfentwicklung, LEADER und Landkreisprozesse; keine Zuschüsse für Haushalte (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
+        "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
       }
     ],
-    "sources": []
+    "sources": [
+      {
+        "url": "elbtalaue.de/barrierefreiheit/barriere_melden.html?naviID=reset1&amp;url=https%3A%2F%2Fwww.elbtalaue.de%2Fbauen-wohnen%2Fleader%2Ffoerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular der Website, kein Förderinhalt. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "disposition": "reviewed",
+        "reason": "Übersicht kommunaler Förderkonzepte, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "disposition": "reviewed",
+        "reason": "Regionalentwicklung, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderung für Projekte, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderschwerpunkte, kein Programm für private Solar-, Speicher- oder Wärmepumpenanlagen. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Antragsweg mit öffentlicher Kofinanzierung, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung"
+      }
+    ]
   },
   {
     "regionId": "03354003",
@@ -40822,9 +40928,62 @@
       {
         "url": "https://www.luechow-dannenberg.de/portal/suche.html",
         "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "finding": "LEADER-Förderseite der Samtgemeinde: verweist auf Ablauf, Förderschwerpunkte und Regionalmanagement; kein Zuschussprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "finding": "LEADER-Antragsweg: Projektförderung mit öffentlicher Kofinanzierung nach regionaler Entwicklungsstrategie; kein Haushaltsprogramm (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "finding": "Regionalentwicklung: Städtebaukonzepte, Dorfentwicklung, LEADER und Landkreisprozesse; keine Zuschüsse für Haushalte (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
+        "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
       }
     ],
-    "sources": []
+    "sources": [
+      {
+        "url": "elbtalaue.de/barrierefreiheit/barriere_melden.html?naviID=reset1&amp;url=https%3A%2F%2Fwww.elbtalaue.de%2Fbauen-wohnen%2Fleader%2Ffoerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular der Website, kein Förderinhalt. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "disposition": "reviewed",
+        "reason": "Übersicht kommunaler Förderkonzepte, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "disposition": "reviewed",
+        "reason": "Regionalentwicklung, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderung für Projekte, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderschwerpunkte, kein Programm für private Solar-, Speicher- oder Wärmepumpenanlagen. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Antragsweg mit öffentlicher Kofinanzierung, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung"
+      }
+    ]
   },
   {
     "regionId": "03354008",
@@ -40853,9 +41012,62 @@
       {
         "url": "https://www.luechow-dannenberg.de/portal/suche.html",
         "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "finding": "LEADER-Förderseite der Samtgemeinde: verweist auf Ablauf, Förderschwerpunkte und Regionalmanagement; kein Zuschussprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "finding": "LEADER-Antragsweg: Projektförderung mit öffentlicher Kofinanzierung nach regionaler Entwicklungsstrategie; kein Haushaltsprogramm (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "finding": "Regionalentwicklung: Städtebaukonzepte, Dorfentwicklung, LEADER und Landkreisprozesse; keine Zuschüsse für Haushalte (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
+        "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
       }
     ],
-    "sources": []
+    "sources": [
+      {
+        "url": "elbtalaue.de/barrierefreiheit/barriere_melden.html?naviID=reset1&amp;url=https%3A%2F%2Fwww.elbtalaue.de%2Fbauen-wohnen%2Fleader%2Ffoerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular der Website, kein Förderinhalt. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "disposition": "reviewed",
+        "reason": "Übersicht kommunaler Förderkonzepte, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "disposition": "reviewed",
+        "reason": "Regionalentwicklung, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderung für Projekte, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderschwerpunkte, kein Programm für private Solar-, Speicher- oder Wärmepumpenanlagen. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Antragsweg mit öffentlicher Kofinanzierung, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung"
+      }
+    ]
   },
   {
     "regionId": "03354011",
@@ -40884,9 +41096,62 @@
       {
         "url": "https://www.luechow-dannenberg.de/portal/suche.html",
         "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "finding": "LEADER-Förderseite der Samtgemeinde: verweist auf Ablauf, Förderschwerpunkte und Regionalmanagement; kein Zuschussprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "finding": "LEADER-Antragsweg: Projektförderung mit öffentlicher Kofinanzierung nach regionaler Entwicklungsstrategie; kein Haushaltsprogramm (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "finding": "Regionalentwicklung: Städtebaukonzepte, Dorfentwicklung, LEADER und Landkreisprozesse; keine Zuschüsse für Haushalte (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
+        "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
       }
     ],
-    "sources": []
+    "sources": [
+      {
+        "url": "elbtalaue.de/barrierefreiheit/barriere_melden.html?naviID=reset1&amp;url=https%3A%2F%2Fwww.elbtalaue.de%2Fbauen-wohnen%2Fleader%2Ffoerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular der Website, kein Förderinhalt. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "disposition": "reviewed",
+        "reason": "Übersicht kommunaler Förderkonzepte, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "disposition": "reviewed",
+        "reason": "Regionalentwicklung, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderung für Projekte, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderschwerpunkte, kein Programm für private Solar-, Speicher- oder Wärmepumpenanlagen. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Antragsweg mit öffentlicher Kofinanzierung, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung"
+      }
+    ]
   },
   {
     "regionId": "03354012",
@@ -40915,9 +41180,62 @@
       {
         "url": "https://www.luechow-dannenberg.de/portal/suche.html",
         "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "finding": "LEADER-Förderseite der Samtgemeinde: verweist auf Ablauf, Förderschwerpunkte und Regionalmanagement; kein Zuschussprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "finding": "LEADER-Antragsweg: Projektförderung mit öffentlicher Kofinanzierung nach regionaler Entwicklungsstrategie; kein Haushaltsprogramm (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "finding": "Regionalentwicklung: Städtebaukonzepte, Dorfentwicklung, LEADER und Landkreisprozesse; keine Zuschüsse für Haushalte (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
+        "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
       }
     ],
-    "sources": []
+    "sources": [
+      {
+        "url": "elbtalaue.de/barrierefreiheit/barriere_melden.html?naviID=reset1&amp;url=https%3A%2F%2Fwww.elbtalaue.de%2Fbauen-wohnen%2Fleader%2Ffoerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular der Website, kein Förderinhalt. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "disposition": "reviewed",
+        "reason": "Übersicht kommunaler Förderkonzepte, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "disposition": "reviewed",
+        "reason": "Regionalentwicklung, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderung für Projekte, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderschwerpunkte, kein Programm für private Solar-, Speicher- oder Wärmepumpenanlagen. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Antragsweg mit öffentlicher Kofinanzierung, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung"
+      }
+    ]
   },
   {
     "regionId": "03354014",
@@ -40946,9 +41264,62 @@
       {
         "url": "https://www.luechow-dannenberg.de/portal/suche.html",
         "finding": "Suche am 21.09.2026: nur Beratungsformate, Wärmepumpendialoge, Energieberatung vor Ort und Ladeinfrastruktur-Ausschreibung; kein Förderprogramm für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "finding": "LEADER-Förderseite der Samtgemeinde: verweist auf Ablauf, Förderschwerpunkte und Regionalmanagement; kein Zuschussprogramm für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "finding": "LEADER-Antragsweg: Projektförderung mit öffentlicher Kofinanzierung nach regionaler Entwicklungsstrategie; kein Haushaltsprogramm (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "finding": "Regionalentwicklung: Städtebaukonzepte, Dorfentwicklung, LEADER und Landkreisprozesse; keine Zuschüsse für Haushalte (gelesen 21.09.2026)."
+      },
+      {
+        "url": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html",
+        "finding": "Formular „Barriere melden\" der Website; kein Förderinhalt (gelesen 21.09.2026)."
       }
     ],
-    "sources": []
+    "sources": [
+      {
+        "url": "elbtalaue.de/barrierefreiheit/barriere_melden.html?naviID=reset1&amp;url=https%3A%2F%2Fwww.elbtalaue.de%2Fbauen-wohnen%2Fleader%2Ffoerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular der Website, kein Förderinhalt. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/barrierefreiheit/barriere_melden.html"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen",
+        "disposition": "reviewed",
+        "reason": "Übersicht kommunaler Förderkonzepte, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung",
+        "disposition": "reviewed",
+        "reason": "Regionalentwicklung, keine Haushaltszuschüsse. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/entwicklungsplanung-foerdermassnahmen/regionalentwicklung/regionalentwicklung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderung für Projekte, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen",
+        "disposition": "reviewed",
+        "reason": "LEADER-Förderschwerpunkte, kein Programm für private Solar-, Speicher- oder Wärmepumpenanlagen. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/foerderschwerpunkte-bedingungen-haeufige-fragen"
+      },
+      {
+        "url": "elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Antragsweg mit öffentlicher Kofinanzierung, kein Haushaltsprogramm. Gelesen 21.09.2026.",
+        "evidenceUrl": "https://www.elbtalaue.de/bauen-wohnen/leader/foerderung/von-der-idee-zur-foerderung"
+      }
+    ]
   },
   {
     "regionId": "03354019",
@@ -41011,5 +41382,501 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "13074017",
+    "name": "Dassow",
+    "checkedAt": "2026-09-21T18:20:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "schoenberger-land.de Volltextsuche: Balkonkraftwerk, Balkon, Solaranlage, Photovoltaik, Solar, Förderprogramm, Förderung, Richtlinie, Zuschuss, Wärmepumpe, Klimaschutz (Gegenprobe „Dassow“: 1.245 Treffer) (21.09.2026)",
+      "Gelesen: Seite „Projekte mit Fördermittel“ des Amts, Standortseite, Seite der Stadt Schönberg",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Katalog ohne Kreisprogramm 13074; Handprüfung Grevesmühlen 19.09.2026)",
+      "Gemeindeschlüssel 13074017 gegen das Melderegister geprüft (Dassow)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "finding": "Im Original gelesen (21.09.2026): „Projekte mit EU-Fördermitteln und / oder Landes- und Kreismitteln“ — Zuwendungen an die amtsangehörigen Kommunen (Stadtjugendpflege Schönberg, LED-Straßenbeleuchtung Dassow u. a.); kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.schoenberger-land.de/?NavID=2618.104&qs=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtswebsite (21.09.2026): Balkonkraftwerk, Solaranlage ohne Treffer; Photovoltaik/Solar nur Bebauungspläne für Freiflächen-Solarparks; Förderprogramm nur EFRE-Bushaltestellen, Radweg, Bodenordnung; Wärmepumpe nur eine kommunale Machbarkeitsstudie; Richtlinie/Förderung nur Vereins-, Kultur- und ILERL-Straßenbauförderung. Gegenprobe „Dassow“: 1.245 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog und gilt hier; ein Programm des Landkreises Nordwestmecklenburg ist nicht bekannt (Katalog ohne Kreisprogramm 13074, vgl. Handprüfung Grevesmühlen 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Seite „Projekte mit Fördermittel“: kommunale EU-/Landesprojekte, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?La=1&amp;object=tx,2618.7732.1&amp;kat=&amp;kuo=2&amp;sub=0",
+        "disposition": "reviewed",
+        "reason": "Standorte der Verwaltung, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=1992.18.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten des Amts auf der Projektseite, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;mt_step=contact&amp;to_id=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dassow gehört zum Amt Schönberger Land (Landkreis Nordwestmecklenburg), dessen Website die Mitgliedsgemeinden mitführt. Das Amt listet nur Fördermittel, die die Kommunen selbst für eigene Projekte erhalten; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist weder dort noch in der Volltextsuche zu finden. Für Mieter gilt das Balkonkraftwerk-Landesprogramm Mecklenburg-Vorpommerns, das der Katalog als Landesprogramm führt."
+  },
+  {
+    "regionId": "13074027",
+    "name": "Grieben",
+    "checkedAt": "2026-09-21T18:20:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "schoenberger-land.de Volltextsuche: Balkonkraftwerk, Balkon, Solaranlage, Photovoltaik, Solar, Förderprogramm, Förderung, Richtlinie, Zuschuss, Wärmepumpe, Klimaschutz (Gegenprobe „Dassow“: 1.245 Treffer) (21.09.2026)",
+      "Gelesen: Seite „Projekte mit Fördermittel“ des Amts, Standortseite, Seite der Stadt Schönberg",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Katalog ohne Kreisprogramm 13074; Handprüfung Grevesmühlen 19.09.2026)",
+      "Gemeindeschlüssel 13074027 gegen das Melderegister geprüft (Grieben)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "finding": "Im Original gelesen (21.09.2026): „Projekte mit EU-Fördermitteln und / oder Landes- und Kreismitteln“ — Zuwendungen an die amtsangehörigen Kommunen (Stadtjugendpflege Schönberg, LED-Straßenbeleuchtung Dassow u. a.); kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.schoenberger-land.de/?NavID=2618.104&qs=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtswebsite (21.09.2026): Balkonkraftwerk, Solaranlage ohne Treffer; Photovoltaik/Solar nur Bebauungspläne für Freiflächen-Solarparks; Förderprogramm nur EFRE-Bushaltestellen, Radweg, Bodenordnung; Wärmepumpe nur eine kommunale Machbarkeitsstudie; Richtlinie/Förderung nur Vereins-, Kultur- und ILERL-Straßenbauförderung. Gegenprobe „Dassow“: 1.245 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog und gilt hier; ein Programm des Landkreises Nordwestmecklenburg ist nicht bekannt (Katalog ohne Kreisprogramm 13074, vgl. Handprüfung Grevesmühlen 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Seite „Projekte mit Fördermittel“: kommunale EU-/Landesprojekte, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?La=1&amp;object=tx,2618.7732.1&amp;kat=&amp;kuo=2&amp;sub=0",
+        "disposition": "reviewed",
+        "reason": "Standorte der Verwaltung, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=1992.18.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten des Amts auf der Projektseite, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;mt_step=contact&amp;to_id=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Grieben gehört zum Amt Schönberger Land (Landkreis Nordwestmecklenburg), dessen Website die Mitgliedsgemeinden mitführt. Das Amt listet nur Fördermittel, die die Kommunen selbst für eigene Projekte erhalten; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist weder dort noch in der Volltextsuche zu finden. Für Mieter gilt das Balkonkraftwerk-Landesprogramm Mecklenburg-Vorpommerns, das der Katalog als Landesprogramm führt."
+  },
+  {
+    "regionId": "13074045",
+    "name": "Lockwisch",
+    "checkedAt": "2026-09-21T18:20:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "schoenberger-land.de Volltextsuche: Balkonkraftwerk, Balkon, Solaranlage, Photovoltaik, Solar, Förderprogramm, Förderung, Richtlinie, Zuschuss, Wärmepumpe, Klimaschutz (Gegenprobe „Dassow“: 1.245 Treffer) (21.09.2026)",
+      "Gelesen: Seite „Projekte mit Fördermittel“ des Amts, Standortseite, Seite der Stadt Schönberg",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Katalog ohne Kreisprogramm 13074; Handprüfung Grevesmühlen 19.09.2026)",
+      "Gemeindeschlüssel 13074045 gegen das Melderegister geprüft (Lockwisch)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "finding": "Im Original gelesen (21.09.2026): „Projekte mit EU-Fördermitteln und / oder Landes- und Kreismitteln“ — Zuwendungen an die amtsangehörigen Kommunen (Stadtjugendpflege Schönberg, LED-Straßenbeleuchtung Dassow u. a.); kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.schoenberger-land.de/?NavID=2618.104&qs=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtswebsite (21.09.2026): Balkonkraftwerk, Solaranlage ohne Treffer; Photovoltaik/Solar nur Bebauungspläne für Freiflächen-Solarparks; Förderprogramm nur EFRE-Bushaltestellen, Radweg, Bodenordnung; Wärmepumpe nur eine kommunale Machbarkeitsstudie; Richtlinie/Förderung nur Vereins-, Kultur- und ILERL-Straßenbauförderung. Gegenprobe „Dassow“: 1.245 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog und gilt hier; ein Programm des Landkreises Nordwestmecklenburg ist nicht bekannt (Katalog ohne Kreisprogramm 13074, vgl. Handprüfung Grevesmühlen 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Seite „Projekte mit Fördermittel“: kommunale EU-/Landesprojekte, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?La=1&amp;object=tx,2618.7732.1&amp;kat=&amp;kuo=2&amp;sub=0",
+        "disposition": "reviewed",
+        "reason": "Standorte der Verwaltung, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=1992.18.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten des Amts auf der Projektseite, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;mt_step=contact&amp;to_id=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lockwisch gehört zum Amt Schönberger Land (Landkreis Nordwestmecklenburg), dessen Website die Mitgliedsgemeinden mitführt. Das Amt listet nur Fördermittel, die die Kommunen selbst für eigene Projekte erhalten; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist weder dort noch in der Volltextsuche zu finden. Für Mieter gilt das Balkonkraftwerk-Landesprogramm Mecklenburg-Vorpommerns, das der Katalog als Landesprogramm führt."
+  },
+  {
+    "regionId": "13074052",
+    "name": "Menzendorf",
+    "checkedAt": "2026-09-21T18:20:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "schoenberger-land.de Volltextsuche: Balkonkraftwerk, Balkon, Solaranlage, Photovoltaik, Solar, Förderprogramm, Förderung, Richtlinie, Zuschuss, Wärmepumpe, Klimaschutz (Gegenprobe „Dassow“: 1.245 Treffer) (21.09.2026)",
+      "Gelesen: Seite „Projekte mit Fördermittel“ des Amts, Standortseite, Seite der Stadt Schönberg",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Katalog ohne Kreisprogramm 13074; Handprüfung Grevesmühlen 19.09.2026)",
+      "Gemeindeschlüssel 13074052 gegen das Melderegister geprüft (Menzendorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "finding": "Im Original gelesen (21.09.2026): „Projekte mit EU-Fördermitteln und / oder Landes- und Kreismitteln“ — Zuwendungen an die amtsangehörigen Kommunen (Stadtjugendpflege Schönberg, LED-Straßenbeleuchtung Dassow u. a.); kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.schoenberger-land.de/?NavID=2618.104&qs=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtswebsite (21.09.2026): Balkonkraftwerk, Solaranlage ohne Treffer; Photovoltaik/Solar nur Bebauungspläne für Freiflächen-Solarparks; Förderprogramm nur EFRE-Bushaltestellen, Radweg, Bodenordnung; Wärmepumpe nur eine kommunale Machbarkeitsstudie; Richtlinie/Förderung nur Vereins-, Kultur- und ILERL-Straßenbauförderung. Gegenprobe „Dassow“: 1.245 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog und gilt hier; ein Programm des Landkreises Nordwestmecklenburg ist nicht bekannt (Katalog ohne Kreisprogramm 13074, vgl. Handprüfung Grevesmühlen 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Seite „Projekte mit Fördermittel“: kommunale EU-/Landesprojekte, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?La=1&amp;object=tx,2618.7732.1&amp;kat=&amp;kuo=2&amp;sub=0",
+        "disposition": "reviewed",
+        "reason": "Standorte der Verwaltung, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=1992.18.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten des Amts auf der Projektseite, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;mt_step=contact&amp;to_id=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Menzendorf gehört zum Amt Schönberger Land (Landkreis Nordwestmecklenburg), dessen Website die Mitgliedsgemeinden mitführt. Das Amt listet nur Fördermittel, die die Kommunen selbst für eigene Projekte erhalten; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist weder dort noch in der Volltextsuche zu finden. Für Mieter gilt das Balkonkraftwerk-Landesprogramm Mecklenburg-Vorpommerns, das der Katalog als Landesprogramm führt."
+  },
+  {
+    "regionId": "13074067",
+    "name": "Roduchelstorf",
+    "checkedAt": "2026-09-21T18:20:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "schoenberger-land.de Volltextsuche: Balkonkraftwerk, Balkon, Solaranlage, Photovoltaik, Solar, Förderprogramm, Förderung, Richtlinie, Zuschuss, Wärmepumpe, Klimaschutz (Gegenprobe „Dassow“: 1.245 Treffer) (21.09.2026)",
+      "Gelesen: Seite „Projekte mit Fördermittel“ des Amts, Standortseite, Seite der Stadt Schönberg",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Katalog ohne Kreisprogramm 13074; Handprüfung Grevesmühlen 19.09.2026)",
+      "Gemeindeschlüssel 13074067 gegen das Melderegister geprüft (Roduchelstorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "finding": "Im Original gelesen (21.09.2026): „Projekte mit EU-Fördermitteln und / oder Landes- und Kreismitteln“ — Zuwendungen an die amtsangehörigen Kommunen (Stadtjugendpflege Schönberg, LED-Straßenbeleuchtung Dassow u. a.); kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.schoenberger-land.de/?NavID=2618.104&qs=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtswebsite (21.09.2026): Balkonkraftwerk, Solaranlage ohne Treffer; Photovoltaik/Solar nur Bebauungspläne für Freiflächen-Solarparks; Förderprogramm nur EFRE-Bushaltestellen, Radweg, Bodenordnung; Wärmepumpe nur eine kommunale Machbarkeitsstudie; Richtlinie/Förderung nur Vereins-, Kultur- und ILERL-Straßenbauförderung. Gegenprobe „Dassow“: 1.245 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog und gilt hier; ein Programm des Landkreises Nordwestmecklenburg ist nicht bekannt (Katalog ohne Kreisprogramm 13074, vgl. Handprüfung Grevesmühlen 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Seite „Projekte mit Fördermittel“: kommunale EU-/Landesprojekte, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?La=1&amp;object=tx,2618.7732.1&amp;kat=&amp;kuo=2&amp;sub=0",
+        "disposition": "reviewed",
+        "reason": "Standorte der Verwaltung, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=1992.18.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten des Amts auf der Projektseite, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;mt_step=contact&amp;to_id=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Roduchelstorf gehört zum Amt Schönberger Land (Landkreis Nordwestmecklenburg), dessen Website die Mitgliedsgemeinden mitführt. Das Amt listet nur Fördermittel, die die Kommunen selbst für eigene Projekte erhalten; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist weder dort noch in der Volltextsuche zu finden. Für Mieter gilt das Balkonkraftwerk-Landesprogramm Mecklenburg-Vorpommerns, das der Katalog als Landesprogramm führt."
+  },
+  {
+    "regionId": "13074074",
+    "name": "Schönberg",
+    "checkedAt": "2026-09-21T18:20:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "schoenberger-land.de Volltextsuche: Balkonkraftwerk, Balkon, Solaranlage, Photovoltaik, Solar, Förderprogramm, Förderung, Richtlinie, Zuschuss, Wärmepumpe, Klimaschutz (Gegenprobe „Dassow“: 1.245 Treffer) (21.09.2026)",
+      "Gelesen: Seite „Projekte mit Fördermittel“ des Amts, Standortseite, Seite der Stadt Schönberg",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Katalog ohne Kreisprogramm 13074; Handprüfung Grevesmühlen 19.09.2026)",
+      "Gemeindeschlüssel 13074074 gegen das Melderegister geprüft (Schönberg)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "finding": "Im Original gelesen (21.09.2026): „Projekte mit EU-Fördermitteln und / oder Landes- und Kreismitteln“ — Zuwendungen an die amtsangehörigen Kommunen (Stadtjugendpflege Schönberg, LED-Straßenbeleuchtung Dassow u. a.); kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.schoenberger-land.de/?NavID=2618.104&qs=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtswebsite (21.09.2026): Balkonkraftwerk, Solaranlage ohne Treffer; Photovoltaik/Solar nur Bebauungspläne für Freiflächen-Solarparks; Förderprogramm nur EFRE-Bushaltestellen, Radweg, Bodenordnung; Wärmepumpe nur eine kommunale Machbarkeitsstudie; Richtlinie/Förderung nur Vereins-, Kultur- und ILERL-Straßenbauförderung. Gegenprobe „Dassow“: 1.245 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.schoenberger-land.de/amtsangeh%C3%B6rige-St%C3%A4dte-Gemeinden/Stadt-Sch%C3%B6nberg/index.php?object=tx%7c2618.35835.1&NavID=2618.137",
+        "finding": "Stadt Schönberg (21.09.2026): neue Förderrichtlinie für Vereine und Projekte mit geistigem, kulturellem, sportlichem und sozialem Interesse; kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog und gilt hier; ein Programm des Landkreises Nordwestmecklenburg ist nicht bekannt (Katalog ohne Kreisprogramm 13074, vgl. Handprüfung Grevesmühlen 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Seite „Projekte mit Fördermittel“: kommunale EU-/Landesprojekte, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?La=1&amp;object=tx,2618.7732.1&amp;kat=&amp;kuo=2&amp;sub=0",
+        "disposition": "reviewed",
+        "reason": "Standorte der Verwaltung, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=1992.18.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten des Amts auf der Projektseite, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;mt_step=contact&amp;to_id=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/amtsangeh%C3%B6rige-St%C3%A4dte-Gemeinden/Stadt-Sch%C3%B6nberg/index.php?object=tx%7c2618.35835.1&amp;NavID=2618.137",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinie der Stadt für Vereine und Projekte, kein Energiezuschuss.",
+        "evidenceUrl": "https://www.schoenberger-land.de/amtsangeh%C3%B6rige-St%C3%A4dte-Gemeinden/Stadt-Sch%C3%B6nberg/index.php?object=tx%7c2618.35835.1&NavID=2618.137"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schönberg gehört zum Amt Schönberger Land (Landkreis Nordwestmecklenburg), dessen Website die Mitgliedsgemeinden mitführt. Das Amt listet nur Fördermittel, die die Kommunen selbst für eigene Projekte erhalten; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist weder dort noch in der Volltextsuche zu finden. Für Mieter gilt das Balkonkraftwerk-Landesprogramm Mecklenburg-Vorpommerns, das der Katalog als Landesprogramm führt."
+  },
+  {
+    "regionId": "13074094",
+    "name": "Siemz-Niendorf",
+    "checkedAt": "2026-09-21T18:20:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "schoenberger-land.de Volltextsuche: Balkonkraftwerk, Balkon, Solaranlage, Photovoltaik, Solar, Förderprogramm, Förderung, Richtlinie, Zuschuss, Wärmepumpe, Klimaschutz (Gegenprobe „Dassow“: 1.245 Treffer) (21.09.2026)",
+      "Gelesen: Seite „Projekte mit Fördermittel“ des Amts, Standortseite, Seite der Stadt Schönberg",
+      "Landkreis Nordwestmecklenburg: kein Kreisprogramm (Katalog ohne Kreisprogramm 13074; Handprüfung Grevesmühlen 19.09.2026)",
+      "Gemeindeschlüssel 13074094 gegen das Melderegister geprüft (Siemz-Niendorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "finding": "Im Original gelesen (21.09.2026): „Projekte mit EU-Fördermitteln und / oder Landes- und Kreismitteln“ — Zuwendungen an die amtsangehörigen Kommunen (Stadtjugendpflege Schönberg, LED-Straßenbeleuchtung Dassow u. a.); kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.schoenberger-land.de/?NavID=2618.104&qs=Balkonkraftwerk",
+        "finding": "Volltextsuche der Amtswebsite (21.09.2026): Balkonkraftwerk, Solaranlage ohne Treffer; Photovoltaik/Solar nur Bebauungspläne für Freiflächen-Solarparks; Förderprogramm nur EFRE-Bushaltestellen, Radweg, Bodenordnung; Wärmepumpe nur eine kommunale Machbarkeitsstudie; Richtlinie/Förderung nur Vereins-, Kultur- und ILERL-Straßenbauförderung. Gegenprobe „Dassow“: 1.245 Treffer, die Suche funktioniert."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm des LFI M-V für steckerfertige PV-Anlagen steht als Landesprogramm im Katalog und gilt hier; ein Programm des Landkreises Nordwestmecklenburg ist nicht bekannt (Katalog ohne Kreisprogramm 13074, vgl. Handprüfung Grevesmühlen 19.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel",
+        "disposition": "reviewed",
+        "reason": "Seite „Projekte mit Fördermittel“: kommunale EU-/Landesprojekte, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?La=1&amp;object=tx,2618.7732.1&amp;kat=&amp;kuo=2&amp;sub=0",
+        "disposition": "reviewed",
+        "reason": "Standorte der Verwaltung, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=1992.18.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten des Amts auf der Projektseite, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;mt_step=contact&amp;to_id=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      },
+      {
+        "url": "schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel/index.php?ModID=9&amp;object=tx%7c2618.1&amp;FID=2618.5.1&amp;NavID=2618.121",
+        "disposition": "reviewed",
+        "reason": "Kontaktkasten Amtsvorsteher, kein Förderinhalt.",
+        "evidenceUrl": "https://www.schoenberger-land.de/Amt-Sch%C3%B6nberger-Land/Amtsverwaltung/Projekte-mit-F%C3%B6rdermittel"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Siemz-Niendorf gehört zum Amt Schönberger Land (Landkreis Nordwestmecklenburg), dessen Website die Mitgliedsgemeinden mitführt. Das Amt listet nur Fördermittel, die die Kommunen selbst für eigene Projekte erhalten; ein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen ist weder dort noch in der Volltextsuche zu finden. Für Mieter gilt das Balkonkraftwerk-Landesprogramm Mecklenburg-Vorpommerns, das der Katalog als Landesprogramm führt."
+  },
+  {
+    "regionId": "03356008",
+    "name": "Ritterhude",
+    "checkedAt": "2026-09-21T18:24:00Z",
+    "recheckAt": "2026-12-20T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "ritterhude.de Volltextsuche: Balkonkraftwerk (keine Treffer), Photovoltaik, Solar, Wärmepumpe, Förderprogramm, Klimaschutz, Sanierungsgebiet (21.09.2026)",
+      "Gelesen: Seite Förderprogramme (Wirtschaftsförderung), KfW-Unternehmerkredit-Eintrag, Rückblick Infoabend Sanierungsgebiete",
+      "Landkreis Osterholz: Katalog ohne Kreisprogramm 03356; Kreisrichtlinie Innovation/Energieeffizienz gilt nur Unternehmen",
+      "Gemeindeschlüssel 03356008 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ritterhude.de/wirtschaft-und-finanzen/wirtschaft/foerderprogramme",
+        "finding": "Im Original gelesen (21.09.2026): Wirtschaftsförderung — EU-/NBank-Programme für Mittelstand und die Kreisrichtlinie „Förderung von Investitionen für Innovation, Energie- und Ressourceneffizienz im Landkreis Osterholz“ (15/25 %, bis 50.000 €) ausschließlich für Unternehmen; kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.ritterhude.de/buergerservice/dienstleistungen/foerderdarlehen-der-kfw-unternehmerkredit-plus-nr-044-046-gewaehrung-900001191-0.html",
+        "finding": "Dienstleistungseintrag KfW-Unternehmerkredit Plus (Nr. 044/046) — Förderdarlehen für Unternehmen, kein Haushaltszuschuss."
+      },
+      {
+        "url": "https://www.ritterhude.de/portal/suche.html?suchbegriff=Photovoltaik",
+        "finding": "Volltextsuche (21.09.2026): Balkonkraftwerk ohne Treffer; Photovoltaik/Solar nur Marktstammdatenregister-Meldung, Solardachkataster des Landkreises, Quartierskonzept, Firmenbesuche; Förderprogramm nur Wirtschaftsförderung, NBank-Sprechtage, „Digital jetzt“, Förderdatenbank des Bundes (Verweis) und kostenlose Energieberatung."
+      },
+      {
+        "url": "https://www.ritterhude.de/portal/meldungen/rueckblick-infoabend-sanierungsgebiete-in-ritterhude-906002123-21060.html",
+        "finding": "Infoabend Sanierungsgebiete (09.02.2026): In den ausgewiesenen Sanierungsgebieten ist energetische Sanierung steuerlich bis 90 % abschreibbar; das ist eine Steuervergünstigung nach Bundesrecht, kein kommunaler Zuschuss. Wärmepumpe mit Verweis auf die Bundesförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ritterhude.de/wirtschaft-und-finanzen/wirtschaft/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Wirtschaftsförderung für Unternehmen, kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.ritterhude.de/wirtschaft-und-finanzen/wirtschaft/foerderprogramme"
+      },
+      {
+        "url": "ritterhude.de/portal/seiten/foerderprogramme-906000129-21060.html",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Seite Förderprogramme unter Portaladresse, Unternehmensförderung.",
+        "evidenceUrl": "https://www.ritterhude.de/wirtschaft-und-finanzen/wirtschaft/foerderprogramme"
+      },
+      {
+        "url": "ritterhude.de/buergerservice/dienstleistungen/foerderdarlehen-der-kfw-unternehmerkredit-plus-nr-044-046-gewaehrung-900001191-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "KfW-Förderdarlehen für Unternehmen.",
+        "evidenceUrl": "https://www.ritterhude.de/buergerservice/dienstleistungen/foerderdarlehen-der-kfw-unternehmerkredit-plus-nr-044-046-gewaehrung-900001191-0.html"
+      },
+      {
+        "url": "ritterhude.de/buergerservice/online/angebot/foerderdatenbank-des-bundes-bundesministerium-fuer-wirtschaft-und-klimaschutz--900000030-21060.html",
+        "disposition": "reviewed",
+        "reason": "Linkeintrag der Gemeinde auf die Förderdatenbank des Bundes (Bund/Land, keine Gemeindeförderung); das Ziel sperrt automatische Abrufe mit einer Bot-Prüfung, die nicht umgangen wurde — Einordnung aus dem Suchtreffer der Gemeinde.",
+        "evidenceUrl": "https://www.ritterhude.de/portal/suche.html?suchbegriff=Photovoltaik"
+      }
+    ],
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ritterhude führt unter „Förderprogramme“ ausschließlich Wirtschaftsförderung für Unternehmen (EU/NBank, Kreisrichtlinie Osterholz, KfW-Unternehmerkredit). Einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gibt es weder auf der Gemeindeseite noch in der Volltextsuche. In den Sanierungsgebieten ist energetische Sanierung steuerlich absetzbar; das ist keine kommunale Förderung und wird im Rechner nicht abgebildet."
   }
 ]
