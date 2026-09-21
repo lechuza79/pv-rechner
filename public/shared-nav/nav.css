@@ -318,12 +318,12 @@
 }
 @media(prefers-reduced-motion:reduce){.sc-nav-tool-actions a{transition:none}}
 
-/* Aktiver Bereich: Linie ÜBER dem Menüpunkt, in Lime, 15 px Abstand zur
-   Schrift. Nur auf dem Desktop — mobil trägt der Punkt den Fettdruck. */
+/* Aktiver Bereich: der Menüpunkt liegt auf einer leichten Pille. Nur auf dem
+   Desktop — mobil trägt der Punkt den Fettdruck. Die Farbe folgt der Schrift
+   (currentColor), damit sie auf hellem wie dunklem Kopf trägt. Als eigenes
+   Element hinter der Schrift, damit der Menüpunkt seine Maße behält. */
 @media(min-width:1281px){
-  .sc-nav-group>summary{position:relative}
+  .sc-nav-group>summary{position:relative;isolation:isolate}
   .sc-nav-group>summary[aria-current=true]{box-shadow:none}
-  .sc-nav-group>summary[aria-current=true]::before{content:"";position:absolute;left:0;right:0;height:2px;border-radius:2px;background:#d4ff24;top:calc(16px - 15px - 2px)}
-  /* 16px = oberer Innenabstand des Menüpunkts (Regel ganz oben): Unterkante
-     der Linie liegt damit genau 15px über der Zeile mit der Schrift. */
+  .sc-nav-group>summary[aria-current=true]::before{content:"";position:absolute;inset:8px -12px;z-index:-1;border-radius:999px;background:color-mix(in srgb,currentColor 9%,transparent)}
 }
