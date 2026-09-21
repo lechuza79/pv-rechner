@@ -38813,11 +38813,11 @@
   {
     "regionId": "01056",
     "name": "Kreis Pinneberg",
-    "checkedAt": "2026-09-20T22:34:00Z",
-    "recheckAt": "2026-12-21T08:00:00Z",
+    "checkedAt": "2026-09-21T00:15:17Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
-    "outcome": "klaerung",
-    "conclusion": "KORREKTUR EINER FALSCHEN EINORDNUNG AUS DEMSELBEN LAUF. Zuerst stand hier, das Gründach-Programm des Kreises falle „unter keine Technik des Katalogs“ und gehöre deshalb nicht aufgenommen. Das ist widerlegt: Der Katalog führt mit „Gründachförderung mit PV-Befestigungszuschlag“ (Lübeck, luebeck-solargruendach) genau diese Bauform bereits — als `foerdert: [\"pv\"]`, Sätze im Wortlaut, OHNE Rechenwert. Die zweite Hälfte des Schlusses trägt weiter: „Euro je Quadratmeter Gründach“ kann das Modell nicht ausdrücken, ein Rechenwert kommt also nicht in Frage. Aber ein fehlender Eintrag ist hier NICHT die sichere Richtung — auf der Kreisseite stünde sonst „keine kommunale Förderung“, wo es eine gibt.\nDER BELEG IST JETZT VOLLSTÄNDIG: Programmseite und Förderrichtlinie „Dachbegrünung und Baumpflanzung“ (Teil 1, 291 Zeilen) heute im Volltext gelesen. 20,00 € je m² begrünter Dachfläche; wird auf dem begrünten Dach zusätzlich eine Photovoltaikanlage installiert, 30,00 € je m² für die GESAMTE begrünte Fläche, höchstens 1.500 € je Anlage. Nr. 4.1 sagt ausdrücklich: „Die PV-Anlage selbst wird nicht bezuschusst.“ Nr. 2.4 schließt Steckersolar ausdrücklich aus („Installation von Stecker-Solaranlagen (‚Balkonmodulen‘); dies sind keine PV-Anlagen im Sinne der Ziffer 4.1“) — die Technik ist also PV, ausdrücklich NICHT Balkon.\nWAS FEHLT, IST NUR DAS TOR: Eine Neuaufnahme verlangt nach dem Wächter-Gate Council mit adversarialem Prüfer. Der Beleg liegt in der Akte; die Aufnahme gehört in den nächsten Lauf. Die Energie-Förderseiten des Kreises verweisen für Photovoltaik, Speicher und Wärmepumpen weiterhin ausschließlich auf Bundesmittel — dafür gibt es keinen Kreiszuschuss.",
+    "outcome": "programme-geprueft",
+    "conclusion": "AUFGENOMMEN am 21.09.2026 als pinneberg-gruendach-pv, nach Council mit drei unabhängigen Prüfern einschließlich eines adversarialen. Alle drei: aufnehmen, mit Korrekturen — die eingearbeitet sind.\nDAS PROGRAMM: 20,00 € je m² begrünter Dachfläche; wird auf dem begrünten Dach zusätzlich eine Photovoltaikanlage installiert, 30,00 € je m² für die GESAMTE begrünte Fläche, höchstens 1.500 € je Gründach. Nr. 4.1 sagt ausdrücklich: „Die PV-Anlage selbst wird nicht bezuschusst.“ Der PV-Bezug ist damit der Aufschlag von 10 € je m², nicht ein Zuschuss zur Anlage — bei 50 m² sind das 500 €, die allein wegen der PV-Entscheidung fließen. Deshalb foerdert [\"pv\"], deshalb OHNE Rechenwert (Euro je Quadratmeter Gründach kann das Modell nicht ausdrücken; im Council gemessen: der Eintrag zieht in keiner Konstellation etwas ab), und deshalb ausdrücklich KEINE Förder-Stadtseite: Eine Seite mit dem Titel „Photovoltaik-Förderung“ verspräche einen Anlagenzuschuss, den der Kreis verweigert. Das Ortsverzeichnis führt ohnehin keine Gemeinde dieses Kreises.\nGEGENÜBER DEM ERSTEN ENTWURF KORRIGIERT: Antragsberechtigt sind auch Gewerbetreibende und gemeinnützige Einrichtungen (Nr. 3), begonnen werden soll erst nach der BEWILLIGUNG und nicht schon nach der Antragstellung (Nr. 4.5 — die Gegenrichtung kostet den Zuschuss), die Fördersumme ist zusätzlich durch die Gesamtkosten der Begrünung gedeckelt (Nr. 4.2), Gebäude in kommunalem Besitz sind nicht förderfähig (Nr. 3), die Kumulierung mit Dritt-Mitteln endet bei den Gesamtkosten des Gründachs OHNE die PV-Anlage (Nr. 7.1), die Zwölf-Monats-Frist ist einmalig um drei Monate verlängerbar (Nr. 5.5), und ein Balkonkraftwerk löst den erhöhten Satz nicht aus (Nr. 2.4).\nLAUFZEIT: Die Richtlinie gilt seit dem Kreistagsbeschluss vom 21.05.2025 „bis auf Weiteres“ (Nr. 16); die Programmseite nennt als Horizont „auch für die Jahre 2025 und 2026“. Das ist kein Enddatum und wird nicht als eines eingetragen — die Wiedervorlage steht auf Januar 2027.\nDie Energie-Förderseiten des Kreises verweisen für Photovoltaik, Speicher und Wärmepumpen weiterhin ausschließlich auf Bundesmittel; dafür gibt es keinen Kreiszuschuss.",
     "searches": [
       "Pressemitteilung „Grünes Dach“ gelesen, Bemessungsgrundlage und PV-Aufschlag bestimmt",
       "Klimaschutzportal des Kreises aufgerufen und seine Förderrubriken durchgesehen",
@@ -38826,7 +38826,9 @@
       "EU-Förderleitfaden auf Adressaten geprüft",
       "Programmseite „Förderprogramm für MEHR GRÜN“ gefunden und im Volltext gelesen",
       "Förderrichtlinie Dachbegrünung und Baumpflanzung als PDF im Volltext gelesen (291 Zeilen)",
-      "Katalog auf einen Präzedenzfall für Gründach mit PV-Zuschlag durchsucht (Lübeck gefunden)"
+      "Katalog auf einen Präzedenzfall für Gründach mit PV-Zuschlag durchsucht (Lübeck gefunden)",
+      "Programmseite am 21.09.2026 erneut im Original gelesen (Name und Laufzeit-Horizont bestätigt)",
+      "Gemeindeschlüssel 01056 gegen das Melderegister geprüft"
     ],
     "evidence": [
       {
@@ -38869,12 +38871,7 @@
         "reason": "Dieselbe Sache; durch Programmseite und Förderrichtlinie abschließend belegt.",
         "evidenceUrl": "https://klimaschutz.kreis-pinneberg.de/MehrGr%C3%BCnImKreisPinneberg.html"
       }
-    ],
-    "nextAction": {
-      "kind": "manual",
-      "dueAt": "2026-09-23T08:00:00Z",
-      "detail": "Gründach-Programm des Kreises Pinneberg über das Wächter-Gate aufnehmen: foerdert [\"pv\"] nach dem Vorbild luebeck-solargruendach, Sätze im Wortlaut, KEIN Rechenwert (Euro je Quadratmeter Gründach ist im Modell nicht darstellbar). Bedingungen aus der Richtlinie: mindestens 15 m² Nettovegetationsfläche, mindestens 8 cm Substrat, eine Förderung je Wohneinheit/Grundstück, Steckersolar ausdrücklich ausgeschlossen, keine Förderung bei bauordnungsrechtlicher Pflicht, Eigenleistung höchstens 50 % der Materialkosten, die PV-Anlage selbst wird nicht bezuschusst. Council mit adversarialem Prüfer ist Pflicht. Belege liegen in der Akte 20260920T2203Z. Vorher prüfen, ob ein aktives PV-Programm auf einem Kreisschlüssel eine Förder-Stadtseite auslöst, die wir hier nicht wollen."
-    }
+    ]
   },
   {
     "regionId": "05316000",
@@ -39026,6 +39023,41 @@
         "disposition": "reviewed",
         "reason": "Richtlinie; Grundlage des Katalogeintrags ehningen-steckerfertige-pv.",
         "evidenceUrl": "https://www.ehningen.de/fileadmin/Dateien/Dateien/Bauamt_Hoch_und_Tiefbau/Foerderrichtlinie_steckerfertige_PV-Anlagen.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03355001",
+    "name": "Adendorf",
+    "checkedAt": "2026-09-21T00:08:50Z",
+    "recheckAt": "2027-03-01T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde führt vier Förderprogramme, davon eines für unsere Techniken: das Stecker-Solar-Geräte-Förderprogramm, 100 Euro je Haushalt. Richtlinie im Volltext gelesen (drei Seiten, in Kraft seit 10.11.2023, zuletzt am 28.01.2025 an die Gesetzeslage angepasst), als Programm aufgenommen. Das Dachbegrünungs-Programm zahlt 5,00 Euro je Quadratmeter, höchstens 200 Euro, und kennt — anders als Kreis Pinneberg oder Lübeck — KEINEN erhöhten Satz für eine Photovoltaikanlage auf dem begrünten Dach; es fällt damit unter keine unserer Techniken. Heckenpflanzung und Umweltpreis liegen außerhalb. Kein Zuschuss für Dachanlagen, Speicher oder Wärmepumpen.",
+    "searches": [
+      "adendorf.de Förderprogramme der Gemeinde Adendorf",
+      "adendorf.de Klimaschutz Fördermöglichkeiten"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.adendorf.de/1/klimaschutz/foerderprogramme-der-gemeinde-adendorf/",
+        "finding": "Übersichtsseite der Gemeinde mit vier Richtlinien: Heckenprogramm, Dachbegrünungs-Förderprogramm, Stecker-Solar-Geräte-Förderprogramm, kommunaler Umweltpreis. Verlinkt Richtlinie und Antragsformular je Programm."
+      },
+      {
+        "url": "https://www.adendorf.de/1/wp-content/uploads/2023/11/Foerderrichtlinie_Stecker_Solar_Geraete.pdf",
+        "finding": "Richtlinie Stecker-Solar-Geräte, Nr. 3.2: „Die Förderhöhe beträgt je Haushalt 100,- Euro.“ Nr. 3.3 schließt eine Förderung mit anderen öffentlichen Mitteln aus. Nr. 2.1 verlangt höchstens 800 VA Wechselrichterausgangsleistung sowie die Anmeldung im Marktstammdatenregister und beim Netzbetreiber. Nr. 4.2: höchstens eine Anlage je Haushalt. Nr. 6.2: Antrag spätestens sechs Monate nach dem Kauf, maßgeblich das Rechnungsdatum. Nr. 10: in Kraft seit 10.11.2023, Hinweis auf die Anpassung vom 28.01.2025."
+      },
+      {
+        "url": "https://www.adendorf.de/1/wp-content/uploads/2022/03/Foerderrichtlinie-Dachbegruenungs-Foerderprogramm-der-Gemeinde-Adendorf.pdf",
+        "finding": "Dachbegrünungs-Richtlinie: „Zuschuss in Höhe von 5,00 Euro/m² (bisher 10,-- DM/m²) begrünter Dachfläche“, „Die maximale Förderungshöhe beträgt 200,00 Euro.“ Kein erhöhter Satz und keine Erwähnung einer Photovoltaikanlage im ganzen Dokument — anders als bei Kreis Pinneberg und Lübeck."
+      }
+    ],
+    "sources": [
+      {
+        "url": "adendorf.de/1/klimaschutz/foerderprogramme-der-gemeinde-adendorf",
+        "disposition": "reviewed",
+        "reason": "Übersichtsseite der Gemeinde im Original gelesen; sie verlinkt alle vier Richtlinien, beide einschlägigen wurden als PDF im Volltext gelesen.",
+        "evidenceUrl": "https://www.adendorf.de/1/klimaschutz/foerderprogramme-der-gemeinde-adendorf/"
       }
     ]
   }

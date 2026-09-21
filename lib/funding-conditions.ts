@@ -248,6 +248,17 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // mounting and registry entry, so the usual "apply before you buy" form would
   // be the wrong test rather than a missing one.
   "havelland-stecker-solar",
+  // Adendorf, aufgenommen am 21.09.2026. Dieselbe umgekehrte Reihenfolge wie
+  // Havelland und Eckental: Die Richtlinie verlangt den Antrag NACH dem Kauf,
+  // spätestens sechs Monate danach (Nr. 6.2), und die Bewilligung folgt auf
+  // Kauf, Installation und Registrierung (Nr. 6.1). Die übliche Prüfform
+  // „vor dem Kauf beantragen" wäre hier der falsche Test, nicht ein fehlender.
+  "adendorf-steckersolar",
+  // Kreis Pinneberg, aufgenommen am 21.09.2026. Das Vorhaben ist eine
+  // Dachbegrünung, nicht eine Photovoltaikanlage — eine Prüfform, die eine
+  // Anlage gegen ein Antragsverfahren hält, hat hier nichts zu prüfen. Die
+  // Bedingungen stehen vollständig auf der Karte.
+  "pinneberg-gruendach-pv",
   "ingelheim-photovoltaik", "verl-nachhaltigkeit", "eschborn-klimaschutz", "bergkamen-balkon", "pfaffenhofen-balkon",
   // Source-reviewed on 2026-09-16. Mixed technology, building and application rules remain explicit card conditions.
   "schwandorf-klimaschutz", "salzkotten-klimaschutz", "wolfratshausen-pv", "luebeck-solargruendach", "minden-klimaplus", "luedinghausen-klimaschutzfonds", "vaterstetten-pv-begleitung", "wendelstein-pv", "wendlingen-energie", "erkelenz-klimaschutz", "haltern-klimafonds-balkon", "idstein-klimaschutz", "kirchlengern-pv-kleinanlagen", "floersheim-photovoltaik", "eppelheim-balkonkraftwerke", "radolfzell-sonnige-zukunft", "meschede-balkon-speicher",

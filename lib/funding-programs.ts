@@ -10837,6 +10837,114 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Bedingung sichtbar an den Eintrag: Wer sie nicht will, bekommt den
     // Zuschuss nicht.
   },
+  "pinneberg-gruendach-pv": {
+    id: "pinneberg-gruendach-pv", name: "Förderprogramm für MEHR GRÜN im Kreis Pinneberg (Teil Dachbegrünung)",
+    traeger: "Kreis Pinneberg", level: "landkreis", region: "Kreis Pinneberg",
+    bundesland: "Schleswig-Holstein", agsCode: "01056",
+    url: "https://klimaschutz.kreis-pinneberg.de/MehrGr%C3%BCnImKreisPinneberg.html",
+    // Guideline "Förderrichtlinie Dachbegrünung und Baumpflanzung", part 1, read
+    // in full (7 pages, nos. 1-16). No. 4.1: "Die Höhe der Förderung beträgt
+    // 20,00 Euro je m² begrünter Dachfläche. Wird auf dem begrünten Dach
+    // zusätzlich eine Photovoltaik-Anlage installiert, wird eine erhöhte
+    // Zuwendung von 30,00 Euro je m² für die gesamte begrünte Dachfläche
+    // gezahlt. Die maximale Gesamtförderung einer Anlage beträgt 1500 Euro. Die
+    // PV-Anlage selbst wird nicht bezuschusst."
+    //
+    // WHY IT IS IN HERE AT ALL, since the county says it does not subsidise the
+    // panels: the county pays 10 EUR/m² MORE the moment a photovoltaic system
+    // goes onto the green roof, over the whole green area. At 50 m² that is
+    // 500 EUR that flows only because of the PV decision. Same shape as
+    // `luebeck-solargruendach` — but weaker, because Lübeck funds a PV cost
+    // item (the mounting) and Pinneberg raises the green-roof rate. That is why
+    // the entry informs and why it must never carry a calculation value.
+    //
+    // NO CALCULATION VALUE ON PURPOSE. The reference quantity is square metres
+    // of green roof; the model cannot express it. Measured during the council
+    // review of 21 Sep 2026: fundingAmount -> {total: 0, computable: false},
+    // stackFunding -> applied: [].
+    //
+    // foerdert ["pv"] and deliberately NOT "balkon": no. 2.4 excludes plug-in
+    // solar by name ("Installation von Stecker-Solaranlagen („Balkonmodulen");
+    // dies sind keine PV-Anlagen im Sinne der Ziffer 4.1"). A balcony unit on a
+    // green roof therefore leaves the rate at 20 EUR/m².
+    //
+    // ACTIVE UNTIL WHEN IS OPEN. The guideline itself says it runs "bis auf
+    // Weiteres" (no. 16); the programme page says the county relaunched its
+    // programmes "auch für die Jahre 2025 und 2026" (read 21 Sep 2026). That is
+    // a stated horizon, not an end date, so no endetIso is invented here — but
+    // January 2027 is the moment to look again.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2025-05-21", beginntIso: "2025-05-21",
+    eligibility: ["privat", "gewerblich"],
+    foerdert: ["pv"],
+    coveredCosts: "Dachbegrünung; erhöhter Satz, wenn auf dem begrünten Dach eine Photovoltaikanlage installiert wird",
+    maxFoerderung: "1.500 € je Gründach",
+    rates: [
+      { label: "Dachbegrünung mit Photovoltaikanlage", value: "30 €/m² begrünter Dachfläche, höchstens 1.500 € je Gründach" },
+      { label: "Dachbegrünung ohne Photovoltaikanlage", value: "20 €/m² begrünter Dachfläche, höchstens 1.500 € je Gründach" },
+    ],
+    conditions: [
+      "Die Photovoltaikanlage selbst wird nicht bezuschusst — gefördert wird die Dachbegrünung darunter, der erhöhte Satz gilt dann für die gesamte begrünte Fläche",
+      "Ein Balkonkraftwerk löst den erhöhten Satz nicht aus; die Richtlinie zählt Stecker-Solaranlagen ausdrücklich nicht zu den Photovoltaikanlagen",
+      "Mit der Maßnahme soll erst nach der BEWILLIGUNG begonnen werden; über Ausnahmen entscheidet das Klimamanagement, und nur wenn der Beginn höchstens sechs Monate vor der Antragstellung liegt",
+      "Mindestens 15 m² Nettovegetationsfläche und mindestens 8 cm Substrat",
+      "Die Fördersumme darf die Gesamtkosten der Dachbegrünung nicht überschreiten; bei Eigenleistung sind höchstens 50 % der Materialkosten förderfähig",
+      "Eine Förderung je Wohneinheit/Grundstück",
+      "Keine Förderung, wenn die Begrünung im Bebauungsplan, in der Baugenehmigung oder sonst baurechtlich gefordert ist",
+      "Keine Förderung für die Sanierung vorhandener Gründächer",
+      "Antragsberechtigt sind Eigentümer, sonst dinglich Verfügungsberechtigte, Mieter mit Zustimmung, gemeinnützige Einrichtungen und Gewerbetreibende; Kommunen nicht, und Gebäude in kommunalem Besitz sind nicht förderfähig",
+      "Umsetzung innerhalb von zwölf Monaten nach dem Bescheid, auf Antrag einmalig um drei Monate verlängerbar; Zweckbindung zehn Jahre",
+      "Kumulierung mit Fördermitteln Dritter ist möglich, zusammen aber höchstens bis zu den Gesamtkosten des Gründachs OHNE die Photovoltaikanlage",
+      "Kein Rechtsanspruch, auch bei Erfüllung aller Voraussetzungen; Bewilligung im Rahmen der verfügbaren Haushaltsmittel in der Reihenfolge des Eingangs",
+    ],
+    combinableWith: BUND,
+  },
+  "adendorf-steckersolar": {
+    id: "adendorf-steckersolar", name: "Stecker-Solar-Geräte-Förderprogramm der Gemeinde Adendorf",
+    traeger: "Gemeinde Adendorf", level: "kommune", region: "Adendorf",
+    bundesland: "Niedersachsen", agsCode: "03355001",
+    url: "https://www.adendorf.de/1/klimaschutz/foerderprogramme-der-gemeinde-adendorf/",
+    // Guideline read in full as the PDF the municipality links (3 pages, 21 Sep
+    // 2026): "Die Förderhöhe beträgt je Haushalt 100,- Euro." (3.2). In force
+    // since 10.11.2023, adjusted on 28.01.2025 "entsprechend der gesetzlichen
+    // Änderungen"; no end date.
+    //
+    // FOUND THROUGH THE COUNTY, NOT THROUGH THE VILLAGE. The page of Landkreis
+    // Lüneburg names five local programmes we did not have; this is the first of
+    // them to be read at its own authority source.
+    //
+    // combinableWith IS EMPTY ON PURPOSE, and that is the catalogue's way of
+    // saying "only on its own": 3.3 excludes any funding from other public
+    // money ("Ausschluss einer Doppelförderung"). Whether a tax rate counts as
+    // public money is not for us to decide — the cautious direction is the one
+    // that does not stack.
+    //
+    // The municipality's OTHER roof programme is NOT in scope: its green-roof
+    // guideline pays 5,00 €/m², at most 200 €, and — unlike Kreis Pinneberg and
+    // Lübeck — knows no raised rate for a photovoltaic system on the green roof.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-11-10",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Zuschuss zum Kauf eines Balkonkraftwerks",
+    maxFoerderung: "100 € je Haushalt",
+    balkonPauschale: 100,
+    rates: [
+      { label: "Balkonkraftwerk", value: "100 € je Haushalt", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Nicht mit anderen öffentlichen Fördermitteln kombinierbar — die Richtlinie schließt eine Doppelförderung ausdrücklich aus",
+      "Antragsberechtigt sind Haus- und Wohnungseigentümer sowie Mieter; Mieter legen die schriftliche Zustimmung des Vermieters vor, in einer Eigentümergemeinschaft deren Zustimmung",
+      "Je Haushalt wird höchstens eine Anlage gefördert",
+      "Höchstens 800 Voltampere Wechselrichter-Ausgangsleistung; das Gerät muss fabrikneu sein, im Gemeindegebiet betrieben und im Marktstammdatenregister sowie beim Netzbetreiber angemeldet werden",
+      "Antrag NACH dem Kauf, spätestens sechs Monate danach — maßgeblich ist das Rechnungsdatum; Geräte, die vor dem 10.11.2023 gekauft wurden, sind nicht förderfähig",
+      "Zum Antrag gehören Angebot oder Beschreibung, Kaufbeleg, Nachweis der Registrierung und ein Foto der installierten Anlage",
+      "Nicht gefördert werden Insel-Anlagen mit Akkubetrieb und geleaste Geräte",
+      "Kein Rechtsanspruch; die Gemeinde entscheidet im Rahmen der verfügbaren Mittel nach der Reihenfolge des Antragseingangs",
+      "Bei einem Kulturdenkmal ist die denkmalschutzrechtliche Genehmigung nachzuweisen",
+    ],
+    combinableWith: [],
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
