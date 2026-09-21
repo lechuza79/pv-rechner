@@ -360,11 +360,16 @@
    Vor Ort, Wissen) — sonst zeigt jedes Menü einen anderen Zustand. */
 @media(hover:hover){.sc-global-nav .sc-nav-column>a:hover{background:#d4ff24;color:#132527;box-shadow:none}}
 .sc-global-nav .sc-nav-column>a:focus-visible{outline:none;background:#d4ff24;color:#132527}
-/* The logged-in account toggle replaces the header login link inside a <details>; give it the same round, faint-ring icon and keep it at least as far from "Wissen" as the menu items are from each other. */
+/* The logged-in account toggle replaces the header login link inside a <details>; a round icon with a faint 2px ring, at least as far from "Wissen" as the menu items are from each other. Only on desktop: below the breakpoint the account entries live in the burger menu. */
+@media(max-width:1280px){.sc-global-header>.sc-account{display:none}}
 @media(min-width:1281px){
  .sc-account{margin-left:clamp(20px,2.4vw,36px)}
- .sc-account>.sc-nav-login{width:34px;height:34px;min-height:34px;padding:0!important;border:1px solid color-mix(in srgb,currentColor 28%,transparent);border-radius:50%;opacity:1}
- .sc-account>.sc-nav-login:hover,.sc-account[open]>.sc-nav-login{border-color:color-mix(in srgb,currentColor 55%,transparent);text-decoration:none}
- .sc-account>.sc-nav-login svg{width:18px;height:18px;opacity:1}
- .sc-account-panel{top:calc(100% + 24px)}
+ .sc-account>.sc-nav-login{width:36px;height:36px;min-height:36px;padding:0!important;border:2px solid color-mix(in srgb,currentColor 16%,transparent);border-radius:50%;opacity:1;line-height:0}
+ .sc-account>.sc-nav-login:hover,.sc-account[open]>.sc-nav-login{border-color:color-mix(in srgb,currentColor 34%,transparent);text-decoration:none}
+ /* The person glyph sits low in its 24-unit box (head at y=4.5, shoulders at y=21); lift it so it looks centred in the ring. */
+ .sc-account>.sc-nav-login svg{width:18px;height:18px;opacity:1;display:block;transform:translateY(-1px)}
+ /* Same distance below the header row as the mega menus: they hang 6px under the 50px-high summaries, this icon is 36px high and centred in that row. */
+ .sc-account-panel{top:calc(100% + 13px)}
 }
+/* With JavaScript the real menu replaces the fallback; hide it from first paint so it never flashes. */
+.sc-js .sc-react-fallback{display:none}

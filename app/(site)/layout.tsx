@@ -17,7 +17,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 // compact copy of lib/theme-schedule.ts (it cannot import modules this early).
 // "auto" tracks the sun over central Germany — keep this formula in sync with
 // the module. Reads/writes the same localStorage key as ThemeController.
-const themeBootScript = `(function(){try{
+// The first statement marks the page as scripted before first paint, so the
+// no-JS fallback menu ("Menü" disclosure) never flashes before the real one mounts.
+const themeBootScript = `document.documentElement.classList.add('sc-js');(function(){try{
 var p=localStorage.getItem('sc-theme-pref');
 if(p!=='light'&&p!=='dark')p='auto';
 var r;
