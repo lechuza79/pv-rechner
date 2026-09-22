@@ -56,6 +56,11 @@ export function bestandsZahlen(p: GemeindePaket) {
 export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; ort: Ortsangaben }) {
   const z = bestandsZahlen(paket);
   const stand = formatStoryDate(paket.registerStand);
+  // The monitor's figures end with the last complete month.
+  const letzterMonat = (paket.monitorHistory as { observations?: { end: string }[] } | undefined)?.observations?.[0]?.end;
+  const kennzahlenBis = letzterMonat
+    ? new Date(letzterMonat + "T12:00:00").toLocaleDateString("de-DE", { month: "long", year: "numeric", timeZone: "Europe/Berlin" })
+    : null;
   const quellen = DATA_SOURCES;
   const rangliste = ranglistenDaten(paket, {
     name: ort.name,
@@ -192,6 +197,35 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
               <p>Ranglistenstand: {formatStoryDate(paket.rangStand)}.</p>
             </details>
           )}
+
+          <section className="atlas-section atlas-overview" id="atlas-data">
+            <div className="atlas-wrap">
+              <div className="atlas-summary">
+                <div>
+                  <p className="atlas-kicker">Energiemonitor</p>
+                  <h2>Energiemonitor {ort.name}</h2>
+                  <p className="monitor-update">
+                    Letztes Update: {formatStoryDate(paket.registerStand)}
+                    {kennzahlenBis && <> · Kennzahlen bis Ende {kennzahlenBis}</>}
+                  </p>
+                  <p>
+                    Wie wächst die erneuerbare Energie vor Ort? Wie viel Strom lässt sich erzeugen und speichern? Der Energiemonitor macht die
+                    Entwicklung in {ort.name} sichtbar – mit den verfügbaren Daten zu Anlagen, Leistung und Ausbau.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="atlas-wrap v3-data">
+              <div className="v3-permanent-charts">
+                <GemeindeRahmen
+                  src={`/embed/gemeinde/${ort.ags}/monitor`}
+                  title={`Energiedaten für ${ort.name}`}
+                  nachricht="municipal-data-layout"
+                  startHoehe={1400}
+                />
+              </div>
+            </div>
+          </section>
 
           <section id="atlas-sources" className="atlas-wrap atlas-sources" aria-labelledby="atlas-sources-title">
             <h2 id="atlas-sources-title">Daten &amp; Quellen</h2>

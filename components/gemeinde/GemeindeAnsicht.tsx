@@ -10,9 +10,11 @@ import type { GemeindePaket } from "../../lib/gemeinde-paket";
  * a crawler needs — the page renders that itself.
  */
 const Insights = dynamic(() => import("./GemeindeInsights"), { ssr: false });
+const Monitor = dynamic(() => import("./GemeindeMonitor"), { ssr: false });
 
-export default function GemeindeAnsicht({ ansicht, paket }: { ansicht: "insights"; paket: GemeindePaket }) {
+export default function GemeindeAnsicht({ ansicht, paket }: { ansicht: "insights" | "monitor"; paket: GemeindePaket }) {
   if (ansicht === "insights")
     return <Insights stories={paket.stories as never} name={paket.name} surfaceScheme="dark" showHeader={false} embedded />;
+  if (ansicht === "monitor") return <Monitor paket={paket} />;
   return null;
 }
