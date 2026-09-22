@@ -154,6 +154,19 @@ async function main() {
     console.log(`  ${model.name}: Lauf ${perModel.at(-1)!.runInit}, Werte bis ${new Date(reachHour * 3600000).toISOString()}`);
   }
 
+  // Just after German midnight the window gains a sixteenth day that the
+  // newest GFS run in the archive does not reach yet (12Z + 384 h ends at
+  // noon UTC of that day; the 18Z run arrives around midnight). That is not a
+  // data hole but a run arriving late: keep the file from the previous run —
+  // the reader drops its past day — and let the next run write. Only the last
+  // day qualifies; if the chain falls short by more, GFS has stopped and the
+  // refusal below turns the run red.
+  const chainEnd = Math.max(...perModel.map((m) => m.endHour));
+  if (chainEnd + 1 < bounds[FORECAST_DAYS] / 3600000 && chainEnd + 1 >= bounds[FORECAST_DAYS - 1] / 3600000) {
+    console.log(`Neuester Lauf reicht nur bis ${new Date(chainEnd * 3600000).toISOString()}, der 16. Tag (${days.at(-1)}) ist noch nicht abgedeckt — bestehende Dateien bleiben, der nächste Lauf schreibt.`);
+    return;
+  }
+
   const shards = new Map<string, ForecastShard>();
   let incomplete = 0;
   for (const plz of Object.keys(coordinates)) {
