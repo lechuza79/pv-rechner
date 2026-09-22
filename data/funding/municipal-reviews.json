@@ -44710,5 +44710,263 @@
         "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link"
       }
     ]
+  },
+  {
+    "regionId": "13076063",
+    "name": "Holthusen",
+    "checkedAt": "2026-09-22T06:43:30Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Holthusen gehört zum Amt Stralendorf (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die EU-Förderseite des Amts zeigt nur kommunale Bauprojekte, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter nennen nur Bundes- und Landesförderung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "amt-stralendorf.de Sitemap (310 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/förder/richtlinie/klima/energie/wärme/speicher durchsucht: nur EU-Bauprojekte und Wirtschaftsförderung",
+      "Volltextsuche amt-stralendorf.de (22.09.2026): Balkonkraftwerk und steckerfertige 0 Treffer; Photovoltaik, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Förderprogramm nur Amtsblätter, Ortsrecht-Übersicht und EU-Bauprojekte",
+      "Alle 20 Amtsblätter mit Treffer „Photovoltaik“ (2023–2026) im Volltext nach Zuschuss/Förderung im Umfeld von Photovoltaik, Balkon, Solaranlage, Wärmepumpe durchsucht: nur BEG-Förderung, Landeszuwendung für den Schulbau und ein allgemeiner Hinweis auf staatliche Solarförderung",
+      "Ortsrecht der Gemeinden (Holthusen, Klein Rogahn, Pampow, Schossin, Warsow, Zülow) vollständig durchgesehen: Bebauungspläne, Haushalts-, Steuer-, Baumschutz-, Gestaltungs-, Kleineinleiter-, Straßenreinigungssatzungen — keine Förderrichtlinie",
+      "Websuche: Landkreis Ludwigslust-Parchim Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm und Breitband)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "finding": "Alte Adresse „EU-Förderung“ leitet am 22.09.2026 (HTTP 302) auf die Startseite des Amts um — kein Förderinhalt unter dieser Adresse."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Aktuelles/Bauprojekte-mit-F%C3%B6rderung-der-Europ%C3%A4ischen-Union/",
+        "finding": "„Bauprojekte mit Förderung der Europäischen Union“ im Original gelesen (22.09.2026): LEADER-Bewegungshof Schule Stralendorf, LED-Umrüstung Amtssporthalle und Schulzentrum, Erweiterungsbau Schulzentrum — kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Gemeinden/Ortsrecht-Satzung-der-Gemeinden/",
+        "finding": "Ortsrecht der Gemeinden im Amt Stralendorf (22.09.2026): für die sechs Gemeinden keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Adresse leitet auf die Startseite um; die EU-geförderten Vorhaben stehen auf der Seite „Bauprojekte mit Förderung der Europäischen Union“ und sind kommunale Bauprojekte.",
+        "evidenceUrl": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "13076071",
+    "name": "Klein Rogahn",
+    "checkedAt": "2026-09-22T06:43:30Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Klein Rogahn gehört zum Amt Stralendorf (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die EU-Förderseite des Amts zeigt nur kommunale Bauprojekte, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter nennen nur Bundes- und Landesförderung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "amt-stralendorf.de Sitemap (310 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/förder/richtlinie/klima/energie/wärme/speicher durchsucht: nur EU-Bauprojekte und Wirtschaftsförderung",
+      "Volltextsuche amt-stralendorf.de (22.09.2026): Balkonkraftwerk und steckerfertige 0 Treffer; Photovoltaik, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Förderprogramm nur Amtsblätter, Ortsrecht-Übersicht und EU-Bauprojekte",
+      "Alle 20 Amtsblätter mit Treffer „Photovoltaik“ (2023–2026) im Volltext nach Zuschuss/Förderung im Umfeld von Photovoltaik, Balkon, Solaranlage, Wärmepumpe durchsucht: nur BEG-Förderung, Landeszuwendung für den Schulbau und ein allgemeiner Hinweis auf staatliche Solarförderung",
+      "Ortsrecht der Gemeinden (Holthusen, Klein Rogahn, Pampow, Schossin, Warsow, Zülow) vollständig durchgesehen: Bebauungspläne, Haushalts-, Steuer-, Baumschutz-, Gestaltungs-, Kleineinleiter-, Straßenreinigungssatzungen — keine Förderrichtlinie",
+      "Websuche: Landkreis Ludwigslust-Parchim Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm und Breitband)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "finding": "Alte Adresse „EU-Förderung“ leitet am 22.09.2026 (HTTP 302) auf die Startseite des Amts um — kein Förderinhalt unter dieser Adresse."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Aktuelles/Bauprojekte-mit-F%C3%B6rderung-der-Europ%C3%A4ischen-Union/",
+        "finding": "„Bauprojekte mit Förderung der Europäischen Union“ im Original gelesen (22.09.2026): LEADER-Bewegungshof Schule Stralendorf, LED-Umrüstung Amtssporthalle und Schulzentrum, Erweiterungsbau Schulzentrum — kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Gemeinden/Ortsrecht-Satzung-der-Gemeinden/",
+        "finding": "Ortsrecht der Gemeinden im Amt Stralendorf (22.09.2026): für die sechs Gemeinden keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Adresse leitet auf die Startseite um; die EU-geförderten Vorhaben stehen auf der Seite „Bauprojekte mit Förderung der Europäischen Union“ und sind kommunale Bauprojekte.",
+        "evidenceUrl": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "13076107",
+    "name": "Pampow",
+    "checkedAt": "2026-09-22T06:43:30Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Pampow gehört zum Amt Stralendorf (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die EU-Förderseite des Amts zeigt nur kommunale Bauprojekte, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter nennen nur Bundes- und Landesförderung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "amt-stralendorf.de Sitemap (310 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/förder/richtlinie/klima/energie/wärme/speicher durchsucht: nur EU-Bauprojekte und Wirtschaftsförderung",
+      "Volltextsuche amt-stralendorf.de (22.09.2026): Balkonkraftwerk und steckerfertige 0 Treffer; Photovoltaik, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Förderprogramm nur Amtsblätter, Ortsrecht-Übersicht und EU-Bauprojekte",
+      "Alle 20 Amtsblätter mit Treffer „Photovoltaik“ (2023–2026) im Volltext nach Zuschuss/Förderung im Umfeld von Photovoltaik, Balkon, Solaranlage, Wärmepumpe durchsucht: nur BEG-Förderung, Landeszuwendung für den Schulbau und ein allgemeiner Hinweis auf staatliche Solarförderung",
+      "Ortsrecht der Gemeinden (Holthusen, Klein Rogahn, Pampow, Schossin, Warsow, Zülow) vollständig durchgesehen: Bebauungspläne, Haushalts-, Steuer-, Baumschutz-, Gestaltungs-, Kleineinleiter-, Straßenreinigungssatzungen — keine Förderrichtlinie",
+      "Websuche: Landkreis Ludwigslust-Parchim Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm und Breitband)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "finding": "Alte Adresse „EU-Förderung“ leitet am 22.09.2026 (HTTP 302) auf die Startseite des Amts um — kein Förderinhalt unter dieser Adresse."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Aktuelles/Bauprojekte-mit-F%C3%B6rderung-der-Europ%C3%A4ischen-Union/",
+        "finding": "„Bauprojekte mit Förderung der Europäischen Union“ im Original gelesen (22.09.2026): LEADER-Bewegungshof Schule Stralendorf, LED-Umrüstung Amtssporthalle und Schulzentrum, Erweiterungsbau Schulzentrum — kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Gemeinden/Ortsrecht-Satzung-der-Gemeinden/",
+        "finding": "Ortsrecht der Gemeinden im Amt Stralendorf (22.09.2026): für die sechs Gemeinden keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Adresse leitet auf die Startseite um; die EU-geförderten Vorhaben stehen auf der Seite „Bauprojekte mit Förderung der Europäischen Union“ und sind kommunale Bauprojekte.",
+        "evidenceUrl": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "13076121",
+    "name": "Schossin",
+    "checkedAt": "2026-09-22T06:43:30Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schossin gehört zum Amt Stralendorf (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die EU-Förderseite des Amts zeigt nur kommunale Bauprojekte, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter nennen nur Bundes- und Landesförderung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "amt-stralendorf.de Sitemap (310 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/förder/richtlinie/klima/energie/wärme/speicher durchsucht: nur EU-Bauprojekte und Wirtschaftsförderung",
+      "Volltextsuche amt-stralendorf.de (22.09.2026): Balkonkraftwerk und steckerfertige 0 Treffer; Photovoltaik, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Förderprogramm nur Amtsblätter, Ortsrecht-Übersicht und EU-Bauprojekte",
+      "Alle 20 Amtsblätter mit Treffer „Photovoltaik“ (2023–2026) im Volltext nach Zuschuss/Förderung im Umfeld von Photovoltaik, Balkon, Solaranlage, Wärmepumpe durchsucht: nur BEG-Förderung, Landeszuwendung für den Schulbau und ein allgemeiner Hinweis auf staatliche Solarförderung",
+      "Ortsrecht der Gemeinden (Holthusen, Klein Rogahn, Pampow, Schossin, Warsow, Zülow) vollständig durchgesehen: Bebauungspläne, Haushalts-, Steuer-, Baumschutz-, Gestaltungs-, Kleineinleiter-, Straßenreinigungssatzungen — keine Förderrichtlinie",
+      "Websuche: Landkreis Ludwigslust-Parchim Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm und Breitband)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "finding": "Alte Adresse „EU-Förderung“ leitet am 22.09.2026 (HTTP 302) auf die Startseite des Amts um — kein Förderinhalt unter dieser Adresse."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Aktuelles/Bauprojekte-mit-F%C3%B6rderung-der-Europ%C3%A4ischen-Union/",
+        "finding": "„Bauprojekte mit Förderung der Europäischen Union“ im Original gelesen (22.09.2026): LEADER-Bewegungshof Schule Stralendorf, LED-Umrüstung Amtssporthalle und Schulzentrum, Erweiterungsbau Schulzentrum — kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Gemeinden/Ortsrecht-Satzung-der-Gemeinden/",
+        "finding": "Ortsrecht der Gemeinden im Amt Stralendorf (22.09.2026): für die sechs Gemeinden keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Adresse leitet auf die Startseite um; die EU-geförderten Vorhaben stehen auf der Seite „Bauprojekte mit Förderung der Europäischen Union“ und sind kommunale Bauprojekte.",
+        "evidenceUrl": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "13076147",
+    "name": "Warsow",
+    "checkedAt": "2026-09-22T06:43:30Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Warsow gehört zum Amt Stralendorf (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die EU-Förderseite des Amts zeigt nur kommunale Bauprojekte, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter nennen nur Bundes- und Landesförderung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "amt-stralendorf.de Sitemap (310 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/förder/richtlinie/klima/energie/wärme/speicher durchsucht: nur EU-Bauprojekte und Wirtschaftsförderung",
+      "Volltextsuche amt-stralendorf.de (22.09.2026): Balkonkraftwerk und steckerfertige 0 Treffer; Photovoltaik, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Förderprogramm nur Amtsblätter, Ortsrecht-Übersicht und EU-Bauprojekte",
+      "Alle 20 Amtsblätter mit Treffer „Photovoltaik“ (2023–2026) im Volltext nach Zuschuss/Förderung im Umfeld von Photovoltaik, Balkon, Solaranlage, Wärmepumpe durchsucht: nur BEG-Förderung, Landeszuwendung für den Schulbau und ein allgemeiner Hinweis auf staatliche Solarförderung",
+      "Ortsrecht der Gemeinden (Holthusen, Klein Rogahn, Pampow, Schossin, Warsow, Zülow) vollständig durchgesehen: Bebauungspläne, Haushalts-, Steuer-, Baumschutz-, Gestaltungs-, Kleineinleiter-, Straßenreinigungssatzungen — keine Förderrichtlinie",
+      "Websuche: Landkreis Ludwigslust-Parchim Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm und Breitband)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "finding": "Alte Adresse „EU-Förderung“ leitet am 22.09.2026 (HTTP 302) auf die Startseite des Amts um — kein Förderinhalt unter dieser Adresse."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Aktuelles/Bauprojekte-mit-F%C3%B6rderung-der-Europ%C3%A4ischen-Union/",
+        "finding": "„Bauprojekte mit Förderung der Europäischen Union“ im Original gelesen (22.09.2026): LEADER-Bewegungshof Schule Stralendorf, LED-Umrüstung Amtssporthalle und Schulzentrum, Erweiterungsbau Schulzentrum — kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Gemeinden/Ortsrecht-Satzung-der-Gemeinden/",
+        "finding": "Ortsrecht der Gemeinden im Amt Stralendorf (22.09.2026): für die sechs Gemeinden keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Adresse leitet auf die Startseite um; die EU-geförderten Vorhaben stehen auf der Seite „Bauprojekte mit Förderung der Europäischen Union“ und sind kommunale Bauprojekte.",
+        "evidenceUrl": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php"
+      }
+    ]
+  },
+  {
+    "regionId": "13076163",
+    "name": "Zülow",
+    "checkedAt": "2026-09-22T06:43:30Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Zülow gehört zum Amt Stralendorf (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die EU-Förderseite des Amts zeigt nur kommunale Bauprojekte, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter nennen nur Bundes- und Landesförderung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "amt-stralendorf.de Sitemap (310 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/förder/richtlinie/klima/energie/wärme/speicher durchsucht: nur EU-Bauprojekte und Wirtschaftsförderung",
+      "Volltextsuche amt-stralendorf.de (22.09.2026): Balkonkraftwerk und steckerfertige 0 Treffer; Photovoltaik, Zuschuss, Wärmepumpe, Speicher, Klimaschutz, Förderprogramm nur Amtsblätter, Ortsrecht-Übersicht und EU-Bauprojekte",
+      "Alle 20 Amtsblätter mit Treffer „Photovoltaik“ (2023–2026) im Volltext nach Zuschuss/Förderung im Umfeld von Photovoltaik, Balkon, Solaranlage, Wärmepumpe durchsucht: nur BEG-Förderung, Landeszuwendung für den Schulbau und ein allgemeiner Hinweis auf staatliche Solarförderung",
+      "Ortsrecht der Gemeinden (Holthusen, Klein Rogahn, Pampow, Schossin, Warsow, Zülow) vollständig durchgesehen: Bebauungspläne, Haushalts-, Steuer-, Baumschutz-, Gestaltungs-, Kleineinleiter-, Straßenreinigungssatzungen — keine Förderrichtlinie",
+      "Websuche: Landkreis Ludwigslust-Parchim Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm und Breitband)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "finding": "Alte Adresse „EU-Förderung“ leitet am 22.09.2026 (HTTP 302) auf die Startseite des Amts um — kein Förderinhalt unter dieser Adresse."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Aktuelles/Bauprojekte-mit-F%C3%B6rderung-der-Europ%C3%A4ischen-Union/",
+        "finding": "„Bauprojekte mit Förderung der Europäischen Union“ im Original gelesen (22.09.2026): LEADER-Bewegungshof Schule Stralendorf, LED-Umrüstung Amtssporthalle und Schulzentrum, Erweiterungsbau Schulzentrum — kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-stralendorf.de/Gemeinden/Ortsrecht-Satzung-der-Gemeinden/",
+        "finding": "Ortsrecht der Gemeinden im Amt Stralendorf (22.09.2026): für die sechs Gemeinden keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Adresse leitet auf die Startseite um; die EU-geförderten Vorhaben stehen auf der Seite „Bauprojekte mit Förderung der Europäischen Union“ und sind kommunale Bauprojekte.",
+        "evidenceUrl": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php"
+      }
+    ]
   }
 ]
