@@ -79,6 +79,7 @@
     "flows:matrix": "tsx scripts/flow-matrix.ts",
     "seitenwert": "tsx scripts/seitenwert.ts",
     "wirkung": "tsx scripts/outreach-wirkung.ts",
+    "kontakte:freigabe": "tsx scripts/kontakte-freigabe.ts",
     "kontakte:quellen": "tsx scripts/contact-source-search.ts",
     "kontakte:vergleich": "tsx scripts/contact-compare.ts",
     "kontakte:recherche": "tsx scripts/contact-research.ts",
