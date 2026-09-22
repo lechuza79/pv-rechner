@@ -46444,5 +46444,516 @@
         "evidenceUrl": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/"
       }
     ]
+  },
+  {
+    "regionId": "01054017",
+    "name": "Braderup",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Braderup gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Braderup auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Forschung und Entwicklung in Unternehmen (gelesen 22.09.2026); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Härtefallhilfen des Bundes für Heizkosten mit nicht leitungsgebundenen Energieträgern (gelesen 22.09.2026), kein Investitionszuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-ndash-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag „Klimaschutz für Bürgerinnen und Bürger – nicht-fossile Heizungssysteme“; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), das Landesprogramm ist im Katalog als eingestellt geführt.",
+        "evidenceUrl": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder: Förderung für Kommunen und Wirtschaft (E-Lastenräder); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "01054027",
+    "name": "Ellhöft",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ellhöft gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Ellhöft auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01054034",
+    "name": "Friedrich-Wilhelm-Lübke-Koog",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Friedrich-Wilhelm-Lübke-Koog gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Friedrich-Wilhelm-Lübke-Koog auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Forschung und Entwicklung in Unternehmen (gelesen 22.09.2026); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Härtefallhilfen des Bundes für Heizkosten mit nicht leitungsgebundenen Energieträgern (gelesen 22.09.2026), kein Investitionszuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-ndash-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag „Klimaschutz für Bürgerinnen und Bürger – nicht-fossile Heizungssysteme“; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), das Landesprogramm ist im Katalog als eingestellt geführt.",
+        "evidenceUrl": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder: Förderung für Kommunen und Wirtschaft (E-Lastenräder); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "01054048",
+    "name": "Holm",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Holm gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Holm auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01054062",
+    "name": "Karlum",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Karlum gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Karlum auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Forschung und Entwicklung in Unternehmen (gelesen 22.09.2026); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Härtefallhilfen des Bundes für Heizkosten mit nicht leitungsgebundenen Energieträgern (gelesen 22.09.2026), kein Investitionszuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-ndash-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag „Klimaschutz für Bürgerinnen und Bürger – nicht-fossile Heizungssysteme“; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), das Landesprogramm ist im Katalog als eingestellt geführt.",
+        "evidenceUrl": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder: Förderung für Kommunen und Wirtschaft (E-Lastenräder); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "01054077",
+    "name": "Lexgaard",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lexgaard gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Lexgaard auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01054154",
+    "name": "Westre",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Westre gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Westre auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Forschung und Entwicklung in Unternehmen (gelesen 22.09.2026); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Härtefallhilfen des Bundes für Heizkosten mit nicht leitungsgebundenen Energieträgern (gelesen 22.09.2026), kein Investitionszuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-ndash-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag „Klimaschutz für Bürgerinnen und Bürger – nicht-fossile Heizungssysteme“; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), das Landesprogramm ist im Katalog als eingestellt geführt.",
+        "evidenceUrl": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder: Förderung für Kommunen und Wirtschaft (E-Lastenräder); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      }
+    ]
   }
 ]
