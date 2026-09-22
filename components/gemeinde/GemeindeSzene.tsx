@@ -1,68 +1,25 @@
-"use client";
-
-import { useEffect } from "react";
-
 /**
  * Starts the shared hero scene (public/hero-system) on the server-rendered
- * markup and gives it this town's weather.
+ * markup and gives it this town's weather — as plain scripts IN THE HTML, so
+ * the scene starts while the page is still loading, like on the homepage.
+ * (Started from a React effect it waited for the whole page to hydrate.)
  *
- * The scene reads `window.atlasWeather.load()`; here that is the same
- * snapshot-backed source the homepage scene uses (/scene-data: DWD ICON-D2),
- * never the free forecast API the prototype called; the monitor's day curve
- * comes from the same snapshot (/api/gemeinde/solartag). One request per page,
+ * `window.atlasWeather.load()` is the scene's weather: the same snapshot-
+ * backed source the homepage scene uses (/scene-data: DWD ICON-D2), never the
+ * free forecast API the prototype called. `tag()` is the energy monitor's day
+ * curve — a separate call the scene never waits for. Each is fetched once and
  * shared by everything that asks within five minutes.
  */
-declare global {
-  interface Window {
-    atlasWeather?: { load(): Promise<unknown>; refresh(): Promise<unknown> };
-  }
+function wetterSkript(plz: string | null): string {
+  const p = JSON.stringify(plz);
+  return `(function(){var plz=${p};function quelle(url){var pending=null,started=0;return function(){if(!plz)return Promise.reject(new Error("Kein Standort"));if(!pending||Date.now()-started>300000){started=Date.now();pending=fetch(url+plz,{signal:AbortSignal.timeout(15000)}).then(function(r){return r.ok?r.json():Promise.reject(new Error("Wetter nicht verfügbar"))}).catch(function(e){pending=null;throw e});}return pending;}}var load=quelle("/scene-data?plz="),tag=quelle("/api/gemeinde/solartag?plz=");window.atlasWeather={load:load,tag:tag,refresh:function(){return load()}};if(plz){load().catch(function(){});}})();`;
 }
 
-// The scene mounts once per document; a second module run (React's
-// development double effect) would build a second stage.
-let gestartet = false;
-
 export default function GemeindeSzene({ plz }: { plz: string | null }) {
-  useEffect(() => {
-    if (gestartet) return;
-    gestartet = true;
-    let pending: Promise<unknown> | null = null;
-    let started = 0;
-    window.atlasWeather = {
-      load() {
-        if (!plz) return Promise.reject(new Error("Kein Standort"));
-        if (Date.now() - started > 300_000) pending = null;
-        if (!pending) {
-          started = Date.now();
-          const json = (url: string) =>
-            fetch(url, { signal: AbortSignal.timeout(15_000) }).then((r) =>
-              r.ok ? r.json() : Promise.reject(new Error("Wetter nicht verfügbar")),
-            );
-          // The scene needs "now"; the monitor also needs today's curve
-          // (`points`). A missing curve must not take the scene down.
-          pending = Promise.all([json(`/scene-data?plz=${plz}`), json(`/api/gemeinde/solartag?plz=${plz}`).catch(() => null)])
-            .then(([jetzt, tag]) => {
-              // Without the curve, keep the answer for the scene but do not
-              // hold it: the next caller asks again.
-              if (!tag?.points) started = 0;
-              return { ...jetzt, points: tag?.points };
-            })
-            .catch((e) => {
-              pending = null;
-              throw e;
-            });
-        }
-        return pending;
-      },
-      refresh() {
-        pending = null;
-        return this.load();
-      },
-    };
-    const script = document.createElement("script");
-    script.type = "module";
-    script.src = "/hero-system/dist/municipality.js";
-    document.body.append(script);
-  }, [plz]);
-  return null;
+  return (
+    <>
+      <script dangerouslySetInnerHTML={{ __html: wetterSkript(plz) }} />
+      <script type="module" src="/hero-system/dist/municipality.js" async />
+    </>
+  );
 }

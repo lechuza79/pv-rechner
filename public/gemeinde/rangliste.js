@@ -503,7 +503,7 @@
         m.snapshot && !m.snapshot.rows
           ? `<p class="atlas-kicker">${escape(m.snapshot.scope)}</p><h3>${escape(m.title)}</h3><div class="ranking-snapshot-result"><strong>${escape(m.snapshot.distinction ?? "Platz " + fmt(m.snapshot.rank))}</strong><p>${escape(G.name)} · Platz ${fmt(m.snapshot.rank)} von ${fmt(total)} Orten</p></div><p class="ranking-detail">Erfasst am ${new Date(m.snapshot.asOf).toLocaleDateString("de-DE", { day: "numeric", month: "short", year: "numeric" })}</p>`
           : top.length
-            ? `<p class="atlas-kicker">Die Top ${Math.min(3, top.length)}</p><h3>${m.title}</h3><p class="ranking-detail">${m.snapshot ? escape(shortScope(m.snapshot.scope)) : owner === "alle" ? "Private und gewerbliche Anlagen" : owner === "privat" ? "Private Anlagen" : "Gewerbliche Anlagen und Freiflächen"} · ${m.unit === "Anlagen" ? "Anzahl" : m.unit}</p><div class="ranking-podium">${order.map((r) => `<div class="ranking-contender ${r.id === G.ags ? "is-own" : ""}" data-rank="${r.rank}">${r.href ? `<a href="${escape(r.href)}" target="_blank" rel="noopener">${r.id === G.ags && r.rank <= 3 ? `<img class="ranking-badge" src="/atlas-design-preview/rank-badges/${m.id === "storage" || m.snapshot?.key?.startsWith("speicher") ? "battery" : "roof"}-${r.rank}.png" alt="Platz ${r.rank} – ${escape(m.title)}" width="96" height="96">` : ``}${escape(r.name)}</a>` : `<span>${r.id === G.ags && r.rank <= 3 ? `<img class="ranking-badge" src="/atlas-design-preview/rank-badges/${m.id === "storage" || m.snapshot?.key?.startsWith("speicher") ? "battery" : "roof"}-${r.rank}.png" alt="Platz ${r.rank} – ${escape(m.title)}" width="96" height="96">` : ``}${escape(r.name)}</span>`}<strong class="ranking-value" data-value="${r.value}">${fmt(r.value)}</strong><span class="ranking-unit" hidden>${m.unit}</span><div class="ranking-step" style="height:${top[0].value > 0 ? (160 * r.value) / top[0].value : 0}px"></div></div>`).join("")}</div><div class="ranking-own"><span>${escape(G.name)}${me && me.rank <= 3 ? " · auf dem Podest" : ""}</span>${me ? `<strong>Platz ${fmt(me.rank)} <small>von ${fmt(total)}</small></strong><span class="ranking-value">${fmt(me.value)} ${m.unit}</span>` : `<p>${ownIncluded() ? "Keine eigene Platzierung verfügbar." : "Liegt außerhalb der gewählten Größenklasse (" + G.einwohnerLabel + ")."}</p>`}</div><p class="ranking-gap">${me?.rank === 1 ? escape(G.name) + " führt diese Kategorie an." : previous ? `${fmt(previous.value - me.value)} ${m.unit} Abstand zu ${escape(previous.name)} auf Platz ${previous.rank}.` : me && top.length ? `${fmt(top[0].value - me.value)} ${m.unit} Abstand zur Spitze (${escape(top[0].name)}).` : ""}</p>`
+            ? `<p class="atlas-kicker">Die Top ${Math.min(3, top.length)}</p><h3>${m.title}</h3><p class="ranking-detail">${m.snapshot ? escape(shortScope(m.snapshot.scope)) : owner === "alle" ? "Private und gewerbliche Anlagen" : owner === "privat" ? "Private Anlagen" : "Gewerbliche Anlagen und Freiflächen"} · ${m.unit === "Anlagen" ? "Anzahl" : m.unit}</p><div class="ranking-podium">${order.map((r) => `<div class="ranking-contender ${r.id === G.ags ? "is-own" : ""}" data-rank="${r.rank}">${r.href ? `<a href="${escape(r.href)}" target="_blank" rel="noopener">${r.id === G.ags && r.rank <= 3 ? `<img class="ranking-badge" src="/gemeinde/rank-badges/${m.id === "storage" || m.snapshot?.key?.startsWith("speicher") ? "battery" : "roof"}-${r.rank}.webp" alt="Platz ${r.rank} – ${escape(m.title)}" width="96" height="96">` : ``}${escape(r.name)}</a>` : `<span>${r.id === G.ags && r.rank <= 3 ? `<img class="ranking-badge" src="/gemeinde/rank-badges/${m.id === "storage" || m.snapshot?.key?.startsWith("speicher") ? "battery" : "roof"}-${r.rank}.webp" alt="Platz ${r.rank} – ${escape(m.title)}" width="96" height="96">` : ``}${escape(r.name)}</span>`}<strong class="ranking-value" data-value="${r.value}">${fmt(r.value)}</strong><span class="ranking-unit" hidden>${m.unit}</span><div class="ranking-step" style="height:${top[0].value > 0 ? (160 * r.value) / top[0].value : 0}px"></div></div>`).join("")}</div><div class="ranking-own"><span>${escape(G.name)}${me && me.rank <= 3 ? " · auf dem Podest" : ""}</span>${me ? `<strong>Platz ${fmt(me.rank)} <small>von ${fmt(total)}</small></strong><span class="ranking-value">${fmt(me.value)} ${m.unit}</span>` : `<p>${ownIncluded() ? "Keine eigene Platzierung verfügbar." : "Liegt außerhalb der gewählten Größenklasse (" + G.einwohnerLabel + ")."}</p>`}</div><p class="ranking-gap">${me?.rank === 1 ? escape(G.name) + " führt diese Kategorie an." : previous ? `${fmt(previous.value - me.value)} ${m.unit} Abstand zu ${escape(previous.name)} auf Platz ${previous.rank}.` : me && top.length ? `${fmt(top[0].value - me.value)} ${m.unit} Abstand zur Spitze (${escape(top[0].name)}).` : ""}</p>`
             : "<h3>Keine Orte in dieser Vergleichsgruppe</h3><p>Wähle eine andere Ortsgröße oder ein größeres Gebiet.</p>";
       function cancelMotion() {
         stage.getAnimations({ subtree: true }).forEach((a) => a.cancel());
@@ -529,17 +529,19 @@
               : "rank";
         const src =
           !known && !button.disabled
-            ? "rank-mystery.png"
+            ? "rank-mystery.webp"
             : top
               ? "top-" + top[1] + ".svg"
               : rank >= 1 && rank <= 3
-                ? family + "-" + rank + (family === "rank" ? ".svg" : ".png")
+                ? family + "-" + rank + (family === "rank" ? ".svg" : ".webp")
                 : null;
         if (src) {
           position.classList.add("has-badge");
           const badge = document.createElement("img");
           badge.className = "ranking-list-badge";
-          badge.src = "/atlas-design-preview/rank-badges/" + src;
+          // The photographic badges are 256-px WebP copies in /gemeinde/rank-badges
+          // (≈20 KB instead of ≈300 KB); the SVG ones stay where they are.
+          badge.src = (src.endsWith(".webp") ? "/gemeinde/rank-badges/" : "/atlas-design-preview/rank-badges/") + src;
           badge.alt = !known
             ? "Platzierung noch nicht entdeckt"
             : top

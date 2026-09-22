@@ -6,7 +6,8 @@ import { DATA_SOURCES } from "../../lib/data-sources";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import GemeindeSzene from "./GemeindeSzene";
 import GemeindeSkripte from "./GemeindeSkripte";
-import GemeindeRahmen from "./GemeindeRahmen";
+import { GemeindeGeschichten, GemeindeEnergiemonitor } from "./GemeindeWidgets";
+import { paketFuer } from "./paket-teile";
 import { ranglistenDaten } from "./rangliste-daten";
 import GemeindeKopfKacheln, { type KopfRang } from "./GemeindeKopfKacheln";
 import GemeindeBeispiele from "./GemeindeBeispiele";
@@ -139,7 +140,8 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
               <span aria-current="page">{ort.name}</span>
             </nav>
           </div>
-          <GemeindeKopfKacheln ags={ort.ags} name={ort.name} rang={kopfRang(paket)} />
+          <GemeindeKopfKacheln paket={paketFuer("kopf", paket)} name={ort.name} rang={kopfRang(paket)} />
+          <GemeindeSzene plz={ort.plz} />
         </section>
 
         <main className="atlas-content">
@@ -185,13 +187,7 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             </div>
             {paket.stories.length > 0 && (
               <>
-                <GemeindeRahmen
-                  src={`/embed/gemeinde/${ort.ags}/insights`}
-                  title={`Geschichten aus ${ort.name}`}
-                  nachricht="story-preview-layout"
-                  startHoehe={560}
-                  vollbild
-                />
+                <GemeindeGeschichten paket={paketFuer("geschichten", paket)} name={ort.name} />
                 {/* The stories' words, in the page for crawlers and screen
                     readers; the frame above is the interactive reader. */}
                 <details className="atlas-wrap gemeinde-rangliste-text">
@@ -246,12 +242,7 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             </div>
             <div className="atlas-wrap v3-data">
               <div className="v3-permanent-charts">
-                <GemeindeRahmen
-                  src={`/embed/gemeinde/${ort.ags}/monitor`}
-                  title={`Energiedaten für ${ort.name}`}
-                  nachricht="municipal-data-layout"
-                  startHoehe={1400}
-                />
+                <GemeindeEnergiemonitor paket={paketFuer("monitor", paket)} />
               </div>
             </div>
           </section>
@@ -350,7 +341,6 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
         <GemeindeAboBox name={ort.name} ags={ort.ags} />
       </div>
       <script src="/illustrations-motion/solar-illustrations.js" defer />
-      <GemeindeSzene plz={ort.plz} />
       <GemeindeSkripte daten={rangliste} />
     </div>
   );

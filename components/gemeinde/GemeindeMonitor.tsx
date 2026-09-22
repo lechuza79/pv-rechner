@@ -94,8 +94,10 @@ export function CurrentPower({ installedKwp, compact = false }: { installedKwp: 
         else setFailed(true);
         return;
       }
-      source
-        .load()
+      // "Now" comes with the scene's weather, today's curve on its own call
+      // (the scene must not wait for the curve).
+      Promise.all([source.load(), source.tag ? source.tag() : Promise.resolve(null)])
+        .then(([jetzt, tag]: Any[]) => ({ ...jetzt, points: tag?.points ?? jetzt?.points }))
         .then((result: Any) => {
           if (!active) return;
           // "Now" without today's curve would draw an empty dial; say that
@@ -148,6 +150,22 @@ export function CurrentPower({ installedKwp, compact = false }: { installedKwp: 
       </div>
     </WidgetFrame>
   );
+}
+
+/** Mounts its children only once the placeholder comes within reach of the
+ *  viewport — the district map brings ≈170 KB of geometry nobody at the top
+ *  of the page needs. */
+function WennNah({ children, hoehe }: { children: React.ReactNode; hoehe: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [nah, setNah] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => e.isIntersecting && setNah(true), { rootMargin: "800px 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return nah ? <>{children}</> : <div ref={ref} style={{ minHeight: hoehe }} />;
 }
 
 function LocalMap({ paket }: { paket: GemeindePaket }) {
@@ -351,6 +369,9 @@ function AnnualGrowth({ years, stand }: { years: { year: number; count: number }
 export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    // Only in a frame: there the body is ours, and the parent needs the
+    // height. Inline on the page the body belongs to the page.
+    if (window.parent === window) return;
     // Shared tooltip portals live on body, outside the embedded theme root.
     const properties = ["--color-bg", "--color-text-primary", "--color-text-secondary", "--color-text-muted", "--color-border", "--font-text", "--font-size-small"];
     const computed = getComputedStyle(root.current!);
@@ -421,77 +442,48 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
           </section>
         );
       })}
-      <LocalMap paket={paket} />
+      {(paket.district.districtPeers as Any[]).length >= 2 && (
+        <WennNah hoehe={640}>
+          <LocalMap paket={paket} />
+        </WennNah>
+      )}
     </div>
   );
 }
 
 /**
  * The compact card in the hero (port of HeroWidgetPreview): one of three
- * monitor readings, switched by the page through postMessage. A click opens
- * the full monitor further down the page.
+ * monitor readings, chosen by the hero stack. Rendered inline on the page,
+ * not in a frame, so it shows as soon as the page is interactive.
  */
-export function GemeindeKopfMonitor({ paket }: { paket: GemeindePaket }) {
+export function GemeindeKopfMonitor({ paket, widget, paused }: { paket: GemeindePaket; widget: string; paused: boolean }) {
   const charts = paket.charts as Any;
-  const [widget, setWidget] = useState(() => {
-    const start = typeof location === "undefined" ? null : new URLSearchParams(location.search).get("widget");
-    return ["feed-in-value", "live", "radial"].includes(start ?? "") ? (start as string) : "feed-in-value";
-  });
-  const [paused, setPaused] = useState(false);
-  useEffect(() => {
-    const receive = (event: MessageEvent) => {
-      if (event.origin === location.origin && event.source === parent && event.data?.type === "atlas-hero-widget" && ["feed-in-value", "live", "radial"].includes(event.data.widget))
-        setWidget(event.data.widget);
-    };
-    window.addEventListener("message", receive);
-    return () => window.removeEventListener("message", receive);
-  }, []);
   const item = (charts?.charts ?? []).find((c: Any) => c.template === widget);
   const installedKwp = ((paket.register?.chartMix as Any)?.values ?? []).reduce((sum: number, row: Any) => sum + row.value, 0);
-  const period = item?.story.solarMonth?.month ?? item?.story.period ?? "";
+  // The feed-in story names its month only as text ("Aug. 2026"); both cards
+  // show the last complete month, which the solar curve carries as a date.
+  // (The prototype typed "2026-08" in here.)
+  const radial = (charts?.charts ?? []).find((c: Any) => c.template === "radial");
+  const period = item?.story.solarMonth?.month ?? radial?.story.solarMonth?.month ?? "";
   const month = /^\d{4}-\d{2}/.test(period)
     ? new Intl.DateTimeFormat("de-DE", { month: "long", timeZone: "UTC" }).format(new Date(period.slice(0, 7) + "-15T12:00:00Z"))
     : "";
-  useEffect(() => {
-    let active = true;
-    Promise.all([document.fonts.ready, ...Array.from(document.images).map((image) => image.decode().catch(() => {}))]).then(() => {
-      if (active) parent.postMessage({ type: "atlas-hero-ready" }, location.origin);
-    });
-    return () => {
-      active = false;
-    };
-  }, [widget]);
   return (
-    <a
-      href="#atlas-data"
-      target="_parent"
-      onClick={(event) => {
-        event.preventDefault();
-        parent.postMessage({ type: "atlas-hero-open-monitor" }, location.origin);
-      }}
-      aria-label="Zum Energiemonitor"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
-      className="hero-monitor-link"
-    >
-      <div className={`${foundation.foundation} municipal-data sc-dashboard monitor-hero`} data-story-scheme="dark">
-        {widget === "live" ? (
-          installedKwp > 0 ? <CurrentPower installedKwp={installedKwp} compact /> : null
-        ) : item ? (
-          <article className="hero-story">
-            <h3>{(widget === "radial" ? "Solarerzeugung " : "Einspeisevergütung ") + month}</h3>
-            <div className="hero-story-visual">
-              {item.story.solarMonth ? (
-                <MonitorMonthlySolarChart data={item.story.solarMonth} compact autoPlay paused={paused} />
-              ) : (
-                <MunicipalChart story={item.story as StoryConcept} compact />
-              )}
-            </div>
-          </article>
-        ) : null}
-      </div>
-    </a>
+    <div className={`${foundation.foundation} municipal-data sc-dashboard monitor-hero`} data-story-scheme="dark">
+      {widget === "live" ? (
+        installedKwp > 0 ? <CurrentPower installedKwp={installedKwp} compact /> : null
+      ) : item ? (
+        <article className="hero-story">
+          <h3>{(widget === "radial" ? "Solarerzeugung " : "Einspeisevergütung ") + month}</h3>
+          <div className="hero-story-visual">
+            {item.story.solarMonth ? (
+              <MonitorMonthlySolarChart data={item.story.solarMonth} compact autoPlay paused={paused} />
+            ) : (
+              <MunicipalChart story={item.story as StoryConcept} compact />
+            )}
+          </div>
+        </article>
+      ) : null}
+    </div>
   );
 }

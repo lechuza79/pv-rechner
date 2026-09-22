@@ -11,7 +11,8 @@ function badge(row:RankMonthRow){
  if(top)return `/atlas-design-preview/rank-badges/top-${top}.svg`;
  if(row.rank>3)return null;
  const theme=/Balkon/i.test(row.label)?'balcony':/Speicher/i.test(row.label)?'battery':/privat|Dach/i.test(row.label)?'roof':null;
- return theme?`/atlas-design-preview/rank-badges/${theme}-${row.rank}-small.png`:null;
+ // 256-px WebP (≈20 KB) instead of the 512-px PNG (≈300 KB): shown at card size.
+ return theme?`/gemeinde/rank-badges/${theme}-${row.rank}-small.webp`:null;
 }
 function movement(row:RankMonthRow){
  if(row.state==='initial')return 'Erstmals erfasst';

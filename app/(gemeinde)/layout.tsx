@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { getCssVariables } from "../../lib/theme";
+import { widgetBasisCss } from "../../lib/widget-basis-css";
 
 /**
  * Root layout of the new municipality page (approved design, 09/2026).
@@ -54,6 +55,9 @@ export default function GemeindeLayout({ children }: { children: React.ReactNode
             side (subscription dialog, footer logo). Variables only — no
             global rules, so the design's own stylesheets stay in charge. */}
         <style dangerouslySetInnerHTML={{ __html: getCssVariables() }} />
+        {/* The widget tokens for the story strip and monitor, which render
+            inline under this class (same source as the embed layout). */}
+        <style dangerouslySetInnerHTML={{ __html: widgetBasisCss(".gemeinde-widgets", ".gemeinde-widgets") }} />
         {STYLESHEETS.map((href) => (
           // eslint-disable-next-line @next/next/no-css-tags
           <link key={href} rel="stylesheet" href={href} precedence="default" />
