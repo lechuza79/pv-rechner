@@ -46955,5 +46955,267 @@
         "evidenceUrl": "https://www.amt-suedtondern.de/"
       }
     ]
+  },
+  {
+    "regionId": "01053025",
+    "name": "Duvensee",
+    "checkedAt": "2026-09-22T16:40:00Z",
+    "recheckAt": "2026-12-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Duvensee gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Duvensee auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Eigene Website duvensee.de gelesen (22.09.2026): Startseite, „Aktuelles“ und „Aktuelles 2025“ — kein Förderhinweis",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/duvensee/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.duvensee.de/",
+        "finding": "Eigene Website duvensee.de gelesen (22.09.2026): Startseite, „Aktuelles“ und „Aktuelles 2025“ — kein Förderhinweis"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01053039",
+    "name": "Groß Boden",
+    "checkedAt": "2026-09-22T16:40:00Z",
+    "recheckAt": "2026-12-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Boden gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Groß Boden auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Gemeindeseite grossboden.amt-sn.de und „Aktuelles“ gelesen (22.09.2026) — kein Förderhinweis; einziger Suchtreffer ein örtlicher Elektrobetrieb im Firmenverzeichnis",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/gross-boden/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://grossboden.amt-sn.de/gemeinde/aktuelles/",
+        "finding": "Gemeindeseite grossboden.amt-sn.de und „Aktuelles“ gelesen (22.09.2026) — kein Förderhinweis; einziger Suchtreffer ein örtlicher Elektrobetrieb im Firmenverzeichnis"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01053081",
+    "name": "Lankau",
+    "checkedAt": "2026-09-22T16:40:00Z",
+    "recheckAt": "2026-12-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lankau gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Lankau auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Eigene Website gemeindelankau.de gelesen (22.09.2026): Startseite, Aktuelles, Pinnwand, „Was erledige ich wo“ — kein Förderhinweis",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/lankau/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.gemeindelankau.de/",
+        "finding": "Eigene Website gemeindelankau.de gelesen (22.09.2026): Startseite, Aktuelles, Pinnwand, „Was erledige ich wo“ — kein Förderhinweis"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01053086",
+    "name": "Lüchow",
+    "checkedAt": "2026-09-22T16:40:00Z",
+    "recheckAt": "2026-12-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lüchow gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Lüchow auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Keine eigene Website verlinkt; Gemeindeseite auf amt-sn.de einzige Quelle",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/luechow/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01053112",
+    "name": "Schönberg",
+    "checkedAt": "2026-09-22T16:40:00Z",
+    "recheckAt": "2026-11-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schönberg gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“. Der 2025 eingerichtete Energieausschuss der Gemeinde ist ein Anlass für eine frühere Wiedervorlage.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Schönberg auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Eigene Website schoenberg-sn.de gelesen (22.09.2026): Startseite, Förderprojekte (nur Radweg „Stadt und Land“ und Aktion Niederungen/Wasserrückhalt), FAQ, Gemeindebrief, Energieausschuss (seit 19.03.2025, Aufgabe u. a. „Förderung und Nutzung regenerativer Energien“ — kein Bürgerzuschuss beschlossen oder genannt)",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/schoenberg/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.schoenberg-sn.de/gemeinde/gemeindevertretung/energieausschuss/",
+        "finding": "Eigene Website schoenberg-sn.de gelesen (22.09.2026): Startseite, Förderprojekte (nur Radweg „Stadt und Land“ und Aktion Niederungen/Wasserrückhalt), FAQ, Gemeindebrief, Energieausschuss (seit 19.03.2025, Aufgabe u. a. „Förderung und Nutzung regenerativer Energien“ — kein Bürgerzuschuss beschlossen oder genannt)"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01053122",
+    "name": "Steinhorst",
+    "checkedAt": "2026-09-22T16:40:00Z",
+    "recheckAt": "2026-12-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Steinhorst gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Steinhorst auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Keine eigene Website verlinkt; Gemeindeseite auf amt-sn.de einzige Quelle",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/steinhorst/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
+      }
+    ]
   }
 ]
