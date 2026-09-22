@@ -27,7 +27,7 @@
  *   npx tsx --conditions=react-server scripts/gemeinde-paket.ts --alle
  */
 import { loadEnvConfig } from "@next/env";
-import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { buildStoryPool } from "../lib/story-pool";
 import { conceptFromFinding } from "../lib/story-finding-concept";
@@ -46,7 +46,7 @@ import { era5StoryWeather } from "../lib/story-weather-provider";
 import { solarMonth } from "../lib/story-monthly-solar";
 import { energyYear } from "../lib/story-energy-year";
 import { unitMonthValue } from "../lib/story-unit-value";
-import type { DiscoveryReport } from "../lib/story-discovery";
+import { SOLAR_SEGMENT_NAMES, type DiscoveryReport } from "../lib/story-discovery";
 import { GEMEINDE_PAKET_VERSION, type GemeindePaket, type PaketLuecke } from "../lib/gemeinde-paket";
 
 loadEnvConfig(process.cwd());
@@ -55,10 +55,12 @@ const CACHE = "scripts/.cache";
 const EDITION = arg("stand") ?? "2026-09-10";
 let RANG_STAND = "";
 const OUT = path.join(CACHE, "gemeinde-pakete", EDITION);
-/** Last complete calendar month of the weather archive and the register edition. */
-const LETZTER_MONAT = arg("monat") ?? "2026-08";
+/** Periods follow the edition: the last complete month before it, and the
+ *  three complete calendar years before its year (overridable for tests). */
+const [EY, EM] = EDITION.split("-").map(Number);
+const LETZTER_MONAT = arg("monat") ?? new Date(Date.UTC(EY, EM - 2, 15)).toISOString().slice(0, 7);
 const MONATE = Number(arg("monate") ?? 20);
-const JAHRE = (arg("jahre") ?? "2025,2024,2023").split(",").map(Number);
+const JAHRE = (arg("jahre") ?? `${EY - 1},${EY - 2},${EY - 3}`).split(",").map(Number);
 
 const read = (file: string) => JSON.parse(readFileSync(file, "utf8"));
 const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -147,8 +149,13 @@ async function buildPackage(
   // ── Charts: prepared availability + municipal catalogue (prepare-charts.ts) ──
   // Stories and charts read the SAME report: ranking month appended, prepared
   // month/year/value data attached (the prototype's bundled report had both).
-  const withPrepared = await attachPreparedStories(report).catch(() => null);
-  if (!withPrepared?.prepared) missing.push({ bereich: "diagramme", grund: "Vorbereitete Monats- und Jahreswerte fehlen." });
+  let withPrepared: DiscoveryReport | null = null;
+  try {
+    withPrepared = await attachPreparedStories(report);
+  } catch (e) {
+    missing.push({ bereich: "diagramme", grund: `Vorbereitete Werte nicht lesbar: ${(e as Error).message}` });
+  }
+  if (withPrepared && !withPrepared.prepared) missing.push({ bereich: "diagramme", grund: "Vorbereitete Monats- und Jahreswerte fehlen." });
   const charts = withPrepared ? municipalChartsFromReport(withPrepared) : null;
 
   // ── Stories: selection unchanged from the prototype (stories.ts) ──
@@ -163,6 +170,7 @@ async function buildPackage(
       seen.add(type);
       return true;
     });
+  if (!concepts.length) missing.push({ bereich: "geschichten", grund: "Keine Geschichte mit einer freigegebenen Bildform." });
   const compared = compareRanks(rankMonth, []);
   const byKey = new Map(compared.map((row) => [row.key, row]));
   const stories = concepts.map((story) => {
@@ -189,16 +197,22 @@ async function buildPackage(
     const reportPower = mix?.values?.reduce((n: number, r: { value: number }) => n + r.value, 0) ?? NaN;
     const storageCount = stock?.evidence.find((r) => r.unit === "Einheiten")?.value;
     if (own.sums.alle.count !== reportCount || Math.abs(own.sums.alle.kwp - reportPower) > 0.1 || (storageCount != null && own.batteryCount !== storageCount))
-      registerAbweichung = `Atlas ${own.sums.alle.count} Anlagen / ${own.sums.alle.kwp.toFixed(1)} kWp / ${own.batteryCount} Speicher, Bericht ${reportCount} / ${Number(reportPower).toFixed(1)} / ${storageCount ?? "—"}`;
+      registerAbweichung = `Atlas ${own.sums.alle.count} Anlagen / ${own.sums.alle.kwp.toFixed(1)} kWp / ${own.batteryCount} Speicher, Bericht ${reportCount} / ${Number.isFinite(reportPower) ? reportPower.toFixed(1) : "ohne Anteilsdiagramm"} / ${storageCount ?? "—"}`;
   } else missing.push({ bereich: "register", grund: "Gemeinde ohne Einwohner oder ohne Speicherzeile im Atlas." });
 
   // The same size class the rankings use (e.g. 5.000–19.999 inhabitants).
   const size = own?.population ? klasseVon(own.population) : null;
   const populationMin = size?.min ?? null;
   const populationMaxExclusive = size?.max ?? null;
-  const peersInClass = district.peers.filter(
+  const inClass = district.peers.filter(
     (r) => populationMin != null && (r.population ?? 0) >= populationMin && (populationMaxExclusive == null || (r.population ?? 0) < populationMaxExclusive),
   );
+  // Same floor as the rankings (at least three towns): a group of one or two
+  // makes every town "Platz 1" — a podium out of nothing. Kreisfreie Städte and
+  // Stadtstaaten are their own district, so they never have a district group.
+  const peersInClass = inClass.length >= 3 ? inClass : [];
+  if (own && !peersInClass.length)
+    missing.push({ bereich: "kreisvergleich", grund: inClass.length ? `Nur ${inClass.length} ${inClass.length === 1 ? "Ort" : "Orte"} dieser Größe im Kreis.` : "Kein Vergleich innerhalb des Kreises möglich." });
 
   // ── Monitor history: 25 month-end cohorts (prepare-monitor-history.mjs) ──
   const cityFile = `${CACHE}/bnetza/story-history-${EDITION}/cities/${ags}.json`;
@@ -216,14 +230,20 @@ async function buildPackage(
     if (!reconciles) missing.push({ bereich: "verlauf", grund: "Tagesverlauf und Bestand des Berichts stimmen nicht überein." });
     else {
       const [year, month] = EDITION.split("-").map(Number);
+      const segments = ["gebaeude", "steckersolar", "freiflaeche", "sonstige"].filter((s) => daily.some((r) => r.segment === s));
+      const unknown = [...new Set(daily.map((r) => r.segment))].filter((s) => !SOLAR_SEGMENT_NAMES[s]);
+      if (unknown.length) throw new Error(`${ags}: unbekannte Solarsegmente ${unknown.join(", ")}`);
       const observations = Array.from({ length: 25 }, (_, index) => {
         const end = new Date(Date.UTC(year, month - 1 - index, 0)).toISOString().slice(0, 10);
         const systems = daily.filter((row) => row.day <= end);
         const stores = batteries.filter((row) => row.month <= end.slice(0, 7));
         return {
           end,
-          solarCounts: Object.fromEntries(["gebaeude", "steckersolar"].map((s) => [s, sum(systems.filter((r) => r.segment === s), "count")])),
-          solarMix: ["gebaeude", "steckersolar"].map((s) => ({ label: s === "gebaeude" ? "Gebäudeanlagen" : "Balkonkraftwerke", value: sum(systems.filter((r) => r.segment === s), "kwp") })),
+          // Every solar segment the town has, so the parts add up to the total
+          // (the prototype listed buildings and balconies only — in towns with
+          // ground-mounted systems the ring then showed a fraction of the stock).
+          solarCounts: Object.fromEntries(segments.map((s) => [s, sum(systems.filter((r) => r.segment === s), "count")])),
+          solarMix: segments.map((s) => ({ label: SOLAR_SEGMENT_NAMES[s], value: sum(systems.filter((r) => r.segment === s), "kwp") })),
           solarCount: sum(systems, "count"),
           solarKwp: sum(systems, "kwp"),
           solarAdditions: sum(systems.filter((r) => r.day.slice(0, 4) === end.slice(0, 4)), "count"),
@@ -266,7 +286,8 @@ async function buildPackage(
           const weather = era5StoryWeather({ ...position, startDate, endDate, wind: false });
           const solar = { ...solarMonth(weather.weather as never, daily, month, baseline.sourceDate, weather.retrievedAt, weather.sourceUrl), town: report.name };
           let value: ReturnType<typeof unitMonthValue> extends infer V ? Omit<V & object, "rows"> | null : never = null;
-          if (inventory && original) {
+          if (!inventory || !original) missing.push({ bereich: "wert", zeitraum: month, grund: !inventory ? "Anlagenbestand für die Bewertung fehlt." : "Gespeicherte Bewertungsannahmen fehlen." });
+          else {
             try {
               const { rows: _rows, ...v } = unitMonthValue(inventory.units, weather.weather as never, month, original.privateSelfConsumption);
               void _rows;
@@ -282,19 +303,15 @@ async function buildPackage(
           missing.push({ bereich: "monat", zeitraum: month, grund: (e as Error).message });
         }
       }
-      // Wind stock at a year end: the Atlas series by commissioning year, summed —
-      // the same active-register method as wind_kwp_ly behind the prepared year.
-      // Guard: the series must reproduce the prepared year's stock exactly, or
-      // no other year is offered (different editions, different answer).
-      const windSeries = await db<{ year: number; kwp: number }[]>("rpc/mastr_region_series", { p_prefix: ags, p_traeger: ["wind"] });
-      const windBis = (y: number) => windSeries.filter((r) => r.year <= y).reduce((n, r) => n + Number(r.kwp), 0);
-      const windPasst = baseline.annual?.windKw != null && Math.abs(windBis(baseline.annual.year) - baseline.annual.windKw) < 0.01;
       for (const year of JAHRE) {
         try {
-          const baseWind = baseline.annual?.windKw ?? null;
-          if (baseWind == null) throw new Error("Kein Jahresprofil in der Grundlage.");
-          if (year !== baseline.annual.year && !windPasst) throw new Error("Windbestand der Jahresreihe passt nicht zum vorbereiteten Jahr.");
-          const windKw = year === baseline.annual.year ? baseWind : windBis(year);
+          const windKw = baseline.annual?.windKw ?? null;
+          if (windKw == null) throw new Error("Kein Jahresprofil in der Grundlage.");
+          // Only the prepared year knows its wind stock. Summing today's active
+          // turbines by commissioning year leaves out every turbine removed
+          // since (repowering) and understates earlier years — the prototype
+          // refused for that reason, and so does this run (review 22.09.2026).
+          if (windKw !== 0 && year !== baseline.annual.year) throw new Error("Windbestand dieses Jahres ist nicht belegt (abgebaute Anlagen fehlen im heutigen Register).");
           const weather = era5StoryWeather({ ...position, startDate: `${year}-01-01`, endDate: `${year}-12-31`, wind: true });
           const solarKwp = daily.filter((row) => row.day < `${year + 1}-01-01`).reduce((s, row) => s + row.kwp, 0);
           result.annual.push(energyYear(weather.weather as never, { town: report.name, year, solarKwp, windKw, sourceDate: baseline.sourceDate, retrievedAt: weather.retrievedAt, sourceUrl: weather.sourceUrl }));
@@ -337,7 +354,7 @@ async function buildPackage(
     kreis: { ags: kreis, name: districtName },
     registerStand: EDITION,
     rangStand: RANG_STAND,
-    atlasStand: own ? (district.regions[0]?.population_as_of ?? null) : null,
+    einwohnerStand: own?.population_as_of ?? null,
     gebautAm: new Date().toISOString(),
     stories,
     charts,
@@ -348,6 +365,17 @@ async function buildPackage(
     rankings,
     missing,
   };
+}
+
+async function aktuelleGemeinden(): Promise<string[]> {
+  const ids: string[] = [];
+  for (let from = 0; ; from += 1000) {
+    const page = await db<{ region_id: string }[]>(`mastr_regions?select=region_id&level=eq.gemeinde&order=region_id.asc&offset=${from}&limit=1000`);
+    ids.push(...page.map((r) => r.region_id).filter((id) => /^\d{8}$/.test(id)));
+    if (page.length < 1000) break;
+  }
+  if (ids.length < 10_000) throw new Error(`Gemeindeliste unvollständig (${ids.length})`);
+  return ids;
 }
 
 function atomic(file: string, data: unknown) {
@@ -370,10 +398,17 @@ async function main() {
   const regions = await db<Region[]>("mastr_regions?select=region_id,name,slug&region_id=not.like.________&limit=1000");
   const slugs = Object.fromEntries(regions.map((r) => [r.region_id, r.slug]));
   const regionNames = new Map(regions.map((r) => [r.region_id, r.name]));
-  const ids = arg("ags")?.split(",") ?? (process.argv.includes("--alle")
-    ? readdirSync(`${CACHE}/story-discovery`).filter((f) => /^\d{8}\.json$/.test(f)).map((f) => f.slice(0, 8)).sort()
-    : []);
+  // --alle: the CURRENT municipalities of the Atlas, never the file listing of
+  // the discovery cache — that also holds reports under keys that no longer
+  // exist (mergers, 304 measured) and would produce empty duplicates of towns.
+  const ids: string[] = arg("ags")?.split(",") ?? (process.argv.includes("--alle") ? await aktuelleGemeinden() : []);
   if (!ids.length) throw new Error("--ags=<schlüssel,…> oder --alle angeben");
+  // --teil=i/n: this process takes every n-th town, so n runs share the work.
+  const teil = arg("teil")?.match(/^(\d+)\/(\d+)$/);
+  if (teil) {
+    const [i, n] = [Number(teil[1]), Number(teil[2])];
+    ids.splice(0, ids.length, ...ids.filter((_, k) => k % n === i));
+  }
   const skip = process.argv.includes("--neu") ? false : true;
   const ctx = { stats, storageRows: storage.rows, kreise: new Map(), slugs, regionNames };
   const summary = { edition: EDITION, rangStand: RANG_STAND, gebaut: 0, uebersprungen: 0, fehler: [] as { ags: string; grund: string }[], luecken: {} as Record<string, number>, abweichungen: 0 };
@@ -393,7 +428,7 @@ async function main() {
       console.error(`${ags}: ${(e as Error).message}`);
     }
   }
-  atomic(path.join(OUT, "_lauf.json"), { ...summary, beendet: new Date().toISOString() });
+  atomic(path.join(OUT, `_lauf${teil ? `-${teil[1]}` : ""}.json`), { ...summary, beendet: new Date().toISOString() });
   console.log(JSON.stringify({ ...summary, fehler: summary.fehler.length }, null, 1));
 }
 

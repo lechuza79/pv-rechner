@@ -18,10 +18,10 @@ import type { EnergyYear } from "./story-energy-year";
 import type { MonthlyRank } from "./story-ranking-month";
 
 /** Bump when the shape changes; the page refuses packages of another version. */
-export const GEMEINDE_PAKET_VERSION = 1;
+export const GEMEINDE_PAKET_VERSION = 2;
 
 export type PaketLuecke = {
-  bereich: "diagramme" | "register" | "verlauf" | "zeitraeume" | "monat" | "wert" | "jahr" | "ranglisten";
+  bereich: "diagramme" | "geschichten" | "register" | "kreisvergleich" | "verlauf" | "zeitraeume" | "monat" | "wert" | "jahr" | "ranglisten";
   /** Month (YYYY-MM) or year for period-bound gaps. */
   zeitraum?: string;
   grund: string;
@@ -75,7 +75,8 @@ export type GemeindePaket = {
   kreis: { ags: string; name: string };
   registerStand: string;
   rangStand: string;
-  atlasStand: string | null;
+  /** Date of the population figures (per-resident values, size classes). */
+  einwohnerStand: string | null;
   gebautAm: string;
   /** Story concepts, selected exactly as the reviewed prototype selects them. */
   stories: unknown[];
@@ -90,6 +91,7 @@ export type GemeindePaket = {
     /** Set when the Atlas sums and the discovery report disagree (different editions). */
     abweichung: string | null;
   } | null;
+  /** `peers`: towns of the same size class in the district, at least three — else empty and listed in `missing`. */
   district: { populationMin: number | null; populationMaxExclusive: number | null; peers: DistrictPeer[]; districtPeers: DistrictPeer[] };
   monitorHistory: { method: string; observations: MonitorObservation[] } | null;
   monitorPeriods: {
