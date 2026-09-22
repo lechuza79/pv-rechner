@@ -68,6 +68,10 @@ export const SCHRIFT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helve
  * Kopf, Inhaltskarte, Fuß — der Aufbau aus dem Schwesterprojekt, mit unseren
  * Farben.
  *
+ * THE LOGO FILE NAME CARRIES A DATE: mail clients (Gmail's image proxy)
+ * cache an image by its address, so a replaced logo.png kept showing the old
+ * one in every inbox. A new look gets a new file name.
+ *
  * DAS LOGO IST EIN BILD MIT TEXT DAHINTER. Viele Postfächer laden Bilder erst
  * auf Klick; steht dort nur ein Bild, ist der Kopf des Briefes bis dahin leer.
  * Der Alternativtext trägt deshalb den Markennamen, und die Größe steht als
@@ -110,7 +114,7 @@ export function huelle(o: {
 
     <div style="text-align:center;padding-bottom:22px">
       <a href="${SITE}" style="text-decoration:none;color:${C.text};font-size:${T.marke};font-weight:700">
-        <img src="${SITE}/logo.png" alt="Solar Check" width="132" height="31" style="display:block;margin:0 auto;border:0;outline:none;max-width:132px;height:auto">
+        <img src="${SITE}/logo-mail-2026-09.png" alt="Solar Check" width="132" height="31" style="display:block;margin:0 auto;border:0;outline:none;max-width:132px;height:auto">
       </a>
     </div>
 
