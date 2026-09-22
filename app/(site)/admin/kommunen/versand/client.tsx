@@ -6,6 +6,7 @@ import { adminTabelle, adminTh, adminTd, adminZeile } from "../../../../../lib/a
 import type { Auswertung, Versandtag } from "../../../../../lib/kommunen-auswertung";
 import AdminSeitenkopf from "../../../../../components/admin/AdminSeitenkopf";
 import InfoTooltip from "../../../../../components/InfoTooltip";
+import { DatenTabelle } from "../../../../../components/admin/DatenTabelle";
 import { KANAELE, KANAL_TEXT, quoteText, type Bilanz, type Veroeffentlichung } from "../../../../../lib/kommunen-veroeffentlichung";
 
 // Auswertung des Kommunen-Outreach.
@@ -220,32 +221,49 @@ function VeroeffentlichungsBilanz({ daten }: { daten: Veroeffentlichungen }) {
         <br />
         {daten.jeSchub.map((s) => `${s.kampagne}: ${s.gemeinden} von ${s.angeschrieben} (${quoteText(s.angeschrieben ? s.gemeinden / s.angeschrieben : 0)})`).join(" · ")}
       </p>
-      <table style={{ ...adminTabelle, maxWidth: 900 }}>
-        <thead>
-          <tr>
-            <th style={adminTh}>Gemeinde</th>
-            <th style={adminTh}>Wo</th>
-            <th style={adminTh}>Link</th>
-            <th style={adminTh}>belegt ab</th>
-            <th style={adminTh}>Beitrag</th>
-          </tr>
-        </thead>
-        <tbody>
-          {daten.liste.map((p) => (
-            <tr key={p.url} style={adminZeile}>
-              <td style={{ ...adminTd, whiteSpace: "nowrap" }}>{daten.namen[p.region_id] ?? p.region_id}</td>
-              <td style={{ ...adminTd, color: v("--color-text-muted") }}>{KANAL_TEXT[p.kanal]}</td>
-              <td style={adminTd}>{p.mit_link ? (p.noch_online ? "ja" : "ja, Seite weg") : "nein"}</td>
-              <td style={{ ...adminTd, whiteSpace: "nowrap" }}>{p.gesehen_ab ? datum(p.gesehen_ab) : "–"}</td>
-              <td style={{ ...adminTd, maxWidth: 320, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                <a href={p.url} target="_blank" rel="noopener" style={{ color: v("--color-accent") }}>
-                  {p.url.replace(/^https?:\/\/(www\.)?/, "")}
-                </a>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DatenTabelle<Veroeffentlichung>
+        zeilen={daten.liste}
+        schluessel={(p) => `${p.region_id} ${p.url}`}
+        nummeriert
+        minBreite={640}
+        startSortierung={[{ key: "gemeinde", richtung: "auf" }]}
+        spalten={[
+          {
+            key: "gemeinde",
+            kopf: "Gemeinde",
+            zelle: (p) => daten.namen[p.region_id] ?? p.region_id,
+            sortWert: (p) => daten.namen[p.region_id] ?? p.region_id,
+          },
+          { key: "wo", kopf: "Wo", zelle: (p) => KANAL_TEXT[p.kanal], sortWert: (p) => KANAL_TEXT[p.kanal] },
+          {
+            key: "link",
+            kopf: "Link",
+            zelle: (p) => (p.mit_link ? (p.noch_online ? "ja" : "ja, Seite weg") : "nein"),
+            sortWert: (p) => (p.mit_link ? (p.noch_online ? 0 : 1) : 2),
+          },
+          {
+            key: "belegt",
+            kopf: "belegt ab",
+            zelle: (p) => (p.gesehen_ab ? datum(p.gesehen_ab) : "–"),
+            sortWert: (p) => p.gesehen_ab ?? "",
+          },
+          {
+            key: "beitrag",
+            kopf: "Beitrag",
+            zelle: (p) => (
+              <a
+                href={p.url}
+                target="_blank"
+                rel="noopener"
+                style={{ color: v("--color-accent"), display: "inline-block", maxWidth: 320, overflow: "hidden", textOverflow: "ellipsis", verticalAlign: "bottom" }}
+              >
+                {p.url.replace(/^https?:\/\/(www\.)?/, "")}
+              </a>
+            ),
+            sortWert: (p) => p.url.replace(/^https?:\/\/(www\.)?/, ""),
+          },
+        ]}
+      />
     </section>
   );
 }
