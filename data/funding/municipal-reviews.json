@@ -42325,5 +42325,42 @@
         "evidenceUrl": "https://goedenstorf.salzhausen.de/buerger/klimaschutz/foerderung-von-stecker-solar-geraeten"
       }
     ]
+  },
+  {
+    "regionId": "01053009",
+    "name": "Berkenthin",
+    "checkedAt": "2026-09-22T00:35:00Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Berkenthin förderte Balkonkraftwerke von April 2023 bis Juni 2024 mit bis zu 200 € je Wohneinheit und 2025 nach neuer Richtlinie mit 50 %, höchstens 200 € (76 Anlagen); laut Mitteilung vom 04.05.2026 ist das Programm eingestellt. Aufgenommen als beendetes Programm berkenthin-balkon-solar ohne Rechenwert. Kein Zuschuss für Dach-PV, Speicher oder Wärmepumpen (Beiträge zu Wärmeversorgung und Solarstrom sind Informationsveranstaltungen).",
+    "searches": [
+      "Seitensuche berkenthin.de nach balkon, photovoltaik, wärmepumpe, speicher, zuschuss, förderung (22.09.2026)",
+      "Beiträge 29.03.2023, 25.10.2023, 23.01.2024, 07.08.2024, 29.12.2024, 04.05.2026 und 16.09.2026 im Volltext gelesen; Richtlinie 12/2024 gelesen",
+      "Adversarialer Prüfer (22.09.2026): Status, Daten und Bedingungen bestätigt; Beschriftung der Sätze nach Runden präzisiert",
+      "Gemeindeschlüssel 01053009 gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://berkenthin.de/erfolgreiches-foerderprogramm-fuer-balkonsolaranlagen-in-berkenthin-beitrag-zum-klimaschutz-sichtbar/",
+        "finding": "04.05.2026: 76 Anlagen seit 2023 bezuschusst; „hat die Gemeinde das Programm eingestellt“."
+      },
+      {
+        "url": "https://berkenthin.de/wp-content/uploads/2024/12/12-24-Richtlinie-der-Gemeinde-Berkenthin-zum-Foerderprogramm-Balkonkraftwerke1-–-Kopie.pdf",
+        "finding": "Richtlinie 12/2024: „mit 50 %, max. 200,00 € je Wohneinheit und Anlage“, bis 800 W, Installation ab 01.01.2025, fünf Jahre Eigennutzung."
+      },
+      {
+        "url": "https://berkenthin.de/berkenthin-verlaengert-balkon-solar-foerderung/",
+        "finding": "23.01.2024: 200 € je Balkonanlage, Antragstellung bis 30.6.2024."
+      }
+    ],
+    "sources": [
+      {
+        "url": "berkenthin.de/berkenthin-erreicht-platz-1-bei-balkonkraftwerken-im-kreis-herzogtum-lauenburg",
+        "disposition": "reviewed",
+        "reason": "Rangmeldung vom 16.09.2026 nennt die gemeindliche Balkonförderung; Programm laut Mitteilung vom 04.05.2026 eingestellt, aufgenommen als berkenthin-balkon-solar.",
+        "evidenceUrl": "https://berkenthin.de/erfolgreiches-foerderprogramm-fuer-balkonsolaranlagen-in-berkenthin-beitrag-zum-klimaschutz-sichtbar/"
+      }
+    ]
   }
 ]

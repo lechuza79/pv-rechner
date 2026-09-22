@@ -433,6 +433,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 22 Sep 2026: closed; dwelling-unit limit, dealer purchase and the
   // exclusion after a municipal grant have no test form.
   "rhein-kreis-neuss-stecker-pv",
+  // Added 22 Sep 2026: closed; five-year own use and the DGS listing of the
+  // inverter have no test form.
+  "berkenthin-balkon-solar",
   "altenkirchen-balkonkraftwerke",
   "altenkirchen-solarspeicher",
   "cochem-zell-solarstromspeicher",

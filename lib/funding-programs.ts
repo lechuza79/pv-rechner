@@ -7029,6 +7029,37 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // Added 22.09.2026 as a closed municipal balcony programme. Council decision
+  // 20.02.2023, applications from April 2023 (post 29.03.2023: "bis zu 200,00 €
+  // je Wohneinheit"), extended in January 2024 to applications until
+  // 30.06.2024; new guideline 12/2024 read in full: "mit 50 %, max. 200,00 €
+  // je Wohneinheit und Anlage", up to 800 W, installation from 01.01.2025,
+  // five-year own use. Post 04.05.2026: 76 systems funded since 2023, "hat die
+  // Gemeinde das Programm eingestellt". Guideline 12/2024 Nr. 7 runs to
+  // 31.12.2025; the day applications actually stopped is not documented, so no
+  // endetIso (adversarial reviewer).
+  // No calc fields (closed).
+  "berkenthin-balkon-solar": {
+    id: "berkenthin-balkon-solar", name: "Förderung von PV-Balkonanlagen",
+    traeger: "Gemeinde Berkenthin", level: "kommune", region: "Berkenthin",
+    bundesland: "Schleswig-Holstein", agsCode: "01053009",
+    url: "https://berkenthin.de/erfolgreiches-foerderprogramm-fuer-balkonsolaranlagen-in-berkenthin-beitrag-zum-klimaschutz-sichtbar/",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-04", beschlossenIso: "2023-02-20",
+    eligibility: ["privat"],
+    coveredCosts: "Material- und Montagekosten der Anlage",
+    maxFoerderung: "200 € je Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk bis 800 W (Richtlinie 2025)", value: "50 % der Kosten, höchstens 200 € — Programm beendet" }],
+    conditions: [
+      "Die Gemeinde hat das Programm eingestellt (Mitteilung vom 4. Mai 2026); seit 2023 wurden 76 Anlagen bezuschusst",
+      "2023 und bis Juni 2024 bis zu 200 € je Wohneinheit; ab 2025 nach neuer Richtlinie 50 % der Material- und Montagekosten, höchstens 200 €",
+      "Antragsberechtigt waren Eigentümer und Mieter von Wohngebäuden und Wohnungen in Berkenthin",
+      "Nach der Richtlinie 12/2024 musste die Anlage im Marktstammdatenregister angemeldet und mindestens fünf Jahre im eigenen Haushalt genutzt werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
   "klempau-balkonkraftwerke": {
     id: "klempau-balkonkraftwerke", name: "Förderung von Balkonkraftwerken",
     traeger: "Gemeinde Klempau", level: "kommune", region: "Klempau",
