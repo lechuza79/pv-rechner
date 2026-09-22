@@ -119,13 +119,20 @@ export function huelle(o: {
     : `<p style="margin:0 0 6px;font-size:${T.klein};color:${RAHMEN.leise}">${grundzeileHtml(o.grundzeile)}</p>
        ${einstellungen ? `<p style="margin:0 0 12px;font-size:${T.klein}">${einstellungen}</p>` : ""}`;
 
-  return `<div style="background:${RAHMEN.grund};margin:0;padding:32px 16px;font-family:${SCHRIFT};color:${C.fliess}">
+  // A full document, not a fragment: mail apps give a bare fragment the
+  // default body margin in white, which framed the dark ground with a white
+  // border (Apple Mail, 22.09.2026). body margin 0 plus bgcolor lets the dark
+  // reach the edge.
+  return `<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light only"></head>
+<body style="margin:0;padding:0;background:${RAHMEN.grund}" bgcolor="${RAHMEN.grund}">
+<div style="background:${RAHMEN.grund};margin:0;padding:32px 16px;font-family:${SCHRIFT};color:${C.fliess}">
   <span style="display:none!important;visibility:hidden;opacity:0;height:0;width:0;overflow:hidden">${escapeHtml(o.vorschau)}</span>
   <div style="max-width:560px;margin:0 auto">
 
     <div style="text-align:center;padding-bottom:22px">
       <a href="${SITE}" style="text-decoration:none;color:${NACHT["--color-text-primary"]};font-size:${T.marke};font-weight:700">
-        <img src="${SITE}/logo-mail-dunkel-2026-09.png" alt="Solar Check" width="132" height="31" style="display:block;margin:0 auto;border:0;outline:none;max-width:132px;height:auto">
+        <img src="${SITE}/logo-mail-weiss-2026-09.png" alt="Solar Check" width="132" height="31" style="display:block;margin:0 auto;border:0;outline:none;max-width:132px;height:auto">
       </a>
     </div>
 
@@ -143,7 +150,8 @@ export function huelle(o: {
     </div>
 
   </div>
-</div>`;
+</div>
+</body></html>`;
 }
 
 /** The reason line, with our domain as an explicit link: mail apps otherwise
