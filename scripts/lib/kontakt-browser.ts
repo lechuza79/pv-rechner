@@ -94,3 +94,17 @@ export async function rendern(b: Bestand, e: Eintrag, max = 5): Promise<{ gelese
   }
   return { gelesen, fehler };
 }
+
+/** One page as a visitor sees it, without storing it — for the check right before use. */
+export async function seiteGerendert(url: string): Promise<string | null> {
+  const br = await oeffnen();
+  const ctx = await br.newContext({
+    userAgent: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${br.version()} Safari/537.36 solar-check-kontaktpruefung/2.0 (+https://solar-check.io/impressum)`,
+  });
+  try {
+    const page = await ctx.newPage();
+    const res = await page.goto(url, { waitUntil: "load", timeout: 15000 });
+    await page.waitForTimeout(2000);
+    return res && res.status() >= 400 ? null : await page.content();
+  } catch { return null; } finally { await ctx.close(); }
+}

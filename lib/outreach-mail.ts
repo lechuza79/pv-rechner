@@ -181,7 +181,9 @@ export const ROLLEN_WORTE = [
 export const ROLLEN_WORTE_TECHNISCH = ["webmaster", "webteam", "web", "online", "internet"];
 
 /** Postfächer, an die grundsätzlich nichts geht. */
-export const POSTFACH_UNGEEIGNET = ["datenschutz", "dsb", "abuse", "noreply", "no-reply", "postmaster", "mailer-daemon"];
+// One list for every population; see there why it grew.
+export { POSTFACH_UNGEEIGNET } from "./kontakt-tauglichkeit";
+import { POSTFACH_UNGEEIGNET } from "./kontakt-tauglichkeit";
 
 const ohneUmlaute = (s: string) =>
   s

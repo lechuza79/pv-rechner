@@ -21,6 +21,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Rollenwerk, ScopeRegeln } from "../lib/kontakt-suche";
 import { PRESS_TEXT } from "../lib/contact-municipal-judge";
+import { postfachTauglich } from "../lib/kontakt-tauglichkeit";
 import {
   bewerten, laufen, readJson, recherchieren, writeJson,
   type Bestand, type Eintrag, type Ergebnis,
@@ -152,7 +153,7 @@ async function apply() {
   const rows = ergebnisse();
   let mitPresse = 0, geschrieben = 0;
   for (const r of rows) {
-    const presse = r.kanaele.presse ?? [];
+    const presse = (r.kanaele.presse ?? []).filter(m => postfachTauglich(m).ok);
     if (!presse.length) continue;
     mitPresse++;
     const beleg = r.proofs.find(p => p.email === presse[0]);

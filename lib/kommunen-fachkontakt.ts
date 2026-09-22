@@ -7,6 +7,7 @@
  * Every proven contact is kept; per channel the best one is named first.
  * Climate protection / energy management is the preferred contact.
  */
+import { postfachTauglich } from "./kontakt-tauglichkeit";
 
 export type FachKanal = "klima" | "presse";
 
@@ -36,7 +37,9 @@ export function fachkontakteAus(r: SearchResult): Fachkontakte {
   const collect = (list: string[], kanal: FachKanal, channel: string): Fachkontakt[] =>
     [...new Set([...list, ...r.proofs.filter(p => p.channels.includes(channel)).map(p => p.email)])].flatMap(email => {
       const proof = r.proofs.find(p => p.email === email && p.channels.includes(channel));
-      if (!proof) return [];
+      // A proven mailbox can still be unfit (data protection, webmaster, a
+      // template placeholder); the next proven one takes its place.
+      if (!proof || !postfachTauglich(email).ok) return [];
       return [{
         email,
         kanal,
