@@ -47217,5 +47217,509 @@
         "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
       }
     ]
+  },
+  {
+    "regionId": "03158002",
+    "name": "Baddeckenstedt",
+    "checkedAt": "2026-09-22T18:26:55Z",
+    "recheckAt": "2026-12-21T12:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen — Mitgliedsgemeinde, Samtgemeinde Baddeckenstedt und Landkreis Wolfenbüttel. Bauland-, Wirtschafts- und Denkmalförderung sowie Landes- und Bundesprogramme getrennt eingeordnet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Baddeckenstedt gehört zur Samtgemeinde Baddeckenstedt im Landkreis Wolfenbüttel. Weder die Mitgliedsgemeinde noch die Samtgemeinde noch der Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderangebote der Samtgemeinde sind Baulandförderung in Baddeckenstedt, Burgdorf, Haverlah und Heere sowie Wirtschaftsförderung; unter „Weitere Förderprogramme“ stehen der Niedersachsenfonds für die Niederlassung von Ärzten, das Solarpotenzialkataster (SolarDachAtlas Großraum Braunschweig — eine Auskunft über die Eignung des eigenen Dachs, kein Zuschuss) und die LEADER-Region Nördliches Harzvorland. Das Förderprogramm des Landkreises „Klimaschutzmaßnahmen für private Haushalte“ (2026–2029, bis 3.000 bzw. 5.000 €) fördert ausschließlich die Gebäudehülle (Dämmung von Dach und Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt) — Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind dort nicht Fördergegenstand. Im Kreis Wolfenbüttel fördert allein die Gemeinde Cremlingen Balkonkraftwerke; dieses Programm steht als eigener Katalogeintrag und gilt für Baddeckenstedt nicht.",
+    "searches": [
+      "Förderseite der Samtgemeinde gelesen (22.09.2026): Förderangebote Samtgemeinde und Mitgliedsgemeinden, Geförderte öffentliche Projekte, Weitere Förderprogramme",
+      "Seite „Förderangebote Samtgemeinde und Mitgliedsgemeinden“ gelesen (22.09.2026): Baulandförderung Baddeckenstedt (mit Altbauförderrichtlinie), Burgdorf, Haverlah, Heere und Wirtschaftsförderung — kein Anlagenzuschuss",
+      "Seite „Förderung ärztliche Versorgung“ gelesen (22.09.2026): Niedersachsenfonds, bis 50.000 € je Zulassung oder Anstellung — kein Energiebezug",
+      "Seite „Solarpotenzialkataster“ gelesen (22.09.2026): SolarDachAtlas für den Großraum Braunschweig, „Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist“ — Auskunft, kein Zuschuss, kein Betrag",
+      "Seite „Nördliches Harzvorland“ gelesen (22.09.2026): LEADER als Förderinstrument der EU für Projekte aus der Bevölkerung — kein Anlagenzuschuss für private Haushalte",
+      "Förderprogramme des Landkreises Wolfenbüttel gelesen (22.09.2026): Sport, Dorfgemeinschaftshäuser, Klimaanpassung, Gebäudehüllen, Denkmalschutz, Kultur, Artenschutz, Stiftung Zukunftsfonds Asse",
+      "Pressemeldung des Landkreises vom 21.05.2026 zum Programm „Klimaschutzmaßnahmen für private Haushalte“ gelesen (22.09.2026): gefördert werden Gebäudehülle (Dämmung Dach/Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt); Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht genannt",
+      "Websuche Landkreis Wolfenbüttel mit Balkonkraftwerk/Photovoltaik/Zuschuss (22.09.2026): als einziges kommunales Programm im Kreis die Balkonkraftwerk-Förderung der Gemeinde Cremlingen",
+      "Katalog nach Programmen im Kreis 03158 durchsucht: nur Cremlingen (03158006)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "finding": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/F%C3%B6rderangebote-Samtgemeinde-und-Mitgliedsgemeinden",
+        "finding": "Förderangebote der Samtgemeinde und ihrer Mitgliedsgemeinden: Bauland- und Wirtschaftsförderung, kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "finding": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten, bis 50.000 € je Zulassung — kein Energiebezug (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "finding": "„LEADER ist ein Förderinstrument der EU und wird geprägt durch Impulse und Ideen aus der Bevölkerung.“ — kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "finding": "„Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist.“ — SolarDachAtlas als Auskunft, kein Zuschussprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
+        "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; die drei Unterpunkte betreffen ärztliche Versorgung, das Solarpotenzialkataster und LEADER — kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "disposition": "reviewed",
+        "reason": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten — kein Energiebezug (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "disposition": "reviewed",
+        "reason": "LEADER-Regionalentwicklung der EU über die lokale Aktionsgruppe — kein Anlagenzuschuss für private Haushalte (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "disposition": "reviewed",
+        "reason": "SolarDachAtlas Großraum Braunschweig: Auskunft über die Eignung des eigenen Dachs, kein Zuschuss und kein Betrag (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      }
+    ]
+  },
+  {
+    "regionId": "03158004",
+    "name": "Burgdorf",
+    "checkedAt": "2026-09-22T18:26:55Z",
+    "recheckAt": "2026-12-21T12:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen — Mitgliedsgemeinde, Samtgemeinde Baddeckenstedt und Landkreis Wolfenbüttel. Bauland-, Wirtschafts- und Denkmalförderung sowie Landes- und Bundesprogramme getrennt eingeordnet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Burgdorf gehört zur Samtgemeinde Baddeckenstedt im Landkreis Wolfenbüttel. Weder die Mitgliedsgemeinde noch die Samtgemeinde noch der Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderangebote der Samtgemeinde sind Baulandförderung in Baddeckenstedt, Burgdorf, Haverlah und Heere sowie Wirtschaftsförderung; unter „Weitere Förderprogramme“ stehen der Niedersachsenfonds für die Niederlassung von Ärzten, das Solarpotenzialkataster (SolarDachAtlas Großraum Braunschweig — eine Auskunft über die Eignung des eigenen Dachs, kein Zuschuss) und die LEADER-Region Nördliches Harzvorland. Das Förderprogramm des Landkreises „Klimaschutzmaßnahmen für private Haushalte“ (2026–2029, bis 3.000 bzw. 5.000 €) fördert ausschließlich die Gebäudehülle (Dämmung von Dach und Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt) — Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind dort nicht Fördergegenstand. Im Kreis Wolfenbüttel fördert allein die Gemeinde Cremlingen Balkonkraftwerke; dieses Programm steht als eigener Katalogeintrag und gilt für Burgdorf nicht.",
+    "searches": [
+      "Förderseite der Samtgemeinde gelesen (22.09.2026): Förderangebote Samtgemeinde und Mitgliedsgemeinden, Geförderte öffentliche Projekte, Weitere Förderprogramme",
+      "Seite „Förderangebote Samtgemeinde und Mitgliedsgemeinden“ gelesen (22.09.2026): Baulandförderung Baddeckenstedt (mit Altbauförderrichtlinie), Burgdorf, Haverlah, Heere und Wirtschaftsförderung — kein Anlagenzuschuss",
+      "Seite „Förderung ärztliche Versorgung“ gelesen (22.09.2026): Niedersachsenfonds, bis 50.000 € je Zulassung oder Anstellung — kein Energiebezug",
+      "Seite „Solarpotenzialkataster“ gelesen (22.09.2026): SolarDachAtlas für den Großraum Braunschweig, „Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist“ — Auskunft, kein Zuschuss, kein Betrag",
+      "Seite „Nördliches Harzvorland“ gelesen (22.09.2026): LEADER als Förderinstrument der EU für Projekte aus der Bevölkerung — kein Anlagenzuschuss für private Haushalte",
+      "Förderprogramme des Landkreises Wolfenbüttel gelesen (22.09.2026): Sport, Dorfgemeinschaftshäuser, Klimaanpassung, Gebäudehüllen, Denkmalschutz, Kultur, Artenschutz, Stiftung Zukunftsfonds Asse",
+      "Pressemeldung des Landkreises vom 21.05.2026 zum Programm „Klimaschutzmaßnahmen für private Haushalte“ gelesen (22.09.2026): gefördert werden Gebäudehülle (Dämmung Dach/Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt); Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht genannt",
+      "Websuche Landkreis Wolfenbüttel mit Balkonkraftwerk/Photovoltaik/Zuschuss (22.09.2026): als einziges kommunales Programm im Kreis die Balkonkraftwerk-Förderung der Gemeinde Cremlingen",
+      "Katalog nach Programmen im Kreis 03158 durchsucht: nur Cremlingen (03158006)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "finding": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/F%C3%B6rderangebote-Samtgemeinde-und-Mitgliedsgemeinden",
+        "finding": "Förderangebote der Samtgemeinde und ihrer Mitgliedsgemeinden: Bauland- und Wirtschaftsförderung, kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "finding": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten, bis 50.000 € je Zulassung — kein Energiebezug (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "finding": "„LEADER ist ein Förderinstrument der EU und wird geprägt durch Impulse und Ideen aus der Bevölkerung.“ — kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "finding": "„Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist.“ — SolarDachAtlas als Auskunft, kein Zuschussprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
+        "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; die drei Unterpunkte betreffen ärztliche Versorgung, das Solarpotenzialkataster und LEADER — kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "disposition": "reviewed",
+        "reason": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten — kein Energiebezug (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "disposition": "reviewed",
+        "reason": "LEADER-Regionalentwicklung der EU über die lokale Aktionsgruppe — kein Anlagenzuschuss für private Haushalte (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "disposition": "reviewed",
+        "reason": "SolarDachAtlas Großraum Braunschweig: Auskunft über die Eignung des eigenen Dachs, kein Zuschuss und kein Betrag (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      }
+    ]
+  },
+  {
+    "regionId": "03158011",
+    "name": "Elbe",
+    "checkedAt": "2026-09-22T18:26:55Z",
+    "recheckAt": "2026-12-21T12:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen — Mitgliedsgemeinde, Samtgemeinde Baddeckenstedt und Landkreis Wolfenbüttel. Bauland-, Wirtschafts- und Denkmalförderung sowie Landes- und Bundesprogramme getrennt eingeordnet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Elbe gehört zur Samtgemeinde Baddeckenstedt im Landkreis Wolfenbüttel. Weder die Mitgliedsgemeinde noch die Samtgemeinde noch der Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderangebote der Samtgemeinde sind Baulandförderung in Baddeckenstedt, Burgdorf, Haverlah und Heere sowie Wirtschaftsförderung; unter „Weitere Förderprogramme“ stehen der Niedersachsenfonds für die Niederlassung von Ärzten, das Solarpotenzialkataster (SolarDachAtlas Großraum Braunschweig — eine Auskunft über die Eignung des eigenen Dachs, kein Zuschuss) und die LEADER-Region Nördliches Harzvorland. Das Förderprogramm des Landkreises „Klimaschutzmaßnahmen für private Haushalte“ (2026–2029, bis 3.000 bzw. 5.000 €) fördert ausschließlich die Gebäudehülle (Dämmung von Dach und Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt) — Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind dort nicht Fördergegenstand. Im Kreis Wolfenbüttel fördert allein die Gemeinde Cremlingen Balkonkraftwerke; dieses Programm steht als eigener Katalogeintrag und gilt für Elbe nicht.",
+    "searches": [
+      "Förderseite der Samtgemeinde gelesen (22.09.2026): Förderangebote Samtgemeinde und Mitgliedsgemeinden, Geförderte öffentliche Projekte, Weitere Förderprogramme",
+      "Seite „Förderangebote Samtgemeinde und Mitgliedsgemeinden“ gelesen (22.09.2026): Baulandförderung Baddeckenstedt (mit Altbauförderrichtlinie), Burgdorf, Haverlah, Heere und Wirtschaftsförderung — kein Anlagenzuschuss",
+      "Seite „Förderung ärztliche Versorgung“ gelesen (22.09.2026): Niedersachsenfonds, bis 50.000 € je Zulassung oder Anstellung — kein Energiebezug",
+      "Seite „Solarpotenzialkataster“ gelesen (22.09.2026): SolarDachAtlas für den Großraum Braunschweig, „Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist“ — Auskunft, kein Zuschuss, kein Betrag",
+      "Seite „Nördliches Harzvorland“ gelesen (22.09.2026): LEADER als Förderinstrument der EU für Projekte aus der Bevölkerung — kein Anlagenzuschuss für private Haushalte",
+      "Förderprogramme des Landkreises Wolfenbüttel gelesen (22.09.2026): Sport, Dorfgemeinschaftshäuser, Klimaanpassung, Gebäudehüllen, Denkmalschutz, Kultur, Artenschutz, Stiftung Zukunftsfonds Asse",
+      "Pressemeldung des Landkreises vom 21.05.2026 zum Programm „Klimaschutzmaßnahmen für private Haushalte“ gelesen (22.09.2026): gefördert werden Gebäudehülle (Dämmung Dach/Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt); Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht genannt",
+      "Websuche Landkreis Wolfenbüttel mit Balkonkraftwerk/Photovoltaik/Zuschuss (22.09.2026): als einziges kommunales Programm im Kreis die Balkonkraftwerk-Förderung der Gemeinde Cremlingen",
+      "Katalog nach Programmen im Kreis 03158 durchsucht: nur Cremlingen (03158006)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "finding": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/F%C3%B6rderangebote-Samtgemeinde-und-Mitgliedsgemeinden",
+        "finding": "Förderangebote der Samtgemeinde und ihrer Mitgliedsgemeinden: Bauland- und Wirtschaftsförderung, kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "finding": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten, bis 50.000 € je Zulassung — kein Energiebezug (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "finding": "„LEADER ist ein Förderinstrument der EU und wird geprägt durch Impulse und Ideen aus der Bevölkerung.“ — kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "finding": "„Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist.“ — SolarDachAtlas als Auskunft, kein Zuschussprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
+        "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; die drei Unterpunkte betreffen ärztliche Versorgung, das Solarpotenzialkataster und LEADER — kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "disposition": "reviewed",
+        "reason": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten — kein Energiebezug (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "disposition": "reviewed",
+        "reason": "LEADER-Regionalentwicklung der EU über die lokale Aktionsgruppe — kein Anlagenzuschuss für private Haushalte (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "disposition": "reviewed",
+        "reason": "SolarDachAtlas Großraum Braunschweig: Auskunft über die Eignung des eigenen Dachs, kein Zuschuss und kein Betrag (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      }
+    ]
+  },
+  {
+    "regionId": "03158016",
+    "name": "Haverlah",
+    "checkedAt": "2026-09-22T18:26:55Z",
+    "recheckAt": "2026-12-21T12:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen — Mitgliedsgemeinde, Samtgemeinde Baddeckenstedt und Landkreis Wolfenbüttel. Bauland-, Wirtschafts- und Denkmalförderung sowie Landes- und Bundesprogramme getrennt eingeordnet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Haverlah gehört zur Samtgemeinde Baddeckenstedt im Landkreis Wolfenbüttel. Weder die Mitgliedsgemeinde noch die Samtgemeinde noch der Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderangebote der Samtgemeinde sind Baulandförderung in Baddeckenstedt, Burgdorf, Haverlah und Heere sowie Wirtschaftsförderung; unter „Weitere Förderprogramme“ stehen der Niedersachsenfonds für die Niederlassung von Ärzten, das Solarpotenzialkataster (SolarDachAtlas Großraum Braunschweig — eine Auskunft über die Eignung des eigenen Dachs, kein Zuschuss) und die LEADER-Region Nördliches Harzvorland. Das Förderprogramm des Landkreises „Klimaschutzmaßnahmen für private Haushalte“ (2026–2029, bis 3.000 bzw. 5.000 €) fördert ausschließlich die Gebäudehülle (Dämmung von Dach und Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt) — Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind dort nicht Fördergegenstand. Im Kreis Wolfenbüttel fördert allein die Gemeinde Cremlingen Balkonkraftwerke; dieses Programm steht als eigener Katalogeintrag und gilt für Haverlah nicht.",
+    "searches": [
+      "Förderseite der Samtgemeinde gelesen (22.09.2026): Förderangebote Samtgemeinde und Mitgliedsgemeinden, Geförderte öffentliche Projekte, Weitere Förderprogramme",
+      "Seite „Förderangebote Samtgemeinde und Mitgliedsgemeinden“ gelesen (22.09.2026): Baulandförderung Baddeckenstedt (mit Altbauförderrichtlinie), Burgdorf, Haverlah, Heere und Wirtschaftsförderung — kein Anlagenzuschuss",
+      "Seite „Förderung ärztliche Versorgung“ gelesen (22.09.2026): Niedersachsenfonds, bis 50.000 € je Zulassung oder Anstellung — kein Energiebezug",
+      "Seite „Solarpotenzialkataster“ gelesen (22.09.2026): SolarDachAtlas für den Großraum Braunschweig, „Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist“ — Auskunft, kein Zuschuss, kein Betrag",
+      "Seite „Nördliches Harzvorland“ gelesen (22.09.2026): LEADER als Förderinstrument der EU für Projekte aus der Bevölkerung — kein Anlagenzuschuss für private Haushalte",
+      "Förderprogramme des Landkreises Wolfenbüttel gelesen (22.09.2026): Sport, Dorfgemeinschaftshäuser, Klimaanpassung, Gebäudehüllen, Denkmalschutz, Kultur, Artenschutz, Stiftung Zukunftsfonds Asse",
+      "Pressemeldung des Landkreises vom 21.05.2026 zum Programm „Klimaschutzmaßnahmen für private Haushalte“ gelesen (22.09.2026): gefördert werden Gebäudehülle (Dämmung Dach/Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt); Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht genannt",
+      "Websuche Landkreis Wolfenbüttel mit Balkonkraftwerk/Photovoltaik/Zuschuss (22.09.2026): als einziges kommunales Programm im Kreis die Balkonkraftwerk-Förderung der Gemeinde Cremlingen",
+      "Katalog nach Programmen im Kreis 03158 durchsucht: nur Cremlingen (03158006)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "finding": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/F%C3%B6rderangebote-Samtgemeinde-und-Mitgliedsgemeinden",
+        "finding": "Förderangebote der Samtgemeinde und ihrer Mitgliedsgemeinden: Bauland- und Wirtschaftsförderung, kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "finding": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten, bis 50.000 € je Zulassung — kein Energiebezug (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "finding": "„LEADER ist ein Förderinstrument der EU und wird geprägt durch Impulse und Ideen aus der Bevölkerung.“ — kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "finding": "„Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist.“ — SolarDachAtlas als Auskunft, kein Zuschussprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
+        "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; die drei Unterpunkte betreffen ärztliche Versorgung, das Solarpotenzialkataster und LEADER — kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "disposition": "reviewed",
+        "reason": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten — kein Energiebezug (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "disposition": "reviewed",
+        "reason": "LEADER-Regionalentwicklung der EU über die lokale Aktionsgruppe — kein Anlagenzuschuss für private Haushalte (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "disposition": "reviewed",
+        "reason": "SolarDachAtlas Großraum Braunschweig: Auskunft über die Eignung des eigenen Dachs, kein Zuschuss und kein Betrag (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      }
+    ]
+  },
+  {
+    "regionId": "03158018",
+    "name": "Heere",
+    "checkedAt": "2026-09-22T18:26:55Z",
+    "recheckAt": "2026-12-21T12:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen — Mitgliedsgemeinde, Samtgemeinde Baddeckenstedt und Landkreis Wolfenbüttel. Bauland-, Wirtschafts- und Denkmalförderung sowie Landes- und Bundesprogramme getrennt eingeordnet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Heere gehört zur Samtgemeinde Baddeckenstedt im Landkreis Wolfenbüttel. Weder die Mitgliedsgemeinde noch die Samtgemeinde noch der Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderangebote der Samtgemeinde sind Baulandförderung in Baddeckenstedt, Burgdorf, Haverlah und Heere sowie Wirtschaftsförderung; unter „Weitere Förderprogramme“ stehen der Niedersachsenfonds für die Niederlassung von Ärzten, das Solarpotenzialkataster (SolarDachAtlas Großraum Braunschweig — eine Auskunft über die Eignung des eigenen Dachs, kein Zuschuss) und die LEADER-Region Nördliches Harzvorland. Das Förderprogramm des Landkreises „Klimaschutzmaßnahmen für private Haushalte“ (2026–2029, bis 3.000 bzw. 5.000 €) fördert ausschließlich die Gebäudehülle (Dämmung von Dach und Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt) — Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind dort nicht Fördergegenstand. Im Kreis Wolfenbüttel fördert allein die Gemeinde Cremlingen Balkonkraftwerke; dieses Programm steht als eigener Katalogeintrag und gilt für Heere nicht.",
+    "searches": [
+      "Förderseite der Samtgemeinde gelesen (22.09.2026): Förderangebote Samtgemeinde und Mitgliedsgemeinden, Geförderte öffentliche Projekte, Weitere Förderprogramme",
+      "Seite „Förderangebote Samtgemeinde und Mitgliedsgemeinden“ gelesen (22.09.2026): Baulandförderung Baddeckenstedt (mit Altbauförderrichtlinie), Burgdorf, Haverlah, Heere und Wirtschaftsförderung — kein Anlagenzuschuss",
+      "Seite „Förderung ärztliche Versorgung“ gelesen (22.09.2026): Niedersachsenfonds, bis 50.000 € je Zulassung oder Anstellung — kein Energiebezug",
+      "Seite „Solarpotenzialkataster“ gelesen (22.09.2026): SolarDachAtlas für den Großraum Braunschweig, „Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist“ — Auskunft, kein Zuschuss, kein Betrag",
+      "Seite „Nördliches Harzvorland“ gelesen (22.09.2026): LEADER als Förderinstrument der EU für Projekte aus der Bevölkerung — kein Anlagenzuschuss für private Haushalte",
+      "Förderprogramme des Landkreises Wolfenbüttel gelesen (22.09.2026): Sport, Dorfgemeinschaftshäuser, Klimaanpassung, Gebäudehüllen, Denkmalschutz, Kultur, Artenschutz, Stiftung Zukunftsfonds Asse",
+      "Pressemeldung des Landkreises vom 21.05.2026 zum Programm „Klimaschutzmaßnahmen für private Haushalte“ gelesen (22.09.2026): gefördert werden Gebäudehülle (Dämmung Dach/Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt); Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht genannt",
+      "Websuche Landkreis Wolfenbüttel mit Balkonkraftwerk/Photovoltaik/Zuschuss (22.09.2026): als einziges kommunales Programm im Kreis die Balkonkraftwerk-Förderung der Gemeinde Cremlingen",
+      "Katalog nach Programmen im Kreis 03158 durchsucht: nur Cremlingen (03158006)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "finding": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/F%C3%B6rderangebote-Samtgemeinde-und-Mitgliedsgemeinden",
+        "finding": "Förderangebote der Samtgemeinde und ihrer Mitgliedsgemeinden: Bauland- und Wirtschaftsförderung, kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "finding": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten, bis 50.000 € je Zulassung — kein Energiebezug (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "finding": "„LEADER ist ein Förderinstrument der EU und wird geprägt durch Impulse und Ideen aus der Bevölkerung.“ — kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "finding": "„Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist.“ — SolarDachAtlas als Auskunft, kein Zuschussprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
+        "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; die drei Unterpunkte betreffen ärztliche Versorgung, das Solarpotenzialkataster und LEADER — kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "disposition": "reviewed",
+        "reason": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten — kein Energiebezug (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "disposition": "reviewed",
+        "reason": "LEADER-Regionalentwicklung der EU über die lokale Aktionsgruppe — kein Anlagenzuschuss für private Haushalte (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "disposition": "reviewed",
+        "reason": "SolarDachAtlas Großraum Braunschweig: Auskunft über die Eignung des eigenen Dachs, kein Zuschuss und kein Betrag (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      }
+    ]
+  },
+  {
+    "regionId": "03158028",
+    "name": "Sehlde",
+    "checkedAt": "2026-09-22T18:26:55Z",
+    "recheckAt": "2026-12-21T12:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen — Mitgliedsgemeinde, Samtgemeinde Baddeckenstedt und Landkreis Wolfenbüttel. Bauland-, Wirtschafts- und Denkmalförderung sowie Landes- und Bundesprogramme getrennt eingeordnet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sehlde gehört zur Samtgemeinde Baddeckenstedt im Landkreis Wolfenbüttel. Weder die Mitgliedsgemeinde noch die Samtgemeinde noch der Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Förderangebote der Samtgemeinde sind Baulandförderung in Baddeckenstedt, Burgdorf, Haverlah und Heere sowie Wirtschaftsförderung; unter „Weitere Förderprogramme“ stehen der Niedersachsenfonds für die Niederlassung von Ärzten, das Solarpotenzialkataster (SolarDachAtlas Großraum Braunschweig — eine Auskunft über die Eignung des eigenen Dachs, kein Zuschuss) und die LEADER-Region Nördliches Harzvorland. Das Förderprogramm des Landkreises „Klimaschutzmaßnahmen für private Haushalte“ (2026–2029, bis 3.000 bzw. 5.000 €) fördert ausschließlich die Gebäudehülle (Dämmung von Dach und Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt) — Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind dort nicht Fördergegenstand. Im Kreis Wolfenbüttel fördert allein die Gemeinde Cremlingen Balkonkraftwerke; dieses Programm steht als eigener Katalogeintrag und gilt für Sehlde nicht.",
+    "searches": [
+      "Förderseite der Samtgemeinde gelesen (22.09.2026): Förderangebote Samtgemeinde und Mitgliedsgemeinden, Geförderte öffentliche Projekte, Weitere Förderprogramme",
+      "Seite „Förderangebote Samtgemeinde und Mitgliedsgemeinden“ gelesen (22.09.2026): Baulandförderung Baddeckenstedt (mit Altbauförderrichtlinie), Burgdorf, Haverlah, Heere und Wirtschaftsförderung — kein Anlagenzuschuss",
+      "Seite „Förderung ärztliche Versorgung“ gelesen (22.09.2026): Niedersachsenfonds, bis 50.000 € je Zulassung oder Anstellung — kein Energiebezug",
+      "Seite „Solarpotenzialkataster“ gelesen (22.09.2026): SolarDachAtlas für den Großraum Braunschweig, „Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist“ — Auskunft, kein Zuschuss, kein Betrag",
+      "Seite „Nördliches Harzvorland“ gelesen (22.09.2026): LEADER als Förderinstrument der EU für Projekte aus der Bevölkerung — kein Anlagenzuschuss für private Haushalte",
+      "Förderprogramme des Landkreises Wolfenbüttel gelesen (22.09.2026): Sport, Dorfgemeinschaftshäuser, Klimaanpassung, Gebäudehüllen, Denkmalschutz, Kultur, Artenschutz, Stiftung Zukunftsfonds Asse",
+      "Pressemeldung des Landkreises vom 21.05.2026 zum Programm „Klimaschutzmaßnahmen für private Haushalte“ gelesen (22.09.2026): gefördert werden Gebäudehülle (Dämmung Dach/Fassade, Fenstertausch) und Klimaanpassung (Dach- und Fassadenbegrünung, Regenwasserrückhalt); Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht genannt",
+      "Websuche Landkreis Wolfenbüttel mit Balkonkraftwerk/Photovoltaik/Zuschuss (22.09.2026): als einziges kommunales Programm im Kreis die Balkonkraftwerk-Förderung der Gemeinde Cremlingen",
+      "Katalog nach Programmen im Kreis 03158 durchsucht: nur Cremlingen (03158006)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "finding": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/F%C3%B6rderangebote-Samtgemeinde-und-Mitgliedsgemeinden",
+        "finding": "Förderangebote der Samtgemeinde und ihrer Mitgliedsgemeinden: Bauland- und Wirtschaftsförderung, kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "finding": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten, bis 50.000 € je Zulassung — kein Energiebezug (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "finding": "„LEADER ist ein Förderinstrument der EU und wird geprägt durch Impulse und Ideen aus der Bevölkerung.“ — kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "finding": "„Hier können Sie einsehen, ob Ihr Haus für die Installation einer Solaranlage geeignet ist.“ — SolarDachAtlas als Auskunft, kein Zuschussprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
+        "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme",
+        "disposition": "reviewed",
+        "reason": "Übersicht „Weitere Förderprogramme“ der Samtgemeinde; die drei Unterpunkte betreffen ärztliche Versorgung, das Solarpotenzialkataster und LEADER — kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung",
+        "disposition": "reviewed",
+        "reason": "Niedersachsenfonds für die Niederlassung von Ärzten und Psychotherapeuten — kein Energiebezug (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/F%C3%B6rderung-%C3%A4rztliche-Versorgung"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland",
+        "disposition": "reviewed",
+        "reason": "LEADER-Regionalentwicklung der EU über die lokale Aktionsgruppe — kein Anlagenzuschuss für private Haushalte (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/N%C3%B6rdliches-Harzvorland"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster",
+        "disposition": "reviewed",
+        "reason": "SolarDachAtlas Großraum Braunschweig: Auskunft über die Eignung des eigenen Dachs, kein Zuschuss und kein Betrag (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      },
+      {
+        "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
+        "disposition": "reviewed",
+        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+      }
+    ]
   }
 ]
