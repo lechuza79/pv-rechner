@@ -35,17 +35,6 @@
       "port": 3648
     },
     {
-      "name": "gemeinde-prototyp",
-      "runtimeExecutable": "node",
-      "runtimeArgs": [
-        "--import",
-        "tsx",
-        "scripts/municipality-preview/server.ts"
-      ],
-      "port": 4196,
-      "url": "http://localhost:4196"
-    },
-    {
       "name": "gemeinde-vorschau",
       "runtimeExecutable": "env",
       "runtimeArgs": [
