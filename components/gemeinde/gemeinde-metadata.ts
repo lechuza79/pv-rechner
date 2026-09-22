@@ -24,14 +24,13 @@ export async function gemeindeMetadata(params: GemeindeParams, { vorschau }: { v
   const angeschrieben = await verlinkendeGemeinden();
   const einzeln = atlasOrtEinzelfreigabe(region.region_id) || angeschrieben.includes(region.region_id);
   const anlagen = atlasLevelReleased("gemeinde") || einzeln ? (await getRegionAtlasData(region.region_id)).solar.total_count : 0;
-  const meta = pageMetadata({
-    title: atlasSeitenTitel({ name: region.name, level: "gemeinde" }),
-    description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
-    path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
-  });
-  return {
-    ...meta,
-    ...(vorschau ? { title: `Vorschau: ${String(meta.title)}` } : {}),
-    robots: vorschau ? { index: false, follow: false } : atlasRobots(einzeln ? anlagen >= GEMEINDE_MIN_ANLAGEN : atlasIsIndexable("gemeinde", anlagen)),
+  const meta: Metadata = {
+    ...pageMetadata({
+      title: atlasSeitenTitel({ name: region.name, level: "gemeinde" }),
+      description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
+      path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
+    }),
+    robots: atlasRobots(einzeln ? anlagen >= GEMEINDE_MIN_ANLAGEN : atlasIsIndexable("gemeinde", anlagen)),
   };
+  return vorschau ? { ...meta, title: `Vorschau: ${String(meta.title)}`, robots: { index: false, follow: false } } : meta;
 }
