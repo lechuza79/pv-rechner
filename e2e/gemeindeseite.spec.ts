@@ -51,4 +51,23 @@ test.describe("Gemeindeseite", () => {
     await expect(fenster).toContainText("Datenschutzerklärung");
     await expect(fenster).not.toContainText(/monatlich|wöchentlich|einmal im monat|pro woche/i);
   });
+  // Der längste Ortsname Deutschlands, über drei Breiten. GEMESSEN am
+  // 22.09.2026: Der Abo-Knopf trägt den Ortsnamen, und das abgenommene Design
+  // hält jeden Knopf einzeilig — dadurch war die Seite auf 375 px um 40 px und
+  // auf 768 px um 113 px breiter als das Fenster, also schob sich die ganze
+  // Seite seitlich. Ein Blick auf Höchberg hätte das nie gezeigt.
+  const LANGER_ORT = "/solar-atlas/sachsen/landkreis-goerlitz/quitzdorf-am-see-kw-tanecy-p-i-j-zoru";
+  for (const breite of [375, 414, 768]) {
+    test(`ein langer Ortsname läuft auf ${breite} px nicht seitlich über`, async ({ page }) => {
+      await page.setViewportSize({ width: breite, height: 900 });
+      const antwort = await page.goto(LANGER_ORT, { waitUntil: "domcontentloaded" });
+      expect(antwort?.status()).toBe(200);
+      await page.waitForTimeout(1500);
+      const mass = await page.evaluate(() => ({
+        dokument: document.documentElement.scrollWidth,
+        fenster: window.innerWidth,
+      }));
+      expect(mass.dokument, `Seite ${mass.dokument} px breit im ${mass.fenster} px Fenster`).toBeLessThanOrEqual(mass.fenster + 1);
+    });
+  }
 });

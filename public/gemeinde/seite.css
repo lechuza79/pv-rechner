@@ -7,3 +7,19 @@
    gives it inline (atlas.js, openAbo). */
 .atlas-dialog .gemeinde-abo-hinweis{font-size:12px}
 .atlas-dialog .gemeinde-abo-klein{font-size:11px}
+
+/* Long town names must not push the action row off the screen.
+   MEASURED (22.09.2026): the subscribe button carries the town name and the
+   design keeps every button on one line — at "Quitzdorf am See / Kwětanecy
+   při jězoru" the page was 40 px wider than a 375 px phone and 113 px wider
+   than a tablet, so the whole page scrolled sideways. The label may wrap
+   instead; for the usual short names nothing changes, because there is room
+   for one line. */
+.solar-page .v3-section-nav{flex-wrap:wrap;min-width:0}
+.solar-page .v3-section-nav .atlas-page-actions{min-width:0;flex-wrap:wrap}
+.solar-page .v3-section-nav .atlas-page-actions button[data-page-subscribe]{
+  min-width:0;max-width:100%;height:auto;min-height:36px;
+  white-space:normal;text-align:center;line-height:1.2;padding-top:6px;padding-bottom:6px}
+@media(max-width:600px){
+  .solar-page .v3-section-nav .atlas-page-actions button[data-page-subscribe]{min-height:32px}
+}
