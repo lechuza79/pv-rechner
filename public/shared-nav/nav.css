@@ -289,3 +289,87 @@
    not carry — without this the logo showed the old site's blue. */
 .sc-react-header .brand svg{--color-brand:var(--sc-brand-accent,var(--lab-accent,#d4ff24));--color-brand-deep:color-mix(in srgb,var(--sc-brand-accent,var(--lab-accent,#d4ff24)) 55%,#fff);--color-accent:#173b42;--color-text-faint:#4a675e}
 .sc-react-header .brand svg>path{fill:var(--color-accent)}
+
+/* ─── Kacheln ganz klickbar, Hover als Pille, aktiver Bereich oben (21.09.2026) ───
+   Die ganze Kachel führt zu ihrem ersten Ziel: Der erste Link spannt eine
+   unsichtbare Fläche über die Kachel, weitere Links liegen darüber und bleiben
+   einzeln anklickbar (Photovoltaik: „Anlage durchrechnen"). Kein zweiter Link
+   um die Kachel herum — verschachtelte Links sind kein gültiges Markup. */
+.sc-nav-tool{position:relative;cursor:pointer}
+.sc-nav-tool-actions a:first-child::after{content:"";position:absolute;inset:0;border-radius:inherit}
+.sc-nav-tool-actions a:not(:first-child){position:relative;z-index:1}
+/* Die Zeile trägt die Pille bündig: gleicher Innenabstand links wie rechts,
+   um genau diesen Betrag nach außen gezogen, damit Text und Pfeil stehen
+   bleiben, wo sie waren — 8px, damit die Pille 6px Luft zum Kachelrand behält;
+   innen 14px, damit Text und Pfeil in der Pille nicht an ihren Rand stoßen. Die Trennlinie ist ein Hintergrundstreifen, eingerückt um denselben Betrag
+   — sonst liefe sie mit der verbreiterten Zeile bis an den Kachelrand. Als
+   Hintergrund statt als eigenes Element, weil der erste Link seine
+   Pseudo-Elemente für die Klickfläche der Kachel braucht. */
+.sc-global-nav .sc-nav-tool-actions a{width:calc(100% + 16px);max-width:none;margin-inline:-8px;padding:10px 14px;min-height:44px;box-sizing:border-box;border-top-color:transparent;background:linear-gradient(var(--sc-nav-line),var(--sc-nav-line)) 8px 0/calc(100% - 16px) 1px no-repeat;transition:background-color 160ms ease}
+.sc-global-nav .sc-nav-panel .sc-nav-tool-actions a[aria-current=page]{border-radius:999px;background:#d4e5d8}
+/* Eine Pille, ob aktiv oder überfahren, hat keine Linie an sich: weder die
+   eigene darüber noch die der Zeile darunter. */
+.sc-global-nav .sc-nav-tool-actions a[aria-current=page]+a{background-image:none}
+@media(min-width:1281px) and (hover:hover){
+  /* Hover: Hintergrund als Pille wie unsere Knöpfe, die Trennlinie darüber
+     blendet aus — und die der nächsten Zeile auch, sonst stößt die Pille
+     unten an eine Linie. Über der Kachel (nicht über einem zweiten Link)
+     zeigt der erste Link den Hover, weil die ganze Fläche zu ihm führt. */
+  .sc-nav-tool-actions a:hover,
+  .sc-nav-tool:hover:not(:has(.sc-nav-tool-actions a:not(:first-child):hover)) .sc-nav-tool-actions a:first-child{background:#d4ff24;border-radius:999px;color:#132527}
+  .sc-global-nav .sc-nav-tool-actions a:hover+a{background-image:none}
+  .sc-global-nav .sc-nav-tool-actions a:hover+a,
+  .sc-nav-tool:hover:not(:has(.sc-nav-tool-actions a:not(:first-child):hover)) .sc-nav-tool-actions a:first-child+a{background-image:none}
+}
+@media(prefers-reduced-motion:reduce){.sc-nav-tool-actions a{transition:none}}
+
+/* Aktiver Bereich: der Menüpunkt liegt auf einer leichten Pille. Nur auf dem
+   Desktop — mobil trägt der Punkt den Fettdruck. Die Farbe folgt der Schrift
+   (currentColor), damit sie auf hellem wie dunklem Kopf trägt. Als eigenes
+   Element hinter der Schrift, damit der Menüpunkt seine Maße behält. */
+@media(min-width:1281px){
+  .sc-nav-group>summary{position:relative;isolation:isolate}
+  .sc-nav-group>summary[aria-current=true]{box-shadow:none}
+  .sc-nav-group>summary[aria-current=true]::before{content:"";position:absolute;inset:8px -12px;z-index:-1;border-radius:999px;background:color-mix(in srgb,currentColor 9%,transparent)}
+}
+
+/* Alle Kacheln des Tools-Menüs gleich hoch: Beide Blöcke strecken sich auf die
+   Höhe des Panels, ihre Raster verteilen die Höhe auf gleich große Reihen —
+   links zwei Reihen, rechts zwei Kacheln, also dieselben Kanten. */
+@media(min-width:1281px){
+  .sc-nav-section-tools .sc-nav-calculator-block,.sc-nav-section-tools .sc-nav-tool-more{display:flex;flex-direction:column}
+  .sc-nav-section-tools .sc-nav-calculator-block>.sc-nav-tools,.sc-nav-section-tools .sc-nav-tool-more>.sc-nav-tools{flex:1}
+  /* Das Flyout beginnt unter dem geöffneten Menüpunkt samt Pille, nicht auf
+     ihm — sonst verdeckt es die untere Hälfte der Markierung. */
+  .sc-global-nav .sc-nav-group>.sc-nav-panel{margin-top:24px}
+}
+
+/* Nutzermenü hinter dem Personen-Symbol (angemeldet): Mein Konto, Admin,
+   Abmelden — statt als eigene Punkte in der Hauptleiste. */
+.sc-account{position:relative}
+.sc-account>summary{list-style:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.sc-account>summary::-webkit-details-marker{display:none}
+.sc-account-panel{position:absolute;right:0;top:calc(100% + 12px);z-index:40;min-width:200px;display:grid;gap:2px;padding:8px;border-radius:14px;background:#edf3ef;color:#153740;box-shadow:0 14px 45px #071d2933}
+.sc-account-panel a,.sc-account-panel button{display:block;width:100%;box-sizing:border-box;padding:10px 14px;border:0;border-radius:999px;background:none;font:500 var(--sc-nav-copy,14px)/1.4 'DM Sans',sans-serif;color:inherit;text-align:left;text-decoration:none;cursor:pointer}
+.sc-account-panel a:hover,.sc-account-panel button:hover,.sc-account-panel a:focus-visible,.sc-account-panel button:focus-visible{background:#d4ff24;color:#132527}
+
+/* Tastatur: dieselbe Pille wie beim Überfahren, auf jedem Gerät. */
+.sc-global-nav .sc-nav-tool-actions a:focus-visible{outline:none;background:#d4ff24;border-radius:999px;color:#132527}
+.sc-global-nav .sc-nav-tool-actions a:focus-visible+a{background-image:none}
+/* Dieselbe Hover-Farbe für die Link-Kacheln der übrigen Menüs (Energiemonitor,
+   Vor Ort, Wissen) — sonst zeigt jedes Menü einen anderen Zustand. */
+@media(hover:hover){.sc-global-nav .sc-nav-column>a:hover{background:#d4ff24;color:#132527;box-shadow:none}}
+.sc-global-nav .sc-nav-column>a:focus-visible{outline:none;background:#d4ff24;color:#132527}
+/* The logged-in account toggle replaces the header login link inside a <details>; a round icon with a faint 2px ring, at least as far from "Wissen" as the menu items are from each other. Only on desktop: below the breakpoint the account entries live in the burger menu. */
+@media(max-width:1280px){.sc-global-header>.sc-account{display:none}}
+@media(min-width:1281px){
+ .sc-account{margin-left:clamp(20px,2.4vw,36px)}
+ .sc-account>.sc-nav-login{width:36px;height:36px;min-height:36px;padding:0!important;border:2px solid color-mix(in srgb,currentColor 16%,transparent);border-radius:50%;opacity:1;line-height:0}
+ .sc-account>.sc-nav-login:hover,.sc-account[open]>.sc-nav-login{border-color:color-mix(in srgb,currentColor 34%,transparent);text-decoration:none}
+ /* The person glyph sits low in its 24-unit box (head at y=4.5, shoulders at y=21); lift it so it looks centred in the ring. */
+ .sc-account>.sc-nav-login svg{width:18px;height:18px;opacity:1;display:block;transform:translateY(-1px)}
+ /* Same distance below the header row as the mega menus: they hang 6px under the 50px-high summaries, this icon is 36px high and centred in that row. */
+ .sc-account-panel{top:calc(100% + 13px)}
+}
+/* With JavaScript the real menu replaces the fallback; hide it from first paint so it never flashes. */
+.sc-js .sc-react-fallback{display:none}

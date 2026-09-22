@@ -1,9 +1,9 @@
 "use client";
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import OptionCard from "../../../components/OptionCard";
 import FlowNav from "../../../components/FlowNav";
+import FlowSchritte from "../../../components/FlowSchritte";
 import StandNoteView from "../../../components/StandNoteView";
 import { type StandSeite } from "../../../lib/stand-format";
 import InlineEdit from "../../../components/InlineEdit";
@@ -23,6 +23,8 @@ import projektionJahre from "../../../lib/klima-projektion-jahre.json";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 
 const STEPS = ["Gerätetyp", "Räume & Größe", "Nutzung & Standort"];
+// One word each for the step indicator; the current one is the step heading.
+const SCHRITT_NAMEN = ["Gerät", "Räume", "Nutzung"];
 
 const WINDOWS: { id: CoolingWindow; label: string; sub: string }[] = [
   { id: "allday", label: "Den ganzen Tag", sub: "Durchgehend gekühlt" },
@@ -65,7 +67,6 @@ const PROJ_YEAR = Math.round((projektionJahre.then[0] + projektionJahre.then[pro
 // nach sich, von denen hier nur die Klima-Config gebraucht wird — im Browser
 // lägen sonst sechs fremde Datentabellen.
 export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
-  const router = useRouter();
   const [step, setStep] = useState(0);
   // Welche Fragen wirklich beantwortet sind. Die Werte behalten ihre Startwerte
   // (die Rechnung braucht sie), geben sich aber nicht mehr als Auswahl aus —
@@ -213,31 +214,26 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
-            {isResult ? "Deine Klimaanlage im Betrieb" : "Was kostet eine Klimaanlage?"}
+      <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
+          {/* In the question steps as small as the PV calculator's head: the focus
+              belongs to the first question, not the title. */}
+          <h1 style={isResult ? {} : { fontSize: v('--font-size-h2') }}>
+            {isResult ? "Deine Klimaanlage im Betrieb" : "Was kostet eine Klimaanlage an Strom?"}
           </h1>
           {!isResult && (
             <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
-              Stromverbrauch, Kosten und CO₂ — ehrlich aus Wetterdaten. Ohne Anmeldung.
+              Die Stromkosten deiner Klimaanlage, Verbrauch und CO₂ — ehrlich aus Wetterdaten. Ohne Anmeldung.
             </p>
           )}
         </div>
 
         {/* Progress */}
-        {!isResult && (
-          <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
-            {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? v('--color-accent') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
-            ))}
-          </div>
-        )}
+        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} onSprung={setStep} />}
 
         {/* ── STEPS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18 }}>{STEPS[step]}</h2>
 
             {/* 0: Gerätetyp */}
             {step === 0 && (
@@ -370,9 +366,9 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     }}
                   />
                   <button type="submit" disabled={plz.length !== 5 || plzLoading || plzConfirmed} style={{
-                    padding: "0 18px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
+                    padding: "0 18px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
                     border: "none", cursor: plz.length === 5 && !plzConfirmed ? "pointer" : "default",
-                    background: plzConfirmed ? v('--color-bg-muted') : plz.length === 5 ? v('--color-accent') : v('--color-bg-muted'),
+                    background: plzConfirmed ? v('--color-bg-muted') : plz.length === 5 ? v('--color-cta') : v('--color-bg-muted'),
                     color: plzConfirmed ? v('--color-text-muted') : plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
                   }}>
                     {plzLoading ? "…" : plzConfirmed
@@ -415,9 +411,9 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Ergebnis anzeigen" : "Weiter"}
                 onWeiter={next}
-                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
-                // Startseite — wie vorher, nur im gemeinsamen Baustein.
-                onZurueck={step > 0 ? back : () => router.push("/")}
+                // No Zurück in the first step — the same in every calculator.
+                onZurueck={back}
+                zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
             </div>
@@ -492,8 +488,8 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     { id: "projection", label: `Projektion ~${PROJ_YEAR}` },
                   ] as { id: CdhMode; label: string }[]).map(opt => (
                     <button key={opt.id} onClick={() => setCdhMode(opt.id)} style={{
-                      flex: 1, padding: "7px 4px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-caption"), fontWeight: 700, cursor: "pointer", border: "none", lineHeight: 1.2,
-                      background: cdhMode === opt.id ? v('--color-accent') : "transparent",
+                      flex: 1, padding: "7px 4px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-caption"), fontWeight: 700, cursor: "pointer", border: "none", lineHeight: 1.2,
+                      background: cdhMode === opt.id ? v('--color-cta') : "transparent",
                       color: cdhMode === opt.id ? v('--color-text-on-accent') : v('--color-text-muted'),
                     }}>{opt.label}</button>
                   ))}
@@ -515,7 +511,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
               {/* Referenz: getroffene Auswahl, voll dargestellt */}
               <div style={{ padding: "12px 14px", borderRadius: v('--radius-sm'), background: v('--color-accent-dim'), border: `1.5px solid ${v('--color-accent')}`, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 10 }}>
                 <span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                  <span style={{ width: 16, height: 16, borderRadius: 4, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", background: v('--color-accent'), color: v('--color-text-on-accent') }}><IconCheck size={iconSizes.xs} /></span>
+                  <span style={{ width: 16, height: 16, borderRadius: v("--radius-pill"), flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", background: v('--color-cta'), color: v('--color-text-on-accent') }}><IconCheck size={iconSizes.xs} /></span>
                   <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-accent') }}>{result.device.label}</span>
                 </span>
                 <span style={{ display: "flex", gap: 12, flexShrink: 0, fontFamily: v('--font-mono'), fontSize: v("--font-size-small"), alignItems: "baseline" }}>
@@ -582,8 +578,8 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 <span style={{ display: "inline-flex", gap: 3, background: v('--color-bg-muted'), borderRadius: v('--radius-sm'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
                   {[{ on: true, label: "Ja" }, { on: false, label: "Nein" }].map(opt => (
                     <button key={String(opt.on)} onClick={() => setPvActive(opt.on)} style={{
-                      padding: "4px 14px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", border: "none",
-                      background: pvActive === opt.on ? v('--color-accent') : "transparent",
+                      padding: "4px 14px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", border: "none",
+                      background: pvActive === opt.on ? v('--color-cta') : "transparent",
                       color: pvActive === opt.on ? v('--color-text-on-accent') : v('--color-text-muted'),
                     }}>{opt.label}</button>
                   ))}
@@ -597,8 +593,8 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     <span style={{ display: "inline-flex", gap: 3, background: v('--color-bg-muted'), borderRadius: v('--radius-sm'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
                       {[{ on: true, label: "Mit Speicher" }, { on: false, label: "Ohne" }].map(opt => (
                         <button key={String(opt.on)} onClick={() => setBattery(opt.on)} style={{
-                          padding: "4px 12px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", border: "none",
-                          background: battery === opt.on ? v('--color-accent') : "transparent",
+                          padding: "4px 12px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", border: "none",
+                          background: battery === opt.on ? v('--color-cta') : "transparent",
                           color: battery === opt.on ? v('--color-text-on-accent') : v('--color-text-muted'),
                         }}>{opt.label}</button>
                       ))}
@@ -641,8 +637,8 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 <span style={{ display: "inline-flex", gap: 3, background: v('--color-bg-muted'), borderRadius: v('--radius-sm'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
                   {[{ on: true, label: "Ja" }, { on: false, label: "Nein" }].map(opt => (
                     <button key={String(opt.on)} onClick={() => setHeatMode(opt.on)} style={{
-                      padding: "4px 14px", borderRadius: v('--radius-sm'), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", border: "none",
-                      background: heatMode === opt.on ? v('--color-accent') : "transparent",
+                      padding: "4px 14px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, cursor: "pointer", border: "none",
+                      background: heatMode === opt.on ? v('--color-cta') : "transparent",
                       color: heatMode === opt.on ? v('--color-text-on-accent') : v('--color-text-muted'),
                     }}>{opt.label}</button>
                   ))}
@@ -735,7 +731,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
 
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-              <Link href={pvRechnerHref} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
+              <Link href={pvRechnerHref} style={{ flex: 1, padding: "12px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Im PV-Rechner mitrechnen <IconArrowRight size={iconSizes.sm} /></span>
               </Link>
               <button onClick={() => setStep(0)} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>

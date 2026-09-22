@@ -227,6 +227,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Modal"],
   },
   {
+    datei: "components/FlowSchritte.tsx",
+    name: "FlowSchritte",
+    zweck:
+      "Die Schrittanzeige über jedem Frage-Flow: nummerierte Schritte mit Namen, erledigte abgehakt und anklickbar, der aktuelle trägt die Überschrift.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/DachField.tsx",
     name: "DachField",
     zweck: "Die Dach-Frage: Form und Ausrichtung. Steht im Frageweg und noch einmal im Ergebnis.",
@@ -600,7 +610,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Icons"],
   },
   // ─── Weitere Bausteine ─────────────────────────────────────────────────────
   {

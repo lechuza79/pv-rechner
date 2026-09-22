@@ -42,7 +42,7 @@ export default function HooksClient({ payload }: { payload: HooksPayload }) {
         <div style={{ fontSize: v("--font-size-small") }}>
           <Link href="/admin/awards" style={{ color: v("--color-accent"), textDecoration: "none" }}>← Award-Rangliste</Link>
         </div>
-        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, color: v("--color-text-primary"), margin: "8px 0 0" }}>
+        <h1 style={{ color: v("--color-text-primary"), margin: "8px 0 0" }}>
           Anschreiben-Aufhänger je Gemeinde
         </h1>
         <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: space.xs, maxWidth: 660, lineHeight: 1.5 }}>
@@ -93,7 +93,7 @@ export default function HooksClient({ payload }: { payload: HooksPayload }) {
             <option value="0">lokal (Kreis) zuerst</option>
           </SelectField>
         </Field>
-        <button type="submit" style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-on-accent"), background: v("--color-accent"), border: "none", borderRadius: v("--radius-sm"), padding: pad("sm", "lg"), cursor: "pointer" }}>
+        <button type="submit" style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-on-accent"), background: v("--color-cta"), border: "none", borderRadius: v("--radius-pill"), padding: pad("sm", "lg"), cursor: "pointer" }}>
           Anwenden
         </button>
       </form>

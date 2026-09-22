@@ -5,7 +5,7 @@ import Klimaanlage from "./klimaanlage";
 
 export const metadata: Metadata = pageMetadata({
   path: "/klimaanlage-stromkosten",
-  title: "Klimaanlagen-Rechner – Stromkosten & Verbrauch ehrlich berechnet",
+  title: "Klimaanlage: Stromkosten & Verbrauch berechnen",
   description:
     "Was kostet eine Klimaanlage im Betrieb? Monoblock, mobile Split oder fest installiert — Stromverbrauch, Kosten und CO₂ aus echten Wetterdaten. Auch als Heizung in der Übergangszeit, plus wie viel deine Solaranlage übernimmt. Kostenlos, ohne Anmeldung.",
   ogImageTitle: "Was kostet deine Klimaanlage?",

@@ -80,9 +80,9 @@ function splitValueUnit(formatted: string): [string, string] {
 function rangeButtonStyle(active: boolean) {
   return {
     padding: "6px 10px",
-    borderRadius: v("--radius-sm"),
+    borderRadius: v("--radius-pill"),
     border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
-    background: active ? v("--color-accent") : v("--color-bg"),
+    background: active ? v("--color-cta") : v("--color-bg"),
     color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
     fontSize: v("--font-size-caption"),
     fontWeight: 600 as const,
@@ -370,7 +370,7 @@ export default function EnergieClient() {
     <div style={{ maxWidth: 640, margin: "0 auto" }}>
       {/* Hero */}
       <div style={{ textAlign: "center", marginBottom: 28 }}>
-        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+        <h1 style={{}}>
           Strommix Deutschland – live
         </h1>
         <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: 6, lineHeight: 1.5 }}>
@@ -674,9 +674,9 @@ export default function EnergieClient() {
                 onClick={refetch}
                 style={{
                   padding: "8px 20px",
-                  borderRadius: v("--radius-sm"),
+                  borderRadius: v("--radius-pill"),
                   border: `1px solid ${v("--color-accent")}`,
-                  background: v("--color-accent"),
+                  background: v("--color-cta"),
                   color: v("--color-text-on-accent"),
                   fontSize: v("--font-size-small"),
                   fontWeight: 600,

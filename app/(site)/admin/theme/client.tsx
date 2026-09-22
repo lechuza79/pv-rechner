@@ -38,7 +38,9 @@ const tokenGroups: { label: string; prefix: string }[] = [
  */
 const TEXTSTUFEN = [
   { token: "--font-size-h1" as const, weight: 800, label: "Seitentitel" },
+  { token: "--font-size-h1-eng" as const, weight: 800, label: "Seitentitel, untere Stufe (schmaler Schirm)" },
   { token: "--font-size-h2" as const, weight: 800, label: "Abschnitts-Überschrift" },
+  { token: "--font-size-h2-eng" as const, weight: 800, label: "Abschnitts-Überschrift, untere Stufe" },
   { token: "--font-size-h3" as const, weight: 700, label: "Kleine Überschrift" },
   { token: "--font-size-lead" as const, weight: 700, label: "Lead, Kartentitel" },
   { token: "--font-size-body" as const, weight: 400, label: "Fließtext, Navigation, Fußzeile, Eingabefelder" },
@@ -268,35 +270,35 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <button style={{
-              padding: "14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
-              background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
+              padding: "14px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700,
+              background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               fontFamily: v('--font-text'), width: "100%",
             }}>
               Primary CTA — Ergebnis anzeigen →
             </button>
             <div style={{ display: "flex", gap: 8 }}>
               <button style={{
-                flex: 1, padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 600,
+                flex: 1, padding: "10px 20px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 600,
                 background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
               }}>
                 Secondary — Zurück
               </button>
               <button style={{
-                flex: 1, padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
-                background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
+                flex: 1, padding: "10px 32px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700,
+                background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               }}>
                 Weiter →
               </button>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button style={{
-                padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
+                padding: "8px 14px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                 background: v('--color-accent-dim'), border: `1.5px solid ${v('--color-accent')}`, color: v('--color-accent'),
               }}>
                 Quick Setting aktiv
               </button>
               <button style={{
-                padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
+                padding: "8px 14px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                 background: v('--color-bg'), border: `1.5px solid ${v('--color-border')}`, color: v('--color-text-secondary'),
               }}>
                 Quick Setting inaktiv

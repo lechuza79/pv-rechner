@@ -204,7 +204,7 @@ export default function SimulationPanel({
   const ctaHref = `/photovoltaik-rechner?a=${ctaIdx}${/^\d{5}$/.test(plz) ? `&plz=${plz}` : ""}`;
   const ctaStyle: React.CSSProperties = {
     display: "block", textAlign: "center", padding: "14px 20px",
-    borderRadius: v('--radius-md'), background: v('--color-accent'),
+    borderRadius: v("--radius-pill"), background: v('--color-cta'),
     color: v('--color-text-on-accent'), fontSize: v("--font-size-body"), fontWeight: 700,
     textDecoration: "none",
   };
@@ -240,8 +240,8 @@ export default function SimulationPanel({
           ) : plz.length === 5 && (
             <button type="submit" aria-label="Anzeigen" style={{
               position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
-              width: 38, height: 38, borderRadius: v('--radius-sm'),
-              background: v('--color-accent'), color: v('--color-text-on-accent'),
+              width: 38, height: 38, borderRadius: v("--radius-pill"),
+              background: v('--color-cta'), color: v('--color-text-on-accent'),
               border: "none", cursor: "pointer", fontSize: v("--font-size-lead"), fontWeight: 700,
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
@@ -291,8 +291,8 @@ export default function SimulationPanel({
           <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
             {PERSONEN.map((p, i) => (
               <button key={i} onClick={() => setPersonenIdx(i)} style={{
-                flex: 1, padding: "6px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
-                background: personenIdx === i ? v('--color-accent') : v('--color-bg-muted'),
+                flex: 1, padding: "6px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v("--radius-pill"), cursor: "pointer",
+                background: personenIdx === i ? v('--color-cta') : v('--color-bg-muted'),
                 color: personenIdx === i ? v('--color-text-on-accent') : v('--color-text-secondary'),
                 border: personenIdx === i ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
               }}>
@@ -304,8 +304,8 @@ export default function SimulationPanel({
           <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
             {NUTZUNG.map((n, i) => (
               <button key={i} onClick={() => setNutzungIdx(i)} style={{
-                flex: 1, padding: "6px 2px", fontSize: v("--font-size-micro"), fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
-                background: nutzungIdx === i ? v('--color-accent') : v('--color-bg-muted'),
+                flex: 1, padding: "6px 2px", fontSize: v("--font-size-micro"), fontWeight: 600, borderRadius: v("--radius-pill"), cursor: "pointer",
+                background: nutzungIdx === i ? v('--color-cta') : v('--color-bg-muted'),
                 color: nutzungIdx === i ? v('--color-text-on-accent') : v('--color-text-secondary'),
                 border: nutzungIdx === i ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
                 lineHeight: 1.2,
@@ -317,24 +317,24 @@ export default function SimulationPanel({
           {/* WP + E-Auto */}
           <div style={{ display: "flex", gap: 8 }}>
             <button onClick={() => setWpActive(!wpActive)} style={{
-              flex: 1, padding: "7px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
-              background: wpActive ? v('--color-accent') : v('--color-bg-muted'),
+              flex: 1, padding: "7px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v("--radius-pill"), cursor: "pointer",
+              background: wpActive ? v('--color-cta') : v('--color-bg-muted'),
               color: wpActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
               border: wpActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
             }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Wärmepumpe {wpActive ? <IconCheck size={iconSizes.sm} /> : ""}</span>
             </button>
             <button onClick={() => setEaActive(!eaActive)} style={{
-              flex: 1, padding: "7px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
-              background: eaActive ? v('--color-accent') : v('--color-bg-muted'),
+              flex: 1, padding: "7px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v("--radius-pill"), cursor: "pointer",
+              background: eaActive ? v('--color-cta') : v('--color-bg-muted'),
               color: eaActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
               border: eaActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
             }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>E-Auto {eaActive ? <IconCheck size={iconSizes.sm} /> : ""}</span>
             </button>
             <button onClick={() => setKlimaActive(!klimaActive)} style={{
-              flex: 1, padding: "7px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
-              background: klimaActive ? v('--color-accent') : v('--color-bg-muted'),
+              flex: 1, padding: "7px 0", fontSize: v("--font-size-small"), fontWeight: 600, borderRadius: v("--radius-pill"), cursor: "pointer",
+              background: klimaActive ? v('--color-cta') : v('--color-bg-muted'),
               color: klimaActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
               border: klimaActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
             }}>

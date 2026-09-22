@@ -58,7 +58,7 @@ export default async function GruppePage({
         <Link href="/admin/awards/anschreiben" style={{ color: v("--color-accent"), textDecoration: "none" }}>← Anschreiben-Aufhänger</Link>
       </div>
       <header>
-        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, color: v("--color-text-primary"), margin: 0 }}>{cat.label}</h1>
+        <h1 style={{ color: v("--color-text-primary"), margin: 0 }}>{cat.label}</h1>
         <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: space.xs }}>
           {levelKey === "bund" ? "bundesweit" : ortPhrase({ name: scopeName, level: levelKey === "land" ? "bundesland" : undefined })} · {nf(ranked.length)} wertbare Gemeinden ·{" "}
           {cat.messart === "proKopf" ? "pro Kopf" : "absolut"}

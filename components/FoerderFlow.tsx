@@ -318,7 +318,7 @@ const zusammen: React.CSSProperties = {
 const neuKnopf: React.CSSProperties = {
   marginTop: space.md,
   padding: "10px 20px",
-  borderRadius: v("--radius-md"),
+  borderRadius: v("--radius-pill"),
   fontSize: v("--font-size-body"),
   fontWeight: 600,
   background: "transparent",

@@ -7,7 +7,7 @@ import { recommend, economicsForScenario } from "../../../lib/recommend";
 import { pvCapacityParams } from "../../../lib/pv-capacity-params";
 import ScenarioTabs from "../../../components/ScenarioTabs";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
-import { AccordionField } from "../../../components/AccordionField";
+import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import { trackFunnelStep, type Funnel } from "../../../lib/analytics";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
 import OptionCard from "../../../components/OptionCard";
@@ -21,11 +21,12 @@ import { type StandSeite } from "../../../lib/stand-format";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
-import { v, iconSizes } from "../../../lib/theme";
+import { v, iconSizes, space } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import { IconArrowRight, IconChevronDown, IconRefresh } from "../../../components/Icons";
 import FlowNav from "../../../components/FlowNav";
+import FlowSchritte from "../../../components/FlowSchritte";
 import KlebenderKnopf, { LEISTE_BASIS, LEISTE_NEBEN } from "../../../components/KlebenderKnopf";
 
 // ─── URL slug mappings (sprechende Werte statt Indizes) ─────────────────────
@@ -86,21 +87,17 @@ const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS];
 // Adresse, damit der Flow dort NICHT herausführt. Ohne diesen Parameter hätte
 // der Empfehlungsweg den Besucher mitten im Vorgang auf solar-check.io
 // abgesetzt — mit dem Ergebnis, aber ohne den Betrieb, der ihn geschickt hat.
-//
-// `heimPfad` ist das Ziel des Zurück-Knopfes im ERSTEN Schritt — dort führt er
-// aus dem Flow heraus. Auf unserer Seite ist das die Startseite. Auf der Seite
-// eines Fachbetriebs gibt es keine: `null` lässt den Knopf dort ganz weg,
-// statt den Besucher auf solar-check.io abzusetzen.
 export default function Empfehlung({
   stand,
   zielPfad = "/photovoltaik-rechner",
-  heimPfad = "/",
-  eigenerPfad = "/pv-bedarf-berechnen",
+  eigenerPfad = "/photovoltaik-rechner",
   ohneZwischenansicht = false,
+  ueberschrift = "Was passt zu dir?",
+  unterzeile = "Wir empfehlen dir die optimale Anlage.",
+  direktHref,
 }: {
   stand?: StandSeite;
   zielPfad?: string;
-  heimPfad?: string | null;
   /** Die Adresse, unter der dieser Flow gerade läuft. Er schreibt seinen
    *  Zustand dorthin zurück. */
   eigenerPfad?: string;
@@ -111,6 +108,14 @@ export default function Empfehlung({
    *  danach nicht auch dasteht. Auf unserer eigenen Seite bleibt die
    *  Zwischenansicht — sie ist dort eine eigene, verlinkbare Seite. */
   ohneZwischenansicht?: boolean;
+  /** Seitenüberschrift und Zeile darunter. Auf unserer eigenen Rechner-Adresse
+   *  trägt die Überschrift den Suchbegriff („PV-Rechner"); auf der Seite eines
+   *  Fachbetriebs bleibt die Frage, weil dort der Kopf den Betrieb nennt. */
+  ueberschrift?: string;
+  unterzeile?: string;
+  /** Der Einstieg für alle, die ihre Anlagengröße schon kennen. Nur auf unserer
+   *  eigenen Seite — ein Fachbetrieb bietet diese Abzweigung nicht an. */
+  direktHref?: string;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -356,6 +361,8 @@ export default function Empfehlung({
   };
 
   const STEPS = ["Dein Haus", "Dein Haushalt", "Großverbraucher"];
+  // One word each for the step indicator; the current one is the step heading.
+  const SCHRITT_NAMEN = ["Haus", "Haushalt", "Verbraucher"];
   // Ereignis je erreichtem Schritt, Reihenfolge wie STEPS, danach das Ergebnis.
   // Bis 29.08.2026 meldete dieser Flow NUR das Ergebnis — wo jemand abbricht,
   // war unsichtbar. Länge und Reihenfolge sind festgenagelt (siehe `lib/analytics.ts`).
@@ -540,38 +547,48 @@ export default function Empfehlung({
         {folgeToast}
       </Toast>
 
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
+      <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
 
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Was passt zu dir?</h1>
-          <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>Wir empfehlen dir die optimale Anlage.</p>
+        {/* Klein gehalten: Der Fokus gehört der ersten Frage, nicht dem Titel. */}
+        <div style={{ textAlign: "center", marginBottom: 16 }}>
+          <h1 style={{ color: v('--color-text-primary'), fontSize: v('--font-size-h2') }}>{ueberschrift}</h1>
+          <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>{unterzeile}</p>
         </div>
 
         {/* Progress */}
-        {!isRecommendation && (
-          <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
-            {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? v('--color-accent') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
-            ))}
-          </div>
-        )}
+        {!isRecommendation && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} onSprung={setWizardStep} />}
 
         {/* ── STEPS ── */}
         {!isRecommendation && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18, color: v('--color-text-primary') }}>{STEPS[step]}</h2>
 
             {/* Step 0: Haus + Dach */}
             {step === 0 && (
               <div>
-                <div style={{ fontSize: v("--font-size-small"), fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Haustyp</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
-                  {HAUSTYPEN.map((h, i) => (
-                    <OptionCard key={i} group="haustyp" selected={beantwortet.has("haustyp") && haustyp === i} onClick={() => { setHaustyp(i); markBeantwortet("haustyp"); }} label={h.label} sub={h.sub} />
-                  ))}
-                </div>
+                {/* Eine Frage nach der anderen, jede klappt nach der Wahl zu
+                    einer Zeile ein — dasselbe Muster wie die Dach-Fragen
+                    darunter und die Verfeinerung im Wärmepumpen-Rechner.
+                    Der Haustyp steht vorn, weil er die Dachfläche trägt. */}
+                <AccordionField
+                  label="Haustyp"
+                  open={!beantwortet.has("haustyp") || gvEditing === "haustyp"}
+                  answered={beantwortet.has("haustyp")}
+                  summary={HAUSTYPEN[haustyp].label}
+                  onEdit={() => setGvEditing("haustyp")}
+                >
+                  <ChoiceButtons
+                    options={HAUSTYPEN}
+                    columns={2}
+                    selected={beantwortet.has("haustyp") ? haustyp : null}
+                    onSelect={i => { setHaustyp(i); markBeantwortet("haustyp"); setGvEditing(null); }}
+                    render={h => h.label}
+                    sub={h => h.sub}
+                  />
+                </AccordionField>
+                {beantwortet.has("haustyp") && gvEditing !== "haustyp" && (
                 <div style={{ marginBottom: 16 }}>
                   <DachField
+                    karten
                     dachartIdx={dachart}
                     setDachartIdx={setDachart}
                     ausrichtung={ausrichtung}
@@ -586,8 +603,11 @@ export default function Empfehlung({
                     hinweis={dachErtragHinweis(effErtragKwp, dachart, ausrichtung, ertragKwp !== null, neigungGrad)}
                   />
                 </div>
+                )}
 
-                {/* Berechnete Dachfläche + Override */}
+                {/* Berechnete Dachfläche + Override — erst, wenn Haus und Dach
+                    stehen; vorher wäre die Zahl eine Schätzung ohne Grundlage. */}
+                {beantwortet.has("haustyp") && dachAnswered.has("dach-form") && dachAnswered.has("dach-ausrichtung") && gvEditing === null && (
                 <div style={{
                   background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "12px 14px",
                   border: `1px solid ${v('--color-border')}`,
@@ -618,6 +638,7 @@ export default function Empfehlung({
                     </span>
                   </div>
                 </div>
+                )}
               </div>
             )}
 
@@ -732,17 +753,9 @@ export default function Empfehlung({
                     : "Weiter"
                 }
                 onWeiter={next}
-                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
-                // Startseite — dieselbe Wirkung wie vorher, nur im gemeinsamen
-                // Baustein statt als eigener Link daneben. Ohne Heimatadresse
-                // (Partnerseite) entfällt der Knopf dort.
-                onZurueck={
-                  step > 0
-                    ? back
-                    : heimPfad
-                      ? () => router.push(heimPfad)
-                      : undefined
-                }
+                // No Zurück in the first step — the same in every calculator.
+                onZurueck={back}
+                zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
             </div>
@@ -1038,7 +1051,19 @@ export default function Empfehlung({
 
         {/* Innerhalb der Spalte, nicht dahinter — der Rahmen ist mindestens
             bildschirmhoch, und was dahinter steht, sieht niemand. */}
-        <StandNoteView seite={stand} />
+        {/* Der Seitenweg zur Direkteingabe steht UNTER dem Rechner, nicht im
+            Kopf: Oben lenkt er von der ersten Frage ab, die fast jeder
+            beantworten soll. Er übernimmt die Trennlinie der Stand-Zeile. */}
+        {direktHref && step === 0 && !isRecommendation ? (
+          <>
+            <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: space.huge, paddingTop: space.xxl, borderTop: `1px solid ${v('--color-border')}` }}>
+              Anlagengröße schon bekannt? <a href={direktHref} style={{ color: v('--color-accent'), textDecoration: "underline" }}>Direkt eingeben</a>
+            </p>
+            <StandNoteView seite={stand} style={{ marginTop: space.lg, paddingTop: 0, borderTop: "none" }} />
+          </>
+        ) : (
+          <StandNoteView seite={stand} />
+        )}
       </div>
     </div>
   );
@@ -1055,9 +1080,9 @@ function ErgebnisKnopf({ onClick }: { onClick: () => void }) {
     <button
       onClick={onClick}
       style={{
-        width: "100%", padding: "14px", borderRadius: v("--radius-md"),
+        width: "100%", padding: "14px", borderRadius: v("--radius-pill"),
         fontSize: v("--font-size-body"), fontWeight: 700,
-        background: v("--color-accent"), border: "none",
+        background: v("--color-cta"), border: "none",
         color: v("--color-text-on-accent"), cursor: "pointer",
         fontFamily: v("--font-text"),
       }}

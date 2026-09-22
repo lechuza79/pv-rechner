@@ -1,8 +1,8 @@
 "use client";
 import { useState, useMemo, useCallback, useEffect, useRef, Fragment } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import FlowNav from "../../../../components/FlowNav";
+import FlowSchritte from "../../../../components/FlowSchritte";
 import OptionCard from "../../../../components/OptionCard";
 import InlineEdit from "../../../../components/InlineEdit";
 import InfoTooltip from "../../../../components/InfoTooltip";
@@ -25,6 +25,8 @@ import { DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 
 const STEPS = ["Haushalt & Standort", "Ausrichtung"];
+// One word each for the step indicator; the current one is the step heading.
+const SCHRITT_NAMEN = ["Haushalt", "Ausrichtung"];
 
 // Klartext-Beschreibung einer Konfiguration (Set + Speicher-Entscheidung).
 function storageName(id: BalkonStorageId): string {
@@ -40,7 +42,6 @@ function configLabel(setId: BalkonSetId, storageId: BalkonStorageId): string {
 }
 
 export default function Balkon() {
-  const router = useRouter();
   const [step, setStep] = useState(0);
   // Welche Fragen wirklich beantwortet sind. Die Werte behalten ihre Startwerte
   // (die Rechnung braucht sie), geben sich aber nicht mehr als Auswahl aus —
@@ -369,31 +370,26 @@ export default function Balkon() {
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
-            {isResult ? "Deine Empfehlung" : "Lohnt sich ein Balkonkraftwerk?"}
+      <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
+          {/* In the question steps as small as the PV calculator's head: the focus
+              belongs to the first question, not the title. */}
+          <h1 style={isResult ? {} : { fontSize: v('--font-size-h2') }}>
+            {isResult ? "Deine Empfehlung" : "Balkonkraftwerk-Rechner"}
           </h1>
           {!isResult && (
             <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
-              Für Miete und Eigentum ohne eigenes Dach. Wir empfehlen dir die passende Größe — mit oder ohne Speicher.
+              Lohnt sich ein Balkonkraftwerk für dich? Für Miete und Eigentum ohne eigenes Dach — wir empfehlen dir die passende Größe, mit oder ohne Speicher.
             </p>
           )}
         </div>
 
         {/* Progress */}
-        {!isResult && (
-          <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
-            {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? v('--color-accent') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
-            ))}
-          </div>
-        )}
+        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} onSprung={setStep} />}
 
         {/* ── STEPS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18 }}>{STEPS[step]}</h2>
 
             {/* 0: Haushalt & Standort */}
             {step === 0 && (
@@ -442,9 +438,9 @@ export default function Balkon() {
                     }}
                   />
                   <button type="submit" disabled={plz.length !== 5 || plzLoading || plzConfirmed} style={{
-                    padding: "0 18px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
+                    padding: "0 18px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
                     border: "none", cursor: plz.length === 5 && !plzConfirmed ? "pointer" : "default",
-                    background: plzConfirmed ? v('--color-positive') : plz.length === 5 ? v('--color-accent') : v('--color-bg-muted'),
+                    background: plzConfirmed ? v('--color-positive') : plz.length === 5 ? v('--color-cta') : v('--color-bg-muted'),
                     color: plzConfirmed || plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
                   }}>
                     {plzLoading ? "…" : plzConfirmed
@@ -482,9 +478,9 @@ export default function Balkon() {
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Empfehlung anzeigen" : "Weiter"}
                 onWeiter={next}
-                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
-                // Startseite — wie vorher, nur im gemeinsamen Baustein.
-                onZurueck={step > 0 ? back : () => router.push("/")}
+                // No Zurück in the first step — the same in every calculator.
+                onZurueck={back}
+                zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
             </div>
@@ -503,8 +499,8 @@ export default function Balkon() {
             style={{
               position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
               zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)", cursor: "pointer",
-              background: v('--color-accent'), color: v('--color-text-on-accent'),
-              borderRadius: v('--radius-md'), padding: "12px 16px",
+              background: v('--color-cta'), color: v('--color-text-on-accent'),
+              borderRadius: v("--radius-pill"), padding: "12px 16px",
               boxShadow: "0 6px 24px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 10,
               fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.4,
             }}
@@ -562,8 +558,8 @@ export default function Balkon() {
                 display: "inline-flex", alignItems: "center", gap: 6,
               }}>
                 <span aria-hidden style={{
-                  width: 38, height: 22, borderRadius: 11, flexShrink: 0, position: "relative", display: "inline-block",
-                  background: storageOn ? v('--color-accent') : v('--color-border-muted'), transition: "background 0.2s",
+                  width: 38, height: 22, borderRadius: v("--radius-pill"), flexShrink: 0, position: "relative", display: "inline-block",
+                  background: storageOn ? v('--color-cta') : v('--color-border-muted'), transition: "background 0.2s",
                 }}>
                   <span style={{
                     position: "absolute", top: 3, left: storageOn ? 19 : 3, width: 16, height: 16, borderRadius: "50%",
@@ -678,7 +674,7 @@ export default function Balkon() {
                         aria-pressed={wohnform === id}
                         onClick={() => setWohnform(wohnform === id ? null : id)}
                         style={{
-                          padding: "6px 12px", borderRadius: v("--radius-md"), cursor: "pointer", fontSize: v("--font-size-small"),
+                          padding: "6px 12px", borderRadius: v("--radius-pill"), cursor: "pointer", fontSize: v("--font-size-small"),
                           border: `1px solid ${wohnform === id ? v("--color-accent") : v("--color-border")}`,
                           background: wohnform === id ? v("--color-bg-accent") : v("--color-bg"),
                           color: v("--color-text-primary"),
@@ -789,7 +785,7 @@ export default function Balkon() {
 
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-              <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
+              <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Eigenes Dach? Große Anlage rechnen <IconArrowRight size={iconSizes.sm} /></span>
               </Link>
               <button onClick={resetAll} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>

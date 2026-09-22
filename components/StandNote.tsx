@@ -1,4 +1,4 @@
-import { STAND } from "../lib/stand";
+import { standSeite } from "../lib/stand";
 import StandNoteView from "./StandNoteView";
 
 /**
@@ -17,5 +17,5 @@ import StandNoteView from "./StandNoteView";
  * Nachschlagen.
  */
 export default function StandNote({ pfad, style }: { pfad: string; style?: React.CSSProperties }) {
-  return <StandNoteView seite={STAND[pfad]} style={style} />;
+  return <StandNoteView seite={standSeite(pfad)} style={style} />;
 }

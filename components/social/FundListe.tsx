@@ -436,10 +436,10 @@ function knopf(betont: boolean): React.CSSProperties {
   return {
     font: "inherit",
     fontSize: v("--font-size-small"),
-    background: betont ? v("--color-accent") : "transparent",
+    background: betont ? v("--color-cta") : "transparent",
     color: betont ? v("--color-text-on-accent") : v("--color-text-muted"),
     border: `1px solid ${betont ? "transparent" : v("--color-border")}`,
-    borderRadius: v("--radius-sm"),
+    borderRadius: v("--radius-pill"),
     padding: pad("xs", "sm"),
     cursor: "pointer",
     display: "inline-flex",

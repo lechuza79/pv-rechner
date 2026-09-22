@@ -37,10 +37,10 @@ export const metadata: Metadata = pageMetadata({
 
 const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.25, marginBottom: 10 },
+  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  h1: { marginBottom: 10 },
   lede: { fontSize: v("--font-size-lead"), color: v("--color-text-muted"), marginBottom: 28, lineHeight: 1.6 },
-  h2: { fontSize: v("--font-size-h2"), fontWeight: 700, marginTop: 30, marginBottom: 8 },
+  h2: { marginTop: 30, marginBottom: 8 },
   p: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: 12 },
   strong: { fontWeight: 700, color: v("--color-text-primary") },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
@@ -87,7 +87,7 @@ const S = {
     width: 26,
     height: 26,
     borderRadius: "50%",
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     color: v("--color-text-on-accent"),
     fontSize: v("--font-size-small"),
     fontWeight: 700,

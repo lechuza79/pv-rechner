@@ -33,6 +33,19 @@ export interface StandEintrag {
    * (siehe `standLastModIso`).
    */
   wertIso?: string;
+  /** Name des Prüfdatums im Prüfstand (`lib/pruefstand.ts`), an dem Rhythmus
+   *  und Frist dieser Zeile hängen. */
+  feld?: string;
+  /** Letzter Tag, an dem die Prüfung noch als aktuell gilt — Prüftag plus die
+   *  erlaubte Frist aus dem Prüfstand. Wird aufgelöst, nie getippt. */
+  gueltigBisIso?: string;
+}
+
+/** Trägt diese Zeile die Auszeichnung „aktuell"? Nur mit einer echten Frist aus
+ *  dem Prüfstand, und nur solange sie nicht verstrichen ist — sonst behauptete
+ *  die Seite eine Aktualität, die niemand mehr bestätigt. */
+export function istAktuell(e: StandEintrag, heuteIso: string): boolean {
+  return e.praezision === "tag" && !!e.gueltigBisIso && heuteIso <= e.gueltigBisIso;
 }
 
 export interface StandSeite {

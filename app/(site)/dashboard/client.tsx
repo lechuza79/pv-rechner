@@ -92,16 +92,16 @@ export default function DashboardClient({
   return (
     <div style={{ fontFamily: v('--font-text'), color: v('--color-text-primary') }}>
 
-      <div style={{ maxWidth: v('--page-max-width') }}>
+      <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size" }}>
 
-        <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, marginBottom: 4 }}>Meine Berechnungen</h1>
+        <h1 style={{ marginBottom: 4 }}>Meine Berechnungen</h1>
         <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginBottom: 20 }}>{userEmail}</p>
 
         {/* Neue Berechnung Button */}
         <Link href="/" style={{
-          display: "block", width: "100%", padding: "14px", borderRadius: v('--radius-md'),
+          display: "block", width: "100%", padding: "14px", borderRadius: v("--radius-pill"),
           fontSize: v("--font-size-body"), fontWeight: 700, textAlign: "center",
-          background: v('--color-accent'), color: v('--color-text-on-accent'), textDecoration: "none",
+          background: v('--color-cta'), color: v('--color-text-on-accent'), textDecoration: "none",
           marginBottom: 20,
         }}>
 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconPlus size={iconSizes.md} /> Neue Berechnung</span>
@@ -166,8 +166,8 @@ export default function DashboardClient({
                     />
                     <div style={{ display: "flex", gap: 8 }}>
                       <button onClick={saveEdit} style={{
-                        flex: 1, padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600,
-                        background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
+                        flex: 1, padding: "8px 12px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600,
+                        background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
                         fontFamily: v('--font-text'),
                       }}>
                         Speichern

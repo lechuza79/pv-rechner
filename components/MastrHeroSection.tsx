@@ -335,9 +335,9 @@ function TraegerSwitch({
           fontWeight: active ? 600 : 400,
           whiteSpace: "nowrap",
           color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
-          background: active ? v("--color-accent") : "transparent",
+          background: active ? v("--color-cta") : "transparent",
           border: "none",
-          borderRadius: 7,
+          borderRadius: v("--radius-pill"),
           cursor: "pointer",
           transition: "background 120ms, color 120ms",
         }}
@@ -820,9 +820,9 @@ function StaleBanner({
             fontSize: v("--font-size-small"),
             fontWeight: 600,
             color: v("--color-text-on-accent"),
-            background: v("--color-accent"),
+            background: v("--color-cta"),
             border: "none",
-            borderRadius: 6,
+            borderRadius: v("--radius-pill"),
             cursor: "pointer",
           }}
         >
@@ -855,9 +855,9 @@ function ErrorKachel({ message, onRetry }: { message: string; onRetry: () => voi
           fontSize: v("--font-size-small"),
           fontWeight: 600,
           color: v("--color-text-on-accent"),
-          background: v("--color-accent"),
+          background: v("--color-cta"),
           border: "none",
-          borderRadius: 8,
+          borderRadius: v("--radius-pill"),
           cursor: "pointer",
           justifySelf: "start",
         }}

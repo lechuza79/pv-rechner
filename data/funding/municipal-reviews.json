@@ -875,7 +875,7 @@
   {
     "regionId": "07143253",
     "name": "Langenbach b. Kirburg",
-    "checkedAt": "2026-09-17T10:06:34.758882+00:00",
+    "checkedAt": "2026-09-22T12:04:11Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -975,6 +975,12 @@
         "disposition": "replaced",
         "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozgleistung mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der VG Bad Marienberg vom 26.01.2026 am 22.09.2026 erneut im Original gelesen (22 Seiten): Position 3.8 „Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke … 100 EUR / Kilowatt pauschal, maximal 600 EUR“ — unverändert; ist das bereits geführte VG-Programm.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
       }
     ]
   },
@@ -1262,7 +1268,7 @@
   {
     "regionId": "07143277",
     "name": "Nisterau",
-    "checkedAt": "2026-09-17T10:06:34.758882+00:00",
+    "checkedAt": "2026-09-22T12:04:11Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -1362,13 +1368,19 @@
         "disposition": "replaced",
         "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozgleistung mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der VG Bad Marienberg vom 26.01.2026 am 22.09.2026 erneut im Original gelesen (22 Seiten): Position 3.8 „Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke … 100 EUR / Kilowatt pauschal, maximal 600 EUR“ — unverändert; ist das bereits geführte VG-Programm.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
       }
     ]
   },
   {
     "regionId": "07143279",
     "name": "Nistertal",
-    "checkedAt": "2026-09-17T10:06:34.758882+00:00",
+    "checkedAt": "2026-09-22T12:04:11Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -1468,13 +1480,19 @@
         "disposition": "replaced",
         "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozgleistung mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der VG Bad Marienberg vom 26.01.2026 am 22.09.2026 erneut im Original gelesen (22 Seiten): Position 3.8 „Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke … 100 EUR / Kilowatt pauschal, maximal 600 EUR“ — unverändert; ist das bereits geführte VG-Programm.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
       }
     ]
   },
   {
     "regionId": "07143280",
     "name": "Norken",
-    "checkedAt": "2026-09-17T10:06:34.758882+00:00",
+    "checkedAt": "2026-09-22T12:04:11Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -1574,6 +1592,12 @@
         "disposition": "replaced",
         "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozgleistung mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der VG Bad Marienberg vom 26.01.2026 am 22.09.2026 erneut im Original gelesen (22 Seiten): Position 3.8 „Stromspeicher für Photovoltaikanlagen sowie Balkonkraftwerke … 100 EUR / Kilowatt pauschal, maximal 600 EUR“ — unverändert; ist das bereits geführte VG-Programm.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
       }
     ]
   },
@@ -4797,7 +4821,7 @@
   {
     "regionId": "13076029",
     "name": "Demen",
-    "checkedAt": "2026-09-18T06:15:00Z",
+    "checkedAt": "2026-09-22T12:04:11Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -4846,6 +4870,10 @@
       {
         "url": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union",
         "finding": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "finding": "Am 22.09.2026 im Original gelesen: Eintrag „Externe Nutzer, Kategorie: Unternehmen“ im Firmenverzeichnis der Amtsseite. Ein Solarinstallateur aus Banzkow wirbt dort mit „400€ Cashback“ für geworbene Kunden; die Seite trägt den Hinweis, dass das Unternehmen selbst verantwortlich ist. Kein kommunaler Zuschuss."
       }
     ],
     "sources": [
@@ -4884,6 +4912,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte.",
         "evidenceUrl": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union"
+      },
+      {
+        "url": "amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "disposition": "reviewed",
+        "reason": "Am 22.09.2026 im Original gelesen: Eintrag „Externe Nutzer, Kategorie: Unternehmen“ im Firmenverzeichnis der Amtsseite. Ein Solarinstallateur aus Banzkow wirbt dort mit „400€ Cashback“ für geworbene Kunden; die Seite trägt den Hinweis, dass das Unternehmen selbst verantwortlich ist. Kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma"
       }
     ]
   },
@@ -5004,7 +5038,7 @@
   {
     "regionId": "13076038",
     "name": "Friedrichsruhe",
-    "checkedAt": "2026-09-18T06:15:00Z",
+    "checkedAt": "2026-09-22T12:04:11Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -5053,6 +5087,10 @@
       {
         "url": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union",
         "finding": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "finding": "Am 22.09.2026 im Original gelesen: Eintrag „Externe Nutzer, Kategorie: Unternehmen“ im Firmenverzeichnis der Amtsseite. Ein Solarinstallateur aus Banzkow wirbt dort mit „400€ Cashback“ für geworbene Kunden; die Seite trägt den Hinweis, dass das Unternehmen selbst verantwortlich ist. Kein kommunaler Zuschuss."
       }
     ],
     "sources": [
@@ -5091,6 +5129,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte.",
         "evidenceUrl": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union"
+      },
+      {
+        "url": "amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "disposition": "reviewed",
+        "reason": "Am 22.09.2026 im Original gelesen: Eintrag „Externe Nutzer, Kategorie: Unternehmen“ im Firmenverzeichnis der Amtsseite. Ein Solarinstallateur aus Banzkow wirbt dort mit „400€ Cashback“ für geworbene Kunden; die Seite trägt den Hinweis, dass das Unternehmen selbst verantwortlich ist. Kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma"
       }
     ]
   },
@@ -5397,7 +5441,7 @@
   {
     "regionId": "13076117",
     "name": "Raben Steinfeld",
-    "checkedAt": "2026-09-18T06:15:00Z",
+    "checkedAt": "2026-09-22T12:04:11Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -5446,6 +5490,10 @@
       {
         "url": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union",
         "finding": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "finding": "Am 22.09.2026 im Original gelesen: Eintrag „Externe Nutzer, Kategorie: Unternehmen“ im Firmenverzeichnis der Amtsseite. Ein Solarinstallateur aus Banzkow wirbt dort mit „400€ Cashback“ für geworbene Kunden; die Seite trägt den Hinweis, dass das Unternehmen selbst verantwortlich ist. Kein kommunaler Zuschuss."
       }
     ],
     "sources": [
@@ -5484,6 +5532,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte.",
         "evidenceUrl": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union"
+      },
+      {
+        "url": "amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "disposition": "reviewed",
+        "reason": "Am 22.09.2026 im Original gelesen: Eintrag „Externe Nutzer, Kategorie: Unternehmen“ im Firmenverzeichnis der Amtsseite. Ein Solarinstallateur aus Banzkow wirbt dort mit „400€ Cashback“ für geworbene Kunden; die Seite trägt den Hinweis, dass das Unternehmen selbst verantwortlich ist. Kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma"
       }
     ]
   },
@@ -39147,7 +39201,7 @@
   {
     "regionId": "03355030",
     "name": "Reinstorf",
-    "checkedAt": "2026-09-21T00:25:35Z",
+    "checkedAt": "2026-09-22T12:04:11Z",
     "recheckAt": "2027-03-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -39177,6 +39231,18 @@
         "disposition": "reviewed",
         "reason": "Förderseite der Samtgemeinde im Original gelesen; sie verlinkt alle vier Richtlinien.",
         "evidenceUrl": "https://www.ostheide.de/buergerservice/bleiben-sie-informiert/foerderprogramme.html"
+      },
+      {
+        "url": "ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 22.09.2026 erneut im Original gelesen: „werden mit 10%, maximal mit 500,00 €, bezuschusst“, „Balkonkraftwerke … werden nicht bezuschusst“ — unverändert, ist das bereits geführte Programm ostheide-solarstrom.",
+        "evidenceUrl": "https://www.ostheide.de/_Resources/Persistent/b/f/a/2/bfa202efc1e39837354a923452e12f7586af50b3/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solarstromerzeugung_12.03.2024.pdf"
+      },
+      {
+        "url": "ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf",
+        "disposition": "reviewed",
+        "reason": "Am 22.09.2026 erneut im Original gelesen: Solarthermie-Richtlinie, 300 € je Wohneinheit, höchstens 900 € — Wärme, keine unserer Techniken; unverändert.",
+        "evidenceUrl": "https://www.ostheide.de/_Resources/Persistent/c/e/4/7/ce479092c8eda2f56cd4bc67732f012cb3a39d6c/Foerderrichtlinie_fuer_die_Bezuschussung_von_Solaranlagen_zur_Solarthermie_12.03.2024.pdf"
       }
     ]
   },
@@ -45512,6 +45578,1643 @@
         "disposition": "reviewed",
         "reason": "EU-Fonds-Seite nennt nur kommunale Bauvorhaben; kein Bürgerzuschuss.",
         "evidenceUrl": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01055014",
+    "name": "Göhl",
+    "checkedAt": "2026-09-22T10:25:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Göhl gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      }
+    ]
+  },
+  {
+    "regionId": "01055015",
+    "name": "Gremersdorf",
+    "checkedAt": "2026-09-22T10:25:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gremersdorf gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      }
+    ]
+  },
+  {
+    "regionId": "01055017",
+    "name": "Großenbrode",
+    "checkedAt": "2026-09-22T10:25:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Großenbrode gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "replaced",
+        "reason": "Lebenslagen-Seite „Infrastruktur-, Bau- und Wohnförderung“ ist entfernt (HTTP 404 am 20.09. und 22.09.2026); die Förder-Lebenslagen des Amts wurden stattdessen über die Volltextsuche geprüft (nur Behördenwegweiser des Landes, kein kommunaler Zuschuss).",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/suche"
+      }
+    ]
+  },
+  {
+    "regionId": "01055022",
+    "name": "Heringsdorf",
+    "checkedAt": "2026-09-22T10:25:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Heringsdorf gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      }
+    ]
+  },
+  {
+    "regionId": "01055031",
+    "name": "Neukirchen",
+    "checkedAt": "2026-09-22T10:25:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neukirchen gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      }
+    ]
+  },
+  {
+    "regionId": "01055043",
+    "name": "Wangels",
+    "checkedAt": "2026-09-22T10:25:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wangels gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "replaced",
+        "reason": "Lebenslagen-Seite „Infrastruktur-, Bau- und Wohnförderung“ ist entfernt (HTTP 404 am 20.09. und 22.09.2026); die Förder-Lebenslagen des Amts wurden stattdessen über die Volltextsuche geprüft (nur Behördenwegweiser des Landes, kein kommunaler Zuschuss).",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/suche"
+      }
+    ]
+  },
+  {
+    "regionId": "15090135",
+    "name": "Eichstedt (Altmark)",
+    "checkedAt": "2026-09-22T12:11:51Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Eichstedt (Altmark) gehört zur Verbandsgemeinde Arneburg-Goldbeck (Landkreis Stendal). Weder Verbandsgemeinde noch Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die sechs Fundstellen des Suchlaufs sind Meldungen über Landes-, EU- und Stiftungsprogramme (überwiegend für Unternehmen, „Sachsen-Anhalt speichert“ eingestellt); die Volltextsuche der Verbandsgemeinde findet sonst nur Bebauungspläne für Freiflächen-Solarparks. Der Balkonkraftwerk-Zuschuss nach einem Stromspar-Check kommt von der Landesenergieagentur, nicht von der Kommune.",
+    "searches": [
+      "arneburg-goldbeck.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz (22.09.2026)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/",
+        "finding": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/",
+        "finding": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/",
+        "finding": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/",
+        "finding": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/",
+        "finding": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/",
+        "finding": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/stromspar-check-fuer-private-haushalte-kommt-nach-stendal/",
+        "finding": "Caritas-Stromspar-Check mit dem Landkreis Stendal: kostenlose Beratung für Haushalte mit geringem Einkommen; danach „Über die Landesenergieagentur Sachsen-Anhalt … Zuschüsse für … Balkonkraftwerke“ — ein Landesangebot, kein Zuschuss der Verbandsgemeinde oder einer Gemeinde."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/1-projektaufruf-leader-clld-der-lokalen-aktionsgruppe-lag-altmark-mitte-e-v-fuer-die-foerderperiode-2023-bis-2027/",
+        "finding": "LEADER-Projektaufruf 2024 (EFRE/ELER/ESF+) mit Projektskizze; kein Kaufzuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Verbandsgemeinde (22.09.2026) nach Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz: Treffer nur Bebauungspläne für Freiflächen-Solarparks, Landes-/EU-/Bundesprogramme, Stromspar-Check und Solarkataster — keine kommunale Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten",
+        "disposition": "reviewed",
+        "reason": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte",
+        "disposition": "reviewed",
+        "reason": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt",
+        "disposition": "reviewed",
+        "reason": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen",
+        "disposition": "reviewed",
+        "reason": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/"
+      }
+    ]
+  },
+  {
+    "regionId": "15090180",
+    "name": "Goldbeck",
+    "checkedAt": "2026-09-22T12:11:51Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Goldbeck gehört zur Verbandsgemeinde Arneburg-Goldbeck (Landkreis Stendal). Weder Verbandsgemeinde noch Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die sechs Fundstellen des Suchlaufs sind Meldungen über Landes-, EU- und Stiftungsprogramme (überwiegend für Unternehmen, „Sachsen-Anhalt speichert“ eingestellt); die Volltextsuche der Verbandsgemeinde findet sonst nur Bebauungspläne für Freiflächen-Solarparks. Der Balkonkraftwerk-Zuschuss nach einem Stromspar-Check kommt von der Landesenergieagentur, nicht von der Kommune.",
+    "searches": [
+      "arneburg-goldbeck.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz (22.09.2026)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/",
+        "finding": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/",
+        "finding": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/",
+        "finding": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/",
+        "finding": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/",
+        "finding": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/",
+        "finding": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/stromspar-check-fuer-private-haushalte-kommt-nach-stendal/",
+        "finding": "Caritas-Stromspar-Check mit dem Landkreis Stendal: kostenlose Beratung für Haushalte mit geringem Einkommen; danach „Über die Landesenergieagentur Sachsen-Anhalt … Zuschüsse für … Balkonkraftwerke“ — ein Landesangebot, kein Zuschuss der Verbandsgemeinde oder einer Gemeinde."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/1-projektaufruf-leader-clld-der-lokalen-aktionsgruppe-lag-altmark-mitte-e-v-fuer-die-foerderperiode-2023-bis-2027/",
+        "finding": "LEADER-Projektaufruf 2024 (EFRE/ELER/ESF+) mit Projektskizze; kein Kaufzuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Verbandsgemeinde (22.09.2026) nach Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz: Treffer nur Bebauungspläne für Freiflächen-Solarparks, Landes-/EU-/Bundesprogramme, Stromspar-Check und Solarkataster — keine kommunale Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten",
+        "disposition": "reviewed",
+        "reason": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte",
+        "disposition": "reviewed",
+        "reason": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt",
+        "disposition": "reviewed",
+        "reason": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen",
+        "disposition": "reviewed",
+        "reason": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/"
+      }
+    ]
+  },
+  {
+    "regionId": "15090220",
+    "name": "Hassel",
+    "checkedAt": "2026-09-22T12:11:51Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hassel gehört zur Verbandsgemeinde Arneburg-Goldbeck (Landkreis Stendal). Weder Verbandsgemeinde noch Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die sechs Fundstellen des Suchlaufs sind Meldungen über Landes-, EU- und Stiftungsprogramme (überwiegend für Unternehmen, „Sachsen-Anhalt speichert“ eingestellt); die Volltextsuche der Verbandsgemeinde findet sonst nur Bebauungspläne für Freiflächen-Solarparks. Der Balkonkraftwerk-Zuschuss nach einem Stromspar-Check kommt von der Landesenergieagentur, nicht von der Kommune.",
+    "searches": [
+      "arneburg-goldbeck.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz (22.09.2026)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/",
+        "finding": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/",
+        "finding": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/",
+        "finding": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/",
+        "finding": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/",
+        "finding": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/",
+        "finding": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/stromspar-check-fuer-private-haushalte-kommt-nach-stendal/",
+        "finding": "Caritas-Stromspar-Check mit dem Landkreis Stendal: kostenlose Beratung für Haushalte mit geringem Einkommen; danach „Über die Landesenergieagentur Sachsen-Anhalt … Zuschüsse für … Balkonkraftwerke“ — ein Landesangebot, kein Zuschuss der Verbandsgemeinde oder einer Gemeinde."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/1-projektaufruf-leader-clld-der-lokalen-aktionsgruppe-lag-altmark-mitte-e-v-fuer-die-foerderperiode-2023-bis-2027/",
+        "finding": "LEADER-Projektaufruf 2024 (EFRE/ELER/ESF+) mit Projektskizze; kein Kaufzuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Verbandsgemeinde (22.09.2026) nach Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz: Treffer nur Bebauungspläne für Freiflächen-Solarparks, Landes-/EU-/Bundesprogramme, Stromspar-Check und Solarkataster — keine kommunale Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten",
+        "disposition": "reviewed",
+        "reason": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte",
+        "disposition": "reviewed",
+        "reason": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt",
+        "disposition": "reviewed",
+        "reason": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen",
+        "disposition": "reviewed",
+        "reason": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/"
+      }
+    ]
+  },
+  {
+    "regionId": "15090245",
+    "name": "Hohenberg-Krusemark",
+    "checkedAt": "2026-09-22T12:11:51Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hohenberg-Krusemark gehört zur Verbandsgemeinde Arneburg-Goldbeck (Landkreis Stendal). Weder Verbandsgemeinde noch Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die sechs Fundstellen des Suchlaufs sind Meldungen über Landes-, EU- und Stiftungsprogramme (überwiegend für Unternehmen, „Sachsen-Anhalt speichert“ eingestellt); die Volltextsuche der Verbandsgemeinde findet sonst nur Bebauungspläne für Freiflächen-Solarparks. Der Balkonkraftwerk-Zuschuss nach einem Stromspar-Check kommt von der Landesenergieagentur, nicht von der Kommune.",
+    "searches": [
+      "arneburg-goldbeck.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz (22.09.2026)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/",
+        "finding": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/",
+        "finding": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/",
+        "finding": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/",
+        "finding": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/",
+        "finding": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/",
+        "finding": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/stromspar-check-fuer-private-haushalte-kommt-nach-stendal/",
+        "finding": "Caritas-Stromspar-Check mit dem Landkreis Stendal: kostenlose Beratung für Haushalte mit geringem Einkommen; danach „Über die Landesenergieagentur Sachsen-Anhalt … Zuschüsse für … Balkonkraftwerke“ — ein Landesangebot, kein Zuschuss der Verbandsgemeinde oder einer Gemeinde."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/1-projektaufruf-leader-clld-der-lokalen-aktionsgruppe-lag-altmark-mitte-e-v-fuer-die-foerderperiode-2023-bis-2027/",
+        "finding": "LEADER-Projektaufruf 2024 (EFRE/ELER/ESF+) mit Projektskizze; kein Kaufzuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Verbandsgemeinde (22.09.2026) nach Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz: Treffer nur Bebauungspläne für Freiflächen-Solarparks, Landes-/EU-/Bundesprogramme, Stromspar-Check und Solarkataster — keine kommunale Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten",
+        "disposition": "reviewed",
+        "reason": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte",
+        "disposition": "reviewed",
+        "reason": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt",
+        "disposition": "reviewed",
+        "reason": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen",
+        "disposition": "reviewed",
+        "reason": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/"
+      }
+    ]
+  },
+  {
+    "regionId": "15090270",
+    "name": "Iden",
+    "checkedAt": "2026-09-22T12:11:51Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Iden gehört zur Verbandsgemeinde Arneburg-Goldbeck (Landkreis Stendal). Weder Verbandsgemeinde noch Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die sechs Fundstellen des Suchlaufs sind Meldungen über Landes-, EU- und Stiftungsprogramme (überwiegend für Unternehmen, „Sachsen-Anhalt speichert“ eingestellt); die Volltextsuche der Verbandsgemeinde findet sonst nur Bebauungspläne für Freiflächen-Solarparks. Der Balkonkraftwerk-Zuschuss nach einem Stromspar-Check kommt von der Landesenergieagentur, nicht von der Kommune.",
+    "searches": [
+      "arneburg-goldbeck.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz (22.09.2026)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/",
+        "finding": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/",
+        "finding": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/",
+        "finding": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/",
+        "finding": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/",
+        "finding": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/",
+        "finding": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/stromspar-check-fuer-private-haushalte-kommt-nach-stendal/",
+        "finding": "Caritas-Stromspar-Check mit dem Landkreis Stendal: kostenlose Beratung für Haushalte mit geringem Einkommen; danach „Über die Landesenergieagentur Sachsen-Anhalt … Zuschüsse für … Balkonkraftwerke“ — ein Landesangebot, kein Zuschuss der Verbandsgemeinde oder einer Gemeinde."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/1-projektaufruf-leader-clld-der-lokalen-aktionsgruppe-lag-altmark-mitte-e-v-fuer-die-foerderperiode-2023-bis-2027/",
+        "finding": "LEADER-Projektaufruf 2024 (EFRE/ELER/ESF+) mit Projektskizze; kein Kaufzuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Verbandsgemeinde (22.09.2026) nach Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz: Treffer nur Bebauungspläne für Freiflächen-Solarparks, Landes-/EU-/Bundesprogramme, Stromspar-Check und Solarkataster — keine kommunale Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten",
+        "disposition": "reviewed",
+        "reason": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte",
+        "disposition": "reviewed",
+        "reason": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt",
+        "disposition": "reviewed",
+        "reason": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen",
+        "disposition": "reviewed",
+        "reason": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/"
+      }
+    ]
+  },
+  {
+    "regionId": "15090435",
+    "name": "Rochau",
+    "checkedAt": "2026-09-22T12:11:51Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rochau gehört zur Verbandsgemeinde Arneburg-Goldbeck (Landkreis Stendal). Weder Verbandsgemeinde noch Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die sechs Fundstellen des Suchlaufs sind Meldungen über Landes-, EU- und Stiftungsprogramme (überwiegend für Unternehmen, „Sachsen-Anhalt speichert“ eingestellt); die Volltextsuche der Verbandsgemeinde findet sonst nur Bebauungspläne für Freiflächen-Solarparks. Der Balkonkraftwerk-Zuschuss nach einem Stromspar-Check kommt von der Landesenergieagentur, nicht von der Kommune.",
+    "searches": [
+      "arneburg-goldbeck.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz (22.09.2026)",
+      "Gemeindeschlüssel gegen das Melderegister geprüft"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/",
+        "finding": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/",
+        "finding": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/",
+        "finding": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/",
+        "finding": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/",
+        "finding": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/",
+        "finding": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/stromspar-check-fuer-private-haushalte-kommt-nach-stendal/",
+        "finding": "Caritas-Stromspar-Check mit dem Landkreis Stendal: kostenlose Beratung für Haushalte mit geringem Einkommen; danach „Über die Landesenergieagentur Sachsen-Anhalt … Zuschüsse für … Balkonkraftwerke“ — ein Landesangebot, kein Zuschuss der Verbandsgemeinde oder einer Gemeinde."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/1-projektaufruf-leader-clld-der-lokalen-aktionsgruppe-lag-altmark-mitte-e-v-fuer-die-foerderperiode-2023-bis-2027/",
+        "finding": "LEADER-Projektaufruf 2024 (EFRE/ELER/ESF+) mit Projektskizze; kein Kaufzuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.arneburg-goldbeck.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Verbandsgemeinde (22.09.2026) nach Balkonkraftwerk, Photovoltaik, Solar, Speicher, Wärmepumpe, Zuschuss, Förderrichtlinie, Klimaschutz: Treffer nur Bebauungspläne für Freiflächen-Solarparks, Landes-/EU-/Bundesprogramme, Stromspar-Check und Solarkataster — keine kommunale Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt ENERGIE“ der Investitionsbank für Unternehmen (Zuschüsse bis 50/35/20 % nach Unternehmensgröße); kein Programm für Privathaushalte und keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieeffizienz-in-unternehmen-wird-gefoerdert/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten",
+        "disposition": "reviewed",
+        "reason": "Meldung zum Landesprogramm „Sachsen-Anhalt speichert“: „neue Anträge können nicht mehr eingereicht werden“ — eingestelltes Landesprogramm, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/energieministerium-will-solarfoerderung-des-landes-neu-ausrichten/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte",
+        "disposition": "reviewed",
+        "reason": "LEADER-Aufruf der LAG Altmark Mitte zur Altlastensanierung (Frist 31.01.2025); keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderaufruf-altlastensanierung-in-der-leader-region-altmark-mitte/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung",
+        "disposition": "reviewed",
+        "reason": "Landesprogramm „Sachsen-Anhalt STROMSPEICHER“ (EFRE): Speicher ab 30 kWh, antragsberechtigt nur Unternehmen und juristische Personen; keine Privathaushalte, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-efre-2021-2027-sachsen-anhalt-stromspeicher-eine-chance-fuer-nachhaltige-energieversorgung/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt",
+        "disposition": "reviewed",
+        "reason": "Neuauflage des Landesprogramms „Sachsen-Anhalt Energie“ für Unternehmen, Beratungssprechtag des Landkreises; keine kommunale Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/foerderprogramm-sachsen-anhalt-energie-wird-neu-aufgelegt/"
+      },
+      {
+        "url": "arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen",
+        "disposition": "reviewed",
+        "reason": "Stiftung für Umwelt, Natur- und Klimaschutz des Landes (SUNK), Projektförderung bis 10.000 € für Umwelt- und Bildungsprojekte; kein Kaufzuschuss für Anlagen, keine kommunale Förderung.",
+        "evidenceUrl": "https://www.arneburg-goldbeck.de/jetzt-foerderantraege-fuer-umweltprojekte-einreichen/"
+      }
+    ]
+  },
+  {
+    "regionId": "01054017",
+    "name": "Braderup",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Braderup gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Braderup auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Forschung und Entwicklung in Unternehmen (gelesen 22.09.2026); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Härtefallhilfen des Bundes für Heizkosten mit nicht leitungsgebundenen Energieträgern (gelesen 22.09.2026), kein Investitionszuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-ndash-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag „Klimaschutz für Bürgerinnen und Bürger – nicht-fossile Heizungssysteme“; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), das Landesprogramm ist im Katalog als eingestellt geführt.",
+        "evidenceUrl": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder: Förderung für Kommunen und Wirtschaft (E-Lastenräder); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "01054027",
+    "name": "Ellhöft",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ellhöft gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Ellhöft auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01054034",
+    "name": "Friedrich-Wilhelm-Lübke-Koog",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Friedrich-Wilhelm-Lübke-Koog gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Friedrich-Wilhelm-Lübke-Koog auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Forschung und Entwicklung in Unternehmen (gelesen 22.09.2026); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Härtefallhilfen des Bundes für Heizkosten mit nicht leitungsgebundenen Energieträgern (gelesen 22.09.2026), kein Investitionszuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-ndash-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag „Klimaschutz für Bürgerinnen und Bürger – nicht-fossile Heizungssysteme“; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), das Landesprogramm ist im Katalog als eingestellt geführt.",
+        "evidenceUrl": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder: Förderung für Kommunen und Wirtschaft (E-Lastenräder); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "01054048",
+    "name": "Holm",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Holm gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Holm auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01054062",
+    "name": "Karlum",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Karlum gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Karlum auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Forschung und Entwicklung in Unternehmen (gelesen 22.09.2026); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Härtefallhilfen des Bundes für Heizkosten mit nicht leitungsgebundenen Energieträgern (gelesen 22.09.2026), kein Investitionszuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-ndash-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag „Klimaschutz für Bürgerinnen und Bürger – nicht-fossile Heizungssysteme“; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), das Landesprogramm ist im Katalog als eingestellt geführt.",
+        "evidenceUrl": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder: Förderung für Kommunen und Wirtschaft (E-Lastenräder); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "01054077",
+    "name": "Lexgaard",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lexgaard gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Lexgaard auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=C",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&NavID=1639.54&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25beantragen&object=tx%7C2861.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      }
+    ]
+  },
+  {
+    "regionId": "01054154",
+    "name": "Westre",
+    "checkedAt": "2026-09-22T14:40:00Z",
+    "recheckAt": "2026-12-21T14:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Westre gehört zum Amt Südtondern (Kreis Nordfriesland). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten des Amts sind Einträge des Zuständigkeitsfinders des Landes; der Balkonkraftwerk-Zuschuss dort ist das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“, vorläufig gestoppt am 16.11.2023. Der Kreis Nordfriesland fördert nur kostenlose Energieberatungen der Verbraucherzentrale (Stand 22.09.2026).",
+    "searches": [
+      "Zuständigkeitsfinder-Seiten des Amts im Original gelesen (22.09.2026): „Zuschuss für steckerfertige Photovoltaikanlagen“ = Landesprogramm, Stopp 16.11.2023; „Balkonkraftwerke“-Eintrag ohne Dienstleistung; „Kommunale Förderung für den Klimaschutz“ = E-Lastenräder für Wirtschaft und Kommunen",
+      "Gemeindeseite Westre auf amt-suedtondern.de gelesen (22.09.2026): kein Förderhinweis",
+      "Volltextsuche amt-suedtondern.de (22.09.2026): Balkonkraftwerk (nur Landes-Eintrag), Photovoltaik (Landes-/Bundesdienstleistungen, Bauleitpläne für Freiflächenanlagen), Solar, Zuschuss, Förderprogramm, Wärmepumpe (Landes-/Bundesprogramme, Wärmeplanung), Klimaschutz — kein kommunaler Bürgerzuschuss",
+      "Mitteilung des Amts vom 22.09.2026 gelesen: Kreis Nordfriesland übernimmt den Eigenanteil kostenloser Energieberatungen der Verbraucherzentrale — kein Investitionszuschuss",
+      "Websuche: Amt Südtondern Zuschuss Balkonkraftwerk Photovoltaik Förderung mit Gemeindenamen (nur Landes-Eintrag und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Kreises Nordfriesland (01054) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1",
+        "finding": "Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage max. 200 €, IB.SH), vorläufiger Stopp am 16.11.2023 (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/index.php?object=tx,2861.6&ModID=255&FID=2861.77756.1",
+        "finding": "Mitteilung 22.09.2026: Kreis Nordfriesland fördert kostenlose Energieberatungen, kein Investitionszuschuss."
+      },
+      {
+        "url": "https://www.amt-suedtondern.de/",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke, Speicher und Wärmepumpen im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-von-haushaltsbezogenen-Solarpanelen-bdquo-Balkonkraftwerke-ldquo-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag des Landes für den „Balkonkraftwerk“-Zuschuss; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), Programm ist das eingestellte Landesprogramm.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag zum Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ (PV-Balkonanlage 200 €, IB.SH), vorläufig gestoppt am 16.11.2023; kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-beantragen.php?ModID=10&FID=2861.1061.1"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderung-f%C3%BCr-das-Programm-KMU-innovativ-Ressourceneffizienz-und-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Forschung und Entwicklung in Unternehmen (gelesen 22.09.2026); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Heizkostenzuschuss-f%C3%BCr-nicht-leitungsgebundene-Energietr%C3%A4ger-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Härtefallhilfen des Bundes für Heizkosten mit nicht leitungsgebundenen Energieträgern (gelesen 22.09.2026), kein Investitionszuschuss.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Klimaschutz-f%C3%BCr-B%C3%BCrgerinnen-und-B%C3%BCrger-ndash-F%C3%B6rderung-f%C3%BCr-nicht-fossile-Heizungssysteme-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder-Eintrag „Klimaschutz für Bürgerinnen und Bürger – nicht-fossile Heizungssysteme“; am 22.09.2026 ohne Dienstleistung („0 Dienstleistungen gefunden“), das Landesprogramm ist im Katalog als eingestellt geführt.",
+        "evidenceUrl": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub"
+      },
+      {
+        "url": "amt-suedtondern.de/B%C3%BCrgerservice/Was-erledige-ich-wo-/Kommunale-F%C3%B6rderung-f%C3%BCr-den-Klimaschutz-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Zuständigkeitsfinder: Förderung für Kommunen und Wirtschaft (E-Lastenräder); nicht für private Haushalte.",
+        "evidenceUrl": "https://www.amt-suedtondern.de/"
+      }
+    ]
+  },
+  {
+    "regionId": "01053025",
+    "name": "Duvensee",
+    "checkedAt": "2026-09-22T16:05:00Z",
+    "recheckAt": "2026-12-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Duvensee gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Duvensee auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Eigene Website duvensee.de gelesen (22.09.2026): Startseite, „Aktuelles“ und „Aktuelles 2025“ — kein Förderhinweis",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/duvensee/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.duvensee.de/",
+        "finding": "Eigene Website duvensee.de gelesen (22.09.2026): Startseite, „Aktuelles“ und „Aktuelles 2025“ — kein Förderhinweis"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01053039",
+    "name": "Groß Boden",
+    "checkedAt": "2026-09-22T16:05:00Z",
+    "recheckAt": "2026-12-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Boden gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Groß Boden auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Gemeindeseite grossboden.amt-sn.de und „Aktuelles“ gelesen (22.09.2026) — kein Förderhinweis; einziger Suchtreffer ein örtlicher Elektrobetrieb im Firmenverzeichnis",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/gross-boden/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://grossboden.amt-sn.de/gemeinde/aktuelles/",
+        "finding": "Gemeindeseite grossboden.amt-sn.de und „Aktuelles“ gelesen (22.09.2026) — kein Förderhinweis; einziger Suchtreffer ein örtlicher Elektrobetrieb im Firmenverzeichnis"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01053081",
+    "name": "Lankau",
+    "checkedAt": "2026-09-22T16:05:00Z",
+    "recheckAt": "2026-12-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lankau gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Lankau auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Eigene Website gemeindelankau.de gelesen (22.09.2026): Startseite, Aktuelles, Pinnwand, „Was erledige ich wo“ — kein Förderhinweis",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/lankau/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.gemeindelankau.de/",
+        "finding": "Eigene Website gemeindelankau.de gelesen (22.09.2026): Startseite, Aktuelles, Pinnwand, „Was erledige ich wo“ — kein Förderhinweis"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01053086",
+    "name": "Lüchow",
+    "checkedAt": "2026-09-22T16:05:00Z",
+    "recheckAt": "2026-12-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lüchow gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Lüchow auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Keine eigene Website verlinkt; Gemeindeseite auf amt-sn.de einzige Quelle",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/luechow/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01053112",
+    "name": "Schönberg",
+    "checkedAt": "2026-09-22T16:05:00Z",
+    "recheckAt": "2026-11-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schönberg gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“. Der 2025 eingerichtete Energieausschuss der Gemeinde ist ein Anlass für eine frühere Wiedervorlage.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Schönberg auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Eigene Website schoenberg-sn.de gelesen (22.09.2026): Startseite, Förderprojekte (nur Radweg „Stadt und Land“ und Aktion Niederungen/Wasserrückhalt), FAQ, Gemeindebrief, Energieausschuss (seit 19.03.2025, Aufgabe u. a. „Förderung und Nutzung regenerativer Energien“ — kein Bürgerzuschuss beschlossen oder genannt)",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/schoenberg/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.schoenberg-sn.de/gemeinde/gemeindevertretung/energieausschuss/",
+        "finding": "Eigene Website schoenberg-sn.de gelesen (22.09.2026): Startseite, Förderprojekte (nur Radweg „Stadt und Land“ und Aktion Niederungen/Wasserrückhalt), FAQ, Gemeindebrief, Energieausschuss (seit 19.03.2025, Aufgabe u. a. „Förderung und Nutzung regenerativer Energien“ — kein Bürgerzuschuss beschlossen oder genannt)"
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01053122",
+    "name": "Steinhorst",
+    "checkedAt": "2026-09-22T16:05:00Z",
+    "recheckAt": "2026-12-21T16:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Steinhorst gehört zum Amt Sandesneben-Nusse (Kreis Herzogtum Lauenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Quelle ist die Abteilungsseite „Schülerbeförderung“ des Amts (Fehltreffer des Wortfilters). Der Kreis bietet keinen eigenen Bürgerzuschuss; der frühere Balkonkraftwerk-Zuschuss im Kreis war das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“.",
+    "searches": [
+      "Erfasste Quelle im Original gelesen (22.09.2026): Abteilungsseite „Schülerbeförderung“ des Amts Sandesneben-Nusse — kein Förderbezug",
+      "Gemeindeseite Steinhorst auf amt-sn.de gelesen (22.09.2026): Einwohner, Geschichte, Infrastruktur — kein Förderhinweis",
+      "Keine eigene Website verlinkt; Gemeindeseite auf amt-sn.de einzige Quelle",
+      "Klimaschutzseite des Amts gelesen (22.09.2026): allgemeiner Text, Projekt Klärteichanlage Grinau — kein Bürgerzuschuss",
+      "Websuche site:amt-sn.de nach Förderung, Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe (22.09.2026): nur Kita-, Kultur-, Bildungs- und Wohngeldleistungen, Wärmenetz Labenz — kein Investitionszuschuss",
+      "Websuche Amt Sandesneben-Nusse und Gemeindenamen mit Zuschuss Balkonkraftwerk/Photovoltaik/Wärmepumpe (22.09.2026): nur Landesprogramm und Ratgeber",
+      "Kreis Herzogtum Lauenburg: Suchtreffer „Förderung für Balkonkraftwerke beantragen“ (Kreisseite heute 404) verweist auf das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“; Übersicht pv-navi (Hinweisgeber) nennt keinen Kreiszuschuss und keine der Gemeinden",
+      "Katalog nach Programmen im Kreis (01053) und des Landes durchsucht: nur Berkenthin (eingestellt) und Klempau (Amt Berkenthin), Landesprogramme eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "finding": "Abteilungsseite Schülerbeförderung, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/Gemeinden/steinhorst/",
+        "finding": "Gemeindeseite ohne Förderhinweis (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.amt-sn.de/zukunftsorientiert/klimaschutz/",
+        "finding": "Klimaschutzseite des Amts ohne Bürgerzuschuss (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung",
+        "disposition": "reviewed",
+        "reason": "Abteilungsseite „Schülerbeförderung“ (Wortfilter-Fehltreffer „Beförderung“), kein Förderbezug; gelesen 22.09.2026.",
+        "evidenceUrl": "https://www.amt-sn.de/buergerservice/abteilungen/SH:department:269299/schuelerbefoerderung"
       }
     ]
   }

@@ -1,8 +1,8 @@
 "use client";
 import { useState, useMemo, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import FlowNav from "../../../components/FlowNav";
+import FlowSchritte from "../../../components/FlowSchritte";
 import {
   SITUATION, WOHNFLAECHEN, WP_M2_MIN, WP_M2_MAX, INSULATION_BESTAND, INSULATION_NEUBAU,
   PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP, YEAR,
@@ -56,6 +56,8 @@ import SelectField from "../../../components/SelectField";
 type VerbrauchEinheit = "gas" | "oel";
 
 const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizsystem"];
+// One word each for the step indicator; the current one is the step heading.
+const SCHRITT_NAMEN = ["Situation", "Haus", "Dämmung", "Haushalt", "Heizung"];
 
 // `embedded` = gerendert in einem Modal (z. B. aus dem Förder-Ratgeber), nicht
 // als eigene Seite: dann ohne 100vh-Höhe, ohne Seitentitel und volle Breite —
@@ -78,7 +80,6 @@ export default function Waermepumpe({
   kfw?: HeizungsfoerderungBund | null;
 } = {}) {
   // ── Step state ───────────────────────────────────────────────
-  const router = useRouter();
   const [step, setStep] = useState(0);
   // Welche Fragen wirklich beantwortet sind. Die Werte darunter behalten ihre
   // Startwerte (die Rechnung braucht sie), geben sich aber nicht mehr als
@@ -708,31 +709,26 @@ export default function Waermepumpe({
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: embedded ? undefined : "100vh", padding: embedded ? 0 : "0 16px 20px" }}>
       <div style={{ maxWidth: embedded ? "100%" : v('--page-max-width'), margin: "0 auto" }}>
         {!embedded && (
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
-              {isResult ? "Deine Wärmepumpen-Prognose" : "Lohnt sich eine Wärmepumpe?"}
+          <div style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
+            {/* In the question steps as small as the PV calculator's head: the focus
+                belongs to the first question, not the title. */}
+            <h1 style={isResult ? {} : { fontSize: v('--font-size-h2') }}>
+              {isResult ? "Deine Wärmepumpen-Prognose" : "Wärmepumpen-Rechner"}
             </h1>
             {!isResult && (
               <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
-                Fünf Fragen, ehrlich berechnet. Keine Anmeldung.
+                Lohnt sich eine Wärmepumpe für dich? Fünf Fragen, ehrlich berechnet, keine Anmeldung.
               </p>
             )}
           </div>
         )}
 
         {/* Progress */}
-        {!isResult && (
-          <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
-            {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? v('--color-accent') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
-            ))}
-          </div>
-        )}
+        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} onSprung={setStep} />}
 
         {/* ── STEPS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18 }}>{STEPS[step]}</h2>
 
             {/* 0: Situation */}
             {step === 0 && (
@@ -930,9 +926,9 @@ export default function Waermepumpe({
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Ergebnis anzeigen" : "Weiter"}
                 onWeiter={next}
-                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
-                // Startseite — wie vorher, nur im gemeinsamen Baustein.
-                onZurueck={step > 0 ? back : () => router.push("/")}
+                // No Zurück in the first step — the same in every calculator.
+                onZurueck={back}
+                zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
             </div>
@@ -954,7 +950,7 @@ export default function Waermepumpe({
                 onClick={() => { setScenario("gruengas"); setPreisExpanded(false); }}
                 onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setScenario("gruengas"); setPreisExpanded(false); } }}
                 style={{ cursor: "pointer", padding: "12px 14px", borderRadius: v('--radius-md'), background: greenGas ? v('--color-accent-dim') : v('--color-bg'), border: `1.5px solid ${greenGas ? v('--color-accent') : v('--color-border')}` }}>
-                <span style={{ display: "inline-block", fontSize: v("--font-size-micro"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v('--color-text-on-accent'), background: v('--color-accent'), padding: "2px 7px", borderRadius: 999, marginBottom: 6 }}>Neues Heizungsgesetz</span>
+                <span style={{ display: "inline-block", fontSize: v("--font-size-micro"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v('--color-text-on-accent'), background: v('--color-cta'), padding: "2px 7px", borderRadius: 999, marginBottom: 6 }}>Neues Heizungsgesetz</span>
                 <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: greenGas ? v('--color-accent') : v('--color-text-primary') }}>Grüngas-Pflicht ab 2029</div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 10, marginTop: 2 }}>
                   <span style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted') }}>Gas wird durch die gesetzliche Biomethan-Beimischung Jahr für Jahr teurer</span>
@@ -1116,7 +1112,7 @@ export default function Waermepumpe({
                     genau die Sorte Zahl, die beim ersten Stichtag still falsch
                     wird, während die Rechnung daneben längst richtig rechnet. */}
                 <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
-                  <span style={{ display: "inline-block", width: 13, height: 13, borderRadius: 3, background: v('--color-accent'), flexShrink: 0 }} />
+                  <span style={{ display: "inline-block", width: 13, height: 13, borderRadius: v("--radius-pill"), background: v('--color-cta'), flexShrink: 0 }} />
                   Grundförderung {Math.round(begStufe.grundfoerderung * 100)} % — bekommt jeder Heizungstausch im Bestand
                 </div>
                 <BonusToggle checked={selbstnutzer} onChange={c => { setSelbstnutzer(c); setOInvest(null); }} label="Ich wohne selbst im Gebäude" tipTitle="Selbstnutzung">
@@ -1583,7 +1579,7 @@ export default function Waermepumpe({
 
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-              <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
+              <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
                 PV-Rechner öffnen <IconArrowRight size={iconSizes.sm} />
               </Link>
               <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFossilInvest(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); /* Die Adresse mitleeren: Sonst stehen die Angaben des geteilten Links noch darin, und ein Neuladen holt die gerade verworfene Rechnung zurück. */ if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>

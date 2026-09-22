@@ -54,7 +54,7 @@ const S = {
     minHeight: "100vh",
     padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   back: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
@@ -62,27 +62,14 @@ const S = {
     display: "inline-block",
     marginBottom: 24,
   },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: v("--color-text-primary"),
-    lineHeight: 1.25,
-    marginBottom: 10,
-  },
+  h1: { color: v("--color-text-primary"), marginBottom: 10 },
   subtitle: {
     fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
     marginBottom: 24,
     lineHeight: 1.6,
   },
-  h2: {
-    fontSize: v("--font-size-h2"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-    marginTop: 32,
-    marginBottom: 10,
-  },
+  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
   p: {
     fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
@@ -126,10 +113,10 @@ const S = {
   ctaButton: {
     display: "inline-block",
     padding: "10px 18px",
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     fontSize: v("--font-size-body"),
     fontWeight: 700,
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     color: v("--color-text-on-accent"),
     textDecoration: "none",
   },
@@ -373,10 +360,10 @@ function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; bad
           gap: 6,
           marginTop: 12,
           padding: "9px 16px",
-          borderRadius: v("--radius-md"),
+          borderRadius: v("--radius-pill"),
           fontSize: v("--font-size-small"),
           fontWeight: 700,
-          background: v("--color-accent"),
+          background: v("--color-cta"),
           color: v("--color-text-on-accent"),
           textDecoration: "none",
         }}
@@ -661,10 +648,10 @@ export default async function LohntSichPvMitSpeicherPage() {
             Annahmen sind im Ergebnis sichtbar und anpassbar.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/photovoltaik-rechner" style={S.ctaButton}>
+            <Link href="/photovoltaik-rechner?direkt=1" style={S.ctaButton}>
               Anlage mit Speicher rechnen →
             </Link>
-            <Link href="/pv-bedarf-berechnen" style={S.ctaSecondary}>
+            <Link href="/photovoltaik-rechner" style={S.ctaSecondary}>
               Was passt zu mir?
             </Link>
           </div>

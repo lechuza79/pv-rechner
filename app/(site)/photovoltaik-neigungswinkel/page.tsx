@@ -36,28 +36,15 @@ const S = {
     minHeight: "100vh",
     padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: v("--color-text-primary"),
-    lineHeight: 1.25,
-    marginBottom: 10,
-  },
+  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  h1: { color: v("--color-text-primary"), marginBottom: 10 },
   subtitle: {
     fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
     marginBottom: 24,
     lineHeight: 1.6,
   },
-  h2: {
-    fontSize: v("--font-size-h2"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-    marginTop: 32,
-    marginBottom: 10,
-  },
+  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
   p: {
     fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
@@ -200,7 +187,7 @@ export default function NeigungswinkelPage() {
         <p style={S.p}>
           <span style={S.strong}>Wichtiger als der Winkel sind in der Praxis:</span> Verschattung
           (Bäume, Gauben, Nachbargebäude), die nutzbare Fläche — und die Frage, wie viel vom
-          Solarstrom du selbst verbrauchst. Eine <Link href="/pv-bedarf-berechnen" style={S.link}>passend
+          Solarstrom du selbst verbrauchst. Eine <Link href="/photovoltaik-rechner" style={S.link}>passend
           dimensionierte Anlage</Link> auf einem 90-%-Dach schlägt eine zu kleine Anlage auf dem
           perfekten Dach.
         </p>
@@ -218,8 +205,7 @@ export default function NeigungswinkelPage() {
           currentPath="/photovoltaik-neigungswinkel"
           links={[
             { href: "/pv-simulation", label: "PV-Simulation: Was produziert ein Dach gerade?", desc: "Live-Leistung einer PV-Anlage an deinem Standort, gerechnet aus aktuellen Wetterdaten." },
-            { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Amortisation, Rendite und Eigenverbrauch für deine Anlage — alle Annahmen transparent und anpassbar." },
-            { href: "/pv-bedarf-berechnen", label: "Welche Anlage passt zu mir?", desc: "In wenigen Fragen zur passenden Anlagengröße — mit Empfehlung und Begründung." },
+            { href: "/photovoltaik-rechner", label: "PV-Rechner: Welche Anlage passt zu mir?", desc: "In wenigen Fragen zur passenden Anlagengröße — mit Amortisation, Rendite und Begründung." },
             { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Für Miete oder ohne eigenes Dach: was Steckersolar bringt und wann es sich amortisiert." },
             { href: "/glossar", label: "Glossar" },
           ]}

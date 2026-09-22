@@ -47,8 +47,8 @@ export default function ResultActions({
     if (authState.status === "authed") {
       return (
         <button onClick={onSave} disabled={saving} style={{
-          flex: 1, height: 40, borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
-          background: saved ? v('--color-accent-dim') : v('--color-accent'),
+          flex: 1, height: 40, borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700,
+          background: saved ? v('--color-accent-dim') : v('--color-cta'),
           border: saved ? `1px solid ${v('--color-accent')}` : "none",
           color: saved ? v('--color-accent') : v('--color-text-on-accent'),
           cursor: saving ? "wait" : "pointer", fontFamily: v('--font-text'), transition: "all 0.2s",
@@ -60,8 +60,8 @@ export default function ResultActions({
     }
     return (
       <button onClick={onLoginClick} style={{
-        flex: 1, height: 40, borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
-        background: v('--color-accent'), border: "none",
+        flex: 1, height: 40, borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700,
+        background: v('--color-cta'), border: "none",
         color: v('--color-text-on-accent'), cursor: "pointer", fontFamily: v('--font-text'),
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>

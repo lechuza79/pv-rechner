@@ -1023,7 +1023,7 @@ function Merkmal({ label, href, stark }: { label: string; href: string; stark?: 
         padding: "1px 6px",
         borderRadius: 999,
         color: stark ? v("--color-text-on-accent") : v("--color-accent-dark"),
-        background: stark ? v("--color-accent") : v("--color-accent-dim"),
+        background: stark ? v("--color-cta") : v("--color-accent-dim"),
       }}
     >
       {label}
@@ -1039,7 +1039,7 @@ function StatusTab({ active, label, onClick }: { active: boolean; label: string;
         fontSize: v("--font-size-small"),
         fontWeight: active ? 700 : 600,
         color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
-        background: active ? v("--color-accent") : v("--color-bg-muted"),
+        background: active ? v("--color-cta") : v("--color-bg-muted"),
         border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
         borderRadius: 999,
         padding: pad("xs", "md"),
@@ -1103,9 +1103,9 @@ const primaryBtn: React.CSSProperties = {
   fontSize: v("--font-size-small"),
   fontWeight: 700,
   padding: pad("sm", "md"),
-  borderRadius: v("--radius-sm"),
+  borderRadius: v("--radius-pill"),
   border: `1px solid ${v("--color-accent")}`,
-  background: v("--color-accent"),
+  background: v("--color-cta"),
   color: v("--color-text-on-accent"),
   cursor: "pointer",
 };

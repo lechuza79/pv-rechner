@@ -110,7 +110,7 @@ export const GEMEINDE_ANKER_ORT = "/solar-atlas/hessen/landkreis-schwalm-eder-kr
 export const FLOW_PFADE: string[] = [
   "/photovoltaik-rechner",
   "/photovoltaik-rechner?a=2&s=2&p=2&n=1&wp=nein&ea=nein",
-  "/pv-bedarf-berechnen",
+  "/photovoltaik-rechner?direkt=1",
   "/pv-simulation",
   "/strommix-deutschland",
   "/waermepumpe-rechner",

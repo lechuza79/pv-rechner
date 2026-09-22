@@ -73,7 +73,7 @@ export default async function AdminChartsPage() {
 
   return (
     <div style={{ maxWidth: 1000 }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, color: v("--color-text-primary"), marginBottom: 6 }}>
+      <h1 style={{ color: v("--color-text-primary"), marginBottom: 6 }}>
         Chart-Baukasten
       </h1>
       <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 24, maxWidth: 640 }}>

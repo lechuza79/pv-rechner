@@ -8,7 +8,7 @@ import {
 import type { Meldung } from "../gemeinde-meldungen";
 import { readFileSync } from "fs";
 import { resolve } from "path";
-import { tokens } from "../theme";
+import { stageDefaults, tokens } from "../theme";
 
 // Was in einer Abo-Mail stehen MUSS und was darin nichts zu suchen hat.
 //
@@ -151,9 +151,13 @@ describe("Aussehen", () => {
       abmeldeUrl: ABMELDEN,
       standLabel: "5. August 2026",
     });
+    // Light card on the house night stage (the lime logo only reads on dark).
     expect(m.html).toContain(tokens["--color-accent"]);
-    expect(m.html).toContain(tokens["--color-bg-muted"]);
-    expect(m.html).toContain(tokens["--color-border"]);
+    expect(m.html).toContain(tokens["--color-bg"]);
+    expect(m.html).toContain(stageDefaults(0)["--color-bg"]);
+    // The button (confirmation mail) takes the site's action colour.
+    const b = aboBestaetigungsMail({ ortName: "Musterdorf", bestaetigenUrl: "#" });
+    expect(b.html).toContain(tokens["--color-cta"]);
   });
 
   it("trägt das Logo mit Alternativtext und Maßen", () => {

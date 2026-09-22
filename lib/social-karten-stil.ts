@@ -43,53 +43,43 @@ export function istKartenStil(wert: unknown): wert is KartenStil {
 const GRUNDLAGE = stageDefaults(STAGE_COUNT - 1);
 
 /**
- * Highlight: der Akzent-Blauton der Marke als Grund (Vorgabe des Betreibers,
- * 27.08.2026) — derselbe, den ein primärer Knopf trägt. Er wird deshalb NICHT
- * hier getippt, sondern aus der Grundlage gezogen: Wechselt die Marke ihren
- * Akzent, wechselt diese Karte mit.
+ * The three schemes follow the approved story cards on the homepage (same
+ * surfaces, ink and neon as the design package's story foundation), so a card
+ * in the feed looks like the story it came from.
  *
- * Der Preis, den man kennen muss: Auf diesem Blau gibt es fast keine
- * Farbabstufung mehr. Gerechnet nach WCAG 2.1 gegen #1365EA erreicht selbst
- * volles Weiß nur 5,2:1 — für lesbaren Kleintext bleiben nur Weißtöne ab etwa
- * 92 % Deckkraft. Die Hierarchie trägt deshalb über Größe und Gewicht, wie in
- * dieser Karte ohnehin (96 px Wert gegen 30 px Beschriftung).
+ * Highlight is the neon scheme: the lime card surface with dark ink. On lime
+ * the brand's own lime mark would vanish, so the logo takes the ink.
  *
- * Die Rollen drehen sich um: Auf blauem Grund sticht WEISS hervor, nicht ein
- * helleres Blau. Der hervorgehobene Wert (`--color-accent`) wird deshalb weiß,
- * der gedämpfte bekommt ein klares Hellblau — vier Stufen, die auseinandergehen:
- * Grund, Spur, gedämpfte Füllung, hervorgehobene Füllung.
- *
- * Text und FLÄCHE laufen dabei auseinander: Überschrift und Werte stehen in
- * vollem Weiß, die gedämpfte Serienfläche in einem klaren Hellblau. Solange
- * beides an `--color-text-primary` hing, konnte man nur eines von beidem haben —
- * heller Text hieß heller Ring und damit keine Unterscheidung mehr, dunkler Ring
- * hieß matter Text. Die Serienfarben stehen deshalb in `serienFarben`.
+ * Surfaces are solid, never translucent: a round-capped arc overlaps itself
+ * at its end, and a translucent colour leaves a bright blot exactly there.
  */
 const HIGHLIGHT: Partial<Record<TokenName, string>> = {
-  "--color-bg": GRUNDLAGE["--color-accent"],
-  "--color-bg-muted": GRUNDLAGE["--color-accent"],
-  "--color-bg-accent": GRUNDLAGE["--color-accent"],
-  // FLÄCHENFARBEN IM VOLLTON, nicht durchscheinend — das ist der Unterschied
-  // zwischen sauber und schmutzig. Ein Bogen mit runder Kappe überlappt sich an
-  // seinem Ende selbst; bei einer durchscheinenden Farbe addiert sich die
-  // Deckkraft genau dort, und das Ende trägt einen hellen Klecks. Im Bild sieht
-  // das nach einem Fehler aus und ist einer.
-  //
-  // Die Töne sind die ausgerechneten Mischungen auf dem blauen Grund, eine Spur
-  // heller gesetzt: Der abgesetzte Ring soll sich vom Grund lösen, nicht mit ihm
-  // verschwimmen.
-  "--color-text-primary": "#FFFFFF",
-  // Reiner TEXT darf durchscheinen — er überlappt sich nicht.
-  "--color-text-secondary": "rgba(255,255,255,0.94)",
-  "--color-text-muted": "rgba(255,255,255,0.92)",
-  "--color-text-faint": "rgba(255,255,255,0.80)",
-  "--color-accent": "#FFFFFF",
-  "--color-border": "#659BF1",
-  "--color-border-muted": "#4E8CEF",
-  // Das Logo führt seine beiden Blautöne als Token. Auf blauem Grund verschwände
-  // die Marke sonst in der Fläche.
-  "--color-brand": "#FFFFFF",
-  "--color-brand-deep": "rgba(255,255,255,0.50)",
+  "--color-bg": "#E2FF78",
+  "--color-bg-muted": "#E2FF78",
+  "--color-bg-accent": "#E2FF78",
+  "--color-text-primary": "#132527",
+  "--color-text-secondary": "#3E5032",
+  "--color-text-muted": "#3E5032",
+  "--color-text-faint": "#3E5032",
+  "--color-accent": "#132527",
+  "--color-border": "#AEC864",
+  "--color-border-muted": "#C3DE6C",
+  "--color-brand": "#132527",
+  "--color-brand-deep": "#3E5032",
+};
+
+/** Dark: the homepage story card on its night surface, neon as the accent. */
+const DUNKEL_KARTE: Partial<Record<TokenName, string>> = {
+  "--color-bg": "#163338",
+  "--color-bg-muted": "#163338",
+  "--color-bg-accent": "#163338",
+  "--color-text-primary": "#E8EEE9",
+  "--color-text-secondary": "#A7BCBB",
+  "--color-text-muted": "#A7BCBB",
+  "--color-text-faint": "#A7BCBB",
+  "--color-accent": "#D4FF24",
+  "--color-border": "#2D494D",
+  "--color-border-muted": "#2D494D",
 };
 
 /**
@@ -126,13 +116,15 @@ export function serienFarben(
   if (palette === "seite") {
     return { hervorgehoben: "var(--color-accent)", gedaempft: "var(--color-text-primary)" };
   }
-  if (stil === "highlight") return { hervorgehoben: "#FFFFFF", gedaempft: "#96BCF8" };
-  const t = kartenTokens(stil);
-  return { hervorgehoben: t["--color-accent"], gedaempft: t["--color-text-primary"] };
+  // The muted series is the accent at 45 % on the card surface, the same mix
+  // the homepage stories use — precomputed as a solid colour (see above).
+  if (stil === "highlight") return { hervorgehoben: "#132527", gedaempft: "#859D54" };
+  if (stil === "dunkel") return { hervorgehoben: "#D4FF24", gedaempft: "#6C8F2F" };
+  return { hervorgehoben: kartenTokens(stil)["--color-accent"], gedaempft: "#92A3A2" };
 }
 
-/** Dunkel ist die Nachtstufe des Hauses, keine zweite dunkle Palette. */
-const DUNKEL = stageDefaults(0);
+/** The house night stage as the base, with the story card's surfaces on top. */
+const DUNKEL = { ...stageDefaults(0), ...DUNKEL_KARTE };
 
 /**
  * Die Token-Werte eines Stils, vollständig.

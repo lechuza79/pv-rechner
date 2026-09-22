@@ -75,8 +75,8 @@ export default function KlimaDetailModal({ open, onClose, rooms, plz, stromPrice
         <button
           onClick={() => { onApply(result.electricityKwh); onClose(); }}
           style={{
-            padding: "12px 20px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
-            background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
+            padding: "12px 20px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700,
+            background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
             display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap",
           }}
         >

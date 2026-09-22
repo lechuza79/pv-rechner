@@ -166,7 +166,7 @@ export default async function RedaktionPlanung() {
       )}
 
       <section style={{ ...karte, marginBottom: space.xxxl }}>
-        <h2 style={{ fontSize: v("--font-size-h3"), marginTop: 0, display: "flex", alignItems: "center", gap: space.xs }}>
+        <h2 style={{ marginTop: 0, display: "flex", alignItems: "center", gap: space.xs }}>
           Vorrat
           <InfoTooltip ariaLabel="Wozu der Puffer" exportNote={false}>
             Ohne Puffer bricht die Kadenz beim ersten vollen Arbeitstag — und genau dann fällt es
@@ -184,7 +184,7 @@ export default async function RedaktionPlanung() {
           dem Blick der Planung: was davon sich heute bauen ließe und was auf
           Daten wartet. Zwei Listen wären zwei Ordnungen für dieselbe Sache. */}
       <section style={{ marginBottom: space.xxxl }}>
-        <h2 style={{ fontSize: v("--font-size-h3"), display: "flex", alignItems: "center", gap: space.xs }}>
+        <h2 style={{ display: "flex", alignItems: "center", gap: space.xs }}>
           Themen
           <InfoTooltip ariaLabel="Woher diese Liste kommt" exportNote={false}>
             Dieselbe Liste, die in der Entwicklung die Kategorien bildet. Was als „Daten da" steht,
@@ -227,7 +227,7 @@ export default async function RedaktionPlanung() {
       </section>
 
       <section style={{ marginBottom: space.xxxl }}>
-        <h2 style={{ fontSize: v("--font-size-h3") }}>Plätze</h2>
+        <h2 style={{}}>Plätze</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
           {SLOTS.map((s) => (
             <div key={s.tag} style={{ ...karte, display: "flex", gap: space.lg, alignItems: "baseline" }}>
@@ -240,7 +240,7 @@ export default async function RedaktionPlanung() {
       </section>
 
       <section>
-        <h2 style={{ fontSize: v("--font-size-h3"), display: "flex", alignItems: "center", gap: space.xs }}>
+        <h2 style={{ display: "flex", alignItems: "center", gap: space.xs }}>
           Regeln
           <InfoTooltip ariaLabel="Wo diese Regeln wirken" exportNote={false}>
             Jede Regel gehört zu einer der Prüfungen und erscheint dort als Prüfliste, wenn eine

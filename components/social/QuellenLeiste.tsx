@@ -99,7 +99,7 @@ const S: Record<string, React.CSSProperties> = {
     textDecoration: "none",
   },
   pilleAktiv: {
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     borderColor: v("--color-accent"),
     // Eigenes Token für Text auf Akzentfläche — der Seitenhintergrund ist auf
     // den dunklen Stufen dunkel.

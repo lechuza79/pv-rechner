@@ -56,9 +56,9 @@ export function FilterLeiste({
                 : e.anzahl === 0
                   ? v("--color-text-muted")
                   : v("--color-text-secondary"),
-              background: an ? v("--color-accent") : v("--color-bg-muted"),
+              background: an ? v("--color-cta") : v("--color-bg-muted"),
               border: `1px solid ${an ? v("--color-accent") : v("--color-border-muted")}`,
-              borderRadius: v("--radius-sm"),
+              borderRadius: v("--radius-pill"),
               padding: pad("xs", "md"),
               cursor: e.anzahl === 0 ? "default" : "pointer",
               opacity: e.anzahl === 0 ? 0.55 : 1,

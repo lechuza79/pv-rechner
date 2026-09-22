@@ -156,10 +156,10 @@ const S = {
     alignSelf: "flex-start",
     marginTop: space.md,
     padding: pad("sm", "lg"),
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     fontSize: "var(--font-size-body)",
     fontWeight: 700,
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     color: v("--color-text-on-accent"),
     textDecoration: "none",
   } as React.CSSProperties,
@@ -611,7 +611,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         <RelatedLinks
           links={[
             { href: "/ratgeber/lohnt-sich-pv-mit-speicher", label: "Lohnt sich PV mit Speicher?", desc: "Die ehrliche Rechnung mit aktuellen Marktpreisen — und wann sich ein Speicher wirklich rechnet." },
-            { href: "/pv-bedarf-berechnen", label: "Welche Anlage passt zu mir?", desc: "In wenigen Fragen zur passenden Anlagengröße — mit Empfehlung und Begründung." },
+            { href: "/photovoltaik-rechner", label: "PV-Rechner: Welche Anlage passt zu mir?", desc: "In wenigen Fragen zur passenden Anlagengröße — mit Empfehlung und Begründung." },
             { href: "/pv-simulation", label: "PV-Simulation: Was produziert ein Dach gerade?", desc: "Live-Leistung einer PV-Anlage an deinem Standort, gerechnet aus aktuellen Wetterdaten." },
             { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Für Miete oder ohne eigenes Dach: was Steckersolar bringt und wann es sich amortisiert." },
             { href: "/ratgeber/waermepumpe-foerderung", label: "Wärmepumpen-Förderung 2026", desc: "Wie viel Zuschuss es für den Heizungstausch gibt — und wer welchen Bonus bekommt." },

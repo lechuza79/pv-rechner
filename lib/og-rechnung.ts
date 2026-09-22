@@ -180,4 +180,5 @@ export const OG_NICHT_GELESEN: Record<string, string> = {
   ht: "Haustyp der Empfehlung für die Dachfläche; die Anlagengröße steht schon in `a`/`ck`.",
   bl: "Budget der Empfehlung; die gewählte Anlage steht schon im Link.",
   km2: "Der Rechner rechnet die Klimaanlage mit der Standardfläche; die Kühlmenge steht in `klwh`/`klr`.",
+  direkt: "Öffnet nur die Direkteingabe statt des Empfehlungswegs, rechnet nicht.",
 };

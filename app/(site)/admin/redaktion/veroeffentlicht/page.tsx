@@ -5,7 +5,7 @@ import {
   volumenGesamt,
   ZUSTAND_LABEL,
 } from "../../../../../lib/artikelplan";
-import { v, space } from "../../../../../lib/theme";
+import { space } from "../../../../../lib/theme";
 import { ArtikelTabelle } from "../../../../../components/redaktion/ArtikelTabelle";
 
 // Die veröffentlichten Artikel als eigener Menüpunkt (Betreiber-Vorgabe
@@ -34,7 +34,7 @@ export default async function RedaktionVeroeffentlicht() {
 
   return (
     <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.xl }}>Veröffentlicht</h1>
+      <h1 style={{ marginBottom: space.xl }}>Veröffentlicht</h1>
 
       <ArtikelTabelle
         vorhaben={live}

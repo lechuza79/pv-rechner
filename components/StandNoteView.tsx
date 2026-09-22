@@ -1,6 +1,10 @@
+"use client";
 import Link from "next/link";
-import { liveSatz, monatJahr, tagMonatJahr, type StandEintrag, type StandSeite } from "../lib/stand-format";
-import { space, v } from "../lib/theme";
+import { useEffect, useState } from "react";
+import { IconCheck } from "./Icons";
+import { istAktuell, liveSatz, monatJahr, tagMonatJahr, type StandEintrag, type StandSeite } from "../lib/stand-format";
+import { heuteInBerlin } from "../lib/zeit";
+import { iconSizes, space, v } from "../lib/theme";
 
 /**
  * Der Aktualisierungsstand unter einem Rechner — die Formulierung, einmal statt
@@ -49,7 +53,16 @@ export default function StandNoteView({
   seite: StandSeite | undefined;
   style?: React.CSSProperties;
 }) {
+  // „aktuell" hängt am HEUTIGEN Tag, eine statisch ausgelieferte Seite am Tag
+  // ihres Baus. Entschieden wird deshalb erst im Browser, nach dem Laden: So
+  // verschwindet die Auszeichnung pünktlich, auch wenn die Frist zwischen zwei
+  // Auslieferungen abläuft — und Server und Browser zeichnen beim ersten Mal
+  // dasselbe, statt sich über das Datum zu streiten.
+  const [heute, setHeute] = useState<string | null>(null);
+  useEffect(() => setHeute(heuteInBerlin()), []);
+
   if (!seite) return null;
+  const pill = (e: StandEintrag) => (heute && istAktuell(e, heute) ? <AktuellPill /> : null);
 
   const live = liveSatz(seite.live);
   // Trennlinie mit Luft darüber und darunter: Der Aktualisierungsstand ist kein
@@ -99,7 +112,7 @@ export default function StandNoteView({
     const e = seite.eintraege[0];
     return (
       <p style={rahmen}>
-        {kopf} {e.was} — {datumsText(e)}.{live ? ` ${live}` : ""} {datenstand}
+        {kopf} {e.was} — {datumsText(e)} {pill(e)}.{live ? ` ${live}` : ""} {datenstand}
       </p>
     );
   }
@@ -110,6 +123,10 @@ export default function StandNoteView({
       <ul style={{ listStyle: "none", margin: "0 0 8px", padding: 0 }}>
         {seite.eintraege.map(e => (
           <li key={e.was} style={{ display: "flex", flexWrap: "wrap", gap: "0 6px", marginBottom: 2 }}>
+            {/* Vorn, nicht hinten: Hinter einem langen Datum bricht sie je nach
+                Breite mal mit um und mal nicht — vorn steht sie in jeder Zeile
+                an derselben Stelle. */}
+            {pill(e)}
             <span style={{ color: v("--color-text-secondary") }}>{e.was}</span>
             <span>— {datumsText(e)}</span>
           </li>
@@ -120,5 +137,24 @@ export default function StandNoteView({
         {datenstand}
       </p>
     </div>
+  );
+}
+
+/** Grüne Auszeichnung für eine Prüfung innerhalb ihrer Frist. Positiv-Farbe,
+ *  weil sie eine Tendenz trägt (bestätigt), nicht eine Zahl. */
+function AktuellPill() {
+  return (
+    <span
+      style={{
+        display: "inline-flex", alignItems: "center", gap: 3, verticalAlign: "middle",
+        padding: "1px 8px 1px 6px", borderRadius: v("--radius-pill"),
+        fontSize: v("--font-size-caption"), fontWeight: 700, lineHeight: 1.5,
+        color: v("--color-positive-text"),
+        background: `color-mix(in srgb, ${v("--color-positive")} 16%, transparent)`,
+      }}
+    >
+      <IconCheck size={iconSizes.xs} color={v("--color-positive-text")} />
+      aktuell
+    </span>
   );
 }

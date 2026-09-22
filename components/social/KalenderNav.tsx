@@ -83,14 +83,7 @@ export function KalenderNav({
       }}
     >
       <h2
-        style={{
-          fontSize: v("--font-size-h3"),
-          margin: 0,
-          marginRight: space.xs,
-          display: "flex",
-          alignItems: "center",
-          gap: space.xs,
-        }}
+        style={{ margin: 0, marginRight: space.xs, display: "flex", alignItems: "center", gap: space.xs }}
       >
         {ueberschrift}
         {hilfe && (

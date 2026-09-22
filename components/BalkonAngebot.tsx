@@ -119,11 +119,11 @@ function ZumShop({ angebot, hervor }: { angebot: ShopAngebot; hervor: boolean })
     ? {
         padding: "10px 18px",
         border: `1px solid ${v("--color-accent")}`,
-        background: v("--color-accent"),
+        background: v("--color-cta"),
         // Auf Vollton gehört die Vollton-Schriftfarbe: `--color-bg` wäre auf
         // den dunklen Tagesstufen dunkle Schrift auf farbiger Fläche.
         color: v("--color-text-on-accent"),
-        borderRadius: v("--radius-md"),
+        borderRadius: v("--radius-pill"),
       }
     : { color: v("--color-accent") };
 
@@ -305,7 +305,7 @@ export default function BalkonAngebot({ basis, foerderungEuro = 0 }: { basis: An
       }}
     >
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
-        <h3 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary"), margin: 0 }}>
+        <h3 style={{ color: v("--color-text-primary"), margin: 0 }}>
           Passende Sets zu kaufen
         </h3>
         {/* Kennzeichnung nach § 5a Abs. 4 UWG — sichtbar, nicht versteckt. */}

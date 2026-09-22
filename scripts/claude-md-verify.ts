@@ -138,7 +138,13 @@ const ZAHLEN: Zahlenpruefung[] = [
     wahrheit: () => {
       const t = lies("lib/theme.ts");
       const stufen = ["micro", "caption", "small", "body", "lead", "h3", "h2", "h1"];
-      const werte = stufen.map((n) => greif(t, new RegExp(`'--font-size-${n}':\\s*'(\\d+)px'`)));
+      // Die Überschriften wachsen seit 09/2026 mit ihrer Spalte (clamp); die
+      // Skala nennt deren Obergrenze, also die größte Stufe, die vorkommt.
+      const werte = stufen.map(
+        (n) =>
+          greif(t, new RegExp(`'--font-size-${n}':\\s*'(\\d+)px'`)) ??
+          greif(t, new RegExp(`'--font-size-${n}':\\s*'clamp\\(\\d+px,[^,]+,(\\d+)px\\)'`)),
+      );
       return werte.some((w) => w === null) ? null : werte.join(" · ");
     },
     behauptung: () => greif(claudeMd, /Acht Textstufen \(([\d\u00b7 ]+),/),

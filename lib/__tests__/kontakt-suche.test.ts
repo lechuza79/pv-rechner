@@ -24,15 +24,27 @@ function pruefe(html: string, url: string, website: string, scope: ScopeRegeln =
 }
 
 describe("Kontaktsuche für einen anderen Bestand", () => {
+  it("nimmt eine verwandte Firmendomain nur, wenn der Bestand es erlaubt", () => {
+    const html = `<main><h1>Impressum</h1><p>Christian Spatz Bedachungen <a href="mailto:info@christian-spatz-bedachungen.de">info@christian-spatz-bedachungen.de</a></p></main>`;
+    const url = "https://www.spatz-bedachungen.com/impressum/";
+    const ohne = pruefe(html, url, "https://www.spatz-bedachungen.com/");
+    expect(ohne.find(b => b.email === "info@christian-spatz-bedachungen.de")?.reasons).toContain("mailbox-foreign-domain");
+    const mit = pruefe(html, url, "https://www.spatz-bedachungen.com/", { ...SCOPE, verwandteDomain: (d, o) => d.includes(o.split(".")[0]) });
+    expect(mit.find(b => b.email === "info@christian-spatz-bedachungen.de")?.reasons).not.toContain("mailbox-foreign-domain");
+  });
   it("nimmt ein Gratis-Postfach aus dem eigenen Impressum nur, wenn der Bestand es erlaubt", () => {
     const html = `<main><h1>Impressum</h1><p>Inhaber Alex Muster <a href="mailto:alex.muster@web.de">alex.muster@web.de</a></p></main>`;
     const url = "https://www.muster-solar.de/impressum/";
     const ohne = pruefe(html, url, "https://www.muster-solar.de/");
     expect(ohne.find(b => b.email === "alex.muster@web.de")?.reasons).toContain("mailbox-foreign-domain");
-    const mit = pruefe(html, url, "https://www.muster-solar.de/", { ...SCOPE, eigeneAdresseAuf: p => /impressum/.test(p) });
+    const mit = pruefe(html, url, "https://www.muster-solar.de/", { ...SCOPE, gratisPostfachAuf: p => /impressum/.test(p) });
     expect(mit.find(b => b.email === "alex.muster@web.de")?.reasons).not.toContain("mailbox-foreign-domain");
+    // Nur Gratis-Anbieter: eine Behörde im selben Impressum bleibt fremd.
+    const behoerde = `<main><h1>Impressum</h1><p>Schlichtungsstelle Energie <a href="mailto:info@schlichtungsstelle-energie.de">info@schlichtungsstelle-energie.de</a></p></main>`;
+    const b = pruefe(behoerde, url, "https://www.muster-solar.de/", { ...SCOPE, gratisPostfachAuf: p => /impressum/.test(p) });
+    expect(b.find(x => x.email === "info@schlichtungsstelle-energie.de")?.reasons).toContain("mailbox-foreign-domain");
     // Auf einer beliebigen anderen Seite bleibt die fremde Domain fremd.
-    const blog = pruefe(html, "https://www.muster-solar.de/blog/tipps", "https://www.muster-solar.de/", { ...SCOPE, eigeneAdresseAuf: p => /impressum/.test(p) });
+    const blog = pruefe(html, "https://www.muster-solar.de/blog/tipps", "https://www.muster-solar.de/", { ...SCOPE, gratisPostfachAuf: p => /impressum/.test(p) });
     expect(blog.find(b => b.email === "alex.muster@web.de")?.reasons).toContain("mailbox-foreign-domain");
   });
 

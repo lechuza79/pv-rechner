@@ -11,6 +11,11 @@ const C_POSITIVE = tokens["--color-positive"];
 const C_ACCENT = tokens["--color-accent"];
 const C_NEGATIVE = tokens["--color-negative"];
 const C_TEXT = tokens["--color-text-primary"];
+const C_SECONDARY = tokens["--color-text-secondary"];
+const C_MUTED = tokens["--color-text-muted"];
+const C_BG = tokens["--color-bg"];
+const C_LINE = tokens["--color-border"];
+const C_LINE_SOFT = tokens["--color-border-muted"];
 
 export const runtime = "edge";
 
@@ -115,23 +120,23 @@ export async function GET(req: NextRequest) {
         <div style={{
           width: "100%", height: "100%", display: "flex", flexDirection: "column",
           justifyContent: "space-between", padding: "56px 64px",
-          background: "#FFFFFF", color: "#3F3F3F",
+          background: C_BG, color: C_TEXT,
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 28, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
-            <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
+            <span style={{ fontSize: 28, fontWeight: 700, color: C_TEXT }}>Solar Check</span>
+            <span style={{ fontSize: 20, color: C_MUTED }}>solar-check.io</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: 58, fontWeight: 700, color: "#1365EA", lineHeight: 1.15 }}>
+            <span style={{ fontSize: 58, fontWeight: 700, color: C_ACCENT, lineHeight: 1.15 }}>
               {title}
             </span>
             {subtitle ? (
-              <span style={{ fontSize: 28, color: "#777777", lineHeight: 1.4, marginTop: 20 }}>
+              <span style={{ fontSize: 28, color: C_SECONDARY, lineHeight: 1.4, marginTop: 20 }}>
                 {subtitle}
               </span>
             ) : null}
           </div>
-          <span style={{ fontSize: 18, color: "#949494" }}>
+          <span style={{ fontSize: 18, color: C_MUTED }}>
             Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.
           </span>
         </div>
@@ -153,17 +158,17 @@ export async function GET(req: NextRequest) {
           <div style={{
             width: "100%", height: "100%", display: "flex", flexDirection: "column",
             justifyContent: "space-between", padding: "56px 64px",
-            background: "#FFFFFF", color: "#3F3F3F",
+            background: C_BG, color: C_TEXT,
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 28, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
-              <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
+              <span style={{ fontSize: 28, fontWeight: 700, color: C_TEXT }}>Solar Check</span>
+              <span style={{ fontSize: 20, color: C_MUTED }}>solar-check.io</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 58, fontWeight: 700, color: "#1365EA", lineHeight: 1.15 }}>
+              <span style={{ fontSize: 58, fontWeight: 700, color: C_ACCENT, lineHeight: 1.15 }}>
                 Energie ehrlich berechnet.
               </span>
-              <span style={{ fontSize: 28, color: "#777777", lineHeight: 1.4, marginTop: 20 }}>
+              <span style={{ fontSize: 28, color: C_SECONDARY, lineHeight: 1.4, marginTop: 20 }}>
                 {/* Hier stand „Fünf Tools" — es sind acht. Der Beleg dafür, dass
                     eine getippte Anzahl still veraltet: Dieses Rückfallbild
                     erscheint nur, wenn die Live-Daten ausfallen, und niemandem
@@ -171,7 +176,7 @@ export async function GET(req: NextRequest) {
                 Ohne Anmeldung, ohne Verkaufsanrufe.
               </span>
             </div>
-            <span style={{ fontSize: 18, color: "#949494" }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</span>
+            <span style={{ fontSize: 18, color: C_MUTED }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</span>
           </div>
         ),
         { width: 1200, height: 630, fonts, headers: { "cache-control": "public, max-age=0, s-maxage=300" } },
@@ -199,47 +204,47 @@ export async function GET(req: NextRequest) {
         <div style={{
           width: "100%", height: "100%", display: "flex", flexDirection: "column",
           justifyContent: "space-between", padding: "44px 56px",
-          background: "#FFFFFF", color: "#3F3F3F",
+          background: C_BG, color: C_TEXT,
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 24, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
-            <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
+            <span style={{ fontSize: 24, fontWeight: 700, color: C_TEXT }}>Solar Check</span>
+            <span style={{ fontSize: 20, color: C_MUTED }}>solar-check.io</span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", flexDirection: "column", width: 560 }}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <div style={{ width: 12, height: 12, borderRadius: 6, background: C_POSITIVE, marginRight: 10 }} />
-                <span style={{ fontSize: 17, color: "#777777", letterSpacing: 1 }}>
+                <span style={{ fontSize: 17, color: C_SECONDARY, letterSpacing: 1 }}>
                   {stand ? `ERNEUERBARE · ${stand}` : "ERNEUERBARE"}
                 </span>
               </div>
-              <span style={{ fontSize: 50, fontWeight: 700, color: "#1365EA", lineHeight: 1.15, marginTop: 14 }}>
+              <span style={{ fontSize: 50, fontWeight: 700, color: C_ACCENT, lineHeight: 1.15, marginTop: 14 }}>
                 Energie ehrlich berechnet.
               </span>
-              <span style={{ fontSize: 23, color: "#777777", lineHeight: 1.4, marginTop: 16 }}>
+              <span style={{ fontSize: 23, color: C_SECONDARY, lineHeight: 1.4, marginTop: 16 }}>
                 Live-Stromdaten, PV- und Wärmepumpen-Rechner. Ohne Anmeldung.
               </span>
             </div>
 
             <div style={{ display: "flex", position: "relative", width: 380, height: 380, alignItems: "center", justifyContent: "center" }}>
               <svg width="380" height="380" viewBox="0 0 380 380">
-                <circle cx={cx} cy={cy} r={innerR + maxLen} fill="none" stroke="#EFEFEF" strokeWidth="1" />
-                <circle cx={cx} cy={cy} r={innerR + maxLen * 0.55} fill="none" stroke="#F3F3F3" strokeWidth="1" />
+                <circle cx={cx} cy={cy} r={innerR + maxLen} fill="none" stroke={C_LINE} strokeWidth="1" />
+                <circle cx={cx} cy={cy} r={innerR + maxLen * 0.55} fill="none" stroke={C_LINE_SOFT} strokeWidth="1" />
                 {lines.map((l, i) => (
                   <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke={l.color} strokeWidth="3.4" strokeLinecap="round" />
                 ))}
               </svg>
               <div style={{ position: "absolute", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <span style={{ fontSize: 58, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#3F3F3F", lineHeight: 1 }}>
+                <span style={{ fontSize: 58, fontWeight: 700, fontFamily: "JetBrains Mono", color: C_TEXT, lineHeight: 1 }}>
                   {gwStr}
                 </span>
-                <span style={{ fontSize: 22, color: "#777777", marginTop: 4 }}>GW</span>
+                <span style={{ fontSize: 22, color: C_SECONDARY, marginTop: 4 }}>GW</span>
               </div>
             </div>
           </div>
 
-          <span style={{ fontSize: 16, color: "#949494" }}>
+          <span style={{ fontSize: 16, color: C_MUTED }}>
             {/* „letzte 24 Stunden" ist relativ und wird in einem eingefrorenen
                 Bild ebenso falsch wie „gerade eben" darüber. Der Verlauf selbst
                 umfasst 24 Stunden — das bleibt wahr, der Bezugspunkt steht oben. */}
@@ -273,17 +278,17 @@ export async function GET(req: NextRequest) {
       <div style={{
         width: "100%", height: "100%", display: "flex", flexDirection: "column",
         justifyContent: "space-between", padding: "48px 56px",
-        background: "#FFFFFF", color: "#3F3F3F",
+        background: C_BG, color: C_TEXT,
       }}>
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: 24, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
-          <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
+          <span style={{ fontSize: 24, fontWeight: 700, color: C_TEXT }}>Solar Check</span>
+          <span style={{ fontSize: 20, color: C_MUTED }}>solar-check.io</span>
         </div>
 
         {/* Main metric */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <span style={{ fontSize: 22, color: "#777777", letterSpacing: 1 }}>
+          <span style={{ fontSize: 22, color: C_SECONDARY, letterSpacing: 1 }}>
             AMORTISATION IN
           </span>
           <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginTop: 8 }}>
@@ -301,13 +306,13 @@ export async function GET(req: NextRequest) {
           {cards.map((card) => (
             <div key={card.label} style={{
               display: "flex", flexDirection: "column", alignItems: "center",
-              padding: "16px 28px", background: "#F8F8F8",
-              border: "1px solid #E9E9E9", borderRadius: 12, minWidth: 120,
+              padding: "16px 28px", background: C_BG,
+              border: `1px solid ${C_LINE}`, borderRadius: 12, minWidth: 120,
             }}>
-              <span style={{ fontSize: 22, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#3F3F3F" }}>
+              <span style={{ fontSize: 22, fontWeight: 700, fontFamily: "JetBrains Mono", color: C_TEXT }}>
                 {card.value}
               </span>
-              <span style={{ fontSize: 14, color: "#777777", marginTop: 4, letterSpacing: 1 }}>
+              <span style={{ fontSize: 14, color: C_SECONDARY, marginTop: 4, letterSpacing: 1 }}>
                 {card.label}
               </span>
             </div>
@@ -318,19 +323,19 @@ export async function GET(req: NextRequest) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
           <div style={{ display: "flex", gap: 40 }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>GEWINN 25 J.</span>
+              <span style={{ fontSize: 14, color: C_SECONDARY, letterSpacing: 1 }}>GEWINN 25 J.</span>
               <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: rendite25j > 0 ? C_POSITIVE : C_NEGATIVE }}>
                 {`${renditeStr} \u20AC`}
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>ERSPARNIS / JAHR</span>
+              <span style={{ fontSize: 14, color: C_SECONDARY, letterSpacing: 1 }}>ERSPARNIS / JAHR</span>
               <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: avgSavings > 0 ? C_POSITIVE : C_TEXT }}>
                 {`${savingsStr} \u20AC`}
               </span>
             </div>
           </div>
-          <span style={{ fontSize: 16, color: "#949494" }}>
+          <span style={{ fontSize: 16, color: C_MUTED }}>
             Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.
           </span>
         </div>

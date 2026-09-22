@@ -252,7 +252,7 @@ export default function EinspeiseRechner() {
   const h2: React.CSSProperties = { fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18, color: v("--color-text-primary") };
   const zurueckBtn: React.CSSProperties = {
     padding: "10px 20px",
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     fontSize: v("--font-size-body"),
     fontWeight: 600,
     background: "transparent",
@@ -275,7 +275,7 @@ export default function EinspeiseRechner() {
       {!isResult && (
         <div style={{ display: "flex", gap: 6, marginBottom: 22 }}>
           {order.map((k, i) => (
-            <div key={k} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= stepIdx ? v("--color-accent") : v("--color-progress-inactive"), transition: "background 0.3s" }} />
+            <div key={k} style={{ flex: 1, height: 3, borderRadius: v("--radius-pill"), background: i <= stepIdx ? v("--color-cta") : v("--color-progress-inactive"), transition: "background 0.3s" }} />
           ))}
         </div>
       )}
@@ -428,8 +428,8 @@ export default function EinspeiseRechner() {
                 type="button"
                 onClick={() => { if (opt.m !== verbrauchMode) { setVerbrauchMode(opt.m); if (!opt.m) setOVerbrauch(null); } }}
                 style={{
-                  flex: 1, padding: "8px 4px", borderRadius: v("--radius-sm"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
-                  background: verbrauchMode === opt.m ? v("--color-accent") : "transparent",
+                  flex: 1, padding: "8px 4px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
+                  background: verbrauchMode === opt.m ? v("--color-cta") : "transparent",
                   border: "none",
                   color: verbrauchMode === opt.m ? v("--color-text-on-accent") : v("--color-text-muted"),
                   transition: "all 0.15s",
@@ -640,7 +640,7 @@ export default function EinspeiseRechner() {
           {anlage === "neu" && (
             <Link
               href="/photovoltaik-rechner"
-              style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "11px 20px", borderRadius: v("--radius-md"), fontSize: v("--font-size-body"), fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent"), textDecoration: "none", marginBottom: space.xl }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "11px 20px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700, background: v("--color-cta"), color: v("--color-text-on-accent"), textDecoration: "none", marginBottom: space.xl }}
             >
               Komplette Rechnung: Lohnt sich die Anlage? <IconArrowRight size={iconSizes.sm} />
             </Link>

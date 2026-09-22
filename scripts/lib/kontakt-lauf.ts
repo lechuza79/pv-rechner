@@ -94,6 +94,8 @@ export type Ergebnis = {
   general: string[]; selected: string[];
   verdict: string; reason: string; outcome: string;
   proofs: { email: string; channels: string[]; scope: string; url: string; digest: string; block: string; headings: string[] }[];
+  /** Where each general mailbox was found — a general mailbox carries no role proof, but it has a page. */
+  fundstellen?: Record<string, string>;
   openLinks: { url: string; priority: number }[];
   [extra: string]: unknown;
 };
@@ -165,6 +167,10 @@ export function bewerten(b: Bestand, e: Eintrag): Ergebnis {
     general: comparison.general, selected: comparison.selected,
     verdict: comparison.verdict, reason: comparison.reason, outcome: comparison.outcome,
     proofs: mailboxes.filter(x => x.proof).map(x => ({ email: x.email, channels: x.channels, scope: x.scope, url: x.proof!.url, digest: x.proof!.digest, block: x.proof!.block, headings: x.proof!.headings })),
+    fundstellen: Object.fromEntries(comparison.general.flatMap(m => {
+      const e2 = evidence.find(x => x.email === m && !x.reasons.length) ?? evidence.find(x => x.email === m);
+      return e2 ? [[m, e2.url]] : [];
+    })),
     openLinks: [...links].sort((a, b2) => b2[1] - a[1]).slice(0, 60).map(([url, priority]) => ({ url, priority })),
     ...(e.zusatz ?? {}),
   };

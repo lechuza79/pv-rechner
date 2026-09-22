@@ -480,7 +480,7 @@ describe("Modell-Kohärenz: eine Aussage gilt über die ganze Laufzeit", () => {
     // nicht stimmt — und niemandem fällt es auf, weil beides plausibel aussieht.
     // Die Zahl kommt deshalb aus der Konstanten, nicht aus der Tastatur.
     const SEITEN = [
-      "app/(site)/pv-bedarf-berechnen/empfehlung.tsx",
+      "app/(site)/photovoltaik-rechner/empfehlung.tsx",
       "app/(site)/methodik/page.tsx",
     ];
     for (const datei of SEITEN) {
@@ -519,7 +519,7 @@ describe("Modell-Kohärenz: eine Aussage gilt über die ganze Laufzeit", () => {
     // und der steht in derselben Karte.
     const KACHELN = [
       "app/(site)/photovoltaik-rechner/_components/ResultStats.tsx",
-      "app/(site)/pv-bedarf-berechnen/empfehlung.tsx",
+      "app/(site)/photovoltaik-rechner/empfehlung.tsx",
       "app/(site)/dashboard/client.tsx",
       "app/(site)/ratgeber/lohnt-sich-pv-mit-speicher/page.tsx",
       "components/FundingProgramParts.tsx",

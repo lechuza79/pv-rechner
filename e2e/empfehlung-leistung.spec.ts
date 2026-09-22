@@ -27,8 +27,8 @@ async function verifyResultAndShare(page: Page, kwp: number, cost?: string) {
 test("Reihenhaus keeps its 4 kWp and investment through recommendation, reload and both share links", async ({ page }) => {
   test.setTimeout(60_000);
   await captureClipboard(page);
-  await page.goto("/pv-bedarf-berechnen");
-  await waehle(page, "Reihenhaus");
+  await page.goto("/photovoltaik-rechner");
+  await akkordeonWaehlen(page, "Haustyp", 0); // Reihenhaus
   await akkordeonWaehlen(page, "Dachform", 0);
   await akkordeonWaehlen(page, "Ausrichtung", 0);
   await weiterKlicken(page);
@@ -50,7 +50,7 @@ test("Reihenhaus keeps its 4 kWp and investment through recommendation, reload a
 });
 
 test("shared recommendation hands over exactly 4 kWp", async ({ page }) => {
-  await page.goto("/pv-bedarf-berechnen?haus=reihenhaus&az=sued&personen=1&nutzung=weg&view=ergebnis");
+  await page.goto("/photovoltaik-rechner?haus=reihenhaus&az=sued&personen=1&nutzung=weg&view=ergebnis");
   await page.getByRole("button", { name: "Ergebnis anzeigen", exact: true }).first().click();
   await page.waitForURL(/photovoltaik-rechner/);
   await expect(page.getByRole("button", { name: "4 kWp bearbeiten", exact: true })).toBeVisible();
@@ -65,7 +65,7 @@ test("intermediate recommendation and alternatives retain their displayed capaci
   // einzige Alternative nur, weil der Eigenverbrauch vor der Geldrechnung auf
   // ganze Prozent gerundet wurde; ungerundet liegt sie unter der 95-%-Schwelle
   // (Rechenmodell-Council 12.09.2026).
-  const recommendation = "/pv-bedarf-berechnen?haus=grosses-efh&dach=flachdach&az=ostwest&personen=5plus&nutzung=teils&view=ergebnis";
+  const recommendation = "/photovoltaik-rechner?haus=grosses-efh&dach=flachdach&az=ostwest&personen=5plus&nutzung=teils&view=ergebnis";
   await page.goto(recommendation);
   const hero = page.getByText("Unsere Empfehlung", { exact: true }).locator("..");
   const kwp = Number((await hero.innerText()).match(/([\d.]+) kWp/)![1]);

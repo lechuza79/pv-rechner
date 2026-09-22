@@ -103,7 +103,7 @@ const F = {
     color: v("--color-text-muted"),
   },
   inner: {
-    maxWidth: v("--content-max-width"),
+    maxWidth: v("--content-max-width"), containerType: "inline-size",
     margin: "0 auto",
     display: "flex",
     justifyContent: "space-between",

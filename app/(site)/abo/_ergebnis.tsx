@@ -16,11 +16,11 @@ import { v, space } from "../../../lib/theme";
 
 export const ABO_KNOPF_STIL: React.CSSProperties = {
   display: "inline-block",
-  background: v("--color-accent"),
-  color: "#fff",
+  background: v("--color-cta"),
+  color: v("--color-cta-ink"),
   border: "none",
   padding: "12px 20px",
-  borderRadius: v("--radius-md"),
+  borderRadius: v("--radius-pill"),
   fontWeight: 600,
   fontSize: v("--font-size-body"),
   fontFamily: "inherit",
@@ -37,17 +37,11 @@ const S: Record<string, React.CSSProperties> = {
     padding: "0 16px 20px",
   },
   wrap: {
-    maxWidth: v("--content-max-width"),
+    maxWidth: v("--content-max-width"), containerType: "inline-size",
     margin: "0 auto",
     paddingTop: "var(--content-lede-top)",
   },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    lineHeight: 1.2,
-    marginBottom: space.lg,
-  },
+  h1: { marginBottom: space.lg },
   p: {
     fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
@@ -57,11 +51,11 @@ const S: Record<string, React.CSSProperties> = {
   aktionen: { marginTop: space.xxl, display: "flex", gap: space.md, flexWrap: "wrap" },
   cta: {
     display: "inline-block",
-    background: v("--color-accent"),
-    color: "#fff",
+    background: v("--color-cta"),
+    color: v("--color-cta-ink"),
     textDecoration: "none",
     padding: "12px 20px",
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     fontWeight: 600,
   },
   leise: {

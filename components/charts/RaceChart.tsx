@@ -662,7 +662,7 @@ function RaceCard({
               const aktiv = e === aktivesEreignis;
               const d = aktiv ? 22 : 13;
               return (
-                <span key={e.tag} className="kr-neu" title={e.label} style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: 16 - d / 2, width: d, height: d, transform: "translateX(-50%)", borderRadius: "50%", background: v("--color-accent"), border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box", boxShadow: aktiv ? `0 2px 6px color-mix(in srgb, ${v("--color-accent")} 35%, transparent)` : "none", transition: "width .2s ease, height .2s ease, top .2s ease", zIndex: aktiv ? 2 : 1 }} />
+                <span key={e.tag} className="kr-neu" title={e.label} style={{ position: "absolute", left: `${posPct(e.tag)}%`, top: 16 - d / 2, width: d, height: d, transform: "translateX(-50%)", borderRadius: "50%", background: v("--color-cta"), border: `2px solid ${v("--color-bg")}`, boxSizing: "border-box", boxShadow: aktiv ? `0 2px 6px color-mix(in srgb, ${v("--color-accent")} 35%, transparent)` : "none", transition: "width .2s ease, height .2s ease, top .2s ease", zIndex: aktiv ? 2 : 1 }} />
               );
             })}
           </div>
@@ -696,7 +696,7 @@ function RaceCard({
           Chart-Achse (dort scheiterte er zweimal). Darunter eine Linie, die den
           Chart-Block von der Fußzeile trennt. */}
       <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", alignItems: "center", gap: space.lg, marginTop: space.md, background: v("--color-bg"), borderRadius: v("--radius-md"), padding: abstand("md", "lg") }}>
-        <style>{`.kr-regler{-webkit-appearance:none;appearance:none;height:2px;margin:0;background:var(--color-border);border-radius:1px;outline:none}.kr-regler::-webkit-slider-runnable-track{height:2px;background:transparent}.kr-regler::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;margin-top:-5.5px;border-radius:50%;background:var(--color-accent);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler::-moz-range-track{height:2px;background:var(--color-border)}.kr-regler::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--color-accent);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px color-mix(in srgb, var(--color-accent) 35%, transparent)}`}</style>
+        <style>{`.kr-regler{-webkit-appearance:none;appearance:none;height:2px;margin:0;background:var(--color-border);border-radius:1px;outline:none}.kr-regler::-webkit-slider-runnable-track{height:2px;background:transparent}.kr-regler::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:13px;height:13px;margin-top:-5.5px;border-radius:50%;background:var(--color-cta);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler::-moz-range-track{height:2px;background:var(--color-border)}.kr-regler::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--color-cta);border:2px solid var(--color-bg);box-sizing:border-box;cursor:pointer}.kr-regler:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px color-mix(in srgb, var(--color-accent) 35%, transparent)}`}</style>
         <button
           type="button"
           onClick={() => {

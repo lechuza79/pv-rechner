@@ -37,7 +37,7 @@ const PVRechner = dynamic(() => import("../../../(site)/photovoltaik-rechner/rec
   loading: () => <Laedt />,
 });
 
-const Empfehlung = dynamic(() => import("../../../(site)/pv-bedarf-berechnen/empfehlung"), {
+const Empfehlung = dynamic(() => import("../../../(site)/photovoltaik-rechner/empfehlung"), {
   ssr: false,
   loading: () => <Laedt />,
 });
@@ -109,7 +109,6 @@ export default function PartnerRechner({
       <Empfehlung
         stand={stand}
         zielPfad={pfad}
-        heimPfad={null}
         eigenerPfad={pfad}
         /* Kein Zwischenhalt auf der Empfehlung: Das Ergebnis trägt dieselbe
            Anlage samt „Warum diese Anlage?", und ein Schritt mehr kostet hier

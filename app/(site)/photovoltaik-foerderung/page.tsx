@@ -14,7 +14,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = pageMetadata({
   path: "/photovoltaik-foerderung",
-  title: `PV-Förderung ${new Date().getFullYear()} – Übersicht aller Programme nach Bundesland`,
+  title: `Photovoltaik-Förderung ${new Date().getFullYear()}: alle Programme nach Bundesland`,
   description:
     "Welche Förderung gibt es für Photovoltaik und Batteriespeicher? Übersicht der Programme von Bund, Ländern und Kommunen — mit Beträgen, Bedingungen und Status.",
   ogImageTitle: "PV-Förderung im Überblick",
@@ -28,11 +28,11 @@ const LEVEL_LABEL: Record<FundingProgram["level"], string> = {
 const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
-  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
+  h1: { margin: "0 0 8px" } as React.CSSProperties,
   intro: { fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 20px" } as React.CSSProperties,
   nav: { display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 } as React.CSSProperties,
   navLink: { fontSize: v("--font-size-small"), color: v("--color-accent"), background: v("--color-bg-accent"), border: `1px solid ${v("--color-border-accent")}`, borderRadius: 999, padding: "4px 12px", textDecoration: "none" } as React.CSSProperties,
-  h2: { fontSize: v("--font-size-h3"), fontWeight: 800, margin: "28px 0 12px", scrollMarginTop: 16 } as React.CSSProperties,
+  h2: { margin: "28px 0 12px", scrollMarginTop: 16 } as React.CSSProperties,
   card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "14px 16px", marginBottom: 10 } as React.CSSProperties,
   label: { fontSize: v("--font-size-small"), color: v("--color-text-secondary") } as React.CSSProperties,
 };
@@ -65,8 +65,8 @@ function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
         {...(primaryExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
         style={{
           display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none",
-          background: v("--color-accent"), color: v("--color-text-on-accent"),
-          fontSize: v("--font-size-small"), fontWeight: 700, padding: "8px 14px", borderRadius: v("--radius-md"),
+          background: v("--color-cta"), color: v("--color-text-on-accent"),
+          fontSize: v("--font-size-small"), fontWeight: 700, padding: "8px 14px", borderRadius: v("--radius-pill"),
         }}
       >
         {primaryLabel} <IconArrowRight size={iconSizes.sm} color={v("--color-text-on-accent")} />
@@ -109,9 +109,9 @@ export default async function FoerderungPage() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <h1 style={S.h1}>PV-Förderung im Überblick</h1>
+        <h1 style={S.h1}>Photovoltaik-Förderung im Überblick</h1>
         <p style={S.intro}>
-          Förderung für Photovoltaik und Speicher gibt es auf drei Ebenen: Bund, Land und Kommune.
+          Photovoltaik-Förderung gibt es auf drei Ebenen: Bund, Land und Kommune — für die Anlage selbst und oft auch für den Speicher.
           Die Programme lassen sich meist <strong style={{ color: v("--color-text-primary"), fontWeight: 600 }}>miteinander kombinieren</strong>,
           die kommunalen Töpfe sind aber oft gedeckelt. Der Antrag muss in der Regel <strong style={{ color: v("--color-text-primary"), fontWeight: 600 }}>vor dem Kauf oder der Montage</strong> gestellt werden.
         </p>

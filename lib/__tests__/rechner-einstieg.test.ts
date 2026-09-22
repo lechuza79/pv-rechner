@@ -53,6 +53,12 @@ describe("Rechner-Einstieg", () => {
     expect(traegtRechnung(new URLSearchParams("er=1050"))).toBe(true);
     expect(traegtRechnung(new URLSearchParams("foe=muenchen-pv"))).toBe(true);
     expect(traegtRechnung(new URLSearchParams(""))).toBe(false);
+    // Seit 21.09.2026 zeigt die nackte Adresse den Empfehlungsweg. Seine
+    // Antworten stehen in der Adresse und bleiben auf der statischen Seite;
+    // erst ?direkt=1 oder eine Rechnung führt auf den Zwilling.
+    expect(traegtRechnung(new URLSearchParams("haus=efh&dach=satteldach&az=sued&personen=4&view=ergebnis"))).toBe(false);
+    expect(traegtRechnung(new URLSearchParams("plz=10115"))).toBe(false);
+    expect(traegtRechnung(new URLSearchParams("direkt=1"))).toBe(true);
     // Kampagnen-Kennungen aendern an der Seite nichts und duerfen den
     // Zwischenspeicher nicht umgehen.
     expect(traegtRechnung(new URLSearchParams("utm_source=newsletter&gclid=abc"))).toBe(false);

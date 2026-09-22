@@ -70,6 +70,8 @@ export const host = (u: string) => { try { return new URL(u).hostname.replace(/^
 /** German sites use plain second-level domains; two labels are the registrable part. */
 /** Zwei Labels sind der registrierbare Teil; Großschreibung ist bedeutungslos (Name@Blog.TV). */
 export const siteOf = (h: string) => h.toLowerCase().split(".").slice(-2).join(".");
+/** Free-mail providers: a mailbox there belongs to whoever publishes it. */
+export const GRATIS_POSTFACH = /^(?:web\.de|t-online\.de|gmx\.(?:de|net|at|ch)|gmail\.com|googlemail\.com|freenet\.de|online\.de|arcor\.de|outlook\.(?:de|com)|hotmail\.(?:de|com)|live\.de|yahoo\.(?:de|com)|icloud\.com|aol\.com|mail\.de|email\.de|posteo\.de|gmx\.com|vodafonemail\.de|kabelmail\.de|ewetel\.net|htp-tel\.de|osnanet\.de)$/;
 const pathOf = (u: string) => { try { return new URL(u).pathname; } catch { return ""; } };
 export const fold = (t: string) => t.toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[^a-z]/g, "");
 
@@ -164,14 +166,22 @@ export type ScopeRegeln = {
   /** Prefixes/suffixes a domain may add around the own name ("stadt…", "…gemeinde"). */
   namensvarianten: RegExp;
   /**
-   * Pages of the own site whose addresses belong to the organisation whatever
-   * their mail domain. A small business publishes its web.de or t-online
-   * mailbox in its legally required imprint; rejecting it as a foreign domain
-   * lost the only address of such businesses (measured 21.09.2026). Left unset
-   * for administrations, where a foreign mailbox on the own site is usually
-   * another body's.
+   * Pages of the own site on which a FREE-MAIL mailbox (web.de, t-online …)
+   * belongs to the organisation. A small business publishes such a mailbox in
+   * its legally required imprint; rejecting it lost the only address of these
+   * businesses (measured 21.09.2026). Only free-mail providers: allowing any
+   * foreign domain there took the arbitration board, the network agency and the
+   * web agency named in the same imprint (measured on 3,115 businesses the same
+   * day). Left unset for administrations.
    */
-  eigeneAdresseAuf?: (pfad: string) => boolean;
+  gratisPostfachAuf?: (pfad: string) => boolean;
+  /**
+   * A mail domain that is the same organisation under another spelling
+   * ("spatz-bedachungen.com" writing from "christian-spatz-bedachungen.de").
+   * Only mailboxes found on the own site are considered. Left unset for
+   * administrations, whose related domains follow the association rules.
+   */
+  verwandteDomain?: (mailDomain: string, ownDomain: string) => boolean;
 };
 
 export function applyScope(evidence: Evidence[], titles: Map<string, string>, o: Organisation, verbund: Verbund | null, r: ScopeRegeln): Evidence[] {
@@ -195,11 +205,12 @@ export function applyScope(evidence: Evidence[], titles: Map<string, string>, o:
   const company = (d: string) => r.eigenbetrieb.test(fold(d));
   const institutional = new Set([...perDomain].filter(([d, set]) => !otherAuthority(d) && !company(d) && (set.size >= 3
     || ownVariant(d)
+    || !!r.verwandteDomain?.(d, own)
     || tokens.some(w => fold(d).includes(w)))).map(([d]) => d));
   return evidence.map(e => {
     const site = siteOf(host(e.url));
     const domain = siteOf(e.email.split("@")[1] ?? "");
-    const publishedAsOwn = site === own && !otherAuthority(domain) && !company(domain) && !!r.eigeneAdresseAuf?.(pathOf(e.url));
+    const publishedAsOwn = site === own && GRATIS_POSTFACH.test(e.email.split("@")[1] ?? "") && !!r.gratisPostfachAuf?.(pathOf(e.url));
     const reasons = e.reasons.filter(rr =>
       !(rr === "source-not-official-site" && adminSites.has(site)) &&
       !(rr === "mailbox-foreign-domain" && (publishedAsOwn || institutional.has(domain) || (verbund && tokens.some(w => fold(domain).includes(w))))));

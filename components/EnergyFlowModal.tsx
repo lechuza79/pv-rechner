@@ -219,7 +219,7 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
                 onClick={() => setView(t.key)}
                 style={{
                   border: `1px solid ${on ? v('--color-accent') : v('--color-border')}`,
-                  background: on ? v('--color-accent') : "transparent",
+                  background: on ? v('--color-cta') : "transparent",
                   color: on ? v('--color-text-on-accent') : v('--color-text-secondary'),
                   fontSize: v("--font-size-caption"), fontWeight: 600, fontFamily: "inherit",
                   padding: "5px 10px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",

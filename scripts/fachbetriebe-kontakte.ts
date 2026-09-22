@@ -10,21 +10,31 @@
  *   --mode=evaluate   offline über bereits geholte Seiten
  *   --mode=research   begrenzte Abrufe je Betrieb (Standard-Budget 8)
  *   --mode=summary    Zahlen und Alt/Neu-Vergleich über alle Ergebnisse
+ *   --mode=browser    zweiter Durchgang mit echtem Browser für Betriebe ohne Kontakt
+ *   --mode=freigabe   jede eingetragene Adresse vor einem Versand frisch prüfen (--schreiben)
+ *   --mode=apply      belegte Kontakte eintragen (--schreiben); ohne den Schalter nur zählen
  *
  * Gemeinsam: --ids=A,B | --stichprobe=N (je N mit und ohne bekannte Adresse)
  *            --part=i --parts=n --out=DIR · research: --budget=8
  *
- * Es wird nichts verschickt und nichts in der Datenbank verändert: Ob Betriebe
- * angeschrieben werden, ist nicht entschieden.
+ * Es wird nichts verschickt. Eingetragen wird nur mit --schreiben, und nur in
+ * eigene Spalten plus die bisher LEERE Kontaktadresse — eine vorhandene
+ * Adresse wird nie überschrieben.
  */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
+import { resolveMx } from "node:dns/promises";
 import type { Rollenwerk, ScopeRegeln } from "../lib/kontakt-suche";
 import {
   bewerten, laufen, readJson, recherchieren, writeJson,
   type Bestand, type Eintrag, type Ergebnis,
 } from "./lib/kontakt-lauf";
 import { MAIN_CHECKOUT, extractionVersion, rulesVersion } from "./lib/contact-v2-config";
+import { browserSchliessen, rendern, seiteGerendert } from "./lib/kontakt-browser";
+import { fetchLive } from "./lib/kontakt-lauf";
+import { contactCandidates } from "../lib/contact-evidence";
+import { heuteInBerlin } from "../lib/zeit";
+import { postfachTauglich } from "../lib/kontakt-tauglichkeit";
 
 const arg = (name: string) => process.argv.find(a => a.startsWith(`--${name}=`))?.slice(name.length + 3);
 const OUT = resolve(arg("out") ?? resolve(MAIN_CHECKOUT, "scripts/.cache/fachbetriebe-kontakte"));
@@ -62,9 +72,24 @@ const FACHBETRIEB_SCOPE: ScopeRegeln = {
   fremdeBehoerde: /agentur|seo|marketing|webdesign|media|hosting|ionos|jimdo|wix|kammer|innung/,
   eigenbetrieb: /shop|store|karriere|jobs/,
   namensvarianten: /solar|elektro|energie|technik|gmbh|haustechnik|pv/,
-  // Kleine Betriebe veröffentlichen ihr web.de- oder t-online-Postfach im Impressum.
-  eigeneAdresseAuf: (pfad: string) => /(?:^|\/)(?:impressum|imprint|kontakt|contact)(?:-\d+)?(?:\.html?|\.php)?\/?$/i.test(pfad),
+  // Kleine Betriebe veröffentlichen ihr web.de- oder t-online-Postfach im
+  // Impressum, oft auch nur auf der Startseite oder unter „Über uns".
+  gratisPostfachAuf: () => true,
+  verwandteDomain: (mailDomain: string, ownDomain: string) => {
+    const eigen = new Set(unterscheidendeWoerter(ownDomain));
+    return unterscheidendeWoerter(mailDomain).some(w => eigen.has(w));
+  },
 };
+
+/**
+ * The distinctive words of a domain: without the ending and without the words
+ * every solar business carries — "solar" shared by two domains says nothing.
+ */
+export function unterscheidendeWoerter(domain: string): string[] {
+  const allgemein = /^(?:solar|solaris|elektro|elektrotechnik|energie|energy|technik|tech|photovoltaik|pv|service|gmbh|haustechnik|team|info|online|dach|bau|systeme|system|group|gruppe|energietechnik|anlagen|solaranlagen|sonne|strom|power|home|smart|green|mail)$/;
+  return domain.toLowerCase().split(".").slice(0, -1).join("-").split(/[^a-zäöüß]+/)
+    .filter(w => w.length >= 4 && !allgemein.test(w));
+}
 
 type Zeile = { domain: string; firmenname: string | null; email: string | null; impressum_url: string | null; kontakt_url: string | null };
 
@@ -110,7 +135,7 @@ function ladeBestand(zeilen: Zeile[]): { bestand: Bestand; eintraege: Map<string
 function summary(bestand: Bestand, anzahl: number) {
   const dir = resolve(OUT, "results");
   const rows = existsSync(dir) ? readdirSync(dir).filter(f => f.endsWith(".json")).map(f => readJson(resolve(dir, f))) as Ergebnis[] : [];
-  const neu = (r: Ergebnis) => r.kanaele.betrieb?.[0] ?? r.general[0] ?? null;
+  const neu = kontaktFuer;
   const mitAlt = rows.filter(r => r.alt), ohneAlt = rows.filter(r => !r.alt);
   const out = {
     observedAt: new Date().toISOString(), rules: bestand.rules, betriebe: anzahl, bewertet: rows.length,
@@ -127,7 +152,157 @@ function summary(bestand: Bestand, anzahl: number) {
   console.log(JSON.stringify(out, null, 1));
 }
 
+/**
+ * The mailbox to use for a business: its general mailbox first (that is where a
+ * craft business answers), otherwise the proven person. A large organisation's
+ * imprint names many people; picking the first of them would pick at random.
+ */
+export const kontaktFuer = (r: Pick<Ergebnis, "general" | "kanaele" | "id">): string | null => {
+  const kandidaten = [...r.general, ...(r.kanaele.betrieb ?? [])].filter(m => postfachTauglich(m).ok);
+  const site = r.id.split(".").slice(-2).join(".");
+  // A mailbox on the business's own domain beats one on a related domain.
+  return kandidaten.find(m => (m.split("@")[1] ?? "").endsWith(site)) ?? kandidaten[0] ?? null;
+};
+
+async function apply() {
+  const schreiben = process.argv.includes("--schreiben");
+  const url = env("SUPABASE_URL") ?? env("NEXT_PUBLIC_SUPABASE_URL");
+  const key = env("SUPABASE_SERVICE_KEY");
+  if (!url || !key) throw new Error("SUPABASE_URL oder SUPABASE_SERVICE_KEY fehlt");
+  const { createClient } = await import("@supabase/supabase-js");
+  const c = createClient(url, key, { auth: { persistSession: false } });
+  const dir = resolve(OUT, "results");
+  const rows = readdirSync(dir).filter(f => f.endsWith(".json")).map(f => readJson(resolve(dir, f))) as Ergebnis[];
+  const stale = rows.filter(r => r.rules !== rulesVersion()).length;
+  if (stale) throw new Error(`${stale} Ergebnisse stammen aus älteren Regeln — erst neu auswerten`);
+  if (schreiben) {
+    const { error } = await c.rpc("exec_sql", { sql: `
+      ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_email_belegt text;
+      ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_beleg_url text;
+      ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_geprueft_am date;
+      NOTIFY pgrst, 'reload schema';` });
+    if (error) throw new Error(error.message);
+    await new Promise(r => setTimeout(r, 3000));
+  }
+  // A mail domain without a mail server is a mis-read address, not a contact:
+  // text glued onto the domain ("…@techo-energy.demehr") passed every other check.
+  const mx = new Map<string, boolean>();
+  const domains = [...new Set(rows.map(kontaktFuer).filter((m): m is string => !!m).map(m => m.split("@")[1]))];
+  for (let i = 0; i < domains.length; i += 20) {
+    await Promise.all(domains.slice(i, i + 20).map(async d => {
+      try { mx.set(d, (await resolveMx(d)).length > 0); } catch { mx.set(d, false); }
+    }));
+  }
+  let belegt = 0, aufgefuellt = 0, geschrieben = 0;
+  const ohneMailserver: string[] = [];
+  for (const r of rows) {
+    const mail = kontaktFuer(r);
+    if (!mail) {
+      // A contact written by an earlier run that no longer holds is withdrawn.
+      if (schreiben) {
+        const { error } = await c.from("fachbetriebe").update({ kontakt_email_belegt: null, kontakt_beleg_url: null, kontakt_geprueft_am: null }).eq("domain", r.id).not("kontakt_email_belegt", "is", null);
+        if (error) throw new Error(`${r.id}: ${error.message}`);
+      }
+      continue;
+    }
+    if (!mx.get(mail.split("@")[1])) {
+      ohneMailserver.push(`${r.id}: ${mail}`);
+      if (schreiben) {
+        const { error } = await c.from("fachbetriebe").update({ kontakt_email_belegt: null, kontakt_beleg_url: null, kontakt_geprueft_am: null }).eq("domain", r.id).not("kontakt_email_belegt", "is", null);
+        if (error) throw new Error(`${r.id}: ${error.message}`);
+      }
+      continue;
+    }
+    if (!r.proofs.some(p => p.email === mail) && !r.fundstellen?.[mail]) throw new Error(`${r.id}: ${mail} ohne Fundstelle`);
+    belegt++;
+    // An empty address, or one that is no mailbox at all (a shuffled anti-spam
+    // text from an older crawl, a data-protection mailbox), is replaced.
+    const leer = !r.alt || !postfachTauglich(String(r.alt)).ok;
+    if (leer) aufgefuellt++;
+    if (!schreiben) continue;
+    const beleg = r.proofs.find(p => p.email === mail)?.url ?? r.fundstellen?.[mail] ?? null;
+    // One row at a time: a batch upsert would give every row the same column set.
+    const { error } = await c.from("fachbetriebe").update({
+      kontakt_email_belegt: mail, kontakt_beleg_url: beleg, kontakt_geprueft_am: r.evaluatedAt.slice(0, 10),
+      ...(leer ? { email: mail } : {}),
+    }).eq("domain", r.id);
+    if (error) throw new Error(`${r.id}: ${error.message}`);
+    geschrieben++;
+  }
+  console.log(JSON.stringify({ schreiben, ergebnisse: rows.length, belegt, leereAdresseAufgefuellt: aufgefuellt, geschrieben, ohneMailserver: ohneMailserver.length }));
+  for (const z of ohneMailserver) console.log(`  ohne Mailserver verworfen: ${z}`);
+}
+
+/**
+ * Before a letter goes out, every stored contact is checked again: is it a
+ * mailbox that takes a letter, does its domain accept mail, and does it still
+ * stand on the page that proved it? Only then does it carry a release date.
+ * A release older than a few days is no release — the sending side checks that.
+ */
+async function freigabe() {
+  const schreiben = process.argv.includes("--schreiben");
+  const url = env("SUPABASE_URL") ?? env("NEXT_PUBLIC_SUPABASE_URL");
+  const key = env("SUPABASE_SERVICE_KEY");
+  if (!url || !key) throw new Error("SUPABASE_URL oder SUPABASE_SERVICE_KEY fehlt");
+  const { createClient } = await import("@supabase/supabase-js");
+  const c = createClient(url, key, { auth: { persistSession: false } });
+  if (schreiben) {
+    const { error } = await c.rpc("exec_sql", { sql: `
+      ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_freigabe_am date;
+      ALTER TABLE fachbetriebe ADD COLUMN IF NOT EXISTS kontakt_sperrgrund text;
+      NOTIFY pgrst, 'reload schema';` });
+    if (error) throw new Error(error.message);
+    await new Promise(r => setTimeout(r, 3000));
+  }
+  const zeilen: { domain: string; kontakt_email_belegt: string; kontakt_beleg_url: string | null }[] = [];
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await c.from("fachbetriebe").select("domain, kontakt_email_belegt, kontakt_beleg_url")
+      .eq("art", "betrieb").not("kontakt_email_belegt", "is", null).order("domain").range(von, von + 999);
+    if (error) throw new Error(error.message);
+    zeilen.push(...(data as any[]));
+    if (!data || data.length < 1000) break;
+  }
+  const ids = arg("ids")?.split(",");
+  const liste = ids ? zeilen.filter(z => ids.includes(z.domain)) : zeilen;
+  const parts = Number(arg("parts") ?? 1), part = Number(arg("part") ?? 0);
+  const meine = liste.filter((_, i) => i % parts === part);
+  const heute = heuteInBerlin();
+  const zaehler: Record<string, number> = {};
+  try {
+    for (const z of meine) {
+      const mail = z.kontakt_email_belegt.toLowerCase();
+      let grund: string | null = null;
+      const taugt = postfachTauglich(mail);
+      if (!taugt.ok) grund = taugt.grund;
+      if (!grund) {
+        try { if (!(await resolveMx(mail.split("@")[1])).length) grund = "Domain nimmt keine Mails an"; }
+        catch { grund = "Domain nimmt keine Mails an"; }
+      }
+      if (!grund && !z.kontakt_beleg_url) grund = "keine Fundstelle";
+      if (!grund) {
+        const beleg = z.kontakt_beleg_url!;
+        const steht = (html: string) => contactCandidates(html, beleg, z.domain).some(k => k.email.toLowerCase() === mail);
+        const live = await fetchLive(beleg);
+        let gefunden = "html" in live && steht(live.html);
+        // Pages that build or decode their content in the browser are read there.
+        if (!gefunden) { const html = await seiteGerendert(beleg); gefunden = !!html && steht(html); }
+        if (!gefunden) grund = "Adresse steht nicht mehr auf der Fundstelle";
+      }
+      zaehler[grund ?? "freigegeben"] = (zaehler[grund ?? "freigegeben"] ?? 0) + 1;
+      if (grund) console.log(`${z.domain}: ${mail} — ${grund}`);
+      if (!schreiben) continue;
+      const { error } = await c.from("fachbetriebe").update(grund
+        ? { kontakt_freigabe_am: null, kontakt_sperrgrund: grund }
+        : { kontakt_freigabe_am: heute, kontakt_sperrgrund: null }).eq("domain", z.domain);
+      if (error) throw new Error(`${z.domain}: ${error.message}`);
+    }
+  } finally { await browserSchliessen(); }
+  console.log(JSON.stringify({ schreiben, geprueft: meine.length, ...zaehler }));
+}
+
 async function main() {
+  if (mode === "apply") return apply();
+  if (mode === "freigabe") return freigabe();
   const zeilen = await betriebe();
   const { bestand, eintraege } = ladeBestand(zeilen);
   if (mode === "summary") return summary(bestand, eintraege.size);
@@ -142,6 +317,19 @@ async function main() {
   }
   const parts = Number(arg("parts") ?? 1), part = Number(arg("part") ?? 0);
   rows = rows.filter((_, i) => i % parts === part);
+  if (mode === "browser") {
+    // Only entries the plain fetch left without any contact.
+    rows = rows.filter(e => !kontaktFuer(bewerten(bestand, e)));
+    console.log(`${rows.length} Betriebe ohne Kontakt · Browser-Durchgang`);
+    try {
+      for (const e of rows) {
+        const r = await rendern(bestand, e);
+        const neu = kontaktFuer(bewerten(bestand, e));
+        console.log(e.id, JSON.stringify({ gelesen: r.gelesen.length, fehler: r.fehler, kontakt: neu }));
+      }
+    } finally { await browserSchliessen(); }
+    return;
+  }
   console.log(`${rows.length} Betriebe · Modus ${mode}`);
   await laufen(bestand, rows, async e => {
     const r = mode === "research" ? await recherchieren(bestand, e, BUDGET) : bewerten(bestand, e);

@@ -225,7 +225,7 @@ export const ARTIKELPLAN: ArtikelVorhaben[] = [
   },
   {
     thema: "Anlagengröße: wie viel kWp brauche ich",
-    slug: "/pv-bedarf-berechnen",
+    slug: "/photovoltaik-rechner",
     ziel: "2026-09-19",
     zustand: "in-arbeit",
     messung: {

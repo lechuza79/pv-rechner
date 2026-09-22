@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { DM_Sans, JetBrains_Mono } from "next/font/google";
+import { DM_Sans, JetBrains_Mono, Montserrat } from "next/font/google";
 import { getCssVariables, getThemeOverrides, globalStyles, headerContentGap } from "../../lib/theme";
 import { getOverrideCss } from "../../lib/theme-overrides";
 import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
@@ -17,7 +17,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 // compact copy of lib/theme-schedule.ts (it cannot import modules this early).
 // "auto" tracks the sun over central Germany — keep this formula in sync with
 // the module. Reads/writes the same localStorage key as ThemeController.
-const themeBootScript = `(function(){try{
+// The first statement marks the page as scripted before first paint, so the
+// no-JS fallback menu ("Menü" disclosure) never flashes before the real one mounts.
+const themeBootScript = `document.documentElement.classList.add('sc-js');(function(){try{
 var p=localStorage.getItem('sc-theme-pref');
 if(p!=='light'&&p!=='dark')p='auto';
 var r;
@@ -53,6 +55,14 @@ const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-jetbrains-mono",
+});
+// Überschriften. Nur das eine Schnittgewicht, das das Design benutzt — die
+// gemeinsame Fußzeile deklariert Montserrat 700 ohnehin auf jeder Seite.
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["700"],
+  display: "swap",
+  variable: "--font-montserrat",
 });
 
 export const metadata: Metadata = {
@@ -97,7 +107,7 @@ export default async function RootLayout({
   // + stage CSS so it wins by source order. Cached read → no DB hit per request.
   const overrideCss = getOverrideCss(await getSavedThemeOverrides());
   return (
-    <html lang="de" className={`${dmSans.variable} ${jetBrainsMono.variable}`} suppressHydrationWarning>
+    <html lang="de" className={`${dmSans.variable} ${jetBrainsMono.variable} ${montserrat.variable}`} suppressHydrationWarning>
       {/* suppressHydrationWarning: the theme boot script sets data-theme /
           data-theme-pref on <html> before hydration (no-flash), which React
           would otherwise flag as a server/client attribute mismatch. */}
@@ -118,7 +128,7 @@ export default async function RootLayout({
         style={{
           margin: 0,
           padding: 0,
-          background: "var(--color-bg)",
+          background: "var(--color-bg-page)",
           minHeight: "100vh",
           fontFamily: "var(--font-text)",
         }}
@@ -137,7 +147,7 @@ export default async function RootLayout({
               Seite selbst als Top-Padding mit (plus Header-marginBottom), was
               projektweit driftete. Keine Seite setzt jetzt noch eigenes
               Top-Padding. */}
-          <div style={{ padding: `20px 16px ${headerContentGap}px` }}><Header /></div>
+          <div style={{ padding: `28px var(--header-frame-pad) ${headerContentGap}px` }}><Header /></div>
           {children}
           {/* Trust section + footer of the new design, full width, one source
               with the document pages (lib/site-fuss.ts). */}

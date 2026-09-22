@@ -69,7 +69,7 @@ test.describe("EEG-Reform: Sachstand auf den Seiten, an denen ein Nutzer ihn lie
   });
 
   test("Rechner-Ergebnis nennt den Sachstand, sobald eingespeist wird", async ({ page }) => {
-    await page.goto("/photovoltaik-rechner");
+    await page.goto("/photovoltaik-rechner?direkt=1");
 
     // Durch den Flow klicken — dieselbe Mechanik wie in rechner.spec.ts.
     // In JEDEM Schritt erst die offenen Fragen beantworten: Seit dem Flow-Umbau
