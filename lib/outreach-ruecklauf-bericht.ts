@@ -48,6 +48,11 @@ export type BerichtEingabe = {
   neu: BerichtBefund[];
   /** Wie viele Mails keiner Gemeinde zuzuordnen waren. */
   unklar: number;
+  /**
+   * Die ungeordneten Mails, die nach einer ECHTEN Antwort aussehen — nicht
+   * maschinell, nicht unzustellbar, nicht der bekannte Lärm.
+   */
+  unklareAntworten?: BerichtBefund[];
   /** Zeitraum des Abrufs in Tagen — sonst ist „nichts Neues" nicht einzuordnen. */
   tage: number;
 };
@@ -70,6 +75,21 @@ export function ruecklaufBericht(e: BerichtEingabe): Bericht {
   const unzustellbar = e.neu.filter((b) => b.art === "unzustellbar");
 
   const decisions: string[] = [];
+  // EINE ANTWORT, DIE NIEMAND ZUORDNEN KONNTE, IST DER GEFÄHRLICHSTE FALL.
+  //
+  // Sie stand bis zum 22.09.2026 nur als Zahl im Kleingedruckten („3 Mails
+  // ließen sich keiner Gemeinde zuordnen"), und ohne weitere Entscheidung ging
+  // der ganze Bericht stumm in die Ablage. Genau so lag Berkenthins Antwort —
+  // eine fertige Pressemitteilung des Bürgermeisters — neun Tage ungelesen da,
+  // während die Auswertung drei Antworten meldete statt sechs. Die Zuordnung
+  // wird immer Lücken haben (fremde Amtsdomain, privates Postfach, Betreff
+  // ohne Bezug); dass eine Lücke SICHTBAR wird, darf nicht davon abhängen, ob
+  // sie geschlossen werden konnte.
+  for (const b of e.unklareAntworten ?? []) {
+    decisions.push(
+      `${b.von} (${b.datum}): „${b.betreff}" — sieht nach einer echten Antwort aus, ließ sich aber keiner Gemeinde zuordnen. Bitte im Postfach ansehen.`,
+    );
+  }
   for (const b of antworten) {
     decisions.push(`${zeile(b)} — hat geantwortet und wartet auf eine Reaktion.`);
   }

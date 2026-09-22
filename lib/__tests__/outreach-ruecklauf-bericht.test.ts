@@ -85,3 +85,22 @@ describe("Rücklauf-Bericht: was den Betreiber erreicht", () => {
     expect(r.details).toContain("14 Tage");
   });
 });
+
+describe("Antworten ohne Zuordnung", () => {
+  const mail = { art: "antwort", name: null, betreff: "Pressemitteilung", von: "bgm.berkenthin@amt-berkenthin.de", datum: "2026-09-13" };
+
+  it("meldet eine nicht zuzuordnende Antwort als Entscheidung", () => {
+    // Echter Fall: Neun Tage ungelesen, weil er nur als Zahl im
+    // Kleingedruckten stand und der Bericht ohne Entscheidung stumm blieb.
+    const b = ruecklaufBericht({ neu: [], unklar: 1, unklareAntworten: [mail], tage: 14 });
+    expect(b.audience).toBe("betreiber");
+    expect(b.decisions.join(" ")).toContain("bgm.berkenthin@amt-berkenthin.de");
+    expect(b.decisions.join(" ")).toContain("Pressemitteilung");
+  });
+
+  it("bleibt still, wenn nur Maschinenpost unzuzuordnen war", () => {
+    const b = ruecklaufBericht({ neu: [], unklar: 3, unklareAntworten: [], tage: 14 });
+    expect(b.audience).toBe("claude");
+    expect(b.decisions).toHaveLength(0);
+  });
+});

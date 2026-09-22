@@ -505,6 +505,12 @@ async function main(): Promise<void> {
       datum: b.datum,
     })),
     unklar: unklar.length,
+    // Nur die, die nach einem Menschen aussehen: Unzustellbarkeiten und
+    // maschinelle Meldungen ohne Zuordnung ändern nichts und wären der Lärm,
+    // in dem die eine echte Antwort untergeht.
+    unklareAntworten: unklar
+      .filter((b) => b.art === "antwort" || b.art === "widerspruch")
+      .map((b) => ({ art: b.art, name: null, betreff: b.betreff, von: b.von, datum: b.datum })),
     tage,
   });
   log();
