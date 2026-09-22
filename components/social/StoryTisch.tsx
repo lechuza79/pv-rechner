@@ -1,17 +1,20 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { ModalHeader } from "../Modal";
+import { IconCheck, IconHourglass } from "../Icons";
 import { v, space, pad } from "../../lib/theme";
 import { FeedVorschau } from "./FeedVorschau";
 import { SeitenVorschau, type OrtsVorschau } from "./SeitenVorschau";
 import { Umschalter } from "./Umschalter";
 import { VorlagenEditor } from "./VorlagenEditor";
 import { Kennung } from "./Kennung";
-import { fuelle } from "../../lib/social-vorlage";
+import { fuelle, beitragsText } from "../../lib/social-vorlage";
 import { KARTEN_STILE, KARTEN_STIL_NAME, KARTEN_STIL_STANDARD, type KartenStil } from "../../lib/social-karten-stil";
 import { urteil, type Pruefung } from "../../lib/social-pruefung-kern";
 import type { Befund as MechanikBefund } from "../../lib/social-mechanik";
 import { Freigabe } from "./Freigabe";
+import { StoryFesthalten } from "./StoryFesthalten";
 import { SendenKnopf } from "./SendenKnopf";
 import { BILDFORM_NAME, moeglicheFormen, templateVon, type PostBild, type SocialPost } from "../../lib/social-posts";
 
@@ -39,8 +42,13 @@ export function StoryTisch({
   ohneTitel,
   onPruefung,
   orts,
+  templateModus = false,
+  onModusWechsel,
 }: {
   post: SocialPost;
+  /** Template exploration never writes a municipality-specific override. */
+  templateModus?: boolean;
+  onModusWechsel?: () => void;
   /**
    * Was diese Geschichte auf ihrer ORTSSEITE zeigt.
    *
@@ -91,9 +99,9 @@ export function StoryTisch({
 }) {
   // Welche Ausgabeform gerade beurteilt wird. Der Feed ist der Ausgangspunkt:
   // Er ist die Form, die es zu JEDEM Beitrag gibt.
-  const [ansicht, setAnsicht] = useState<"feed" | "seite">("feed");
+  const [ansicht, setAnsicht] = useState<"feed" | "seite">(templateModus ? "seite" : "feed");
   const [stil, setStil] = useState<KartenStil>(post.bild?.stil ?? KARTEN_STIL_STANDARD);
-  const [form, setForm] = useState<PostBild["art"] | null>(post.bild?.art ?? null);
+  const [form, setForm] = useState<PostBild["art"] | null>(templateModus && post.bild?.anteile ? "anteilsdonut" : post.bild?.art ?? null);
   const [entwurf, setEntwurf] = useState(post.vorlage ?? "");
   const [offen, setOffen] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
@@ -121,13 +129,13 @@ export function StoryTisch({
 
   const werte = Object.fromEntries((post.platzhalter ?? []).map((p) => [p.name, p.wert]));
   // Bearbeitbare Posts zeigen den Entwurf, die übrigen ihren eingebauten Text.
-  const text = post.vorlage ? fuelle(entwurf, werte) : post.text;
+  const text = post.vorlage != null ? beitragsText(entwurf, werte, post.textRahmen) : post.text;
   const bild = post.bild ? { ...post.bild, stil, ...(form ? { art: form } : {}) } : null;
   const formen = post.bild ? moeglicheFormen(post.bild) : [];
   const geaendert =
     stil !== gespeichert.stil ||
     form !== gespeichert.form ||
-    (!!post.vorlage && entwurf !== gespeichert.vorlage);
+    (post.vorlage != null && entwurf !== gespeichert.vorlage);
   // Dasselbe Urteil, das die Freigabe-Karte zeigt — hier für den Sende-Knopf.
   // Es wird nicht zweimal gerechnet, sondern einmal und zweimal gelesen.
   const urteilOk = !geaendert && urteil(abdruck, gepruefte).ok;
@@ -172,7 +180,7 @@ export function StoryTisch({
           postId: post.id,
           // Nur mitschicken, was es gibt: Ein Post ohne Vorlage hat keinen
           // bearbeitbaren Text, und ein leeres Feld würde ihn zurücksetzen.
-          ...(post.vorlage ? { vorlage: entwurf } : {}),
+          ...(post.vorlage != null ? { vorlage: entwurf } : {}),
           stil,
           ...(form ? { form } : {}),
         }),
@@ -212,30 +220,20 @@ export function StoryTisch({
         flexWrap: "wrap",
       }}
     >
-      <div style={{ flex: "0 0 auto" }}>
-        {/* AUSGABEFORM: Feed oder Seite. Ein Beitrag kann beides sein, und die
-            beiden sehen verschieden aus — deshalb wird auch beides beurteilt
-            und nicht das eine aus dem anderen geschlossen. */}
-        <div style={{ marginBottom: space.md }}>
-          <Umschalter
-            eintraege={[
-              { wert: "feed", text: "Feed" },
-              { wert: "seite", text: "Auf der Seite" },
-            ]}
-            wert={ansicht}
-            onWaehle={setAnsicht}
-            ariaLabel="Ausgabeform"
-          />
-        </div>
+      <ModalHeader><header style={{ flexBasis: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: space.md }}>
+        <Umschalter primary eintraege={[{ wert: "feed", text: "Social-Post" }, { wert: "seite", text: "Website" }]} wert={ansicht} onWaehle={setAnsicht} ariaLabel="Ausgabeform" />
+        <span role="status" style={{ fontSize: v("--font-size-small"), color: v(bild && templateVon(bild) ? "--color-positive-text" : "--color-pending-text"), background: bild && templateVon(bild) ? "transparent" : v("--color-pending-bg"), padding: pad("xs", "sm"), borderRadius: v("--radius-sm"), whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: space.xs }}>{bild && templateVon(bild) ? <IconCheck /> : <IconHourglass />}{bild && templateVon(bild) ? "Abgenommen" : "Abnahme offen"}</span>
+      </header></ModalHeader>
+      <div style={{ flex: "0 1 440px", minWidth: 0, maxWidth: "100%" }}>
         {/* Die Bildaufnahme greift auf den Feed-Bereich: Das veröffentlichte
             Bild ist das 4:5-Bild, nicht die Seitenfassung. */}
         <div ref={karte} hidden={ansicht !== "feed"}>
           <FeedVorschau bild={bild!} text={text} breite={440} />
         </div>
-        {ansicht === "seite" && <SeitenVorschau post={post} orts={orts} />}
+        {ansicht === "seite" && <SeitenVorschau detailsSichtbar post={{ ...post, text, bild }} orts={orts ? { ...orts, beitrag: { ...orts.beitrag, post: { ...post, text, bild }, text: post.textRahmen ? fuelle(entwurf, werte) : orts.beitrag.text } } : undefined} />}
       </div>
 
-      <div style={{ flex: "1 1 440px", minWidth: 340 }}>
+      <div style={{ flex: "1 1 340px", minWidth: 0 }}>
         {kategorieHinweis && (
           <a
             href={kategorieHinweis.href}
@@ -255,21 +253,14 @@ export function StoryTisch({
             {post.titel}
           </h3>
         )}
-        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: space.xs }}>
-          {/* Das Template zuerst: Beim Gestalten ist das die Identität des
-              Beitrags, nicht der Kanal. Trägt er eine Kombination, die niemand
-              durchgesehen hat, steht das hier statt eines Namens. */}
-          {bild ? (templateVon(bild)?.name ?? "kein abgenommenes Template") : "ohne Bild"} ·{" "}
-          {post.kanal.join(" · ")} · {text.length} Zeichen
-        </div>
 
         {/* Bildform: dieselbe Aussage in einer anderen Darstellung. Angeboten
             wird nur, was für DIESE Zahlen trägt — eine Form, die man wählen
             kann, wählt irgendwann jemand. */}
-        {formen.length > 1 && (
+        {formen.length > 0 && (
           <div style={{ marginTop: space.lg }}>
             <Umschalter
-              label="Bildform"
+              label="Chart-Template"
               eintraege={formen.map((f) => ({ wert: f, text: BILDFORM_NAME[f] }))}
               wert={(form ?? post.bild?.art) as PostBild["art"]}
               onWaehle={setForm}
@@ -281,13 +272,107 @@ export function StoryTisch({
             gespeichert und wandert damit ins veröffentlichte Bild mit. */}
         <div style={{ marginTop: space.lg }}>
           <Umschalter
-            label="Farbschema der Karte"
+            label="Farbschema"
             eintraege={KARTEN_STILE.map((x) => ({ wert: x, text: KARTEN_STIL_NAME[x] }))}
             wert={stil}
             onWaehle={setStil}
           />
         </div>
 
+        {templateModus && (
+          <details style={{ marginTop: space.xl }}>
+            <summary style={{ cursor: "pointer", fontSize: v("--font-size-body") }}>Text bearbeiten</summary>
+            <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary") }}>{orts?.beitrag.text ?? post.text}</p>
+            <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>{text.length} Zeichen im Social-Post</span>
+            {onModusWechsel && <button type="button" onClick={onModusWechsel} style={{ display: "block", marginTop: space.md }}>Beispieltext bearbeiten</button>}
+          </details>
+        )}
+        {!templateModus && <>
+        {onModusWechsel && <button type="button" onClick={onModusWechsel}>Zur Template-Gestaltung</button>}
+        <div style={{ display: "flex", gap: space.sm, marginTop: space.md, alignItems: "center", flexWrap: "wrap" }}>
+          <button
+            type="button"
+            disabled={laeuft || !geaendert}
+            onClick={speichern}
+            style={{
+              padding: pad("xs", "lg"),
+              borderRadius: v("--radius-sm"),
+              border: "none",
+              background: geaendert ? v("--color-accent") : v("--color-border"),
+              color: geaendert ? v("--color-text-on-accent") : v("--color-text-muted"),
+              cursor: geaendert ? "pointer" : "default",
+              fontSize: v("--font-size-small"),
+              fontWeight: 600,
+            }}
+          >
+            {laeuft ? "…" : geaendert ? "Änderungen speichern" : "Keine offenen Änderungen"}
+          </button>
+          {status && (
+            <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>{status}</span>
+          )}
+          {post.vorlage != null ? (
+            <button
+              type="button"
+              aria-expanded={offen}
+              onClick={() => setOffen((o) => !o)}
+              style={{
+                padding: pad("xs", "md"),
+                borderRadius: v("--radius-sm"),
+                border: `1px solid ${v("--color-border")}`,
+                background: "transparent",
+                color: v("--color-text-secondary"),
+                cursor: "pointer",
+                fontSize: v("--font-size-small"),
+              }}
+            >
+              {offen ? "Textfeld einklappen" : "Text bearbeiten"}
+            </button>
+          ) : (
+            <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
+              Noch nicht auf Vorlagen umgestellt — Text hier nur lesbar.
+            </span>
+          )}
+          <Kennung id={post.id} template={bild ? templateVon(bild)?.name : undefined} />
+        </div>
+
+        {offen && post.vorlage != null && post.platzhalter && (
+          <div style={{ marginTop: space.lg }}>
+            <VorlagenEditor
+              postId={post.id}
+              entwurf={entwurf}
+              onEntwurf={setEntwurf}
+              platzhalter={post.platzhalter}
+            />
+          </div>
+        )}
+
+        </>}
+
+        <details style={{ marginTop: space.md }}>
+          <summary
+            style={{ cursor: "pointer", fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}
+          >
+            Belege ({post.belege.length})
+          </summary>
+          <ul
+            style={{
+              fontSize: v("--font-size-small"),
+              color: v("--color-text-secondary"),
+              marginTop: space.sm,
+              paddingLeft: space.lg,
+            }}
+          >
+            {post.belege.map((b) => (
+              <li key={b} style={{ marginBottom: space.xs }}>
+                {b}
+              </li>
+            ))}
+          </ul>
+        </details>
+        {!templateModus && <>
+        {orts && <StoryFesthalten postId={post.id} abdruck={abdruck} disabled={geaendert} name={orts.ortName} />}
+        <details style={{ marginTop: space.xl, borderTop: `1px solid ${v("--color-border")}`, paddingTop: space.lg }}>
+          <summary style={{ cursor: "pointer", fontSize: v("--font-size-body"), fontWeight: 600 }}>Prüfen und veröffentlichen</summary>
         {/* Freigabe: hängt an Text UND Bild, und wird hier auch erteilt.
             Ungespeichertes lässt sich nicht freigeben — die Senderoute baut den
             Text später aus der Ablage neu, ein Entwurf im Browser käme dort gar
@@ -353,84 +438,10 @@ export function StoryTisch({
           )}
         </div>
 
-        <div style={{ display: "flex", gap: space.sm, marginTop: space.md, alignItems: "center", flexWrap: "wrap" }}>
-          <button
-            type="button"
-            disabled={laeuft || !geaendert}
-            onClick={speichern}
-            style={{
-              padding: pad("xs", "lg"),
-              borderRadius: v("--radius-sm"),
-              border: "none",
-              background: geaendert ? v("--color-accent") : v("--color-border"),
-              color: geaendert ? v("--color-text-on-accent") : v("--color-text-muted"),
-              cursor: geaendert ? "pointer" : "default",
-              fontSize: v("--font-size-small"),
-              fontWeight: 600,
-            }}
-          >
-            {laeuft ? "…" : geaendert ? "Speichern" : "Gespeichert"}
-          </button>
-          {status && (
-            <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>{status}</span>
-          )}
-          {post.vorlage ? (
-            <button
-              type="button"
-              aria-expanded={offen}
-              onClick={() => setOffen((o) => !o)}
-              style={{
-                padding: pad("xs", "md"),
-                borderRadius: v("--radius-sm"),
-                border: `1px solid ${v("--color-border")}`,
-                background: "transparent",
-                color: v("--color-text-secondary"),
-                cursor: "pointer",
-                fontSize: v("--font-size-small"),
-              }}
-            >
-              {offen ? "Bearbeiten schließen" : "Bearbeiten"}
-            </button>
-          ) : (
-            <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
-              Noch nicht auf Vorlagen umgestellt — Text hier nur lesbar.
-            </span>
-          )}
-          <Kennung id={post.id} template={bild ? templateVon(bild)?.name : undefined} />
-        </div>
-
-        {offen && post.vorlage && post.platzhalter && (
-          <div style={{ marginTop: space.lg }}>
-            <VorlagenEditor
-              postId={post.id}
-              entwurf={entwurf}
-              onEntwurf={setEntwurf}
-              platzhalter={post.platzhalter}
-            />
-          </div>
-        )}
-
-        <details style={{ marginTop: space.md }}>
-          <summary
-            style={{ cursor: "pointer", fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}
-          >
-            Belege ({post.belege.length})
-          </summary>
-          <ul
-            style={{
-              fontSize: v("--font-size-small"),
-              color: v("--color-text-secondary"),
-              marginTop: space.sm,
-              paddingLeft: space.lg,
-            }}
-          >
-            {post.belege.map((b) => (
-              <li key={b} style={{ marginBottom: space.xs }}>
-                {b}
-              </li>
-            ))}
-          </ul>
         </details>
+
+        </>}
+
       </div>
     </section>
   );

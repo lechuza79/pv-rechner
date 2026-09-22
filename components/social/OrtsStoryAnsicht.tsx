@@ -2,9 +2,9 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../lib/theme";
-import GemeindeWidgetShell from "../atlas/GemeindeWidgetShell";
+import { useChartExport } from "../../lib/useChartExport";
+import { IconCopy, IconDownload, IconShare } from "../Icons";
 import InfoTooltip from "../InfoTooltip";
-import { WIDGETS, widgetFuerMeldung } from "../../lib/widget-registry";
 import { SocialKarte } from "./SocialKarte";
 // NUR DER TYP: Ein Wert-Import aus der Story-Rechnung zöge die Vergütungsreihe,
 // die Stundensimulation und ein halbes Dutzend Konfigurationen in das Bündel
@@ -65,7 +65,7 @@ export function KarteImRahmen({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div ref={rahmen} style={{ width: "100%", aspectRatio: "1", overflow: "hidden" }}>
+    <div ref={rahmen} style={{ width: "100%", aspectRatio: "1", overflow: "hidden", borderRadius: v("--radius-md") }}>
       <div
         style={{
           width: KARTEN_AUSGABE,
@@ -171,76 +171,71 @@ export function OrtsStoryKarte({
   name,
   liveUrl,
   standIso,
+  shareable = true,
 }: {
   beitrag: OrtsBeitrag;
   name: string;
   liveUrl: string;
   standIso: string;
+  shareable?: boolean;
 }) {
   const bild = beitrag.post.bild;
   // Die Schlagzeile IST der Titel der Karte — auf der Seite wie im Bild.
   const schlagzeile = bild?.aussage ?? beitrag.post.titel;
-  const widget = widgetFuerMeldung(WIDGETS.gemeindeMeldung, name, schlagzeile, liveUrl);
-
-  return (
-    <GemeindeWidgetShell
-      widget={widget}
-      subline={`${name} · ${beitrag.label}`}
-      // Die Bildkarte trägt Überschrift und Rahmen selbst — sonst stehen drei
-      // ineinander (Fenster, Hüllenkarte, Bildkarte).
-      nackt
-      filename={`solar-check-${beitrag.storyKennung}`}
-      // Die Quellenkante erwartet ein FERTIG FORMATIERTES Datum, nicht das
-      // ISO-Feld: Ihr Rückfall ist das heutige Datum in deutscher Schreibweise,
-      // und roh durchgereicht stünde neben allen anderen Karten der Seite ein
-      // „2026-08-05".
-      dataAsOf={standDeutsch(standIso)}
-      // Woran die Geschichte hängt, gehört ins Bild — dort gibt es keinen
-      // Knopf mehr, der es erklären könnte. Der Bild-Fuß nimmt es auf.
-      note={beitrag.grundlage}
-      // Eigene Seite: Quelle beim Überfahren, keine Markenzeile — die Seite
-      // trägt beides. Im heruntergeladenen Bild stehen beide trotzdem.
-      onsite
-      // Kein zweiter Knopf in den Rechner: Die Seite bietet ihn ohnehin an, und
-      // die Karte soll die Geschichte tragen, nicht werben.
-      showCta={false}
-      // Es gibt (noch) keine Einbett-Route für eine Geschichte; der Knopf würde
-      // in die Galerie springen statt Code für DIESEN Ort zu liefern.
-      showEmbed={false}
-    >
-      <div style={S.inhalt}>
-        {/* DIE QUADRATISCHE STUFE MIT DEN FARBEN DER SEITE.
-            Beides zusammen ist der Grund, warum diese Karte hier überhaupt
-            stehen kann: Die volle Stufe ist auf ein 4:5-Bild für einen fremden
-            Feed gerechnet und bringt ihre eigene Palette mit — auf einer Seite
-            mit Tageslicht-Theme ein weißer Block auf dunklem Grund. Die kleine
-            Stufe wiederum lässt Ring und Säule weg und machte die Formenwahl
-            der Geschichte wirkungslos. */}
-        {bild && (
-          <KarteImRahmen>
-            <SocialKarte bild={bild} skala={1} stufe="quadrat" palette="seite" />
-          </KarteImRahmen>
-        )}
-
-        {/* Der Beitragstext OHNE Schlagzeile und OHNE Quellenzeile: Die
-            Schlagzeile steht im Bild darüber, die Quelle an der Kante der
-            Karte. Beides ein zweites Mal wäre dieselbe Angabe zweimal. */}
-        <p style={S.text}>
-          {beitrag.text} <InfoTooltip title="Woran diese Zahl hängt">{beitrag.grundlage}</InfoTooltip>
-        </p>
+  const storyUrl = `${liveUrl.split("#")[0]}#story-${beitrag.storyKennung}`;
+  const [feedback, setFeedback] = useState("");
+  const [shareOpen, setShareOpen] = useState(false);
+  const chart = useChartExport({ context: { title: schlagzeile }, filename: `solar-check-${name}-${beitrag.storyKennung}`, mode: "node" });
+  async function copyLink() {
+    try { await navigator.clipboard.writeText(storyUrl); setFeedback("Link kopiert"); }
+    catch { setFeedback("Der Link konnte nicht kopiert werden."); }
+  }
+  async function shareStory() {
+    if (!navigator.share) { setShareOpen(!shareOpen); return; }
+    try { await navigator.share({ title: schlagzeile, url: storyUrl }); }
+    catch (error) { if (!(error instanceof DOMException && error.name === "AbortError")) setShareOpen(true); }
+  }
+  const actionStyle = { display: "inline-flex", alignItems: "center", gap: space.sm, padding: pad("sm", "md"), fontSize: v("--font-size-body"), color: v("--color-accent"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-sm"), background: "transparent", cursor: "pointer" };
+  const showCopy = beitrag.text.trim().length > 0;
+  return <article style={{ width: "100%" }}>
+    {bild && <>
+      <div ref={chart.chartRef}>
+        <KarteImRahmen>
+          <SocialKarte bild={bild} skala={1} stufe="quadrat" palette="eigene" branding={false} source={false} dataAsOf={standDeutsch(standIso)} />
+        </KarteImRahmen>
+        <div data-sc-export-only style={{ display: "none", fontSize: v("--font-size-small"), padding: space.md }}>{bild.quelle}</div>
       </div>
-    </GemeindeWidgetShell>
-  );
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: space.sm }}>
+        <button type="button" style={actionStyle} disabled={chart.isExporting} onClick={() => chart.downloadPng().catch(() => setFeedback("Das Bild konnte nicht heruntergeladen werden."))}><IconDownload />Bild herunterladen</button>
+      </div>
+    </>}
+    {showCopy && <p style={S.text}>{beitrag.text}</p>}
+    <div style={{ marginBlock: space.lg, display: "flex", alignItems: "center", flexWrap: "wrap", gap: space.md }}>
+      <InfoTooltip title="Datengrundlage">{beitrag.grundlage}</InfoTooltip>
+      <a href="/energie-widgets#gemeinde-solar" style={{ fontSize: v("--font-size-body"), color: v("--color-accent") }}>Passende Widgets →</a>
+    </div>
+    <footer style={{ borderTop: `1px solid ${v("--color-border")}`, paddingTop: space.md }}>
+      {shareable && <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm }}>
+        <button type="button" style={{ ...actionStyle, background: v("--color-accent"), color: v("--color-text-on-accent") }} onClick={shareStory}><IconShare />Teilen</button>
+        <button type="button" style={actionStyle} onClick={copyLink}><IconCopy />Link kopieren</button>
+      </div>}
+      {shareOpen && <div style={{ display: "flex", gap: space.md, marginTop: space.md }}>
+        <a href={`https://wa.me/?text=${encodeURIComponent(`${schlagzeile}\n${storyUrl}`)}`} target="_blank" rel="noreferrer">WhatsApp</a>
+        <a href={`mailto:?subject=${encodeURIComponent(schlagzeile)}&body=${encodeURIComponent(storyUrl)}`}>E-Mail</a>
+      </div>}
+      {feedback && <p role="status">{feedback}</p>}
+      <p style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted"), lineHeight: 1.5, marginTop: space.md }}>{bild?.quelle}</p>
+    </footer>
+  </article>;
 }
 
-/** "2026-08-05" → "05.08.2026" — dieselbe Schreibweise, die die Quellenkante
- *  ohne Angabe selbst erzeugt. */
+/** Compact editorial date, independent of the browser timezone. */
 export function standDeutsch(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
   if (Number.isNaN(d.getTime())) return iso;
   return d.toLocaleDateString("de-DE", {
-    day: "2-digit",
-    month: "2-digit",
+    day: "numeric",
+    month: "short",
     year: "numeric",
     timeZone: "UTC",
   });
@@ -310,7 +305,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   inhalt: { alignSelf: "stretch", width: "100%", display: "flex", flexDirection: "column", gap: space.sm },
   text: {
-    fontSize: v("--font-size-small"),
+    fontSize: v("--font-size-body"),
     lineHeight: 1.55,
     color: v("--color-text-primary"),
     margin: `${space.sm}px 0 0`,

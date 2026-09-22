@@ -99,7 +99,10 @@
     "klima:kuehlgrad": "tsx scripts/kuehlgrad-build.ts",
     "klima:projektion": "tsx scripts/klima-projektion-build.ts",
     "klima:kuehlgrad-gegen-messung": "tsx scripts/kuehlgrad-vs-dwd.ts",
-    "rueckblick:vorbereiten": "tsx scripts/solar-rueckblick-vorbereiten.ts"
+    "rueckblick:vorbereiten": "tsx scripts/solar-rueckblick-vorbereiten.ts",
+    "stories:refresh": "node scripts/story-refresh.mjs --fetch",
+    "stories:prepare": "node --import tsx scripts/story-prepare.ts",
+    "stories:rangsnapshot": "node --conditions=react-server --import tsx scripts/story-ranking-month.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",

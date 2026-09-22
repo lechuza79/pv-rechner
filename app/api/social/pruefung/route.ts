@@ -4,6 +4,8 @@ import { fassungsAbdruck, speicherePruefung } from "../../../../lib/social-pruef
 import { istPruefArt, pruefeBefund } from "../../../../lib/social-pruefung-kern";
 import { socialKennzahlen } from "../../../../lib/social-kennzahlen";
 import { baueAllePosts } from "../../../../lib/social-posts";
+import { ortsPostTeile } from "../../../../lib/orts-posts";
+import { ortsBeitraegeFuerId } from "../../../../lib/orts-beitraege-server";
 import { ladeFassungen } from "../../../../lib/social-vorlagen-db";
 
 // Eine Prüfung erteilen: die Aussage eines Menschen über eine konkrete Fassung.
@@ -66,7 +68,11 @@ export async function POST(req: NextRequest) {
 
   let post;
   try {
-    post = baueAllePosts(await socialKennzahlen(), await ladeFassungen()).find((p) => p.id === body.postId);
+    const ort = ortsPostTeile(body.postId);
+    const fassungen = await ladeFassungen();
+    post = ort
+      ? (await ortsBeitraegeFuerId(ort.regionId, fassungen))?.beitraege.find(b => b.post.id === body.postId)?.post
+      : baueAllePosts(await socialKennzahlen(), fassungen).find(p => p.id === body.postId);
   } catch (err) {
     return NextResponse.json({ error: `Zahlen nicht abrufbar: ${(err as Error).message}` }, { status: 503 });
   }

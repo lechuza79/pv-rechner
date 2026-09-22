@@ -16,6 +16,8 @@ import "server-only";
 // Geschichten wären zweiundvierzig Einträge für sieben Aussagen.
 
 import { AKTUELLER_SCHUB, SCHUEBE } from "./kommunen-testballon";
+import { waehleRedaktionsSchub } from "./redaktions-schub";
+import { heuteInBerlin } from "./zeit";
 import { ortsBeitraegeMehrere } from "./orts-beitraege-server";
 import type { OrtsBeitrag } from "./orts-posts";
 import { baueAllePosts, type SocialPost } from "./social-posts";
@@ -43,7 +45,7 @@ type SchubOrt = { regionId: string; charge: number | null; offen: boolean };
 
 /** Die Gemeinden einer Kampagne, in der Reihenfolge ihrer Chargen. */
 async function orteDesSchubs(kampagne: string): Promise<SchubOrt[]> {
-  if (!supabase) return [];
+  if (!supabase) throw new Error("Der Datenzugang für die Kommunen-Schübe fehlt.");
   const { data, error } = await supabase
     .from("kommunen_kontakt")
     .select("region_id, charge, outreach_status")
@@ -61,28 +63,20 @@ async function orteDesSchubs(kampagne: string): Promise<SchubOrt[]> {
   });
 }
 
-/**
- * Welcher Schub ist WIRKLICH als Nächstes dran?
- *
- * GEMESSEN, NICHT ANGEMELDET. Die Markierung „aktueller Schub" im Code ist eine
- * Angabe, die jemand pflegen muss — und am 06.09.2026 zeigte sie auf einen
- * Schub, dessen 79 Gemeinden alle angeschrieben waren. Vier der fünf Schübe
- * waren durch.
- *
- * Dieselbe Systematik wie beim Sitzungs-Befehl des Projekts: nachsehen, statt
- * einer zweiten Wahrheit zu glauben.
- */
+// Respect the scheduled batch and its start date, then check actual open towns.
+// Database errors must remain visible rather than silently selecting another batch.
 async function naechsterSchub(): Promise<{ schluessel: string; orte: SchubOrt[] }> {
+  const heuteIso = heuteInBerlin();
   const staende = await Promise.all(
-    Object.entries(SCHUEBE).map(async ([schluessel, s]) => {
-      const orte = await orteDesSchubs(s.kampagne).catch(() => [] as SchubOrt[]);
-      return { schluessel, orte, offen: orte.filter((o) => o.offen).length };
+    Object.entries(SCHUEBE).filter(([, s]) => s.abIso <= heuteIso).map(async ([schluessel, s]) => {
+      const orte = await orteDesSchubs(s.kampagne);
+      return { schluessel, abIso: s.abIso, orte, offen: orte.filter((o) => o.offen).length };
     }),
   );
-  const beste = [...staende].sort((a, b) => b.offen - a.offen)[0];
-  if (beste && beste.offen > 0) return { schluessel: beste.schluessel, orte: beste.orte };
-  const rueckfall = staende.find((x) => x.schluessel === AKTUELLER_SCHUB) ?? staende[0];
-  return { schluessel: rueckfall?.schluessel ?? AKTUELLER_SCHUB, orte: rueckfall?.orte ?? [] };
+  const schluessel = waehleRedaktionsSchub(staende, AKTUELLER_SCHUB, heuteIso);
+  const gewaehlt = staende.find((s) => s.schluessel === schluessel);
+  if (!gewaehlt) throw new Error("Kein gestarteter Kommunen-Schub mit offenen Gemeinden vorhanden. Bitte einen Schub gezielt auswählen.");
+  return gewaehlt;
 }
 
 /** Die Beiträge nach ihrem Story-Typ; ein Beitrag ohne Typ steht für sich. */

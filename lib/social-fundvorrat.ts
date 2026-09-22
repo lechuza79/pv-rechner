@@ -1,4 +1,5 @@
 import "server-only";
+import { isDeepStrictEqual } from "node:util";
 import { supabase } from "./supabase-server";
 import { withDbTimeout, DB_SOFT_READ_TIMEOUT_MS } from "./db-timeout";
 import { type Fund } from "./social-funde";
@@ -73,12 +74,9 @@ function ausZeile(z: Zeile): VorratsFund {
 }
 
 /**
- * Was der Lauf gefunden hat, in den Vorrat schreiben.
- *
- * Zwei Kennungen können im selben Lauf zusammenfallen — dieselbe Gemeinde in
- * zwei Metriken ergibt denselben lesbaren Namen. Die zweite überschriebe die
- * erste stumm, und das Ergebnis wäre ein Satz mit den Zahlen eines anderen
- * Fundes. Deshalb wird vorher entdoppelt, und zwar zugunsten des STÄRKEREN.
+ * Store computed findings without touching editorial state.
+ * Identical repeated findings are harmless. Conflicting claims with the same
+ * identity are a finder bug and must fail before any write, never pick a winner.
  */
 export async function schreibeFunde(funde: Fund[], jetztIso: string): Promise<number> {
   if (!supabase || funde.length === 0) return 0;
@@ -86,7 +84,10 @@ export async function schreibeFunde(funde: Fund[], jetztIso: string): Promise<nu
   const beste = new Map<string, Fund>();
   for (const f of funde) {
     const bisher = beste.get(f.kennung);
-    if (!bisher || f.staerke > bisher.staerke) beste.set(f.kennung, f);
+    if (bisher && !isDeepStrictEqual(bisher, f)) {
+      throw new Error(`Conflicting story identities: ${f.kennung}. The finder must distinguish these observations.`);
+    }
+    beste.set(f.kennung, f);
   }
 
   const zeilen = [...beste.values()].map((f) => ({
@@ -116,80 +117,80 @@ export async function schreibeFunde(funde: Fund[], jetztIso: string): Promise<nu
   return geschrieben;
 }
 
-/**
- * Zum Stöbern: der Vorrat, je Muster die stärksten zuerst.
- *
- * NICHT GLOBAL NACH STÄRKE SORTIEREN — die Zahl bedeutet je Muster etwas
- * anderes. Beim Flächenmix ist sie ein Abstand in Prozentpunkten (bis 80), bei
- * allen übrigen ein Faktor (selten über 20). Global sortiert stünden deshalb
- * immer dieselben elf Flächenmix-Funde oben, und zwar nicht weil sie die besten
- * Geschichten sind, sondern weil ihre Skala eine größere Zahl hergibt.
- *
- * Eine gemeinsame Normierung wäre die Alternative und wäre schlechter: Sie
- * erfände eine Vergleichbarkeit zwischen Äpfeln und Birnen, die es nicht gibt.
- * Gruppiert nach Muster stimmt die Reihenfolge innerhalb dessen, was wirklich
- * vergleichbar ist.
- */
+/** Read every matching row in bounded pages; display limits never restrict discovery. */
+async function readPages<T>(
+  label: string,
+  page: (from: number, to: number) => PromiseLike<{ data: T[] | null; error: { message: string } | null }>,
+  budgetMs?: number,
+): Promise<T[]> {
+  const rows: T[] = [];
+  const size = 500;
+  for (let from = 0; ; from += size) {
+    // Every page carries the read budget: a slow database must not hold the
+    // function until its platform limit (see lib/db-timeout.ts).
+    const result = await withDbTimeout(page(from, from + size - 1), label, budgetMs);
+    if (result.error) throw new Error(`Vorrat lesen fehlgeschlagen: ${result.error.message}`);
+    const current = result.data ?? [];
+    rows.push(...current);
+    if (current.length < size) return rows;
+  }
+}
+
+/** Read the matching inventory before applying explicitly requested presentation limits. */
 export async function leseFunde(opts: {
   stand?: FundStand;
   muster?: string;
   ort?: string;
   land?: string;
-  /** „nur Evergreens" oder „nur Zeitgebundenes" — ohne Angabe beides. */
   evergreen?: boolean;
   suche?: string;
-  /** Wie viele Zeilen die Datenbank höchstens liefert. */
+  /** Explicit presentation limit, applied after filtering and fair interleaving. */
   grenze?: number;
-  /** Wie viele Funde je Muster in der Liste stehen. */
   jeMuster?: number;
   /**
    * Zeitbudget des Reads. Ohne Angabe das lange; nur wer einen vollwertigen
    * Rückfall hat (die Ortsseite: dann eben ohne Geschichten), setzt das kurze.
    */
   budgetMs?: number;
+  /** Internal municipality/county lookup; filtered by the database before pagination. */
+  orte?: string[];
 }): Promise<VorratsFund[]> {
-  if (!supabase) return [];
-  let q = supabase
-    .from("social_funde")
-    .select(
-      "kennung, muster, kategorie, satz, staerke, werte, grundlage, orte, laender, evergreen, stand, notiz, zuletzt_gesehen, erstmals_gesehen",
-    )
-    .order("staerke", { ascending: false })
-    .limit(opts.grenze ?? 1000);
-  if (opts.stand) q = q.eq("stand", opts.stand);
-  if (opts.muster) q = q.eq("muster", opts.muster);
-  if (opts.ort) q = q.contains("orte", [opts.ort]);
-  if (opts.land) q = q.contains("laender", [opts.land]);
-  if (opts.evergreen !== undefined) q = q.eq("evergreen", opts.evergreen);
-  if (opts.suche?.trim()) {
-    // Über Satz UND Grundlage: In der Grundlage steht, was die Zahlen nicht
-    // hergeben — wer danach sucht, sucht meist genau danach.
-    const wort = opts.suche.trim().replace(/[%,()]/g, " ");
-    q = q.or(`satz.ilike.%${wort}%,grundlage.ilike.%${wort}%`);
+  const db = supabase;
+  if (!db) return [];
+  const rows = await readPages<Zeile>("social_funde/lesen", (from, to) => {
+    let q = db.from("social_funde").select("kennung, muster, kategorie, satz, staerke, werte, grundlage, orte, laender, evergreen, stand, notiz, zuletzt_gesehen, erstmals_gesehen")
+      .order("kennung", { ascending: true }).range(from, to);
+    if (opts.stand) q = q.eq("stand", opts.stand);
+    if (opts.muster) q = q.eq("muster", opts.muster);
+    if (opts.ort) q = q.contains("orte", [opts.ort]);
+    if (opts.orte) q = q.overlaps("orte", opts.orte);
+    if (opts.land) q = q.contains("laender", [opts.land]);
+    if (opts.evergreen !== undefined) q = q.eq("evergreen", opts.evergreen);
+    if (opts.suche?.trim()) {
+      const word = opts.suche.trim().replace(/[%,()]/g, " ");
+      q = q.or(`satz.ilike.%${word}%,grundlage.ilike.%${word}%`);
+    }
+    return q;
+  }, opts.budgetMs);
+  const groups = new Map<string, VorratsFund[]>();
+  for (const row of rows) {
+    const f = ausZeile(row);
+    const group = groups.get(f.muster) ?? [];
+    group.push(f);
+    groups.set(f.muster, group);
   }
-  const { data, error } = await withDbTimeout(q, "social_funde/lesen", opts.budgetMs);
-  if (error) throw new Error(`Vorrat lesen fehlgeschlagen: ${error.message}`);
-  const funde = (data ?? []).map((z) => ausZeile(z as Zeile));
-
-  // JE MUSTER GEKAPPT, NICHT ÜBER ALLE. Die Grenze schnitt vorher global nach
-  // Stärke — und weil die Zahl je Muster etwas anderes bedeutet, fielen ganze
-  // Muster heraus: Gemessen an 590 Funden fehlten in den ersten 300 die
-  // Umkehrungen (14), die Heizungsförderung (5) und die Förderlücke komplett,
-  // vom Kontrast kamen 27 von 256 an. Die Filterleiste bot sie mit Zahlen an,
-  // in der Liste standen sie nie.
-  //
-  // Je Muster dieselbe Zahl zu nehmen ist die einzige Kappung, die zur Ansicht
-  // passt: Sie gruppiert nach Muster, also muss auch die Grenze dort greifen.
-  const proMuster = new Map<string, VorratsFund[]>();
-  for (const f of funde) {
-    const bisher = proMuster.get(f.muster);
-    if (bisher) bisher.push(f);
-    else proMuster.set(f.muster, [f]);
+  // JE MUSTER GEKAPPT, NICHT ÜBER ALLE: Die Stärke bedeutet je Muster etwas
+  // anderes; global gekappt fielen ganze Muster heraus (gemessen an 590
+  // Funden). Reihum statt nach Stärke, damit jede Gruppe vorkommt.
+  const ordered = [...groups.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, group]) =>
+    group.sort((a, b) => b.staerke - a.staerke || a.kennung.localeCompare(b.kennung))
+      .slice(0, opts.jeMuster));
+  // Strengths measure different things across patterns; round-robin preserves diversity.
+  const result: VorratsFund[] = [];
+  for (let index = 0; ordered.some(group => index < group.length); index++) {
+    for (const group of ordered) if (group[index]) result.push(group[index]);
   }
-  const jeMuster = opts.jeMuster ?? 40;
-  return [...proMuster.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .flatMap(([, liste]) => liste.slice(0, jeMuster));
+  return result.slice(0, opts.grenze);
 }
 
 /** Einen einzelnen Fund holen — der Weg für einen Zuruf mit Kennung. */
@@ -212,11 +213,8 @@ export async function leseFund(kennung: string): Promise<VorratsFund | null> {
 /** Wie viele je Muster und Stand — für die Übersicht. */
 export async function zaehleFunde(): Promise<{ muster: string; stand: string; zahl: number }[]> {
   if (!supabase) return [];
-  const { data, error } = await withDbTimeout(
-    supabase.from("social_funde").select("muster, stand"),
-    "social_funde/zaehlen",
-  );
-  if (error) throw new Error(`Vorrat zählen fehlgeschlagen: ${error.message}`);
+  const db = supabase;
+  const data = await readPages<{ muster: string; stand: string }>("social_funde/zaehlen", (from, to) => db.from("social_funde").select("muster, stand").order("kennung").range(from, to));
   const zaehler = new Map<string, number>();
   for (const z of data ?? []) {
     const k = `${z.muster}|${z.stand}`;
@@ -255,11 +253,8 @@ export async function orteImVorrat(): Promise<{
   laender: { name: string; zahl: number }[];
 }> {
   if (!supabase) return { kommunen: [], laender: [] };
-  const { data, error } = await withDbTimeout(
-    supabase.from("social_funde").select("orte, laender"),
-    "social_funde/orte",
-  );
-  if (error) throw new Error(`Orte lesen fehlgeschlagen: ${error.message}`);
+  const db = supabase;
+  const data = await readPages<{ orte: string[] | null; laender: string[] | null }>("social_funde/orte", (from, to) => db.from("social_funde").select("orte, laender").order("kennung").range(from, to));
 
   const zaehle = (feld: "orte" | "laender") => {
     const zaehler = new Map<string, number>();
@@ -287,7 +282,8 @@ export async function orteImVorrat(): Promise<{
  * Seite aber genauso eine Nachricht; nur die NÄHE unterscheidet sie.
  *
  * Die Reihenfolge ist die Nähe: der eigene Ort zuerst, dann der Landkreis,
- * dann das Land. Innerhalb einer Stufe bleibt die Stärke des Suchlaufs.
+ * dann das Land. Within each tier, patterns are interleaved; strengths are
+ * comparable only within one pattern. An explicit limit belongs to display.
  *
  * `stand` bleibt Sache des Aufrufers: Ein Fund im Zustand „offen" hat noch
  * niemand angesehen und gehört nicht auf eine öffentliche Seite.
@@ -306,9 +302,16 @@ export async function fundeFuerOrt(opts: {
   // warf eine Gemeindeseite in einen 500er — ohne Zeitbudget hätte er bei
   // einer bloß langsamen Datenbank zusätzlich bis zum Function-Limit gewartet.
   // Deshalb das kurze Budget und ein leerer Feed als Rückfall.
+  const nearby = [...new Set([opts.ort, ...(opts.kreisOrte ?? [])])];
   let alle: VorratsFund[];
   try {
-    alle = await leseFunde({ stand: opts.stand, grenze: 1000, budgetMs: DB_SOFT_READ_TIMEOUT_MS });
+    const [local, state] = await Promise.all([
+      leseFunde({ stand: opts.stand, orte: nearby, budgetMs: DB_SOFT_READ_TIMEOUT_MS }),
+      opts.land
+        ? leseFunde({ stand: opts.stand, land: opts.land, budgetMs: DB_SOFT_READ_TIMEOUT_MS })
+        : Promise.resolve([]),
+    ]);
+    alle = [...new Map([...local, ...state.filter((f) => !f.orte?.length)].map((f) => [f.kennung, f])).values()];
   } catch {
     return [];
   }
@@ -326,7 +329,7 @@ export async function fundeFuerOrt(opts: {
   return alle
     .map((f) => ({ f, n: naehe(f) }))
     .filter((x) => x.n < 99)
-    .sort((a, b) => a.n - b.n || b.f.staerke - a.f.staerke)
-    .slice(0, opts.grenze ?? 6)
+    .sort((a, b) => a.n - b.n)
+    .slice(0, opts.grenze)
     .map((x) => x.f);
 }

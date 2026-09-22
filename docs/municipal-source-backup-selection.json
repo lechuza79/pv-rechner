@@ -1,0 +1,2716 @@
+{
+  "selected": [
+    {
+      "path": ".github/workflows/mastr-refresh.yml",
+      "bytes": 6203,
+      "sha256": "305b44ae3e43f44fbb99104d75283a88f8b8b5c5ad961090b930d4a129a8ccf9",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": ".github/workflows/story-preparation.yml",
+      "bytes": 3225,
+      "sha256": "514d1a8980f2f0ea4c40e7744228e7bcfb1d06de81c1ac7417dd035467a39dc1",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/(embed)/embed/story-preview/page.tsx",
+      "bytes": 1567,
+      "sha256": "c4aa0a31ac1837dc7823be1c4ed907e6da8d7de1c3c075a294d4e4bad37194c7",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/(site)/admin/redaktion/entwicklung-v2/page.tsx",
+      "bytes": 497,
+      "sha256": "debb6484e96164d02e34ff8c1b7610dcc205877e744d97f360dfebf4dc3c0206",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/(site)/admin/redaktion/konzepte/page.tsx",
+      "bytes": 126,
+      "sha256": "bdd45281ae852348c61303adea15b1ffb9a07a810145039fe3e28b166fe005b6",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx",
+      "bytes": 47159,
+      "sha256": "3d74ee46ff96047cc19a811f51c0ba3cf1ee5bd15c478cd2293d174224cb2f9c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/admin/design-shared/[...asset]/route.ts",
+      "bytes": 1827,
+      "sha256": "e37e46f49e54fb3e46b596653afa32ecdf70774e69dfd81f5769432a7358b6c1",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/admin/municipal-charts/route.ts",
+      "bytes": 1113,
+      "sha256": "b2608e7107408a1b49b61f79a72fe6891aa774ca85c8312ecaeead7817477125",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/admin/story-design/route.ts",
+      "bytes": 1601,
+      "sha256": "bbafc317c611f35b1229ac16b24d76598959e8ebced7c27bafe044145d9fee0f",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/admin/story-discovery/route.ts",
+      "bytes": 2866,
+      "sha256": "b74e1f432dcbdde523c07d2ba3092f26eda8ec92a436b2d45c6d18f99137014f",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/admin/story-text-pattern/route.ts",
+      "bytes": 2357,
+      "sha256": "77aa347f03ae3170a3caf1285b873ca17d1127d166f40dffbabcc0da814306ed",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/atlas/solar-day/route.ts",
+      "bytes": 2350,
+      "sha256": "c3cd2fc684aaed9e96e636e30fc570710395ae7507c00dd9cac3d5609c355935",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/social/fassung/route.ts",
+      "bytes": 4070,
+      "sha256": "706604b4861a7b35c58aa3037191ecb28fb02f02d666e51d8bcf8168f2f88d18",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/social/pruefung/route.ts",
+      "bytes": 4916,
+      "sha256": "61561fef465b826567ba359a1eda287f087205a4bd3fc556d93830bd6f3ec8af",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/social/story-feed/observations/route.ts",
+      "bytes": 3151,
+      "sha256": "7d46fa5778f6728bb040f440839dae1b35f55da9204233897d92e03654cba221",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/social/story-feed/route.ts",
+      "bytes": 3335,
+      "sha256": "f75b32b95bc299550c66e47cd1862e78bf6fd3742fa38a6aa32d5bb5ff29e5ed",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/social/story-feed/setup/route.ts",
+      "bytes": 710,
+      "sha256": "b27f04a5b696f8ff83357daca71dd3d464d1f7ff4568c2cbfa7f04dfa252c2b0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/warteliste/abmelden/route.ts",
+      "bytes": 201,
+      "sha256": "155acb20d62e3533ec7a09c52d01dcfa1703e814fb2876f19d44bb067fe048fc",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/warteliste/anmelden/route.ts",
+      "bytes": 3535,
+      "sha256": "b623d7b151ab1a3c7b9eb09e5f9c187ce9486861f859022ffdea947bdc508cdc",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "app/api/warteliste/bestaetigen/route.ts",
+      "bytes": 202,
+      "sha256": "5f5d2ae2d314949fb143aa4381232e1c8e616f94b616e32939be6cbfbd68cdd0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/DataSourceList.tsx",
+      "bytes": 2934,
+      "sha256": "4a0fd94755d74453815650f2949257577a5d5d75edfeacf5d1f0dc68fcf4dc38",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/Icons.tsx",
+      "bytes": 26307,
+      "sha256": "03b8929399e620359814de27872f1708610b4475ed0663ffbfdc2c663cb1fc1e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/InternalShell.tsx",
+      "bytes": 10484,
+      "sha256": "67d55ba8e620b80c393e34d65ccea29a68229b91e96745c5ffc4e4c0abe5a0a2",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/Logo.tsx",
+      "bytes": 14953,
+      "sha256": "397aa8b9cc2143b72e88a5464087fa1df16a2d72521abe6e6a5df89c21943846",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/Modal.tsx",
+      "bytes": 17684,
+      "sha256": "49602770b36640fda1460c579fe01946fc294f42da63d8140e5c44b33c163759",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/atlas/GemeindeMeldungen.tsx",
+      "bytes": 8195,
+      "sha256": "1ace01400ff91a51a75d45998b10adcb3c2b0c4009371eb63a4780bed21d2e0b",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/atlas/GemeindeWidgetShell.tsx",
+      "bytes": 10960,
+      "sha256": "b1642a0501b21e2bd30eb68eed875cfa50cfdc85fc56e8991ec10fc943cf288f",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/AnnualEnergyChart.module.css",
+      "bytes": 1695,
+      "sha256": "b950ac7949d654c93d03c31a68a742b23e0c911ce9ae5c4176f5c1687c548b72",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/AnnualEnergyChart.tsx",
+      "bytes": 5349,
+      "sha256": "2d9acc59c6e8176f8ba5719dfb3aa258c3bfc48648c577c79cf89edcecb2bcd9",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/ApprovedStoryVisual.module.css",
+      "bytes": 6352,
+      "sha256": "4b773876bf936d83036c69c8daad09417659ea6bde410c7bb31f589015c0464e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/ApprovedStoryVisual.tsx",
+      "bytes": 7000,
+      "sha256": "aa32e8bfcf33d8ff820acf5c442ef6be4e70043d4f1aff5210c3ba273cb57b67",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/FeedVorschau.tsx",
+      "bytes": 5391,
+      "sha256": "f0a87193d7b4156d9718e348db3fe3cedee3a404c7c2322b69f66d1dda22c279",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/InstallationCountChart.module.css",
+      "bytes": 3471,
+      "sha256": "2630e7540ea6783f704280851e1a1a9c80450698829d2ded8734a876145cd66c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/InstallationCountChart.tsx",
+      "bytes": 2810,
+      "sha256": "eda48a98bb4a8b841d621c02b55a9e128293d641a87f985a60feaa8991108fd4",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/MonthlySolarChart.module.css",
+      "bytes": 4637,
+      "sha256": "b19b25d04ba41fdd4ea18c5893fb1593f5166d079979678794b0ec4790e430d7",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/MonthlySolarChart.tsx",
+      "bytes": 10305,
+      "sha256": "26ad7b8021651072f13a854c2eaecb0302b1d5f68381d74a1fa24b3b54f3a25a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/MunicipalChart.tsx",
+      "bytes": 1276,
+      "sha256": "815571d12fa0c44015415a4740531060983a8064befbcfcd00d955e1ebb7ccd6",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/MunicipalStoryPreview.module.css",
+      "bytes": 3502,
+      "sha256": "cd3386cf05b1edf6928d4b75e5283d1d223e1f5da7133481c30a97793fe38bcc",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/MunicipalStoryPreview.tsx",
+      "bytes": 3950,
+      "sha256": "63a68ee85e5ee7f0f98cbd9d02f57563904681205feb8edd7608ad3d7eb5f3c9",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/OrtsStoryAnsicht.tsx",
+      "bytes": 13117,
+      "sha256": "baa2e3c298813e2001b02a2791c820b7133abc53012e7590883b5ad8ad511522",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/RankStoryChart.module.css",
+      "bytes": 3875,
+      "sha256": "a321758a60142379970f344fdc6b08c4ddf2b9ccfba7f995332535be46f2ebd9",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/RankStoryChart.tsx",
+      "bytes": 3783,
+      "sha256": "6a88a2faa3e904404d387aa68596dfd41c8bc1a83a90aad4afedaf14c52f3be4",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/SeitenVorschau.tsx",
+      "bytes": 5584,
+      "sha256": "0b9c14060f8d7537d436edf8bbaeaa4149f6a00bcd7d5041dcdc0bbc1eefe96c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/SocialKarte.tsx",
+      "bytes": 72102,
+      "sha256": "f457446b950426d96c332b905158e3828d66e7a77a790cfbf3bc3e44408e3619",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/StoryConceptLab.module.css",
+      "bytes": 26426,
+      "sha256": "2add9c0cd5ef6109f54e0a939e11f4eaffd88a6c8be6abb753ea87024c6fcfb3",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/StoryConceptLab.tsx",
+      "bytes": 24937,
+      "sha256": "c829c0070f7e23f87292df3b0bb355b6dfd6db91a2e7c852168239264e4e18b0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/StoryDiscoveryPool.module.css",
+      "bytes": 2371,
+      "sha256": "dde1282dea3ce26a26f15bd5f567ba11fab367ad9fec73660ed5779baa411850",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/StoryDiscoveryPool.tsx",
+      "bytes": 4520,
+      "sha256": "b36bf72847978869bf0d24333134ba2eacc78d08613a5d070036dca3673cf0f7",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/StoryFesthalten.tsx",
+      "bytes": 2872,
+      "sha256": "4f81297e902b3dc618200e493fdb32bd88b9d976c6b135f656ef9d6509c90bad",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/StoryGrid.tsx",
+      "bytes": 11866,
+      "sha256": "3f2b51b603db71aeb8e0cc52d4b5fb5646ab1c63b3764b0d3f5d0e2c740c8b70",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/StoryIdeas.module.css",
+      "bytes": 6371,
+      "sha256": "d64151004ae3af4dd7e96d75ecb631dbbaaecb6b59f7e6da8de70b36ff1706f2",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/StoryIdeas.tsx",
+      "bytes": 21231,
+      "sha256": "fccb60eb23e4833ab0811b0db3f99bc9b08d7f8d9f07ee2b9a4e64a202eab4b1",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/StoryTisch.tsx",
+      "bytes": 19991,
+      "sha256": "7eff88bab71e88b0ed92fe3e4e52219fad323c0ec2b9a3ca54779559d3ab8b92",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/Umschalter.tsx",
+      "bytes": 2454,
+      "sha256": "5ac01b93a8f3efebfd59ac673728a1757ac9598feb5fa4efdbb8677cfcb5467a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/VorlagenEditor.tsx",
+      "bytes": 5811,
+      "sha256": "dac47fdf8f3e01d4263208e59cb0a50ba363d5b072755f7d8fd133c79f26c85d",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/YieldChart.tsx",
+      "bytes": 8981,
+      "sha256": "27c6c9e1113a0807a2105c8082f7b5aced4f3087f393001a4104bed639ed044e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "components/social/atlas-foundations.module.css",
+      "bytes": 2185,
+      "sha256": "d75b679526459818e70156d1d1a07c5ed4568e4064417572c802ced90e8c08c5",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/claude-handoff-copernicus-weather.md",
+      "bytes": 10491,
+      "sha256": "ac074e24fc3d8304c271ca15b894a6ba3d398c5b7d72c4ecdae7efc433d61f64",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/codex-update-wetter-2026-09-19.md",
+      "bytes": 4988,
+      "sha256": "3c6d14e1b5fbf2cdb8a86fd9c0ecded013c298d26c40500c4c42b647db0ad05f",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/README.md",
+      "bytes": 1289,
+      "sha256": "3bfbae2c2e3bb613efed2d7232001f39f932812d8c5af9d7abf607780c1ca4a3",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/atlas-entwurf-v3-atlas.css",
+      "bytes": 32111,
+      "sha256": "82026f52e533745dda8993d0db3f72a5798624ca295db950dcbdc0cdc73c981c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/atlas-entwurf-v3-variant3.css",
+      "bytes": 22703,
+      "sha256": "a5c6d91e5f18d301d169f1a5ec818ecc49613bdbe22be32508cef720ba21d4ba",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/atlas-theme-migration.md",
+      "bytes": 5934,
+      "sha256": "e78e8c47652984045809f91d59b9fe77c7ffc161d6f4013f2c23683034e2f3fb",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/chart-number-conventions.md",
+      "bytes": 1765,
+      "sha256": "221a195770fa12cad12dd27fe0dddd810d4be84625638e707afc8e988a8a5f3a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/design-lab-homepage-experiments.css",
+      "bytes": 7820,
+      "sha256": "d4de19dc1c60e5a98b79d61a3112848ea87f6b5c5eb97155c402057680eae447",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/dynamic-hero-test.css",
+      "bytes": 12305,
+      "sha256": "cb0b61b6097431b1e7111dc648e2d4f0ad63a25112795ba9fd91581967a5b716",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/flaechencharts.md",
+      "bytes": 1964,
+      "sha256": "18f188abb64bff0b97dbca966e3fd8cbe4047c5f9909cdd92a6c904054c580a2",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/homepage-study-homepage.css",
+      "bytes": 84220,
+      "sha256": "084bf2c11082ebe8a327781753fdfc3dc2c9918f664c91dfbe4dae7923f1813e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/homepage-study-system-race.css",
+      "bytes": 593,
+      "sha256": "3e2be70729f9494a7281def052cf361e8783b5594b896439df3e283eb6cf7cdb",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/shared-footer-footer.css",
+      "bytes": 3617,
+      "sha256": "de0b8e0b2d72272ff901d7377a119776baeb1dd292b1e00802ddfe5ee1ade58f",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/shared-nav-nav.css",
+      "bytes": 2573,
+      "sha256": "ad346f9defdf5d6f8b5a72390c2dbcba7372945a8697b37a42a1c1a790e26a86",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/shared-person-person.css",
+      "bytes": 2561,
+      "sha256": "d4e4a6f05d665b6c8e483a46aa74fa353e60db052e3937efef26f6586a1cb5ee",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/design-reference/sources.json",
+      "bytes": 2683,
+      "sha256": "22acaa0593b99533a4851dfc0662fbaee843fd8cca5efb059d5ee60e7cba97c8",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/kommunen-foerder-zubau-abgleich-2026-09-10.json",
+      "bytes": 70979,
+      "sha256": "9774959ef88d5294497712ecf31b92099175adbcfca8a020dda6a7dcf2175e35",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/kommunen-foerder-zubau-abgleich-2026-09-10.md",
+      "bytes": 4937,
+      "sha256": "e6c4ba06484ad6cb5feffc9cbe220d0b053fef5f7410f0d25d89857a70e5c76e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/kommunen-story-analyse-2026-09-10.json",
+      "bytes": 21985,
+      "sha256": "580b6eeb37c9e23f8ad89b2cc4fb0919065e6c2395e4f07d24fe9ddf85d6fe4b",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/kommunen-story-analyse-2026-09-10.md",
+      "bytes": 7650,
+      "sha256": "5d8c6016338142af431fbd4394a79804e552d0e27b806760f5aa4bf1bc8212b2",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/kommunen-story-historie-2026-09-10.md",
+      "bytes": 2681,
+      "sha256": "5c5ea272f3c875ed9c83c3ec2044c1a8e183cd6fd7d31babb2d32ce57d56ba3d",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/kommunen-story-matrix.md",
+      "bytes": 11652,
+      "sha256": "a4801647b05e2a78ebb388b349d2eff2615c488a608c320ae34cd8b5fc4ca1e8",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/municipal-charts-and-stories.md",
+      "bytes": 3884,
+      "sha256": "bd1a71af4eaa8514d57e5264a18345ca534aa6c6f4fbd3e8b4dbb32b37ccf92c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/redaktion-story-vergleiche.md",
+      "bytes": 6108,
+      "sha256": "97094f4555ad6ac687c18d885d7098fa0f2f57f34f8ae348c5d781b271802b03",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/redaktion/kommunen-story-auswahl-und-rangarchiv.md",
+      "bytes": 7948,
+      "sha256": "e07aadb3fd16fcc330856b974177c3e6e643d48c641c06bc554757261072ec19",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/redaktion/story-ertragsvergleiche.md",
+      "bytes": 5774,
+      "sha256": "1127662efee8082a7396697a1e497dbd87c00a5e671d755b25e51eddbe35d48a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/redaktion/story-pattern-coverage.md",
+      "bytes": 9614,
+      "sha256": "2ed2933c7fcaa08659bba4432d1875f179462fd66fdd64811e81561ced897d1a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/redaktion/story-pool-original-audit.md",
+      "bytes": 5849,
+      "sha256": "0406dd72b8d7fc1d053347a78193f1bbe08cf7d113e4d603e32d970d30f66885",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/redaktion/story-system-abnahme.md",
+      "bytes": 5365,
+      "sha256": "300a8f8183b57acc41a6a8ee66546e531417da90662b1aba5e3764b330e45765",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/seo/kommunen-stories-messung-2026-09-10.json",
+      "bytes": 137545,
+      "sha256": "5f6f09882de4a877293b247384da1cb71072571e93d79be40614800318d36ad2",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/seo/kommunen-stories-strategie-2026-09-10.md",
+      "bytes": 13564,
+      "sha256": "2a84a692abbc2a856a779b5b1ababd81fa3195d366494685d9d1c318fc4cb999",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/story-commercial-assumptions.md",
+      "bytes": 5951,
+      "sha256": "9ec7e6e229ea2a0e0db12dea9a11ae996bfe8197783ddeb7306483afb0fd7de1",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/story-content-audit-2026-09-17.md",
+      "bytes": 4370,
+      "sha256": "274305a8b615c23378e1068036a86274a3fca43183973c25fd8f6cd70cc6fecf",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/story-energy-year-reference.md",
+      "bytes": 1793,
+      "sha256": "cd59d6e3970ed6db1beca86f29b962e967474429bf38d83148ab58fbb8a460d5",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/story-erkennung-prozess.md",
+      "bytes": 7988,
+      "sha256": "446a94d02e48b24bc3cf1dbf5544942601a711ed859ab78978cb5768a09b5767",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/story-preparation.md",
+      "bytes": 3518,
+      "sha256": "ff003285f5885e9420ca58488ef5efafc51cac782297732fe26a7c6d70c815a7",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/story-register-correction-2026-09-18.md",
+      "bytes": 2098,
+      "sha256": "77e84b9f944854cf11feb0cce6e5079506df4671e97783f4149543194845c35e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/story-standardset-rang.md",
+      "bytes": 4007,
+      "sha256": "541617e6230a4b25343aece6b2e09016be6d7b17bc83b4b6b10fefe1c9230a87",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/story-template-mapping.md",
+      "bytes": 4657,
+      "sha256": "ee6ecbf31a2e41d2bec92c859e0f3b4e065dd89211e15892e0b3bd54c840970e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/story-weather-adoption-2026-09-19.md",
+      "bytes": 1975,
+      "sha256": "201b177ebdcf98c4422ad6a4aa7d7eb6ca9fc0060ccf4d6efa0cb8ec40bb7cc3",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/story-widget-contract.md",
+      "bytes": 5566,
+      "sha256": "f2da14b2a951b5ffb26aae5b68cbf705dcaad0c5e2a139123da005da734e11d4",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "docs/storyauswahl-trier-nidda-2026-09-10.md",
+      "bytes": 4623,
+      "sha256": "92601dacb7f6aba2b5ea41f27e649591338e6358ebaf44e91001d08cb41d59ab",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/anteilsprofil.test.tsx",
+      "bytes": 1918,
+      "sha256": "327d5cc7cb3b47f56d7ba304bcbfa53946cf042fc51c2cd34c7950272ed0cbd3",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/kommunen-text-route.test.ts",
+      "bytes": 2130,
+      "sha256": "9b8ec0099c4091d10737d1c46064148a325fa0c89435955f3269d550e8a1a42a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/municipal-chart-catalog.test.ts",
+      "bytes": 1297,
+      "sha256": "f68e41c8a88d3339235032e819d766a4ed519b760d1318b98bf3a233c0cbd1c8",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/municipal-story-preview.test.tsx",
+      "bytes": 1252,
+      "sha256": "bf8ee4a21ead4e1a6c07addc19487db47cd6c1f698d478bb2487c57fbdd4f7c0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/offer-waitlist.test.ts",
+      "bytes": 2273,
+      "sha256": "909b85af446be10de691ac808c24653ecf6c271a000857c01335d5e42bf4dc18",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/orts-posts.test.ts",
+      "bytes": 8683,
+      "sha256": "2db3162e69d0d6be61e35cd9ae4ce03a5507e0da494dd9036c77e0083baf64bf",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/orts-stories.test.ts",
+      "bytes": 12786,
+      "sha256": "17c6992daad0f50d15a654bb4075addaf5ff4a0aba7ccb4fd1792cf5b39e591e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/orts-story-feed-route.test.ts",
+      "bytes": 2124,
+      "sha256": "a2e901dd7e3da04ff1e5d2c09cf65a1961cefab6841a20e85ab7927e7dec8553",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/orts-story-feed.test.ts",
+      "bytes": 3182,
+      "sha256": "34f5c8ef0bbc5dc79bad26115350d95162996c8d8cd8b5196ad26e62d8274ba4",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/redaktions-schub.test.ts",
+      "bytes": 1835,
+      "sha256": "8c94d37322b2f8d27fa43ceb4d3b1a941361a5e31e6b403df3af2e4de0b856d4",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/seitenform-eine-quelle.test.ts",
+      "bytes": 3630,
+      "sha256": "e64de94ab72a3547ccd4f31ce975ad210925e8d26c29785a5cdcd8f184738e6d",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/social-funde.test.ts",
+      "bytes": 24648,
+      "sha256": "3f15e1e271b2344ae8a34338367a2cf270dae1042951f7ffa5e7a56870367731",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/social-fundvorrat.test.ts",
+      "bytes": 4184,
+      "sha256": "8bce6da3409d35fc49d0cf7668b9e1094a5012a1400d7a5af2220c70f50d0ee0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/solar-day.test.ts",
+      "bytes": 1312,
+      "sha256": "f87e456abfebc708c78d35eb918cc8d59cfa6512b7885eea97a5e3ea2226b944",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-approved-visual.test.ts",
+      "bytes": 2845,
+      "sha256": "a87c1c86cd5a0cd673e51c54d3f3fbf21d7ccbeadf487e70b2a025e68ccbf372",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-city-sets.test.ts",
+      "bytes": 1413,
+      "sha256": "b57bb2b79e88e46d549b23a56c6b265aa07b860090fa79d2616d693e3f760490",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-commercial-clusters.test.ts",
+      "bytes": 1431,
+      "sha256": "7e250a3e45ed124739bf0d871be2952a063657ba9e41d509e8f4d97dfcf6e8bc",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-copy.test.ts",
+      "bytes": 2192,
+      "sha256": "c4dd2701d7b25f341cc086dfb3c4cdcc9a9d61f6fe3fe7aa6a0de782f68c8eed",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-count-grid.test.ts",
+      "bytes": 692,
+      "sha256": "89a25b5865f936627525966f301ab5e29bceec66ec287925316c09f0a4eae223",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-design-store.test.ts",
+      "bytes": 4116,
+      "sha256": "17cd3185e34f943c93b0c2bd8012c95cd38672d6476ccc32648d0fb003044673",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-discovery.test.ts",
+      "bytes": 6961,
+      "sha256": "775c617697114ef7a8c24e416377e87d9cd6095b8888ec376849d301bbbf858f",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-energy-discovery.test.ts",
+      "bytes": 741,
+      "sha256": "f66a69d4117bc564aec96c7d16088d066c4623fef5427508df5a6a2ce78712e6",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-energy-year.test.ts",
+      "bytes": 2600,
+      "sha256": "f481155eea02160d0e29f8a82da8c458c518c169a1b8dab72a54629e871e0b4d",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-finding-concept.test.ts",
+      "bytes": 1692,
+      "sha256": "56156f4e29005c771767f4ce3cc2684b4c120981193ea5013c3a4f735158a571",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-funding-discovery.test.ts",
+      "bytes": 4209,
+      "sha256": "fffb8d31096a3740e3bf4d8b7cbd1c711c0bb35abab8e0b6a210a54bf914037a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-housing-discovery.test.ts",
+      "bytes": 889,
+      "sha256": "73583a47a2f0df2b545e901a296a280211cfaa84d36721d3c54668940dec9ce0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-journey.test.ts",
+      "bytes": 1270,
+      "sha256": "99992c56ce6ac66ed4f85b6f161b9223af545f6744f75f00c953bbfd0d42dc24",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-legacy-adapter.test.ts",
+      "bytes": 3191,
+      "sha256": "84f67a14493de644f2189f1cba8ff168b611152c097428f1b29b037493c2a344",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-monatspeak.test.ts",
+      "bytes": 2462,
+      "sha256": "102ff12212c8f0e467cb50e3554e5d60da359169fc9b6c89f9a11a1cab2dfe8a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-month-value.test.ts",
+      "bytes": 2007,
+      "sha256": "cb7edb6b71cc777afc07c2ad3302d674661ce67416c38c4249f5eb50f5b44e82",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-monthly-additions.test.ts",
+      "bytes": 1682,
+      "sha256": "0f86526327421b228b6b11d7185885dff25e38310c1b128cf30f14b9830356d1",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-monthly-solar.test.ts",
+      "bytes": 2333,
+      "sha256": "8cc69ef42575bf6ef7e4f3a5c049d50a744ea69b77ed2218b0053f861f0c8d95",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-original-patterns.test.ts",
+      "bytes": 2625,
+      "sha256": "581a98f68f46d2e075177f51a0d84a1ae69ff79fa04b43610fbf74eae3476408",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-period-discovery.test.ts",
+      "bytes": 2047,
+      "sha256": "6996568aa61f952d9fce0ea9391356fe51f6c27f26d5669149868e4e79103b52",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-pool.test.ts",
+      "bytes": 5322,
+      "sha256": "2118cf70c6a0314ea5d7d5aee0616f956f570291f7d288a6a3358c88d41e8388",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-prepared-data.test.ts",
+      "bytes": 2187,
+      "sha256": "059bae6156aac2eed9c5fb44514995af36bcf5371d2035fc146b9b10fca94115",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-rank-history.test.ts",
+      "bytes": 2506,
+      "sha256": "d040d66157f51194b5f2d6bf47f63362314da005e9f2eb3fc1813d4933f3a160",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-rank-render.test.tsx",
+      "bytes": 1888,
+      "sha256": "628e8f0c2028a251f528c3bf854d560511da03cec1fbe9128460a57501fd7cd3",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-ranking-coverage.test.ts",
+      "bytes": 1884,
+      "sha256": "5f906588f8ba2875c3a8f9b628d97ba1aa9341fb15aed51a0925bb822ca4d7d1",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-ranking-month.test.ts",
+      "bytes": 3945,
+      "sha256": "86335b350bea40a4319862f9ad8de7eaccc76b74c035daa48174f7f7772a6869",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-related.test.ts",
+      "bytes": 1206,
+      "sha256": "62c67060c3f67e7c15637b3616a6a313509857e637da2184df0059435aca4397",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-storage-discovery.test.ts",
+      "bytes": 2064,
+      "sha256": "1aed6dde68d6636ec5f07c3f1960a1e30302f95e3decb4693b6511afdcd1cca0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-template-render.test.tsx",
+      "bytes": 1323,
+      "sha256": "3ca9bedcf9fef0a2e21a840fe449e32b2567b071b8cbda3ebbdd01248accbc20",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-text-patterns.test.ts",
+      "bytes": 1146,
+      "sha256": "c31c3e3b1d07289d525fa0f7aa9c1159102e5ba8b461bda64e3599cb3184832a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-unit-value.test.ts",
+      "bytes": 2607,
+      "sha256": "f7f4364f915c5329e7daaa53dc40e597778bc7f2e461bf845276c6059f4116b0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-weather-location.test.ts",
+      "bytes": 457,
+      "sha256": "5c307bbef138da48b3c331812f8909924554dcacc90852b57909662861b81ffe",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-weather-validation.test.ts",
+      "bytes": 1045,
+      "sha256": "123f3b155ada4dd828d7cf4288caedd3aceaf79be77f6b06ffeca8f6e3c81631",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-yield-discovery.test.ts",
+      "bytes": 2735,
+      "sha256": "25cd199024d5efe826e50c214445b9effc9a68e6f847db2a48aacb17d498329b",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/story-zero-growth.test.ts",
+      "bytes": 2245,
+      "sha256": "a9da09d5cad160b126b779ebd7e871c4687691999e49818c2398e481f760a014",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/__tests__/yield-chart-layers.test.tsx",
+      "bytes": 2607,
+      "sha256": "2eac43bade49ab552b6e20afe3dc5baa14517dd2562854440883a15f58127850",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/ags-nachfolger-daten.json",
+      "bytes": 191430,
+      "sha256": "df0d371470e8ab7ba83d5000119eefe869df00ea3df7ee2694dc7acf694dbc38",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/brand-assets.ts",
+      "bytes": 429,
+      "sha256": "bb530a56664b5a0f895cb710a2eebefb5191988bfceff2350c2a583e0d396f35",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/data-sources.ts",
+      "bytes": 21209,
+      "sha256": "e49a0ad8343fcc72af891ca7997c748a74f7549e229baf01c0bfe6b16b07884c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/kommunen-testballon.ts",
+      "bytes": 16327,
+      "sha256": "0d30b8b44479ef5804e2584499dd3de36405b47c9f9de9b3c115d995866707e0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/municipal-chart-catalog.ts",
+      "bytes": 2783,
+      "sha256": "95c7106cdc38257791c1bf38025ce3b79d9e5cc7a9bebeaaeaf1326a6ea0306a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/offer-waitlist-action.ts",
+      "bytes": 2227,
+      "sha256": "5e605d771259e7dc3fa3295973b7bea2584b4227a803c95538f1abe8416ff433",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/offer-waitlist.ts",
+      "bytes": 1147,
+      "sha256": "35e86ca996e4d03486cbaf5732b7cb55af2737a6bd676e08c9d3a6c203efb5f5",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/orts-beitraege-server.ts",
+      "bytes": 7951,
+      "sha256": "379adc121df9dc62f4d893805e00cee2a717b59ac1659c68349bae2683bfe387",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/orts-posts.ts",
+      "bytes": 9926,
+      "sha256": "f0d9978669fbae24c4d67c94c6a3c6e2bbad4344dcf36cc39c594526faa79bf7",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/orts-rang-stories-server.ts",
+      "bytes": 3519,
+      "sha256": "2fc72eb486f95b709a29b97c9be41875874d281d4e3e4a4e6ea38194c19a0778",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/orts-rang-stories.ts",
+      "bytes": 1541,
+      "sha256": "953122d524b231c6e75d140ee92c36dec315b05efbe62b619eecefcde772e9a9",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/orts-stories.ts",
+      "bytes": 48798,
+      "sha256": "6a7c9e8438cab573abff14e87d5cd1923fe31dc5c541047c0d64c0593e24a4ca",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/orts-story-feed-db.ts",
+      "bytes": 3984,
+      "sha256": "c0513c4ab170b189c18c653502005e1cca9cc58d21fbff1c744b4418bbcaf057",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/orts-story-feed.ts",
+      "bytes": 1872,
+      "sha256": "1a6b1e1a634f68210830b2b07eb599bf2e7626fda8615ada7cc5b72b90f5e370",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/redaktions-quelle.ts",
+      "bytes": 7691,
+      "sha256": "c4333d64dbe39592870c5a4943688884e320d9afefcce2e0adf717a2e51cbd63",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/redaktions-schub.ts",
+      "bytes": 595,
+      "sha256": "11bc2e0df94d1433bc3da18a3f51416085e331db6e16b7508e390ff579579dc0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/social-bildformen.ts",
+      "bytes": 17657,
+      "sha256": "a24e8a9f48d880e00ce781f266088985722f0830bd9cf53d727707f197454d0f",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/social-funde.ts",
+      "bytes": 67262,
+      "sha256": "ebc87043c09d975dba9059a5958d39b28481525da8846f67d4ae1bb36674e49d",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/social-fundvorrat.ts",
+      "bytes": 11703,
+      "sha256": "867e1e002c349591ea2b9acb11487c54df82c3f96b0ce75b8e794f7151199179",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/social-posts.ts",
+      "bytes": 77201,
+      "sha256": "1ec5cc5ccb009b87ee85d78fc510b53b6146113f3cd9c6042d4ad29444816be4",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/social-vorlage.ts",
+      "bytes": 3468,
+      "sha256": "fa59a58faf6e4da5ddae265446b6568180947661f98cc712af886af72208c928",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/solar-day.ts",
+      "bytes": 1537,
+      "sha256": "92abdff1af3ecd905f83b8cacac5a3f0db125b1017b72ed723fc4e9cde01d920",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-approved-visual.ts",
+      "bytes": 4617,
+      "sha256": "68964e38907a8e1278b386173df694fd7daafb7d83548ba14d28aed1339855e4",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-city-data.json",
+      "bytes": 84778,
+      "sha256": "b8643c4fe01c56c95aede478064f9cef35a4106b4dc5a953788b4e1c894177e2",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-city-sets.ts",
+      "bytes": 15094,
+      "sha256": "2d07adfe6e35d208d2bae410446768de7f9356dec566bedb023727eb51d016d2",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-commercial-clusters.ts",
+      "bytes": 4105,
+      "sha256": "ca214b27a60d896f45a545387c098dda52f783e26e25581f42e54d32a6983c19",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-copy.ts",
+      "bytes": 9786,
+      "sha256": "526ef199435d83bbad5267fa4a6665a118917cabec2842acc6da4d9dd079c66f",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-count-grid.ts",
+      "bytes": 558,
+      "sha256": "89c759a791cb88a27771fcc9525323ba3ffb9504ed489c600c90e89b77d6bc6f",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-design-store.ts",
+      "bytes": 4433,
+      "sha256": "f4fd3c2cce13451b8b4909cf1c8ac25a9c99c3e02d1b58eb1a56e870e3c8cfb0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-discovery-reports.json",
+      "bytes": 819623,
+      "sha256": "693c34e3ac2e539e7c115d5c45bf26a4163fbf86715248f2dc6cba5343463f99",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-discovery.ts",
+      "bytes": 21551,
+      "sha256": "01455a63c57f80a19aa1038da8f33afcc3d38ead58bc2c1e50a16c9cf98c8c70",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-energy-discovery.ts",
+      "bytes": 1614,
+      "sha256": "d5c896085a86d4a0e78f97acc02596360d3d80599f31f9d966a73291e9df83a5",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-energy-year-data.json",
+      "bytes": 27773,
+      "sha256": "6acb431c75ecb13ae87c3090ecad46a6ffcda7ba2e9fc86a01af327eb450dc1c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-energy-year.ts",
+      "bytes": 2859,
+      "sha256": "fec9e267cbafbf29afca80db6061ba25c5c552d690c609ce8b78f7a92e52d6ca",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-finding-concept.ts",
+      "bytes": 5689,
+      "sha256": "197180a944888532a853f7742c2702577483d4334d9feb37a03c62f6c65162be",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-format.ts",
+      "bytes": 645,
+      "sha256": "6858a87c4a2ebb2b74f9fc167d749d913d699cee3cb5a248bd34cb2bdbb47085",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-funding-discovery.ts",
+      "bytes": 7629,
+      "sha256": "0e5ad768b734313163c3bfc8ed6b0a348152df9154dc0a5ba9339e6c2c010558",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-housing-discovery.ts",
+      "bytes": 1801,
+      "sha256": "f7102c7882545891e5240595edf32db7de197407ab704868c688a90c633c7242",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-konzepte.ts",
+      "bytes": 17427,
+      "sha256": "292a5b3a268141cb72175b50fb6f2f0b5433095fba1de723aac67030eeacb47a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-legacy-adapter.ts",
+      "bytes": 5287,
+      "sha256": "845181cf051d04c5e6e49787b5c123517d85245887bb97e93d59f6aac4a90d48",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-monatspeak-beispiele.json",
+      "bytes": 8291,
+      "sha256": "8b709e56f30ed3d977a75627d90a0cd8e7a7ea3120cd940b307710f916eec15f",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-monatspeak-examples.ts",
+      "bytes": 729,
+      "sha256": "fc6352ae80cc30ec39a0010432445807ce82fa64dd6c3444124329da2da212bb",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-monatspeak.ts",
+      "bytes": 6157,
+      "sha256": "7f1e5644ac84134592eacb3341dac680f3810315e73291a129c9b4fd03db3178",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-month-feed-in-data.json",
+      "bytes": 22147,
+      "sha256": "a622ea312ed931c158312261a2f6d2e318eb8bc92b854547bd1949f72818f3b9",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-month-value-data.json",
+      "bytes": 555,
+      "sha256": "20df2c18a64229440e478c05f0f0d0e51f767bb8edf14bc7d4e6d25e8003897b",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-month-value.ts",
+      "bytes": 2207,
+      "sha256": "b4f236ce49eebf6796454fbd6b919b552fe6b8df769cbfcbc28520718f3b89f4",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-monthly-additions.ts",
+      "bytes": 2564,
+      "sha256": "6d3698dcbdef5bae4da03abeed7af81d79f31e9417a8f27cd985b3be5377188c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-monthly-candidate.ts",
+      "bytes": 9849,
+      "sha256": "7308790e6a6fd633d4697dd43837089e05c2ffbfc50f6a47011d1bc103bd9f58",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-monthly-solar-data.json",
+      "bytes": 6899,
+      "sha256": "d05bff8e525c8624b3dba2d907f8d116d694028a068408e9d77cfc46dd657043",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-monthly-solar.ts",
+      "bytes": 3341,
+      "sha256": "642ba0f2b0ca9e159866dc16fccfb651a8a201eca52855647b03b32d465c13ee",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-period-discovery.ts",
+      "bytes": 5256,
+      "sha256": "00018585ddba8e1a4dd7fac43f6826d7b64946d2119a622153d66002217e3b90",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-pool.ts",
+      "bytes": 9035,
+      "sha256": "e001d2d42b517cd4f3c35a054e542a201e5f68999812c5a3e7539983cec4c193",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-prepared-data.ts",
+      "bytes": 653,
+      "sha256": "446b4c9c14db67cf5ae1784e90616418c5e8f6121d8bb73ef4ae6817e6e268c2",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-prepared-server.ts",
+      "bytes": 1210,
+      "sha256": "c175556fc9a7cf9d4d3ca4c58aadf7b51d99f4296197fd400c5776f85a135dd6",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-radial-city-data.json",
+      "bytes": 35441,
+      "sha256": "c09aedc41e15f08a5bf677303dea9faa8afceabad5589c3770148da9f47288c0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-radial-data.ts",
+      "bytes": 496,
+      "sha256": "64c5774f5e82a45d3d9b1bfd8b93ddb55643e74c2e0ecc35e2a323e0a18c1d13",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-radial-viewbox.ts",
+      "bytes": 559,
+      "sha256": "ce28b4a6a287e9af757b08be7eff41b9bb2d1833e2a8d25a220013e55df36931",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-rank-history.ts",
+      "bytes": 3429,
+      "sha256": "49c5d9d498e0de87da203f81c20ee4becea894c3ecd792c8b8ddd10a86f6a576",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-ranking-atlas.ts",
+      "bytes": 2119,
+      "sha256": "a3c299d75f70ff84c5204ea191ee6c7db22d9df023bb78d5a1bfbc6c17959e01",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-ranking-month-data.json",
+      "bytes": 1975655,
+      "sha256": "309e2c68c60f5eb8d5467e734f754ac50affeafe9246e1f9256f7c7bd2a36112",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-ranking-month-server.ts",
+      "bytes": 2309,
+      "sha256": "48a36c527a91415b5462e0cb3994ee150737a902a4897894d7e6bd4512d77eff",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-ranking-month.ts",
+      "bytes": 5069,
+      "sha256": "5057cdbeaf81360364441e2f870b88884411e1619024b55d8d215febc48e3f2e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-related.ts",
+      "bytes": 1435,
+      "sha256": "e0229c944c2dfcb0b740d8afe5394cda2439186c1268380bbd0850be42138f6a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-storage-discovery.ts",
+      "bytes": 3477,
+      "sha256": "4c74f2854043ce19df0e2084fc2b983455c8f587bea0c28de262f8ad63c7faee",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-text-patterns.ts",
+      "bytes": 1091,
+      "sha256": "fe154fd4a16470db79c4e127359737f213bbd025d805433053b0a632d114de15",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-unit-value-data.json",
+      "bytes": 489,
+      "sha256": "8c7d92b75808e53d107f046cd245c97b0937db193df8c0dc0d1caf7ad639c8ec",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-unit-value.ts",
+      "bytes": 4770,
+      "sha256": "3e47ea81645fc1cac4d55b07c67ca2cfa80eb7f90a9a15927facb0973c6108ce",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-weather-attribution.ts",
+      "bytes": 407,
+      "sha256": "01beda310d6955b326c2a9e40ca9546f691ea70a3cbb352ecb3ccffdb146d125",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-weather-location.ts",
+      "bytes": 699,
+      "sha256": "6d15f6167f8296e974b45d62d0ea5ea009ca2b1a4f0aad860f9391cda90a233b",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-weather-validation.ts",
+      "bytes": 1060,
+      "sha256": "7cd51b4af92ada3fdee3a46d0384fbb497df5a1b72a3cca2bcf07a0080c44116",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/story-yield-discovery.ts",
+      "bytes": 8530,
+      "sha256": "b0c13d7be9c39efe7da1801687a5c809c3b128b1f6314973b9660d14c17429f9",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "lib/theme.ts",
+      "bytes": 67594,
+      "sha256": "58899e2ffb62d412c22c516cd78c95cb11fb895caa8dbdab62ae61d08a64692e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "package.json",
+      "bytes": 5395,
+      "sha256": "decdbc473ca87b57178ed32d22e7cfacf5796ab5daba097d71dcf6debda10952",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/RANKING-HANDOFF.md",
+      "bytes": 6957,
+      "sha256": "357c6e43bb59cee26f9f6f73d80842586ecd9af61fceadcfd447875e144de906",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/VERSION.md",
+      "bytes": 244,
+      "sha256": "841f22751f12fdf45980f643d17053f43b431bcd8f10daebdce6dfa513e103d9",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/atlas.css",
+      "bytes": 32111,
+      "sha256": "82026f52e533745dda8993d0db3f72a5798624ca295db950dcbdc0cdc73c981c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/atlas.js",
+      "bytes": 12845,
+      "sha256": "6ff92c97f8199d53c5a48acabe4cc975fb70f662f021c91cd9077b019be90f66",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/current-theme.css",
+      "bytes": 5038,
+      "sha256": "97cf75298f89f174d1536ce72f59ddc39e6e60d25a684dd716b64f7258e2f892",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/atlas-image-0.webp",
+      "bytes": 221360,
+      "sha256": "7e10b4a05c48f888ea5cfc2af518de156612510e8f80562510567bffdffe6f06",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/atlas-image-1.gif",
+      "bytes": 26,
+      "sha256": "3b7b8a4b411ddf8db9bacc2f3aabf406f8e4c0c087829b336ca331c40adfdff1",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/atlas-shell-0.woff2",
+      "bytes": 36980,
+      "sha256": "468d56b6b25b05b70190b6c233d773f6f1770e8579827ce022a57f03fa8002fb",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/atlas-shell-1.woff2",
+      "bytes": 31340,
+      "sha256": "2c32b9b3ee358c119e210f6f5195f9bd34894d78a785ff2e95d60e718e400af4",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/dist/chunk-SQE76S5B.js",
+      "bytes": 577,
+      "sha256": "11247d28c5c2fb3d976002c2b55fecb6ba19fd88153e11d2c7af5832fd6ff331",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/dist/scene.js",
+      "bytes": 25258,
+      "sha256": "3bd4a67c0712ea6ae779248a350fa4edddd532d3fe362d7856d4948f403cf984",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/dist/unified-renderer-HNVSF255.js",
+      "bytes": 876166,
+      "sha256": "3421c947b42f2234ac92e75e2a8880a6f474bed5908933f291dd60cca32b0603",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/moon-lroc-1k.jpg",
+      "bytes": 139068,
+      "sha256": "b246064f217f8d479df78c49c7c8595a8f5fbda008a72fd539978d2e121e0109",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/panel-fallback-0.webp",
+      "bytes": 221360,
+      "sha256": "7e10b4a05c48f888ea5cfc2af518de156612510e8f80562510567bffdffe6f06",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/panel-fallback-mobile.webp",
+      "bytes": 30148,
+      "sha256": "967de30d6b433db4c7ef889a8c8e5bd0e5afaa9757b22aab443c357b341a4709",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/plz-coordinates.json",
+      "bytes": 176234,
+      "sha256": "fb4211d180e82529c9249ad2d6f6d8a13e2c2d2d9ef153a3ad8d7018f2c10f4b",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/serve.py",
+      "bytes": 3315,
+      "sha256": "826853cc3919e54bfda0d92654ef63cb93ccf24c493438950ba1d680557a2429",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/test.before-foreground.js",
+      "bytes": 922173,
+      "sha256": "5a635e11da5cdf839e4be18dd416c2c998aeb05b8582a575d305cf82b427ff4c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/test.bundle.js",
+      "bytes": 941693,
+      "sha256": "272697816a09bfafc65d595e38a563c4d857c5d50d691bcd186066c2385ae8e5",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/dynamic-hero/test.css",
+      "bytes": 12522,
+      "sha256": "9537402200c0624cb535317eca1eb4689c02109c6ca5d711d61aca3d61ced370",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/font-test.css",
+      "bytes": 2533,
+      "sha256": "e447e080822539b177ea3b45744f9d0cb999019e7348736a5b51530cf574925a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/font-test.js",
+      "bytes": 3567,
+      "sha256": "243890c6979026c686b237fed298adc55677c486cd25ebbec781d0b682b66f23",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/bangers-0.woff2",
+      "bytes": 31040,
+      "sha256": "86f90cb0810af8aedd50eb6d9203b5870576b2e59c1e02b731cfac07281e22e7",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/bevan-0.woff2",
+      "bytes": 32268,
+      "sha256": "5a53203787130335928b977b38b46d38223b37ed6ffc6ac8e16a7e5fad86979f",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/bigshot-one-0.woff2",
+      "bytes": 19892,
+      "sha256": "83263d7f63af05ac90f2fd6ebe5d69e190f69e2978b0c049fd3789c970c93add",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/bowlby-one-0.woff2",
+      "bytes": 19500,
+      "sha256": "f4960fe4b1796a9871a4645148954f0eaa216a2a3503d7678e4b38c8eea6d0da",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/ceviche-one-0.woff2",
+      "bytes": 16328,
+      "sha256": "fe89e292f8174080c193728fd84bad5b79731dda9ba424602d02b8bda24bceba",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-00.woff2",
+      "bytes": 27116,
+      "sha256": "9056778b506c1d14b31fda3cefbb886e7debdf729d116ae77488036249de6eee",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-01.woff2",
+      "bytes": 26364,
+      "sha256": "31369b9c55626b0e2f6d19b6ae82aa9b36f0f9e6de78b0d33d1e7f6eb2a8a338",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-02.woff2",
+      "bytes": 28704,
+      "sha256": "622efe2457c9742985a6d7947942b624efe78b3c5c859c4b446592c68a560b26",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-03.woff2",
+      "bytes": 20304,
+      "sha256": "cc86e1326fdbf59bc9b3764a3d7973b05ca1dcab434cc5b4da0bf57a7983a909",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-04.woff2",
+      "bytes": 25528,
+      "sha256": "99235cbc8e953ebbed084c1352e41942a551e61207c7bd8f38676a123bd58eb9",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-05.woff2",
+      "bytes": 36812,
+      "sha256": "31b10e8e0665e542363d6945614e9ebaa09c6ae5b5de5619caa0c5893d57ca7e",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-06.woff2",
+      "bytes": 38932,
+      "sha256": "ee72e28a4cee7176a5de06ebabe8ac16b41266dce9d0f80538c42cf13fa78eb9",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-07.woff2",
+      "bytes": 12652,
+      "sha256": "23a054ca70a6dcd4b49846bfc63d7f1f405362c8e512d5be11115d7120f2773b",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-08.woff2",
+      "bytes": 29640,
+      "sha256": "80997664b4bb416bebf9296761754183095ed4e01d9ea2ace23a535914216f01",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-09.woff2",
+      "bytes": 15692,
+      "sha256": "e6d2757436fef17bf50a5161c566aaa9e903e6666bb2c8b61f44138a5f651317",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-10.woff2",
+      "bytes": 15540,
+      "sha256": "cfa690c1a9e0d44d7f2dad47783ea1a22ed30192e46b4efd014f272c8f8b4a86",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-11.woff2",
+      "bytes": 31432,
+      "sha256": "c35ad836f71455e4b90d615f143c914eedcdc61d344e23ad54ce42ec9053d46c",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-12.woff2",
+      "bytes": 14784,
+      "sha256": "e121eb8d4bc03ad827fe76c16bc48df6cade8761b01cbb1f0cb0b4b37975241f",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-13.woff2",
+      "bytes": 27152,
+      "sha256": "e9bbc1e65f14b8b92e57880df1db77cab45878c32b0bf307f5f788eeb8acce80",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-14.woff2",
+      "bytes": 35640,
+      "sha256": "134bae013f67dbbe414dd6de3a69534c7af997885bc802910ed12ac743830e13",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-15.woff2",
+      "bytes": 8400,
+      "sha256": "235e529ae10a3c09eda2fe455166e2ba7ae56dac4f6c1ec9adad100dd00e1f51",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-16.woff2",
+      "bytes": 30024,
+      "sha256": "6ad279fe780b0bf6f7e9552dd7f6495c6c30375befd231c7b507fe01d0f359b8",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-17.woff2",
+      "bytes": 23368,
+      "sha256": "8f7bedc9664045e68a31a3561ed81e16cf9cf5407e1125988350083165d4f671",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-18.woff2",
+      "bytes": 31588,
+      "sha256": "a96d1d307b06cfb5e8e7cb65bf0d336c45a83d331015a79c68f08270ab90574e",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-19.woff2",
+      "bytes": 27904,
+      "sha256": "a3d2a250948e5148f204420e147dfef1d52a0d5c31e2560adb41afa4d1f07d3e",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/display-fonts.css",
+      "bytes": 6340,
+      "sha256": "b1af738ec86dffc94ba9993effc3e5a0fcd1ec07a3c8933f2de07ec6a7e73711",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/gloock-0.woff2",
+      "bytes": 41800,
+      "sha256": "d5846bf65bd309e5d2951ecdbcf36d21adaa4ea08cc343cdd93da139d5ef8776",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/goblin-one-0.woff2",
+      "bytes": 14328,
+      "sha256": "e5bc35603ce58a401061c03c288ac725065054e9bcc7bf602a186fa559a76cc0",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/jetbrains-mono-bold-0.woff2",
+      "bytes": 18248,
+      "sha256": "a52508191a3ce4de652a8a411551bf5082e40e4767e5b84c156d3192e8461f34",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/lily-script-one-0.woff2",
+      "bytes": 15904,
+      "sha256": "ae586969c7efe85410790bb8cc5607ce289d3e9b28824b82874db5d8aeafeee1",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/lobster-0.woff2",
+      "bytes": 67560,
+      "sha256": "78510b16c8ccd4bebc9cf219d6b80217813d65a07ebfbe46811e7e417d5b55f4",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/montserrat-black-0.woff2",
+      "bytes": 27112,
+      "sha256": "11bc258e371e1be63b0396c469c06a0a84f4cf4fe81eae1dfd0b16f121782d2e",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/montserrat-bold-0.woff2",
+      "bytes": 27100,
+      "sha256": "42d5be7d4027ef646f156a64db70e99b28ee3c3d8aec8ced002d044d4f3e18e0",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/paytone-one-0.woff2",
+      "bytes": 35428,
+      "sha256": "afc0abcb8d2c1298ccb7413426e8cc6d0fcad2668698bedea7d8908d7daf3132",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/fonts/protest-riot-0.woff2",
+      "bytes": 35724,
+      "sha256": "1c888f889b9f709806f08514ba450d2269296bb1a120beb5622abe38ca9d0c67",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/hero-rank-confetti.js",
+      "bytes": 3513,
+      "sha256": "29361b17d6fbd3e9bec1d5c3de028133a7c2c3b5f3c2fea55f25f5c5746510eb",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/index.html",
+      "bytes": 83434,
+      "sha256": "f16218bed22e919578526e0ecb9ac1df6f1326f47e215c4f9586288baa2c2a0d",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/karte-bestand.png",
+      "bytes": 341648,
+      "sha256": "d99e485ad42057437afd32499690ca43bc8239effed0abe16b23299ea8467b5a",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/klickhinweise.html",
+      "bytes": 58497,
+      "sha256": "0ab8e3224beea7e49d51f5dac8c0e2d63549bb462a7e30e62095f4cabfd78946",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/live-icons.js",
+      "bytes": 6380,
+      "sha256": "5ed1a8edc6f101f6b3155c25e40568a74bb184163550905c57fb36dec34837cd",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/mount-shared-footer.js",
+      "bytes": 405,
+      "sha256": "27905e76c167a6aec71333c5ec515c63be3655596995a9d09fd598f36805455b",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/mount-shared-nav.js",
+      "bytes": 405,
+      "sha256": "8305958159af4e6252575f2c562df3793e2eafebbe5550dc8bb6088127abcdc8",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/SOURCE.md",
+      "bytes": 3761,
+      "sha256": "9ed1cb3268ed3bb169ea666b7462541a855b344d2391dc2c19eabaf849183421",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/balcony-1-small.png",
+      "bytes": 330699,
+      "sha256": "9f93c252edd0202850be1c05543ef0c8b202b07da19db51e4ed00a0041f67b0e",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/balcony-2-small.png",
+      "bytes": 266474,
+      "sha256": "8b1fbbf354c1950843bd4d80a6b5a4916c9a8aa29285992749b908d062e96e02",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/balcony-3-small.png",
+      "bytes": 255119,
+      "sha256": "2d5d34f85bd57da5af6e0c944e45a2f2a3d636bb83925d2e1c02caf8e96f2d6b",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/battery-1-small.png",
+      "bytes": 315121,
+      "sha256": "fede5766c54a90a4321eedd56dec9fd39470ff31e97afce944b5868f53a3262e",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/battery-1.png",
+      "bytes": 315121,
+      "sha256": "fede5766c54a90a4321eedd56dec9fd39470ff31e97afce944b5868f53a3262e",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/battery-2-small.png",
+      "bytes": 251864,
+      "sha256": "94024fde69670e14f746625abfe1e4021d0df7e2b1fd6cbb9343315bd64e13d8",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/battery-2.png",
+      "bytes": 251864,
+      "sha256": "94024fde69670e14f746625abfe1e4021d0df7e2b1fd6cbb9343315bd64e13d8",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/battery-3-small.png",
+      "bytes": 237925,
+      "sha256": "567329b87a83dd49bc1af1ebfa5fd986528d647f9d0596a6a492cd4a550d91c4",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/battery-3.png",
+      "bytes": 237925,
+      "sha256": "567329b87a83dd49bc1af1ebfa5fd986528d647f9d0596a6a492cd4a550d91c4",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/rank-mystery.png",
+      "bytes": 327472,
+      "sha256": "b1d74bd006d3180e7f93a4d96f5721b2e112bb33eb8c6c55c75a4fb25596ee9a",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/roof-1-small.png",
+      "bytes": 341528,
+      "sha256": "288109065aa270dfccbb56627ddea2656c9bb6ca8eddb3c8292cd33a1725ed4d",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/roof-1.png",
+      "bytes": 341528,
+      "sha256": "288109065aa270dfccbb56627ddea2656c9bb6ca8eddb3c8292cd33a1725ed4d",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/roof-2-no-banner.svg",
+      "bytes": 13353697,
+      "sha256": "e485658d048f4468962d1030183b3cc9cf14fc7884f8df39004668f778b569bf",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/roof-2-small.png",
+      "bytes": 275703,
+      "sha256": "22d7aca8552774aebf545627d8561fae56a4c18a2e5783a3fb1119a8192f018a",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/roof-2.png",
+      "bytes": 275703,
+      "sha256": "22d7aca8552774aebf545627d8561fae56a4c18a2e5783a3fb1119a8192f018a",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/roof-3-small.png",
+      "bytes": 266252,
+      "sha256": "d2d59048030015cfb1d669d9c1a2684359444dbd8ae7f1dac57765cffc9a9d03",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/roof-3.png",
+      "bytes": 266252,
+      "sha256": "d2d59048030015cfb1d669d9c1a2684359444dbd8ae7f1dac57765cffc9a9d03",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/top-10.svg",
+      "bytes": 92941,
+      "sha256": "52f5f0a5bfbe5daaeb8a6d3c6a785d003790f69fa517830705125f59b265719d",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/top-100.svg",
+      "bytes": 93472,
+      "sha256": "6f7148fb7f61f714a1d57d5d292999e74b5da04bb2eda5910c184eadda5c5613",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/top-25.svg",
+      "bytes": 93107,
+      "sha256": "9474c4b90129faf9e8221973800b8be3bf37e70144f3df09623d57bc48c63d85",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/rank-badges/top-50.svg",
+      "bytes": 93244,
+      "sha256": "4a71c2de798dfa1e8c2726636b9e206adf1dbdbf0ad44063bcb2c9793257c76d",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/ranking-data.json",
+      "bytes": 31830,
+      "sha256": "5095f23d50901bcd311c95f9eaf6f1ed28323febe6b56a7ed44d40aad987a764",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/ranking.js",
+      "bytes": 24430,
+      "sha256": "63070b01f5521ebf7085ed0a005115e07168f4c65e9ac0192f641b69172d2fe7",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/refine.js",
+      "bytes": 7408,
+      "sha256": "e3cf74626254469290de68bef17bdbbf6d7c3b95280c85a529704630058a878b",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/sebastian-portrait.png",
+      "bytes": 748333,
+      "sha256": "6f6ed6a27a030d446602004fd32bd52673eda3a1bef07ce92841b250fb70c70f",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/sebastian-schaeder.webp",
+      "bytes": 9492,
+      "sha256": "153962e338a0371eb46e21e277c7881f3717b88557aeacffcb1fff0b8120a887",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/atlas-design-preview/share-ranking.js",
+      "bytes": 2907,
+      "sha256": "2243f3bffcd2c71041e741bc86ab01429e85a2eb155517c5f15e3c5e46b93951",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-footer/README.md",
+      "bytes": 1325,
+      "sha256": "b0f045d50bae2fd5216fd143b5a08a1fa3ab22e372214921c1bcbdc4321ba643",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-footer/footer.css",
+      "bytes": 2753,
+      "sha256": "f0baaedd1cca8b80cafd8933660d1b7b0fe60c8f695c89a212212e696c06e117",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-footer/footer.js",
+      "bytes": 4962,
+      "sha256": "d52c5f91172a50753d33cf7bb102d7141dc668e8fbf12fdfaec326e6f060b140",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-footer/mount-atlas.bundle.js",
+      "bytes": 8223,
+      "sha256": "b79748650c7d9fd260a962fdd332220c0f51f7e2be4aabc4d8a6989b339ae39e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-footer/mount-atlas.js",
+      "bytes": 382,
+      "sha256": "ecdc81cf365b166e23fd216526b694a7f075869beb3da7ebce0c8400b03fe660",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-footer/trust-badges-v7/catalog.json",
+      "bytes": 3359,
+      "sha256": "159a5a129938d27d17c62402c9dec56b54e1a6b0bb370990472b02fe93bc35eb",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-footer/trust-badges-v7/trust-art.js",
+      "bytes": 12417670,
+      "sha256": "d1f9fe54d609a579e1b3f895117e462472acbc2036be60a62c4ab47e74d239ed",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-footer/trust-badges-v7/trust-badges.js",
+      "bytes": 2277,
+      "sha256": "7501806ab76bdd01b454d02374f63f8552b326097301529766bbf88fbc561a38",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-footer/trust-badges-v7/trust-copy.json",
+      "bytes": 1168,
+      "sha256": "3c47eb267327d1538feedeea0e104137919c69806fe66905ba52436d990560c6",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-footer/trust-signals.json",
+      "bytes": 1393,
+      "sha256": "1429039fd911c9efb47cab00d1bc99ded5c3b603a9768bad024887290f125a56",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-nav/mount-atlas.js",
+      "bytes": 333,
+      "sha256": "d5b6d3f38b66c6b1249e1b1f777482175e526e617675ec55002e5793e65ad9fc",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-nav/nav.css",
+      "bytes": 2573,
+      "sha256": "ad346f9defdf5d6f8b5a72390c2dbcba7372945a8697b37a42a1c1a790e26a86",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-nav/nav.js",
+      "bytes": 3744,
+      "sha256": "4c6a5ff69155f788d08c77340bcb249e733f76caa485f1ba6fee0df54938bebd",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-person/README.md",
+      "bytes": 846,
+      "sha256": "8f7b219ebb4c30062dfe3d391e7cd6e2576cf974bf4f3dc2f9ab751d076d7179",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-person/mount-atlas.js",
+      "bytes": 438,
+      "sha256": "1a49ffcce593f40a0081455c3588ad5a201c7dfd6e587be69475e0b34bf12a2d",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-person/person.css",
+      "bytes": 2561,
+      "sha256": "d4e4a6f05d665b6c8e483a46aa74fa353e60db052e3937efef26f6586a1cb5ee",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/shared-person/person.js",
+      "bytes": 2661,
+      "sha256": "fe2cac14b251fced69ed7dfe65a9ed950b5ce7d4d7da36d28a90b24a0cb0ca34",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/story-integration.js",
+      "bytes": 1304,
+      "sha256": "ced49b99dc70e7068ad48d26af8696cbf54d6fd8a0ce6733c7639d29ec1515ee",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/variant3.css",
+      "bytes": 22703,
+      "sha256": "a5c6d91e5f18d301d169f1a5ec818ecc49613bdbe22be32508cef720ba21d4ba",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/variant3.js",
+      "bytes": 12478,
+      "sha256": "ffd29b36e3f8e5069a86ad74be8d628350d5ec4908c7551603de288a13e9a70d",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/weather-data.js",
+      "bytes": 601,
+      "sha256": "6ab34c467bfb29cfa167218ce3ddfc29ab8933f1ca13a02fa794424f33dee61b",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/atlas-design-preview/zubau-data.json",
+      "bytes": 144,
+      "sha256": "0be7e938abca549df3b9beb29079acdfd666fa37c471b4e84c1dec4d5a6cc2e1",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/brand/feed-in-v4-back.svg",
+      "bytes": 216503,
+      "sha256": "be27f4f9109680215af8279c650a3f7b8720097ba12bc07fff1bc38f2e7d7e0c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/brand/feed-in-v4-coins-cropped.svg",
+      "bytes": 162538,
+      "sha256": "73a0f37173094f4c29b7b65c32b33187d3d6386da391f5a28bc04fb4ff5f8f18",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/brand/feed-in-v4-coins.svg",
+      "bytes": 162536,
+      "sha256": "788a0b9a90ccbd7e8d22241a3676ef217febea5babd7d4eda6b1ae71e445174e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/brand/feed-in-v4-splashes.svg",
+      "bytes": 68451,
+      "sha256": "4400e46c74481f8379c30400be2527ef3c6a7cf52ab0bc2e4ab51a9be28ee6f5",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/brand/feed-in-v4.webp",
+      "bytes": 34544,
+      "sha256": "cad729a15567bf0e76ec81b5bef631fbe38c46a046fec2d19c5bf0fade64ac2a",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/brand/logo-result.svg",
+      "bytes": 13333,
+      "sha256": "e92b095e68fe1318a3b6a8fc3a8f5e949e4287b441ffc13c5c76f33c18a90e1b",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/brand/pv-modules-mono-contained.svg",
+      "bytes": 148773,
+      "sha256": "07906735ba104e8572a786b11e8c20318f7e6b4a1064cac1768d7fb8f40bf13e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/brand/pv-modules-mono.svg",
+      "bytes": 148772,
+      "sha256": "4ee008e5f274159b17777a86971f7c1c6dfb6c612e422e384d9041e266ba26cc",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/brand/rank-balcony-modern.webp",
+      "bytes": 78900,
+      "sha256": "346be352d12196448ad8b8c8658678f9aad2861ff3797d2ddd800d865a8e8d0f",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/brand/rank-battery.webp",
+      "bytes": 76148,
+      "sha256": "19326379481958fdfb92b3d3a9216520137af951457a9e1deeb72bbbd7099fc2",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/brand/rank-house.webp",
+      "bytes": 85156,
+      "sha256": "3a6944a48655703db1309ea6633d3562b14a97a135140cd3782e63d5ed198788",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "public/brand/splash-blue-mask.svg",
+      "bytes": 1549947,
+      "sha256": "456ea081565d19917bb2b86b5964872925d785a6c5c3f0619626575e9ac132ed",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/design-assets/design-lab/splash-blue.svg",
+      "bytes": 6791702,
+      "sha256": "5c663ff11e7605759ad726abab0f44e8b28f9392ab15028ca446705b8a8da8b9",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/design-assets/design-lab/splash-color.svg",
+      "bytes": 6792037,
+      "sha256": "017112f27bba21890171aa2eea6a9f94d0ff3cd610ed55d5c5519944cf2a2242",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/design-assets/design-lab/splash-ochre.svg",
+      "bytes": 6791703,
+      "sha256": "bf1d6a3e57a6cd8f60f2db18b6b4c65975df7a14a9d6c24ad3946578844a3c28",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/design-assets/design-lab/splash-sage.svg",
+      "bytes": 6791702,
+      "sha256": "789cd9663cd58c1ae44daf5eeb42397dc694af05ac202fbb2847875c07bbbe7a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/design-assets/design-lab/splash.svg",
+      "bytes": 6792022,
+      "sha256": "bf3dcd8b56bac5017bf20f98f8734692c725966783604456e1379d2b9cd9544a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "public/fonts/atlas-montserrat-bold.ttf",
+      "bytes": 181028,
+      "sha256": "247f052d2f5b84a5bbe7831c3b08a71ca391ff54f1dfb9be88a3d3da569e3a38",
+      "kind": "intentional-public-asset"
+    },
+    {
+      "path": "scripts/design/export-result-logo.tsx",
+      "bytes": 412,
+      "sha256": "a089038a51415572912224b5e74fc8dabb7ab3bc45ca9c3cddd201b31d6a99c6",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/design/update-atlas-scene.mjs",
+      "bytes": 4056,
+      "sha256": "e49f963eea97149bd4636898460d4c36d1aba6633aafc8e797ff251885eff3db",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-commercial-cluster-audit.py",
+      "bytes": 2765,
+      "sha256": "fad32ec96dcded9a93323149f9fd6d0d03995b8f30abcfd6488901d10687b69e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-content-audit.ts",
+      "bytes": 2115,
+      "sha256": "244216fe4e89b8023f3dee9fd04e68beaffc55ac0771aff7dabb113019878898",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-copy-audit.ts",
+      "bytes": 2345,
+      "sha256": "8fe3aae37f1eea7449143a6dd26aeb08059bf0384a35470f6ce5e7382185d9e7",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-detail-summaries.py",
+      "bytes": 1840,
+      "sha256": "5a178ba9af6c65ca4caad068af5ad8a82d85a81a1a379fc65de59a001ba4ff98",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-discovery-run.ts",
+      "bytes": 11899,
+      "sha256": "43ec345b7c87e2a9a2cb03fc2a1f3c3e43a67fa0753b426149c310e52fcb2de1",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-energy-year-build.ts",
+      "bytes": 1405,
+      "sha256": "5c33ff524318a4248c87c3c4a97570ef0f21584bbbbfa5ba489ed028347319e0",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-history-local.py",
+      "bytes": 3618,
+      "sha256": "0b61aff8fb89057c7016a27b3aa53c3c49acf7311335f1caa415b9559f9bd1ad",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-month-feed-in-build.ts",
+      "bytes": 1343,
+      "sha256": "49d51d77570f35d07b2dadbb6affc9793547b1183dafe7bb0dc33a0b2f5b7fa8",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-month-value-build.ts",
+      "bytes": 1058,
+      "sha256": "13005c16856cb620ee6c58307896dd5b14fdf83ea35e727adda7217d655911fe",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-monthly-additions-build.ts",
+      "bytes": 1110,
+      "sha256": "34bdb00af2f7c2ab2b0f55e6fa84757e9db6f5715977e15f59ccc4d24e28af44",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-monthly-solar-build.ts",
+      "bytes": 1246,
+      "sha256": "efa7fe69966ed8f042c5bd0aa687a5060cd88592a51adb4922ae31a1c0571336",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-original-patterns.ts",
+      "bytes": 14112,
+      "sha256": "b5d839636c6553cb7393e05868632ae824101cfbe607a34d29584aa797f4969c",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-pool-verify.ts",
+      "bytes": 2123,
+      "sha256": "abc795fb79dca7a41d946918ce46b6b5d2d5ff0ce91a81721bcffd5ca70ccb17",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-prepare-resume.mjs",
+      "bytes": 1610,
+      "sha256": "e156a78d9d8da333a0864e8ebc117366707c966d060cc5b60248353122122e74",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-prepare.ts",
+      "bytes": 11829,
+      "sha256": "46d2d6dd92b663f50c6e02e6980da4ee4bba952f7776d374c9b531597f35d813",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-prepared-seeds.ts",
+      "bytes": 1112,
+      "sha256": "0d5856b81d905d2b465b0beae4e912b0b2e83cfb94437140e5a8c9a0e33b7c09",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-prepared-verify.ts",
+      "bytes": 1603,
+      "sha256": "35e3433404bf0119995a565adc711620152f4d284f673805e3b26ed52ae22579",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-radial-build.ts",
+      "bytes": 2081,
+      "sha256": "782077e9d1b5f0203a11b18e8658d325da9ab304c415488b84a2a717a497d6b8",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-ranking-month.ts",
+      "bytes": 1969,
+      "sha256": "d4d94cf61a932a405ec6b9918635b22253f372fb6e6f3dbd5e7f02470eca1330",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-ranking-repair.ts",
+      "bytes": 1535,
+      "sha256": "45f79c72d2f45cb4a626a554d3bc4d9fcff0f04391cb54d016d272a15259922e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-refresh.mjs",
+      "bytes": 2169,
+      "sha256": "b98b2629c9e85a38401bb7c1db16fddf6ff77dec15e39fdd7a220822152595bc",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-register-detail.py",
+      "bytes": 4801,
+      "sha256": "7b78f8627e3d8bd08ddfdc206f23bb626d7cf7f4b8f5937f263e40a6246a9a9a",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-register-verify.py",
+      "bytes": 1563,
+      "sha256": "28182e9681a31f94db632657ffa8d2bf4112240182139998b4bc05cb35b7256d",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-remap-local.py",
+      "bytes": 2473,
+      "sha256": "e9025785cf6a14bf9b6b868839a86a909c01da3d88ac8dab1064c7a26cb5e949",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-source-inputs.mjs",
+      "bytes": 1498,
+      "sha256": "13dba70bfaec2d0f114e1e7cb86ac992c174e0b678a0da3677c059b49ff53b45",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-stock-input.mjs",
+      "bytes": 1649,
+      "sha256": "df0cab6676d7264824f11565e435d70ea5c76c00221edd24c76b53cc37622df1",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-template-audit.ts",
+      "bytes": 1985,
+      "sha256": "3a2b8a9c20cd9c952b8e2c348baa7c401555e50c1b48ff6277f0ec64d61ed635",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-unit-value-build.ts",
+      "bytes": 1733,
+      "sha256": "2e5474f2fc499c95764f00546f282081138a65c5005283537fb8f70da5dab40e",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-value-units.py",
+      "bytes": 2619,
+      "sha256": "f5b4df64de6c8ab4a134312bd0bb761497e76d7a28e8f95448d1af143bc0ca51",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-yield-fetch.mjs",
+      "bytes": 3103,
+      "sha256": "adeaa463c103ec6f885fe5b3b4b540ed34e4d5ffbfe1b885bcff054dee09db95",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story-zero-growth-refresh.ts",
+      "bytes": 2086,
+      "sha256": "d40d4148cfa44e07d945ce42985f19c63b889726d7fa410a207c57cdadcd4d36",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "scripts/story_region_key.py",
+      "bytes": 398,
+      "sha256": "56a9cc5f4879a21e69075101c009c93a5ee8dd9e91a0311553fba1df1734b593",
+      "kind": "source-or-derived-data"
+    },
+    {
+      "path": "sql/2026-09-offer-waitlist.sql",
+      "bytes": 2001,
+      "sha256": "3ef555bed86a8a0c7b36acfe94719eccbec59757391a4eff79e89035189fe167",
+      "kind": "source-or-derived-data"
+    }
+  ],
+  "excluded": [
+    {
+      "path": "node_modules",
+      "reason": "Local dependency symlink"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/RANKING-HANDOFF.md",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/VERSION.md",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/atlas.css",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/atlas.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/dynamic-hero/moon-lroc-1k.jpg",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/dynamic-hero/plz-coordinates.json",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/dynamic-hero/serve.py",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/dynamic-hero/test.before-foreground.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/dynamic-hero/test.bundle.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/dynamic-hero/test.css",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/font-test.css",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/font-test.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/bangers-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/bevan-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/bigshot-one-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/bowlby-one-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/ceviche-one-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-00.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-01.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-02.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-03.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-04.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-05.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-06.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-07.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-08.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-09.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-10.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-11.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-12.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-13.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-14.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-15.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-16.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-17.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-18.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-19.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/display-fonts.css",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/gloock-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/goblin-one-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/jetbrains-mono-bold-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/lily-script-one-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/lobster-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/montserrat-black-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/montserrat-bold-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/paytone-one-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/fonts/protest-riot-0.woff2",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/index.html",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/karte-bestand.png",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/klickhinweise.html",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/live-icons.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/rank-badges/SOURCE.md",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/rank-badges/battery-1.png",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/rank-badges/battery-2.png",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/rank-badges/battery-3.png",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/rank-badges/rank-mystery.png",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/rank-badges/roof-1.png",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/rank-badges/roof-2-no-banner.svg",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/rank-badges/roof-2.png",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/rank-badges/roof-3.png",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/ranking-data.json",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/ranking.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/refine.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/sebastian-portrait.png",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/sebastian-schaeder.webp",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/share-ranking.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-footer/README.md",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-footer/footer.css",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-footer/footer.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-footer/mount-atlas.bundle.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-footer/mount-atlas.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-footer/trust-badges-v7/catalog.json",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-footer/trust-badges-v7/trust-art.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-footer/trust-badges-v7/trust-badges.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-footer/trust-badges-v7/trust-copy.json",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-footer/trust-signals.json",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-nav/mount-atlas.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-nav/nav.css",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-nav/nav.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-person/README.md",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-person/mount-atlas.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-person/person.css",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/shared-person/person.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/solar-check-hoechberg-entwurf.jpg",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/solar-check-hoechberg-entwurf.png",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/solar-check-hoechberg-erster-entwurf.jpg",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/story-integration.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/variant3.css",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/variant3.js",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-archive/2026-09-15/zubau-data.json",
+      "reason": "Historical duplicate design archive"
+    },
+    {
+      "path": "public/atlas-design-preview/solar-check-hoechberg-entwurf.jpg",
+      "reason": "Rendered design mockup, not a runtime asset"
+    },
+    {
+      "path": "public/atlas-design-preview/solar-check-hoechberg-entwurf.png",
+      "reason": "Rendered design mockup, not a runtime asset"
+    },
+    {
+      "path": "public/atlas-design-preview/solar-check-hoechberg-erster-entwurf.jpg",
+      "reason": "Rendered design mockup, not a runtime asset"
+    }
+  ]
+}

@@ -245,3 +245,30 @@ describe("Die Einspeisesumme steht in Kachel und Titel als dieselbe Zahl", () =>
     }
   });
 });
+
+describe("Municipal editorial text", () => {
+  it("keeps the generated default and applies the same override to web and feed", () => {
+    const original = beitraege()[0];
+    const vorlage = "In {ort}: {wert1}. {einordnung}";
+    const result = ortsPosts({ stories: geschichten(), ort: ORT, standIso: BASIS.standIso,
+      fassungen: { [original.id]: { vorlage, stil: "dunkel" } } });
+    const own = result[0];
+    expect(own.text).toContain("In Musterdorf:");
+    expect(own.post.text).toContain(own.text);
+    expect(own.post.text).toContain(own.post.textRahmen!.vorher);
+    expect(own.post.text).toContain(own.post.textRahmen!.nachher);
+    expect(own.post.bild?.aussage).toEqual(original.bild?.aussage);
+    expect(own.post.bild?.serien).toEqual(original.bild?.serien);
+    expect(result[1].post.text).toEqual(beitraege()[1].text);
+    const reset = beitraege({ [original.id]: { stil: "dunkel" } })[0];
+    expect(reset.text).toEqual(original.text);
+    expect(reset.bild?.stil).toBe("dunkel");
+    expect(reset.vorlage).toBe("{einordnung}");
+  });
+  it("never applies one municipality's override to another", () => {
+    const original = beitraege()[0];
+    const other = ortsPosts({stories: geschichten(), ort: {name:"Anderer Ort", regionId:"06440013"}, standIso: BASIS.standIso,
+      fassungen: {[original.id]: {vorlage:"Only Musterdorf"}}});
+    expect(other.every(b => !b.post.text.includes("Only Musterdorf"))).toBe(true);
+  });
+});

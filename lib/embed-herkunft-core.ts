@@ -121,6 +121,7 @@ export const EMBED_WIDGETS = [
   "region-anlagentyp",
   "region-solarleistung",
   "simulation",
+  "story-preview",
   "strommix",
   "strommix-anteil",
   "zubau-erneuerbare-atom",

@@ -1,5 +1,5 @@
 "use client";
-import { useId } from "react";
+import { useId, type CSSProperties } from "react";
 import { v } from "../lib/theme";
 
 // Horizontal logo, inline so its colours are code, not baked pixels.
@@ -23,7 +23,14 @@ import { v } from "../lib/theme";
 // The mark artwork is authored 41×60; the lockup is 31 high.
 const MARK_SCALE = 31 / 60;
 
-export default function Logo({ width = 130 }: { width?: number }) {
+export const RESULT_LOGO_COLORS = {
+  "--color-accent": "#173b42",
+  "--color-brand": "color-mix(in srgb,#e8ece3 45%,#173b42)",
+  "--color-brand-deep": "color-mix(in srgb,#e8ece3 70%,#173b42)",
+  "--color-text-faint": "#8A8A8A",
+} as CSSProperties;
+
+export default function Logo({ width = 130, variant = "theme" }: { width?: number; variant?: "theme" | "result" }) {
   const uid = useId();
   const gradId = `logo-grad-${uid}`;
 
@@ -35,7 +42,7 @@ export default function Logo({ width = 130 }: { width?: number }) {
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label="solar-check.io"
-      style={{ display: "block", flexShrink: 0, height: "auto" }}
+      style={{ display: "block", flexShrink: 0, height: "auto", ...(variant === "result" ? RESULT_LOGO_COLORS : {}) }}
     >
       <g transform={`scale(${MARK_SCALE})`}>
           <path opacity="0.4" d="M38.2923 14.3953L16.2601 36.2935C15.8678 36.6834 15.2334 36.6808 14.8444 36.2876L2.70186 24.0173C2.31399 23.6254 2.3166 22.9934 2.70771 22.6047L24.7399 0.706489C25.1322 0.316556 25.7666 0.319184 26.1556 0.712354L38.2981 12.9827C38.686 13.3746 38.6834 14.0066 38.2923 14.3953Z" fill={`url(#${gradId})`} />

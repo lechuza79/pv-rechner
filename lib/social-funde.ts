@@ -1123,18 +1123,7 @@ export function findeAnomalie(
      * Stichtag von außen kam.
      */
     heuteMonat?: string;
-    /**
-     * Gab es in diesem Ort zu dieser Zeit ein Förderprogramm?
-     *
-     * WER DIE ANTWORT KENNT, DARF NICHT FRAGEN. „Weiß jemand, was da los war?"
-     * ist eine echte Frage, solange wir es nicht wissen — steht die Ursache in
-     * unserem eigenen Förderkatalog, wäre sie eine Inszenierung, und die erste
-     * Antwort in den Kommentaren macht sie öffentlich sichtbar.
-     *
-     * Der Katalog kennt heute 110 von 11.000 Gemeinden: Ein Treffer beweist
-     * etwas, ein Fehlen beweist nichts. Deshalb schließt ein Treffer den Fund
-     * aus, und das Fehlen ändert am Satz nichts.
-     */
+    /** A known programme supplies context, never proof of causality or a reason to discard a fact. */
     foerderungBekannt?: (regionId: string, vonMonat: string, bisMonat: string) => boolean;
   } = {},
 ): Fund[] {
@@ -1143,7 +1132,7 @@ export function findeAnomalie(
   // Nachbarn — und der Faktor entsteht dann allein im kleinen Nenner.
   const mindestMenge = opts.mindestMenge ?? 25;
   const mindestFaktor = opts.mindestFaktor ?? 4;
-  const anzahl = opts.anzahl ?? 5;
+  const anzahl = opts.anzahl;
   // EIN MONAT IST NICHT FERTIG, WENN ER VORBEI IST — und das ist gemessen,
   // nicht befürchtet. Über 443.134 Solaranlagen der letzten zwei Jahre, aus dem
   // Abstand zwischen Inbetriebnahme und Registrierung (02.09.2026):
@@ -1188,6 +1177,7 @@ export function findeAnomalie(
     menge: number;
     ueblich: number;
     faktor: number;
+    funding: boolean;
   };
   const treffer: Treffer[] = [];
 
@@ -1219,11 +1209,8 @@ export function findeAnomalie(
       const basis = Math.max(1, ueblich);
       const faktor = menge / basis;
       if (faktor < mindestFaktor) continue;
-      // NUR DIESES FENSTER, nicht den ganzen Ort: Ein Programm, das 2024
-      // lief, erklärt keinen Ausschlag von 2026. Die erste Fassung brach
-      // hier die Schleife ab und verwarf damit auch spätere, förderfreie
-      // Ausschläge desselben Orts.
-      if (gefoerdert?.(regionId, reif[i], reif[i + fenster - 1])) continue;
+      // Retain the descriptive observation even when a programme is known.
+      const funding = gefoerdert?.(regionId, reif[i], reif[i + fenster - 1]) ?? false;
       treffer.push({
         ort,
         von: reif[i],
@@ -1231,8 +1218,9 @@ export function findeAnomalie(
         menge,
         ueblich: Math.round(ueblich),
         faktor,
+        funding,
       });
-      break; // Je Ort der stärkste Ausschlag, nicht jedes überlappende Fenster.
+
     }
   }
 
@@ -1245,22 +1233,27 @@ export function findeAnomalie(
     return `${namen[Number(mo) - 1] ?? mo} ${j}`;
   };
 
-  return treffer
-    .sort((a, b) => b.faktor - a.faktor)
+  const distinct: Treffer[] = [];
+  for (const hit of treffer.sort((a, b) => b.faktor - a.faktor || a.von.localeCompare(b.von))) {
+    if (!distinct.some(other => other.ort === hit.ort && other.von <= hit.bis && hit.von <= other.bis)) distinct.push(hit);
+  }
+  const duration = fenster === 1 ? "einem Monat" : `${fenster} Monaten`;
+  return distinct
     .slice(0, anzahl)
     .map((t) => ({
-      kennung: kennungAus(redaktionsKategorie, "anomalie", t.ort, t.von),
+      kennung: kennungAus(redaktionsKategorie, "anomalie", t.ort, t.von, thema, `${fenster}-monate`),
       orte: [t.ort],
       evergreen: false,
       muster: "anomalie" as const,
       kategorie: redaktionsKategorie,
-      satz: `In ${t.ort} gingen zwischen ${monatsName(t.von)} und ${monatsName(t.bis)} ${t.menge.toLocaleString("de-DE")} ${thema} ans Netz — sonst sind es dort ${t.ueblich} in drei Monaten. Weiß jemand, was da los war?`,
+      satz: `In ${t.ort} gingen zwischen ${monatsName(t.von)} und ${monatsName(t.bis)} ${t.menge.toLocaleString("de-DE")} ${thema} ans Netz — sonst sind es dort ${t.ueblich} in ${duration}.${t.funding ? " Im selben Zeitraum war ein Förderprogramm bekannt. Das belegt keinen ursächlichen Zusammenhang." : " Die Registerdaten allein erklären die Ursache nicht."}`,
       staerke: t.faktor,
       werte: [
-        { name: "in diesen drei Monaten", wert: t.menge, einheit: "anzahl" },
-        { name: "sonst in drei Monaten", wert: t.ueblich, einheit: "anzahl" },
+        { name: `im ausgewählten Zeitraum (${fenster} Monate)`, wert: t.menge, einheit: "anzahl" },
+        { name: `Median anderer ${fenster}-Monatszeiträume`, wert: t.ueblich, einheit: "anzahl" },
       ],
-      grundlage: `Verglichen wird der Ort mit SICH SELBST — der Median aller übrigen Dreimonatsfenster, ohne die Nachbarfenster des Ausschlags. Gesucht ist nicht „wo passiert viel", sondern „wo passiert plötzlich viel". Nur nach oben: Ein Einbruch wäre eine Bloßstellung. Die jüngsten ${reifeMonate} Monate bleiben draußen, weil Anlagen nach der Inbetriebnahme registriert werden: Gemessen an 443.134 Anlagen stehen nach 30 Tagen erst 82 Prozent eines Monats im Register, nach 90 Tagen 92. Auch die genannte Menge ist deshalb eine Untergrenze — sie wächst noch leicht nach. Der Satz nennt bewusst keine Ursache — Sammelbestellung, Zeitungsartikel oder Neubaugebiet stehen in keinem Datensatz. Orte, für die unser Förderkatalog zu dieser Zeit ein Programm kennt, sind ausgenommen: Wer die Antwort kennt, darf nicht fragen. Der Katalog deckt allerdings erst einen Bruchteil der Gemeinden ab — ein Treffer beweist etwas, sein Fehlen nichts.`,
+      grundlage: `Vergleichszeitraum: ${monatsName(reif[0])} bis ${monatsName(reif[reif.length - 1])}. Verglichen wird die registrierte Zahl mit dem Median aller übrigen ${fenster}-Monatsfenster desselben Orts, ohne überlappende Fenster. Das ist ein beschreibender Vergleich, kein Nachweis einer ungewöhnlichen Entwicklung nach Bereinigung um Wachstum und Saison. Die jüngsten ${reifeMonate} Monate bleiben wegen Nachmeldungen außen vor. Auch ältere Werte können sich ändern. ${t.funding ? "Ein zeitgleich bekanntes Förderprogramm ist Kontext; seine Wirkung wurde nicht gemessen." : "Ein fehlender Fördereintrag belegt nicht, dass es kein Programm gab."}`,
+
     }));
 }
 
@@ -1317,7 +1310,8 @@ export function kennungAus(kategorie: string, muster: string, ...teile: string[]
     .replace(/ß/g, "ss")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
-  return `${kategorie}-${muster}-${wort || "fund"}`.slice(0, 90);
+  // The database key is text. Truncation silently merged distinct long names.
+  return `${kategorie}-${muster}-${wort || "fund"}`;
 }
 
 /**

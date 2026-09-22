@@ -1,5 +1,6 @@
 'use client';
 import SelectField from '../SelectField';
+import {storyWeatherAttribution} from '../../lib/story-weather-attribution';
 import {IconChevronLeft,IconChevronRight,IconRefresh,IconPlay,IconPause} from '../Icons';
 import {useEffect,useId,useState} from 'react';
 import type {SolarMonth} from '../../lib/story-monthly-solar';
@@ -99,6 +100,6 @@ export function MonthlySolarChart({data,compact=false,autoPlay=false}:{data:Sola
  <div className={styles.dateSlot}>{hasActive?<label className={styles.dateField}><span className={styles.dateValue}><span>{formatStoryDate(active.date)}</span><span className={styles.dayYield}>{Math.round(active.mwh).toLocaleString('de-DE')} <small>MWh</small></span></span><SelectField size="sm" ariaLabel="Tag auswählen" value={displayDate??selected} onChange={event=>chooseDay(event.target.value)}>{data.days.map(day=><option key={day.date} value={day.date}>{formatStoryDate(day.date)}</option>)}</SelectField></label>:<button type="button" className={styles.bestDay} onClick={()=>chooseDay(data.peakDay)}>Bester Tag</button>}</div>
  <button type="button" aria-label="Nächster Tag" onClick={()=>shiftDay(1)}><IconChevronRight size={12}/></button>
  </div>
- <div className={styles.playback}><button className={styles.playButton} type="button" aria-label={playing?"Wiedergabe pausieren":"Monat abspielen"} aria-pressed={playing} onClick={togglePlayback}>{playing?<IconPause size={14}/>:<IconPlay size={14}/>}<span>{playing?'Pause':'Abspielen'}</span></button><button type="button" aria-label="Zurücksetzen und Tagesauswahl aufheben" style={{visibility:hasActive||frame!==null?'visible':'hidden'}} onClick={clearDay}><IconRefresh size={14}/></button></div> </div></div><footer>Quelle: <a href="https://open-meteo.com/en/docs/historical-weather-api" target="_blank" rel="noreferrer">Open-Meteo · ERA5</a> und Marktstammdatenregister</footer></>}
+ <div className={styles.playback}><button className={styles.playButton} type="button" aria-label={playing?"Wiedergabe pausieren":"Monat abspielen"} aria-pressed={playing} onClick={togglePlayback}>{playing?<IconPause size={14}/>:<IconPlay size={14}/>}<span>{playing?'Pause':'Abspielen'}</span></button><button type="button" aria-label="Zurücksetzen und Tagesauswahl aufheben" style={{visibility:hasActive||frame!==null?'visible':'hidden'}} onClick={clearDay}><IconRefresh size={14}/></button></div> </div></div><footer>Datenbasis: <a href={storyWeatherAttribution(data.sourceUrl).url} target="_blank" rel="noreferrer">{storyWeatherAttribution(data.sourceUrl).label}</a> und Marktstammdatenregister</footer></>}
  </div>;
 }

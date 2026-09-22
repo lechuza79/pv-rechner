@@ -83,7 +83,8 @@ async function prepareCity(city:typeof cities[number]){
  const r=regions.get(city.regionId),ps=points.get(city.regionId)??[];
  let boundary=null;const boundaryPath='public/geo/gemeinden/'+city.regionId.slice(0,5)+'.geo.json';
  if(existsSync(boundaryPath)){const feature=read(boundaryPath).features.find((f:any)=>f.properties.id===city.regionId);boundary=boundaryWeatherPoint(feature?.geometry?.coordinates);}
- const savedUrl=data.monthly?.sourceUrl?new URL(data.monthly.sourceUrl):null;
+ const savedWeatherUrl=data.monthly?.sourceUrl??data.weatherSourceUrl;
+ const savedUrl=savedWeatherUrl?new URL(savedWeatherUrl):null;
  const lat=(savedUrl?Number(savedUrl.searchParams.get('latitude')):undefined)??r?.centroid_lat??boundary?.latitude??(ps.length?ps.reduce((s,p)=>s+p[0],0)/ps.length:NaN);
  const lon=(savedUrl?Number(savedUrl.searchParams.get('longitude')):undefined)??r?.centroid_lon??boundary?.longitude??(ps.length?ps.reduce((s,p)=>s+p[1],0)/ps.length:NaN);
  const coordinateNote=savedUrl?'Wetterpunkt des gespeicherten Berechnungsstands':r?.centroid_lat!=null?'Gemeindemittelpunkt':boundary?'Mittelpunkt des umschließenden Gemeinderechtecks':'Mittelpunkt der örtlichen Postleitzahl-Koordinaten';

@@ -59,7 +59,7 @@ export type StoryDaten = {
   solar: {
     total_count: number;
     total_kwp: number;
-    by_segment: { segment: string; count: number; kwp: number }[];
+    by_segment: { segment: string; count: number; kwp: number; min_kwp?: number | null; max_kwp?: number | null }[];
     by_year_segment: JahrSegRow[];
   };
   speicher: { by_segment?: { segment: string; count: number }[]; kwh_batterie: number };
@@ -218,6 +218,8 @@ export type OrtsStory = {
   text: string;
   /** Benannte Werte mit Einheit — daraus zeichnet die Karte ihr Bild. */
   werte: StoryWert[];
+  gesamtAnzeige?: string;
+  anteile?: number[];
   /** Woran die Geschichte hängt: Grundmenge, Nenner, Annahmen. Im Klartext. */
   grundlage: string;
   /**
@@ -398,7 +400,7 @@ function storyEingespielt(d: StoryDaten, heuteJahr: number): OrtsStory | null {
     d.population && d.population > 0 ? Math.round(summe / d.population / 10) * 10 : null;
 
   const werte: StoryWert[] = [
-    { name: "seit 2000 geflossen", wert: geflossen.wert, einheit: geflossen.einheit, haupt: true },
+    { name: "modellierte Einspeisevergütung", wert: geflossen.wert, einheit: geflossen.einheit, haupt: true },
     { name: "je Anlage", wert: jeAnlage, einheit: "€" },
   ];
   if (proKopf !== null) {
@@ -413,7 +415,7 @@ function storyEingespielt(d: StoryDaten, heuteJahr: number): OrtsStory | null {
     gemessen: "Einspeisevergütung seit 2000, je Baujahr gerechnet",
     titel:
       `${geflossen.wert.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ${geflossen.einheit} ` +
-      `Einspeisevergütung sind seit 2000 nach ${d.name} geflossen`,
+      `Einspeisevergütung für Anlagen in ${d.name} — Modellrechnung seit 2000`,
     text:
       `Verteilt auf ${anlagenWort(anlagen)}, die bisher mindestens ein volles Jahr vergütet wurden, ` +
       `sind das im Schnitt ${nf(jeAnlage)} € je Anlage. Der Satz hängt am Baujahr: Wer früh gebaut ` +
@@ -426,8 +428,8 @@ function storyEingespielt(d: StoryDaten, heuteJahr: number): OrtsStory | null {
     grundlage:
       `Gerechnet, nicht gemessen: Jahreserzeugung je Baujahr aus der installierten Leistung und ` +
       `dem Standort-Ertrag, multipliziert mit dem Vergütungssatz dieses Jahrgangs. Vergütet wird ` +
-      `nur der eingespeiste Strom; bei privaten Dächern ist der Eigenverbrauch aus dem Anlagen- ` +
-      `und Speicherbestand des Orts abgezogen, bei Gewerbe und Freifläche ist er uns nicht belegt — ` +
+      `nur der eingespeiste Strom; bei Anlagen natürlicher Personen ist der Eigenverbrauch aus dem Anlagen- ` +
+      `und Speicherbestand des Orts abgezogen, bei übrigen Betreibern und Freifläche ist er uns nicht belegt — ` +
       `dort fällt die Summe zu hoch aus, wenn selbst verbraucht wird. Gezählt werden nur Anlagen ` +
       `mit mindestens einem vollen Vergütungsjahr — die Zahl liegt deshalb unter dem Gesamtbestand ` +
       `des Orts.`,
@@ -475,7 +477,7 @@ function storyAuslauf(d: StoryDaten, heuteJahr: number): OrtsStory | null {
       // hingehört.
     ],
     grundlage:
-      `Nur private Dachanlagen des Baujahrs ${jahrgang}; bei Gewerbe und Freifläche ist der ` +
+      `Nur Anlagen natürlicher Personen außerhalb der Freiflächen-Gruppe des Baujahrs ${jahrgang}; bei Gewerbe und Freifläche ist der ` +
       `Weiterbetrieb eine Unternehmensentscheidung. Das Register führt das Baujahr, nicht den Tag — ` +
       `maßgeblich ist ohnehin das Jahresende.`,
     gewicht: 100,
@@ -533,10 +535,10 @@ function storyKohorte(d: StoryDaten): OrtsStory | null {
     bildform: "saeule",
     ...familie("kohorte"),
     quellen: ["mastr"],
-    gemessen: `Mittlere Größe neuer privater Dachanlagen, ${frueh} gegen ${spaet}`,
+    gemessen: `Mittlere Größe neuer Anlagen natürlicher Personen, ${frueh} gegen ${spaet}`,
     titel: `Die typische Dachanlage in ${d.name} ist ${faktor.toLocaleString("de-DE")}-mal so groß wie ${frueh}`,
     text:
-      `${frueh} hatte eine neue private Dachanlage in ${d.name} im Schnitt ${alt.toLocaleString("de-DE")} kWp, ` +
+      `${frueh} hatte eine neue Anlage natürlicher Personen in ${d.name} im Schnitt ${alt.toLocaleString("de-DE")} kWp, ` +
       `${spaet} waren es ${neu.toLocaleString("de-DE")} kWp. Größere Module, mehr Fläche — und ein Dach, ` +
       `das heute für Wärmepumpe und Auto mitgedacht wird.`,
     werte: [
@@ -544,9 +546,9 @@ function storyKohorte(d: StoryDaten): OrtsStory | null {
       { name: `${frueh} im Schnitt`, wert: alt, einheit: "kWp" },
     ],
     grundlage:
-      `Mittelwert über die privaten Dachanlagen des jeweiligen Baujahrs — nur Jahrgänge mit ` +
+      `Mittelwert über die Anlagen natürlicher Personen des jeweiligen Baujahrs — nur Jahrgänge mit ` +
       `mindestens ${MIN_ANLAGEN_FUER_KOHORTE} Anlagen, sonst beschreibt der Mittelwert einen Einzelfall. ` +
-      `Gewerbe und Freifläche bleiben draußen: Ein einzelnes Projekt verschöbe den Schnitt um ein Vielfaches.`,
+      `Andere oder unbekannte Betreiber und Freifläche bleiben draußen: Ein einzelnes Projekt verschöbe den Schnitt um ein Vielfaches.`,
     gewicht: 70,
   };
 }
@@ -573,6 +575,7 @@ const MIN_WACHSTUM_KOHORTE = 1.3;
  */
 function storyFlaeche(d: StoryDaten): OrtsStory | null {
   const kwp = (seg: string) => d.solar.by_segment.find((x) => x.segment === seg)?.kwp ?? 0;
+  const count = (segment: string) => d.solar.by_segment.find(row => row.segment === segment)?.count ?? 0;
   const frei = kwp("freiflaeche");
   const gewerbe = kwp("gewerbe_dach");
   const privat = kwp("privat_dach");
@@ -585,25 +588,56 @@ function storyFlaeche(d: StoryDaten): OrtsStory | null {
   // Richtigkeit, und ein falscher Kasus ist im Fließtext dieselbe Sorte Fehler
   // wie „1 neue Anlagen".
   const anteile = [
-    { name: "Freifläche", auf: "Freiflächen", wert: frei },
-    { name: "Gewerbedächer", auf: "Gewerbedächern", wert: gewerbe },
-    { name: "private Dächer", auf: "privaten Dächern", wert: privat },
+    { name: "Freifläche", auf: "Freifläche", wert: frei, count: count("freiflaeche") },
+    { name: "Andere oder unbekannte Betreiber", auf: "Andere oder unbekannte Betreiber", wert: gewerbe, count: count("gewerbe_dach") },
+    { name: "Natürliche Personen", auf: "Natürliche Personen", wert: privat, count: count("privat_dach") },
   ].sort((a, b) => b.wert - a.wert);
   const top = anteile[0];
   const anteil = Math.round((top.wert / summe) * 100);
   if (anteil < MIN_ANTEIL_FUER_FLAECHE) return null;
 
+  // Count and power use the same three segments; balcony systems never enter
+  // either denominator. Aggregate means do not prove single-plant dominance.
+  const validCounts = anteile.every(a => Number.isInteger(a.count) && a.count >= 0 && (a.wert <= 0 || a.count > 0));
+  const totalCount = anteile.reduce((sum, a) => sum + a.count, 0);
+  const otherCount = totalCount - top.count;
+  const otherPower = summe - top.wert;
+  const number = (value: number) => value.toLocaleString("de-DE", { maximumFractionDigits: 1 });
+  let text = "";
+  if (validCounts && top.count > 0 && otherCount > 0 && otherPower > 0) {
+    const mean = top.wert / top.count;
+    const otherMean = otherPower / otherCount;
+    text = `${top.count.toLocaleString("de-DE")} von ${totalCount.toLocaleString("de-DE")} erfassten Anlagen in ${d.name} gehören zur Gruppe „${top.name}“. ` +
+      `Eine Anlage dieser Gruppe hat im Durchschnitt ${number(mean)} kWp Leistung; bei den übrigen Anlagen sind es ${number(otherMean)} kWp.`;
+  } else if (validCounts && top.count > 0 && otherCount === 0) {
+    text = `${top.count === 1 ? "Die erfasste Anlage gehört" : `Alle ${top.count.toLocaleString("de-DE")} erfassten Anlagen in ${d.name} gehören`} zur Gruppe „${top.name}“. ` +
+      `Die durchschnittliche Leistung pro Anlage beträgt ${number(top.wert / top.count)} kWp.`;
+  }
+
+
+  // Extrema must come from the same imported plant population as the mean.
+  // Until the importer supplies both, leave the range out rather than estimate.
+  const segmentKeys = { "Freifläche": "freiflaeche", "Andere oder unbekannte Betreiber": "gewerbe_dach", "Natürliche Personen": "privat_dach" };
+  const segment = d.solar.by_segment.find(row => row.segment === segmentKeys[top.name as keyof typeof segmentKeys]);
+  const min = segment?.min_kwp;
+  const max = segment?.max_kwp;
+  const mean = top.wert / top.count;
+  if (text && top.count > 1 && min != null && max != null && Number.isFinite(min) && Number.isFinite(max) && min > 0 && min <= mean && mean <= max) {
+    const precise = (value: number) => value.toLocaleString("de-DE", { maximumFractionDigits: 2 });
+    if (min < max) text += ` Die Anlagen dieser Gruppe reichen von ${precise(min)} bis ${precise(max)} kWp.`;
+    else text += ` Alle Anlagen dieser Gruppe haben eine Leistung von jeweils ${precise(min)} kWp.`;
+  }
+
   return {
     kennung: "flaeche",
+    gesamtAnzeige: fmtPvLeistung(summe),
+    anteile: anteile.map(a => a.wert / summe),
     bildform: "vergleich",
     ...familie("flaeche"),
     quellen: ["mastr"],
     gemessen: `Anteile an ${fmtPvLeistung(summe)} installierter Leistung`,
-    titel: `${anteil} % der Solarleistung in ${d.name} stehen auf ${top.auf}`,
-    text:
-      `Von ${fmtPvLeistung(summe)} installierter Leistung entfallen ${anteil} % auf ${top.name}. ` +
-      `Die drei Formen sagen Verschiedenes: Ein privates Dach gehört jemandem im Ort, eine Freifläche ` +
-      `meist einem Investor von außerhalb.`,
+    titel: `${anteil} % der Solarleistung in ${d.name} entfallen auf die Gruppe „${top.name}“`,
+    text,
     werte: [
       { name: top.name, wert: anteil, einheit: "%", haupt: true },
       ...anteile.slice(1).map((a) => ({
@@ -613,9 +647,9 @@ function storyFlaeche(d: StoryDaten): OrtsStory | null {
       })),
     ],
     grundlage:
-      `Anteile an der installierten Leistung, nicht an der Zahl der Anlagen — nach Stückzahl ` +
-      `dominieren immer die kleinen. Balkonkraftwerke bleiben draußen; sie zählen zur Leistung ` +
-      `kaum und verschöben nur die Prozentzahlen.`,
+      `Erfasst sind Anlagen im Marktstammdatenregister ohne Balkonkraftwerke. ` +
+      `Die Anteile werden aus der installierten Nennleistung berechnet und auf ganze Prozent gerundet. ` +
+      `Außerhalb der Freifläche unterscheidet der Import nach Betreiberart, nicht nach Gebäudenutzung oder Eigentum. Zur Restgruppe gehören auch unbekannte Betreiber.`,
     // Drei ANTEILE — also mit Ganzem. Ohne es normiert der Balken am größten
     // gezeigten Wert: Bei 47/33/20 bekäme die kleinste Form 43 Prozent der
     // Länge, obwohl sie ein Fünftel ist. Genau diesen Fehler hat das Projekt
@@ -648,32 +682,25 @@ function storyWohnform(d: StoryDaten): OrtsStory | null {
   const w = d.wohnungen;
   if (!w || w.gesamt < MIN_WOHNUNGEN) return null;
   const anteil = Math.round((w.einZwei / w.gesamt) * 100);
-  const anlagen = segSumme(d, "privat_dach").count;
-  if (anlagen < MIN_ANLAGEN_FUER_GELD) return null;
-
   return {
     kennung: "wohnform",
     bildform: "donut",
     ...familie("wohnform"),
-    // Der Zensus liefert die Wohnungen, das Anlagenregister die Anlagen im
-    // Text daneben — beide Quellen gehören deshalb in die Zeile im Bild.
-    quellen: ["zensus", "mastr"],
+    // This story describes housing structure only; solar coverage needs a separate source.
+    quellen: ["zensus"],
     gemessen: `Wohnungen nach Gebäudegröße, Zensus 2022`,
     titel: `${anteil} % der Wohnungen in ${d.name} liegen in Häusern mit ein oder zwei Wohnungen`,
     text:
-      `Das sind ${nf(w.einZwei)} von ${nf(w.gesamt)} Wohnungen — dort ist ein eigenes Dach die Regel. ` +
-      `Auf privaten Dächern stehen bisher ${anlagenWort(anlagen)}. In einer Großstadt ist dieses ` +
-      `Verhältnis umgekehrt: Dort liegt die Mehrheit der Wohnungen in Gebäuden, auf denen praktisch ` +
-      `nichts steht.`,
+      `Der Zensus zählt ${nf(w.einZwei)} Wohnungen in Ein- und Zweifamilienhäusern und ` +
+      `${nf(w.gesamt - w.einZwei)} Wohnungen in größeren Wohngebäuden. ` +
+      `Das beschreibt die Wohnstruktur; daraus lässt sich nicht ablesen, welche Dächer bereits Solarstrom erzeugen.`,
     werte: [
       { name: "in Ein- und Zweifamilienhäusern", wert: w.einZwei, einheit: "", haupt: true },
       { name: "in größeren Gebäuden", wert: w.gesamt - w.einZwei, einheit: "" },
     ],
     ganzes: w.gesamt,
     grundlage:
-      `Wohnungen nach Gebäudegröße aus dem Zensus 2022, Anlagen aus dem Marktstammdatenregister. ` +
-      `Gezählt werden WOHNUNGEN, nicht Gebäude: Ein Zweifamilienhaus zählt zweimal, hat aber ein ` +
-      `Dach — der Anteil ist deshalb eine Untergrenze für den Anteil der Häuser mit eigenem Dach.`,
+      `Wohnungen nach Gebäudegröße aus dem Zensus 2022. Gezählt werden Wohnungen, nicht Gebäude, Eigentümer oder freie Dachflächen.`,
     gewicht: 75,
   };
 }
@@ -700,10 +727,23 @@ function storyMonat(d: StoryDaten): OrtsStory | null {
   const reif = reifeMonate(d);
   if (reif.length === 0) return null;
   const letzter = reif[reif.length - 1];
+  const stand = new Date(`${d.standIso.slice(0, 7)}-01T00:00:00Z`);
+  stand.setUTCMonth(stand.getUTCMonth() - UNREIFE_MONATE);
+  if (!Number.isFinite(stand.getTime()) || letzter.monat !== stand.toISOString().slice(0, 7)) return null;
   if (letzter.count < MIN_ANLAGEN_MONAT) return null;
 
   const proTausend =
     d.population && d.population > 0 ? runde((letzter.count / d.population) * 1000, 1) : null;
+
+  const vorjahrMonat = `${Number(letzter.monat.slice(0, 4)) - 1}${letzter.monat.slice(4)}`;
+  const vorjahr = reif.find((m) => m.monat === vorjahrMonat);
+  const differenz = vorjahr ? letzter.count - vorjahr.count : null;
+  const vergleich = vorjahr
+    ? `Im gleichen Monat des Vorjahres waren es ${vorjahr.count.toLocaleString("de-DE")} Anlagen. ` +
+      (differenz === 0
+        ? "Die Zahl ist damit unverändert."
+        : `Das sind ${Math.abs(differenz!).toLocaleString("de-DE")} Anlagen ${differenz! > 0 ? "mehr" : "weniger"}.`)
+    : "";
 
   return {
     kennung: `monat-${letzter.monat}`,
@@ -713,22 +753,21 @@ function storyMonat(d: StoryDaten): OrtsStory | null {
     gemessen: `Netzanschlüsse im ${monatsName(letzter.monat)}`,
     titel: `${anlagenWort(letzter.count)} gingen in ${d.name} im ${monatsName(letzter.monat)} ans Netz`,
     text:
-      `Das ist der jüngste Monat, für den die Meldungen weitgehend vollständig sind — Anlagen ` +
-      `werden nach der Inbetriebnahme registriert, die letzten Wochen sind deshalb immer ` +
-      `untererfasst.` +
+      vergleich +
       (proTausend !== null
-        ? ` Auf die Einwohnerzahl umgelegt sind das ${proTausend.toLocaleString("de-DE")} je 1.000.`
+        ? `${vergleich ? " " : ""}Auf die Einwohnerzahl umgelegt sind das ${proTausend.toLocaleString("de-DE")} neue Anlagen je 1.000 Einwohner.`
         : ""),
     werte: [
-      { name: `neu im ${monatsName(letzter.monat)}`, wert: letzter.count, einheit: "", haupt: true },
-      ...(proTausend !== null
-        ? [{ name: "je 1.000 Einwohner", wert: proTausend, einheit: "" }]
+      { name: monatsName(letzter.monat), wert: letzter.count, einheit: "Anlagen", haupt: true },
+      ...(vorjahr
+        ? [{ name: monatsName(vorjahr.monat), wert: vorjahr.count, einheit: "Anlagen" }]
         : []),
     ],
     grundlage:
-      `Zubau nach Anschlussmonat aus dem Marktstammdatenregister. Die absolute Zahl steht ` +
-      `bewusst zuerst: Auf kleiner Grundmenge macht eine Pro-Kopf-Zahl aus zwei Anlagen einen ` +
-      `Spitzenwert. Die jüngsten Monate sind untererfasst und bleiben deshalb außen vor.`,
+      `Gezählt werden im Register erfasste, noch betriebene Solaranlagen nach Inbetriebnahmemonat. ` +
+      `Der Monat des Datenstands und der vorherige Monat bleiben wegen möglicher Nachmeldungen außen vor. ` +
+      `Auch ältere Monatswerte können sich durch Nachmeldungen und Korrekturen ändern.` +
+      (vorjahr ? ` Der Vergleich bezieht sich auf denselben Kalendermonat des Vorjahres im selben Datenstand.` : ""),
     gewicht: 85,
   };
 }
@@ -787,8 +826,7 @@ function storyAnomalie(d: StoryDaten): OrtsStory | null {
     titel: `Im ${monatsName(m.monat)} gingen in ${d.name} ${vergleich}`,
     text:
       `${anlagenWort(m.count)} in einem Monat, während es in den übrigen Monaten dieses Zeitraums ` +
-      `im Mittel deutlich weniger waren. Woran das lag, sagen die Daten nicht — ein Förderprogramm, ` +
-      `eine Sammelbestellung, ein Bericht in der Zeitung.`,
+      `im Mittel deutlich weniger waren. Die Registerdaten allein erklären die Ursache nicht.`,
     werte: [
       // EINE Einheit, sonst trägt die Säule nicht: der Sockel ist der typische
       // Monat, die überragende Fläche der Ausschlag.
@@ -797,8 +835,8 @@ function storyAnomalie(d: StoryDaten): OrtsStory | null {
     ],
     grundlage:
       `Verglichen wird der Monat mit den übrigen Monaten DESSELBEN Orts (Median), nicht mit ` +
-      `anderen Gemeinden. Nur Ausschläge nach oben; ein schwacher Monat ist keine Nachricht, ` +
-      `sondern eine Bloßstellung. Die jüngsten Monate bleiben außen vor, weil sie untererfasst sind.`,
+      `anderen Gemeinden. Dieses Muster beschreibt hohe Monatswerte. Andere Muster können Rückgänge beschreiben. ` +
+      `Die jüngsten Monate bleiben außen vor, weil sie untererfasst sind.`,
     gewicht: 88,
   };
 }
@@ -821,10 +859,32 @@ const UNREIFE_MONATE = 2;
 /** Die Monate, deren Meldungen weitgehend vollständig sind — aufsteigend. */
 function reifeMonate(d: StoryDaten): { monat: string; count: number }[] {
   if (!d.monate?.length) return [];
-  const summe = new Map<string, number>();
-  for (const z of d.monate) summe.set(z.monat, (summe.get(z.monat) ?? 0) + z.count);
-  const sortiert = [...summe.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-  return sortiert.slice(0, Math.max(0, sortiert.length - UNREIFE_MONATE)).map(([monat, count]) => ({ monat, count }));
+  const monthIndex = (value: string): number | null => {
+    const match = /^(\d{4})-(0[1-9]|1[0-2])(?:$|-)/.exec(value);
+    return match ? Number(match[1]) * 12 + Number(match[2]) - 1 : null;
+  };
+  const stand = monthIndex(d.standIso);
+  if (stand === null) return [];
+  const ende = stand - UNREIFE_MONATE;
+  const summe = new Map<number, number>();
+  for (const z of d.monate) {
+    const monat = monthIndex(z.monat);
+    if (monat === null || monat > stand || !Number.isInteger(z.count) || z.count < 0) continue;
+    summe.set(monat, (summe.get(monat) ?? 0) + z.count);
+  }
+  if (!summe.size) return [];
+  // The import only stores non-zero months. Fill internal gaps, never extend
+  // beyond observed coverage: the monthly import has no freshness metadata.
+  const start = Math.min(...summe.keys());
+  const letzterBeleg = Math.max(...summe.keys());
+  const result: { monat: string; count: number }[] = [];
+  for (let i = start; i <= Math.min(ende, letzterBeleg); i++) {
+    result.push({
+      monat: `${Math.floor(i / 12)}-${String(i % 12 + 1).padStart(2, "0")}`,
+      count: summe.get(i) ?? 0,
+    });
+  }
+  return result;
 }
 
 const MONATSNAMEN = [
@@ -871,7 +931,7 @@ function medianVon(xs: number[]): number {
  * Bloßstellung — sie steht auf ihrer eigenen Seite; über fremde Orte fällt
  * hier ohnehin kein Wort.
  */
-function storyVergleich(d: StoryDaten, p: VergleichsPlatz): OrtsStory {
+export function storyVergleich(d: Pick<StoryDaten, "name">, p: VergleichsPlatz): OrtsStory {
   const spitze = p.rang === 1;
   return {
     kennung: `vergleich-${p.kategorie}-${p.ebene}-${p.klasseSlug}`,
