@@ -11,10 +11,12 @@ import type { GemeindePaket } from "../../lib/gemeinde-paket";
  */
 const Insights = dynamic(() => import("./GemeindeInsights"), { ssr: false });
 const Monitor = dynamic(() => import("./GemeindeMonitor"), { ssr: false });
+const KopfMonitor = dynamic(() => import("./GemeindeMonitor").then((m) => m.GemeindeKopfMonitor), { ssr: false });
 
-export default function GemeindeAnsicht({ ansicht, paket }: { ansicht: "insights" | "monitor"; paket: GemeindePaket }) {
+export default function GemeindeAnsicht({ ansicht, paket }: { ansicht: "insights" | "monitor" | "kopf"; paket: GemeindePaket }) {
   if (ansicht === "insights")
     return <Insights stories={paket.stories as never} name={paket.name} surfaceScheme="dark" showHeader={false} embedded />;
   if (ansicht === "monitor") return <Monitor paket={paket} />;
+  if (ansicht === "kopf") return <KopfMonitor paket={paket} />;
   return null;
 }

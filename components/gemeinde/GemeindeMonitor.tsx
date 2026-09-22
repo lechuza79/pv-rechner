@@ -425,3 +425,73 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
     </div>
   );
 }
+
+/**
+ * The compact card in the hero (port of HeroWidgetPreview): one of three
+ * monitor readings, switched by the page through postMessage. A click opens
+ * the full monitor further down the page.
+ */
+export function GemeindeKopfMonitor({ paket }: { paket: GemeindePaket }) {
+  const charts = paket.charts as Any;
+  const [widget, setWidget] = useState(() => {
+    const start = typeof location === "undefined" ? null : new URLSearchParams(location.search).get("widget");
+    return ["feed-in-value", "live", "radial"].includes(start ?? "") ? (start as string) : "feed-in-value";
+  });
+  const [paused, setPaused] = useState(false);
+  useEffect(() => {
+    const receive = (event: MessageEvent) => {
+      if (event.origin === location.origin && event.source === parent && event.data?.type === "atlas-hero-widget" && ["feed-in-value", "live", "radial"].includes(event.data.widget))
+        setWidget(event.data.widget);
+    };
+    window.addEventListener("message", receive);
+    return () => window.removeEventListener("message", receive);
+  }, []);
+  const item = (charts?.charts ?? []).find((c: Any) => c.template === widget);
+  const installedKwp = ((paket.register?.chartMix as Any)?.values ?? []).reduce((sum: number, row: Any) => sum + row.value, 0);
+  const period = item?.story.solarMonth?.month ?? item?.story.period ?? "";
+  const month = /^\d{4}-\d{2}/.test(period)
+    ? new Intl.DateTimeFormat("de-DE", { month: "long", timeZone: "UTC" }).format(new Date(period.slice(0, 7) + "-15T12:00:00Z"))
+    : "";
+  useEffect(() => {
+    let active = true;
+    Promise.all([document.fonts.ready, ...Array.from(document.images).map((image) => image.decode().catch(() => {}))]).then(() => {
+      if (active) parent.postMessage({ type: "atlas-hero-ready" }, location.origin);
+    });
+    return () => {
+      active = false;
+    };
+  }, [widget]);
+  return (
+    <a
+      href="#atlas-data"
+      target="_parent"
+      onClick={(event) => {
+        event.preventDefault();
+        parent.postMessage({ type: "atlas-hero-open-monitor" }, location.origin);
+      }}
+      aria-label="Zum Energiemonitor"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      className="hero-monitor-link"
+    >
+      <div className={`${foundation.foundation} municipal-data sc-dashboard monitor-hero`} data-story-scheme="dark">
+        {widget === "live" ? (
+          installedKwp > 0 ? <CurrentPower installedKwp={installedKwp} compact /> : null
+        ) : item ? (
+          <article className="hero-story">
+            <h3>{(widget === "radial" ? "Solarerzeugung " : "Einspeisevergütung ") + month}</h3>
+            <div className="hero-story-visual">
+              {item.story.solarMonth ? (
+                <MonitorMonthlySolarChart data={item.story.solarMonth} compact autoPlay paused={paused} />
+              ) : (
+                <MunicipalChart story={item.story as StoryConcept} compact />
+              )}
+            </div>
+          </article>
+        ) : null}
+      </div>
+    </a>
+  );
+}

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { getCssVariables } from "../../lib/theme";
 
 /**
  * Root layout of the new municipality page (approved design, 09/2026).
@@ -49,6 +50,10 @@ export default function GemeindeLayout({ children }: { children: React.ReactNode
       <head>
         <link rel="preload" href="/atlas-design-preview/fonts/montserrat-bold-0.woff2" as="font" type="font/woff2" crossOrigin="" />
         <link rel="preload" href="/atlas-design-preview/dynamic-hero/atlas-shell-0.woff2" as="font" type="font/woff2" crossOrigin="" />
+        {/* The site's colour tokens, for the parts that come from the React
+            side (subscription dialog, footer logo). Variables only — no
+            global rules, so the design's own stylesheets stay in charge. */}
+        <style dangerouslySetInnerHTML={{ __html: getCssVariables() }} />
         {STYLESHEETS.map((href) => (
           // eslint-disable-next-line @next/next/no-css-tags
           <link key={href} rel="stylesheet" href={href} precedence="default" />

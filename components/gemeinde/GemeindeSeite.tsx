@@ -8,6 +8,11 @@ import GemeindeSzene from "./GemeindeSzene";
 import GemeindeSkripte from "./GemeindeSkripte";
 import GemeindeRahmen from "./GemeindeRahmen";
 import { ranglistenDaten } from "./rangliste-daten";
+import GemeindeKopfKacheln, { type KopfRang } from "./GemeindeKopfKacheln";
+import GemeindeBeispiele from "./GemeindeBeispiele";
+import GemeindeAboKnopf from "./GemeindeAboKnopf";
+import GemeindeAboBox from "../atlas/GemeindeAboBox";
+import SiteFuss from "../SiteFuss";
 
 /**
  * The new municipality page (approved design, 09/2026), server-rendered.
@@ -51,6 +56,26 @@ export function bestandsZahlen(p: GemeindePaket) {
   const solarKwp = mix.reduce((n, r) => n + r.value, 0);
   const batteryCount = p.register?.storage.find((r) => r.unit === "Einheiten")?.value ?? null;
   return { solarCount, solarKwp: mix.length ? solarKwp : null, batteryCount };
+}
+
+/** Badge for a distinction, from the design's badge set; none if it has none. */
+function rangBild(auszeichnung: string | undefined): string | null {
+  const platz = /^Platz ([123])$/.exec(auszeichnung ?? "");
+  if (platz) return `/atlas-design-preview/rank-badges/rank-${platz[1]}.svg`;
+  const top = /^Top (10|25|50|100)$/.exec(auszeichnung ?? "");
+  if (top) return `/atlas-design-preview/rank-badges/top-${top[1]}.svg`;
+  return null;
+}
+
+/**
+ * The hero's rank tile: the town's leading distinction (the package lists
+ * them best first). A town without one gets no tile — a "Platz 812" in the
+ * hero would be the page's first impression.
+ */
+export function kopfRang(p: GemeindePaket): KopfRang | null {
+  const r = p.rankings.find((x) => x.distinction);
+  if (!r) return null;
+  return { titel: r.distinction as string, text: r.label.charAt(0).toUpperCase() + r.label.slice(1), bild: rangBild(r.distinction as string) };
 }
 
 export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; ort: Ortsangaben }) {
@@ -114,6 +139,7 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
               <span aria-current="page">{ort.name}</span>
             </nav>
           </div>
+          <GemeindeKopfKacheln ags={ort.ags} name={ort.name} rang={kopfRang(paket)} />
         </section>
 
         <main className="atlas-content">
@@ -122,6 +148,7 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             <a href="#atlas-ranking">Ranking</a>
             <a href="#atlas-data">Energiemonitor</a>
             <div className="atlas-page-actions">
+              <GemeindeAboKnopf name={ort.name} />
               <button type="button" data-page-copy aria-label="Link zur Seite kopieren" title="Link kopieren" />
               <button type="button" data-page-share aria-label="Seite teilen" title="Seite teilen" />
               <span className="atlas-page-status" role="status" />
@@ -198,6 +225,8 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             </details>
           )}
 
+          <GemeindeBeispiele name={ort.name} plz={ort.plz} lat={ort.lat} lon={ort.lon} />
+
           <section className="atlas-section atlas-overview" id="atlas-data">
             <div className="atlas-wrap">
               <div className="atlas-summary">
@@ -227,6 +256,59 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             </div>
           </section>
 
+          <section className="atlas-wrap atlas-end" id="atlas-publish">
+            <div>
+              <p className="atlas-kicker">Für Gemeinde, Presse und Vereine</p>
+              <h2>
+                {rangliste.genitiv} Entwicklung.
+                <br />
+                Ein Link für Ihre Website.
+              </h2>
+              <p>
+                Verweisen Sie auf die laufende Ortsübersicht oder übernehmen Sie eine kurze Meldung mit Quellenlink. Ohne Anmeldung, frei
+                verwendbar und gern gekürzt.
+              </p>
+            </div>
+            <div>
+              <button className="atlas-button" data-ranking-share="">
+                Meldung mit Ortslink übernehmen{" "}
+                <svg className="sc-live-icon" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="9" y="9" width="12" height="12" rx="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              </button>
+              <p style={{ marginTop: 15 }}>
+                <a className="atlas-link" href={rangliste.widgetUrl} target="_blank" rel="noopener">
+                  Weitere Möglichkeit: Daten als Widget einbetten{" "}
+                  <svg className="sc-live-icon" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M5.5 4.5 2 8l3.5 3.5M10.5 4.5 14 8l-3.5 3.5" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+              </p>
+            </div>
+          </section>
+
+          <section className="sc-person atlas-wrap atlas-contact" aria-label="Ihr Kontakt bei Solar Check">
+            <picture className="sc-person-picture">
+              <img src="/atlas-design-preview/sebastian-portrait.png" alt="Sebastian Schäder" loading="lazy" />
+            </picture>
+            <div className="sc-person-body">
+              <p className="sc-person-text">
+                Wir machen erneuerbare Energien <strong>verständlich und berechenbar</strong>. Mit kostenlosen Rechnern und aktuellen
+                Energiedaten.
+              </p>
+              <p className="sc-person-signature">
+                <strong>Sebastian Schäder</strong> · Solar Check
+              </p>
+              <div className="sc-person-actions">
+                <a href="/kontakt" className="sc-person-primary">
+                  Schreib mir
+                </a>
+              </div>
+            </div>
+            <p className="atlas-contact-reassurance">Ohne Anmeldung und ohne Verkaufsanrufe.</p>
+          </section>
+
           <section id="atlas-sources" className="atlas-wrap atlas-sources" aria-labelledby="atlas-sources-title">
             <h2 id="atlas-sources-title">Daten &amp; Quellen</h2>
             <p>
@@ -245,6 +327,10 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
               Modellrechnung; keine gemessene Stromerzeugung.
             </p>
             <p>
+              <strong>Standortertrag der Beispielrechnungen:</strong>{" "}
+              <a href={quellen.pvgis.url} target="_blank" rel="noopener">{quellen.pvgis.name}</a>.
+            </p>
+            <p>
               <strong>Kartengeometrien:</strong> {quellen.bkg.name},{" "}
               <a href={quellen.bkg.licenseUrl} target="_blank" rel="noopener">{quellen.bkg.license}</a>, vereinfacht.
             </p>
@@ -257,6 +343,13 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
           </section>
         </main>
       </div>
+      <SiteFuss />
+      {/* The sign-up dialog; its own button stays hidden — the section bar's
+          subscribe button opens it. */}
+      <div hidden>
+        <GemeindeAboBox name={ort.name} ags={ort.ags} />
+      </div>
+      <script src="/illustrations-motion/solar-illustrations.js" defer />
       <GemeindeSzene plz={ort.plz} />
       <GemeindeSkripte daten={rangliste} />
     </div>

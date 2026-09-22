@@ -17,7 +17,7 @@ export function generateStaticParams() {
   return [];
 }
 
-const ANSICHTEN = ["insights", "monitor"] as const;
+const ANSICHTEN = ["insights", "monitor", "kopf"] as const;
 
 export default async function GemeindeEinbettung(props: { params: Promise<{ ags: string; ansicht: string }> }) {
   const { ags, ansicht } = await props.params;
