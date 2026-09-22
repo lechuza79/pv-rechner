@@ -52,3 +52,17 @@ Er ist **Referenz für Aussehen und Verhalten**, nicht Code, der live geht.
   muss vor dem Umschalten stehen.
 - Abo, Einbett-Knopf, Brief-Herkunft: die echten Bausteine der alten Seite
   weiterverwenden (Prototyp-Abo verschickt nichts).
+
+## Vor dem Zusammenführen mit der Hauptlinie (Prüfung 22.09.2026)
+
+- `public/atlas-design-preview/` und `scripts/municipality-preview/` sind Referenz
+  und gehen NICHT mit auf `main` (öffentlich erreichbar, u. a. `serve.py` mit
+  Open-Meteo-Adresse, Übergabe-Notizen). Die Seite bringt ihr CSS selbst mit.
+- `public/hero-system/dist/*`: nur die Chunks, die die neue Seite wirklich lädt.
+- Admin-Werkzeuge der Redaktion (`/api/admin/story-text-pattern`,
+  `lib/story-design-store.ts`) schreiben unter `scripts/.cache` — auf Vercel
+  schreibgeschützt. Nur lokal nutzbar; so kennzeichnen oder umbauen.
+- Geschichten-Vorrat: gemessen 0 zur Veröffentlichung vorgemerkte Funde (22.09.2026);
+  der Suchlauf erzeugt 639 Funde ohne widersprüchliche Kennung.
+- Monatslauf aus EINEM Registerauszug (Atlas + Geschichten + Pakete), sonst
+  weichen die Zahlen ab (gemessen: 108 von ~1.200 Paketen mit Abweichung).

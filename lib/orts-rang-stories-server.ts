@@ -1,4 +1,5 @@
 import "server-only";
+import { withDbTimeout } from "./db-timeout";
 import { supabase } from "./supabase-server";
 import { getRegionById } from "./atlas";
 import { storyVergleich, type OrtsStory } from "./orts-stories";
@@ -12,10 +13,10 @@ type StoredRank = { regionId: string; rank: number; value: number; total: number
 
 export async function retainedRankStories(regionId: string, name: string, sourceDate: string): Promise<OrtsStory[]> {
   if (!supabase) throw new Error("Datenbank nicht konfiguriert");
-  const { data, error } = await supabase.from("municipality_rank_observations")
+  const { data, error } = await withDbTimeout(supabase.from("municipality_rank_observations")
     .select("source_date,rules_version,payload->complete,payload->groups")
     .eq("group_key", "all").eq("payload->>complete", "true")
-    .order("source_date", { ascending: false }).limit(2);
+    .order("source_date", { ascending: false }).limit(2), "rang-stories/staende");
   if (error) throw new Error(`Rangstände nicht lesbar: ${error.message}`);
   if (!data || data.length < 2) return [];
   const rows = data as unknown as (Omit<Manifest, "payload"> & Manifest["payload"])[];
@@ -28,9 +29,9 @@ export async function retainedRankStories(regionId: string, name: string, source
   });
   const stories: OrtsStory[] = [];
   for (const key of keys) {
-    const { data: groups, error: groupError } = await supabase.from("municipality_rank_observations")
+    const { data: groups, error: groupError } = await withDbTimeout(supabase.from("municipality_rank_observations")
       .select("source_date,payload").eq("group_key", key).eq("rules_version", after.rules_version)
-      .in("source_date", [before.source_date, after.source_date]);
+      .in("source_date", [before.source_date, after.source_date]), "rang-stories/gruppe");
     if (groupError) throw new Error(groupError.message);
     const get = (date: string) => groups?.find(g => g.source_date === date)?.payload.ranks as StoredRank[] | undefined;
     const old = get(before.source_date), current = get(after.source_date);

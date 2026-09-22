@@ -53,7 +53,7 @@ describe("Seitenfassung der Ortsgeschichten", () => {
       expect(quelle, `${name} holt die Bildkarte herein`).not.toContain("SocialKarte }");
     }
     // Genau EINE Stelle ruft sie — die geteilte Ansicht.
-    expect(GETEILT).toMatch(/<SocialKarte\s+bild=\{bild\}\s+skala=\{1\}\s+stufe="quadrat"/);
+    expect(GETEILT).toContain("<SocialKarte bild={bild} skala={1} stufe=\"quadrat\" palette=\"seite\" />");
   });
 
   it("das Werkzeug erfindet keine Angaben, die an der Karte stehen", () => {

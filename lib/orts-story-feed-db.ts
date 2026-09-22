@@ -1,4 +1,5 @@
 import "server-only";
+import { withDbTimeout, DB_SOFT_READ_TIMEOUT_MS } from "./db-timeout";
 import { supabase } from "./supabase-server";
 import type { StoryEdition } from "./orts-story-feed";
 
@@ -51,14 +52,14 @@ export async function saveStoryEdition(edition: StoryEdition): Promise<void> {
   if (error) throw new Error(`Story nicht gespeichert: ${error.message}`);
 }
 
-export async function readStoryFeed(regionId: string): Promise<StoryEdition[]> {
+export async function readStoryFeed(regionId: string, budgetMs?: number): Promise<StoryEdition[]> {
   if (!supabase) throw new Error("Datenbank nicht konfiguriert");
   const result: StoryEdition[] = [];
   for (let from = 0; ; from += 500) {
-    const { data, error } = await supabase.from("municipality_story_publications")
+    const { data, error } = await withDbTimeout(supabase.from("municipality_story_publications")
       .select("municipality_story_editions(payload)")
       .eq("region_id", regionId).order("published_at", { ascending: false })
-      .order("edition_id").range(from, from + 499);
+      .order("edition_id").range(from, from + 499), "story-feed/lesen", budgetMs);
     if (error) throw new Error(`Story-Feed nicht lesbar: ${error.message}`);
     for (const row of data ?? []) {
       const joined = row.municipality_story_editions as unknown as { payload: StoryEdition };
@@ -76,5 +77,11 @@ export async function publishedStoryContributions(regionId: string) {
 export async function withPublishedStories(regionId: string, drafts: import("./orts-posts").OrtsBeitrag[]) {
   // Rollout switch: never query unavailable tables before the storage migration.
   if (process.env.MUNICIPALITY_STORY_FEED !== "1") return drafts;
-  return publishedStoryContributions(regionId);
+  // The town page has a complete fallback (the generated drafts): short read
+  // budget, and a failed read falls back instead of turning the page into a 500.
+  try {
+    return (await readStoryFeed(regionId, DB_SOFT_READ_TIMEOUT_MS)).map((e) => ({ ...e.beitrag, editionSourceDate: e.sourceDate }));
+  } catch {
+    return drafts;
+  }
 }

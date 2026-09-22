@@ -329,7 +329,13 @@ export async function fundeFuerOrt(opts: {
   return alle
     .map((f) => ({ f, n: naehe(f) }))
     .filter((x) => x.n < 99)
+    // Stable sort by distance only: within a tier the reads' pattern-by-pattern
+    // interleaving stays (strength means something different per pattern).
     .sort((a, b) => a.n - b.n)
+    // No default limit, by design of the story system: every finding saved for
+    // publication reaches the town. Measured 22.09.2026: 0 findings are saved
+    // for publication, so this changes no live page today; a caller that shows
+    // a fixed number of cards passes `grenze`.
     .slice(0, opts.grenze)
     .map((x) => x.f);
 }

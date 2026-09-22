@@ -46,7 +46,7 @@ export function StoryFesthalten({ postId, abdruck, disabled, name }: {
     {edition && <button type="button" onClick={() => setOpen(true)}>Gespeicherte Story ansehen</button>}
     {error && <p role="alert">{error}</p>}
     <Modal open={open} onClose={() => setOpen(false)} title="Gespeicherte Story" maxWidth={560}>
-      {edition && <OrtsStoryKarte beitrag={edition.beitrag} name={name} liveUrl="" shareable={false} standIso={edition.sourceDate} />}
+      {edition && <OrtsStoryKarte beitrag={edition.beitrag} name={name} liveUrl="" standIso={edition.sourceDate} />}
     </Modal>
   </div>;
 }

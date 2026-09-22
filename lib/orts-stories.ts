@@ -536,7 +536,8 @@ function storyKohorte(d: StoryDaten): OrtsStory | null {
     ...familie("kohorte"),
     quellen: ["mastr"],
     gemessen: `Mittlere Größe neuer Anlagen natürlicher Personen, ${frueh} gegen ${spaet}`,
-    titel: `Die typische Dachanlage in ${d.name} ist ${faktor.toLocaleString("de-DE")}-mal so groß wie ${frueh}`,
+    // The title names what is measured: plants of natural persons, not "roofs".
+    titel: `Die typische Anlage natürlicher Personen in ${d.name} ist ${faktor.toLocaleString("de-DE")}-mal so groß wie ${frueh}`,
     text:
       `${frueh} hatte eine neue Anlage natürlicher Personen in ${d.name} im Schnitt ${alt.toLocaleString("de-DE")} kWp, ` +
       `${spaet} waren es ${neu.toLocaleString("de-DE")} kWp. Größere Module, mehr Fläche — und ein Dach, ` +

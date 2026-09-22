@@ -1037,18 +1037,14 @@ export const globalStyles = `
 
 `;
 
-// Editorial share-card geometry at 1080px output width. These roles belong to
-// the share-card canvas, rather than the surrounding site's text scale.
-export const storyChart = {
-  donutValue: 88,
-  donutUnit: 30,
-  donutLabel: 34,
-  value: 144,
-  unit: 48,
-  label: 38,
-  detail: 30,
-  index: 25,
-  gap: 28,
-  barHeight: 64,
-  splashSize: 440,
+/**
+ * Logo colours for the "result" lockup on exported story images: dark ink on
+ * the light result surface, independent of the page's daylight stage.
+ * Here, not in components/Logo.tsx — design colours have one source.
+ */
+export const RESULT_LOGO_COLORS = {
+  "--color-accent": "#173b42",
+  "--color-brand": "color-mix(in srgb,#e8ece3 45%,#173b42)",
+  "--color-brand-deep": "color-mix(in srgb,#e8ece3 70%,#173b42)",
+  "--color-text-faint": "#8A8A8A",
 } as const;
