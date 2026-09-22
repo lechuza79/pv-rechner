@@ -63,6 +63,7 @@
     "kommunen:vorflug": "tsx scripts/kommunen-vorflug.ts",
     "atlas:kreisfrei": "tsx scripts/atlas-kreisfrei-messen.ts",
     "kommunen:verweise": "tsx scripts/kommunen-verweise-suchen.ts",
+    "kommunen:presse": "tsx scripts/kommunen-presse-suchen.ts",
     "kommunen:wirkung": "tsx scripts/outreach-evaluation.ts",
     "kommunen:klicks": "tsx scripts/outreach-klicks.ts",
     "kfw:import": "tsx scripts/kfw-report-import.ts",

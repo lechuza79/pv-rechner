@@ -193,6 +193,11 @@ async function main(): Promise<void> {
           ? ` — ${ausBrief.length} über ein Anschreiben, ${inOrten.length} in einer angeschriebenen Gemeinde`
           : ""),
     );
+    // One row per PLACE, not per person. On 16.09.2026 one Samtgemeinde mailbox
+    // subscribed four member municipalities in two minutes, and this line read
+    // "6 subscriptions" for what were 3 people. This report may not read the
+    // addresses (purpose binding), so it says what the number counts instead.
+    if (aktiv.length) log(`    (je Ort gezählt — eine Person kann mehrere Orte abonnieren)`);
     const offen = (abos ?? []).filter((a) => !a.bestaetigt_am && !a.abgemeldet_am).length;
     // Unbestätigt ist im doppelten Bestätigungsverfahren ein Nein, kein
     // Zwischenstand — es steht hier, weil eine wachsende Zahl bedeutet, dass
