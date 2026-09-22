@@ -2987,6 +2987,129 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "sh-waermepumpe-klimaschutz-bub": {
+    // Read 21.09.2026 in the original: "Richtlinie zur Förderung nicht-fossiler
+    // Heizsysteme im Rahmen des Förderprogramms 'Klimaschutz für Bürgerinnen und
+    // Bürger'" (Amtsblatt S-H 2023, Nr. 27, pp. 1575-1580, Bekanntmachung
+    // 08.06.2023, in force 01.07.2023). No. 2.1 heat pump; No. 3 natural persons
+    // with first residence in S-H and non-profits; No. 4.1 existing buildings,
+    // BEG EM technical minimums, BAFA grant decision a precondition; No. 4.5
+    // BAFA application not before 30.12.2022; No. 7.2.3/7.2.6 state application
+    // after the BAFA application, BAFA decision to be filed within a year;
+    // No. 5.2.1 "bis zu 2.000,00 EUR"; No. 5.2.5 factor 2.0 for Bürgergeld /
+    // Grundsicherung / Wohngeld; No. 5.2.6 state grant max 50 %, state + BEG EM
+    // max 60 %; No. 5.3.4 no stacking with other state programmes; No. 7.2.8f.
+    // application windows with a cap.
+    // The January version (juris: status 12.12.2022, in force 16.01.2023) was
+    // NOT read. Its heat-pump amount is carried by the ministry press release of
+    // 05.01.2023 ("Wärmepumpen mit bis zu 2.000 Euro"); the doubling and the
+    // non-profits came with phase 2 (press release 15.08.2023: "gibt es nun auch
+    // die Möglichkeit für gemeinnützige Organisationen" / "Verdopplung der
+    // Zuschüsse möglich"), hence "ab August 2023" in the texts below.
+    // Stop: state page (updated 30.04.2024) "bis zum vorläufigen Stopp des
+    // Förderprogramms am 16.11.2023", "beschlossen, das gestoppte
+    // Förderprogramm ... nicht fortzuführen". Council 3/3 (incl. adversarial)
+    // 21.09.2026: add with corrections, applied. State programme of a
+    // territorial state: no city page, informs only.
+    id: "sh-waermepumpe-klimaschutz-bub", name: "Klimaschutz für Bürgerinnen und Bürger — Zuschuss für Wärmepumpen",
+    traeger: "Land Schleswig-Holstein, Bewilligung: Investitionsbank Schleswig-Holstein", level: "land", region: "Schleswig-Holstein", bundesland: "Schleswig-Holstein", agsCode: "01",
+    url: "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub", stand: "September 2026",
+    status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-01-16", endetIso: "2023-11-16",
+    eligibility: ["privat"],
+    foerdert: ["waermepumpe"],
+    coveredCosts: "Einbau einer Wärmepumpe in einem Bestandsgebäude, zusätzlich zur Bundesförderung (BEG Einzelmaßnahmen); anerkannt nur Kosten, die auch die Bundesförderung anerkennt",
+    rates: [{ label: "Zuschuss", value: "eingestellt — seit dem 16. November 2023 keine Anträge mehr; zuvor bis 2.000 €, ab August 2023 bei Bürgergeld, Grundsicherung oder Wohngeld das Doppelte, höchstens die Hälfte der förderfähigen Kosten" }],
+    conditions: [
+      "Seit dem vorläufigen Stopp am 16. November 2023 sind keine Anträge mehr möglich; die Landesregierung hat beschlossen, das Programm nicht fortzuführen",
+      "Nur für Bestandsgebäude und nur zusammen mit der Bundesförderung: Sie musste vor dem Landesantrag beantragt sein, der Bescheid des BAFA war nachzureichen und Voraussetzung für die Auszahlung",
+      "Landeszuschuss und Bundesförderung durften zusammen höchstens 60 % der förderfähigen Kosten erreichen",
+      "Anträge gab es nur in festen Antragsfenstern mit begrenzter Antragszahl",
+      "Antragsberechtigt waren Privatpersonen mit Erstwohnsitz in Schleswig-Holstein, ab August 2023 auch gemeinnützige Organisationen; Einbau durch ein Fachunternehmen, kein Vertragsabschluss vor dem Antrag",
+      "Nicht mit anderen Landesprogrammen kombinierbar",
+    ],
+    combinableWith: null,
+  },
+  "sh-speicher-klimaschutz-bub": {
+    // Read 21.09.2026 in the original: "Richtlinie zur Förderung von
+    // Batteriespeichern" as the state's CONSOLIDATED text (guideline of
+    // 08.06.2023 plus the amendment of 02.10.2023, Amtsblatt 2023 Nr. 43
+    // p. 2417; "Rechtliche Gültigkeit besitzen die jeweiligen
+    // Originalfassungen"). The June wording and what the amendment changed were
+    // NOT read; the conditions below are therefore the version from October
+    // 2023. No. 2.1 stationary battery systems; No. 3.1 natural persons with
+    // first residence in S-H, non-profits, freelancers, small/micro enterprises
+    // (No. 3.3 excludes fishery, aquaculture, primary agriculture); No. 4.1 at
+    // least 2 kWh usable; No. 4.2/4.4 coupling with a renewable generator of
+    // 3-30 kW(p) commissioned after 01.01.2022 (any renewable, not only PV; the
+    // 3 kW floor rules out balcony sets); No. 4.12 a binding offer sufficed if
+    // not yet installed; No. 7.2.7 "Mit der Maßnahme darf erst nach Zustellung
+    // des Zuwendungsbescheides begonnen werden"; No. 5.2.1 "bis zu 750,00 EUR";
+    // No. 5.2.2 "bis zu 1.500,00 EUR" for Bürgergeld/Grundsicherung/Wohngeld;
+    // No. 5.2.3 max 50 %; No. 5.3.3 no stacking with other state programmes.
+    // No. 8: in force 01.07.2023, valid "bis einschließlich 30.06.2024" unless
+    // extended. beginntIso is the first application window, not the entry into
+    // force: press release 15.08.2023 "Das Antragsfenster für die Förderung von
+    // Batteriespeichern wird am 22. August geöffnet" (350 applications that
+    // quarter). Stop: state page (updated 30.04.2024), 16.11.2023, "nicht
+    // fortzuführen". The 2024 S-H storage guideline for SMEs (EU regional fund)
+    // is a different programme, not a continuation. foerdert "pv": the catalog
+    // has no separate storage technique. Council 3/3 21.09.2026, corrections applied.
+    id: "sh-speicher-klimaschutz-bub", name: "Klimaschutz für Bürgerinnen und Bürger — Zuschuss für Batteriespeicher",
+    traeger: "Land Schleswig-Holstein, Bewilligung: Investitionsbank Schleswig-Holstein", level: "land", region: "Schleswig-Holstein", bundesland: "Schleswig-Holstein", agsCode: "01",
+    url: "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub", stand: "September 2026",
+    status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-08-22", endetIso: "2023-11-16",
+    eligibility: ["privat", "gewerblich"],
+    foerdert: ["pv"],
+    coveredCosts: "Anschaffung und Installation eines stationären Batteriespeichers (mindestens 2 kWh nutzbar), gekoppelt an eine Anlage für erneuerbaren Strom von 3 bis 30 kW",
+    rates: [{ label: "Zuschuss", value: "eingestellt — seit dem 16. November 2023 keine Anträge mehr; zuvor bis 750 €, bei Bürgergeld, Grundsicherung oder Wohngeld bis 1.500 €, höchstens die Hälfte der Kosten" }],
+    conditions: [
+      "Seit dem vorläufigen Stopp am 16. November 2023 sind keine Anträge mehr möglich; die Landesregierung hat beschlossen, das Programm nicht fortzuführen",
+      "Der Speicher musste mit einer Anlage für erneuerbaren Strom von 3 bis 30 kW gekoppelt sein, die nach dem 1. Januar 2022 in Betrieb ging und selbst nicht gefördert wurde; nach der Fassung ab Oktober 2023 genügte bei Antragstellung ein verbindliches Angebot für diese Anlage",
+      "Anträge gab es nur in festen Antragsfenstern mit begrenzter Antragszahl; das erste öffnete am 22. August 2023",
+      "Antragsberechtigt waren Privatpersonen mit Erstwohnsitz in Schleswig-Holstein, gemeinnützige Organisationen, Freiberufler sowie kleine und Kleinstunternehmen; ein Antrag je Haushalt",
+      "Einbau durch ein Fachunternehmen, nur neue Speicher; begonnen werden durfte erst nach Zustellung des Zuwendungsbescheids",
+      "Nicht mit anderen Landesprogrammen kombinierbar",
+    ],
+    combinableWith: null,
+  },
+  "sh-balkon-klimaschutz-bub": {
+    // Read 21.09.2026 in the original: guideline "Richtlinie zur Förderung von
+    // Photovoltaik-Balkonanlagen" (Amtsblatt S-H 2023, Nr. 27, pp. 1581-1585;
+    // in force 01.07.2023, No. 2: 250-600 W; No. 3: natural persons and
+    // non-profits; No. 5.2.1 "bis zu 200,00 EUR", No. 5.2.2 "+ bis zu 150,00 EUR"
+    // for Bürgergeld/Grundsicherung/Wohngeld, No. 5.2.3 max. 50 % of costs;
+    // No. 5.3.3 no stacking with other state programmes). Programme start
+    // 16.01.2023 per the ministry article of 16.06.2023 ("Die Richtlinien
+    // traten zum 16.01.2023 in Kraft"); the January version paid at most 200 EUR
+    // (press release 05.01.2023), the supplement came with the July version.
+    // Stop: state page (updated 30.04.2024) "bis zum vorläufigen Stopp des
+    // Förderprogramms am 16.11.2023" and "beschlossen, das gestoppte
+    // Förderprogramm ... nicht fortzuführen". endetIso is the end of
+    // applications; pending applications were still decided afterwards.
+    // Council 3/3 (incl. adversarial) 21.09.2026: add with these corrections.
+    // combinableWith stays null: the guideline allows other funding only "sofern
+    // die Förderrichtlinien der betroffenen Programme dies zulassen", which
+    // establishes no specific combination. State programme of a territorial
+    // state: no city page (see CLAUDE.md), informs only.
+    id: "sh-balkon-klimaschutz-bub", name: "Klimaschutz für Bürgerinnen und Bürger — Zuschuss für PV-Balkonanlagen",
+    traeger: "Land Schleswig-Holstein, Bewilligung: Investitionsbank Schleswig-Holstein", level: "land", region: "Schleswig-Holstein", bundesland: "Schleswig-Holstein", agsCode: "01",
+    url: "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub", stand: "September 2026",
+    status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-01-16", endetIso: "2023-11-16",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Anschaffung und Installation eines Balkonkraftwerks (ab Juli 2023: 250 bis 600 W Wechselrichterleistung)",
+    rates: [{ label: "Zuschuss", value: "eingestellt — seit dem 16. November 2023 keine Anträge mehr; zuvor bis 200 €, ab Juli 2023 bei Bürgergeld, Grundsicherung oder Wohngeld bis 350 €, höchstens die Hälfte der Kosten" }],
+    conditions: [
+      "Seit dem vorläufigen Stopp am 16. November 2023 sind keine Anträge mehr möglich; die Landesregierung hat beschlossen, das Programm nicht fortzuführen",
+      "Anträge gab es nur in festen Antragsfenstern mit begrenzter Antragszahl",
+      "Antragsberechtigt waren Privatpersonen mit Erstwohnsitz in Schleswig-Holstein, ab Juli 2023 auch gemeinnützige Organisationen; ein Antrag je Haushalt",
+      "Nicht mit anderen Landesprogrammen kombinierbar; mit anderen Förderungen nur, soweit deren Richtlinie es zulässt",
+    ],
+    combinableWith: null,
+  },
   /**
    * AKTIV, aber nur für Mieter — der Betrag rechnet deshalb NUR mit
    * `nurWohnform: "mieter"`, und ohne beantwortete Wohnform gar nicht.
@@ -3496,9 +3619,20 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     eligibility: ["privat"],
     coveredCosts: "Pauschalbonus für Stromkunden der Stadtwerke (Kauf/Pacht über die Stadtwerke)",
     rates: [{ label: "PV-Anlage", value: "1.000 € (über 4 Jahre als Stromgutschrift)" }],
+    // CORRECTED 21.09.2026 against the Stadtwerke's own conditions
+    // ("Förderprogramm 2026 … Allgemeine Förderbedingungen", Stand April 2026,
+    // Foerderbedingungen.pdf) and the application form. "Bestandskunden" was
+    // too narrow: the existing/new customer split only sets the heat-pump
+    // amount (1.000 / 700 €); for PV the rule is "Belieferung mit Strom durch
+    // die SWBAD". Council 3/3 (one adversarial), wording of the owner and
+    // budget lines taken from the adversarial reviewer.
     conditions: [
-      "Nur Strom-Bestandskunden der Stadtwerke Baden-Baden",
-      "PV-Anlage bei den Stadtwerken kaufen oder pachten",
+      "Nur Privatpersonen, die Strom von den Stadtwerken Baden-Baden beziehen (auch Neukunden) und Eigentümer des Anwesens sind, auf dem die Anlage entsteht",
+      "PV-Anlage bei den Stadtwerken kaufen oder pachten (Produkt PV plus)",
+      "Gefördert wird im Netzgebiet der Stadtwerke, im Rebland sowie in Iffezheim und Hügelsheim",
+      "Der Antrag muss spätestens drei Monate nach Inbetriebnahme eingehen; zu spät gestellte Anträge werden nicht berücksichtigt",
+      "Die 1.000 € werden über vier Jahre zu je einem Viertel mit der Stromrechnung verrechnet; wer vorher den Stromanbieter wechselt, verliert die ausstehenden Teile",
+      "Gilt bis 31.12.2026; endet früher, wenn der gemeinsame Topf von 50.000 € für alle Maßnahmen ausgeschöpft ist oder ein Nachfolgeprogramm in Kraft tritt",
       "Nicht für frei beauftragte Anlagen — daher nicht pauschal eingerechnet",
     ],
     combinableWith: BUND,
@@ -6654,6 +6788,276 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["balkon"],
     balkonPauschale: 150,
+  },
+
+  // Added 21.09.2026 as a closed historical programme. City page, guideline
+  // ("Stand: 08.06.2023", in force 01.07.2023) and the press release of
+  // 18.07.2023 read in the original: 200 € flat per dwelling for a plug-in
+  // system up to 600 W, 40,000 € budget for 2023, exhausted after 200
+  // applications. The city page still carries the exhaustion notice; no new
+  // round announced. No calculation fields (closed).
+  "kaarst-stecker-pv": {
+    id: "kaarst-stecker-pv", name: "Förderprogramm Stecker-PV-Anlagen",
+    traeger: "Stadt Kaarst", level: "kommune", region: "Kaarst",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05162016",
+    url: "https://www.kaarst.de/planen-bauen-mobilitaet-und-umwelt/foerderungen/stecker-pv-anlagen",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-07-01",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Wohneinheit",
+    maxFoerderung: "200 € je Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk bis 600 W", value: "200 € pauschal je Wohneinheit — Programm beendet" }],
+    conditions: [
+      "Das Förderkontingent von 200 Anträgen war im Juli 2023 erschöpft; seitdem können keine Anträge mehr gestellt werden",
+      "Für 2023 standen 40.000 € bereit; eine neue Runde ist nicht angekündigt",
+      "Antragsberechtigt waren Eigentümer und Mieter einer Wohneinheit in Kaarst; jede Wohneinheit wurde nur einmal gefördert",
+      "Gefördert wurden nur Geräte, die nach dem Bewilligungsbescheid gekauft wurden",
+      "Das Gerät musste beim Netzbetreiber angemeldet und im Marktstammdatenregister registriert sein",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
+  // Added 21.09.2026. Guideline "Richtlinie zum Förderprogramm Klimaschutz"
+  // (signed 01.02.2026, in force 01.07.2026) read in full, plus the two
+  // service pages. No. 6: PV "ab einer Leistung von 1 kWp jeweils 100,00 € pro
+  // 1 kWp. Der Höchstbetrag der Förderung beträgt 400,00 €"; plug-in "80 v. H.
+  // des Kaufpreises, jedoch maximal 200,00 € je Wohneinheit". The PV page
+  // reopened applications on 27.07.2026; the plug-in page says "Die
+  // Fördergelder für Stecker-PV-Anlagen sind bereits ausgeschöpft" — so the
+  // balcony part carries no calculation fields. "pro 1 kWp" is read
+  // conservatively as whole kWp (vollEinheiten); at 400 € the cap binds from
+  // 4 kWp anyway. The building-age rule (completed by 31.12.2022) stays a
+  // visible condition, as for Bonn. Council 3/3 (21.09.2026, one adversarial):
+  // rounding and status confirmed; eligibility narrowed to natural persons
+  // and the commercial-plot exclusion and 12-month proof deadline added.
+  "niederkruechten-klimaschutz": {
+    id: "niederkruechten-klimaschutz", name: "Förderprogramm Klimaschutz",
+    traeger: "Gemeinde Niederkrüchten", level: "kommune", region: "Niederkrüchten",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05166020",
+    url: "https://www.niederkruechten.de/serviceportal/dienstleistungen/foerderung-von-pv-anlagen",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-07-01", beschlossenIso: "2026-02-01",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp für Dach-PV an Wohnhäusern; Balkonkraftwerke derzeit ausgeschöpft",
+    maxFoerderung: "max. 400 € je Wohngrundstück (Dach-PV)",
+    rates: [
+      { label: "PV-Anlage ab 1 kWp", value: "100 € je kWp, max. 400 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk bis 800 W", value: "80 % des Kaufpreises, max. 200 € je Wohneinheit — Mittel derzeit ausgeschöpft", nur: ["balkon"] },
+    ],
+    conditions: [
+      { text: "Antragsberechtigt sind Privatpersonen, die ein Wohngrundstück in Niederkrüchten besitzen; gefördert wird eine neue Anlage an einem Wohnhaus, je Wohngrundstück eine", nur: ["pv"] },
+      { text: "Nur auf einem Bestandsgebäude, das bis zum 31. Dezember 2022 fertiggestellt wurde; Erweiterungen bestehender Anlagen werden nicht gefördert", nur: ["pv"] },
+      { text: "Die Anlage muss von einem Fachbetrieb installiert werden; der Nachweis (Rechnung, Foto, Marktstammdatenregister, Netzbetreiber) ist binnen zwölf Monaten nach der Bewilligung einzureichen, sonst verfällt sie", nur: ["pv"] },
+      "Der Antrag muss vor dem Kauf bei der Gemeinde eingehen; eine bereits gekaufte Anlage wird nicht gefördert",
+      "Vergabe nach Reihenfolge des Antragseingangs im Rahmen der verfügbaren Mittel; ein Rechtsanspruch besteht nicht",
+      { text: "Die Mittel für Balkonkraftwerke sind derzeit ausgeschöpft; antragsberechtigt waren auch Mieter, je Wohneinheit eine Anlage", nur: ["balkon"] },
+      { text: "Zusammen mit anderen Zuschüssen höchstens 80 % des Kaufpreises", nur: ["balkon"] },
+      "Nicht gefördert werden Anlagen, zu denen eine rechtliche Pflicht besteht, etwa durch einen Bebauungsplan, und Anlagen auf gewerblich oder industriell genutzten Grundstücken",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    pvPerKwp: 100, pvCap: 400, pvMin: 1, vollEinheiten: true,
+  },
+
+  // Added 22.09.2026. Service page and guideline read in the original
+  // (cremlingen.de, "Förderrichtlinie zum Ausbau von steckerfertigen
+  // Photovoltaikanlagen (Balkonkraftwerken)", Stand 16.05.2023, in force
+  // 01.07.2023). No. 5: "bis zu 30% der Nettokosten des Kaufpreises …
+  // maximal jedoch 300€"; No. 3: only residents who rent a house or flat or
+  // live in a condominium ("Bewohner*innen einer Eigentumswohnung") — owners
+  // of a house are excluded. The calculator's housing question cannot express
+  // that split (a condominium owner is an owner), so no calculation fields.
+  // Page: total volume 15,000 € (no year given), applications possible; a
+  // payment form created January 2026 is published, no exhaustion notice —
+  // "aktiv" rests on that. Council 3/3 (22.09.2026, one adversarial):
+  // eligibility wording sharpened, budget marked as undated. The guideline replaced the 2022 PV-plus-
+  // battery guideline (29.06.2022), repealed on 30.06.2023.
+  "cremlingen-balkonkraftwerk": {
+    id: "cremlingen-balkonkraftwerk", name: "Förderprogramm steckerfertige Fotovoltaikanlagen (Balkonkraftwerke)",
+    traeger: "Gemeinde Cremlingen", level: "kommune", region: "Cremlingen",
+    bundesland: "Niedersachsen", agsCode: "03158006",
+    url: "https://www.cremlingen.de/bauen/foerderprogramm-balkonkraftwerke",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2023-07-01", beschlossenIso: "2023-05-16",
+    eligibility: ["privat"],
+    coveredCosts: "Anteil am Nettokaufpreis eines Balkonkraftwerks",
+    maxFoerderung: "max. 300 €",
+    rates: [{ label: "Balkonkraftwerk", value: "30 % des Nettokaufpreises, max. 300 €" }],
+    conditions: [
+      "Nur für Personen mit Wohnsitz in Cremlingen, die zur Miete wohnen oder eine Eigentumswohnung bewohnen (auch selbstnutzende Wohnungseigentümer); wer ein eigenes Haus bewohnt, ist nicht antragsberechtigt",
+      "Eine Anlage je Haushalt",
+      "Die Rechnung darf höchstens vier Wochen vor dem Antrag datieren; bei Antragstellung schon betriebene Anlagen sind ausgeschlossen",
+      "Keine Eigenbauten, Prototypen oder gebrauchten Teile; keine Anlagen, denen Bau-, Planungs- oder Denkmalrecht entgegensteht",
+      "Die Leistung darf die beim Antrag für Steckersolargeräte zulässige Grenze nicht überschreiten; Vorgaben und Kosten des Netzbetreibers trägt der Haushalt",
+      "Gesamtvolumen 15.000 € ohne Jahresangabe, vergeben nach Eingang der Anträge; wie viel davon noch frei ist, nennt die Gemeinde nicht",
+      "Umsetzung und Abrechnung binnen eines Jahres ab Bescheid, Verwendungsnachweis spätestens drei Monate danach; Anmeldung beim Netzbetreiber und im Marktstammdatenregister mit dem Auszahlungsantrag nachweisen, soweit erforderlich",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
+  // Added 22.09.2026. Guideline "Richtlinie zum Förderprogramm
+  // 'Stecker-Solar-Geräte'" (Fassung 13.06.2024, in force 24.06.2024) read in
+  // full as a scanned PDF from the municipality's funding page. No. 5 (b):
+  // "Die Förderhöhe beträgt pauschal 150 € pro Anlage"; No. 3 owners, heritable
+  // building right holders and tenants; No. 4 (e) excludes modules under 400 W
+  // and inverters over 800 W; No. 6 (d) purchase only after the receipt
+  // confirmation. No. 9: valid "solange … Haushaltsmittel hierfür zur
+  // Verfügung stehen"; the page lists it without an exhaustion notice.
+  // No calculation fields: No. 5 (a) pays "erst nach Freigabe der
+  // entsprechenden Haushaltsmittel in Rahmen eines Gemeinderatsbeschlusses",
+  // and no source shows that release for 2026 (adversarial reviewer,
+  // 22.09.2026). Council: own reading plus one adversarial reviewer.
+  "goedenstorf-stecker-solar": {
+    id: "goedenstorf-stecker-solar", name: "Förderprogramm Stecker-Solar-Geräte",
+    traeger: "Gemeinde Gödenstorf", level: "kommune", region: "Gödenstorf",
+    bundesland: "Niedersachsen", agsCode: "03353013",
+    url: "https://goedenstorf.salzhausen.de/buerger/klimaschutz/foerderung-von-stecker-solar-geraeten",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-06-24", beschlossenIso: "2024-06-13",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Balkonkraftwerk",
+    maxFoerderung: "150 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk", value: "150 € pauschal je Anlage" }],
+    conditions: [
+      "Antragsberechtigt sind volljährige Eigentümer, Erbbauberechtigte und Mieter mit Wohnsitz in Gödenstorf; eine Anlage je Person und Haushalt",
+      "Gekauft werden darf erst nach der Eingangsbestätigung des Antrags; vorher gekaufte Geräte sind ausgeschlossen",
+      "Neugeräte aus Deutschland mit deutscher Rechnung; ausgeschlossen sind Anlagen mit weniger als 400 W Modulleistung oder mehr als 800 W Wechselrichterleistung sowie Insel- und Akkuanlagen",
+      "Kauf binnen vier Monaten nach der Bewilligung nachweisen, samt Eintrag im Marktstammdatenregister und Foto der Anlage",
+      "Das Gerät muss drei Jahre selbst genutzt werden; Vergabe nach Eingang, solange Haushaltsmittel da sind",
+      "Ausgezahlt wird erst, wenn der Gemeinderat die Haushaltsmittel freigegeben hat; einen Rechtsanspruch gibt es nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
+  // Added 21.09.2026 as a closed historical programme. City press releases
+  // read in the original: 28.03.2023 (start 3 April 2023, 100 € for 250-430 W,
+  // 200 € for 430-600 W, 10,000 € budget), 03.07.2023 ("Innerhalb kürzester
+  // Zeit war der Fördertopf ausgeschöpft"), 19.02.2024 (a round for rented
+  // property: 50 % of the cost, at most 100 €/200 €). The city's funding page
+  // (read 21.09.2026) now lists only rainwater precautions. No calc fields.
+  // Council (own reading + verifier + adversarial): "eingestellt" is an
+  // inference from the funding page, stated as such in the condition.
+  "nettetal-steckermodule": {
+    id: "nettetal-steckermodule", name: "Förderprogramm „Photovoltaik-Steckermodule“",
+    traeger: "Stadt Nettetal", level: "kommune", region: "Nettetal",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05166016",
+    url: "https://www.nettetal.de/rathaus-verwaltung/pressemitteilungen/foerderprogramm-photovoltaik-steckermodule-fuer-mietobjekte",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-04-03",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je Balkonkraftwerk nach Geräteleistung",
+    maxFoerderung: "200 €",
+    rates: [
+      { label: "Balkonkraftwerk 250–430 W", value: "100 € (2024 für Mietobjekte: 50 % der Kosten, höchstens 100 €) — Programm beendet" },
+      { label: "Balkonkraftwerk 430–600 W", value: "200 € (2024 für Mietobjekte: 50 % der Kosten, höchstens 200 €) — Programm beendet" },
+    ],
+    conditions: [
+      "Nicht mehr angeboten (Stand 21.09.2026): Als eigenes Programm führt die Förderseite der Stadt nur noch die Starkregenvorsorge; ein Ende der Runde 2024 ist nirgends ausdrücklich gemeldet",
+      "2023 gab es feste Beträge; 10.000 € standen bereit, und der Topf war kurz nach dem Start am 3. April 2023 ausgeschöpft",
+      "Ab 19. Februar 2024 folgte eine Runde für Mietobjekte, beantragen konnten Mieter wie Vermieter: 50 % der Kosten, höchstens 100 € bzw. 200 €",
+      "Gefördert wurden Wechselrichter mit mindestens 250 W und höchstens 600 W; 2024 war ein auf 600 W gedrosseltes 800-W-Gerät zugelassen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
+  // Added 22.09.2026 as an exhausted municipal balcony programme. Guideline
+  // "Richtlinie über die Gewährung von Zuschüssen für die Errichtung von
+  // Photovoltaikanlagen als Balkonmodule" (in force 31.03.2023, amended
+  // 21.11.2024) read in full: Nr. 3.4 "Zuschuss in Höhe von 200,00 Euro als
+  // Festbetrag" for up to 800 W, Nr. 4.2 main residence at least two months,
+  // Nr. 6.5 application after completion, up to 3 months after registration.
+  // Programme page (read 22.09.2026): "Hinweis 18.02.2025: Aktuell stehen keine
+  // Fördermittel mehr zur Verfügung. Es können derzeit keine neuen Anträge mehr
+  // gestellt bzw. berücksichtigt werden." No calc fields (no funds).
+  "grossheide-balkonmodule": {
+    id: "grossheide-balkonmodule", name: "Förderprogramm Photovoltaik (Balkonmodule)",
+    traeger: "Gemeinde Großheide", level: "kommune", region: "Großheide",
+    bundesland: "Niedersachsen", agsCode: "03452007",
+    url: "https://www.grossheide.de/Wirtschaft-Bauen-Wohnen/Bauen-in-Grossheide/Foerderprogramme",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beginntIso: "2023-03-31",
+    eligibility: ["privat"],
+    coveredCosts: "Festbetrag je Balkonkraftwerk",
+    maxFoerderung: "200 €",
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "200 € Festbetrag — derzeit keine Mittel" }],
+    conditions: [
+      "Laut Hinweis der Gemeinde vom 18. Februar 2025 stehen derzeit keine Fördermittel mehr zur Verfügung; neue Anträge werden nicht berücksichtigt",
+      "Antragsberechtigt sind Eigentümer und Mieter; Erstwohnsitz in Großheide seit mindestens zwei Monaten, nur Dauerwohnungen",
+      "Nur neue Anlagen mit Modulwechselrichter bis 800 W, im Marktstammdatenregister eingetragen",
+      "Der Antrag folgt nach der Installation, spätestens drei Monate nach der Anmeldung beim Netzbetreiber",
+      "Die Anlage muss mindestens drei Jahre betrieben werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
+  // Added 22.09.2026 as a closed county programme. Guideline "Richtlinie des
+  // Rhein-Kreises Neuss zur Förderung steckerfertiger Photovoltaikanlagen" read
+  // in full on the county's application portal (rkn.nrw/pr021 →
+  // solar.gotzg.de, 22.09.2026): "pauschal 100,- € pro Wohneinheit … Bei
+  // Vorliegen eines Wohnberechtigungsscheins" 300 €, not before 20.11.2023,
+  // "Die Antragsmittel sind aufgebraucht!". County press release 30.04.2025:
+  // "Das Budget … in Höhe von 100.000 Euro ist ausgeschöpft. Es können keine
+  // neuen Anträge mehr angenommen werden." — and "Zuvor war dies nur bis 600
+  // Watt Leistung möglich" (800 W only after Solarpaket I; switch date not
+  // stated, so no date given). endetIso is month-precise: the press release
+  // of 30.04.2025 shows the budget exhausted by then, not the day intake
+  // stopped (adversarial reviewer). No calculation fields (closed).
+  "rhein-kreis-neuss-stecker-pv": {
+    id: "rhein-kreis-neuss-stecker-pv", name: "Förderung steckerfertiger Photovoltaikanlagen",
+    traeger: "Rhein-Kreis Neuss", level: "landkreis", region: "Rhein-Kreis Neuss",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05162",
+    url: "https://www.rhein-kreis-neuss.de/de/verwaltung-politik/nachrichten/pressemeldungen-aus-dem-jahr-2025/konsequenter-klimaschutz-programm-fuer-balkonkraftwerke-ist-ausgeschoepft/",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-11-20", endetIso: "2025-04",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Wohneinheit",
+    maxFoerderung: "100 € je Wohneinheit, 300 € mit Wohnberechtigungsschein",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € pauschal, 300 € mit Wohnberechtigungsschein — Programm beendet" }],
+    conditions: [
+      "Laut Pressemitteilung vom 30. April 2025 war das Budget von 100.000 € ausgeschöpft; neue Anträge nimmt der Kreis nicht mehr an",
+      "Antragsberechtigt waren Mieter und Eigentümer einer Wohneinheit in einem Ein-, Zwei- oder Mehrfamilienhaus im Kreisgebiet; eine Anlage je Wohneinheit",
+      "Gefördert wurden neue Anlagen vom gewerblichen Händler, angeschafft ab dem 20. November 2023 und im Marktstammdatenregister eingetragen",
+      "Zunächst waren Anlagen bis 600 W förderfähig, nach dem Solarpaket I bis 800 W Wechselrichterleistung",
+      "Wer schon von einer Kommune im Kreisgebiet eine Förderung für ein Balkonkraftwerk bewilligt bekommen hatte, war ausgeschlossen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
+  // Added 22.09.2026 as a closed municipal balcony programme. Council decision
+  // 20.02.2023, applications from April 2023 (post 29.03.2023: "bis zu 200,00 €
+  // je Wohneinheit"), extended in January 2024 to applications until
+  // 30.06.2024; new guideline 12/2024 read in full: "mit 50 %, max. 200,00 €
+  // je Wohneinheit und Anlage", up to 800 W, installation from 01.01.2025,
+  // five-year own use. Post 04.05.2026: 76 systems funded since 2023, "hat die
+  // Gemeinde das Programm eingestellt". Guideline 12/2024 Nr. 7 runs to
+  // 31.12.2025; the day applications actually stopped is not documented, so no
+  // endetIso (adversarial reviewer).
+  // No calc fields (closed).
+  "berkenthin-balkon-solar": {
+    id: "berkenthin-balkon-solar", name: "Förderung von PV-Balkonanlagen",
+    traeger: "Gemeinde Berkenthin", level: "kommune", region: "Berkenthin",
+    bundesland: "Schleswig-Holstein", agsCode: "01053009",
+    url: "https://berkenthin.de/erfolgreiches-foerderprogramm-fuer-balkonsolaranlagen-in-berkenthin-beitrag-zum-klimaschutz-sichtbar/",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-04", beschlossenIso: "2023-02-20",
+    eligibility: ["privat"],
+    coveredCosts: "Material- und Montagekosten der Anlage",
+    maxFoerderung: "200 € je Wohneinheit",
+    rates: [{ label: "Balkonkraftwerk bis 800 W (Richtlinie 2025)", value: "50 % der Kosten, höchstens 200 € — Programm beendet" }],
+    conditions: [
+      "Die Gemeinde hat das Programm eingestellt (Mitteilung vom 4. Mai 2026); seit 2023 wurden 76 Anlagen bezuschusst",
+      "2023 und bis Juni 2024 bis zu 200 € je Wohneinheit; ab 2025 nach neuer Richtlinie 50 % der Material- und Montagekosten, höchstens 200 €",
+      "Antragsberechtigt waren Eigentümer und Mieter von Wohngebäuden und Wohnungen in Berkenthin",
+      "Nach der Richtlinie 12/2024 musste die Anlage im Marktstammdatenregister angemeldet und mindestens fünf Jahre im eigenen Haushalt genutzt werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
   },
 
   "klempau-balkonkraftwerke": {
@@ -10888,7 +11292,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "horneburg-nachhaltige-projekte": {
     id: "horneburg-nachhaltige-projekte", name: "Förderprogramm nachhaltiger Projekte (Teil Photovoltaik und Speicher)",
-    traeger: "Flecken Horneburg", level: "kommune", region: "Flecken Horneburg",
+    traeger: "Flecken Horneburg", level: "kommune", region: "Horneburg",
     bundesland: "Niedersachsen", agsCode: "03359027",
     // The Samtgemeinde keeps ONE page for both programmes and links a separate
     // guideline per municipality (Horneburg: https://www.horneburg.de/downloads/datei/MzFjYTE2YjRlYmUzMGJhMGFCMSt3RnRjb1loWm8rMXd3Ylg5bVlsSVVGUDdyelV2L0NyUnNYbXU5ZTdqc2U5WEMvZGFpSkRxSDZXbGgxRjR5STNtU1BzSXBISjdJSHlJMFJFdXBOWlM4OXAxeS9lRVVvdHVUZVl2MHQ1d3BHem5ZTjVnTUh0VlFXNTdKVUR4cVlHVVNmUWZXdStsV09yNUlFVHFLcXlwa3Z2VmpxYm1EN0Y2aW9LNEpPUT0).
@@ -10938,7 +11342,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "nottensdorf-nachhaltige-projekte": {
     id: "nottensdorf-nachhaltige-projekte", name: "Förderprogramm nachhaltiger Projekte (Teil Photovoltaik und Speicher)",
-    traeger: "Gemeinde Nottensdorf", level: "kommune", region: "Gemeinde Nottensdorf",
+    traeger: "Gemeinde Nottensdorf", level: "kommune", region: "Nottensdorf",
     bundesland: "Niedersachsen", agsCode: "03359034",
     // The Samtgemeinde keeps ONE page for both programmes and links a separate
     // guideline per municipality (Nottensdorf: https://www.horneburg.de/downloads/datei/YWQ2ZTYyN2Q5Mzk0ZmQ3NE9GWDZXZGdnVnlxdVp0TjRlRDA1K1NEa2FZV1U2UXhmZnYrUi9YbSs2aG1YTVhSRnVPVXVraEQvWnpodWpnOC9RVXo5ZFp6TTREeXZEMjhQVzRIQ0FvWEljT1U5bXllNDF2aUM0MnpHak02NVdlVTdsVWVRWjAxTXF3T1dSazc1SWd3VFI0ZmZrYUlHSU1lNDZ5N2xSam5CMFE1K0tRN3d0U0d1SXVaTnFaN21nQmRnY1VPVnF3b3VqL0FqdVJlNlVHOFh0TjkvK3JkaEpoY2RQdHJhR2FTa0d0bTdJeHJlMEVUQ1dSb2lJczVIWVQzNXlvUEwrQjZhdVh5a2FCcTk).
@@ -11284,6 +11688,74 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Kein Rechtsanspruch; vergeben wird nach Eingang des vollständigen Antrags im Rahmen der Haushaltsmittel",
     ],
     combinableWith: BUND,
+  },
+  "ransbach-baumbach-balkonkraftwerke": {
+    id: "ransbach-baumbach-balkonkraftwerke", name: "Förderprogramm für Balkonkraftwerke der Verbandsgemeinde Ransbach-Baumbach",
+    traeger: "Verbandsgemeinde Ransbach-Baumbach", level: "kommune", region: "Verbandsgemeinde Ransbach-Baumbach",
+    bundesland: "Rheinland-Pfalz",
+    // FÖRDERGEBIET: the eleven municipalities as the Verbandsgemeinde's own
+    // menu lists them ("Gemeinden", ransbach-baumbach.de, read 21 Sep 2026):
+    // Alsbach, Breitenau, Caan, Deesen, Hundsdorf, Nauort, Oberhaid,
+    // Sessenbach, Stadt Ransbach-Baumbach, Wirscheid, Wittgert - each key looked
+    // up singly in the population register. The shared prefix 07143 is the
+    // Westerwaldkreis and would be wrong. "Ransbach-Baumbach" here is the town
+    // 07143062, not the Verbandsgemeinde.
+    agsCodes: [
+      "07143001", "07143006", "07143007", "07143009", "07143038", "07143050",
+      "07143059", "07143062", "07143068", "07143082", "07143084",
+    ],
+    url: "https://ransbach-baumbach.de/B%C3%BCrger-Einwohner/Klimaschutz",
+    // Programme page and guideline read in full on 21 Sep 2026. The page
+    // (section "Eigene Förderungen: Förderprogramm für Balkonkraftwerke"):
+    // "Die Verbandsgemeinde Ransbach-Baumbach fördert im Jahr 2026 erneut die
+    // Anschaffungskosten von Balkonkraftwerken (Mini-Solaranlagen) mit einer
+    // maximalen Modulleistung von 2000Watt/peak und einer
+    // Wechselrichterleistung von maximal 800Watt pauschal mit 200,00€", once
+    // per household, with a live RLP online application form linked. The
+    // guideline it links ("Richtlinie über die Gewährung eines Zuschusses über
+    // Kauf und Inbetriebnahme einer Mini-Solaranlage", 2 pages, dated "im März
+    // 2025", link title "... 2026"):
+    // https://ransbach-baumbach.de/loadDocument.phtml?FID=3768.1216.1&Ext=PDF
+    // § 4: "einmalige Pauschalförderung von 200€ der Anschaffungskosten der
+    // Module - je Hausgrundstück bzw. Mieteinheit."
+    //
+    // APPLY BEFORE BUYING - § 3 (1): "Es werden nur Geräte gefördert, die nach
+    // dem Erhalt der Förderzusage angeschafft wurden. Bestehende, bereits
+    // bestellte oder gekaufte Anlagen werden nicht gefördert." First come,
+    // first served by date of receipt, within the budget of the year.
+    //
+    // combinableWith IS EMPTY ON PURPOSE: § 3 (1) "Eine Doppelförderung ist
+    // ausgeschlossen." The clause does not say whether it means any other
+    // public money or only a second grant from the Verbandsgemeinde; the
+    // cautious reading is the one that does not stack. No federal or state
+    // balcony grant exists in Rhineland-Palatinate today, so the reading
+    // changes no amount.
+    //
+    // NO beginntIso: the guideline carries only its signing month (March
+    // 2025) and the page says "erneut", so the programme is older than this
+    // version; a date would read as the programme start. No "ausgeschöpft"
+    // notice on 21 Sep 2026.
+    //
+    // THE VERBANDSGEMEINDE'S OTHER GRANTS ARE NOT IN SCOPE: rainwater cisterns
+    // (up to 150 EUR, KIPKI money) and an on-site energy advice for dwellings.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Pauschaler Zuschuss zum Kauf eines Balkonkraftwerks",
+    maxFoerderung: "200 € je Haushalt",
+    balkonPauschale: 200,
+    rates: [
+      { label: "Balkonkraftwerk", value: "200 € pauschal je Hausgrundstück bzw. Mieteinheit", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Vor dem Kauf beantragen: Gefördert werden nur Geräte, die nach Erhalt der Förderzusage angeschafft werden — bereits bestellte oder gekaufte Anlagen sind ausgeschlossen",
+      "Antragsberechtigt sind Hauseigentümer und Mieter von Wohnraum in der Verbandsgemeinde; laut Programmseite brauchen Mieter die Zustimmung des Vermieters",
+      "Höchstens 2.000 Wp Modulleistung und 800 W Wechselrichterleistung; gefördert werden frei aufgestellte und fest montierte Anlagen",
+      "Einmal je Haushalt — die Richtlinie nennt als Bezug zugleich „je Hausgrundstück bzw. Mieteinheit“; eine Doppelförderung ist ausgeschlossen",
+      "Ausgezahlt wird nach Vorlage der Rechnung, eines Fotos der installierten Anlage und des Nachweises der Anmeldung im Marktstammdatenregister",
+      "Kein Rechtsanspruch; vergeben wird im Rahmen der jährlichen Haushaltsmittel nach der Reihenfolge des Antragseingangs",
+    ],
+    combinableWith: [],
   },
 };
 

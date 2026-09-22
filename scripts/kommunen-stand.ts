@@ -19,6 +19,7 @@ import { SCHUEBE, AKTUELLER_SCHUB } from "../lib/kommunen-testballon";
 import { OUTREACH_STATUS_LABEL, istUnbeantwortet, UNBEANTWORTET_TAGE } from "../lib/outreach-status";
 import { liesNotiz } from "../lib/outreach-ruecklauf";
 import { heuteInBerlin } from "../lib/zeit";
+import { domainAus, verlinkendeDomains } from "./lib/verweise";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -46,6 +47,7 @@ type Zeile = {
   responded_at: string | null;
   rollen_email: string | null;
   notes: string | null;
+  website: string | null;
   mastr_regions: { name: string };
 };
 
@@ -59,7 +61,7 @@ async function main(): Promise<void> {
 
   const { data, error } = await db
     .from("kommunen_kontakt")
-    .select("region_id, charge, kampagne, outreach_status, contacted_at, responded_at, rollen_email, notes, mastr_regions!inner(name)")
+    .select("region_id, charge, kampagne, outreach_status, contacted_at, responded_at, rollen_email, notes, website, mastr_regions!inner(name)")
     .not("kampagne", "is", null);
   if (error) throw new Error(`Konnte den Stand nicht lesen: ${error.message}`);
   const alle = (data ?? []) as unknown as Zeile[];
@@ -142,9 +144,30 @@ async function main(): Promise<void> {
       (geantwortet.length ? `: ${geantwortet.map((z) => z.mastr_regions.name).join(", ")}` : ""),
   );
   log(
-    `    ${veroeffentlicht.length} ${veroeffentlicht.length === 1 ? "Veröffentlichung" : "Veröffentlichungen"} verzeichnet` +
+    `    ${veroeffentlicht.length} ${veroeffentlicht.length === 1 ? "Veröffentlichung" : "Veröffentlichungen"} von Hand verzeichnet` +
       (veroeffentlicht.length ? `: ${veroeffentlicht.map((z) => z.mastr_regions.name).join(", ")}` : ""),
   );
+
+  // The hand-set status misses every publication nobody noted: Nidda linked to
+  // us for weeks and stood here as "answered" only (21.09.2026). The backlink
+  // measurement is read every time; if it cannot be read, that is said.
+  const login = process.env.DATAFORSEO_LOGIN, pass = process.env.DATAFORSEO_PASSWORD;
+  if (!login || !pass) {
+    log("Verlinkungen NICHT geprüft: Zugang zur Backlink-Prüfung fehlt", "warn");
+  } else {
+    try {
+      const { domains } = await verlinkendeDomains(login, pass);
+      const verlinkt = raus.filter((z) => { const d = domainAus(z.website); return !!d && domains.has(d); });
+      log(
+        `    ${verlinkt.length} ${verlinkt.length === 1 ? "angeschriebene Gemeinde verlinkt" : "angeschriebene Gemeinden verlinken"} uns (Backlink-Prüfung)` +
+          (verlinkt.length ? `: ${verlinkt.map((z) => `${z.mastr_regions.name} (${domains.get(domainAus(z.website)!) || domainAus(z.website)})`).join(", ")}` : ""),
+      );
+      const nichtVermerkt = verlinkt.filter((z) => z.outreach_status !== "veroeffentlicht");
+      if (nichtVermerkt.length) log(`Verlinkt, aber nicht als veröffentlicht vermerkt: ${nichtVermerkt.map((z) => z.mastr_regions.name).join(", ")}`, "warn");
+    } catch (e) {
+      log(`Verlinkungen NICHT geprüft: ${(e as Error).message}`, "warn");
+    }
+  }
 
   // Die Abos sind der eigentliche Ertrag: Wer sich einträgt, hat eingewilligt —
   // aus einem Einmalkontakt wird ein Kanal. Sie standen bisher in keiner

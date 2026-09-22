@@ -30,10 +30,38 @@ import { FUNDING_PROGRAMS } from "../funding-programs";
  * die Gegenrichtung mitzumessen.
  */
 
-/** Programme, die eine Gemeinde oder ein Kreis auflegt — der Fall, den die Suche findet. */
+/**
+ * Programme, die eine Gemeinde oder ein Kreis auflegt — der Fall, den die Suche findet.
+ *
+ * Ohne die Programme, deren einzige Adresse ein PDF-Dokument ist. Die Suche
+ * sucht Seiten und schließt Downloads mit Absicht aus („DOWNLOAD ist keine
+ * Seite", `funding-url-suche.ts`); ein solches Programm im Nenner misst nicht
+ * den Filter, sondern die Aufbewahrungsform der Gemeinde. Gemessen am
+ * 22.09.2026: Drei Einträge standen so da (Mainz-Bingen, Ehningen,
+ * Scharnebeck), und jede neu aufgenommene, nur als Richtlinie veröffentlichte
+ * Förderung drückte die Quote, ohne dass sich am Filter etwas geändert hatte —
+ * zwei gelesene Programme blieben deshalb liegen.
+ *
+ * Ausgeschlossen wird nach der ENDUNG, einer Eigenschaft der Adresse, nie nach
+ * dem Urteil des Filters: Wer den Nenner über `istEndergebnis` filtert, misst
+ * den Filter an sich selbst und bekommt immer 100 %.
+ */
 const REGIONAL = Object.values(FUNDING_PROGRAMS).filter(
-  (p) => p.level !== "bund" && p.level !== "land" && typeof p.url === "string" && p.url.startsWith("http"),
+  (p) =>
+    p.level !== "bund" &&
+    p.level !== "land" &&
+    typeof p.url === "string" &&
+    p.url.startsWith("http") &&
+    !istDokument(p.url),
 );
+
+function istDokument(url: string): boolean {
+  try {
+    return /\.pdf$/i.test(new URL(url).pathname);
+  } catch {
+    return false;
+  }
+}
 
 /** Wie der Erkenner die Adresse ohne jeden Linktext sieht — der harte Fall. */
 function trefferOhneText(url: string): boolean {
@@ -65,6 +93,8 @@ describe("Findet unsere Suche die Programme, die wir selbst führen?", () => {
     //
     // Gemessen am 25.08.2026: 75,2 % vor den drei Korrekturen an Ressort-,
     // Meldungs- und Förderwort-Regel, 81,0 % danach.
+    // 22.09.2026: 194 von 244 Seiten-Adressen (79,5 %), nachdem PDF-Adressen
+    // aus dem Nenner genommen wurden (siehe oben); mit ihnen waren es 78,5 %.
     //
     // Was der Test verhindert, ist das Abrutschen: Jede neue Ausschlussregel
     // gegen Fehlalarme kostet hier Prozente, und ohne diese Zahl merkt es

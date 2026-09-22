@@ -45,6 +45,32 @@ export function decodeRot13Address(encoded: string): string | null {
   return ADDRESS.test(decoded) ? decoded : null;
 }
 
+/**
+ * GIPS, the shared web platform of many German municipal utilities, publishes
+ * `<a data-encrypted href="mailto:…">` whose value is base64 over the address
+ * with every byte inverted and the order reversed. Without this the press
+ * office of every GIPS site looked like it had no address (Erlanger Stadtwerke,
+ * measured 21.09.2026). Only a result that is a valid address is accepted.
+ */
+export function decodeGipsMailto(encoded: string): string | null {
+  if (!/^[A-Za-z0-9+/]{8,400}={0,2}$/.test(encoded)) return null;
+  const bytes = Buffer.from(encoded, "base64");
+  const plain = String.fromCharCode(...[...bytes].map(b => 255 - b).reverse());
+  return ADDRESS.test(plain) ? plain : null;
+}
+
+/**
+ * A widespread craft-business site builder shows a shuffled address as link
+ * text and carries the real one as colon-separated character codes
+ * (`data-q-uncrypt="105:110:102:111:64:…"`). Without this the shuffled text
+ * itself was taken as an address (measured 21.09.2026 on two businesses).
+ */
+export function decodeCharCodeMail(encoded: string): string | null {
+  if (!/^\d{2,3}(?::\d{2,3}){5,200}$/.test(encoded)) return null;
+  const plain = String.fromCharCode(...encoded.split(":").map(Number));
+  return ADDRESS.test(plain) ? plain : null;
+}
+
 export function deobfuscatePublishedMail(html: string): string {
   html = html.replace(
     /href=(["'])javascript:linkTo_UnCryptMailto\((?:%27|'|&#39;)([^'&]+?)(?:%27|'|&#39;)(?:,\s*-?\d+)?\);?\1/g,

@@ -588,7 +588,12 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   einer Zusammenfassung wie ein erledigter Verfahrensschritt; nur das Datum
   //   gegen den Kalender gehalten deckt es auf. Zustand unverändert:
   //   Regierungsentwurf, eingebracht.
-  geprueftIso: "2026-09-21",
+  // 22.09.2026, 00:10 Uhr (Dienstag der Sitzungswoche): Die Ankündigungsseite
+  //   des Bundestages im Rohtext gelesen — „Der Bundestag berät am Donnerstag,
+  //   24. September 2026, in erster Lesung den Gesetzentwurf …" (21/7867), nach
+  //   20-minütiger Aussprache Überweisung. Der Termin liegt weiter vor uns,
+  //   keine Kammer hat seit gestern beschlossen. Zustand unverändert.
+  geprueftIso: "2026-09-22",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

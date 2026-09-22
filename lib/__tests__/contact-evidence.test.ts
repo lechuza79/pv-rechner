@@ -6,6 +6,22 @@ import { readMail } from "../../scripts/lib/read-mail";
 import { ordneEin } from "../outreach-ruecklauf";
 
 describe("contact evidence counterexamples", () => {
+  it("reads character-code mail links and never the shuffled link text", () => {
+    // Real markup from a craft business imprint (21.09.2026).
+    const html = '<p>E-Mail: <a title="E-Mail" data-q-trigger="ieQ.system.helper.uncrypt" data-q-uncrypt="105:110:102:111:64:101:108:101:107:116:114:111:45:105:108:103:46:100:101">e-eeiol@dnkor.ifgtl</a></p>';
+    expect(contactCandidates(html, 'https://www.elektro-ilg.de/impressum', 'elektro-ilg.de').map(r => r.email)).toEqual(['info@elektro-ilg.de']);
+    const kaputt = '<p><a data-q-uncrypt="1:2">e-eeiol@dnkor.ifgtl</a></p>';
+    expect(contactCandidates(kaputt, 'https://www.elektro-ilg.de/impressum', 'elektro-ilg.de')).toEqual([]);
+  });
+
+  it("reads GIPS-encrypted mail links of municipal utilities, and nothing that does not decode to an address", () => {
+    // Real markup from the Erlanger Stadtwerke press page (21.09.2026).
+    const html = '<h3>Ihr Ansprechpartner für Presse</h3><p>Claus Göbel<br>Pressesprecher<br><a data-encrypted href="mailto:mpvRiIuMmr+Tmp2akJjRjIqek5w=">E-Mail</a></p>';
+    const mails = contactCandidates(html, 'https://www.estw.de/presse', 'estw.de').map(r => r.email);
+    expect(mails).toEqual(['claus.goebel@estw.de']);
+    expect(contactCandidates('<a data-encrypted href="mailto:bm90LWEtbWFpbA==">E-Mail</a>', 'https://www.estw.de/', 'estw.de')).toEqual([]);
+  });
+
   it("reads published TYPO3 mail links and keeps responsibility within their table row", () => {
     const html = '<h1>Kontakt</h1><table><tr><td>Klimaschutzmanagement Yunus Göksen</td><td><a href="#" data-mailto-token="ocknvq,awpwu0iqgmugpBpgwowgpuvgt0fg" data-mailto-vector="2">E-Mail</a></td></tr><tr><td>Stabsstellenleitung Julia Schirrmacher</td><td><a href="#" data-mailto-token="ocknvq,lwnkc0uejkttocejgtBpgwowgpuvgt0fg" data-mailto-vector="2">E-Mail</a></td></tr></table>';
     expect(confirmedContactPage(html)).toBe(true);

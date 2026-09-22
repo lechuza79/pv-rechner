@@ -35,6 +35,13 @@ const GETEILTE_ADRESSE_ERLAUBT: Record<string, string> = {
   // Wort, die die Suche nach bekannten Programmen nicht wiedererkennt.
   "https://www.horneburg.de/portal/seiten/foerderprogramm-nachhaltiger-projekte-im-flecken-horneburg-und-der-gemeinde-nottensdorf-900000020-20450.html":
     "Eine Seite der Samtgemeinde für zwei Gemeindeprogramme, je eigene Richtlinie verlinkt",
+  // Land Schleswig-Holstein, "Klimaschutz für Bürgerinnen und Bürger"
+  // (21.09.2026): ONE programme page for balcony, heat-pump and battery grants;
+  // each technique has its own guideline PDF, but only the page carries the stop
+  // of 16.11.2023 and the decision not to continue - which is what the page
+  // watcher must see if the state ever restarts it.
+  "https://www.schleswig-holstein.de/de/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub":
+    "Eine Programmseite des Landes für drei Fördergegenstände, je eigene Richtlinie verlinkt",
 };
 
 describe("Jedes Programm nennt seine eigene Amtsseite", () => {

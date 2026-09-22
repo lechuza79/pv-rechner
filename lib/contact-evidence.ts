@@ -2,7 +2,7 @@ import { entschluesseltOderRoh } from "./uri-sicher";
 import { load } from "cheerio";
 import { entwirreAdressen } from "./personen-fund";
 import { publishedJoomlaMail } from "./published-joomla-mail";
-import { deobfuscatePublishedMail, repairGluedAddress } from "./mail-deobfuscation";
+import { decodeCharCodeMail, decodeGipsMailto, deobfuscatePublishedMail, repairGluedAddress } from "./mail-deobfuscation";
 
 export type ContactCandidate = {
   email: string;
@@ -30,6 +30,16 @@ function decodePublishedMailLinks($: ReturnType<typeof load>): void {
     if (!script.includes("addy") || !script.includes("document.write")) return;
     const email = publishedJoomlaMail(script);
     if (email) $(el).replaceWith($("<a>").attr("href", `mailto:${email}`).text(email));
+  });
+  $("a[data-encrypted][href^='mailto:']").each((_, el) => {
+    const email = decodeGipsMailto(($(el).attr("href") ?? "").slice(7));
+    if (email) $(el).attr("href", `mailto:${email}`).text(email);
+  });
+  $("a[data-q-uncrypt]").each((_, el) => {
+    const email = decodeCharCodeMail($(el).attr("data-q-uncrypt") ?? "");
+    // Undecodable: drop the shuffled text rather than read it as an address.
+    if (email) $(el).attr("href", `mailto:${email}`).text(email);
+    else $(el).text("");
   });
   $("a[data-mailto-token][data-mailto-vector]").each((_, el) => {
     const raw = $(el).attr("data-mailto-vector") ?? "";

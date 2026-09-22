@@ -269,6 +269,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Monate nach dem Rechnungsdatum (§ 6 Abs. 1 und 2); das Formular lässt ihn
   // auch vorher zu. „Vor dem Kauf beantragen" als Pflicht wäre der falsche Test.
   "scharnebeck-steckersolar",
+  // Verbandsgemeinde Ransbach-Baumbach, aufgenommen am 21.09.2026. Antrag VOR
+  // dem Kauf: gefördert werden nur Geräte, die nach der Förderzusage
+  // angeschafft werden (Richtlinie § 3 Abs. 1). Die Bedingung steht wörtlich am
+  // Programm; die Prüfform folgt mit der nächsten Erfassungsrunde.
+  "ransbach-baumbach-balkonkraftwerke",
   // Kreis Pinneberg, aufgenommen am 21.09.2026. Das Vorhaben ist eine
   // Dachbegrünung, nicht eine Photovoltaikanlage — eine Prüfform, die eine
   // Anlage gegen ein Antragsverfahren hält, hat hier nichts zu prüfen. Die
@@ -292,6 +297,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Ihre Bedingungen hängen an Mieter/Eigentümer — eine Unterscheidung, die das
   // Modell (privat/gewerblich) nicht kennt. Erfassbar erst, wenn es sie kennt.
   "sachsen-balkon-eeus", "mv-mini-solaranlagen",
+  // Schleswig-Holstein state grants (balcony, heat pump, battery), added 21.09.2026 as closed programmes
+  // (applications ended 16.11.2023). Nothing left to check against a system.
+  "sh-balkon-klimaschutz-bub", "sh-waermepumpe-klimaschutz-bub", "sh-speicher-klimaschutz-bub",
   "berlin-solarplus", "stuttgart-solaroffensive", "karlsruhe-klimabonus",
   "regensburg-effizient", "wuerzburg-klimastadt", "darmstadt-pv",
   "badhomburg-energiespar", "koeln-pv", "duesseldorf-klimafreundlich",
@@ -406,6 +414,28 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 17 Sep 2026 as a closed historical programme (no calculation fields).
   "mainz-bingen-balkonkraftwerke",
   "mayen-koblenz-balkonkraftwerke",
+  // Added 21 Sep 2026 as a closed historical programme (no calculation fields).
+  "kaarst-stecker-pv",
+  // Added 21 Sep 2026: building-age rule (completed by 31.12.2022), specialist
+  // installation and the 80 % combined cap for balcony kits have no test form.
+  "niederkruechten-klimaschutz",
+  // Added 21 Sep 2026 as a closed historical programme (no calculation fields).
+  "nettetal-steckermodule",
+  // Added 22 Sep 2026: tenants and condominium residents only (house owners
+  // excluded), four-week invoice window and first-come budget have no test form.
+  "cremlingen-balkonkraftwerk",
+  // Added 22 Sep 2026: purchase only after the receipt confirmation, 400 W module
+  // minimum, three-year own use and council budget release have no test form.
+  "goedenstorf-stecker-solar",
+  // Added 22 Sep 2026: exhausted; two-month main residence, application after
+  // installation and three-year operation have no test form.
+  "grossheide-balkonmodule",
+  // Added 22 Sep 2026: closed; dwelling-unit limit, dealer purchase and the
+  // exclusion after a municipal grant have no test form.
+  "rhein-kreis-neuss-stecker-pv",
+  // Added 22 Sep 2026: closed; five-year own use and the DGS listing of the
+  // inverter have no test form.
+  "berkenthin-balkon-solar",
   "altenkirchen-balkonkraftwerke",
   "altenkirchen-solarspeicher",
   "cochem-zell-solarstromspeicher",

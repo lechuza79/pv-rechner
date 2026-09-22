@@ -24,6 +24,30 @@ export function sourceFailure(status: number, contentType: string, html: string,
   return null;
 }
 
+/**
+ * NOLIS municipal portals (e.g. amtboizenburgland.de) put a notice page in
+ * front of every deep link while a "Wichtiger Hinweis" is active: the request
+ * is redirected to `/?ruri=<path>%3Fvs%3D1`, and that page links onward to
+ * `<path>?vs=1`, which serves the requested page. Without following it, every
+ * source of the portal read as "redirected" and could never be quittiert.
+ * Only a same-origin target whose path is the requested path is followed —
+ * never an arbitrary address taken from the page.
+ */
+export function noticeBypassTarget(requested: string, final: string): string | null {
+  try {
+    const from = new URL(requested), to = new URL(final);
+    if (to.origin.replace("://www.", "://") !== from.origin.replace("://www.", "://")) return null;
+    if (to.pathname.replace(/\/$/, "") !== "") return null;
+    const ruri = to.searchParams.get("ruri");
+    if (!ruri || !ruri.startsWith("/")) return null;
+    const target = new URL(ruri, to.origin);
+    if (target.origin !== to.origin) return null;
+    if (target.pathname.replace(/\/$/, "") !== from.pathname.replace(/\/$/, "")) return null;
+    if (target.searchParams.get("vs") !== "1") return null;
+    return target.toString();
+  } catch { return null; }
+}
+
 // Operational retry windows, not assertions about program validity: network
 // failures get tomorrow's run; blocks/shells get a weekly alternate-path review;
 // removed URLs need rediscovery rather than daily hammering of a dead path.

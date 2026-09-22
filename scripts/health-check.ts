@@ -1854,6 +1854,9 @@ export const GEPLANTE_LAEUFE: ReadonlyArray<{ datei: string; was: string }> = [
   // Alle sechs Stunden. Fällt er aus, veraltet der Hitzewellen-Hinweis; nach
   // gut zwei Wochen ohne Lauf verschwindet er, weil kein Tag mehr übrig ist.
   { datei: "wetter-vorhersage.yml", was: "Wetter-Vorhersage 16 Tage" },
+  // Werktags dreimal. Fällt er aus, bleiben geprüfte Sachfragen an
+  // Förderstellen liegen — am 21.09.2026 zweimal rot, ohne dass es jemand sah.
+  { datei: "foerder-anfragen.yml", was: "Sachfragen an Förderstellen" },
 ];
 
 /** Ab so vielen Läufen ohne Erfolg in Folge ist ein geplanter Lauf auffällig. */
