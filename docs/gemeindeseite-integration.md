@@ -66,3 +66,38 @@ Er ist **Referenz für Aussehen und Verhalten**, nicht Code, der live geht.
   der Suchlauf erzeugt 639 Funde ohne widersprüchliche Kennung.
 - Monatslauf aus EINEM Registerauszug (Atlas + Geschichten + Pakete), sonst
   weichen die Zahlen ab (gemessen: 108 von ~1.200 Paketen mit Abweichung).
+
+## Stand vor dem Livegang (22.09.2026)
+
+**Zwei Zweige.** `claude/gemeindeseite-integration` trägt Vorschau und alles
+Gemeinsame; `claude/gemeindeseite-umschalten` (darauf aufgesetzt) nimmt die neue
+Seite unter die Atlas-Adresse, löscht die alte und die Vorschau-Route. Live geht
+nur der zweite, als ein Merge auf main.
+
+**Erledigt und gemessen:**
+- 11.247 Pakete im Speicher `gemeinde-pakete` (Brotli, 673 MB); Lesen gecacht mit
+  der Seite, Marke `ATLAS_DATEN_TAG`. Ein Lesefehler lässt den Aufbau scheitern
+  (CDN behält die alte Seite), nur ein fehlendes Objekt ist 404.
+- Titel, Beschreibung, kanonische Adresse, Index-Regel an fünf Orten gegen die
+  Produktion gleich; strukturierte Daten wie vorher (Organization,
+  SoftwareApplication, BreadcrumbList, Dataset).
+- Besuchszählung und Brief-Herkunft wie auf jeder (site)-Seite.
+- Bildvergleich gegen den Prototyp: Ranking, Monitor, Bürger-Karten, Kontakt,
+  Kopf deckungsgleich. Bewusste Abweichungen: Quellenzeile (DWD statt freier
+  Wetter-API, PVGIS ergänzt), Kurztitel nach Regeln für alle Orte, Abo-Fenster im
+  Prototyp-Design mit dem archivierten Einwilligungstext.
+- Desktop und Telefon ohne seitlichen Überlauf an fünf Orten; ohne JavaScript
+  steht der Inhalt im HTML.
+
+**Offen bzw. bewusst so:**
+- **Ein Registerstand:** Datenbank 09-09, Pakete 09-10 — gut jede zwölfte Paket-
+  Prüfung weicht ab. Erst der Monatslauf (`scripts/gemeinde-monatslauf.ts`,
+  lokal, nach dem Datenbank-Import am 5.) macht beides aus EINEM Export. Er
+  läuft im Hauptcheckout; vorher die Story-Caches aus dem Codex-Worktree dorthin
+  KOPIEREN (heute Symlinks) und den geplanten Auftrag anlegen.
+- **Redaktionstisch „Kommunen":** Die Ortsseite zeigt die Geschichten aus dem
+  Paket, nicht mehr die Kette `orts-posts`. Was dort je Ort eingestellt wird,
+  erscheint nicht mehr auf der Ortsseite.
+- `public/atlas-design-preview` bleibt: die Startseite (Story-Karten) und die
+  Redaktion lesen daraus. `scripts/municipality-preview` bleibt als Referenz
+  des freigegebenen Entwurfs, bis der Livegang abgenommen ist.
