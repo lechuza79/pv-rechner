@@ -335,7 +335,7 @@ export function SocialKarte({
                       top: 0,
                       bottom: 0,
                       width: `${Math.max(anteil * 100, 2)}%`,
-                      background: s.hervorgehoben ? v("--color-cta") : v("--color-border"),
+                      background: s.hervorgehoben ? serienFarben(bild.stil, palette).hervorgehoben : serienFarben(bild.stil, palette).gedaempft,
                       borderRadius: v("--radius-pill"),
                     }}
                   />
