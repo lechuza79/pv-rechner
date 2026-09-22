@@ -1,7 +1,6 @@
 "use client";
 import { useState, useMemo, useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import FlowNav from "../../../components/FlowNav";
 import FlowSchritte from "../../../components/FlowSchritte";
 import {
@@ -81,7 +80,6 @@ export default function Waermepumpe({
   kfw?: HeizungsfoerderungBund | null;
 } = {}) {
   // ── Step state ───────────────────────────────────────────────
-  const router = useRouter();
   const [step, setStep] = useState(0);
   // Welche Fragen wirklich beantwortet sind. Die Werte darunter behalten ihre
   // Startwerte (die Rechnung braucht sie), geben sich aber nicht mehr als
@@ -928,9 +926,9 @@ export default function Waermepumpe({
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Ergebnis anzeigen" : "Weiter"}
                 onWeiter={next}
-                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
-                // Startseite — wie vorher, nur im gemeinsamen Baustein.
-                onZurueck={step > 0 ? back : () => router.push("/")}
+                // No Zurück in the first step — the same in every calculator.
+                onZurueck={back}
+                zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
             </div>

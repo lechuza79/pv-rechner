@@ -1,7 +1,6 @@
 "use client";
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import OptionCard from "../../../components/OptionCard";
 import FlowNav from "../../../components/FlowNav";
 import FlowSchritte from "../../../components/FlowSchritte";
@@ -68,7 +67,6 @@ const PROJ_YEAR = Math.round((projektionJahre.then[0] + projektionJahre.then[pro
 // nach sich, von denen hier nur die Klima-Config gebraucht wird — im Browser
 // lägen sonst sechs fremde Datentabellen.
 export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
-  const router = useRouter();
   const [step, setStep] = useState(0);
   // Welche Fragen wirklich beantwortet sind. Die Werte behalten ihre Startwerte
   // (die Rechnung braucht sie), geben sich aber nicht mehr als Auswahl aus —
@@ -413,9 +411,9 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Ergebnis anzeigen" : "Weiter"}
                 onWeiter={next}
-                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
-                // Startseite — wie vorher, nur im gemeinsamen Baustein.
-                onZurueck={step > 0 ? back : () => router.push("/")}
+                // No Zurück in the first step — the same in every calculator.
+                onZurueck={back}
+                zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
             </div>

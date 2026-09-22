@@ -1,7 +1,6 @@
 "use client";
 import { useState, useMemo, useCallback, useEffect, useRef, Fragment } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import FlowNav from "../../../../components/FlowNav";
 import FlowSchritte from "../../../../components/FlowSchritte";
 import OptionCard from "../../../../components/OptionCard";
@@ -43,7 +42,6 @@ function configLabel(setId: BalkonSetId, storageId: BalkonStorageId): string {
 }
 
 export default function Balkon() {
-  const router = useRouter();
   const [step, setStep] = useState(0);
   // Welche Fragen wirklich beantwortet sind. Die Werte behalten ihre Startwerte
   // (die Rechnung braucht sie), geben sich aber nicht mehr als Auswahl aus —
@@ -480,9 +478,9 @@ export default function Balkon() {
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Empfehlung anzeigen" : "Weiter"}
                 onWeiter={next}
-                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
-                // Startseite — wie vorher, nur im gemeinsamen Baustein.
-                onZurueck={step > 0 ? back : () => router.push("/")}
+                // No Zurück in the first step — the same in every calculator.
+                onZurueck={back}
+                zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
             </div>

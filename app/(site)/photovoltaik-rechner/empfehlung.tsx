@@ -87,15 +87,9 @@ const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS];
 // Adresse, damit der Flow dort NICHT herausführt. Ohne diesen Parameter hätte
 // der Empfehlungsweg den Besucher mitten im Vorgang auf solar-check.io
 // abgesetzt — mit dem Ergebnis, aber ohne den Betrieb, der ihn geschickt hat.
-//
-// `heimPfad` ist das Ziel des Zurück-Knopfes im ERSTEN Schritt — dort führt er
-// aus dem Flow heraus. Auf unserer Seite ist das die Startseite. Auf der Seite
-// eines Fachbetriebs gibt es keine: `null` lässt den Knopf dort ganz weg,
-// statt den Besucher auf solar-check.io abzusetzen.
 export default function Empfehlung({
   stand,
   zielPfad = "/photovoltaik-rechner",
-  heimPfad = "/",
   eigenerPfad = "/photovoltaik-rechner",
   ohneZwischenansicht = false,
   ueberschrift = "Was passt zu dir?",
@@ -104,7 +98,6 @@ export default function Empfehlung({
 }: {
   stand?: StandSeite;
   zielPfad?: string;
-  heimPfad?: string | null;
   /** Die Adresse, unter der dieser Flow gerade läuft. Er schreibt seinen
    *  Zustand dorthin zurück. */
   eigenerPfad?: string;
@@ -760,17 +753,9 @@ export default function Empfehlung({
                     : "Weiter"
                 }
                 onWeiter={next}
-                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
-                // Startseite — dieselbe Wirkung wie vorher, nur im gemeinsamen
-                // Baustein statt als eigener Link daneben. Ohne Heimatadresse
-                // (Partnerseite) entfällt der Knopf dort.
-                onZurueck={
-                  step > 0
-                    ? back
-                    : heimPfad
-                      ? () => router.push(heimPfad)
-                      : undefined
-                }
+                // No Zurück in the first step — the same in every calculator.
+                onZurueck={back}
+                zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
             </div>
