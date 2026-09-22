@@ -15,9 +15,12 @@ import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
  *                               object `<ags>.json.br` (Brotli: ≈55 KB instead
  *                               of ≈370 KB; 11,000 towns are ≈0.6 GB, not 4)
  *
- * A missing, unreadable or wrong-version package returns null: the page then
- * shows the town without the new sections rather than half a package. The
- * read carries the soft budget — the page has a complete fallback.
+ * Two outcomes that must never be confused:
+ *   null   the package does not exist (HTTP 400/404 from the store, or it is
+ *          of another version/town) — the page answers 404
+ *   throw  the read failed (timeout, network, 5xx) — the render fails and
+ *          the CDN keeps serving the last good page. Turned into null, one
+ *          storage hiccup would put a 404 into the cache for a day.
  */
 export const GEMEINDE_PAKET_BUCKET = "gemeinde-pakete";
 
@@ -39,7 +42,8 @@ export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | nu
   }
   const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
-  if (!url || !key) return null;
+  // Missing access is a broken deployment, not a missing town.
+  if (!url || !key) throw new Error("gemeinde-paket: Supabase-Zugang fehlt");
   try {
     const res = await withDbTimeout(
       fetch(`${url}/storage/v1/object/${GEMEINDE_PAKET_BUCKET}/${ags}.json.br`, {
@@ -51,10 +55,12 @@ export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | nu
       `gemeinde-paket/${ags}`,
       DB_SOFT_READ_TIMEOUT_MS,
     );
-    if (!res.ok) return null;
+    // Supabase Storage answers a missing object with 400 or 404.
+    if (res.status === 400 || res.status === 404) return null;
+    if (!res.ok) throw new Error(`gemeinde-paket/${ags}: HTTP ${res.status}`);
     const data = JSON.parse(brotliDecompressSync(Buffer.from(await res.arrayBuffer())).toString("utf8"));
     return gueltig(data, ags) ? data : null;
-  } catch {
-    return null;
+  } catch (e) {
+    throw e instanceof Error ? e : new Error(`gemeinde-paket/${ags}: ${String(e)}`);
   }
 }
