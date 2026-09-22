@@ -47261,6 +47261,14 @@
       {
         "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
         "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1",
+        "finding": "Ziel des ersten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte der Samtgemeinde mit Anschrift und Leitweg-ID, keine Förderseite (gegengelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1",
+        "finding": "Ziel des zweiten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte des Sachbearbeiters Bauen/Liegenschaften, keine Förderseite (gegengelesen 22.09.2026)."
       }
     ],
     "sources": [
@@ -47291,14 +47299,14 @@
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte der Samtgemeinde (Service/Samtgemeinde-Baddeckenstedt.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1"
       },
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte des Sachbearbeiters (Service/Herr-Burkhard-Behne.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1"
       }
     ]
   },
@@ -47345,6 +47353,14 @@
       {
         "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
         "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1",
+        "finding": "Ziel des ersten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte der Samtgemeinde mit Anschrift und Leitweg-ID, keine Förderseite (gegengelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1",
+        "finding": "Ziel des zweiten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte des Sachbearbeiters Bauen/Liegenschaften, keine Förderseite (gegengelesen 22.09.2026)."
       }
     ],
     "sources": [
@@ -47375,14 +47391,14 @@
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte der Samtgemeinde (Service/Samtgemeinde-Baddeckenstedt.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1"
       },
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte des Sachbearbeiters (Service/Herr-Burkhard-Behne.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1"
       }
     ]
   },
@@ -47429,6 +47445,14 @@
       {
         "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
         "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1",
+        "finding": "Ziel des ersten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte der Samtgemeinde mit Anschrift und Leitweg-ID, keine Förderseite (gegengelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1",
+        "finding": "Ziel des zweiten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte des Sachbearbeiters Bauen/Liegenschaften, keine Förderseite (gegengelesen 22.09.2026)."
       }
     ],
     "sources": [
@@ -47459,14 +47483,14 @@
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte der Samtgemeinde (Service/Samtgemeinde-Baddeckenstedt.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1"
       },
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte des Sachbearbeiters (Service/Herr-Burkhard-Behne.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1"
       }
     ]
   },
@@ -47513,6 +47537,14 @@
       {
         "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
         "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1",
+        "finding": "Ziel des ersten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte der Samtgemeinde mit Anschrift und Leitweg-ID, keine Förderseite (gegengelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1",
+        "finding": "Ziel des zweiten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte des Sachbearbeiters Bauen/Liegenschaften, keine Förderseite (gegengelesen 22.09.2026)."
       }
     ],
     "sources": [
@@ -47543,14 +47575,14 @@
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte der Samtgemeinde (Service/Samtgemeinde-Baddeckenstedt.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1"
       },
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte des Sachbearbeiters (Service/Herr-Burkhard-Behne.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1"
       }
     ]
   },
@@ -47597,6 +47629,14 @@
       {
         "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
         "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1",
+        "finding": "Ziel des ersten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte der Samtgemeinde mit Anschrift und Leitweg-ID, keine Förderseite (gegengelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1",
+        "finding": "Ziel des zweiten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte des Sachbearbeiters Bauen/Liegenschaften, keine Förderseite (gegengelesen 22.09.2026)."
       }
     ],
     "sources": [
@@ -47627,14 +47667,14 @@
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte der Samtgemeinde (Service/Samtgemeinde-Baddeckenstedt.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1"
       },
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte des Sachbearbeiters (Service/Herr-Burkhard-Behne.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1"
       }
     ]
   },
@@ -47681,6 +47721,14 @@
       {
         "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
         "finding": "Landkreis Wolfenbüttel, Meldung vom 21.05.2026: Programm „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029 fördert Gebäudehülle und Klimaanpassung; PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1",
+        "finding": "Ziel des ersten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte der Samtgemeinde mit Anschrift und Leitweg-ID, keine Förderseite (gegengelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1",
+        "finding": "Ziel des zweiten Kontakt-Detaillinks der Seite Solarpotenzialkataster: Visitenkarte des Sachbearbeiters Bauen/Liegenschaften, keine Förderseite (gegengelesen 22.09.2026)."
       }
     ],
     "sources": [
@@ -47711,14 +47759,366 @@
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.1.1",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte der Samtgemeinde (Service/Samtgemeinde-Baddeckenstedt.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Samtgemeinde-Baddeckenstedt.php?ModID=9&FID=4162.1.1"
       },
       {
         "url": "baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster/index.php?object=tx,4162.1.1&amp;ModID=9&amp;FID=4162.12.1&amp;NavID=4162.606",
         "disposition": "reviewed",
-        "reason": "CMS-Variante derselben Seite Solarpotenzialkataster — Auskunft statt Zuschuss (gelesen 22.09.2026).",
-        "evidenceUrl": "https://www.baddeckenstedt.de/Bauen-Umwelt-/F%C3%B6rderungen/Weitere-F%C3%B6rderprogramme/Solarpotenzialkataster"
+        "reason": "Kontakt-Detaillink der Seite Solarpotenzialkataster. Der Server liefert dafür die Visitenkarte des Sachbearbeiters (Service/Herr-Burkhard-Behne.php), keine Förderseite (am 22.09.2026 gegengelesen).",
+        "evidenceUrl": "https://www.baddeckenstedt.de/Service/Herr-Burkhard-Behne.php?ModID=9&FID=4162.12.1"
+      }
+    ]
+  },
+  {
+    "regionId": "09274112",
+    "name": "Aham",
+    "checkedAt": "2026-09-22T20:28:33Z",
+    "recheckAt": "2026-12-21T12:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen — Gemeinde, Verwaltungsgemeinschaft Gerzen und Landkreis Landshut. Bundes- und Landesprogramme sowie Beratungsangebote getrennt eingeordnet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Aham gehört zur Verwaltungsgemeinschaft Gerzen im Landkreis Landshut. Weder die Gemeinde noch die Verwaltungsgemeinschaft noch der Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Seite „Aktuelle Fördermöglichkeiten im Überblick“ der Verwaltungsgemeinschaft nennt ausschließlich Bundesprogramme: KfW-Zuschuss Nr. 458 (Heizungsförderung für Privatpersonen), KfW-Kredit Nr. 261 (Sanierung und Kauf) und die Bundesförderung für effiziente Wärmenetze der BAFA. Die Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“ liefert Breitband-, Mobilfunk- und Seniorenmeldungen sowie ein Datenschutz-Informationsblatt zu freiwilligen Leistungen — keinen Anlagenzuschuss. Der Landkreis Landshut verweist auf seiner Seite „Energieberatung und Förderungen“ nur auf Beratung (Verbraucherzentrale Bayern, Landshuter Energieagentur) und auf Bundes- und Landesstellen, nicht auf ein eigenes Programm. Im Kreis Landshut stehen allein Altdorf (Balkonkraftwerk, eingestellt) und Kumhausen (Balkon-Photovoltaik, aktiv) im Katalog; beide gelten für Aham nicht.",
+    "searches": [
+      "Seite „Aktuelle Fördermöglichkeiten im Überblick“ der VG Gerzen gelesen (22.09.2026): KfW 458, KfW 261, BAFA Wärmenetze — kein kommunaler Zuschuss",
+      "Volltextsuche der VG Gerzen nach „Förderprogramm“ gelesen (22.09.2026), auch die Filter auf Artikel und auf Dokumente: 9 bzw. 8 bzw. 1 Treffer, keiner mit Anlagenbezug",
+      "Das einzige Dokument der Suche im Original geöffnet (22.09.2026): „Informationsblatt zur Erhebung von personenbezogenen Daten nach Art. 13 und 14 DSGVO“ zu freiwilligen Leistungen nach GO und KommHV — Datenschutzhinweis, kein Förderprogramm",
+      "Seite „Energieberatung und Förderungen“ des Landkreises Landshut gelesen (22.09.2026): Verbraucherzentrale Bayern, Landshuter Energieagentur, Verweise auf Förderdatenbank des Bundes, KfW, LfA Bayern, BAFA und dena — kein eigenes Kreisprogramm",
+      "Websuche nach einem Zuschuss der Gemeinden Aham, Gerzen, Kröning und Schalkham für Balkonkraftwerk oder Photovoltaik (22.09.2026): kein kommunales Programm gefunden",
+      "Katalog nach Programmen im Kreis 09274 durchsucht: nur Altdorf (09274113, eingestellt) und Kumhausen (09274146, aktiv)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick",
+        "finding": "Förderübersicht der VG Gerzen: KfW-Zuschuss Nr. 458, KfW-Kredit Nr. 261, Bundesförderung für effiziente Wärmenetze — ausschließlich Bundesprogramme (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0",
+        "finding": "Volltextsuche nach „Förderprogramm“: neun Treffer zu Breitband, Mobilfunk und Seniorenarbeit, kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.gerzen.de/Infoblatt-Freiwillige-Leistungen-Foerderprogramme.o6360.html",
+        "finding": "Das einzige Dokument der Suche ist ein Datenschutz-Informationsblatt nach Art. 13/14 DSGVO zu freiwilligen Leistungen, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.landkreis-landshut.de/themen/energie-und-klimaschutz/energieberatung-und-foerderungen/",
+        "finding": "Landkreis Landshut nennt nur Beratung und Verweise auf Bundes- und Landesstellen, kein eigenes Förderprogramm für private Haushalte (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=-2",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=0",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=2",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=0",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=1",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=2",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=3",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;type=1",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;type=7",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      }
+    ]
+  },
+  {
+    "regionId": "09274135",
+    "name": "Gerzen",
+    "checkedAt": "2026-09-22T20:28:33Z",
+    "recheckAt": "2026-12-21T12:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen — Gemeinde, Verwaltungsgemeinschaft Gerzen und Landkreis Landshut. Bundes- und Landesprogramme sowie Beratungsangebote getrennt eingeordnet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gerzen gehört zur Verwaltungsgemeinschaft Gerzen im Landkreis Landshut. Weder die Gemeinde noch die Verwaltungsgemeinschaft noch der Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Seite „Aktuelle Fördermöglichkeiten im Überblick“ der Verwaltungsgemeinschaft nennt ausschließlich Bundesprogramme: KfW-Zuschuss Nr. 458 (Heizungsförderung für Privatpersonen), KfW-Kredit Nr. 261 (Sanierung und Kauf) und die Bundesförderung für effiziente Wärmenetze der BAFA. Die Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“ liefert Breitband-, Mobilfunk- und Seniorenmeldungen sowie ein Datenschutz-Informationsblatt zu freiwilligen Leistungen — keinen Anlagenzuschuss. Der Landkreis Landshut verweist auf seiner Seite „Energieberatung und Förderungen“ nur auf Beratung (Verbraucherzentrale Bayern, Landshuter Energieagentur) und auf Bundes- und Landesstellen, nicht auf ein eigenes Programm. Im Kreis Landshut stehen allein Altdorf (Balkonkraftwerk, eingestellt) und Kumhausen (Balkon-Photovoltaik, aktiv) im Katalog; beide gelten für Gerzen nicht.",
+    "searches": [
+      "Seite „Aktuelle Fördermöglichkeiten im Überblick“ der VG Gerzen gelesen (22.09.2026): KfW 458, KfW 261, BAFA Wärmenetze — kein kommunaler Zuschuss",
+      "Volltextsuche der VG Gerzen nach „Förderprogramm“ gelesen (22.09.2026), auch die Filter auf Artikel und auf Dokumente: 9 bzw. 8 bzw. 1 Treffer, keiner mit Anlagenbezug",
+      "Das einzige Dokument der Suche im Original geöffnet (22.09.2026): „Informationsblatt zur Erhebung von personenbezogenen Daten nach Art. 13 und 14 DSGVO“ zu freiwilligen Leistungen nach GO und KommHV — Datenschutzhinweis, kein Förderprogramm",
+      "Seite „Energieberatung und Förderungen“ des Landkreises Landshut gelesen (22.09.2026): Verbraucherzentrale Bayern, Landshuter Energieagentur, Verweise auf Förderdatenbank des Bundes, KfW, LfA Bayern, BAFA und dena — kein eigenes Kreisprogramm",
+      "Websuche nach einem Zuschuss der Gemeinden Aham, Gerzen, Kröning und Schalkham für Balkonkraftwerk oder Photovoltaik (22.09.2026): kein kommunales Programm gefunden",
+      "Katalog nach Programmen im Kreis 09274 durchsucht: nur Altdorf (09274113, eingestellt) und Kumhausen (09274146, aktiv)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick",
+        "finding": "Förderübersicht der VG Gerzen: KfW-Zuschuss Nr. 458, KfW-Kredit Nr. 261, Bundesförderung für effiziente Wärmenetze — ausschließlich Bundesprogramme (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0",
+        "finding": "Volltextsuche nach „Förderprogramm“: neun Treffer zu Breitband, Mobilfunk und Seniorenarbeit, kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.gerzen.de/Infoblatt-Freiwillige-Leistungen-Foerderprogramme.o6360.html",
+        "finding": "Das einzige Dokument der Suche ist ein Datenschutz-Informationsblatt nach Art. 13/14 DSGVO zu freiwilligen Leistungen, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.landkreis-landshut.de/themen/energie-und-klimaschutz/energieberatung-und-foerderungen/",
+        "finding": "Landkreis Landshut nennt nur Beratung und Verweise auf Bundes- und Landesstellen, kein eigenes Förderprogramm für private Haushalte (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=-2",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=0",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=2",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=0",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=1",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=2",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=3",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;type=1",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;type=7",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      }
+    ]
+  },
+  {
+    "regionId": "09274145",
+    "name": "Kröning",
+    "checkedAt": "2026-09-22T20:28:33Z",
+    "recheckAt": "2026-12-21T12:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen — Gemeinde, Verwaltungsgemeinschaft Gerzen und Landkreis Landshut. Bundes- und Landesprogramme sowie Beratungsangebote getrennt eingeordnet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kröning gehört zur Verwaltungsgemeinschaft Gerzen im Landkreis Landshut. Weder die Gemeinde noch die Verwaltungsgemeinschaft noch der Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Seite „Aktuelle Fördermöglichkeiten im Überblick“ der Verwaltungsgemeinschaft nennt ausschließlich Bundesprogramme: KfW-Zuschuss Nr. 458 (Heizungsförderung für Privatpersonen), KfW-Kredit Nr. 261 (Sanierung und Kauf) und die Bundesförderung für effiziente Wärmenetze der BAFA. Die Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“ liefert Breitband-, Mobilfunk- und Seniorenmeldungen sowie ein Datenschutz-Informationsblatt zu freiwilligen Leistungen — keinen Anlagenzuschuss. Der Landkreis Landshut verweist auf seiner Seite „Energieberatung und Förderungen“ nur auf Beratung (Verbraucherzentrale Bayern, Landshuter Energieagentur) und auf Bundes- und Landesstellen, nicht auf ein eigenes Programm. Im Kreis Landshut stehen allein Altdorf (Balkonkraftwerk, eingestellt) und Kumhausen (Balkon-Photovoltaik, aktiv) im Katalog; beide gelten für Kröning nicht.",
+    "searches": [
+      "Seite „Aktuelle Fördermöglichkeiten im Überblick“ der VG Gerzen gelesen (22.09.2026): KfW 458, KfW 261, BAFA Wärmenetze — kein kommunaler Zuschuss",
+      "Volltextsuche der VG Gerzen nach „Förderprogramm“ gelesen (22.09.2026), auch die Filter auf Artikel und auf Dokumente: 9 bzw. 8 bzw. 1 Treffer, keiner mit Anlagenbezug",
+      "Das einzige Dokument der Suche im Original geöffnet (22.09.2026): „Informationsblatt zur Erhebung von personenbezogenen Daten nach Art. 13 und 14 DSGVO“ zu freiwilligen Leistungen nach GO und KommHV — Datenschutzhinweis, kein Förderprogramm",
+      "Seite „Energieberatung und Förderungen“ des Landkreises Landshut gelesen (22.09.2026): Verbraucherzentrale Bayern, Landshuter Energieagentur, Verweise auf Förderdatenbank des Bundes, KfW, LfA Bayern, BAFA und dena — kein eigenes Kreisprogramm",
+      "Websuche nach einem Zuschuss der Gemeinden Aham, Gerzen, Kröning und Schalkham für Balkonkraftwerk oder Photovoltaik (22.09.2026): kein kommunales Programm gefunden",
+      "Katalog nach Programmen im Kreis 09274 durchsucht: nur Altdorf (09274113, eingestellt) und Kumhausen (09274146, aktiv)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick",
+        "finding": "Förderübersicht der VG Gerzen: KfW-Zuschuss Nr. 458, KfW-Kredit Nr. 261, Bundesförderung für effiziente Wärmenetze — ausschließlich Bundesprogramme (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0",
+        "finding": "Volltextsuche nach „Förderprogramm“: neun Treffer zu Breitband, Mobilfunk und Seniorenarbeit, kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.gerzen.de/Infoblatt-Freiwillige-Leistungen-Foerderprogramme.o6360.html",
+        "finding": "Das einzige Dokument der Suche ist ein Datenschutz-Informationsblatt nach Art. 13/14 DSGVO zu freiwilligen Leistungen, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.landkreis-landshut.de/themen/energie-und-klimaschutz/energieberatung-und-foerderungen/",
+        "finding": "Landkreis Landshut nennt nur Beratung und Verweise auf Bundes- und Landesstellen, kein eigenes Förderprogramm für private Haushalte (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=-2",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=0",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=2",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=0",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=1",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=2",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;order=3",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;type=1",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      },
+      {
+        "url": "gerzen.de/suchergebnisse-vgem?bid=80&amp;app=search&amp;q=f%C3%B6rderprogramm&amp;type=7",
+        "disposition": "reviewed",
+        "reason": "Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“: Treffer sind Breitbandausbau, Mobilfunk und Seniorenarbeit; einziges Dokument ist ein Datenschutz-Informationsblatt zu freiwilligen Leistungen. Kein Anlagenzuschuss (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0"
+      }
+    ]
+  },
+  {
+    "regionId": "09274179",
+    "name": "Schalkham",
+    "checkedAt": "2026-09-22T20:28:33Z",
+    "recheckAt": "2026-12-21T12:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen — Gemeinde, Verwaltungsgemeinschaft Gerzen und Landkreis Landshut. Bundes- und Landesprogramme sowie Beratungsangebote getrennt eingeordnet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schalkham gehört zur Verwaltungsgemeinschaft Gerzen im Landkreis Landshut. Weder die Gemeinde noch die Verwaltungsgemeinschaft noch der Landkreis führen einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Seite „Aktuelle Fördermöglichkeiten im Überblick“ der Verwaltungsgemeinschaft nennt ausschließlich Bundesprogramme: KfW-Zuschuss Nr. 458 (Heizungsförderung für Privatpersonen), KfW-Kredit Nr. 261 (Sanierung und Kauf) und die Bundesförderung für effiziente Wärmenetze der BAFA. Die Volltextsuche der Verwaltungsgemeinschaft nach „Förderprogramm“ liefert Breitband-, Mobilfunk- und Seniorenmeldungen sowie ein Datenschutz-Informationsblatt zu freiwilligen Leistungen — keinen Anlagenzuschuss. Der Landkreis Landshut verweist auf seiner Seite „Energieberatung und Förderungen“ nur auf Beratung (Verbraucherzentrale Bayern, Landshuter Energieagentur) und auf Bundes- und Landesstellen, nicht auf ein eigenes Programm. Im Kreis Landshut stehen allein Altdorf (Balkonkraftwerk, eingestellt) und Kumhausen (Balkon-Photovoltaik, aktiv) im Katalog; beide gelten für Schalkham nicht.",
+    "searches": [
+      "Seite „Aktuelle Fördermöglichkeiten im Überblick“ der VG Gerzen gelesen (22.09.2026): KfW 458, KfW 261, BAFA Wärmenetze — kein kommunaler Zuschuss",
+      "Volltextsuche der VG Gerzen nach „Förderprogramm“ gelesen (22.09.2026), auch die Filter auf Artikel und auf Dokumente: 9 bzw. 8 bzw. 1 Treffer, keiner mit Anlagenbezug",
+      "Das einzige Dokument der Suche im Original geöffnet (22.09.2026): „Informationsblatt zur Erhebung von personenbezogenen Daten nach Art. 13 und 14 DSGVO“ zu freiwilligen Leistungen nach GO und KommHV — Datenschutzhinweis, kein Förderprogramm",
+      "Seite „Energieberatung und Förderungen“ des Landkreises Landshut gelesen (22.09.2026): Verbraucherzentrale Bayern, Landshuter Energieagentur, Verweise auf Förderdatenbank des Bundes, KfW, LfA Bayern, BAFA und dena — kein eigenes Kreisprogramm",
+      "Websuche nach einem Zuschuss der Gemeinden Aham, Gerzen, Kröning und Schalkham für Balkonkraftwerk oder Photovoltaik (22.09.2026): kein kommunales Programm gefunden",
+      "Katalog nach Programmen im Kreis 09274 durchsucht: nur Altdorf (09274113, eingestellt) und Kumhausen (09274146, aktiv)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick",
+        "finding": "Förderübersicht der VG Gerzen: KfW-Zuschuss Nr. 458, KfW-Kredit Nr. 261, Bundesförderung für effiziente Wärmenetze — ausschließlich Bundesprogramme (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.gerzen.de/suchergebnisse-vgem?bid=80&app=search&q=f%C3%B6rderprogramm&order=0",
+        "finding": "Volltextsuche nach „Förderprogramm“: neun Treffer zu Breitband, Mobilfunk und Seniorenarbeit, kein Anlagenzuschuss (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.gerzen.de/Infoblatt-Freiwillige-Leistungen-Foerderprogramme.o6360.html",
+        "finding": "Das einzige Dokument der Suche ist ein Datenschutz-Informationsblatt nach Art. 13/14 DSGVO zu freiwilligen Leistungen, kein Förderprogramm (gelesen 22.09.2026)."
+      },
+      {
+        "url": "https://www.landkreis-landshut.de/themen/energie-und-klimaschutz/energieberatung-und-foerderungen/",
+        "finding": "Landkreis Landshut nennt nur Beratung und Verweise auf Bundes- und Landesstellen, kein eigenes Förderprogramm für private Haushalte (gelesen 22.09.2026)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=-2",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=0",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
+      },
+      {
+        "url": "gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick?o2c_fs=2",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht der Verwaltungsgemeinschaft Gerzen: nur Bundesprogramme (KfW-Zuschuss 458 Heizungsförderung, KfW-Kredit 261, BAFA-Förderung für effiziente Wärmenetze). Kein eigener Zuschuss der Gemeinde oder der Verwaltungsgemeinschaft (gelesen 22.09.2026).",
+        "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
       }
     ]
   }
