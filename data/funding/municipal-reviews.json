@@ -42402,5 +42402,85 @@
         "evidenceUrl": "https://berkenthin.de/europa-ganz-nah-und-zum-anfassen-oliver-brandt-besichtigt-eu-gefoerderte-projekte/"
       }
     ]
+  },
+  {
+    "regionId": "13076090",
+    "name": "Ludwigslust",
+    "checkedAt": "2026-09-22T02:45:00Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Ludwigslust führt kein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seiten „Zuschuss für steckerfertige Photovoltaikanlagen“ sind die Leistungsbeschreibung des Landesprogramms (Landesförderinstitut M-V), das bereits im Katalog steht. Die städtische Förderung gilt Vereinen; Klimaschutzkonzept und Wärmeplan beschließen keinen Bürgerzuschuss.",
+    "searches": [
+      "ludwigslust.de Volltextsuche: Photovoltaik, Balkonkraftwerk, Zuschuss, Solaranlage, Förderung, Wärmepumpe, Klimaschutz, Speicher",
+      "Stadt Ludwigslust Förderung Balkonkraftwerk Photovoltaik Zuschuss (Websuche)",
+      "Stadtwerke Ludwigslust-Grabow Zuschuss Balkonkraftwerk Wärmepumpe (Websuche: nur Tarife, kein Zuschuss)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&FID=3634.1563.1",
+        "finding": "Im Original gelesen (22.09.2026): Leistungsbeschreibung aus dem Landes-Zuständigkeitsfinder — Zuschuss 500 € je Anlage für Mieter bzw. selbstnutzende Eigentümer mit Erstwohnsitz in M-V; Handlungsgrundlage ist die Landesrichtlinie, zuständige Stelle das Landesförderinstitut M-V. Kein Programm der Stadt; bereits als Landesprogramm im Katalog."
+      },
+      {
+        "url": "https://www.ludwigslust.de/?ffmod=suche&NavID=3634.11&such=Balkonkraftwerk",
+        "finding": "Volltextsuche der Stadtseite (22.09.2026): Balkonkraftwerk nur diese Landes-Dienstleistung; Photovoltaik, Solaranlage, Speicher, Wärmepumpe nur Bebauungspläne, Stadtanzeiger, Klimaschutzkonzept und Wärmeplan; Zuschuss nur Wohngeld, Wohnungsrückbau, Städtebauförderung und die Landes-Dienstleistung; Förderung nur Vereinsförderung der Stadt, LEADER/EU-Projekte der Stadt."
+      },
+      {
+        "url": "https://www.ludwigslust.de/index.php?La=1&object=tx,3634.543.1",
+        "finding": "Im Original gelesen: „Förderung durch die Stadt Ludwigslust“ betrifft ausschließlich soziale Dienste, gemeinnützige Vereine, Sportvereine und Jugendgruppen (Antragsfrist 31. März) — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.ludwigslust.de/Energie-Klima/Klimaschutz/",
+        "finding": "Im Original gelesen: Klimaschutzseite beschreibt das über die Nationale Klimaschutzinitiative geförderte Klimaschutzmanagement der Stadt (Förderzeitraum 01.08.2024–31.10.2026) — kein Förderprogramm für Bürger."
+      },
+      {
+        "url": "https://www.ludwigslust.de/output/download.php?fid=3634.4235.1.PDF",
+        "finding": "Klimaschutzkonzept Teil 2 (Maßnahmenkatalog) gelesen: Förderhinweise nennen nur Bundes-, Landes- und EU-Programme für kommunale Anlagen; kein beschlossener städtischer Zuschuss für Photovoltaik, Balkonkraftwerk, Speicher oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen“ aus dem Landes-Zuständigkeitsfinder (Varianten nur durch Navigations-/Alphabetparameter); gelesen: Landesprogramm des LFI M-V, bereits im Katalog — kein Programm der Stadt.",
+        "evidenceUrl": "https://www.ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&FID=3634.1563.1"
+      },
+      {
+        "url": "ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?NavID=3634.14&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&ModID=10&object=tx%7C3634.2.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen“ aus dem Landes-Zuständigkeitsfinder (Varianten nur durch Navigations-/Alphabetparameter); gelesen: Landesprogramm des LFI M-V, bereits im Katalog — kein Programm der Stadt.",
+        "evidenceUrl": "https://www.ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&FID=3634.1563.1"
+      },
+      {
+        "url": "ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?NavID=3634.14&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&ModID=10&object=tx%7C3634.2.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen“ aus dem Landes-Zuständigkeitsfinder (Varianten nur durch Navigations-/Alphabetparameter); gelesen: Landesprogramm des LFI M-V, bereits im Katalog — kein Programm der Stadt.",
+        "evidenceUrl": "https://www.ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&FID=3634.1563.1"
+      },
+      {
+        "url": "ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?NavID=3634.14&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&ModID=10&object=tx%7C3634.2.1&amp;alpha=D",
+        "disposition": "reviewed",
+        "reason": "Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen“ aus dem Landes-Zuständigkeitsfinder (Varianten nur durch Navigations-/Alphabetparameter); gelesen: Landesprogramm des LFI M-V, bereits im Katalog — kein Programm der Stadt.",
+        "evidenceUrl": "https://www.ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&FID=3634.1563.1"
+      },
+      {
+        "url": "ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?NavID=3634.14&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&ModID=10&object=tx%7C3634.2.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen“ aus dem Landes-Zuständigkeitsfinder (Varianten nur durch Navigations-/Alphabetparameter); gelesen: Landesprogramm des LFI M-V, bereits im Katalog — kein Programm der Stadt.",
+        "evidenceUrl": "https://www.ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&FID=3634.1563.1"
+      },
+      {
+        "url": "ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?NavID=3634.14&such=Zuschuss%25f%FCr%25steckerfertige%25Photovoltaikanlagen%25Balkon%25PV%25Anlagen%25beantragen&ModID=10&object=tx%7C3634.2.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen“ aus dem Landes-Zuständigkeitsfinder (Varianten nur durch Navigations-/Alphabetparameter); gelesen: Landesprogramm des LFI M-V, bereits im Katalog — kein Programm der Stadt.",
+        "evidenceUrl": "https://www.ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&FID=3634.1563.1"
+      },
+      {
+        "url": "stadtludwigslust.de/index.php?object=tx,3634.2.1&amp;ModID=10&amp;FID=3634.1563.1",
+        "disposition": "reviewed",
+        "reason": "Leistungsbeschreibung „Zuschuss für steckerfertige Photovoltaikanlagen“ aus dem Landes-Zuständigkeitsfinder (Varianten nur durch Navigations-/Alphabetparameter); gelesen: Landesprogramm des LFI M-V, bereits im Katalog — kein Programm der Stadt.",
+        "evidenceUrl": "https://www.ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&FID=3634.1563.1"
+      }
+    ]
   }
 ]
