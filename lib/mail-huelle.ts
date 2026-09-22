@@ -27,9 +27,12 @@ export const C = {
   karte: tokens["--color-bg"],
   grund: tokens["--color-bg-muted"],
   akzent: tokens["--color-accent"],
-  aufAkzent: tokens["--color-text-on-accent"],
+  // The button carries the site's action colour (neon with dark ink), the same
+  // pair as every primary button on the site.
+  knopf: tokens["--color-cta"],
+  aufKnopf: tokens["--color-cta-ink"],
   eckeKarte: tokens["--radius-lg"],
-  eckeKnopf: tokens["--radius-md"],
+  eckeKnopf: tokens["--radius-pill"],
 };
 
 /**
@@ -107,7 +110,7 @@ export function huelle(o: {
 
     <div style="text-align:center;padding-bottom:22px">
       <a href="${SITE}" style="text-decoration:none;color:${C.text};font-size:${T.marke};font-weight:700">
-        <img src="${SITE}/logo.png" alt="Solar Check" width="150" height="26" style="display:block;margin:0 auto;border:0;outline:none;max-width:150px;height:auto">
+        <img src="${SITE}/logo.png" alt="Solar Check" width="132" height="31" style="display:block;margin:0 auto;border:0;outline:none;max-width:132px;height:auto">
       </a>
     </div>
 
@@ -130,7 +133,7 @@ export function huelle(o: {
 
 export function knopf(url: string, text: string): string {
   return `<p style="margin:24px 0">
-    <a href="${url}" style="display:inline-block;background:${C.akzent};color:${C.aufAkzent};text-decoration:none;padding:13px 24px;border-radius:${C.eckeKnopf};font-weight:700;font-size:${T.text}">${escapeHtml(text)}</a>
+    <a href="${url}" style="display:inline-block;background:${C.knopf};color:${C.aufKnopf};text-decoration:none;padding:13px 24px;border-radius:${C.eckeKnopf};font-weight:700;font-size:${T.text}">${escapeHtml(text)}</a>
   </p>`;
 }
 
