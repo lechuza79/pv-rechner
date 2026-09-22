@@ -427,6 +427,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 22 Sep 2026: purchase only after the receipt confirmation, 400 W module
   // minimum, three-year own use and council budget release have no test form.
   "goedenstorf-stecker-solar",
+  // Added 22 Sep 2026: exhausted; two-month main residence, application after
+  // installation and three-year operation have no test form.
+  "grossheide-balkonmodule",
+  // Added 22 Sep 2026: closed; dwelling-unit limit, dealer purchase and the
+  // exclusion after a municipal grant have no test form.
+  "rhein-kreis-neuss-stecker-pv",
   "altenkirchen-balkonkraftwerke",
   "altenkirchen-solarspeicher",
   "cochem-zell-solarstromspeicher",

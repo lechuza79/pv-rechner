@@ -6964,6 +6964,71 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // Added 22.09.2026 as an exhausted municipal balcony programme. Guideline
+  // "Richtlinie über die Gewährung von Zuschüssen für die Errichtung von
+  // Photovoltaikanlagen als Balkonmodule" (in force 31.03.2023, amended
+  // 21.11.2024) read in full: Nr. 3.4 "Zuschuss in Höhe von 200,00 Euro als
+  // Festbetrag" for up to 800 W, Nr. 4.2 main residence at least two months,
+  // Nr. 6.5 application after completion, up to 3 months after registration.
+  // Programme page (read 22.09.2026): "Hinweis 18.02.2025: Aktuell stehen keine
+  // Fördermittel mehr zur Verfügung. Es können derzeit keine neuen Anträge mehr
+  // gestellt bzw. berücksichtigt werden." No calc fields (no funds).
+  "grossheide-balkonmodule": {
+    id: "grossheide-balkonmodule", name: "Förderprogramm Photovoltaik (Balkonmodule)",
+    traeger: "Gemeinde Großheide", level: "kommune", region: "Großheide",
+    bundesland: "Niedersachsen", agsCode: "03452007",
+    url: "https://www.grossheide.de/Wirtschaft-Bauen-Wohnen/Bauen-in-Grossheide/Foerderprogramme",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beginntIso: "2023-03-31",
+    eligibility: ["privat"],
+    coveredCosts: "Festbetrag je Balkonkraftwerk",
+    maxFoerderung: "200 €",
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "200 € Festbetrag — derzeit keine Mittel" }],
+    conditions: [
+      "Laut Hinweis der Gemeinde vom 18. Februar 2025 stehen derzeit keine Fördermittel mehr zur Verfügung; neue Anträge werden nicht berücksichtigt",
+      "Antragsberechtigt sind Eigentümer und Mieter; Erstwohnsitz in Großheide seit mindestens zwei Monaten, nur Dauerwohnungen",
+      "Nur neue Anlagen mit Modulwechselrichter bis 800 W, im Marktstammdatenregister eingetragen",
+      "Der Antrag folgt nach der Installation, spätestens drei Monate nach der Anmeldung beim Netzbetreiber",
+      "Die Anlage muss mindestens drei Jahre betrieben werden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
+  // Added 22.09.2026 as a closed county programme. Guideline "Richtlinie des
+  // Rhein-Kreises Neuss zur Förderung steckerfertiger Photovoltaikanlagen" read
+  // in full on the county's application portal (rkn.nrw/pr021 →
+  // solar.gotzg.de, 22.09.2026): "pauschal 100,- € pro Wohneinheit … Bei
+  // Vorliegen eines Wohnberechtigungsscheins" 300 €, not before 20.11.2023,
+  // "Die Antragsmittel sind aufgebraucht!". County press release 30.04.2025:
+  // "Das Budget … in Höhe von 100.000 Euro ist ausgeschöpft. Es können keine
+  // neuen Anträge mehr angenommen werden." — and "Zuvor war dies nur bis 600
+  // Watt Leistung möglich" (800 W only after Solarpaket I; switch date not
+  // stated, so no date given). endetIso is month-precise: the press release
+  // of 30.04.2025 shows the budget exhausted by then, not the day intake
+  // stopped (adversarial reviewer). No calculation fields (closed).
+  "rhein-kreis-neuss-stecker-pv": {
+    id: "rhein-kreis-neuss-stecker-pv", name: "Förderung steckerfertiger Photovoltaikanlagen",
+    traeger: "Rhein-Kreis Neuss", level: "landkreis", region: "Rhein-Kreis Neuss",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05162",
+    url: "https://www.rhein-kreis-neuss.de/de/verwaltung-politik/nachrichten/pressemeldungen-aus-dem-jahr-2025/konsequenter-klimaschutz-programm-fuer-balkonkraftwerke-ist-ausgeschoepft/",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-11-20", endetIso: "2025-04",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Wohneinheit",
+    maxFoerderung: "100 € je Wohneinheit, 300 € mit Wohnberechtigungsschein",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € pauschal, 300 € mit Wohnberechtigungsschein — Programm beendet" }],
+    conditions: [
+      "Laut Pressemitteilung vom 30. April 2025 war das Budget von 100.000 € ausgeschöpft; neue Anträge nimmt der Kreis nicht mehr an",
+      "Antragsberechtigt waren Mieter und Eigentümer einer Wohneinheit in einem Ein-, Zwei- oder Mehrfamilienhaus im Kreisgebiet; eine Anlage je Wohneinheit",
+      "Gefördert wurden neue Anlagen vom gewerblichen Händler, angeschafft ab dem 20. November 2023 und im Marktstammdatenregister eingetragen",
+      "Zunächst waren Anlagen bis 600 W förderfähig, nach dem Solarpaket I bis 800 W Wechselrichterleistung",
+      "Wer schon von einer Kommune im Kreisgebiet eine Förderung für ein Balkonkraftwerk bewilligt bekommen hatte, war ausgeschlossen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
   "klempau-balkonkraftwerke": {
     id: "klempau-balkonkraftwerke", name: "Förderung von Balkonkraftwerken",
     traeger: "Gemeinde Klempau", level: "kommune", region: "Klempau",
