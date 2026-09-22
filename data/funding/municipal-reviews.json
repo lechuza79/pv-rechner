@@ -45514,5 +45514,323 @@
         "evidenceUrl": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html"
       }
     ]
+  },
+  {
+    "regionId": "01055014",
+    "name": "Göhl",
+    "checkedAt": "2026-09-22T10:40:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Göhl gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      }
+    ]
+  },
+  {
+    "regionId": "01055015",
+    "name": "Gremersdorf",
+    "checkedAt": "2026-09-22T10:40:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gremersdorf gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      }
+    ]
+  },
+  {
+    "regionId": "01055017",
+    "name": "Großenbrode",
+    "checkedAt": "2026-09-22T10:40:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Großenbrode gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      }
+    ]
+  },
+  {
+    "regionId": "01055022",
+    "name": "Heringsdorf",
+    "checkedAt": "2026-09-22T10:40:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Heringsdorf gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      }
+    ]
+  },
+  {
+    "regionId": "01055031",
+    "name": "Neukirchen",
+    "checkedAt": "2026-09-22T10:40:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neukirchen gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      }
+    ]
+  },
+  {
+    "regionId": "01055043",
+    "name": "Wangels",
+    "checkedAt": "2026-09-22T10:40:00Z",
+    "recheckAt": "2026-12-21T10:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wangels gehört zum Amt Oldenburg-Land (Kreis Ostholstein). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: „Geförderte Projekte“ nennt nur kommunale Vorhaben und Regionalbudget-Projekte, die Klimaschutz-Seite verweist auf die Wärmeplanung und den Klimaschutzfonds des Kreises Ostholstein, und dieser schließt Anlagen zur Wärme- und Stromerzeugung und -speicherung ausdrücklich aus. Das Landesprogramm Schleswig-Holsteins für Balkonkraftwerke und Speicher ist eingestellt (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ im Original gelesen (22.09.2026): Dorfkümmerei Wangels, Kita und Schule Hansühn, Sprüttenhuus Großenbrode, Seebrücke Weißenhäuser Strand, LED-Straßenbeleuchtung Wangels, Schulhof Gremersdorf, Regionalbudget-Projekte 2024–2026 — kein Bürgerzuschuss",
+      "Seite „Klimaschutz und Kommunale Wärmeplanung“ im Original gelesen (22.09.2026): Wärmeplanung bis Q1 2027, Informationen über Wärmepumpen ohne Zuschuss, Verweis auf den Klimaschutzfonds des Kreises Ostholstein",
+      "Klimaschutzfonds des Kreises Ostholstein im Original gelesen (22.09.2026): „Maßnahmen zur energetischen Sanierung sowie Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen“; gefördert nur öffentlichkeitswirksame Projekte",
+      "Volltextsuche amt-oldenburg-land.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik 12 (Potenzialanalysen der Gemeinden für Freiflächen), Solar 6 (Katastrophenschutz, Ortsentwicklungskonzepte), Zuschuss 10 (Kreis-Klimaschutzfonds, Wohngeld), Förderung 64 (Regionalbudget-Projekte, Kita, Behördenwegweiser-Lebenslagen des Landes, Satzungen ohne Förderrichtlinie), Förderprogramm 6 (Behördenwegweiser, Ortsentwicklungskonzepte), Wärmepumpe 2 (Klimaschutz-Seite), Speicher 22 (Ausweise, Datenschutz, Abwassersatzung), Richtlinie 10 (Barrierefreiheit, Lärmschutz)",
+      "Websuche: Förderung Balkonkraftwerk Photovoltaik Zuschuss Göhl, Gremersdorf, Großenbrode, Heringsdorf, Neukirchen, Wangels (nur allgemeine Ratgeber und die Amtsseite)",
+      "Katalog nach Programmen des Kreises Ostholstein (01055) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme für Balkonkraftwerke und Speicher eingestellt"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "finding": "Klimaschutz-Seite des Amts (22.09.2026): Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, kein eigener Zuschuss."
+      },
+      {
+        "url": "https://klimaschutz.kreis-oh.de/klimaschutzfonds",
+        "finding": "Klimaschutzfonds Kreis Ostholstein (22.09.2026): Anlagen zur Wärme-/Stromerzeugung und -speicherung ausgeschlossen."
+      },
+      {
+        "url": "https://www.amt-oldenburg-land.de/suche",
+        "finding": "Volltextsuche des Amts (22.09.2026, 9 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.schleswig-holstein.de/DE/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub",
+        "finding": "Landesprogramme Schleswig-Holsteins für Balkonkraftwerke und Speicher im Katalog als eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Liste kommunaler geförderter Vorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/informations-und-serviceangeote/gefoerderte-projekte"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung",
+        "disposition": "reviewed",
+        "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      }
+    ]
   }
 ]

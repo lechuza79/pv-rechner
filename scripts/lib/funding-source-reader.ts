@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { createHash } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { fundingPdfText, fundingContentGap, renderFundingSource, htmlText } from "./funding-document";
-import { sourceFailure, retryAt, type SourceFailure } from "../../lib/funding-source-policy";
+import { sourceFailure, retryAt, noticeBypassTarget, type SourceFailure } from "../../lib/funding-source-policy";
 
 export const EVIDENCE_RUN = process.env.FUNDING_RUN_ID ?? `local-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 export const EVIDENCE_DIR = resolve(process.env.FUNDING_EVIDENCE_DIR ?? `scripts/.cache/funding-evidence/${EVIDENCE_RUN}`);
@@ -133,7 +133,12 @@ export class FundingSourceReader {
     let response: Response | undefined;
     let body = "";
     let bytes = new Uint8Array();
-    try { response = await fetch(input, init); bytes = new Uint8Array(await response.clone().arrayBuffer()); body = new TextDecoder().decode(bytes); } catch { /* recorded as network failure */ }
+    try {
+      response = await fetch(input, init);
+      const bypass = response.ok ? noticeBypassTarget(input, response.url || input) : null;
+      if (bypass) response = await fetch(bypass, init);
+      bytes = new Uint8Array(await response.clone().arrayBuffer()); body = new TextDecoder().decode(bytes);
+    } catch { /* recorded as network failure */ }
     let reason = sourceFailure(response?.status ?? 0, response?.headers.get("content-type") ?? "", body, input, response?.url || input);
     const hash = createHash("sha256").update(bytes).digest("hex");
     mkdirSync(resolve(EVIDENCE_DIR, "bodies"), { recursive: true });
