@@ -1,0 +1,1461 @@
+{
+  "source": "https://solar-check.io/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
+  "retrieved": "2026-09-08",
+  "dataAsOf": "2026-08-05",
+  "populationAsOf": "2026-06-30",
+  "populationMin": 5000,
+  "populationMaxExclusive": 20000,
+  "peers": [
+    {
+      "region_id": "09679130",
+      "name": "Estenfeld",
+      "slug": "estenfeld",
+      "population": 5323,
+      "sums": {
+        "alle": {
+          "count": 691,
+          "kwp": 8365.580000000002,
+          "speicher": 3738.61
+        },
+        "privat": {
+          "count": 621,
+          "kwp": 4888.29,
+          "speicher": 3136.85
+        },
+        "gewerbe": {
+          "count": 70,
+          "kwp": 3477.2899999999995,
+          "speicher": 601.76
+        }
+      }
+    },
+    {
+      "region_id": "09679136",
+      "name": "Gerbrunn",
+      "slug": "gerbrunn",
+      "population": 6493,
+      "sums": {
+        "alle": {
+          "count": 445,
+          "kwp": 3783.16,
+          "speicher": 1937.32
+        },
+        "privat": {
+          "count": 418,
+          "kwp": 2780.7599999999998,
+          "speicher": 1818.02
+        },
+        "gewerbe": {
+          "count": 27,
+          "kwp": 1002.4000000000002,
+          "speicher": 119.29999999999998
+        }
+      }
+    },
+    {
+      "region_id": "09679138",
+      "name": "Giebelstadt",
+      "slug": "giebelstadt",
+      "population": 5617,
+      "sums": {
+        "alle": {
+          "count": 902,
+          "kwp": 51627.82000000001,
+          "speicher": 2317.4100000000003
+        },
+        "privat": {
+          "count": 591,
+          "kwp": 5618.7300000000005,
+          "speicher": 2175.73
+        },
+        "gewerbe": {
+          "count": 311,
+          "kwp": 46009.09,
+          "speicher": 141.68
+        }
+      }
+    },
+    {
+      "region_id": "09679147",
+      "name": "Höchberg",
+      "slug": "hoechberg",
+      "population": 9564,
+      "sums": {
+        "alle": {
+          "count": 929,
+          "kwp": 9191.94,
+          "speicher": 5782.160000000001
+        },
+        "privat": {
+          "count": 883,
+          "kwp": 6505.510000000001,
+          "speicher": 4568.72
+        },
+        "gewerbe": {
+          "count": 46,
+          "kwp": 2686.4300000000003,
+          "speicher": 1213.44
+        }
+      }
+    },
+    {
+      "region_id": "09679170",
+      "name": "Ochsenfurt",
+      "slug": "ochsenfurt",
+      "population": 11219,
+      "sums": {
+        "alle": {
+          "count": 1241,
+          "kwp": 23585.950000000004,
+          "speicher": 4564.12
+        },
+        "privat": {
+          "count": 985,
+          "kwp": 8096.03,
+          "speicher": 4292.61
+        },
+        "gewerbe": {
+          "count": 256,
+          "kwp": 15489.920000000002,
+          "speicher": 271.51
+        }
+      }
+    },
+    {
+      "region_id": "09679180",
+      "name": "Rimpar",
+      "slug": "rimpar",
+      "population": 7587,
+      "sums": {
+        "alle": {
+          "count": 912,
+          "kwp": 9644,
+          "speicher": 7138.09
+        },
+        "privat": {
+          "count": 835,
+          "kwp": 6420.860000000001,
+          "speicher": 4287.55
+        },
+        "gewerbe": {
+          "count": 77,
+          "kwp": 3223.1399999999994,
+          "speicher": 2850.54
+        }
+      }
+    },
+    {
+      "region_id": "09679185",
+      "name": "Rottendorf",
+      "slug": "rottendorf",
+      "population": 5398,
+      "sums": {
+        "alle": {
+          "count": 687,
+          "kwp": 11863.03,
+          "speicher": 2785.0799999999995
+        },
+        "privat": {
+          "count": 605,
+          "kwp": 3773.129999999999,
+          "speicher": 2402.72
+        },
+        "gewerbe": {
+          "count": 82,
+          "kwp": 8089.899999999999,
+          "speicher": 382.35999999999996
+        }
+      }
+    },
+    {
+      "region_id": "09679202",
+      "name": "Veitshöchheim",
+      "slug": "veitshoechheim",
+      "population": 9671,
+      "sums": {
+        "alle": {
+          "count": 833,
+          "kwp": 11653.829999999998,
+          "speicher": 4008.33
+        },
+        "privat": {
+          "count": 780,
+          "kwp": 5429.19,
+          "speicher": 3847.73
+        },
+        "gewerbe": {
+          "count": 53,
+          "kwp": 6224.639999999999,
+          "speicher": 160.6
+        }
+      }
+    }
+  ],
+  "districtPeers": [
+    {
+      "region_id": "09679114",
+      "name": "Aub",
+      "slug": "aub",
+      "population": 1370,
+      "sums": {
+        "alle": {
+          "count": 253,
+          "kwp": 4360.290000000001,
+          "speicher": 4185.2
+        },
+        "privat": {
+          "count": 147,
+          "kwp": 1305.8700000000006,
+          "speicher": 557.86
+        },
+        "gewerbe": {
+          "count": 106,
+          "kwp": 3054.4200000000005,
+          "speicher": 3627.3399999999997
+        }
+      }
+    },
+    {
+      "region_id": "09679117",
+      "name": "Bergtheim",
+      "slug": "bergtheim",
+      "population": 3740,
+      "sums": {
+        "alle": {
+          "count": 702,
+          "kwp": 15101.849999999995,
+          "speicher": 2958.4300000000003
+        },
+        "privat": {
+          "count": 578,
+          "kwp": 5215.09,
+          "speicher": 2866.75
+        },
+        "gewerbe": {
+          "count": 124,
+          "kwp": 9886.759999999998,
+          "speicher": 91.68
+        }
+      }
+    },
+    {
+      "region_id": "09679118",
+      "name": "Bieberehren",
+      "slug": "bieberehren",
+      "population": 845,
+      "sums": {
+        "alle": {
+          "count": 210,
+          "kwp": 6313.950000000001,
+          "speicher": 607.57
+        },
+        "privat": {
+          "count": 144,
+          "kwp": 1157.3,
+          "speicher": 597.57
+        },
+        "gewerbe": {
+          "count": 66,
+          "kwp": 5156.650000000001,
+          "speicher": 10
+        }
+      }
+    },
+    {
+      "region_id": "09679122",
+      "name": "Bütthard",
+      "slug": "buetthard",
+      "population": 1301,
+      "sums": {
+        "alle": {
+          "count": 347,
+          "kwp": 23081.550000000003,
+          "speicher": 964.4800000000001
+        },
+        "privat": {
+          "count": 198,
+          "kwp": 2036.6699999999998,
+          "speicher": 897.4800000000001
+        },
+        "gewerbe": {
+          "count": 149,
+          "kwp": 21044.88,
+          "speicher": 67
+        }
+      }
+    },
+    {
+      "region_id": "09679124",
+      "name": "Eibelstadt",
+      "slug": "eibelstadt",
+      "population": 3091,
+      "sums": {
+        "alle": {
+          "count": 349,
+          "kwp": 5462.270000000001,
+          "speicher": 2235.88
+        },
+        "privat": {
+          "count": 302,
+          "kwp": 2167.68,
+          "speicher": 1334.4799999999998
+        },
+        "gewerbe": {
+          "count": 47,
+          "kwp": 3294.5899999999997,
+          "speicher": 901.4
+        }
+      }
+    },
+    {
+      "region_id": "09679126",
+      "name": "Eisingen",
+      "slug": "eisingen",
+      "population": 3395,
+      "sums": {
+        "alle": {
+          "count": 407,
+          "kwp": 3842.48,
+          "speicher": 1871.99
+        },
+        "privat": {
+          "count": 360,
+          "kwp": 2639.93,
+          "speicher": 1766.69
+        },
+        "gewerbe": {
+          "count": 47,
+          "kwp": 1202.55,
+          "speicher": 105.30000000000001
+        }
+      }
+    },
+    {
+      "region_id": "09679128",
+      "name": "Erlabrunn",
+      "slug": "erlabrunn",
+      "population": 1831,
+      "sums": {
+        "alle": {
+          "count": 263,
+          "kwp": 2213.0200000000004,
+          "speicher": 1387.57
+        },
+        "privat": {
+          "count": 255,
+          "kwp": 2046.7999999999997,
+          "speicher": 1387.57
+        },
+        "gewerbe": {
+          "count": 8,
+          "kwp": 166.22,
+          "speicher": 0
+        }
+      }
+    },
+    {
+      "region_id": "09679130",
+      "name": "Estenfeld",
+      "slug": "estenfeld",
+      "population": 5323,
+      "sums": {
+        "alle": {
+          "count": 691,
+          "kwp": 8365.580000000002,
+          "speicher": 3738.61
+        },
+        "privat": {
+          "count": 621,
+          "kwp": 4888.29,
+          "speicher": 3136.85
+        },
+        "gewerbe": {
+          "count": 70,
+          "kwp": 3477.2899999999995,
+          "speicher": 601.76
+        }
+      }
+    },
+    {
+      "region_id": "09679131",
+      "name": "Frickenhausen a.Main",
+      "slug": "frickenhausen-a-main",
+      "population": 1161,
+      "sums": {
+        "alle": {
+          "count": 198,
+          "kwp": 5506.8,
+          "speicher": 481.15
+        },
+        "privat": {
+          "count": 117,
+          "kwp": 926.9100000000001,
+          "speicher": 436.15
+        },
+        "gewerbe": {
+          "count": 81,
+          "kwp": 4579.89,
+          "speicher": 45
+        }
+      }
+    },
+    {
+      "region_id": "09679134",
+      "name": "Gaukönigshofen",
+      "slug": "gaukoenigshofen",
+      "population": 2471,
+      "sums": {
+        "alle": {
+          "count": 646,
+          "kwp": 11406.570000000003,
+          "speicher": 1752.21
+        },
+        "privat": {
+          "count": 398,
+          "kwp": 3959.4799999999987,
+          "speicher": 1670.71
+        },
+        "gewerbe": {
+          "count": 248,
+          "kwp": 7447.090000000001,
+          "speicher": 81.5
+        }
+      }
+    },
+    {
+      "region_id": "09679135",
+      "name": "Gelchsheim",
+      "slug": "gelchsheim",
+      "population": 853,
+      "sums": {
+        "alle": {
+          "count": 228,
+          "kwp": 8909.97,
+          "speicher": 562.29
+        },
+        "privat": {
+          "count": 109,
+          "kwp": 1095.0800000000002,
+          "speicher": 493.61
+        },
+        "gewerbe": {
+          "count": 119,
+          "kwp": 7814.89,
+          "speicher": 68.68
+        }
+      }
+    },
+    {
+      "region_id": "09679136",
+      "name": "Gerbrunn",
+      "slug": "gerbrunn",
+      "population": 6493,
+      "sums": {
+        "alle": {
+          "count": 445,
+          "kwp": 3783.16,
+          "speicher": 1937.32
+        },
+        "privat": {
+          "count": 418,
+          "kwp": 2780.7599999999998,
+          "speicher": 1818.02
+        },
+        "gewerbe": {
+          "count": 27,
+          "kwp": 1002.4000000000002,
+          "speicher": 119.29999999999998
+        }
+      }
+    },
+    {
+      "region_id": "09679137",
+      "name": "Geroldshausen",
+      "slug": "geroldshausen",
+      "population": 1393,
+      "sums": {
+        "alle": {
+          "count": 283,
+          "kwp": 6507.419999999997,
+          "speicher": 842.15
+        },
+        "privat": {
+          "count": 209,
+          "kwp": 1748.1799999999998,
+          "speicher": 808.15
+        },
+        "gewerbe": {
+          "count": 74,
+          "kwp": 4759.24,
+          "speicher": 34
+        }
+      }
+    },
+    {
+      "region_id": "09679138",
+      "name": "Giebelstadt",
+      "slug": "giebelstadt",
+      "population": 5617,
+      "sums": {
+        "alle": {
+          "count": 902,
+          "kwp": 51627.82000000001,
+          "speicher": 2317.4100000000003
+        },
+        "privat": {
+          "count": 591,
+          "kwp": 5618.7300000000005,
+          "speicher": 2175.73
+        },
+        "gewerbe": {
+          "count": 311,
+          "kwp": 46009.09,
+          "speicher": 141.68
+        }
+      }
+    },
+    {
+      "region_id": "09679141",
+      "name": "Greußenheim",
+      "slug": "greussenheim",
+      "population": 1624,
+      "sums": {
+        "alle": {
+          "count": 260,
+          "kwp": 4194.8200000000015,
+          "speicher": 1121.47
+        },
+        "privat": {
+          "count": 236,
+          "kwp": 1900.9499999999996,
+          "speicher": 1091.17
+        },
+        "gewerbe": {
+          "count": 24,
+          "kwp": 2293.87,
+          "speicher": 30.3
+        }
+      }
+    },
+    {
+      "region_id": "09679142",
+      "name": "Güntersleben",
+      "slug": "guentersleben",
+      "population": 4382,
+      "sums": {
+        "alle": {
+          "count": 598,
+          "kwp": 5341.079999999999,
+          "speicher": 2512.98
+        },
+        "privat": {
+          "count": 549,
+          "kwp": 3822.360000000001,
+          "speicher": 2413.81
+        },
+        "gewerbe": {
+          "count": 49,
+          "kwp": 1518.7200000000003,
+          "speicher": 99.16999999999999
+        }
+      }
+    },
+    {
+      "region_id": "09679143",
+      "name": "Hausen b.Würzburg",
+      "slug": "hausen-b-wuerzburg",
+      "population": 2520,
+      "sums": {
+        "alle": {
+          "count": 526,
+          "kwp": 14029.269999999993,
+          "speicher": 2379.34
+        },
+        "privat": {
+          "count": 435,
+          "kwp": 3709.27,
+          "speicher": 2174.5000000000005
+        },
+        "gewerbe": {
+          "count": 91,
+          "kwp": 10320,
+          "speicher": 204.83999999999997
+        }
+      }
+    },
+    {
+      "region_id": "09679144",
+      "name": "Helmstadt",
+      "slug": "helmstadt",
+      "population": 2547,
+      "sums": {
+        "alle": {
+          "count": 387,
+          "kwp": 14921.609999999997,
+          "speicher": 1639.41
+        },
+        "privat": {
+          "count": 333,
+          "kwp": 2894.6900000000005,
+          "speicher": 1609.97
+        },
+        "gewerbe": {
+          "count": 54,
+          "kwp": 12026.92,
+          "speicher": 29.439999999999998
+        }
+      }
+    },
+    {
+      "region_id": "09679146",
+      "name": "Hettstadt",
+      "slug": "hettstadt",
+      "population": 3597,
+      "sums": {
+        "alle": {
+          "count": 497,
+          "kwp": 8472.939999999999,
+          "speicher": 2542.93
+        },
+        "privat": {
+          "count": 450,
+          "kwp": 3529.47,
+          "speicher": 2360.6299999999997
+        },
+        "gewerbe": {
+          "count": 47,
+          "kwp": 4943.469999999999,
+          "speicher": 182.3
+        }
+      }
+    },
+    {
+      "region_id": "09679147",
+      "name": "Höchberg",
+      "slug": "hoechberg",
+      "population": 9564,
+      "sums": {
+        "alle": {
+          "count": 929,
+          "kwp": 9191.94,
+          "speicher": 5782.160000000001
+        },
+        "privat": {
+          "count": 883,
+          "kwp": 6505.510000000001,
+          "speicher": 4568.72
+        },
+        "gewerbe": {
+          "count": 46,
+          "kwp": 2686.4300000000003,
+          "speicher": 1213.44
+        }
+      }
+    },
+    {
+      "region_id": "09679149",
+      "name": "Holzkirchen",
+      "slug": "holzkirchen",
+      "population": 936,
+      "sums": {
+        "alle": {
+          "count": 138,
+          "kwp": 1371.85,
+          "speicher": 653.86
+        },
+        "privat": {
+          "count": 128,
+          "kwp": 1122.67,
+          "speicher": 643.62
+        },
+        "gewerbe": {
+          "count": 10,
+          "kwp": 249.17999999999998,
+          "speicher": 10.24
+        }
+      }
+    },
+    {
+      "region_id": "09679153",
+      "name": "Kirchheim",
+      "slug": "kirchheim",
+      "population": 2171,
+      "sums": {
+        "alle": {
+          "count": 369,
+          "kwp": 4985.27,
+          "speicher": 1326.81
+        },
+        "privat": {
+          "count": 305,
+          "kwp": 2878.46,
+          "speicher": 1298.9099999999999
+        },
+        "gewerbe": {
+          "count": 64,
+          "kwp": 2106.81,
+          "speicher": 27.9
+        }
+      }
+    },
+    {
+      "region_id": "09679154",
+      "name": "Kist",
+      "slug": "kist",
+      "population": 2632,
+      "sums": {
+        "alle": {
+          "count": 316,
+          "kwp": 3020.34,
+          "speicher": 1390.3700000000001
+        },
+        "privat": {
+          "count": 297,
+          "kwp": 1995.5799999999995,
+          "speicher": 1285.51
+        },
+        "gewerbe": {
+          "count": 19,
+          "kwp": 1024.76,
+          "speicher": 104.86000000000001
+        }
+      }
+    },
+    {
+      "region_id": "09679155",
+      "name": "Kleinrinderfeld",
+      "slug": "kleinrinderfeld",
+      "population": 2006,
+      "sums": {
+        "alle": {
+          "count": 248,
+          "kwp": 3619.1900000000005,
+          "speicher": 1176.73
+        },
+        "privat": {
+          "count": 222,
+          "kwp": 1858.5600000000002,
+          "speicher": 1095.28
+        },
+        "gewerbe": {
+          "count": 26,
+          "kwp": 1760.63,
+          "speicher": 81.45
+        }
+      }
+    },
+    {
+      "region_id": "09679156",
+      "name": "Kürnach",
+      "slug": "kuernach",
+      "population": 4578,
+      "sums": {
+        "alle": {
+          "count": 658,
+          "kwp": 11701.050000000001,
+          "speicher": 2855.32
+        },
+        "privat": {
+          "count": 608,
+          "kwp": 4729.680000000001,
+          "speicher": 2767.78
+        },
+        "gewerbe": {
+          "count": 50,
+          "kwp": 6971.37,
+          "speicher": 87.53999999999999
+        }
+      }
+    },
+    {
+      "region_id": "09679161",
+      "name": "Margetshöchheim",
+      "slug": "margetshoechheim",
+      "population": 3113,
+      "sums": {
+        "alle": {
+          "count": 341,
+          "kwp": 2881.9800000000005,
+          "speicher": 1862.8400000000001
+        },
+        "privat": {
+          "count": 323,
+          "kwp": 2270.750000000001,
+          "speicher": 1797.4900000000002
+        },
+        "gewerbe": {
+          "count": 18,
+          "kwp": 611.23,
+          "speicher": 65.35
+        }
+      }
+    },
+    {
+      "region_id": "09679164",
+      "name": "Neubrunn",
+      "slug": "neubrunn",
+      "population": 2275,
+      "sums": {
+        "alle": {
+          "count": 333,
+          "kwp": 4698.47,
+          "speicher": 1136.27
+        },
+        "privat": {
+          "count": 255,
+          "kwp": 2170,
+          "speicher": 1094.4099999999999
+        },
+        "gewerbe": {
+          "count": 78,
+          "kwp": 2528.47,
+          "speicher": 41.86
+        }
+      }
+    },
+    {
+      "region_id": "09679165",
+      "name": "Altertheim",
+      "slug": "altertheim",
+      "population": 1972,
+      "sums": {
+        "alle": {
+          "count": 260,
+          "kwp": 3262.17,
+          "speicher": 926.11
+        },
+        "privat": {
+          "count": 217,
+          "kwp": 1934.5199999999995,
+          "speicher": 885.3099999999998
+        },
+        "gewerbe": {
+          "count": 43,
+          "kwp": 1327.65,
+          "speicher": 40.8
+        }
+      }
+    },
+    {
+      "region_id": "09679167",
+      "name": "Eisenheim",
+      "slug": "eisenheim",
+      "population": 1325,
+      "sums": {
+        "alle": {
+          "count": 200,
+          "kwp": 2108.1399999999994,
+          "speicher": 728.69
+        },
+        "privat": {
+          "count": 167,
+          "kwp": 1399.7,
+          "speicher": 666.19
+        },
+        "gewerbe": {
+          "count": 33,
+          "kwp": 708.4399999999999,
+          "speicher": 62.5
+        }
+      }
+    },
+    {
+      "region_id": "09679169",
+      "name": "Oberpleichfeld",
+      "slug": "oberpleichfeld",
+      "population": 1143,
+      "sums": {
+        "alle": {
+          "count": 215,
+          "kwp": 3358.4399999999996,
+          "speicher": 830.6499999999999
+        },
+        "privat": {
+          "count": 185,
+          "kwp": 1936.44,
+          "speicher": 800.6499999999999
+        },
+        "gewerbe": {
+          "count": 30,
+          "kwp": 1422,
+          "speicher": 30
+        }
+      }
+    },
+    {
+      "region_id": "09679170",
+      "name": "Ochsenfurt",
+      "slug": "ochsenfurt",
+      "population": 11219,
+      "sums": {
+        "alle": {
+          "count": 1241,
+          "kwp": 23585.950000000004,
+          "speicher": 4564.12
+        },
+        "privat": {
+          "count": 985,
+          "kwp": 8096.03,
+          "speicher": 4292.61
+        },
+        "gewerbe": {
+          "count": 256,
+          "kwp": 15489.920000000002,
+          "speicher": 271.51
+        }
+      }
+    },
+    {
+      "region_id": "09679174",
+      "name": "Prosselsheim",
+      "slug": "prosselsheim",
+      "population": 1130,
+      "sums": {
+        "alle": {
+          "count": 222,
+          "kwp": 16489.140000000003,
+          "speicher": 6783.19
+        },
+        "privat": {
+          "count": 172,
+          "kwp": 1804.37,
+          "speicher": 687.19
+        },
+        "gewerbe": {
+          "count": 50,
+          "kwp": 14684.769999999999,
+          "speicher": 6096
+        }
+      }
+    },
+    {
+      "region_id": "09679175",
+      "name": "Randersacker",
+      "slug": "randersacker",
+      "population": 3353,
+      "sums": {
+        "alle": {
+          "count": 324,
+          "kwp": 3056.69,
+          "speicher": 1291.8700000000001
+        },
+        "privat": {
+          "count": 288,
+          "kwp": 2026.1300000000003,
+          "speicher": 1189.6299999999999
+        },
+        "gewerbe": {
+          "count": 36,
+          "kwp": 1030.5600000000002,
+          "speicher": 102.24
+        }
+      }
+    },
+    {
+      "region_id": "09679176",
+      "name": "Reichenberg",
+      "slug": "reichenberg",
+      "population": 4148,
+      "sums": {
+        "alle": {
+          "count": 609,
+          "kwp": 54605.92000000001,
+          "speicher": 2857.24
+        },
+        "privat": {
+          "count": 470,
+          "kwp": 4299.919999999999,
+          "speicher": 2424.36
+        },
+        "gewerbe": {
+          "count": 139,
+          "kwp": 50306.00000000001,
+          "speicher": 432.88
+        }
+      }
+    },
+    {
+      "region_id": "09679177",
+      "name": "Remlingen",
+      "slug": "remlingen",
+      "population": 1488,
+      "sums": {
+        "alle": {
+          "count": 221,
+          "kwp": 2871.43,
+          "speicher": 776.05
+        },
+        "privat": {
+          "count": 181,
+          "kwp": 1578.83,
+          "speicher": 762.55
+        },
+        "gewerbe": {
+          "count": 40,
+          "kwp": 1292.5999999999997,
+          "speicher": 13.5
+        }
+      }
+    },
+    {
+      "region_id": "09679179",
+      "name": "Riedenheim",
+      "slug": "riedenheim",
+      "population": 746,
+      "sums": {
+        "alle": {
+          "count": 240,
+          "kwp": 94646.83000000005,
+          "speicher": 389.71
+        },
+        "privat": {
+          "count": 123,
+          "kwp": 1226.5799999999997,
+          "speicher": 382.03000000000003
+        },
+        "gewerbe": {
+          "count": 117,
+          "kwp": 93420.25000000003,
+          "speicher": 7.68
+        }
+      }
+    },
+    {
+      "region_id": "09679180",
+      "name": "Rimpar",
+      "slug": "rimpar",
+      "population": 7587,
+      "sums": {
+        "alle": {
+          "count": 912,
+          "kwp": 9644,
+          "speicher": 7138.09
+        },
+        "privat": {
+          "count": 835,
+          "kwp": 6420.860000000001,
+          "speicher": 4287.55
+        },
+        "gewerbe": {
+          "count": 77,
+          "kwp": 3223.1399999999994,
+          "speicher": 2850.54
+        }
+      }
+    },
+    {
+      "region_id": "09679182",
+      "name": "Röttingen",
+      "slug": "roettingen",
+      "population": 1681,
+      "sums": {
+        "alle": {
+          "count": 348,
+          "kwp": 5588.39,
+          "speicher": 1054.74
+        },
+        "privat": {
+          "count": 228,
+          "kwp": 2045.56,
+          "speicher": 1008.6600000000001
+        },
+        "gewerbe": {
+          "count": 120,
+          "kwp": 3542.83,
+          "speicher": 46.08
+        }
+      }
+    },
+    {
+      "region_id": "09679185",
+      "name": "Rottendorf",
+      "slug": "rottendorf",
+      "population": 5398,
+      "sums": {
+        "alle": {
+          "count": 687,
+          "kwp": 11863.03,
+          "speicher": 2785.0799999999995
+        },
+        "privat": {
+          "count": 605,
+          "kwp": 3773.129999999999,
+          "speicher": 2402.72
+        },
+        "gewerbe": {
+          "count": 82,
+          "kwp": 8089.899999999999,
+          "speicher": 382.35999999999996
+        }
+      }
+    },
+    {
+      "region_id": "09679187",
+      "name": "Sommerhausen",
+      "slug": "sommerhausen",
+      "population": 1927,
+      "sums": {
+        "alle": {
+          "count": 176,
+          "kwp": 2279.42,
+          "speicher": 802.17
+        },
+        "privat": {
+          "count": 146,
+          "kwp": 1106.4199999999998,
+          "speicher": 694.33
+        },
+        "gewerbe": {
+          "count": 30,
+          "kwp": 1173,
+          "speicher": 107.84
+        }
+      }
+    },
+    {
+      "region_id": "09679188",
+      "name": "Sonderhofen",
+      "slug": "sonderhofen",
+      "population": 871,
+      "sums": {
+        "alle": {
+          "count": 231,
+          "kwp": 8406.97,
+          "speicher": 741.3699999999999
+        },
+        "privat": {
+          "count": 120,
+          "kwp": 1414.1299999999997,
+          "speicher": 687.49
+        },
+        "gewerbe": {
+          "count": 111,
+          "kwp": 6992.84,
+          "speicher": 53.88
+        }
+      }
+    },
+    {
+      "region_id": "09679192",
+      "name": "Tauberrettersheim",
+      "slug": "tauberrettersheim",
+      "population": 808,
+      "sums": {
+        "alle": {
+          "count": 152,
+          "kwp": 1867.2900000000004,
+          "speicher": 353.01
+        },
+        "privat": {
+          "count": 111,
+          "kwp": 949.0500000000001,
+          "speicher": 353.01
+        },
+        "gewerbe": {
+          "count": 41,
+          "kwp": 918.24,
+          "speicher": 0
+        }
+      }
+    },
+    {
+      "region_id": "09679193",
+      "name": "Theilheim",
+      "slug": "theilheim",
+      "population": 2310,
+      "sums": {
+        "alle": {
+          "count": 295,
+          "kwp": 24744.27999999999,
+          "speicher": 6914.299999999999
+        },
+        "privat": {
+          "count": 271,
+          "kwp": 2128.61,
+          "speicher": 1400.3
+        },
+        "gewerbe": {
+          "count": 24,
+          "kwp": 22615.67,
+          "speicher": 5514
+        }
+      }
+    },
+    {
+      "region_id": "09679194",
+      "name": "Thüngersheim",
+      "slug": "thuengersheim",
+      "population": 2649,
+      "sums": {
+        "alle": {
+          "count": 316,
+          "kwp": 2817.51,
+          "speicher": 1412.64
+        },
+        "privat": {
+          "count": 294,
+          "kwp": 2299.06,
+          "speicher": 1412.64
+        },
+        "gewerbe": {
+          "count": 22,
+          "kwp": 518.4499999999999,
+          "speicher": 0
+        }
+      }
+    },
+    {
+      "region_id": "09679196",
+      "name": "Uettingen",
+      "slug": "uettingen",
+      "population": 1935,
+      "sums": {
+        "alle": {
+          "count": 272,
+          "kwp": 9020.82,
+          "speicher": 1132.3600000000001
+        },
+        "privat": {
+          "count": 236,
+          "kwp": 1762,
+          "speicher": 1058.22
+        },
+        "gewerbe": {
+          "count": 36,
+          "kwp": 7258.82,
+          "speicher": 74.14
+        }
+      }
+    },
+    {
+      "region_id": "09679200",
+      "name": "Leinach",
+      "slug": "leinach",
+      "population": 3277,
+      "sums": {
+        "alle": {
+          "count": 456,
+          "kwp": 4676.319999999999,
+          "speicher": 2467.92
+        },
+        "privat": {
+          "count": 416,
+          "kwp": 3391.2,
+          "speicher": 2306.49
+        },
+        "gewerbe": {
+          "count": 40,
+          "kwp": 1285.1200000000001,
+          "speicher": 161.43
+        }
+      }
+    },
+    {
+      "region_id": "09679201",
+      "name": "Unterpleichfeld",
+      "slug": "unterpleichfeld",
+      "population": 3132,
+      "sums": {
+        "alle": {
+          "count": 611,
+          "kwp": 20784.860000000004,
+          "speicher": 3274.2
+        },
+        "privat": {
+          "count": 432,
+          "kwp": 4010.1800000000003,
+          "speicher": 2175.02
+        },
+        "gewerbe": {
+          "count": 179,
+          "kwp": 16774.68,
+          "speicher": 1099.1799999999998
+        }
+      }
+    },
+    {
+      "region_id": "09679202",
+      "name": "Veitshöchheim",
+      "slug": "veitshoechheim",
+      "population": 9671,
+      "sums": {
+        "alle": {
+          "count": 833,
+          "kwp": 11653.829999999998,
+          "speicher": 4008.33
+        },
+        "privat": {
+          "count": 780,
+          "kwp": 5429.19,
+          "speicher": 3847.73
+        },
+        "gewerbe": {
+          "count": 53,
+          "kwp": 6224.639999999999,
+          "speicher": 160.6
+        }
+      }
+    },
+    {
+      "region_id": "09679204",
+      "name": "Waldbrunn",
+      "slug": "waldbrunn",
+      "population": 2909,
+      "sums": {
+        "alle": {
+          "count": 434,
+          "kwp": 8411.900000000001,
+          "speicher": 2088.34
+        },
+        "privat": {
+          "count": 410,
+          "kwp": 3313.01,
+          "speicher": 2051.84
+        },
+        "gewerbe": {
+          "count": 24,
+          "kwp": 5098.890000000001,
+          "speicher": 36.5
+        }
+      }
+    },
+    {
+      "region_id": "09679205",
+      "name": "Waldbüttelbrunn",
+      "slug": "waldbuettelbrunn",
+      "population": 4926,
+      "sums": {
+        "alle": {
+          "count": 582,
+          "kwp": 6648.0700000000015,
+          "speicher": 2657.3599999999997
+        },
+        "privat": {
+          "count": 512,
+          "kwp": 3812.06,
+          "speicher": 2525.8199999999997
+        },
+        "gewerbe": {
+          "count": 70,
+          "kwp": 2836.01,
+          "speicher": 131.54
+        }
+      }
+    },
+    {
+      "region_id": "09679206",
+      "name": "Winterhausen",
+      "slug": "winterhausen",
+      "population": 1422,
+      "sums": {
+        "alle": {
+          "count": 170,
+          "kwp": 1473.58,
+          "speicher": 619.33
+        },
+        "privat": {
+          "count": 150,
+          "kwp": 942.6799999999998,
+          "speicher": 566.03
+        },
+        "gewerbe": {
+          "count": 20,
+          "kwp": 530.8999999999999,
+          "speicher": 53.3
+        }
+      }
+    },
+    {
+      "region_id": "09679209",
+      "name": "Zell a.Main",
+      "slug": "zell-a-main",
+      "population": 4360,
+      "sums": {
+        "alle": {
+          "count": 395,
+          "kwp": 3341.8900000000003,
+          "speicher": 1707.1
+        },
+        "privat": {
+          "count": 378,
+          "kwp": 2492.3700000000003,
+          "speicher": 1707.1
+        },
+        "gewerbe": {
+          "count": 17,
+          "kwp": 849.52,
+          "speicher": 0
+        }
+      }
+    },
+    {
+      "region_id": "09679451",
+      "name": "Gramschatzer Wald",
+      "slug": null,
+      "population": 0,
+      "sums": {
+        "alle": {
+          "count": 0,
+          "kwp": 0,
+          "speicher": 0
+        },
+        "privat": {
+          "count": 0,
+          "kwp": 0,
+          "speicher": 0
+        },
+        "gewerbe": {
+          "count": 0,
+          "kwp": 0,
+          "speicher": 0
+        }
+      }
+    },
+    {
+      "region_id": "09679452",
+      "name": "Guttenberger Wald",
+      "slug": null,
+      "population": 0,
+      "sums": {
+        "alle": {
+          "count": 0,
+          "kwp": 0,
+          "speicher": 0
+        },
+        "privat": {
+          "count": 0,
+          "kwp": 0,
+          "speicher": 0
+        },
+        "gewerbe": {
+          "count": 0,
+          "kwp": 0,
+          "speicher": 0
+        }
+      }
+    },
+    {
+      "region_id": "09679453",
+      "name": "Irtenberger Wald",
+      "slug": null,
+      "population": 0,
+      "sums": {
+        "alle": {
+          "count": 0,
+          "kwp": 0,
+          "speicher": 0
+        },
+        "privat": {
+          "count": 0,
+          "kwp": 0,
+          "speicher": 0
+        },
+        "gewerbe": {
+          "count": 0,
+          "kwp": 0,
+          "speicher": 0
+        }
+      }
+    }
+  ]
+}

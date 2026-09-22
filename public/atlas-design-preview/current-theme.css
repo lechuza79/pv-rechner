@@ -1,0 +1,33 @@
+/* Current homepage palette and pill actions, applied to the full Atlas preview.
+   Source: solar-hero-handoff/homepage-study and design-lab, 15 September 2026. */
+:root{--atlas-bg:#08191c;--atlas-paper:#163338;--atlas-ink:#e8eee9;--atlas-muted:#a7bcbb;--atlas-blue:#d4ff24;--atlas-line:#b0c8c325;--atlas-radius:16px;--theme-action:#d4ff24;--theme-action-ink:#132527;--theme-font:Montserrat,AtlasConcept,'DM Sans',sans-serif}
+html,body,.solar-page,.atlas-content{background:var(--atlas-bg)!important;color:var(--atlas-ink)!important}
+:is(.atlas-content,.atlas-dialog,.atlas-sticky) :is(h1,h2,h3){color:var(--atlas-ink);font-family:var(--theme-font)!important;font-weight:700!important}
+:is(.atlas-content,.atlas-dialog,.atlas-sticky) :is(button,select),:is(.primary-cta,.secondary-cta,.header-cta,.atlas-button,.atlas-link){font-family:var(--theme-font)!important;font-weight:700!important}
+:is(.atlas-button,.primary-cta,.header-cta,.atlas-sticky-abo,.ranking-play,.ranking-next){background:var(--theme-action)!important;color:var(--theme-action-ink)!important;border:1px solid var(--theme-action)!important;border-radius:999px!important;padding-inline:26px!important;clip-path:none!important;box-shadow:none!important}
+:is(.secondary-cta,.atlas-secondary,.atlas-local-abo,.atlas-sticky button,.ranking-edit,.ranking-reset,.ranking-share-buttons button,.ranking-filters button,.ranking-settings button,.v3-card-actions button){border:1px solid var(--atlas-line)!important;border-radius:999px!important;background:transparent!important;color:var(--atlas-ink)!important;box-shadow:none!important}
+:is(.atlas-content,.atlas-dialog) button[aria-pressed=true]{background:var(--theme-action)!important;border-color:var(--theme-action)!important;color:var(--theme-action-ink)!important}
+:is(.atlas-content,.atlas-dialog) :is(input,select){accent-color:var(--theme-action);background:var(--atlas-paper)!important;color:var(--atlas-ink)!important;border-color:var(--atlas-line)!important;border-radius:10px}
+:is(.atlas-overview,.v3-data,.v3-examples,.atlas-ranking,.atlas-editor-note,.atlas-end,.v3-conclusion){background:var(--atlas-bg)!important;color:var(--atlas-ink)!important}
+:is(.atlas-story,.v3-widget-grid>article,.v3-examples article,.atlas-paper,.atlas-dialog,.atlas-award-card,.ranking-choices,.ranking-settings,.ranking-choice,.atlas-sticky){background:var(--atlas-paper)!important;color:var(--atlas-ink)!important;border-color:var(--atlas-line)!important;border-radius:var(--atlas-radius)!important}
+:is(.v3-section-nav,.atlas-nav){background:var(--atlas-bg)!important;color:var(--atlas-ink)!important;border-color:var(--atlas-line)!important}
+:is(.atlas-content,.atlas-dialog) :is(p,small,.atlas-caption,.atlas-kicker,.atlas-source,.ranking-source,.ranking-unit,.v3-number-unit,.ranking-choice-caption,.ranking-choice-denominator){color:var(--atlas-muted)!important}
+:is(.atlas-number,.atlas-detail,.atlas-abo,.atlas-source,.atlas-status,.ranking-step,.v3-section-divider,.ranking-table td,.ranking-table th){border-color:var(--atlas-line)!important}
+:is(.atlas-blue,.atlas-link,.ranking-inline-value,.atlas-big){color:var(--theme-action)!important}
+:is(.atlas-track i,.atlas-column.new i,.atlas-batteryplot i.active,.v3-growth-bars i){background:var(--theme-action)!important}
+.atlas-sticky a{border-radius:999px!important}.atlas-sticky .atlas-button{background:var(--theme-action)!important;color:var(--theme-action-ink)!important}
+/* The weather scene retains its light contrast; its actions share the same shape. */
+.hero :is(.secondary-cta,.atlas-local-abo){color:#18323e!important;border-color:#18323e66!important}
+.hero .primary-cta{color:var(--theme-action-ink)!important}
+:is(button,a,input,select):focus-visible{outline:2px solid var(--theme-action);outline-offset:4px}
+.atlas-content button:hover,.atlas-sticky button:hover{filter:brightness(1.12)}
+.sc-person-primary{background:var(--theme-action)!important;color:var(--theme-action-ink)!important;border-radius:999px!important;font-family:var(--theme-font)!important;padding-inline:26px!important}
+.sc-person-actions a:not(.sc-person-primary){border-radius:999px!important}
+.site-header .brand,.sc-footer-brand{--color-brand:var(--theme-action);--color-brand-deep:color-mix(in srgb,var(--theme-action) 55%,#fff)}
+#atlas-ranking .ranking-label{background:#0b2024!important;color:var(--atlas-ink)!important;border-color:var(--atlas-paper)!important}
+#atlas-ranking .ranking-label:after{border-top-color:#0b2024!important}
+#atlas-ranking .ranking-label :is(a,span,strong){color:var(--atlas-ink)!important}
+#atlas-ranking .ranking-contender.is-own .ranking-label{background:var(--theme-action)!important;color:var(--theme-action-ink)!important}
+#atlas-ranking .ranking-contender.is-own .ranking-label :is(a,span,strong){color:var(--theme-action-ink)!important}
+#atlas-ranking .ranking-contender.is-own .ranking-label:after{border-top-color:var(--theme-action)!important}
+.ranking-choice[aria-pressed=true] :is(p,small,span,strong){color:var(--theme-action-ink)!important}

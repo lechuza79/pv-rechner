@@ -194,3 +194,112 @@ describe("Leer ist ein zulässiges Ergebnis", () => {
     expect(stories(leer)).toEqual([]);
   });
 });
+
+
+describe("Area story: count and power share use matching populations", () => {
+  const area = (rows: StoryDaten["solar"]["by_segment"]) => stories(daten({ solar: { by_segment: rows } })).find(s => s.kennung === "flaeche");
+  it("compares segment means without including balcony systems", () => {
+    const story = area([
+      { segment: "gewerbe_dach", count: 10, kwp: 600 },
+      { segment: "privat_dach", count: 100, kwp: 400 },
+      { segment: "balkon", count: 900, kwp: 700 },
+    ])!;
+    expect(story.text).toContain("10 von 110");
+    expect(story.text).toContain("60 kWp");
+    expect(story.text).toContain("4 kWp");
+    expect(story.text).not.toMatch(/wenige|einzelne|Investor/);
+  });
+  it("does not invent a comparison for a single populated segment", () => {
+    const story = area([{ segment: "gewerbe_dach", count: 1, kwp: 600 }])!;
+    expect(story.text).toContain("Die erfasste Anlage gehört");
+    expect(story.text).not.toContain("übrigen");
+    expect(story.text).not.toMatch(/NaN|Infinity/);
+  });
+  it("omits the interpretation when powered segments lack valid counts", () => {
+    expect(area([{ segment: "gewerbe_dach", count: 0, kwp: 600 }, { segment: "privat_dach", count: 100, kwp: 400 }])!.text).toBe("");
+  });
+  it("can describe a dominant category with smaller average plants", () => {
+    const story = area([{ segment: "privat_dach", count: 100, kwp: 600 }, { segment: "gewerbe_dach", count: 2, kwp: 400 }])!;
+    expect(story.text).toContain("100 von 102");
+    expect(story.text).toContain("6 kWp");
+    expect(story.text).toContain("200 kWp");
+  });
+});
+
+
+describe("Area story: imported size range", () => {
+  const rangeText = (min?: number | null, max?: number | null) => stories(daten({ solar: { by_segment: [
+    { segment: "gewerbe_dach", count: 10, kwp: 600, min_kwp: min, max_kwp: max },
+    { segment: "privat_dach", count: 100, kwp: 400, min_kwp: 1, max_kwp: 9 },
+  ] } })).find(s => s.kennung === "flaeche")!.text;
+  it("uses extrema of the chart's leading segment", () => {
+    expect(rangeText(12.34, 150)).toContain("Die Anlagen dieser Gruppe reichen von 12,34 bis 150 kWp.");
+  });
+  it.each([[undefined, undefined], [null, 150], [12, null], [0, 150], [70, 150], [12, 50], [NaN, 150], [12, Infinity]])("omits missing or inconsistent extrema %s / %s", (min, max) => {
+    expect(rangeText(min, max)).not.toContain("reichen von");
+  });
+  it("does not invent a spread when all plants are the same size", () => {
+    expect(rangeText(60, 60)).toContain("jeweils 60 kWp");
+    expect(rangeText(60, 60)).not.toContain("reichen von");
+  });
+});
+
+describe("Calendar month stories", () => {
+  const monthStory = (rows: [string, number][], standIso = "2026-08-05") =>
+    stories(daten({ standIso, monate: rows.map(([monat, count]) => ({ monat, count, segment: "privat_dach" })) }))
+      .find((s) => s.kennung.startsWith("monat-"));
+
+  it("uses the data date cutoff instead of dropping the last two populated rows", () => {
+    expect(monthStory([["2026-01", 5], ["2026-03", 5], ["2026-05", 5], ["2026-06", 5]])?.kennung)
+      .toBe("monat-2026-06");
+  });
+  it("excludes recent months across a year boundary", () => {
+    const s = monthStory([["2025-11", 7], ["2025-12", 20], ["2026-01", 40]], "2026-01-10");
+    expect(s?.kennung).toBe("monat-2025-11");
+    expect(s?.werte[0].wert).toBe(7);
+  });
+  it("does not substitute an old populated month for a zero month", () => {
+    expect(monthStory([["2026-05", 9], ["2026-07", 4]])).toBeUndefined();
+  });
+  it("does not treat a stale or missing series as current", () => {
+    expect(monthStory([["2026-02", 9]])).toBeUndefined();
+    expect(monthStory([])).toBeUndefined();
+    expect(monthStory([["2026-06", 9]], "invalid")).toBeUndefined();
+  });
+  it.each([[4, "6 Anlagen mehr"], [15, "5 Anlagen weniger"], [10, "unverändert"]])(
+    "compares the same month last year (%s)", (previous, expected) => {
+      const s = monthStory([["2025-06", previous as number], ["2026-06", 10]]);
+      expect(s?.text).toContain(expected);
+      expect(s?.werte.map((v) => [v.name, v.wert])).toEqual([["Juni 2026", 10], ["Juni 2025", previous]]);
+    },
+  );
+  it("counts a missing prior-year month inside coverage as zero without a percentage", () => {
+    const s = monthStory([["2025-05", 2], ["2025-07", 3], ["2026-06", 10]]);
+    expect(s?.werte[1].wert).toBe(0);
+    expect(s?.text).toContain("10 Anlagen mehr");
+    expect(s?.text).not.toMatch(/Infinity|NaN|%/);
+  });
+  it("does not invent prior-year coverage", () => {
+    expect(monthStory([["2025-07", 3], ["2026-06", 10]])?.werte).toHaveLength(1);
+  });
+});
+
+
+describe("Source-backed wording", () => {
+  it("labels the revenue as a model in the visible claim", () => {
+    const story = stories().find(s => s.art === "eingespielt")!;
+    expect(story.titel).toContain("Modellrechnung");
+    expect(story.titel).not.toContain("geflossen");
+  });
+  it("does not infer ownership or solar potential from dwelling structure", () => {
+    const story = stories(daten({ wohnungen: { gesamt: 1000, einZwei: 400 } })).find(s => s.art === "wohnform")!;
+    expect(story).toBeDefined();
+    expect(story.text).not.toMatch(/eigenes Dach|praktisch nichts|bisher|Potenzial/);
+    expect(story.grundlage).toContain("nicht Gebäude, Eigentümer oder freie Dachflächen");
+  });
+  it("does not present a residual operator group as commercial roof use", () => {
+    const story = stories().find(s => s.art === "flaeche")!;
+    expect(JSON.stringify(story)).not.toMatch(/Gewerbedäch|privaten Däch/);
+    expect(story.grundlage).toContain("unbekannte Betreiber");
+  });
+});

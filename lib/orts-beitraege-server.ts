@@ -17,6 +17,7 @@ import { getAncestors, getRankingData, getRegionById } from "./atlas";
 import { getRegionAtlasData } from "./mastr-data";
 import { fundeFuerOrt } from "./social-fundvorrat";
 import { vergleichsPlaetze } from "./awards-server";
+import { retainedRankStories } from "./orts-rang-stories-server";
 import { monatsZubau, wohnungsBestand } from "./orts-daten";
 import { ortsStories, type StoryDaten } from "./orts-stories";
 import { ortsPosts, type OrtsBeitrag } from "./orts-posts";
@@ -62,7 +63,7 @@ export async function ortsBeitraege(
   ]);
 
   return ortsPosts({
-    stories: ortsStories({
+    stories: [...await retainedRankStories(ort.regionId, ort.name, ort.standIso), ...ortsStories({
       daten: {
         name: ort.name,
         regionId: ort.regionId,
@@ -76,7 +77,7 @@ export async function ortsBeitraege(
       heuteJahr: new Date().getUTCFullYear(),
       plaetze,
       funde,
-    }),
+    })],
     ort: { regionId: ort.regionId, name: ort.name },
     standIso: ort.standIso,
     fassungen: gespeichert,

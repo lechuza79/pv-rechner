@@ -1,0 +1,13 @@
+.site-header.sc-global-header{position:relative;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:24px;overflow:visible}
+.sc-global-nav{display:flex;align-items:center;gap:clamp(16px,2vw,30px);font:14px 'DM Sans',sans-serif;color:inherit}
+.sc-global-nav a,.sc-global-nav summary,.sc-global-nav button{font:inherit;color:inherit;text-decoration:none;cursor:pointer}
+.sc-global-nav>a,.sc-nav-group>summary{padding:16px 0;white-space:nowrap}
+.sc-nav-group{position:relative}.sc-nav-group summary{display:flex;gap:7px;align-items:center;list-style:none}.sc-nav-group summary::-webkit-details-marker{display:none}
+.sc-global-nav [aria-current=page]{text-decoration:underline;text-underline-offset:7px}
+.sc-nav-panel{position:absolute;top:100%;left:0;min-width:280px;display:grid;gap:3px;padding:16px;border-radius:14px;background:#edf3ef;color:#153740;box-shadow:0 14px 45px #071d2933;border:1px solid #ffffff99}
+.sc-nav-group:last-child .sc-nav-panel{left:auto;right:0}
+.sc-nav-panel a,.sc-nav-panel button{display:block;text-align:left;padding:9px 12px;border:0;border-radius:6px;background:none}.sc-nav-panel a:hover,.sc-nav-panel button:hover{background:#dce8e2}
+.sc-nav-caption{font-size:10px;text-transform:uppercase;letter-spacing:1px;opacity:.65;padding:16px 12px 5px;border-top:1px solid #15374018;margin-top:7px}.sc-nav-panel small{display:block;font-size:10px;opacity:.7;margin-top:3px}
+.sc-nav-toggle{display:none}.sc-global-header :focus-visible{outline:2px solid #1265e8;outline-offset:4px}
+.sc-waitlist{margin:auto;padding:32px;max-width:460px;width:90%;border:0;border-radius:18px;background:#edf3ef;color:#153740}.sc-waitlist::backdrop{background:#071d2977}.sc-waitlist h2{font-size:28px;line-height:1.15;margin-bottom:20px}.sc-waitlist p{margin-top:16px}.sc-waitlist>button{float:right;font-size:26px;cursor:pointer}
+@media(max-width:1100px){.sc-nav-toggle{display:block;background:none;border:0;color:inherit;font:14px 'DM Sans',sans-serif;padding:12px;cursor:pointer}.sc-global-nav{display:none}.sc-menu-open .sc-global-nav{display:flex;position:absolute;left:0;right:0;top:100%;flex-direction:column;align-items:stretch;gap:0;padding:15px 22px;background:#edf3ef;color:#153740;border-radius:14px;box-shadow:0 14px 45px #071d2933;max-height:75vh;overflow:auto}.sc-nav-group>summary{justify-content:space-between}.sc-nav-panel{position:static;min-width:0;padding:0 0 14px;border:0;box-shadow:none;background:none}.sc-global-nav>a,.sc-nav-group{border-bottom:1px solid #15374018}.sc-nav-panel a,.sc-nav-panel button{font-size:13px}}

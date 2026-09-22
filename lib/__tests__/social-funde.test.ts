@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  kennungAus,
   findeDavid,
   findeFlaechenmix,
   findeFoerderluecken,
@@ -299,11 +300,11 @@ describe("Anomalie", () => {
     expect(funde).toHaveLength(0);
   });
 
-  it("erfindet keine Ursache und endet mit der Frage", () => {
+  it("erfindet keine Ursache", () => {
     const zeilen = reihe("r1", 2, 6, 240);
     const [fund] = findeAnomalie(zeilen, () => "Musterdorf", "g10", "Balkonkraftwerke");
     expect(fund).toBeDefined();
-    expect(fund.satz).toContain("Weiß jemand, was da los war?");
+    expect(fund.satz).toContain("Die Registerdaten allein erklären die Ursache nicht.");
     expect(fund.satz).not.toMatch(/weil|Sammelbestellung|Neubaugebiet|vermutlich/);
   });
 });
@@ -358,7 +359,9 @@ describe("Anomalie: Förderkatalog als Gegenprobe", () => {
     const mit = findeAnomalie(zeilen, () => "Musterdorf", "g10", "Balkonkraftwerke", {
       foerderungBekannt: () => true,
     });
-    expect(mit).toHaveLength(0);
+    expect(mit).toHaveLength(1);
+    expect(mit[0].satz).toContain("Förderprogramm bekannt");
+    expect(mit[0].satz).toContain("keinen ursächlichen Zusammenhang");
   });
 });
 
@@ -534,7 +537,7 @@ describe("Anomalie: der Stichtag kommt vom Kalender", () => {
     expect(heuteImSchub).toHaveLength(0);
   });
 
-  it("verwirft nur das geförderte Fenster, nicht den ganzen Ort", () => {
+  it("behält getrennte Ausschläge mit und ohne Förderkontext", () => {
     // Ein Programm, das 2025 lief, erklärt keinen Ausschlag von 2026.
     const monate: string[] = [];
     for (let i = 0; i < 24; i++) {
@@ -555,7 +558,39 @@ describe("Anomalie: der Stichtag kommt vom Kalender", () => {
     });
     // Der spätere Ausschlag bleibt — die erste Fassung brach hier ab und
     // verwarf den Ort komplett.
-    expect(funde.length).toBe(1);
-    expect(funde[0].satz).toContain("2026");
+    expect(funde.length).toBe(2);
+    expect(funde.some(f => f.satz.includes("2026"))).toBe(true);
+    expect(funde.some(f => f.satz.includes("2025") && f.satz.includes("Förderprogramm bekannt"))).toBe(true);
+  });
+});
+
+
+describe("Anomaly inventory completeness", () => {
+  it("keeps all municipalities and selects the strongest overlap instead of the first crossing", () => {
+    const rows = Array.from({ length: 8 }, (_, city) => Array.from({ length: 36 }, (_, i) => ({
+      regionId: String(city), monat: `${2022 + Math.floor(i / 12)}-${String(i % 12 + 1).padStart(2, '0')}`,
+      count: i >= 12 && i <= 14 ? 80 : 2,
+    }))).flat();
+    const found = findeAnomalie(rows, id => `City ${id}`, 'g10', 'Anlagen', { heuteMonat: '2026-01' });
+    expect(found).toHaveLength(8);
+    expect(found.every(f => f.werte[0].wert === 240)).toBe(true);
+    expect(found.every(f => f.grundlage.includes('Januar 2022 bis Dezember 2024'))).toBe(true);
+  });
+});
+
+
+describe("Finding identities", () => {
+  it("keeps distinguishing names after the old ninety-character cutoff", () => {
+    const prefix = 'long-place-name-'.repeat(10);
+    expect(kennungAus('g3', 'kontrast', prefix, 'solar')).not.toBe(kennungAus('g3', 'kontrast', prefix, 'storage'));
+    expect(kennungAus('g3', 'kontrast', 'Trier', 'Nidda')).toBe('g3-kontrast-trier-nidda');
+  });
+  it("distinguishes themes and window lengths for the same municipality and month", () => {
+    const rows = Array.from({length: 36}, (_,i) => ({regionId: '07211000', monat: `${2022+Math.floor(i/12)}-${String(i%12+1).padStart(2,'0')}`, count: i === 12 ? 100 : 2}));
+    const options = {heuteMonat: '2026-01', fenster: 1};
+    const solar = findeAnomalie(rows, () => 'Trier', 'g10', 'Solaranlagen', options)[0];
+    const balcony = findeAnomalie(rows, () => 'Trier', 'g10', 'Balkonkraftwerke', options)[0];
+    const quarter = findeAnomalie(rows, () => 'Trier', 'g10', 'Solaranlagen', {...options, fenster: 3})[0];
+    expect(new Set([solar.kennung, balcony.kennung, quarter.kennung]).size).toBe(3);
   });
 });

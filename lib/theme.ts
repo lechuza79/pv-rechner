@@ -5,6 +5,8 @@
 // v2: Consolidated from Figma design (the previous v1 token set has been removed).
 
 export const tokens = {
+  '--color-pending-text': '#785600',
+  '--color-pending-bg': '#FFF0B3',
   // ─── Backgrounds (3) ────────────────────────────────────────────────────────
   '--color-bg': '#FFFFFF',              // Page, cards, panels, chart
   '--color-bg-muted': '#F8F8F8',        // Inputs, subtle areas, overlays
@@ -1079,3 +1081,19 @@ export const globalStyles = `
 
 
 `;
+
+// Editorial share-card geometry at 1080px output width. These roles belong to
+// the share-card canvas, rather than the surrounding site's text scale.
+export const storyChart = {
+  donutValue: 88,
+  donutUnit: 30,
+  donutLabel: 34,
+  value: 144,
+  unit: 48,
+  label: 38,
+  detail: 30,
+  index: 25,
+  gap: 28,
+  barHeight: 64,
+  splashSize: 440,
+} as const;

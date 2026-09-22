@@ -386,3 +386,8 @@ export function IconPause({ size = 16, color = "currentColor", style }: IconProp
     </svg>
   );
 }
+
+/** Awaiting editorial review. */
+export function IconHourglass({ size = 16, color = "currentColor", style }: IconProps) {
+  return <svg aria-hidden="true" width={size} height={size} viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, ...style }}><path d="M4 2h8M4 14h8M5 2v3l3 3-3 3v3M11 2v3L8 8l3 3v3" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+}

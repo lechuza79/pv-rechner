@@ -63,7 +63,10 @@
     "umstellung:versand": "NODE_OPTIONS=--conditions=react-server tsx scripts/umstellungs-versand.ts",
     "presse": "tsx scripts/presse-refresh.ts",
     "temperatur:tage": "tsx scripts/dwd-temperatur-tage-sync.ts",
-    "flows:matrix": "tsx scripts/flow-matrix.ts"
+    "flows:matrix": "tsx scripts/flow-matrix.ts",
+    "stories:refresh": "node scripts/story-refresh.mjs --fetch",
+    "stories:prepare": "node --import tsx scripts/story-prepare.ts",
+    "stories:rangsnapshot": "node --conditions=react-server --import tsx scripts/story-ranking-month.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",

@@ -55,6 +55,13 @@ export interface DataSource {
 const BKG_DATENBEZUG_JAHR = 2026;
 
 export const DATA_SOURCES = {
+  era5Archive: {
+    name: "ERA5, Copernicus Climate Change Service, über Open-Meteo",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://open-meteo.com",
+    note: "Rasterzelle und Höhenbezug abgeleitet",
+  },
   /**
    * Live electricity mix, generation, cross-border flows.
    *

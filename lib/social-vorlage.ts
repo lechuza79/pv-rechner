@@ -73,3 +73,9 @@ export const SOCIAL_VORLAGEN_DDL = `
   REVOKE ALL ON social_vorlagen FROM anon;
   REVOKE ALL ON social_vorlagen FROM authenticated;
 `;
+
+/** Assemble the same editable text for feed, preview and saved output. */
+export function beitragsText(vorlage: string, werte: Record<string, string>, rahmen?: { vorher: string; nachher: string }): string {
+  const text = fuelle(vorlage, werte);
+  return rahmen ? [rahmen.vorher, text, rahmen.nachher].join("\n\n") : text;
+}

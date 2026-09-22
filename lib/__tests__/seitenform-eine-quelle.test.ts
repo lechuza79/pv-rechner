@@ -53,7 +53,7 @@ describe("Seitenfassung der Ortsgeschichten", () => {
       expect(quelle, `${name} holt die Bildkarte herein`).not.toContain("SocialKarte }");
     }
     // Genau EINE Stelle ruft sie — die geteilte Ansicht.
-    expect(GETEILT).toContain("<SocialKarte bild={bild} skala={1} stufe=\"quadrat\" palette=\"seite\" />");
+    expect(GETEILT).toMatch(/<SocialKarte\s+bild=\{bild\}\s+skala=\{1\}\s+stufe="quadrat"/);
   });
 
   it("das Werkzeug erfindet keine Angaben, die an der Karte stehen", () => {
@@ -70,6 +70,6 @@ describe("Seitenfassung der Ortsgeschichten", () => {
   it("wo es keine Seitenfassung gibt, sagt das Werkzeug es", () => {
     // „Nichts anzuzeigen" und „gibt es nicht" sind zwei Auskünfte. Zwölf der
     // vierzehn bundesweiten Beiträge haben bis heute keine.
-    expect(WERKZEUG).toContain("nur für den Feed");
+    expect(WERKZEUG).toContain("nur als Social-Post");
   });
 });

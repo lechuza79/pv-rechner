@@ -119,6 +119,14 @@ jobs:
             exit 1
           fi
 
+      - name: Preserve ranking observation for the story feed
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          curl --fail-with-body --silent --show-error --max-time 120 \
+            -X POST -H "Authorization: Bearer $CRON_SECRET" \
+            https://solar-check.io/api/social/story-feed/observations
+
   # Aufwaermen: baut die soeben fuer ungueltig erklaerten Seiten gedrosselt neu
   # auf, damit der erste echte Besucher eine fertige Seite bekommt statt den
   # Neuaufbau zu bezahlen. Die Drosselung schont die Supabase-Instanz.

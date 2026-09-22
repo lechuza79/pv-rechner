@@ -1,3 +1,4 @@
+import { withPublishedStories } from "../../../../../../lib/orts-story-feed-db";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
@@ -571,7 +572,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           einstellen; die Beitrags-Kennung trägt dafür den Gemeindeschlüssel.
         */}
         <GemeindeMeldungen
-          beitraege={ortsPosts({
+          beitraege={await withPublishedStories(region.region_id, ortsPosts({
             ort: { regionId: region.region_id, name: region.name },
             standIso: atlas.data_as_of,
             fassungen: await ladeFassungen(),
@@ -610,7 +611,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
               stand: "vorgemerkt",
             }),
             }),
-          })}
+          }))}
           name={region.name}
           liveUrl={`${BASE_URL}${atlasPath}`}
           standIso={atlas.data_as_of}

@@ -1,0 +1,84 @@
+name: Municipal story preparation
+on:
+  workflow_run:
+    workflows: [MaStR Refresh]
+    types: [completed]
+  workflow_dispatch: {}
+  schedule:
+    # Resume cached, incomplete weather batches without publishing them.
+    - cron: '15 6 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: municipal-story-preparation
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: python -m pip install lxml
+      - name: Select source period
+        id: period
+        run: echo "month=$(date -u +%Y-%m)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            scripts/.cache/story-inputs
+            scripts/.cache/story-discovery
+            scripts/.cache/story-prepared
+            scripts/.cache/story-weather
+            scripts/.cache/story-radial
+            scripts/.cache/bnetza/story-history-*/full.json
+            scripts/.cache/bnetza/story-history-*/storage.json
+            scripts/.cache/bnetza/story-history-*/sizes.json
+            scripts/.cache/bnetza/story-history-*/detail-coverage.json
+            scripts/.cache/bnetza/story-history-*/cities
+
+          key: municipal-stories-${{ steps.period.outputs.month }}-${{ github.run_id }}
+          restore-keys: municipal-stories-${{ steps.period.outputs.month }}-
+      - name: Obtain archive for a new source edition
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_run" ] || [ ! -f scripts/.cache/story-prepared/latest-run.json ]; then
+            npm run mastr:refresh-bnetza -- --download
+          fi
+      - name: Prepare and audit local story snapshots
+        run: npm run stories:refresh
+      - name: Preserve resumable inputs
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            scripts/.cache/story-inputs
+            scripts/.cache/story-discovery
+            scripts/.cache/story-prepared
+            scripts/.cache/story-weather
+            scripts/.cache/story-radial
+            scripts/.cache/bnetza/story-history-*/full.json
+            scripts/.cache/bnetza/story-history-*/storage.json
+            scripts/.cache/bnetza/story-history-*/sizes.json
+            scripts/.cache/bnetza/story-history-*/detail-coverage.json
+            scripts/.cache/bnetza/story-history-*/cities
+          key: municipal-stories-${{ steps.period.outputs.month }}-${{ github.run_id }}
+      - name: Reviewable aggregate results (no automatic publication)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: municipal-story-snapshots
+          path: |
+            scripts/.cache/story-prepared
+            scripts/.cache/story-templates/content-audit.json
+          retention-days: 30
