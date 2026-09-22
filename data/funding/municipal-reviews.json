@@ -48721,5 +48721,293 @@
         "evidenceUrl": "https://sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023/"
       }
     ]
+  },
+  {
+    "regionId": "03151017",
+    "name": "Meinersen",
+    "checkedAt": "2026-09-22T23:05:00Z",
+    "recheckAt": "2026-12-22T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene.",
+    "outcome": "klaerung",
+    "conclusion": "Die Gemeinde Meinersen fördert Solarthermie- und Photovoltaikanlagen mit 10 % der förderfähigen Kosten, höchstens 1.000 € je Vorhaben (Richtlinie Nr. 8.1). Aufgenommen, aber ohne Rechenwert: Die veröffentlichte Richtlinie erfasst nur den Neubau auf einem bisher unbebauten Grundstück, während die Gemeindeseite eine seit 2022 mögliche Antragstellung für Bestandsgebäude ankündigt und die Richtlinie als in Umstellung bezeichnet — die Bedingungen dafür sind nirgends veröffentlicht. Das Balkonprogramm der Nachbargemeinde Müden (Aller) gilt hier NICHT. Offen bleibt die Kreisebene (siehe nächster Schritt).",
+    "searches": [
+      "sg-meinersen.de Volltextsuche „Photovoltaik*“ (72 Treffer, nur die zwei Programme plus Beratungswerkzeug)",
+      "sg-meinersen.de Volltextsuche „Förderung“ (124 Treffer)",
+      "landkreis-gifhorn.de Volltextsuche „Balkonkraftwerk*“ und „Steckersolar*“",
+      "Landkreis Gifhorn Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss private Haushalte Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/",
+        "finding": "Programmseite der Gemeinde Meinersen am 23.09.2026 gelesen: „Gefördert wird die Installation von Solarthermie- und Photovoltaikanlagen“, Antragstellung ab dem 01.01.2024, Bescheidung „im Rahmen der verfügbaren Mittel“. Hinweis daneben: „Seit 2022 ist auch eine Antragstellung für Bestandsgebäude möglich“ und „Die Richtlinie sowie der Antrag werden derzeit noch umgestellt“."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/loadDocument.phtml?FID=4019.49.1&Ext=PDF",
+        "finding": "Richtlinie der Gemeinde Meinersen (gescanntes PDF ohne Textebene, erstellt 25.11.2020, 5 Seiten) als Bild gelesen. Nr. 8.1: „Die Höhe des Zuschusses beträgt 10% der förderfähigen Kosten der Rechnung, maximal 1.000 € pro Vorhaben.“ Nr. 3 begrenzt den Kreis auf „Eigentümer unbebauter Grundstücke … die darauf Wohngebäude neu errichten wollen“, Nr. 5.2 verlangt den „Erstbezug des Wohngebäudes“. Nr. 4 verlangt eine Anlage aus der BAFA-Liste, Nr. 5.5 einmalige Förderung je Grundstück, Nr. 8.2 Windhundprinzip mit Losentscheid."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen",
+        "finding": "Programmseite der Gemeinde Müden (Aller) am 23.09.2026 gelesen: „Gefördert werden steckerfertige Photovoltaik-Anlagen, auch bekannt als Balkonsolaranlage“, Antragstellung „ab dem 01.04.2026 bis zum 31.12.2026“."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273",
+        "finding": "Richtlinie der Gemeinde Müden (Aller) im Volltext gelesen. Nr. 4: „Ab 0,25 bis 0,40 kWp 100,00 € pauschal“ / „> 0,40 bis 0,60 bzw. 0,80 kWp 200,00 € pauschal“. Nr. 2: volljährige Privatpersonen, Eigentümer oder Mieter mit Hauptwohnsitz; „Die Förderung gilt für Ein- bis Mehrfamilienhäuser und sowohl für bestehende Gebäude als auch für Neubauten.“ Nr. 3: höchstens zwei Module und 600 bzw. 800 W Wechselrichterleistung, fabrikneu vom Fachbetrieb, fünf Jahre Nutzung, Registrierung im Marktstammdatenregister."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/suche.php?such=Photovoltaik*",
+        "finding": "Volltextsuche der Samtgemeinde am 23.09.2026 (Platzhalter nötig — ohne Stern sucht sie Vollwörter): 72 Treffer, darunter nur die beiden Programme oben und ein „Photovoltaik-Check“, also ein Beratungswerkzeug ohne Geld. Kein weiteres Förderprogramm einer Mitgliedsgemeinde."
+      },
+      {
+        "url": "https://www.landkreis-gifhorn.de/suche.php?such=Steckersolar*",
+        "finding": "Volltextsuche des Landkreises Gifhorn am 23.09.2026: zwei Treffer, beide im Amtsblatt-Archiv von 2024 („Richtlinien des Landkreises Gifhorn zur Förderung von ‚Balkonkraftwerken‘ (Stecker-Solargeräte)“, Amtsblatt 2024-06). Keine aktuelle Dienstleistungsseite — Laufzeit und Mittelstand sind damit offen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Gemeinde Meinersen, am 23.09.2026 vollständig gelesen; Programm in den Katalog aufgenommen (ohne Rechenwert, weil die veröffentlichte Richtlinie nur den Neubau erfasst).",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
+      },
+      {
+        "url": "sg-meinersen.de/loadDocument.phtml?FID=4019.49.1&Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Meinersen. Als gescanntes PDF ohne Textebene seitenweise als Bild gelesen; Betrag, Berechtigte und Verfahren daraus belegt. Der abgelegte Zustand „unerreichbar“ traf am 23.09.2026 nicht zu, die Datei lud mit HTTP 200.",
+        "evidenceUrl": "https://www.sg-meinersen.de/loadDocument.phtml?FID=4019.49.1&Ext=PDF"
+      },
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Gemeinde Müden (Aller), am 23.09.2026 gelesen; Programm in den Katalog aufgenommen.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen"
+      },
+      {
+        "url": "sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Müden (Aller) im Volltext gelesen; Staffelbeträge und Bedingungen daraus belegt.",
+        "evidenceUrl": "https://www.sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273"
+      },
+      {
+        "url": "sg-meinersen.de/output/download.php?fid=4019.105.1.PDF",
+        "disposition": "replaced",
+        "reason": "Zweiter Ausgabeweg desselben Dokuments: Die Objektkennung 105 ist die Richtlinie der Gemeinde Müden (Aller), die unter der sprechenden Adresse gelesen wurde. Abruf am 23.09.2026 liefert ein PDF mit identischem Anfang.",
+        "evidenceUrl": "https://www.sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273"
+      },
+      {
+        "url": "sg-meinersen.de/Rathaus-Service/Was-erledige-ich-wo-/F%C3%B6rderung-von-Balkonsolaranlagen-Gemeinde-M%C3%BCden-Aller-Samtgemeinde-Meinersen-.php",
+        "disposition": "replaced",
+        "reason": "Eintrag im Dienstleistungsverzeichnis zum Müdener Programm; der Abruf landet auf der Suchmaske „Was erledige ich wo?“ ohne eigenen Inhalt. Maßgeblich ist die Programmseite selbst.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen"
+      },
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/index.php?object=tx,4019.1.1&ModID=9&FID=4019.7.1&NavID=4019.155",
+        "disposition": "replaced",
+        "reason": "Kontakt-Detaillink der Programmseite: leitet am 23.09.2026 auf die Visitenkarte einer Mitarbeiterin (Bethke) um, nicht auf eine zweite Fassung der Programmseite. Dieselbe CMS-Bauform wie bei der Samtgemeinde Baddeckenstedt.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
+      },
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/index.php?object=tx,4019.1.1&ModID=9&FID=4019.91.1&NavID=4019.155",
+        "disposition": "replaced",
+        "reason": "Zweiter Kontakt-Detaillink derselben Programmseite: leitet auf die Visitenkarte einer weiteren Mitarbeiterin (Wauschkies) um.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
+      }
+    ],
+    "nextAction": {
+      "kind": "manual",
+      "dueAt": "2026-09-24T08:00:00Z",
+      "detail": "Offen ist allein die KREISEBENE: Der Landkreis Gifhorn hat 2024 eine „Richtlinie zur Förderung von Balkonkraftwerken (Stecker-Solargeräte)“ im Amtsblatt 2024-06 bekannt gemacht (200 € pauschal ab 200 € förderfähigen Kosten, Mindestleistung 350 VA, höchstens 800 VA und 2 kWp; Anträge ab 15.07.2024). Die Volltextsuche des Kreises findet sie heute NUR noch im Amtsblatt-Archiv, nicht als Dienstleistung — die Laufzeit ist laut Richtlinie durch die Haushaltsmittel begrenzt. Zu klären: Läuft das Programm noch, ist es ausgeschöpft oder beendet? Quelle ist der Dienstleistungseintrag im Serviceportal des Kreises (openrathaus.gifhorn.de); die Kennung nicht raten, sondern über die Dienstleistungssuche auflösen. Erst danach lässt sich für diese Gemeinden abschließend sagen, was ein Haushalt bekommt."
+    }
+  },
+  {
+    "regionId": "03151018",
+    "name": "Müden (Aller)",
+    "checkedAt": "2026-09-22T23:05:00Z",
+    "recheckAt": "2026-12-22T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene.",
+    "outcome": "klaerung",
+    "conclusion": "Die Gemeinde Müden (Aller) fördert Balkonkraftwerke pauschal: 100 € für 0,25–0,40 kWp, 200 € darüber (Richtlinie Nr. 4), Antragszeitraum 01.04. bis 31.12., Bestand und Neubau, Eigentümer und Mieter. Aufgenommen und rechenbar. Das Dach-Programm der Nachbargemeinde Meinersen gilt hier NICHT. Offen bleibt die Kreisebene (siehe nächster Schritt).",
+    "searches": [
+      "sg-meinersen.de Volltextsuche „Photovoltaik*“ (72 Treffer, nur die zwei Programme plus Beratungswerkzeug)",
+      "sg-meinersen.de Volltextsuche „Förderung“ (124 Treffer)",
+      "landkreis-gifhorn.de Volltextsuche „Balkonkraftwerk*“ und „Steckersolar*“",
+      "Landkreis Gifhorn Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss private Haushalte Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/",
+        "finding": "Programmseite der Gemeinde Meinersen am 23.09.2026 gelesen: „Gefördert wird die Installation von Solarthermie- und Photovoltaikanlagen“, Antragstellung ab dem 01.01.2024, Bescheidung „im Rahmen der verfügbaren Mittel“. Hinweis daneben: „Seit 2022 ist auch eine Antragstellung für Bestandsgebäude möglich“ und „Die Richtlinie sowie der Antrag werden derzeit noch umgestellt“."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/loadDocument.phtml?FID=4019.49.1&Ext=PDF",
+        "finding": "Richtlinie der Gemeinde Meinersen (gescanntes PDF ohne Textebene, erstellt 25.11.2020, 5 Seiten) als Bild gelesen. Nr. 8.1: „Die Höhe des Zuschusses beträgt 10% der förderfähigen Kosten der Rechnung, maximal 1.000 € pro Vorhaben.“ Nr. 3 begrenzt den Kreis auf „Eigentümer unbebauter Grundstücke … die darauf Wohngebäude neu errichten wollen“, Nr. 5.2 verlangt den „Erstbezug des Wohngebäudes“. Nr. 4 verlangt eine Anlage aus der BAFA-Liste, Nr. 5.5 einmalige Förderung je Grundstück, Nr. 8.2 Windhundprinzip mit Losentscheid."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen",
+        "finding": "Programmseite der Gemeinde Müden (Aller) am 23.09.2026 gelesen: „Gefördert werden steckerfertige Photovoltaik-Anlagen, auch bekannt als Balkonsolaranlage“, Antragstellung „ab dem 01.04.2026 bis zum 31.12.2026“."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273",
+        "finding": "Richtlinie der Gemeinde Müden (Aller) im Volltext gelesen. Nr. 4: „Ab 0,25 bis 0,40 kWp 100,00 € pauschal“ / „> 0,40 bis 0,60 bzw. 0,80 kWp 200,00 € pauschal“. Nr. 2: volljährige Privatpersonen, Eigentümer oder Mieter mit Hauptwohnsitz; „Die Förderung gilt für Ein- bis Mehrfamilienhäuser und sowohl für bestehende Gebäude als auch für Neubauten.“ Nr. 3: höchstens zwei Module und 600 bzw. 800 W Wechselrichterleistung, fabrikneu vom Fachbetrieb, fünf Jahre Nutzung, Registrierung im Marktstammdatenregister."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/suche.php?such=Photovoltaik*",
+        "finding": "Volltextsuche der Samtgemeinde am 23.09.2026 (Platzhalter nötig — ohne Stern sucht sie Vollwörter): 72 Treffer, darunter nur die beiden Programme oben und ein „Photovoltaik-Check“, also ein Beratungswerkzeug ohne Geld. Kein weiteres Förderprogramm einer Mitgliedsgemeinde."
+      },
+      {
+        "url": "https://www.landkreis-gifhorn.de/suche.php?such=Steckersolar*",
+        "finding": "Volltextsuche des Landkreises Gifhorn am 23.09.2026: zwei Treffer, beide im Amtsblatt-Archiv von 2024 („Richtlinien des Landkreises Gifhorn zur Förderung von ‚Balkonkraftwerken‘ (Stecker-Solargeräte)“, Amtsblatt 2024-06). Keine aktuelle Dienstleistungsseite — Laufzeit und Mittelstand sind damit offen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Gemeinde Meinersen, am 23.09.2026 vollständig gelesen; Programm in den Katalog aufgenommen (ohne Rechenwert, weil die veröffentlichte Richtlinie nur den Neubau erfasst).",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
+      },
+      {
+        "url": "sg-meinersen.de/loadDocument.phtml?FID=4019.49.1&Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Meinersen. Als gescanntes PDF ohne Textebene seitenweise als Bild gelesen; Betrag, Berechtigte und Verfahren daraus belegt. Der abgelegte Zustand „unerreichbar“ traf am 23.09.2026 nicht zu, die Datei lud mit HTTP 200.",
+        "evidenceUrl": "https://www.sg-meinersen.de/loadDocument.phtml?FID=4019.49.1&Ext=PDF"
+      },
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Gemeinde Müden (Aller), am 23.09.2026 gelesen; Programm in den Katalog aufgenommen.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen"
+      },
+      {
+        "url": "sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Müden (Aller) im Volltext gelesen; Staffelbeträge und Bedingungen daraus belegt.",
+        "evidenceUrl": "https://www.sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273"
+      },
+      {
+        "url": "sg-meinersen.de/output/download.php?fid=4019.105.1.PDF",
+        "disposition": "replaced",
+        "reason": "Zweiter Ausgabeweg desselben Dokuments: Die Objektkennung 105 ist die Richtlinie der Gemeinde Müden (Aller), die unter der sprechenden Adresse gelesen wurde. Abruf am 23.09.2026 liefert ein PDF mit identischem Anfang.",
+        "evidenceUrl": "https://www.sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273"
+      },
+      {
+        "url": "sg-meinersen.de/Rathaus-Service/Was-erledige-ich-wo-/F%C3%B6rderung-von-Balkonsolaranlagen-Gemeinde-M%C3%BCden-Aller-Samtgemeinde-Meinersen-.php",
+        "disposition": "replaced",
+        "reason": "Eintrag im Dienstleistungsverzeichnis zum Müdener Programm; der Abruf landet auf der Suchmaske „Was erledige ich wo?“ ohne eigenen Inhalt. Maßgeblich ist die Programmseite selbst.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen"
+      },
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/index.php?object=tx,4019.1.1&ModID=9&FID=4019.7.1&NavID=4019.155",
+        "disposition": "replaced",
+        "reason": "Kontakt-Detaillink der Programmseite: leitet am 23.09.2026 auf die Visitenkarte einer Mitarbeiterin (Bethke) um, nicht auf eine zweite Fassung der Programmseite. Dieselbe CMS-Bauform wie bei der Samtgemeinde Baddeckenstedt.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
+      },
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/index.php?object=tx,4019.1.1&ModID=9&FID=4019.91.1&NavID=4019.155",
+        "disposition": "replaced",
+        "reason": "Zweiter Kontakt-Detaillink derselben Programmseite: leitet auf die Visitenkarte einer weiteren Mitarbeiterin (Wauschkies) um.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
+      }
+    ],
+    "nextAction": {
+      "kind": "manual",
+      "dueAt": "2026-09-24T08:00:00Z",
+      "detail": "Offen ist allein die KREISEBENE: Der Landkreis Gifhorn hat 2024 eine „Richtlinie zur Förderung von Balkonkraftwerken (Stecker-Solargeräte)“ im Amtsblatt 2024-06 bekannt gemacht (200 € pauschal ab 200 € förderfähigen Kosten, Mindestleistung 350 VA, höchstens 800 VA und 2 kWp; Anträge ab 15.07.2024). Die Volltextsuche des Kreises findet sie heute NUR noch im Amtsblatt-Archiv, nicht als Dienstleistung — die Laufzeit ist laut Richtlinie durch die Haushaltsmittel begrenzt. Zu klären: Läuft das Programm noch, ist es ausgeschöpft oder beendet? Quelle ist der Dienstleistungseintrag im Serviceportal des Kreises (openrathaus.gifhorn.de); die Kennung nicht raten, sondern über die Dienstleistungssuche auflösen. Erst danach lässt sich für diese Gemeinden abschließend sagen, was ein Haushalt bekommt."
+    }
+  },
+  {
+    "regionId": "03151015",
+    "name": "Leiferde",
+    "checkedAt": "2026-09-22T23:05:00Z",
+    "recheckAt": "2026-12-22T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene.",
+    "outcome": "klaerung",
+    "conclusion": "Leiferde hat kein eigenes Programm. Die beiden im Quellenvorrat erfassten Förderseiten der Samtgemeinde gehören den Nachbargemeinden Meinersen (Dachanlagen) und Müden (Aller) (Balkonkraftwerke) und gelten jeweils nur im eigenen Gemeindegebiet — die Müdener Richtlinie sagt das ausdrücklich („innerhalb des Gemeindegebietes Müden (Aller)“). Die Volltextsuche der Samtgemeinde zeigt kein drittes Programm. Offen bleibt die Kreisebene (siehe nächster Schritt).",
+    "searches": [
+      "sg-meinersen.de Volltextsuche „Photovoltaik*“ (72 Treffer, nur die zwei Programme plus Beratungswerkzeug)",
+      "sg-meinersen.de Volltextsuche „Förderung“ (124 Treffer)",
+      "landkreis-gifhorn.de Volltextsuche „Balkonkraftwerk*“ und „Steckersolar*“",
+      "Landkreis Gifhorn Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss private Haushalte Klimaschutz"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/",
+        "finding": "Programmseite der Gemeinde Meinersen am 23.09.2026 gelesen: „Gefördert wird die Installation von Solarthermie- und Photovoltaikanlagen“, Antragstellung ab dem 01.01.2024, Bescheidung „im Rahmen der verfügbaren Mittel“. Hinweis daneben: „Seit 2022 ist auch eine Antragstellung für Bestandsgebäude möglich“ und „Die Richtlinie sowie der Antrag werden derzeit noch umgestellt“."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/loadDocument.phtml?FID=4019.49.1&Ext=PDF",
+        "finding": "Richtlinie der Gemeinde Meinersen (gescanntes PDF ohne Textebene, erstellt 25.11.2020, 5 Seiten) als Bild gelesen. Nr. 8.1: „Die Höhe des Zuschusses beträgt 10% der förderfähigen Kosten der Rechnung, maximal 1.000 € pro Vorhaben.“ Nr. 3 begrenzt den Kreis auf „Eigentümer unbebauter Grundstücke … die darauf Wohngebäude neu errichten wollen“, Nr. 5.2 verlangt den „Erstbezug des Wohngebäudes“. Nr. 4 verlangt eine Anlage aus der BAFA-Liste, Nr. 5.5 einmalige Förderung je Grundstück, Nr. 8.2 Windhundprinzip mit Losentscheid."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen",
+        "finding": "Programmseite der Gemeinde Müden (Aller) am 23.09.2026 gelesen: „Gefördert werden steckerfertige Photovoltaik-Anlagen, auch bekannt als Balkonsolaranlage“, Antragstellung „ab dem 01.04.2026 bis zum 31.12.2026“."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273",
+        "finding": "Richtlinie der Gemeinde Müden (Aller) im Volltext gelesen. Nr. 4: „Ab 0,25 bis 0,40 kWp 100,00 € pauschal“ / „> 0,40 bis 0,60 bzw. 0,80 kWp 200,00 € pauschal“. Nr. 2: volljährige Privatpersonen, Eigentümer oder Mieter mit Hauptwohnsitz; „Die Förderung gilt für Ein- bis Mehrfamilienhäuser und sowohl für bestehende Gebäude als auch für Neubauten.“ Nr. 3: höchstens zwei Module und 600 bzw. 800 W Wechselrichterleistung, fabrikneu vom Fachbetrieb, fünf Jahre Nutzung, Registrierung im Marktstammdatenregister."
+      },
+      {
+        "url": "https://www.sg-meinersen.de/suche.php?such=Photovoltaik*",
+        "finding": "Volltextsuche der Samtgemeinde am 23.09.2026 (Platzhalter nötig — ohne Stern sucht sie Vollwörter): 72 Treffer, darunter nur die beiden Programme oben und ein „Photovoltaik-Check“, also ein Beratungswerkzeug ohne Geld. Kein weiteres Förderprogramm einer Mitgliedsgemeinde."
+      },
+      {
+        "url": "https://www.landkreis-gifhorn.de/suche.php?such=Steckersolar*",
+        "finding": "Volltextsuche des Landkreises Gifhorn am 23.09.2026: zwei Treffer, beide im Amtsblatt-Archiv von 2024 („Richtlinien des Landkreises Gifhorn zur Förderung von ‚Balkonkraftwerken‘ (Stecker-Solargeräte)“, Amtsblatt 2024-06). Keine aktuelle Dienstleistungsseite — Laufzeit und Mittelstand sind damit offen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Gemeinde Meinersen, am 23.09.2026 vollständig gelesen; Programm in den Katalog aufgenommen (ohne Rechenwert, weil die veröffentlichte Richtlinie nur den Neubau erfasst).",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
+      },
+      {
+        "url": "sg-meinersen.de/loadDocument.phtml?FID=4019.49.1&Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Meinersen. Als gescanntes PDF ohne Textebene seitenweise als Bild gelesen; Betrag, Berechtigte und Verfahren daraus belegt. Der abgelegte Zustand „unerreichbar“ traf am 23.09.2026 nicht zu, die Datei lud mit HTTP 200.",
+        "evidenceUrl": "https://www.sg-meinersen.de/loadDocument.phtml?FID=4019.49.1&Ext=PDF"
+      },
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen",
+        "disposition": "reviewed",
+        "reason": "Programmseite der Gemeinde Müden (Aller), am 23.09.2026 gelesen; Programm in den Katalog aufgenommen.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen"
+      },
+      {
+        "url": "sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Gemeinde Müden (Aller) im Volltext gelesen; Staffelbeträge und Bedingungen daraus belegt.",
+        "evidenceUrl": "https://www.sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273"
+      },
+      {
+        "url": "sg-meinersen.de/output/download.php?fid=4019.105.1.PDF",
+        "disposition": "replaced",
+        "reason": "Zweiter Ausgabeweg desselben Dokuments: Die Objektkennung 105 ist die Richtlinie der Gemeinde Müden (Aller), die unter der sprechenden Adresse gelesen wurde. Abruf am 23.09.2026 liefert ein PDF mit identischem Anfang.",
+        "evidenceUrl": "https://www.sg-meinersen.de/PDF/Richtlinie_der_Gemeinde_M%C3%BCden_Aller_zur_F%C3%B6rderung_von_Balkonsolaranlagen.PDF?ObjSvrID=4019&ObjID=105&ObjLa=1&Ext=PDF&WTR=1&_ts=1721234273"
+      },
+      {
+        "url": "sg-meinersen.de/Rathaus-Service/Was-erledige-ich-wo-/F%C3%B6rderung-von-Balkonsolaranlagen-Gemeinde-M%C3%BCden-Aller-Samtgemeinde-Meinersen-.php",
+        "disposition": "replaced",
+        "reason": "Eintrag im Dienstleistungsverzeichnis zum Müdener Programm; der Abruf landet auf der Suchmaske „Was erledige ich wo?“ ohne eigenen Inhalt. Maßgeblich ist die Programmseite selbst.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen"
+      },
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/index.php?object=tx,4019.1.1&ModID=9&FID=4019.7.1&NavID=4019.155",
+        "disposition": "replaced",
+        "reason": "Kontakt-Detaillink der Programmseite: leitet am 23.09.2026 auf die Visitenkarte einer Mitarbeiterin (Bethke) um, nicht auf eine zweite Fassung der Programmseite. Dieselbe CMS-Bauform wie bei der Samtgemeinde Baddeckenstedt.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
+      },
+      {
+        "url": "sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/index.php?object=tx,4019.1.1&ModID=9&FID=4019.91.1&NavID=4019.155",
+        "disposition": "replaced",
+        "reason": "Zweiter Kontakt-Detaillink derselben Programmseite: leitet auf die Visitenkarte einer weiteren Mitarbeiterin (Wauschkies) um.",
+        "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
+      }
+    ],
+    "nextAction": {
+      "kind": "manual",
+      "dueAt": "2026-09-24T08:00:00Z",
+      "detail": "Offen ist allein die KREISEBENE: Der Landkreis Gifhorn hat 2024 eine „Richtlinie zur Förderung von Balkonkraftwerken (Stecker-Solargeräte)“ im Amtsblatt 2024-06 bekannt gemacht (200 € pauschal ab 200 € förderfähigen Kosten, Mindestleistung 350 VA, höchstens 800 VA und 2 kWp; Anträge ab 15.07.2024). Die Volltextsuche des Kreises findet sie heute NUR noch im Amtsblatt-Archiv, nicht als Dienstleistung — die Laufzeit ist laut Richtlinie durch die Haushaltsmittel begrenzt. Zu klären: Läuft das Programm noch, ist es ausgeschöpft oder beendet? Quelle ist der Dienstleistungseintrag im Serviceportal des Kreises (openrathaus.gifhorn.de); die Kennung nicht raten, sondern über die Dienstleistungssuche auflösen. Erst danach lässt sich für diese Gemeinden abschließend sagen, was ein Haushalt bekommt."
+    }
   }
 ]

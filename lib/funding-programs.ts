@@ -8813,6 +8813,112 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     balkonPercentOfCost: 0.5, balkonCap: 150,
   },
 
+  // NEU AM 23.09.2026 — gefunden über eine Websuche zu einem ganz anderen Thema
+  // (der Rückmeldung der Samtgemeinde auf unser Anschreiben), nicht über den
+  // Crawl. Der Fund gehört damit in dieselbe Klasse wie Konstanz: Die
+  // Förderseite lag in unserem Quellenvorrat, gelesen hatte sie niemand.
+  //
+  // WARUM OHNE RECHENWERT, obwohl die Höhe belegt ist: Das Modell kann den
+  // Zuschuss ausdrücken (10 % der Kosten, gedeckelt bei 1.000 €) — aber NICHT
+  // seinen Geltungsbereich. Die einzige veröffentlichte Richtlinie fördert nach
+  // Nr. 3 ausschließlich „Eigentümer unbebauter Grundstücke …, die darauf
+  // Wohngebäude neu errichten wollen", und Nr. 5.2 verlangt den „Erstbezug des
+  // Wohngebäudes". Der Rechner fragt Neubau nicht ab; ein Abzug träfe damit
+  // jede Bestandssanierung, für die diese Richtlinie nichts hergibt.
+  // Die Gemeindeseite sagt daneben: „Seit 2022 ist auch eine Antragstellung für
+  // Bestandsgebäude möglich" und „Die Richtlinie sowie der Antrag werden derzeit
+  // noch umgestellt, können aber weiterhin genutzt werden" — die Bedingungen für
+  // Bestandsgebäude sind also angekündigt und NIRGENDS veröffentlicht. Lieber
+  // keine Zahl als eine falsche: Das Programm informiert und zieht nichts ab.
+  // ZU PRÜFEN, sobald die umgestellte Richtlinie online ist: Gilt der Satz von
+  // 10 % / 1.000 € auch für Bestandsgebäude? Dann bekommt der Eintrag
+  // `percentOfCost: 0.1` und `pvCap: 1000`.
+  //
+  // Die Richtlinie liegt als GESCANNTES PDF ohne Textebene vor (erstellt
+  // 25.11.2020) — Textwerkzeuge geben dort nichts zurück und sehen dabei aus wie
+  // ein leeres Dokument. Gelesen als Bild, Seite für Seite, am 23.09.2026.
+  // ZWEITES PROGRAMM DERSELBEN SAMTGEMEINDE, anderer Träger und andere Technik
+  // (23.09.2026). Genau der Fall, für den die Quellentabelle den Schlüssel
+  // (Gemeinde × Adresse) trägt: Meinersen fördert die Dachanlage, Müden (Aller)
+  // das Balkonkraftwerk, beide Seiten liegen auf der Domain der Samtgemeinde.
+  // Wer hier eine Gemeinde je Domain annimmt, verliert eines von beiden.
+  //
+  // DIE STUFEN DER RICHTLINIE MESSEN DIE WECHSELRICHTERLEISTUNG, NICHT DIE
+  // MODULLEISTUNG — deshalb steht hier eine Pauschale und keine `balkonTiers`.
+  // Nr. 4 staffelt „Ab 0,25 bis 0,40 kWp → 100,00 € pauschal" und „> 0,40 bis
+  // 0,60 bzw. 0,80² kWp → 200,00 € pauschal"; Fußnote 2 lautet „Entsprechend der
+  // ausstehenden Entscheidung der Bundesregierung" und steht wortgleich an der
+  // Wechselrichtergrenze in Nr. 3 („maximal zwei Module und einer
+  // Wechselrichterleistung von maximal insgesamt 600 bzw. 800¹ W"). Die obere
+  // Stufe endet also dort, wo der Wechselrichter gedeckelt ist.
+  // `balkonTiers` vergleicht dagegen die MODULleistung (siehe Feldkommentar).
+  // Beide Semantiken hier gleichzusetzen wäre eine erfundene Regel: Ein heutiges
+  // Set trägt rund 0,9 kWp Module an einem 800-W-Wechselrichter und läge unter
+  // der Modul-Lesart oberhalb der ganzen Tabelle, also ohne Förderung — was die
+  // Richtlinie erkennbar nicht meint, denn sie fördert ausdrücklich zwei Module.
+  // Jedes Set, das unser Balkon-Rechner anbietet, hat einen 800-W-Wechselrichter
+  // und fällt damit in die obere Stufe: 200 € sind für jeden rechenbaren Fall
+  // der richtige Betrag. Die 100-€-Stufe steht in `rates` und `conditions`, damit
+  // sie ein Nutzer mit einem sehr kleinen Gerät trotzdem sieht.
+  "mueden-aller-balkonsolar": {
+    id: "mueden-aller-balkonsolar",
+    name: "Förderung von Balkonsolaranlagen",
+    traeger: "Gemeinde Müden (Aller)", level: "kommune", region: "Müden (Aller)",
+    bundesland: "Niedersachsen", agsCode: "03151018",
+    url: "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-M%C3%BCden-Aller-/F%C3%B6rderung-von-Balkonsolaranlagen",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Haushalt, gestaffelt nach Anlagenleistung",
+    maxFoerderung: "200 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk 0,25–0,40 kWp", value: "100 € pauschal" },
+      { label: "Balkonkraftwerk über 0,40 kWp", value: "200 € pauschal" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind volljährige Privatpersonen, die Eigentümer oder Mieter mit Hauptwohnsitz in der Gemeinde sind; Mieter brauchen das Einverständnis des Eigentümers",
+      "Gefördert werden Bestandsgebäude und Neubauten, solange das Gebäude überwiegend Wohnzwecken dient",
+      "Höchstens zwei Module und höchstens 600 beziehungsweise 800 W Wechselrichterleistung je Wohneinheit",
+      "Ein Antrag je Haushalt; wer mehrere Wohnungen besitzt, darf nur für eine beantragen",
+      "Das Gerät muss fabrikneu sein und von einem Fachbetrieb oder Online-Fachbetrieb stammen — Gebrauchtgeräte, Eigenbau, Prototypen und Leasing sind ausgeschlossen",
+      "Der Antrag ist vor dem Vorhabenbeginn zu stellen; als Beginn gilt die Bestellung oder die Beauftragung eines Betriebs",
+      "Fünf Jahre Nutzung in derselben Wohneinheit; ein Umzug innerhalb der Gemeinde ist vorher anzuzeigen",
+      "Die fertige Anlage ist im Marktstammdatenregister zu registrieren",
+      "Antragszeitraum ist der 01.04. bis 31.12. eines Jahres, im Rahmen der verfügbaren Mittel; ein Rechtsanspruch besteht nicht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 200,
+  },
+
+  "meinersen-solar": {
+    id: "meinersen-solar",
+    name: "Förderung von Solarthermie- und Photovoltaikanlagen",
+    traeger: "Gemeinde Meinersen", level: "kommune", region: "Meinersen",
+    bundesland: "Niedersachsen", agsCode: "03151017",
+    url: "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der förderfähigen Rechnungskosten, gedeckelt",
+    maxFoerderung: "1.000 € je Vorhaben",
+    rates: [
+      { label: "Photovoltaik- oder Solarthermieanlage", value: "10 % der förderfähigen Kosten, höchstens 1.000 € je Vorhaben" },
+    ],
+    conditions: [
+      "Die veröffentlichte Richtlinie gilt dem Neubau: antragsberechtigt sind Eigentümer unbebauter Grundstücke, die dort ein Wohngebäude errichten; vorausgesetzt wird der Erstbezug",
+      "Die Gemeinde schreibt daneben, dass seit 2022 auch Bestandsgebäude beantragen können und die Richtlinie derzeit umgestellt wird — die Bedingungen dafür sind nicht veröffentlicht",
+      "Das Vorhaben darf bei Antragstellung noch nicht begonnen sein; als Beginn gilt der Abschluss eines Liefer- oder Leistungsvertrags, Planung zählt nicht",
+      "Die Anlage muss zum Zeitpunkt der Bewilligung in der BAFA-Liste der förderfähigen Anlagen stehen",
+      "Der Zuschuss kann je Grundstück nur einmal in Anspruch genommen werden",
+      "Nach der Bewilligung bleiben drei Jahre Zeit für die Umsetzung",
+      "Anträge werden in der Reihenfolge des Eingangs bewilligt, solange das Jahresbudget reicht; bei Gleichstand am selben Tag entscheidet das Los",
+      "Ein Rechtsanspruch auf die Zuwendung besteht nicht",
+      "Eine Doppelförderung ist nicht ausgeschlossen; die Gemeinde versteht sich als vorrangiger Fördergeldgeber",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+  },
+
   "bissendorf-klimaschutz": {
     id: "bissendorf-klimaschutz", name: "Förderung von Klimaschutzmaßnahmen",
     traeger: "Gemeinde Bissendorf", level: "kommune", region: "Bissendorf",

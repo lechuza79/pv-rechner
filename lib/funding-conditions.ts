@@ -438,6 +438,23 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "berkenthin-balkon-solar",
   "altenkirchen-balkonkraftwerke",
   "altenkirchen-solarspeicher",
+  // Added 23 Sep 2026: Mueden (Aller). Guideline read in full. The usual
+  // application-before-purchase rule does apply here, so a test form is possible
+  // -- it just has not been written in this run, and half-recorded is not an
+  // option. Three further conditions have no test form at all: at most two
+  // modules with 600 or 800 W of inverter power per dwelling unit, the five-year
+  // use in that same unit, and the factory-new purchase from a specialist
+  // dealer. All of them stand in full on the card.
+  "mueden-aller-balkonsolar",
+  // Added 23 Sep 2026: Meinersen. Guideline read as images (scanned, no text
+  // layer). No test form, and the reason is the same one that keeps the entry
+  // from carrying a calculation field: the published guideline only covers a NEW
+  // building on a previously undeveloped plot, while the municipality announces
+  // that existing buildings have been eligible since 2022 and that the guideline
+  // is being revised. A test form would hold the user's project against a rule
+  // the municipality itself says is out of date. The conditions stand in full on
+  // the card.
+  "meinersen-solar",
   "cochem-zell-solarstromspeicher",
   // Added 19 Sep 2026: discretionary EKM grant without a rate; the committee
   // decision, the start-after-receipt rule and the new-building exclusion have

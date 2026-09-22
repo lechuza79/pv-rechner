@@ -423,6 +423,8 @@ export const ATLAS_CITIES: AtlasCity[] = [
   // gefasst (achtstellig statt fünfstellig), nicht der Eintrag falsch.
   { slug: "klempau", name: "Klempau", ags: "01053067", kreis: "Kreis Herzogtum Lauenburg", bundesland: "Schleswig-Holstein", yieldKwhKwp: 1007 },
   { slug: "helmstedt", name: "Helmstedt", ags: "03154028", kreis: "Landkreis Helmstedt", bundesland: "Niedersachsen", yieldKwhKwp: 1041 },
+  { slug: "meinersen", name: "Meinersen", ags: "03151017", kreis: "Landkreis Gifhorn", bundesland: "Niedersachsen", yieldKwhKwp: 1028 },
+  { slug: "mueden-aller", name: "Müden (Aller)", ags: "03151018", kreis: "Landkreis Gifhorn", bundesland: "Niedersachsen", yieldKwhKwp: 1010 },
   { slug: "goettingen", name: "Göttingen", ags: "03159016", kreis: "Landkreis Göttingen", bundesland: "Niedersachsen", yieldKwhKwp: 1007 },
   { slug: "herzberg-am-harz", name: "Herzberg am Harz", ags: "03159019", kreis: "Landkreis Göttingen", bundesland: "Niedersachsen", yieldKwhKwp: 1031 },
   { slug: "weyhe", name: "Weyhe", ags: "03251047", kreis: "Landkreis Diepholz", bundesland: "Niedersachsen", yieldKwhKwp: 1013 },
