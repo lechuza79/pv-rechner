@@ -1,0 +1,18 @@
+/* Shared first-paint shell. Load after host styles; opt in on the html element.
+   Hosts retain their SSR BrandLogo SVG and set data-sc-shell before first paint. */
+html[data-sc-shell] .site-header{position:relative;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:24px;overflow:visible}
+html[data-sc-shell] .site-header .brand svg{--color-brand:var(--sc-brand-accent,var(--lab-accent,#d4ff24));--color-brand-deep:color-mix(in srgb,var(--sc-brand-accent,var(--lab-accent,#d4ff24)) 55%,#fff);--color-accent:#173b42;--color-text-faint:#4a675e;width:166px;height:auto;flex-shrink:0}
+html[data-sc-shell] .site-header .brand svg>path{fill:var(--color-accent)}
+html[data-sc-shell] [data-dark=true] .site-header .brand svg,html[data-sc-shell] [data-rain-study=night] .site-header .brand svg,html[data-sc-shell] [data-rain-study=rain] .site-header .brand svg{--color-accent:#eff6ff;--color-text-faint:#cfdeee}
+html[data-sc-shell] .site-header :focus-visible{outline:2px solid currentColor;outline-offset:4px}
+@media(max-width:600px){
+ html[data-sc-shell] .site-header{padding:18px 24px;min-height:64px}
+ html[data-sc-shell] .site-header .brand svg{width:155px;max-width:155px}
+ html[data-sc-shell] .sc-nav-toggle{font-size:0!important;width:48px;height:48px;padding:10px;display:grid;place-items:center}
+}
+html[data-sc-shell][data-sc-fonts=pending] :is(.site-header,.hero-copy,.hero-bottom){visibility:hidden}
+html[data-sc-shell][data-sc-fonts=ready] :is(.site-header,.hero-copy,.hero-bottom){animation:sc-shell-enter 950ms cubic-bezier(.22,1,.36,1) both}
+html[data-sc-shell][data-sc-fonts=ready] .hero-copy{animation-delay:90ms}
+html[data-sc-shell][data-sc-fonts=ready] .hero-bottom{animation-delay:180ms}
+@keyframes sc-shell-enter{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){html[data-sc-shell][data-sc-fonts=ready] :is(.site-header,.hero-copy,.hero-bottom){animation:none}}

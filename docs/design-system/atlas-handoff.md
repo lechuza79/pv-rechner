@@ -1,3 +1,5 @@
+> Superseded for integration scope on 2026-09-22: this design replaces the old municipal Atlas page for all municipalities. See [the portable source handoff](../../scripts/municipality-preview/HANDOFF.md). Historical preview paths below are not runtime dependencies.
+
 # Atlas preview handoff — 2026-09-21
 
 ## Checkpoint and ownership

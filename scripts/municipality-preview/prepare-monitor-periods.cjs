@@ -2,23 +2,24 @@
 const {createRequire}=require('node:module');
 const {readFileSync,writeFileSync}=require('node:fs');
 const path=require('node:path');
-const main=process.env.SOLAR_SITE_ROOT||'/Users/eule/projects/pv-rechner';
-const source=process.env.STORY_SOURCE_ROOT||'/Users/eule/projects/pv-rechner/.worktrees/codex-kommunen-templates';
-const req=createRequire(path.join(main,'package.json'));
+const paths=require('./paths.cjs');
+const main=paths.siteSourceRoot;
+const source=paths.storySourceRoot;
+const req=createRequire(path.join(main,'entry.cjs'));
 const {era5StoryWeather}=req('./lib/story-weather-provider.ts');
 const {solarMonth}=require(path.join(source,'lib/story-monthly-solar.ts'));
 const {energyYear}=require(path.join(source,'lib/story-energy-year.ts'));
 const {unitMonthValue}=require(path.join(source,'lib/story-unit-value.ts'));
 const read=p=>JSON.parse(readFileSync(p,'utf8'));
-const baseline=read(path.join(source,'scripts/.cache/story-prepared/2026-09-10/09679147.json'));
-const detail=read(path.join(source,'scripts/.cache/bnetza/story-history-2026-09-10/cities/09679147.json'));
-const inventory=read(path.join(source,'scripts/.cache/story-radial/09679147-value-units.json'));
+const baseline=read(path.join(paths.cacheRoot,'story-prepared/2026-09-10/09679147.json'));
+const detail=read(path.join(paths.cacheRoot,'bnetza/story-history-2026-09-10/cities/09679147.json'));
+const inventory=read(path.join(paths.cacheRoot,'story-radial/09679147-value-units.json'));
 if(inventory.sourceDate!==baseline.sourceDate)throw Error('Mismatched register editions');
 const original=baseline.values['2026-08'];
 const result={sourceDate:baseline.sourceDate,preparedAt:new Date().toISOString(),method:'active-register-cohort-and-archived-era5',valuationAssumptionDate:original.valuationDate,privateSelfConsumption:original.privateSelfConsumption,monthly:[],annual:[],missing:[]};
 const saved=new URL(baseline.monthly.sourceUrl);
 const position={latitude:Number(saved.searchParams.get('latitude')),longitude:Number(saved.searchParams.get('longitude'))};
-process.chdir(main); // Archive modules resolve their read-only store relative to the main checkout.
+process.chdir(paths.repoRoot); // Archive inputs must exist in this checkout's local cache.
 for(let offset=0;offset<20;offset++){
  const year=2026,monthIndex=7-offset;
  const month=new Date(Date.UTC(year,monthIndex,15)).toISOString().slice(0,7);

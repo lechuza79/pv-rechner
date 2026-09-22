@@ -3,7 +3,7 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
 
-// Read the owning session's canonical templates and all their dependencies.
+// Read the vendored canonical templates and their dependencies.
 // This local adapter selects Höchberg without changing production routing/auth.
 export async function prepareStories(sourceRoot:string){
 const sourceImport=(file:string)=>import(pathToFileURL(path.join(sourceRoot,file)).href);
@@ -33,6 +33,10 @@ const thumbLabels=JSON.parse(readFileSync(new URL('./story-thumb-labels.json',im
 writeFileSync(new URL('./stories.json',import.meta.url),JSON.stringify({stories:stories.map(story=>({...story,thumbLabel:thumbLabels[story.id]})),name:report.name}));
 console.log(`${stories.length} existing stories for ${report.name}`);
 
+prepareBaseStyles(sourceRoot);
+}
+export function prepareBaseStyles(sourceRoot:string){
+const {tokens}=require(path.join(sourceRoot,'lib/theme.ts'));
 mkdirSync(new URL('./build/',import.meta.url),{recursive:true});
 const layout=readFileSync(path.join(sourceRoot,'app/(embed)/layout.tsx'),'utf8');
 const template=layout.match(/const baseStyles = `([\s\S]*?)`;/)![1];

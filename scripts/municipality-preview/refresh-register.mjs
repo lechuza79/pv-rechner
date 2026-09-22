@@ -1,7 +1,8 @@
+import paths from './paths.cjs';
 import {readFileSync,writeFileSync} from 'node:fs';
 import path from 'node:path';
-const sourceRoot=process.env.STORY_SOURCE_ROOT??'/Users/eule/projects/pv-rechner/.worktrees/codex-kommunen-templates';
-process.loadEnvFile(path.join(sourceRoot,'.env.local'));
+const sourceRoot=paths.storySourceRoot;
+process.loadEnvFile(path.join(paths.repoRoot,'.env.local'));
 const headers={apikey:process.env.SUPABASE_SERVICE_KEY,Authorization:`Bearer ${process.env.SUPABASE_SERVICE_KEY}`,'Content-Type':'application/json'};
 async function read(route,body){const r=await fetch(new URL('/rest/v1/'+route,process.env.SUPABASE_URL),{headers,...(body?{method:'POST',body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(30000)});if(!r.ok)throw Error('Register read failed '+r.status);return r.json();}
 const before=(await read('mastr_meta?select=imported_at&id=eq.1'))[0]?.imported_at;if(!before)throw Error('No edition');
@@ -16,7 +17,7 @@ if(regions.length!==55||solar.length>=1000||regions.filter(r=>r.population>0).so
 const districtPeers=regions.filter(r=>r.population>0).map(r=>{const battery=storage.find(s=>s.region_id===r.region_id);if(!battery)throw Error('Missing storage');const rows=solar.filter(s=>s.region_id===r.region_id);const sums=Object.fromEntries(['alle','privat','gewerbe'].map(owner=>{const allowed=owner==='alle'?null:owner==='privat'?['privat_dach','steckersolar']:['gewerbe_dach','freiflaeche'];const cells=rows.filter(s=>!allowed||allowed.includes(s.segment));return [owner,{count:cells.reduce((n,s)=>n+Number(s.count),0),kwp:cells.reduce((n,s)=>n+Number(s.kwp),0),speicher:(owner!=='gewerbe'?Number(battery.batterie_privat_kwh):0)+(owner!=='privat'?Number(battery.batterie_gewerbe_kwh):0)}]}));return {...r,sums,batteryCount:Number(battery.batterie_privat_count)+Number(battery.batterie_gewerbe_count)};});
 const data={source:'Marktstammdatenregister · current Atlas aggregate',retrieved:new Date().toISOString(),dataAsOf:before.slice(0,10),populationAsOf:regions[0].population_as_of,populationMin:5000,populationMaxExclusive:20000,peers:districtPeers.filter(r=>r.population>=5000&&r.population<20000),districtPeers};
 
-const report=JSON.parse(readFileSync(path.join(sourceRoot,'scripts/.cache/story-discovery/09679147.json'),'utf8'));
+const report=JSON.parse(readFileSync(path.join(paths.cacheRoot,'story-discovery/09679147.json'),'utf8'));
 const stock=report.candidates.find(c=>c.family==='Speicherbestand');
 const chartData=JSON.parse(readFileSync(new URL('./charts.json',import.meta.url),'utf8'));
 const mix=chartData.charts.find(c=>c.template==='anteilsdonut').story;

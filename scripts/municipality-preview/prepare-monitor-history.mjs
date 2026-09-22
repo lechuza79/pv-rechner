@@ -1,8 +1,9 @@
+import paths from './paths.cjs';
 import {readFileSync,writeFileSync} from 'node:fs';
 import path from 'node:path';
-const sourceRoot=process.env.STORY_SOURCE_ROOT??'/Users/eule/projects/pv-rechner/.worktrees/codex-kommunen-templates';
+const sourceRoot=paths.storySourceRoot;
 const register=JSON.parse(readFileSync(new URL('../../public/atlas-design-preview/current-register.json',import.meta.url)));
-const root=path.join(sourceRoot,'scripts/.cache/bnetza','story-history-'+register.sourceDate);
+const root=path.join(paths.cacheRoot,'bnetza','story-history-'+register.sourceDate);
 const solar=JSON.parse(readFileSync(path.join(root,'cities/09679147.json'))).daily;
 const storage=JSON.parse(readFileSync(path.join(root,'storage.json')));
 if(storage.sourceDate!==register.sourceDate)throw Error('Mismatching register editions');

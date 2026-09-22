@@ -1,8 +1,9 @@
+import paths from './paths.cjs';
 import {compareRanks,comparisonText} from './rank-comparison.mjs';
 import {readFile,writeFile} from 'node:fs/promises';
 import path from 'node:path';
 async function main(){
- const source=process.env.STORY_SOURCE_ROOT??'/Users/eule/projects/pv-rechner/.worktrees/codex-kommunen-templates';
+ const source=paths.storySourceRoot;
  const {rankingMonthRows,rankingDistinction}=await import(path.join(source,'lib/story-ranking-month.ts'));
  const {rankingRows,rankingKategorien}=await import(path.join(source,'lib/atlas-ranking.ts'));
  const {RANKING_FELDER}=await import(path.join(source,'lib/ranking-felder.ts'));
@@ -12,7 +13,7 @@ async function main(){
  const temporalByKey=new Map(temporal.map(row=>[row.key,row]));
  const temporalText=(row:any,kind:string)=>{const result=temporalByKey.get(row.key);return result?comparisonText(result,kind)??(result.comparisons[kind].status==='changed-basis'?'Vergleichsgruppe oder Berechnung geändert':'Kein gespeicherter Vergleichsstand'):'Kein gespeicherter Vergleichsstand';};
  const rows=rankingMonthRows(snapshot.current,snapshot.previous).sort((a:any,b:any)=>a.rank/a.size-b.rank/b.size);
- const statsPath=path.join(source,'scripts/.cache/story-ranking-month/sources/3a1bf9ee977d1a94c75b09e7a6890eed3278fd4fa03bed9ca5021972a81c7182.json');
+ const statsPath=path.join(paths.cacheRoot,'story-ranking-month/sources/3a1bf9ee977d1a94c75b09e7a6890eed3278fd4fa03bed9ca5021972a81c7182.json');
  const stats=JSON.parse(await readFile(statsPath,'utf8'));
  const categories=new Map(rankingKategorien().map((category:any)=>[category.key,category]));
  const fields=new Map(RANKING_FELDER.map((field:any)=>[field.slug,field]));

@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import path from 'node:path';
-const sharedRoot=path.join(process.env.SOLAR_SITE_ROOT ?? '/Users/eule/projects/pv-rechner','public');
+import paths from './paths.cjs';
+const sharedRoot=path.join(paths.repoRoot,'public');
 const boot=await readFile(path.join(sharedRoot,'shared-nav/header-boot.js'),'utf8');
 function run(load){
  const root={dataset:{},hasAttribute:()=>true};
