@@ -55,6 +55,7 @@
     "release:plan": "tsx scripts/release-plan.ts",
     "release:messen": "tsx scripts/release-messen.ts",
     "kommunen:veroeffentlicht": "tsx scripts/kommunen-veroeffentlicht.ts",
+    "kommunen:veroeffentlichungen": "tsx scripts/kommunen-veroeffentlichungen.ts",
     "social:zahlen": "tsx --conditions react-server --env-file=.env.local scripts/social-zahlen.ts",
     "social:formen": "tsx --tsconfig scripts/tsconfig.werkbank.json scripts/social-formen-werkbank.tsx",
     "orts:visual": "tsx --tsconfig scripts/tsconfig.werkbank.json scripts/orts-visual-werkbank.tsx",

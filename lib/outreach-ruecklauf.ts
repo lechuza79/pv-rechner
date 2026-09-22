@@ -375,3 +375,52 @@ export const ART_LABEL: Record<Ruecklaufart, string> = {
   abwesenheit: "Abwesenheitsnotiz",
   antwort: "Antwort",
 };
+
+/**
+ * Wem gehört eine Antwort, die von einer UNBEKANNTEN Adresse kommt?
+ *
+ * WARUM (22.09.2026): Berkenthins Bürgermeister hat auf unseren Brief mit einer
+ * fertigen Pressemitteilung geantwortet — von `amt-berkenthin.de`, während der
+ * Brief an `berkenthin.de` ging. Weder die Domain noch eine zitierte Adresse
+ * passten, der Betreff hieß „Pressemitteilung", und die Antwort landete in der
+ * Liste „bitte selbst ansehen", wo sie neun Tage lag. Ein Amt, ein
+ * Verwaltungsverbund oder ein privates Postfach der Verwaltung trägt den
+ * Ortsnamen regelmäßig, aber eben nicht die Domain des Briefes.
+ *
+ * GERATEN WIRD DABEI NICHT: Der Ortsname muss im Absender als eigenes Wort
+ * stehen (von Buchstaben umgeben zählt nicht — „Linden" in „lindenberg.de" ist
+ * kein Treffer), er muss mindestens fünf Buchstaben haben, und es darf genau
+ * EINE angeschriebene Gemeinde passen. Bleibt es mehrdeutig, bleibt die Mail
+ * ungeordnet — dieselbe Richtung wie überall sonst: lieber offen als falsch
+ * zugeschrieben.
+ */
+export function ortAusAbsender<T extends { region_id: string; name: string }>(
+  von: string,
+  gemeinden: T[],
+): T | null {
+  const norm = (s: string) =>
+    s
+      .toLowerCase()
+      .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  const absender = ` ${norm(von)} `;
+  const treffer = new Map<string, T>();
+  const namen = gemeinden.map((g) => ({ g, voll: ` ${norm(g.name)} ` }));
+  for (const g of gemeinden) {
+    // Nur der Hauptname zählt: „Heringen (Werra)" sucht nach „heringen",
+    // „Burg (Spreewald)/Bórkowy" nach „burg" — das ist dann zu kurz und fällt
+    // ohnehin heraus.
+    const name = norm(g.name.split(/[(/,]/)[0]);
+    if (name.replace(/ /g, "").length < 5) continue;
+    if (!absender.includes(` ${name} `)) continue;
+    // Ein zweiter Ort, der denselben Namen im eigenen trägt („Niendorf bei
+    // Berkenthin"), sitzt regelmäßig auf derselben Amtsdomain. Dann ist die
+    // Mail nicht zuzuordnen — auch wenn nur einer der beiden den Namen genau
+    // trägt.
+    const auchMoeglich = namen.some((n) => n.g.region_id !== g.region_id && n.voll.includes(` ${name} `));
+    if (auchMoeglich) return null;
+    treffer.set(g.region_id, g);
+  }
+  return treffer.size === 1 ? [...treffer.values()][0] : null;
+}

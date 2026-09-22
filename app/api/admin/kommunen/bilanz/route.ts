@@ -5,6 +5,8 @@ import { werteAus, type OutreachZeile } from "../../../../../lib/kommunen-auswer
 import { zaehleAbos, type AboZeile } from "../../../../../lib/kommunen-abo-spiegel";
 import { aboZeilenFuerAuswertung } from "../../../../../lib/gemeinde-abo";
 import { isAdminSession } from "../../../../../lib/admin-guard";
+import { bilanz, type Veroeffentlichung } from "../../../../../lib/kommunen-veroeffentlichung";
+import { liesNotiz } from "../../../../../lib/outreach-ruecklauf";
 
 // Auswertung des Outreach: was hinausging und was daraus wurde.
 //
@@ -62,6 +64,36 @@ export async function GET(req: NextRequest) {
 
   const { gesamt, jeKampagne, jeTag } = werteAus(alle, spiegel);
 
+  // ─── Belegte Veröffentlichungen, je Beitrag ────────────────────────────────
+  //
+  // Der Nenner sind die Briefe ohne bekannten Zustellfehler — dieselbe Zählung
+  // wie auf der Kommandozeile (lib/kommunen-veroeffentlichung.ts). Fällt die
+  // Abfrage aus, steht das auf der Seite statt einer Null.
+  let veroeffentlichungen: unknown = null;
+  {
+    const { data: pubs, error: pe } = await serviceDb
+      .from("kommunen_veroeffentlichung")
+      .select("region_id, url, kanal, mit_link, gesehen_ab, noch_online")
+      .order("gesehen_ab");
+    const { data: noten, error: ne } = await serviceDb
+      .from("kommunen_kontakt")
+      .select("region_id, kampagne, outreach_status, notes, mastr_regions!inner(name)")
+      .not("contacted_at", "is", null);
+    if (!pe && !ne) {
+      const zugestellt = ((noten ?? []) as any[]).filter(
+        (z) => z.outreach_status !== "bounce" && !liesNotiz(z.notes).verlauf.some((v) => v.art === "unzustellbar"),
+      );
+      const liste = (pubs ?? []) as Veroeffentlichung[];
+      const namen = Object.fromEntries(zugestellt.map((z) => [z.region_id, z.mastr_regions.name as string]));
+      const mit = new Set(liste.map((v) => v.region_id));
+      const jeSchub = [...new Set(zugestellt.map((z) => z.kampagne as string))].sort().map((k) => {
+        const im = zugestellt.filter((z) => z.kampagne === k);
+        return { kampagne: k, angeschrieben: im.length, gemeinden: im.filter((z) => mit.has(z.region_id)).length };
+      });
+      veroeffentlichungen = { bilanz: bilanz(liste, zugestellt.length), liste, namen, jeSchub };
+    }
+  }
+
   // ─── Teil 2: Verteilung der Anschreiben-Fassungen einer Kampagne ───────────
   //
   // Vorgabe ist der Schub mit den meisten verschickten Briefen, nicht ein fest
@@ -74,6 +106,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     kampagne,
     wirkung: { gesamt, jeKampagne, jeTag },
+    veroeffentlichungen,
     verteilung: verteile(zeilen),
     // Was noch aussteht — sonst liest sich „0 Antworten" wie ein Ergebnis,
     // obwohl schlicht noch nichts raus ist.

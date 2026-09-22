@@ -1,4 +1,6 @@
 import { liesNotiz } from "../lib/outreach-ruecklauf";
+import { hinweisBericht, neueHinweise, type Hinweis } from "../lib/kommunen-hinweise";
+import { berichtAblegen } from "../lib/alert-senden";
 /**
  * Was ist aus den angeschriebenen Gemeinden geworden?
  *
@@ -83,7 +85,14 @@ function adressen(regionen: Map<string, RegionZeile>, ids: string[]): Map<string
 async function main() {
   loadEnvFile();
   const args = process.argv.slice(2);
-  const seit = args.find((a) => a.startsWith("--seit="))?.split("=")[1] ?? ANALYTICS_SEIT;
+  // Die Schnittstelle nimmt höchstens 62 Tage je Abfrage (gemessen 22.09.2026:
+  // mit dem Messbeginn als Vorgabe antwortete sie nur noch mit HTTP 400 — der
+  // Befehl lief also ohne Angabe gar nicht mehr). Vorgabe sind deshalb die
+  // letzten 60 Tage, nie früher als der Messbeginn.
+  const sechzigTage = heuteInBerlin(new Date(Date.now() - 60 * 86_400_000));
+  const seit =
+    args.find((a) => a.startsWith("--seit="))?.split("=")[1] ??
+    (sechzigTage > ANALYTICS_SEIT ? sechzigTage : ANALYTICS_SEIT);
   // MORGEN, NICHT HEUTE: Vercel liest ein Datum als Tagesgrenze, „bis heute"
   // schneidet den heutigen Tag also vollständig ab. Gemessen am 02.09.2026 —
   // mit „bis heute" fehlte ein Ereignis, das es an diesem Tag gab, und das sah
@@ -296,6 +305,35 @@ async function main() {
   if (fremde.size) {
     console.log("\nNoch nicht eingeordnet — bitte ansehen, ob eine Veröffentlichung dahintersteckt:");
     for (const [k, n] of [...fremde].sort((a, b) => b[1] - a[1])) console.log(`  ${n}  ${k}`);
+  }
+
+  // ─── Melden ─────────────────────────────────────────────────────────────────
+  //
+  // Nur mit `--melden` (der wöchentliche Lauf setzt es). Gemeldet wird, was
+  // noch nirgends in der Notiz der Gemeinde steht — beide Sorten: Besucher über
+  // eine bekannte Veröffentlichungs-Art und Besucher von einer Seite, die wir
+  // noch nicht einordnen können. Genau die zweite Sorte hat am 22.09.2026
+  // Berkenthin enthalten und lag trotzdem liegen.
+  if (args.includes("--melden")) {
+    const notizen = new Map([...gemeindeJePfad.values()].map((g) => [g.name, g.notes] as const));
+    const roh: Hinweis[] = [];
+    for (const [pfad, s] of seiten) {
+      const g = gemeindeJePfad.get(pfad)!;
+      for (const [h, n] of s.verweise) {
+        const art = ordneHerkunft(h, g.website);
+        if (art !== "veroeffentlichung" && art !== "andere") continue;
+        roh.push({ gemeinde: g.name, fundstelle: h, quelle: `${n} Besucher von dort, seit ${seit}` });
+      }
+    }
+    const neu = neueHinweise(roh, notizen);
+    const bericht = hinweisBericht(neu, "Besucherherkunft");
+    console.log(`
+${bericht.done[0]}`);
+    await berichtAblegen(
+      { tag: "kommunen-hinweise", subject: "Kommunen: Hinweise auf Veröffentlichungen (Besucherherkunft)", audience: "claude", ...bericht },
+      process.env.CRON_SECRET ?? "",
+      { basis: process.env.ALERT_BASE_URL },
+    );
   }
 
   // ─── Je Schub ───────────────────────────────────────────────────────────────

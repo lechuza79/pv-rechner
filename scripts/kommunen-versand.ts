@@ -87,6 +87,8 @@ type Brief = {
   region_id: string;
   name: string;
   empfaenger: string;
+  /** Kind of mailbox (climate contact, press, general) — stored with the send. */
+  empfaenger_rolle: string;
   subject: string;
   body: string;
   /** Dieselbe Nachricht als HTML, mechanisch aus dem Text erzeugt. */
@@ -466,6 +468,7 @@ async function sendenIntern(p: Paket, limit: number, pauseMs: number): Promise<v
           contacted_at: new Date().toISOString(),
           channel: "mail",
           sent_to: b.empfaenger,
+          sent_to_rolle: b.empfaenger_rolle,
           sent_message_id: info.messageId,
           versendet_variante: b.variante,
           // DEN VERSCHICKTEN TEXT AUFHEBEN.

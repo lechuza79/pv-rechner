@@ -1,0 +1,78 @@
+name: Kommunen-Hinweise
+
+# Sucht einmal die Woche nach Hinweisen, dass eine angeschriebene Gemeinde
+# veröffentlicht hat, und legt NUR NEUE ab.
+#
+# WARUM ES DIESEN LAUF GIBT (22.09.2026): Die Frage „wer hat veröffentlicht?"
+# wurde dreimal von Hand beantwortet und jedes Mal fehlte etwas. Die Quellen
+# gab es — Besucherherkunft und Websuche —, aber sie liefen nur, wenn jemand
+# daran dachte, und ihre Funde lagen dann ungelesen im Terminal: Berkenthin
+# stand als „noch nicht eingeordnet" in der Besucherstatistik, Riedstadt als
+# einzelner Besuch von der Stadtseite. Beide hatten veröffentlicht.
+#
+# „Neu" heißt: Die Fundstelle steht noch in keiner Notiz der Gemeinde. Wer
+# einen Hinweis angesehen hat, vermerkt das Ergebnis dort (belegt oder
+# verworfen), und der nächste Lauf schweigt dazu. Angezeigt werden die offenen
+# Hinweise von `npm run kommunen:stand`, dem ersten Befehl jeder Sitzung.
+#
+# Der Lauf SCHREIBT NICHTS an den Gemeinden. Ein Hinweis ist kein Beleg; ob
+# dort die Gemeinde veröffentlicht hat, entscheidet erst das Lesen der Seite.
+#
+# Kosten: rund 1,20 $ Websuche je Lauf (zwei Abfragen je Gemeinde).
+
+on:
+  schedule:
+    - cron: "30 6 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kommunen-hinweise
+  cancel-in-progress: false
+
+jobs:
+  hinweise:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Getrennte Schritte mit eigenem Zeitlimit: Fällt die Besucherstatistik
+      # aus, soll die Websuche trotzdem laufen und umgekehrt. Rot wird der Lauf
+      # trotzdem — ein Hinweis-Lauf, der still halb scheitert, sieht aus wie
+      # „nichts Neues".
+      - name: Besucherherkunft
+        timeout-minutes: 15
+        continue-on-error: true
+        id: klicks
+        run: npm run kommunen:klicks -- --melden
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+      - name: Websuche
+        timeout-minutes: 40
+        continue-on-error: true
+        id: presse
+        run: npm run kommunen:presse -- --melden
+        env:
+          DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
+
+      - name: Ergebnis
+        if: steps.klicks.outcome != 'success' || steps.presse.outcome != 'success'
+        run: |
+          echo "Besucherherkunft: ${{ steps.klicks.outcome }} · Websuche: ${{ steps.presse.outcome }}"
+          exit 1

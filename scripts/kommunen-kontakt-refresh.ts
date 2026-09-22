@@ -184,6 +184,7 @@ async function setup(): Promise<void> {
     -- Versionen nötig werden, später in eine eigene Tabelle auslagern).
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS channel text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS sent_to text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS sent_to_rolle text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS sent_message_id text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS contacted_at timestamptz;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS responded_at timestamptz;
