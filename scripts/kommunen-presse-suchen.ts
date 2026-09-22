@@ -36,6 +36,8 @@
 import { envLaden } from "./env-laden";
 envLaden();
 import { createClient } from "@supabase/supabase-js";
+import { hinweisBericht, neueHinweise, type Hinweis } from "../lib/kommunen-hinweise";
+import { berichtAblegen } from "../lib/alert-senden";
 
 const trocken = process.argv.includes("--trocken");
 const LOGIN = process.env.DATAFORSEO_LOGIN;
@@ -95,8 +97,32 @@ const EIGEN_ODER_PORTAL = /solar-check\.io|wikipedia\.org|dasoertliche|balkonkra
 
 /** Title names the place and a ranking — everything else is noise (measured). */
 const RANG = /Platz\s*1\b|Spitzenplatz|Spitzenreiter|vorne|Rang 1/i;
+/**
+ * Place, ranking AND topic. Without the topic a sports ground ("Nebenplatz 1")
+ * in Verl came back as a candidate in the first weekly trial (22.09.2026).
+ */
+const THEMA = /solar|photovoltaik|\bpv\b|balkon|speicher|klima|energie|wärmepumpe|strom/i;
 function titelPasst(titel: string, ort: string): boolean {
-  return titel.includes(ort) && RANG.test(titel);
+  return titel.includes(ort) && RANG.test(titel) && THEMA.test(titel);
+}
+
+/**
+ * A cross-search hit counts only if the PAGE names the place next to a ranking.
+ * The title is not enough there: search results cut it off ("Wusstet ihr
+ * schon? Aue-Bad Schlema ist bei ..."), and the same query returned five
+ * unrelated posts of the same Facebook page (concerts, a reading). Facebook
+ * delivers the post text without login in its page description, so the check
+ * reads the raw page, attributes included.
+ */
+async function seiteNenntOrtUndRang(url: string, ort: string): Promise<boolean> {
+  try {
+    const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(20_000) });
+    if (!res.ok) return false;
+    const roh = await res.text();
+    return roh.includes(ort) && RANG.test(roh);
+  } catch {
+    return false;
+  }
 }
 
 async function pruefeSeite(url: string): Promise<Befund> {
@@ -113,12 +139,12 @@ async function pruefeSeite(url: string): Promise<Befund> {
 }
 
 async function main() {
-  const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!, {
+  const db = createClient((process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL)!, process.env.SUPABASE_SERVICE_KEY!, {
     auth: { persistSession: false },
   });
   const { data, error } = await db
     .from("kommunen_kontakt")
-    .select("region_id, outreach_status, draft_subject, mastr_regions!inner(name)")
+    .select("region_id, outreach_status, draft_subject, notes, mastr_regions!inner(name)")
     .not("contacted_at", "is", null)
     .limit(1000);
   if (error) throw new Error(error.message);
@@ -126,7 +152,7 @@ async function main() {
     const name = String(z.mastr_regions?.name ?? z.region_id);
     // "Heringen (Werra)" is written "Heringen" in a newspaper.
     const ort = name.replace(/\s*\(.*\)$/, "");
-    return { ags: z.region_id, name, ort, wort: stichwort(z.draft_subject), status: z.outreach_status };
+    return { ags: z.region_id, name, ort, wort: stichwort(z.draft_subject), status: z.outreach_status, notes: (z.notes ?? null) as string | null };
   });
 
   console.log(`${gemeinden.length} angeschriebene Gemeinden, geschätzt ${(gemeinden.length * 2 * PREIS_JE_ABRUF).toFixed(2)} $\n`);
@@ -193,6 +219,38 @@ async function main() {
     for (const f of fehlgeschlagen.slice(0, 10)) console.log(`  ${f}`);
   }
   console.log(`\nKosten: ${ausgegeben.toFixed(3)} $`);
+
+  // ─── Melden ─────────────────────────────────────────────────────────────────
+  //
+  // Nur mit `--melden`. Ein Treffer der Quer-Suche trägt keine Gemeinde; er
+  // wird der zugeordnet, deren Ortsname im Titel steht; ohne Zuordnung fällt
+  // er weg (gemessen: dort landete nur Fremdes).
+  if (process.argv.includes("--melden")) {
+    const notizen = new Map<string, string | null>(gemeinden.map((g) => [g.name, g.notes]));
+    const artText: Record<Befund, string> = {
+      link: "Websuche, Seite verlinkt uns",
+      erwaehnt: "Websuche, Seite nennt uns ohne Link",
+      kandidat: "Websuche, Titel passt, uns nicht genannt",
+      unerreichbar: "Websuche, Seite nicht abrufbar",
+    };
+    const roh: Hinweis[] = treffer.map((t) => ({ gemeinde: t.name, fundstelle: t.url, quelle: artText[t.art] }));
+    // Only hits that belong to a contacted place AND whose page shows it with
+    // a ranking. The first trial filed eleven hints, nine of them noise:
+    // Reddit threads, an Instagram reel and unrelated posts of the same page.
+    for (const f of fremd) {
+      const g = gemeinden.find((x) => f.titel.includes(x.ort));
+      if (!g || !(await seiteNenntOrtUndRang(f.url, g.ort))) continue;
+      roh.push({ gemeinde: g.name, fundstelle: f.url, quelle: `Quer-Suche: ${f.titel}` });
+    }
+    const neu = neueHinweise(roh, notizen);
+    const bericht = hinweisBericht(neu, "Websuche");
+    console.log(`\n${bericht.done[0]}`);
+    await berichtAblegen(
+      { tag: "kommunen-hinweise", subject: "Kommunen: Hinweise auf Veröffentlichungen (Websuche)", audience: "claude", ...bericht },
+      process.env.CRON_SECRET ?? "",
+      { basis: process.env.ALERT_BASE_URL },
+    );
+  }
   console.log(
     `\nVORBEHALT: Print und geschlossene Kanäle (Facebook, LinkedIn, Apps) findet auch diese Suche nicht,\n` +
       `und eine Meldung, die den Aufhänger umformuliert, fällt durch die Abfrage.`,

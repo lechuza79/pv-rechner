@@ -62,6 +62,9 @@ const SUCHE = [
   "google.", "bing.com", "duckduckgo.com", "ecosia.org", "startpage.com",
   "search.brave.com", "yandex.", "chatgpt.com", "perplexity.ai", "claude.ai",
   "copilot.microsoft.com", "gemini.google.com",
+  // Baidu sah am 22.09.2026 als „andere Seite" aus und landete damit als
+  // Veröffentlichungs-Hinweis für Wallertheim im Wochenbericht.
+  "baidu.com",
 ];
 
 /** Unsere eigenen Oberflächen. */

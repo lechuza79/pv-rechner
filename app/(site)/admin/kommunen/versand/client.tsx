@@ -5,6 +5,8 @@ import { v, space, pad } from "../../../../../lib/theme";
 import { adminTabelle, adminTh, adminTd, adminZeile } from "../../../../../lib/admin-tabelle";
 import type { Auswertung, Versandtag } from "../../../../../lib/kommunen-auswertung";
 import AdminSeitenkopf from "../../../../../components/admin/AdminSeitenkopf";
+import InfoTooltip from "../../../../../components/InfoTooltip";
+import { KANAELE, KANAL_TEXT, quoteText, type Bilanz, type Veroeffentlichung } from "../../../../../lib/kommunen-veroeffentlichung";
 
 // Auswertung des Kommunen-Outreach.
 //
@@ -19,16 +21,26 @@ import AdminSeitenkopf from "../../../../../components/admin/AdminSeitenkopf";
 // Fußnote im Code.
 
 type Wirkung = { gesamt: Auswertung; jeKampagne: Auswertung[]; jeTag: Versandtag[] };
+type Veroeffentlichungen = {
+  bilanz: Bilanz;
+  liste: Veroeffentlichung[];
+  namen: Record<string, string>;
+  jeSchub: { kampagne: string; angeschrieben: number; gemeinden: number }[];
+};
 
 export default function VersandAuswertung() {
   const [wirkung, setWirkung] = useState<Wirkung | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
+  const [pubs, setPubs] = useState<Veroeffentlichungen | null | undefined>(undefined);
   const offeneSchuebe = (wirkung?.jeKampagne ?? []).filter((k) => k.offen > 0);
 
   useEffect(() => {
     fetch("/api/admin/kommunen/bilanz")
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`Antwort ${r.status}`))))
-      .then((j) => setWirkung(j.wirkung ?? null))
+      .then((j) => {
+        setWirkung(j.wirkung ?? null);
+        setPubs(j.veroeffentlichungen ?? null);
+      })
       .catch((e) => setFehler(e instanceof Error ? e.message : String(e)));
   }, []);
 
@@ -65,6 +77,13 @@ export default function VersandAuswertung() {
             Untergrenzen: Eine Veröffentlichung ohne Link auf uns wird nicht gefunden, und wer sich einträgt, ohne
             das Kästchen „Ich arbeite für die Verwaltung" anzukreuzen, zählt hier als Bürger.
           </p>
+
+          {pubs === null && (
+            <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative"), marginBottom: space.lg }}>
+              Die Liste der Veröffentlichungen konnte nicht geladen werden.
+            </p>
+          )}
+          {pubs && <VeroeffentlichungsBilanz daten={pubs} />}
 
           {/* NUR EINE TABELLE. Es waren zwei, und sie sagten fast dasselbe:
               Ein Schub IST eine Menge von Versandtagen, also stand jede Zahl
@@ -168,6 +187,66 @@ export default function VersandAuswertung() {
         </>
       )}
     </div>
+  );
+}
+
+/**
+ * Die belegten Veröffentlichungen: Quote, Beiträge, Links, wo sie stehen.
+ *
+ * Eine Zeile je BEITRAG, nicht je Gemeinde — Nidda steht in drei Medien, und
+ * „wie viele Links haben wir" beantwortet nur die Beitragsliste. Jede Zeile
+ * ist belegt: Jemand hat den Beitrag gesehen (lib/kommunen-veroeffentlichung.ts).
+ */
+function VeroeffentlichungsBilanz({ daten }: { daten: Veroeffentlichungen }) {
+  const b = daten.bilanz;
+  return (
+    <section style={{ marginBottom: space.xl }}>
+      <h2 style={ueberschrift}>
+        Veröffentlichungen{" "}
+        <InfoTooltip ariaLabel="Was hier zählt" exportNote={false}>
+          Nur belegte Beiträge: Jeder wurde selbst angesehen. Die Quote rechnet mit den Briefen ohne bekannten
+          Zustellfehler. Gedrucktes und geschlossene Gruppen sieht keine unserer Quellen — alle Zahlen sind
+          Untergrenzen.
+        </InfoTooltip>
+      </h2>
+      <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.md }}>
+        <Kennzahl label="Gemeinden mit Veröffentlichung" wert={b.gemeinden} unten={`${quoteText(b.quote)} von ${b.angeschrieben} angeschriebenen`} gut />
+        <Kennzahl label="Beiträge" wert={b.beitraege} />
+        <Kennzahl label="davon mit Link" wert={b.mitLink} unten={b.mitLinkOnline < b.mitLink ? `${b.mitLinkOnline} noch erreichbar` : undefined} gut />
+        <Kennzahl label="woanders als auf der Gemeindeseite" wert={b.woanders} />
+      </div>
+      <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.md }}>
+        {KANAELE.map((k) => `${KANAL_TEXT[k]} ${b.jeKanal[k]}`).join(" · ")}
+        <br />
+        {daten.jeSchub.map((s) => `${s.kampagne}: ${s.gemeinden} von ${s.angeschrieben} (${quoteText(s.angeschrieben ? s.gemeinden / s.angeschrieben : 0)})`).join(" · ")}
+      </p>
+      <table style={{ ...adminTabelle, maxWidth: 900 }}>
+        <thead>
+          <tr>
+            <th style={adminTh}>Gemeinde</th>
+            <th style={adminTh}>Wo</th>
+            <th style={adminTh}>Link</th>
+            <th style={adminTh}>belegt ab</th>
+            <th style={adminTh}>Beitrag</th>
+          </tr>
+        </thead>
+        <tbody>
+          {daten.liste.map((p) => (
+            <tr key={p.url} style={adminZeile}>
+              <td style={{ ...adminTd, whiteSpace: "nowrap" }}>{daten.namen[p.region_id] ?? p.region_id}</td>
+              <td style={{ ...adminTd, color: v("--color-text-muted") }}>{KANAL_TEXT[p.kanal]}</td>
+              <td style={adminTd}>{p.mit_link ? (p.noch_online ? "ja" : "ja, Seite weg") : "nein"}</td>
+              <td style={{ ...adminTd, whiteSpace: "nowrap" }}>{p.gesehen_ab ? datum(p.gesehen_ab) : "–"}</td>
+              <td style={{ ...adminTd, maxWidth: 320, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <a href={p.url} target="_blank" rel="noopener" style={{ color: v("--color-accent") }}>
+                  {p.url.replace(/^https?:\/\/(www\.)?/, "")}
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
   );
 }
 

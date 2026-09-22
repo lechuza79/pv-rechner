@@ -90,7 +90,7 @@ describe("Presse-Postfach erkennen", () => {
 describe("Empfänger des Briefes", () => {
   it("nimmt die Presseadresse, wenn es eine gibt", () => {
     const e = empfaengerFuerBrief({ rollenEmail: "info@goch.de", presseEmail: "pressestelle@goch.de" });
-    expect(e).toEqual({ email: "pressestelle@goch.de", anPresse: true, fach: false });
+    expect(e).toEqual({ email: "pressestelle@goch.de", anPresse: true, fach: false, rolle: "presse-postfach" });
   });
 
   it("bleibt beim allgemeinen Postfach, wenn keine Presseadresse bekannt ist", () => {
@@ -98,6 +98,7 @@ describe("Empfänger des Briefes", () => {
       email: "info@goch.de",
       anPresse: false,
       fach: false,
+      rolle: "allgemein",
     });
   });
 
@@ -107,16 +108,16 @@ describe("Empfänger des Briefes", () => {
   it("misstraut einer Presse-Spalte, die keine Presseadresse enthält", () => {
     expect(
       empfaengerFuerBrief({ rollenEmail: "info@goch.de", presseEmail: "buergermeister@goch.de" }),
-    ).toEqual({ email: "info@goch.de", anPresse: false, fach: false });
+    ).toEqual({ email: "info@goch.de", anPresse: false, fach: false, rolle: "allgemein" });
   });
 
   it("nimmt den belegten Klimaschutz-Kontakt vor allem anderen, dann den belegten Pressekontakt", () => {
     expect(
       empfaengerFuerBrief({ rollenEmail: "info@goch.de", presseEmail: "pressestelle@goch.de", klimaEmail: "m.muster@goch.de", presseKontaktEmail: "h.muster@goch.de" }),
-    ).toEqual({ email: "m.muster@goch.de", anPresse: false, fach: true });
+    ).toEqual({ email: "m.muster@goch.de", anPresse: false, fach: true, rolle: "klima" });
     expect(
       empfaengerFuerBrief({ rollenEmail: "info@goch.de", presseEmail: "pressestelle@goch.de", presseKontaktEmail: "h.muster@goch.de" }),
-    ).toEqual({ email: "h.muster@goch.de", anPresse: true, fach: true });
+    ).toEqual({ email: "h.muster@goch.de", anPresse: true, fach: true, rolle: "presse-kontakt" });
   });
 
   it("meldet gar keine Adresse, wenn beide fehlen", () => {

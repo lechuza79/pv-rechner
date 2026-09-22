@@ -5,7 +5,7 @@ import type { Adressherkunft } from "../../../../../lib/kommunen-outreach-draft"
 import { istAdminOderCron } from "../../../../../lib/admin-guard";
 import { SCHUEBE, AKTUELLER_SCHUB } from "../../../../../lib/kommunen-testballon";
 import { versandfenster } from "../../../../../lib/schulferien";
-import { empfaengerFuerBrief } from "../../../../../lib/kommunen-presse";
+import { empfaengerFuerBrief, type EmpfaengerRolle } from "../../../../../lib/kommunen-presse";
 import { fachHerkunft, verwaltungDomainVon } from "../../../../../lib/kommunen-fachkontakt";
 import { postfachBefund } from "../../../../../lib/outreach-mail";
 import { heuteInBerlin } from "../../../../../lib/zeit";
@@ -87,6 +87,7 @@ export async function GET(req: NextRequest) {
     name: string;
     empfaenger: string;
     an_presse: boolean;
+    empfaenger_rolle: EmpfaengerRolle;
     subject: string;
     body: string;
     body_html: string;
@@ -191,6 +192,7 @@ export async function GET(req: NextRequest) {
       name: gebaut.name,
       empfaenger: ziel.email,
       an_presse: ziel.anPresse,
+      empfaenger_rolle: ziel.rolle,
       subject: gebaut.draft.subject,
       body: gebaut.draft.body,
       body_html: gebaut.draft.bodyHtml,
