@@ -24,7 +24,7 @@
 .atlas-abo.atlas-editor-note{display:grid!important;grid-template-columns:280px minmax(0,1fr);align-items:end!important;gap:55px!important;background:none!important;border:0!important;border-bottom:1px solid #bac9c4!important;border-radius:0!important;padding:0!important;margin-top:85px!important;box-shadow:none!important;overflow:hidden}.atlas-abo.atlas-editor-note>img{width:280px!important;height:365px!important;object-fit:cover!important;object-position:top!important;align-self:end;border-radius:0!important;background:none!important;display:block;margin:0!important}.atlas-editor-copy{padding:28px 0 40px}.atlas-editor-copy h3{margin:0 0 20px!important}.atlas-editor-copy>p:not(.atlas-editor-signature){font-size:17px;line-height:1.65}.atlas-editor-signature{margin:20px 0 26px!important;font-size:14px!important}.atlas-editor-actions{display:flex;align-items:center;gap:25px;flex-wrap:wrap}.atlas-editor-actions>a{font-size:14px;color:inherit;text-decoration:none}.atlas-editor-copy strong{font-weight:700}@media(max-width:700px){.atlas-abo.atlas-editor-note{grid-template-columns:110px minmax(0,1fr);gap:20px!important}.atlas-abo.atlas-editor-note>img{width:110px!important;height:190px!important}.atlas-editor-copy{padding-bottom:24px}.atlas-editor-copy h3{font-size:23px!important}.atlas-editor-copy>p:not(.atlas-editor-signature){font-size:15px}.atlas-editor-actions{gap:16px}.atlas-editor-actions button{font-size:12px;padding:10px!important}}
 
 /* Manual ranking discovery; retain the sequential bar animation. */
-#atlas-ranking{border-top:0!important}#atlas-ranking .ranking-intro{max-width:none;display:block!important}#atlas-ranking .ranking-intro-copy{display:inline!important}#atlas-ranking .ranking-edit{display:inline!important;white-space:nowrap;margin-left:4px;vertical-align:baseline}#atlas-ranking .ranking-step{width:56px!important;margin-left:auto;margin-right:auto;border-radius:5px 5px 0 0}#atlas-ranking .ranking-next{display:flex;align-items:center;justify-content:space-between;gap:18px;width:100%;border:0;border-top:1px solid var(--atlas-line);background:none;color:var(--atlas-blue);padding:22px 12px;font:inherit;font-size:14px;text-align:left;cursor:pointer}#atlas-ranking .ranking-next[hidden]{display:none!important}@media(max-width:700px){#atlas-ranking .ranking-step{width:40px!important}}
+#atlas-ranking{border-top:0!important}#atlas-ranking .ranking-intro-copy{display:inline!important}#atlas-ranking .ranking-edit{display:inline!important;white-space:nowrap;margin-left:4px;vertical-align:baseline}#atlas-ranking .ranking-step{width:56px!important;margin-left:auto;margin-right:auto;border-radius:5px 5px 0 0}@media(max-width:700px){#atlas-ranking .ranking-step{width:40px!important}}
 
 /* Same scene aspect ratio as the homepage at each breakpoint. */
 .hero{height:900px!important;min-height:900px!important}@media(max-width:1149px){.hero{height:1050px!important;min-height:1050px!important}}@media(max-width:700px){.hero{height:1150px!important;min-height:1150px!important}}
@@ -45,7 +45,7 @@
 #atlas-ranking .ranking-label .ranking-value{margin:0!important;padding:0!important;line-height:1.1!important}
 
 /* One shared section gap; rank badges belong to the municipality list. */
-#atlas-stories{padding-bottom:0!important}#atlas-ranking{padding-top:56px!important}.ranking-list-badge{display:block;width:96px;height:96px;object-fit:contain}#atlas-ranking .ranking-choice-position{width:96px;min-width:96px;text-align:center}#atlas-ranking .ranking-choice-position.has-badge .ranking-choice-rank{display:none}#atlas-ranking .ranking-choice-position.has-badge .ranking-choice-denominator{display:block;margin-top:2px;font-size:11px;color:var(--atlas-muted)}#atlas-ranking .ranking-choice{gap:18px;padding-top:14px;padding-bottom:14px}#atlas-ranking .ranking-podium{margin-bottom:24px!important}@media(max-width:700px){#atlas-ranking{padding-top:40px!important}}
+#atlas-stories{padding-bottom:0!important}#atlas-ranking{padding-top:56px!important}#atlas-ranking .ranking-podium{margin-bottom:24px!important}@media(max-width:700px){#atlas-ranking{padding-top:40px!important}}
 
 /* Compact hero teaser and consistent municipality figures. */
 .v3-hero-stack{position:absolute;z-index:4;top:185px;right:5%;width:390px;display:grid;gap:14px}
@@ -55,14 +55,15 @@
 .v3-hero-stack .v3-hero-card h3{font-family:DMSans,sans-serif!important;font-size:16px!important;font-weight:500!important;line-height:1.3;margin:0 0 15px}
 .atlas-number>strong{font-family:'Montserrat Bold',Montserrat,sans-serif!important;font-weight:700!important;line-height:1.1}.atlas-number .v3-number-unit{display:block;font-size:15px;line-height:1.4;margin:5px 0 12px}.v3-number-delta{display:block;margin-top:12px;font-size:14px;font-weight:600;color:#536d75}.v3-number-delta span{display:inline;font-size:11px;font-weight:400}
 .v3-metric-help{display:inline-grid;place-items:center;width:18px;height:18px;padding:0;border:1px solid currentColor;border-radius:50%;font:12px DMSans,sans-serif;color:inherit;background:transparent;cursor:pointer;vertical-align:middle}.v3-metric-explanation:not([hidden]){display:block;max-width:350px;margin:12px auto 0;padding:12px;background:#f7faf6;border-radius:8px;font-size:13px;line-height:1.5;text-align:left}
+.v3-calculation-help summary{list-style:none;cursor:pointer;touch-action:manipulation}
+.v3-calculation-help summary::-webkit-details-marker{display:none}
+.v3-calculation-help summary::marker{content:""}
+.v3-calculation-help summary:focus-visible{outline:2px solid currentColor;outline-offset:4px}
 .v3-widget-grid{grid-template-columns:1fr}
 @media(min-width:1100px) and (max-width:1279px){.v3-hero-stack{right:4%;width:350px}}
 @media(min-width:701px) and (max-width:1099px){.v3-hero-stack{top:200px;left:calc(5% + 390px);right:auto;width:302px}.v3-hero-stack .v3-hero-card{padding:20px}}
 @media(max-width:700px){.v3-hero-stack{top:auto;bottom:75px;left:6%;right:6%;width:auto;max-width:340px;margin-left:auto;gap:10px}.v3-hero-stack .v3-hero-card{padding:18px}.v3-hero-stack .v3-slide{min-height:250px}.v3-hero-stack .v3-rank-intro{padding:8px 12px}.v3-rank-intro img{width:58px;height:58px}.v3-rank-intro strong{font-size:16px}.v3-hero-stack .v3-big{margin-top:16px}.v3-hero-stack .v3-home-radial{height:190px}}
 /* The badges carry the rank; highlighted rows need no separator edges. */
-#atlas-ranking .ranking-choice-denominator{display:none!important}
-#atlas-ranking .ranking-choice[aria-pressed=true],
-#atlas-ranking .ranking-choice[aria-pressed=true]+.ranking-choice{border-top-color:transparent}
 
 /* Values track the growing bar; the callout arrives just before the town. */
 #atlas-ranking .ranking-label{transition:background-color .18s ease,box-shadow .18s ease}
@@ -88,12 +89,5 @@
 .v3-hero-stack .v3-rank-intro img{position:static;inset:auto;width:64px;height:64px;flex:0 0 64px;object-fit:contain}
 
 /* Tap overlay: only the first invitation, dismissed by the first ranking click. */
-#atlas-ranking .ranking-choice{position:relative}
-#atlas-ranking .ranking-choice>span:last-child{position:relative;flex:0 0 20px;display:flex;justify-content:flex-end;align-items:center}
-#atlas-ranking .ranking-choice.ranking-invite-visible:before,
-#atlas-ranking .ranking-choice.ranking-invite-visible:after{content:'';position:absolute;left:56%;top:52%;width:38px;height:38px;border-radius:50%;pointer-events:none;opacity:0;z-index:2;box-sizing:border-box}
-#atlas-ranking .ranking-choice.ranking-invite-visible:before{background:#2362df36;border:2px solid #2362dfcc;animation:ranking-tap-contact 3.2s infinite}
-#atlas-ranking .ranking-choice.ranking-invite-visible:after{border:2px solid #2362df99;animation:ranking-tap-wave 3.2s infinite}
 @keyframes ranking-tap-contact{0%,8%{opacity:0;transform:translate(-50%,-50%) scale(1.15)}18%{opacity:1;transform:translate(-50%,-50%) scale(1)}26%{opacity:1;transform:translate(-50%,-50%) scale(.78)}35%{opacity:.85;transform:translate(-50%,-50%) scale(1.06)}46%,100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
 @keyframes ranking-tap-wave{0%,25%{opacity:0;transform:translate(-50%,-50%) scale(.78)}29%{opacity:.7;transform:translate(-50%,-50%) scale(.85)}47%{opacity:.25;transform:translate(-50%,-50%) scale(1.85)}60%,100%{opacity:0;transform:translate(-50%,-50%) scale(2.25)}}
-@media(prefers-reduced-motion:reduce){#atlas-ranking .ranking-choice.ranking-invite-visible:before{opacity:.5;transform:translate(-50%,-50%);animation:none}#atlas-ranking .ranking-choice.ranking-invite-visible:after{animation:none}}

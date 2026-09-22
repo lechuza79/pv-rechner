@@ -1,0 +1,45 @@
+.chart{width:100%;font-family:var(--atlas-body);color:var(--atlas-text)}
+.chart header h2{font-family:var(--atlas-display);font-size:var(--atlas-card-title-size);line-height:1.2;max-width:85%;margin:0 0 16px}
+.chart header p,.legend,.chart footer{font-size:var(--atlas-caption-size);color:var(--atlas-secondary)}
+.chart>svg{display:block;width:100%;max-width:680px;margin:24px auto}
+.hour{font-family:var(--atlas-body);font-size:13px;fill:var(--atlas-secondary)}.scale{font-family:var(--atlas-body);font-size:10px;fill:var(--atlas-secondary)}
+.total{font-family:var(--atlas-display);font-weight:700;font-size:34px;fill:var(--atlas-text)}.unit{font-family:var(--atlas-number-unit-font);font-size:16px;font-weight:400;fill:var(--atlas-secondary)}.centerLabel{font-size:13px;fill:var(--atlas-secondary)}
+.legend{display:grid;gap:8px;text-align:center}.legend strong{font-weight:500;color:var(--atlas-action)}
+.chart footer{border-top:1px solid var(--atlas-border);padding-top:16px;margin-top:24px}.chart a{color:inherit}
+
+/* Keep chart typography independent of the surrounding story preview. */
+.chart.chart>svg text.hour,.chart.chart>svg text.scale{font-family:var(--atlas-body);font-size:var(--atlas-label-size);font-weight:400;letter-spacing:0;fill:var(--atlas-secondary);opacity:.65}
+.chart.chart>svg text.unit{font-family:var(--atlas-number-unit-font);font-weight:var(--atlas-number-unit-weight);fill:var(--atlas-secondary);opacity:.65}
+.dateNavigation{display:grid;gap:12px;width:326px;max-width:100%;margin:8px auto 0}
+.dateSlot{flex:1;min-width:0;height:45px}
+.transport{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.playback{display:flex;align-items:center;justify-content:center;gap:8px}
+.dateNavigation button{display:flex;align-items:center;justify-content:center;flex-shrink:0;width:45px;height:45px;border:1px solid var(--atlas-border);border-radius:var(--atlas-action-radius);background:transparent;color:var(--atlas-text);cursor:pointer;padding:0}
+.chart .dateNavigation button svg{display:block;margin:0;width:12px;height:12px;max-width:none;flex:none}
+.dateNavigation select{appearance:none;font-family:var(--atlas-body);font-size:var(--atlas-body-size);font-weight:500;line-height:1.5;text-align:center;text-align-last:center;color:var(--atlas-action);background:transparent;border:1px solid var(--atlas-action);border-radius:var(--atlas-action-radius);padding:6px 12px;width:100%;height:45px;cursor:pointer}
+.dateNavigation select option{color:var(--atlas-text);background:var(--atlas-card)}
+.dayYield{min-height:24px;color:var(--atlas-text);font-family:var(--atlas-body);font-size:var(--atlas-body-size);font-weight:400;line-height:1.5}
+.dayYield small{font-family:var(--atlas-number-unit-font);font-size:.75em;font-weight:var(--atlas-number-unit-weight);color:var(--atlas-secondary)}
+
+.chart .dateNavigation .bestDay{width:100%;height:45px;padding:12px 18px;border:0;border-radius:var(--atlas-action-radius);background:var(--atlas-action);color:var(--atlas-action-ink);font-family:var(--atlas-display);font-size:var(--atlas-label-size);font-weight:700;line-height:1.5}
+
+.dayLine{transition:opacity 300ms ease}
+.activeLine{transition:stroke-opacity 280ms ease;pointer-events:none}
+.hitLine{cursor:pointer;pointer-events:stroke}
+.drawing{stroke-dasharray:1;animation:drawDay 600ms ease-out both}
+@keyframes drawDay{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){.dayLine,.activeLine{transition:none}.drawing{animation:none}}
+
+.dateField{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:45px;border:1px solid var(--atlas-action);border-radius:var(--atlas-action-radius);box-sizing:border-box;cursor:pointer}
+.dateValue{display:flex;flex-direction:column;align-items:center;pointer-events:none;color:var(--atlas-action);font-size:var(--atlas-body-size);line-height:20px}
+.dateField .dayYield{min-height:0;font-size:var(--atlas-label-size);line-height:18px}
+.dateNavigation .dateField select{position:absolute;inset:0;width:100%;height:100%;opacity:0}
+.dateField:focus-within{outline:2px solid var(--atlas-action);outline-offset:4px}
+.chart .dateNavigation .playButton{width:138px;gap:8px;padding:0 16px;font-family:var(--atlas-display);font-weight:700;font-size:var(--atlas-label-size)}
+
+.compact{box-sizing:border-box;padding:20px;width:100%;aspect-ratio:1;display:grid;place-items:center}
+.compact>svg{width:100%;height:100%;margin:0;min-height:0}
+
+/* Bleed artwork through the plot padding; clip only at the rounded tile edge. */
+.compact{overflow:hidden;border-radius:inherit}
+.compact>svg{overflow:visible}

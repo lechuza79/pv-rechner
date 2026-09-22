@@ -1,5 +1,5 @@
 (()=>{
-function refine(){const root=document.querySelector('.solar-page'),stage=document.querySelector('.hero'),content=document.querySelector('.atlas-content');if(!content||!document.getElementById('source-mode')){requestAnimationFrame(refine);return;}
+function refine(){const root=document.querySelector('.solar-page'),stage=document.querySelector('.hero'),content=document.querySelector('.atlas-content');if(!content){requestAnimationFrame(refine);return;}
 const bell='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>';
 const award='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="m8 13-2 9 6-3 6 3-2-9"/></svg>';
 const abo=()=>content.querySelector('[data-abo]').click();
@@ -20,8 +20,5 @@ const ranking=document.createElement('section');ranking.id='atlas-ranking';ranki
 document.getElementById('atlas-overview').before(ranking);
 
 const credit=document.createElement('a');credit.href='https://open-meteo.com/';credit.target='_blank';credit.rel='noopener';credit.textContent=' Wettermodell: Open-Meteo (CC BY 4.0).';content.querySelector('.atlas-status').append(credit);
-const sticky=document.createElement('div');sticky.className='atlas-sticky';sticky.hidden=true;sticky.innerHTML='<div><strong>Höchberg</strong><span>Solar-Atlas</span></div><button class="atlas-sticky-abo atlas-secondary">'+bell+' <span>Abonnieren</span></button><button type="button" data-ranking-share class="atlas-button">Platzierung teilen <span aria-hidden="true">↗</span></button>';document.body.append(sticky);sticky.querySelector('button').onclick=abo;const observer=new IntersectionObserver(([entry])=>{sticky.hidden=entry.isIntersecting;},{threshold:0});observer.observe(stage);window.addEventListener('pagehide',()=>observer.disconnect(),{once:true});
-// Use the original scene's data integration with the municipality postcode.
-const postcode=document.getElementById('postcode');postcode.value='97204';const mode=document.getElementById('source-mode');mode.value='live';mode.dispatchEvent(new Event('change',{bubbles:true}));
 
 }refine();})();

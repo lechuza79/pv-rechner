@@ -1,0 +1,386 @@
+// Balkon-PV / Steckersolar model config.
+//
+// Steckersolargeräte ("Balkonkraftwerke") sind kleine Anlagen (ein bis vier
+// Module) mit einem Wechselrichter, der seit dem Solarpaket I (Mai 2024) bis
+// 800 W ins Hausnetz einspeisen darf; die Modulleistung darf bis 2.000 Wp
+// betragen. Anmeldung: nur noch Marktstammdatenregister, keine Netzbetreiber-
+// Genehmigung mehr.
+//
+// RECHT vs. NORM — nicht verwechseln (Council-Prüfung 07/2026):
+//   GESETZ (§ 8 Abs. 5a EEG): 2.000 Wp Module / 800 VA Wechselrichter. Das ist die
+//   einzige verbindliche Grenze. Von 960 Wp steht dort nichts.
+//   VORNORM (DIN VDE V 0126-95, seit 01.12.2025): sieht für den Betrieb an einer
+//   normalen Schuko-Steckdose max. 960 Wp Module vor (= 800 W + 20 %), darüber eine
+//   "spezielle Energiesteckvorrichtung" (technologieoffen formuliert — "Wieland" ist
+//   ein Markenname, keine Anforderung). Diese Vornorm ist FREIWILLIG und eine
+//   PRODUKTnorm: Adressat sind Hersteller, nicht Betreiber. Die DKE selbst schreibt:
+//   "Die Anwendung von Normen ist grundsätzlich freiwillig." Sie ist zudem eine
+//   Vornorm ("V") und wird spätestens nach drei Jahren überprüft → schukoMaxWp
+//   gehört deshalb an den Wächter (reviewBy), nicht still in den Code.
+//   Wichtig: Die Vornorm gilt ausdrücklich NUR für Geräte OHNE Speicher — die DKE:
+//   "Die Konformität mit dieser Produktnorm ist nur für Steckersolargeräte ohne
+//   Speicher möglich."
+// Deshalb formuliert der Rechner hier nie "Pflicht"/"verboten", sondern nennt
+// Gesetz und Norm getrennt.
+//
+// Wirtschaftlich zählt fast nur der SELBST genutzte Strom: für Balkonkraftwerke
+// gibt es keine Einspeisevergütung, der Überschuss fließt unvergütet ins Netz.
+// Deshalb modellieren wir Ertrag → Eigenverbrauch → Ersparnis, nicht
+// Einspeiseerlöse.
+//
+// Rechen-Basis: siehe CLAUDE.md „Geteilte Rechen-Basis". Standort-Ertrag kommt als
+// PVGIS-Monatsprofil, die Haushaltslast aus calcHourlyConsumption, der Tag/Nacht-
+// Split über die geteilte tagQuote — hier steht nur, was Balkon-spezifisch ist.
+
+import { NUTZUNG, NATIONAL_AVG_YIELD, DEGRAD } from "./constants";
+import { DEFAULT_PRICES } from "./prices-config";
+
+export type BalkonSetId = "single" | "duo" | "max";
+export type BalkonOrientationId = "sued_flach" | "sued_gelaender" | "ost_west" | "nord_schatten";
+export type BalkonPresenceId = "weg" | "teils" | "home" | "immer";
+export type BalkonStorageId = "none" | "small" | "large";
+
+export interface BalkonSet {
+  id: BalkonSetId;
+  label: string;
+  what: string;
+  moduleWp: number;   // Modul-Spitzenleistung (Wp)
+  inverterW: number;  // Wechselrichter-Grenze (W AC)
+  price: number;      // typischer Set-Preis inkl. Halterung (€)
+}
+
+export interface BalkonOrientation {
+  id: BalkonOrientationId;
+  label: string;
+  sub: string;
+  // Kein Ertragsfaktor mehr: Jede Ausrichtung hat in lib/solar-year.ts eine eigene
+  // PVGIS-Stundenreihe mit eigenem Tagesverlauf. Ein Faktor koennte nur die Menge
+  // skalieren, nicht die Form — und lag frueher grob daneben (Ost/West 0,85 statt
+  // real 0,51; Nord 0,5 statt real 0,20).
+  //
+  // BEKANNTE GRENZE (HTW-Validierung 07/2026): "ost_west" rechnet mit einer reinen
+  // OST-Reihe, und beide Optionen fassen je zwei Faelle zusammen, die sich
+  // unterschiedlich verhalten:
+  //   - Ost vs. West: In der Menge fast gleich (PVGIS 506 vs. 496 kWh/kWp), im
+  //     Eigenverbrauch nicht. West liefert abends, wenn gekocht wird. Die HTW misst
+  //     deshalb fuer West MEHR Eigenverbrauch als fuer Ost (294 vs. 288 kWh) trotz
+  //     weniger Ertrag — bei uns kommt es andersherum heraus (Ost +12 %). Wir
+  //     rechnen West also als Ost und liegen beim Vorzeichen falsch.
+  //   - Nord vs. verschattet: Eine verschattete Suedwand hat einen voellig anderen
+  //     Tagesverlauf als eine Nordwand; die Reihe ist echtes Nord, ohne Verschattung.
+  // Beides ist bewusst offen (eigene West-Reihe + getrennte Verschattungs-Option
+  // waeren die Fixes) — es haengt an der Frage, wie fein der Flow fragen soll.
+}
+
+export interface BalkonPresence {
+  id: BalkonPresenceId;
+  label: string;
+  sub: string;
+  // Tag-Anteil am Haushaltsverbrauch (7–18 Uhr). GETEILTE Größe: dieselbe, mit der
+  // der PV-Rechner rechnet (NUTZUNG.tagQuote, BDEW H0) — nicht neu erfinden.
+  tagQuote: number;
+}
+
+export interface BalkonStorage {
+  id: BalkonStorageId;
+  label: string;
+  sub: string;
+  kwh: number;   // nutzbare Kapazität (kWh)
+  price: number; // Mehrkosten inkl. Wechselrichter/App (€), 0 = ohne Speicher
+}
+
+export interface BalkonConfig {
+  sets: BalkonSet[];
+  orientations: BalkonOrientation[];
+  presence: BalkonPresence[];
+  storage: BalkonStorage[];
+  defaultSet: BalkonSetId;
+  defaultOrientation: BalkonOrientationId;
+  defaultPresence: BalkonPresenceId;
+  defaultStorage: BalkonStorageId;
+
+  specificYield: number;    // Fallback kWh/kWp im Jahr, wenn keine PLZ gesetzt ist.
+                            // Mit PLZ kommen die 12 Monatswerte direkt von PVGIS.
+
+  // Modulleistung, bis zu der die VDE-Vornorm den Betrieb an einer normalen
+  // Schuko-Steckdose vorsieht. FREIWILLIGE Vornorm, kein Gesetz (siehe Kopf) —
+  // wird spätestens 2028 überprüft, deshalb im Wächter-Runbook geführt.
+  schukoMaxWp: number;
+  // Was die Vornorm oberhalb davon vorsieht (Einbau durch Elektrofachkraft).
+  // Marktangabe, keine Norm-/Gesetzesgröße → Wächter prüft sie mit.
+  energySocketCostMin: number;
+  energySocketCostMax: number;
+
+  // HINWEIS: Clipping-Deckel, Eigenverbrauchs-Power-Law und Speicher-Durchsatz
+  // standen früher hier als kalibrierte Konstanten. Sie sind ersatzlos entfallen —
+  // lib/balkon-sim.ts simuliert das Jahr stündlich auf der geteilten Basis
+  // (PVGIS-Monatswerte + calcHourlyConsumption), damit ergeben sich Clipping,
+  // Eigenverbrauch und Speicher-Nutzen als Ergebnis statt als Annahme.
+
+  // Lade-/Entlade-Wirkungsgrad über den Umlauf (0–1). Greift in balkon-sim.ts
+  // EINMAL, beim Entladen — das Laden ist dort verlustfrei, der Wert ist also der
+  // vollständige Round-Trip und kein Einzelpfad-Wirkungsgrad.
+  //
+  // RECHENREGEL: Wir übernehmen den Wert, den die HTW Berlin für genau diese
+  // Geräteklasse (≤ 3 kWh) in ihrem Stecker-Solar-Simulator ansetzt —
+  // 0,917 Laden × 0,920 Entladen × 0,978 Batterie = 82,5 % (Dokumentation der
+  // Berechnungsgrundlagen V3.0, Kap. 4.2). Das ist die einzige institutionelle
+  // Zahl für diese Klasse, und sie passt topologisch: Die HTW modelliert
+  // AC-gekoppelt, unsere Simulation ebenso (siehe Kommentar in balkon-sim.ts).
+  //
+  // Zwei bekannte Korrekturen wirken gegenläufig und heben sich näherungsweise auf,
+  // deshalb bleibt es beim HTW-Wert statt bei einem gerundeten Kompromiss:
+  //  + DC-Kopplung. Reale Balkonspeicher laden direkt am Modul-Gleichstrom und
+  //    sparen eine Wandlung. Gemessen ist der Vorteil aber klein: dasselbe
+  //    Anker-Gerät DC 83,5 % vs. AC 82,1 %, derselbe KOSTAL-Wechselrichter als
+  //    Hybrid vs. AC-Batteriewechselrichter 7,3 % vs. 8,1 % Gesamtverluste
+  //    (Stromspeicher-Inspektion 2026, Tab. 4) — also 0,4–1,4 Prozentpunkte,
+  //    nicht die 5–8, die kursierende Pauschalen ("DC 90–95 %") unterstellen.
+  //  − Standby. Die HTW schließt Standby- und Regelungsverluste ausdrücklich AUS,
+  //    die 82,5 % sind damit eine Obergrenze. Real läuft die Elektronik mit
+  //    (Anker 9,5 W, Zendure Hyper 2000 1,5–2 W); über ein Jahr mit vielen
+  //    Leerlaufstunden kostet das mehrere Prozentpunkte. Unquantifiziert.
+  //
+  // Gegenprobe an Messungen (EnergieMagazin, 13 Geräte, DC rein → AC raus):
+  // bei 800 W Volllast 80–89,7 %, bei 150 W Teillast 71,6–79,5 %. KEIN Gerät
+  // erreicht 90 %, auch nicht im Bestpunkt. Und Teillast ist beim Entladen der
+  // Normalfall, nicht die Ausnahme: 72 % der nächtlichen Leistungsflüsse liegen
+  // unter 300 W, 96 % unter 750 W (HTW / Verbraucherzentrale RLP, Faktencheck 5,
+  // 09/2024). Der frühere Wert 0,90 war eine Herstellerangabe und lag über dem
+  // Bestpunkt des besten Geräts.
+  //
+  // Council 07/2026: 3/3 gegen 0,90, adversarialer Prüfer eingeschlossen (konnte
+  // den Wert nicht verteidigen). Sein Einwand "vielleicht wird der Verlust doppelt
+  // abgezogen" ist am Code geprüft und ausgeräumt — siehe oben, greift einmal.
+  //
+  // Der Wert steht auf /datenstand und verschiebt Nutzer-Ergebnisse (weniger
+  // Speicher-Zugewinn → seltener eine Speicher-Empfehlung). Das ist beabsichtigt.
+  storageRoundtrip: number;
+  storageLifeYears: number;        // realistische Speicher-Lebensdauer (Jahre) — der
+                                   // Speicher-Zusatznutzen zählt nur bis hierhin, danach
+                                   // laufen die Module weiter.
+  storageRecommendMaxPayback: number; // Ein Speicher wird nur EMPFOHLEN, wenn er sich
+                                   // innerhalb dieser Jahre selbst amortisiert. Deutlich
+                                   // unter der Lebensdauer, damit die Empfehlung ehrlich
+                                   // bleibt: Speicher nur da, wo er sich klar rechnet
+                                   // (viel Überschuss = tagsüber wenig Eigenverbrauch),
+                                   // sonst empfehlen wir bewusst ohne — Balkonspeicher
+                                   // amortisieren sich oft nicht.
+
+  lifetimeYears: number;
+  degradation: number;
+  gridCo2PerKwh: number;    // kg CO₂/kWh, DE-Netzmix (= WP-Rechner)
+  stromPrice: number;       // Fallback €/kWh
+
+  validFrom: string;            // ISO — Stand der Preis-/Marktwerte (Monat)
+  geprueftIso: string;          // ISO — Tag des letzten Laufs, der die Preisquellen erreicht hat
+  reviewBy: string;             // ISO — bis dahin gegen Quellen prüfen (scripts/balkon-verify.md)
+}
+
+export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
+  sets: [
+    { id: "single", label: "1 Modul", what: "~500 Wp mit kleinem Wechselrichter — für schmale Balkone oder eine Wand.", moduleWp: 500, inverterW: 600, price: 300 },
+    // 960 Wp statt früher 1.000: genau die Grenze, bis zu der die VDE-Vornorm den
+    // normalen Schuko-Stecker vorsieht. Der Markt verkauft seit der Norm exakt
+    // solche Sets — damit ist die gängigste Größe ohne Sternchen normkonform.
+    { id: "duo", label: "2 Module (Standard)", what: "~960 Wp am 800-W-Wechselrichter — die gängigste Größe, läuft am normalen Schuko-Stecker.", moduleWp: 960, inverterW: 800, price: 500 },
+    { id: "max", label: "4 Module (Maximum)", what: "~2.000 Wp am 800-W-Wechselrichter — mehr Ertrag morgens und abends, die Mittagsspitze wird gedrosselt. Gesetzlich erlaubt; die VDE-Vornorm sieht dafür eine spezielle Einspeisesteckdose vor.", moduleWp: 2000, inverterW: 800, price: 800 },
+  ],
+  orientations: [
+    { id: "sued_flach", label: "Süd, aufgeständert", sub: "Optimaler Winkel (Flachdach, Garten, Terrasse)" },
+    { id: "sued_gelaender", label: "Süd, senkrecht am Geländer", sub: "Klassischer Balkon" },
+    { id: "ost_west", label: "Ost oder West, senkrecht", sub: "Halbtags Sonne — rund halber Ertrag" },
+    { id: "nord_schatten", label: "Nord oder verschattet", sub: "Wenig direkte Sonne — lohnt selten" },
+  ],
+  // tagQuote wird aus der geteilten NUTZUNG-Tabelle referenziert (nicht abgeschrieben),
+  // damit Balkon- und PV-Rechner nicht auseinanderlaufen.
+  presence: [
+    { id: "weg", label: "Tagsüber selten", sub: "Meist berufstätig außer Haus", tagQuote: NUTZUNG[0].tagQuote },
+    { id: "teils", label: "Teils zuhause", sub: "Homeoffice-Tage, Familie", tagQuote: NUTZUNG[1].tagQuote },
+    { id: "home", label: "Oft zuhause", sub: "Homeoffice, Kinder", tagQuote: NUTZUNG[2].tagQuote },
+    // Vierte Stufe seit 05.09.2026 (Betreiber): Der PV-Rechner kennt sie längst;
+    // ein Rentner-Haushalt landete hier vorher auf 38 statt 45 % Tagesanteil.
+    { id: "immer", label: "Immer zuhause", sub: "Rente, Elternzeit …", tagQuote: NUTZUNG[3].tagQuote },
+  ],
+  // Größen und Preise an echten, getesteten Geräten (Stand 2026-07). Das Segment
+  // unter ~1,5 kWh ist als Einstieg vom Markt verschwunden (Zendure AB1000 läuft
+  // nur noch als Altbestand) — Einstieg ist heute ~1,6 kWh.
+  //   ~1,6 kWh: Anker Solarbank 2 Pro (~410–460 €)
+  //   ~2,7 kWh: Anker Solarbank 3 Pro (ab ~890 €, Testsieger)
+  // Quervergleich: Growatt Noah 2000 (2,0 kWh, ab 600 €), Zendure SolarFlow 800 Pro
+  // (1,9 kWh, ab 730 €). Marktspanne reiner Balkonspeicher: 400–1.500 €.
+  storage: [
+    { id: "none", label: "Ohne Speicher", sub: "Überschuss fließt unvergütet ins Netz", kwh: 0, price: 0 },
+    { id: "small", label: "~1,6 kWh Speicher", sub: "Einstiegsgröße, deckt den Abend", kwh: 1.6, price: 430 },
+    { id: "large", label: "~2,7 kWh Speicher", sub: "Mehr Puffer — mehr, als ein Balkon meist füllen kann", kwh: 2.7, price: 890 },
+  ],
+  defaultSet: "duo",
+  defaultOrientation: "sued_gelaender",
+  defaultPresence: "teils",
+  defaultStorage: "none",
+
+  specificYield: NATIONAL_AVG_YIELD, // Bundesschnitt bei optimaler Ausrichtung; per PLZ von PVGIS überschrieben.
+                            // Die Ausrichtung wirkt über die eigene PVGIS-Reihe je
+                            // Himmelsrichtung, nicht über einen Abschlag hier.
+
+  schukoMaxWp: 960,
+  energySocketCostMin: 100,
+  energySocketCostMax: 300,
+
+  storageRoundtrip: 0.825, // HTW-Wert für diese Geräteklasse, siehe Herleitung oben
+  storageLifeYears: 12,
+  storageRecommendMaxPayback: 8,
+
+  lifetimeYears: 20,
+  // Dieselbe Degradation wie Dach-PV — importiert, nicht abgetippt.
+  degradation: DEGRAD,
+  // Bewusst 20 statt der 25 Jahre des PV-Rechners: Ein Fixpreis-Set mit
+  // 800-W-Wechselrichter und Steckerelektronik ist eine andere Geräteklasse als
+  // eine Dachanlage; die Oberfläche trägt „Gewinn nach 20 J." durchgehend.
+  // (Council 05.09.2026: dokumentiert, keine Kopie.)
+  gridCo2PerKwh: 0.38,
+  stromPrice: DEFAULT_PRICES.electricityPrice, // kanonischer Haushaltspreis (kein eigener Wert → kein Drift)
+
+  validFrom: "2026-07",
+  /** Tag, an dem ein Lauf die Preisquellen zuletzt wirklich gelesen hat.
+   *  Getrennt von `validFrom`, obwohl bei einem Markt-Scan beide zusammen
+   *  entstehen: Sichtbar sind sie als „Set- und Speicherpreise von Juli 2026,
+   *  geprüft am 15. Juli 2026" — und sobald ein Lauf die Preise bestätigt, ohne
+   *  dass sich einer bewegt, laufen sie auseinander. Startwert ist der Lauf des
+   *  Geräte-Wächters vom 15.07.2026, aus dem die Preise stammen. */
+  geprueftIso: "2026-07-15",
+  reviewBy: "2026-10", // Quartals-Rhythmus (scripts/balkon-verify.md), nicht jährlich
+};
+
+/** Die Wirkungsgrad-Kette hinter `storageRoundtrip` — einzeln, weil der
+ *  Speicher-Ratgeber (/balkonkraftwerk/ratgeber/mit-speicher) sie aufschlüsselt und die drei
+ *  Zahlen sonst ein zweites Mal getippt dastünden. Genau das ist die
+ *  Fehlerklasse aus CLAUDE.md (Faktenprüfung 11): Eine Korrektur erreichte dann
+ *  stumm nur eine der beiden Stellen.
+ *
+ *  Wörtlich aus der Leitquelle (Kap. 4.2): „Für die Systemkonfigurationen wurde
+ *  ein mittlerer Umwandlungswirkungsgrad im Lade- bzw. Entladebetrieb von 91,7 %
+ *  bzw. 92 % angenommen, der Batteriewirkungsgrad beträgt 97,8 %. Der
+ *  resultierende AC-Systemnutzungsgrad des AC-gekoppelten Batteriesystems
+ *  beträgt somit 82,5 %."
+ *
+ *  Volltext im Repo: docs/quellen/HTW-Stecker-Solar-Simulator-Dokumentation-V3.pdf
+ *  (HTW Berlin, Forschungsgruppe Solarspeichersysteme, Version 3.0, Mai 2024) —
+ *  am 19.08.2026 im Original nachgelesen, nicht aus zweiter Hand übernommen.
+ *
+ *  `storageRoundtrip` bleibt die Rechengröße und wird NICHT aus diesen drei
+ *  Faktoren berechnet: Das Produkt ergibt 0,825216, die Quelle nennt 82,5 %.
+ *  Die dritte Nachkommastelle als Rundungsartefakt in jedes Nutzer-Ergebnis
+ *  durchzureichen wäre eine erfundene Genauigkeit. `lib/__tests__/balkon.test.ts`
+ *  hält beide Fassungen aneinander. */
+export const STORAGE_ROUNDTRIP_KETTE = {
+  laden: 0.917,
+  entladen: 0.92,
+  batterie: 0.978,
+} as const;
+
+/** Ab diesem Jahresverbrauch weisen wir darauf hin, dass eine Dachanlage deutlich
+ *  mehr holt — ein Balkonkraftwerk deckt dann nur noch die Grundlast. Bewusst
+ *  konservativ. Steht hier, weil die Schwelle im Rechner-Ergebnis UND im
+ *  Textabschnitt der Seite genannt wird; als zweite getippte Zahl würde eine
+ *  davon beim nächsten Anfassen zurückbleiben. */
+export const BALKON_DACH_HINWEIS_KWH = 3500;
+
+// ─── Rechtsaussagen zu Steckersolar — EINE Quelle ───────────────────────────
+//
+// Dieselben Sätze stehen im Rechner-Ergebnis UND im FAQ der Rechner-Seite (und
+// von dort im FAQPage-JSON-LD). Als handgetippte Zweitkopie würde eine Korrektur
+// stumm nur eine der Oberflächen erreichen — dieselbe Systematik wie bei
+// `bioTreppeStufenText()` / `eegVerfahrenSatz()` (CLAUDE.md, Faktenprüfung 11).
+// Der Quartals-Wächter (scripts/balkon-verify.md, Abschnitt „Anmelde-Regel")
+// prüft diese Sätze; er findet sie ab jetzt hier statt im JSX.
+//
+// ZUSTAND: geltendes Recht (Solarpaket I, in Kraft seit 16.05.2024) — kein
+// Entwurf. Die VDE-Vornorm ist ausdrücklich KEIN Gesetz, sondern freiwillig;
+// dieser Unterschied steht im Satz selbst und darf beim Kürzen nicht wegfallen.
+// Festgenagelt von lib/__tests__/balkon.test.ts → „Rechtssätze".
+export const BALKON_RECHT = {
+  /** Tag, an dem die Sätze hier zuletzt gegen die Primärquellen gelesen wurden.
+   *  BEWUSST ein Stichtag und kein Renderdatum: Er darf nur mitwandern, wenn
+   *  jemand die Quellen wirklich wieder aufgeschlagen hat (Regel „Prüfdatum nur
+   *  stempeln, was geprüft wurde"). Der Quartals-Wächter zieht ihn nach. */
+  geprueftIso: "2026-08-16",
+
+  /** Anmeldeweg seit dem Solarpaket I. */
+  anmeldung:
+    "Anmeldung seit 2024 vereinfacht: eine Registrierung im Marktstammdatenregister genügt, keine Netzbetreiber-Genehmigung.",
+  /** Mietwohnung und Eigentümergemeinschaft. */
+  mieteEigentum:
+    "Seit 2024 gelten Steckersolargeräte als privilegierte Maßnahme: Der Vermieter kann die Montage nur ablehnen, wenn sie ihm auch unter Würdigung deiner Interessen nicht zuzumuten ist; in der Eigentümergemeinschaft besteht ein Anspruch auf eine angemessene Anbringung, über deren Ausführung die Gemeinschaft beschließt. Die Erlaubnis einzuholen ist deshalb kein Hoeflichkeitsschritt, sondern Voraussetzung.",
+  /** Keine Vergütung für den Überschuss — der Grund, warum nur Eigenverbrauch zählt. */
+  keineVerguetung:
+    "Für Balkonkraftwerke gibt es keine Einspeisevergütung — der Überschuss fließt unvergütet ins Netz. Deshalb zählt nur der Strom, den du selbst verbrauchst.",
+
+  // Geprüft am 16.08.2026 im Volltext, Auszug im Repo:
+  // docs/quellen/ustae-12-18-nullsteuersatz.txt
+  //   § 12 Abs. 3 UStG — Nullsteuersatz, Anlage an einer Wohnung, höchstens 30 kWp.
+  //   UStAE 12.18 Abs. 2 S. 6 — nennt Steckersolargeräte ausdrücklich.
+  //   UStAE 12.18 Abs. 7 S. 3 — bis 800 VA entfällt sogar die Nachweispflicht,
+  //     die Betreibereigenschaft wird unterstellt (bis 2024: 600 W; geändert durch
+  //     BMF-Schreiben v. 15.08.2024, III C 2 - S 7220/22/10002 :017).
+  // DER SPEICHER-SATZ IST IN BEIDE RICHTUNGEN HEIKEL — Council 16.08.2026, 2/3
+  // bestätigt, der adversariale Prüfer hat ihn ENTSCHÄRFT statt verschärft:
+  // Die 5 kWh aus Abs. 7 S. 10 sind eine VERMUTUNGSREGEL, kein Tatbestandsmerkmal.
+  // Materiell entscheidet S. 9 die Zweckbestimmung. Ein 1,6-kWh-Balkonspeicher
+  // fällt also nur aus der Vermutung, nicht aus der Begünstigung — er ist
+  // steuerfrei, sobald erkennbar ist, dass er Strom aus dem begünstigten Gerät
+  // speichert, und das ist beim Kauf zum Set praktisch immer erkennbar.
+  //   ZU STRENG wäre: „unter 5 kWh nicht steuerfrei" / „dann 19 %" — schlicht falsch.
+  //   ZU LASCH wäre: „Set und Speicher sind steuerfrei" — unterschlägt die Bedingung.
+  // Der Satz muss beide Fehler vermeiden; deshalb nennt er die Schwelle UND sagt,
+  // was darunter gilt. Festgenagelt von lib/__tests__/balkon.test.ts.
+  // Vom Council zusätzlich gefunden, hier bewusst NICHT im Satz (gehört in den
+  // geplanten Ratgeber, nicht in die Kurzantwort): Beim GEBRAUCHTKAUF vom
+  // Wiederverkäufer greift die Differenzbesteuerung (§ 25a Abs. 5 S. 1 UStG,
+  // 19 % auf die Marge), und Miete/Leasing sowie Wartungsverträge bleiben bei 19 %.
+  // Zwei weitere Council-Funde stecken im Wortlaut:
+  //   „STEUERFREI" IST DER FALSCHE BEGRIFF. Es ist ein Steuersatz von 0 %, keine
+  //   Steuerbefreiung — im Ergebnis dasselbe für den Käufer, aber ein anderer
+  //   Rechtsbegriff. Deshalb durchgehend „keine Mehrwertsteuer" / „Nullsteuersatz".
+  //   DIE HÄNDLERPRAXIS GEHÖRT DAZU. Beim SEPARAT gekauften Speicher fehlt die
+  //   Klammer des einheitlichen Kaufs (Sachgesamtheit, UStAE 3.1 Abs. 1 S. 4);
+  //   viele Händler rechnen dort trotzdem 19 % ab. Ohne diesen Halbsatz weckt
+  //   der Satz eine Erwartung, die an der Kasse platzt — rechtlich richtig,
+  //   praktisch irreführend.
+  nullsteuer:
+    "Auf das Set fällt keine Mehrwertsteuer an: Für Solarmodule an einer Wohnung gilt der Nullsteuersatz, und bis 800 Voltampere verlangt das Finanzamt dafür nicht einmal einen Nachweis. Beim separat gekauften Speicher unterstellt das Finanzamt den Solarbezug erst ab 5 kWh von sich aus; kleinere Balkonspeicher sind davon nicht ausgeschlossen, in der Praxis rechnen viele Händler dort aber die vollen 19 Prozent ab.",
+
+  // Geprüft am 16.08.2026 über die vollständige Verweiskette (nicht aus § 95 EnWG
+  // allein ableitbar — eine Verordnung löst nur bei ausdrücklicher Rückverweisung
+  // ein Bußgeld aus, und genau die gibt es hier):
+  //   § 5 Abs. 1 S. 1 MaStRV — Registrierungspflicht des Betreibers.
+  //   § 5 Abs. 5 S. 1 MaStRV — die Monatsfrist. Steht NICHT in Absatz 1; die
+  //     Verwechslung ist naheliegend, weil § 21 Nr. 1 nur auf Abs. 1 verweist —
+  //     die Fristüberschreitung wird dort über „nicht rechtzeitig" erfasst.
+  //   § 21 Nr. 1 MaStRV — „Ordnungswidrig im Sinn des § 95 Absatz 1 Nummer 5
+  //     Buchstabe e des Energiewirtschaftsgesetzes handelt, wer vorsätzlich oder
+  //     fahrlässig entgegen … § 5 Absatz 1 … eine Registrierung nicht, nicht
+  //     richtig, nicht in der vorgeschriebenen Weise oder nicht rechtzeitig
+  //     vornimmt". Das ist die Rückverweisung.
+  //   § 95 Abs. 2 EnWG — Rahmen für Nr. 5 Buchst. e: bis 50.000 €.
+  // Die 50.000 € stehen BEWUSST NICHT im Satz: Das ist der gesetzliche Höchstrahmen
+  // für alle Verstöße dieser Nummer, nicht das, was einem Balkon-Betreiber droht
+  // (§ 17 OWiG bemisst nach Bedeutung und Vorwurf). Die Zahl als Drohung zu setzen
+  // wäre formal belegbar und trotzdem irreführend — genau die Sorte Halbwahrheit,
+  // mit der die Wettbewerber-Seiten zu diesem Keyword arbeiten.
+  // Council 16.08.2026: 3/3 bestätigt, der adversariale Prüfer kam über fünf
+  // Angriffe nicht durch. Drei seiner Formulierungs-Einwände stecken im Satz:
+  //   1. „ordnungswidrig" nicht als Automatik — § 21 MaStRV verlangt Vorsatz
+  //      oder Fahrlässigkeit. Deshalb „grundsätzlich", wörtlich wie die
+  //      Bundesnetzagentur selbst in ihrer MaStR-Webhilfe formuliert.
+  //   2. Inbetriebnahme = erster Tag der Stromerzeugung, nicht Kauf oder
+  //      Lieferung. Das ist die Frage, an der die Frist real scheitert.
+  //   3. Pflichtig ist der BETREIBER — bei „Vermieter kauft, Mieter betreibt"
+  //      trifft es nicht den, den ein „wer eins hat" nahelegt. Deshalb „du"
+  //      im Sinn des Betreibers und kein Eigentums-Vokabular.
+  // Bewusst NICHT im Satz: die Verfolgungspraxis. Weder „wird nie verfolgt"
+  // noch „nachträglich sanktionsfrei" ließ sich auf die Behörde oder eine
+  // Statistik zurückführen — beides sind unbelegte Blog-Behauptungen.
+  anmeldeFrist:
+    "Dafür hast du einen Monat ab Inbetriebnahme — gerechnet ab dem Tag, an dem die Module das erste Mal Strom liefern, nicht ab Kauf oder Lieferung. Wer die Frist verstreichen lässt, handelt grundsätzlich ordnungswidrig; die Anmeldung selbst ist kostenlos und in wenigen Minuten erledigt.",
+} as const;

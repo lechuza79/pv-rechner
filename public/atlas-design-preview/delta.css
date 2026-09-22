@@ -1,0 +1,25 @@
+.sc-delta {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  appearance: none;
+  border: 1px solid var(--color-positive, #00d950);
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: color-mix(in srgb, var(--color-positive, #00d950) 10%, transparent);
+  color: var(--color-positive-text, var(--color-positive, #00d950));
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  text-align: left;
+}
+
+span.sc-delta { cursor: default; }
+.sc-delta-sign, .sc-delta-suffix { color: color-mix(in srgb, currentColor 62%, transparent); }
+.sc-delta-value { display: inline-flex; align-items: baseline; }
+.sc-delta-alternative { display: none; position: absolute; bottom: 100%; left: 0; white-space: nowrap; padding: 8px 12px; border: 1px solid var(--widget-muted, var(--color-border)); border-radius: 8px; background: var(--widget-surface, var(--color-bg)); color: var(--widget-ink, var(--color-text-primary)); z-index: 2; box-shadow: 0 4px 16px #0003; }
+.sc-delta:hover .sc-delta-alternative, .sc-delta:focus-visible .sc-delta-alternative, .sc-delta-alternative[data-open="true"] { display: block; }
+.sc-delta:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }

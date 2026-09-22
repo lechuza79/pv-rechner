@@ -150,9 +150,11 @@ export function MastrLiveRadial({
   unit = "GW",
   injected = null,
   highlightTs,
+  secondaryBars = false,
   bare = false,
   fuelltBreite = false,
   exportFooter = null,
+  className,
 }: {
   energietraeger: Energietraeger;
   installedKwp: number | null;
@@ -165,6 +167,8 @@ export function MastrLiveRadial({
   injected?: { ts: string; mw: number }[] | null;
   /** Welcher Balken „jetzt" ist (Mitte + Highlight). Standard: der letzte. */
   highlightTs?: string;
+  /** Use widget-muted bars with the current reading in the widget accent color. */
+  secondaryBars?: boolean;
   /** Chromeless: kein eigener Rahmen/Kopf/Branding-Footer — für die Einbettung
    *  in eine geteilte Widget-Hülle (Gemeinde-Seite), die den Rahmen zeichnet. */
   bare?: boolean;
@@ -187,6 +191,8 @@ export function MastrLiveRadial({
    * kind-dependent invitation (see WidgetExportFooter).
    */
   exportFooter?: React.ReactNode;
+  /** Optional hook for the host widget to provide shared sizing/layout rules. */
+  className?: string;
   /**
    * Sichtbare Fußzeile der Karte — der geteilte Baustein `WidgetFooter`
    * (nächster Schritt · Aktionen · Marke). Sie steht INNERHALB der Karte, damit
@@ -467,8 +473,12 @@ export function MastrLiveRadial({
     return bestD <= 2.6 ? best : null;
   };
 
-  const accentBars = v("--color-accent");
-  const accentLatest = v("--color-highlight");
+  const accentBars = secondaryBars
+    ? "var(--widget-muted, var(--color-text-secondary))"
+    : v("--color-accent");
+  const accentLatest = secondaryBars
+    ? "var(--widget-accent, var(--color-highlight))"
+    : v("--color-highlight");
   // Muted text token instead of fixed black so the unit label stays legible on
   // a dark widget background (where it resolves to a light tone).
   const labelColor = v("--color-text-muted");
@@ -486,6 +496,7 @@ export function MastrLiveRadial({
 
   return (
     <div
+      className={className}
       style={{
         perspective: "1200px",
         display: isCompact && !fuelltBreite ? "inline-block" : "block",
@@ -511,7 +522,7 @@ export function MastrLiveRadial({
             transition: "opacity 0.12s ease 0.22s",
           }}
         >
-          <div style={cardStyle}>
+          <div className="sc-mastr-live-radial-card" style={{...cardStyle, display: "flex", flexDirection: "column"}}>
       {!bare && (traegerNav ? (
         <div
           style={{
@@ -828,6 +839,13 @@ export function MastrLiveRadial({
             }}
           />
 
+          <g aria-hidden="true" className="sc-mastr-live-radial-clock">
+            {([['12', 12], ['18', 18], ['00', 0], ['06', 6]] as const).map(([label, hour]) => {
+              const [x, y] = pointAt(CX, CY, visualAngleFromHour(hour), OUTER_R + (isCompact ? 1 : 8));
+              return <text key={label} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fill={labelColor} fontSize={isCompact ? 8 : 10}>{label}</text>;
+            })}
+          </g>
+
           {/* Hintergrund-Kreis ÜBER den Bars mit Drop-Shadow.
               Schneidet die Bar-Caps unten leicht an und wirft Schatten nach
               außen — gibt visuelle Tiefe. Fill folgt dem Theme-Hintergrund. */}
@@ -897,7 +915,7 @@ export function MastrLiveRadial({
       {!isCompact && displayPct !== null && (
         <div
           style={{
-            marginTop: 10,
+            marginTop: "auto",
             paddingTop: 8,
             borderTop: `1px solid ${v("--color-border")}`,
             fontSize: 12,

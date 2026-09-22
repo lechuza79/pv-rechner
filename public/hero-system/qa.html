@@ -1,0 +1,31 @@
+<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hero lifecycle checks</title><body><h1>Hero lifecycle checks</h1><pre id="results" role="status">Running…</pre><div id="fixtures"></div><script type="module">
+import {mountHeroStage} from './dist/hero-stage.js';
+import {heroInstances} from './dist/instances.js';
+const results=document.querySelector('#results'),fixtures=document.querySelector('#fixtures');
+const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const log=[];function check(ok,message){if(!ok)throw Error(message);log.push('PASS '+message);results.textContent=log.join('\n');}
+const page=new DOMParser().parseFromString(await fetch('/atlas-design-preview/index.html').then(r=>r.text()),'text/html');
+for(const style of page.querySelectorAll('style,link[rel=stylesheet]'))document.head.append(style.cloneNode(true));
+const css=document.createElement('style');css.textContent='#fixtures{display:flex;gap:16px}.qa-root{width:48%;height:340px}.qa-root .hero{height:340px;min-height:0}.qa-root .scene{inset:0}body{background:white!important;color:black!important}#results{position:relative;z-index:100;white-space:pre-wrap}';document.head.append(css);
+const state={phase:'day',cloud:.2,rain:0,wind:.3,direction:1,sunX:55,sunY:25,daylight:1,season:'summer'};
+function fixture(profile){const root=document.createElement('div');root.className='solar-page qa-root';const stage=document.createElement('section');stage.className='hero';const scene=page.querySelector('.scene').cloneNode(true);stage.append(scene);root.append(stage);fixtures.append(root);return {root,stage,scene,api:mountHeroStage({root,stage,scene,state,...profile})};}
+async function ready(item){for(let i=0;i<150;i++){if(item.scene.dataset.unifiedReady==='true')return;await wait(100);}throw Error('First frame timeout');}
+try{
+ const a=fixture(heroInstances.municipality),b=fixture(heroInstances.homepage);await Promise.all([ready(a),ready(b)]);
+ check(a.scene.dataset.unifiedReady==='true'&&b.scene.dataset.unifiedReady==='true','Two separately configured instances render');
+ check(a.stage.querySelectorAll('.hs-foreground-layer').length===0&&b.stage.querySelectorAll('.hs-foreground-layer').length===1,'Foreground overlay belongs only to its configured instance');
+ check(!performance.getEntriesByType('resource').some(x=>/panel-fallback|moon-lroc/.test(x.name)),'Daytime startup requests neither photo panels nor moon texture');
+ a.api.update({state:{...state,phase:'night'}});check(a.root.dataset.phase==='night'&&b.root.dataset.phase==='day','Weather update is isolated');
+ a.api.update({motion:false});b.api.update({motion:false});await wait(500);const count=b.scene.dataset.renderCount;await wait(500);check(count===b.scene.dataset.renderCount,'Paused instance does not keep rendering');
+ a.api.update({state:{...state,cloud:.9}});await wait(150);check(count===b.scene.dataset.renderCount,'Updating one instance does not wake the other');
+ a.api.update({sunStyle:'flare',moonPhase:'.5'});await wait(100);check(a.root.dataset.sunStyle==='flare'&&a.api.moonDescription.includes('100 %'),'Sun style and moon phase remain configurable');a.api.triggerGust();
+ a.api.simulateLoss();await wait(250);
+ check(a.root.dataset.sceneBoot==='failed'&&b.root.dataset.sceneBoot==='ready','Context loss falls back without breaking another instance');
+ a.api.dispose();check(a.stage.querySelectorAll('canvas').length===0,'Dispose removes owned canvases');
+ b.api.dispose();check(b.stage.querySelectorAll('canvas').length===0,'Dispose also removes the foreground overlay');
+ const c=fixture(heroInstances.municipality);c.api.dispose();await wait(500);check(c.stage.querySelectorAll('canvas').length===0,'Dispose before asynchronous boot leaves no canvas');c.root.remove();
+ a.root.remove();b.root.remove();const d=fixture(heroInstances.municipality);await ready(d);check(d.scene.querySelectorAll('.unified-canvas').length===1,'Remount creates exactly one renderer');d.api.dispose();
+ const staticHero=fixture({...heroInstances.municipality,quality:'static'});await wait(400);check(!staticHero.scene.querySelector('.unified-canvas'),'Static quality never initializes WebGL');staticHero.api.update({quality:'low'});await ready(staticHero);check(staticHero.scene.dataset.unifiedReady==='true','Static instance can enable rendering later');staticHero.api.dispose();
+ document.body.dataset.result='passed';results.textContent=log.join('\n')+'\nALL PASSED';
+}catch(error){document.body.dataset.result='failed';results.textContent=log.join('\n')+'\nFAIL '+error.message;}
+</script></body></html>

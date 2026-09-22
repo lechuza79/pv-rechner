@@ -1,16 +1,16 @@
 'use client';
-import {IconArrowRight,IconChevronLeft,IconChevronRight,IconShare,IconPlay,IconPause,IconCopy,IconDownload,IconClose} from '../../components/Icons';
+import {IconArrowRight,IconChevronLeft,IconChevronRight,IconShare,IconPlay,IconPause,IconCopy,IconDownload,IconClose} from '@solar-check/story-source/components/Icons';
 import {useState,useEffect,useRef} from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import AutoScroll from './vendor/embla-auto-scroll.mjs';
 import './story-swipe.css';
-import type {StoryConcept} from '../../lib/story-konzepte';
-import {formatStoryDate} from '../../lib/story-format';
-import {MunicipalChart} from '../../components/social/MunicipalChart';
-import Modal,{ModalHeader} from '../../components/Modal';
-import foundation from '../../components/social/atlas-foundations.module.css';
-import chart from '../../components/social/StoryConceptLab.module.css';
-import styles from '../../components/social/MunicipalStoryPreview.module.css';
+import type {StoryConcept} from '@solar-check/story-source/lib/story-konzepte';
+import {formatStoryDate} from '@solar-check/story-source/lib/story-format';
+import {MunicipalChart} from '@solar-check/story-source/components/social/MunicipalChart';
+import Modal,{ModalHeader} from '@solar-check/story-source/components/Modal';
+import foundation from '@solar-check/story-source/components/social/atlas-foundations.module.css';
+import chart from '@solar-check/story-source/components/social/StoryConceptLab.module.css';
+import styles from '@solar-check/story-source/components/social/MunicipalStoryPreview.module.css';
 
 const storyVisual=(story:StoryConcept,compact:boolean,autoPlay=false,scheme='dark')=><div className={`${chart.visualTheme} ${compact?styles.visual:chart.figure} ${story.kind==='yield'&&compact?chart.preview:''}`} data-story-scheme={scheme}><MunicipalChart story={story} compact={compact} autoPlay={autoPlay}/></div>;
 const ignoreStorySelection=(_index:number)=>{};
@@ -68,7 +68,7 @@ export default function MunicipalStoryPreview({stories,name,embedded=false,surfa
  const previewVisual=(story:StoryConcept,compact:boolean,autoPlay=false)=>storyVisual(story,compact,autoPlay,visualScheme);
  const cards=(all:boolean)=><div className={all?styles.feed:'story-strip'} ref={all?undefined:stripRef}><div className={all?'story-feed-grid':'story-strip-track'}>{(all?stories:[...stories,...stories,...stories]).map((story,index)=><div className={all?'story-feed-cell':'story-strip-slide'} key={`${story.id}-${index}`}><button className={`${styles.card} story-preview-card`} data-preview-scheme={surfaceScheme} onClick={()=>{open(index%stories.length);}}>{<VisibleWidget enabled={selected===null&&!paused} story={story} visual={previewVisual}/>}<div className={styles.copy}>{showTown&&<small>{story.town}</small>}{showDate&&<small>{formatStoryDate(story.period)}</small>}<h3>{story.thumbLabel??story.title}</h3></div></button></div>)}</div></div>;
  return <section ref={sectionRef} data-story-scheme={surfaceScheme} id="geschichten" className={`${foundation.foundation} ${styles.section} ${embedded?styles.embedded:''}`}>
- {showHeader&&<header><h2>{name} im Fokus</h2><div className="story-strip-actions"><button onClick={()=>setFeed(true)} className="story-all-link">Alle {stories.length} Stories <IconArrowRight size={18}/></button></div></header>}
+ {showHeader&&<header><h2>Insights aus {name}</h2></header>}
  {cards(false)}
  <Modal scheme={surfaceScheme} open={feed&&selected===null} onClose={()=>setFeed(false)} title={`Geschichten aus ${name}`} maxWidth={1040} className={foundation.foundation}>{cards(true)}</Modal>
  {!onStoryOpen&&<MunicipalStoryModal key={openId} stories={stories} name={name} initial={lastSelected.current} surfaceScheme={surfaceScheme} open={selected!==null} onSelect={setSelected} onClose={()=>setSelected(null)}/>}
@@ -105,7 +105,7 @@ function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose
  const download=async()=>{
   const node=bodyRef.current?.querySelector<HTMLElement>('.story-reader-slide[aria-hidden="false"] .story-export-card');if(!node)return;
   setBusy(true);setFeedback('Bild wird erstellt …');
-  try{await document.fonts.ready;const {captureNodeToBlob,downloadBlob}=await import('../../lib/chart-export');const exportHost=document.createElement('div');
+  try{await document.fonts.ready;const {captureNodeToBlob,downloadBlob}=await import('@solar-check/story-source/lib/chart-export');const exportHost=document.createElement('div');
    exportHost.style.cssText='position:fixed;left:-100000px;top:0;pointer-events:none;';
    const exportCard=node.cloneNode(true) as HTMLElement;
    exportCard.style.cssText=`${node.getAttribute('data-sc-export-css')};width:${node.getBoundingClientRect().width}px;box-sizing:border-box;`;
@@ -115,11 +115,12 @@ function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose
  return <>
 
  <ModalHeader><div className="story-progress-row"><div className="story-reader-segments" aria-label="Story auswählen">{stories.map((story:any,i:number)=><button key={story.id} aria-label={`Story ${i+1}: ${story.title}`} aria-current={index===i?'step':undefined} onClick={()=>api?.scrollTo(i)}><span className="story-segment-track" role={index===i?'progressbar':undefined} aria-label={index===i?'Story-Fortschritt':undefined} aria-valuemin={0} aria-valuemax={100}><span className="story-segment-fill" key={`${i}-${index}`} ref={index===i?progressRef:undefined} style={{transform:`scaleX(${i<index?1:0})`}}/></span></button>)}</div><button className="story-timer-toggle" aria-label={paused?'Story fortsetzen':'Story pausieren'} onClick={()=>setPaused(value=>!value)}>{paused?<IconPlay/>:<IconPause/>}</button><button className="story-close" aria-label="Schließen" onClick={onClose}><IconClose/></button></div></ModalHeader><div ref={bodyRef} className="story-reader-body"><div className="story-reader-viewport" ref={viewport}><div className="story-reader-track">{stories.map((story:any,i:number)=><article key={story.id} className="story-reader-slide" aria-label={story.title} aria-hidden={i!==index} inert={i!==index} >
-
+ 
  <div className="story-widget-area" onPointerEnter={event=>{if(event.pointerType==='mouse')setHovered(true);}} onPointerLeave={()=>setHovered(false)} onPointerDownCapture={()=>{readUntil.current=performance.now()+1500;}} onFocusCapture={()=>setFocused(true)} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget))setFocused(false);}}><StoryArtwork story={story} visual={visual} name={name} active={i===index&&isOpen}/></div><div className={`story-caption-overlay ${textOpen?'is-open':''}`}>
  <button className="story-caption-toggle" aria-expanded={textOpen} onClick={()=>{setTextOpen(value=>!value);setHeld(false);setFocused(false);readUntil.current=0;}} aria-label={textOpen?'Beschreibung schließen':'Beschreibung öffnen'}>{textOpen?'Schließen':null}</button>
  <div className="story-reader-context" inert={!textOpen} aria-label="Story-Beschreibung und Quellen">
  {story.teaser&&<p className={styles.text}>{story.teaser}</p>}
+ {story.rankComparisonCopy?.map((text:string)=><p className={styles.text} key={text}>{text}</p>)}
  {story.kind!=='yield'&&<p className={styles.source}>Quelle: {!story.sources?.length&&(story.sourceCaption??'Marktstammdatenregister · eigene Auswertung')}{story.sources?.map((source:any,j:number)=><span key={source.url}>{j>0?' · ':''}<a href={source.url} target="_blank" rel="noreferrer">{source.label}</a></span>)}</p>}
  </div>
  </div></article>)}</div></div></div><footer className="story-reader-bottom"><nav className="story-reader-controls" aria-label="Story wechseln"><div className="story-reader-pagination"><button aria-label="Vorherige Story" onClick={()=>api?.scrollPrev()}><IconChevronLeft size={16}/></button><span aria-live="polite" aria-atomic="true">{index+1} von {stories.length}</span><button aria-label="Nächste Story" onClick={()=>api?.scrollNext()}><IconChevronRight size={16}/></button></div><div className="story-reader-actions"><button className="story-reader-share" aria-label="Story teilen" disabled={busy} onClick={share}><IconShare/>Teilen</button><button aria-label="Link kopieren" title="Link kopieren" onClick={copy}><IconCopy/></button><button aria-label="Story als Bild herunterladen" title="Bild herunterladen" disabled={busy} onClick={download}><IconDownload/></button></div></nav>{feedback&&<p className="story-share-status" role="status">{feedback}</p>}</footer>

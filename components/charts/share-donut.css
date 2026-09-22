@@ -1,0 +1,17 @@
+.sc-share-donut{padding:20px var(--widget-padding) var(--widget-padding);}
+.sc-share-ring{position:relative;max-width:280px;margin:auto;}
+.sc-share-ring svg{display:block;width:100%;overflow:visible;}
+.sc-share-ring circle[role=button]{cursor:pointer;transition:stroke-width .15s;}
+.sc-share-ring circle:focus-visible{outline:none;stroke:var(--widget-ink);}
+.sc-share-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
+.sc-share-center strong{font:700 32px/1.2 var(--atlas-display,inherit);}
+.sc-share-center span,.sc-share-center small{color:var(--widget-muted);font-size:13px;}
+.sc-share-center small{max-width:135px;text-align:center;margin-top:6px;font-size:11px;}
+.sc-share-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:20px;}
+.sc-share-legend button{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:16px 8px;border:1px solid transparent;background:color-mix(in srgb,var(--widget-ink) 7%,var(--widget-surface));color:var(--widget-ink);border-radius:12px;font:inherit;font-size:12px;cursor:pointer;transition:background .15s,border-color .15s;isolation:isolate;position:relative;overflow:hidden;justify-content:center;}
+.sc-share-legend button:hover,.sc-share-legend button[aria-pressed=true]{border-color:color-mix(in srgb,var(--widget-ink) 25%,transparent);background:color-mix(in srgb,var(--widget-ink) 11%,var(--widget-surface));}
+.sc-share-legend img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform:scale(1.3);filter:grayscale(1);opacity:.16;mask-image:linear-gradient(to bottom,#000 35%,transparent 100%);pointer-events:none;z-index:-1;}
+.sc-share-legend span{line-height:1.4;}
+.sc-share-legend strong{font-size:28px;line-height:1.2;white-space:nowrap;}
+.sc-share-legend small{font-size:12px;font-weight:400;color:var(--widget-muted);}
+@container(max-width:300px){.sc-share-donut{padding-inline:12px;}.sc-share-legend{gap:8px;}.sc-share-legend strong{font-size:24px;}}

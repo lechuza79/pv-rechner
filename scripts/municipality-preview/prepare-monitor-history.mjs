@@ -1,0 +1,21 @@
+import paths from './paths.cjs';
+import {readFileSync,writeFileSync} from 'node:fs';
+import path from 'node:path';
+const sourceRoot=paths.storySourceRoot;
+const register=JSON.parse(readFileSync(new URL('../../public/atlas-design-preview/current-register.json',import.meta.url)));
+const root=path.join(paths.cacheRoot,'bnetza','story-history-'+register.sourceDate);
+const solar=JSON.parse(readFileSync(path.join(root,'cities/09679147.json'))).daily;
+const storage=JSON.parse(readFileSync(path.join(root,'storage.json')));
+if(storage.sourceDate!==register.sourceDate)throw Error('Mismatching register editions');
+const batteries=storage.rows.filter(row=>row.region_id==='09679147');
+const sum=(rows,key)=>rows.reduce((total,row)=>total+row[key],0);
+if(sum(solar,'count')!==register.coverage.filter(row=>row.topic!=='batterie').reduce((total,row)=>total+row.count,0)||sum(batteries,'count')!==register.storage.find(row=>row.unit==='Einheiten').value)throw Error('History does not reconcile with current stock');
+if([...solar,...batteries].some(row=>!Number.isFinite(row.count)||row.count<0)||solar.some(row=>!Number.isFinite(row.kwp)||row.kwp<0)||batteries.some(row=>!Number.isFinite(row.kwh)||row.kwh<0))throw Error('Invalid history values');
+const [year,month]=register.sourceDate.split('-').map(Number);
+const observations=Array.from({length:25},(_,index)=>{
+ const end=new Date(Date.UTC(year,month-1-index,0)).toISOString().slice(0,10);
+ const systems=solar.filter(row=>row.day<=end),stores=batteries.filter(row=>row.month<=end.slice(0,7));
+ return {end,solarCounts:Object.fromEntries(['gebaeude','steckersolar'].map(segment=>[segment,sum(systems.filter(row=>row.segment===segment),'count')])),solarMix:['gebaeude','steckersolar'].map(segment=>({label:segment==='gebaeude'?'Gebäudeanlagen':'Balkonkraftwerke',value:sum(systems.filter(row=>row.segment===segment),'kwp')})),solarCount:sum(systems,'count'),solarKwp:sum(systems,'kwp'),solarAdditions:sum(systems.filter(row=>row.day.slice(0,4)===end.slice(0,4)),'count'),batteryCount:sum(stores,'count'),batteryKwh:sum(stores,'kwh')};
+});
+writeFileSync(new URL('./monitor-history.json',import.meta.url),JSON.stringify({sourceDate:register.sourceDate,method:'active-register-by-commissioning-date',regionId:'09679147',population:register.register.population,populationDate:register.populationDate,observations},null,2)+'\n');
+console.log('Prepared 25 reconciled monthly observations for the monitor.');
