@@ -11,7 +11,7 @@ import { mountGlobalNav } from "../public/shared-nav/nav.js";
 import "../public/shared-nav/nav.css";
 
 /** Keep the same menu on React pages and the standalone homepage. */
-export default function SharedSiteHeader() {
+export default function SharedSiteHeader({ aktiv }: { aktiv?: string } = {}) {
   const header = useRef<HTMLElement>(null);
   const pathname = usePathname();
   const auth = useAuth();
@@ -23,8 +23,8 @@ export default function SharedSiteHeader() {
   useEffect(() => {
     const node = header.current;
     if (!node) return;
-    return mountGlobalNav(node, { active: ratgeberBySlug(pathname) ? "ratgeber" : "" });
-  }, [pathname]);
+    return mountGlobalNav(node, { active: aktiv ?? (ratgeberBySlug(pathname) ? "ratgeber" : "") });
+  }, [pathname, aktiv]);
 
   // Login state only rewrites the account links; the menu itself stays.
   useEffect(() => {

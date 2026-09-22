@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { getCssVariables } from "../../lib/theme";
-import { widgetBasisCss } from "../../lib/widget-basis-css";
 
 /**
  * Root layout of the new municipality page (approved design, 09/2026).
@@ -35,6 +34,7 @@ const STYLESHEETS = [
   "/atlas-design-preview/responsive-sizing.css",
   "/atlas-design-preview/ranking.css",
   "/atlas-design-preview/delta.css",
+  "/gemeinde/seite.css",
 ];
 
 export default function GemeindeLayout({ children }: { children: React.ReactNode }) {
@@ -51,13 +51,11 @@ export default function GemeindeLayout({ children }: { children: React.ReactNode
       <head>
         <link rel="preload" href="/atlas-design-preview/fonts/montserrat-bold-0.woff2" as="font" type="font/woff2" crossOrigin="" />
         <link rel="preload" href="/atlas-design-preview/dynamic-hero/atlas-shell-0.woff2" as="font" type="font/woff2" crossOrigin="" />
-        {/* The site's colour tokens, for the parts that come from the React
-            side (subscription dialog, footer logo). Variables only — no
-            global rules, so the design's own stylesheets stay in charge. */}
-        <style dangerouslySetInnerHTML={{ __html: getCssVariables() }} />
-        {/* The widget tokens for the story strip and monitor, which render
-            inline under this class (same source as the embed layout). */}
-        <style dangerouslySetInnerHTML={{ __html: widgetBasisCss(".gemeinde-widgets", ".gemeinde-widgets") }} />
+        {/* The site's colour tokens, ONLY for the parts that come from the
+            React side (subscription dialog, footer). On :root they changed the
+            approved design: its stylesheets read several of these names with
+            a fallback (the citizen examples' green amounts came out dim). */}
+        <style dangerouslySetInnerHTML={{ __html: getCssVariables().replace(":root", '[aria-modal="true"],[data-sc-fuss]') }} />
         {STYLESHEETS.map((href) => (
           // eslint-disable-next-line @next/next/no-css-tags
           <link key={href} rel="stylesheet" href={href} precedence="default" />

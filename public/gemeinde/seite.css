@@ -1,0 +1,4 @@
+/* Additions of the app build to the approved design — nothing visible.
+   The story and ranking texts stand in the HTML for crawlers and screen
+   readers; visually the page shows the approved design's interactive views. */
+.gemeinde-nur-text{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}

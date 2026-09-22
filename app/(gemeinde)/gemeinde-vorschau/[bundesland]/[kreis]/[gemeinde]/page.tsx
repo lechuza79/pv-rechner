@@ -49,7 +49,7 @@ export default async function GemeindeVorschau(props: { params: Promise<Params> 
   const kreisfrei = istKreisfrei(region.region_id, kreis, region.name);
   const stadtstaat = istStadtstaat(region.region_id);
   const pfad = [
-    { name: "Energie-Atlas", href: "/solar-atlas" },
+    { name: "Solar-Atlas", href: "/solar-atlas" },
     // Berlin and Hamburg would otherwise name themselves three times, a
     // kreisfreie Stadt twice — the same rule as the live page.
     ...(stadtstaat ? [] : [{ name: bl?.name ?? params.bundesland, href: `/solar-atlas/${params.bundesland}` }]),

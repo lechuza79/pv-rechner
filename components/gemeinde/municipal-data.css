@@ -71,9 +71,3 @@
 .monitor-current-power .monitor-live-radial{flex:1;height:100%;}
 .monitor-live-radial>div>div{height:100%;}
 
-/* The hero card inline on the page (it used to be a frame of this height,
-   where 100vh meant the frame's height). */
-.gemeinde-kopf-monitor{--kopf-h:clamp(340px,31vw,400px);display:block;height:var(--kopf-h);border-radius:24px;overflow:hidden;color:inherit;text-decoration:none}
-@media(max-width:700px){.gemeinde-kopf-monitor{--kopf-h:clamp(340px,100vw,400px)}}
-.gemeinde-kopf-monitor .monitor-hero{height:100%}
-.gemeinde-kopf-monitor .monitor-hero .monitor-live-radial div:has(>svg[aria-label="24-Stunden-Verlauf"]){width:min(100%,calc(var(--kopf-h) - 76px))!important}

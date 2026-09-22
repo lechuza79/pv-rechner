@@ -6,8 +6,7 @@ import { DATA_SOURCES } from "../../lib/data-sources";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import GemeindeSzene from "./GemeindeSzene";
 import GemeindeSkripte from "./GemeindeSkripte";
-import { GemeindeGeschichten, GemeindeEnergiemonitor } from "./GemeindeWidgets";
-import { paketFuer } from "./paket-teile";
+import GemeindeRahmen from "./GemeindeRahmen";
 import { ranglistenDaten } from "./rangliste-daten";
 import GemeindeKopfKacheln, { type KopfRang } from "./GemeindeKopfKacheln";
 import GemeindeBeispiele from "./GemeindeBeispiele";
@@ -25,6 +24,10 @@ import SiteFuss from "../SiteFuss";
  * the homepage release, 20.09.2026).
  */
 
+/** Long German date, as the approved design writes the sources' dates. */
+const datumLang = (iso: string) =>
+  new Intl.DateTimeFormat("de-DE", { dateStyle: "long", timeZone: "UTC" }).format(new Date(iso));
+
 export type Ortsangaben = {
   name: string;
   ags: string;
@@ -41,9 +44,10 @@ export type Ortsangaben = {
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
+// The approved design's breadcrumb arrow (live-icons.js, ArrowLongRight).
 const pfeil = (
-  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="m9 6 6 6-6 6" />
+  <svg className="sc-live-icon" aria-hidden="true" focusable="false" height="16" viewBox="0 0 28 14" fill="none">
+    <path d="M1 7h25m0 0-5-5m5 5-5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -59,24 +63,27 @@ export function bestandsZahlen(p: GemeindePaket) {
   return { solarCount, solarKwp: mix.length ? solarKwp : null, batteryCount };
 }
 
-/** Badge for a distinction, from the design's badge set; none if it has none. */
-function rangBild(auszeichnung: string | undefined): string | null {
-  const platz = /^Platz ([123])$/.exec(auszeichnung ?? "");
-  if (platz) return `/atlas-design-preview/rank-badges/rank-${platz[1]}.svg`;
-  const top = /^Top (10|25|50|100)$/.exec(auszeichnung ?? "");
-  if (top) return `/atlas-design-preview/rank-badges/top-${top[1]}.svg`;
-  return null;
-}
-
 /**
- * The hero's rank tile: the town's leading distinction (the package lists
- * them best first). A town without one gets no tile — a "Platz 812" in the
- * hero would be the page's first impression.
+ * The hero's rank tile, as the approved design builds it (variant3.js): the
+ * town's place by number of solar installations among the same-size towns of
+ * its district. Where there is no district comparison (kreisfreie Stadt,
+ * Stadtstaat) it takes the town's leading distinction instead.
  */
 export function kopfRang(p: GemeindePaket): KopfRang | null {
+  const peers = p.district.peers as { region_id: string; sums: { alle: { count: number } } }[];
+  const own = peers.find((r) => r.region_id === p.ags);
+  if (peers.length >= 3 && own) {
+    const platz = 1 + peers.filter((r) => r.sums.alle.count > own.sums.alle.count).length;
+    const bild = platz === 2 ? "/atlas-design-preview/rank-badges/roof-2-no-banner.svg" : platz <= 3 ? `/gemeinde/rank-badges/roof-${platz}.webp` : null;
+    return { titel: `Platz ${platz}`, text: "Anzahl der Solaranlagen", bild };
+  }
   const r = p.rankings.find((x) => x.distinction);
   if (!r) return null;
-  return { titel: r.distinction as string, text: r.label.charAt(0).toUpperCase() + r.label.slice(1), bild: rangBild(r.distinction as string) };
+  const d = r.distinction as string;
+  const platz = /^Platz ([123])$/.exec(d)?.[1];
+  const top = /^Top (10|25|50|100)$/.exec(d)?.[1];
+  const bild = platz ? `/atlas-design-preview/rank-badges/rank-${platz}.svg` : top ? `/atlas-design-preview/rank-badges/top-${top}.svg` : null;
+  return { titel: d, text: r.label.charAt(0).toUpperCase() + r.label.slice(1), bild };
 }
 
 export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; ort: Ortsangaben }) {
@@ -112,7 +119,7 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
       >
         <section className="hero" aria-labelledby="hero-title">
           <div className="scene" aria-hidden="true" dangerouslySetInnerHTML={{ __html: HERO_SZENE_INNER_HTML }} />
-          <SharedSiteHeader />
+          <SharedSiteHeader aktiv="atlas" />
           <div className="hero-copy">
             <h1 id="hero-title" data-sc-contrast="">
               {ort.name}.<br />
@@ -140,7 +147,7 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
               <span aria-current="page">{ort.name}</span>
             </nav>
           </div>
-          <GemeindeKopfKacheln paket={paketFuer("kopf", paket)} name={ort.name} rang={kopfRang(paket)} />
+          <GemeindeKopfKacheln ags={ort.ags} name={ort.name} rang={kopfRang(paket)} />
           <GemeindeSzene plz={ort.plz} />
         </section>
 
@@ -187,18 +194,25 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             </div>
             {paket.stories.length > 0 && (
               <>
-                <GemeindeGeschichten paket={paketFuer("geschichten", paket)} name={ort.name} />
+                <GemeindeRahmen
+                  src={`/embed/gemeinde/${ort.ags}/insights`}
+                  durchreichen={["story"]}
+                  title={`Geschichten aus ${ort.name}`}
+                  nachricht="story-preview-layout"
+                  startHoehe={560}
+                  vollbild
+                />
                 {/* The stories' words, in the page for crawlers and screen
                     readers; the frame above is the interactive reader. */}
-                <details className="atlas-wrap gemeinde-rangliste-text">
-                  <summary>Alle Geschichten aus {ort.name} als Text</summary>
+                <div className="gemeinde-nur-text">
+                  <h3>Alle Geschichten aus {ort.name}</h3>
                   {(paket.stories as { id: string; title?: string; teaser?: string }[]).map((st) => (
                     <article key={st.id}>
                       <h3>{st.title}</h3>
                       {st.teaser && <p>{st.teaser}</p>}
                     </article>
                   ))}
-                </details>
+                </div>
               </>
             )}
           </section>
@@ -208,8 +222,8 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
               right after it, rendered here on the server. */}
           <section id="atlas-ranking" className="atlas-section atlas-ranking" />
           {paket.rankings.length > 0 && (
-            <details className="atlas-wrap gemeinde-rangliste-text">
-              <summary>Alle Platzierungen von {ort.name} als Liste</summary>
+            <div className="gemeinde-nur-text">
+              <h3>Alle Platzierungen von {ort.name}</h3>
               <ul>
                 {paket.rankings.map((r) => (
                   <li key={r.key}>
@@ -218,7 +232,7 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
                 ))}
               </ul>
               <p>Ranglistenstand: {formatStoryDate(paket.rangStand)}.</p>
-            </details>
+            </div>
           )}
 
           <GemeindeBeispiele name={ort.name} plz={ort.plz} lat={ort.lat} lon={ort.lon} />
@@ -242,7 +256,12 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             </div>
             <div className="atlas-wrap v3-data">
               <div className="v3-permanent-charts">
-                <GemeindeEnergiemonitor paket={paketFuer("monitor", paket)} />
+                <GemeindeRahmen
+                  src={`/embed/gemeinde/${ort.ags}/monitor`}
+                  title={`Energiedaten für ${ort.name}`}
+                  nachricht="municipal-data-layout"
+                  startHoehe={1400}
+                />
               </div>
             </div>
           </section>
@@ -327,8 +346,8 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             </p>
             <p>
               Der Datenstand steht jeweils bei den Zahlen. Die Rangliste basiert auf dem Atlas-Registerstand vom{" "}
-              {formatStoryDate(paket.rangStand)}, die Bestandsdiagramme auf dem Export vom {stand}.
-              {paket.einwohnerStand && <> Einwohnerstand: {formatStoryDate(paket.einwohnerStand)}.</>}{" "}
+              {datumLang(paket.rangStand)}, die Bestandsdiagramme auf dem Export vom {datumLang(paket.registerStand)}.
+              {paket.einwohnerStand && <> Einwohnerstand: {datumLang(paket.einwohnerStand)}.</>}{" "}
               <a href="/datenstand">Mehr zu Datenstand und Quellen</a> · <a href="/methodik">So rechnen wir</a>
             </p>
           </section>
@@ -340,7 +359,14 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
       <div hidden>
         <GemeindeAboBox name={ort.name} ags={ort.ags} />
       </div>
+      {/* The approved design's neon illustrations (the adapter swaps the
+          citizen examples' motifs) and its rank confetti, unchanged. */}
       <script src="/illustrations-motion/solar-illustrations.js" defer />
+      <script src="/illustrations-neon/solar-neon.js" defer />
+      <script src="/gemeinde/konfetti.js" defer />
+      {/* The header is complete in the server HTML; the confetti waits for
+          this mark, which the prototype's nav script set after mounting. */}
+      <script dangerouslySetInnerHTML={{ __html: 'document.querySelector(".site-header")?.setAttribute("data-nav-ready","true")' }} />
       <GemeindeSkripte daten={rangliste} />
     </div>
   );
