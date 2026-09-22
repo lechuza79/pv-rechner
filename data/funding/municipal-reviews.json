@@ -43126,5 +43126,376 @@
         "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/"
       }
     ]
+  },
+  {
+    "regionId": "15087010",
+    "name": "Ahlsdorf",
+    "checkedAt": "2026-09-22T04:24:18Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ahlsdorf gehört zur Verbandsgemeinde Mansfelder Grund-Helbra (Landkreis Mansfeld-Südharz). Die VG-Seite „Förderungen“ listet ausschließlich Förderprojekte, die die Verbandsgemeinde selbst erhalten hat (Abriss, Sanierung kommunaler Gebäude, Digitalpakt Schule); Klimaschutz- und Wärmeplanungsseite nennen nur Beratung und kommunale Vorhaben. Weder Gemeinde, Verbandsgemeinde noch Landkreis führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; ein Landesprogramm Sachsen-Anhalts gibt es dafür nicht (Stand 22.09.2026).",
+    "searches": [
+      "verwaltungsamt-helbra.de WordPress-Sitemap (358 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/waerme/speicher/klima/energie durchsucht",
+      "verwaltungsamt-helbra.de Volltextsuche: Photovoltaik, Balkonkraftwerk, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Speicher (Balkonkraftwerk, Zuschuss, Wärmepumpe: keine Treffer)",
+      "Gemeindeseite Ahlsdorf auf der VG-Website gelesen: keine eigene Gemeinde-Website verlinkt, kein Förderhinweis",
+      "mansfeldsuedharz.de Volltextsuche (Kreis): Balkonkraftwerk keine Treffer; Photovoltaik/Solar nur Denkmalgenehmigung, Regionalplanung, Masterplan, Haushalt; Zuschuss nur Sport-, Ärzte-, Wohngeld-Förderung",
+      "Katalog nach Programmen des Landkreises Mansfeld-Südharz (15087) und des Landes Sachsen-Anhalt durchsucht: keine",
+      "Websuche: Benndorf/Helbra/Klostermansfeld/Hergisdorf Zuschuss Balkonkraftwerk Solaranlage (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/foerderungen/",
+        "finding": "Im Original gelesen (22.09.2026): Liste der Förderprojekte der Verbandsgemeinde (Abriss Familienhäuser Helbra, Sanierung Neptunbad, Herrenhaus Benndorf, DigitalPakt Schule, IKT-Richtlinie, Machbarkeitsstudie Ernst-Schacht) — keine Förderung für Private."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/klimaschutz/",
+        "finding": "Klimaschutzseite: Beratung durch den Klimaschutzmanager und die Landesenergieagentur, Projekte an kommunalen Liegenschaften (LED, PV auf kommunalen Dächern, Ladestationen) — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung mit Öffentlichkeitsbeteiligung (MVV Regioplan, Verbraucherzentrale, LENA) — kein Förderprogramm."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/info/foerderung-eu-bund-land/",
+        "finding": "Seite „Förderungen von EU, Bund und Land“ ohne eigenes kommunales Programm."
+      },
+      {
+        "url": "https://www.mansfeldsuedharz.de/suche?id=78&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis-Volltextsuche 22.09.2026: Balkonkraftwerk keine Treffer; Photovoltaik (10 Treffer) nur Pressemitteilungen zu Denkmal-Genehmigungspraxis, Regionalplanung, Masterplan Strukturwandel, Haushalt — kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte, die die Verbandsgemeinde erhalten hat — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      },
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen/?s=",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Seite mit leerem Suchparameter — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      }
+    ]
+  },
+  {
+    "regionId": "15087045",
+    "name": "Benndorf",
+    "checkedAt": "2026-09-22T04:24:18Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Benndorf gehört zur Verbandsgemeinde Mansfelder Grund-Helbra (Landkreis Mansfeld-Südharz). Die VG-Seite „Förderungen“ listet ausschließlich Förderprojekte, die die Verbandsgemeinde selbst erhalten hat (Abriss, Sanierung kommunaler Gebäude, Digitalpakt Schule); Klimaschutz- und Wärmeplanungsseite nennen nur Beratung und kommunale Vorhaben. Benndorf ist als eea-Kommune aktiv (Nahwärme, PV auf der Bergarbeitersiedlung), fördert aber keine privaten Anlagen. Weder Gemeinde, Verbandsgemeinde noch Landkreis führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; ein Landesprogramm Sachsen-Anhalts gibt es dafür nicht (Stand 22.09.2026).",
+    "searches": [
+      "verwaltungsamt-helbra.de WordPress-Sitemap (358 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/waerme/speicher/klima/energie durchsucht",
+      "verwaltungsamt-helbra.de Volltextsuche: Photovoltaik, Balkonkraftwerk, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Speicher (Balkonkraftwerk, Zuschuss, Wärmepumpe: keine Treffer)",
+      "Gemeindeseite Benndorf auf der VG-Website gelesen: keine eigene Gemeinde-Website verlinkt, kein Förderhinweis",
+      "mansfeldsuedharz.de Volltextsuche (Kreis): Balkonkraftwerk keine Treffer; Photovoltaik/Solar nur Denkmalgenehmigung, Regionalplanung, Masterplan, Haushalt; Zuschuss nur Sport-, Ärzte-, Wohngeld-Förderung",
+      "Katalog nach Programmen des Landkreises Mansfeld-Südharz (15087) und des Landes Sachsen-Anhalt durchsucht: keine",
+      "Websuche: Benndorf/Helbra/Klostermansfeld/Hergisdorf Zuschuss Balkonkraftwerk Solaranlage (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/foerderungen/",
+        "finding": "Im Original gelesen (22.09.2026): Liste der Förderprojekte der Verbandsgemeinde (Abriss Familienhäuser Helbra, Sanierung Neptunbad, Herrenhaus Benndorf, DigitalPakt Schule, IKT-Richtlinie, Machbarkeitsstudie Ernst-Schacht) — keine Förderung für Private."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/klimaschutz/",
+        "finding": "Klimaschutzseite: Beratung durch den Klimaschutzmanager und die Landesenergieagentur, Projekte an kommunalen Liegenschaften (LED, PV auf kommunalen Dächern, Ladestationen) — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung mit Öffentlichkeitsbeteiligung (MVV Regioplan, Verbraucherzentrale, LENA) — kein Förderprogramm."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/info/foerderung-eu-bund-land/",
+        "finding": "Seite „Förderungen von EU, Bund und Land“ ohne eigenes kommunales Programm."
+      },
+      {
+        "url": "https://www.mansfeldsuedharz.de/suche?id=78&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis-Volltextsuche 22.09.2026: Balkonkraftwerk keine Treffer; Photovoltaik (10 Treffer) nur Pressemitteilungen zu Denkmal-Genehmigungspraxis, Regionalplanung, Masterplan Strukturwandel, Haushalt — kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte, die die Verbandsgemeinde erhalten hat — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      },
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen/?s=",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Seite mit leerem Suchparameter — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      }
+    ]
+  },
+  {
+    "regionId": "15087070",
+    "name": "Blankenheim",
+    "checkedAt": "2026-09-22T04:24:18Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Blankenheim gehört zur Verbandsgemeinde Mansfelder Grund-Helbra (Landkreis Mansfeld-Südharz). Die VG-Seite „Förderungen“ listet ausschließlich Förderprojekte, die die Verbandsgemeinde selbst erhalten hat (Abriss, Sanierung kommunaler Gebäude, Digitalpakt Schule); Klimaschutz- und Wärmeplanungsseite nennen nur Beratung und kommunale Vorhaben. Weder Gemeinde, Verbandsgemeinde noch Landkreis führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; ein Landesprogramm Sachsen-Anhalts gibt es dafür nicht (Stand 22.09.2026).",
+    "searches": [
+      "verwaltungsamt-helbra.de WordPress-Sitemap (358 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/waerme/speicher/klima/energie durchsucht",
+      "verwaltungsamt-helbra.de Volltextsuche: Photovoltaik, Balkonkraftwerk, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Speicher (Balkonkraftwerk, Zuschuss, Wärmepumpe: keine Treffer)",
+      "Gemeindeseite Blankenheim auf der VG-Website gelesen: keine eigene Gemeinde-Website verlinkt, kein Förderhinweis",
+      "mansfeldsuedharz.de Volltextsuche (Kreis): Balkonkraftwerk keine Treffer; Photovoltaik/Solar nur Denkmalgenehmigung, Regionalplanung, Masterplan, Haushalt; Zuschuss nur Sport-, Ärzte-, Wohngeld-Förderung",
+      "Katalog nach Programmen des Landkreises Mansfeld-Südharz (15087) und des Landes Sachsen-Anhalt durchsucht: keine",
+      "Websuche: Benndorf/Helbra/Klostermansfeld/Hergisdorf Zuschuss Balkonkraftwerk Solaranlage (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/foerderungen/",
+        "finding": "Im Original gelesen (22.09.2026): Liste der Förderprojekte der Verbandsgemeinde (Abriss Familienhäuser Helbra, Sanierung Neptunbad, Herrenhaus Benndorf, DigitalPakt Schule, IKT-Richtlinie, Machbarkeitsstudie Ernst-Schacht) — keine Förderung für Private."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/klimaschutz/",
+        "finding": "Klimaschutzseite: Beratung durch den Klimaschutzmanager und die Landesenergieagentur, Projekte an kommunalen Liegenschaften (LED, PV auf kommunalen Dächern, Ladestationen) — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung mit Öffentlichkeitsbeteiligung (MVV Regioplan, Verbraucherzentrale, LENA) — kein Förderprogramm."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/info/foerderung-eu-bund-land/",
+        "finding": "Seite „Förderungen von EU, Bund und Land“ ohne eigenes kommunales Programm."
+      },
+      {
+        "url": "https://www.mansfeldsuedharz.de/suche?id=78&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis-Volltextsuche 22.09.2026: Balkonkraftwerk keine Treffer; Photovoltaik (10 Treffer) nur Pressemitteilungen zu Denkmal-Genehmigungspraxis, Regionalplanung, Masterplan Strukturwandel, Haushalt — kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte, die die Verbandsgemeinde erhalten hat — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      },
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen/?s=",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Seite mit leerem Suchparameter — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      }
+    ]
+  },
+  {
+    "regionId": "15087075",
+    "name": "Bornstedt",
+    "checkedAt": "2026-09-22T04:24:18Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bornstedt gehört zur Verbandsgemeinde Mansfelder Grund-Helbra (Landkreis Mansfeld-Südharz). Die VG-Seite „Förderungen“ listet ausschließlich Förderprojekte, die die Verbandsgemeinde selbst erhalten hat (Abriss, Sanierung kommunaler Gebäude, Digitalpakt Schule); Klimaschutz- und Wärmeplanungsseite nennen nur Beratung und kommunale Vorhaben. Weder Gemeinde, Verbandsgemeinde noch Landkreis führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; ein Landesprogramm Sachsen-Anhalts gibt es dafür nicht (Stand 22.09.2026).",
+    "searches": [
+      "verwaltungsamt-helbra.de WordPress-Sitemap (358 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/waerme/speicher/klima/energie durchsucht",
+      "verwaltungsamt-helbra.de Volltextsuche: Photovoltaik, Balkonkraftwerk, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Speicher (Balkonkraftwerk, Zuschuss, Wärmepumpe: keine Treffer)",
+      "Gemeindeseite Bornstedt auf der VG-Website gelesen: keine eigene Gemeinde-Website verlinkt, kein Förderhinweis",
+      "mansfeldsuedharz.de Volltextsuche (Kreis): Balkonkraftwerk keine Treffer; Photovoltaik/Solar nur Denkmalgenehmigung, Regionalplanung, Masterplan, Haushalt; Zuschuss nur Sport-, Ärzte-, Wohngeld-Förderung",
+      "Katalog nach Programmen des Landkreises Mansfeld-Südharz (15087) und des Landes Sachsen-Anhalt durchsucht: keine",
+      "Websuche: Benndorf/Helbra/Klostermansfeld/Hergisdorf Zuschuss Balkonkraftwerk Solaranlage (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/foerderungen/",
+        "finding": "Im Original gelesen (22.09.2026): Liste der Förderprojekte der Verbandsgemeinde (Abriss Familienhäuser Helbra, Sanierung Neptunbad, Herrenhaus Benndorf, DigitalPakt Schule, IKT-Richtlinie, Machbarkeitsstudie Ernst-Schacht) — keine Förderung für Private."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/klimaschutz/",
+        "finding": "Klimaschutzseite: Beratung durch den Klimaschutzmanager und die Landesenergieagentur, Projekte an kommunalen Liegenschaften (LED, PV auf kommunalen Dächern, Ladestationen) — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung mit Öffentlichkeitsbeteiligung (MVV Regioplan, Verbraucherzentrale, LENA) — kein Förderprogramm."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/info/foerderung-eu-bund-land/",
+        "finding": "Seite „Förderungen von EU, Bund und Land“ ohne eigenes kommunales Programm."
+      },
+      {
+        "url": "https://www.mansfeldsuedharz.de/suche?id=78&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis-Volltextsuche 22.09.2026: Balkonkraftwerk keine Treffer; Photovoltaik (10 Treffer) nur Pressemitteilungen zu Denkmal-Genehmigungspraxis, Regionalplanung, Masterplan Strukturwandel, Haushalt — kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte, die die Verbandsgemeinde erhalten hat — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      },
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen/?s=",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Seite mit leerem Suchparameter — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      }
+    ]
+  },
+  {
+    "regionId": "15087205",
+    "name": "Helbra",
+    "checkedAt": "2026-09-22T04:24:18Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Helbra gehört zur Verbandsgemeinde Mansfelder Grund-Helbra (Landkreis Mansfeld-Südharz). Die VG-Seite „Förderungen“ listet ausschließlich Förderprojekte, die die Verbandsgemeinde selbst erhalten hat (Abriss, Sanierung kommunaler Gebäude, Digitalpakt Schule); Klimaschutz- und Wärmeplanungsseite nennen nur Beratung und kommunale Vorhaben. Weder Gemeinde, Verbandsgemeinde noch Landkreis führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; ein Landesprogramm Sachsen-Anhalts gibt es dafür nicht (Stand 22.09.2026).",
+    "searches": [
+      "verwaltungsamt-helbra.de WordPress-Sitemap (358 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/waerme/speicher/klima/energie durchsucht",
+      "verwaltungsamt-helbra.de Volltextsuche: Photovoltaik, Balkonkraftwerk, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Speicher (Balkonkraftwerk, Zuschuss, Wärmepumpe: keine Treffer)",
+      "Gemeindeseite Helbra auf der VG-Website gelesen: keine eigene Gemeinde-Website verlinkt, kein Förderhinweis",
+      "mansfeldsuedharz.de Volltextsuche (Kreis): Balkonkraftwerk keine Treffer; Photovoltaik/Solar nur Denkmalgenehmigung, Regionalplanung, Masterplan, Haushalt; Zuschuss nur Sport-, Ärzte-, Wohngeld-Förderung",
+      "Katalog nach Programmen des Landkreises Mansfeld-Südharz (15087) und des Landes Sachsen-Anhalt durchsucht: keine",
+      "Websuche: Benndorf/Helbra/Klostermansfeld/Hergisdorf Zuschuss Balkonkraftwerk Solaranlage (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/foerderungen/",
+        "finding": "Im Original gelesen (22.09.2026): Liste der Förderprojekte der Verbandsgemeinde (Abriss Familienhäuser Helbra, Sanierung Neptunbad, Herrenhaus Benndorf, DigitalPakt Schule, IKT-Richtlinie, Machbarkeitsstudie Ernst-Schacht) — keine Förderung für Private."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/klimaschutz/",
+        "finding": "Klimaschutzseite: Beratung durch den Klimaschutzmanager und die Landesenergieagentur, Projekte an kommunalen Liegenschaften (LED, PV auf kommunalen Dächern, Ladestationen) — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung mit Öffentlichkeitsbeteiligung (MVV Regioplan, Verbraucherzentrale, LENA) — kein Förderprogramm."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/info/foerderung-eu-bund-land/",
+        "finding": "Seite „Förderungen von EU, Bund und Land“ ohne eigenes kommunales Programm."
+      },
+      {
+        "url": "https://www.mansfeldsuedharz.de/suche?id=78&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis-Volltextsuche 22.09.2026: Balkonkraftwerk keine Treffer; Photovoltaik (10 Treffer) nur Pressemitteilungen zu Denkmal-Genehmigungspraxis, Regionalplanung, Masterplan Strukturwandel, Haushalt — kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte, die die Verbandsgemeinde erhalten hat — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      },
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen/?s=",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Seite mit leerem Suchparameter — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      }
+    ]
+  },
+  {
+    "regionId": "15087210",
+    "name": "Hergisdorf",
+    "checkedAt": "2026-09-22T04:24:18Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hergisdorf gehört zur Verbandsgemeinde Mansfelder Grund-Helbra (Landkreis Mansfeld-Südharz). Die VG-Seite „Förderungen“ listet ausschließlich Förderprojekte, die die Verbandsgemeinde selbst erhalten hat (Abriss, Sanierung kommunaler Gebäude, Digitalpakt Schule); Klimaschutz- und Wärmeplanungsseite nennen nur Beratung und kommunale Vorhaben. Weder Gemeinde, Verbandsgemeinde noch Landkreis führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; ein Landesprogramm Sachsen-Anhalts gibt es dafür nicht (Stand 22.09.2026).",
+    "searches": [
+      "verwaltungsamt-helbra.de WordPress-Sitemap (358 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/waerme/speicher/klima/energie durchsucht",
+      "verwaltungsamt-helbra.de Volltextsuche: Photovoltaik, Balkonkraftwerk, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Speicher (Balkonkraftwerk, Zuschuss, Wärmepumpe: keine Treffer)",
+      "Gemeindeseite Hergisdorf auf der VG-Website gelesen: keine eigene Gemeinde-Website verlinkt, kein Förderhinweis",
+      "mansfeldsuedharz.de Volltextsuche (Kreis): Balkonkraftwerk keine Treffer; Photovoltaik/Solar nur Denkmalgenehmigung, Regionalplanung, Masterplan, Haushalt; Zuschuss nur Sport-, Ärzte-, Wohngeld-Förderung",
+      "Katalog nach Programmen des Landkreises Mansfeld-Südharz (15087) und des Landes Sachsen-Anhalt durchsucht: keine",
+      "Websuche: Benndorf/Helbra/Klostermansfeld/Hergisdorf Zuschuss Balkonkraftwerk Solaranlage (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/foerderungen/",
+        "finding": "Im Original gelesen (22.09.2026): Liste der Förderprojekte der Verbandsgemeinde (Abriss Familienhäuser Helbra, Sanierung Neptunbad, Herrenhaus Benndorf, DigitalPakt Schule, IKT-Richtlinie, Machbarkeitsstudie Ernst-Schacht) — keine Förderung für Private."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/klimaschutz/",
+        "finding": "Klimaschutzseite: Beratung durch den Klimaschutzmanager und die Landesenergieagentur, Projekte an kommunalen Liegenschaften (LED, PV auf kommunalen Dächern, Ladestationen) — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung mit Öffentlichkeitsbeteiligung (MVV Regioplan, Verbraucherzentrale, LENA) — kein Förderprogramm."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/info/foerderung-eu-bund-land/",
+        "finding": "Seite „Förderungen von EU, Bund und Land“ ohne eigenes kommunales Programm."
+      },
+      {
+        "url": "https://www.mansfeldsuedharz.de/suche?id=78&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis-Volltextsuche 22.09.2026: Balkonkraftwerk keine Treffer; Photovoltaik (10 Treffer) nur Pressemitteilungen zu Denkmal-Genehmigungspraxis, Regionalplanung, Masterplan Strukturwandel, Haushalt — kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte, die die Verbandsgemeinde erhalten hat — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      },
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen/?s=",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Seite mit leerem Suchparameter — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      }
+    ]
+  },
+  {
+    "regionId": "15087260",
+    "name": "Klostermansfeld",
+    "checkedAt": "2026-09-22T04:24:18Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Klostermansfeld gehört zur Verbandsgemeinde Mansfelder Grund-Helbra (Landkreis Mansfeld-Südharz). Die VG-Seite „Förderungen“ listet ausschließlich Förderprojekte, die die Verbandsgemeinde selbst erhalten hat (Abriss, Sanierung kommunaler Gebäude, Digitalpakt Schule); Klimaschutz- und Wärmeplanungsseite nennen nur Beratung und kommunale Vorhaben. Weder Gemeinde, Verbandsgemeinde noch Landkreis führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; ein Landesprogramm Sachsen-Anhalts gibt es dafür nicht (Stand 22.09.2026).",
+    "searches": [
+      "verwaltungsamt-helbra.de WordPress-Sitemap (358 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/waerme/speicher/klima/energie durchsucht",
+      "verwaltungsamt-helbra.de Volltextsuche: Photovoltaik, Balkonkraftwerk, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Speicher (Balkonkraftwerk, Zuschuss, Wärmepumpe: keine Treffer)",
+      "Gemeindeseite Klostermansfeld auf der VG-Website gelesen: keine eigene Gemeinde-Website verlinkt, kein Förderhinweis",
+      "mansfeldsuedharz.de Volltextsuche (Kreis): Balkonkraftwerk keine Treffer; Photovoltaik/Solar nur Denkmalgenehmigung, Regionalplanung, Masterplan, Haushalt; Zuschuss nur Sport-, Ärzte-, Wohngeld-Förderung",
+      "Katalog nach Programmen des Landkreises Mansfeld-Südharz (15087) und des Landes Sachsen-Anhalt durchsucht: keine",
+      "Websuche: Benndorf/Helbra/Klostermansfeld/Hergisdorf Zuschuss Balkonkraftwerk Solaranlage (nur überregionale Ratgeber)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/foerderungen/",
+        "finding": "Im Original gelesen (22.09.2026): Liste der Förderprojekte der Verbandsgemeinde (Abriss Familienhäuser Helbra, Sanierung Neptunbad, Herrenhaus Benndorf, DigitalPakt Schule, IKT-Richtlinie, Machbarkeitsstudie Ernst-Schacht) — keine Förderung für Private."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/klimaschutz/",
+        "finding": "Klimaschutzseite: Beratung durch den Klimaschutzmanager und die Landesenergieagentur, Projekte an kommunalen Liegenschaften (LED, PV auf kommunalen Dächern, Ladestationen) — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung mit Öffentlichkeitsbeteiligung (MVV Regioplan, Verbraucherzentrale, LENA) — kein Förderprogramm."
+      },
+      {
+        "url": "https://www.verwaltungsamt-helbra.de/info/foerderung-eu-bund-land/",
+        "finding": "Seite „Förderungen von EU, Bund und Land“ ohne eigenes kommunales Programm."
+      },
+      {
+        "url": "https://www.mansfeldsuedharz.de/suche?id=78&tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "Kreis-Volltextsuche 22.09.2026: Balkonkraftwerk keine Treffer; Photovoltaik (10 Treffer) nur Pressemitteilungen zu Denkmal-Genehmigungspraxis, Regionalplanung, Masterplan Strukturwandel, Haushalt — kein Kreisprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Liste der Förderprojekte, die die Verbandsgemeinde erhalten hat — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      },
+      {
+        "url": "verwaltungsamt-helbra.de/foerderungen/?s=",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Seite mit leerem Suchparameter — keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
+      }
+    ]
   }
 ]
