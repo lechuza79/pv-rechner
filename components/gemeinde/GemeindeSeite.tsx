@@ -5,6 +5,8 @@ import { formatStoryDate } from "../../lib/story-format";
 import { DATA_SOURCES } from "../../lib/data-sources";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import GemeindeSzene from "./GemeindeSzene";
+import GemeindeSkripte from "./GemeindeSkripte";
+import { ranglistenDaten } from "./rangliste-daten";
 
 /**
  * The new municipality page (approved design, 09/2026), server-rendered.
@@ -25,7 +27,12 @@ export type Ortsangaben = {
   /** Breadcrumb parents, outermost first. */
   pfad: { name: string; href: string }[];
   liveUrl: string;
+  landName: string;
+  /** Prefix of district town pages, for the ranking's links. */
+  kreisBase: string;
 };
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
 const pfeil = (
   <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -49,6 +56,14 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
   const z = bestandsZahlen(paket);
   const stand = formatStoryDate(paket.registerStand);
   const quellen = DATA_SOURCES;
+  const rangliste = ranglistenDaten(paket, {
+    name: ort.name,
+    ags: ort.ags,
+    landName: ort.landName,
+    kreisBase: ort.kreisBase,
+    liveUrlAbsolut: `${BASE_URL}${ort.liveUrl}`,
+    widgetUrl: `${BASE_URL}/energie-widgets?ags=${ort.ags}&name=${encodeURIComponent(ort.name)}#gemeinde-solar`,
+  });
 
   return (
     <div id="root">
@@ -100,6 +115,11 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             <a href="#atlas-stories">Insights</a>
             <a href="#atlas-ranking">Ranking</a>
             <a href="#atlas-data">Energiemonitor</a>
+            <div className="atlas-page-actions">
+              <button type="button" data-page-copy aria-label="Link zur Seite kopieren" title="Link kopieren" />
+              <button type="button" data-page-share aria-label="Seite teilen" title="Seite teilen" />
+              <span className="atlas-page-status" role="status" />
+            </div>
           </nav>
 
           <section className="v3-intro atlas-wrap">
@@ -125,6 +145,24 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
               </div>
             </div>
           </section>
+
+          {/* Built by public/gemeinde/rangliste.js (the approved interactive
+              ranking). Its content for crawlers and screen readers is the list
+              right after it, rendered here on the server. */}
+          <section id="atlas-ranking" className="atlas-section atlas-ranking" />
+          {paket.rankings.length > 0 && (
+            <details className="atlas-wrap gemeinde-rangliste-text">
+              <summary>Alle Platzierungen von {ort.name} als Liste</summary>
+              <ul>
+                {paket.rankings.map((r) => (
+                  <li key={r.key}>
+                    {r.label} · {r.scope}: Platz {r.rank.toLocaleString("de-DE")} von {r.size.toLocaleString("de-DE")}
+                  </li>
+                ))}
+              </ul>
+              <p>Ranglistenstand: {formatStoryDate(paket.rangStand)}.</p>
+            </details>
+          )}
 
           <section id="atlas-sources" className="atlas-wrap atlas-sources" aria-labelledby="atlas-sources-title">
             <h2 id="atlas-sources-title">Daten &amp; Quellen</h2>
@@ -157,6 +195,7 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
         </main>
       </div>
       <GemeindeSzene plz={ort.plz} />
+      <GemeindeSkripte daten={rangliste} />
     </div>
   );
 }

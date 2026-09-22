@@ -1,4 +1,5 @@
 import 'server-only';
+import { requireLocalStoryDesignEnvironment } from './story-design-local';
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, writeFile, readFile, link, unlink } from 'node:fs/promises';
 import path from 'node:path';
@@ -49,6 +50,7 @@ const errorCode = (error: unknown) => (error as NodeJS.ErrnoException).code;
 
 /** Local immutable drafts only: this store grants no publication or editorial approval. */
 export async function writeStoryDesignSnapshot(snapshot: StoryDesignSnapshot, directory = defaultDirectory()): Promise<{ id: string; snapshot: StoryDesignSnapshot }> {
+  requireLocalStoryDesignEnvironment();
   validate(snapshot);
   const content = canonical(snapshot);
   const id = digest(content);
@@ -71,6 +73,7 @@ export async function writeStoryDesignSnapshot(snapshot: StoryDesignSnapshot, di
 }
 
 export async function readStoryDesignSnapshot(id: string, directory = defaultDirectory()): Promise<StoryDesignSnapshot | null> {
+  requireLocalStoryDesignEnvironment();
   if (!identifier.test(id)) throw new Error('Invalid story snapshot identifier');
   let content: string;
   try {

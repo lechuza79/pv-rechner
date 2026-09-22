@@ -65,6 +65,8 @@ export default async function GemeindeVorschau(props: { params: Promise<Params> 
         lon: geo && Number.isFinite(geo.lon) ? geo.lon : null,
         pfad,
         liveUrl: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
+        landName: bl?.name ?? params.bundesland,
+        kreisBase: `/solar-atlas/${params.bundesland}/${params.kreis}/`,
       }}
     />
   );

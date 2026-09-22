@@ -918,7 +918,13 @@ async function getGruppenGroesseUncached(opts: {
         p_owner: opts.owner,
         p_limit: RANG_LIMIT,
         p_min_pop: opts.minPop ?? 0,
-        p_max_pop: opts.maxPop ?? null,
+        // A count-only call goes out as HEAD, with the arguments in the query
+        // string: `null` arrives as the text "null", the int cast fails, and a
+        // HEAD answer has no body — so the error came back EMPTY and every
+        // class without an upper bound (Großstädte) failed with 500
+        // (measured 22.09.2026 on production). Without an upper bound the
+        // argument is left out; the function's default is NULL.
+        ...(opts.maxPop != null ? { p_max_pop: opts.maxPop } : {}),
       },
       { count: "exact", head: true },
     ),

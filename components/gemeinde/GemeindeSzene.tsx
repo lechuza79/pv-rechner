@@ -17,8 +17,14 @@ declare global {
   }
 }
 
+// The scene mounts once per document; a second module run (React's
+// development double effect) would build a second stage.
+let gestartet = false;
+
 export default function GemeindeSzene({ plz }: { plz: string | null }) {
   useEffect(() => {
+    if (gestartet) return;
+    gestartet = true;
     let pending: Promise<unknown> | null = null;
     let started = 0;
     window.atlasWeather = {
@@ -45,7 +51,6 @@ export default function GemeindeSzene({ plz }: { plz: string | null }) {
     script.type = "module";
     script.src = "/hero-system/dist/municipality.js";
     document.body.append(script);
-    return () => script.remove();
   }, [plz]);
   return null;
 }
