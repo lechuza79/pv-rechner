@@ -24,6 +24,14 @@ function pruefe(html: string, url: string, website: string, scope: ScopeRegeln =
 }
 
 describe("Kontaktsuche für einen anderen Bestand", () => {
+  it("nimmt eine verwandte Firmendomain nur, wenn der Bestand es erlaubt", () => {
+    const html = `<main><h1>Impressum</h1><p>Christian Spatz Bedachungen <a href="mailto:info@christian-spatz-bedachungen.de">info@christian-spatz-bedachungen.de</a></p></main>`;
+    const url = "https://www.spatz-bedachungen.com/impressum/";
+    const ohne = pruefe(html, url, "https://www.spatz-bedachungen.com/");
+    expect(ohne.find(b => b.email === "info@christian-spatz-bedachungen.de")?.reasons).toContain("mailbox-foreign-domain");
+    const mit = pruefe(html, url, "https://www.spatz-bedachungen.com/", { ...SCOPE, verwandteDomain: (d, o) => d.includes(o.split(".")[0]) });
+    expect(mit.find(b => b.email === "info@christian-spatz-bedachungen.de")?.reasons).not.toContain("mailbox-foreign-domain");
+  });
   it("nimmt ein Gratis-Postfach aus dem eigenen Impressum nur, wenn der Bestand es erlaubt", () => {
     const html = `<main><h1>Impressum</h1><p>Inhaber Alex Muster <a href="mailto:alex.muster@web.de">alex.muster@web.de</a></p></main>`;
     const url = "https://www.muster-solar.de/impressum/";

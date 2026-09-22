@@ -175,6 +175,13 @@ export type ScopeRegeln = {
    * day). Left unset for administrations.
    */
   gratisPostfachAuf?: (pfad: string) => boolean;
+  /**
+   * A mail domain that is the same organisation under another spelling
+   * ("spatz-bedachungen.com" writing from "christian-spatz-bedachungen.de").
+   * Only mailboxes found on the own site are considered. Left unset for
+   * administrations, whose related domains follow the association rules.
+   */
+  verwandteDomain?: (mailDomain: string, ownDomain: string) => boolean;
 };
 
 export function applyScope(evidence: Evidence[], titles: Map<string, string>, o: Organisation, verbund: Verbund | null, r: ScopeRegeln): Evidence[] {
@@ -198,6 +205,7 @@ export function applyScope(evidence: Evidence[], titles: Map<string, string>, o:
   const company = (d: string) => r.eigenbetrieb.test(fold(d));
   const institutional = new Set([...perDomain].filter(([d, set]) => !otherAuthority(d) && !company(d) && (set.size >= 3
     || ownVariant(d)
+    || !!r.verwandteDomain?.(d, own)
     || tokens.some(w => fold(d).includes(w)))).map(([d]) => d));
   return evidence.map(e => {
     const site = siteOf(host(e.url));

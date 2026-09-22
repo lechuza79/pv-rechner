@@ -10,6 +10,7 @@
  *   --mode=evaluate   offline über bereits geholte Seiten
  *   --mode=research   begrenzte Abrufe je Betrieb (Standard-Budget 8)
  *   --mode=summary    Zahlen und Alt/Neu-Vergleich über alle Ergebnisse
+ *   --mode=browser    zweiter Durchgang mit echtem Browser für Betriebe ohne Kontakt
  *   --mode=apply      belegte Kontakte eintragen (--schreiben); ohne den Schalter nur zählen
  *
  * Gemeinsam: --ids=A,B | --stichprobe=N (je N mit und ohne bekannte Adresse)
@@ -28,6 +29,7 @@ import {
   type Bestand, type Eintrag, type Ergebnis,
 } from "./lib/kontakt-lauf";
 import { MAIN_CHECKOUT, extractionVersion, rulesVersion } from "./lib/contact-v2-config";
+import { browserSchliessen, rendern } from "./lib/kontakt-browser";
 
 const arg = (name: string) => process.argv.find(a => a.startsWith(`--${name}=`))?.slice(name.length + 3);
 const OUT = resolve(arg("out") ?? resolve(MAIN_CHECKOUT, "scripts/.cache/fachbetriebe-kontakte"));
@@ -65,9 +67,24 @@ const FACHBETRIEB_SCOPE: ScopeRegeln = {
   fremdeBehoerde: /agentur|seo|marketing|webdesign|media|hosting|ionos|jimdo|wix|kammer|innung/,
   eigenbetrieb: /shop|store|karriere|jobs/,
   namensvarianten: /solar|elektro|energie|technik|gmbh|haustechnik|pv/,
-  // Kleine Betriebe veröffentlichen ihr web.de- oder t-online-Postfach im Impressum.
-  gratisPostfachAuf: (pfad: string) => /(?:^|\/)(?:impressum|imprint|kontakt|contact)(?:-\d+)?(?:\.html?|\.php)?\/?$/i.test(pfad),
+  // Kleine Betriebe veröffentlichen ihr web.de- oder t-online-Postfach im
+  // Impressum, oft auch nur auf der Startseite oder unter „Über uns".
+  gratisPostfachAuf: () => true,
+  verwandteDomain: (mailDomain: string, ownDomain: string) => {
+    const eigen = new Set(unterscheidendeWoerter(ownDomain));
+    return unterscheidendeWoerter(mailDomain).some(w => eigen.has(w));
+  },
 };
+
+/**
+ * The distinctive words of a domain: without the ending and without the words
+ * every solar business carries — "solar" shared by two domains says nothing.
+ */
+export function unterscheidendeWoerter(domain: string): string[] {
+  const allgemein = /^(?:solar|solaris|elektro|elektrotechnik|energie|energy|technik|tech|photovoltaik|pv|service|gmbh|haustechnik|team|info|online|dach|bau|systeme|system|group|gruppe|energietechnik|anlagen|solaranlagen|sonne|strom|power|home|smart|green|mail)$/;
+  return domain.toLowerCase().split(".").slice(0, -1).join("-").split(/[^a-zäöüß]+/)
+    .filter(w => w.length >= 4 && !allgemein.test(w));
+}
 
 type Zeile = { domain: string; firmenname: string | null; email: string | null; impressum_url: string | null; kontakt_url: string | null };
 
@@ -211,6 +228,19 @@ async function main() {
   }
   const parts = Number(arg("parts") ?? 1), part = Number(arg("part") ?? 0);
   rows = rows.filter((_, i) => i % parts === part);
+  if (mode === "browser") {
+    // Only entries the plain fetch left without any contact.
+    rows = rows.filter(e => !kontaktFuer(bewerten(bestand, e)));
+    console.log(`${rows.length} Betriebe ohne Kontakt · Browser-Durchgang`);
+    try {
+      for (const e of rows) {
+        const r = await rendern(bestand, e);
+        const neu = kontaktFuer(bewerten(bestand, e));
+        console.log(e.id, JSON.stringify({ gelesen: r.gelesen.length, fehler: r.fehler, kontakt: neu }));
+      }
+    } finally { await browserSchliessen(); }
+    return;
+  }
   console.log(`${rows.length} Betriebe · Modus ${mode}`);
   await laufen(bestand, rows, async e => {
     const r = mode === "research" ? await recherchieren(bestand, e, BUDGET) : bewerten(bestand, e);
