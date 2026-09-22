@@ -115,7 +115,18 @@ export const CO2_PRICE: Co2PriceConfig = {
   // ersten Durchgangs, kein Beschluss. Nicht in einen sichtbaren Text übernommen:
   // Der Bundesrat nennt seine Liste selbst „Entwurf Tagesordnung", sie kann sich
   // bis zur Sitzung ändern.
-  geprueftIso: "2026-09-10",
+  // 23.09.2026: erstmals in der TAGESORDNUNG der Sitzungswoche selbst gefunden.
+  // „Tagesordnung komplett (95.–97. Sitzung)", amtliches PDF des Bundestages,
+  // Donnerstag TOP 32: „Erste Beratung des von der Bundesregierung eingebrachten
+  // Entwurfs eines Dritten Gesetzes zur Änderung des
+  // Brennstoffemissionshandelsgesetzes", Drucksache 21/7869, 20 Minuten,
+  // Überweisungsvorschlag an den Ausschuss für Umwelt, Klimaschutz, Naturschutz
+  // und nukleare Sicherheit (federführend). Damit ist der Termin amtlich, an dem
+  // der Entwurf seine erste Lesung bekommt — eine erste Beratung mit Überweisung
+  // ist KEIN Beschluss, der Entwurf geht danach in den Ausschuss. Zustand
+  // unverändert: Regierungsentwurf, eingebracht; 2027 bleibt damit die
+  // Korridor-Decke aus dem Entwurf, nicht geltendes Recht.
+  geprueftIso: "2026-09-23",
   // Bewusst VOR dem erwarteten Bundestagsbeschluss (Herbst 2026): Ein Satz, der
   // "Bundestag steht aus" sagt, wird am Tag des Beschlusses von selbst falsch.
   reviewBy: "2026-11-30",

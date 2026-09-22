@@ -48121,5 +48121,605 @@
         "evidenceUrl": "https://www.gerzen.de/aktuelle-foerdermoeglichkeiten-im-ueberblick"
       }
     ]
+  },
+  {
+    "regionId": "03459001",
+    "name": "Alfhausen",
+    "checkedAt": "2026-09-22T22:25:15Z",
+    "recheckAt": "2026-12-22T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene; Bundes- und Landesprogramme nicht Gegenstand.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Kaufzuschuss für unsere Technik. Die Förderseite der Samtgemeinde Bersenbrück führt ausschließlich das Sofortprogramm „Perspektive Innenstadt“ — EFRE-Mittel über die NBank für innerstädtische Maßnahmen der Kommune selbst, nicht für private Haushalte. Die übrigen sieben erfassten Quellen sind Nachrichtenmeldungen über fremde Programme (Bundesförderung Ladeinfrastruktur, DSEE-Ehrenamt, Landschaftsverband Osnabrücker Land für Kultur, ZILE und Dorfentwicklung AnKe für Plätze und Schulhof) oder ein Gartenwettbewerb — keine davon fördert Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Auch der Landkreis Osnabrück, der alle sechs Gemeinden abdeckt, hat kein eigenes Kaufzuschussprogramm: Seine Förderübersicht listet Integration, Sport, Kultur und Ehrenamt; zu Energie bietet er ausschließlich Beratung (Energiewende zu Hause, Solardachkataster, Eignungs-Check Solar, Wärmepumpen-Infotag). Der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde ist ein Wettbewerbspreis für bereits umgesetzte Projekte, kein Kaufzuschuss.",
+    "searches": [
+      "sgbsb.de Volltextsuche „Balkonkraftwerk“ (0 einschlägige Treffer)",
+      "sgbsb.de Volltextsuche „Photovoltaik“ (nur Bauleitplanung Freiflächen-PV und Bauberichte)",
+      "sgbsb.de Volltextsuche „Klimaschutz“ (nur Klimaschutzpreis und Kindermeilen-Aktion)",
+      "Landkreis Osnabrück Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Bürger Klimaschutz",
+      "Alfhausen Bersenbrück Eggermühlen Gehrde Kettenkamp Rieste Zuschuss Balkonkraftwerk Förderung Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://sgbsb.de/bauen/foerderprogramme/",
+        "finding": "Förderseite der Samtgemeinde am 23.09.2026 vollständig gelesen. Einziger Inhalt: „Die Samtgemeinde Bersenbrück ist als Kommune in das Sofortprogramm ‚Perspektive Innenstadt‘ aufgenommen worden“ — 755.000 € EFRE-Budget für Einzelvorhaben in den Grundzentren Bersenbrück und Ankum, Bewilligungsbehörde NBank. Kein Angebot für private Haushalte, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/",
+        "finding": "Meldung über ein BUNDES-Programm für Ladeinfrastruktur an Mehrparteienhäusern (Antragstellung ab 15.04.2026). Kein Programm der Samtgemeinde und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/",
+        "finding": "Meldung über das Programm der Deutschen Stiftung für Engagement und Ehrenamt (bis 500 € für Mitmach-Aktionen zum Ehrentag des Grundgesetzes). Ehrenamt, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/",
+        "finding": "Meldung über Kulturförderung des Landschaftsverbands Osnabrücker Land (über 270.000 € für Kulturprojekte). Fremder Träger, Kultur- und Heimatpflege."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023/",
+        "finding": "Zweite Meldung zum selben Kulturfördertopf des Landschaftsverbands (über 100.000 € Restmittel, Antragsfrist 15.03.2023). Kultur, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/",
+        "finding": "Meldung über einen ZILE-Zuwendungsbescheid des Amts für regionale Landesentwicklung an die Gemeinde Kettenkamp für den Ausbau von sieben Spielplätzen. Empfänger ist die Kommune, nicht der Haushalt."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/500-000-euro-fuer-gruene-mitte-kettenkamp-foerdermittel-fuer-dorfentwicklung/",
+        "finding": "Meldung über 500.000 € aus dem Dorfentwicklungsprogramm Ankum Kettenkamp (AnKe) des niedersächsischen Landwirtschaftsministeriums für den Schulhof der Keding-Grundschule. Empfänger ist die Samtgemeinde."
+      },
+      {
+        "url": "https://sgbsb.de/nicht-startseite/start-des-gehrder-wettbewerbs-schmetterlinge-in-meinem-garten-am-09-mai-praemiert-werden-naturnahe-gaerten-und-naturnahe-gaerten-in-der-entstehung/",
+        "finding": "Gehrder Gartenwettbewerb „Schmetterlinge in meinem Garten“ — prämiert naturnahe Gärten. Ein Wettbewerbspreis, kein Kaufzuschuss, und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Samtgemeinde am 23.09.2026: kein Förderangebot. Die zwei Treffer sind ein Vortragshinweis „Heizen mit erneuerbaren Energien“ und eine VHS-Meldung. Die Suche weist selbst darauf hin, dass sie nur den redaktionellen Teil durchsucht; der Dienstleistungskatalog läuft über OpenR@thaus."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Klimaschutz",
+        "finding": "Volltextsuche „Klimaschutz“: nur der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde (Preis für bereits umgesetzte Projekte, Vorschlagsfrist 14. September) und die Kindermeilen-Aktion einer Kita. Kein Kaufzuschussprogramm."
+      },
+      {
+        "url": "https://www.landkreis-osnabrueck.de/foerderungen",
+        "finding": "Förderübersicht des Landkreises Osnabrück am 23.09.2026 gelesen: Integration, Sport, Kultur, Ehrenamt. Kein Treffer für Photovoltaik, Balkon oder Speicher im Inhalt; „Solar“ und „Wärmepumpe“ kommen ausschließlich in der Navigationsleiste vor (Solardachkataster, Wärmepumpen-Infotag). Kein kommunaler Kaufzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sgbsb.de/bauen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Samtgemeinde, am 23.09.2026 vollständig gelesen: allein das Sofortprogramm „Perspektive Innenstadt“ (EFRE/NBank) für innerstädtische Maßnahmen der Kommune. Kein Angebot für private Haushalte und keine unserer Techniken.",
+        "evidenceUrl": "https://sgbsb.de/bauen/foerderprogramme/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über ein Bundesprogramm für Ladeinfrastruktur. Fremder Träger, andere Technik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über das Ehrenamtsprogramm der DSEE. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über Kulturförderung des Landschaftsverbands Osnabrücker Land. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über einen ZILE-Zuwendungsbescheid an die Gemeinde Kettenkamp für Spielplätze. Empfänger ist die Kommune, nicht der Haushalt.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023",
+        "disposition": "reviewed",
+        "reason": "Zweite Nachrichtenmeldung zum selben Kulturfördertopf des Landschaftsverbands. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023/"
+      }
+    ]
+  },
+  {
+    "regionId": "03459010",
+    "name": "Bersenbrück",
+    "checkedAt": "2026-09-22T22:25:15Z",
+    "recheckAt": "2026-12-22T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene; Bundes- und Landesprogramme nicht Gegenstand.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Kaufzuschuss für unsere Technik. Die Förderseite der Samtgemeinde Bersenbrück führt ausschließlich das Sofortprogramm „Perspektive Innenstadt“ — EFRE-Mittel über die NBank für innerstädtische Maßnahmen der Kommune selbst, nicht für private Haushalte. Die übrigen sieben erfassten Quellen sind Nachrichtenmeldungen über fremde Programme (Bundesförderung Ladeinfrastruktur, DSEE-Ehrenamt, Landschaftsverband Osnabrücker Land für Kultur, ZILE und Dorfentwicklung AnKe für Plätze und Schulhof) oder ein Gartenwettbewerb — keine davon fördert Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Auch der Landkreis Osnabrück, der alle sechs Gemeinden abdeckt, hat kein eigenes Kaufzuschussprogramm: Seine Förderübersicht listet Integration, Sport, Kultur und Ehrenamt; zu Energie bietet er ausschließlich Beratung (Energiewende zu Hause, Solardachkataster, Eignungs-Check Solar, Wärmepumpen-Infotag). Der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde ist ein Wettbewerbspreis für bereits umgesetzte Projekte, kein Kaufzuschuss.",
+    "searches": [
+      "sgbsb.de Volltextsuche „Balkonkraftwerk“ (0 einschlägige Treffer)",
+      "sgbsb.de Volltextsuche „Photovoltaik“ (nur Bauleitplanung Freiflächen-PV und Bauberichte)",
+      "sgbsb.de Volltextsuche „Klimaschutz“ (nur Klimaschutzpreis und Kindermeilen-Aktion)",
+      "Landkreis Osnabrück Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Bürger Klimaschutz",
+      "Alfhausen Bersenbrück Eggermühlen Gehrde Kettenkamp Rieste Zuschuss Balkonkraftwerk Förderung Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://sgbsb.de/bauen/foerderprogramme/",
+        "finding": "Förderseite der Samtgemeinde am 23.09.2026 vollständig gelesen. Einziger Inhalt: „Die Samtgemeinde Bersenbrück ist als Kommune in das Sofortprogramm ‚Perspektive Innenstadt‘ aufgenommen worden“ — 755.000 € EFRE-Budget für Einzelvorhaben in den Grundzentren Bersenbrück und Ankum, Bewilligungsbehörde NBank. Kein Angebot für private Haushalte, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/",
+        "finding": "Meldung über ein BUNDES-Programm für Ladeinfrastruktur an Mehrparteienhäusern (Antragstellung ab 15.04.2026). Kein Programm der Samtgemeinde und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/",
+        "finding": "Meldung über das Programm der Deutschen Stiftung für Engagement und Ehrenamt (bis 500 € für Mitmach-Aktionen zum Ehrentag des Grundgesetzes). Ehrenamt, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/",
+        "finding": "Meldung über Kulturförderung des Landschaftsverbands Osnabrücker Land (über 270.000 € für Kulturprojekte). Fremder Träger, Kultur- und Heimatpflege."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023/",
+        "finding": "Zweite Meldung zum selben Kulturfördertopf des Landschaftsverbands (über 100.000 € Restmittel, Antragsfrist 15.03.2023). Kultur, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/",
+        "finding": "Meldung über einen ZILE-Zuwendungsbescheid des Amts für regionale Landesentwicklung an die Gemeinde Kettenkamp für den Ausbau von sieben Spielplätzen. Empfänger ist die Kommune, nicht der Haushalt."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/500-000-euro-fuer-gruene-mitte-kettenkamp-foerdermittel-fuer-dorfentwicklung/",
+        "finding": "Meldung über 500.000 € aus dem Dorfentwicklungsprogramm Ankum Kettenkamp (AnKe) des niedersächsischen Landwirtschaftsministeriums für den Schulhof der Keding-Grundschule. Empfänger ist die Samtgemeinde."
+      },
+      {
+        "url": "https://sgbsb.de/nicht-startseite/start-des-gehrder-wettbewerbs-schmetterlinge-in-meinem-garten-am-09-mai-praemiert-werden-naturnahe-gaerten-und-naturnahe-gaerten-in-der-entstehung/",
+        "finding": "Gehrder Gartenwettbewerb „Schmetterlinge in meinem Garten“ — prämiert naturnahe Gärten. Ein Wettbewerbspreis, kein Kaufzuschuss, und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Samtgemeinde am 23.09.2026: kein Förderangebot. Die zwei Treffer sind ein Vortragshinweis „Heizen mit erneuerbaren Energien“ und eine VHS-Meldung. Die Suche weist selbst darauf hin, dass sie nur den redaktionellen Teil durchsucht; der Dienstleistungskatalog läuft über OpenR@thaus."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Klimaschutz",
+        "finding": "Volltextsuche „Klimaschutz“: nur der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde (Preis für bereits umgesetzte Projekte, Vorschlagsfrist 14. September) und die Kindermeilen-Aktion einer Kita. Kein Kaufzuschussprogramm."
+      },
+      {
+        "url": "https://www.landkreis-osnabrueck.de/foerderungen",
+        "finding": "Förderübersicht des Landkreises Osnabrück am 23.09.2026 gelesen: Integration, Sport, Kultur, Ehrenamt. Kein Treffer für Photovoltaik, Balkon oder Speicher im Inhalt; „Solar“ und „Wärmepumpe“ kommen ausschließlich in der Navigationsleiste vor (Solardachkataster, Wärmepumpen-Infotag). Kein kommunaler Kaufzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sgbsb.de/bauen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Samtgemeinde, am 23.09.2026 vollständig gelesen: allein das Sofortprogramm „Perspektive Innenstadt“ (EFRE/NBank) für innerstädtische Maßnahmen der Kommune. Kein Angebot für private Haushalte und keine unserer Techniken.",
+        "evidenceUrl": "https://sgbsb.de/bauen/foerderprogramme/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über ein Bundesprogramm für Ladeinfrastruktur. Fremder Träger, andere Technik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über das Ehrenamtsprogramm der DSEE. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über Kulturförderung des Landschaftsverbands Osnabrücker Land. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über einen ZILE-Zuwendungsbescheid an die Gemeinde Kettenkamp für Spielplätze. Empfänger ist die Kommune, nicht der Haushalt.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023",
+        "disposition": "reviewed",
+        "reason": "Zweite Nachrichtenmeldung zum selben Kulturfördertopf des Landschaftsverbands. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023/"
+      }
+    ]
+  },
+  {
+    "regionId": "03459016",
+    "name": "Eggermühlen",
+    "checkedAt": "2026-09-22T22:25:15Z",
+    "recheckAt": "2026-12-22T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene; Bundes- und Landesprogramme nicht Gegenstand.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Kaufzuschuss für unsere Technik. Die Förderseite der Samtgemeinde Bersenbrück führt ausschließlich das Sofortprogramm „Perspektive Innenstadt“ — EFRE-Mittel über die NBank für innerstädtische Maßnahmen der Kommune selbst, nicht für private Haushalte. Die übrigen sieben erfassten Quellen sind Nachrichtenmeldungen über fremde Programme (Bundesförderung Ladeinfrastruktur, DSEE-Ehrenamt, Landschaftsverband Osnabrücker Land für Kultur, ZILE und Dorfentwicklung AnKe für Plätze und Schulhof) oder ein Gartenwettbewerb — keine davon fördert Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Auch der Landkreis Osnabrück, der alle sechs Gemeinden abdeckt, hat kein eigenes Kaufzuschussprogramm: Seine Förderübersicht listet Integration, Sport, Kultur und Ehrenamt; zu Energie bietet er ausschließlich Beratung (Energiewende zu Hause, Solardachkataster, Eignungs-Check Solar, Wärmepumpen-Infotag). Der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde ist ein Wettbewerbspreis für bereits umgesetzte Projekte, kein Kaufzuschuss.",
+    "searches": [
+      "sgbsb.de Volltextsuche „Balkonkraftwerk“ (0 einschlägige Treffer)",
+      "sgbsb.de Volltextsuche „Photovoltaik“ (nur Bauleitplanung Freiflächen-PV und Bauberichte)",
+      "sgbsb.de Volltextsuche „Klimaschutz“ (nur Klimaschutzpreis und Kindermeilen-Aktion)",
+      "Landkreis Osnabrück Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Bürger Klimaschutz",
+      "Alfhausen Bersenbrück Eggermühlen Gehrde Kettenkamp Rieste Zuschuss Balkonkraftwerk Förderung Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://sgbsb.de/bauen/foerderprogramme/",
+        "finding": "Förderseite der Samtgemeinde am 23.09.2026 vollständig gelesen. Einziger Inhalt: „Die Samtgemeinde Bersenbrück ist als Kommune in das Sofortprogramm ‚Perspektive Innenstadt‘ aufgenommen worden“ — 755.000 € EFRE-Budget für Einzelvorhaben in den Grundzentren Bersenbrück und Ankum, Bewilligungsbehörde NBank. Kein Angebot für private Haushalte, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/",
+        "finding": "Meldung über ein BUNDES-Programm für Ladeinfrastruktur an Mehrparteienhäusern (Antragstellung ab 15.04.2026). Kein Programm der Samtgemeinde und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/",
+        "finding": "Meldung über das Programm der Deutschen Stiftung für Engagement und Ehrenamt (bis 500 € für Mitmach-Aktionen zum Ehrentag des Grundgesetzes). Ehrenamt, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/",
+        "finding": "Meldung über Kulturförderung des Landschaftsverbands Osnabrücker Land (über 270.000 € für Kulturprojekte). Fremder Träger, Kultur- und Heimatpflege."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023/",
+        "finding": "Zweite Meldung zum selben Kulturfördertopf des Landschaftsverbands (über 100.000 € Restmittel, Antragsfrist 15.03.2023). Kultur, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/",
+        "finding": "Meldung über einen ZILE-Zuwendungsbescheid des Amts für regionale Landesentwicklung an die Gemeinde Kettenkamp für den Ausbau von sieben Spielplätzen. Empfänger ist die Kommune, nicht der Haushalt."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/500-000-euro-fuer-gruene-mitte-kettenkamp-foerdermittel-fuer-dorfentwicklung/",
+        "finding": "Meldung über 500.000 € aus dem Dorfentwicklungsprogramm Ankum Kettenkamp (AnKe) des niedersächsischen Landwirtschaftsministeriums für den Schulhof der Keding-Grundschule. Empfänger ist die Samtgemeinde."
+      },
+      {
+        "url": "https://sgbsb.de/nicht-startseite/start-des-gehrder-wettbewerbs-schmetterlinge-in-meinem-garten-am-09-mai-praemiert-werden-naturnahe-gaerten-und-naturnahe-gaerten-in-der-entstehung/",
+        "finding": "Gehrder Gartenwettbewerb „Schmetterlinge in meinem Garten“ — prämiert naturnahe Gärten. Ein Wettbewerbspreis, kein Kaufzuschuss, und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Samtgemeinde am 23.09.2026: kein Förderangebot. Die zwei Treffer sind ein Vortragshinweis „Heizen mit erneuerbaren Energien“ und eine VHS-Meldung. Die Suche weist selbst darauf hin, dass sie nur den redaktionellen Teil durchsucht; der Dienstleistungskatalog läuft über OpenR@thaus."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Klimaschutz",
+        "finding": "Volltextsuche „Klimaschutz“: nur der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde (Preis für bereits umgesetzte Projekte, Vorschlagsfrist 14. September) und die Kindermeilen-Aktion einer Kita. Kein Kaufzuschussprogramm."
+      },
+      {
+        "url": "https://www.landkreis-osnabrueck.de/foerderungen",
+        "finding": "Förderübersicht des Landkreises Osnabrück am 23.09.2026 gelesen: Integration, Sport, Kultur, Ehrenamt. Kein Treffer für Photovoltaik, Balkon oder Speicher im Inhalt; „Solar“ und „Wärmepumpe“ kommen ausschließlich in der Navigationsleiste vor (Solardachkataster, Wärmepumpen-Infotag). Kein kommunaler Kaufzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sgbsb.de/bauen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Samtgemeinde, am 23.09.2026 vollständig gelesen: allein das Sofortprogramm „Perspektive Innenstadt“ (EFRE/NBank) für innerstädtische Maßnahmen der Kommune. Kein Angebot für private Haushalte und keine unserer Techniken.",
+        "evidenceUrl": "https://sgbsb.de/bauen/foerderprogramme/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über ein Bundesprogramm für Ladeinfrastruktur. Fremder Träger, andere Technik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über das Ehrenamtsprogramm der DSEE. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über Kulturförderung des Landschaftsverbands Osnabrücker Land. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über einen ZILE-Zuwendungsbescheid an die Gemeinde Kettenkamp für Spielplätze. Empfänger ist die Kommune, nicht der Haushalt.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023",
+        "disposition": "reviewed",
+        "reason": "Zweite Nachrichtenmeldung zum selben Kulturfördertopf des Landschaftsverbands. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023/"
+      }
+    ]
+  },
+  {
+    "regionId": "03459018",
+    "name": "Gehrde",
+    "checkedAt": "2026-09-22T22:25:15Z",
+    "recheckAt": "2026-12-22T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene; Bundes- und Landesprogramme nicht Gegenstand.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Kaufzuschuss für unsere Technik. Die Förderseite der Samtgemeinde Bersenbrück führt ausschließlich das Sofortprogramm „Perspektive Innenstadt“ — EFRE-Mittel über die NBank für innerstädtische Maßnahmen der Kommune selbst, nicht für private Haushalte. Die übrigen sieben erfassten Quellen sind Nachrichtenmeldungen über fremde Programme (Bundesförderung Ladeinfrastruktur, DSEE-Ehrenamt, Landschaftsverband Osnabrücker Land für Kultur, ZILE und Dorfentwicklung AnKe für Plätze und Schulhof) oder ein Gartenwettbewerb — keine davon fördert Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Auch der Landkreis Osnabrück, der alle sechs Gemeinden abdeckt, hat kein eigenes Kaufzuschussprogramm: Seine Förderübersicht listet Integration, Sport, Kultur und Ehrenamt; zu Energie bietet er ausschließlich Beratung (Energiewende zu Hause, Solardachkataster, Eignungs-Check Solar, Wärmepumpen-Infotag). Der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde ist ein Wettbewerbspreis für bereits umgesetzte Projekte, kein Kaufzuschuss.",
+    "searches": [
+      "sgbsb.de Volltextsuche „Balkonkraftwerk“ (0 einschlägige Treffer)",
+      "sgbsb.de Volltextsuche „Photovoltaik“ (nur Bauleitplanung Freiflächen-PV und Bauberichte)",
+      "sgbsb.de Volltextsuche „Klimaschutz“ (nur Klimaschutzpreis und Kindermeilen-Aktion)",
+      "Landkreis Osnabrück Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Bürger Klimaschutz",
+      "Alfhausen Bersenbrück Eggermühlen Gehrde Kettenkamp Rieste Zuschuss Balkonkraftwerk Förderung Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://sgbsb.de/bauen/foerderprogramme/",
+        "finding": "Förderseite der Samtgemeinde am 23.09.2026 vollständig gelesen. Einziger Inhalt: „Die Samtgemeinde Bersenbrück ist als Kommune in das Sofortprogramm ‚Perspektive Innenstadt‘ aufgenommen worden“ — 755.000 € EFRE-Budget für Einzelvorhaben in den Grundzentren Bersenbrück und Ankum, Bewilligungsbehörde NBank. Kein Angebot für private Haushalte, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/",
+        "finding": "Meldung über ein BUNDES-Programm für Ladeinfrastruktur an Mehrparteienhäusern (Antragstellung ab 15.04.2026). Kein Programm der Samtgemeinde und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/",
+        "finding": "Meldung über das Programm der Deutschen Stiftung für Engagement und Ehrenamt (bis 500 € für Mitmach-Aktionen zum Ehrentag des Grundgesetzes). Ehrenamt, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/",
+        "finding": "Meldung über Kulturförderung des Landschaftsverbands Osnabrücker Land (über 270.000 € für Kulturprojekte). Fremder Träger, Kultur- und Heimatpflege."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023/",
+        "finding": "Zweite Meldung zum selben Kulturfördertopf des Landschaftsverbands (über 100.000 € Restmittel, Antragsfrist 15.03.2023). Kultur, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/",
+        "finding": "Meldung über einen ZILE-Zuwendungsbescheid des Amts für regionale Landesentwicklung an die Gemeinde Kettenkamp für den Ausbau von sieben Spielplätzen. Empfänger ist die Kommune, nicht der Haushalt."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/500-000-euro-fuer-gruene-mitte-kettenkamp-foerdermittel-fuer-dorfentwicklung/",
+        "finding": "Meldung über 500.000 € aus dem Dorfentwicklungsprogramm Ankum Kettenkamp (AnKe) des niedersächsischen Landwirtschaftsministeriums für den Schulhof der Keding-Grundschule. Empfänger ist die Samtgemeinde."
+      },
+      {
+        "url": "https://sgbsb.de/nicht-startseite/start-des-gehrder-wettbewerbs-schmetterlinge-in-meinem-garten-am-09-mai-praemiert-werden-naturnahe-gaerten-und-naturnahe-gaerten-in-der-entstehung/",
+        "finding": "Gehrder Gartenwettbewerb „Schmetterlinge in meinem Garten“ — prämiert naturnahe Gärten. Ein Wettbewerbspreis, kein Kaufzuschuss, und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Samtgemeinde am 23.09.2026: kein Förderangebot. Die zwei Treffer sind ein Vortragshinweis „Heizen mit erneuerbaren Energien“ und eine VHS-Meldung. Die Suche weist selbst darauf hin, dass sie nur den redaktionellen Teil durchsucht; der Dienstleistungskatalog läuft über OpenR@thaus."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Klimaschutz",
+        "finding": "Volltextsuche „Klimaschutz“: nur der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde (Preis für bereits umgesetzte Projekte, Vorschlagsfrist 14. September) und die Kindermeilen-Aktion einer Kita. Kein Kaufzuschussprogramm."
+      },
+      {
+        "url": "https://www.landkreis-osnabrueck.de/foerderungen",
+        "finding": "Förderübersicht des Landkreises Osnabrück am 23.09.2026 gelesen: Integration, Sport, Kultur, Ehrenamt. Kein Treffer für Photovoltaik, Balkon oder Speicher im Inhalt; „Solar“ und „Wärmepumpe“ kommen ausschließlich in der Navigationsleiste vor (Solardachkataster, Wärmepumpen-Infotag). Kein kommunaler Kaufzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sgbsb.de/bauen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Samtgemeinde, am 23.09.2026 vollständig gelesen: allein das Sofortprogramm „Perspektive Innenstadt“ (EFRE/NBank) für innerstädtische Maßnahmen der Kommune. Kein Angebot für private Haushalte und keine unserer Techniken.",
+        "evidenceUrl": "https://sgbsb.de/bauen/foerderprogramme/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über ein Bundesprogramm für Ladeinfrastruktur. Fremder Träger, andere Technik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über das Ehrenamtsprogramm der DSEE. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über Kulturförderung des Landschaftsverbands Osnabrücker Land. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über einen ZILE-Zuwendungsbescheid an die Gemeinde Kettenkamp für Spielplätze. Empfänger ist die Kommune, nicht der Haushalt.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/"
+      },
+      {
+        "url": "sgbsb.de/nicht-startseite/start-des-gehrder-wettbewerbs-schmetterlinge-in-meinem-garten-am-09-mai-praemiert-werden-naturnahe-gaerten-und-naturnahe-gaerten-in-der-entstehung",
+        "disposition": "reviewed",
+        "reason": "Gartenwettbewerb in Gehrde: ein Preis für naturnahe Gärten, kein Kaufzuschuss und keine unserer Techniken.",
+        "evidenceUrl": "https://sgbsb.de/nicht-startseite/start-des-gehrder-wettbewerbs-schmetterlinge-in-meinem-garten-am-09-mai-praemiert-werden-naturnahe-gaerten-und-naturnahe-gaerten-in-der-entstehung/"
+      }
+    ]
+  },
+  {
+    "regionId": "03459023",
+    "name": "Kettenkamp",
+    "checkedAt": "2026-09-22T22:25:15Z",
+    "recheckAt": "2026-12-22T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene; Bundes- und Landesprogramme nicht Gegenstand.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Kaufzuschuss für unsere Technik. Die Förderseite der Samtgemeinde Bersenbrück führt ausschließlich das Sofortprogramm „Perspektive Innenstadt“ — EFRE-Mittel über die NBank für innerstädtische Maßnahmen der Kommune selbst, nicht für private Haushalte. Die übrigen sieben erfassten Quellen sind Nachrichtenmeldungen über fremde Programme (Bundesförderung Ladeinfrastruktur, DSEE-Ehrenamt, Landschaftsverband Osnabrücker Land für Kultur, ZILE und Dorfentwicklung AnKe für Plätze und Schulhof) oder ein Gartenwettbewerb — keine davon fördert Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Auch der Landkreis Osnabrück, der alle sechs Gemeinden abdeckt, hat kein eigenes Kaufzuschussprogramm: Seine Förderübersicht listet Integration, Sport, Kultur und Ehrenamt; zu Energie bietet er ausschließlich Beratung (Energiewende zu Hause, Solardachkataster, Eignungs-Check Solar, Wärmepumpen-Infotag). Der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde ist ein Wettbewerbspreis für bereits umgesetzte Projekte, kein Kaufzuschuss.",
+    "searches": [
+      "sgbsb.de Volltextsuche „Balkonkraftwerk“ (0 einschlägige Treffer)",
+      "sgbsb.de Volltextsuche „Photovoltaik“ (nur Bauleitplanung Freiflächen-PV und Bauberichte)",
+      "sgbsb.de Volltextsuche „Klimaschutz“ (nur Klimaschutzpreis und Kindermeilen-Aktion)",
+      "Landkreis Osnabrück Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Bürger Klimaschutz",
+      "Alfhausen Bersenbrück Eggermühlen Gehrde Kettenkamp Rieste Zuschuss Balkonkraftwerk Förderung Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://sgbsb.de/bauen/foerderprogramme/",
+        "finding": "Förderseite der Samtgemeinde am 23.09.2026 vollständig gelesen. Einziger Inhalt: „Die Samtgemeinde Bersenbrück ist als Kommune in das Sofortprogramm ‚Perspektive Innenstadt‘ aufgenommen worden“ — 755.000 € EFRE-Budget für Einzelvorhaben in den Grundzentren Bersenbrück und Ankum, Bewilligungsbehörde NBank. Kein Angebot für private Haushalte, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/",
+        "finding": "Meldung über ein BUNDES-Programm für Ladeinfrastruktur an Mehrparteienhäusern (Antragstellung ab 15.04.2026). Kein Programm der Samtgemeinde und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/",
+        "finding": "Meldung über das Programm der Deutschen Stiftung für Engagement und Ehrenamt (bis 500 € für Mitmach-Aktionen zum Ehrentag des Grundgesetzes). Ehrenamt, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/",
+        "finding": "Meldung über Kulturförderung des Landschaftsverbands Osnabrücker Land (über 270.000 € für Kulturprojekte). Fremder Träger, Kultur- und Heimatpflege."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023/",
+        "finding": "Zweite Meldung zum selben Kulturfördertopf des Landschaftsverbands (über 100.000 € Restmittel, Antragsfrist 15.03.2023). Kultur, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/",
+        "finding": "Meldung über einen ZILE-Zuwendungsbescheid des Amts für regionale Landesentwicklung an die Gemeinde Kettenkamp für den Ausbau von sieben Spielplätzen. Empfänger ist die Kommune, nicht der Haushalt."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/500-000-euro-fuer-gruene-mitte-kettenkamp-foerdermittel-fuer-dorfentwicklung/",
+        "finding": "Meldung über 500.000 € aus dem Dorfentwicklungsprogramm Ankum Kettenkamp (AnKe) des niedersächsischen Landwirtschaftsministeriums für den Schulhof der Keding-Grundschule. Empfänger ist die Samtgemeinde."
+      },
+      {
+        "url": "https://sgbsb.de/nicht-startseite/start-des-gehrder-wettbewerbs-schmetterlinge-in-meinem-garten-am-09-mai-praemiert-werden-naturnahe-gaerten-und-naturnahe-gaerten-in-der-entstehung/",
+        "finding": "Gehrder Gartenwettbewerb „Schmetterlinge in meinem Garten“ — prämiert naturnahe Gärten. Ein Wettbewerbspreis, kein Kaufzuschuss, und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Samtgemeinde am 23.09.2026: kein Förderangebot. Die zwei Treffer sind ein Vortragshinweis „Heizen mit erneuerbaren Energien“ und eine VHS-Meldung. Die Suche weist selbst darauf hin, dass sie nur den redaktionellen Teil durchsucht; der Dienstleistungskatalog läuft über OpenR@thaus."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Klimaschutz",
+        "finding": "Volltextsuche „Klimaschutz“: nur der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde (Preis für bereits umgesetzte Projekte, Vorschlagsfrist 14. September) und die Kindermeilen-Aktion einer Kita. Kein Kaufzuschussprogramm."
+      },
+      {
+        "url": "https://www.landkreis-osnabrueck.de/foerderungen",
+        "finding": "Förderübersicht des Landkreises Osnabrück am 23.09.2026 gelesen: Integration, Sport, Kultur, Ehrenamt. Kein Treffer für Photovoltaik, Balkon oder Speicher im Inhalt; „Solar“ und „Wärmepumpe“ kommen ausschließlich in der Navigationsleiste vor (Solardachkataster, Wärmepumpen-Infotag). Kein kommunaler Kaufzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sgbsb.de/bauen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Samtgemeinde, am 23.09.2026 vollständig gelesen: allein das Sofortprogramm „Perspektive Innenstadt“ (EFRE/NBank) für innerstädtische Maßnahmen der Kommune. Kein Angebot für private Haushalte und keine unserer Techniken.",
+        "evidenceUrl": "https://sgbsb.de/bauen/foerderprogramme/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über ein Bundesprogramm für Ladeinfrastruktur. Fremder Träger, andere Technik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über das Ehrenamtsprogramm der DSEE. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über Kulturförderung des Landschaftsverbands Osnabrücker Land. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über einen ZILE-Zuwendungsbescheid an die Gemeinde Kettenkamp für Spielplätze. Empfänger ist die Kommune, nicht der Haushalt.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/500-000-euro-fuer-gruene-mitte-kettenkamp-foerdermittel-fuer-dorfentwicklung",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über Dorfentwicklungsmittel (AnKe) für einen Schulhof. Empfänger ist die Samtgemeinde.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/500-000-euro-fuer-gruene-mitte-kettenkamp-foerdermittel-fuer-dorfentwicklung/"
+      }
+    ]
+  },
+  {
+    "regionId": "03459031",
+    "name": "Rieste",
+    "checkedAt": "2026-09-22T22:25:15Z",
+    "recheckAt": "2026-12-22T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene; Bundes- und Landesprogramme nicht Gegenstand.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Kaufzuschuss für unsere Technik. Die Förderseite der Samtgemeinde Bersenbrück führt ausschließlich das Sofortprogramm „Perspektive Innenstadt“ — EFRE-Mittel über die NBank für innerstädtische Maßnahmen der Kommune selbst, nicht für private Haushalte. Die übrigen sieben erfassten Quellen sind Nachrichtenmeldungen über fremde Programme (Bundesförderung Ladeinfrastruktur, DSEE-Ehrenamt, Landschaftsverband Osnabrücker Land für Kultur, ZILE und Dorfentwicklung AnKe für Plätze und Schulhof) oder ein Gartenwettbewerb — keine davon fördert Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Auch der Landkreis Osnabrück, der alle sechs Gemeinden abdeckt, hat kein eigenes Kaufzuschussprogramm: Seine Förderübersicht listet Integration, Sport, Kultur und Ehrenamt; zu Energie bietet er ausschließlich Beratung (Energiewende zu Hause, Solardachkataster, Eignungs-Check Solar, Wärmepumpen-Infotag). Der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde ist ein Wettbewerbspreis für bereits umgesetzte Projekte, kein Kaufzuschuss.",
+    "searches": [
+      "sgbsb.de Volltextsuche „Balkonkraftwerk“ (0 einschlägige Treffer)",
+      "sgbsb.de Volltextsuche „Photovoltaik“ (nur Bauleitplanung Freiflächen-PV und Bauberichte)",
+      "sgbsb.de Volltextsuche „Klimaschutz“ (nur Klimaschutzpreis und Kindermeilen-Aktion)",
+      "Landkreis Osnabrück Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss Bürger Klimaschutz",
+      "Alfhausen Bersenbrück Eggermühlen Gehrde Kettenkamp Rieste Zuschuss Balkonkraftwerk Förderung Gemeinde"
+    ],
+    "evidence": [
+      {
+        "url": "https://sgbsb.de/bauen/foerderprogramme/",
+        "finding": "Förderseite der Samtgemeinde am 23.09.2026 vollständig gelesen. Einziger Inhalt: „Die Samtgemeinde Bersenbrück ist als Kommune in das Sofortprogramm ‚Perspektive Innenstadt‘ aufgenommen worden“ — 755.000 € EFRE-Budget für Einzelvorhaben in den Grundzentren Bersenbrück und Ankum, Bewilligungsbehörde NBank. Kein Angebot für private Haushalte, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/",
+        "finding": "Meldung über ein BUNDES-Programm für Ladeinfrastruktur an Mehrparteienhäusern (Antragstellung ab 15.04.2026). Kein Programm der Samtgemeinde und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/",
+        "finding": "Meldung über das Programm der Deutschen Stiftung für Engagement und Ehrenamt (bis 500 € für Mitmach-Aktionen zum Ehrentag des Grundgesetzes). Ehrenamt, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/",
+        "finding": "Meldung über Kulturförderung des Landschaftsverbands Osnabrücker Land (über 270.000 € für Kulturprojekte). Fremder Träger, Kultur- und Heimatpflege."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023/",
+        "finding": "Zweite Meldung zum selben Kulturfördertopf des Landschaftsverbands (über 100.000 € Restmittel, Antragsfrist 15.03.2023). Kultur, keine Energietechnik."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/",
+        "finding": "Meldung über einen ZILE-Zuwendungsbescheid des Amts für regionale Landesentwicklung an die Gemeinde Kettenkamp für den Ausbau von sieben Spielplätzen. Empfänger ist die Kommune, nicht der Haushalt."
+      },
+      {
+        "url": "https://sgbsb.de/sgbsb/500-000-euro-fuer-gruene-mitte-kettenkamp-foerdermittel-fuer-dorfentwicklung/",
+        "finding": "Meldung über 500.000 € aus dem Dorfentwicklungsprogramm Ankum Kettenkamp (AnKe) des niedersächsischen Landwirtschaftsministeriums für den Schulhof der Keding-Grundschule. Empfänger ist die Samtgemeinde."
+      },
+      {
+        "url": "https://sgbsb.de/nicht-startseite/start-des-gehrder-wettbewerbs-schmetterlinge-in-meinem-garten-am-09-mai-praemiert-werden-naturnahe-gaerten-und-naturnahe-gaerten-in-der-entstehung/",
+        "finding": "Gehrder Gartenwettbewerb „Schmetterlinge in meinem Garten“ — prämiert naturnahe Gärten. Ein Wettbewerbspreis, kein Kaufzuschuss, und keine unserer Techniken."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Balkonkraftwerk",
+        "finding": "Volltextsuche der Samtgemeinde am 23.09.2026: kein Förderangebot. Die zwei Treffer sind ein Vortragshinweis „Heizen mit erneuerbaren Energien“ und eine VHS-Meldung. Die Suche weist selbst darauf hin, dass sie nur den redaktionellen Teil durchsucht; der Dienstleistungskatalog läuft über OpenR@thaus."
+      },
+      {
+        "url": "https://sgbsb.de/?s=Klimaschutz",
+        "finding": "Volltextsuche „Klimaschutz“: nur der Klimaschutzpreis der Westenergie in Kooperation mit der Samtgemeinde (Preis für bereits umgesetzte Projekte, Vorschlagsfrist 14. September) und die Kindermeilen-Aktion einer Kita. Kein Kaufzuschussprogramm."
+      },
+      {
+        "url": "https://www.landkreis-osnabrueck.de/foerderungen",
+        "finding": "Förderübersicht des Landkreises Osnabrück am 23.09.2026 gelesen: Integration, Sport, Kultur, Ehrenamt. Kein Treffer für Photovoltaik, Balkon oder Speicher im Inhalt; „Solar“ und „Wärmepumpe“ kommen ausschließlich in der Navigationsleiste vor (Solardachkataster, Wärmepumpen-Infotag). Kein kommunaler Kaufzuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sgbsb.de/bauen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderseite der Samtgemeinde, am 23.09.2026 vollständig gelesen: allein das Sofortprogramm „Perspektive Innenstadt“ (EFRE/NBank) für innerstädtische Maßnahmen der Kommune. Kein Angebot für private Haushalte und keine unserer Techniken.",
+        "evidenceUrl": "https://sgbsb.de/bauen/foerderprogramme/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über ein Bundesprogramm für Ladeinfrastruktur. Fremder Träger, andere Technik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/bundesfoerderprogramm-fuer-ladeinfrastruktur-an-mehrparteienhaeusern-startet-im-april/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über das Ehrenamtsprogramm der DSEE. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/foerderprogramm-zum-ehrentag-gestartet-bis-zu-500-euro-fuer-mitmach-aktionen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über Kulturförderung des Landschaftsverbands Osnabrücker Land. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/landschaftsverband-osnabruecker-land-foerdermittel-fuer-2023-beantragen/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze",
+        "disposition": "reviewed",
+        "reason": "Nachrichtenmeldung über einen ZILE-Zuwendungsbescheid an die Gemeinde Kettenkamp für Spielplätze. Empfänger ist die Kommune, nicht der Haushalt.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/zile-foerderung-fuer-sieben-plaetze/"
+      },
+      {
+        "url": "sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023",
+        "disposition": "reviewed",
+        "reason": "Zweite Nachrichtenmeldung zum selben Kulturfördertopf des Landschaftsverbands. Fremder Träger, keine Energietechnik.",
+        "evidenceUrl": "https://sgbsb.de/sgbsb/noch-foerdermittel-fuer-projekte-in-der-zweiten-jahreshaelfte-2023/"
+      }
+    ]
   }
 ]

@@ -8559,6 +8559,29 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "waldalgesheim-balkon-pv", name: "Installation von Balkon-Photovoltaik-Anlagen",
     traeger: "Ortsgemeinde Waldalgesheim", level: "kommune", region: "Waldalgesheim",
     bundesland: "Rheinland-Pfalz", agsCode: "07339062",
+    // DIE BEIDEN BETRÄGE SIND AM 23.09.2026 AUFGEKLÄRT — der Abzug bleibt
+    // trotzdem bei 100 €, weil die Erhöhung über der Sprunggrenze des
+    // Wächter-Gates liegt (+100 %) und damit dem Betreiber gehört. Was die
+    // Prüfung ergeben hat (Council 2/2, einer adversarial):
+    //   · Ursprungsrichtlinie (Stand 09.09.2024, bis 14.06.2026 die einzige
+    //     verlinkte): "Pro Haushalt wird maximal eine Anlage mit 100€
+    //     gefördert. Der Förderzeitraum beginnt am 01.07.2024 und endet am
+    //     30.06.2026".
+    //   · "FÖRDERRICHTLINIE 1. Änderung … Stand: 19.05.2026 -
+    //     Gemeinderatsbeschluss", seit dem 15.07.2026 als "aktualisierte
+    //     Version" die EINZIGE verlinkte: "Pro Haushalt wird maximal eine
+    //     Anlage mit 200 € gefördert … endet am 31.12.2026".
+    // DIE LAUFZEIT IST DER EIGENTLICHE BEFUND, nicht der Betrag: Ohne die
+    // Änderung wäre das Programm seit dem 30.06.2026 beendet. Unser `endetIso`
+    // (31.12.2026) stammt also bereits aus derselben Änderungsrichtlinie, deren
+    // Betrag wir nicht übernehmen — diese Unwucht ist bewusst und benannt, sie
+    // geht in die sichere Richtung (lieber zu wenig Geld als zu viel).
+    // NICHT BELEGT und deshalb nirgends behauptet: dass der Seitentext "einfach
+    // nicht nachgepflegt" sei. Die Seite wurde am 15.07.2026 neu veröffentlicht
+    // und im selben Zug mit den neuen Dateien bestückt — sie WURDE gepflegt und
+    // nennt trotzdem 100 €. Ebenso wenig belegt ist ein Inkrafttretens-Datum:
+    // Nr. 10 der Richtlinie knüpft es an die öffentliche Bekanntmachung, und
+    // eine solche ist auf der Website nicht auffindbar.
     url: "https://waldalgesheim.de/foerderung-balkonkraftwerke/",
     stand: "September 2026", status: "aktiv", capped: true, verified: true,
     beginntIso: "2024-07-01", endetIso: "2026-12-31",
@@ -8575,7 +8598,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Der Antrag wird nach dem Kauf gestellt; eine Reservierung für noch nicht gekaufte Anlagen gibt es nicht",
       "Für die Anschaffung darf kein weiteres Förderprogramm in Anspruch genommen werden",
       "Fünf Jahre Haltedauer, Anmeldung beim Netzbetreiber und im Marktstammdatenregister",
-      "Die Ortsgemeinde nennt zwei verschiedene Beträge: 100 € im Seitentext, 200 € in der im Juni 2026 beschlossenen Richtlinie daneben — wir rechnen den niedrigeren",
+      "Die Ortsgemeinde nennt zwei verschiedene Beträge: 100 € im Seitentext, 200 € in der daneben verlinkten Richtlinie — wir rechnen den niedrigeren",
     ],
     combinableWith: BUND,
     foerdert: ["balkon"],
