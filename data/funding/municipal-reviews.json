@@ -42482,5 +42482,397 @@
         "evidenceUrl": "https://www.ludwigslust.de/Politik-Verwaltung/B%C3%BCrgerservice/Dienstleistungen-A-Z/Zuschuss-f%C3%BCr-steckerfertige-Photovoltaikanlagen-Balkon-PV-Anlagen-beantragen.php?ModID=10&FID=3634.1563.1"
       }
     ]
+  },
+  {
+    "regionId": "07137023",
+    "name": "Einig",
+    "checkedAt": "2026-09-22T04:07:32Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Einig gehört zur Verbandsgemeinde Maifeld (Landkreis Mayen-Koblenz). Weder die Verbandsgemeinde noch die Ortsgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die VG-Seite „Bauen, Wohnen, Klimaschutz & Förderungen“ enthält nur Bauleitplanung, Klimaschutzmanagement für kommunale Liegenschaften, Hochwasservorsorge und die Energieberatung der Verbraucherzentrale; die KIPKI-Mittel der VG fließen in kommunale Gebäude. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet und stehen im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "maifeld.de Sitemap (976 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerderprogramm/richtlinie/klima/energie/kipki durchsucht",
+      "Ortsrecht der Ortsgemeinde Einig auf maifeld.de (Satzungen-/Ortsrecht-Ordner) vollständig durchgesehen: nur Haupt-, Friedhofs-, Hundesteuer-, Reinigungssatzungen, Benutzungsordnungen — keine Förderrichtlinie",
+      "Ortsgemeinde Einig hat laut Gemeindeseite der VG keine eigene Website (nur VG-Portal, Maifelder Nachrichten)",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: Balkonkraftwerke und Solarspeicher, beide beendet",
+      "Websuche: Verbandsgemeinde Maifeld Förderung Balkonkraftwerk Photovoltaik Zuschuss Ortsgemeinde (nur KIPKI für kommunale Liegenschaften, Dorferneuerung, Bauleitplanung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/",
+        "finding": "Übersichtsseite im Original gelesen (22.09.2026): vier Unterbereiche Bauleitplanung, Klimaschutz, Hochwasser- und Starkregenvorsorge, Energieberatung — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/",
+        "finding": "Im Browser gelesen: Klimaschutzteilkonzept (kommunale Liegenschaften), Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, kommunale Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus; für Fördermöglichkeiten verweist die VG an die Verbraucherzentrale — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/",
+        "finding": "Sturzflutkarten und örtliche Hochwasservorsorgekonzepte der Ortsgemeinden — kein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://kipki.rlp.de/was-ist-kipki/aktuelles/detail/verbandsgemeinde-maifeld-erhaelt-kipki-foerderung-in-hoehe-von-rund-726000-euro-1",
+        "finding": "KIPKI-Mittel der VG Maifeld (rund 726.000 €) für kommunale Maßnahmen: LED und Wärmepumpen in kommunalen Gebäuden, Heizungssanierung in Schulen/Kitas, Batteriespeicher und Ladesäulen in kommunalen Liegenschaften — kein Zuschuss für Private."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen",
+        "disposition": "reviewed",
+        "reason": "VG-Übersicht „Bauen, Wohnen, Klimaschutz & Förderungen“ samt Unterseiten Klimaschutz und Energieberatung gelesen: kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge",
+        "disposition": "reviewed",
+        "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137027",
+    "name": "Gappenach",
+    "checkedAt": "2026-09-22T04:07:32Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gappenach gehört zur Verbandsgemeinde Maifeld (Landkreis Mayen-Koblenz). Weder die Verbandsgemeinde noch die Ortsgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die VG-Seite „Bauen, Wohnen, Klimaschutz & Förderungen“ enthält nur Bauleitplanung, Klimaschutzmanagement für kommunale Liegenschaften, Hochwasservorsorge und die Energieberatung der Verbraucherzentrale; die KIPKI-Mittel der VG fließen in kommunale Gebäude. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet und stehen im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "maifeld.de Sitemap (976 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerderprogramm/richtlinie/klima/energie/kipki durchsucht",
+      "Ortsrecht der Ortsgemeinde Gappenach auf maifeld.de (Satzungen-/Ortsrecht-Ordner) vollständig durchgesehen: nur Haupt-, Friedhofs-, Hundesteuer-, Reinigungssatzungen, Benutzungsordnungen — keine Förderrichtlinie",
+      "Ortsgemeinde Gappenach hat laut Gemeindeseite der VG keine eigene Website (nur VG-Portal, Maifelder Nachrichten)",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: Balkonkraftwerke und Solarspeicher, beide beendet",
+      "Websuche: Verbandsgemeinde Maifeld Förderung Balkonkraftwerk Photovoltaik Zuschuss Ortsgemeinde (nur KIPKI für kommunale Liegenschaften, Dorferneuerung, Bauleitplanung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/",
+        "finding": "Übersichtsseite im Original gelesen (22.09.2026): vier Unterbereiche Bauleitplanung, Klimaschutz, Hochwasser- und Starkregenvorsorge, Energieberatung — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/",
+        "finding": "Im Browser gelesen: Klimaschutzteilkonzept (kommunale Liegenschaften), Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, kommunale Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus; für Fördermöglichkeiten verweist die VG an die Verbraucherzentrale — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/",
+        "finding": "Sturzflutkarten und örtliche Hochwasservorsorgekonzepte der Ortsgemeinden — kein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://kipki.rlp.de/was-ist-kipki/aktuelles/detail/verbandsgemeinde-maifeld-erhaelt-kipki-foerderung-in-hoehe-von-rund-726000-euro-1",
+        "finding": "KIPKI-Mittel der VG Maifeld (rund 726.000 €) für kommunale Maßnahmen: LED und Wärmepumpen in kommunalen Gebäuden, Heizungssanierung in Schulen/Kitas, Batteriespeicher und Ladesäulen in kommunalen Liegenschaften — kein Zuschuss für Private."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen",
+        "disposition": "reviewed",
+        "reason": "VG-Übersicht „Bauen, Wohnen, Klimaschutz & Förderungen“ samt Unterseiten Klimaschutz und Energieberatung gelesen: kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge",
+        "disposition": "reviewed",
+        "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137048",
+    "name": "Kerben",
+    "checkedAt": "2026-09-22T04:07:32Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kerben gehört zur Verbandsgemeinde Maifeld (Landkreis Mayen-Koblenz). Weder die Verbandsgemeinde noch die Ortsgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die VG-Seite „Bauen, Wohnen, Klimaschutz & Förderungen“ enthält nur Bauleitplanung, Klimaschutzmanagement für kommunale Liegenschaften, Hochwasservorsorge und die Energieberatung der Verbraucherzentrale; die KIPKI-Mittel der VG fließen in kommunale Gebäude. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet und stehen im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "maifeld.de Sitemap (976 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerderprogramm/richtlinie/klima/energie/kipki durchsucht",
+      "Ortsrecht der Ortsgemeinde Kerben auf maifeld.de (Satzungen-/Ortsrecht-Ordner) vollständig durchgesehen: nur Haupt-, Friedhofs-, Hundesteuer-, Reinigungssatzungen, Benutzungsordnungen — keine Förderrichtlinie",
+      "Eigene Website der Ortsgemeinde: kerben.de (WordPress-Suche: Photovoltaik, Balkonkraftwerk, Zuschuss, Solar, Förderung — nur Ratssitzung, Haushaltssatzung, Dorfprojekt)",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: Balkonkraftwerke und Solarspeicher, beide beendet",
+      "Websuche: Verbandsgemeinde Maifeld Förderung Balkonkraftwerk Photovoltaik Zuschuss Ortsgemeinde (nur KIPKI für kommunale Liegenschaften, Dorferneuerung, Bauleitplanung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/",
+        "finding": "Übersichtsseite im Original gelesen (22.09.2026): vier Unterbereiche Bauleitplanung, Klimaschutz, Hochwasser- und Starkregenvorsorge, Energieberatung — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/",
+        "finding": "Im Browser gelesen: Klimaschutzteilkonzept (kommunale Liegenschaften), Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, kommunale Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus; für Fördermöglichkeiten verweist die VG an die Verbraucherzentrale — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/",
+        "finding": "Sturzflutkarten und örtliche Hochwasservorsorgekonzepte der Ortsgemeinden — kein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://kipki.rlp.de/was-ist-kipki/aktuelles/detail/verbandsgemeinde-maifeld-erhaelt-kipki-foerderung-in-hoehe-von-rund-726000-euro-1",
+        "finding": "KIPKI-Mittel der VG Maifeld (rund 726.000 €) für kommunale Maßnahmen: LED und Wärmepumpen in kommunalen Gebäuden, Heizungssanierung in Schulen/Kitas, Batteriespeicher und Ladesäulen in kommunalen Liegenschaften — kein Zuschuss für Private."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen",
+        "disposition": "reviewed",
+        "reason": "VG-Übersicht „Bauen, Wohnen, Klimaschutz & Förderungen“ samt Unterseiten Klimaschutz und Energieberatung gelesen: kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge",
+        "disposition": "reviewed",
+        "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137080",
+    "name": "Naunheim",
+    "checkedAt": "2026-09-22T04:07:32Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Naunheim gehört zur Verbandsgemeinde Maifeld (Landkreis Mayen-Koblenz). Weder die Verbandsgemeinde noch die Ortsgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die VG-Seite „Bauen, Wohnen, Klimaschutz & Förderungen“ enthält nur Bauleitplanung, Klimaschutzmanagement für kommunale Liegenschaften, Hochwasservorsorge und die Energieberatung der Verbraucherzentrale; die KIPKI-Mittel der VG fließen in kommunale Gebäude. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet und stehen im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "maifeld.de Sitemap (976 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerderprogramm/richtlinie/klima/energie/kipki durchsucht",
+      "Ortsrecht der Ortsgemeinde Naunheim auf maifeld.de (Satzungen-/Ortsrecht-Ordner) vollständig durchgesehen: nur Haupt-, Friedhofs-, Hundesteuer-, Reinigungssatzungen, Benutzungsordnungen — keine Förderrichtlinie",
+      "Eigene Website der Ortsgemeinde: gemeinde-naunheim.de (WordPress-Suche: Photovoltaik, Balkonkraftwerk, Zuschuss, Solar, Förderung — nur Kreis-Förderung Dach-/Fassadenbegrünung und Vereins-/Seniorenbeiträge)",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: Balkonkraftwerke und Solarspeicher, beide beendet",
+      "Websuche: Verbandsgemeinde Maifeld Förderung Balkonkraftwerk Photovoltaik Zuschuss Ortsgemeinde (nur KIPKI für kommunale Liegenschaften, Dorferneuerung, Bauleitplanung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/",
+        "finding": "Übersichtsseite im Original gelesen (22.09.2026): vier Unterbereiche Bauleitplanung, Klimaschutz, Hochwasser- und Starkregenvorsorge, Energieberatung — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/",
+        "finding": "Im Browser gelesen: Klimaschutzteilkonzept (kommunale Liegenschaften), Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, kommunale Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus; für Fördermöglichkeiten verweist die VG an die Verbraucherzentrale — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/",
+        "finding": "Sturzflutkarten und örtliche Hochwasservorsorgekonzepte der Ortsgemeinden — kein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://kipki.rlp.de/was-ist-kipki/aktuelles/detail/verbandsgemeinde-maifeld-erhaelt-kipki-foerderung-in-hoehe-von-rund-726000-euro-1",
+        "finding": "KIPKI-Mittel der VG Maifeld (rund 726.000 €) für kommunale Maßnahmen: LED und Wärmepumpen in kommunalen Gebäuden, Heizungssanierung in Schulen/Kitas, Batteriespeicher und Ladesäulen in kommunalen Liegenschaften — kein Zuschuss für Private."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen",
+        "disposition": "reviewed",
+        "reason": "VG-Übersicht „Bauen, Wohnen, Klimaschutz & Förderungen“ samt Unterseiten Klimaschutz und Energieberatung gelesen: kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge",
+        "disposition": "reviewed",
+        "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137087",
+    "name": "Pillig",
+    "checkedAt": "2026-09-22T04:07:32Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Pillig gehört zur Verbandsgemeinde Maifeld (Landkreis Mayen-Koblenz). Weder die Verbandsgemeinde noch die Ortsgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die VG-Seite „Bauen, Wohnen, Klimaschutz & Förderungen“ enthält nur Bauleitplanung, Klimaschutzmanagement für kommunale Liegenschaften, Hochwasservorsorge und die Energieberatung der Verbraucherzentrale; die KIPKI-Mittel der VG fließen in kommunale Gebäude. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet und stehen im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "maifeld.de Sitemap (976 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerderprogramm/richtlinie/klima/energie/kipki durchsucht",
+      "Ortsrecht der Ortsgemeinde Pillig auf maifeld.de (Satzungen-/Ortsrecht-Ordner) vollständig durchgesehen: nur Haupt-, Friedhofs-, Hundesteuer-, Reinigungssatzungen, Benutzungsordnungen — keine Förderrichtlinie",
+      "Eigene Website der Ortsgemeinde: gemeinde-pillig.de (Startseite und Sitemap mit 39 Adressen: kein Förderbezug außer „Förderung der Friedensarbeit“)",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: Balkonkraftwerke und Solarspeicher, beide beendet",
+      "Websuche: Verbandsgemeinde Maifeld Förderung Balkonkraftwerk Photovoltaik Zuschuss Ortsgemeinde (nur KIPKI für kommunale Liegenschaften, Dorferneuerung, Bauleitplanung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/",
+        "finding": "Übersichtsseite im Original gelesen (22.09.2026): vier Unterbereiche Bauleitplanung, Klimaschutz, Hochwasser- und Starkregenvorsorge, Energieberatung — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/",
+        "finding": "Im Browser gelesen: Klimaschutzteilkonzept (kommunale Liegenschaften), Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, kommunale Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus; für Fördermöglichkeiten verweist die VG an die Verbraucherzentrale — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/",
+        "finding": "Sturzflutkarten und örtliche Hochwasservorsorgekonzepte der Ortsgemeinden — kein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://kipki.rlp.de/was-ist-kipki/aktuelles/detail/verbandsgemeinde-maifeld-erhaelt-kipki-foerderung-in-hoehe-von-rund-726000-euro-1",
+        "finding": "KIPKI-Mittel der VG Maifeld (rund 726.000 €) für kommunale Maßnahmen: LED und Wärmepumpen in kommunalen Gebäuden, Heizungssanierung in Schulen/Kitas, Batteriespeicher und Ladesäulen in kommunalen Liegenschaften — kein Zuschuss für Private."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen",
+        "disposition": "reviewed",
+        "reason": "VG-Übersicht „Bauen, Wohnen, Klimaschutz & Förderungen“ samt Unterseiten Klimaschutz und Energieberatung gelesen: kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge",
+        "disposition": "reviewed",
+        "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137095",
+    "name": "Rüber",
+    "checkedAt": "2026-09-22T04:07:32Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rüber gehört zur Verbandsgemeinde Maifeld (Landkreis Mayen-Koblenz). Weder die Verbandsgemeinde noch die Ortsgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die VG-Seite „Bauen, Wohnen, Klimaschutz & Förderungen“ enthält nur Bauleitplanung, Klimaschutzmanagement für kommunale Liegenschaften, Hochwasservorsorge und die Energieberatung der Verbraucherzentrale; die KIPKI-Mittel der VG fließen in kommunale Gebäude. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet und stehen im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "maifeld.de Sitemap (976 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerderprogramm/richtlinie/klima/energie/kipki durchsucht",
+      "Ortsrecht der Ortsgemeinde Rüber auf maifeld.de (Satzungen-/Ortsrecht-Ordner) vollständig durchgesehen: nur Haupt-, Friedhofs-, Hundesteuer-, Reinigungssatzungen, Benutzungsordnungen — keine Förderrichtlinie",
+      "Eigene Website der Ortsgemeinde: gemeinde-rueber.de (Navigation vollständig: Einrichtungen, Vereine, Hochwasserschutzkonzept, Satzungsrecht — kein Förderprogramm)",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: Balkonkraftwerke und Solarspeicher, beide beendet",
+      "Websuche: Verbandsgemeinde Maifeld Förderung Balkonkraftwerk Photovoltaik Zuschuss Ortsgemeinde (nur KIPKI für kommunale Liegenschaften, Dorferneuerung, Bauleitplanung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/",
+        "finding": "Übersichtsseite im Original gelesen (22.09.2026): vier Unterbereiche Bauleitplanung, Klimaschutz, Hochwasser- und Starkregenvorsorge, Energieberatung — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/",
+        "finding": "Im Browser gelesen: Klimaschutzteilkonzept (kommunale Liegenschaften), Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, kommunale Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus; für Fördermöglichkeiten verweist die VG an die Verbraucherzentrale — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/",
+        "finding": "Sturzflutkarten und örtliche Hochwasservorsorgekonzepte der Ortsgemeinden — kein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://kipki.rlp.de/was-ist-kipki/aktuelles/detail/verbandsgemeinde-maifeld-erhaelt-kipki-foerderung-in-hoehe-von-rund-726000-euro-1",
+        "finding": "KIPKI-Mittel der VG Maifeld (rund 726.000 €) für kommunale Maßnahmen: LED und Wärmepumpen in kommunalen Gebäuden, Heizungssanierung in Schulen/Kitas, Batteriespeicher und Ladesäulen in kommunalen Liegenschaften — kein Zuschuss für Private."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen",
+        "disposition": "reviewed",
+        "reason": "VG-Übersicht „Bauen, Wohnen, Klimaschutz & Förderungen“ samt Unterseiten Klimaschutz und Energieberatung gelesen: kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge",
+        "disposition": "reviewed",
+        "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      }
+    ]
+  },
+  {
+    "regionId": "07137114",
+    "name": "Wierschem",
+    "checkedAt": "2026-09-22T04:07:32Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wierschem gehört zur Verbandsgemeinde Maifeld (Landkreis Mayen-Koblenz). Weder die Verbandsgemeinde noch die Ortsgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die VG-Seite „Bauen, Wohnen, Klimaschutz & Förderungen“ enthält nur Bauleitplanung, Klimaschutzmanagement für kommunale Liegenschaften, Hochwasservorsorge und die Energieberatung der Verbraucherzentrale; die KIPKI-Mittel der VG fließen in kommunale Gebäude. Die beiden Kreisprogramme (Balkonkraftwerke, Solarspeicher) sind beendet und stehen im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "maifeld.de Sitemap (976 Adressen, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerderprogramm/richtlinie/klima/energie/kipki durchsucht",
+      "Ortsrecht der Ortsgemeinde Wierschem auf maifeld.de (Satzungen-/Ortsrecht-Ordner) vollständig durchgesehen: nur Haupt-, Friedhofs-, Hundesteuer-, Reinigungssatzungen, Benutzungsordnungen — keine Förderrichtlinie",
+      "Eigene Website der Ortsgemeinde: wierschem.de (Joomla-Suche Photovoltaik, Balkon, Zuschuss, Solar: keine Treffer)",
+      "Katalog nach Programmen des Landkreises Mayen-Koblenz (07137) durchsucht: Balkonkraftwerke und Solarspeicher, beide beendet",
+      "Websuche: Verbandsgemeinde Maifeld Förderung Balkonkraftwerk Photovoltaik Zuschuss Ortsgemeinde (nur KIPKI für kommunale Liegenschaften, Dorferneuerung, Bauleitplanung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/",
+        "finding": "Übersichtsseite im Original gelesen (22.09.2026): vier Unterbereiche Bauleitplanung, Klimaschutz, Hochwasser- und Starkregenvorsorge, Energieberatung — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/",
+        "finding": "Im Browser gelesen: Klimaschutzteilkonzept (kommunale Liegenschaften), Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, kommunale Wärmeplanung — kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/energieberatung/",
+        "finding": "Kostenlose Energieberatung der Verbraucherzentrale im Rathaus; für Fördermöglichkeiten verweist die VG an die Verbraucherzentrale — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/",
+        "finding": "Sturzflutkarten und örtliche Hochwasservorsorgekonzepte der Ortsgemeinden — kein Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://kipki.rlp.de/was-ist-kipki/aktuelles/detail/verbandsgemeinde-maifeld-erhaelt-kipki-foerderung-in-hoehe-von-rund-726000-euro-1",
+        "finding": "KIPKI-Mittel der VG Maifeld (rund 726.000 €) für kommunale Maßnahmen: LED und Wärmepumpen in kommunalen Gebäuden, Heizungssanierung in Schulen/Kitas, Batteriespeicher und Ladesäulen in kommunalen Liegenschaften — kein Zuschuss für Private."
+      },
+      {
+        "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+        "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen",
+        "disposition": "reviewed",
+        "reason": "VG-Übersicht „Bauen, Wohnen, Klimaschutz & Förderungen“ samt Unterseiten Klimaschutz und Energieberatung gelesen: kein Zuschussprogramm für private Haushalte.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge",
+        "disposition": "reviewed",
+        "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      }
+    ]
   }
 ]
