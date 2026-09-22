@@ -28,6 +28,14 @@ describe('individual monthly valuation',()=>{
   expect(unitTariff({...unit,day:'2006-01-01'},'2026-12-31').eligible).toBe(true);
   expect(unitTariff({...unit,day:'2006-01-01'},'2027-01-01').eligible).toBe(false);
  });
+ it('prices a ground-mounted system by the valued month, not by today (2005 was still paid in 2025)',()=>{
+  // EEG 2004 § 11 Abs. 1 and 5: 45.70 ct base, −5 % for 2005 → 43.42 ct; paid until 31.12.2025.
+  const ground={...unit,day:'2005-06-15',kwp:500,art:'852',feedInMode:'688'};
+  expect(unitTariff(ground,'2025-06-30')).toEqual({ct:43.42,eligible:true,approximate:true});
+  expect(unitTariff(ground,'2026-01-31').eligible).toBe(false);
+  // A roof system of the same vintage takes the same law's 2005 roof rate.
+  expect(unitTariff({...unit,day:'2005-06-15',kwp:5},'2025-06-30').ct).toBe(54.53);
+ });
  it('keeps all 23/25-hour DST intervals and rejects a missing hour',()=>{
   const spring=unitMonthValue([unit],weather('2026-03'),'2026-03',.3),fall=unitMonthValue([unit],weather('2026-10'),'2026-10',.3);
   expect(fall.totalMwh/spring.totalMwh).toBeCloseTo(745/743);

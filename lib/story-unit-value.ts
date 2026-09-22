@@ -1,6 +1,6 @@
 import {altFeedInRatesFor,blendRoofRate} from './feedin-archiv-alt';
 import {feedInEndIso,feedInRatesForCommissioning} from './feedin-config';
-import {einspeiseSatz,marktErloesCt,balkonEigenverbrauchAnteil} from './atlas-impact';
+import {einspeiseSatz,marktErloesCt,balkonEigenverbrauchAnteil,jahrgangStichtag} from './atlas-impact';
 import {DEFAULT_PRICES} from './prices-config';
 import {calcCurrentPower} from './simulation';
 export type ValuationUnit={id:string;day:string;kwp:number;status:string;art:string;usage:string;feedInMode:string;storage:string};
@@ -9,7 +9,17 @@ export function unitTariff(unit:ValuationUnit,asOf:string){
  if(!/^\d{4}-\d{2}-\d{2}$/.test(day)||!Number.isFinite(kwp)||kwp<=0)throw Error('Invalid unit');
  if(unit.art==='2961')return {ct:0,eligible:false,approximate:false};
  if(feedInEndIso(day)<asOf)return {ct:marktErloesCt(),eligible:false,approximate:false};
- if(unit.art==='852')return {...einspeiseSatz('freiflaeche',Number(day.slice(0,4)),kwp),eligible:true,approximate:true};
+ // Ground-mounted: the payment period was checked above against the VALUED
+ // month. einspeiseSatz() checks it against today instead, so for a past month
+ // it priced a still-paid 2005 system at market value (about a ninth of its
+ // 43.42 ct). Up to 03/2012 take the ground rate of the vintage's mid-year
+ // reference day — the rule einspeiseSatz() applies to unexpired vintages, so
+ // every value that was already right stays identical; later vintages are not
+ // expired today and go through einspeiseSatz() unchanged.
+ if(unit.art==='852'){
+  const year=Number(day.slice(0,4)),vintage=altFeedInRatesFor(jahrgangStichtag(year));
+  return vintage?{ct:vintage.groundMounted,eligible:true,approximate:true}:{...einspeiseSatz('freiflaeche',year,kwp),eligible:true,approximate:true};
+ }
  const alt=altFeedInRatesFor(day);
  if(alt){const exact=blendRoofRate(alt,kwp);return {ct:exact??alt.roofUpTo100,eligible:true,approximate:exact===null};}
  const rates=feedInRatesForCommissioning(day);
