@@ -45518,7 +45518,7 @@
   {
     "regionId": "01055014",
     "name": "Göhl",
-    "checkedAt": "2026-09-22T10:40:00Z",
+    "checkedAt": "2026-09-22T10:25:00Z",
     "recheckAt": "2026-12-21T10:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -45571,7 +45571,7 @@
   {
     "regionId": "01055015",
     "name": "Gremersdorf",
-    "checkedAt": "2026-09-22T10:40:00Z",
+    "checkedAt": "2026-09-22T10:25:00Z",
     "recheckAt": "2026-12-21T10:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -45624,7 +45624,7 @@
   {
     "regionId": "01055017",
     "name": "Großenbrode",
-    "checkedAt": "2026-09-22T10:40:00Z",
+    "checkedAt": "2026-09-22T10:25:00Z",
     "recheckAt": "2026-12-21T10:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -45671,13 +45671,19 @@
         "disposition": "reviewed",
         "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
         "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "replaced",
+        "reason": "Lebenslagen-Seite „Infrastruktur-, Bau- und Wohnförderung“ ist entfernt (HTTP 404 am 20.09. und 22.09.2026); die Förder-Lebenslagen des Amts wurden stattdessen über die Volltextsuche geprüft (nur Behördenwegweiser des Landes, kein kommunaler Zuschuss).",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/suche"
       }
     ]
   },
   {
     "regionId": "01055022",
     "name": "Heringsdorf",
-    "checkedAt": "2026-09-22T10:40:00Z",
+    "checkedAt": "2026-09-22T10:25:00Z",
     "recheckAt": "2026-12-21T10:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -45730,7 +45736,7 @@
   {
     "regionId": "01055031",
     "name": "Neukirchen",
-    "checkedAt": "2026-09-22T10:40:00Z",
+    "checkedAt": "2026-09-22T10:25:00Z",
     "recheckAt": "2026-12-21T10:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -45783,7 +45789,7 @@
   {
     "regionId": "01055043",
     "name": "Wangels",
-    "checkedAt": "2026-09-22T10:40:00Z",
+    "checkedAt": "2026-09-22T10:25:00Z",
     "recheckAt": "2026-12-21T10:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -45830,6 +45836,12 @@
         "disposition": "reviewed",
         "reason": "Wärmeplanung und Verweis auf den Kreis-Klimaschutzfonds, der Energieanlagen ausschließt.",
         "evidenceUrl": "https://www.amt-oldenburg-land.de/buergerservice-politik/wissenswertes/klimaschutz-und-kommunale-waermeplanung"
+      },
+      {
+        "url": "amt-oldenburg-land.de/buergerservice-politik/ihre-digitale-amtsverwaltung/lebenslagen/detail/infrastruktur-bau-und-wohnfoerderung-2568",
+        "disposition": "replaced",
+        "reason": "Lebenslagen-Seite „Infrastruktur-, Bau- und Wohnförderung“ ist entfernt (HTTP 404 am 20.09. und 22.09.2026); die Förder-Lebenslagen des Amts wurden stattdessen über die Volltextsuche geprüft (nur Behördenwegweiser des Landes, kein kommunaler Zuschuss).",
+        "evidenceUrl": "https://www.amt-oldenburg-land.de/suche"
       }
     ]
   }
