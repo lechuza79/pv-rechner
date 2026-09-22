@@ -21,21 +21,29 @@ import { host, siteOf } from "../../lib/kontakt-suche";
 const sha = (b: Buffer | string) => createHash("sha256").update(b).digest("hex");
 const KONTAKT_LINK = /impressum|imprint|kontakt|contact|legal|about|über uns|ueber-uns|uber-uns/i;
 
-let browser: Browser | null = null;
-async function oeffnen(): Promise<Browser> {
-  if (!browser) {
-    const { chromium } = await import("playwright");
-    browser = await chromium.launch({ headless: true });
-  }
+// A promise, not the browser: parallel callers would otherwise each launch one.
+let browser: Promise<Browser> | null = null;
+function oeffnen(): Promise<Browser> {
+  browser ??= import("playwright").then(({ chromium }) => chromium.launch({ headless: true }));
   return browser;
 }
-export async function browserSchliessen() { await browser?.close(); browser = null; }
+export async function browserSchliessen() { const b = browser; browser = null; await (await b)?.close(); }
 
 /** Start addresses in the order a visitor would reach the site. */
 export function startAdressen(website: string): string[] {
   const h = host(website);
   const bare = h.replace(/^www\./, "");
   return [...new Set([`https://${h}/`, `https://www.${bare}/`, `http://www.${bare}/`, `http://${bare}/`])];
+}
+
+/** The page's HTML; a page that is still redirecting is given time to settle. */
+async function inhalt(page: import("playwright").Page): Promise<string | null> {
+  for (let versuch = 0; versuch < 3; versuch++) {
+    try { return await page.content(); } catch {
+      await page.waitForLoadState("load", { timeout: 10000 }).catch(() => {});
+    }
+  }
+  return null;
 }
 
 function speichern(b: Bestand, id: string, url: string, finalUrl: string, html: string) {
@@ -72,7 +80,9 @@ export async function rendern(b: Bestand, e: Eintrag, max = 5): Promise<{ gelese
     }
     if (!start) return { gelesen, fehler };
     fehler = null;
-    speichern(b, e.id, start, page.url(), await page.content());
+    const startHtml = await inhalt(page);
+    if (!startHtml) return { gelesen, fehler: "Seite kam nicht zur Ruhe" };
+    speichern(b, e.id, start, page.url(), startHtml);
     gelesen.push(page.url());
     const site = siteOf(host(page.url()));
     const links = await page.$$eval("a[href]", as => as.map(a => ({ href: (a as HTMLAnchorElement).href, text: (a.textContent ?? "").trim() })));
@@ -85,7 +95,9 @@ export async function rendern(b: Bestand, e: Eintrag, max = 5): Promise<{ gelese
         await page.waitForTimeout(1500);
         // A hash route of a single-page site navigates without a response.
         if (res && res.status() >= 400) continue;
-        speichern(b, e.id, ziel, page.url(), await page.content());
+        const html = await inhalt(page);
+        if (!html) continue;
+        speichern(b, e.id, ziel, page.url(), html);
         gelesen.push(page.url());
       } catch { /* one unreadable page does not end the pass */ }
     }
@@ -105,6 +117,6 @@ export async function seiteGerendert(url: string): Promise<string | null> {
     const page = await ctx.newPage();
     const res = await page.goto(url, { waitUntil: "load", timeout: 15000 });
     await page.waitForTimeout(2000);
-    return res && res.status() >= 400 ? null : await page.content();
+    return res && res.status() >= 400 ? null : await inhalt(page);
   } catch { return null; } finally { await ctx.close(); }
 }

@@ -64,7 +64,7 @@ export const MEDIEN_ROLLENWERK: Rollenwerk = {
   seitenRolle: (pfad: string) => /(?:^|\/)(?:impressum|imprint|kontakt|contact|ueber-?(?:mich|uns)|about|team|redaktion)(?:-\d+)?\/?$/i.test(pfad) ? "redaktion" : null,
 };
 
-const MEDIEN_SCOPE: ScopeRegeln = {
+export const MEDIEN_SCOPE: ScopeRegeln = {
   // Verlags- und Vermarkterdomains gehören nicht dem Blog, das wir anschreiben.
   fremdeBehoerde: /verlag|mediengruppe|vermarkt|networ|agentur/,
   // Shop- und Forenableger sind nicht die Redaktion.
