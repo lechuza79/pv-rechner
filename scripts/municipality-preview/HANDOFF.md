@@ -7,7 +7,7 @@ Replace the old Atlas municipality page across all approximately 11,000 municipa
 ## Secured source
 
 - Design: `codex/kommunenseite-design`. Previously completed design commit `6e5aaaa2cb97d7ccc1f909cc9f0210979f648c2f` is pushed. The portable-source handoff is a subsequent commit on the same branch.
-- Story worktree: backup branch `codex/kommunen-templates-sicherung`, based on the existing `codex/kommunen-templates` commit. Its original source selection is archived remotely; the WIP commit is pending explicit permission because the normal hook failed eight existing tests and automatic approval rejected skipping that gate. Do not treat a local branch name as evidence of a pushed backup commit.
+- Story source: `codex/kommunen-templates-sicherung`, commit `6d707e8bccd3e16b4f3dc1fc7ba17adf50695bab`. The original selection plus targeted validation repairs is committed with the regular hook; the pristine original remains separately archived. See `docs/municipal-source-backup-notes.md` on that branch for the exact nine repaired files.
 - Private draft GitHub release: tag `municipal-source-backup-2026-09-22` in `lechuza79/pv-rechner`. This is an authenticated backup artifact, not a published release or deployment. Use the tag with GitHub CLI; draft release URLs may show an `untagged-…` identifier.
 
 ```sh
@@ -65,5 +65,9 @@ Use one consistent weather provider/edition and matching register inputs. Do not
 
 - Preview build completed; inherited CSS composition duplicate-property warnings remain.
 - All 13 focused header/history/ranking/portability tests passed with independently installed dependencies. Asset hashes, source fingerprints and every story build input were checked inside this checkout.
-- Original story source type check passed. Its full test run passed 3,649 of 3,657 tests; eight failures remain in registry/embed/font registries, a social-card source assertion, two UTC-day usages and three story-city snapshot expectations. The remote source archive deliberately preserves that original state.
+- Secured story branch: type check and all 3,657 tests pass through the regular commit hook. The initial eight failures were repaired, not bypassed. The remote source archive deliberately preserves the pristine original before repairs; the vendor closure in this design branch also remains that original snapshot. For integration, take canonical repaired story sources from the secured story branch, not the vendor duplicate.
 - This work does not establish production load times, SEO or deployed correctness. No fresh nationwide source preparation was run.
+
+## Confirmed completion scope
+
+The user explicitly retained SSR/SEO and central application integration with Claude. Source backup, portability and handoff are complete; the SEO gaps above remain intentional integration work, not a claim of production readiness. No deployment or main merge is authorized by this handoff.
