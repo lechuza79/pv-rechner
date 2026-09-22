@@ -43497,5 +43497,1218 @@
         "evidenceUrl": "https://www.verwaltungsamt-helbra.de/foerderungen/"
       }
     ]
+  },
+  {
+    "regionId": "01058001",
+    "name": "Achterwehr",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Achterwehr gehört zum Amt Achterwehr (Kreis Rendsburg-Eckernförde). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Gemeinde hat ein kommunales Klimaschutzkonzept (Klimaschutzagentur Rendsburg-Eckernförde), aber kein Zuschussprogramm. Der Klimaschutzfonds des Kreises fördert nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen, keine Privathaushalte; das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ ist eingestellt und steht im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "amt-achterwehr.de Sitemap (672 Adressen inkl. Nachrichten, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerder/richtlinie/klima/energie/waerme/speicher durchsucht: nur Bauleitplanung für Solarparks, Vereinsförderung Felde, LED-Umrüstungen Ottendorf, Klimaschutzkonzepte, Wärmeplanung, Energiemonitor",
+      "Volltextsuche amt-achterwehr.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik/Solar nur Bebauungspläne und Finanzamt-Hinweis; Zuschuss nur Vereinszuschüsse; Wärmepumpe nur Leistungsbeschreibung Unternehmenszertifizierung; Klimaschutz nur Klimaschutzkonzepte und Landesprogramm",
+      "Amtliche Bekanntmachungen (Satzungen der Amtsgemeinden) in der Sitemap durchgesehen: Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Kita-, Reinigungssatzungen — keine Förderrichtlinie für Energieanlagen",
+      "Klimaschutzagentur Rendsburg-Eckernförde: Klimaschutzfonds und Handlungsfeld Solarenergie gelesen",
+      "Katalog nach Programmen des Kreises Rendsburg-Eckernförde (01058) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt",
+      "Websuche: Balkonkraftwerk/Photovoltaik Zuschuss Achterwehr, Felde, Krummwisch, Ottendorf, Quarnbek, Westensee — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/",
+        "finding": "Im Original gelesen (22.09.2026): „Förderung von Vereinen und Verbänden“ nach den Förderrichtlinien der Gemeinde Felde seit Juni 2015 — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/aktuelles/foerderungen/",
+        "finding": "„Im Amt Achterwehr aktuell geförderte Maßnahmen“: nur LED-Umrüstung Mehrzweckhalle und Straßenbeleuchtung der Gemeinde Ottendorf — Fördermittel an die Gemeinde, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises: antragsberechtigt nur kreisangehörige Gemeinden, Ämter, Schulträger, Kita-Träger, gemeinnützige Sportvereine und kulturelle Einrichtungen; PV-Anlagen seit 01.01.2026 nicht mehr gefördert — keine Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung für die Amtsgemeinden — Planungsinstrument, keine Förderung."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/energiemonitor/",
+        "finding": "Energiemonitor des Netzbetreibers für das Amtsgebiet — Information, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag",
+        "disposition": "reviewed",
+        "reason": "Vereinsförderung der Gemeinde Felde nach ihren Förderrichtlinien (Antrag bis Ende Februar an den Bildungs-, Sozial- und Kulturausschuss) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/"
+      }
+    ]
+  },
+  {
+    "regionId": "01058050",
+    "name": "Felde",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Felde gehört zum Amt Achterwehr (Kreis Rendsburg-Eckernförde). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die einzige Förderseite der Gemeinde betrifft Vereine und Verbände. Der Klimaschutzfonds des Kreises fördert nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen, keine Privathaushalte; das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ ist eingestellt und steht im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "amt-achterwehr.de Sitemap (672 Adressen inkl. Nachrichten, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerder/richtlinie/klima/energie/waerme/speicher durchsucht: nur Bauleitplanung für Solarparks, Vereinsförderung Felde, LED-Umrüstungen Ottendorf, Klimaschutzkonzepte, Wärmeplanung, Energiemonitor",
+      "Volltextsuche amt-achterwehr.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik/Solar nur Bebauungspläne und Finanzamt-Hinweis; Zuschuss nur Vereinszuschüsse; Wärmepumpe nur Leistungsbeschreibung Unternehmenszertifizierung; Klimaschutz nur Klimaschutzkonzepte und Landesprogramm",
+      "Amtliche Bekanntmachungen (Satzungen der Amtsgemeinden) in der Sitemap durchgesehen: Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Kita-, Reinigungssatzungen — keine Förderrichtlinie für Energieanlagen",
+      "Klimaschutzagentur Rendsburg-Eckernförde: Klimaschutzfonds und Handlungsfeld Solarenergie gelesen",
+      "Katalog nach Programmen des Kreises Rendsburg-Eckernförde (01058) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt",
+      "Websuche: Balkonkraftwerk/Photovoltaik Zuschuss Achterwehr, Felde, Krummwisch, Ottendorf, Quarnbek, Westensee — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/",
+        "finding": "Im Original gelesen (22.09.2026): „Förderung von Vereinen und Verbänden“ nach den Förderrichtlinien der Gemeinde Felde seit Juni 2015 — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/aktuelles/foerderungen/",
+        "finding": "„Im Amt Achterwehr aktuell geförderte Maßnahmen“: nur LED-Umrüstung Mehrzweckhalle und Straßenbeleuchtung der Gemeinde Ottendorf — Fördermittel an die Gemeinde, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises: antragsberechtigt nur kreisangehörige Gemeinden, Ämter, Schulträger, Kita-Träger, gemeinnützige Sportvereine und kulturelle Einrichtungen; PV-Anlagen seit 01.01.2026 nicht mehr gefördert — keine Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung für die Amtsgemeinden — Planungsinstrument, keine Förderung."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/energiemonitor/",
+        "finding": "Energiemonitor des Netzbetreibers für das Amtsgebiet — Information, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag",
+        "disposition": "reviewed",
+        "reason": "Vereinsförderung der Gemeinde Felde nach ihren Förderrichtlinien (Antrag bis Ende Februar an den Bildungs-, Sozial- und Kulturausschuss) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/"
+      }
+    ]
+  },
+  {
+    "regionId": "01058093",
+    "name": "Krummwisch",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Krummwisch gehört zum Amt Achterwehr (Kreis Rendsburg-Eckernförde). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Gemeinde hat keine eigene Website, nur die Gemeindeseiten auf dem Amtsportal. Der Klimaschutzfonds des Kreises fördert nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen, keine Privathaushalte; das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ ist eingestellt und steht im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "amt-achterwehr.de Sitemap (672 Adressen inkl. Nachrichten, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerder/richtlinie/klima/energie/waerme/speicher durchsucht: nur Bauleitplanung für Solarparks, Vereinsförderung Felde, LED-Umrüstungen Ottendorf, Klimaschutzkonzepte, Wärmeplanung, Energiemonitor",
+      "Volltextsuche amt-achterwehr.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik/Solar nur Bebauungspläne und Finanzamt-Hinweis; Zuschuss nur Vereinszuschüsse; Wärmepumpe nur Leistungsbeschreibung Unternehmenszertifizierung; Klimaschutz nur Klimaschutzkonzepte und Landesprogramm",
+      "Amtliche Bekanntmachungen (Satzungen der Amtsgemeinden) in der Sitemap durchgesehen: Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Kita-, Reinigungssatzungen — keine Förderrichtlinie für Energieanlagen",
+      "Klimaschutzagentur Rendsburg-Eckernförde: Klimaschutzfonds und Handlungsfeld Solarenergie gelesen",
+      "Katalog nach Programmen des Kreises Rendsburg-Eckernförde (01058) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt",
+      "Websuche: Balkonkraftwerk/Photovoltaik Zuschuss Achterwehr, Felde, Krummwisch, Ottendorf, Quarnbek, Westensee — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/",
+        "finding": "Im Original gelesen (22.09.2026): „Förderung von Vereinen und Verbänden“ nach den Förderrichtlinien der Gemeinde Felde seit Juni 2015 — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/aktuelles/foerderungen/",
+        "finding": "„Im Amt Achterwehr aktuell geförderte Maßnahmen“: nur LED-Umrüstung Mehrzweckhalle und Straßenbeleuchtung der Gemeinde Ottendorf — Fördermittel an die Gemeinde, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises: antragsberechtigt nur kreisangehörige Gemeinden, Ämter, Schulträger, Kita-Träger, gemeinnützige Sportvereine und kulturelle Einrichtungen; PV-Anlagen seit 01.01.2026 nicht mehr gefördert — keine Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung für die Amtsgemeinden — Planungsinstrument, keine Förderung."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/energiemonitor/",
+        "finding": "Energiemonitor des Netzbetreibers für das Amtsgebiet — Information, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag",
+        "disposition": "reviewed",
+        "reason": "Vereinsförderung der Gemeinde Felde nach ihren Förderrichtlinien (Antrag bis Ende Februar an den Bildungs-, Sozial- und Kulturausschuss) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/"
+      }
+    ]
+  },
+  {
+    "regionId": "01058126",
+    "name": "Ottendorf",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ottendorf gehört zum Amt Achterwehr (Kreis Rendsburg-Eckernförde). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Das 2026 veröffentlichte Klimaschutzkonzept der Gemeinde und die geförderten LED-Umrüstungen betreffen kommunale Anlagen, kein Bürgerprogramm. Der Klimaschutzfonds des Kreises fördert nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen, keine Privathaushalte; das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ ist eingestellt und steht im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "amt-achterwehr.de Sitemap (672 Adressen inkl. Nachrichten, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerder/richtlinie/klima/energie/waerme/speicher durchsucht: nur Bauleitplanung für Solarparks, Vereinsförderung Felde, LED-Umrüstungen Ottendorf, Klimaschutzkonzepte, Wärmeplanung, Energiemonitor",
+      "Volltextsuche amt-achterwehr.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik/Solar nur Bebauungspläne und Finanzamt-Hinweis; Zuschuss nur Vereinszuschüsse; Wärmepumpe nur Leistungsbeschreibung Unternehmenszertifizierung; Klimaschutz nur Klimaschutzkonzepte und Landesprogramm",
+      "Amtliche Bekanntmachungen (Satzungen der Amtsgemeinden) in der Sitemap durchgesehen: Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Kita-, Reinigungssatzungen — keine Förderrichtlinie für Energieanlagen",
+      "Klimaschutzagentur Rendsburg-Eckernförde: Klimaschutzfonds und Handlungsfeld Solarenergie gelesen",
+      "Katalog nach Programmen des Kreises Rendsburg-Eckernförde (01058) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt",
+      "Websuche: Balkonkraftwerk/Photovoltaik Zuschuss Achterwehr, Felde, Krummwisch, Ottendorf, Quarnbek, Westensee — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/",
+        "finding": "Im Original gelesen (22.09.2026): „Förderung von Vereinen und Verbänden“ nach den Förderrichtlinien der Gemeinde Felde seit Juni 2015 — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/aktuelles/foerderungen/",
+        "finding": "„Im Amt Achterwehr aktuell geförderte Maßnahmen“: nur LED-Umrüstung Mehrzweckhalle und Straßenbeleuchtung der Gemeinde Ottendorf — Fördermittel an die Gemeinde, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises: antragsberechtigt nur kreisangehörige Gemeinden, Ämter, Schulträger, Kita-Träger, gemeinnützige Sportvereine und kulturelle Einrichtungen; PV-Anlagen seit 01.01.2026 nicht mehr gefördert — keine Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung für die Amtsgemeinden — Planungsinstrument, keine Förderung."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/energiemonitor/",
+        "finding": "Energiemonitor des Netzbetreibers für das Amtsgebiet — Information, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag",
+        "disposition": "reviewed",
+        "reason": "Vereinsförderung der Gemeinde Felde nach ihren Förderrichtlinien (Antrag bis Ende Februar an den Bildungs-, Sozial- und Kulturausschuss) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/"
+      }
+    ]
+  },
+  {
+    "regionId": "01058130",
+    "name": "Quarnbek",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Quarnbek gehört zum Amt Achterwehr (Kreis Rendsburg-Eckernförde). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die frühere Gemeindedomain quarnbek.de ist eine zum Verkauf stehende Parkdomain; die Gemeinde wird auf dem Amtsportal geführt. Der Klimaschutzfonds des Kreises fördert nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen, keine Privathaushalte; das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ ist eingestellt und steht im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "amt-achterwehr.de Sitemap (672 Adressen inkl. Nachrichten, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerder/richtlinie/klima/energie/waerme/speicher durchsucht: nur Bauleitplanung für Solarparks, Vereinsförderung Felde, LED-Umrüstungen Ottendorf, Klimaschutzkonzepte, Wärmeplanung, Energiemonitor",
+      "Volltextsuche amt-achterwehr.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik/Solar nur Bebauungspläne und Finanzamt-Hinweis; Zuschuss nur Vereinszuschüsse; Wärmepumpe nur Leistungsbeschreibung Unternehmenszertifizierung; Klimaschutz nur Klimaschutzkonzepte und Landesprogramm",
+      "Amtliche Bekanntmachungen (Satzungen der Amtsgemeinden) in der Sitemap durchgesehen: Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Kita-, Reinigungssatzungen — keine Förderrichtlinie für Energieanlagen",
+      "Klimaschutzagentur Rendsburg-Eckernförde: Klimaschutzfonds und Handlungsfeld Solarenergie gelesen",
+      "Katalog nach Programmen des Kreises Rendsburg-Eckernförde (01058) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt",
+      "Websuche: Balkonkraftwerk/Photovoltaik Zuschuss Achterwehr, Felde, Krummwisch, Ottendorf, Quarnbek, Westensee — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/",
+        "finding": "Im Original gelesen (22.09.2026): „Förderung von Vereinen und Verbänden“ nach den Förderrichtlinien der Gemeinde Felde seit Juni 2015 — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/aktuelles/foerderungen/",
+        "finding": "„Im Amt Achterwehr aktuell geförderte Maßnahmen“: nur LED-Umrüstung Mehrzweckhalle und Straßenbeleuchtung der Gemeinde Ottendorf — Fördermittel an die Gemeinde, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises: antragsberechtigt nur kreisangehörige Gemeinden, Ämter, Schulträger, Kita-Träger, gemeinnützige Sportvereine und kulturelle Einrichtungen; PV-Anlagen seit 01.01.2026 nicht mehr gefördert — keine Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung für die Amtsgemeinden — Planungsinstrument, keine Förderung."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/energiemonitor/",
+        "finding": "Energiemonitor des Netzbetreibers für das Amtsgebiet — Information, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag",
+        "disposition": "reviewed",
+        "reason": "Vereinsförderung der Gemeinde Felde nach ihren Förderrichtlinien (Antrag bis Ende Februar an den Bildungs-, Sozial- und Kulturausschuss) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/"
+      }
+    ]
+  },
+  {
+    "regionId": "01058171",
+    "name": "Westensee",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Westensee gehört zum Amt Achterwehr (Kreis Rendsburg-Eckernförde). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. westensee.de verweist nur auf eine Tourismusseite; die Gemeinde wird auf dem Amtsportal geführt. Der Klimaschutzfonds des Kreises fördert nur Gemeinden, Ämter, Schul- und Kita-Träger, gemeinnützige Sportvereine und Kultureinrichtungen, keine Privathaushalte; das Landesprogramm „Klimaschutz für Bürgerinnen und Bürger“ ist eingestellt und steht im Katalog (Stand 22.09.2026).",
+    "searches": [
+      "amt-achterwehr.de Sitemap (672 Adressen inkl. Nachrichten, 22.09.2026) nach solar/photovolt/balkon/stecker/zuschuss/foerder/richtlinie/klima/energie/waerme/speicher durchsucht: nur Bauleitplanung für Solarparks, Vereinsförderung Felde, LED-Umrüstungen Ottendorf, Klimaschutzkonzepte, Wärmeplanung, Energiemonitor",
+      "Volltextsuche amt-achterwehr.de (22.09.2026): Balkonkraftwerk 0 Treffer; Photovoltaik/Solar nur Bebauungspläne und Finanzamt-Hinweis; Zuschuss nur Vereinszuschüsse; Wärmepumpe nur Leistungsbeschreibung Unternehmenszertifizierung; Klimaschutz nur Klimaschutzkonzepte und Landesprogramm",
+      "Amtliche Bekanntmachungen (Satzungen der Amtsgemeinden) in der Sitemap durchgesehen: Haupt-, Entschädigungs-, Haushalts-, Abgaben-, Kita-, Reinigungssatzungen — keine Förderrichtlinie für Energieanlagen",
+      "Klimaschutzagentur Rendsburg-Eckernförde: Klimaschutzfonds und Handlungsfeld Solarenergie gelesen",
+      "Katalog nach Programmen des Kreises Rendsburg-Eckernförde (01058) und des Landes Schleswig-Holstein durchsucht: kein Kreisprogramm, Landesprogramme eingestellt",
+      "Websuche: Balkonkraftwerk/Photovoltaik Zuschuss Achterwehr, Felde, Krummwisch, Ottendorf, Quarnbek, Westensee — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/",
+        "finding": "Im Original gelesen (22.09.2026): „Förderung von Vereinen und Verbänden“ nach den Förderrichtlinien der Gemeinde Felde seit Juni 2015 — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/aktuelles/foerderungen/",
+        "finding": "„Im Amt Achterwehr aktuell geförderte Maßnahmen“: nur LED-Umrüstung Mehrzweckhalle und Straßenbeleuchtung der Gemeinde Ottendorf — Fördermittel an die Gemeinde, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.ksa-rdeck.de/projekte/klimaschutzfonds",
+        "finding": "Klimaschutzfonds des Kreises: antragsberechtigt nur kreisangehörige Gemeinden, Ämter, Schulträger, Kita-Träger, gemeinnützige Sportvereine und kulturelle Einrichtungen; PV-Anlagen seit 01.01.2026 nicht mehr gefördert — keine Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/kommunale-waermeplanung/",
+        "finding": "Kommunale Wärmeplanung für die Amtsgemeinden — Planungsinstrument, keine Förderung."
+      },
+      {
+        "url": "https://www.amt-achterwehr.de/bauen-wohnen/energiemonitor/",
+        "finding": "Energiemonitor des Netzbetreibers für das Amtsgebiet — Information, keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag",
+        "disposition": "reviewed",
+        "reason": "Vereinsförderung der Gemeinde Felde nach ihren Förderrichtlinien (Antrag bis Ende Februar an den Bildungs-, Sozial- und Kulturausschuss) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.amt-achterwehr.de/gemeinden/felde/politik/foerderungsantrag/"
+      }
+    ]
+  },
+  {
+    "regionId": "12071074",
+    "name": "Felixsee",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Felixsee gehört zum Amt Döbern-Land (Landkreis Spree-Neiße). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Amts listen nur Fördermittel, die die Gemeinden selbst erhalten (Löschwasser, Straßenbeleuchtung, Geopark, Strukturwandel), und Links zu Wirtschaftsförderern. Der Landkreis Spree-Neiße führt auf seiner Website nur Wirtschaftsförderung; im Katalog steht weder ein Programm des Landkreises noch ein Landesprogramm Brandenburgs (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche amt-doebern-land.de (22.09.2026): Balkonkraftwerk und Wärmepumpe 0 Treffer; Photovoltaik nur Bauen/Bekanntmachungen; Solar nur Branchenverzeichnis und Unternehmertreffen; Speicher nur Heimatspeicher Klein Kölzig und Ziegelei-Projekt; Zuschuss und Förderprogramm nur Förderinstitutionen, Corona-Teilhabefonds, kommunale Vorhaben; Klimaschutz nur kommunale Fördervorhaben",
+      "Kommunenverzeichnis des Amtsportals: keine eigenen Gemeindewebsites verlinkt",
+      "lkspn.de Sitemap (308 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/klima/energie/waerme/speicher durchsucht: nur Wirtschaftsförderung",
+      "Katalog nach Programmen des Landkreises Spree-Neiße (12071) und des Landes Brandenburg durchsucht: keine",
+      "Websuche: Landkreis Spree-Neiße Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "finding": "Im Original gelesen (22.09.2026): Linkliste zu Förderinstitutionen für Wirtschaft, Beschäftigung und Gründung (Ministerien, ILB, KfW, BAFA, IHK) — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "finding": "Liste der Fördervorhaben der Amtsgemeinden (Löschwasserentnahmestellen, Straßenbeleuchtung Felixsee, Geopark-Projekt, Alte Ziegelei, Brückenrückbau) — Fördermittel an die Gemeinden, kein Bürgerzuschuss; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "finding": "Strukturwandel-Vorhaben der Gemeinde Neiße-Malxetal nach der Lausitz-Richtlinie des Landes — Infrastruktur der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortet am 22.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.lkspn.de/wirtschaft/wirtschaftsfoerderung.html",
+        "finding": "Einzige förderbezogene Seite in der Sitemap des Landkreises: Wirtschaftsförderung — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "disposition": "reviewed",
+        "reason": "Linkliste Förderinstitutionen für Wirtschaft und Beschäftigung — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "disposition": "reviewed",
+        "reason": "Geförderte Vorhaben der Amtsgemeinden — Fördermittel an die Gemeinden, kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der Seite Fördervorhaben, am 22.09.2026 gesondert abgerufen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "disposition": "reviewed",
+        "reason": "Kommunales Strukturwandel-Vorhaben (Zufahrt, Parkplätze) der Gemeinde Neiße-Malxetal.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html"
+      },
+      {
+        "url": "amt-doebern-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12071153",
+    "name": "Groß Schacksdorf-Simmersdorf",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Groß Schacksdorf-Simmersdorf gehört zum Amt Döbern-Land (Landkreis Spree-Neiße). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Amts listen nur Fördermittel, die die Gemeinden selbst erhalten (Löschwasser, Straßenbeleuchtung, Geopark, Strukturwandel), und Links zu Wirtschaftsförderern. Der Landkreis Spree-Neiße führt auf seiner Website nur Wirtschaftsförderung; im Katalog steht weder ein Programm des Landkreises noch ein Landesprogramm Brandenburgs (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche amt-doebern-land.de (22.09.2026): Balkonkraftwerk und Wärmepumpe 0 Treffer; Photovoltaik nur Bauen/Bekanntmachungen; Solar nur Branchenverzeichnis und Unternehmertreffen; Speicher nur Heimatspeicher Klein Kölzig und Ziegelei-Projekt; Zuschuss und Förderprogramm nur Förderinstitutionen, Corona-Teilhabefonds, kommunale Vorhaben; Klimaschutz nur kommunale Fördervorhaben",
+      "Kommunenverzeichnis des Amtsportals: keine eigenen Gemeindewebsites verlinkt",
+      "lkspn.de Sitemap (308 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/klima/energie/waerme/speicher durchsucht: nur Wirtschaftsförderung",
+      "Katalog nach Programmen des Landkreises Spree-Neiße (12071) und des Landes Brandenburg durchsucht: keine",
+      "Websuche: Landkreis Spree-Neiße Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "finding": "Im Original gelesen (22.09.2026): Linkliste zu Förderinstitutionen für Wirtschaft, Beschäftigung und Gründung (Ministerien, ILB, KfW, BAFA, IHK) — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "finding": "Liste der Fördervorhaben der Amtsgemeinden (Löschwasserentnahmestellen, Straßenbeleuchtung Felixsee, Geopark-Projekt, Alte Ziegelei, Brückenrückbau) — Fördermittel an die Gemeinden, kein Bürgerzuschuss; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "finding": "Strukturwandel-Vorhaben der Gemeinde Neiße-Malxetal nach der Lausitz-Richtlinie des Landes — Infrastruktur der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortet am 22.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.lkspn.de/wirtschaft/wirtschaftsfoerderung.html",
+        "finding": "Einzige förderbezogene Seite in der Sitemap des Landkreises: Wirtschaftsförderung — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "disposition": "reviewed",
+        "reason": "Linkliste Förderinstitutionen für Wirtschaft und Beschäftigung — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "disposition": "reviewed",
+        "reason": "Geförderte Vorhaben der Amtsgemeinden — Fördermittel an die Gemeinden, kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der Seite Fördervorhaben, am 22.09.2026 gesondert abgerufen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "disposition": "reviewed",
+        "reason": "Kommunales Strukturwandel-Vorhaben (Zufahrt, Parkplätze) der Gemeinde Neiße-Malxetal.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html"
+      },
+      {
+        "url": "amt-doebern-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12071189",
+    "name": "Jämlitz-Klein Düben",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Jämlitz-Klein Düben gehört zum Amt Döbern-Land (Landkreis Spree-Neiße). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Amts listen nur Fördermittel, die die Gemeinden selbst erhalten (Löschwasser, Straßenbeleuchtung, Geopark, Strukturwandel), und Links zu Wirtschaftsförderern. Der Landkreis Spree-Neiße führt auf seiner Website nur Wirtschaftsförderung; im Katalog steht weder ein Programm des Landkreises noch ein Landesprogramm Brandenburgs (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche amt-doebern-land.de (22.09.2026): Balkonkraftwerk und Wärmepumpe 0 Treffer; Photovoltaik nur Bauen/Bekanntmachungen; Solar nur Branchenverzeichnis und Unternehmertreffen; Speicher nur Heimatspeicher Klein Kölzig und Ziegelei-Projekt; Zuschuss und Förderprogramm nur Förderinstitutionen, Corona-Teilhabefonds, kommunale Vorhaben; Klimaschutz nur kommunale Fördervorhaben",
+      "Kommunenverzeichnis des Amtsportals: keine eigenen Gemeindewebsites verlinkt",
+      "lkspn.de Sitemap (308 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/klima/energie/waerme/speicher durchsucht: nur Wirtschaftsförderung",
+      "Katalog nach Programmen des Landkreises Spree-Neiße (12071) und des Landes Brandenburg durchsucht: keine",
+      "Websuche: Landkreis Spree-Neiße Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "finding": "Im Original gelesen (22.09.2026): Linkliste zu Förderinstitutionen für Wirtschaft, Beschäftigung und Gründung (Ministerien, ILB, KfW, BAFA, IHK) — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "finding": "Liste der Fördervorhaben der Amtsgemeinden (Löschwasserentnahmestellen, Straßenbeleuchtung Felixsee, Geopark-Projekt, Alte Ziegelei, Brückenrückbau) — Fördermittel an die Gemeinden, kein Bürgerzuschuss; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "finding": "Strukturwandel-Vorhaben der Gemeinde Neiße-Malxetal nach der Lausitz-Richtlinie des Landes — Infrastruktur der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortet am 22.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.lkspn.de/wirtschaft/wirtschaftsfoerderung.html",
+        "finding": "Einzige förderbezogene Seite in der Sitemap des Landkreises: Wirtschaftsförderung — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "disposition": "reviewed",
+        "reason": "Linkliste Förderinstitutionen für Wirtschaft und Beschäftigung — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "disposition": "reviewed",
+        "reason": "Geförderte Vorhaben der Amtsgemeinden — Fördermittel an die Gemeinden, kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der Seite Fördervorhaben, am 22.09.2026 gesondert abgerufen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "disposition": "reviewed",
+        "reason": "Kommunales Strukturwandel-Vorhaben (Zufahrt, Parkplätze) der Gemeinde Neiße-Malxetal.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html"
+      },
+      {
+        "url": "amt-doebern-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12071294",
+    "name": "Neiße-Malxetal",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neiße-Malxetal gehört zum Amt Döbern-Land (Landkreis Spree-Neiße). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Amts listen nur Fördermittel, die die Gemeinden selbst erhalten (Löschwasser, Straßenbeleuchtung, Geopark, Strukturwandel), und Links zu Wirtschaftsförderern. Der Landkreis Spree-Neiße führt auf seiner Website nur Wirtschaftsförderung; im Katalog steht weder ein Programm des Landkreises noch ein Landesprogramm Brandenburgs (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche amt-doebern-land.de (22.09.2026): Balkonkraftwerk und Wärmepumpe 0 Treffer; Photovoltaik nur Bauen/Bekanntmachungen; Solar nur Branchenverzeichnis und Unternehmertreffen; Speicher nur Heimatspeicher Klein Kölzig und Ziegelei-Projekt; Zuschuss und Förderprogramm nur Förderinstitutionen, Corona-Teilhabefonds, kommunale Vorhaben; Klimaschutz nur kommunale Fördervorhaben",
+      "Kommunenverzeichnis des Amtsportals: keine eigenen Gemeindewebsites verlinkt",
+      "lkspn.de Sitemap (308 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/klima/energie/waerme/speicher durchsucht: nur Wirtschaftsförderung",
+      "Katalog nach Programmen des Landkreises Spree-Neiße (12071) und des Landes Brandenburg durchsucht: keine",
+      "Websuche: Landkreis Spree-Neiße Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "finding": "Im Original gelesen (22.09.2026): Linkliste zu Förderinstitutionen für Wirtschaft, Beschäftigung und Gründung (Ministerien, ILB, KfW, BAFA, IHK) — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "finding": "Liste der Fördervorhaben der Amtsgemeinden (Löschwasserentnahmestellen, Straßenbeleuchtung Felixsee, Geopark-Projekt, Alte Ziegelei, Brückenrückbau) — Fördermittel an die Gemeinden, kein Bürgerzuschuss; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "finding": "Strukturwandel-Vorhaben der Gemeinde Neiße-Malxetal nach der Lausitz-Richtlinie des Landes — Infrastruktur der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortet am 22.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.lkspn.de/wirtschaft/wirtschaftsfoerderung.html",
+        "finding": "Einzige förderbezogene Seite in der Sitemap des Landkreises: Wirtschaftsförderung — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "disposition": "reviewed",
+        "reason": "Linkliste Förderinstitutionen für Wirtschaft und Beschäftigung — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "disposition": "reviewed",
+        "reason": "Geförderte Vorhaben der Amtsgemeinden — Fördermittel an die Gemeinden, kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der Seite Fördervorhaben, am 22.09.2026 gesondert abgerufen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "disposition": "reviewed",
+        "reason": "Kommunales Strukturwandel-Vorhaben (Zufahrt, Parkplätze) der Gemeinde Neiße-Malxetal.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html"
+      },
+      {
+        "url": "amt-doebern-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12071392",
+    "name": "Tschernitz",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Tschernitz gehört zum Amt Döbern-Land (Landkreis Spree-Neiße). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Amts listen nur Fördermittel, die die Gemeinden selbst erhalten (Löschwasser, Straßenbeleuchtung, Geopark, Strukturwandel), und Links zu Wirtschaftsförderern. Der Landkreis Spree-Neiße führt auf seiner Website nur Wirtschaftsförderung; im Katalog steht weder ein Programm des Landkreises noch ein Landesprogramm Brandenburgs (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche amt-doebern-land.de (22.09.2026): Balkonkraftwerk und Wärmepumpe 0 Treffer; Photovoltaik nur Bauen/Bekanntmachungen; Solar nur Branchenverzeichnis und Unternehmertreffen; Speicher nur Heimatspeicher Klein Kölzig und Ziegelei-Projekt; Zuschuss und Förderprogramm nur Förderinstitutionen, Corona-Teilhabefonds, kommunale Vorhaben; Klimaschutz nur kommunale Fördervorhaben",
+      "Kommunenverzeichnis des Amtsportals: keine eigenen Gemeindewebsites verlinkt",
+      "lkspn.de Sitemap (308 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/klima/energie/waerme/speicher durchsucht: nur Wirtschaftsförderung",
+      "Katalog nach Programmen des Landkreises Spree-Neiße (12071) und des Landes Brandenburg durchsucht: keine",
+      "Websuche: Landkreis Spree-Neiße Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "finding": "Im Original gelesen (22.09.2026): Linkliste zu Förderinstitutionen für Wirtschaft, Beschäftigung und Gründung (Ministerien, ILB, KfW, BAFA, IHK) — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "finding": "Liste der Fördervorhaben der Amtsgemeinden (Löschwasserentnahmestellen, Straßenbeleuchtung Felixsee, Geopark-Projekt, Alte Ziegelei, Brückenrückbau) — Fördermittel an die Gemeinden, kein Bürgerzuschuss; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "finding": "Strukturwandel-Vorhaben der Gemeinde Neiße-Malxetal nach der Lausitz-Richtlinie des Landes — Infrastruktur der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortet am 22.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.lkspn.de/wirtschaft/wirtschaftsfoerderung.html",
+        "finding": "Einzige förderbezogene Seite in der Sitemap des Landkreises: Wirtschaftsförderung — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "disposition": "reviewed",
+        "reason": "Linkliste Förderinstitutionen für Wirtschaft und Beschäftigung — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "disposition": "reviewed",
+        "reason": "Geförderte Vorhaben der Amtsgemeinden — Fördermittel an die Gemeinden, kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der Seite Fördervorhaben, am 22.09.2026 gesondert abgerufen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "disposition": "reviewed",
+        "reason": "Kommunales Strukturwandel-Vorhaben (Zufahrt, Parkplätze) der Gemeinde Neiße-Malxetal.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html"
+      },
+      {
+        "url": "amt-doebern-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12071414",
+    "name": "Wiesengrund",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wiesengrund gehört zum Amt Döbern-Land (Landkreis Spree-Neiße). Weder die Gemeinde noch das Amt führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Amts listen nur Fördermittel, die die Gemeinden selbst erhalten (Löschwasser, Straßenbeleuchtung, Geopark, Strukturwandel), und Links zu Wirtschaftsförderern. Der Landkreis Spree-Neiße führt auf seiner Website nur Wirtschaftsförderung; im Katalog steht weder ein Programm des Landkreises noch ein Landesprogramm Brandenburgs (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche amt-doebern-land.de (22.09.2026): Balkonkraftwerk und Wärmepumpe 0 Treffer; Photovoltaik nur Bauen/Bekanntmachungen; Solar nur Branchenverzeichnis und Unternehmertreffen; Speicher nur Heimatspeicher Klein Kölzig und Ziegelei-Projekt; Zuschuss und Förderprogramm nur Förderinstitutionen, Corona-Teilhabefonds, kommunale Vorhaben; Klimaschutz nur kommunale Fördervorhaben",
+      "Kommunenverzeichnis des Amtsportals: keine eigenen Gemeindewebsites verlinkt",
+      "lkspn.de Sitemap (308 Adressen, 22.09.2026) nach solar/photovolt/balkon/zuschuss/foerder/klima/energie/waerme/speicher durchsucht: nur Wirtschaftsförderung",
+      "Katalog nach Programmen des Landkreises Spree-Neiße (12071) und des Landes Brandenburg durchsucht: keine",
+      "Websuche: Landkreis Spree-Neiße Förderprogramm Balkonkraftwerk Photovoltaik Speicher Zuschuss — kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "finding": "Im Original gelesen (22.09.2026): Linkliste zu Förderinstitutionen für Wirtschaft, Beschäftigung und Gründung (Ministerien, ILB, KfW, BAFA, IHK) — kein eigenes Programm."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "finding": "Liste der Fördervorhaben der Amtsgemeinden (Löschwasserentnahmestellen, Straßenbeleuchtung Felixsee, Geopark-Projekt, Alte Ziegelei, Brückenrückbau) — Fördermittel an die Gemeinden, kein Bürgerzuschuss; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "finding": "Strukturwandel-Vorhaben der Gemeinde Neiße-Malxetal nach der Lausitz-Richtlinie des Landes — Infrastruktur der Gemeinde."
+      },
+      {
+        "url": "https://www.amt-doebern-land.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortet am 22.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.lkspn.de/wirtschaft/wirtschaftsfoerderung.html",
+        "finding": "Einzige förderbezogene Seite in der Sitemap des Landkreises: Wirtschaftsförderung — kein Programm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html",
+        "disposition": "reviewed",
+        "reason": "Linkliste Förderinstitutionen für Wirtschaft und Beschäftigung — kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/273692/f%C3%B6rderinstitutionen.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html",
+        "disposition": "reviewed",
+        "reason": "Geförderte Vorhaben der Amtsgemeinden — Fördermittel an die Gemeinden, kein Bürgerprogramm.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der Seite Fördervorhaben, am 22.09.2026 gesondert abgerufen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/311922/f%C3%B6rdervorhaben.html"
+      },
+      {
+        "url": "amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html",
+        "disposition": "reviewed",
+        "reason": "Kommunales Strukturwandel-Vorhaben (Zufahrt, Parkplätze) der Gemeinde Neiße-Malxetal.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/seite/655634/bau-von-touristischer-infrastruktur-an-der-alte-ziegelei-klein-k%C3%B6lzig.html"
+      },
+      {
+        "url": "amt-doebern-land.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.amt-doebern-land.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16076007",
+    "name": "Bocka",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bocka gehört zur Verwaltungsgemeinschaft Münchenbernsdorf (Landkreis Greiz). Weder die Gemeinde noch die Verwaltungsgemeinschaft führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Portals listen nur geförderte kommunale ELER-/LEADER-Vorhaben, das Ortsrecht enthält als einzige Förderregel die Vereinsförderung. Der Landkreis Greiz führt nur Naturschutz-, Fischerei- und Wasserwirtschaftsförderung, die Thüringer Aufbaubank für Privatpersonen nur Wohneigentum, Gründung und Kleinkläranlagen (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche rathaus-muenchenbernsdorf.de (22.09.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Förderprogramm 0 Treffer; Speicher nur Datenschutzerklärung; Förderung nur ELER-/LEADER-Seiten; Richtlinie im Ortsrecht nur Vereinsförderung (Gegenprobe: Suche liefert für Förderung und ELER die bekannten Seiten)",
+      "Landkreis Greiz: Volltextsuche (Balkonkraftwerk keine Ergebnisse; Photovoltaik, Solar, Speicher, Wärmepumpe, Klimaschutz, Förderprogramm nur Schulbau, Vereinsinvestitionen in Sportstätten, Genehmigungsformulare, Umwelt-/Wirtschaftsförderung) und Seite „Förderung Umwelt“ gelesen",
+      "Thüringer Aufbaubank, Förderangebote für Privatpersonen gelesen",
+      "Katalog nach Programmen des Landkreises Greiz (16076) und des Landes Thüringen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "finding": "ELER-Förderung der Stadt Münchenbernsdorf, am 21.09.2026 gelesen: Liste geförderter kommunaler Projekte (Freibad, Dorfgemeinschaftshaus, Basisdienstleistungen) — kein Zuschuss für Privathaushalte; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "finding": "LEADER-Förderung, am 21.09.2026 gelesen: kommunale Vorhaben — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "finding": "ELER-Unterseite „Förderung von Einrichtungen für lokale Basisdienstleistungen“, am 22.09.2026 gelesen: derzeit keine Einträge — kommunale Vorhaben, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortete am 21.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.landkreis-greiz.de/landkreis-greiz/organisatorisch/kreisverwaltung/redakteursebene-aemter/amt-fuer-umwelt/foerderung-umwelt",
+        "finding": "Landkreis Greiz, „Förderung Umwelt“ (22.09.2026): nur Naturschutz/Landschaftspflege, Vertragsnaturschutz, Fischerei und Hochwasserschutz — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.aufbaubank.de/Privatpersonen",
+        "finding": "Thüringer Aufbaubank, Förderangebote für Privatpersonen (22.09.2026): Wohneigentum, Selbstständigkeit, Kleinkläranlagen — kein Solar-, Speicher- oder Wärmepumpenprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale ELER-Projekte der Stadt, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der ELER-Seite, am 21.09.2026 gesondert gelesen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale LEADER-Vorhaben, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "disposition": "reviewed",
+        "reason": "ELER-Unterseite zu kommunalen Basisdienstleistungen, derzeit ohne Einträge.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16076033",
+    "name": "Hundhaupten",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hundhaupten gehört zur Verwaltungsgemeinschaft Münchenbernsdorf (Landkreis Greiz). Weder die Gemeinde noch die Verwaltungsgemeinschaft führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Portals listen nur geförderte kommunale ELER-/LEADER-Vorhaben, das Ortsrecht enthält als einzige Förderregel die Vereinsförderung. Der Landkreis Greiz führt nur Naturschutz-, Fischerei- und Wasserwirtschaftsförderung, die Thüringer Aufbaubank für Privatpersonen nur Wohneigentum, Gründung und Kleinkläranlagen (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche rathaus-muenchenbernsdorf.de (22.09.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Förderprogramm 0 Treffer; Speicher nur Datenschutzerklärung; Förderung nur ELER-/LEADER-Seiten; Richtlinie im Ortsrecht nur Vereinsförderung (Gegenprobe: Suche liefert für Förderung und ELER die bekannten Seiten)",
+      "Landkreis Greiz: Volltextsuche (Balkonkraftwerk keine Ergebnisse; Photovoltaik, Solar, Speicher, Wärmepumpe, Klimaschutz, Förderprogramm nur Schulbau, Vereinsinvestitionen in Sportstätten, Genehmigungsformulare, Umwelt-/Wirtschaftsförderung) und Seite „Förderung Umwelt“ gelesen",
+      "Thüringer Aufbaubank, Förderangebote für Privatpersonen gelesen",
+      "Katalog nach Programmen des Landkreises Greiz (16076) und des Landes Thüringen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "finding": "ELER-Förderung der Stadt Münchenbernsdorf, am 21.09.2026 gelesen: Liste geförderter kommunaler Projekte (Freibad, Dorfgemeinschaftshaus, Basisdienstleistungen) — kein Zuschuss für Privathaushalte; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "finding": "LEADER-Förderung, am 21.09.2026 gelesen: kommunale Vorhaben — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "finding": "ELER-Unterseite „Förderung von Einrichtungen für lokale Basisdienstleistungen“, am 22.09.2026 gelesen: derzeit keine Einträge — kommunale Vorhaben, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortete am 21.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.landkreis-greiz.de/landkreis-greiz/organisatorisch/kreisverwaltung/redakteursebene-aemter/amt-fuer-umwelt/foerderung-umwelt",
+        "finding": "Landkreis Greiz, „Förderung Umwelt“ (22.09.2026): nur Naturschutz/Landschaftspflege, Vertragsnaturschutz, Fischerei und Hochwasserschutz — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.aufbaubank.de/Privatpersonen",
+        "finding": "Thüringer Aufbaubank, Förderangebote für Privatpersonen (22.09.2026): Wohneigentum, Selbstständigkeit, Kleinkläranlagen — kein Solar-, Speicher- oder Wärmepumpenprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale ELER-Projekte der Stadt, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der ELER-Seite, am 21.09.2026 gesondert gelesen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale LEADER-Vorhaben, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "disposition": "reviewed",
+        "reason": "ELER-Unterseite zu kommunalen Basisdienstleistungen, derzeit ohne Einträge.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16076042",
+    "name": "Lederhose",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lederhose gehört zur Verwaltungsgemeinschaft Münchenbernsdorf (Landkreis Greiz). Weder die Gemeinde noch die Verwaltungsgemeinschaft führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Portals listen nur geförderte kommunale ELER-/LEADER-Vorhaben, das Ortsrecht enthält als einzige Förderregel die Vereinsförderung. Der Landkreis Greiz führt nur Naturschutz-, Fischerei- und Wasserwirtschaftsförderung, die Thüringer Aufbaubank für Privatpersonen nur Wohneigentum, Gründung und Kleinkläranlagen (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche rathaus-muenchenbernsdorf.de (22.09.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Förderprogramm 0 Treffer; Speicher nur Datenschutzerklärung; Förderung nur ELER-/LEADER-Seiten; Richtlinie im Ortsrecht nur Vereinsförderung (Gegenprobe: Suche liefert für Förderung und ELER die bekannten Seiten)",
+      "Landkreis Greiz: Volltextsuche (Balkonkraftwerk keine Ergebnisse; Photovoltaik, Solar, Speicher, Wärmepumpe, Klimaschutz, Förderprogramm nur Schulbau, Vereinsinvestitionen in Sportstätten, Genehmigungsformulare, Umwelt-/Wirtschaftsförderung) und Seite „Förderung Umwelt“ gelesen",
+      "Thüringer Aufbaubank, Förderangebote für Privatpersonen gelesen",
+      "Katalog nach Programmen des Landkreises Greiz (16076) und des Landes Thüringen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "finding": "ELER-Förderung der Stadt Münchenbernsdorf, am 21.09.2026 gelesen: Liste geförderter kommunaler Projekte (Freibad, Dorfgemeinschaftshaus, Basisdienstleistungen) — kein Zuschuss für Privathaushalte; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "finding": "LEADER-Förderung, am 21.09.2026 gelesen: kommunale Vorhaben — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "finding": "ELER-Unterseite „Förderung von Einrichtungen für lokale Basisdienstleistungen“, am 22.09.2026 gelesen: derzeit keine Einträge — kommunale Vorhaben, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortete am 21.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.landkreis-greiz.de/landkreis-greiz/organisatorisch/kreisverwaltung/redakteursebene-aemter/amt-fuer-umwelt/foerderung-umwelt",
+        "finding": "Landkreis Greiz, „Förderung Umwelt“ (22.09.2026): nur Naturschutz/Landschaftspflege, Vertragsnaturschutz, Fischerei und Hochwasserschutz — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.aufbaubank.de/Privatpersonen",
+        "finding": "Thüringer Aufbaubank, Förderangebote für Privatpersonen (22.09.2026): Wohneigentum, Selbstständigkeit, Kleinkläranlagen — kein Solar-, Speicher- oder Wärmepumpenprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale ELER-Projekte der Stadt, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der ELER-Seite, am 21.09.2026 gesondert gelesen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale LEADER-Vorhaben, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "disposition": "reviewed",
+        "reason": "ELER-Unterseite zu kommunalen Basisdienstleistungen, derzeit ohne Einträge.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16076044",
+    "name": "Lindenkreuz",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lindenkreuz gehört zur Verwaltungsgemeinschaft Münchenbernsdorf (Landkreis Greiz). Weder die Gemeinde noch die Verwaltungsgemeinschaft führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Portals listen nur geförderte kommunale ELER-/LEADER-Vorhaben, das Ortsrecht enthält als einzige Förderregel die Vereinsförderung. Der Landkreis Greiz führt nur Naturschutz-, Fischerei- und Wasserwirtschaftsförderung, die Thüringer Aufbaubank für Privatpersonen nur Wohneigentum, Gründung und Kleinkläranlagen (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche rathaus-muenchenbernsdorf.de (22.09.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Förderprogramm 0 Treffer; Speicher nur Datenschutzerklärung; Förderung nur ELER-/LEADER-Seiten; Richtlinie im Ortsrecht nur Vereinsförderung (Gegenprobe: Suche liefert für Förderung und ELER die bekannten Seiten)",
+      "Landkreis Greiz: Volltextsuche (Balkonkraftwerk keine Ergebnisse; Photovoltaik, Solar, Speicher, Wärmepumpe, Klimaschutz, Förderprogramm nur Schulbau, Vereinsinvestitionen in Sportstätten, Genehmigungsformulare, Umwelt-/Wirtschaftsförderung) und Seite „Förderung Umwelt“ gelesen",
+      "Thüringer Aufbaubank, Förderangebote für Privatpersonen gelesen",
+      "Katalog nach Programmen des Landkreises Greiz (16076) und des Landes Thüringen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "finding": "ELER-Förderung der Stadt Münchenbernsdorf, am 21.09.2026 gelesen: Liste geförderter kommunaler Projekte (Freibad, Dorfgemeinschaftshaus, Basisdienstleistungen) — kein Zuschuss für Privathaushalte; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "finding": "LEADER-Förderung, am 21.09.2026 gelesen: kommunale Vorhaben — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "finding": "ELER-Unterseite „Förderung von Einrichtungen für lokale Basisdienstleistungen“, am 22.09.2026 gelesen: derzeit keine Einträge — kommunale Vorhaben, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortete am 21.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.landkreis-greiz.de/landkreis-greiz/organisatorisch/kreisverwaltung/redakteursebene-aemter/amt-fuer-umwelt/foerderung-umwelt",
+        "finding": "Landkreis Greiz, „Förderung Umwelt“ (22.09.2026): nur Naturschutz/Landschaftspflege, Vertragsnaturschutz, Fischerei und Hochwasserschutz — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.aufbaubank.de/Privatpersonen",
+        "finding": "Thüringer Aufbaubank, Förderangebote für Privatpersonen (22.09.2026): Wohneigentum, Selbstständigkeit, Kleinkläranlagen — kein Solar-, Speicher- oder Wärmepumpenprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale ELER-Projekte der Stadt, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der ELER-Seite, am 21.09.2026 gesondert gelesen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale LEADER-Vorhaben, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "disposition": "reviewed",
+        "reason": "ELER-Unterseite zu kommunalen Basisdienstleistungen, derzeit ohne Einträge.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16076064",
+    "name": "Saara",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Saara gehört zur Verwaltungsgemeinschaft Münchenbernsdorf (Landkreis Greiz). Weder die Gemeinde noch die Verwaltungsgemeinschaft führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Portals listen nur geförderte kommunale ELER-/LEADER-Vorhaben, das Ortsrecht enthält als einzige Förderregel die Vereinsförderung. Der Landkreis Greiz führt nur Naturschutz-, Fischerei- und Wasserwirtschaftsförderung, die Thüringer Aufbaubank für Privatpersonen nur Wohneigentum, Gründung und Kleinkläranlagen (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche rathaus-muenchenbernsdorf.de (22.09.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Förderprogramm 0 Treffer; Speicher nur Datenschutzerklärung; Förderung nur ELER-/LEADER-Seiten; Richtlinie im Ortsrecht nur Vereinsförderung (Gegenprobe: Suche liefert für Förderung und ELER die bekannten Seiten)",
+      "Landkreis Greiz: Volltextsuche (Balkonkraftwerk keine Ergebnisse; Photovoltaik, Solar, Speicher, Wärmepumpe, Klimaschutz, Förderprogramm nur Schulbau, Vereinsinvestitionen in Sportstätten, Genehmigungsformulare, Umwelt-/Wirtschaftsförderung) und Seite „Förderung Umwelt“ gelesen",
+      "Thüringer Aufbaubank, Förderangebote für Privatpersonen gelesen",
+      "Katalog nach Programmen des Landkreises Greiz (16076) und des Landes Thüringen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "finding": "ELER-Förderung der Stadt Münchenbernsdorf, am 21.09.2026 gelesen: Liste geförderter kommunaler Projekte (Freibad, Dorfgemeinschaftshaus, Basisdienstleistungen) — kein Zuschuss für Privathaushalte; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "finding": "LEADER-Förderung, am 21.09.2026 gelesen: kommunale Vorhaben — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "finding": "ELER-Unterseite „Förderung von Einrichtungen für lokale Basisdienstleistungen“, am 22.09.2026 gelesen: derzeit keine Einträge — kommunale Vorhaben, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortete am 21.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.landkreis-greiz.de/landkreis-greiz/organisatorisch/kreisverwaltung/redakteursebene-aemter/amt-fuer-umwelt/foerderung-umwelt",
+        "finding": "Landkreis Greiz, „Förderung Umwelt“ (22.09.2026): nur Naturschutz/Landschaftspflege, Vertragsnaturschutz, Fischerei und Hochwasserschutz — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.aufbaubank.de/Privatpersonen",
+        "finding": "Thüringer Aufbaubank, Förderangebote für Privatpersonen (22.09.2026): Wohneigentum, Selbstständigkeit, Kleinkläranlagen — kein Solar-, Speicher- oder Wärmepumpenprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale ELER-Projekte der Stadt, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der ELER-Seite, am 21.09.2026 gesondert gelesen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale LEADER-Vorhaben, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "disposition": "reviewed",
+        "reason": "ELER-Unterseite zu kommunalen Basisdienstleistungen, derzeit ohne Einträge.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16076068",
+    "name": "Schwarzbach",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwarzbach gehört zur Verwaltungsgemeinschaft Münchenbernsdorf (Landkreis Greiz). Weder die Gemeinde noch die Verwaltungsgemeinschaft führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Portals listen nur geförderte kommunale ELER-/LEADER-Vorhaben, das Ortsrecht enthält als einzige Förderregel die Vereinsförderung. Der Landkreis Greiz führt nur Naturschutz-, Fischerei- und Wasserwirtschaftsförderung, die Thüringer Aufbaubank für Privatpersonen nur Wohneigentum, Gründung und Kleinkläranlagen (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche rathaus-muenchenbernsdorf.de (22.09.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Förderprogramm 0 Treffer; Speicher nur Datenschutzerklärung; Förderung nur ELER-/LEADER-Seiten; Richtlinie im Ortsrecht nur Vereinsförderung (Gegenprobe: Suche liefert für Förderung und ELER die bekannten Seiten)",
+      "Landkreis Greiz: Volltextsuche (Balkonkraftwerk keine Ergebnisse; Photovoltaik, Solar, Speicher, Wärmepumpe, Klimaschutz, Förderprogramm nur Schulbau, Vereinsinvestitionen in Sportstätten, Genehmigungsformulare, Umwelt-/Wirtschaftsförderung) und Seite „Förderung Umwelt“ gelesen",
+      "Thüringer Aufbaubank, Förderangebote für Privatpersonen gelesen",
+      "Katalog nach Programmen des Landkreises Greiz (16076) und des Landes Thüringen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "finding": "ELER-Förderung der Stadt Münchenbernsdorf, am 21.09.2026 gelesen: Liste geförderter kommunaler Projekte (Freibad, Dorfgemeinschaftshaus, Basisdienstleistungen) — kein Zuschuss für Privathaushalte; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "finding": "LEADER-Förderung, am 21.09.2026 gelesen: kommunale Vorhaben — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "finding": "ELER-Unterseite „Förderung von Einrichtungen für lokale Basisdienstleistungen“, am 22.09.2026 gelesen: derzeit keine Einträge — kommunale Vorhaben, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortete am 21.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.landkreis-greiz.de/landkreis-greiz/organisatorisch/kreisverwaltung/redakteursebene-aemter/amt-fuer-umwelt/foerderung-umwelt",
+        "finding": "Landkreis Greiz, „Förderung Umwelt“ (22.09.2026): nur Naturschutz/Landschaftspflege, Vertragsnaturschutz, Fischerei und Hochwasserschutz — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.aufbaubank.de/Privatpersonen",
+        "finding": "Thüringer Aufbaubank, Förderangebote für Privatpersonen (22.09.2026): Wohneigentum, Selbstständigkeit, Kleinkläranlagen — kein Solar-, Speicher- oder Wärmepumpenprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale ELER-Projekte der Stadt, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der ELER-Seite, am 21.09.2026 gesondert gelesen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale LEADER-Vorhaben, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "disposition": "reviewed",
+        "reason": "ELER-Unterseite zu kommunalen Basisdienstleistungen, derzeit ohne Einträge.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16076086",
+    "name": "Zedlitz",
+    "checkedAt": "2026-09-22T06:32:58Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Zedlitz gehört zur Verwaltungsgemeinschaft Münchenbernsdorf (Landkreis Greiz). Weder die Gemeinde noch die Verwaltungsgemeinschaft führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseiten des Portals listen nur geförderte kommunale ELER-/LEADER-Vorhaben, das Ortsrecht enthält als einzige Förderregel die Vereinsförderung. Der Landkreis Greiz führt nur Naturschutz-, Fischerei- und Wasserwirtschaftsförderung, die Thüringer Aufbaubank für Privatpersonen nur Wohneigentum, Gründung und Kleinkläranlagen (Stand 22.09.2026).",
+    "searches": [
+      "Volltextsuche rathaus-muenchenbernsdorf.de (22.09.2026): Balkonkraftwerk, Photovoltaik, Zuschuss, Solar, Wärmepumpe, Klimaschutz, Förderprogramm 0 Treffer; Speicher nur Datenschutzerklärung; Förderung nur ELER-/LEADER-Seiten; Richtlinie im Ortsrecht nur Vereinsförderung (Gegenprobe: Suche liefert für Förderung und ELER die bekannten Seiten)",
+      "Landkreis Greiz: Volltextsuche (Balkonkraftwerk keine Ergebnisse; Photovoltaik, Solar, Speicher, Wärmepumpe, Klimaschutz, Förderprogramm nur Schulbau, Vereinsinvestitionen in Sportstätten, Genehmigungsformulare, Umwelt-/Wirtschaftsförderung) und Seite „Förderung Umwelt“ gelesen",
+      "Thüringer Aufbaubank, Förderangebote für Privatpersonen gelesen",
+      "Katalog nach Programmen des Landkreises Greiz (16076) und des Landes Thüringen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "finding": "ELER-Förderung der Stadt Münchenbernsdorf, am 21.09.2026 gelesen: Liste geförderter kommunaler Projekte (Freibad, Dorfgemeinschaftshaus, Basisdienstleistungen) — kein Zuschuss für Privathaushalte; die Druckfassung zeigt denselben Inhalt."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "finding": "LEADER-Förderung, am 21.09.2026 gelesen: kommunale Vorhaben — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "finding": "ELER-Unterseite „Förderung von Einrichtungen für lokale Basisdienstleistungen“, am 22.09.2026 gelesen: derzeit keine Einträge — kommunale Vorhaben, kein Bürgerprogramm."
+      },
+      {
+        "url": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link",
+        "finding": "Teilen-/Kontaktformular des Portals; antwortete am 21.09.2026 mit HTTP 404 — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.landkreis-greiz.de/landkreis-greiz/organisatorisch/kreisverwaltung/redakteursebene-aemter/amt-fuer-umwelt/foerderung-umwelt",
+        "finding": "Landkreis Greiz, „Förderung Umwelt“ (22.09.2026): nur Naturschutz/Landschaftspflege, Vertragsnaturschutz, Fischerei und Hochwasserschutz — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.aufbaubank.de/Privatpersonen",
+        "finding": "Thüringer Aufbaubank, Förderangebote für Privatpersonen (22.09.2026): Wohneigentum, Selbstständigkeit, Kleinkläranlagen — kein Solar-, Speicher- oder Wärmepumpenprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale ELER-Projekte der Stadt, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung der ELER-Seite, am 21.09.2026 gesondert gelesen: gleicher Inhalt.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/eler-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Kommunale LEADER-Vorhaben, kein Zuschuss für Privathaushalte.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/739272/leader-f%C3%B6rderung.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html",
+        "disposition": "reviewed",
+        "reason": "ELER-Unterseite zu kommunalen Basisdienstleistungen, derzeit ohne Einträge.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/seite/745217/f%C3%B6rderung-von-einrichtungen-f%C3%BCr-lokale-basisdienstleistungen.html"
+      },
+      {
+        "url": "rathaus-muenchenbernsdorf.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Portal-Formular ohne Förderinhalt, antwortet mit 404.",
+        "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link"
+      }
+    ]
   }
 ]
