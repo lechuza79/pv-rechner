@@ -15,7 +15,9 @@ import GemeindeSeite from "../../../../../../components/gemeinde/GemeindeSeite";
  * and not in the sitemap; the live route stays unchanged until the switch
  * (docs/gemeindeseite-integration.md).
  */
-export const revalidate = 604800;
+// One day: the package changes with the monthly run, and invalidating by
+// route pattern does not reach pages built on demand (lib/atlas-revalidate-routen.ts).
+export const revalidate = 86400;
 export function generateStaticParams() {
   return [];
 }

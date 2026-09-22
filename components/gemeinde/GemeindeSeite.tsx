@@ -6,6 +6,7 @@ import { DATA_SOURCES } from "../../lib/data-sources";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import GemeindeSzene from "./GemeindeSzene";
 import GemeindeSkripte from "./GemeindeSkripte";
+import GemeindeRahmen from "./GemeindeRahmen";
 import { ranglistenDaten } from "./rangliste-daten";
 
 /**
@@ -144,6 +145,34 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
                 </p>
               </div>
             </div>
+          </section>
+
+          <section className="atlas-section" id="atlas-stories">
+            <div className="atlas-wrap atlas-insights-head">
+              <h2>Insights aus {ort.name}</h2>
+            </div>
+            {paket.stories.length > 0 && (
+              <>
+                <GemeindeRahmen
+                  src={`/embed/gemeinde/${ort.ags}/insights`}
+                  title={`Geschichten aus ${ort.name}`}
+                  nachricht="story-preview-layout"
+                  startHoehe={560}
+                  vollbild
+                />
+                {/* The stories' words, in the page for crawlers and screen
+                    readers; the frame above is the interactive reader. */}
+                <details className="atlas-wrap gemeinde-rangliste-text">
+                  <summary>Alle Geschichten aus {ort.name} als Text</summary>
+                  {(paket.stories as { id: string; title?: string; teaser?: string }[]).map((st) => (
+                    <article key={st.id}>
+                      <h3>{st.title}</h3>
+                      {st.teaser && <p>{st.teaser}</p>}
+                    </article>
+                  ))}
+                </details>
+              </>
+            )}
           </section>
 
           {/* Built by public/gemeinde/rangliste.js (the approved interactive

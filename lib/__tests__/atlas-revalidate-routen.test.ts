@@ -44,7 +44,7 @@ function seitenDatei(routenMuster: string): string {
 }
 
 /**
- * Alle Seiten unter (site) UND (embed) mit ihrem Routenmuster.
+ * Alle Seiten unter (site), (embed) und (gemeinde) mit ihrem Routenmuster.
  *
  * Die Widgets gehören dazu, weil sie dieselben Atlas-Daten rendern. Die erste
  * Fassung sah nur (site) — eine langlebige Widget-Seite wäre für die Schranke
@@ -53,7 +53,7 @@ function seitenDatei(routenMuster: string): string {
 function alleSeiten(): { muster: string; gruppe: string; datei: string; quelle: string }[] {
   const treffer: { muster: string; gruppe: string; datei: string; quelle: string }[] = [];
 
-  for (const gruppe of ["(site)", "(embed)"]) {
+  for (const gruppe of ["(site)", "(embed)", "(gemeinde)"]) {
     const wurzel = path.join(APP, gruppe);
     if (!fs.existsSync(wurzel)) continue;
 

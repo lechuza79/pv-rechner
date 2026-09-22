@@ -109,6 +109,7 @@ export const EMBED_WIDGETS = [
   "erzeugung",
   "erzeugung-mini",
   "foerder-check",
+  "gemeinde",
   "gemeinde-erneuerbare",
   "gemeinde-solar",
   "gemeinde-solarleistung",
