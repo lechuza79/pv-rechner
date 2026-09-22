@@ -140,3 +140,11 @@ The two test files implicated in the previous failure were rerun with one worker
 - Keep the citizen delta period inside its green box; enlarge/crop building and balcony backgrounds.
 - Move live clock labels inward and stretch the live-card height chain so utilization stays at the bottom.
 - Validation: preview bundle builds; 20 focused existing tests pass. Desktop browser confirmed card rotation, solar playback and same-page monitor navigation. Browser viewport override did not take effect, so this follow-up has not received a fresh mobile visual check. One fresh monitor tab temporarily reported unavailable weather; the existing embedded monitor returned live values.
+
+### Contact, contrast and ranking checkpoint — 22 September
+
+This checkpoint adds the homepage-style light contact card before the sources, with “Schreib mir” as its only action. Citizen delta periods sit closer to the amount; periods and smaller euro symbols share the plus-sign tint. The header wordmark now uses the scene sampler's ink instead of the shared header's fixed color. Ranking data dates are inside the Top 3 question-mark explanation, which overlays the card without compressing the title; only the highlighted own bar gets a subtle shadow.
+
+Desktop browser review confirmed the contact card, source ordering, inherited wordmark color and expanded ranking help. The previous commit attempt passed TypeScript and 4157/4158 tests; one unchanged flow-runner test timed out. Its isolated rerun passed all five tests. The new requested commit uses the normal hook again; consult the task result for its outcome. All asset packaging and public-preview checks above still apply. Nothing has been deployed.
+
+Requested commit outcome (22 September): the normal hook rejected the commit. TypeScript passed. Full suite: 4151/4158 tests passed, seven failures across six unchanged files, mostly timeouts, plus a worker timeout. A one-worker rerun passed 42/44 tests; contact-reassess and the repository scan in security-sql still timed out. No checks were disabled. Latest successful commit remains f3586718; the five staged files and /tmp/atlas-review-2026-09-22.patch contain this follow-up. Do not claim the follow-up is committed or release-validated.

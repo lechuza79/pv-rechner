@@ -256,5 +256,32 @@
  .solar-page .hero .v3-hero-stack{right:calc(var(--atlas-hero-inset) + 20px);}
 }
 @media(max-width:700px){.solar-page .hero .hero-copy{padding-top:92px!important;}}
-.v3-conclusion .v3-result-amount.sc-delta{display:inline-grid;grid-template-columns:auto auto;column-gap:8px;row-gap:4px;}
-.v3-conclusion .v3-result-amount.sc-delta>small{grid-column:2;color:color-mix(in srgb,var(--color-positive,#00d950) 65%,transparent);margin:0;}
+.v3-conclusion .v3-result-amount.sc-delta{display:inline-grid;grid-template-columns:auto auto;column-gap:8px;row-gap:0;}
+.v3-conclusion .v3-result-amount.sc-delta>small{grid-column:2;color:color-mix(in srgb,var(--color-positive,#00d950) 62%,transparent)!important;margin:0;line-height:1.1;}
+
+.v3-conclusion .sc-delta .v3-delta-currency{font-size:.62em;font-weight:400;color:color-mix(in srgb,currentColor 62%,transparent);}
+.atlas-content>.atlas-contact{margin-bottom:64px;}
+
+/* The scene sampler owns the wordmark ink; preserve the colored logo symbol. */
+html[data-sc-shell] .site-header .brand[data-sc-contrast] svg{--color-accent:var(--sc-region-ink,currentColor)!important;--color-text-faint:var(--sc-region-ink,currentColor)!important;}
+.site-header .brand[data-sc-contrast] svg>path{fill:var(--sc-region-ink,currentColor)!important;}
+/* Reuse the homepage's light portrait card, with contact as its single action. */
+.atlas-content>.atlas-contact{box-sizing:border-box;position:relative;max-width:980px;margin:150px auto 64px;padding:0 24px;background:#e8eee5;color:#173b42;--atlas-muted:#466259;border:0;border-radius:22px;box-shadow:0 22px 48px #03141638,0 5px 14px #0314161f;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:0 20px;align-items:end;}
+.atlas-contact .sc-person-picture{grid-column:1;grid-row:1;position:relative;width:100%;max-width:310px;min-height:0;height:auto;margin:-125px auto 0;overflow:visible;}
+.atlas-contact .sc-person-picture img{position:static;width:100%;height:auto;max-width:100%;transform:none;object-fit:contain;}
+.atlas-contact .sc-person-body{grid-column:2;grid-row:1;padding:24px 0;align-self:center;}
+.atlas-contact .sc-person-text{font-size:14px;line-height:1.55;margin:0;}
+.atlas-contact .sc-person-signature{font-size:12px;line-height:1.5;margin:16px 0;}
+.atlas-contact .sc-person-actions .sc-person-primary{font-size:14px;}
+.atlas-contact .atlas-contact-reassurance{grid-column:1/-1;background:#173b4209;margin:0 -24px!important;padding:15px 24px;text-align:center;font-size:12px;line-height:1.5;border-radius:0 0 22px 22px;color:#466259!important;}
+@media(max-width:600px){
+ .atlas-content>.atlas-contact{display:flex;flex-direction:column;gap:22px;width:calc(100% - 48px);padding:0 28px;margin-top:125px;}
+ .atlas-contact .sc-person-picture{width:220px;max-width:100%;margin:-105px auto 0;border-radius:0;background:transparent;}
+ .atlas-contact .sc-person-body{align-self:stretch;padding:0;}
+ .atlas-contact .atlas-contact-reassurance{align-self:stretch;margin-inline:-28px!important;}
+}
+
+#atlas-ranking .ranking-help-source{display:block;margin-top:12px;font-size:12px;line-height:1.5;}
+#atlas-ranking .ranking-contender.is-own:not(.ranking-own-pending) .ranking-step{box-shadow:3px 4px 9px #173b421a;}
+#atlas-ranking .ranking-stage>.ranking-detail{position:relative;flex-shrink:0;width:100%;}
+#atlas-ranking .ranking-stage .v3-metric-explanation:not([hidden]){position:absolute;top:100%;left:50%;transform:translateX(-50%);box-sizing:border-box;width:100%;max-width:350px;z-index:5;box-shadow:0 5px 16px #173b4214;}
