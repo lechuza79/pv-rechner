@@ -5,6 +5,7 @@ import {radialPreviewViewBox} from '../../lib/story-radial-viewbox';
 import {formatStoryDate} from '../../lib/story-format';
 import {WidgetSetting} from '../dashboard/WidgetSetting';
 import styles from './MonitorAnnualEnergyChart.module.css';
+import {energieTeile} from '../../lib/gemeinde-einheiten';
 
 export function MonitorAnnualEnergyChart({data:initialData, datasets=[initialData], compact=false}:{data:EnergyYear;datasets?:EnergyYear[];compact?:boolean}) {
  const [year,setYear]=useState(initialData.year);
@@ -33,10 +34,10 @@ export function MonitorAnnualEnergyChart({data:initialData, datasets=[initialDat
    {data.days.map((entry,i)=>{const solar=mode==='wind'?0:entry.solarMwh,wind=mode==='solar'?0:entry.windMwh,active=index===i;return <g key={entry.date} opacity={index===null||active?1:.25}>
     {solar>0&&<path d={segment(i,0,solar)} stroke="var(--atlas-action)" strokeWidth={active?2:1} strokeLinecap="round"/>}
     {wind>0&&<path d={segment(i,solar,solar+wind)} stroke="var(--atlas-text)" strokeWidth={active?2:1} strokeLinecap="round"/>}
-    {!compact&&<path d={segment(i,0,maximum)} stroke="transparent" strokeWidth="5" onPointerEnter={()=>setHover(i)} onPointerLeave={()=>setHover(null)} onClick={()=>setSelected(selected===i?null:i)}><title>{formatStoryDate(entry.date)} · Solar {Math.round(entry.solarMwh)} MWh · Wind {Math.round(entry.windMwh)} MWh</title></path>}
+    {!compact&&<path d={segment(i,0,maximum)} stroke="transparent" strokeWidth="5" onPointerEnter={()=>setHover(i)} onPointerLeave={()=>setHover(null)} onClick={()=>setSelected(selected===i?null:i)}><title>{formatStoryDate(entry.date)} · Solar {energieTeile(entry.solarMwh).value} {energieTeile(entry.solarMwh).unit} · Wind {energieTeile(entry.windMwh).value} {energieTeile(entry.windMwh).unit}</title></path>}
    </g>;})}
-   <text x="260" y="250" textAnchor="middle" className={styles.total}>{(day?value(day):total/1000).toLocaleString('de-DE',{maximumFractionDigits:day?0:1})}</text><text x="260" y="273" textAnchor="middle" className={styles.label}>{day?'MWh':'GWh'}</text><text x="260" y="296" textAnchor="middle" className={styles.label}>{day?formatStoryDate(day.date):''}</text>
-   {!compact&&<g transform={`translate(260,${260-82-145/2})`}><rect x="-23" y="-12" width="46" height="35" rx="2" fill="var(--atlas-card)"/><text textAnchor="middle" className={styles.label}><tspan x="0">{maximum/2}</tspan><tspan x="0" dy="16">MWh</tspan></text></g>}
+   <text x="260" y="250" textAnchor="middle" className={styles.total}>{energieTeile(day?value(day):total).value}</text><text x="260" y="273" textAnchor="middle" className={styles.label}>{energieTeile(day?value(day):total).unit}</text><text x="260" y="296" textAnchor="middle" className={styles.label}>{day?formatStoryDate(day.date):''}</text>
+   {!compact&&<g transform={`translate(260,${260-82-145/2})`}><rect x="-23" y="-12" width="46" height="35" rx="2" fill="var(--atlas-card)"/><text textAnchor="middle" className={styles.label}><tspan x="0">{energieTeile(maximum/2).value}</tspan><tspan x="0" dy="16">{energieTeile(maximum/2).unit}</tspan></text></g>}
   </svg>
   {!compact&&<div className={styles.legend}><span><i/>Solar</span><span><i/>Wind · {windTotal+solarTotal>0?(windTotal/(windTotal+solarTotal)*100).toLocaleString('de-DE',{maximumFractionDigits:2}):'0'} % im Jahr</span></div>}
  </div>;

@@ -27,6 +27,7 @@ import { MastrLiveRadial } from "../MastrLiveRadial";
 import { MastrMap } from "../MastrMap";
 import ZubauChart from "../atlas/ZubauChart";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
+import { reihenMassstab } from "../../lib/gemeinde-einheiten";
 
 /* The package keeps prototype data loosely typed (lib/gemeinde-paket.ts). */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -63,7 +64,12 @@ function kpiGroups(paket: GemeindePaket) {
       title: "Solaranlagen",
       items: [
         metric("solar-count", "Anlagen", (r) => r.solarCount, "Stk.", 0),
-        metric("solar-power", "Installierte Leistung", (r) => r.solarKwp / 1000, "MWp", 1),
+        // Einheit nach der Größe des Orts: ein Dorf mit einem Balkonkraftwerk
+        // zeigte sonst „0,0 MWp" — eine Null, wo eine Anlage steht.
+        (() => {
+          const m = reihenMassstab(current.solarKwp, "kWp", "MWp");
+          return metric("solar-power", "Installierte Leistung", (r) => r.solarKwp / m.teiler, m.unit, m.digits);
+        })(),
         // Without a population figure a per-resident value would be invented.
         ...(population > 0 ? [metric("solar-per-resident", "Leistung je Einwohner", (r) => (r.solarKwp * 1000) / population, "Wp")] : []),
         metric("solar-additions", "Neue Anlagen dieses Jahr", (r) => r.solarAdditions, "Stk.", 0, "period-total"),
@@ -73,7 +79,10 @@ function kpiGroups(paket: GemeindePaket) {
       title: "Batteriespeicher",
       items: [
         metric("battery-count", "Speicher", (r) => r.batteryCount, "Stk.", 0),
-        metric("battery-capacity", "Kapazität", (r) => r.batteryKwh / 1000, "MWh", 1),
+        (() => {
+          const m = reihenMassstab(current.batteryKwh, "kWh", "MWh");
+          return metric("battery-capacity", "Kapazität", (r) => r.batteryKwh / m.teiler, m.unit, m.digits);
+        })(),
       ],
     },
   ];
