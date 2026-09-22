@@ -44968,5 +44968,293 @@
         "evidenceUrl": "https://www.amt-stralendorf.de/Kurzmen%C3%BC/EU-F%C3%B6rderung.php"
       }
     ]
+  },
+  {
+    "regionId": "13076053",
+    "name": "Grebs-Niendorf",
+    "checkedAt": "2026-09-22T08:07:19Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Grebs-Niendorf gehört zum Amt Dömitz-Malliß (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Geförderte Projekte“ zeigt nur Fördermittel-Logos und Ordner zu Ausschreibungen, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter der letzten zwei Jahre nennen keinen kommunalen Zuschuss. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ des Amts (beide erfassten Adressen) im Original gelesen (22.09.2026): nur Bild der Fördermittel-Logos und Ordner „Ab 01.01.2021“ / „Archiv bis 31.12.2020“ der Ausschreibungen",
+      "Ortsrecht/Satzungen des Amts, der Stadt Dömitz und aller sieben Gemeinden (Grebs-Niendorf, Karenz, Malk Göhren, Malliß, Neu Kaliß, Vielank) vollständig durchgesehen (22.09.2026): Haupt-, Haushalts-, Steuer-, Gebühren-, Baumschutz-, Gestaltungs-, Straßenreinigungssatzungen und Geschäftsordnungen — keine Förderrichtlinie",
+      "AmtsKurier (Amtsblatt, Wittich-Archiv) Ausgaben 10/2024 bis 09/2026, 22 im Volltext (12/2025 und 05/2026 als leere Datei geliefert), nach Photovoltaik, Balkonkraftwerk, steckerfertig, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung/Richtlinie/Antrag durchsucht: nur Handwerker-Anzeigen und redaktionelle Ratgebertexte",
+      "Websuche: Dömitz Malliß Vielank Neu Kaliß Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde (nur Amtsseiten ohne Förderinhalt und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm (Kreisrecherche 22.09.2026 im Lauf zu Amt Stralendorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): kein Förderangebot an Bürger, nur Fördermittel-Logos und Ausschreibungsordner."
+      },
+      {
+        "url": "https://www.amtdoemitz-malliss.de/ortsrecht-politik/",
+        "finding": "Ortsrecht des Amts und aller Gemeinden (22.09.2026): keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.wittich.de/produkte/zeitungen/archiv/3494-amts-kurier",
+        "finding": "AmtsKurier 10/2024–09/2026 (22 Ausgaben im Volltext): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Seite zeigt nur Fördermittel-Logos und Ausschreibungsordner; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      },
+      {
+        "url": "amtdoemitz-malliss.de/portal/seiten/gefoerderte-projekte-900000061-28930.html?naviID=900000120&amp;brotID=900000120&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Portaladresse derselben Seite „Geförderte Projekte“; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13076067",
+    "name": "Karenz",
+    "checkedAt": "2026-09-22T08:07:19Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Karenz gehört zum Amt Dömitz-Malliß (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Geförderte Projekte“ zeigt nur Fördermittel-Logos und Ordner zu Ausschreibungen, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter der letzten zwei Jahre nennen keinen kommunalen Zuschuss. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ des Amts (beide erfassten Adressen) im Original gelesen (22.09.2026): nur Bild der Fördermittel-Logos und Ordner „Ab 01.01.2021“ / „Archiv bis 31.12.2020“ der Ausschreibungen",
+      "Ortsrecht/Satzungen des Amts, der Stadt Dömitz und aller sieben Gemeinden (Grebs-Niendorf, Karenz, Malk Göhren, Malliß, Neu Kaliß, Vielank) vollständig durchgesehen (22.09.2026): Haupt-, Haushalts-, Steuer-, Gebühren-, Baumschutz-, Gestaltungs-, Straßenreinigungssatzungen und Geschäftsordnungen — keine Förderrichtlinie",
+      "AmtsKurier (Amtsblatt, Wittich-Archiv) Ausgaben 10/2024 bis 09/2026, 22 im Volltext (12/2025 und 05/2026 als leere Datei geliefert), nach Photovoltaik, Balkonkraftwerk, steckerfertig, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung/Richtlinie/Antrag durchsucht: nur Handwerker-Anzeigen und redaktionelle Ratgebertexte",
+      "Websuche: Dömitz Malliß Vielank Neu Kaliß Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde (nur Amtsseiten ohne Förderinhalt und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm (Kreisrecherche 22.09.2026 im Lauf zu Amt Stralendorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): kein Förderangebot an Bürger, nur Fördermittel-Logos und Ausschreibungsordner."
+      },
+      {
+        "url": "https://www.amtdoemitz-malliss.de/ortsrecht-politik/",
+        "finding": "Ortsrecht des Amts und aller Gemeinden (22.09.2026): keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.wittich.de/produkte/zeitungen/archiv/3494-amts-kurier",
+        "finding": "AmtsKurier 10/2024–09/2026 (22 Ausgaben im Volltext): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Seite zeigt nur Fördermittel-Logos und Ausschreibungsordner; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      },
+      {
+        "url": "amtdoemitz-malliss.de/portal/seiten/gefoerderte-projekte-900000061-28930.html?naviID=900000120&amp;brotID=900000120&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Portaladresse derselben Seite „Geförderte Projekte“; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13076093",
+    "name": "Malk Göhren",
+    "checkedAt": "2026-09-22T08:07:19Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Malk Göhren gehört zum Amt Dömitz-Malliß (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Geförderte Projekte“ zeigt nur Fördermittel-Logos und Ordner zu Ausschreibungen, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter der letzten zwei Jahre nennen keinen kommunalen Zuschuss. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ des Amts (beide erfassten Adressen) im Original gelesen (22.09.2026): nur Bild der Fördermittel-Logos und Ordner „Ab 01.01.2021“ / „Archiv bis 31.12.2020“ der Ausschreibungen",
+      "Ortsrecht/Satzungen des Amts, der Stadt Dömitz und aller sieben Gemeinden (Grebs-Niendorf, Karenz, Malk Göhren, Malliß, Neu Kaliß, Vielank) vollständig durchgesehen (22.09.2026): Haupt-, Haushalts-, Steuer-, Gebühren-, Baumschutz-, Gestaltungs-, Straßenreinigungssatzungen und Geschäftsordnungen — keine Förderrichtlinie",
+      "AmtsKurier (Amtsblatt, Wittich-Archiv) Ausgaben 10/2024 bis 09/2026, 22 im Volltext (12/2025 und 05/2026 als leere Datei geliefert), nach Photovoltaik, Balkonkraftwerk, steckerfertig, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung/Richtlinie/Antrag durchsucht: nur Handwerker-Anzeigen und redaktionelle Ratgebertexte",
+      "Websuche: Dömitz Malliß Vielank Neu Kaliß Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde (nur Amtsseiten ohne Förderinhalt und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm (Kreisrecherche 22.09.2026 im Lauf zu Amt Stralendorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): kein Förderangebot an Bürger, nur Fördermittel-Logos und Ausschreibungsordner."
+      },
+      {
+        "url": "https://www.amtdoemitz-malliss.de/ortsrecht-politik/",
+        "finding": "Ortsrecht des Amts und aller Gemeinden (22.09.2026): keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.wittich.de/produkte/zeitungen/archiv/3494-amts-kurier",
+        "finding": "AmtsKurier 10/2024–09/2026 (22 Ausgaben im Volltext): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Seite zeigt nur Fördermittel-Logos und Ausschreibungsordner; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      },
+      {
+        "url": "amtdoemitz-malliss.de/portal/seiten/gefoerderte-projekte-900000061-28930.html?naviID=900000120&amp;brotID=900000120&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Portaladresse derselben Seite „Geförderte Projekte“; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13076094",
+    "name": "Malliß",
+    "checkedAt": "2026-09-22T08:07:19Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Malliß gehört zum Amt Dömitz-Malliß (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Geförderte Projekte“ zeigt nur Fördermittel-Logos und Ordner zu Ausschreibungen, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter der letzten zwei Jahre nennen keinen kommunalen Zuschuss. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ des Amts (beide erfassten Adressen) im Original gelesen (22.09.2026): nur Bild der Fördermittel-Logos und Ordner „Ab 01.01.2021“ / „Archiv bis 31.12.2020“ der Ausschreibungen",
+      "Ortsrecht/Satzungen des Amts, der Stadt Dömitz und aller sieben Gemeinden (Grebs-Niendorf, Karenz, Malk Göhren, Malliß, Neu Kaliß, Vielank) vollständig durchgesehen (22.09.2026): Haupt-, Haushalts-, Steuer-, Gebühren-, Baumschutz-, Gestaltungs-, Straßenreinigungssatzungen und Geschäftsordnungen — keine Förderrichtlinie",
+      "AmtsKurier (Amtsblatt, Wittich-Archiv) Ausgaben 10/2024 bis 09/2026, 22 im Volltext (12/2025 und 05/2026 als leere Datei geliefert), nach Photovoltaik, Balkonkraftwerk, steckerfertig, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung/Richtlinie/Antrag durchsucht: nur Handwerker-Anzeigen und redaktionelle Ratgebertexte",
+      "Websuche: Dömitz Malliß Vielank Neu Kaliß Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde (nur Amtsseiten ohne Förderinhalt und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm (Kreisrecherche 22.09.2026 im Lauf zu Amt Stralendorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): kein Förderangebot an Bürger, nur Fördermittel-Logos und Ausschreibungsordner."
+      },
+      {
+        "url": "https://www.amtdoemitz-malliss.de/ortsrecht-politik/",
+        "finding": "Ortsrecht des Amts und aller Gemeinden (22.09.2026): keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.wittich.de/produkte/zeitungen/archiv/3494-amts-kurier",
+        "finding": "AmtsKurier 10/2024–09/2026 (22 Ausgaben im Volltext): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Seite zeigt nur Fördermittel-Logos und Ausschreibungsordner; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      },
+      {
+        "url": "amtdoemitz-malliss.de/portal/seiten/gefoerderte-projekte-900000061-28930.html?naviID=900000120&amp;brotID=900000120&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Portaladresse derselben Seite „Geförderte Projekte“; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13076103",
+    "name": "Neu Kaliß",
+    "checkedAt": "2026-09-22T08:07:19Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neu Kaliß gehört zum Amt Dömitz-Malliß (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Geförderte Projekte“ zeigt nur Fördermittel-Logos und Ordner zu Ausschreibungen, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter der letzten zwei Jahre nennen keinen kommunalen Zuschuss. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ des Amts (beide erfassten Adressen) im Original gelesen (22.09.2026): nur Bild der Fördermittel-Logos und Ordner „Ab 01.01.2021“ / „Archiv bis 31.12.2020“ der Ausschreibungen",
+      "Ortsrecht/Satzungen des Amts, der Stadt Dömitz und aller sieben Gemeinden (Grebs-Niendorf, Karenz, Malk Göhren, Malliß, Neu Kaliß, Vielank) vollständig durchgesehen (22.09.2026): Haupt-, Haushalts-, Steuer-, Gebühren-, Baumschutz-, Gestaltungs-, Straßenreinigungssatzungen und Geschäftsordnungen — keine Förderrichtlinie",
+      "AmtsKurier (Amtsblatt, Wittich-Archiv) Ausgaben 10/2024 bis 09/2026, 22 im Volltext (12/2025 und 05/2026 als leere Datei geliefert), nach Photovoltaik, Balkonkraftwerk, steckerfertig, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung/Richtlinie/Antrag durchsucht: nur Handwerker-Anzeigen und redaktionelle Ratgebertexte",
+      "Websuche: Dömitz Malliß Vielank Neu Kaliß Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde (nur Amtsseiten ohne Förderinhalt und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm (Kreisrecherche 22.09.2026 im Lauf zu Amt Stralendorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): kein Förderangebot an Bürger, nur Fördermittel-Logos und Ausschreibungsordner."
+      },
+      {
+        "url": "https://www.amtdoemitz-malliss.de/ortsrecht-politik/",
+        "finding": "Ortsrecht des Amts und aller Gemeinden (22.09.2026): keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.wittich.de/produkte/zeitungen/archiv/3494-amts-kurier",
+        "finding": "AmtsKurier 10/2024–09/2026 (22 Ausgaben im Volltext): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Seite zeigt nur Fördermittel-Logos und Ausschreibungsordner; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      },
+      {
+        "url": "amtdoemitz-malliss.de/portal/seiten/gefoerderte-projekte-900000061-28930.html?naviID=900000120&amp;brotID=900000120&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Portaladresse derselben Seite „Geförderte Projekte“; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      }
+    ]
+  },
+  {
+    "regionId": "13076143",
+    "name": "Vielank",
+    "checkedAt": "2026-09-22T08:07:19Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Vielank gehört zum Amt Dömitz-Malliß (Landkreis Ludwigslust-Parchim). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Geförderte Projekte“ zeigt nur Fördermittel-Logos und Ordner zu Ausschreibungen, das Ortsrecht der Gemeinde enthält keine Förderrichtlinie, und die Amtsblätter der letzten zwei Jahre nennen keinen kommunalen Zuschuss. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Geförderte Projekte“ des Amts (beide erfassten Adressen) im Original gelesen (22.09.2026): nur Bild der Fördermittel-Logos und Ordner „Ab 01.01.2021“ / „Archiv bis 31.12.2020“ der Ausschreibungen",
+      "Ortsrecht/Satzungen des Amts, der Stadt Dömitz und aller sieben Gemeinden (Grebs-Niendorf, Karenz, Malk Göhren, Malliß, Neu Kaliß, Vielank) vollständig durchgesehen (22.09.2026): Haupt-, Haushalts-, Steuer-, Gebühren-, Baumschutz-, Gestaltungs-, Straßenreinigungssatzungen und Geschäftsordnungen — keine Förderrichtlinie",
+      "AmtsKurier (Amtsblatt, Wittich-Archiv) Ausgaben 10/2024 bis 09/2026, 22 im Volltext (12/2025 und 05/2026 als leere Datei geliefert), nach Photovoltaik, Balkonkraftwerk, steckerfertig, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung/Richtlinie/Antrag durchsucht: nur Handwerker-Anzeigen und redaktionelle Ratgebertexte",
+      "Websuche: Dömitz Malliß Vielank Neu Kaliß Förderung Balkonkraftwerk Photovoltaik Zuschuss Gemeinde (nur Amtsseiten ohne Förderinhalt und allgemeine Ratgeber)",
+      "Katalog nach Programmen des Landkreises Ludwigslust-Parchim (13076) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm (Kreisrecherche 22.09.2026 im Lauf zu Amt Stralendorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "finding": "„Geförderte Projekte“ im Original gelesen (22.09.2026): kein Förderangebot an Bürger, nur Fördermittel-Logos und Ausschreibungsordner."
+      },
+      {
+        "url": "https://www.amtdoemitz-malliss.de/ortsrecht-politik/",
+        "finding": "Ortsrecht des Amts und aller Gemeinden (22.09.2026): keine Förderrichtlinie für Energieanlagen."
+      },
+      {
+        "url": "https://www.wittich.de/produkte/zeitungen/archiv/3494-amts-kurier",
+        "finding": "AmtsKurier 10/2024–09/2026 (22 Ausgaben im Volltext): kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Seite zeigt nur Fördermittel-Logos und Ausschreibungsordner; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      },
+      {
+        "url": "amtdoemitz-malliss.de/portal/seiten/gefoerderte-projekte-900000061-28930.html?naviID=900000120&amp;brotID=900000120&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "Ältere Portaladresse derselben Seite „Geförderte Projekte“; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
+      }
+    ]
   }
 ]
