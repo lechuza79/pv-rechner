@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { getCssVariables } from "../../lib/theme";
+import { WebAnalytics } from "../../components/WebAnalytics";
+import { HerkunftsMelder } from "../../components/HerkunftsMelder";
 
 /**
  * Root layout of the new municipality page (approved design, 09/2026).
@@ -61,7 +63,14 @@ export default function GemeindeLayout({ children }: { children: React.ReactNode
           <link key={href} rel="stylesheet" href={href} precedence="default" />
         ))}
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Same measurement as every (site) page: cookieless page views and
+            the arrivals from the municipality letters (reasons in the (site)
+            layout). Without them the switch would blind the letter statistics. */}
+        <WebAnalytics />
+        <HerkunftsMelder />
+      </body>
     </html>
   );
 }

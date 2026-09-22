@@ -3,6 +3,7 @@ import SharedSiteHeader from "../SharedSiteHeader";
 import { anlagenZahlTeile, fmtPvLeistung } from "../../lib/atlas-format";
 import { formatStoryDate } from "../../lib/story-format";
 import { DATA_SOURCES } from "../../lib/data-sources";
+import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../lib/json-ld";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import GemeindeSzene from "./GemeindeSzene";
 import GemeindeSkripte from "./GemeindeSkripte";
@@ -11,7 +12,7 @@ import { ranglistenDaten } from "./rangliste-daten";
 import GemeindeKopfKacheln, { type KopfRang } from "./GemeindeKopfKacheln";
 import GemeindeBeispiele from "./GemeindeBeispiele";
 import GemeindeAboKnopf from "./GemeindeAboKnopf";
-import GemeindeAboBox from "../atlas/GemeindeAboBox";
+import GemeindeAboDialog from "./GemeindeAboDialog";
 import SiteFuss from "../SiteFuss";
 
 /**
@@ -104,8 +105,29 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
     widgetUrl: `${BASE_URL}/energie-widgets?ags=${ort.ags}&name=${encodeURIComponent(ort.name)}#gemeinde-solar`,
   });
 
+  // Structured data as on the old page: breadcrumb and the town's dataset.
+  const breadcrumbLd = breadcrumbJsonLd([...ort.pfad.map((p) => ({ name: p.name, path: p.href })), { name: ort.name }], BASE_URL);
+  const batterieKwh = paket.register?.storage.find((r) => r.unit === "kWh")?.value ?? null;
+  const datasetLd = atlasDatasetJsonLd({
+    name: `Solaranlagen-Bestand ${ort.name}`,
+    description: `Anlagenzahl, installierte Leistung und Zubau der Photovoltaik in ${ort.name} aus dem Marktstammdatenregister.`,
+    url: `${BASE_URL}${ort.liveUrl}`,
+    dateModified: paket.registerStand,
+    placeName: ort.name,
+    // The nearest real place above the town; for Berlin and Hamburg that is Germany.
+    containedInPlace: ort.pfad.length > 1 ? ort.pfad.at(-1)?.name : "Deutschland",
+    variables: [
+      { name: "Solaranlagen in Betrieb", value: z.solarCount },
+      ...(z.solarKwp != null ? [{ name: "Installierte Leistung", value: Math.round(z.solarKwp), unitText: "kWp" }] : []),
+      ...(batterieKwh != null ? [{ name: "Batteriespeicher-Kapazität", value: Math.round(batterieKwh), unitText: "kWh" }] : []),
+    ],
+    baseUrl: BASE_URL,
+  });
+
   return (
     <div id="root">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
       <div
         className="solar-page"
         data-hero-system=""
@@ -354,11 +376,9 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
         </main>
       </div>
       <SiteFuss />
-      {/* The sign-up dialog; its own button stays hidden — the section bar's
+      {/* The sign-up dialog in the approved design; the section bar's
           subscribe button opens it. */}
-      <div hidden>
-        <GemeindeAboBox name={ort.name} ags={ort.ags} />
-      </div>
+      <GemeindeAboDialog name={ort.name} ags={ort.ags} />
       {/* The approved design's neon illustrations (the adapter swaps the
           citizen examples' motifs) and its rank confetti, unchanged. */}
       <script src="/illustrations-motion/solar-illustrations.js" defer />

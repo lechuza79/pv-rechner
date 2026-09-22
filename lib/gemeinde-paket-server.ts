@@ -1,6 +1,7 @@
 import "server-only";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { brotliDecompressSync } from "node:zlib";
 import { GEMEINDE_PAKET_VERSION, type GemeindePaket } from "./gemeinde-paket";
 import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 
@@ -11,7 +12,8 @@ import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
  *   GEMEINDE_PAKET_LOKAL=<dir>  development: the local build output
  *                               (scripts/.cache/gemeinde-pakete/<edition>)
  *   otherwise                   Supabase Storage bucket `gemeinde-pakete`,
- *                               object `<ags>.json` of the published edition
+ *                               object `<ags>.json.br` (Brotli: ≈55 KB instead
+ *                               of ≈370 KB; 11,000 towns are ≈0.6 GB, not 4)
  *
  * A missing, unreadable or wrong-version package returns null: the page then
  * shows the town without the new sections rather than half a package. The
@@ -40,7 +42,7 @@ export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | nu
   if (!url || !key) return null;
   try {
     const res = await withDbTimeout(
-      fetch(`${url}/storage/v1/object/${GEMEINDE_PAKET_BUCKET}/${ags}.json`, {
+      fetch(`${url}/storage/v1/object/${GEMEINDE_PAKET_BUCKET}/${ags}.json.br`, {
         headers: { apikey: key, Authorization: `Bearer ${key}` },
         // The page itself is ISR; the package changes with the monthly run and
         // is revalidated together with the page (lib/atlas-revalidate-routen.ts).
@@ -50,7 +52,7 @@ export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | nu
       DB_SOFT_READ_TIMEOUT_MS,
     );
     if (!res.ok) return null;
-    const data = await res.json();
+    const data = JSON.parse(brotliDecompressSync(Buffer.from(await res.arrayBuffer())).toString("utf8"));
     return gueltig(data, ags) ? data : null;
   } catch {
     return null;

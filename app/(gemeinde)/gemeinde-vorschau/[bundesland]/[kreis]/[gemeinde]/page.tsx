@@ -6,6 +6,7 @@ import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
 import { ladeGemeindePaket } from "../../../../../../lib/gemeinde-paket-server";
 import GemeindeSeite from "../../../../../../components/gemeinde/GemeindeSeite";
+import { gemeindeMetadata } from "../../../../../../components/gemeinde/gemeinde-metadata";
 
 /**
  * PREVIEW of the new municipality page, for acceptance before the switch.
@@ -25,12 +26,7 @@ export function generateStaticParams() {
 type Params = { bundesland: string; kreis: string; gemeinde: string };
 
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
-  const params = await props.params;
-  const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
-  return {
-    title: region ? `Vorschau: ${region.name} – Energie von hier | Solar Check` : "Vorschau | Solar Check",
-    robots: { index: false, follow: false },
-  };
+  return gemeindeMetadata(await props.params, { vorschau: true });
 }
 
 export default async function GemeindeVorschau(props: { params: Promise<Params> }) {

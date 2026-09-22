@@ -2,3 +2,8 @@
    The story and ranking texts stand in the HTML for crawlers and screen
    readers; visually the page shows the approved design's interactive views. */
 .gemeinde-nur-text{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+/* The subscription dialog's small print, at the sizes the approved design
+   gives it inline (atlas.js, openAbo). */
+.atlas-dialog .gemeinde-abo-hinweis{font-size:12px}
+.atlas-dialog .gemeinde-abo-klein{font-size:11px}
