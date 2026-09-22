@@ -45256,5 +45256,263 @@
         "evidenceUrl": "https://www.amtdoemitz-malliss.de/oeffentliche-auslegungen-bauleitplanung/ausschreibungen-vergaben/gefoerderte-projekte"
       }
     ]
+  },
+  {
+    "regionId": "13074004",
+    "name": "Benz",
+    "checkedAt": "2026-09-22T08:12:20Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Benz gehört zum Amt Neuburg (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Förderung Europäische Fonds“ nennt nur kommunale Vorhaben, die Volltextsuche des Amts findet zu Photovoltaik nur Bebauungspläne für Solarparks und zu Zuschüssen nur Wohngeld und Dorferneuerung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Förderung Europäische Fonds“ im Original gelesen (22.09.2026): Straßenbeleuchtung Blowatz und Neuburg, Radweg Boiensdorf, Brandschutz und Verschattung der Schule Neuburg",
+      "Volltextsuche amt-neuburg.de im Browser (22.09.2026), Suchbereiche Seiten, Dokumente, Dienstleistungen, Formulare: Balkonkraftwerk, steckerfertig 0 Treffer; Photovoltaik 9 (Vergabe und Bebauungspläne für Freiflächenanlagen), Solar 3 (Solarparks), Zuschuss 4 (Wohngeld, Dorferneuerung), Förderung 2 (EU-Fonds, Kita), Förderprogramm 0, Wärmepumpe und Klimaschutz 1 (Wärmeplanung), Speicher 2 (Ausweis), Richtlinie 1 (Gaststätten)",
+      "Seite „Ortsrecht“ des Amts im Browser geöffnet (22.09.2026): ohne Einträge; Satzungen sind über die Dokumentsuche erfasst",
+      "Blowatzer Blatt und Gemeindeblatt Neuburg 2025–2026 (35 Ausgaben) geladen; 19 mit Textebene nach Photovoltaik, Balkonkraftwerk, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung durchsucht: kein Treffer; 16 Ausgaben des Blowatzer Blatts sind reine Bildscans und nicht durchsuchbar",
+      "Websuche: Landkreis Nordwestmecklenburg Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm)",
+      "Katalog nach Programmen des Landkreises Nordwestmecklenburg (13074) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html",
+        "finding": "„Förderung Europäische Fonds“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/portal/suche.html",
+        "finding": "Volltextsuche des Amts (22.09.2026, 10 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/kultur-sport/gemeindeblaetter/",
+        "finding": "Gemeindeblätter Blowatz und Neuburg 2025–2026, soweit mit Textebene: kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html?naviID=900000076&amp;brotID=900000076&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "EU-Fonds-Seite nennt nur kommunale Bauvorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074007",
+    "name": "Blowatz",
+    "checkedAt": "2026-09-22T08:12:20Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Blowatz gehört zum Amt Neuburg (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Förderung Europäische Fonds“ nennt nur kommunale Vorhaben, die Volltextsuche des Amts findet zu Photovoltaik nur Bebauungspläne für Solarparks und zu Zuschüssen nur Wohngeld und Dorferneuerung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Förderung Europäische Fonds“ im Original gelesen (22.09.2026): Straßenbeleuchtung Blowatz und Neuburg, Radweg Boiensdorf, Brandschutz und Verschattung der Schule Neuburg",
+      "Volltextsuche amt-neuburg.de im Browser (22.09.2026), Suchbereiche Seiten, Dokumente, Dienstleistungen, Formulare: Balkonkraftwerk, steckerfertig 0 Treffer; Photovoltaik 9 (Vergabe und Bebauungspläne für Freiflächenanlagen), Solar 3 (Solarparks), Zuschuss 4 (Wohngeld, Dorferneuerung), Förderung 2 (EU-Fonds, Kita), Förderprogramm 0, Wärmepumpe und Klimaschutz 1 (Wärmeplanung), Speicher 2 (Ausweis), Richtlinie 1 (Gaststätten)",
+      "Seite „Ortsrecht“ des Amts im Browser geöffnet (22.09.2026): ohne Einträge; Satzungen sind über die Dokumentsuche erfasst",
+      "Blowatzer Blatt und Gemeindeblatt Neuburg 2025–2026 (35 Ausgaben) geladen; 19 mit Textebene nach Photovoltaik, Balkonkraftwerk, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung durchsucht: kein Treffer; 16 Ausgaben des Blowatzer Blatts sind reine Bildscans und nicht durchsuchbar",
+      "Websuche: Landkreis Nordwestmecklenburg Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm)",
+      "Katalog nach Programmen des Landkreises Nordwestmecklenburg (13074) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html",
+        "finding": "„Förderung Europäische Fonds“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/portal/suche.html",
+        "finding": "Volltextsuche des Amts (22.09.2026, 10 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/kultur-sport/gemeindeblaetter/",
+        "finding": "Gemeindeblätter Blowatz und Neuburg 2025–2026, soweit mit Textebene: kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html?naviID=900000076&amp;brotID=900000076&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "EU-Fonds-Seite nennt nur kommunale Bauvorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074009",
+    "name": "Boiensdorf",
+    "checkedAt": "2026-09-22T08:12:20Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Boiensdorf gehört zum Amt Neuburg (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Förderung Europäische Fonds“ nennt nur kommunale Vorhaben, die Volltextsuche des Amts findet zu Photovoltaik nur Bebauungspläne für Solarparks und zu Zuschüssen nur Wohngeld und Dorferneuerung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Förderung Europäische Fonds“ im Original gelesen (22.09.2026): Straßenbeleuchtung Blowatz und Neuburg, Radweg Boiensdorf, Brandschutz und Verschattung der Schule Neuburg",
+      "Volltextsuche amt-neuburg.de im Browser (22.09.2026), Suchbereiche Seiten, Dokumente, Dienstleistungen, Formulare: Balkonkraftwerk, steckerfertig 0 Treffer; Photovoltaik 9 (Vergabe und Bebauungspläne für Freiflächenanlagen), Solar 3 (Solarparks), Zuschuss 4 (Wohngeld, Dorferneuerung), Förderung 2 (EU-Fonds, Kita), Förderprogramm 0, Wärmepumpe und Klimaschutz 1 (Wärmeplanung), Speicher 2 (Ausweis), Richtlinie 1 (Gaststätten)",
+      "Seite „Ortsrecht“ des Amts im Browser geöffnet (22.09.2026): ohne Einträge; Satzungen sind über die Dokumentsuche erfasst",
+      "Blowatzer Blatt und Gemeindeblatt Neuburg 2025–2026 (35 Ausgaben) geladen; 19 mit Textebene nach Photovoltaik, Balkonkraftwerk, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung durchsucht: kein Treffer; 16 Ausgaben des Blowatzer Blatts sind reine Bildscans und nicht durchsuchbar",
+      "Websuche: Landkreis Nordwestmecklenburg Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm)",
+      "Katalog nach Programmen des Landkreises Nordwestmecklenburg (13074) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html",
+        "finding": "„Förderung Europäische Fonds“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/portal/suche.html",
+        "finding": "Volltextsuche des Amts (22.09.2026, 10 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/kultur-sport/gemeindeblaetter/",
+        "finding": "Gemeindeblätter Blowatz und Neuburg 2025–2026, soweit mit Textebene: kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html?naviID=900000076&amp;brotID=900000076&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "EU-Fonds-Seite nennt nur kommunale Bauvorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074034",
+    "name": "Hornstorf",
+    "checkedAt": "2026-09-22T08:12:20Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hornstorf gehört zum Amt Neuburg (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Förderung Europäische Fonds“ nennt nur kommunale Vorhaben, die Volltextsuche des Amts findet zu Photovoltaik nur Bebauungspläne für Solarparks und zu Zuschüssen nur Wohngeld und Dorferneuerung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Förderung Europäische Fonds“ im Original gelesen (22.09.2026): Straßenbeleuchtung Blowatz und Neuburg, Radweg Boiensdorf, Brandschutz und Verschattung der Schule Neuburg",
+      "Volltextsuche amt-neuburg.de im Browser (22.09.2026), Suchbereiche Seiten, Dokumente, Dienstleistungen, Formulare: Balkonkraftwerk, steckerfertig 0 Treffer; Photovoltaik 9 (Vergabe und Bebauungspläne für Freiflächenanlagen), Solar 3 (Solarparks), Zuschuss 4 (Wohngeld, Dorferneuerung), Förderung 2 (EU-Fonds, Kita), Förderprogramm 0, Wärmepumpe und Klimaschutz 1 (Wärmeplanung), Speicher 2 (Ausweis), Richtlinie 1 (Gaststätten)",
+      "Seite „Ortsrecht“ des Amts im Browser geöffnet (22.09.2026): ohne Einträge; Satzungen sind über die Dokumentsuche erfasst",
+      "Blowatzer Blatt und Gemeindeblatt Neuburg 2025–2026 (35 Ausgaben) geladen; 19 mit Textebene nach Photovoltaik, Balkonkraftwerk, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung durchsucht: kein Treffer; 16 Ausgaben des Blowatzer Blatts sind reine Bildscans und nicht durchsuchbar",
+      "Websuche: Landkreis Nordwestmecklenburg Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm)",
+      "Katalog nach Programmen des Landkreises Nordwestmecklenburg (13074) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html",
+        "finding": "„Förderung Europäische Fonds“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/portal/suche.html",
+        "finding": "Volltextsuche des Amts (22.09.2026, 10 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/kultur-sport/gemeindeblaetter/",
+        "finding": "Gemeindeblätter Blowatz und Neuburg 2025–2026, soweit mit Textebene: kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html?naviID=900000076&amp;brotID=900000076&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "EU-Fonds-Seite nennt nur kommunale Bauvorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074044",
+    "name": "Krusenhagen",
+    "checkedAt": "2026-09-22T08:12:20Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Krusenhagen gehört zum Amt Neuburg (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Förderung Europäische Fonds“ nennt nur kommunale Vorhaben, die Volltextsuche des Amts findet zu Photovoltaik nur Bebauungspläne für Solarparks und zu Zuschüssen nur Wohngeld und Dorferneuerung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Förderung Europäische Fonds“ im Original gelesen (22.09.2026): Straßenbeleuchtung Blowatz und Neuburg, Radweg Boiensdorf, Brandschutz und Verschattung der Schule Neuburg",
+      "Volltextsuche amt-neuburg.de im Browser (22.09.2026), Suchbereiche Seiten, Dokumente, Dienstleistungen, Formulare: Balkonkraftwerk, steckerfertig 0 Treffer; Photovoltaik 9 (Vergabe und Bebauungspläne für Freiflächenanlagen), Solar 3 (Solarparks), Zuschuss 4 (Wohngeld, Dorferneuerung), Förderung 2 (EU-Fonds, Kita), Förderprogramm 0, Wärmepumpe und Klimaschutz 1 (Wärmeplanung), Speicher 2 (Ausweis), Richtlinie 1 (Gaststätten)",
+      "Seite „Ortsrecht“ des Amts im Browser geöffnet (22.09.2026): ohne Einträge; Satzungen sind über die Dokumentsuche erfasst",
+      "Blowatzer Blatt und Gemeindeblatt Neuburg 2025–2026 (35 Ausgaben) geladen; 19 mit Textebene nach Photovoltaik, Balkonkraftwerk, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung durchsucht: kein Treffer; 16 Ausgaben des Blowatzer Blatts sind reine Bildscans und nicht durchsuchbar",
+      "Websuche: Landkreis Nordwestmecklenburg Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm)",
+      "Katalog nach Programmen des Landkreises Nordwestmecklenburg (13074) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html",
+        "finding": "„Förderung Europäische Fonds“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/portal/suche.html",
+        "finding": "Volltextsuche des Amts (22.09.2026, 10 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/kultur-sport/gemeindeblaetter/",
+        "finding": "Gemeindeblätter Blowatz und Neuburg 2025–2026, soweit mit Textebene: kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html?naviID=900000076&amp;brotID=900000076&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "EU-Fonds-Seite nennt nur kommunale Bauvorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html"
+      }
+    ]
+  },
+  {
+    "regionId": "13074056",
+    "name": "Neuburg",
+    "checkedAt": "2026-09-22T08:12:20Z",
+    "recheckAt": "2026-12-21T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Neuburg gehört zum Amt Neuburg (Landkreis Nordwestmecklenburg). Weder die Gemeinde noch das Amt führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Seite „Förderung Europäische Fonds“ nennt nur kommunale Vorhaben, die Volltextsuche des Amts findet zu Photovoltaik nur Bebauungspläne für Solarparks und zu Zuschüssen nur Wohngeld und Dorferneuerung. Für Balkonkraftwerke gilt das Landesprogramm Mecklenburg-Vorpommerns, das im Katalog steht (Stand 22.09.2026).",
+    "searches": [
+      "Seite „Förderung Europäische Fonds“ im Original gelesen (22.09.2026): Straßenbeleuchtung Blowatz und Neuburg, Radweg Boiensdorf, Brandschutz und Verschattung der Schule Neuburg",
+      "Volltextsuche amt-neuburg.de im Browser (22.09.2026), Suchbereiche Seiten, Dokumente, Dienstleistungen, Formulare: Balkonkraftwerk, steckerfertig 0 Treffer; Photovoltaik 9 (Vergabe und Bebauungspläne für Freiflächenanlagen), Solar 3 (Solarparks), Zuschuss 4 (Wohngeld, Dorferneuerung), Förderung 2 (EU-Fonds, Kita), Förderprogramm 0, Wärmepumpe und Klimaschutz 1 (Wärmeplanung), Speicher 2 (Ausweis), Richtlinie 1 (Gaststätten)",
+      "Seite „Ortsrecht“ des Amts im Browser geöffnet (22.09.2026): ohne Einträge; Satzungen sind über die Dokumentsuche erfasst",
+      "Blowatzer Blatt und Gemeindeblatt Neuburg 2025–2026 (35 Ausgaben) geladen; 19 mit Textebene nach Photovoltaik, Balkonkraftwerk, Solaranlage, Wärmepumpe im Umfeld von Zuschuss/Förderung durchsucht: kein Treffer; 16 Ausgaben des Blowatzer Blatts sind reine Bildscans und nicht durchsuchbar",
+      "Websuche: Landkreis Nordwestmecklenburg Förderung Balkonkraftwerk Photovoltaik Zuschuss (nur Landesprogramm)",
+      "Katalog nach Programmen des Landkreises Nordwestmecklenburg (13074) und des Landes Mecklenburg-Vorpommern durchsucht: Landesprogramm Mini-Solaranlagen aktiv, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html",
+        "finding": "„Förderung Europäische Fonds“ im Original gelesen (22.09.2026): nur kommunale Vorhaben, kein Bürgerzuschuss."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/portal/suche.html",
+        "finding": "Volltextsuche des Amts (22.09.2026, 10 Begriffe): kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.amt-neuburg.de/kultur-sport/gemeindeblaetter/",
+        "finding": "Gemeindeblätter Blowatz und Neuburg 2025–2026, soweit mit Textebene: kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.lfi-mv.de/foerderfinder/mini-solaranlagen/",
+        "finding": "Landesprogramm Mecklenburg-Vorpommern für steckerfertige PV-Anlagen, im Katalog als aktiv geführt — Landesförderung, nicht kommunal."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html?naviID=900000076&amp;brotID=900000076&amp;rubrik=900000001",
+        "disposition": "reviewed",
+        "reason": "EU-Fonds-Seite nennt nur kommunale Bauvorhaben; kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.amt-neuburg.de/portal/seiten/foerderung-europaeische-fonds-900000021-28440.html"
+      }
+    ]
   }
 ]
