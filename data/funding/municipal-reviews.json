@@ -42329,7 +42329,7 @@
   {
     "regionId": "01053009",
     "name": "Berkenthin",
-    "checkedAt": "2026-09-22T00:35:00Z",
+    "checkedAt": "2026-09-22T00:55:00Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "programme-geprueft",
@@ -42352,6 +42352,10 @@
       {
         "url": "https://berkenthin.de/berkenthin-verlaengert-balkon-solar-foerderung/",
         "finding": "23.01.2024: 200 € je Balkonanlage, Antragstellung bis 30.6.2024."
+      },
+      {
+        "url": "https://berkenthin.de/europa-ganz-nah-und-zum-anfassen-oliver-brandt-besichtigt-eu-gefoerderte-projekte/",
+        "finding": "21.03.2024: Besuch LEADER-/ELER-geförderter Projekte der Regionalentwicklung; keine Förderung für Haushalte."
       }
     ],
     "sources": [
@@ -42360,6 +42364,42 @@
         "disposition": "reviewed",
         "reason": "Rangmeldung vom 16.09.2026 nennt die gemeindliche Balkonförderung; Programm laut Mitteilung vom 04.05.2026 eingestellt, aufgenommen als berkenthin-balkon-solar.",
         "evidenceUrl": "https://berkenthin.de/erfolgreiches-foerderprogramm-fuer-balkonsolaranlagen-in-berkenthin-beitrag-zum-klimaschutz-sichtbar/"
+      },
+      {
+        "url": "berkenthin.de/erfolgreiches-foerderprogramm-fuer-balkonsolaranlagen-in-berkenthin-beitrag-zum-klimaschutz-sichtbar",
+        "disposition": "reviewed",
+        "reason": "Bilanz 04.05.2026: 76 Anlagen, Programm eingestellt; Beleg für berkenthin-balkon-solar.",
+        "evidenceUrl": "https://berkenthin.de/erfolgreiches-foerderprogramm-fuer-balkonsolaranlagen-in-berkenthin-beitrag-zum-klimaschutz-sichtbar/"
+      },
+      {
+        "url": "berkenthin.de/gemeinde-berkenthin-foerdert-balkon-solaranlagen",
+        "disposition": "reviewed",
+        "reason": "Start 29.03.2023, bis zu 200 € je Wohneinheit; im Eintrag berkenthin-balkon-solar abgebildet.",
+        "evidenceUrl": "https://berkenthin.de/erfolgreiches-foerderprogramm-fuer-balkonsolaranlagen-in-berkenthin-beitrag-zum-klimaschutz-sichtbar/"
+      },
+      {
+        "url": "berkenthin.de/foerderung-von-balkon-solaranlagen-durch-die-gemeinde-berkenthin",
+        "disposition": "reviewed",
+        "reason": "Bilanz 07.08.2024 der Runde April 2023 bis Juni 2024; im Eintrag abgebildet.",
+        "evidenceUrl": "https://berkenthin.de/erfolgreiches-foerderprogramm-fuer-balkonsolaranlagen-in-berkenthin-beitrag-zum-klimaschutz-sichtbar/"
+      },
+      {
+        "url": "berkenthin.de/balkon-solar-foerderung-in-berkenthin",
+        "disposition": "reviewed",
+        "reason": "Zwischenstand 25.10.2023 derselben Runde; im Eintrag abgebildet.",
+        "evidenceUrl": "https://berkenthin.de/erfolgreiches-foerderprogramm-fuer-balkonsolaranlagen-in-berkenthin-beitrag-zum-klimaschutz-sichtbar/"
+      },
+      {
+        "url": "berkenthin.de/berkenthin-verlaengert-balkon-solar-foerderung",
+        "disposition": "reviewed",
+        "reason": "Verlängerung 23.01.2024 bis 30.06.2024; im Eintrag abgebildet.",
+        "evidenceUrl": "https://berkenthin.de/berkenthin-verlaengert-balkon-solar-foerderung/"
+      },
+      {
+        "url": "berkenthin.de/europa-ganz-nah-und-zum-anfassen-oliver-brandt-besichtigt-eu-gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "LEADER-/ELER-Projekte der Regionalentwicklung, keine Haushaltsförderung.",
+        "evidenceUrl": "https://berkenthin.de/europa-ganz-nah-und-zum-anfassen-oliver-brandt-besichtigt-eu-gefoerderte-projekte/"
       }
     ]
   }
