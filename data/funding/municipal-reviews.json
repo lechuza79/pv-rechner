@@ -42486,7 +42486,7 @@
   {
     "regionId": "07137023",
     "name": "Einig",
-    "checkedAt": "2026-09-22T04:07:32Z",
+    "checkedAt": "2026-09-22T04:15:58Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -42522,6 +42522,18 @@
       {
         "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
         "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/",
+        "finding": "Bauleitplanung (FNP-Änderungen, Bebauungsplanverfahren), gelesen 21.09.2026 — Planungsrecht, keine Förderung."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/",
+        "finding": "38. Änderung Flächennutzungsplan für Freiflächen-Photovoltaik, gelesen 21.09.2026 — Bauleitplanverfahren, kein Zuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/",
+        "finding": "Planungskriterien für Freiflächen-PV in der VG, gelesen 21.09.2026 — keine Förderung."
       }
     ],
     "sources": [
@@ -42536,13 +42548,37 @@
         "disposition": "reviewed",
         "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
         "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung",
+        "disposition": "reviewed",
+        "reason": "Bauleitplanung der VG (FNP-Änderungen, laufende Bebauungsplanverfahren), am 21.09.2026 gelesen — Planungsrecht, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik",
+        "disposition": "reviewed",
+        "reason": "38. Änderung Flächennutzungsplan (Flächen für Freiflächen-Photovoltaik), am 21.09.2026 gelesen — Bauleitplanverfahren, kein Zuschuss für Private.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Klimaschutz-Übersicht am 22.09.2026 im Browser gelesen: Klimaschutzteilkonzept für kommunale Liegenschaften, Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, Wärmeplanung — kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "„Errichtung von Freiflächen-Photovoltaikanlagen in der Verbandsgemeinde Maifeld“, am 21.09.2026 gelesen — Planungskriterien für Freiflächenanlagen, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/"
       }
     ]
   },
   {
     "regionId": "07137027",
     "name": "Gappenach",
-    "checkedAt": "2026-09-22T04:07:32Z",
+    "checkedAt": "2026-09-22T04:15:58Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -42578,6 +42614,18 @@
       {
         "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
         "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/",
+        "finding": "Bauleitplanung (FNP-Änderungen, Bebauungsplanverfahren), gelesen 21.09.2026 — Planungsrecht, keine Förderung."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/",
+        "finding": "38. Änderung Flächennutzungsplan für Freiflächen-Photovoltaik, gelesen 21.09.2026 — Bauleitplanverfahren, kein Zuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/",
+        "finding": "Planungskriterien für Freiflächen-PV in der VG, gelesen 21.09.2026 — keine Förderung."
       }
     ],
     "sources": [
@@ -42592,13 +42640,37 @@
         "disposition": "reviewed",
         "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
         "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung",
+        "disposition": "reviewed",
+        "reason": "Bauleitplanung der VG (FNP-Änderungen, laufende Bebauungsplanverfahren), am 21.09.2026 gelesen — Planungsrecht, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik",
+        "disposition": "reviewed",
+        "reason": "38. Änderung Flächennutzungsplan (Flächen für Freiflächen-Photovoltaik), am 21.09.2026 gelesen — Bauleitplanverfahren, kein Zuschuss für Private.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Klimaschutz-Übersicht am 22.09.2026 im Browser gelesen: Klimaschutzteilkonzept für kommunale Liegenschaften, Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, Wärmeplanung — kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "„Errichtung von Freiflächen-Photovoltaikanlagen in der Verbandsgemeinde Maifeld“, am 21.09.2026 gelesen — Planungskriterien für Freiflächenanlagen, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/"
       }
     ]
   },
   {
     "regionId": "07137048",
     "name": "Kerben",
-    "checkedAt": "2026-09-22T04:07:32Z",
+    "checkedAt": "2026-09-22T04:15:58Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -42634,6 +42706,18 @@
       {
         "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
         "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/",
+        "finding": "Bauleitplanung (FNP-Änderungen, Bebauungsplanverfahren), gelesen 21.09.2026 — Planungsrecht, keine Förderung."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/",
+        "finding": "38. Änderung Flächennutzungsplan für Freiflächen-Photovoltaik, gelesen 21.09.2026 — Bauleitplanverfahren, kein Zuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/",
+        "finding": "Planungskriterien für Freiflächen-PV in der VG, gelesen 21.09.2026 — keine Förderung."
       }
     ],
     "sources": [
@@ -42648,13 +42732,37 @@
         "disposition": "reviewed",
         "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
         "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung",
+        "disposition": "reviewed",
+        "reason": "Bauleitplanung der VG (FNP-Änderungen, laufende Bebauungsplanverfahren), am 21.09.2026 gelesen — Planungsrecht, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik",
+        "disposition": "reviewed",
+        "reason": "38. Änderung Flächennutzungsplan (Flächen für Freiflächen-Photovoltaik), am 21.09.2026 gelesen — Bauleitplanverfahren, kein Zuschuss für Private.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Klimaschutz-Übersicht am 22.09.2026 im Browser gelesen: Klimaschutzteilkonzept für kommunale Liegenschaften, Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, Wärmeplanung — kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "„Errichtung von Freiflächen-Photovoltaikanlagen in der Verbandsgemeinde Maifeld“, am 21.09.2026 gelesen — Planungskriterien für Freiflächenanlagen, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/"
       }
     ]
   },
   {
     "regionId": "07137080",
     "name": "Naunheim",
-    "checkedAt": "2026-09-22T04:07:32Z",
+    "checkedAt": "2026-09-22T04:15:58Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -42690,6 +42798,18 @@
       {
         "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
         "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/",
+        "finding": "Bauleitplanung (FNP-Änderungen, Bebauungsplanverfahren), gelesen 21.09.2026 — Planungsrecht, keine Förderung."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/",
+        "finding": "38. Änderung Flächennutzungsplan für Freiflächen-Photovoltaik, gelesen 21.09.2026 — Bauleitplanverfahren, kein Zuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/",
+        "finding": "Planungskriterien für Freiflächen-PV in der VG, gelesen 21.09.2026 — keine Förderung."
       }
     ],
     "sources": [
@@ -42704,13 +42824,37 @@
         "disposition": "reviewed",
         "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
         "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung",
+        "disposition": "reviewed",
+        "reason": "Bauleitplanung der VG (FNP-Änderungen, laufende Bebauungsplanverfahren), am 21.09.2026 gelesen — Planungsrecht, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik",
+        "disposition": "reviewed",
+        "reason": "38. Änderung Flächennutzungsplan (Flächen für Freiflächen-Photovoltaik), am 21.09.2026 gelesen — Bauleitplanverfahren, kein Zuschuss für Private.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Klimaschutz-Übersicht am 22.09.2026 im Browser gelesen: Klimaschutzteilkonzept für kommunale Liegenschaften, Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, Wärmeplanung — kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "„Errichtung von Freiflächen-Photovoltaikanlagen in der Verbandsgemeinde Maifeld“, am 21.09.2026 gelesen — Planungskriterien für Freiflächenanlagen, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/"
       }
     ]
   },
   {
     "regionId": "07137087",
     "name": "Pillig",
-    "checkedAt": "2026-09-22T04:07:32Z",
+    "checkedAt": "2026-09-22T04:15:58Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -42746,6 +42890,18 @@
       {
         "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
         "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/",
+        "finding": "Bauleitplanung (FNP-Änderungen, Bebauungsplanverfahren), gelesen 21.09.2026 — Planungsrecht, keine Förderung."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/",
+        "finding": "38. Änderung Flächennutzungsplan für Freiflächen-Photovoltaik, gelesen 21.09.2026 — Bauleitplanverfahren, kein Zuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/",
+        "finding": "Planungskriterien für Freiflächen-PV in der VG, gelesen 21.09.2026 — keine Förderung."
       }
     ],
     "sources": [
@@ -42760,13 +42916,37 @@
         "disposition": "reviewed",
         "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
         "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung",
+        "disposition": "reviewed",
+        "reason": "Bauleitplanung der VG (FNP-Änderungen, laufende Bebauungsplanverfahren), am 21.09.2026 gelesen — Planungsrecht, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik",
+        "disposition": "reviewed",
+        "reason": "38. Änderung Flächennutzungsplan (Flächen für Freiflächen-Photovoltaik), am 21.09.2026 gelesen — Bauleitplanverfahren, kein Zuschuss für Private.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Klimaschutz-Übersicht am 22.09.2026 im Browser gelesen: Klimaschutzteilkonzept für kommunale Liegenschaften, Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, Wärmeplanung — kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "„Errichtung von Freiflächen-Photovoltaikanlagen in der Verbandsgemeinde Maifeld“, am 21.09.2026 gelesen — Planungskriterien für Freiflächenanlagen, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/"
       }
     ]
   },
   {
     "regionId": "07137095",
     "name": "Rüber",
-    "checkedAt": "2026-09-22T04:07:32Z",
+    "checkedAt": "2026-09-22T04:15:58Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -42802,6 +42982,18 @@
       {
         "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
         "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/",
+        "finding": "Bauleitplanung (FNP-Änderungen, Bebauungsplanverfahren), gelesen 21.09.2026 — Planungsrecht, keine Förderung."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/",
+        "finding": "38. Änderung Flächennutzungsplan für Freiflächen-Photovoltaik, gelesen 21.09.2026 — Bauleitplanverfahren, kein Zuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/",
+        "finding": "Planungskriterien für Freiflächen-PV in der VG, gelesen 21.09.2026 — keine Förderung."
       }
     ],
     "sources": [
@@ -42816,13 +43008,37 @@
         "disposition": "reviewed",
         "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
         "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung",
+        "disposition": "reviewed",
+        "reason": "Bauleitplanung der VG (FNP-Änderungen, laufende Bebauungsplanverfahren), am 21.09.2026 gelesen — Planungsrecht, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik",
+        "disposition": "reviewed",
+        "reason": "38. Änderung Flächennutzungsplan (Flächen für Freiflächen-Photovoltaik), am 21.09.2026 gelesen — Bauleitplanverfahren, kein Zuschuss für Private.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Klimaschutz-Übersicht am 22.09.2026 im Browser gelesen: Klimaschutzteilkonzept für kommunale Liegenschaften, Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, Wärmeplanung — kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "„Errichtung von Freiflächen-Photovoltaikanlagen in der Verbandsgemeinde Maifeld“, am 21.09.2026 gelesen — Planungskriterien für Freiflächenanlagen, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/"
       }
     ]
   },
   {
     "regionId": "07137114",
     "name": "Wierschem",
-    "checkedAt": "2026-09-22T04:07:32Z",
+    "checkedAt": "2026-09-22T04:15:58Z",
     "recheckAt": "2026-12-21T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -42858,6 +43074,18 @@
       {
         "url": "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
         "finding": "Kreisprogramme Mayen-Koblenz (Balkonkraftwerke, Solarspeicher) beendet; im Katalog als beendet/eingestellt geführt."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/",
+        "finding": "Bauleitplanung (FNP-Änderungen, Bebauungsplanverfahren), gelesen 21.09.2026 — Planungsrecht, keine Förderung."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/",
+        "finding": "38. Änderung Flächennutzungsplan für Freiflächen-Photovoltaik, gelesen 21.09.2026 — Bauleitplanverfahren, kein Zuschuss."
+      },
+      {
+        "url": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/",
+        "finding": "Planungskriterien für Freiflächen-PV in der VG, gelesen 21.09.2026 — keine Förderung."
       }
     ],
     "sources": [
@@ -42872,6 +43100,30 @@
         "disposition": "reviewed",
         "reason": "Hochwasser- und Starkregenvorsorge (Sturzflutkarten, örtliche Vorsorgekonzepte) gelesen: kein Bezug zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
         "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/hochwasser-und-starkregenvorsorge/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung",
+        "disposition": "reviewed",
+        "reason": "Bauleitplanung der VG (FNP-Änderungen, laufende Bebauungsplanverfahren), am 21.09.2026 gelesen — Planungsrecht, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik",
+        "disposition": "reviewed",
+        "reason": "38. Änderung Flächennutzungsplan (Flächen für Freiflächen-Photovoltaik), am 21.09.2026 gelesen — Bauleitplanverfahren, kein Zuschuss für Private.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/bauleitplanung/laufende-bauleitplanverfahren/38-aenderung-flaechennutzungsplan-photovoltaik/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz",
+        "disposition": "reviewed",
+        "reason": "Klimaschutz-Übersicht am 22.09.2026 im Browser gelesen: Klimaschutzteilkonzept für kommunale Liegenschaften, Klimaschutzmanagement, Machbarkeitsstudie Eigenstrom (PV auf öffentlichen Gebäuden), Klimaschutzbericht, Freiflächen-PV, Wärmeplanung — kein Bürgerzuschuss.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/"
+      },
+      {
+        "url": "maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "„Errichtung von Freiflächen-Photovoltaikanlagen in der Verbandsgemeinde Maifeld“, am 21.09.2026 gelesen — Planungskriterien für Freiflächenanlagen, keine Förderung.",
+        "evidenceUrl": "https://www.maifeld.de/leben-infrastruktur/bauen-wohnen-klimaschutz-foerderungen/klimaschutz/freiflaechen-photovoltaikanlagen/"
       }
     ]
   }
