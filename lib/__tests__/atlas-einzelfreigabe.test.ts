@@ -136,7 +136,7 @@ describe("Beleg-Schub: die Auflagen, die ihn vom Rollout trennen", () => {
  */
 describe("Automatische Freigabe verlinkender Gemeinden", () => {
   const gemeindeSeite = readFileSync(
-    resolve(__dirname, "../../app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx"),
+    resolve(__dirname, "../../components/gemeinde/gemeinde-metadata.ts"),
     "utf8",
   );
   const sitemap = readFileSync(resolve(__dirname, "../../app/sitemap.ts"), "utf8");

@@ -6,15 +6,15 @@ import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
 import { ladeGemeindePaket } from "../../../../../../lib/gemeinde-paket-server";
 import GemeindeSeite from "../../../../../../components/gemeinde/GemeindeSeite";
+import { vergleichsBasisPfad } from "../../../../../../lib/atlas-ranking";
 import { gemeindeMetadata } from "../../../../../../components/gemeinde/gemeinde-metadata";
 
 /**
- * PREVIEW of the new municipality page, for acceptance before the switch.
- *
- * Same address pattern as the live page under a separate prefix, so every
- * town can be looked at. Never indexed (markup AND header, see next.config.js)
- * and not in the sitemap; the live route stays unchanged until the switch
- * (docs/gemeindeseite-integration.md).
+ * The municipality page (approved design, 09/2026). Replaced the old Atlas
+ * town page at the same address; metadata and index rules are the old page's
+ * (components/gemeinde/gemeinde-metadata.ts). Content from the town's
+ * precomputed package (lib/gemeinde-paket-server.ts), refreshed monthly
+ * (scripts/gemeinde-monatslauf.ts).
  */
 // One day: the package changes with the monthly run, and invalidating by
 // route pattern does not reach pages built on demand (lib/atlas-revalidate-routen.ts).
@@ -26,10 +26,10 @@ export function generateStaticParams() {
 type Params = { bundesland: string; kreis: string; gemeinde: string };
 
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
-  return gemeindeMetadata(await props.params, { vorschau: true });
+  return gemeindeMetadata(await props.params, { vorschau: false });
 }
 
-export default async function GemeindeVorschau(props: { params: Promise<Params> }) {
+export default async function GemeindePage(props: { params: Promise<Params> }) {
   const params = await props.params;
   const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
   if (!region || region.level !== "gemeinde") notFound();
@@ -64,7 +64,8 @@ export default async function GemeindeVorschau(props: { params: Promise<Params> 
         pfad,
         liveUrl: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
         landName: bl?.name ?? params.bundesland,
-        kreisBase: `/solar-atlas/${params.bundesland}/${params.kreis}/`,
+        // Town rows of the ranking link below the district, by the one rule.
+        kreisBase: `${vergleichsBasisPfad("gemeinde", params.bundesland, params.kreis)}/`,
       }}
     />
   );

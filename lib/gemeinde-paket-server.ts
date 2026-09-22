@@ -4,6 +4,7 @@ import path from "node:path";
 import { brotliDecompressSync } from "node:zlib";
 import { GEMEINDE_PAKET_VERSION, type GemeindePaket } from "./gemeinde-paket";
 import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
+import { ATLAS_DATEN_TAG } from "./atlas-revalidate-routen";
 
 /**
  * Read one town's precomputed package (see lib/gemeinde-paket.ts).
@@ -48,9 +49,10 @@ export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | nu
     const res = await withDbTimeout(
       fetch(`${url}/storage/v1/object/${GEMEINDE_PAKET_BUCKET}/${ags}.json.br`, {
         headers: { apikey: key, Authorization: `Bearer ${key}` },
-        // The page itself is ISR; the package changes with the monthly run and
-        // is revalidated together with the page (lib/atlas-revalidate-routen.ts).
-        cache: "no-store",
+        // Cached with the page and dropped with the monthly run's Atlas
+        // invalidation (same tag). NOT no-store: on an ISR page a no-store
+        // fetch fails the render (DYNAMIC_SERVER_USAGE, measured 22.09.2026).
+        next: { revalidate: 86400, tags: [ATLAS_DATEN_TAG] },
       }),
       `gemeinde-paket/${ags}`,
       DB_SOFT_READ_TIMEOUT_MS,

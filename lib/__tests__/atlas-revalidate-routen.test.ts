@@ -40,6 +40,11 @@ const LIB = path.join(__dirname, "..");
 const ATLAS_DATEN_MODULE = ["atlas.ts", "mastr-data.ts"];
 
 function seitenDatei(routenMuster: string): string {
+  // The town page lives in its own route group since the new design (09/2026).
+  for (const gruppe of ["(site)", "(gemeinde)"]) {
+    const datei = path.join(APP, gruppe, routenMuster.replace(/^\//, ""), "page.tsx");
+    if (fs.existsSync(datei)) return datei;
+  }
   return path.join(APP, "(site)", routenMuster.replace(/^\//, ""), "page.tsx");
 }
 

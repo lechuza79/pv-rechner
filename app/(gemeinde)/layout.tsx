@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { getCssVariables } from "../../lib/theme";
 import { WebAnalytics } from "../../components/WebAnalytics";
+import { organizationJsonLd, softwareAppJsonLd } from "../../lib/site-json-ld";
+import { jsonLdHtml } from "../../lib/json-ld";
 import { HerkunftsMelder } from "../../components/HerkunftsMelder";
 
 /**
@@ -64,6 +66,9 @@ export default function GemeindeLayout({ children }: { children: React.ReactNode
         ))}
       </head>
       <body>
+        {/* Site-wide structured data, as every (site) page carries it. */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(organizationJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(softwareAppJsonLd) }} />
         {children}
         {/* Same measurement as every (site) page: cookieless page views and
             the arrivals from the municipality letters (reasons in the (site)
