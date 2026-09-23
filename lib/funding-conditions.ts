@@ -398,6 +398,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "bad-rothenfelde-klima", "vilshofen-steckersolar",
   // Erste Städte, die überhaupt erst die URL-Suche gefunden hat.
   "neuwied-balkonkraftwerke", "rodgau-balkonsolar", "tuebingen-balkon-pv",
+  // Neu aufgenommen am 24.09.2026 (Council 3/3, adversarialer Prüfer und
+  // Legal-Judge eingeschlossen). Sätze, Status und Bedingungen sind an der
+  // Trägerseite im Volltext gelesen und belegt; die Zuordnung zu den Prüfformen
+  // steht noch aus — der Eintrag zieht ohnehin kein Geld ab.
+  "tuebingen-pv-speicher",
   "zweibruecken-balkonkraftwerke", "unterhaching-energiesparen",
   "hueckelhoven-balkonkraftwerke", "weinheim-effizienz", "ottobrunn-foerderprogramme",
   "feucht-klimaschutz",

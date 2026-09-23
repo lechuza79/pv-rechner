@@ -5949,6 +5949,108 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     balkonPercentOfCost: 0.25, balkonCap: 200,
   },
 
+  // GEFUNDEN AM 24.09.2026 über eine breite Suche nach kommunalen PV-Programmen.
+  // Der Katalog führte für Tübingen bis dahin NUR das Balkon-Programm für
+  // Inhaber der KreisBonusCard — die Stadt hätte damit als Ort ohne Förderung
+  // für Dachanlagen dagestanden, obwohl es eine gibt. Das ist dieselbe
+  // Falschauskunft wie ein zu hoher Betrag, nur andersherum.
+  //
+  // Alles am 24.09.2026 an der Trägerseite im Volltext gelesen: die
+  // Programmseite (tuebingen.de/tuebingen-macht-blau/33179.html) samt ihrer
+  // Unterseiten „Ziel und Gegenstand" (33179/47538), „Grundsätze" (47539),
+  // „Antragsberechtigte" (47541), den vier Modulen A (47542), B (47543),
+  // C (47544) und D (47545), der Rückzahlungsverpflichtung (47546) und den
+  // Fragen und Antworten (42332). EIN RICHTLINIEN-PDF GIBT ES NICHT: Die
+  // Seiten SIND die Richtlinie („Förderrichtlinien und Antragstellung /
+  // Stand: 14. Juli 2026"). Wer hier vergeblich nach einem Dokument sucht, hat
+  // damit noch nichts bewiesen — dieselbe Falle wie bei Stuhr, wo die
+  // Richtlinie auf Seite 2 des Antragsformulars steht.
+  //
+  // BEWUSST OHNE Rechenwert (kein `pvTiers`, kein `speicherTiers`), obwohl die
+  // Beträge als saubere kWp-Staffel dastehen und das Modell sie ausdrücken
+  // KÖNNTE. Tragend ist GENAU EIN Grund, und er steht hier allein, damit ihn
+  // niemand später über eine schwächere Nebenbegründung aushebelt:
+  //   Die VOLLBELEGUNG. Modul A zahlt nur, wenn das Dach „so weit wie technisch
+  //   möglich" belegt ist, nachzuweisen mit Dachplan und einer Bestätigung des
+  //   Fachbetriebs. Unser Rechner kennt die Anlagengröße, nicht den
+  //   Belegungsgrad — er dimensioniert sogar bewusst nach Verbrauch. Eine
+  //   8-kWp-Anlage auf einem 20-kWp-Dach bekommt nichts, und das ist der
+  //   Referenzfall unserer Nutzer.
+  // NICHT TRAGEND, obwohl naheliegend, und deshalb ausdrücklich benannt:
+  //   · Der Abzug wegen der PV-Pflicht Baden-Württemberg (§ 23 KlimaG BW samt
+  //     PV-Pflicht-Verordnung, am 24.09.2026 geprüft) greift nur bei Neubau,
+  //     grundlegender Dachsanierung und großen Parkplätzen. Auf dem gewöhnlichen
+  //     Bestandsdach gibt es gar nichts abzuziehen — der Heidelberger Eintrag
+  //     sagt das selbst („Anlagen außerhalb der PV-Pflicht werden vollständig
+  //     gefördert").
+  //   · Das Windhundprinzip ist `capped: true` und sonst nichts; damit rechnen
+  //     zahlreiche Programme im Katalog weiter.
+  //   Beide standen im ersten Entwurf als Mitbegründung und wurden vom Council
+  //   am 24.09.2026 gestrichen (drei Prüfer, adversarialer und Legal-Judge
+  //   eingeschlossen). Eine schwache Begründung neben einer starken ist ein
+  //   Hebel, mit dem jemand später die ganze Entscheidung kippt.
+  //
+  // VORBEHALT ZU `combinableWith: BUND`: Die Richtlinie schließt Anlagen aus,
+  // die auf einen Effizienzhaus-Standard der Bundesförderung angerechnet werden
+  // sollen. Heute trifft das keinen Eintrag in `BUND` — der Nullsteuersatz ist
+  // ein Steuersatz ohne Antrag, der KfW-270-Kredit ist „Erneuerbare Energien –
+  // Standard" und vergibt keinen Effizienzhaus-Standard. `BUND` ist aber eine
+  // geteilte Konstante: Wer dort je ein Effizienzhaus-Programm hineinnimmt,
+  // lässt diesen Eintrag still eine Kombinierbarkeit behaupten, die die
+  // Richtlinie ausschließt — ohne roten Test und ohne sichtbaren Fehler.
+  //
+  // WIEDERVORLAGE JANUAR 2027: „Die Fördermittel stehen nur im Jahr 2026 zur
+  // Verfügung"; Antrag, Inbetriebnahme und Nachweise müssen bis zum 31.12.2026
+  // erledigt sein, und die Stadt behält sich vor, „das Förderprogramm jederzeit
+  // zu beenden oder inhaltlich ändern zu können". Ohne Neuauflage ist der
+  // Eintrag am 01.01.2027 „beendet" — der Seiten-Wächter fängt das nicht, weil
+  // die Stadt dieselbe Adresse weiterbenutzt.
+  //
+  // OFFEN, eigener Vorgang: Dieselbe Stadt fördert über die „Sanierungsprämie"
+  // (Stand 15.04.2026) unter „Modul B II: Heizungstausch" auch den Einbau einer
+  // strombetriebenen Wärmepumpe, „Die Antragsstellung ist ab sofort möglich".
+  // Im Wärmepumpen-Fördercheck steht Tübingen damit heute als Ort ohne
+  // kommunale Förderung da. Aufnahme braucht ihren eigenen Quellen-Lauf.
+  "tuebingen-pv-speicher": {
+    id: "tuebingen-pv-speicher", name: "Photovoltaik und Batteriespeicher",
+    traeger: "Universitätsstadt Tübingen", level: "kommune", region: "Tübingen",
+    bundesland: "Baden-Württemberg", agsCode: "08416041",
+    url: "https://www.tuebingen.de/tuebingen-macht-blau/33179.html",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-01-01", endetIso: "2026-12-31",
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Pauschalen je Programm-Modul (A bis D), gestaffelt nach Anlagenleistung",
+    maxFoerderung: "max. 3.000 € je Antrag (Privatpersonen), 5.000 € (Unternehmen, Betriebe, Vereine)",
+    rates: [
+      { label: "Modul A — Dach-PV, nur bei Vollbelegung (ab 2 / ab 8 / ab 15 bis 25 kWp)", value: "500 € / 600 € / 700 € pauschal" },
+      { label: "Modul A — Norddach-Bonus (mindestens 2 kWp auf Nord- und Süddach, Neigung ab 20° nach Norden, höchstens 45° Abweichung)", value: "400 € pauschal" },
+      { label: "Modul B — Solardachziegel oder Indach-PV, nur bei Stadtbildsatzung oder Denkmalschutz (ab 2 / ab 8 / ab 15 bis 25 kWp)", value: "1.000 € / 1.250 € / 1.500 € pauschal" },
+      { label: "Modul C — PVT-Hybridkollektoren (ab 2 / ab 8 / ab 15 bis 25 kWp elektrisch)", value: "1.000 € / 1.250 € / 1.500 € pauschal" },
+      { label: "Modul B und C — Sonder-Norddach-Bonus (dieselben Norddach-Kriterien)", value: "750 € pauschal" },
+      { label: "Modul D — PV über neu überdachten Parkplätzen ab 25 m² (ab 4 / ab 25 / ab 50 / ab 100 kWp)", value: "500 € / 2.000 € / 4.000 € / 5.000 € pauschal" },
+      { label: "Batteriespeicher zu einer geförderten Anlage (ab 2 kWh nutzbarer Kapazität)", value: "250 € pauschal" },
+    ],
+    conditions: [
+      "Für Modul A gilt: gefördert wird nur eine Vollbelegung — alle Dachflächen in südlicher Richtung von Nord-Ost bis Nord-West müssen so weit wie technisch möglich belegt sein, nachzuweisen mit Dachplan oder Fotos und einer Bestätigung des Fachbetriebs",
+      "Als voll belegt gilt ein Dach auch dann, wenn baurechtliche Auflagen, Denkmalschutz, Statik, Vorgaben des Netzbetreibers oder Artenschutz die Belegung begrenzen; Nordflächen müssen nicht belegt werden, und Verschattung zählt erst ab 50 % Ertragsminderung",
+      "Modul B setzt voraus, dass das Gebäude auf einem Bestandsbau im Geltungsbereich der Stadt- oder Ortsbildsatzung liegt oder unter Denkmalschutz-Aspekte fällt",
+      "Modul D fördert nur eine neu errichtete Überdachung ab 25 m² Grundfläche; Anlagen über Tiefgaragen sind ausgeschlossen, bestehende Carports und Garagen laufen als Erweiterungsfläche über Modul A",
+      "Unterliegt das Dach oder die Parkplatzfläche einer Pflicht zur Errichtung einer PV-Anlage — etwa der des Landes Baden-Württemberg oder einer Pflicht der Stadt —, wird nur der darüber hinausgehende Anlagenteil gefördert",
+      "Nicht gefördert sind Anlagen und Speicher, die angerechnet werden sollen, um andere Vorgaben zu erfüllen — etwa das Erneuerbare-Wärme-Gesetz des Landes oder einen Effizienzhaus-Standard der Bundesförderung",
+      "Antragsberechtigt sind Privatpersonen, Wohnungseigentümergemeinschaften, Baugruppen und Baugenossenschaften, Unternehmen und Vereine sowie Pächter mit einem mindestens zehnjährigen Pachtvertrag",
+      "Das Gebäude liegt im Siedlungsgebiet der Stadt Tübingen oder eines ihrer Teilorte und wird dauerhaft zum Wohnen oder für Gewerbe genutzt",
+      "Mindestens 2 kWp Anlagenleistung, auf Parkplatzflächen mindestens 4 kWp; die Staffeln der Module A bis C enden bei 25 kWp, zu größeren Dachanlagen sagt die Richtlinie nichts",
+      "Für Modul A wird der Antrag erst nach der Inbetriebnahme gestellt; bei den Modulen B, C und D ist auch ein Antrag vor dem Kauf möglich, der die Mittel bis Jahresende reserviert",
+      "Anlage und Speicher müssen zwischen dem 1. Januar und dem 31. Dezember 2026 in Betrieb genommen werden; Antrag und alle Nachweise sind bis zum 31. Dezember 2026 einzureichen",
+      "Die Förderung ist sofort zurückzuzahlen, wenn die Anlage nicht zehn Jahre am geförderten Standort Strom erzeugt oder der Speicher nicht fünf Jahre im Eigentum bleibt",
+      "Je Gebäude oder Parkplatzfläche ist nur ein Antrag möglich, und innerhalb von fünf Jahren wird höchstens einmal gefördert; die Module A bis D lassen sich dabei kombinieren",
+      "Geleaste, gepachtete oder gemietete Anlagen und Speicher sowie Eigenkonstruktionen, Prototypen und Insellösungen sind ausgeschlossen",
+      "Vergeben wird nach Eingang der vollständigen und richtigen Unterlagen und nur, solange Haushaltsmittel da sind; ein Rechtsanspruch besteht nicht, unvollständige oder falsch ausgefüllte Anträge werden abgelehnt und fehlende Unterlagen nicht nachgefordert",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+  },
+
   "tuebingen-balkon-pv": {
     id: "tuebingen-balkon-pv", name: "Balkon-PV für Inhaber der KreisBonusCard",
     traeger: "Universitätsstadt Tübingen", level: "kommune", region: "Tübingen",
