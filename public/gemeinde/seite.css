@@ -436,3 +436,23 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
   text-decoration-thickness: 1px;
 }
 #atlas-ranking .ranking-class-help:hover { text-decoration-style: solid }
+
+/* Das Zeichen sitzt auf der Zeile, nicht darunter: Die Hülle des
+   Aufklappblocks war 33 px hoch bei 15,6 px Zeilenhöhe, das Zeichen hing an
+   ihrem unteren Rand. Ohne eigene Zeilenhöhe ist die Hülle so hoch wie das
+   Zeichen, und „middle" stellt beide auf die Mitte der Textzeile. Die Größe
+   folgt dem Text daneben (13 px), nicht einer festen Zahl. */
+#atlas-ranking .ranking-ratio-help {
+  line-height: 0;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+#atlas-ranking .ranking-ratio-help summary {
+  width: 15px !important;
+  height: 15px !important;
+  vertical-align: middle;
+  mask-size: 15px 15px;
+  -webkit-mask-size: 15px 15px;
+}
+/* Der Erklärtext hat seine eigene Zeilenhöhe wieder. */
+#atlas-ranking .ranking-ratio-help p { line-height: 1.5 }
