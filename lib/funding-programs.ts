@@ -11222,6 +11222,189 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Überraschung, zu viel ein Zuschuss, den jemand einplant und nicht bekommt.
     balkonCap: 200,
   },
+  "bruehl-baden-umweltschutz": {
+    id: "bruehl-baden-umweltschutz", name: "Richtlinien für die Förderung von Umweltschutzmaßnahmen",
+    traeger: "Gemeinde Brühl (Baden)", level: "kommune", region: "Brühl (Baden)",
+    bundesland: "Baden-Württemberg", agsCode: "08226009",
+    // ES GIBT ZWEI GEMEINDEN NAMENS BRÜHL. 08226009 ist die badische im
+    // Rhein-Neckar-Kreis (14.328 Einwohner, am Melderegister nachgeschlagen);
+    // 05362012 ist die Stadt Brühl im Rhein-Erft-Kreis und hat mit diesem
+    // Programm nichts zu tun. Die Leistungsseite der Gemeinde trägt in ihren
+    // eigenen Online-Antragslinks `ags=08226009`.
+    url: "https://www.bruehl-baden.de/tools/downloads/?aktuelles=1575",
+    // DIE RICHTLINIE IST DIE QUELLE, NICHT DIE LEISTUNGSSEITE — obwohl die
+    // Adresse nach einer Downloadseite aussieht, liefert sie das PDF selbst
+    // (28 Seiten, HTTP 200 am 23.09.2026). Der Grund ist der Seiten-Wächter:
+    // Die Leistungsseite zur Dachanlage
+    // (…/wegweiser/leistungen/F/forderung-von-photovoltaikanlagen-id_6026573)
+    // enthält den SPEICHERSATZ gar nicht, und der ist der einzige Wert dieses
+    // Programms, der im Rechner Geld abzieht. Ein Fingerabdruck auf ihr würde
+    // eine Änderung am Speichersatz nie bemerken. Die zweite Leistungsseite
+    // (…/forderung-von-stromspeichern-fur-pv-anlagen-id_6026577) trägt ihn
+    // wortgleich und diente als unabhängige zweite Fundstelle.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-01-01",
+    // KEIN `beschlossenIso`. Die Fußzeile des PDF nennt „Umwelt-Förderrichtlinien
+    // Gemeinde Brühl 2026 (18. November 2025)" — das ist eine FASSUNG, kein
+    // Beschluss und keine Unterzeichnung. Im ganzen Dokument steht weder ein
+    // Unterschriftsblock noch ein „gez." noch ein Gemeinderatsdatum. Ein Datum
+    // daraus zu machen wäre eine Behauptung ohne Fundstelle.
+    // KEIN `endetIso`: „gelten bis 31.12.2026" befristet die Richtlinie, nicht
+    // die Annahme von Anträgen — die Frist steht als Bedingung.
+    // LEERE LISTE = KEINE BEHAUPTUNG. `eligibility` ist im Katalog kein
+    // Filter, sondern rendert als ERSTE sichtbare Bedingung „Nur für
+    // Privatpersonen" bzw. „Für Privatpersonen und Gewerbe". Die Richtlinie
+    // regelt den Berechtigtenkreis für Photovoltaik und Speicher an keiner
+    // Stelle — einmal, in Abschnitt X zum Niederschlagswasser, tut sie es,
+    // und das Antragsformular fragt „Eigentümer des Grundstücks? Ja/Nein",
+    // setzt es also gerade nicht voraus. Jede der beiden Beschriftungen
+    // wäre damit ein Satz, den die Quelle nicht hergibt; die leere Liste
+    // lässt die Zeile weg.
+    eligibility: [],
+    coveredCosts: "Stromspeicher zu einer Photovoltaikanlage und Dachanlagen über 10 kWp",
+    maxFoerderung: "1.600 € für den Speicher, 1.500 € für die Dachanlage",
+    rates: [
+      { label: "Stromspeicher zur Photovoltaikanlage", value: "80 € je kWh Speicherkapazität, höchstens 1.600 € je Photovoltaikanlage", nur: ["pv"] },
+      { label: "Dachanlage über 10 kWp", value: "150 € je kWp für die Leistung über 10 kWp, höchstens 1.500 €", nur: ["pv"] },
+    ],
+    conditions: [
+      "Der Antrag ist zwingend vor Beginn der Maßnahme zu stellen, schriftlich und mit Kostenvoranschlag",
+      "Der Zuschuss zur Dachanlage entfällt, wenn die Anlage in Baden-Württemberg ohnehin vorgeschrieben ist — das ist sie bei einem Neubau und bei einer grundlegenden Dachsanierung; für den Speicherzuschuss gilt diese Einschränkung nicht",
+      "Gefördert wird nur der Leistungsanteil über 10 kWp; eine Anlage bis einschließlich 10 kWp bekommt für die Anlage selbst nichts",
+      "Der Speicher muss stationär und mit einer netzgekoppelten Photovoltaikanlage direkt verbunden sein",
+      "Die Auszahlung ist innerhalb eines Jahres nach der Förderzusage zu beantragen, sonst verliert die Zusage ihre Gültigkeit",
+      "Die Haushaltsmittel sind begrenzt; ein Rechtsanspruch auf Förderung besteht nicht",
+      "Die Richtlinie gilt bis zum 31. Dezember 2026",
+    ],
+    // DIE RICHTLINIE HAT EINE AUSSCHLUSSKLAUSEL, ABER NICHT HIER: Abschnitt V
+    // (Fernwärme) schließt „jede weitere Förderung aus dem Gemeinde-Förder-
+    // programm auf dem Sektor der erneuerbaren Energien (Solarthermie,
+    // Wärmepumpen, Biomasse)" aus. Die Klammer ist abschließend, Photovoltaik
+    // und Stromspeicher stehen nicht darin. Wer hier je ein Brühler Wärme-
+    // Programm ergänzt, muss diese Klausel mitlesen.
+    // `combinableWith: null` heißt „nicht festgestellt" und ist hier die
+    // einzige ehrliche Angabe: Die Richtlinie sagt zur Kumulierung mit Bundes-
+    // oder Landesmitteln NICHTS. Eine leere Liste wäre im Katalog das
+    // ausdrückliche „geht nur allein" und damit falsch; BUND wäre ein Schluss
+    // aus Schweigen.
+    combinableWith: null,
+    foerdert: ["pv"],
+    // DIE PFLICHT-BEDINGUNG GILT NUR DER DACHANLAGE, und das ist dreifach
+    // belegt: Die Richtlinie führt sie allein unter IV b) 2), der Abschnitt
+    // IV a) 2) zum Speicher nennt als einzige Voraussetzung den stationären,
+    // netzgekoppelten Betrieb, und die beiden Antragsformulare trennen es
+    // ebenso — nur das Formular für die Dachanlage enthält die Versicherung
+    // des Antragstellers dazu.
+    //   SIE STEHT BEWUSST OHNE PARAGRAFEN AUF DER KARTE. Der Nutzer braucht
+    //   die Bedingung, nicht die Fundstelle; ein Paragraf ohne nachgeschlagenes
+    //   Gesetz wäre für ihn keine Fundstelle, sondern Dekoration. Welche
+    //   Vorschrift gemeint ist, steht in der Richtlinie selbst, und die ist
+    //   als Quelle dieses Eintrags verlinkt.
+    // DER SPEICHERSATZ RECHNET, DIE DACHANLAGE NICHT — und das ist keine
+    // Vorsicht, sondern eine Grenze des Modells.
+    //   Der Speicher ist unbedingt: 80 € je kWh, gedeckelt bei 1.600 € je
+    //   Anlage, ohne Verhältnis zur Modulleistung, ohne Mindest- oder
+    //   Höchstkapazität, ohne Wohneinheiten-Staffel. Das ist genau das, was
+    //   `speicherPerKwh` und `speicherCap` ausdrücken.
+    //   Die Dachanlage dagegen zahlt 150 € je kWp NUR auf den Anteil über
+    //   10 kWp. Das Modell kennt „Betrag je kWp auf die ganze Leistung" und
+    //   einen additiven Sockel, aber keine Schwelle, ab der der Satz erst
+    //   greift. Osnabrück steht aus demselben Grund ohne Rechenwert im Katalog
+    //   („400 €/kWp für Leistung über 8 kWp"). Der Satz steht als Text auf der
+    //   Karte; wer 12 kWp ohne Speicher baut, sieht dort die Bedingung und
+    //   bekommt keinen Betrag ausgewiesen — lieber keine Zahl als eine falsche.
+    speicherPerKwh: 80,
+    speicherCap: 1600,
+  },
+  "wertingen-photovoltaik": {
+    id: "wertingen-photovoltaik", name: "Zuschuss PV-Anlagen / Balkonkraftwerke",
+    traeger: "Stadt Wertingen", level: "kommune", region: "Wertingen",
+    bundesland: "Bayern", agsCode: "09773182",
+    // 09773182, am Melderegister nachgeschlagen (9.486 Einwohner). Die
+    // Nachbarnummer 09773183 gehört dem Markt Wittislingen — ein Gemeinde-
+    // schlüssel ist eine Zahl ohne Aussehen, ein Tippfehler bleibt gültig und
+    // zeigt auf einen anderen Ort.
+    url: "https://www.wertingen.de/verwaltung/was-erledige-ich-wo/zuschuss-pv-anlagen/",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: [],
+    coveredCosts: "Zuschuss zu Photovoltaikanlagen — derzeit keine Bewilligungen, Mittel ausgeschöpft",
+    rates: [
+      { label: "Photovoltaikanlage", value: "Satz nicht als Richtlinie veröffentlicht — siehe Bedingungen" },
+    ],
+    conditions: [
+      "Die Stadt meldet seit dem 27. September 2024 unverändert, dass die Fördermittel ausgeschöpft sind und bis zur nächsten Haushaltsberatung keine Zuschüsse bewilligt oder ausgezahlt werden",
+      "Die Stadt kündigt an, an derselben Stelle zu informieren, sobald neue Mittel bereitstehen",
+      "Eine Förderrichtlinie ist nicht veröffentlicht; im Klimaschutzkonzept (Stand 2023) nennt die Stadt rückblickend 25 % des Anschaffungspreises, höchstens 500 €, ab 100 Wp Mindestleistung — ob diese Konditionen noch gelten, sagt sie nicht",
+      "Fragen beantwortet die Stadtverwaltung; eine Ansprechpartnerin ist auf der Programmseite genannt",
+    ],
+    combinableWith: null,
+    foerdert: ["pv", "balkon"],
+    // KEIN RECHENWERT, und die Zahlen aus dem Klimaschutzkonzept werden
+    // ausdrücklich NICHT zu einem: Sie stehen dort unter „Bisherige Aktivitäten
+    // der Stadt", eingeleitet mit „exemplarisch aufgelistet", in einem Konzept,
+    // das am 30.11.2023 vorgestellt wurde und auf Verbrauchsdaten von 2021
+    // beruht. Das ist eine Rückschau, keine Förderrichtlinie — dieselbe Klasse
+    // wie ein Screening-Zitat, das nie die Quelle für eine Zahl ist. Als
+    // datierter Hinweis in den Bedingungen ist sie richtig aufgehoben.
+    //   BALKONKRAFTWERK STEHT IM PROGRAMMNAMEN, NICHT IM FLIESSTEXT. Die Stadt
+    //   nennt das Programm selbst „Zuschuss PV-Anlagen / Balkonkraftwerke"
+    //   (Überschrift der Seite), der Text darunter spricht nur von
+    //   Photovoltaikanlagen. Die Mindestleistung von 100 Wp aus dem
+    //   Klimaschutzkonzept passt zu Steckersolar. `foerdert` nennt deshalb
+    //   beides; es kostet nichts, weil das Programm ausgeschöpft ist und keinen
+    //   Betrag abzieht.
+  },
+  "petershausen-photovoltaik": {
+    id: "petershausen-photovoltaik", name: "Förderprogramm für Solarstrom / Photovoltaik",
+    traeger: "Gemeinde Petershausen", level: "kommune", region: "Petershausen",
+    bundesland: "Bayern", agsCode: "09174136",
+    url: "https://petershausen.de/leben/foerderprogramm-fuer-solarstrom/",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    // ENDE UND ANFANG SIND BEIDE BELEGT, aus zwei verschiedenen Quellen.
+    //   Das Ende steht am 23.09.2026 im Volltext auf der Gemeindeseite: „die
+    //   Förderung der PV-Anlagen durch die Gemeinde Petershausen wurde zum
+    //   31.01.2024 nicht verlängert. Die Gemeinde hat in den letzten 1 ½ Jahren
+    //   PV-Anlagen in der Höhe von 30.000 € unterstützt."
+    //   Der Anfang und sämtliche Konditionen stehen in der Richtlinie vom
+    //   05.09.2022, die die Gemeinde von ihrer Seite genommen hat. Sie ist im
+    //   Archiv der Amtsseite erhalten und wurde am 23.09.2026 im Volltext
+    //   gelesen (Fassung vom 20.03.2023). Nr. 8: „Die Richtlinie gilt mit
+    //   Wirkung ab dem 01.10.2022."
+    //     DAS ARCHIV BELEGT HIER GENAU DAS RICHTIGE. Sonst gilt: Es belegt den
+    //     Inhalt, nicht die Aktualität — und die Aktualität ist bei einem
+    //     beendeten Programm gerade nicht die Frage. Gesucht war die Historie,
+    //     und die ist im Wortlaut da.
+    beginntIso: "2022-10-01",
+    endetIso: "2024-01-31",
+    eligibility: ["privat"],
+    coveredCosts: "Historische Fördersätze für Dachanlagen und Balkonkraftwerke; seit 31.01.2024 keine Antragsannahme",
+    maxFoerderung: "1.000 € je Gebäude für die Dachanlage, 60 € je Balkonkraftwerk",
+    rates: [
+      { label: "Photovoltaikanlage", value: "100 € je kWp, höchstens 1.000 € je Gebäude — historischer Satz", nur: ["pv"] },
+      { label: "Balkonkraftwerk", value: "60 € pauschal je Anlage — historischer Satz", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Das Programm ist zum 31. Januar 2024 ausgelaufen und wurde nicht verlängert — die Sätze sind historisch, es gibt keine Antragsannahme mehr",
+      "Der Antrag war vor Durchführung der Maßnahme zu stellen",
+      "Antragsberechtigt waren natürliche Personen: Hauseigentümer und ihre Vertretungsberechtigten, für Balkonkraftwerke auch Mieter",
+      { text: "Gefördert wurde nur die Neuerrichtung; bei der Erweiterung einer vorhandenen Anlage nur der neue Anlagenteil", nur: ["pv"] },
+      { text: "Prototypen, Eigenbau und gebrauchte Anlagen waren ausgeschlossen", nur: ["pv"] },
+      { text: "Bindungsfrist zehn Jahre ab Rechnungsdatum", nur: ["pv"] },
+      { text: "Je Haushalt durften höchstens 600 W Gesamtleistung angeschlossen werden", nur: ["balkon"] },
+      { text: "Bindungsfrist drei Jahre ab Rechnungsdatum", nur: ["balkon"] },
+      "Die Gemeinde stellte insgesamt 30.000 € bereit; ein Rechtsanspruch bestand nicht",
+    ],
+    // KUMULIERUNG IST HIER AUSDRÜCKLICH GEREGELT, nicht erschlossen — Nr. 6 der
+    // Richtlinie: „Die Gemeinde Petershausen schließt eine Förderung durch
+    // andere Fördermittelgeber (z. B. KfW, Freistaat Bayern) nicht aus."
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    // KEINE RECHENFELDER, obwohl beide Sätze eindeutig sind (100 €/kWp gedeckelt
+    // bei 1.000 €, 60 € pauschal). Das Programm nimmt seit dem 31.01.2024 keine
+    // Anträge mehr an; ein Betrag, den niemand mehr bekommt, gehört in die
+    // Beschreibung und nicht in die Rechnung. `fundingZaehlt` würde ihn ohnehin
+    // nicht durchlassen — die Felder wegzulassen sagt dasselbe, nur sichtbar.
+  },
   "ehningen-steckerfertige-pv": {
     id: "ehningen-steckerfertige-pv", name: "Förderprogramm Steckerfertige PV-Anlagen",
     traeger: "Gemeinde Ehningen", level: "kommune", region: "Ehningen",

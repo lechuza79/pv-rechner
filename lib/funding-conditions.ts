@@ -460,6 +460,22 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // card, together with the storage ratio of 0.5 to 2 kWh per kWp, which is the
   // reason the storage part carries no calculation field.
   "garching-energiespar",
+  // Added 23 Sep 2026: Petershausen. Closed programme without a rate; the
+  // municipal page is four sentences long and names no condition at all, so
+  // there is nothing to turn into a test form.
+  "petershausen-photovoltaik",
+  // Added 23 Sep 2026: Bruehl (Baden). Guideline read in full (28 pages).
+  // No test form in this run. Two conditions have none at all: the obligation
+  // under section 23 of the Baden-Wuerttemberg climate act, which depends on
+  // whether the roof is being renovated, and the 10 kWp threshold above which
+  // the roof rate starts. Both stand in full on the card, and the threshold is
+  // the reason the roof part carries no calculation field.
+  "bruehl-baden-umweltschutz",
+  // Added 23 Sep 2026: Wertingen. Exhausted programme, no published guideline;
+  // the only figures the town names stand in a retrospective list inside its
+  // 2023 climate concept, which is not a rule anyone could be held to. There
+  // is nothing to turn into a test form.
+  "wertingen-photovoltaik",
   "mueden-aller-balkonsolar",
   // Added 23 Sep 2026: Meinersen. Guideline read as images (scanned, no text
   // layer). No test form, and the reason is the same one that keeps the entry
