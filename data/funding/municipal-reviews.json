@@ -52318,5 +52318,191 @@
         "evidenceUrl": "https://www.kranenburg.de/planen-bauen-umwelt/denkmalschutz-und-denkmalpflege/foerderprogramme"
       }
     ]
+  },
+  {
+    "regionId": "03158007",
+    "name": "Dahlum",
+    "checkedAt": "2026-09-23T14:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort ausschließlich eine Fundstelle auf elm-asse.de, der Seite der Samtgemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Samtgemeinde Elm-Asse zahlt privaten Haushalten keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Fundstelle behandelt die Bauleitplanung für Freiflächen-Photovoltaik, also die Steuerung großer Anlagen im Gemeindegebiet, und kennt weder Antrag noch Betrag. Der Klimaschutz-Bereich der Samtgemeinde führt zwei Stellen für Klimaschutzmanagement und verweist für Fördermöglichkeiten ausdrücklich auf den Landkreis Wolfenbüttel; ein eigenes Programm gibt es dort nicht. Ein Programm dieser Ortsgemeinde selbst ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Seite zur Freiflächen-Photovoltaik der Samtgemeinde Elm-Asse am 23.09.2026 gelesen",
+      "Klimaschutz-Bereich der Samtgemeinde durchgesehen, einschließlich der Unterseite „Informationen für private Haushalte“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "finding": "„Freiflächen-Photovoltaik\" der Samtgemeinde Elm-Asse, am 23.09.2026 gelesen. Die Seite ordnet die BAULEITPLANUNG für Freiflächenanlagen ein („Das Land Niedersachsen hat das Ziel, seinen Energiebedarf bis 2040 vollständig aus Erneuerbaren Energien zu decken … Durch die Novellierung des Erneuerbaren-Energien-Gesetz 2023 … wurden die förderfähigen Gebiete für die Freiflächen-Photovoltaikanlagen erweitert\"). Kein Zuschuss, kein Antrag, kein Betrag für private Haushalte."
+      },
+      {
+        "url": "https://www.elm-asse.de/klimaschutz/klimaschutz/informationen_fuer_private_haushalte/",
+        "finding": "„Informationen für private Haushalte\" im Klimaschutz-Bereich der Samtgemeinde, am 23.09.2026 gelesen: Das Klimaschutzmanagement steht „als Ansprechpartner bei Fragen rund um das Thema Klimaschutz zur Verfügung\" und verweist für Fördermöglichkeiten auf den Landkreis Wolfenbüttel und auf den Modernisierungs-Check von co2online. Ein eigenes Förderprogramm der Samtgemeinde nennt die Seite nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "disposition": "reviewed",
+        "reason": "Seite gelesen; reine Bauleitplanung für Freiflächenanlagen, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "03158008",
+    "name": "Denkte",
+    "checkedAt": "2026-09-23T14:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort ausschließlich eine Fundstelle auf elm-asse.de, der Seite der Samtgemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Samtgemeinde Elm-Asse zahlt privaten Haushalten keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Fundstelle behandelt die Bauleitplanung für Freiflächen-Photovoltaik, also die Steuerung großer Anlagen im Gemeindegebiet, und kennt weder Antrag noch Betrag. Der Klimaschutz-Bereich der Samtgemeinde führt zwei Stellen für Klimaschutzmanagement und verweist für Fördermöglichkeiten ausdrücklich auf den Landkreis Wolfenbüttel; ein eigenes Programm gibt es dort nicht. Ein Programm dieser Ortsgemeinde selbst ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Seite zur Freiflächen-Photovoltaik der Samtgemeinde Elm-Asse am 23.09.2026 gelesen",
+      "Klimaschutz-Bereich der Samtgemeinde durchgesehen, einschließlich der Unterseite „Informationen für private Haushalte“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "finding": "„Freiflächen-Photovoltaik\" der Samtgemeinde Elm-Asse, am 23.09.2026 gelesen. Die Seite ordnet die BAULEITPLANUNG für Freiflächenanlagen ein („Das Land Niedersachsen hat das Ziel, seinen Energiebedarf bis 2040 vollständig aus Erneuerbaren Energien zu decken … Durch die Novellierung des Erneuerbaren-Energien-Gesetz 2023 … wurden die förderfähigen Gebiete für die Freiflächen-Photovoltaikanlagen erweitert\"). Kein Zuschuss, kein Antrag, kein Betrag für private Haushalte."
+      },
+      {
+        "url": "https://www.elm-asse.de/klimaschutz/klimaschutz/informationen_fuer_private_haushalte/",
+        "finding": "„Informationen für private Haushalte\" im Klimaschutz-Bereich der Samtgemeinde, am 23.09.2026 gelesen: Das Klimaschutzmanagement steht „als Ansprechpartner bei Fragen rund um das Thema Klimaschutz zur Verfügung\" und verweist für Fördermöglichkeiten auf den Landkreis Wolfenbüttel und auf den Modernisierungs-Check von co2online. Ein eigenes Förderprogramm der Samtgemeinde nennt die Seite nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "disposition": "reviewed",
+        "reason": "Seite gelesen; reine Bauleitplanung für Freiflächenanlagen, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "03158022",
+    "name": "Kneitlingen",
+    "checkedAt": "2026-09-23T14:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort ausschließlich eine Fundstelle auf elm-asse.de, der Seite der Samtgemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Samtgemeinde Elm-Asse zahlt privaten Haushalten keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Fundstelle behandelt die Bauleitplanung für Freiflächen-Photovoltaik, also die Steuerung großer Anlagen im Gemeindegebiet, und kennt weder Antrag noch Betrag. Der Klimaschutz-Bereich der Samtgemeinde führt zwei Stellen für Klimaschutzmanagement und verweist für Fördermöglichkeiten ausdrücklich auf den Landkreis Wolfenbüttel; ein eigenes Programm gibt es dort nicht. Ein Programm dieser Ortsgemeinde selbst ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Seite zur Freiflächen-Photovoltaik der Samtgemeinde Elm-Asse am 23.09.2026 gelesen",
+      "Klimaschutz-Bereich der Samtgemeinde durchgesehen, einschließlich der Unterseite „Informationen für private Haushalte“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "finding": "„Freiflächen-Photovoltaik\" der Samtgemeinde Elm-Asse, am 23.09.2026 gelesen. Die Seite ordnet die BAULEITPLANUNG für Freiflächenanlagen ein („Das Land Niedersachsen hat das Ziel, seinen Energiebedarf bis 2040 vollständig aus Erneuerbaren Energien zu decken … Durch die Novellierung des Erneuerbaren-Energien-Gesetz 2023 … wurden die förderfähigen Gebiete für die Freiflächen-Photovoltaikanlagen erweitert\"). Kein Zuschuss, kein Antrag, kein Betrag für private Haushalte."
+      },
+      {
+        "url": "https://www.elm-asse.de/klimaschutz/klimaschutz/informationen_fuer_private_haushalte/",
+        "finding": "„Informationen für private Haushalte\" im Klimaschutz-Bereich der Samtgemeinde, am 23.09.2026 gelesen: Das Klimaschutzmanagement steht „als Ansprechpartner bei Fragen rund um das Thema Klimaschutz zur Verfügung\" und verweist für Fördermöglichkeiten auf den Landkreis Wolfenbüttel und auf den Modernisierungs-Check von co2online. Ein eigenes Förderprogramm der Samtgemeinde nennt die Seite nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "disposition": "reviewed",
+        "reason": "Seite gelesen; reine Bauleitplanung für Freiflächenanlagen, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "03158027",
+    "name": "Schöppenstedt",
+    "checkedAt": "2026-09-23T14:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort ausschließlich eine Fundstelle auf elm-asse.de, der Seite der Samtgemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Samtgemeinde Elm-Asse zahlt privaten Haushalten keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Fundstelle behandelt die Bauleitplanung für Freiflächen-Photovoltaik, also die Steuerung großer Anlagen im Gemeindegebiet, und kennt weder Antrag noch Betrag. Der Klimaschutz-Bereich der Samtgemeinde führt zwei Stellen für Klimaschutzmanagement und verweist für Fördermöglichkeiten ausdrücklich auf den Landkreis Wolfenbüttel; ein eigenes Programm gibt es dort nicht. Ein Programm dieser Ortsgemeinde selbst ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Seite zur Freiflächen-Photovoltaik der Samtgemeinde Elm-Asse am 23.09.2026 gelesen",
+      "Klimaschutz-Bereich der Samtgemeinde durchgesehen, einschließlich der Unterseite „Informationen für private Haushalte“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "finding": "„Freiflächen-Photovoltaik\" der Samtgemeinde Elm-Asse, am 23.09.2026 gelesen. Die Seite ordnet die BAULEITPLANUNG für Freiflächenanlagen ein („Das Land Niedersachsen hat das Ziel, seinen Energiebedarf bis 2040 vollständig aus Erneuerbaren Energien zu decken … Durch die Novellierung des Erneuerbaren-Energien-Gesetz 2023 … wurden die förderfähigen Gebiete für die Freiflächen-Photovoltaikanlagen erweitert\"). Kein Zuschuss, kein Antrag, kein Betrag für private Haushalte."
+      },
+      {
+        "url": "https://www.elm-asse.de/klimaschutz/klimaschutz/informationen_fuer_private_haushalte/",
+        "finding": "„Informationen für private Haushalte\" im Klimaschutz-Bereich der Samtgemeinde, am 23.09.2026 gelesen: Das Klimaschutzmanagement steht „als Ansprechpartner bei Fragen rund um das Thema Klimaschutz zur Verfügung\" und verweist für Fördermöglichkeiten auf den Landkreis Wolfenbüttel und auf den Modernisierungs-Check von co2online. Ein eigenes Förderprogramm der Samtgemeinde nennt die Seite nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "disposition": "reviewed",
+        "reason": "Seite gelesen; reine Bauleitplanung für Freiflächenanlagen, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "03158032",
+    "name": "Vahlberg",
+    "checkedAt": "2026-09-23T14:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort ausschließlich eine Fundstelle auf elm-asse.de, der Seite der Samtgemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Samtgemeinde Elm-Asse zahlt privaten Haushalten keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Fundstelle behandelt die Bauleitplanung für Freiflächen-Photovoltaik, also die Steuerung großer Anlagen im Gemeindegebiet, und kennt weder Antrag noch Betrag. Der Klimaschutz-Bereich der Samtgemeinde führt zwei Stellen für Klimaschutzmanagement und verweist für Fördermöglichkeiten ausdrücklich auf den Landkreis Wolfenbüttel; ein eigenes Programm gibt es dort nicht. Ein Programm dieser Ortsgemeinde selbst ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Seite zur Freiflächen-Photovoltaik der Samtgemeinde Elm-Asse am 23.09.2026 gelesen",
+      "Klimaschutz-Bereich der Samtgemeinde durchgesehen, einschließlich der Unterseite „Informationen für private Haushalte“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "finding": "„Freiflächen-Photovoltaik\" der Samtgemeinde Elm-Asse, am 23.09.2026 gelesen. Die Seite ordnet die BAULEITPLANUNG für Freiflächenanlagen ein („Das Land Niedersachsen hat das Ziel, seinen Energiebedarf bis 2040 vollständig aus Erneuerbaren Energien zu decken … Durch die Novellierung des Erneuerbaren-Energien-Gesetz 2023 … wurden die förderfähigen Gebiete für die Freiflächen-Photovoltaikanlagen erweitert\"). Kein Zuschuss, kein Antrag, kein Betrag für private Haushalte."
+      },
+      {
+        "url": "https://www.elm-asse.de/klimaschutz/klimaschutz/informationen_fuer_private_haushalte/",
+        "finding": "„Informationen für private Haushalte\" im Klimaschutz-Bereich der Samtgemeinde, am 23.09.2026 gelesen: Das Klimaschutzmanagement steht „als Ansprechpartner bei Fragen rund um das Thema Klimaschutz zur Verfügung\" und verweist für Fördermöglichkeiten auf den Landkreis Wolfenbüttel und auf den Modernisierungs-Check von co2online. Ein eigenes Förderprogramm der Samtgemeinde nennt die Seite nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "disposition": "reviewed",
+        "reason": "Seite gelesen; reine Bauleitplanung für Freiflächenanlagen, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "03158036",
+    "name": "Wittmar",
+    "checkedAt": "2026-09-23T14:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort ausschließlich eine Fundstelle auf elm-asse.de, der Seite der Samtgemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Samtgemeinde Elm-Asse zahlt privaten Haushalten keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die erfasste Fundstelle behandelt die Bauleitplanung für Freiflächen-Photovoltaik, also die Steuerung großer Anlagen im Gemeindegebiet, und kennt weder Antrag noch Betrag. Der Klimaschutz-Bereich der Samtgemeinde führt zwei Stellen für Klimaschutzmanagement und verweist für Fördermöglichkeiten ausdrücklich auf den Landkreis Wolfenbüttel; ein eigenes Programm gibt es dort nicht. Ein Programm dieser Ortsgemeinde selbst ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Seite zur Freiflächen-Photovoltaik der Samtgemeinde Elm-Asse am 23.09.2026 gelesen",
+      "Klimaschutz-Bereich der Samtgemeinde durchgesehen, einschließlich der Unterseite „Informationen für private Haushalte“"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "finding": "„Freiflächen-Photovoltaik\" der Samtgemeinde Elm-Asse, am 23.09.2026 gelesen. Die Seite ordnet die BAULEITPLANUNG für Freiflächenanlagen ein („Das Land Niedersachsen hat das Ziel, seinen Energiebedarf bis 2040 vollständig aus Erneuerbaren Energien zu decken … Durch die Novellierung des Erneuerbaren-Energien-Gesetz 2023 … wurden die förderfähigen Gebiete für die Freiflächen-Photovoltaikanlagen erweitert\"). Kein Zuschuss, kein Antrag, kein Betrag für private Haushalte."
+      },
+      {
+        "url": "https://www.elm-asse.de/klimaschutz/klimaschutz/informationen_fuer_private_haushalte/",
+        "finding": "„Informationen für private Haushalte\" im Klimaschutz-Bereich der Samtgemeinde, am 23.09.2026 gelesen: Das Klimaschutzmanagement steht „als Ansprechpartner bei Fragen rund um das Thema Klimaschutz zur Verfügung\" und verweist für Fördermöglichkeiten auf den Landkreis Wolfenbüttel und auf den Modernisierungs-Check von co2online. Ein eigenes Förderprogramm der Samtgemeinde nennt die Seite nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik",
+        "disposition": "reviewed",
+        "reason": "Seite gelesen; reine Bauleitplanung für Freiflächenanlagen, keine Haushaltsförderung.",
+        "evidenceUrl": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik"
+      }
+    ]
   }
 ]
