@@ -1034,16 +1034,24 @@ nicht sicherstellen können. **Zwei von drei Bausteinen dieser Begründung halte
   rechtskräftig und hat die Frage nie geprüft. **Wer diesen Blocker wiederverwendet,
   beschafft zuerst die Fundstelle.**
 
-  **Praktisch bleibt die Angabe trotzdem geschuldet, und das ist die ehrliche Fassung:**
-  Der amtliche Leitsatz des BGH stellt die Entbehrlichkeit der Sterneklassen-Aufschlüsselung
-  ausdrücklich unter die Bedingung, „wenn die Gesamtzahl und der Zeitraum der
-  berücksichtigten Bewertungen angegeben ist". Getragen ist sie nur von einer ersten
-  Instanz, aber es gibt keine Gegenstimme, und die Wettbewerbszentrale verfolgt das Thema.
-  **Und ein „Stand des Abrufs" ersetzt den Zeitraum nicht** — verlangt ist die
-  Erhebungsspanne der eingeflossenen Bewertungen, damit der Leser einschätzen kann, was
-  eine Note aussagt; 4,7 aus 30 Bewertungen eines halben Jahres und 4,7 aus 30 über zwölf
-  Jahre sind zwei verschiedene Aussagen und können am selben Tag abgerufen sein. Aus einer
-  strukturierten Angabe auf einer fremden Website ist diese Spanne nicht ableitbar.
+  **Was davon übrig bleibt, ist eine Bedingung, kein Gebot:** Der amtliche Leitsatz macht
+  die Entbehrlichkeit der Sterneklassen-Aufschlüsselung davon abhängig, „wenn die
+  Gesamtzahl und der Zeitraum der berücksichtigten Bewertungen angegeben ist" — was gilt,
+  wenn sie fehlen, lässt er offen. Die Entscheidung erging zudem zu Werbung von **vor** der
+  Einführung der Bewertungs-Transparenzregeln; § 5b Abs. 3 UWG und Anhang Nr. 23b kommen im
+  ganzen Urteil nicht vor. **Wer sie für Bewertungspflichten heranzieht, zitiert die falsche
+  Norm.** Ein „Stand des Abrufs" ersetzt den Zeitraum trotzdem nicht — verlangt wäre die
+  Erhebungsspanne, und 4,7 aus 30 Bewertungen eines halben Jahres ist etwas anderes als 4,7
+  aus 30 über zwölf Jahre.
+
+- **Der Grund, die vorhandenen Werte NICHT zu zeigen, ist ein anderer und trägt besser.**
+  Wer fremde Sterne von einer anderen Website ausliest und in die eigene Darstellung
+  einbaut, macht sie sich zu eigen und haftet für ihre Richtigkeit (§ 5 UWG). Die
+  Entlastung aus der BGH-Entscheidung zum Hotelbewertungsportal greift dabei **nicht** — sie
+  setzt nutzergenerierte Bewertungen im eigenen Portal voraus, nicht übernommene
+  Fremdangaben. Und eine strukturierte Bewertungsangabe auf der Seite eines Betriebs ist
+  von diesem selbst gesetzt und kann frei erfunden sein. **Das ist der Satz, der bleibt:
+  Wir würden für eine Zahl einstehen, die wir nicht prüfen können.**
 
 **Und dann die Messung, die die Quellenfrage entscheidet.** An 157 bzw. 116 zufälligen
 Betriebs-Startseiten geprüft, wer überhaupt auf welche Bewertungsplattform verweist:
@@ -1117,10 +1125,29 @@ dort nach der Gesetzesbegründung gar nicht erst.
 **Der Hebel, den beide Prüfer erst spät gesehen haben, hat mit Bewertungen gar nichts zu
 tun und greift früher:** Wer Verbrauchern eine Suche über mehrere Anbieter anbietet, muss
 die Hauptparameter seiner Reihenfolge und deren Gewichtung offenlegen (§ 5b Abs. 2 UWG).
-Das gilt, sobald das Verzeichnis sortiert — also ab dem ersten Tag und unabhängig davon,
-ob je eine Bewertung angezeigt wird. Die Wettbewerbszentrale hat deswegen nach Angabe des
-Gegenprüfers 33 Vergleichsportale abgemahnt. **Das ist vor dem Livegang des Verzeichnisses
-zu klären, nicht danach.**
+Das gilt, sobald das Verzeichnis sortiert — ab dem ersten Tag und unabhängig davon, ob je
+eine Bewertung angezeigt wird. Die Wettbewerbszentrale hat 64 Vergleichsportale untersucht,
+122 Verstöße gefunden, **33 abgemahnt** und viermal geklagt; ein Portal verkaufte
+Besserplatzierungen als „Gold-, Silber- und Bronze-Einträge", ohne das zu kennzeichnen.
+
+**Die Abgrenzung, die das Partnermodell rettet, steht in der Gesetzesbegründung:** Erfasst
+ist eine Zahlung „zur gezielten Erreichung eines höheren Rankings"; **nicht** erfasst sind
+„Zahlungen für allgemeine Dienstleistungen wie Gebühren für die Listung oder
+Mitgliedsbeiträge …, sofern diese Zahlungen nicht dazu bestimmt sind, ein höheres Ranking
+zu bewirken." Solange die Reihenfolge nach Nutzen sortiert — derselbe Grundsatz, der am
+Balkonkraftwerk-Angebotsblock schon sichtbar am Block steht —, löst eine Pauschalgebühr das
+Per-se-Verbot nicht aus. Sobald Geld die Reihenfolge bewegt, ist die Kennzeichnung Pflicht
+und ihr Fehlen ohne jede Abwägung unlauter.
+
+**Und der eine Weg zu Bewertungen, für die wir wirklich einstehen können, hat eine
+Bedingung an der Beschriftung.** Wer über eine Partnerseite eine Anfrage gestellt hat, hat
+die Leistung **nicht** erworben oder genutzt — „Kundenbewertung" wäre dann eine nachweislich
+unzutreffende Behauptung, und schon dieses eine Wort trägt sie (OLG Köln a. a. O.). Benennt
+die Beschriftung dagegen den Gegenstand — „Bewertung des Erstkontakts durch Nutzer, die
+hierüber angefragt haben" —, liegt gar keine Behauptung im Sinne des Verbots vor, und die
+einzige Prüfung, die dieses Projekt wirklich leisten kann (die Anfrage lief über uns),
+deckt genau die getroffene Aussage. **Das ist die günstigste Konstellation des ganzen
+Themenfelds — und die einzige, in der wir mehr behaupten dürfen als „ungeprüft".**
 
 ---
 
