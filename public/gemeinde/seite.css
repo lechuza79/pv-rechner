@@ -33,6 +33,7 @@
 .solar-page .v3-section-nav .v3-nav-menu{display:flex;align-items:center;min-width:0}
 .solar-page .v3-section-nav .v3-nav-menu>summary{display:none}
 .solar-page .v3-section-nav .v3-nav-links{display:flex;align-items:center;gap:4px}
+.solar-page .v3-section-nav [data-page-subscribe] .sc-abo-kurz{display:none}
 
 @media(max-width:860px){
   /* Der Abschnittsname gibt NICHT nach: Er ist der Zweck der Leiste („immer
@@ -79,7 +80,8 @@
    dieser Leiste. */
 @media(max-width:860px){
   .solar-page .v3-section-nav .atlas-page-update{font-size:11px}
-  .solar-page .v3-section-nav [data-page-subscribe] .sc-abo-ort{display:none}
+  .solar-page .v3-section-nav [data-page-subscribe] .sc-abo-lang{display:none}
+  .solar-page .v3-section-nav [data-page-subscribe] .sc-abo-kurz{display:inline}
 }
 
 /* ── Die „?"-Erklärungen sehen aus wie überall sonst ─────────────────────────
@@ -91,16 +93,26 @@
    Die Fläche zum Antippen bleibt trotzdem fingergroß (24 px): Ohne Rahmen ist
    das Zeichen selbst sieben Pixel breit, und auf einem Telefon ist der Klick
    der einzige Weg zur Erklärung. */
+/* DASSELBE Zeichen wie überall sonst auf der Site: der Kreis mit Fragezeichen
+   aus dem Icon-Satz, als Datei unter /design-system/, nicht ein zweites Mal
+   gezeichnet. Der Text im Element bleibt für Vorleseprogramme stehen und wird
+   nur ausgeblendet; die Farbe kommt aus der Maske, also von der Stelle, an der
+   das Zeichen steht. */
 #atlas-ranking .ranking-ratio-help summary,
 .solar-page .v3-calculation-help summary {
+  display: inline-block !important;
+  width: 18px !important;
+  height: 18px !important;
   border: 0 !important;
   border-radius: 0 !important;
-  width: 24px !important;
-  height: 24px !important;
   cursor: help;
-  opacity: .72;
-  font-size: var(--font-size-sm, 14px) !important;
-  line-height: 1 !important;
+  opacity: .7;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  vertical-align: -3px;
+  background: currentColor;
+  -webkit-mask: url("/design-system/icon-help-circle.svg") center / 18px 18px no-repeat;
+  mask: url("/design-system/icon-help-circle.svg") center / 18px 18px no-repeat;
 }
 #atlas-ranking .ranking-ratio-help summary:hover,
 .solar-page .v3-calculation-help summary:hover { opacity: 1 }
@@ -402,3 +414,25 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
    deshalb als heller Streifen mitten im Dunkeln (Betreiber, 23.09.2026). Die
    helle Karte selbst bleibt, sie ist die Box. */
 .solar-page .hs-person-section { background: none !important; }
+
+/* Der Text-Auslöser in der Ranglisten-Einleitung sieht aus wie der der
+   übrigen Site: gepunktete UNTERSTREICHUNG im laufenden Satz, Hilfe-Zeiger,
+   Größe und Gewicht vom Satz geerbt. Der Entwurf gab ihm einen gepunkteten
+   unteren Rand MIT runden Ecken — die Linie bog an beiden Enden nach oben und
+   sah aus wie eine halbe Pille. Und als eigener Block riss er den Satz
+   auseinander: 378 px breit, also stand die Phrase immer in einer eigenen
+   Zeile, mit dem Trennpunkt allein am Ende der Zeile darüber. */
+#atlas-ranking .ranking-class-help {
+  display: inline !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: none !important;
+  color: inherit;
+  font: inherit !important;
+  cursor: help;
+  text-decoration: underline dotted;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+#atlas-ranking .ranking-class-help:hover { text-decoration-style: solid }
