@@ -53966,5 +53966,239 @@
         "evidenceUrl": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme"
       }
     ]
+  },
+  {
+    "regionId": "03251004",
+    "name": "Barenburg",
+    "checkedAt": "2026-09-23T20:44:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf kirchdorf.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Samtgemeinde Kirchdorf führt auf ihrer Förderseite drei Programme ihrer Mitgliedsgemeinden: Wohnungsbauförderung in Bahrenborstel und in Wehrbleck sowie einen Zuschuss für die Anpflanzung von Hecken und Laubbäumen in Wehrbleck. Bauen und Begrünung, keine Energieerzeugung.",
+    "searches": [
+      "Seite „Kommunale Förderprogramme\" der Samtgemeinde Kirchdorf am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchdorf.de/leben/wohnen/foerderprogramme",
+        "finding": "Seite „Kommunale Förderprogramme\" der Samtgemeinde Kirchdorf, am 23.09.2026 gelesen. Wörtlich: „Unsere Mitgliedsgemeinden unterstützen Bauvorhaben und den Naturschutz mit gezielten Förderprogrammen.\" Verlinkt sind drei Dokumente: die Wohnungsbauförderprogramme der Gemeinden Bahrenborstel und Wehrbleck und eine Richtlinie über Zuschüsse für die Anpflanzung von Hecken und Laubbäumen in Wehrbleck. Energie kommt darin nicht vor."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchdorf.de/leben/wohnen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Wohnungsbau- und Anpflanzungszuschüsse, keine Energietechnik.",
+        "evidenceUrl": "https://www.kirchdorf.de/leben/wohnen/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "03251018",
+    "name": "Freistatt",
+    "checkedAt": "2026-09-23T20:44:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf kirchdorf.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Samtgemeinde Kirchdorf führt auf ihrer Förderseite drei Programme ihrer Mitgliedsgemeinden: Wohnungsbauförderung in Bahrenborstel und in Wehrbleck sowie einen Zuschuss für die Anpflanzung von Hecken und Laubbäumen in Wehrbleck. Bauen und Begrünung, keine Energieerzeugung.",
+    "searches": [
+      "Seite „Kommunale Förderprogramme\" der Samtgemeinde Kirchdorf am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchdorf.de/leben/wohnen/foerderprogramme",
+        "finding": "Seite „Kommunale Förderprogramme\" der Samtgemeinde Kirchdorf, am 23.09.2026 gelesen. Wörtlich: „Unsere Mitgliedsgemeinden unterstützen Bauvorhaben und den Naturschutz mit gezielten Förderprogrammen.\" Verlinkt sind drei Dokumente: die Wohnungsbauförderprogramme der Gemeinden Bahrenborstel und Wehrbleck und eine Richtlinie über Zuschüsse für die Anpflanzung von Hecken und Laubbäumen in Wehrbleck. Energie kommt darin nicht vor."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchdorf.de/leben/wohnen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Wohnungsbau- und Anpflanzungszuschüsse, keine Energietechnik.",
+        "evidenceUrl": "https://www.kirchdorf.de/leben/wohnen/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "03251021",
+    "name": "Kirchdorf",
+    "checkedAt": "2026-09-23T20:44:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf kirchdorf.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Samtgemeinde Kirchdorf führt auf ihrer Förderseite drei Programme ihrer Mitgliedsgemeinden: Wohnungsbauförderung in Bahrenborstel und in Wehrbleck sowie einen Zuschuss für die Anpflanzung von Hecken und Laubbäumen in Wehrbleck. Bauen und Begrünung, keine Energieerzeugung.",
+    "searches": [
+      "Seite „Kommunale Förderprogramme\" der Samtgemeinde Kirchdorf am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchdorf.de/leben/wohnen/foerderprogramme",
+        "finding": "Seite „Kommunale Förderprogramme\" der Samtgemeinde Kirchdorf, am 23.09.2026 gelesen. Wörtlich: „Unsere Mitgliedsgemeinden unterstützen Bauvorhaben und den Naturschutz mit gezielten Förderprogrammen.\" Verlinkt sind drei Dokumente: die Wohnungsbauförderprogramme der Gemeinden Bahrenborstel und Wehrbleck und eine Richtlinie über Zuschüsse für die Anpflanzung von Hecken und Laubbäumen in Wehrbleck. Energie kommt darin nicht vor."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchdorf.de/leben/wohnen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Wohnungsbau- und Anpflanzungszuschüsse, keine Energietechnik.",
+        "evidenceUrl": "https://www.kirchdorf.de/leben/wohnen/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "03251042",
+    "name": "Twistringen",
+    "checkedAt": "2026-09-23T20:44:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf twistringen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Seite „Förderprogramme\" der Stadt ist eine Informationsseite über BUNDESförderung: steuerliche Abschreibung energetischer Maßnahmen, die Zuschussförderung neuer Heizungen über die KfW, Solarthermie. Ein eigenes Programm der Stadt nennt sie nicht — die bekannte Umkehrung, Förderung des Bundes statt Förderung der Kommune. Das daneben verlinkte Solarkataster ist eine Eignungskarte, kein Zuschuss.",
+    "searches": [
+      "Seite „Förderprogramme\" der Stadt Twistringen am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.twistringen.de/bauen-wirtschaft/klima-umwelt/foerderprogramme",
+        "finding": "Wörtlich: „Die Zuständigkeit für die Zuschussförderung neuer Heizungsanlagen liegt ab dem 01.01.2024 fast vollständig bei der KfW.\" Die Seite beschreibt durchgehend Bundesprogramme, kein Angebot der Stadt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "twistringen.de/bauen-wirtschaft/klima-umwelt/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Informationsseite über Bundesförderung.",
+        "evidenceUrl": "https://www.twistringen.de/bauen-wirtschaft/klima-umwelt/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "03251035",
+    "name": "Staffhorst",
+    "checkedAt": "2026-09-23T20:44:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf staffhorst.eu.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle beschreibt die Bewerbung der Region um Aufnahme in das EU-Förderprogramm LEADER 2023–2027; über die Projekte entscheidet eine lokale Arbeitsgemeinschaft. Beispiele nennt die Seite selbst: Tourismus, Kultur, Mobilität, Klima- und Naturschutz — kein Zuschuss an Haushalte für Energietechnik.",
+    "searches": [
+      "Seite zum LEADER-Förderprogramm am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.staffhorst.eu/gemeinde/foerderprogramm",
+        "finding": "Wörtlich: „LEADER verbindet Akteure und Projekte, die die Lebensqualität in ländlichen Räumen verbessern wollen und stärkt Kooperationen vor Ort.\" EU-Regionalentwicklung, keine kommunale Leistung an Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "staffhorst.eu/gemeinde/foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Gelesen; LEADER-Regionalentwicklung.",
+        "evidenceUrl": "https://www.staffhorst.eu/gemeinde/foerderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "03159001",
+    "name": "Adelebsen",
+    "checkedAt": "2026-09-23T20:44:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf adelebsen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Seite „Fördertöpfe\" des Fleckens Adelebsen verweist auf die Bundesförderung für effiziente Gebäude und weitere Programme von Bund und Land. Ein eigenes Programm der Gemeinde steht dort nicht.",
+    "searches": [
+      "Seite „Fördertöpfe\" des Fleckens Adelebsen am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.adelebsen.de/seite/630144/f%C3%B6rdert%C3%B6pfe.html",
+        "finding": "Wörtlich: „Mit der Bundesförderung für effiziente Gebäude werden Maßnahmen für mehr Energieeffizienz in Wohn- und Nichtwongebäuden sowie u. a. der Austausch alter, fossiler Heizungen durch Heizungen auf Basis Erneuerbarer Energien gefördert.\" Verwiesen wird auf Bundesprogramme, nicht auf ein eigenes."
+      }
+    ],
+    "sources": [
+      {
+        "url": "adelebsen.de/seite/630144/f%C3%B6rdert%C3%B6pfe.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Verweis auf Bundesförderung.",
+        "evidenceUrl": "https://www.adelebsen.de/seite/630144/f%C3%B6rdert%C3%B6pfe.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03241015",
+    "name": "Seelze",
+    "checkedAt": "2026-09-23T20:44:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf seelze.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Seite listet Vorhaben, die die Stadt SELBST aus der Nationalen Klimaschutzinitiative des Bundes finanziert hat — eine Radabstellanlage am Gymnasium, der Austausch der Straßenbeleuchtung auf LED im Stadtteil Letter und ein Prämiensystem an Schulen und Kindergärten, jeweils mit Förderkennzeichen und Laufzeit. Förderung FÜR die Kommune, nicht VON ihr.",
+    "searches": [
+      "Seite „Förderprojekte Klimaschutz\" der Stadt Seelze am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.seelze.de/portal/seiten/foerderprojekte-klimaschutz-900000263-30950.html",
+        "finding": "Aufgeführt sind ausschließlich eigene Vorhaben, etwa wörtlich „Bau einer neuen und modernen Radabstellanlage am Georg-Büchner-Gymnasium\", gefördert aus der Nationalen Klimaschutzinitiative. Keine Leistung an Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "seelze.de/portal/seiten/foerderprojekte-klimaschutz-900000263-30950.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; eigene Vorhaben der Stadt aus Bundesmitteln.",
+        "evidenceUrl": "https://www.seelze.de/portal/seiten/foerderprojekte-klimaschutz-900000263-30950.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03254020",
+    "name": "Harsum",
+    "checkedAt": "2026-09-23T20:44:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf harsum.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Potentialanalyse der Gemeinde für FREIFLÄCHEN-Photovoltaik: Sie stuft rund 4,97 % der Gemeindefläche als Gunstfläche ein, und der Rat hat am 12.03.2024 beschlossen, Freiflächenanlagen künftig nur dort zuzulassen. Das ist Bauleitplanung, kein Geld — dieselbe Verwechslung wie in Selsingen: „Photovoltaik\" im Titel ist hier ein Planungsbegriff.",
+    "searches": [
+      "Seite zur Freiflächenphotovoltaik der Gemeinde Harsum am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.harsum.de/unsere-gemeinde/bauen-und-planen/versorgung-und-energie/freiflaechenphotovoltaik",
+        "finding": "Wörtlich: „Im Rahmen der Analyse wurden rund 4,97 % der Gemeindefläche als Gunstflächen für mögliche Photovoltaiknutzung eingestuft.\" Gegenstand ist die Flächenausweisung nach Ratsbeschluss vom 12.03.2024, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "harsum.de/unsere-gemeinde/bauen-und-planen/versorgung-und-energie/freiflaechenphotovoltaik",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Potentialanalyse für Freiflächen-PV, kein Zuschuss.",
+        "evidenceUrl": "https://www.harsum.de/unsere-gemeinde/bauen-und-planen/versorgung-und-energie/freiflaechenphotovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "03241016",
+    "name": "Sehnde",
+    "checkedAt": "2026-09-23T20:44:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf sehnde.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Seite „Beratung und Förderung\" der Stadt verweist auf die vom Bundeswirtschaftsministerium geförderte Energieberatung der Verbraucherzentrale und auf die gemeinnützige Klimaschutzagentur der Region Hannover. Beides ist Beratung, kein Geld der Stadt.",
+    "searches": [
+      "Seite „Beratung und Förderung\" der Stadt Sehnde am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sehnde.de/portal/seiten/beratung-und-foerderung-915001585-22550.html?rubrik=915000016",
+        "finding": "Wörtlich: „Das Team der gemeinnützigen Klimaschutzagentur unterstützt Hausbesitzerinnen und Hausbesitzer dabei – mit neutralen und kostenfreien Vorträgen, Erstberatungen und Informationsmaterialien\". Beratungsangebot, kein Zuschuss der Stadt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sehnde.de/portal/seiten/beratung-und-foerderung-915001585-22550.html?rubrik=915000016",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Verweis auf Beratungsangebote, kein Zuschuss.",
+        "evidenceUrl": "https://www.sehnde.de/portal/seiten/beratung-und-foerderung-915001585-22550.html?rubrik=915000016"
+      }
+    ]
   }
 ]
