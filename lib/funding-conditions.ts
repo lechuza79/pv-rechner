@@ -136,6 +136,15 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // hier nicht; bis dahin steht die Frist als erste Bedingung auf der Karte.
   "vg-hoehr-grenzhausen-balkonkraftwerke",
   "vg-kandel-balkonkraftwerke",
+  // VG Leiningerland, aufgenommen am 23.09.2026. Dasselbe wie bei Bremen: Das
+  // Programm ist BEENDET (Meldung der Verbandsgemeinde vom 26.06.2025, 400
+  // geförderte Anträge), eine Prüfform hielte das Vorhaben eines Nutzers also
+  // gegen ein Verfahren, in das er gar nicht mehr hineinkommt. Die Bedingungen
+  // stehen vollständig auf der Karte, in der Vergangenheitsform und mit dem
+  // Ende als erster Zeile. Wird das Programm je neu aufgelegt, gehört die
+  // Prüfform zur Neuauflage — dann aber an der dann geltenden Richtlinie, nicht
+  // an dieser von 2024.
+  "vg-leiningerland-balkonkraftwerke",
   // Bremen Heizungstausch, aufgenommen am 23.09.2026. Das Programm nimmt seit
   // dem 31.08.2025 keine Anträge mehr an — eine Prüfform hielte das Vorhaben
   // eines Nutzers gegen ein Verfahren, in das er gar nicht mehr hineinkommt.

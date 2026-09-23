@@ -52504,5 +52504,254 @@
         "evidenceUrl": "https://www.elm-asse.de/wohnen_amp_wirtschaft/freiflaechen_photovoltaik"
       }
     ]
+  },
+  {
+    "regionId": "07332027",
+    "name": "Hettenleidelheim",
+    "checkedAt": "2026-09-23T16:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf vg-l.de, der Seite der Verbandsgemeinde Leiningerland.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Verbandsgemeinde Leiningerland hat privaten Haushalten 200 € pauschal je Wohneinheit für ein Balkonkraftwerk gezahlt, Wechselrichter höchstens 800 W. Das Programm ist BEENDET: Die Verbandsgemeinde meldete am 26.06.2025 das „erfolgreiche Ende“ nach 400 geförderten Anträgen aus rund 80.000 € KIPKI-Mitteln des Landes, und die Programmseite ist nicht mehr veröffentlicht. Es steht seit dem 23.09.2026 als vg-leiningerland-balkonkraftwerke im Katalog, mit Status „eingestellt“ und ohne Rechenfeld — es informiert also und zieht nichts ab. Die Konditionen stammen aus der verbindlichen Richtlinie vom 23.05.2024, gelesen im Archiv der Amtsseite, Volltext im Repo. Dachanlagen, Speicher und Wärmepumpen hat die Verbandsgemeinde nie gefördert; die Kosten eines Batteriespeichers waren ausdrücklich nicht förderfähig. Die fünf übrigen erfassten Fundstellen sind Projekte der Nationalen Klimaschutzinitiative des Bundes an GEBÄUDEN DER VERBANDSGEMEINDE selbst (Beleuchtungsumstellung in Kitas, Feuerwehrgerätehäusern und einem Dorfgemeinschaftshaus, alle 2019) — Förderung FÜR die Kommune, nicht VON der Kommune, und damit keine Leistung an Haushalte. Alle fünf am 23.09.2026 gelesen. Ein eigenes Programm dieser Ortsgemeinde ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Abschlussmeldung „Erfolgreiches Ende des Förderprogramms für Balkonkraftwerke“ am 23.09.2026 live gelesen",
+      "Verbindliche Förderrichtlinie („Gültig ab 23.05.2024“) am 23.09.2026 im Volltext aus dem Archiv der Amtsseite gelesen; die Live-Programmseite leitet auf die CMS-Anmeldung um",
+      "Alle fünf Klimaschutzinitiative-Seiten am 23.09.2026 gelesen; alle betreffen Beleuchtungsumstellungen in Gebäuden der Verbandsgemeinde",
+      "Mitgliederliste der Verbandsgemeinde am 23.09.2026 gelesen (21 Ortsgemeinden), jeder Gemeindeschlüssel einzeln im Melderegister nachgeschlagen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/erfolgreiches-ende-des-foerderprogramms-fuer-balkonkraftwerke",
+        "finding": "Abschlussmeldung der Verbandsgemeinde Leiningerland vom 26.06.2025, am 23.09.2026 live gelesen: „Das Förderprojekt der Verbandsgemeinde Leiningerland für die Anschaffung von Balkonkraftwerken für Privathaushalte kam zu einem erfolgreichen Abschluss. … 400 Anträge konnten gefördert werden“, ermöglicht durch KIPKI-Mittel „in Höhe von etwa 80.000 €“."
+      },
+      {
+        "url": "https://web.archive.org/web/20250422192743/https://www.vg-l.de/formulare/fb2/balkonkraftwerk/foerderrichtlinie.pdf",
+        "finding": "Förderrichtlinie „Balkonkraftwerke für Privathaushalte“, Verwaltungsvorschrift, „Gültig ab 23.05.2024“ — Archivfassung der Amtsseite vom 22.04.2025, am 23.09.2026 im Volltext gelesen; die Live-Fassung der Programmseite leitet auf die CMS-Anmeldung um. Nr. 3: höchstens 800 W Wechselrichterleistung, Kauf ab 23.05.2024. Nr. 4: nur Privatpersonen mit Hauptwohnsitz in der Verbandsgemeinde, schriftliches Einverständnis des Vermieters, keine Eigenleistungen und keine gebrauchten Anlagen. Nr. 5: „Die Förderhöhe für Balkonkraftwerke beträgt pauschal 200 €. Je Wohneinheit wird maximal ein Balkonkraftwerk gefördert.“ Nr. 8: fünf Jahre Haltedauer. Nr. 9: „Eine Doppelförderung ist unzulässig.“ Nr. 11: Inkrafttreten 23.05.2024."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-dorfgemeinschaftshaus-kleinkarlbach",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung im Dorfgemeinschaftshauses Kleinkarlbach mit dem Förderkennzeichen 03K09096.“ Meldung vom 06.11.2019. Bundesmittel für ein Gebäude der Verbandsgemeinde, kein Antrag und kein Betrag für Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-bockenheim-kindenheim-und-kirchheim-kleinkarlbach",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in den Feuerwehrgerätehäuser Bockenheim-Kindenheim und Kirchheim-Kleinkarlbach mit dem Förderkennzeichen 03K09220.“ Meldung vom 06.11.2019. Gebäude der Verbandsgemeinde, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-obrigheim-und-ebertsheim",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in den Feuerwehrgerätehäuser Obrigheim und Ebertsheim mit dem Förderkennzeichen 03K09221.“ Meldung vom 06.11.2019. Gebäude der Verbandsgemeinde, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-grashuepfer-in-laumersheim",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in der Kindertagesstätte ‚Grashüpfer‘ des Kindertagesstättenzweckverbandes Laumersheim-Großkarlbach mit dem Förderkennzeichen 03K09119.“ Meldung vom 06.11.2019. Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-himmelszelt-in-dirmstein",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in der Kindertagesstätte ‚Himmelszelt‘ mit dem Förderkennzeichen 03K09120.“ Meldung vom 06.11.2019. Gebäude der Verbandsgemeinde, keine Leistung an Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/erfolgreiches-ende-des-foerderprogramms-fuer-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Abschlussmeldung gelesen; das Programm ist daraufhin als beendeter Eintrag in den Katalog aufgenommen worden.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/erfolgreiches-ende-des-foerderprogramms-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-dorfgemeinschaftshaus-kleinkarlbach",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-dorfgemeinschaftshaus-kleinkarlbach"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-bockenheim-kindenheim-und-kirchheim-kleinkarlbach",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-bockenheim-kindenheim-und-kirchheim-kleinkarlbach"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-obrigheim-und-ebertsheim",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-obrigheim-und-ebertsheim"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-grashuepfer-in-laumersheim",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-grashuepfer-in-laumersheim"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-himmelszelt-in-dirmstein",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-himmelszelt-in-dirmstein"
+      }
+    ]
+  },
+  {
+    "regionId": "07332036",
+    "name": "Mertesheim",
+    "checkedAt": "2026-09-23T16:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf vg-l.de, der Seite der Verbandsgemeinde Leiningerland.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Verbandsgemeinde Leiningerland hat privaten Haushalten 200 € pauschal je Wohneinheit für ein Balkonkraftwerk gezahlt, Wechselrichter höchstens 800 W. Das Programm ist BEENDET: Die Verbandsgemeinde meldete am 26.06.2025 das „erfolgreiche Ende“ nach 400 geförderten Anträgen aus rund 80.000 € KIPKI-Mitteln des Landes, und die Programmseite ist nicht mehr veröffentlicht. Es steht seit dem 23.09.2026 als vg-leiningerland-balkonkraftwerke im Katalog, mit Status „eingestellt“ und ohne Rechenfeld — es informiert also und zieht nichts ab. Die Konditionen stammen aus der verbindlichen Richtlinie vom 23.05.2024, gelesen im Archiv der Amtsseite, Volltext im Repo. Dachanlagen, Speicher und Wärmepumpen hat die Verbandsgemeinde nie gefördert; die Kosten eines Batteriespeichers waren ausdrücklich nicht förderfähig. Die fünf übrigen erfassten Fundstellen sind Projekte der Nationalen Klimaschutzinitiative des Bundes an GEBÄUDEN DER VERBANDSGEMEINDE selbst (Beleuchtungsumstellung in Kitas, Feuerwehrgerätehäusern und einem Dorfgemeinschaftshaus, alle 2019) — Förderung FÜR die Kommune, nicht VON der Kommune, und damit keine Leistung an Haushalte. Alle fünf am 23.09.2026 gelesen. Ein eigenes Programm dieser Ortsgemeinde ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Abschlussmeldung „Erfolgreiches Ende des Förderprogramms für Balkonkraftwerke“ am 23.09.2026 live gelesen",
+      "Verbindliche Förderrichtlinie („Gültig ab 23.05.2024“) am 23.09.2026 im Volltext aus dem Archiv der Amtsseite gelesen; die Live-Programmseite leitet auf die CMS-Anmeldung um",
+      "Alle fünf Klimaschutzinitiative-Seiten am 23.09.2026 gelesen; alle betreffen Beleuchtungsumstellungen in Gebäuden der Verbandsgemeinde",
+      "Mitgliederliste der Verbandsgemeinde am 23.09.2026 gelesen (21 Ortsgemeinden), jeder Gemeindeschlüssel einzeln im Melderegister nachgeschlagen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/erfolgreiches-ende-des-foerderprogramms-fuer-balkonkraftwerke",
+        "finding": "Abschlussmeldung der Verbandsgemeinde Leiningerland vom 26.06.2025, am 23.09.2026 live gelesen: „Das Förderprojekt der Verbandsgemeinde Leiningerland für die Anschaffung von Balkonkraftwerken für Privathaushalte kam zu einem erfolgreichen Abschluss. … 400 Anträge konnten gefördert werden“, ermöglicht durch KIPKI-Mittel „in Höhe von etwa 80.000 €“."
+      },
+      {
+        "url": "https://web.archive.org/web/20250422192743/https://www.vg-l.de/formulare/fb2/balkonkraftwerk/foerderrichtlinie.pdf",
+        "finding": "Förderrichtlinie „Balkonkraftwerke für Privathaushalte“, Verwaltungsvorschrift, „Gültig ab 23.05.2024“ — Archivfassung der Amtsseite vom 22.04.2025, am 23.09.2026 im Volltext gelesen; die Live-Fassung der Programmseite leitet auf die CMS-Anmeldung um. Nr. 3: höchstens 800 W Wechselrichterleistung, Kauf ab 23.05.2024. Nr. 4: nur Privatpersonen mit Hauptwohnsitz in der Verbandsgemeinde, schriftliches Einverständnis des Vermieters, keine Eigenleistungen und keine gebrauchten Anlagen. Nr. 5: „Die Förderhöhe für Balkonkraftwerke beträgt pauschal 200 €. Je Wohneinheit wird maximal ein Balkonkraftwerk gefördert.“ Nr. 8: fünf Jahre Haltedauer. Nr. 9: „Eine Doppelförderung ist unzulässig.“ Nr. 11: Inkrafttreten 23.05.2024."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-dorfgemeinschaftshaus-kleinkarlbach",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung im Dorfgemeinschaftshauses Kleinkarlbach mit dem Förderkennzeichen 03K09096.“ Meldung vom 06.11.2019. Bundesmittel für ein Gebäude der Verbandsgemeinde, kein Antrag und kein Betrag für Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-bockenheim-kindenheim-und-kirchheim-kleinkarlbach",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in den Feuerwehrgerätehäuser Bockenheim-Kindenheim und Kirchheim-Kleinkarlbach mit dem Förderkennzeichen 03K09220.“ Meldung vom 06.11.2019. Gebäude der Verbandsgemeinde, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-obrigheim-und-ebertsheim",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in den Feuerwehrgerätehäuser Obrigheim und Ebertsheim mit dem Förderkennzeichen 03K09221.“ Meldung vom 06.11.2019. Gebäude der Verbandsgemeinde, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-grashuepfer-in-laumersheim",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in der Kindertagesstätte ‚Grashüpfer‘ des Kindertagesstättenzweckverbandes Laumersheim-Großkarlbach mit dem Förderkennzeichen 03K09119.“ Meldung vom 06.11.2019. Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-himmelszelt-in-dirmstein",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in der Kindertagesstätte ‚Himmelszelt‘ mit dem Förderkennzeichen 03K09120.“ Meldung vom 06.11.2019. Gebäude der Verbandsgemeinde, keine Leistung an Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/erfolgreiches-ende-des-foerderprogramms-fuer-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Abschlussmeldung gelesen; das Programm ist daraufhin als beendeter Eintrag in den Katalog aufgenommen worden.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/erfolgreiches-ende-des-foerderprogramms-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-dorfgemeinschaftshaus-kleinkarlbach",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-dorfgemeinschaftshaus-kleinkarlbach"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-bockenheim-kindenheim-und-kirchheim-kleinkarlbach",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-bockenheim-kindenheim-und-kirchheim-kleinkarlbach"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-obrigheim-und-ebertsheim",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-obrigheim-und-ebertsheim"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-grashuepfer-in-laumersheim",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-grashuepfer-in-laumersheim"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-himmelszelt-in-dirmstein",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-himmelszelt-in-dirmstein"
+      }
+    ]
+  },
+  {
+    "regionId": "07332042",
+    "name": "Quirnheim",
+    "checkedAt": "2026-09-23T16:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sechs Fundstellen auf vg-l.de, der Seite der Verbandsgemeinde Leiningerland.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Verbandsgemeinde Leiningerland hat privaten Haushalten 200 € pauschal je Wohneinheit für ein Balkonkraftwerk gezahlt, Wechselrichter höchstens 800 W. Das Programm ist BEENDET: Die Verbandsgemeinde meldete am 26.06.2025 das „erfolgreiche Ende“ nach 400 geförderten Anträgen aus rund 80.000 € KIPKI-Mitteln des Landes, und die Programmseite ist nicht mehr veröffentlicht. Es steht seit dem 23.09.2026 als vg-leiningerland-balkonkraftwerke im Katalog, mit Status „eingestellt“ und ohne Rechenfeld — es informiert also und zieht nichts ab. Die Konditionen stammen aus der verbindlichen Richtlinie vom 23.05.2024, gelesen im Archiv der Amtsseite, Volltext im Repo. Dachanlagen, Speicher und Wärmepumpen hat die Verbandsgemeinde nie gefördert; die Kosten eines Batteriespeichers waren ausdrücklich nicht förderfähig. Die fünf übrigen erfassten Fundstellen sind Projekte der Nationalen Klimaschutzinitiative des Bundes an GEBÄUDEN DER VERBANDSGEMEINDE selbst (Beleuchtungsumstellung in Kitas, Feuerwehrgerätehäusern und einem Dorfgemeinschaftshaus, alle 2019) — Förderung FÜR die Kommune, nicht VON der Kommune, und damit keine Leistung an Haushalte. Alle fünf am 23.09.2026 gelesen. Ein eigenes Programm dieser Ortsgemeinde ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Abschlussmeldung „Erfolgreiches Ende des Förderprogramms für Balkonkraftwerke“ am 23.09.2026 live gelesen",
+      "Verbindliche Förderrichtlinie („Gültig ab 23.05.2024“) am 23.09.2026 im Volltext aus dem Archiv der Amtsseite gelesen; die Live-Programmseite leitet auf die CMS-Anmeldung um",
+      "Alle fünf Klimaschutzinitiative-Seiten am 23.09.2026 gelesen; alle betreffen Beleuchtungsumstellungen in Gebäuden der Verbandsgemeinde",
+      "Mitgliederliste der Verbandsgemeinde am 23.09.2026 gelesen (21 Ortsgemeinden), jeder Gemeindeschlüssel einzeln im Melderegister nachgeschlagen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/erfolgreiches-ende-des-foerderprogramms-fuer-balkonkraftwerke",
+        "finding": "Abschlussmeldung der Verbandsgemeinde Leiningerland vom 26.06.2025, am 23.09.2026 live gelesen: „Das Förderprojekt der Verbandsgemeinde Leiningerland für die Anschaffung von Balkonkraftwerken für Privathaushalte kam zu einem erfolgreichen Abschluss. … 400 Anträge konnten gefördert werden“, ermöglicht durch KIPKI-Mittel „in Höhe von etwa 80.000 €“."
+      },
+      {
+        "url": "https://web.archive.org/web/20250422192743/https://www.vg-l.de/formulare/fb2/balkonkraftwerk/foerderrichtlinie.pdf",
+        "finding": "Förderrichtlinie „Balkonkraftwerke für Privathaushalte“, Verwaltungsvorschrift, „Gültig ab 23.05.2024“ — Archivfassung der Amtsseite vom 22.04.2025, am 23.09.2026 im Volltext gelesen; die Live-Fassung der Programmseite leitet auf die CMS-Anmeldung um. Nr. 3: höchstens 800 W Wechselrichterleistung, Kauf ab 23.05.2024. Nr. 4: nur Privatpersonen mit Hauptwohnsitz in der Verbandsgemeinde, schriftliches Einverständnis des Vermieters, keine Eigenleistungen und keine gebrauchten Anlagen. Nr. 5: „Die Förderhöhe für Balkonkraftwerke beträgt pauschal 200 €. Je Wohneinheit wird maximal ein Balkonkraftwerk gefördert.“ Nr. 8: fünf Jahre Haltedauer. Nr. 9: „Eine Doppelförderung ist unzulässig.“ Nr. 11: Inkrafttreten 23.05.2024."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-dorfgemeinschaftshaus-kleinkarlbach",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung im Dorfgemeinschaftshauses Kleinkarlbach mit dem Förderkennzeichen 03K09096.“ Meldung vom 06.11.2019. Bundesmittel für ein Gebäude der Verbandsgemeinde, kein Antrag und kein Betrag für Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-bockenheim-kindenheim-und-kirchheim-kleinkarlbach",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in den Feuerwehrgerätehäuser Bockenheim-Kindenheim und Kirchheim-Kleinkarlbach mit dem Förderkennzeichen 03K09220.“ Meldung vom 06.11.2019. Gebäude der Verbandsgemeinde, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-obrigheim-und-ebertsheim",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in den Feuerwehrgerätehäuser Obrigheim und Ebertsheim mit dem Förderkennzeichen 03K09221.“ Meldung vom 06.11.2019. Gebäude der Verbandsgemeinde, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-grashuepfer-in-laumersheim",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in der Kindertagesstätte ‚Grashüpfer‘ des Kindertagesstättenzweckverbandes Laumersheim-Großkarlbach mit dem Förderkennzeichen 03K09119.“ Meldung vom 06.11.2019. Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-himmelszelt-in-dirmstein",
+        "finding": "Am 23.09.2026 gelesen: „Die Nationale Klimaschutzinitiative fördert die Beleuchtungsumstellung in der Kindertagesstätte ‚Himmelszelt‘ mit dem Förderkennzeichen 03K09120.“ Meldung vom 06.11.2019. Gebäude der Verbandsgemeinde, keine Leistung an Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/erfolgreiches-ende-des-foerderprogramms-fuer-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Abschlussmeldung gelesen; das Programm ist daraufhin als beendeter Eintrag in den Katalog aufgenommen worden.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/erfolgreiches-ende-des-foerderprogramms-fuer-balkonkraftwerke"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-dorfgemeinschaftshaus-kleinkarlbach",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-dorfgemeinschaftshaus-kleinkarlbach"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-bockenheim-kindenheim-und-kirchheim-kleinkarlbach",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-bockenheim-kindenheim-und-kirchheim-kleinkarlbach"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-obrigheim-und-ebertsheim",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-feuerwehrgeraetehaeuser-obrigheim-und-ebertsheim"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-grashuepfer-in-laumersheim",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-grashuepfer-in-laumersheim"
+      },
+      {
+        "url": "vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-himmelszelt-in-dirmstein",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Bundesmittel der Nationalen Klimaschutzinitiative für ein Gebäude der Verbandsgemeinde, keine Förderung für private Haushalte.",
+        "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-himmelszelt-in-dirmstein"
+      }
+    ]
   }
 ]

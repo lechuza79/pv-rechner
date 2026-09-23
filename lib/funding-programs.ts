@@ -12733,6 +12733,123 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+
+  // ── Verbandsgemeinde Leiningerland, Rheinland-Pfalz ─────────────────────────
+  //
+  // BEENDETES Programm, aufgenommen weil "gab es, ist beendet" eine echte
+  // Auskunft ist und wir eine Neuauflage sonst nicht bemerken (Betreiber,
+  // 17.08.2026). Es zieht kein Geld ab -- `fundingZaehlt()` verlangt
+  // `status === "aktiv"` --, deshalb trägt es bewusst KEIN Rechenfeld
+  // (`balkonPauschale`); der Betrag steht nur als Text, wie bei
+  // `berkenthin-balkon-solar`.
+  //
+  // QUELLENLAGE, und die Arbeitsteilung darin ist der Punkt (Council
+  // 23.09.2026, drei Prüfer plus Legal-Judge):
+  //   * Die KONDITIONEN stehen in der Förderrichtlinie der Verbandsgemeinde
+  //     ("Gültig ab 23.05.2024", Verwaltungsvorschrift, Nr. 1-12). Sie ist
+  //     heute nicht mehr veröffentlicht -- die Programmseite
+  //     www.vg-l.de/formulare/fb2/balkonkraftwerk/ leitet auf die
+  //     CMS-Anmeldeseite um --, gelesen wurde sie deshalb im Archiv der
+  //     Amtsseite (Fassung vom 22.04.2025, Volltext in
+  //     docs/quellen/vg-leiningerland/).
+  //   * Das ENDE steht live: die Meldung "Erfolgreiches Ende des
+  //     Förderprogramms für Balkonkraftwerke" vom 26.06.2025, am 23.09.2026
+  //     abgerufen (die url dieses Eintrags), mit 400 geförderten Anträgen und
+  //     rund 80.000 € KIPKI-Mitteln.
+  //   Das ist genau die im Projekt vorgesehene Teilung: Das Archiv belegt den
+  //   INHALT, nie die Aktualität -- die kommt aus dem Live-Abruf. Deshalb
+  //   trägt dieser Eintrag auch KEIN Prüfdatum: Die Seite, auf der die Sätze
+  //   standen, lässt sich nicht mehr prüfen.
+  //
+  // WARUM "eingestellt" und nicht "ausgeschoepft": tragend ist allein der
+  // Wortlaut der Verbandsgemeinde -- Überschrift "Erfolgreiches ENDE",
+  // Schlussbilanz über die volle Summe. NICHT tragend wären zwei Begründungen,
+  // die naheliegen und beide falsch sind: die Umleitung auf die Anmeldeseite
+  // sagt etwas über unseren Abrufversuch, nicht über die Quelle (nur 404/410
+  // täte das), und dass die KIPKI-Mittel des Landes ausgelaufen seien, ist
+  // hier nirgends belegt. "ausgeschoepft" wäre auch nicht die vorsichtigere
+  // Wahl -- "Fördertopf leer" behauptet ein Wiederauffüllen, das wir genauso
+  // wenig belegen können, und lässt einen Leser warten.
+  //
+  // KEIN endetIso: Der 26.06.2025 ist der Tag der MELDUNG, nicht der letzte
+  // Antragstag; den nennt keine Quelle. Dieselbe Unterscheidung wie
+  // `festgestelltAm` gegen "geändert am". `beginntIso` dagegen ist belegt --
+  // Nr. 11 der Richtlinie: "Diese Richtlinie tritt mit Wirkung zum 23.05.2024
+  // in Kraft."
+  //
+  // FÖRDERGEBIET: die 21 Ortsgemeinden der Verbandsgemeinde. Die Richtlinie
+  // Nr. 4 macht "alle Privatpersonen mit Hauptwohnsitz in der Verbandsgemeinde
+  // Leiningerland" antragsberechtigt, das Gebiet ist also die ganze VG; die
+  // Mitgliederliste stammt von der Verbandsgemeinde selbst
+  // (www.vg-l.de/leben/ortsgemeinden/, 23.09.2026) und wird unabhängig von der
+  // Kreisverwaltung Bad Dürkheim und von Wikipedia mit derselben Zahl 21
+  // bestätigt. Jeder Schlüssel einzeln aus `mastr_regions` geholt, nie aus der
+  // Namensliste getippt. Die Landkreis-Gemeinden gehen dabei lückenlos auf:
+  // 48 = 3 verbandsfreie (Bad Dürkheim 07332002, Grünstadt 07332024, Haßloch
+  // 07332025) + 21 Leiningerland + 8 Freinsheim + 7 Lambrecht + 5 Deidesheim
+  // + 4 Wachenheim. GRÜNSTADT GEHÖRT NICHT DAZU, obwohl der Verwaltungssitz
+  // dort liegt -- es ist verbandsfrei. Vier Namen sind bundesweit mehrdeutig
+  // und tragen deshalb die amtliche Langform: Tiefenthal (auch 07133104, Bad
+  // Kreuznach), Obrigheim (Pfalz) (auch 08225074, Neckar-Odenwald-Kreis),
+  // Battenberg (Pfalz) (auch 06635004, Hessen), Kirchheim an der Weinstraße
+  // (auch 16070031 und 06632011). Der fünfstellige 07332 darf hier NIE stehen:
+  // das ist der Landkreis Bad Dürkheim, und dort liegt bereits
+  // `bad-duerkheim-stecker-solar` (07332002) -- zwei Programme auf einem
+  // Schlüssel lassen `fundingFor()` `undefined` liefern, und die Stadtseite
+  // fiele ohne roten Test auf 404.
+  "vg-leiningerland-balkonkraftwerke": {
+    id: "vg-leiningerland-balkonkraftwerke",
+    name: "Balkonkraftwerke für Privathaushalte",
+    traeger: "Verbandsgemeinde Leiningerland", level: "kommune",
+    region: "Verbandsgemeinde Leiningerland",
+    bundesland: "Rheinland-Pfalz",
+    agsCode: "07332027",
+    agsCodes: [
+      "07332001", "07332003", "07332004", "07332006", "07332007", "07332010",
+      "07332012", "07332021", "07332023", "07332029", "07332030", "07332031",
+      "07332033", "07332036", "07332038", "07332040", "07332041", "07332042",
+      "07332044", "07332047",
+    ],
+    url: "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/erfolgreiches-ende-des-foerderprogramms-fuer-balkonkraftwerke",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-05-23",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Pauschale je Wohneinheit",
+    maxFoerderung: "200 € je Wohneinheit",
+    rates: [
+      { label: "Balkonkraftwerk bis 800 W (Richtlinie vom 23.05.2024)", value: "200 € pauschal je Wohneinheit — Programm beendet", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Die Verbandsgemeinde hat das Programm beendet und das am 26. Juni 2025 gemeldet; gefördert wurden insgesamt 400 Anträge aus rund 80.000 € KIPKI-Mitteln des Landes Rheinland-Pfalz",
+      "Gefördert wurde die Neuerrichtung eines Balkonkraftwerks mit höchstens 800 W Wechselrichterleistung, je Wohneinheit höchstens eines",
+      "Förderfähig waren nur Anlagen, die ab dem 23. Mai 2024 neu gekauft und errichtet wurden; maßgeblich war das Kauf- oder Rechnungsdatum",
+      "Antragsberechtigt waren ausschließlich Privatpersonen mit Hauptwohnsitz in der Verbandsgemeinde Leiningerland",
+      "Mieter mussten vorab das schriftliche Einverständnis des Vermieters einholen",
+      "Nicht gefördert wurden Eigenleistungen, Prototypen, gebrauchte Anlagen und Anlagen mit wesentlich gebraucht erworbenen Teilen",
+      "Die Kosten eines Batteriespeichers waren nicht förderfähig",
+      "Eine Doppelförderung war ausgeschlossen: Wer für dieselbe Anlage bereits einen Antrag in einem anderen Förderprogramm gestellt hatte, wurde nicht berücksichtigt",
+      "Die Anlage musste fünf Jahre in der Verbandsgemeinde betrieben werden; ein Weiterverkauf war erst danach förderunschädlich",
+      "Nachzuweisen waren Kaufbeleg mit Zahlungsnachweis, ein Foto des Installationsorts und die Registrierung im Marktstammdatenregister",
+      "Kein Rechtsanspruch; entschieden wurde nach pflichtgemäßem Ermessen in der Reihenfolge des Antragseingangs und im Rahmen der verfügbaren Mittel",
+    ],
+    // Nr. 9 der Richtlinie schließt die Doppelförderung ausdrücklich aus ("Eine
+    // Doppelförderung ist unzulässig"). Die LEERE Liste ist im Katalog bereits
+    // das "geht nur allein" -- sie ist hier also belegt und nicht geraten.
+    //
+    // BEWUSST NICHT als Bedingung aufgenommen (Legal-Judge 23.09.2026): Nr. 4
+    // der Richtlinie sagt wörtlich "Das Einspeisen von Solarstrom oder die
+    // Vermietung der Anlage sind im Rahmen dieser Förderrichtlinie nicht
+    // gestattet." Jedes Balkonkraftwerk speist technisch Überschuss ein; als
+    // Punkt in UNSERER Bedingungsliste läse der Nutzer "damit war ich
+    // ausgeschlossen" -- was die 400 geförderten Anlagen widerlegen. Der Satz
+    // glatt zu ziehen ("keine Einspeisevergütung") wäre eine Deutung ohne
+    // Fundstelle, die wir der Gemeinde in den Mund legen. Für ein beendetes
+    // Programm ist die Bedingung für keine Entscheidung mehr wesentlich, also
+    // entfällt sie. Wer sie je zeigen will, zeigt sie als gekennzeichnetes
+    // wörtliches Zitat mit Datum, nie umformuliert.
+    combinableWith: [],
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
