@@ -1,8 +1,16 @@
 # PV-Fachbetriebe: welche Quelle trägt, welche nicht
 
-**Alles hier ist am 27.08.2026 gemessen oder im Volltext geprüft, nichts geschätzt.**
-Wer diese Erhebung erweitert, liest zuerst diese Datei — vier Quellen sind bereits
-durchgeprüft, drei davon verworfen. Der Weg muss nicht noch einmal gegangen werden.
+**Alles hier ist gemessen oder im Volltext geprüft, nichts geschätzt** (Hauptteil
+27.08.2026, Nachträge mit eigenem Datum). Wer diese Erhebung erweitert, liest zuerst diese
+Datei — **sieben Quellen sind durchgeprüft, fünf davon verworfen.** Der Weg muss nicht
+noch einmal gegangen werden.
+
+**Kurzfassung für die eilige Sitzung:** Google gesperrt · Kammer-Werbeverzeichnis leer
+(1 von 12 Betrieben darin) · OpenStreetMap zu dünn · **Handelsregister liefert nicht das
+Gründungsjahr, sondern das Alter der Rechtsform — bei alten Betrieben bis zu 76 Jahre
+daneben** · Ortssuche über die Suchmaschine ist der Weg für die Grundgesamtheit · **das
+Innungsverzeichnis der E-Handwerke ist die einzige neue Quelle mit Ertrag (33 % der
+Elektrobetriebe)** · Bewertungen liegen bei Google, das heißt: Link statt Wert.
 
 ---
 
@@ -25,7 +33,7 @@ Zahl 146 ist eine Obergrenze, keine Messung.
 
 ---
 
-## Die vier geprüften Quellen
+## Die geprüften Quellen
 
 ### 1. Google Places / Maps — GESPERRT, nicht bloß heikel
 
@@ -716,6 +724,241 @@ solche Namen.
 Meisterbetrieb, der seinen Titel nicht auf die Website schreibt, bekommt weniger Punkte
 als einer, der es tut — die Zahl misst unseren Datenstand, nicht den Betrieb. Deshalb
 heißt sie so und steht neben den einzelnen Merkmalen, nicht an ihrer Stelle.
+
+---
+
+# Nachtrag 23.09.2026: die Suche nach NEUEN Quellen für die Trust-Signale
+
+Anlass: Von 3.115 als Betrieb eingeordneten Adressen trägt **weniger als die Hälfte
+(1.428, 46 %) überhaupt ein Trust-Signal** — Meisterbetrieb 845, Handwerkskammer 462,
+Gründungsjahr 489, Bewertung 160, Innung 44. Zwei Eichungen an je 30 Betrieben hatten
+gezeigt, dass ein weiterer Durchgang über dieselben Websites 3 bis 7 Prozent bringt.
+Gesucht wurden deshalb **andere Quellen**, nicht ein zweiter Blick auf dieselbe.
+
+Das Ergebnis vorweg: **Von drei geprüften Quellen trägt eine.** Die beiden Register
+scheiden aus fachlichen Gründen aus, nicht aus rechtlichen — was die Rechtsprüfung nur
+deshalb nicht erspart hat, weil sie parallel lief.
+
+---
+
+## 5. Handelsregister — technisch offen, fachlich UNBRAUCHBAR für das Gründungsjahr
+
+Das ist der teuerste Befund dieser Runde, weil er auf den ersten Blick wie ein Volltreffer
+aussieht. Der Zugang ist seit dem DiRUG (01.08.2022) gebührenfrei, das Portal liefert
+einen **strukturierten Registerinhalt als XML**, und wir haben zu 1.802 Betrieben eine
+Registernummer aus deren eigenem Impressum, bei 1.337 davon zusätzlich das Gericht — also
+genau den Schlüssel, mit dem sich gezielt nachschlagen lässt.
+
+**Gemessen am 23.09.2026 an 20 Betrieben aus unserem eigenen Bestand** (10 zufällig über
+Registerarten und Bundesländer verteilt, 10 weitere gezielt solche, deren Gründungsjahr
+wir aus ihrer Website bereits kennen):
+
+| Was das Register liefert | Ergebnis |
+|---|---|
+| Treffer über Registernummer + Gericht | 18 von 20 |
+| Rechtsform, Sitz, Anschrift, letzte Eintragung | zuverlässig |
+| **Datum der ersten Satzung** | **nur 6 von 20** |
+| Datum der ersten Satzung bei Personengesellschaften (HRA) | **nie** — eine KG hat keine Satzung |
+
+**Der eigentliche Befund ist aber nicht die Lücke, sondern die systematische Abweichung.**
+Wo wir das Gründungsjahr von der Website kennen und das Register ein Datum liefert, sind
+es nicht dieselben Jahre:
+
+| Betrieb sagt auf seiner Website | Register sagt | Abstand |
+|---|---|---|
+| 1932 (Heizungsbetrieb, Landshut) | Gesellschaftsvertrag 2008, „entstanden durch Abspaltung" | 76 Jahre |
+| 1931 (Wärmetechnik, Sachsen) | „Beginn: 02.12.2002" | 71 Jahre |
+| 1932 (Haustechnik, Osnabrück) | „Tag der ersten Eintragung: 18.01.1951", Beginn 1967 | 19 Jahre |
+| 1937 (Elektro, Krefeld) | Satzung 1985 | 48 Jahre |
+
+**Das Register misst, seit wann die heutige RECHTSFORM eingetragen ist — nicht, seit wann
+der Betrieb besteht.** Jede Umwandlung, Abspaltung, Sitzverlegung oder Umschreibung auf
+EDV setzt die Uhr neu. Der Fehler geht dabei immer in dieselbe Richtung: zu jung, und zwar
+am stärksten bei genau den alten Familienbetrieben, bei denen das Signal am meisten wert
+wäre. **Zwei Drittel unserer bekannten Gründungsjahre liegen vor 2010** (312 von 489,
+Median 2006) — also im Bereich, in dem die Registerzahl systematisch falsch wäre.
+
+Aus einem 94 Jahre alten Handwerksbetrieb würde auf unserer Seite eine Gründung von 2008.
+Das ist nicht „ungenau", das ist die Fehlerklasse, die CLAUDE.md an erster Stelle nennt:
+eine Zahl, die etwas anderes misst als ihre Beschriftung sagt.
+
+**Zwei Nebenbefunde, die bleiben:**
+
+- **Unsere Registernummern zeigen teils auf eine ANDERE Firma, als der Betrieb heißt.**
+  Unter 20 Nachschlägen viermal: Der Name im Register war „b&m GmbH" statt Becker Aalen,
+  „Blinktank GmbH" statt AmtsGuide, „ieQ-systems Elektro" statt alpha-solar-power,
+  „Konopka & Pasch" statt Elektro Smart. Teils ist das Marke gegen Rechtsträger (also
+  richtig), teils vermutlich eine falsch ausgelesene Nummer. **Automatisch ist das nicht
+  zu unterscheiden** — ein Lauf würde einem Teil der Betriebe stillschweigend die Daten
+  einer fremden Firma anhängen.
+- **Was das Register DOCH zuverlässig sagt, ist der Status:** „aktuell" gegen gelöscht.
+  Das wäre ein echtes Signal („besteht noch"), aber es ist ein negativer Filter, kein
+  Vertrauensmerkmal, und es beantwortet keine Nutzerfrage.
+
+### Die Rechtslage — geprüft, und sie hätte getragen
+
+Die Prüfung lief parallel und ist nicht umsonst, weil ihre Ergebnisse für jeden künftigen
+Registerabruf gelten:
+
+- **§ 9 Abs. 1 S. 1 HGB erlaubt die Einsicht „durch einzelne Abrufe".** Die drei Worte
+  sind mit dem DiRUG zum 01.08.2022 eingefügt worden, zeitgleich mit dem Wegfall der
+  Gebühren; die Begründung (BT-Drs. 19/30523) nennt als Zweck ausdrücklich, „dass ein
+  Massenabruf von Registerdaten zu anderen hiervon nicht umfassten Zwecken, insbesondere
+  einer kommerziellen Weiterverwendung […] verhindert wird". **Ob eine Kette einzelner
+  Abrufe die Schranke verlässt, ist nicht entschieden** — dazu wurde keine Rechtsprechung
+  gefunden.
+- **Es GIBT eine Nutzungsordnung, und sie ist eindeutig.** Sie liegt unter „Informationen"
+  im Portal und ist über einen gewöhnlichen Abruf nicht erreichbar, weil die ganze
+  Anwendung über Formular-Absendungen läuft — deshalb wird sie leicht übersehen. Drei
+  Zahlen daraus: **höchstens 60 Suchen oder Rechtsträger-Aufrufe pro Stunde**;
+  **„systematische Abrufe, um parallele Voll- oder Teilregister aufzubauen, auszubauen
+  oder zu aktualisieren, sind unzulässig"**; für mehr gibt es ein **Antragsverfahren** bei
+  der Servicestelle am Amtsgericht Hagen. Das Portal sperrt bei Verdacht einzelne
+  Adressen.
+- **Das Datenbankherstellerrecht trägt hier NICHT** (anders als beim Impressum des
+  Unternehmensregisters behauptet): Das Register *erzeugt* seinen Inhalt hoheitlich, statt
+  ihn zu beschaffen (EuGH C-444/02), und seit der Abruf gebührenfrei ist, gibt es keine
+  Amortisation, die ein Abruf gefährden könnte (EuGH C-762/19).
+- **Das Unternehmensregister ist der schlechtere von beiden Wegen.** Seine
+  Crawler-Anweisung sperrt Suche und Registerinformationen ausdrücklich (am 23.09.2026
+  gemessen), während das Registerportal gar keine hat und seine Erlaubnis positiv
+  formuliert.
+- **Eine amtliche Schnittstelle für Massenabrufe gibt es nicht** — obwohl die EU-Kategorie
+  der hochwertigen Datensätze (Durchführungsverordnung 2023/138, Anhang Nr. 5) seit dem
+  09.06.2024 genau „Datum der Eintragung" und „Rechtsform" als maschinenlesbar
+  bereitzustellende Merkmale nennt. Ein Umsetzungsstand in Deutschland war nicht
+  auffindbar.
+- **„Handelsregister" darf kein Etikett für unseren Bestand werden** (§ 8 Abs. 2 HGB):
+  Eine Angabe am einzelnen Betrieb ist vertretbar, der Datenbestand als Ganzes darf so
+  nicht bezeichnet, beworben oder angeboten werden.
+
+**Nicht erneut aufmachen.** Das Register liefert das gesuchte Merkmal nicht. Wer es
+trotzdem für die Rechtsform oder den Fortbestand abrufen will, findet oben die Auflagen —
+und stellt vorher die Frage, ob 1.337 Abrufe bei 30 pro Stunde (rund 90 Stunden Laufzeit)
+und eine Ergänzung der Datenschutzerklärung den Nutzen wert sind.
+
+### Die Handwerksrolle: Aufwand geschätzt, nicht angegangen
+
+Bleibt als amtliche Quelle für den Meisterbetrieb (§ 6 Abs. 2 HwO, Rechtslage im
+Abschnitt 2 oben geprüft). **Der Aufwand ist der Grund, warum sie liegen bleibt:** 53
+Kammern, je ein eigener Antrag mit Darlegung des berechtigten Interesses, Ausgang je
+Kammer offen, keine Schnittstelle, und sie erfasst **nur zulassungspflichtige Handwerke** —
+also gerade nicht die reinen Solarteure. Gegenrechnung: Wir vermuten das Merkmal ohnehin
+bei fast allen Elektrobetrieben; was fehlt, ist nicht die Tatsache, sondern ihr Beleg.
+**Der billigste Beleg bleibt die Frage beim Erstkontakt.**
+
+---
+
+## 6. Das Innungsverzeichnis der E-Handwerke — die einzige NEUE Quelle, die trägt
+
+Die Fachbetriebssuche der Elektro- und Informationstechnischen Handwerke führt die
+Innungsmitglieder; ein Treffer dort IST das Signal „Innungsfachbetrieb" — eines der fünf
+gesuchten, und dasjenige, das uns mit 44 von 3.115 am meisten fehlt. Betrieben wird sie
+von einer Werbe-Tochter des Zentralverbands, der nach eigener Angabe rund 49.000 Betriebe
+vertritt.
+
+**Gemessen am 23.09.2026 an 24 unserer Elektrobetriebe**, gesucht über den Betriebsnamen,
+abgeglichen über die Mail-Domain des Treffers:
+
+| | |
+|---|---|
+| eindeutig wiedergefunden (Mail-Domain identisch) | **8 von 24 (33 %)** |
+| Namenstreffer, aber anderer Ort — also ein fremder Betrieb | 2 |
+| kein Treffer | 14 |
+
+Das ist die mit Abstand beste gemessene Quote dieser Runde — viermal so gut wie das
+Kammer-Werbeverzeichnis (1 von 12) und deutlich besser als ein erneutes Lesen der eigenen
+Websites (3 bis 7 %). Auf die 1.454 Betriebe mit Elektro-Gewerk hochgerechnet wären das
+**grob 480 zusätzliche Innungsbelege** — gegenüber 44 heute.
+
+**Drei Eigenschaften, die den Weg überhaupt gangbar machen:**
+
+1. **Die Namenssuche braucht keine Einwilligung.** Nur die Ortssuche verlangt die
+   Zustimmung zu einem Kartendienst; über den Betriebsnamen geht es ohne.
+2. **Der Treffer trägt eine E-Mail-Adresse** — damit gibt es einen maschinell prüfbaren
+   Abgleich gegen unsere Domain statt eines Namensvergleichs.
+3. **Es gibt keine Crawler-Anweisung** (der Abruf liefert eine Fehlerseite).
+
+**Und drei Fallen, die beim Eichen schon zugeschlagen haben:**
+
+- **Die Namenssuche ist unscharf.** „Blaschke" liefert vier Treffer, keiner davon unser
+  Betrieb; „Janssen" vierzehn. **Ein Treffer zählt nur mit übereinstimmender Mail-Domain**
+  oder, ersatzweise, übereinstimmender Postleitzahl — sonst hängen wir einem Betrieb die
+  Innungsmitgliedschaft eines fremden an. Genau dieser Fehler wäre bei zwei der 24
+  passiert.
+- **Postleitzahlen weichen um Stadtteile ab** (75175 gegen 75181 in derselben Stadt). Ein
+  reiner Postleitzahl-Vergleich ist zu streng, ein reiner Ortsname-Vergleich zu weit.
+- **Die Formular-Absendung trägt eine Prüfsumme**, die an die geladene Seite gebunden ist.
+  Ein nachgebauter Abruf ohne vorheriges Laden der Seite scheitert stumm mit einer
+  Fehlermeldung von 53 Zeichen — er sieht aus wie „kein Treffer". **Wer das nachbaut,
+  prüft zuerst gegen einen Betrieb, von dem er WEISS, dass er drin steht.**
+
+**Die Rechtsfrage ist zum Zeitpunkt dieses Nachtrags noch in Prüfung** (Datenbankrecht an
+einem Mitgliederverzeichnis, Nutzungsbedingungen, die Formular-Prüfsumme als technische
+Schutzvorrichtung). Vor einem Lauf ist ihr Ergebnis abzuwarten. **Der Merksatz aus dem
+Förderbereich — „private Portale nicht abgreifen, weil dort die Auswahl die Investition
+IST" — ist hier NICHT ungeprüft zu übernehmen:** In einem Mitgliederverzeichnis wird nichts
+ausgewählt, es wird eine Mitgliedschaft abgebildet. Ob das trägt, entscheidet die Prüfung,
+nicht die Analogie.
+
+**Der Gegenpart für Heizung und Sanitär** (514 unserer Betriebe) ist die Handwerkersuche
+des SHK-Zentralverbands, nach dessen Angabe über 23.000 Innungsbetriebe. Sie sucht **nur
+nach Ort, nicht nach Namen** und hat eigene Nutzungsbedingungen, die noch zu lesen sind —
+**ungemessen und offen.**
+
+---
+
+## 7. Bewertungen: die Sperre war zu weit, und die Messung dreht die Frage
+
+Die bisherige Linie lautete: Bewertungen anzeigen ist gesperrt, weil wir die Echtheit
+nicht sicherstellen können. **Zwei von drei Bausteinen dieser Begründung halten nicht**
+(Legal-Judge 23.09.2026, Gegenprüfung lief bei Abfassung noch):
+
+- **§ 5b Abs. 3 UWG verlangt keine Prüfung, sondern eine ANGABE** — „Informationen darüber,
+  **ob und wie**". Die Gesetzesbegründung sagt ausdrücklich: „Ergreift er gar keine
+  Maßnahmen, muss er auch über diesen Umstand informieren." Nichtprüfen ist kein Verstoß,
+  Nichtsagen ist einer.
+- **Ein reiner LINK löst die Pflicht gar nicht aus.** Wieder die Begründung im Wortlaut:
+  „Verweist der Unternehmer lediglich über einen Link auf Verbraucherbewertungen […],
+  besteht die Pflicht nicht."
+- **Was dagegen hält und neu ist:** Der BGH verlangt bei Werbung mit einem
+  Sterne-Durchschnitt zusätzlich die Gesamtzahl **und den berücksichtigten Zeitraum**
+  (I ZR 143/23). Den Zeitraum liefert eine strukturierte Bewertungsangabe auf einer
+  Website nicht, und wir können ihn nicht ableiten. Das ist der eigentliche Blocker für
+  die 160 Werte, die wir haben — nicht die Echtheitsfrage.
+
+**Und dann die Messung, die die Quellenfrage entscheidet.** An 157 zufälligen
+Betriebs-Startseiten geprüft, wer überhaupt auf welche Bewertungsplattform verweist:
+
+| Plattform | Anteil der Betriebe |
+|---|---|
+| **Google** (Profil- oder Kartenlink auf der eigenen Startseite) | **34 %** |
+| strukturierte Bewertungsangabe im Seitenquelltext | 7 % |
+| ProvenExpert | 3 % |
+| Trustpilot | 1 % |
+| Trusted Shops | 0 % |
+
+**Daraus folgt die ganze Strategie.** Eine Lizenz bei der einzigen Plattform, die eine
+Drittanzeige überhaupt vertraglich vorsieht (Trustpilot, „Review Syndication", Preis nicht
+öffentlich), deckte **rund ein Prozent** unserer Betriebe ab — und verböte zugleich
+strukturiertes Markup, verlangte einen Folgen-Link nach außen und das Nicht-Indexieren der
+Inhalte. Die Bewertungen dieses Marktes liegen bei Google, und Google ist als Quelle
+dreifach zu (Maps-Bedingungen, Business-Profile-Regeln, allgemeine API-Bedingungen) — auch
+mit schriftlicher Zustimmung des Betriebs, weil die Klauseln **uns als Abrufer** binden.
+
+**Der Weg, der bleibt und nichts kostet: den Google-Profil-LINK vom Betrieb selbst
+einsammeln.** Er steht bei einem Drittel der Betriebe auf ihrer eigenen Startseite, der
+Betrieb hat ihn dort selbst hingesetzt, und ein Link ist keine Vervielfältigung. „Bewertungen
+bei Google ansehen" beantwortet die Nutzerfrage, ohne eine einzige der drei Hürden zu
+berühren.
+
+**Was NICHT wiederkommen darf:** die alte Begründung „wir können nichts überprüfen, also
+gar nichts anzeigen". Sie ist in dieser Form widerlegt. Was bleibt, ist enger und härter:
+kein Sterne-Durchschnitt ohne Zeitraum, keine Beschriftung, die Echtheit behauptet
+(„Kundenbewertungen", „echte Bewertungen"), und kein Wert aus einer Quelle, deren Lizenz
+wir nicht haben.
+
+---
 
 ## Was diese Erhebung ausdrücklich NICHT ist
 
