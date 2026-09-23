@@ -526,7 +526,48 @@ async function akkordeonFragePruefen(page: Page, frage: string, fehler: string[]
  * keine). Verschwindet die Navigation ganz, ist das Ergebnis erreicht — auch
  * ein Wechsel.
  */
-export async function weiterKlicken(page: Page) {
+/**
+ * Der WEG gehört in jede geworfene Meldung — BLOCKER für den Kombinations-Läufer.
+ *
+ * Der nächtliche Lauf geht für den PV-Rechner rund 1.700 Kombinationen in gut
+ * drei Stunden. Gesammelte Befunde (`erg.fehler`) tragen ihren Weg längst; die
+ * beiden Helfer hier WERFEN aber, und eine geworfene Meldung reißt den Test ab,
+ * ohne zu sagen, WO. Gemessen an den Läufen vom 21. und 22.09.2026: Zweimal
+ * dieselbe Meldung „Weiter kam nicht durch (Weiter-Knopf frei)", beide Male
+ * ohne einen einzigen Hinweis auf die Kombination — nicht nachstellbar, also
+ * auch nicht behebbar. Der Kommentar in `waehle` benannte die Lücke bereits
+ * („noch auf welchem Weg"), geschlossen war sie nie.
+ *
+ * Optional, weil die übrigen Aufrufer feste, kurze Wege gehen: Dort sagt die
+ * Datei-und-Zeile-Angabe von Playwright bereits alles.
+ */
+function wegPraefix(weg?: string) {
+  return weg ? `[${weg}] ` : "";
+}
+
+/**
+ * Die beiden Meldungen stehen als eigene Funktionen da, damit der Wächter sie
+ * AUFRUFEN kann statt den Quelltext nach ihrem Wortlaut zu durchsuchen. Eine
+ * Textsuche bliebe grün, sobald jemand den Parameter entgegennimmt und in der
+ * Meldung vergisst — genau die Fehlerklasse, gegen die es diesen Fix gibt.
+ */
+export function weiterMeldung(weg: string | undefined, gesperrt: boolean) {
+  return (
+    `${wegPraefix(weg)}Weiter kam nicht durch: Der Schritt wechselte 20 s lang nicht ` +
+    `(Weiter-Knopf ${gesperrt ? "gesperrt (aria-disabled)" : "frei"}).`
+  );
+}
+
+export function wahlMeldung(weg: string | undefined, label: string, zustand: unknown) {
+  return (
+    `${wegPraefix(weg)}Option „${label}" ließ sich nicht wählen (20 s lang kein aria-pressed=true). ` +
+    `Zustand: ${JSON.stringify(zustand)}. ` +
+    `Steht dort sichtbar=true und deaktiviert=false, kam der Klick nicht an — ` +
+    `dann liegt etwas darüber oder die Seite ist nicht interaktiv geworden.`
+  );
+}
+
+export async function weiterKlicken(page: Page, weg?: string) {
   const fingerabdruck = () =>
     page.evaluate(() => {
       const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
@@ -548,14 +589,11 @@ export async function weiterKlicken(page: Page) {
     }).toPass({ timeout: 20_000 });
   } catch {
     const gesperrt = (await weiter.getAttribute("aria-disabled").catch(() => null)) === "true";
-    throw new Error(
-      `Weiter kam nicht durch: Der Schritt wechselte 20 s lang nicht ` +
-        `(Weiter-Knopf ${gesperrt ? "gesperrt (aria-disabled)" : "frei"}).`,
-    );
+    throw new Error(weiterMeldung(weg, gesperrt));
   }
 }
 
-export async function waehle(page: Page, label: string) {
+export async function waehle(page: Page, label: string, weg?: string) {
   const option = page.locator(`[data-flow-option="${label.replace(/"/g, '\\"')}"]:visible`).first();
   await expect(option).toBeEnabled({ timeout: 15_000 });
   // Wiederholen, nicht warten: Der Knopf ist ab dem servergerenderten HTML da
@@ -591,11 +629,6 @@ export async function waehle(page: Page, label: string) {
       sichtbar: (e as HTMLElement).offsetParent !== null,
       deaktiviert: (e as HTMLButtonElement).disabled,
     })).catch(() => null);
-    throw new Error(
-      `Option „${label}" ließ sich nicht wählen (20 s lang kein aria-pressed=true). ` +
-        `Zustand: ${JSON.stringify(zustand)}. ` +
-        `Steht dort sichtbar=true und deaktiviert=false, kam der Klick nicht an — ` +
-        `dann liegt etwas darüber oder die Seite ist nicht interaktiv geworden.`,
-    );
+    throw new Error(wahlMeldung(weg, label, zustand));
   }
 }
