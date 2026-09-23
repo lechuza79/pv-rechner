@@ -87,6 +87,17 @@
   .solar-page .v3-section-nav [data-page-subscribe] .sc-abo-lang{display:none}
   .solar-page .v3-section-nav [data-page-subscribe] .sc-abo-kurz{display:inline}
 }
+/* AUF DEM TELEFON BRICHT DIE ZEILE UM — BLOCKER (23.09.2026, an der
+   Produktion gemessen): Die Reihe stand auf "nicht umbrechen". Mit dem Datum
+   daneben brauchte sie 307 px in einem 246 px breiten Platz, und die Seite war
+   bei 375 px Fenster 416 px breit — seitlicher Ueberlauf auf JEDER Ortsseite.
+   Nicht das Datum wieder wegnehmen: Es ist die einzige Stelle in dieser Leiste,
+   die sagt, wann neue Zahlen kommen. Es bekommt eine eigene Zeile, die Knoepfe
+   bleiben zusammen. */
+@media(max-width:700px){
+  .solar-page .v3-section-nav .atlas-page-actions{flex-wrap:wrap;justify-content:flex-end;row-gap:6px}
+  .solar-page .v3-section-nav .atlas-page-update{flex-basis:100%;justify-content:flex-end;margin-right:0}
+}
 
 /* ── Die „?"-Erklärungen sehen aus wie überall sonst ─────────────────────────
    Der Entwurf setzt sie als umrandeten Kreis, in zwei Größen (18 und 24 px),
