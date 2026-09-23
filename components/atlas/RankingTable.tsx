@@ -230,17 +230,19 @@ function sortName(s: Sort, sinceYear: number): string {
   return COLUMNS.find((c) => c.key === s)?.label ?? s;
 }
 
-// Textfarben auf der gefüllten Zeile (aktive Kommune). Modulweit, weil
+// Textfarben auf der hervorgehobenen Zeile (aktive Kommune). Modulweit, weil
 // RankDelta außerhalb der Komponente steht und dieselben Töne braucht.
 //
-// BEIDE KOMMEN AUS DEM THEME, KEINER WIRD GETIPPT. Der zweite stand hier bis
-// zum 23.09.2026 als rgba(255,255,255,0.72) — richtig, solange die Zeile blau
-// gefüllt war, und seit der Umstellung auf die Lime-Platte mit 1,1:1
-// unsichtbar. Betroffen war alles, was NEBEN einem Wert steht: jede Einheit,
-// die Einwohnerzahl, das „±0". Von außen sieht eine solche Zeile nicht kaputt
-// aus, sie sieht leer aus.
-const ON_ACCENT = v("--color-text-on-accent");
-const ON_ACCENT_DIM = v("--color-text-on-accent-dim");
+// ES SIND DIE GEWÖHNLICHEN TEXTSTUFEN — und das ist der Punkt der Zeile
+// (Betreiber, 23.09.2026: „die zeile nicht gelb, weiß mit dropshadow"). Sie
+// hebt sich durch HÖHE ab, nicht durch Farbe: angehobene Fläche, Rahmen,
+// Schlagschatten, fettere Schrift. Eine gefüllte Zeile zwingt dagegen jede
+// Angabe darauf in eine eigene Tinte, und jede dieser Tinten ist eine
+// Gelegenheit, sie falsch zu wählen — genau daran ist die Lime-Fassung
+// gescheitert: Ortsname 1,3:1, Einheiten 1,1:1, beides von außen nicht als
+// Fehler zu erkennen, weil so eine Zeile nicht kaputt aussieht, sondern leer.
+const HERVOR_TEXT = v("--color-text-primary");
+const HERVOR_DIM = v("--color-text-muted");
 
 /**
  * Rangbewegung — steht wieder NEBEN der Platzziffer, auf derselben Zeile.
@@ -277,7 +279,7 @@ const ON_ACCENT_DIM = v("--color-text-on-accent-dim");
  * gibt es keine Vergleichszahl" — und dann steht links schon „—" statt einer
  * Platzziffer.
  */
-function RankDelta({ value, sinceYear, onAccent = false }: { value: number | null; sinceYear: number; onAccent?: boolean }) {
+function RankDelta({ value, sinceYear, hervor = false }: { value: number | null; sinceYear: number; hervor?: boolean }) {
   if (value === null) return null;
   if (value === 0) {
     return (
@@ -298,7 +300,7 @@ function RankDelta({ value, sinceYear, onAccent = false }: { value: number | nul
            * Richtung behauptet — der Stillstand behauptet nichts.
            */
           fontWeight: 500,
-          color: onAccent ? ON_ACCENT_DIM : v("--color-text-muted"),
+          color: hervor ? HERVOR_DIM : v("--color-text-muted"),
         }}
       >
         ±0
@@ -310,9 +312,10 @@ function RankDelta({ value, sinceYear, onAccent = false }: { value: number | nul
   return (
     <span
       title={`${Math.abs(value)} ${Math.abs(value) === 1 ? "Platz" : "Plätze"} ${up ? "gutgemacht" : "verloren"} seit Ende ${sinceYear}`}
-      // Auf der gefüllten Zeile die Tinte der Platte statt grün/rot — der Pfeil
-      // trägt die Richtung, und eine Signalfarbe auf der Platte geht unter.
-      style={{ ...S.delta, color: onAccent ? v("--color-text-on-accent") : up ? v("--color-positive-text") : v("--color-negative-text") }}
+      // Auf der hervorgehobenen Zeile dieselben Signalfarben wie überall: Sie
+      // liegt auf einer angehobenen Fläche, nicht auf einer gefärbten Platte,
+      // also gilt dort auch keine Sonderfarbe.
+      style={{ ...S.delta, color: up ? v("--color-positive-text") : v("--color-negative-text") }}
     >
       <Icon size={9} />
       {Math.abs(value)}
@@ -876,7 +879,7 @@ export default function RankingTable({
    */
   const cellNumStyle = (): React.CSSProperties => S.valNum;
 
-  // Zellen einer Zeile. `onAccent` = die Zeile ist gefüllt (aktive Kommune):
+  // Zellen einer Zeile. `hervor` = die Zeile ist gefüllt (aktive Kommune):
   // Werte in der Tinte der Platte, Nebenangaben in ihrer gedämpften Stufe, der
   // Balken in der Tinte auf der gewöhnlichen Schiene. Ein Renderer für Liste
   // UND schwebende Kopie, damit beide identisch aussehen. Die beiden Töne
@@ -905,18 +908,18 @@ export default function RankingTable({
         : null),
     }) as React.CSSProperties;
 
-  const rowCells = (r: Row, onAccent: boolean, floating = false) => (
+  const rowCells = (r: Row, hervor: boolean, floating = false) => (
     <>
       <span
         className="atlas-fix-spalte"
-        style={{ ...S.rank, ...fixStil(FIX_LINKS_PLATZ, floating), ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}
+        style={{ ...S.rank, ...fixStil(FIX_LINKS_PLATZ, floating), ...(hervor ? { color: HERVOR_DIM } : null) }}
       >
         {/* Ziffer und Bewegung auf EINER Zeile, in einem eigenen Kasten: Die
             Zelle selbst muss über die volle Zeilenhöhe decken (mitlaufende
             Spalte), ihr Text aber oben auf der Namenslinie stehen. */}
         <span style={S.rankZeile}>
           {rankOf.has(r.region_id) ? `${rankOf.get(r.region_id)}.` : "—"}
-          <RankDelta value={deltas.get(r.region_id) ?? null} sinceYear={lastFullYear} onAccent={onAccent} />
+          <RankDelta value={deltas.get(r.region_id) ?? null} sinceYear={lastFullYear} hervor={hervor} />
         </span>
       </span>
       <span className="atlas-fix-spalte atlas-fix-spalte--kante" style={{ ...S.nameCell, ...fixStil(FIX_LINKS_NAME, floating) }}>
@@ -945,8 +948,8 @@ export default function RankingTable({
         <span
           style={{
             ...S.name,
-            fontWeight: onAccent ? 700 : 500,
-            ...(onAccent ? { color: ON_ACCENT } : null),
+            fontWeight: hervor ? 700 : 500,
+            ...(hervor ? { color: HERVOR_TEXT } : null),
             ...(nameOffen === r.region_id ? S.nameOffen : null),
           }}
           onMouseEnter={(e) => {
@@ -964,7 +967,7 @@ export default function RankingTable({
         >
           {r.name}
         </span>
-        <span style={{ ...S.hint, ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}>
+        <span style={{ ...S.hint, ...(hervor ? { color: HERVOR_DIM } : null) }}>
           {r.population === null ? "unbewohnt" : fmtPop(r.population, popInMillions)}
         </span>
         {/* Platzhalter für die Balkenschiene der Wertzellen: gleicher Aufbau,
@@ -976,11 +979,11 @@ export default function RankingTable({
         const teil = cellTeile(r, c.key);
         return (
           <span key={c.key} style={S.val}>
-            <span style={{ ...cellNumStyle(), ...(onAccent ? { color: ON_ACCENT } : null) }}>{teil.value}</span>
+            <span style={{ ...cellNumStyle(), ...(hervor ? { color: HERVOR_TEXT } : null) }}>{teil.value}</span>
             {/* Die Einheit steht IMMER als eigene Zeile, auch wenn sie leer ist:
                 sonst rutschen Zellen ohne Einheit („Anlagen") in der Zeile hoch
                 und die Zahlenreihe verliert ihre gemeinsame Grundlinie. */}
-            <span style={{ ...S.valUnit, ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}>
+            <span style={{ ...S.valUnit, ...(hervor ? { color: HERVOR_DIM } : null) }}>
               {teil.unit || " "}
             </span>
             {/* Die Balkenschiene läuft in JEDER Zelle mit, sichtbar nur in der
@@ -994,7 +997,7 @@ export default function RankingTable({
               style={{
                 ...S.track,
                 ...(c.key === platz
-                  ? onAccent
+                  ? hervor
                     ? // Die Schiene auf der gefüllten Zeile: dasselbe Token wie
                       // jede andere Schiene der Site. Ein getipptes Weiß stand
                       // hier, aus der blauen Zeit — auf Lime war die Schiene
@@ -1009,7 +1012,7 @@ export default function RankingTable({
                 style={{
                   ...S.fill,
                   width: `${barPct(valueOf(r, platz))}%`,
-                  background: onAccent ? ON_ACCENT : v("--color-accent-light"),
+                  background: hervor ? v("--color-accent") : v("--color-accent-light"),
                 }}
               />
             </span>
@@ -1029,13 +1032,14 @@ export default function RankingTable({
   // decken statt den scrollenden Inhalt durchscheinen zu lassen.
   //
   // SIE MUSS DIESELBE QUELLE HABEN WIE DER ZEILENGRUND SELBST (S.rowHome,
-  // S.stickyRow). Hier stand --color-accent, dort --color-cta — solange beide
-  // dasselbe Blau meinten, fiel das nicht auf; seit dem 21.09.2026 ist das eine
-  // die Lime-Platte und das andere ein dunkles Petrol, und die markierte Zeile
-  // war zweifarbig: Platz und Ortsname auf einem dunklen Block, der Rest auf
-  // Lime — mit der Platten-Tinte darauf, also 1,3:1. Der Ortsname der eigenen
-  // Gemeinde war damit die am schlechtesten lesbare Angabe der ganzen Tabelle.
-  const AKZENT_ZEILE = { "--atlas-zeilen-bg": v("--color-cta") } as React.CSSProperties;
+  // S.stickyRow) — sonst ist die Zeile zweifarbig. Genau das war sie bis zum
+  // 23.09.2026: Hier stand --color-accent, dort --color-cta. Solange beide
+  // dasselbe Blau meinten, fiel es nicht auf; seit dem 21.09.2026 ist das eine
+  // ein dunkles Petrol und das andere die Lime-Platte, und Platz und Ortsname
+  // lagen auf einem dunklen Block mitten in einer hellen Zeile — mit der Tinte
+  // der hellen darauf, also 1,3:1. Der Ortsname der eigenen Gemeinde war damit
+  // die am schlechtesten lesbare Angabe der ganzen Tabelle.
+  const AKZENT_ZEILE = { "--atlas-zeilen-bg": v("--color-bg-raised") } as React.CSSProperties;
 
   // Die schwebende Kopie der markierten Zeile — oben wie unten dieselbe. Folgt
   // dem Horizontal-Scroll der Liste (translateX), damit die Spalten fluchten.
@@ -1050,7 +1054,7 @@ export default function RankingTable({
         style={{ ...S.row, ...S.stickyRow, ...S.rowLink, ...AKZENT_ZEILE }}
       >
         {rowCells(markedRow, true, true)}
-        <span className="atlas-go" style={{ ...S.go, color: ON_ACCENT }} aria-hidden>
+        <span className="atlas-go" style={{ ...S.go }} aria-hidden>
           <IconArrowRight size={13} />
         </span>
       </Link>
@@ -1298,7 +1302,7 @@ export default function RankingTable({
                 return r.href ? (
                   <Link key={r.region_id} href={r.href} {...marker} className="atlas-rank-row" style={{ ...style, ...S.rowLink }}>
                     {rowCells(r, isMarked)}
-                    <span className="atlas-go" style={{ ...S.go, ...(isMarked ? { color: ON_ACCENT } : null) }} aria-hidden>
+                    <span className="atlas-go" style={S.go} aria-hidden>
                       <IconArrowRight size={13} />
                     </span>
                   </Link>
@@ -2290,8 +2294,15 @@ const S: Record<string, React.CSSProperties> = {
     // umzubrechen — das ist schon einmal passiert.
     whiteSpace: "nowrap",
   },
-  // Aktive Kommune voll in unserem Blau (weiße Schrift via rowCells onAccent).
-  rowHome: { background: v("--color-cta"), borderRadius: v("--radius-md") },
+  // Die eigene Gemeinde: eine angehobene Karte, kein Farbfeld (Betreiber,
+  // 23.09.2026). Grund, Rahmen und Schatten machen die Hervorhebung; die
+  // Schrift wird über rowCells nur fetter, nicht andersfarbig.
+  rowHome: {
+    background: v("--color-bg-raised"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: v("--radius-md"),
+    boxShadow: "0 2px 10px rgba(0,0,0,0.10)",
+  },
   // Die Platzziffer gehört auf die Namenslinie, nicht in die Mitte zwischen
   // Name und Einwohnerzahl: sie benennt den Ort, nicht die Zeile als Ganzes.
   rank: {
@@ -2403,10 +2414,10 @@ const S: Record<string, React.CSSProperties> = {
   stickyPicker: { position: "sticky", bottom: 4, zIndex: 2 },
   stickyRow: {
     borderBottom: "none",
-    // Voll in unserem Blau — die schwebende Kopie sieht aus wie die aktive Zeile
-    // in der Liste, nur mit Schlagschatten abgehoben.
-    background: v("--color-cta"),
-    border: `1px solid ${v("--color-accent-dark")}`,
+    // Dieselbe angehobene Karte wie die Zeile in der Liste, nur mit einem
+    // kräftigeren Schatten: Sie schwebt über der Liste statt in ihr.
+    background: v("--color-bg-raised"),
+    border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-pill"),
     boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
   },

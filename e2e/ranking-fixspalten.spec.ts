@@ -1,4 +1,16 @@
 import { test, expect } from "@playwright/test";
+import { stufePinnen } from "./kontrast";
+
+// DIE TAGESSTUFE WIRD FESTGENAGELT — sonst entscheidet die Uhr des Prüfrechners
+// über das Urteil. Dieser Test zählt Bildpunkte in der Farbe der
+// Platzierungs-Box; die Palette wird zum Abend hin gedämpft, und dort liegen
+// Box, Kartengrund und Seitengrund nur noch wenige Stufen auseinander. Am
+// 23.09.2026 meldete er abends in ALLEN zehn Stellungen je EINEN Bildpunkt —
+// auch in der Stellung 0, in der die Box gar nicht unter den mitlaufenden
+// Spalten liegen kann. Ein einzelner kantengeglätteter Punkt, der die
+// Toleranz von ±2 zufällig trifft, kein Durchscheinen. Tagsüber lief derselbe
+// Stand grün, und gegengeprüft an der Fassung VOR den Farbkorrekturen
+// desselben Tages: ebenfalls rot. Es ist also die Uhr, nicht der Code.
 
 /**
  * Die mitlaufenden Spalten der Rangliste dürfen keine Zahl anschneiden.
@@ -104,6 +116,7 @@ for (const [name, viewport] of [
     test.use({ viewport });
 
     test("keine Zahl wird von der Haltekante angeschnitten", async ({ page }) => {
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       // Der Scrollkasten rastet erst ein, wenn der gemessene Überlauf feststeht
@@ -244,6 +257,7 @@ for (const [name, viewport] of [
      *     bedienen (WCAG 2.1.1) — deshalb Fokus + Enter statt Klick.
      */
     test("springt mit den Pfeilen spaltenweise und zeigt sie nur, wo es weitergeht", async ({ page }) => {
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       // Erst wenn der Überlauf gemessen ist, stehen auch die Knöpfe — beides
@@ -323,6 +337,7 @@ for (const [name, viewport] of [
      *     die Rastpunkte, und ein verschobener Rastpunkt schneidet Zahlen an.
      */
     test("markiert sortierte und platzierte Spalte verschieden — ohne die Tabelle zu verbreitern", async ({ page }) => {
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
@@ -518,6 +533,7 @@ test.describe("Rangliste: die Platzierungs-Box bleibt in ihrer Spalte", () => {
   ] as const) {
     test(`${name}: Box überdeckt weder den eigenen noch den benachbarten „?"`, async ({ page }) => {
       await page.setViewportSize(viewport);
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
@@ -639,6 +655,7 @@ test.describe("Rangliste: die Platzierungs-Box scheint nicht hinter den mitlaufe
       // die liest sich wie ein Fehler an der Tabelle, obwohl sie keiner ist.
       test.setTimeout(180_000);
       await page.setViewportSize(viewport);
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
@@ -796,6 +813,7 @@ test.describe("Rangliste: die Blätter-Pfeile schweben auf der Tabelle", () => {
       // die 30 Sekunden aus der Voreinstellung sind dafür zu knapp.
       test.setTimeout(120_000);
       await page.setViewportSize(viewport);
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
@@ -1018,6 +1036,7 @@ test.describe("Rangliste, mitlaufende Spalten tragen in jeder Zeile ihren Inhalt
   test.use({ viewport: TELEFON });
 
   test("direkt auf 390 px geladen", async ({ page }) => {
+    await page.addInitScript(stufePinnen("light"));
     await page.goto("/solar-atlas");
     const { geprueft, funde } = await pruefeFixSpalten(page);
     // Ohne diese Zusicherung wäre der Test still grün, wenn gar keine Zeile im
@@ -1028,6 +1047,7 @@ test.describe("Rangliste, mitlaufende Spalten tragen in jeder Zeile ihren Inhalt
 
   test("nach einer Größenänderung von 1280 auf 390 px", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
+    await page.addInitScript(stufePinnen("light"));
     await page.goto("/solar-atlas");
     await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
     // Erst wenn die Tabelle steht, wird schmal gemacht: Alles, was beim ersten

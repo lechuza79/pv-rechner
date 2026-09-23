@@ -3,6 +3,28 @@
 // Steht getrennt vom Test, damit derselbe Messkopf auch von Hand über eine
 // einzelne Seite laufen kann, ohne den ganzen Lauf anzuwerfen.
 
+/**
+ * Die Tagesstufe festnageln — BLOCKER für jeden Test, der Farben misst.
+ *
+ * Das Theme folgt der Sonne: sieben Stufen, und welche gilt, entscheidet die
+ * Uhr des Rechners, auf dem der Test läuft. Ein Farbtest ohne diese Zeile
+ * misst deshalb morgens etwas anderes als abends — am 23.09.2026 gleich
+ * zweimal beobachtet: Ein Pixeltest der Ranglisten-Köpfe lief tagsüber grün
+ * und wurde abends rot (ein einziger Bildpunkt, der auf der gedämpften Palette
+ * zufällig die Farbe der Platzierungs-Box traf), und dieser Kontrasttest fand
+ * lokal am Tag nichts und auf dem Prüfrechner am Abend zwei echte Befunde.
+ *
+ * Gepinnt wird über die EIGENE Einstellung der Site (hell/dunkel), nicht über
+ * einen gesetzten Zustand am Dokument: Damit misst der Test einen Zustand, den
+ * es wirklich gibt, und keinen konstruierten.
+ */
+export type Tagesstufe = "light" | "dark";
+
+/** Als Startskript in die Seite legen, VOR dem ersten Aufruf. */
+export function stufePinnen(stufe: Tagesstufe): string {
+  return `try{localStorage.setItem('sc-theme-pref',${JSON.stringify(stufe)})}catch(e){}`;
+}
+
 /** Ein Textstück, das sich auf seinem Grund nicht ausreichend abhebt. */
 export type Kontrastbefund = {
   /** Der gelesene Text, gekürzt — damit ein roter Lauf sagt, WO. */
@@ -27,6 +49,10 @@ export type Kontrastbefund = {
  * Als Text statt als Funktion, weil er im BROWSER laufen muss: page.evaluate
  * serialisiert nur die übergebene Funktion selbst, nicht die Hilfsfunktionen
  * daneben. Ein Skript-Tag bringt alles zusammen hinein.
+ *
+ * KEIN RÜCKWÄRTS-ANFÜHRUNGSZEICHEN DARIN, auch nicht im Kommentar: Es beendet
+ * die Vorlage, und der Fehler liest sich danach wie ein Syntaxfehler irgendwo
+ * anders in der Datei.
  */
 export const MESSKOPF = String.raw`
 window.__kontrastMessen = function () {
@@ -102,6 +128,26 @@ window.__kontrastMessen = function () {
     var r = el.getBoundingClientRect();
     if (r.width < 2 || r.height < 2) continue;
     var grund = grundVon(el);
+    // TEXT IN EINEM DIAGRAMM BLEIBT AUSSEN VOR — und das ist eine Grenze der
+    // Messung, keine Entwarnung. Zwei Gruende, beide gemessen am 23.09.2026:
+    //
+    //  1. SVG-Text wird mit "fill" gemalt, nicht mit "color", und "color" steht
+    //     dort auf seinem Anfangswert Schwarz. Wer das verwechselt, meldet auf
+    //     einer einzigen Seite 53 Beschriftungen als unlesbar, die es nicht
+    //     sind.
+    //  2. Selbst richtig gelesen stimmt der GRUND nicht: In gestapelten
+    //     Flaechen, Balken und Ringen sitzt die Beschriftung auf einer
+    //     gezeichneten Form, und die hat keinen CSS-Hintergrund. Diese Messung
+    //     sieht dort den Seitengrund und faellt ein Urteil ueber eine Farbe,
+    //     die den Leser nie erreicht — in beide Richtungen falsch.
+    //
+    // OFFEN (bis 12/2026): die Beschriftungen der Diagramme mit einer
+    // Messung am BILD pruefen. Beim Bau schon gesehen und nicht behoben: Die
+    // End-Beschriftungen des Liniendiagramms tragen die Farbe ihrer Reihe und
+    // kommen damit auf 2,0 bis 2,7:1 ("Kernenergie", "Erdgas", "Erneuerbare",
+    // "Braunkohle"). Sie zu entfaerben nimmt ihnen die Zuordnung zur Linie —
+    // das ist eine Gestaltungsfrage, keine Korrektur nebenbei.
+    if (el.namespaceURI === "http://www.w3.org/2000/svg") continue;
     var vg = ueber(parse(s.color), grund);
     var px = parseFloat(s.fontSize);
     var fett = parseInt(s.fontWeight, 10) >= 700;

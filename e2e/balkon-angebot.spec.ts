@@ -152,12 +152,24 @@ test.describe("Balkon-Angebote im Ergebnis", () => {
     // nichts. Geprüft wird über das GELADENE Bild, nicht über die Zeichenkette
     // im src: Der Pfad steht dort kodiert (`%2Fshop%2Fsolakon%2F`), ein
     // Selektor auf „/shop/solakon/" findet ihn nie und wäre still rot.
-    const geladen = await page.evaluate(() =>
-      [...document.querySelectorAll("img")]
-        .filter(i => decodeURIComponent(i.currentSrc || i.src).includes("/shop/solakon/"))
-        .filter(i => i.complete && i.naturalWidth > 0).length,
-    );
-    expect(geladen).toBeGreaterThan(0);
+    // GEWARTET WIRD AUF DAS BILD, NICHT EINMAL NACHGESEHEN. Ein Bild ist erst
+    // geladen, wenn der Browser es auch dekodiert hat, und das dauert unter
+    // Last länger — mit zwei Playwright-Arbeitern auf einem Rechner war diese
+    // eine Abfrage wiederholt null, während sie allein sofort grün lief
+    // (gemessen 23.09.2026). Das sah nach einem Fehler am Angebotsblock aus
+    // und war eine zu früh gestellte Frage.
+    await expect
+      .poll(
+        () =>
+          page.evaluate(
+            () =>
+              [...document.querySelectorAll("img")]
+                .filter(i => decodeURIComponent(i.currentSrc || i.src).includes("/shop/solakon/"))
+                .filter(i => i.complete && i.naturalWidth > 0).length,
+          ),
+        { timeout: 15_000, message: "kein eigenes Produktbild geladen" },
+      )
+      .toBeGreaterThan(0);
   });
 
   test("läuft auf 375 px nicht aus der Seite", async ({ page }) => {
