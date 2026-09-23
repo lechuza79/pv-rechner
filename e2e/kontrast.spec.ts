@@ -1,6 +1,14 @@
 import { test, expect } from "@playwright/test";
 import { SEITEN } from "./routen";
-import { MESSKOPF, UNLESBAR_UNTER, grenzeFuer, zeile, type Kontrastbefund } from "./kontrast";
+import {
+  MESSKOPF,
+  UNLESBAR_UNTER,
+  grenzeFuer,
+  stufePinnen,
+  zeile,
+  type Kontrastbefund,
+  type Tagesstufe,
+} from "./kontrast";
 
 // ─── Kein Text verschwindet auf seinem Grund ─────────────────────────────────
 //
@@ -45,45 +53,56 @@ const EIGENER_ORT = {
   plz: "80331",
 };
 
-for (const { pfad } of SEITEN) {
-  test(`${pfad}: kein Text unter ${UNLESBAR_UNTER}:1`, async ({ page }) => {
-    await page.addInitScript((ort) => {
-      try {
-        window.localStorage.setItem("solarcheck.home-gemeinde.v1", JSON.stringify(ort));
-      } catch {
-        // Privater Modus — dann eben ohne markierte Zeile.
-      }
-    }, EIGENER_ORT);
+// BEIDE ENDEN DER TAGESSTUFEN, nicht die gerade geltende. Das Theme hat sieben
+// Stufen, von voller Sonne bis Nacht, und sie unterscheiden sich nicht nur im
+// Grund: Textfarben, Signalfarben und Ränder werden je Stufe eigens gesetzt.
+// Wer nur eine misst, prüft die Site, die er gerade zufällig vor sich hat —
+// genau so entgingen dem ersten Lauf 53 schwarze Diagramm-Beschriftungen, die
+// nur nachts auf dunklem Grund stehen.
+const STUFEN: Tagesstufe[] = ["light", "dark"];
 
-    const antwort = await page.goto(pfad, { waitUntil: "domcontentloaded" });
-    expect(antwort?.status(), `${pfad} antwortet nicht mit 200`).toBe(200);
-    // Nicht auf „Netz ruhig" warten: Auf dem Runner hängen externe Abrufe
-    // minutenlang im Zeitlimit (dieselbe Messung wie beim Überlauf-Test).
-    // Nachgeladene Blöcke ändern Farben nicht mehr, wenn sie einmal stehen.
-    await page.waitForTimeout(2000);
-    await page.addScriptTag({ content: MESSKOPF });
+for (const stufe of STUFEN) {
+  for (const { pfad } of SEITEN) {
+    test(`${pfad} (${stufe}): kein Text unter ${UNLESBAR_UNTER}:1`, async ({ page }) => {
+      await page.addInitScript(stufePinnen(stufe));
+      await page.addInitScript((ort) => {
+        try {
+          window.localStorage.setItem("solarcheck.home-gemeinde.v1", JSON.stringify(ort));
+        } catch {
+          // Privater Modus — dann eben ohne markierte Zeile.
+        }
+      }, EIGENER_ORT);
 
-    const alle = (await page.evaluate(() => (window as unknown as {
-      __kontrastMessen: () => Kontrastbefund[];
-    }).__kontrastMessen())) as Kontrastbefund[];
+      const antwort = await page.goto(pfad, { waitUntil: "domcontentloaded" });
+      expect(antwort?.status(), `${pfad} antwortet nicht mit 200`).toBe(200);
+      // Nicht auf „Netz ruhig" warten: Auf dem Runner hängen externe Abrufe
+      // minutenlang im Zeitlimit (dieselbe Messung wie beim Überlauf-Test).
+      // Nachgeladene Blöcke ändern Farben nicht mehr, wenn sie einmal stehen.
+      await page.waitForTimeout(2000);
+      await page.addScriptTag({ content: MESSKOPF });
 
-    const befunde = alle.filter((b) => b.kontrast < grenzeFuer(b));
-    // Gleiche Farbpaarung nur einmal melden: Eine Tabelle mit neunzig Zahlen
-    // in derselben Farbe ist EIN Fehler, keine neunzig — und eine Meldung mit
-    // neunzig Zeilen liest niemand.
-    const gesehen = new Set<string>();
-    const knapp = befunde.filter((b) => {
-      const schluessel = `${b.vordergrund}|${b.grund}`;
-      if (gesehen.has(schluessel)) return false;
-      gesehen.add(schluessel);
-      return true;
+      const alle = (await page.evaluate(() => (window as unknown as {
+        __kontrastMessen: () => Kontrastbefund[];
+      }).__kontrastMessen())) as Kontrastbefund[];
+
+      const befunde = alle.filter((b) => b.kontrast < grenzeFuer(b));
+      // Gleiche Farbpaarung nur einmal melden: Eine Tabelle mit neunzig Zahlen
+      // in derselben Farbe ist EIN Fehler, keine neunzig — und eine Meldung mit
+      // neunzig Zeilen liest niemand.
+      const gesehen = new Set<string>();
+      const knapp = befunde.filter((b) => {
+        const schluessel = `${b.vordergrund}|${b.grund}`;
+        if (gesehen.has(schluessel)) return false;
+        gesehen.add(schluessel);
+        return true;
+      });
+
+      expect(
+        befunde.length,
+        `${pfad} (${stufe}): ${befunde.length} Textstellen unter der Lesbarkeitsgrenze ` +
+          `(${knapp.length} verschiedene Farbpaare)\n  ` +
+          knapp.map(zeile).join("\n  "),
+      ).toBe(0);
     });
-
-    expect(
-      befunde.length,
-      `${pfad}: ${befunde.length} Textstellen unter der Lesbarkeitsgrenze ` +
-        `(${knapp.length} verschiedene Farbpaare)\n  ` +
-        knapp.map(zeile).join("\n  "),
-    ).toBe(0);
-  });
+  }
 }
