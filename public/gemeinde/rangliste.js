@@ -382,6 +382,23 @@
       inviteDismissed = false,
       inviteReady = false,
       inviteTimer = null;
+    /**
+     * Laeuft gerade eine Enthuellung — und soll sie abgekuerzt werden?
+     *
+     * ZWEI FEHLER AUS EINEM KLICK (Betreiber, 23.09.2026): Wer mehrfach auf
+     * "Naechste Platzierung" tippt, sah den Hinweis-Zeiger schon auf dem
+     * naechsten Eintrag, waehrend die Balken daneben noch wuchsen — und der
+     * naechste Eintrag lud sofort, die Enthuellung war weg, bevor man sie
+     * gesehen hatte. Ab dem zweiten Eintrag blieb der Zeiger dauerhaft
+     * freigeschaltet, weil er nur EINMAL verzoegert wird; er zeigt seitdem
+     * nur, wenn nichts mehr laeuft.
+     *
+     * Und ein Klick waehrend der Enthuellung bringt sie jetzt zu Ende, statt
+     * weiterzuspringen: Ungeduld heisst "zeig mir das Ergebnis", nicht
+     * "ueberspring es". Der zweite Klick geht dann weiter.
+     */
+    let enthuellungLaeuft = false,
+      ueberspringen = false;
     function dismissInvite() {
       inviteDismissed = true;
       clearTimeout(inviteTimer);
@@ -407,7 +424,7 @@
     );
     function updateInvite() {
       const next =
-        inviteDismissed || !inviteReady
+        inviteDismissed || !inviteReady || enthuellungLaeuft
           ? null
           : choices.querySelector(
               '.ranking-undiscovered:not([aria-pressed="true"]):not(:disabled)',
@@ -585,6 +602,8 @@
       }
       function revealChoice() {
         if (id !== animationId) return;
+        enthuellungLaeuft = false;
+        ueberspringen = false;
         const newlyRevealed = !seen.has(m.id);
         seen.set(m.id, {
           rank: me ? fmt(me.rank) : "—",
@@ -792,16 +811,25 @@
           queueMicrotask(revealChoice);
           return;
         }
+        enthuellungLaeuft = true;
+        ueberspringen = false;
+        updateInvite();
         const hide = (node) => {
           if (node) {
             node.style.visibility = "hidden";
             node.inert = true;
           }
         };
+        // Eine Pause, die sich abkuerzen laesst (siehe "enthuellungLaeuft").
+        const warte = (ms) =>
+          new Promise((resolve) =>
+            ueberspringen ? resolve() : setTimeout(resolve, ms),
+          );
         const reveal = async (node) => {
           if (!node || id !== animationId) return;
           node.style.visibility = "visible";
           node.inert = false;
+          if (ueberspringen) return;
           await node
             .animate(
               [
@@ -860,7 +888,7 @@
                 resolve();
                 return;
               }
-              const t = Math.min(1, (now - start) / 850),
+              const t = ueberspringen ? 1 : Math.min(1, (now - start) / 850),
                 e = 1 - Math.pow(1 - t, 3);
               bar.style.transform = `scaleY(${e})`;
               label.style.transform = `translateY(${height * (1 - e)}px)`;
@@ -883,14 +911,12 @@
         const home = contestants.find((c) => c.classList.contains("is-own"));
         if (home) revealOrder.push(home);
         for (const [index, c] of revealOrder.entries()) {
-          await new Promise((resolve) =>
-            setTimeout(resolve, index === 0 ? 400 : 750),
-          );
+          await warte(index === 0 ? 400 : 750);
           if (id !== animationId) return;
           c.querySelector(".ranking-label").classList.remove(
             "ranking-bubble-pending",
           );
-          await new Promise((resolve) => setTimeout(resolve, 180));
+          await warte(180);
           if (id !== animationId) return;
           c.classList.remove("ranking-own-pending");
           await Promise.all([
@@ -900,7 +926,7 @@
           ]);
         }
         if (!home && own) {
-          await new Promise((resolve) => setTimeout(resolve, 750));
+          await warte(750);
           if (id !== animationId) return;
         }
 
@@ -994,7 +1020,15 @@
           : "Nächste Platzierung") +
         "</span>" +
         arrow;
-      next.onclick = () => selectMetric(activeIndex + 1);
+      // Ein Klick waehrend der Enthuellung bringt sie zu Ende, erst der
+      // naechste geht weiter (siehe "enthuellungLaeuft").
+      next.onclick = () => {
+        if (enthuellungLaeuft) {
+          ueberspringen = true;
+          return;
+        }
+        selectMetric(activeIndex + 1);
+      };
       requestAnimationFrame(() => {
         sizePanel();
         keepActiveVisible(animate);
@@ -1059,6 +1093,8 @@
     async function load() {
       clearTimeout(inviteTimer);
       inviteReady = false;
+      enthuellungLaeuft = false;
+      ueberspringen = false;
       updateInvite();
       delete section.dataset.share;
       seen.clear();
