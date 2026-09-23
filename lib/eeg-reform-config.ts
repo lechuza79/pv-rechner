@@ -606,7 +606,25 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   Die Tagesordnung ist dabei die bessere Quelle als die Ankündigungsseite —
   //   sie führt den Verfahrensschritt und den Überweisungsvorschlag mit, nicht
   //   nur den Termin.
-  geprueftIso: "2026-09-23",
+  // 24.09.2026, 00:15 Uhr — der Tag der ersten Lesung, und sie hat noch nicht
+  //   stattgefunden: Die Tagesordnung der Sitzungswoche (amtliches PDF des
+  //   Bundestages, Stand 22.09.2026, 18.45 Uhr, 95.–97. Sitzung) führt für
+  //   Donnerstag, den 24.09.2026, TOP 14 a „Erste Beratung des von der
+  //   Bundesregierung eingebrachten Entwurfs eines Gesetzes für einen planbaren,
+  //   kosteneffizienten, netzverträglichen und marktorientierten Ausbau der
+  //   erneuerbaren Energien im Stromsektor", Drucksache 21/7867, mit
+  //   Überweisungsvorschlag an den Ausschuss für Wirtschaft und Energie
+  //   (federführend). Die Sitzung beginnt um 9 Uhr, der Punkt liegt am Abend;
+  //   zum Zeitpunkt dieser Prüfung ist noch nichts beraten. Eine erste Beratung
+  //   mit Überweisung wäre ohnehin kein Beschluss. Zustand unverändert:
+  //   Regierungsentwurf, eingebracht.
+  //   DIESELBE SUCHFALLE wie am 21.09., erneut zugeschnappt: Eine
+  //   Suchzusammenfassung meldete im Perfekt, der Bundestag „held its first
+  //   reading" am 24.09.2026 — über einen Termin, der zum Zeitpunkt der Suche
+  //   zwanzig Stunden in der Zukunft lag. Nur der Abgleich mit der Uhr deckt es
+  //   auf; eine Zusammenfassung kennt den Unterschied zwischen angekündigt und
+  //   erledigt nicht.
+  geprueftIso: "2026-09-24",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

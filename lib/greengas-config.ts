@@ -582,7 +582,26 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Beimischungskosten seit 2007 im Deckungsbeitrag AUFGEHEN statt getrennt
   // ausgewiesen zu werden — genau das macht sie als Preisreihe unbrauchbar. Die
   // Lücke im Öl-Ergebnis bleibt samt ihrer benannten Fehlerrichtung stehen.
-  geprueftRechtIso: "2026-09-23",
+  // 24.09.2026, 00:20 Uhr: § 43 und § 42a im geltenden Gesetzestext gelesen
+  // (gesetze-im-internet.de/geg/__43.html und /__42a.html). Die Stufen stehen
+  // zellgleich: „ab dem 1. Januar 2029 mindestens 10", 2030 15, 2035 30, 2040
+  // 60 Prozent, dazu die Erfüllungswege nach Absatz 3 bis 5 und die
+  // Zwölfmonatsfrist bei irreparablem Ausfall nach Absatz 7. § 42a trägt
+  // unverändert NUR die Ankündigung („wird eine Grüngas-/Grünheizölquote
+  // eingeführt", vorzulegen bis zum 1. Dezember 2026) und nennt selbst KEINEN
+  // Prozentsatz und kein Startjahr außer der Vollumstellung 2045.
+  //   EINE SUCHFALLE, die heute zugeschnappt ist: Mehrere Fachseiten schreiben,
+  //   die Quote „startet 2028 mit einem Prozent". Diese Zahl steht NICHT im
+  //   Gesetz — § 42a nennt gar keine Quotenhöhe. Sie stammt aus
+  //   Sekundärliteratur und darf `quoteStops` nicht anfassen; dort ist 2028
+  //   weiterhin 0 und alles ab 2029 die belegte Stufe bzw. die als solche
+  //   gekennzeichnete IW-Annahme.
+  // Dreißigste Bioheizöl-Gegensuche, weiterhin OHNE Trägerquelle mit Preisreihe:
+  // Die Treffer sind erneut Händler- und Portalseiten (roth-energie, esyoil,
+  // fastenergy, heizoel24) und ein Gesamtpreis-Chart; keine amtliche Statistik
+  // und kein Verband führt eine Reihe für den Bio-Anteil. Der Lücken-Hinweis im
+  // Öl-Ergebnis bleibt samt seiner benannten Fehlerrichtung stehen.
+  geprueftRechtIso: "2026-09-24",
   reviewBy: "2027-07-25",
 };
 
