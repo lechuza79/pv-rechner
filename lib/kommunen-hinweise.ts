@@ -92,6 +92,59 @@ export function neueHinweise(
 }
 
 /**
+ * Eine Zeile des abgelegten Berichts, zurückgelesen.
+ *
+ * Der Bericht ist Text (`<Gemeinde> — <Fundstelle> (<Quelle>)`), weil die
+ * Ablage Text hält. Zum Filtern braucht die Übersicht die beiden Teile wieder
+ * einzeln.
+ */
+export function hinweisZeileLesen(zeile: string): { gemeinde: string; fundstelle: string } | null {
+  // Der Gedankenstrich trennt; im Ortsnamen kommt er nicht vor, in der Adresse
+  // schon (Bindestriche in Pfaden sind kurze Striche, das ist ein anderes
+  // Zeichen). Deshalb am ERSTEN „ — " trennen und nicht am letzten.
+  const i = zeile.indexOf(" — ");
+  if (i < 0) return null;
+  const gemeinde = zeile.slice(0, i).trim();
+  const rest = zeile.slice(i + 3).trim();
+  const fundstelle = rest.replace(/\s*\([^()]*\)\s*$/, "").trim();
+  if (!gemeinde || !fundstelle) return null;
+  return { gemeinde, fundstelle };
+}
+
+/**
+ * Welche Zeilen eines ABGELEGTEN Berichts sind heute noch offen?
+ *
+ * WARUM ES DAS BRAUCHT (23.09.2026): Der wöchentliche Lauf legt nur neue
+ * Hinweise ab, und `npm run kommunen:stand` zeigte diesen Bericht bis heute
+ * **wörtlich**. Wer einen Hinweis am Dienstag abarbeitet, sieht ihn bis zum
+ * nächsten Montag weiter als „offen" — die Notiz sagt längst, was daraus
+ * geworden ist. Gemessen an Bocholt: Der Hinweis war am 22.09. geprüft und
+ * verworfen, am 23.09. ein zweites Mal, und stand trotzdem noch in der Liste;
+ * der nächste Lauf hat ihn ein drittes Mal aufgerufen und gelesen. Genau davon
+ * lebt die Regel, gegen die dieses Modul gebaut ist: Eine Liste, die zur Hälfte
+ * aus Erledigtem besteht, liest irgendwann niemand mehr.
+ *
+ * MEHRDEUTIGE ORTSNAMEN BLEIBEN SICHTBAR. Die Berichtszeile trägt den Namen,
+ * nicht den Gemeindeschlüssel, und mehrere Orte heißen gleich. Erledigt ist die
+ * Zeile deshalb nur, wenn **jede** Gemeinde dieses Namens die Fundstelle
+ * vermerkt hat; kennt die Übersicht den Namen gar nicht, bleibt die Zeile
+ * stehen. Ein Hinweis zu viel kostet einen Blick, ein verschwundener kostet die
+ * Veröffentlichung.
+ */
+export function offeneHinweisZeilen(
+  zeilen: readonly string[],
+  notizenJeName: ReadonlyMap<string, readonly (string | null)[]>,
+): string[] {
+  return zeilen.filter((zeile) => {
+    const teile = hinweisZeileLesen(zeile);
+    if (!teile) return true;
+    const notizen = notizenJeName.get(teile.gemeinde);
+    if (!notizen || !notizen.length) return true;
+    return !notizen.every((n) => schonVermerkt(teile.fundstelle, n));
+  });
+}
+
+/**
  * Der Bericht für die Ablage. Er wird IMMER abgelegt, auch leer: Ein
  * wöchentlicher Lauf, der nur bei Funden meldet, ist von einem ausgefallenen
  * nicht zu unterscheiden.

@@ -21,6 +21,7 @@ import { liesNotiz } from "../lib/outreach-ruecklauf";
 import { heuteInBerlin } from "../lib/zeit";
 import { domainAus, verlinkendeDomains } from "./lib/verweise";
 import { bilanz, quoteText, type Veroeffentlichung } from "../lib/kommunen-veroeffentlichung";
+import { offeneHinweisZeilen } from "../lib/kommunen-hinweise";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -252,10 +253,33 @@ async function main(): Promise<void> {
     for (const b of hinweisBerichte as { created_at: string; subject: string; details: string | null }[]) {
       if (!jeQuelle.has(b.subject)) jeQuelle.set(b.subject, b);
     }
+    // Der abgelegte Bericht ist der Stand des LAUFS, nicht der von heute: Er
+    // hält fest, was am Montag neu war. Wer einen Hinweis am Dienstag abarbeitet
+    // und das Ergebnis in die Notiz schreibt, sah ihn hier bis zum nächsten
+    // Montag weiter als offen — und hat ihn ein zweites Mal aufgerufen. Genau so
+    // ist es am 23.09.2026 mit Bocholt passiert, zweimal geprüft und zweimal
+    // verworfen. Gefiltert wird mit derselben Funktion, die auch der wöchentliche
+    // Lauf benutzt; eine zweite Auslegung von „schon angesehen" wäre eine zweite
+    // Wahrheit.
+    const notizenJeName = new Map<string, (string | null)[]>();
+    for (const z of alle) {
+      const n = z.mastr_regions.name;
+      if (!notizenJeName.has(n)) notizenJeName.set(n, []);
+      notizenJeName.get(n)!.push(z.notes);
+    }
     for (const b of jeQuelle.values()) {
-      const zeilen = (b.details ?? "").split("\n").filter(Boolean);
+      const roh = (b.details ?? "").split("\n").filter(Boolean);
+      const zeilen = offeneHinweisZeilen(roh, notizenJeName);
+      const erledigt = roh.length - zeilen.length;
       const quelle = b.subject.match(/\(([^)]+)\)/)?.[1] ?? b.subject;
-      log(`    ${quelle}, Lauf vom ${b.created_at.slice(0, 10)}: ${zeilen.length ? `${zeilen.length} offene Hinweise` : "nichts Neues"}`, zeilen.length ? "warn" : undefined);
+      // „Seither erledigt" wird MITGEZÄHLT, nicht verschwiegen: Sonst sieht ein
+      // Lauf, dessen Hinweise alle abgearbeitet sind, aus wie einer, der nichts
+      // gefunden hat.
+      const seither = erledigt ? ` (${erledigt} seither erledigt)` : "";
+      log(
+        `    ${quelle}, Lauf vom ${b.created_at.slice(0, 10)}: ${zeilen.length ? `${zeilen.length} offene Hinweise` : "nichts Offenes"}${seither}`,
+        zeilen.length ? "warn" : undefined,
+      );
       for (const z of zeilen.slice(0, 15)) log(`      ${z}`);
     }
   }

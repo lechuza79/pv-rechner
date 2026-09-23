@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { hinweisBericht, neueHinweise, schonVermerkt } from "../kommunen-hinweise";
+import {
+  hinweisBericht,
+  hinweisZeileLesen,
+  neueHinweise,
+  offeneHinweisZeilen,
+  schonVermerkt,
+} from "../kommunen-hinweise";
 
 // Die Fälle sind die echten vom 22.09.2026: Was damals schon vermerkt war, darf
 // nicht wiederkommen, und was liegen gelassen wurde, muss erscheinen.
@@ -70,5 +76,86 @@ describe("Beitragsnummer statt voller Adresse", () => {
   });
   it("eine kurze Nummer genügt nicht", () => {
     expect(schonVermerkt("https://app.meindorfnet.de/news/7358?app_id=7", "https://app.wallertheim.de/news/7358")).toBe(false);
+  });
+});
+
+// Die Übersicht zeigt den ABGELEGTEN Bericht des letzten wöchentlichen Laufs.
+// Bis zum 23.09.2026 zeigte sie ihn wörtlich — ein Hinweis, der am Dienstag
+// abgearbeitet wurde, stand bis zum nächsten Montag weiter als offen da. Der
+// gemessene Fall: Bocholt, am 22.09. geprüft und in der Notiz verworfen, stand
+// am 23.09. erneut in der Liste und wurde ein zweites Mal aufgerufen und
+// gelesen. Genau davor soll dieses Modul schützen — eine Liste, die zur Hälfte
+// aus Erledigtem besteht, liest irgendwann niemand mehr.
+describe("Offene Zeilen eines abgelegten Berichts", () => {
+  const BOCHOLT_URL =
+    "https://www.bbv-net.de/bocholt/photovoltaik-ausbau-bocholt-platz-3-im-monitor-2026-solarenergie-enpal-solaranlage-w1162021-6000509794/";
+  const BOCHOLT = `Bocholt — ${BOCHOLT_URL} (Websuche, Titel passt, uns nicht genannt)`;
+  const WALLERTHEIM = "Wallertheim — m.baidu.com (1 Besucher von dort, seit 2026-08-04)";
+
+  it("zerlegt eine Berichtszeile in Gemeinde und Fundstelle", () => {
+    expect(hinweisZeileLesen(BOCHOLT)).toEqual({ gemeinde: "Bocholt", fundstelle: BOCHOLT_URL });
+    expect(hinweisZeileLesen(WALLERTHEIM)).toEqual({ gemeinde: "Wallertheim", fundstelle: "m.baidu.com" });
+  });
+
+  it("die Adresse behält ihre eigenen Bindestriche", () => {
+    // Getrennt wird am ERSTEN Gedankenstrich: Er trennt Gemeinde und
+    // Fundstelle, die Bindestriche im Pfad sind ein anderes Zeichen.
+    expect(hinweisZeileLesen(BOCHOLT)!.fundstelle).toContain("solarenergie-enpal-solaranlage");
+  });
+
+  it("ein zweiter Gedankenstrich in der Quellenangabe verschiebt die Trennung nicht", () => {
+    // Die Websuche hängt den Titel des Treffers an, und Zeitungstitel tragen
+    // Gedankenstriche. Am LETZTEN Trenner zerlegt, wäre die halbe Zeile der
+    // Ortsname und die Fundstelle verloren — und die Zeile bliebe für immer
+    // offen, weil sie zu keiner Gemeinde mehr passt.
+    const zeile = "Riedstadt — https://example.invalid/a (Websuche: Riedstadt — Spitzenplatz in Hessen)";
+    expect(hinweisZeileLesen(zeile)).toEqual({
+      gemeinde: "Riedstadt",
+      fundstelle: "https://example.invalid/a",
+    });
+    // Und der Filter erkennt sie trotzdem als erledigt, wenn die Adresse in der
+    // Notiz steht — die Gemeinde stimmt, darauf kommt es an.
+    expect(
+      offeneHinweisZeilen([zeile], new Map([["Riedstadt", ["gesehen: https://example.invalid/a"]]])),
+    ).toEqual([]);
+  });
+
+  it("eine Zeile verschwindet, sobald ihr Ergebnis in der Notiz steht", () => {
+    const notiz = `[2026-09-22] Hinweis geprüft, keine Veröffentlichung: ${BOCHOLT_URL} — fremde Rangliste.`;
+    expect(offeneHinweisZeilen([BOCHOLT], new Map([["Bocholt", [notiz]]]))).toEqual([]);
+  });
+
+  it("ohne Vermerk bleibt sie stehen", () => {
+    expect(offeneHinweisZeilen([BOCHOLT], new Map([["Bocholt", [null]]]))).toEqual([BOCHOLT]);
+    expect(
+      offeneHinweisZeilen([BOCHOLT], new Map([["Bocholt", ["[2026-09-01] irgendetwas anderes"]]])),
+    ).toEqual([BOCHOLT]);
+  });
+
+  it("ein unbekannter Ortsname lässt die Zeile stehen, statt sie zu verschlucken", () => {
+    // Ein Hinweis zu viel kostet einen Blick, ein verschwundener die
+    // Veröffentlichung.
+    expect(offeneHinweisZeilen([BOCHOLT], new Map())).toEqual([BOCHOLT]);
+  });
+
+  it("bei mehreren Orten gleichen Namens zählt erst, wenn ALLE vermerkt haben", () => {
+    // Die Berichtszeile trägt den Namen, nicht den Gemeindeschlüssel, und
+    // Mühlhausen und Senden gibt es mehrfach in Deutschland.
+    const zeile = "Senden — https://example.invalid/artikel (Websuche)";
+    expect(
+      offeneHinweisZeilen([zeile], new Map([["Senden", [`… ${"https://example.invalid/artikel"} …`, null]]])),
+    ).toEqual([zeile]);
+    expect(
+      offeneHinweisZeilen(
+        [zeile],
+        new Map([["Senden", ["… https://example.invalid/artikel …", "gesehen: example.invalid/artikel"]]]),
+      ),
+    ).toEqual([]);
+  });
+
+  it("eine unlesbare Zeile bleibt stehen", () => {
+    const kaputt = "irgendein Text ohne Trenner";
+    expect(hinweisZeileLesen(kaputt)).toBeNull();
+    expect(offeneHinweisZeilen([kaputt], new Map())).toEqual([kaputt]);
   });
 });
