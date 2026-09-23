@@ -312,18 +312,41 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
 .gemeinde-foerder-liste .sc-feature-card { background: transparent !important; padding-left: 0 !important; padding-right: 0 !important }
 
 /* Der Hinweis an einer Beispielrechnung: das lila Zeichen des Menues, daneben
-   linksbuendig der Satz und darunter der Weg zum Abschnitt. Das Zeichen sitzt
-   auf der ersten Zeile, nicht in der Mitte des Blocks. */
-.gemeinde-foerder-hinweis {
-  display: flex; align-items: flex-start; gap: 10px;
-  margin: 24px 0 0; color: inherit; max-width: none;
+   linksbuendig „Förderung verfügbar" im Fliesstext und darunter „Details" als
+   gewoehnlicher Textlink (Betreiber, 23.09.2026).
+
+   Mit Seitenklasse und !important, weil hier drei Stylesheets auf dieselben
+   Elemente zeigen (Navigation, Design-System, Entwurf) und die Regeln des
+   Entwurfs spaeter geladen werden — ohne das gewinnt dort „margin: 0" und der
+   Hinweis klebt am Absatz darueber. */
+.solar-page .sc-feature-card .gemeinde-foerder-hinweis {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+  margin: 24px 0 0 !important;
+  max-width: none !important;
+  color: inherit;
 }
-.gemeinde-foerder-hinweis > span { display: grid; gap: 2px; justify-items: start }
-.gemeinde-foerder-hinweis a {
-  color: inherit; font-weight: 400;
-  text-decoration: underline; text-underline-offset: 3px;
+.solar-page .sc-feature-card .gemeinde-foerder-hinweis > span:not(.sc-nav-notice-icon) {
+  display: block;
+  min-width: 0;
 }
-.gemeinde-foerder-hinweis a:hover { text-decoration-thickness: 2px }
+.solar-page .sc-feature-card .gemeinde-foerder-hinweis a {
+  display: inline !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 2px 0 0 !important;
+  border: 0 !important;
+  background: none !important;
+  color: inherit !important;
+  font: inherit !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+/* „Details" steht auf einer eigenen Zeile unter dem Satz, aber linksbuendig
+   mit ihm — deshalb ein Umbruch statt eines eigenen Blocks mit eigener Hoehe. */
+.solar-page .sc-feature-card .gemeinde-foerder-hinweis a::before { content: "\A"; white-space: pre }
 
 /* Der Weg zur vollstaendigen Uebersicht steht mittig unter den Karten — wie
    der Knopf der Karten darueber, nur als Link. */
