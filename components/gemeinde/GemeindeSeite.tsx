@@ -84,7 +84,7 @@ export function kopfRang(p: GemeindePaket): KopfRang | null {
     // nicht aufs Podest, gilt die beste ausgezeichnete Platzierung, und wo es
     // keine gibt, bleibt die Kachel weg.
     if (platz <= 3) {
-      const bild = platz === 2 ? "/atlas-design-preview/rank-badges/roof-2-no-banner.svg" : `/gemeinde/rank-badges/roof-${platz}.webp`;
+      const bild = platz === 2 ? "/atlas-design-preview/rank-badges/roof-2-no-banner.svg" : `/gemeinde/rank-badges/roof-${platz}.png`;
       return { titel: `Platz ${platz}`, text: "Anzahl der Solaranlagen", bild };
     }
   }

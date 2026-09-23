@@ -295,12 +295,6 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
 }
 .gemeinde-foerder-technikblock h3 { margin: 0 0 8px; font-size: 15px }
 
-/* Die Rangabzeichen tragen einen hellen Papier-Hintergrund mit geraden Kanten
-   — beim Gold-Abzeichen deutlich, bei Silber und Bronze schwach. Auf der
-   hellen Ranglisten-Karte fällt das nicht auf, auf der dunklen Kopf-Kachel
-   klebt das Abzeichen als hellgrauer Kasten. Ein weicher runder Auslauf nimmt
-   die Kanten weg und lässt Abzeichen und Banner stehen. */
-.v3-rank-intro img {
-  -webkit-mask-image: radial-gradient(circle at 50% 46%, #000 74%, transparent 86%);
-  mask-image: radial-gradient(circle at 50% 46%, #000 74%, transparent 86%);
-}
+/* Die gelieferten Abzeichen tragen eine halbdurchsichtige Papierfläche als
+   Rechteck um das Motiv; sie sind freigestellt abgelegt (Werkzeug:
+   scripts/rangabzeichen-freistellen.ts). Hier deshalb nichts mehr zu tun. */
