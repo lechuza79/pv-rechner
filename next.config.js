@@ -87,6 +87,7 @@ const nextConfig = {
       {"source": "/photovoltaik-foerderung/kirchlengern", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/kirchlengern", "permanent": true},
       {"source": "/photovoltaik-foerderung/floersheim-am-main", "destination": "/photovoltaik-foerderung/hessen/floersheim-am-main", "permanent": true},
       {"source": "/photovoltaik-foerderung/eppelheim", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/eppelheim", "permanent": true},
+      {"source": "/photovoltaik-foerderung/bruehl-baden", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/bruehl-baden", "permanent": true},
       {"source": "/photovoltaik-foerderung/radolfzell-am-bodensee", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/radolfzell-am-bodensee", "permanent": true},
       {"source": "/photovoltaik-foerderung/meschede", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/meschede", "permanent": true},
       {"source": "/photovoltaik-foerderung/ingelheim-am-rhein", "destination": "/photovoltaik-foerderung/rheinland-pfalz/ingelheim-am-rhein", "permanent": true},
