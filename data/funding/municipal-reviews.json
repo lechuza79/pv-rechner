@@ -52753,5 +52753,240 @@
         "evidenceUrl": "https://www.vg-l.de/leben/klima-und-umweltschutz/foerdermassnahmen/klimaschutzinitiative-kindertagesstaette-himmelszelt-in-dirmstein"
       }
     ]
+  },
+  {
+    "regionId": "01004000",
+    "name": "Neumünster",
+    "checkedAt": "2026-09-23T18:11:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort zwei Fundstellen auf neumuenster.de, beide im Bereich Klima und Umweltqualität.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Neumünster zahlt privaten Haushalten keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Ihre Förderübersicht — von der Stadt zuletzt am 11.09.2026 aktualisiert, am 23.09.2026 im Volltext gelesen — führt in allen vier Rubriken (Gebäude/Energie, Mobilität, Produktion, Weiteres) ausschließlich Programme des Bundes (KfW, BAFA, BMWK) und des Landes (Landesprogramm Wirtschaft, KliKom der EKSH). Die Seite sagt das im ersten Satz selbst: „Der Bund und die Bundesländer setzen eine Vielzahl an Förderprogrammen für den Klimaschutz … um.“ Es ist damit die Umkehrung, vor der der Katalog warnt: Förderung FÜR Bürger vom Bund, nicht VON der Kommune. Die zweite Fundstelle ist die Einstiegsseite der Stabsstelle Klima und Umweltqualität; sie verteilt auf Beratung, Veranstaltungen, Online-Checks und eben diese Übersicht. Ein eigenes kommunales Programm ist auf keiner erfassten Fundstelle belegt. Bemerkenswert, weil Neumünster mit rund 80.000 Einwohnern die größte Kommune dieses Prüflaufs ist — dort wäre ein eigenes Programm am ehesten zu erwarten gewesen.",
+    "searches": [
+      "Förderübersicht der Stadt am 23.09.2026 live gelesen, vollständig bis zur Fußnote „Die Auswahl wurde zuletzt am 11.09.2026 aktualisiert“",
+      "Einstiegsseite Beratung und Förderung am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.neumuenster.de/verkehr-umwelt/klima-umweltqualitaet/beratung-foerderung/foerderungen",
+        "finding": "Vollständige Förderliste der Stadt, Stand 11.09.2026: jeder Eintrag ein Bundes- oder Landesprogramm. Wörtlich: „Der Bund und die Bundesländer setzen eine Vielzahl an Förderprogrammen für den Klimaschutz in Bereichen wie nachhaltige Mobilität oder nachhaltiges Bauen um.“ Kein Zuschuss der Stadt selbst."
+      },
+      {
+        "url": "https://www.neumuenster.de/verkehr-umwelt/klima-umweltqualitaet/beratung-foerderung",
+        "finding": "Einstiegsseite der Stabsstelle Klima und Umweltqualität, am 23.09.2026 gelesen: Verteiler auf Veranstaltungen, Beratungen, Förderungen und Online-Checks. Kein eigenes Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "neumuenster.de/verkehr-umwelt/klima-umweltqualitaet/beratung-foerderung/foerderungen",
+        "disposition": "reviewed",
+        "reason": "Förderliste im Volltext gelesen; ausschließlich Bundes- und Landesprogramme.",
+        "evidenceUrl": "https://www.neumuenster.de/verkehr-umwelt/klima-umweltqualitaet/beratung-foerderung/foerderungen"
+      },
+      {
+        "url": "neumuenster.de/verkehr-umwelt/klima-umweltqualitaet/beratung-foerderung",
+        "disposition": "reviewed",
+        "reason": "Einstiegsseite gelesen; verteilt nur weiter, kein eigenes Programm.",
+        "evidenceUrl": "https://www.neumuenster.de/verkehr-umwelt/klima-umweltqualitaet/beratung-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01051127",
+    "name": "Wesselburen",
+    "checkedAt": "2026-09-23T18:11:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine einzige Fundstelle auf wesselburen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss der Stadt Wesselburen für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle trägt das Wort „Förderpreis“ und meint einen Literaturpreis: „Seit 2015 vergibt die Stadt Wesselburen in Zusammenarbeit mit der Hebbel-Gesellschaft einen Hebbel-Förderpreis für wissenschaftlichen Nachwuchs.“ Die Seite listet nur Preisträger und ihre germanistischen Arbeiten. Kein Energiebezug. Nebenbefund: Das Seitenregister führte die Adresse als unerreichbar; sie antwortete am 23.09.2026 mit HTTP 200 — der abgelegte Zustand ist eine Beobachtung von damals, keine Aussage über heute.",
+    "searches": [
+      "Fundstelle am 23.09.2026 live gelesen (HTTP 200, obwohl im Register als unerreichbar geführt)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wesselburen.de/unsere-stadt/hebbel/hebbel-foerderpreis",
+        "finding": "Literaturpreis für wissenschaftlichen Nachwuchs, vergeben seit 2015 gemeinsam mit der Hebbel-Gesellschaft; die Seite listet die Preisträger 2015 bis 2024 mit ihren Arbeiten. Kein Förderprogramm im Sinn des Katalogs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wesselburen.de/unsere-stadt/hebbel/hebbel-foerderpreis",
+        "disposition": "reviewed",
+        "reason": "Gelesen; ein Literaturpreis, kein Zuschuss und kein Energiebezug.",
+        "evidenceUrl": "https://www.wesselburen.de/unsere-stadt/hebbel/hebbel-foerderpreis"
+      }
+    ]
+  },
+  {
+    "regionId": "01053088",
+    "name": "Mechow",
+    "checkedAt": "2026-09-23T18:11:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine einzige Fundstelle auf mechow.net.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss der Gemeinde Mechow belegt. Die einzige erfasste Fundstelle ist ein Termineintrag von 2022: ein Informationsabend am 11.08.2022 um 19:30 Uhr „Im Feuerwehrgerätehaus Mechow“ über die Bundesförderung für effiziente Gebäude. Eine Veranstaltung der Gemeinde ÜBER eine Bundesförderung, kein eigenes Programm — dieselbe Umkehrung wie bei den Förderlisten anderer Kommunen. Nebenbefund: Das Register führte die Adresse als unerreichbar; sie antwortete am 23.09.2026 mit HTTP 200.",
+    "searches": [
+      "Fundstelle am 23.09.2026 live gelesen (HTTP 200, obwohl im Register als unerreichbar geführt)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.mechow.net/events/event/info-beg-foerderung",
+        "finding": "Termineintrag „Info BEG Förderung“, veröffentlicht am 02.08.2022, Termin am 11.08.2022 19:30–22:00 Uhr im Feuerwehrgerätehaus. Eine Informationsveranstaltung zur Bundesförderung, kein Programm der Gemeinde."
+      }
+    ],
+    "sources": [
+      {
+        "url": "mechow.net/events/event/info-beg-foerderung",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Informationsveranstaltung von 2022 über eine Bundesförderung.",
+        "evidenceUrl": "https://www.mechow.net/events/event/info-beg-foerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "01054083",
+    "name": "Midlum",
+    "checkedAt": "2026-09-23T18:11:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine einzige Fundstelle auf midlum-auf-foehr.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss der Gemeinde Midlum auf Föhr belegt. Die einzige erfasste Fundstelle wirbt für die fördernde Mitgliedschaft in der Freiwilligen Feuerwehr („… förderndes Mitglied Ihrer Freiwilligen Feuerwehr werden?“). Das ist ein Beitrag der Bürger AN die Feuerwehr, also die Gegenrichtung einer Förderung, und ohne jeden Energiebezug.",
+    "searches": [
+      "Fundstelle am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.midlum-auf-foehr.de/freiwillige-feuerwehr/foerdermitgliedschaft",
+        "finding": "Aufruf an Einwohner und Zweitwohnungsbesitzer, förderndes Mitglied der Freiwilligen Feuerwehr zu werden; erläutert wird die Verwendung der Kameradschaftskasse. Kein Zuschuss der Gemeinde an Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "midlum-auf-foehr.de/freiwillige-feuerwehr/foerdermitgliedschaft",
+        "disposition": "reviewed",
+        "reason": "Gelesen; fördernde Mitgliedschaft bei der Feuerwehr, kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.midlum-auf-foehr.de/freiwillige-feuerwehr/foerdermitgliedschaft"
+      }
+    ]
+  },
+  {
+    "regionId": "01054119",
+    "name": "Seeth",
+    "checkedAt": "2026-09-23T18:11:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort zwei Fundstellen auf seeth.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss der Gemeinde Seeth für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Beide erfassten Fundstellen betreffen Landesmittel, und in beiden Fällen ist das Landesamt der Träger, nicht die Gemeinde: eine Meldung vom 05.11.2025, dass das Landesamt für Landwirtschaft und nachhaltige Landesentwicklung ein Projekt „Dorfkümmerer*in“ fördert, und eine Meldung vom 23.07.2026 über 72.000 € Restmittel aus dem Dorfkernentwicklungskonzept. Die Restmittel gehen zwar an private Eigentümer, aber für den „Erhalt ortsbildprägender und historisch wertvoller Gebäude“ — Bauerhalt, nicht Energie; Ansprechpartnerin ist eine Sachbearbeiterin des Landesamts in Flensburg. Ein eigenes Programm der Gemeinde ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Beide Fundstellen am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.seeth.de/foerderung-dorfkuemmerin-bewilligt",
+        "finding": "Meldung vom 05.11.2025: „Landesamt für Landwirtschaft und nachhaltige Landesentwicklung unterstützt Seether Projekt“ — gefördert wird die Stelle einer Dorfkümmerin. Förderung FÜR die Gemeinde vom Land."
+      },
+      {
+        "url": "https://www.seeth.de/information-zu-foerdermitteln",
+        "finding": "Meldung vom 23.07.2026: 72.000 € Restmittel im Dorfkernentwicklungskonzept, Schlüsselprojekt 1.2 „Projektbündel privater Vorhaben zum Erhalt ortsbildprägender und historisch wertvoller Gebäude“. Antragstellung beim Landesamt, Frist im Jahr 2026. Bauerhalt, kein Energiebezug."
+      }
+    ],
+    "sources": [
+      {
+        "url": "seeth.de/foerderung-dorfkuemmerin-bewilligt",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Landesförderung für eine Personalstelle der Gemeinde.",
+        "evidenceUrl": "https://www.seeth.de/foerderung-dorfkuemmerin-bewilligt"
+      },
+      {
+        "url": "seeth.de/information-zu-foerdermitteln",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Landesmittel für Gebäudeerhalt, Träger ist das Landesamt.",
+        "evidenceUrl": "https://www.seeth.de/information-zu-foerdermitteln"
+      }
+    ]
+  },
+  {
+    "regionId": "07334007",
+    "name": "Germersheim",
+    "checkedAt": "2026-09-23T18:11:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort sechs Fundstellen auf germersheim.eu, alle im Zweig Stadtentwicklung/Förderprojekte.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Stadt Germersheim hat privaten Haushalten 125 € pauschal für ein Balkonkraftwerk gezahlt, Wechselrichter höchstens 800 W, Module höchstens 2.000 Wp. Das Programm ist BEENDET: Die Antragsfrist endete am 31.10.2025, so von der Richtlinie (Stadtratsbeschluss 21.05.2024, in Kraft ab 01.01.2025) von Anfang an vorgesehen; die Klimaschutz-Chronik der Stadt sagt am 23.09.2026 live in der Vergangenheitsform „Das Programm war zeitlich bis zum Oktober 2025 begrenzt“. Es steht seit dem 23.09.2026 als germersheim-balkonkraftwerke im Katalog, mit Status „eingestellt“ und ohne Rechenfeld — es informiert also und zieht nichts ab. NICHT ausgeschöpft: Drei archivierte Zwischenstände des Antragszählers zeigen 31 Anträge (18.03.2025), 52 (18.06.2025) und 76 bei 244 freien von 320 Plätzen (05.09.2025); eine Abschlusszahl nennt keine Quelle. Programmseite und Richtlinien-PDF antworten heute mit HTTP 404, die Konditionen stammen deshalb aus dem Archiv der Amtsseite, Volltext im Repo. Dachanlagen, Speicher und Wärmepumpen hat die Stadt nie gefördert. Die sechs ERFASSTEN Fundstellen betreffen sämtlich Bundes- und KfW-Förderung an EIGENEN Vorhaben der Stadt (Brandschutzsanierung eines städtischen Gebäudes, Radwegesanierung, LED-Straßenbeleuchtung, Radinfrastruktur der Verwaltung, Mulchraupe und Baumpflanzungen, Piko-Park) — Förderung FÜR die Kommune, nicht VON der Kommune. Alle sechs am 23.09.2026 gelesen. Bemerkenswert und in die Übergabe aufgenommen: Die Balkon-Förderseite stand NIE in der Quellenerfassung; gefunden wurde das Programm über einen Nebenbefund eines Council-Prüfers, nicht über den Suchlauf.",
+    "searches": [
+      "Verbindliche Förderrichtlinie („Förderrichtlinie der Stadt Germersheim für Photovoltaik-Balkonanlagen“) am 23.09.2026 im Volltext aus dem Archiv der Amtsseite gelesen; Live-Adresse antwortet mit HTTP 404",
+      "Programmseite in drei Archivständen gelesen (18.03.2025, 18.06.2025, 05.09.2025) — daraus die datierten Zwischenstände des Antragszählers; jüngster Stand 18.05.2026",
+      "Klimaschutz-Chronik der Stadt am 23.09.2026 live gelesen: trägt das Ende in der Vergangenheitsform",
+      "KIPKI-Seite und Übersicht „Nachhaltigkeit aktiv“ am 23.09.2026 live gelesen: keine Ankündigung einer neuen Runde",
+      "Alle sechs erfassten Förderprojekt-Seiten am 23.09.2026 gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.germersheim.eu/lokales-soziales/nachhaltigkeit/klimaschutz-energie/",
+        "finding": "Klimaschutz-Chronik der Stadt, am 23.09.2026 live gelesen, Eintrag Januar 2025: „Start von kommunalem Förderprogramm für Balkonkraftwerke … einen Zuschuss von 125 € beantragen können. Das Programm war zeitlich bis zum Oktober 2025 begrenzt.“ Das ist die Live-Fundstelle für das Ende des Programms."
+      },
+      {
+        "url": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/abgeschlossene-foerderprojekte/brandschutztechnische-sanierung-waldstr-13-13a",
+        "finding": "Bundesförderung für effiziente Gebäude an einem Gebäude DER STADT in der Waldstraße, Zuwendungsbescheid vom 24.01.2024. Förderung FÜR die Kommune, keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/abgeschlossene-foerderprojekte/radwegesanierung",
+        "finding": "Sanierung dreier innerstädtischer Radwege, bis zu 63.000 € aus dem Sonderprogramm „Stadt und Land“ von Bund und Land. Förderung FÜR die Kommune, kein Energiebezug für Haushalte."
+      },
+      {
+        "url": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/energieeffiziente-beleuchtung-in-germersheim",
+        "finding": "298.240 € vom Bundesumweltministerium aus dem Klima- und Transformationsfonds für die Umstellung der städtischen Straßenbeleuchtung auf LED. Förderung FÜR die Kommune."
+      },
+      {
+        "url": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/klimaschutz-durch-radverkehr",
+        "finding": "Bis zu 574.592 € aus der Nationalen Klimaschutzinitiative für die Radinfrastruktur DER STADTVERWALTUNG, Laufzeit 01.08.2022 bis 30.06.2026. Förderung FÜR die Kommune."
+      },
+      {
+        "url": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/natuerlicher-klimaschutz-in-kommunen-pflanzung-von-baeumen-und-technische-ausstattung",
+        "finding": "KfW-Zuschuss aus dem Aktionsprogramm Natürlicher Klimaschutz für eine ferngesteuerte Mulchraupe des städtischen Betriebshofs und für Baumpflanzungen. Förderung FÜR die Kommune, kein Energiebezug."
+      },
+      {
+        "url": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/natuerlicher-klimaschutz-in-kommunen-piko-park-und-technische-ausstattung",
+        "finding": "Anlage eines Piko-Parks auf rund 213 m² an der Ecke Schlossstraße/Zeughausstraße aus dem Aktionsprogramm Natürlicher Klimaschutz des Bundes. Förderung FÜR die Kommune, kein Energiebezug."
+      }
+    ],
+    "sources": [
+      {
+        "url": "germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/abgeschlossene-foerderprojekte/brandschutztechnische-sanierung-waldstr-13-13a",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Bundesförderung an einem Gebäude der Stadt.",
+        "evidenceUrl": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/abgeschlossene-foerderprojekte/brandschutztechnische-sanierung-waldstr-13-13a"
+      },
+      {
+        "url": "germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/abgeschlossene-foerderprojekte/radwegesanierung",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Bund-Land-Sonderprogramm für städtische Radwege.",
+        "evidenceUrl": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/abgeschlossene-foerderprojekte/radwegesanierung"
+      },
+      {
+        "url": "germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/energieeffiziente-beleuchtung-in-germersheim",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Bundesmittel für die städtische Straßenbeleuchtung.",
+        "evidenceUrl": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/energieeffiziente-beleuchtung-in-germersheim"
+      },
+      {
+        "url": "germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/klimaschutz-durch-radverkehr",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Nationale Klimaschutzinitiative für die Radinfrastruktur der Verwaltung.",
+        "evidenceUrl": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/klimaschutz-durch-radverkehr"
+      },
+      {
+        "url": "germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/natuerlicher-klimaschutz-in-kommunen-pflanzung-von-baeumen-und-technische-ausstattung",
+        "disposition": "reviewed",
+        "reason": "Gelesen; KfW-Zuschuss für Gerät des Betriebshofs und Baumpflanzungen.",
+        "evidenceUrl": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/natuerlicher-klimaschutz-in-kommunen-pflanzung-von-baeumen-und-technische-ausstattung"
+      },
+      {
+        "url": "germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/natuerlicher-klimaschutz-in-kommunen-piko-park-und-technische-ausstattung",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Bundesmittel für einen Piko-Park.",
+        "evidenceUrl": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/natuerlicher-klimaschutz-in-kommunen-piko-park-und-technische-ausstattung"
+      }
+    ]
   }
 ]

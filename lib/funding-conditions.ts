@@ -145,6 +145,19 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Prüfform zur Neuauflage — dann aber an der dann geltenden Richtlinie, nicht
   // an dieser von 2024.
   "vg-leiningerland-balkonkraftwerke",
+  // Stadt Germersheim, aufgenommen am 23.09.2026. Zwei Gründe, jeder für sich
+  // ausreichend. Erstens ist das Programm BEENDET (Antragsfrist am 31.10.2025
+  // abgelaufen) -- eine Prüfform hielte das Vorhaben eines Nutzers gegen ein
+  // Verfahren, in das er gar nicht mehr hineinkommt. Zweitens ist das
+  // Verfahren das UMGEKEHRTE, wie bei Kandel, Fritzlar und Mauer: "Eine
+  // Beantragung der Fördermittel vor Kauf, Installation und Registrierung des
+  // Balkonkraftwerks ist NICHT möglich." Die vorhandenen Prüfformen bilden die
+  // übliche Regel "Antrag vor Kauf" ab; hier verlangten sie vom Nutzer das
+  // Gegenteil dessen, was die Stadt verlangte. Die Bedingungen stehen
+  // vollständig auf der Karte, in der Vergangenheitsform und mit dem Ende als
+  // erster Zeile. Prüfform mit einer Neuauflage -- dann aber an der dann
+  // geltenden Richtlinie, nicht an dieser von 2024.
+  "germersheim-balkonkraftwerke",
   // Bremen Heizungstausch, aufgenommen am 23.09.2026. Das Programm nimmt seit
   // dem 31.08.2025 keine Anträge mehr an — eine Prüfform hielte das Vorhaben
   // eines Nutzers gegen ein Verfahren, in das er gar nicht mehr hineinkommt.
