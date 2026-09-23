@@ -7,7 +7,7 @@ import {formatStoryDate} from '../../lib/story-format';
 import type {EnergyYear} from '../../lib/story-energy-year';
 import {radialPreviewViewBox} from '../../lib/story-radial-viewbox';
 import styles from './AnnualEnergyChart.module.css';
-export function AnnualEnergyChart({data,compact=false}:{data:EnergyYear;compact?:boolean}){
+export function AnnualEnergyChart({data,compact=false,ohneBedienung=false}:{data:EnergyYear;compact?:boolean;ohneBedienung?:boolean}){
  const [mode,setMode]=useState<'both'|'solar'|'wind'>('both');
  const [selected,setSelected]=useState<number|null>(null);
  const [hover,setHover]=useState<number|null>(null);
@@ -36,7 +36,7 @@ export function AnnualEnergyChart({data,compact=false}:{data:EnergyYear;compact?
  {!compact&&<g transform={`translate(260,${260-82-145/2})`}><rect x="-23" y="-12" width="46" height="35" rx="2" fill="var(--atlas-card)"/><text textAnchor="middle" className={styles.label}><tspan x="0">{maximum/2}</tspan><tspan x="0" dy="16">MWh</tspan></text></g>}
  </svg>
  {!compact&&<div className={styles.legend}><span><i/>Solar</span><span><i/>Wind{!compact&&` · ${windShare.toLocaleString('de-DE',{maximumFractionDigits:2})} % im Jahr`}</span></div>}
- {!compact&&<><div className={styles.controls} role="group" aria-label="Energieart">{([['both','Zusammen'],['solar','Solar'],['wind','Wind']] as const).map(([key,label])=><button key={key} aria-pressed={mode===key} onClick={()=>setMode(key)}>{label}</button>)}</div>
+ {!compact&&!ohneBedienung&&<><div className={styles.controls} role="group" aria-label="Energieart">{([['both','Zusammen'],['solar','Solar'],['wind','Wind']] as const).map(([key,label])=><button key={key} aria-pressed={mode===key} onClick={()=>setMode(key)}>{label}</button>)}</div>
  <div className={styles.controls}><button aria-label="Vorheriger Tag" onClick={()=>shift(-1)}><IconChevronLeft size={12}/></button><SelectField size="sm" ariaLabel="Tag auswählen" value={selected??''} onChange={e=>setSelected(e.target.value===''?null:Number(e.target.value))}><option value="">Ganzes Jahr</option>{data.days.map((d,i)=><option key={d.date} value={i}>{formatStoryDate(d.date)}</option>)}</SelectField><button aria-label="Nächster Tag" onClick={()=>shift(1)}><IconChevronRight size={12}/></button><button aria-label="Tagesauswahl aufheben" onClick={()=>{setSelected(null);setHover(null);}}><IconRefresh size={14}/></button></div>
  <footer>Datenbasis: <a href={storyWeatherAttribution(data.sourceUrl).url} target="_blank" rel="noreferrer">{storyWeatherAttribution(data.sourceUrl).label}</a> und Marktstammdatenregister</footer></>}
  </div>;

@@ -162,3 +162,34 @@
    Kompositions-Hinweise kosten nichts und helfen dort, wo es ruckelt. */
 .story-strip { transform: translateZ(0); }
 .story-strip-track { will-change: transform; backface-visibility: hidden; }
+
+/* Links im dunklen Lesefenster: weiß mit gelber Unterstreichung. Ohne diese
+   Zeilen zeichnet der Browser sie blau/violett — auf dunklem Grund kaum
+   lesbar und nicht unsere Farbwelt (Betreiber, 23.09.2026). */
+.story-reader-dialog a,
+.story-reader-dialog .story-reader-context a {
+  color: var(--atlas-text);
+  text-decoration-line: underline;
+  text-decoration-color: var(--atlas-action);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.story-reader-dialog a:hover { text-decoration-thickness: 2px }
+.story-reader-dialog a:focus-visible { outline: 2px solid var(--atlas-action); outline-offset: 2px }
+
+/* Die geöffnete Geschichte steht in einem QUADRAT (Betreiber, 23.09.2026).
+   Vorher bekamen alle Geschichten die Höhe der höchsten — eine Kennzahl stand
+   dann in einem Kasten, der für den Tagesverlauf gebaut war. Am Ende der
+   Datei, weil die Blöcke darüber Höhe und Rand dieses Kastens je Breite
+   setzen und sonst gewinnen. */
+.story-reader-dialog .story-artwork-stage {
+  /* Nicht strecken: Der Kasten darum ist ein Flex-Container, und gestreckt
+     bekam das Quadrat dessen volle Höhe (gemessen 618 × 765). */
+  align-self: center;
+  flex: 0 1 auto;
+  height: auto;
+  aspect-ratio: 1;
+  width: 100%;
+  max-height: 100%;
+  margin-inline: auto;
+}

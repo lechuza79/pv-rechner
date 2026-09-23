@@ -8,7 +8,7 @@ import {WidgetSetting} from '../dashboard/WidgetSetting';
 import styles from './MonitorMonthlySolarChart.module.css';
 import {energieTeile,leistungTeile} from '../../lib/gemeinde-einheiten';
 
-function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished}:{data:SolarMonth;months:SolarMonth[];onMonthChange:(value:string)=>void;compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void}) {
+function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished,onTag}:{data:SolarMonth;months:SolarMonth[];onMonthChange:(value:string)=>void;compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void;onTag?:(datum:string|null)=>void}) {
  const gradientId=useId();
  const [selected,setSelected]=useState(data.peakDay),[focused,setFocused]=useState(false),[hovered,setHovered]=useState<string|null>(null),[playing,setPlaying]=useState(false),[frame,setFrame]=useState<number|null>(null);
  const firstDate=data.days[0]?.date;
@@ -18,6 +18,10 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
  // Kachel erst danach weiterschaltet.
  useEffect(()=>{if(!autoPlay||!firstDate){setPlaying(false);return;}const motion=window.matchMedia('(prefers-reduced-motion: reduce)');if(motion.matches){setPlaying(false);onFinished?.();return;}setHovered(null);setFrame(null);setSelected(firstDate);setFocused(true);const start=window.setTimeout(()=>{setFrame(0);setPlaying(true)},startDelayMs);const stop=()=>{if(motion.matches)setPlaying(false)};motion.addEventListener('change',stop);return()=>{window.clearTimeout(start);motion.removeEventListener('change',stop)}},[autoPlay,firstDate,startDelayMs,onFinished]);
  const displayDate=focused?selected:hovered,active=data.days.find(day=>day.date===displayDate)??data.days[0],hasActive=displayDate!==null;
+ const gezeigterTag=hasActive?active:null;
+ const mitte=gezeigterTag?energieTeile(gezeigterTag.mwh):energieTeile(data.totalMwh);
+ // Der Kopf der Kachel nennt den Tag, der gerade gezeichnet wird.
+ useEffect(()=>{onTag?.(gezeigterTag?.date??null)},[gezeigterTag?.date,onTag]);
  const chooseDay=(date:string)=>{setPlaying(false);setFrame(null);setHovered(null);setSelected(date);setFocused(true)};
  const clearDay=()=>{setPlaying(false);setFrame(null);setHovered(null);setFocused(false)};
  useEffect(()=>{if(!playing||paused||frame===null)return;const timer=window.setTimeout(()=>{if(frame>=data.days.length-1){setPlaying(false);setFrame(null);setFocused(false);onFinished?.();return;}setFrame(frame+1);setSelected(data.days[frame+1].date)},650);return()=>window.clearTimeout(timer)},[playing,paused,frame,data.days,onFinished]);
@@ -37,15 +41,18 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
    {(compact?[0]:[0,max/3,max*2/3,max]).map((value,i)=><g key={i}><circle cx="280" cy="280" r={90+value/max*150} fill="none" stroke="var(--atlas-text)" strokeOpacity={i===0?.22:.1} strokeDasharray={i%2===0?'2 6':undefined}/>{!compact&&i===2&&<g transform={`translate(280,${280-90-value/max*150})`}><rect x="-22" y="-15" width="44" height="40" rx="2" fill="var(--atlas-card)"/><text textAnchor="middle" dominantBaseline="middle" className={styles.scale}><tspan x="0" y="-3">{leistungTeile(value).value}</tspan><tspan x="0" y="15">{leistungTeile(max).unit}</tspan></text></g>}</g>)}
    {!compact&&[0,6,12,18].map(hour=>{const angle=hour/24*Math.PI*2+Math.PI/2;return <text key={hour} x={280+Math.cos(angle)*260} y={280+Math.sin(angle)*260+5} textAnchor="middle" className={styles.hour}>{String(hour).padStart(2,'0')}{hour===0?' Uhr':''}</text>})}
    {data.days.map((day,index)=>{const isActive=hasActive&&day.date===displayDate,hidden=frame!==null&&index>frame;return <g key={day.date} opacity={hidden?0:1} className={styles.dayLine}><path d={path(day.mw)} fill="none" stroke={`url(#${gradientId})`} strokeOpacity={playing&&index===frame?0:1} strokeWidth="1" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round"/><path d={path(day.mw)} pathLength="1" className={`${styles.activeLine} ${playing&&index===frame?styles.drawing:''}`} fill="none" stroke="var(--atlas-action)" strokeOpacity={isActive?1:0} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round"/>{!compact&&!hidden&&!playing&&<path d={path(day.mw)} fill="none" stroke="transparent" strokeWidth="10" className={styles.hitLine} onPointerEnter={()=>{if(!focused&&!playing)setHovered(day.date)}} onPointerLeave={()=>setHovered(null)} onClick={()=>chooseDay(day.date)}><title>{formatStoryDate(day.date)}: {energieTeile(day.mwh).value} {energieTeile(day.mwh).unit}</title></path>}</g>})}
-   <text x="280" y="275" textAnchor="middle" className={styles.total}>{energieTeile(data.totalMwh).value}</text><text x="280" y="300" textAnchor="middle" className={styles.unit}>{energieTeile(data.totalMwh).unit}</text>
+   {/* In der Mitte steht, was gerade gezeigt wird: der laufende Tag, sonst der
+       Monat. Vorher stand dort immer die Monatssumme, während die Linie Tag
+       für Tag weiterzog (Betreiber, 23.09.2026). */}
+   <text x="280" y="275" textAnchor="middle" className={`${styles.total} ${compact?styles.totalAkzent:''}`}>{mitte.value}</text><text x="280" y="300" textAnchor="middle" className={styles.unit}>{mitte.unit}</text>
   </svg>
   {!compact&&footer}
  </div>;
 }
 
-export function MonitorMonthlySolarChart({data,datasets=[data],compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished}:{data:SolarMonth;datasets?:SolarMonth[];compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void}){
+export function MonitorMonthlySolarChart({data,datasets=[data],compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished,onTag}:{data:SolarMonth;datasets?:SolarMonth[];compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void;onTag?:(datum:string|null)=>void}){
  const [month,setMonth]=useState(data.month);
  const selected=datasets.find(item=>item.month===month)??data;
- return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={setMonth} compact={compact} autoPlay={autoPlay} paused={paused} startDelayMs={startDelayMs} onFinished={onFinished}/>;
+ return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={setMonth} compact={compact} autoPlay={autoPlay} paused={paused} startDelayMs={startDelayMs} onFinished={onFinished} onTag={onTag}/>;
 }
 export default MonitorMonthlySolarChart;

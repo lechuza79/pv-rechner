@@ -154,6 +154,7 @@ export function CurrentPower({ installedKwp, compact = false }: { installedKwp: 
             className="monitor-live-radial"
             bare
             fuelltBreite
+            kopfKachel={compact}
           />
         )}
       </div>
@@ -470,6 +471,8 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
  * not in a frame, so it shows as soon as the page is interactive.
  */
 export function GemeindeKopfMonitor({ paket, widget, paused, onFertig }: { paket: GemeindePaket; widget: string; paused: boolean; onFertig?: () => void }) {
+  // Welcher Tag gerade gezeichnet wird — steht als zweite Zeile im Kopf.
+  const [tag, setTag] = useState<string | null>(null);
   const charts = paket.charts as Any;
   const item = (charts?.charts ?? []).find((c: Any) => c.template === widget);
   const installedKwp = ((paket.register?.chartMix as Any)?.values ?? []).reduce((sum: number, row: Any) => sum + row.value, 0);
@@ -488,9 +491,16 @@ export function GemeindeKopfMonitor({ paket, widget, paused, onFertig }: { paket
       ) : item ? (
         <article className="hero-story">
           <h3>{(widget === "radial" ? "Solarerzeugung " : "Einspeisevergütung ") + month}</h3>
+          {widget === "radial" && (
+            <p className="hero-story-tag">
+              {tag
+                ? new Date(tag + "T12:00:00Z").toLocaleDateString("de-DE", { day: "numeric", month: "long", timeZone: "UTC" })
+                : "Alle Tage des Monats"}
+            </p>
+          )}
           <div className="hero-story-visual">
             {item.story.solarMonth ? (
-              <MonitorMonthlySolarChart data={item.story.solarMonth} compact autoPlay paused={paused} startDelayMs={900} onFinished={onFertig} />
+              <MonitorMonthlySolarChart data={item.story.solarMonth} compact autoPlay paused={paused} startDelayMs={900} onFinished={onFertig} onTag={setTag} />
             ) : (
               <MunicipalChart story={item.story as StoryConcept} compact />
             )}

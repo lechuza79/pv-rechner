@@ -23,7 +23,7 @@ function movement(row:RankMonthRow){
  return `${count} ${Math.abs(row.delta??0)===1?'Platz':'Plätze'} ${row.state==='up'?'verbessert':'zurückgefallen'}`;
 }
 /** Shared ranking visual: scope, metric and movement always stay attached to the rank. */
-export function RankStoryChart({story,compact=false}:{story:StoryConcept;compact?:boolean}){
+export function RankStoryChart({story,compact=false,ohneBedienung=false}:{story:StoryConcept;compact?:boolean;ohneBedienung?:boolean}){
  const all=story.rankSummary??[];
  const highlights=rankingHighlights(all);
  const rows=highlights.slice(0,compact?1:3);
@@ -47,6 +47,6 @@ export function RankStoryChart({story,compact=false}:{story:StoryConcept;compact
   })}</div>
   {highlights.length>rows.length&&<p className={styles.more}>{highlights.length-rows.length} weitere bemerkenswerte Platzierungen</p>}
   {!compact&&<a className={styles.rankLink} href={rankingHref}>Alle Platzierungen <IconArrowRight size={16}/></a>}
-  {!compact&&<footer>Quelle: Energie-Atlas · Marktstammdatenregister</footer>}
+  {!compact&&!ohneBedienung&&<footer>Quelle: Energie-Atlas · Marktstammdatenregister</footer>}
  </div>;
 }

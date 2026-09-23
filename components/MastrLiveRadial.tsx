@@ -153,6 +153,7 @@ export function MastrLiveRadial({
   secondaryBars = false,
   bare = false,
   fuelltBreite = false,
+  kopfKachel = false,
   exportFooter = null,
   className,
 }: {
@@ -182,6 +183,14 @@ export function MastrLiveRadial({
    * weil die Spalten stimmten und nur der Kasten darin nicht.
    */
   fuelltBreite?: boolean;
+  /**
+   * Die Fassung für die Kopf-Kachel der Ortsseite: Der Wert steht in der
+   * Aktionsfarbe und trägt „jetzt" statt nur seiner Einheit, die Stunden am
+   * Ring sind kleiner und unterbrechen die Ringlinie mit ihrem eigenen Grund.
+   * Betreiber-Vorgabe 23.09.2026; die öffentlichen Erzeugungs-Widgets bleiben
+   * unverändert.
+   */
+  kopfKachel?: boolean;
   /**
    * Image-only footer (legend, help texts, source, brand). Belongs INSIDE the
    * card so it sits on the card background — a footer added around the radial by
@@ -842,7 +851,16 @@ export function MastrLiveRadial({
           <g aria-hidden="true" className="sc-mastr-live-radial-clock">
             {([['12', 12], ['18', 18], ['00', 0], ['06', 6]] as const).map(([label, hour]) => {
               const [x, y] = pointAt(CX, CY, visualAngleFromHour(hour), OUTER_R + (isCompact ? 1 : 8));
-              return <text key={label} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fill={labelColor} fontSize={isCompact ? 8 : 10}>{label}</text>;
+              const fontSize = kopfKachel ? 7 : isCompact ? 8 : 10;
+              // Die Stunden sitzen auf der Ringlinie. In der Kopf-Kachel
+              // bekommen sie ihren eigenen Grund, damit die Linie hinter der
+              // Schrift aufhört statt durch sie hindurchzulaufen.
+              return (
+                <g key={label}>
+                  {kopfKachel && <rect x={x - fontSize * 0.95} y={y - fontSize * 0.75} width={fontSize * 1.9} height={fontSize * 1.5} rx={fontSize * 0.4} fill="var(--color-bg)" />}
+                  <text x={x} y={y} textAnchor="middle" dominantBaseline="middle" fill={labelColor} fontSize={fontSize}>{label}</text>
+                </g>
+              );
             })}
           </g>
 
@@ -875,7 +893,7 @@ export function MastrLiveRadial({
             style={{
               fontSize: dim.centerBig,
               fontWeight: 700,
-              color: v("--color-text-primary"),
+              color: kopfKachel ? v("--color-cta") : v("--color-text-primary"),
               fontVariantNumeric: "tabular-nums",
               fontFamily: v("--font-mono"),
               letterSpacing: -0.3,
@@ -892,7 +910,7 @@ export function MastrLiveRadial({
               letterSpacing: 0.5,
             }}
           >
-            {unit}
+            {kopfKachel ? `${unit} jetzt` : unit}
           </div>
         </div>
       </div>

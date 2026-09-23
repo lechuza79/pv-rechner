@@ -12,7 +12,7 @@ import foundation from '../social/atlas-foundations.module.css';
 import chart from '../social/StoryConceptLab.module.css';
 import styles from '../social/MunicipalStoryPreview.module.css';
 
-const storyVisual=(story:StoryConcept,compact:boolean,autoPlay=false,scheme='dark')=><div className={`${chart.visualTheme} ${compact?styles.visual:chart.figure} ${story.kind==='yield'&&compact?chart.preview:''}`} data-story-scheme={scheme}><MunicipalChart story={story} compact={compact} autoPlay={autoPlay}/></div>;
+const storyVisual=(story:StoryConcept,compact:boolean,autoPlay=false,scheme='dark')=><div className={`${chart.visualTheme} ${compact?styles.visual:chart.figure} ${story.kind==='yield'&&compact?chart.preview:''}`} data-story-scheme={scheme}><MunicipalChart story={story} compact={compact} autoPlay={autoPlay} ohneBedienung={!compact}/></div>;
 const ignoreStorySelection=(_index:number)=>{};
 
 export type MunicipalStoryModalProps={
@@ -133,7 +133,10 @@ function StoryArtwork({story,visual,name,active}:any){
  const [foreground,setForeground]=useState(true);
  useEffect(()=>{const update=()=>setForeground(!document.hidden);update();document.addEventListener('visibilitychange',update);return()=>document.removeEventListener('visibilitychange',update);},[]);
  useEffect(()=>{const outer=stage.current,inner=canvas.current;if(!outer||!inner)return;
- const fit=()=>{const stages=Array.from(outer.closest('.story-reader-track')!.querySelectorAll<HTMLElement>('.story-artwork-stage'));const height=Math.max(...stages.map(stage=>(stage.querySelector('.story-export-card')?.firstElementChild as HTMLElement)?.offsetHeight||0));for(const stage of stages){const card=stage.firstElementChild as HTMLElement;card.style.height=height+'px';card.style.transform=`translate(-50%,-50%) scale(${Math.min(1,stage.clientHeight/height)})`;}};
+ // JEDE Geschichte steht in ihrem eigenen Quadrat (Betreiber, 23.09.2026).
+ // Vorher bekamen alle die Höhe der höchsten — eine kurze Kennzahl stand
+ // dann in einem Kasten, der für den Tagesverlauf gebaut war.
+ const fit=()=>{const card=inner;if(!card)return;card.style.height='auto';const breite=outer.clientWidth,hoehe=outer.clientHeight;const eigen=card.firstElementChild as HTMLElement|null;const natur=eigen?.offsetHeight||card.offsetHeight||1;const faktor=Math.min(1,breite/(card.offsetWidth||breite),hoehe/natur);card.style.transform=`translate(-50%,-50%) scale(${faktor})`;};
  const observer=new ResizeObserver(fit);observer.observe(outer);if(inner.firstElementChild)observer.observe(inner.firstElementChild);fit();return()=>observer.disconnect();},[]);
  return <div className="story-artwork-stage" ref={stage}><div ref={canvas} className="story-export-card" data-sc-export-css="position:static;transform:none;height:auto;min-height:0;background:#08191c;border-radius:12px;display:block;">
  {visual(story,false,active&&foreground)}<div className="story-export-credit" data-sc-export-only="block">Solar Check · {name} · {formatStoryDate(story.sourceDate??story.period)}<br/>{story.sourceCaption??'Marktstammdatenregister · eigene Auswertung'}</div>

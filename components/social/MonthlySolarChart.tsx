@@ -7,7 +7,11 @@ import type {SolarMonth} from '../../lib/story-monthly-solar';
 import {formatStoryDate} from '../../lib/story-format';
 import {radialPreviewViewBox} from '../../lib/story-radial-viewbox';
 import styles from './MonthlySolarChart.module.css';
-export function MonthlySolarChart({data,compact=false,autoPlay=false}:{data:SolarMonth;compact?:boolean;autoPlay?:boolean}){
+export function MonthlySolarChart({data,compact=false,autoPlay=false,ohneBedienung=false}:{data:SolarMonth;compact?:boolean;autoPlay?:boolean;
+ /** Ohne Tagesauswahl, Abspiel-Knöpfe und Quellenzeile — für die geöffnete
+  *  Geschichte: Das bedienbare Widget steht auf derselben Seite weiter unten,
+  *  und die Quelle steht im Text darunter (Betreiber, 23.09.2026). */
+ ohneBedienung?:boolean}){
  const gradientId=useId();
  const [selected,setSelected]=useState(data.peakDay);
  const [focused,setFocused]=useState(false);
@@ -94,7 +98,7 @@ export function MonthlySolarChart({data,compact=false,autoPlay=false}:{data:Sola
  <text x="280" y="275" textAnchor="middle" className={styles.total}>{(data.totalMwh/1000).toLocaleString('de-DE',{maximumFractionDigits:1})}</text>
  <text x="280" y="300" textAnchor="middle" className={styles.unit}>GWh</text>
  </svg>
- {!compact&&<><div className={styles.legend}><div className={styles.dateNavigation}>
+ {!compact&&!ohneBedienung&&<><div className={styles.legend}><div className={styles.dateNavigation}>
  <div className={styles.transport}>
  <button type="button" aria-label="Vorheriger Tag" onClick={()=>shiftDay(-1)}><IconChevronLeft size={12}/></button>
  <div className={styles.dateSlot}>{hasActive?<label className={styles.dateField}><span className={styles.dateValue}><span>{formatStoryDate(active.date)}</span><span className={styles.dayYield}>{Math.round(active.mwh).toLocaleString('de-DE')} <small>MWh</small></span></span><SelectField size="sm" ariaLabel="Tag auswählen" value={displayDate??selected} onChange={event=>chooseDay(event.target.value)}>{data.days.map(day=><option key={day.date} value={day.date}>{formatStoryDate(day.date)}</option>)}</SelectField></label>:<button type="button" className={styles.bestDay} onClick={()=>chooseDay(data.peakDay)}>Bester Tag</button>}</div>
