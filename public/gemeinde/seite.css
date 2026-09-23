@@ -307,13 +307,30 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
   margin: 6px 0 10px;
 }
 .gemeinde-foerder-ebene { font-size: 13px; opacity: .72; margin: 8px 0 0 }
-/* Der Hinweis an einer Beispielrechnung: dasselbe lila Zeichen wie im Menue,
-   der Text als Link auf den Abschnitt darunter. */
+/* Die Karten tragen hier KEINEN eigenen Grund (Betreiber, 23.09.2026): Der
+   Abschnitt steht zwischen zwei Linien und braucht keinen zweiten Rahmen. */
+.gemeinde-foerder-liste .sc-feature-card { background: transparent !important; padding-left: 0 !important; padding-right: 0 !important }
+
+/* Der Hinweis an einer Beispielrechnung: das lila Zeichen des Menues, daneben
+   linksbuendig der Satz und darunter der Weg zum Abschnitt. Das Zeichen sitzt
+   auf der ersten Zeile, nicht in der Mitte des Blocks. */
 .gemeinde-foerder-hinweis {
-  display: flex; align-items: center; gap: 10px;
-  margin: 14px 0 0; color: inherit; max-width: none;
+  display: flex; align-items: flex-start; gap: 10px;
+  margin: 24px 0 0; color: inherit; max-width: none;
 }
-.gemeinde-foerder-hinweis a { color: inherit; font-weight: 700; text-underline-offset: 3px }
+.gemeinde-foerder-hinweis > span { display: grid; gap: 2px; justify-items: start }
+.gemeinde-foerder-hinweis a {
+  color: inherit; font-weight: 400;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.gemeinde-foerder-hinweis a:hover { text-decoration-thickness: 2px }
+
+/* Der Weg zur vollstaendigen Uebersicht steht mittig unter den Karten — wie
+   der Knopf der Karten darueber, nur als Link. */
+.gemeinde-foerder-alle {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: fit-content; margin: 8px auto 0;
+}
 .gemeinde-foerder-dialog .gemeinde-foerder-traeger { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
 .gemeinde-foerder-dialog .gemeinde-foerder-quelle {
   display: flex;

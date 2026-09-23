@@ -118,8 +118,8 @@ export default function GemeindeFoerderung({
           })}
         </div>
       )}
-      <a className="atlas-link" href={uebersichtHref}>
-        Was bundesweit gilt {pfeil}
+      <a className="atlas-link gemeinde-foerder-alle" href={uebersichtHref}>
+        Alle Förderprogramme {pfeil}
       </a>
 
       {/* aria-modal, damit die Farbtoken der Site in diesem Fenster gelten —

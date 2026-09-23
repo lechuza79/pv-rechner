@@ -167,7 +167,10 @@ export default function GemeindeBeispiele({
                     <span className="sc-nav-notice-icon" aria-hidden="true">
                       !
                     </span>
-                    <a href="#atlas-foerderung">Förderung verfügbar</a>
+                    <span>
+                      Förderung verfügbar
+                      <a href="#atlas-foerderung">Details</a>
+                    </span>
                   </p>
                 )}
               </div>
