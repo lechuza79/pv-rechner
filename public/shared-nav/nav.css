@@ -373,3 +373,14 @@
 }
 /* With JavaScript the real menu replaces the fallback; hide it from first paint so it never flashes. */
 .sc-js .sc-react-fallback{display:none}
+
+/* Ein spaet geladenes Bild blendet auf, statt zu springen (Betreiber,
+   23.09.2026). Die Bilder der Ausklappmenues laden erst beim Oeffnen; der
+   Ladezustand ist in CSS nicht abfragbar, deshalb setzt das Bild selbst die
+   Marke (nav-content.js, nachgezogen in nav.js). Als ANIMATION, nicht als
+   Transition: Die Kacheln haben weiter unten eine eigene transform-Transition,
+   und ein zweites transition-Kurzschreiben wuerde sie ersetzen. */
+.sc-nav-art img{opacity:0}
+.sc-nav-art img[data-geladen]{opacity:1;animation:sc-nav-art-ein 320ms ease-out}
+@keyframes sc-nav-art-ein{from{opacity:0}}
+@media(prefers-reduced-motion:reduce){.sc-nav-art img[data-geladen]{animation:none}}

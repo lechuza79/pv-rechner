@@ -159,6 +159,16 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
       <div
+        // Die Szene faengt an, bevor React uebernimmt (siehe GemeindeSzene) —
+        // und schreibt dabei Klasse und Zustaende an genau dieses Element
+        // (data-mode, data-weather, data-moving, data-phase, data-scene-boot).
+        // React haelt das fuer einen Fehler seiner eigenen Auslieferung und
+        // meldet es als Hydrations-Konflikt; der Rundgang faellt bei
+        // Konsolenfehlern durch. Hier ist der abweichende Stand der RICHTIGE:
+        // Er beschreibt das Wetter dieses Augenblicks, unsere Auslieferung nur
+        // den Ausgangszustand. React patcht Attribute beim Hydrieren ohnehin
+        // nicht — die Angabe nimmt also nur die Falschmeldung weg.
+        suppressHydrationWarning
         className="solar-page"
         data-hero-system=""
         data-mode="day"
@@ -170,7 +180,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
         data-place-lon={ort.lon ?? undefined}
       >
         <section className="hero" aria-labelledby="hero-title">
-          <div className="scene" aria-hidden="true" dangerouslySetInnerHTML={{ __html: HERO_SZENE_INNER_HTML }} />
+          <div className="scene" aria-hidden="true" suppressHydrationWarning dangerouslySetInnerHTML={{ __html: HERO_SZENE_INNER_HTML }} />
           <SharedSiteHeader aktiv="atlas" />
           <div className="hero-copy">
             <h1 id="hero-title" data-sc-contrast="">

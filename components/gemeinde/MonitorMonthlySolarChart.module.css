@@ -15,3 +15,10 @@
 .bestDay[data-selected="true"]{background:var(--atlas-action);border-color:var(--atlas-action)!important;color:var(--atlas-bg,#08191c)}
 .bestDay small{font:400 11px/1.2 var(--atlas-body);opacity:.75}
 .footer .transport{margin-left:auto}
+
+/* Der Wert in der Mitte blendet bei jedem Tageswechsel ein, in derselben
+   Zeit, in der sich die Linie daneben zeichnet. Ohne das springt die Zahl,
+   während die Linie noch läuft. */
+.wertWechsel{animation:wertEin 420ms ease-out both}
+@keyframes wertEin{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.wertWechsel{animation:none}}

@@ -699,6 +699,23 @@ export function MastrLiveRadial({
             </filter>
           </defs>
 
+          <g aria-hidden="true" className="sc-mastr-live-radial-clock">
+            {([['12', 12], ['18', 18], ['00', 0], ['06', 6]] as const).map(([label, hour]) => {
+              const [x, y] = pointAt(CX, CY, visualAngleFromHour(hour), OUTER_R + (isCompact ? 1 : 8));
+              const fontSize = kopfKachel ? 7 : isCompact ? 8 : 10;
+              // Die Beschriftung liegt HINTER dem Chart (Betreiber,
+              // 23.09.2026): Sie steht vor den Ringen und Balken im Markup,
+              // also zeichnet der Browser sie zuerst und alles Weitere
+              // darüber. Vorher lag sie obenauf und brauchte einen
+              // deckenden Fleck, damit die Ringlinie nicht durch die Ziffern
+              // lief — ein Fleck, der auf jedem anderen Grund auffällt.
+              return (
+                <text key={label} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fill={labelColor} fontSize={fontSize}>
+                  {label}
+                </text>
+              );
+            })}
+          </g>
           {/* 4 Section-Kreise (25/50/75/100% der Bar-Länge), alternierende Deckkraft */}
           {sectionRings.map((s) => (
             <circle
@@ -847,22 +864,6 @@ export function MastrLiveRadial({
               if (e.pointerType === "mouse") setHover(null);
             }}
           />
-
-          <g aria-hidden="true" className="sc-mastr-live-radial-clock">
-            {([['12', 12], ['18', 18], ['00', 0], ['06', 6]] as const).map(([label, hour]) => {
-              const [x, y] = pointAt(CX, CY, visualAngleFromHour(hour), OUTER_R + (isCompact ? 1 : 8));
-              const fontSize = kopfKachel ? 7 : isCompact ? 8 : 10;
-              // Die Stunden sitzen auf der Ringlinie. In der Kopf-Kachel
-              // bekommen sie ihren eigenen Grund, damit die Linie hinter der
-              // Schrift aufhört statt durch sie hindurchzulaufen.
-              return (
-                <g key={label}>
-                  {kopfKachel && <rect x={x - fontSize * 0.95} y={y - fontSize * 0.75} width={fontSize * 1.9} height={fontSize * 1.5} rx={fontSize * 0.4} fill="var(--color-bg)" />}
-                  <text x={x} y={y} textAnchor="middle" dominantBaseline="middle" fill={labelColor} fontSize={fontSize}>{label}</text>
-                </g>
-              );
-            })}
-          </g>
 
           {/* Hintergrund-Kreis ÜBER den Bars mit Drop-Shadow.
               Schneidet die Bar-Caps unten leicht an und wirft Schatten nach

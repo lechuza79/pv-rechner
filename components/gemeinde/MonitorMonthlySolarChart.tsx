@@ -44,7 +44,14 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
    {/* In der Mitte steht, was gerade gezeigt wird: der laufende Tag, sonst der
        Monat. Vorher stand dort immer die Monatssumme, während die Linie Tag
        für Tag weiterzog (Betreiber, 23.09.2026). */}
+   {/* Die Zahl blendet bei jedem Tageswechsel kurz ein, statt umzuspringen:
+      Die Linie daneben zeichnet sich über 600 ms, und eine Zahl, die
+      schlagartig wechselt, läuft ihr sichtbar davon (Betreiber, 23.09.2026).
+      Der Schlüssel am Element sorgt dafür, dass die Einblendung bei jedem
+      neuen Tag von vorn läuft. */}
+   <g key={gezeigterTag?.date??'summe'} className={styles.wertWechsel}>
    <text x="280" y="275" textAnchor="middle" className={`${styles.total} ${compact?styles.totalAkzent:''}`}>{mitte.value}</text><text x="280" y="300" textAnchor="middle" className={styles.unit}>{mitte.unit}</text>
+   </g>
   </svg>
   {!compact&&footer}
  </div>;

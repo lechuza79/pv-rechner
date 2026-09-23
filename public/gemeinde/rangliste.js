@@ -688,8 +688,11 @@
           heading.textContent = label;
           const sub = document.createElement("p");
           sub.className = "ranking-stage-subline";
+          // Die Einheit der ANZEIGE, nicht die Grundeinheit des Eintrags:
+          // Darunter stehen gestaffelte Zahlen, und „kWp" über 562,9 ist eine
+          // Falschaussage um den Faktor tausend.
           sub.textContent =
-            qualifier || (m.unit === "Anlagen" ? "Anzahl der Anlagen" : m.unit);
+            qualifier || (sk.unit === "Anlagen" ? "Anzahl der Anlagen" : sk.unit);
           heading.after(sub);
         }
         const kicker = stage.querySelector(".atlas-kicker");

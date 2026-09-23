@@ -6,6 +6,12 @@ export function mountGlobalNav(header,{active='',homeHref='/',atlasHref='/solar-
  const brand=header.querySelector('.brand');if(brand)brand.href=homeHref;
  const nav=document.createElement('nav');nav.className='sc-global-nav';nav.setAttribute('aria-label','Hauptnavigation');
  nav.innerHTML=navigationContent({atlasHref,calculatorsHref,artBase});
+ // Ein spaetes Bild blendet auf, statt zu springen (Betreiber, 23.09.2026):
+ // Die Bilder der Ausklappmenues laden erst beim Oeffnen. Der Ladezustand ist
+ // in CSS nicht abfragbar, deshalb setzt das Bild selbst die Marke. Ein Bild
+ // aus dem Zwischenspeicher kann fertig sein, bevor der Merker haengt --
+ // dann bliebe es fuer immer unsichtbar, also hier einmal nachgezogen.
+ nav.querySelectorAll('.sc-nav-art img').forEach(img=>{if(img.complete)img.dataset.geladen='';});
  // Multiple entry points share destinations, but only one section owns a page.
  const path=location.pathname.replace(/\/$/,'')||'/';
  const owner=navigationOwner(path,active);

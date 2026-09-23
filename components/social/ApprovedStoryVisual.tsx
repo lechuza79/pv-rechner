@@ -18,6 +18,21 @@ export function StoryNumber({text,unit}:{text:string;unit?:string}) {
  return <>{match[1]}{match[2]&&<small className={styles.numberSuffix}> {match[2]}</small>}{unit&&<small className={styles.numberUnit}> {unit}</small>}</>;
 }
 
+/**
+ * Ein spaet geladenes Bild blendet auf, statt zu springen (Betreiber,
+ * 23.09.2026: "bei einspeisevergueting hat gerade das bild sehr spaet geladen
+ * und war dann ploetzlich da"). Der Ladezustand ist in CSS nicht abfragbar,
+ * deshalb setzt das Bild selbst die Marke. Ein Bild aus dem Zwischenspeicher
+ * kann fertig sein, bevor React den Merker haengt -- und bliebe dann fuer
+ * immer unsichtbar; der ref zieht das nach. Ein Fehlschlag markiert ebenso:
+ * lieber ein kaputtes Bild als ein unsichtbares.
+ */
+const geladen={
+ ref:(el:HTMLImageElement|null)=>{if(el?.complete)el.dataset.geladen='';},
+ onLoad:(e:React.SyntheticEvent<HTMLImageElement>)=>{e.currentTarget.dataset.geladen='';},
+ onError:(e:React.SyntheticEvent<HTMLImageElement>)=>{e.currentTarget.dataset.geladen='';},
+};
+
 function OriginalChart({bild,compact}:{bild:PostBild;compact:boolean}) {
  const ref=useRef<HTMLDivElement>(null),[width,setWidth]=useState(440);
  useEffect(()=>{if(!ref.current)return;const observer=new ResizeObserver(entries=>setWidth(entries[0].contentRect.width));observer.observe(ref.current);return()=>observer.disconnect();},[]);
@@ -52,7 +67,7 @@ export function ApprovedStoryVisual({bild,compact=false,date,provisional=false}:
  let offset=0;
  return <div className={`${styles.visual} ${compact?styles.compact:''}`} data-approved-template={bild.art}>
  {!compact&&<header className={styles.header}><h2>{bild.countComparison?bild.aussage.split(/(\d+(?:[.,]\d+)?\s*%)/g).map((part,index)=>/%$/.test(part)?<span key={index} className={styles.headlineValue}>{part}</span>:part):bild.aussage}</h2>{date&&<p>Stand {formatStoryDate(date)}{provisional?" · vorläufig":""}{bild.art==='kennzahl'?" · Modellrechnung":""}</p>}</header>}
- {bild.art==='verlauf'?<MonthlyAdditionsVisual bild={bild} compact={compact}/>:bild.art==='kennzahl'?<div ref={moneyRef} className={styles.singleValue} onPointerMove={moveMoney} onPointerLeave={resetMoney}>{bild.serien[0]?.label==='Einspeisevergütung'?<><img className={styles.valueIllustration} src="/brand/feed-in-v4-back.svg" alt="" aria-hidden="true"/><img className={`${styles.valueIllustration} ${styles.valueCoins}`} src="/brand/feed-in-v4-coins-cropped.svg" alt="" aria-hidden="true"/></>:<div aria-hidden="true" className={styles.valueSplash} style={{maskImage:`url(${brandAssets.splashMask})`,WebkitMaskImage:`url(${brandAssets.splashMask})`}}/>}<strong>{(total/(total>=1e6?1e6:total>=1e3?1e3:1)).toLocaleString('de-DE',{maximumFractionDigits:1})}</strong><span>{total>=1e6?'Mio. €':total>=1e3?'Tsd. €':'€'}</span></div>:bild.countComparison?<InstallationCountChart counts={bild.countComparison} powerShare={bild.serien[1].wert} compact={compact}/>: (bild.art==='saeule'||bild.art==='donut')?<OriginalChart bild={bild} compact={compact}/>:bild.art==='anteilsdonut'?<>
+ {bild.art==='verlauf'?<MonthlyAdditionsVisual bild={bild} compact={compact}/>:bild.art==='kennzahl'?<div ref={moneyRef} className={styles.singleValue} onPointerMove={moveMoney} onPointerLeave={resetMoney}>{bild.serien[0]?.label==='Einspeisevergütung'?<><img className={styles.valueIllustration} src="/brand/feed-in-v4-back.svg" alt="" aria-hidden="true" decoding="async" {...geladen}/><img className={`${styles.valueIllustration} ${styles.valueCoins}`} src="/brand/feed-in-v4-coins-cropped.svg" alt="" aria-hidden="true" decoding="async" {...geladen}/></>:<div aria-hidden="true" className={styles.valueSplash} style={{maskImage:`url(${brandAssets.splashMask})`,WebkitMaskImage:`url(${brandAssets.splashMask})`}}/>}<strong>{(total/(total>=1e6?1e6:total>=1e3?1e3:1)).toLocaleString('de-DE',{maximumFractionDigits:1})}</strong><span>{total>=1e6?'Mio. €':total>=1e3?'Tsd. €':'€'}</span></div>:bild.countComparison?<InstallationCountChart counts={bild.countComparison} powerShare={bild.serien[1].wert} compact={compact}/>: (bild.art==='saeule'||bild.art==='donut')?<OriginalChart bild={bild} compact={compact}/>:bild.art==='anteilsdonut'?<>
  <div className={styles.ring}><svg viewBox="0 0 220 220" role="img" aria-label={bild.serien.map(s=>`${s.label}: ${s.wert} ${s.einheit}`).join(', ')}>
  {bild.serien.map((s,i)=>{const start=offset;const share=s.wert/total*100;offset+=share;return <circle key={s.label} cx="110" cy="110" r="85" fill="none" stroke={tones[i]} strokeWidth="30" pathLength="100" strokeDasharray={`${Math.max(0,share-.25)} ${100-Math.max(0,share-.25)}`} strokeDashoffset={-start} transform="rotate(-90 110 110)"/>})}
  </svg>{bild.art==='anteilsdonut'&&<div className={styles.center}><strong><StoryNumber text={(total/totalScale).toLocaleString('de-DE',{maximumFractionDigits:totalScale>1?1:0})}/></strong><span>{totalUnit}</span></div>}</div>

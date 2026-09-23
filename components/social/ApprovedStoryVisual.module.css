@@ -59,3 +59,15 @@
 /* Anchor the foreground to the measured number, including longer amounts. */
 .singleValue .valueIllustration.valueCoins{width:clamp(64px,24cqi,120px);height:auto;left:min(calc(var(--value-right, 70%) - 20px),calc(100% - 64px));top:calc(var(--value-bottom, 60%) - 22px);bottom:auto;transform:translate(calc(var(--money-x)*4px),calc(var(--money-y)*3px));}
 @media(prefers-reduced-motion:reduce){.singleValue .valueIllustration.valueCoins{transform:none}}
+
+/* Siehe ApprovedStoryVisual.tsx, "geladen": Das Bild erscheint als Blende.
+   Die Deckkraft bleibt dabei die eigene des Bildes (Hintergrund .2, Muenzen 1)
+   und wird nur mit dem Schalter multipliziert -- ein pauschales opacity:1
+   haette den Hintergrund fuenffach sichtbar gemacht. Als ANIMATION, nicht als
+   Transition: Beide Bilder haben eine transform-Transition, die ein zweites
+   transition-Kurzschreiben ersetzen wuerde. */
+.valueIllustration{--bild-an:0;opacity:calc(.2*var(--bild-an))}
+.valueIllustration.valueCoins{opacity:var(--bild-an)}
+.valueIllustration[data-geladen]{--bild-an:1;animation:bildEin 420ms ease-out}
+@keyframes bildEin{from{opacity:0}}
+@media (prefers-reduced-motion: reduce){.valueIllustration[data-geladen]{animation:none}}
