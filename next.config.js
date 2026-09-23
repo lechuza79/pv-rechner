@@ -71,6 +71,18 @@ const nextConfig = {
       ] },
     ];
   },
+  async rewrites() {
+    // Die Ortsseite eines Stadtstaats wohnt unter der kurzen Landesadresse.
+    // UMGESCHRIEBEN, nicht weitergeleitet: Die Adresse bleibt kurz, die Seite
+    // ist die dreiteilige Route. `beforeFiles` läuft NACH den Weiterleitungen,
+    // also entsteht keine Schleife mit der Umkehrung oben.
+    return {
+      beforeFiles: [
+        { source: "/solar-atlas/hamburg", destination: "/solar-atlas/hamburg/hamburg/hamburg" },
+        { source: "/solar-atlas/berlin", destination: "/solar-atlas/berlin/berlin/berlin" },
+      ],
+    };
+  },
   async redirects() {
     return [
       {"source": "/photovoltaik-foerderung/schwandorf", "destination": "/photovoltaik-foerderung/bayern/schwandorf", "permanent": true},
@@ -402,9 +414,14 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/parkstein", destination: "/photovoltaik-foerderung/bayern/parkstein", permanent: true },
       { source: "/photovoltaik-foerderung/marburg", destination: "/photovoltaik-foerderung/hessen/marburg", permanent: true },
       { source: "/photovoltaik-foerderung/schoenbrunn", destination: "/photovoltaik-foerderung/baden-wuerttemberg/schoenbrunn", permanent: true },
-      // Hamburg/Bremen: Stadtstaaten — flacher Slug = Bundesland-Slug, daher KEIN
-      // Redirect (würde die Bundesland-Seite abfangen). Stadt-Seite liegt unter
-      // /hamburg/hamburg bzw. /bremen/bremen, erreichbar über die Bundesland-Seite.
+      // Hamburg und Berlin SIND ihr Bundesland (Betreiber, 23.09.2026): eine
+      // Adresse, nicht zwei. Die kurze trägt die Ortsseite (siehe rewrites),
+      // die beiden langen Formen führen dauerhaft dorthin. Bremen bleibt außen
+      // vor — dort ist das Land die Summe aus Bremen und Bremerhaven.
+      { source: "/solar-atlas/hamburg/hamburg", destination: "/solar-atlas/hamburg", permanent: true },
+      { source: "/solar-atlas/hamburg/hamburg/hamburg", destination: "/solar-atlas/hamburg", permanent: true },
+      { source: "/solar-atlas/berlin/berlin", destination: "/solar-atlas/berlin", permanent: true },
+      { source: "/solar-atlas/berlin/berlin/berlin", destination: "/solar-atlas/berlin", permanent: true },
       // Legacy Vercel preview host → production (handled by Next before middleware
       // so it doesn't consume middleware invocations)
       {

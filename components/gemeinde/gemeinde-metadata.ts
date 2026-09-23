@@ -5,7 +5,7 @@ import { pageMetadata } from "../../lib/seo";
 import { atlasSeitenTitel } from "../../lib/atlas-titel";
 import { atlasIsIndexable, atlasLevelReleased, atlasOrtEinzelfreigabe, atlasRobots, GEMEINDE_MIN_ANLAGEN } from "../../lib/atlas-index";
 import { verlinkendeGemeinden } from "../../lib/atlas-outreach-freigabe";
-import { istStadtstaat } from "../../lib/atlas-orte";
+import { istStadtstaat, ortsseitenPfad } from "../../lib/atlas-orte";
 
 export type GemeindeParams = { bundesland: string; kreis: string; gemeinde: string };
 
@@ -28,7 +28,7 @@ export async function gemeindeMetadata(params: GemeindeParams, { vorschau }: { v
     ...pageMetadata({
       title: atlasSeitenTitel({ name: region.name, level: "gemeinde" }),
       description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
-      path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
+      path: ortsseitenPfad(region.region_id, params.bundesland, params.kreis, params.gemeinde),
     }),
     robots: atlasRobots(einzeln ? anlagen >= GEMEINDE_MIN_ANLAGEN : atlasIsIndexable("gemeinde", anlagen)),
   };

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { anzeigeOrtsname, ortPhrase, gattungPhrase, childNoun, istKreisfrei, istStadtstaat } from "../atlas-orte";
+import { anzeigeOrtsname, ortPhrase, ortsseitenPfad, gattungPhrase, childNoun, istKreisfrei, istStadtstaat } from "../atlas-orte";
 import { regionDisplayName } from "../atlas-format";
 
 describe("ortPhrase", () => {
@@ -166,5 +166,25 @@ describe("anzeigeOrtsname", () => {
     expect(anzeigeOrtsname("Boxberg/O.L.")).toBe("Boxberg/O.L.");
     expect(anzeigeOrtsname("Lübbenau/Spreewald / Lubnjow/Błota")).toBe("Lübbenau/Spreewald");
     expect(anzeigeOrtsname("Höchberg")).toBe("Höchberg");
+  });
+});
+
+describe("ortsseitenPfad", () => {
+  // GEMESSEN (23.09.2026): Genau zwei Bundesländer haben einen einzigen Kreis
+  // mit einer einzigen Gemeinde — Hamburg und Berlin. Dort beschrieben zwei
+  // Adressen dasselbe Gebiet mit denselben Zahlen. Die 107 kreisfreien Städte
+  // leiten schon lange von der Kreis- auf die Ortsadresse weiter.
+  it("gibt einem Stadtstaat die kurze Adresse seines Bundeslands", () => {
+    expect(ortsseitenPfad("02000000", "hamburg", "hamburg", "hamburg")).toBe("/solar-atlas/hamburg");
+    expect(ortsseitenPfad("11000000", "berlin", "berlin", "berlin")).toBe("/solar-atlas/berlin");
+  });
+
+  it("lässt Bremen und jede andere Gemeinde unter ihrer eigenen Adresse", () => {
+    // Bremen ist Land UND Stadt, aber das Land besteht aus Bremen und
+    // Bremerhaven — die Landesseite ist dort eine echte Ebene darüber.
+    expect(ortsseitenPfad("04011000", "bremen", "bremen", "bremen")).toBe("/solar-atlas/bremen/bremen/bremen");
+    expect(ortsseitenPfad("09679147", "bayern", "landkreis-wuerzburg", "hoechberg")).toBe(
+      "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
+    );
   });
 });

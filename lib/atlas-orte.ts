@@ -172,3 +172,22 @@ export function istKreisfrei(
 export function istStadtstaat(regionId: string): boolean {
   return regionId.length >= 5 && regionId.slice(2, 5) === "000";
 }
+
+/**
+ * Die Adresse der Ortsseite. Für einen Stadtstaat ist das die kurze Adresse
+ * des Bundeslands, sonst der dreiteilige Pfad.
+ *
+ * WARUM (Betreiber, 23.09.2026): Hamburg und Berlin SIND ihr Bundesland. Es
+ * gab zwei Seiten für dasselbe Gebiet mit denselben Zahlen (gemessen: beide
+ * 32.523 Anlagen, 302 MWp) — und die Ortsseite lag unter einer Adresse, die
+ * den Namen dreimal trägt. Bremen bleibt außen vor: Dort ist das Bundesland
+ * die Summe aus Bremen UND Bremerhaven, die Landesseite also eine echte
+ * Ebene darüber.
+ *
+ * Die Weiterleitung der langen Adressen und das Umschreiben der kurzen stehen
+ * in next.config.js; hier steht, was in Kanonisch-Angabe, Teilen-Link,
+ * Krümelspur und strukturierten Daten erscheint.
+ */
+export function ortsseitenPfad(regionId: string, bundesland: string, kreis: string, gemeinde: string): string {
+  return istStadtstaat(regionId) ? `/solar-atlas/${bundesland}` : `/solar-atlas/${bundesland}/${kreis}/${gemeinde}`;
+}

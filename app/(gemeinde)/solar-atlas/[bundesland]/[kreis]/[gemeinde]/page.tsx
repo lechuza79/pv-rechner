@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { resolveSlugPath, getRegionById } from "../../../../../../lib/atlas";
-import { anzeigeOrtsname, istKreisfrei, istStadtstaat } from "../../../../../../lib/atlas-orte";
+import { anzeigeOrtsname, istKreisfrei, istStadtstaat, ortsseitenPfad } from "../../../../../../lib/atlas-orte";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
 import { ladeGemeindePaket } from "../../../../../../lib/gemeinde-paket-server";
@@ -62,7 +62,7 @@ export default async function GemeindePage(props: { params: Promise<Params> }) {
         lat: geo && Number.isFinite(geo.lat) ? geo.lat : null,
         lon: geo && Number.isFinite(geo.lon) ? geo.lon : null,
         pfad,
-        liveUrl: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
+        liveUrl: ortsseitenPfad(region.region_id, params.bundesland, params.kreis, params.gemeinde),
         landName: bl?.name ?? params.bundesland,
         // Town rows of the ranking link below the district, by the one rule.
         kreisBase: `${vergleichsBasisPfad("gemeinde", params.bundesland, params.kreis)}/`,

@@ -66,6 +66,8 @@
   // beim Zubau je Einwohner Zweiter ist. Die Reihenfolge der gespeicherten
   // Platzierungen ist bereits die beste zuerst.
   const besteEntdeckung = discoveries.findIndex((d) => d.distinction);
+  // Nur für den ersten Aufbau: Danach ist jede Auswahl die des Lesers.
+  let ersterAufbau = true;
   let area = G.startArea,
     owner = "alle",
     classId = G.klasse,
@@ -1028,7 +1030,11 @@
       delete section.dataset.share;
       seen.clear();
       discovered = 1;
-      if (active.startsWith("saved-")) active = "count";
+      // Beim Wechsel der Vergleichsgrößen fällt die Auswahl auf eine
+      // Live-Kategorie zurück — eine gespeicherte Platzierung gilt nur für
+      // ihre eigene Gruppe. Der ERSTE Aufbau ist davon ausgenommen: Dort
+      // steht die beste Platzierung des Orts, und die soll stehen bleiben.
+      if (active.startsWith("saved-") && !ersterAufbau) active = "count";
       const id = ++requestId;
       pause();
       busy = true;
@@ -1049,7 +1055,12 @@
         area === G.kreisAgs
           ? ""
           : "Für " + G.landLabel + " und Deutschland liefert die bestehende Rangliste derzeit Solarleistung je Einwohner." + (G.kreisAgs ? " Weitere Kategorien sind im " + G.kreisLabel + " verfügbar." : "");
-      if (area !== G.kreisAgs) active = "power";
+      // Ohne Kreisvergleich liefert die Live-Rangliste nur Solarleistung je
+      // Einwohner. Das ist für die Auswahl aber die LETZTE Wahl: Berlin steht
+      // dort auf Platz 80 von 80 und eröffnete damit seinen Abschnitt, während
+      // es bei der Solarleistung insgesamt Erster ist. Gibt es eine
+      // ausgezeichnete Platzierung, gilt sie auch hier.
+      if (area !== G.kreisAgs && !active.startsWith("saved-")) active = "power";
       playLabel();
       try {
         if (area !== G.kreisAgs) {
@@ -1120,7 +1131,7 @@
     // Towns without a district comparison (kreisfreie Städte, Stadtstaaten,
     // small size classes) start with the state list, which is fetched.
     if (area === G.kreisAgs) render(true);
-    else load();
+    else load().finally(() => { ersterAufbau = false; });
   }
   mount();
 })().catch((e) => console.error("Ranking could not start", e));

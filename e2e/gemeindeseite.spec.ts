@@ -134,10 +134,26 @@ test.describe("Gemeindeseite", () => {
     await expect(abschnitt.locator(".ranking-stage")).toContainText("Zubau auf privaten Dächern", { timeout: 30_000 });
     await expect(abschnitt.locator(".ranking-intro-copy")).toContainText("im Landkreis Görlitz");
   });
+  // Ein Stadtstaat hat EINE Adresse: die kurze. Vorher standen die Landesseite
+  // und eine Ortsseite unter „hamburg/hamburg/hamburg" nebeneinander, mit
+  // denselben Zahlen.
+  test("ein Stadtstaat hat eine Adresse, die langen führen dorthin", async ({ page, request }) => {
+    const kurz = await request.get("/solar-atlas/hamburg", { maxRedirects: 0 });
+    expect(kurz.status()).toBe(200);
+    expect(await kurz.text()).toMatch(/<h1[^>]*>Hamburg/);
+    for (const lang of ["/solar-atlas/hamburg/hamburg", "/solar-atlas/hamburg/hamburg/hamburg", "/solar-atlas/berlin/berlin/berlin"]) {
+      const antwort = await request.get(lang, { maxRedirects: 0 });
+      expect(antwort.status(), lang).toBe(308);
+      expect(antwort.headers()["location"], lang).toMatch(/\/solar-atlas\/(hamburg|berlin)$/);
+    }
+    await page.goto("/solar-atlas/hamburg");
+    await expect(page).toHaveURL(/\/solar-atlas\/hamburg$/);
+  });
+
   // Ein Stadtstaat IST sein Bundesland: Hamburg verglich sich mit „1 Ort" —
   // sich selbst. Jetzt startet der Vergleich bundesweit.
   test("ein Stadtstaat vergleicht sich nicht mit sich selbst", async ({ page }) => {
-    await page.goto("/solar-atlas/hamburg/hamburg/hamburg");
+    await page.goto("/solar-atlas/hamburg");
     const abschnitt = page.locator("#atlas-ranking");
     await abschnitt.scrollIntoViewIfNeeded();
     await expect(abschnitt).toContainText(/Wir vergleichen \d+ Orte in Deutschland/, { timeout: 30_000 });

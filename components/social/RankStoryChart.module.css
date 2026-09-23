@@ -23,5 +23,9 @@
 .rankLink{margin-top:0;font-size:var(--atlas-body-size)}
 
 .chart{position:relative;isolation:isolate;overflow:hidden;border-radius:var(--atlas-card-radius)}
-.backdrop{position:absolute;z-index:-1;pointer-events:none;width:105%;max-width:none;height:auto;right:-22%;top:50%;transform:translateY(-45%);filter:grayscale(1);opacity:.1;mask-image:linear-gradient(to bottom,transparent,#000 25%,#000 65%,transparent);}
-.chart[data-compact=true] .backdrop{width:140%;right:-30%;transform:translateY(-50%);opacity:.12}
+.backdrop{position:absolute;z-index:-1;pointer-events:none;width:92%;max-width:none;height:auto;right:4%;top:50%;transform:translateY(-45%);filter:grayscale(1);opacity:.1;-webkit-mask-image:radial-gradient(120% 100% at 50% 50%,#000 42%,transparent 88%);mask-image:radial-gradient(120% 100% at 50% 50%,#000 42%,transparent 88%)}
+/* Das Motiv bleibt IM Rahmen. Vorher war es breiter als die Karte und nach
+   rechts geschoben — auf der Ortsseite stand ein hart abgeschnittenes Haus
+   hinter dem Text (Betreiber, 23.09.2026). Jetzt passt es hinein und läuft
+   nach allen Seiten aus, statt an der Kartenkante abzureißen. */
+.chart[data-compact=true] .backdrop{width:88%;right:6%;transform:translateY(-50%);opacity:.12}
