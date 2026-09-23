@@ -180,6 +180,22 @@
             href: r.href ? "https://solar-check.io" + r.href : null,
           }));
   }
+  // Die Zeilen einer gespeicherten Platzierung nachholen. Das Paket trägt nur
+  // die eigene Position; ohne die Mitbewerber zeigt die Bühne statt des
+  // Podests nur eine nackte Platz-Zahl. Einmal geholt, bleibt sie am Eintrag.
+  async function zeilenNachladen(m) {
+    const snap = m?.snapshot;
+    if (!snap || snap.rows || !snap.rowsUrl || snap.rowsFailed) return;
+    try {
+      const r = await fetch(snap.rowsUrl);
+      if (!r.ok) throw Error("unavailable");
+      snap.rows = await r.json();
+    } catch {
+      snap.rowsFailed = true;
+      snap.rowsUnavailableReason =
+        "Die vollständige Liste konnte gerade nicht geladen werden.";
+    }
+  }
   function mount() {
     const section = document.getElementById("atlas-ranking");
     if (!section) {
@@ -231,14 +247,7 @@
       const snap = m?.snapshot;
       if (snap && !snap.rows && snap.rowsUrl && !snap.rowsFailed) {
         scroller.innerHTML = "<p>Rangliste wird geladen …</p>";
-        try {
-          const r = await fetch(snap.rowsUrl);
-          if (!r.ok) throw Error("unavailable");
-          snap.rows = await r.json();
-        } catch {
-          snap.rowsFailed = true;
-          snap.rowsUnavailableReason = "Die vollständige Liste konnte gerade nicht geladen werden.";
-        }
+        await zeilenNachladen(m);
         if (active === m.id) render(true);
       }
     };
@@ -446,14 +455,7 @@
       const snap = metric.snapshot;
       if (snap && !snap.rows && snap.rowsUrl && !snap.rowsFailed) {
         stage.innerHTML = "<p>Rangliste wird geladen …</p>";
-        try {
-          const r = await fetch(snap.rowsUrl);
-          if (!r.ok) throw Error("unavailable");
-          snap.rows = await r.json();
-        } catch {
-          snap.rowsFailed = true;
-          snap.rowsUnavailableReason = "Die vollständige Liste konnte gerade nicht geladen werden.";
-        }
+        await zeilenNachladen(metric);
         if (active !== metric.id) return;
       }
       render(true);
@@ -1133,8 +1135,24 @@
     );
     // Towns without a district comparison (kreisfreie Städte, Stadtstaaten,
     // small size classes) start with the state list, which is fetched.
-    if (area === G.kreisAgs) render(true);
-    else load().finally(() => { ersterAufbau = false; });
+    // Erst zeichnen, dann die Mitbewerber der Startkategorie holen und noch
+    // einmal zeichnen. Der Abschnitt öffnet auf der besten ausgezeichneten
+    // Platzierung, und deren Zeilen wurden bisher NUR beim Kategorie-Wechsel
+    // geholt — auf dem ersten Bild stand deshalb nie ein Podest, sondern nur
+    // die gespeicherte Platz-Zahl.
+    const startMetrik = metrics.find((m) => m.id === active);
+    const podestNachziehen = () =>
+      zeilenNachladen(startMetrik).then(() => {
+        if (active === startMetrik?.id && startMetrik?.snapshot?.rows) render(true);
+      });
+    if (area === G.kreisAgs) {
+      render(true);
+      podestNachziehen();
+    } else
+      load().finally(() => {
+        ersterAufbau = false;
+        podestNachziehen();
+      });
   }
   mount();
 })().catch((e) => console.error("Ranking could not start", e));
