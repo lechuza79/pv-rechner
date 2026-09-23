@@ -34,7 +34,7 @@ import {
 } from "../lib/projekt-kosten";
 import { bilanz, STUNDENSATZ_EUR, STUNDENSATZ_BELEG } from "../lib/projekt-bilanz";
 import { ROLLENSAETZE, ERHEBUNG } from "../lib/rollensaetze";
-import { MESSUNGEN, KI_ANNAHME_STAND, FEHLERRICHTUNG, spanneDerMessungen } from "../lib/ki-wirkung";
+import { MESSUNGEN, KI_ANNAHME_STAND, FEHLERRICHTUNG } from "../lib/ki-wirkung";
 import { schaetzeAufwand, type Zaehlstand } from "../lib/aufwand-schaetzung";
 import { WIDGETS } from "../lib/widget-registry";
 import { allFundingPrograms } from "../lib/funding-programs";
@@ -499,7 +499,6 @@ async function main() {
         },
       });
       const raum = (r: { von: string; bis: string } | null) => (r ? ` [${r.von} bis ${r.bis}]` : "");
-      const spanne = spanneDerMessungen();
       const i = b.investiert;
       console.log("\n── Übersicht ──────────────────────────────────────────────");
       console.log("INVESTIERT");
@@ -512,7 +511,6 @@ async function main() {
         console.log(`                  + ${z(i.stundenHochgerechnet)} Stunden hochgerechnet für die Zeit ohne Protokolle`);
       }
       console.log(`  Geld            ${eur(i.bezahltEur)}${raum(i.zeitraum.geld)}`);
-      console.log(`                  alle Projekte zusammen ${eur(i.bezahltAlleProjekteEur)}`);
       console.log(`  Eigene Zeit     ${eur(i.eigeneZeitEur)} — ${z(Math.round(i.eigeneZeitEur / STUNDENSATZ_EUR))} h à ${eur(STUNDENSATZ_EUR)}`);
       console.log(`                  ${STUNDENSATZ_BELEG}`);
       console.log(`  Rechenleistung  ${(i.tokens / 1e9).toFixed(1)} Mrd. Tokens (ganze Laufzeit, Frühphase hochgerechnet)`);
@@ -539,13 +537,14 @@ async function main() {
       console.log(`  Mischsatz ${eur(b.wert.mischsatzEurProStunde)}/h. Anker: ${ERHEBUNG.quelle},`);
       console.log(`  Median Software-/Webentwicklung ${eur(ERHEBUNG.softwareEntwicklungEurProStunde)}/h (n=${ERHEBUNG.stichprobeSoftware});`);
       console.log("  die Rollenspreizung ist Marktbeobachtung, keine Erhebung.");
-      console.log(`  KI-Abschlag je Gewerk (Stand ${KI_ANNAHME_STAND}) — die Messungen dazu reichen von`);
-      console.log(`  ${Math.round(spanne.langsamste * 100)} % langsamer bis ${Math.abs(Math.round(spanne.schnellste * 100))} % schneller:`);
+      console.log(`\n  KI-Abschlag je Gewerk (Stand ${KI_ANNAHME_STAND}). Die Messungen dazu:`);
       for (const m of MESSUNGEN) {
         const v = m.zeitaenderung < 0
           ? `${Math.abs(Math.round(m.zeitaenderung * 100))} % schneller`
-          : `${Math.round(m.zeitaenderung * 100)} % langsamer`;
-        console.log(`    ${v.padEnd(16)} ${m.quelle}`);
+          : `${Math.round(m.zeitaenderung * 100)} % LANGSAMER`;
+        console.log(`    ${v.padEnd(16)} ${m.urheber} (${m.jahr}), ${m.fundstelle}`);
+        console.log(`                     „${m.titel}"`);
+        console.log(`                     ${m.aufbau}`);
       }
       console.log(`  Der Abschlag ist ${FEHLERRICHTUNG}.`);
       console.log("VERHÄLTNIS");

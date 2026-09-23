@@ -22,9 +22,18 @@
 export type KiWirkung = "stark" | "mittel" | "gering";
 
 export interface Messung {
+  /** Kurzname für Tabellen und Fußzeilen. */
   quelle: string;
+  /** Der vollständige Titel, wie man ihn zitiert. */
+  titel: string;
+  /** Wer sie veröffentlicht hat. */
+  urheber: string;
+  jahr: number;
+  /** Wo sie zu finden ist. */
+  fundstelle: string;
   /** Wirkung auf die Bearbeitungszeit: negativ = schneller, positiv = langsamer. */
   zeitaenderung: number;
+  /** Woran gemessen wurde — der Grund, warum die Ergebnisse auseinandergehen. */
   aufbau: string;
 }
 
@@ -37,27 +46,53 @@ export interface Messung {
  */
 export const MESSUNGEN: Messung[] = [
   {
-    quelle: "METR 2025, kontrollierter Versuch",
+    quelle: "METR",
+    titel:
+      "Measuring the Impact of Early-2025 AI on Experienced Open-Source " +
+      "Developer Productivity",
+    urheber: "METR",
+    jahr: 2025,
+    fundstelle: "arXiv:2507.09089",
     zeitaenderung: +0.19,
     aufbau:
       "16 erfahrene Entwickler, 246 echte Aufgaben in Projekten, die sie im " +
-      "Schnitt seit fünf Jahren kennen — die Entwickler waren LANGSAMER und " +
-      "hielten sich für schneller",
+      "Schnitt seit fünf Jahren kennen — sie waren LANGSAMER und schätzten " +
+      "sich hinterher auf 20 % schneller",
   },
   {
-    quelle: "Google, kontrollierter Versuch im Unternehmen",
+    quelle: "Google",
+    titel:
+      "How much does AI impact development speed? An enterprise-based " +
+      "randomized controlled trial",
+    urheber: "Google",
+    jahr: 2024,
+    fundstelle: "arXiv:2410.12944",
     zeitaenderung: -0.21,
-    aufbau: "echte Unternehmensaufgaben; die belastbarste Einzelzahl für unseren Fall",
+    aufbau:
+      "echte Unternehmensaufgaben im Konzernalltag — von allen vieren die " +
+      "Lage, die unserer am nächsten kommt",
   },
   {
-    quelle: "GitHub Copilot, kontrollierter Versuch",
-    zeitaenderung: -0.55,
-    aufbau: "eine isolierte, klar umrissene Aufgabe im Labor",
+    quelle: "GitHub Copilot",
+    titel: "The Impact of AI on Developer Productivity: Evidence from GitHub Copilot",
+    urheber: "Peng, Kalliamvakou, Cihon, Demirer (Microsoft / GitHub / MIT)",
+    jahr: 2023,
+    fundstelle: "arXiv:2302.06590",
+    zeitaenderung: -0.558,
+    aufbau:
+      "eine einzige, klar umrissene Laboraufgabe (einen HTTP-Server in " +
+      "JavaScript schreiben) — nicht übertragbar auf ein gewachsenes System",
   },
   {
-    quelle: "McKinsey, Laborexperiment",
+    quelle: "McKinsey",
+    titel: "Unleashing developer productivity with generative AI",
+    urheber: "McKinsey & Company",
+    jahr: 2023,
+    fundstelle: "mckinsey.com, 27.06.2023",
     zeitaenderung: -0.5,
-    aufbau: "Laborbedingungen, abgegrenzte Aufgaben — das obere Ende der Spanne",
+    aufbau:
+      "40 eigene Entwickler an abgegrenzten Aufgaben; die Urheberin verkauft " +
+      "Beratung zu diesem Thema — das obere Ende der Spanne",
   },
 ];
 
@@ -93,6 +128,7 @@ export function faktor(wirkung: KiWirkung): number {
 }
 
 export const KI_ANNAHME_STAND = "2026-09-23";
+export const MESSUNGEN_GEPRUEFT_AM = "2026-09-23";
 
 /**
  * Die Richtung des Fehlers — sie gehört an jede Zahl, die hier herauskommt.
