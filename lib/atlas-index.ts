@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { releaseFreigegeben } from "./release-plan";
+import { istStadtstaat } from "./atlas-orte";
 
 // Gestufte Index-Freischaltung des Energie-Atlas (Plan: docs/atlas-index-wellen.md).
 // Solange eine Ebene hier nicht freigeschaltet ist, bleibt sie noindex (Pilot) und
@@ -216,6 +217,30 @@ export function atlasIsIndexable(level: AtlasLevel, anlagen?: number, ags?: stri
   if (!frei) return false;
   if (level === "gemeinde") return (anlagen ?? 0) >= GEMEINDE_MIN_ANLAGEN;
   return true;
+}
+
+/**
+ * Darf die ORTSSEITE dieses Schlüssels in den Index?
+ *
+ * EIN STADTSTAAT WIRD ALS BUNDESLAND BEURTEILT — BLOCKER (23.09.2026). Seit
+ * Hamburg und Berlin unter der kurzen Adresse ihres Bundeslands wohnen, IST
+ * ihre Ortsseite die Landesseite. Nach der Gemeinde-Regel beurteilt (die Ebene
+ * ist gesperrt) fielen beide auf „nicht indexieren" — zwei seit Monaten
+ * indexierte Landesseiten wären still aus dem Index gefallen, während sie
+ * weiter in der Sitemap stehen. Angemeldet und gleichzeitig abgemeldet ist
+ * genau der Widerspruch, den Google als Fehler meldet.
+ *
+ * Gemessen an der Produktion am 23.09.2026: Bayern und Bremen „index, follow",
+ * Hamburg und Berlin „noindex, nofollow" — alle vier in der Sitemap. Bremen
+ * gehört bewusst nicht dazu: Dort ist Bremerhaven ein echter zweiter Kreis,
+ * das Land also eine echte Ebene über der Stadt.
+ */
+export function ortsseiteIndexierbar(
+  regionId: string,
+  { einzeln, anlagen }: { einzeln: boolean; anlagen: number },
+): boolean {
+  if (istStadtstaat(regionId)) return atlasIsIndexable("bundesland");
+  return einzeln ? anlagen >= GEMEINDE_MIN_ANLAGEN : atlasIsIndexable("gemeinde", anlagen);
 }
 
 /**
