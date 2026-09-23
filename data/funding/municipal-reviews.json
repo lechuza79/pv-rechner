@@ -55526,16 +55526,21 @@
     "name": "Brüssow",
     "checkedAt": "2026-09-23T23:05:09Z",
     "recheckAt": "2026-12-24T08:00:00Z",
-    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Brüssow eine Fundstelle auf amt-bruessow.de.",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Brüssow drei Fundstellen auf amt-bruessow.de.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine entfernte Adresse (HTTP 404), die ohnehin nur ein Kontakt-Weiterleiter war.",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Seite „Fördermaßnahmen“ listet Vorhaben, für die das Amt selbst Landesmittel der Investitionsbank Brandenburg erhalten hat — die bekannte Umkehrung. Die dritte erfasste Adresse war ein Kontakt-Weiterleiter und antwortet inzwischen mit HTTP 404.",
     "searches": [
-      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Brüssow)"
+      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Brüssow)",
+      "Seite „Fördermaßnahmen“ auf amt-bruessow.de am 24.09.2026 live gelesen"
     ],
     "evidence": [
       {
         "url": "https://www.amt-bruessow.de/contact/index/link",
         "finding": "Die Adresse antwortet mit HTTP 404 („Die Seite wurde nicht gefunden“), am 24.09.2026 gemessen. Sie war ohnehin ein Kontakt-Weiterleiter der Amtsseite und nie eine Förderseite."
+      },
+      {
+        "url": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "finding": "„Fördermaßnahmen der Investitionsbank des Landes Brandenburg (ILB)“ — eine Liste der Vorhaben, für die das Amt selbst Landesmittel bekommen hat: denkmalpflegerische Zielplanung für den Park Menkin, Sanierung der Stadtmauer von Brüssow, Erwerb, Neubau und Ausbau. Wieder die Umkehrung: Förderung FÜR das Amt, nicht von ihm. Kein Zuschuss an Haushalte und kein Bezug zu Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen."
       }
     ],
     "sources": [
@@ -55544,6 +55549,18 @@
         "disposition": "reviewed",
         "evidenceUrl": "https://www.amt-bruessow.de/contact/index/link",
         "reason": "Am 24.09.2026 gemessen: HTTP 404, Adresse entfernt."
+      },
+      {
+        "url": "amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der Landesmittel, die das Amt selbst erhalten hat — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html?modus=drucken",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der Landesmittel, die das Amt selbst erhalten hat — kein Zuschuss an Haushalte. Druckansicht derselben Seite."
       }
     ]
   },
@@ -55552,16 +55569,21 @@
     "name": "Carmzow-Wallmow",
     "checkedAt": "2026-09-23T23:05:09Z",
     "recheckAt": "2026-12-24T08:00:00Z",
-    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Carmzow-Wallmow eine Fundstelle auf amt-bruessow.de.",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Carmzow-Wallmow drei Fundstellen auf amt-bruessow.de.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine entfernte Adresse (HTTP 404), die ohnehin nur ein Kontakt-Weiterleiter war.",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Seite „Fördermaßnahmen“ listet Vorhaben, für die das Amt selbst Landesmittel der Investitionsbank Brandenburg erhalten hat — die bekannte Umkehrung. Die dritte erfasste Adresse war ein Kontakt-Weiterleiter und antwortet inzwischen mit HTTP 404.",
     "searches": [
-      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Carmzow-Wallmow)"
+      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Carmzow-Wallmow)",
+      "Seite „Fördermaßnahmen“ auf amt-bruessow.de am 24.09.2026 live gelesen"
     ],
     "evidence": [
       {
         "url": "https://www.amt-bruessow.de/contact/index/link",
         "finding": "Die Adresse antwortet mit HTTP 404 („Die Seite wurde nicht gefunden“), am 24.09.2026 gemessen. Sie war ohnehin ein Kontakt-Weiterleiter der Amtsseite und nie eine Förderseite."
+      },
+      {
+        "url": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "finding": "„Fördermaßnahmen der Investitionsbank des Landes Brandenburg (ILB)“ — eine Liste der Vorhaben, für die das Amt selbst Landesmittel bekommen hat: denkmalpflegerische Zielplanung für den Park Menkin, Sanierung der Stadtmauer von Brüssow, Erwerb, Neubau und Ausbau. Wieder die Umkehrung: Förderung FÜR das Amt, nicht von ihm. Kein Zuschuss an Haushalte und kein Bezug zu Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen."
       }
     ],
     "sources": [
@@ -55570,6 +55592,18 @@
         "disposition": "reviewed",
         "evidenceUrl": "https://www.amt-bruessow.de/contact/index/link",
         "reason": "Am 24.09.2026 gemessen: HTTP 404, Adresse entfernt."
+      },
+      {
+        "url": "amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der Landesmittel, die das Amt selbst erhalten hat — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html?modus=drucken",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der Landesmittel, die das Amt selbst erhalten hat — kein Zuschuss an Haushalte. Druckansicht derselben Seite."
       }
     ]
   },
@@ -55578,16 +55612,21 @@
     "name": "Göritz",
     "checkedAt": "2026-09-23T23:05:09Z",
     "recheckAt": "2026-12-24T08:00:00Z",
-    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Göritz eine Fundstelle auf amt-bruessow.de.",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Göritz drei Fundstellen auf amt-bruessow.de.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine entfernte Adresse (HTTP 404), die ohnehin nur ein Kontakt-Weiterleiter war.",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Seite „Fördermaßnahmen“ listet Vorhaben, für die das Amt selbst Landesmittel der Investitionsbank Brandenburg erhalten hat — die bekannte Umkehrung. Die dritte erfasste Adresse war ein Kontakt-Weiterleiter und antwortet inzwischen mit HTTP 404.",
     "searches": [
-      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Göritz)"
+      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Göritz)",
+      "Seite „Fördermaßnahmen“ auf amt-bruessow.de am 24.09.2026 live gelesen"
     ],
     "evidence": [
       {
         "url": "https://www.amt-bruessow.de/contact/index/link",
         "finding": "Die Adresse antwortet mit HTTP 404 („Die Seite wurde nicht gefunden“), am 24.09.2026 gemessen. Sie war ohnehin ein Kontakt-Weiterleiter der Amtsseite und nie eine Förderseite."
+      },
+      {
+        "url": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "finding": "„Fördermaßnahmen der Investitionsbank des Landes Brandenburg (ILB)“ — eine Liste der Vorhaben, für die das Amt selbst Landesmittel bekommen hat: denkmalpflegerische Zielplanung für den Park Menkin, Sanierung der Stadtmauer von Brüssow, Erwerb, Neubau und Ausbau. Wieder die Umkehrung: Förderung FÜR das Amt, nicht von ihm. Kein Zuschuss an Haushalte und kein Bezug zu Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen."
       }
     ],
     "sources": [
@@ -55596,6 +55635,18 @@
         "disposition": "reviewed",
         "evidenceUrl": "https://www.amt-bruessow.de/contact/index/link",
         "reason": "Am 24.09.2026 gemessen: HTTP 404, Adresse entfernt."
+      },
+      {
+        "url": "amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der Landesmittel, die das Amt selbst erhalten hat — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html?modus=drucken",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der Landesmittel, die das Amt selbst erhalten hat — kein Zuschuss an Haushalte. Druckansicht derselben Seite."
       }
     ]
   },
@@ -55604,16 +55655,21 @@
     "name": "Schenkenberg",
     "checkedAt": "2026-09-23T23:05:09Z",
     "recheckAt": "2026-12-24T08:00:00Z",
-    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Schenkenberg eine Fundstelle auf amt-bruessow.de.",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Schenkenberg drei Fundstellen auf amt-bruessow.de.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine entfernte Adresse (HTTP 404), die ohnehin nur ein Kontakt-Weiterleiter war.",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Seite „Fördermaßnahmen“ listet Vorhaben, für die das Amt selbst Landesmittel der Investitionsbank Brandenburg erhalten hat — die bekannte Umkehrung. Die dritte erfasste Adresse war ein Kontakt-Weiterleiter und antwortet inzwischen mit HTTP 404.",
     "searches": [
-      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Schenkenberg)"
+      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Schenkenberg)",
+      "Seite „Fördermaßnahmen“ auf amt-bruessow.de am 24.09.2026 live gelesen"
     ],
     "evidence": [
       {
         "url": "https://www.amt-bruessow.de/contact/index/link",
         "finding": "Die Adresse antwortet mit HTTP 404 („Die Seite wurde nicht gefunden“), am 24.09.2026 gemessen. Sie war ohnehin ein Kontakt-Weiterleiter der Amtsseite und nie eine Förderseite."
+      },
+      {
+        "url": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "finding": "„Fördermaßnahmen der Investitionsbank des Landes Brandenburg (ILB)“ — eine Liste der Vorhaben, für die das Amt selbst Landesmittel bekommen hat: denkmalpflegerische Zielplanung für den Park Menkin, Sanierung der Stadtmauer von Brüssow, Erwerb, Neubau und Ausbau. Wieder die Umkehrung: Förderung FÜR das Amt, nicht von ihm. Kein Zuschuss an Haushalte und kein Bezug zu Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen."
       }
     ],
     "sources": [
@@ -55622,6 +55678,18 @@
         "disposition": "reviewed",
         "evidenceUrl": "https://www.amt-bruessow.de/contact/index/link",
         "reason": "Am 24.09.2026 gemessen: HTTP 404, Adresse entfernt."
+      },
+      {
+        "url": "amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der Landesmittel, die das Amt selbst erhalten hat — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html?modus=drucken",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der Landesmittel, die das Amt selbst erhalten hat — kein Zuschuss an Haushalte. Druckansicht derselben Seite."
       }
     ]
   },
@@ -55630,16 +55698,21 @@
     "name": "Schönfeld",
     "checkedAt": "2026-09-23T23:05:09Z",
     "recheckAt": "2026-12-24T08:00:00Z",
-    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Schönfeld eine Fundstelle auf amt-bruessow.de.",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Schönfeld drei Fundstellen auf amt-bruessow.de.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine entfernte Adresse (HTTP 404), die ohnehin nur ein Kontakt-Weiterleiter war.",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Seite „Fördermaßnahmen“ listet Vorhaben, für die das Amt selbst Landesmittel der Investitionsbank Brandenburg erhalten hat — die bekannte Umkehrung. Die dritte erfasste Adresse war ein Kontakt-Weiterleiter und antwortet inzwischen mit HTTP 404.",
     "searches": [
-      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Schönfeld)"
+      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Schönfeld)",
+      "Seite „Fördermaßnahmen“ auf amt-bruessow.de am 24.09.2026 live gelesen"
     ],
     "evidence": [
       {
         "url": "https://www.amt-bruessow.de/contact/index/link",
         "finding": "Die Adresse antwortet mit HTTP 404 („Die Seite wurde nicht gefunden“), am 24.09.2026 gemessen. Sie war ohnehin ein Kontakt-Weiterleiter der Amtsseite und nie eine Förderseite."
+      },
+      {
+        "url": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "finding": "„Fördermaßnahmen der Investitionsbank des Landes Brandenburg (ILB)“ — eine Liste der Vorhaben, für die das Amt selbst Landesmittel bekommen hat: denkmalpflegerische Zielplanung für den Park Menkin, Sanierung der Stadtmauer von Brüssow, Erwerb, Neubau und Ausbau. Wieder die Umkehrung: Förderung FÜR das Amt, nicht von ihm. Kein Zuschuss an Haushalte und kein Bezug zu Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen."
       }
     ],
     "sources": [
@@ -55648,6 +55721,18 @@
         "disposition": "reviewed",
         "evidenceUrl": "https://www.amt-bruessow.de/contact/index/link",
         "reason": "Am 24.09.2026 gemessen: HTTP 404, Adresse entfernt."
+      },
+      {
+        "url": "amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der Landesmittel, die das Amt selbst erhalten hat — kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html?modus=drucken",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/seite/585399/f%C3%B6rderma%C3%9Fnahmen.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der Landesmittel, die das Amt selbst erhalten hat — kein Zuschuss an Haushalte. Druckansicht derselben Seite."
       }
     ]
   }
