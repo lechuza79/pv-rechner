@@ -2,15 +2,15 @@
 
 **Alles hier ist gemessen oder im Volltext geprüft, nichts geschätzt** (Hauptteil
 27.08.2026, Nachträge mit eigenem Datum). Wer diese Erhebung erweitert, liest zuerst diese
-Datei — **sieben Quellen sind durchgeprüft, fünf davon verworfen.** Der Weg muss nicht
+Datei — **acht Quellen sind durchgeprüft, sechs davon verworfen.** Der Weg muss nicht
 noch einmal gegangen werden.
 
 **Kurzfassung für die eilige Sitzung:** Google gesperrt · Kammer-Werbeverzeichnis leer
 (1 von 12 Betrieben darin) · OpenStreetMap zu dünn · **Handelsregister liefert nicht das
 Gründungsjahr, sondern das Alter der Rechtsform — bei alten Betrieben bis zu 76 Jahre
-daneben** · Ortssuche über die Suchmaschine ist der Weg für die Grundgesamtheit · **das
-Innungsverzeichnis der E-Handwerke ist die einzige neue Quelle mit Ertrag (33 % der
-Elektrobetriebe)** · Bewertungen liegen bei Google, das heißt: Link statt Wert.
+daneben** · Ortssuche über die Suchmaschine ist der Weg für die Grundgesamtheit · **die
+Innungsverzeichnisse hätten getragen (33 % der Elektrobetriebe wiedergefunden) und
+untersagen den Abruf ausdrücklich** · Bewertungen liegen bei Google, das heißt: Link statt Wert.
 
 ---
 
@@ -849,7 +849,7 @@ bei fast allen Elektrobetrieben; was fehlt, ist nicht die Tatsache, sondern ihr 
 
 ---
 
-## 6. Das Innungsverzeichnis der E-Handwerke — die einzige NEUE Quelle, die trägt
+## 6. Die Innungsverzeichnisse — fachlich die beste Quelle, und beide verbieten es ausdrücklich
 
 Die Fachbetriebssuche der Elektro- und Informationstechnischen Handwerke führt die
 Innungsmitglieder; ein Treffer dort IST das Signal „Innungsfachbetrieb" — eines der fünf
@@ -893,18 +893,61 @@ Websites (3 bis 7 %). Auf die 1.454 Betriebe mit Elektro-Gewerk hochgerechnet w�
   Fehlermeldung von 53 Zeichen — er sieht aus wie „kein Treffer". **Wer das nachbaut,
   prüft zuerst gegen einen Betrieb, von dem er WEISS, dass er drin steht.**
 
-**Die Rechtsfrage ist zum Zeitpunkt dieses Nachtrags noch in Prüfung** (Datenbankrecht an
-einem Mitgliederverzeichnis, Nutzungsbedingungen, die Formular-Prüfsumme als technische
-Schutzvorrichtung). Vor einem Lauf ist ihr Ergebnis abzuwarten. **Der Merksatz aus dem
-Förderbereich — „private Portale nicht abgreifen, weil dort die Auswahl die Investition
-IST" — ist hier NICHT ungeprüft zu übernehmen:** In einem Mitgliederverzeichnis wird nichts
-ausgewählt, es wird eine Mitgliedschaft abgebildet. Ob das trägt, entscheidet die Prüfung,
-nicht die Analogie.
+### Und dann das Verbot, gefunden eine Stunde vor der Empfehlung
 
-**Der Gegenpart für Heizung und Sanitär** (514 unserer Betriebe) ist die Handwerkersuche
-des SHK-Zentralverbands, nach dessen Angabe über 23.000 Innungsbetriebe. Sie sucht **nur
-nach Ort, nicht nach Namen** und hat eigene Nutzungsbedingungen, die noch zu lesen sind —
-**ungemessen und offen.**
+**Beide Verzeichnisse untersagen genau diese Nutzung, im Wortlaut.** Auszüge liegen in
+`docs/quellen/fachbetriebe/innungsverzeichnisse-nutzungsklauseln-2026-09-23.txt`.
+
+Bei den E-Handwerken steht die Klausel **nicht** unter der Überschrift
+„Nutzungsbedingungen" — die betrifft dort nur Bilder —, sondern im **Impressum** unter
+„Hinweis und Haftungsausschluss":
+
+> „Nicht erlaubt ist eine kommerzielle Nutzung der Daten, wie zum Beispiel zum Aufbau
+> eigener Systeme und Dienste bzw. **Verzeichnisse jeglicher Art**. Außerdem ist das
+> **automatische Auslesen von Daten durch Software untersagt**."
+
+Der SHK-Zentralverband sagt dasselbe noch deutlicher und nennt die Rechtsfolge:
+
+> „Jede zweckfremde Nutzung oder Verwertung ist unzulässig. So ist insbesondere die
+> vollständige, teilweise oder auszugsweise Verwendung der gelisteten Daten im Internet
+> für gewerbliche Adressenverwertung, kommerzielle Auskunftserteilung oder **als Unterlage
+> bzw. Hilfsmittel für die Zusammenstellung oder Ergänzung von Teilnehmer-, Adress- oder
+> anderen Verzeichnissen** in jeder medialen Form […] sowie **das Auslesen der Daten im
+> Internet zu den vorgenannten Zwecken** […] nicht gestattet und wird von den Anbietern
+> nach geltendem Recht unter Ausschöpfung des Rechtsweges verfolgt."
+
+Das sind nicht zwei Formulierungen, die man auslegen müsste. Beide nennen unseren
+Anwendungsfall bei seinen zwei Bestandteilen: ein Verzeichnis aufbauen und dafür
+maschinell auslesen.
+
+**Die Lehre ist nicht „es gibt eine Klausel", sondern WO sie stand.** Gesucht hatte ich
+unter „Nutzungsbedingungen" und in einer Crawler-Anweisung; gefunden habe ich sie im
+Impressum, zwischen Registernummer und Haftungsausschluss für Links. Dieselbe Falle wie
+beim Registerportal, wo die Nutzungsordnung hinter einer Formular-Navigation liegt und mit
+einem gewöhnlichen Abruf gar nicht erreichbar ist. **Wer eine fremde Quelle bewertet,
+sucht die Nutzungsbedingungen im ganzen Impressum und in der ganzen Datenschutzerklärung,
+nicht nur dort, wo sie hingehören.**
+
+**Der Merksatz aus dem Förderbereich trägt hier übrigens tatsächlich nicht** — in einem
+Mitgliederverzeichnis wird nichts ausgewählt, es wird eine Mitgliedschaft abgebildet, und
+das Datenbankrecht ist deshalb eine offene Frage. **Es kommt nur nicht mehr darauf an.**
+Eine ausdrückliche, spezifische Untersagung zu übergehen ist unabhängig vom
+Datenbankrecht die falsche Richtung, und für dieses Projekt die teuerste: Die Marke ist
+„belegte Zahlen, ehrlich erhoben". Ein Verband, der uns schreibt, wäre nicht zu erklären.
+
+**Was bleibt, sind zwei Wege ohne Abruf:**
+
+1. **Den Verband fragen.** Beide betreiben ihr Verzeichnis als Werbeleistung für ihre
+   Mitglieder; ein unabhängiger Rechner, der Innungsbetriebe als solche ausweist, ist für
+   sie nicht offensichtlich ein Gegner. Das ist Außenkontakt und damit eine Entscheidung
+   des Betreibers.
+2. **Den Betrieb selbst fragen**, beim ohnehin geplanten Erstkontakt. Dasselbe Ergebnis
+   wie beim Meisterbrief: Wer Innungsmitglied ist, sagt es — kostenlos, aktuell und ohne
+   jede Rechtsfrage.
+
+**Die gemessene Trefferquote bleibt trotzdem wertvoll:** Sie sagt, dass rund ein Drittel
+unserer Elektrobetriebe Innungsmitglied ist. Das ist die Erwartung, gegen die sich die
+Ausbeute des Erstkontakts messen lässt.
 
 ---
 
