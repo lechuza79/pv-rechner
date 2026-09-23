@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ortPhrase, gattungPhrase, childNoun, istKreisfrei, istStadtstaat } from "../atlas-orte";
+import { anzeigeOrtsname, ortPhrase, gattungPhrase, childNoun, istKreisfrei, istStadtstaat } from "../atlas-orte";
 import { regionDisplayName } from "../atlas-format";
 
 describe("ortPhrase", () => {
@@ -148,5 +148,23 @@ describe("istStadtstaat", () => {
     expect(istStadtstaat("08111000")).toBe(false); // Stuttgart
     expect(istStadtstaat("09162000")).toBe(false); // München
     expect(istStadtstaat("05315000")).toBe(false); // Köln
+  });
+});
+
+describe("anzeigeOrtsname", () => {
+  // 46 Gemeinden tragen amtlich zwei Namen. Auf der Ortsseite steht der Name in
+  // Überschrift, Abo-Knopf, jeder Rangzeile und jedem Geschichten-Titel — dort
+  // zählt die deutsche Form allein.
+  it("lässt die zweisprachige Zweitform weg", () => {
+    expect(anzeigeOrtsname("Quitzdorf am See / Kwětanecy při jězoru")).toBe("Quitzdorf am See");
+    expect(anzeigeOrtsname("Bautzen / Budyšin")).toBe("Bautzen");
+    expect(anzeigeOrtsname("Lübben (Spreewald) / Lubin (Błota)")).toBe("Lübben (Spreewald)");
+  });
+
+  it("rührt einen Schrägstrich IM Namen nicht an", () => {
+    // Ohne Leerzeichen gehört er zum Namen — sonst hieße Boxberg „Boxberg".
+    expect(anzeigeOrtsname("Boxberg/O.L.")).toBe("Boxberg/O.L.");
+    expect(anzeigeOrtsname("Lübbenau/Spreewald / Lubnjow/Błota")).toBe("Lübbenau/Spreewald");
+    expect(anzeigeOrtsname("Höchberg")).toBe("Höchberg");
   });
 });

@@ -43,8 +43,9 @@ export default function GemeindeBeispiele({
   plz: string | null;
   lat: number | null;
   lon: number | null;
-  /** Kommunale oder Landesförderung, wenn sie hier gilt — sonst nichts. */
-  foerderung?: { href: string; text: string; titel: string } | null;
+  /** Der Förder-Abschnitt dieses Orts (GemeindeFoerderung) — vom Server
+   *  gebaut, weil er den Katalog liest. */
+  foerderung?: React.ReactNode;
 }) {
   const [p, setP] = useState<GemeindePotential | null>(null);
   const [fehler, setFehler] = useState(false);
@@ -155,19 +156,10 @@ export default function GemeindeBeispiele({
             </article>
           ))}
         </div>
-        {foerderung && (
-          // Der Zuschuss der Gemeinde gehört zu den Beispielrechnungen: Er
-          // ändert jede von ihnen. Verlinkt statt gerechnet, weil die Höhe an
-          // Bedingungen hängt, die diese Seite nicht kennt. Eigener Abschnitt,
-          // damit die Sprungleiste ihn anspringen kann.
-          <div className="v3-examples-foerderung" id="atlas-foerderung">
-            <h3>{foerderung.titel}</h3>
-            <p>Zuschüsse zusätzlich zur bundesweiten Regelung.</p>
-            <a className="atlas-link" href={foerderung.href}>
-              {foerderung.text} {pfeil}
-            </a>
-          </div>
-        )}
+        {/* Der Zuschuss der Gemeinde gehört zu den Beispielrechnungen: Er
+            ändert jede von ihnen. Eigener Abschnitt, damit die Sprungleiste
+            ihn anspringen kann. */}
+        {foerderung}
       </div>
     </section>
   );

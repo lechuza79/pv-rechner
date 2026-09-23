@@ -93,14 +93,46 @@ test.describe("Gemeindeseite", () => {
     });
   }
   // Die kommunale Förderung stand auf der bisherigen Ortsseite und fehlte im
-  // neuen Entwurf ganz — aufgefallen ist es dem Betreiber, nicht uns. Sie
-  // erscheint nur, wo sie gilt: Nidda hat ein eigenes Programm, Höchberg keins.
-  test("der Zuschuss der Gemeinde steht auf der Seite und führt zu seinem Programm", async ({ page }) => {
+  // neuen Entwurf ganz — aufgefallen ist es dem Betreiber, nicht uns. Jedes
+  // Programm, das hier gilt, steht als Box mit seinen Einzelheiten im Fenster;
+  // wo es keines gibt, sagt der Abschnitt genau das. Vorher stand dort ein
+  // Verweis auf die Landesseite, der bei Quitzdorf einen BEENDETEN
+  // Balkon-Zuschuss als „Landesförderung in Sachsen" anbot.
+  test("das Förderprogramm der Gemeinde steht als Box und öffnet seine Einzelheiten", async ({ page }) => {
     await page.goto("/solar-atlas/hessen/landkreis-wetteraukreis/nidda");
-    const link = page.getByRole("link", { name: /Zuschüsse in Nidda/ });
-    await expect(link).toHaveAttribute("href", "/photovoltaik-foerderung/hessen/nidda");
+    const abschnitt = page.locator("#atlas-foerderung");
+    await abschnitt.scrollIntoViewIfNeeded();
+    await expect(abschnitt).toContainText("Förderung in Nidda");
+    const box = abschnitt.locator(".gemeinde-foerder-box").first();
+    await expect(box).toContainText("Photovoltaik");
+    // Der Dialog steht immer im Dokument; geöffnet ist er erst mit [open].
+    const fenster = page.locator("dialog.gemeinde-foerder-dialog[open]");
+    await klickBisWirkung(box, fenster, "Förder-Fenster");
+    // Die Bedingungen stehen je Technik getrennt: Die Balkon-Bedingung „zwei
+    // Module je Haushalt" darf nicht unter der Dachanlage stehen.
+    await expect(fenster).toContainText("Balkonkraftwerk");
+    await expect(fenster.getByRole("link", { name: /offiziellen Quelle/ })).toBeVisible();
+  });
+
+  test("ein Ort ohne eigenen Zuschuss bekommt den Satz, der wirklich gilt", async ({ page }) => {
     await page.goto(ORT);
-    await expect(page.getByRole("link", { name: /Zuschüsse in|Landesförderung in/ })).toHaveCount(0);
+    const abschnitt = page.locator("#atlas-foerderung");
+    await abschnitt.scrollIntoViewIfNeeded();
+    await expect(abschnitt).toContainText(/kein eigener Zuschuss bekannt|kein eigenes Förderprogramm/);
+    await expect(abschnitt.locator(".gemeinde-foerder-box")).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /Landesförderung in/ })).toHaveCount(0);
+  });
+
+  // Der Kopf zeigt eine Platzierung nur, wenn sie eine Nachricht ist. Quitzdorf
+  // stand dort mit „Platz 25", obwohl es im Kreis beim Zubau je Einwohner
+  // Zweiter ist — und der Ranglisten-Abschnitt eröffnete mit derselben 25.
+  test("Kopf und Rangliste zeigen die beste Platzierung, nicht die erstbeste", async ({ page }) => {
+    await page.goto(LANGER_ORT);
+    await expect(page.locator(".v3-rank-intro")).not.toContainText("Platz 25");
+    const abschnitt = page.locator("#atlas-ranking");
+    await abschnitt.scrollIntoViewIfNeeded();
+    await expect(abschnitt.locator(".ranking-stage")).toContainText("Zubau auf privaten Dächern", { timeout: 30_000 });
+    await expect(abschnitt.locator(".ranking-intro-copy")).toContainText("im Landkreis Görlitz");
   });
   // Ein Stadtstaat IST sein Bundesland: Hamburg verglich sich mit „1 Ort" —
   // sich selbst. Jetzt startet der Vergleich bundesweit.

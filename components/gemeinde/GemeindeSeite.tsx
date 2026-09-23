@@ -14,8 +14,9 @@ import GemeindeBeispiele from "./GemeindeBeispiele";
 import GemeindeAboKnopf from "./GemeindeAboKnopf";
 import GemeindeAboDialog from "./GemeindeAboDialog";
 import SiteFuss from "../SiteFuss";
-import { publishedCities, cityPath } from "../../lib/atlas-cities";
-import { landProgramBundeslaender } from "../../lib/funding-programs";
+import GemeindeFoerderung from "./GemeindeFoerderung";
+import { getFundingPrograms } from "../../lib/funding-data";
+import { fundingStandLabel, fundingZaehlt, matchFundingForAgs } from "../../lib/funding-programs";
 
 /**
  * The new municipality page (approved design, 09/2026), server-rendered.
@@ -77,8 +78,15 @@ export function kopfRang(p: GemeindePaket): KopfRang | null {
   const own = peers.find((r) => r.region_id === p.ags);
   if (peers.length >= 3 && own) {
     const platz = 1 + peers.filter((r) => r.sums.alle.count > own.sums.alle.count).length;
-    const bild = platz === 2 ? "/atlas-design-preview/rank-badges/roof-2-no-banner.svg" : platz <= 3 ? `/gemeinde/rank-badges/roof-${platz}.webp` : null;
-    return { titel: `Platz ${platz}`, text: "Anzahl der Solaranlagen", bild };
+    // Nur ein Podestplatz ist eine Nachricht. Quitzdorf stand hier mit „Platz
+    // 25" im Kopf, während es im Kreis Platz 2 beim Zubau je Einwohner hält —
+    // die schwächste Zahl des Orts an seiner sichtbarsten Stelle. Reicht es
+    // nicht aufs Podest, gilt die beste ausgezeichnete Platzierung, und wo es
+    // keine gibt, bleibt die Kachel weg.
+    if (platz <= 3) {
+      const bild = platz === 2 ? "/atlas-design-preview/rank-badges/roof-2-no-banner.svg" : `/gemeinde/rank-badges/roof-${platz}.webp`;
+      return { titel: `Platz ${platz}`, text: "Anzahl der Solaranlagen", bild };
+    }
   }
   const r = p.rankings.find((x) => x.distinction);
   if (!r) return null;
@@ -89,25 +97,15 @@ export function kopfRang(p: GemeindePaket): KopfRang | null {
   return { titel: d, text: r.label.charAt(0).toUpperCase() + r.label.slice(1), bild };
 }
 
-export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; ort: Ortsangaben }) {
-  // Kommunale Förderung: dieselbe Bedingung wie auf der bisherigen Ortsseite —
-  // verlinkt wird nur, was hier auch gilt. Ein Ort ohne eigenes Programm
-  // bekommt den Landes-Zuschuss seines Bundeslands, sonst nichts.
-  const foerderOrt = publishedCities().find((c) => ort.ags.startsWith(c.ags));
-  // Das Bundesland kommt aus der Adresse, nicht aus der Krümelspur: Bei
-  // Stadtstaaten lässt die Spur das Land weg, damit sich Hamburg nicht dreimal
-  // nennt — Hamburgs Landesförderung wäre so nie gefunden worden.
-  const landSlug = ort.liveUrl.split("/")[2] ?? "";
-  const foerderLand = landProgramBundeslaender().find((b) => b.slug === landSlug);
-  const foerderung = foerderOrt
-    ? { href: cityPath(foerderOrt), text: `Zuschüsse in ${foerderOrt.name}`, titel: `Förderung in ${foerderOrt.name}` }
-    : foerderLand
-      ? {
-          href: `/photovoltaik-foerderung/${landSlug}`,
-          text: `Landesförderung in ${foerderLand.name}`,
-          titel: `Förderung in ${foerderLand.name}`,
-        }
-      : null;
+export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; ort: Ortsangaben }) {
+  // Förderung dieses Orts: alles, was hier gilt — Gemeinde, Landkreis, Land,
+  // jede Technik. Die Bundesprogramme bleiben draußen, sie gelten überall und
+  // sagen über den Ort nichts; sie stehen als Satz mit Weg zur Übersicht.
+  // Vorher stand hier ein Link auf die Landesseite, der bei Quitzdorf einen
+  // beendeten Balkon-Zuschuss als „Landesförderung" anbot.
+  const foerderProgramme = matchFundingForAgs(await getFundingPrograms(), ort.ags)
+    .filter((p) => p.level !== "bund")
+    .map((programm) => ({ programm, standLabel: fundingStandLabel(programm), zaehlt: fundingZaehlt(programm) }));
   const z = bestandsZahlen(paket);
   const stand = formatStoryDate(paket.registerStand);
   // The monitor's figures end with the last complete month.
@@ -198,7 +196,7 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             <a href="#atlas-stories">Insights</a>
             <a href="#atlas-ranking">Ranking</a>
             <a href="#atlas-data">Energiemonitor</a>
-            {foerderung && <a href="#atlas-foerderung">Förderung</a>}
+            <a href="#atlas-foerderung">Förderung</a>
             <div className="atlas-page-actions">
               <GemeindeAboKnopf name={ort.name} />
               <button type="button" data-page-copy aria-label="Link zur Seite kopieren" title="Link kopieren" />
@@ -278,7 +276,13 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             </div>
           )}
 
-          <GemeindeBeispiele name={ort.name} plz={ort.plz} lat={ort.lat} lon={ort.lon} foerderung={foerderung} />
+          <GemeindeBeispiele
+            name={ort.name}
+            plz={ort.plz}
+            lat={ort.lat}
+            lon={ort.lon}
+            foerderung={<GemeindeFoerderung ort={ort.name} programme={foerderProgramme} uebersichtHref="/photovoltaik-foerderung" />}
+          />
 
           <section className="atlas-section atlas-overview" id="atlas-data">
             <div className="atlas-wrap">

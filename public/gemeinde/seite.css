@@ -159,3 +159,138 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
 }
 #atlas-sources p { margin: 0 0 10px; }
 #atlas-sources a { color: inherit; }
+
+/* Der Tipp-Kreis über „Alle … Orte ansehen" und über der nächsten Kategorie
+   ist im Entwurf lila und mit festen Farbwerten in die Bewegung geschrieben —
+   er blinkte als einziger Fremdkörper auf der Seite. Dieselbe Geste in unserem
+   Grün; der Fokusring ebenso. */
+#atlas-ranking .ranking-list-invite::before,
+#atlas-ranking .ranking-choice.ranking-invite-visible::before {
+  background: color-mix(in srgb, var(--theme-action) 22%, transparent);
+  border-color: color-mix(in srgb, var(--theme-action) 80%, transparent);
+}
+#atlas-ranking .ranking-list-invite::after,
+#atlas-ranking .ranking-choice.ranking-invite-visible::after {
+  border-color: color-mix(in srgb, var(--theme-action) 60%, transparent);
+}
+#atlas-ranking .ranking-open:focus-visible,
+#atlas-ranking .ranking-choice:focus-visible,
+#atlas-ranking .ranking-icon-action:focus-visible {
+  outline-color: var(--atlas-ink);
+}
+
+/* ── Das Fenster mit der vollständigen Liste ───────────────────────────────── */
+/* Unter der Tabelle standen 76 px leer: Platz für den schwebenden Knopf, den
+   die klebende eigene Zeile ersetzt hat. Ohne ihn sah die Liste unten
+   abgeschnitten aus. */
+#atlas-ranking .ranking-dialog .ranking-table {
+  margin-bottom: 0 !important;
+  padding-bottom: 6px;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+/* Die klebende eigene Zeile trägt ihren Schatten; die Trennlinien darüber und
+   darunter zeichneten zusätzlich zwei Striche quer hindurch. */
+#atlas-ranking .ranking-dialog .ranking-table tr.is-own :is(td, th),
+#atlas-ranking .ranking-dialog .ranking-table tr:has(+ tr.is-own) :is(td, th) {
+  border-bottom-color: transparent;
+}
+/* Jede andere Gemeinde führt auf ihre Seite. */
+#atlas-ranking .ranking-dialog .ranking-table th a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 3px;
+}
+#atlas-ranking .ranking-dialog .ranking-table th a:hover {
+  text-decoration-color: currentColor;
+}
+/* Beim Öffnen steht der Fokus auf dem Schließen-Knopf — der Ring sah aus wie
+   eine Auszeichnung des Kreuzes. Er bleibt für die Tastatur, aber dezent. */
+#atlas-ranking .ranking-close:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--atlas-ink) 45%, transparent);
+  outline-offset: 2px;
+}
+#atlas-ranking .ranking-close:focus:not(:focus-visible) { outline: none }
+
+/* ── Förderung des Orts: Vorschaubox je Programm, Einzelheiten im Fenster ──── */
+.gemeinde-foerder-liste {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  margin: 18px 0 18px;
+  padding: 0;
+}
+.gemeinde-foerder-box {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  padding: 16px 18px;
+  border: 1px solid var(--atlas-line);
+  border-radius: 14px;
+  background: var(--atlas-paper);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.gemeinde-foerder-box:hover { border-color: var(--atlas-muted); transform: translateY(-1px) }
+.gemeinde-foerder-box strong { font-size: 16px; line-height: 1.3 }
+.gemeinde-foerder-technik { display: flex; flex-wrap: wrap; gap: 6px }
+.gemeinde-foerder-technik span {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--atlas-ink) 8%, transparent);
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.gemeinde-foerder-satz { font-size: 14px; color: var(--atlas-muted) }
+.gemeinde-foerder-fuss {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--atlas-muted);
+}
+.gemeinde-foerder-mehr { display: inline-flex; align-items: center; gap: 6px; color: var(--atlas-ink); font-weight: 700 }
+.gemeinde-foerder-dialog .gemeinde-foerder-traeger { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
+.gemeinde-foerder-dialog .gemeinde-foerder-quelle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--atlas-line);
+  font-size: 13px;
+  color: var(--atlas-muted);
+}
+.gemeinde-foerder-dialog .gemeinde-foerder-quelle a { display: inline-flex; align-items: center; gap: 6px; color: var(--atlas-ink); font-weight: 700 }
+/* Das Fenster steht im dunklen Abschnitt der Beispielrechnungen und erbte
+   dessen Farben — dasselbe Fenster sah je nach Abschnitt anders aus als das
+   Abo-Fenster. Es setzt seine Farbwelt deshalb selbst. */
+.gemeinde-foerder-dialog {
+  --atlas-paper: #fafbf8;
+  --atlas-ink: #18323e;
+  --atlas-muted: #617279;
+  --atlas-line: #cdd6d2;
+  max-height: min(86dvh, 760px);
+  display: flex;
+  flex-direction: column;
+}
+.gemeinde-foerder-dialog h2 { font-size: clamp(20px, 2.4vw, 26px); margin-bottom: 14px }
+/* Lange Bedingungslisten laufen im Fenster, nicht aus ihm heraus. */
+.gemeinde-foerder-dialog .atlas-dialog-body { min-height: 0; overflow: auto; padding-right: 4px }
+.gemeinde-foerder-technikblock + .gemeinde-foerder-technikblock {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--atlas-line);
+}
+.gemeinde-foerder-technikblock h3 { margin: 0 0 8px; font-size: 15px }

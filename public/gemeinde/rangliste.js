@@ -60,10 +60,16 @@
     })),
   );
   let discovered = 1;
+  // Womit der Abschnitt aufmacht: mit der BESTEN ausgezeichneten Platzierung,
+  // wenn es eine gibt. Der Entwurf startete immer auf „Zahl der Solaranlagen" —
+  // Quitzdorf eröffnete damit mit Platz 25 von 40, obwohl es im selben Kreis
+  // beim Zubau je Einwohner Zweiter ist. Die Reihenfolge der gespeicherten
+  // Platzierungen ist bereits die beste zuerst.
+  const besteEntdeckung = discoveries.findIndex((d) => d.distinction);
   let area = G.startArea,
     owner = "alle",
     classId = G.klasse,
-    active = "count",
+    active = besteEntdeckung >= 0 ? "saved-" + besteEntdeckung : "count",
     playing = false,
     visible = false,
     busy = false,
@@ -204,62 +210,35 @@
       once: true,
     });
     let priorOverflow = "";
-    openList.onclick = () => {
+    // Die eigene Zeile bleibt beim Scrollen in der Tabelle stehen (weiß,
+    // gerundet, mit Schatten). Der Entwurf löste das mit einem gelben Knopf,
+    // der unten in der Tabelle schwebte und die Zeile ein zweites Mal
+    // nachbaute — mit der klebenden Zeile stand beides gleichzeitig da.
+    const scroller = full.querySelector(".ranking-table");
+    openList.onclick = async () => {
       pause();
       listInvitations.add(active);
       openList.classList.remove("ranking-list-invite");
       priorOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
       full.showModal();
-      requestAnimationFrame(updateFloating);
-    };
-    const floating = document.createElement("button");
-    floating.type = "button";
-    floating.className = "ranking-floating-own";
-    floating.hidden = true;
-    full.append(floating);
-    const scroller = full.querySelector(".ranking-table");
-    function updateFloating() {
-      const own = scroller.querySelector("tr.is-own");
-      if (!full.open || !own) {
-        floating.hidden = true;
-        return;
+      // Die volle Liste einer gespeicherten Platzierung wird erst hier geholt.
+      // Sie hing bisher am Kategorie-Wechsel; öffnet die Seite gleich auf der
+      // besten Platzierung, stand im Fenster „undefined" statt der Liste.
+      const m = metrics.find((x) => x.id === active);
+      const snap = m?.snapshot;
+      if (snap && !snap.rows && snap.rowsUrl && !snap.rowsFailed) {
+        scroller.innerHTML = "<p>Rangliste wird geladen …</p>";
+        try {
+          const r = await fetch(snap.rowsUrl);
+          if (!r.ok) throw Error("unavailable");
+          snap.rows = await r.json();
+        } catch {
+          snap.rowsFailed = true;
+          snap.rowsUnavailableReason = "Die vollständige Liste konnte gerade nicht geladen werden.";
+        }
+        if (active === m.id) render(true);
       }
-      const row = own.getBoundingClientRect(),
-        view = scroller.getBoundingClientRect();
-      floating.hidden =
-        row.top >=
-          view.top +
-            (scroller.querySelector("thead")?.getBoundingClientRect().height ??
-              0) && row.bottom <= view.bottom;
-      if (!floating.hidden) {
-        floating.style.gridTemplateColumns = [...own.children]
-          .map((cell) => cell.getBoundingClientRect().width + "fr")
-          .join(" ");
-        floating.innerHTML = [...own.children]
-          .map((cell) => "<span>" + cell.innerHTML + "</span>")
-          .join("");
-        floating.setAttribute(
-          "aria-label",
-          G.name + " in der Rangliste anzeigen",
-        );
-      }
-    }
-    scroller.addEventListener("scroll", updateFloating, { passive: true });
-    const floatingObserver = new ResizeObserver(updateFloating);
-    floatingObserver.observe(scroller);
-    window.addEventListener("pagehide", () => floatingObserver.disconnect(), {
-      once: true,
-    });
-    floating.onclick = () => {
-      const own = scroller.querySelector("tr.is-own");
-      if (own)
-        scroller.scrollTo({
-          top: own.offsetTop - scroller.clientHeight / 2,
-          behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
-            ? "instant"
-            : "smooth",
-        });
     };
     section.querySelector(".ranking-close").onclick = () => full.close();
     full.addEventListener("click", (event) => {
@@ -1007,7 +986,7 @@
         : classLabel;
       const classHelp = `<span class="ranking-help-wrap"><button type="button" class="ranking-class-help" aria-expanded="false" aria-describedby="ranking-class-tip">${escape(cluster)}</button><span id="ranking-class-tip" role="tooltip" hidden>${m.snapshot ? escape(savedClass ?? "Alle Ortsgrößen") : classes.map((c) => escape(c[1])).join("<br>")}<br>${escape(G.name)} hat ${G.einwohnerLabel}.</span></span>`;
       section.querySelector(".ranking-intro-copy").innerHTML = m.snapshot
-        ? `Wir vergleichen ${fmt(total)} Orte in ${escape(areaLabel)}${savedClass ? " · " + classHelp : ""}.`
+        ? `Wir vergleichen ${fmt(total)} Orte ${escape(m.snapshot.scopePhrase ?? "in " + areaLabel)}${savedClass ? " · " + classHelp : ""}.`
         : `Wir vergleichen ${fmt(total)} Orte ${areaLabel} · ${classHelp}. Berücksichtigt werden ${ownerLabel}.`;
       bindTooltip();
       updateReset();
@@ -1019,8 +998,8 @@
           : `Rangliste ansehen · ${total > 100 ? "Top 100 und eigene Position" : total + " Orte"}`;
       section.querySelector(".ranking-table").innerHTML =
         m.snapshot && !m.snapshot.rows
-          ? `<p>${escape(m.snapshot.rowsUnavailableReason)}</p><a class="ranking-snapshot-link" href="https://solar-check.io${escape(m.snapshot.href)}" target="_blank" rel="noopener">Vollständige Rangliste öffnen ↗</a>`
-          : `<table><thead><tr><th>Platz</th><th>Ort</th><th>${m.unit || "Wert"}</th><th title="Rangänderung">Änderung${m.snapshot?.changePeriod ? "<br><small>" + escape(m.snapshot.changePeriod) + "</small>" : ""}</th></tr></thead><tbody>${rows.map((r) => `<tr class="${r.id === G.ags ? "is-own" : ""}"><td>${fmt(r.rank)}</td><th scope="row">${escape(r.name)}</th><td>${fmt(r.value)}</td><td>${r.change == null || r.change === 0 ? '<span class="ranking-flat" title="' + (r.change === 0 ? "Platz gehalten" : "Kein vergleichbarer früherer Stand") + '">–</span>' : r.change > 0 ? '<span class="ranking-delta ranking-up" aria-label="' + fmt(r.change) + ' Plätze gestiegen">' + PFEIL_HOCH + fmt(r.change) + "</span>" : '<span class="ranking-delta ranking-down" aria-label="' + fmt(-r.change) + ' Plätze gefallen">' + PFEIL_RUNTER + fmt(-r.change) + "</span>"}</td></tr>`).join("")}</tbody></table>`;
+          ? `<p>${escape(m.snapshot.rowsUnavailableReason ?? "Diese Rangliste wird hier gerade geladen.")}</p><a class="ranking-snapshot-link" href="https://solar-check.io${escape(m.snapshot.href)}" target="_blank" rel="noopener">Vollständige Rangliste öffnen ↗</a>`
+          : `<table><thead><tr><th>Platz</th><th>Ort</th><th>${m.unit || "Wert"}</th><th title="Rangänderung">Änderung${m.snapshot?.changePeriod ? "<br><small>" + escape(m.snapshot.changePeriod) + "</small>" : ""}</th></tr></thead><tbody>${rows.map((r) => `<tr class="${r.id === G.ags ? "is-own" : ""}"><td>${fmt(r.rank)}</td><th scope="row">${r.href && r.id !== G.ags ? `<a href="${escape(r.href)}">${escape(r.name)}</a>` : escape(r.name)}</th><td>${fmt(r.value)}</td><td>${r.change == null || r.change === 0 ? '<span class="ranking-flat" title="' + (r.change === 0 ? "Platz gehalten" : "Kein vergleichbarer früherer Stand") + '">–</span>' : r.change > 0 ? '<span class="ranking-delta ranking-up" aria-label="' + fmt(r.change) + ' Plätze gestiegen">' + PFEIL_HOCH + fmt(r.change) + "</span>" : '<span class="ranking-delta ranking-down" aria-label="' + fmt(-r.change) + ' Plätze gefallen">' + PFEIL_RUNTER + fmt(-r.change) + "</span>"}</td></tr>`).join("")}</tbody></table>`;
       if (m.snapshot)
         openList.textContent =
           "Alle " + fmt(total) + " Orte in dieser Rangliste ansehen";

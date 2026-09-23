@@ -116,6 +116,27 @@ export function kurzOrtsname(name: string): string {
   return ohneZusatz.length >= 3 ? ohneZusatz : ohneKlammer || name;
 }
 
+/**
+ * Der Ortsname, wie ihn die Ortsseite zeigt: ohne die zweisprachige Zweitform.
+ * „Quitzdorf am See / Kwětanecy při jězoru" → „Quitzdorf am See".
+ *
+ * 46 Gemeinden in Sachsen und Brandenburg führen amtlich beide Namen, deutsch
+ * und sorbisch. Auf einer Seite, die den Ortsnamen in der Überschrift, im
+ * Abo-Knopf, in jeder Rangzeile und in jedem Geschichten-Titel trägt,
+ * verdoppelt das die Länge an jeder dieser Stellen — der Abo-Knopf allein
+ * schob die Seite auf dem Telefon aus dem Fenster.
+ *
+ * NUR das Trennzeichen mit Leerzeichen zählt: „Boxberg/O.L." und
+ * „Lübbenau/Spreewald" tragen ihren Schrägstrich im Namen selbst.
+ *
+ * NICHT für Adressen, Verzeichnisse oder amtliche Angaben — dort steht der
+ * vollständige Name.
+ */
+export function anzeigeOrtsname(name: string): string {
+  const erste = name.split(" / ")[0].trim();
+  return erste.length >= 2 ? erste : name;
+}
+
 /** Gattungswort der untergeordneten Ebene, mit korrektem Numerus. */
 export function childNoun(childLevel: string | null, anzahl?: number): string {
   const eins = anzahl === 1;

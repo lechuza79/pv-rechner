@@ -37,6 +37,14 @@ export type MastrMapProps = {
   valueLabel?: string;
   /** True while choropleth data is fetching — polygons animate with a pulse. */
   loading?: boolean;
+  /**
+   * Höchste Höhe der Kartenfläche in Pixeln.
+   *
+   * Ohne Angabe 620 — die Karte einer Seite, die sonst nichts zeigt. In einer
+   * Karte neben anderen Widgets (Ortsseite) ist das zu hoch: Die Box wuchs dort
+   * auf über 800 px und hing unten aus dem Rahmen.
+   */
+  maxHeight?: number;
 };
 
 // Choropleth shades derive from the accent color (mixed toward the background),
@@ -67,6 +75,7 @@ export function MastrMap({
   onSelect,
   valueLabel = "MW",
   loading = false,
+  maxHeight = 620,
 }: MastrMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   // Only the WIDTH is measured. The height is derived from the geometry: we fit
@@ -203,7 +212,7 @@ export function MastrMap({
     const PAD = 12;
     // Cap so a tall outline (Deutschland, schmale Kreise) can't grow the box
     // without bound; flatter outlines stay below it and shrink to fit exactly.
-    const MAX_H = 620;
+    const MAX_H = maxHeight;
     // Fit the shape to the WIDTH and make the box exactly as tall as the shape —
     // no letterbox gap. If that would exceed MAX_H, fall back to fitting both
     // dimensions into width × MAX_H (centered). `fitObject` is the outline we
@@ -251,7 +260,7 @@ export function MastrMap({
     // Default: de-level. Fit the whole country outline (the Bundesländer union
     // — identical bounds to the old Landkreis-based fit), render Bundesländer.
     return fitToWidth(blGeo, blGeo.features);
-  }, [level, parentAgs, lkGeo, blGeo, gemGeo, gemKreis, width]);
+  }, [level, parentAgs, lkGeo, blGeo, gemGeo, gemKreis, width, maxHeight]);
 
   const pathGen = useMemo(() => (projection ? geoPath(projection) : null), [projection]);
 

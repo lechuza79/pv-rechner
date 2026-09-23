@@ -1,6 +1,6 @@
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import { klasseVon } from "../../lib/gemeindegroesse";
-import { istStadtstaat } from "../../lib/atlas-orte";
+import { anzeigeOrtsname, istStadtstaat, ortPraeposition } from "../../lib/atlas-orte";
 
 /**
  * What public/gemeinde/rangliste.js and teilen.js read as window.__GEMEINDE__.
@@ -62,11 +62,22 @@ export function ranglistenDaten(
     district: {
       dataAsOf: paket.rangStand,
       populationAsOf: paket.einwohnerStand ?? paket.rangStand,
-      districtPeers: paket.district.districtPeers,
+      // Dieselbe Kurzform wie überall auf der Seite (sonst steht der Ort in
+      // seiner eigenen Kreisliste doppelt so lang wie im Kopf darüber).
+      districtPeers: paket.district.districtPeers.map((r) =>
+        typeof (r as { name?: unknown }).name === "string" ? { ...r, name: anzeigeOrtsname((r as { name: string }).name) } : r,
+      ),
     },
     discoveries: paket.rankings.map((r) => ({
       ...r,
       unit: EINHEIT[r.format] ?? "",
+      // "im Landkreis Görlitz", "in der Region Hannover", "in Sachsen" — die
+      // Regel steht in lib/atlas-orte.ts und kann im Browser-Skript nicht
+      // importiert werden; dort stand deshalb hart "in " vor jedem Gebiet.
+      scopePhrase: (() => {
+        const gebiet = r.scope.split(" · ")[0];
+        return `${ortPraeposition(gebiet)} ${gebiet}`;
+      })(),
       rowsUrl: `/api/gemeinde/rangliste?schluessel=${encodeURIComponent(r.key)}`,
     })),
   };

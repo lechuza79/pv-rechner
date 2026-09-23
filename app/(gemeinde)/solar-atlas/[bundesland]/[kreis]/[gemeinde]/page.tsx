@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { resolveSlugPath, getRegionById } from "../../../../../../lib/atlas";
-import { istKreisfrei, istStadtstaat } from "../../../../../../lib/atlas-orte";
+import { anzeigeOrtsname, istKreisfrei, istStadtstaat } from "../../../../../../lib/atlas-orte";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
 import { ladeGemeindePaket } from "../../../../../../lib/gemeinde-paket-server";
@@ -56,7 +56,7 @@ export default async function GemeindePage(props: { params: Promise<Params> }) {
     <GemeindeSeite
       paket={paket}
       ort={{
-        name: region.name,
+        name: anzeigeOrtsname(region.name),
         ags: region.region_id,
         plz: geo?.plz ?? null,
         lat: geo && Number.isFinite(geo.lat) ? geo.lat : null,

@@ -195,6 +195,10 @@ function LocalMap({ paket }: { paket: GemeindePaket }) {
           selectedAgs={selected}
           selectionStyle="pin"
           values={peers.map((row) => ({ ags: row.region_id, value: row.sums.alle.count }))}
+          // Die Karte steht hier in einer Reihe mit den übrigen Kacheln; mit
+          // der vollen Höhe wuchs ihre Box auf über 800 px und hing unten aus
+          // dem Rahmen (Betreiber, 23.09.2026).
+          maxHeight={420}
           valueLabel="Solaranlagen"
           onSelect={setSelected}
         />

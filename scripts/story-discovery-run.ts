@@ -1,4 +1,5 @@
 import {appendMonthlyAdditions} from '../lib/story-monthly-additions';
+import {anzeigeOrtsname} from '../lib/atlas-orte';
 import {appendMonthlySolar} from '../lib/story-monthly-candidate';
 /** Local replayable discovery. No database writes or publication side effects. */
 import {appendYieldStories,type YieldInput} from '../lib/story-yield-discovery';
@@ -38,7 +39,7 @@ const chosen=arg('cities','Trier,Nidda,Fürfeld,Höchberg,Berlin').split(',');
 const reports=regions.filter(r=>chosen.includes('all')||chosen.includes(r.name)||chosen.includes(r.region_id)).map(r=>{
  const peers=regions.filter(p=>p.region_id!==r.region_id&&p.population_as_of===r.population_as_of&&p.population>0&&p.population>=r.population/2&&p.population<=r.population*2&&annual.has(p.region_id));
  const values=peers.map(p=>(annual.get(p.region_id)??0)*1000/p.population).sort((a,b)=>a-b);
- const report=discoverStories({name:r.name,regionId:r.region_id,sourceDate:raw.sourceDate,source:raw.source,completeExport:true,rows:grouped.get(r.region_id)??[],funding:funding[r.region_id],peer:{population:r.population,populationBasis:r.population_as_of&&peers.length>=20&&r.population>=500?`Einwohnerzahlen aus dem Gemeindeverzeichnis mit Gebietsstand ${r.population_as_of}, auch für die Vergleichsorte; kein historischer Einwohnerstand des Zubaujahres.`:undefined,median:values.length?(values[Math.floor((values.length-1)/2)]+values[Math.floor(values.length/2)])/2:0,n:peers.length,minPopulation:Math.ceil(r.population/2),maxPopulation:r.population*2}});
+ const report=discoverStories({name:anzeigeOrtsname(r.name),regionId:r.region_id,sourceDate:raw.sourceDate,source:raw.source,completeExport:true,rows:grouped.get(r.region_id)??[],funding:funding[r.region_id],peer:{population:r.population,populationBasis:r.population_as_of&&peers.length>=20&&r.population>=500?`Einwohnerzahlen aus dem Gemeindeverzeichnis mit Gebietsstand ${r.population_as_of}, auch für die Vergleichsorte; kein historischer Einwohnerstand des Zubaujahres.`:undefined,median:values.length?(values[Math.floor((values.length-1)/2)]+values[Math.floor(values.length/2)])/2:0,n:peers.length,minPopulation:Math.ceil(r.population/2),maxPopulation:r.population*2}});
  report.inputKey=inputKey;
  const coverageRows=[...(grouped.get(r.region_id)??[]),...(storageGrouped.get(r.region_id)??[])];
  report.coverage=[...new Set(coverageRows.map(row=>row.segment))].map(topic=>{const rs=coverageRows.filter(row=>row.segment===topic).sort((a,b)=>a.month.localeCompare(b.month));return {topic,first:rs[0].month,last:rs.at(-1)!.month,count:rs.reduce((n,row)=>n+row.count,0)};});
