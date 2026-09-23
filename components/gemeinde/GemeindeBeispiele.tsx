@@ -38,6 +38,7 @@ export default function GemeindeBeispiele({
   lat,
   lon,
   foerderung,
+  foerderTechniken,
 }: {
   name: string;
   plz: string | null;
@@ -46,6 +47,9 @@ export default function GemeindeBeispiele({
   /** Der Förder-Abschnitt dieses Orts (GemeindeFoerderung) — vom Server
    *  gebaut, weil er den Katalog liest. */
   foerderung?: React.ReactNode;
+  /** Für welche Techniken es hier einen zählenden Zuschuss gibt. Entscheidet
+   *  der Server (fundingZaehlt), hier steht nur der Hinweis an der Karte. */
+  foerderTechniken?: string[];
 }) {
   const [p, setP] = useState<GemeindePotential | null>(null);
   const [fehler, setFehler] = useState(false);
@@ -86,6 +90,7 @@ export default function GemeindeBeispiele({
 
   const karten = [
     {
+      technik: "pv" as const,
       motif: "house",
       titel: "Eigenes Dach",
       wert: p ? rund(p.pvFiveYearBenefit, 100) : undefined,
@@ -95,6 +100,7 @@ export default function GemeindeBeispiele({
       cta: "Solar selbst durchrechnen",
     },
     {
+      technik: "waermepumpe" as const,
       motif: "heatpump-modern",
       titel: "Heizung erneuern",
       wert: p ? rund(p.wpTco20, 100) : undefined,
@@ -104,6 +110,7 @@ export default function GemeindeBeispiele({
       cta: "Wärmepumpe durchrechnen",
     },
     {
+      technik: "balkon" as const,
       motif: "balcony-modern",
       titel: "Balkonkraftwerk",
       wert: p ? rund(p.balkonSavingPerYear, 10) : undefined,
@@ -149,6 +156,20 @@ export default function GemeindeBeispiele({
                   <span className="v3-result-amount sc-delta">{betrag(k.wert, k.zeitraum)}</span>
                 </h3>
                 <p>{k.text}</p>
+                {/* Gibt es für DIESE Technik hier einen Zuschuss, steht es an
+                    der Rechnung, die er verändert — nicht nur unten im
+                    Förderabschnitt (Betreiber, 23.09.2026). Das lila Zeichen
+                    ist dasselbe wie im Menü neben dem Förderhinweis, aus
+                    demselben Stylesheet; eine zweite Fassung davon wäre eine
+                    zweite Wahrheit über dieselbe Sache. */}
+                {foerderTechniken?.includes(k.technik) && (
+                  <p className="sc-nav-funding-note gemeinde-foerder-hinweis">
+                    <span className="sc-nav-notice-icon" aria-hidden="true">
+                      !
+                    </span>
+                    <a href="#atlas-foerderung">Förderung verfügbar</a>
+                  </p>
+                )}
               </div>
               <a className="v3-example-cta sc-feature-action" href={k.href}>
                 {k.cta} {pfeil}

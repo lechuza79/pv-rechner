@@ -173,13 +173,21 @@
    Karte: Er trägt keinen Betrag, weil die Höhe an Bedingungen hängt. Als
    eigener Abschnitt mit Sprungziel, damit die Leiste ihn anspringen kann. */
 .solar-page .v3-examples-foerderung {
-  margin: 32px 0 0;
-  padding-top: 24px;
+  margin: 0;
+  padding: 56px 0 40px;
   border-top: 1px solid var(--atlas-line);
+  border-bottom: 1px solid var(--atlas-line);
   scroll-margin-top: 96px;
 }
-.solar-page .v3-examples-foerderung h3 { margin: 0 0 4px; }
-.solar-page .v3-examples-foerderung p { margin: 0 0 12px; color: var(--atlas-muted); }
+/* Ueberschrift und Einleitung wie in jedem anderen Abschnitt der Seite. */
+.solar-page .v3-examples-foerderung h3 {
+  font-family: var(--atlas-display, Montserrat), sans-serif;
+  font-weight: 700;
+  font-size: clamp(22px, 2.4vw, 30px);
+  line-height: 1.2;
+  margin: 0 0 8px;
+}
+.solar-page .v3-examples-foerderung > p { margin: 0 0 4px; color: var(--atlas-muted); }
 
 /* ── Fenster: mittig, sanft, auf dem Telefon von unten ──────────────────────
    Der Entwurf gibt dem Fenster keine Ränder, deshalb klebte es in der oberen
@@ -285,52 +293,27 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
 }
 #atlas-ranking .ranking-close:focus:not(:focus-visible) { outline: none }
 
-/* ── Förderung des Orts: Vorschaubox je Programm, Einzelheiten im Fenster ──── */
-.gemeinde-foerder-liste {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 12px;
-  margin: 18px 0 18px;
-  padding: 0;
+/* ── Förderung des Orts ─────────────────────────────────────────────────────
+   Die Karten sind DIESELBEN wie die drei Beispielrechnungen darüber
+   (sc-feature-card aus dem Design-System). Hier steht nur, was der Abschnitt
+   zusätzlich braucht; eigene Schrift, eigene Ränder und eigene Abstände gab es
+   hier einmal und passten zu nichts (Betreiber, 23.09.2026). */
+.gemeinde-foerder-liste { margin: 24px 0 20px; }
+.gemeinde-foerder-liste .sc-feature-card > .sc-feature-content > h3 {
+  font-family: var(--atlas-display, Montserrat), sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.25;
+  margin: 6px 0 10px;
 }
-.gemeinde-foerder-box {
-  display: grid;
-  gap: 6px;
-  width: 100%;
-  height: 100%;
-  text-align: left;
-  padding: 16px 18px;
-  border: 1px solid var(--atlas-line);
-  border-radius: 14px;
-  background: var(--atlas-paper);
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  transition: border-color .15s ease, transform .15s ease;
+.gemeinde-foerder-ebene { font-size: 13px; opacity: .72; margin: 8px 0 0 }
+/* Der Hinweis an einer Beispielrechnung: dasselbe lila Zeichen wie im Menue,
+   der Text als Link auf den Abschnitt darunter. */
+.gemeinde-foerder-hinweis {
+  display: flex; align-items: center; gap: 10px;
+  margin: 14px 0 0; color: inherit; max-width: none;
 }
-.gemeinde-foerder-box:hover { border-color: var(--atlas-muted); transform: translateY(-1px) }
-.gemeinde-foerder-box strong { font-size: 16px; line-height: 1.3 }
-.gemeinde-foerder-technik { display: flex; flex-wrap: wrap; gap: 6px }
-.gemeinde-foerder-technik span {
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--atlas-ink) 8%, transparent);
-  font-size: 11px;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-}
-.gemeinde-foerder-satz { font-size: 14px; color: var(--atlas-muted) }
-.gemeinde-foerder-fuss {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--atlas-muted);
-}
-.gemeinde-foerder-mehr { display: inline-flex; align-items: center; gap: 6px; color: var(--atlas-ink); font-weight: 700 }
+.gemeinde-foerder-hinweis a { color: inherit; font-weight: 700; text-underline-offset: 3px }
 .gemeinde-foerder-dialog .gemeinde-foerder-traeger { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
 .gemeinde-foerder-dialog .gemeinde-foerder-quelle {
   display: flex;

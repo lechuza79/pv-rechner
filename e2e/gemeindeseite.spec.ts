@@ -103,11 +103,13 @@ test.describe("Gemeindeseite", () => {
     const abschnitt = page.locator("#atlas-foerderung");
     await abschnitt.scrollIntoViewIfNeeded();
     await expect(abschnitt).toContainText("Förderung in Nidda");
-    const box = abschnitt.locator(".gemeinde-foerder-box").first();
+    // Dieselbe Karte wie die Beispielrechnungen darueber (sc-feature-card).
+    const box = abschnitt.locator(".sc-feature-card").first();
+    const knopf = box.locator("button.sc-feature-action");
     await expect(box).toContainText("Photovoltaik");
     // Der Dialog steht immer im Dokument; geöffnet ist er erst mit [open].
     const fenster = page.locator("dialog.gemeinde-foerder-dialog[open]");
-    await klickBisWirkung(box, fenster, "Förder-Fenster");
+    await klickBisWirkung(knopf, fenster, "Förder-Fenster");
     // Die Bedingungen stehen je Technik getrennt: Die Balkon-Bedingung „zwei
     // Module je Haushalt" darf nicht unter der Dachanlage stehen.
     await expect(fenster).toContainText("Balkonkraftwerk");
@@ -119,7 +121,7 @@ test.describe("Gemeindeseite", () => {
     const abschnitt = page.locator("#atlas-foerderung");
     await abschnitt.scrollIntoViewIfNeeded();
     await expect(abschnitt).toContainText(/kein eigener Zuschuss bekannt|kein eigenes Förderprogramm/);
-    await expect(abschnitt.locator(".gemeinde-foerder-box")).toHaveCount(0);
+    await expect(abschnitt.locator(".sc-feature-card")).toHaveCount(0);
     await expect(page.getByRole("link", { name: /Landesförderung in/ })).toHaveCount(0);
   });
 

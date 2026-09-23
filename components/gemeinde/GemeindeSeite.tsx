@@ -18,7 +18,7 @@ import SiteFuss from "../SiteFuss";
 import PersonBox from "../PersonBox";
 import GemeindeFoerderung from "./GemeindeFoerderung";
 import { getFundingPrograms } from "../../lib/funding-data";
-import { fundingStandLabel, fundingZaehlt, matchFundingForAgs } from "../../lib/funding-programs";
+import { fundingStandLabel, fundingZaehlt, matchFundingForAgs, technikenVon } from "../../lib/funding-programs";
 
 /**
  * The new municipality page (approved design, 09/2026), server-rendered.
@@ -106,6 +106,12 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
   const foerderProgramme = matchFundingForAgs(await getFundingPrograms(), ort.ags)
     .filter((p) => p.level !== "bund")
     .map((programm) => ({ programm, standLabel: fundingStandLabel(programm), zaehlt: fundingZaehlt(programm) }));
+  // Für welche Techniken hier wirklich Geld zu holen ist — nur Programme, die
+  // heute zählen. Ein beendeter Zuschuss darf an keiner Beispielrechnung als
+  // „Förderung verfügbar" stehen.
+  const foerderTechniken = [
+    ...new Set(foerderProgramme.filter((p) => p.zaehlt).flatMap((p) => technikenVon(p.programm))),
+  ];
   const z = bestandsZahlen(paket);
   const stand = formatStoryDate(paket.registerStand);
   // Der nächste geplante Lauf des Anlagenregisters, gerechnet vom jüngeren aus
@@ -326,6 +332,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
             lat={ort.lat}
             lon={ort.lon}
             foerderung={<GemeindeFoerderung ort={ort.name} programme={foerderProgramme} uebersichtHref="/photovoltaik-foerderung" />}
+            foerderTechniken={foerderTechniken}
           />
 
           <section className="atlas-section atlas-overview" id="atlas-data">

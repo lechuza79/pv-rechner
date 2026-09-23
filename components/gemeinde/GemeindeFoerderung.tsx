@@ -26,6 +26,13 @@ const TECHNIK_WORT: Record<FundingTechnik, string> = {
   waermepumpe: "Wärmepumpe",
 };
 
+/** Dasselbe Motiv, das die Beispielrechnung derselben Technik trägt. */
+const MOTIV: Record<FundingTechnik, string> = {
+  pv: "house",
+  balkon: "balcony-modern",
+  waermepumpe: "heatpump-modern",
+};
+
 const EBENE_WORT: Record<string, string> = {
   kommune: "Programm der Gemeinde",
   landkreis: "Programm des Landkreises",
@@ -75,31 +82,41 @@ export default function GemeindeFoerderung({
           ? `Diese Zuschüsse gelten hier zusätzlich zur bundesweiten Förderung.`
           : `Für ${ort} ist uns derzeit kein eigener Zuschuss bekannt. Es gilt die bundesweite Förderung.`}
       </p>
+      {/* DIESELBE Karte wie die drei Beispielrechnungen darüber (Betreiber,
+          23.09.2026: „Box wie die anderen und noch das Visual rein, nicht
+          Styles erfinden, recyceln"). Vorher hatte dieser Abschnitt eine
+          eigene, handgeschriebene Box — eigene Schrift, eigene Ränder, eigene
+          Abstände, und nichts davon passte zur Seite. Hier kommt nur der
+          Inhalt hinzu; Aufbau, Bild und Knopf sind die des geteilten
+          Bausteins. */}
       {programme.length > 0 && (
-        <ul className="gemeinde-foerder-liste">
+        <div className="v3-examples sc-feature-list gemeinde-foerder-liste">
           {programme.map((p) => {
             const satz = saetzeFuer(p.programm.rates)[0];
+            const techniken = technikenVon(p.programm);
             return (
-              <li key={p.programm.id}>
-                <button type="button" className="gemeinde-foerder-box" onClick={() => setOffen(p)}>
-                  <span className="gemeinde-foerder-technik">
-                    {technikenVon(p.programm).map((t) => (
-                      <span key={t}>{TECHNIK_WORT[t]}</span>
-                    ))}
-                  </span>
-                  <strong>{p.programm.name}</strong>
-                  <span className="gemeinde-foerder-satz">
-                    {satz ? `${satz.value}${satz.label ? ` · ${satz.label}` : ""}` : p.programm.coveredCosts}
-                  </span>
-                  <span className="gemeinde-foerder-fuss">
-                    <span>{EBENE_WORT[p.programm.level] ?? p.programm.traeger}</span>
-                    <span className="gemeinde-foerder-mehr">Einzelheiten {pfeil}</span>
-                  </span>
+              <article key={p.programm.id} className="sc-feature-card">
+                {/* @ts-expect-error — web component from /illustrations-motion/solar-illustrations.js */}
+                <solar-illustration
+                  class="v3-example-art sc-feature-visual"
+                  motif={MOTIV[techniken[0]] ?? "house"}
+                  label={TECHNIK_WORT[techniken[0]] ?? "Förderung"}
+                  circle=""
+                  loading="lazy"
+                />
+                <div className="v3-example-copy sc-feature-content">
+                  <p className="atlas-kicker">{techniken.map((t) => TECHNIK_WORT[t]).join(" · ")}</p>
+                  <h3>{p.programm.name}</h3>
+                  <p>{satz ? `${satz.value}${satz.label ? ` · ${satz.label}` : ""}` : p.programm.coveredCosts}</p>
+                  <p className="gemeinde-foerder-ebene">{EBENE_WORT[p.programm.level] ?? p.programm.traeger}</p>
+                </div>
+                <button type="button" className="v3-example-cta sc-feature-action" onClick={() => setOffen(p)}>
+                  Einzelheiten {pfeil}
                 </button>
-              </li>
+              </article>
             );
           })}
-        </ul>
+        </div>
       )}
       <a className="atlas-link" href={uebersichtHref}>
         Was bundesweit gilt {pfeil}
