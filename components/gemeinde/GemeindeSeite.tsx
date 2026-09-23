@@ -199,6 +199,16 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
             <a href="#atlas-data">Energiemonitor</a>
             <a href="#atlas-foerderung">Förderung</a>
             <div className="atlas-page-actions">
+              {/* Wann die Seite zuletzt neue Zahlen bekommen hat — direkt am
+                  Abo-Knopf, weil er genau das anbietet: Bescheid bekommen,
+                  wenn hier wieder etwas steht. Heute ist das der Stichtag des
+                  Registerauszugs (er wechselt mit dem Monatslauf); sobald die
+                  Datengeschichten in eigenem Takt nachwachsen, tritt deren
+                  Datum an diese Stelle. Kein mitlaufendes Datum: Was hier
+                  steht, muss eine echte Aktualisierung gewesen sein. */}
+              <span className="atlas-page-update">
+                Update <time dateTime={paket.registerStand}>{stand}</time>
+              </span>
               <GemeindeAboKnopf name={ort.name} />
               <button type="button" data-page-copy aria-label="Link zur Seite kopieren" title="Link kopieren" />
               <button type="button" data-page-share aria-label="Seite teilen" title="Seite teilen" />

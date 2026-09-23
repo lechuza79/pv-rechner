@@ -23,6 +23,17 @@
 @media(max-width:600px){
   .solar-page .v3-section-nav .atlas-page-actions button[data-page-subscribe]{min-height:32px}
 }
+/* Das Datum der letzten Aktualisierung steht vor dem Abo-Knopf: leise, weil es
+   eine Auskunft ist und keine Handlung, und einzeilig, damit es die Leiste
+   nicht auf zwei Zeilen zieht. Auf schmalen Bildschirmen entfällt es — dort
+   ist der Platz für den Knopf und die drei Sprungmarken da, und das Datum
+   steht ohnehin zweimal weiter unten auf der Seite. */
+.solar-page .v3-section-nav .atlas-page-update{
+  display:inline-flex;align-items:center;gap:4px;white-space:nowrap;
+  font-size:var(--font-size-xs,12px);color:var(--atlas-muted);margin-right:4px}
+@media(max-width:860px){
+  .solar-page .v3-section-nav .atlas-page-update{display:none}
+}
 
 /* ── Das Ranglisten-Fenster in unserer Farbwelt ──────────────────────────────
    Der Entwurf färbt es lila (Schließen-Knopf, Fokusring, Hinweiszeile) und
