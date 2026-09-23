@@ -107,7 +107,7 @@ const S = {
   },
   mono: { fontFamily: v("--font-mono"), fontSize: v("--font-size-small") },
   accent: { color: v("--color-accent"), fontWeight: 600 },
-  positive: { color: v("--color-positive"), fontWeight: 600 },
+  positive: { color: v("--color-positive-text"), fontWeight: 600 },
   muted: { color: v("--color-text-muted") },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
   ctaButton: {
@@ -342,14 +342,14 @@ function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; bad
         </div>
         <div style={tileWrap}>
           <div style={tileLabel}>Gewinn 25 J.</div>
-          <div style={{ ...tileValue, color: row.gewinn25 >= 0 ? v("--color-positive") : v("--color-negative") }}>
+          <div style={{ ...tileValue, color: row.gewinn25 >= 0 ? v("--color-positive-text") : v("--color-negative-text") }}>
             {row.gewinn25 > 0 ? "+" : ""}
             {row.gewinn25.toLocaleString("de-DE")} €
           </div>
         </div>
         <div style={tileWrap}>
           <div style={tileLabel}>⌀ Ersparnis / Jahr</div>
-          <div style={{ ...tileValue, color: v("--color-positive") }}>{row.ersparnisProJahr.toLocaleString("de-DE")} €</div>
+          <div style={{ ...tileValue, color: v("--color-positive-text") }}>{row.ersparnisProJahr.toLocaleString("de-DE")} €</div>
         </div>
       </div>
       <Link
@@ -531,10 +531,10 @@ export default async function LohntSichPvMitSpeicherPage() {
                     ? Math.round(((r.gewinn25 - rows[0].gewinn25) / rows[0].gewinn25) * 100)
                     : 0;
                   return (
-                    <td key={r.speicherKwh} style={{ ...S.tdNum, borderBottom: "none", color: v("--color-positive"), fontWeight: 700 }}>
+                    <td key={r.speicherKwh} style={{ ...S.tdNum, borderBottom: "none", color: v("--color-positive-text"), fontWeight: 700 }}>
                       {eur(r.gewinn25)}
                       {mehrPct > 0 && (
-                        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-positive"), opacity: 0.75, fontWeight: 600, marginTop: 2, display: "inline-flex", alignItems: "center", gap: 2, justifyContent: "flex-end" }}>
+                        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-positive-text"), opacity: 0.75, fontWeight: 600, marginTop: 2, display: "inline-flex", alignItems: "center", gap: 2, justifyContent: "flex-end" }}>
                           <IconArrowUp size={9} /> +{mehrPct} %
                         </div>
                       )}

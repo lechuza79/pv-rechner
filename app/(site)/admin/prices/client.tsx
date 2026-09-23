@@ -40,8 +40,8 @@ const S = {
   th: { textAlign: "left" as const, padding: "6px 8px", borderBottom: `2px solid ${v("--color-border")}`, fontWeight: 600, color: v("--color-text-secondary") },
   td: { padding: "6px 8px", borderBottom: `1px solid ${v("--color-border")}`, fontFamily: v("--font-mono") },
   muted: { color: v("--color-text-muted"), fontSize: v("--font-size-small") },
-  success: { color: v("--color-positive"), fontSize: v("--font-size-body"), fontWeight: 600, marginTop: 8 },
-  error: { color: v("--color-negative"), fontSize: v("--font-size-body"), fontWeight: 600, marginTop: 8 },
+  success: { color: v("--color-positive-text"), fontSize: v("--font-size-body"), fontWeight: 600, marginTop: 8 },
+  error: { color: v("--color-negative-text"), fontSize: v("--font-size-body"), fontWeight: 600, marginTop: 8 },
   link: { color: v("--color-accent"), textDecoration: "none", fontSize: v("--font-size-small") },
 };
 
@@ -295,7 +295,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
                     </td>
                     <td style={{ ...S.td, fontFamily: v("--font-text"), fontSize: v("--font-size-small"), maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {row.source === "SCRAPE_ERROR" ? (
-                        <span style={{ color: v("--color-negative") }} title={row.notes || ""}>Fehler</span>
+                        <span style={{ color: v("--color-negative-text") }} title={row.notes || ""}>Fehler</span>
                       ) : (
                         <span title={row.notes || ""}>{row.source || row.updated_by || "—"}</span>
                       )}

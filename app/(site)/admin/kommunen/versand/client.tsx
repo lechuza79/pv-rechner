@@ -50,7 +50,7 @@ export default function VersandAuswertung() {
       <AdminSeitenkopf titel="Übersicht" />
 
       {fehler && (
-        <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative") }}>
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative-text") }}>
           Die Auswertung konnte nicht geladen werden ({fehler}).
         </p>
       )}
@@ -80,7 +80,7 @@ export default function VersandAuswertung() {
           </p>
 
           {pubs === null && (
-            <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative"), marginBottom: space.lg }}>
+            <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative-text"), marginBottom: space.lg }}>
               Die Liste der Veröffentlichungen konnte nicht geladen werden.
             </p>
           )}
@@ -310,7 +310,7 @@ function Kennzahl({ label, wert, unten, gut }: { label: string; wert: number; un
           fontSize: v("--font-size-h1"),
           fontWeight: 800,
           fontFamily: v("--font-mono"),
-          color: gut && wert > 0 ? v("--color-positive") : v("--color-text-primary"),
+          color: gut && wert > 0 ? v("--color-positive-text") : v("--color-text-primary"),
         }}
       >
         {wert.toLocaleString("de-DE")}

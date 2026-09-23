@@ -102,7 +102,7 @@ export default function PasswortSetzen() {
               <button type="submit" disabled={busy} style={{ ...knopf, marginTop: space.xl, opacity: busy ? 0.7 : 1, cursor: busy ? "default" : "pointer" }}>
                 {busy ? "Einen Moment…" : "Passwort speichern"}
               </button>
-              {fehler && <div role="alert" style={{ fontSize: v("--font-size-small"), color: v("--color-negative"), marginTop: space.md, lineHeight: 1.4 }}>{fehler}</div>}
+              {fehler && <div role="alert" style={{ fontSize: v("--font-size-small"), color: v("--color-negative-text"), marginTop: space.md, lineHeight: 1.4 }}>{fehler}</div>}
             </form>
           )}
         </div>

@@ -797,7 +797,7 @@ export default function Empfehlung({
                 </div>
               )}
               <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), marginTop: 8, paddingTop: 8, borderTop: `1px solid ${v('--color-border-accent')}` }}>
-                Gewinn nach 25 Jahren: <span style={{ fontWeight: 700, color: (selRec?.eco.npv25 ?? 0) >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono') }}>
+                Gewinn nach 25 Jahren: <span style={{ fontWeight: 700, color: (selRec?.eco.npv25 ?? 0) >= 0 ? v('--color-positive-text') : v('--color-negative-text'), fontFamily: v('--font-mono') }}>
                   {(selRec?.eco.npv25 ?? 0) >= 0 ? "+" : ""}{Math.round(selRec?.eco.npv25 ?? 0).toLocaleString("de-DE")} €
                 </span>
               </div>
@@ -808,11 +808,11 @@ export default function Empfehlung({
                   weil sie verschweigt, dass die genannte Zahl das eigene Budget
                   ueberschreitet. */}
               {rec.reasoning.budgetZuKnapp ? (
-                <div style={{ fontSize: v("--font-size-small"), color: v('--color-negative'), marginTop: 8, fontWeight: 600 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-negative-text'), marginTop: 8, fontWeight: 600 }}>
                   Für dein Budget reicht es nicht — das ist die kleinste sinnvolle Anlage.
                 </div>
               ) : rec.reasoning.budgetConstrained && (
-                <div style={{ fontSize: v("--font-size-small"), color: v('--color-negative'), marginTop: 8, fontWeight: 600 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: v('--color-negative-text'), marginTop: 8, fontWeight: 600 }}>
                   Budget-begrenzt — ohne Limit wäre mehr möglich
                 </div>
               )}
@@ -904,7 +904,7 @@ export default function Empfehlung({
                   </div>
                   <div>
                     <div style={{ color: v('--color-text-secondary'), fontSize: v("--font-size-caption"), textTransform: "uppercase", letterSpacing: "0.04em" }}>Autarkie</div>
-                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-positive') }}>{rec.reasoning.autarkie}%</div>
+                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-positive-text') }}>{rec.reasoning.autarkie}%</div>
                   </div>
                   <div>
                     <div style={{ color: v('--color-text-secondary'), fontSize: v("--font-size-caption"), textTransform: "uppercase", letterSpacing: "0.04em" }}>Eigenverbrauch</div>
@@ -937,7 +937,7 @@ export default function Empfehlung({
                   <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v('--color-text-primary') }}>
                     Förderung{fundingOrt ? ` in ${fundingOrt}` : ""}
                   </span>
-                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, fontSize: v("--font-size-body"), color: v('--color-positive') }}>
+                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, fontSize: v("--font-size-body"), color: v('--color-positive-text') }}>
                     + {Math.round(fundingStack.total).toLocaleString("de-DE")} €
                   </span>
                 </div>
@@ -1033,7 +1033,7 @@ export default function Empfehlung({
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, paddingTop: 6, borderTop: `1px dashed ${v('--color-border')}` }}>
                         <span style={{ fontSize: v("--font-size-caption"), color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</span>
-                        <span style={{ fontSize: v("--font-size-small"), fontFamily: v('--font-mono'), fontWeight: 700, color: (altEco[i]?.npv25 ?? alt.npv25) >= 0 ? v('--color-positive') : v('--color-negative') }}>
+                        <span style={{ fontSize: v("--font-size-small"), fontFamily: v('--font-mono'), fontWeight: 700, color: (altEco[i]?.npv25 ?? alt.npv25) >= 0 ? v('--color-positive-text') : v('--color-negative-text') }}>
                           {(altEco[i]?.npv25 ?? alt.npv25) >= 0 ? "+" : ""}{Math.round(altEco[i]?.npv25 ?? alt.npv25).toLocaleString("de-DE")} €
                         </span>
                       </div>

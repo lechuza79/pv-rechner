@@ -393,7 +393,9 @@ export default async function MethodikPage() {
               Modellzahl veraltet lautlos. */}
           {SCENARIOS.map(s => (
             <span key={s.id}>
-              <span style={{ color: s.color, fontWeight: 600 }}>{s.label}:</span>{" "}
+              {/* textColor, nicht color: hier steht der Name als Text, nicht als
+                  Kurve — die Kurvenfarbe kommt auf diesem Grund auf 1,9:1. */}
+              <span style={{ color: s.textColor, fontWeight: 600 }}>{s.label}:</span>{" "}
               Strom +{(s.strom * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %/Jahr
               <br />
             </span>

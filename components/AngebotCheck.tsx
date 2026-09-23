@@ -334,7 +334,7 @@ export default function AngebotCheck({
       )}
 
       {zustand.art === "fehler" && (
-        <p style={{ fontSize: v("--font-size-body"), color: v("--color-negative"), marginTop: space.md }}>{zustand.text}</p>
+        <p style={{ fontSize: v("--font-size-body"), color: v("--color-negative-text"), marginTop: space.md }}>{zustand.text}</p>
       )}
 
       {zustand.art === "abgelehnt" && (

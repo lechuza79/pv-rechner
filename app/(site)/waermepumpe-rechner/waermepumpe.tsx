@@ -635,7 +635,7 @@ export default function Waermepumpe({
   // auseinanderläuft. Der eingeklappte Preis-Block erklärt sein eigenes Modell
   // aus `selPrice.explain`.
   const GRUENGAS_META = {
-    id: "gruengas", label: "Neues Heizungsgesetz", color: v('--color-positive'),
+    id: "gruengas", label: "Neues Heizungsgesetz", color: v('--color-positive-text'),
     sub: "Grüngas-Pflicht ab 2029",
   };
 
@@ -664,7 +664,7 @@ export default function Waermepumpe({
   const chartScenarios = greenGas
     ? [
         ...scenariosPlain.map(s => ({ id: s.id, color: v('--color-text-muted'), years: s.years, amortisationsJahre: s.amortisationsJahre })),
-        { id: "gruengas", color: v('--color-positive'), years: gruengasResult.years, amortisationsJahre: gruengasResult.amortisationsJahre },
+        { id: "gruengas", color: v('--color-positive-text'), years: gruengasResult.years, amortisationsJahre: gruengasResult.amortisationsJahre },
       ]
     : scenariosPlain.map(s => ({ id: s.id, color: s.color, years: s.years, amortisationsJahre: s.amortisationsJahre }));
 
@@ -1033,7 +1033,7 @@ export default function Waermepumpe({
               {/* Kernaussage */}
               <div style={{ padding: "10px 12px", borderRadius: v('--radius-md'), background: v('--color-chart-positive-bg'), marginBottom: 18, fontSize: v("--font-size-small"), lineHeight: 1.6, color: v('--color-text-secondary') }}>
                 Durch die Grüngas-Pflicht spart die Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre{" "}
-                <span style={{ fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>+{greenGasDelta.toLocaleString("de-DE")} €</span>{" "}mehr als bei reiner Preisfortschreibung.
+                <span style={{ fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive-text') }}>+{greenGasDelta.toLocaleString("de-DE")} €</span>{" "}mehr als bei reiner Preisfortschreibung.
               </div>
               {/* Chart B: Heizkosten je kWh Wärme */}
               <div style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Heizkosten je Kilowattstunde Wärme</div>
@@ -1066,10 +1066,10 @@ export default function Waermepumpe({
                   <span style={{ fontWeight: 700, color: v('--color-text-primary') }}>So wie dein Haus jetzt ist</span>
                   {" "}({INSULATION_BESTAND[insulationIdx].label.toLowerCase()}{heizsystem === "hk_alt" ? ", alte Heizkörper" : ""}){" "}
                   {istNegativ
-                    ? <>ist eine Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre <span style={{ fontWeight: 700, color: v('--color-negative') }}>unwirtschaftlich</span> ({istResult.tcoEinsparung.toLocaleString("de-DE")} €).</>
+                    ? <>ist eine Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre <span style={{ fontWeight: 700, color: v('--color-negative-text') }}>unwirtschaftlich</span> ({istResult.tcoEinsparung.toLocaleString("de-DE")} €).</>
                     : istKnapp
                       ? <>spielt eine Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre nur <span style={{ fontWeight: 700, fontFamily: v('--font-mono') }}>+{istResult.tcoEinsparung.toLocaleString("de-DE")} €</span> ein — sie lohnt sich <span style={{ fontWeight: 700 }}>ohne weitere Maßnahmen kaum</span>.</>
-                      : <>rechnet sich eine Wärmepumpe schon: <span style={{ fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>+{istResult.tcoEinsparung.toLocaleString("de-DE")} €</span>{istMehrkosten <= 0
+                      : <>rechnet sich eine Wärmepumpe schon: <span style={{ fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive-text') }}>+{istResult.tcoEinsparung.toLocaleString("de-DE")} €</span>{istMehrkosten <= 0
                         ? ", und sie kostet nach Förderung nicht mehr als eine neue Heizung"
                         : istResult.amortisationsJahre !== null ? `, die Mehrkosten sind nach ${istResult.amortisationsJahre} ${istResult.amortisationsJahre === 1 ? "Jahr" : "Jahren"} wieder drin` : ""}.</>}
                   {" "}So wirken sich weitere Schritte auf die Wirtschaftlichkeit aus:
@@ -1284,7 +1284,7 @@ export default function Waermepumpe({
                   <TcoBreakdown r={sel} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} refLabel={fuel.refLabel} />
                 </InfoTooltip>
               </div>
-              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: sel.tcoEinsparung >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
+              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: sel.tcoEinsparung >= 0 ? v('--color-positive-text') : v('--color-negative-text'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
                 {sel.tcoEinsparung >= 0 ? "+" : ""}{sel.tcoEinsparung.toLocaleString("de-DE")} €
               </div>
               {/* Die große Zahl gilt für EINE Preisannahme. Ohne die Bandbreite daneben
@@ -1543,7 +1543,7 @@ export default function Waermepumpe({
                   <div>Batteriespeicher: <InlineEdit value={pvSpeicher} onCommit={v => setPvSpeicher(v)} unit=" kWh" min={0} max={30} step={1} width={60} /></div>
 
                   <div style={{ marginTop: 10, fontSize: v("--font-size-small"), color: v('--color-text-muted'), lineHeight: 1.6 }}>
-                    WP-Synergie durch PV: <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.pvBenefit.toLocaleString("de-DE")} €</span> über {DEFAULT_HEATPUMP_CONFIG.years} Jahre — die PV deckt <span style={{ fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> des WP-Strombedarfs.
+                    WP-Synergie durch PV: <span style={{ fontWeight: 700, color: v('--color-positive-text'), fontFamily: v('--font-mono') }}>{result.pvBenefit.toLocaleString("de-DE")} €</span> über {DEFAULT_HEATPUMP_CONFIG.years} Jahre — die PV deckt <span style={{ fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> des WP-Strombedarfs.
                     <div style={{ marginTop: 4, fontSize: v("--font-size-caption"), color: v('--color-text-faint') }}>
                       Angerechnet wird nur der Solarstrom, den die Wärmepumpe zusätzlich selbst verbraucht (spart den WP-Tarif statt niedriger Einspeisung). Die PV-Anschaffung und ihr voller Nutzen (Haushaltsstrom, Einspeisung) rechnest du im <Link href="/photovoltaik-rechner" style={{ color: v('--color-accent'), textDecoration: "underline" }}>PV-Rechner</Link> — das gehört nicht in die Wärmepumpe-vs-Gas-Rechnung.
                     </div>
@@ -1660,7 +1660,7 @@ function StatCard({ label, value, positive, help, helpTitle, helpAriaLabel }: { 
         {label}
         {help && <InfoTooltip title={helpTitle} ariaLabel={helpAriaLabel ?? "Mehr Infos"} size={iconSizes.sm}>{help}</InfoTooltip>}
       </div>
-      <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: positive ? v('--color-positive') : v('--color-text-primary') }}>{value}</div>
+      <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: positive ? v('--color-positive-text') : v('--color-text-primary') }}>{value}</div>
     </div>
   );
 }
@@ -1733,7 +1733,7 @@ function WegCard({ titel, kurz, r, active, onClick, situation, sanierung, refLab
       </div>
       <div style={{ textAlign: "right", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
-          <span style={{ fontSize: v("--font-size-lead"), fontWeight: 800, fontFamily: v('--font-mono'), color: pos ? v('--color-positive') : v('--color-negative') }}>
+          <span style={{ fontSize: v("--font-size-lead"), fontWeight: 800, fontFamily: v('--font-mono'), color: pos ? v('--color-positive-text') : v('--color-negative-text') }}>
             {pos ? "+" : ""}{r.tcoEinsparung.toLocaleString("de-DE")} €
           </span>
           <span onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()} style={{ display: "inline-flex" }}>

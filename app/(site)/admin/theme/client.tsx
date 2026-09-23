@@ -58,8 +58,8 @@ const TEXTSTUFEN = [
 const ZAHLENSTUFEN = [
   { token: "--font-size-display-xl" as const, weight: 800, label: "Die eine große Zahl einer Seite", color: v("--color-accent") },
   { token: "--font-size-display-lg" as const, weight: 800, label: "Hero-Zahl eines Rechner-Ergebnisses", color: v("--color-accent") },
-  { token: "--font-size-display-md" as const, weight: 800, label: "Mitte eines Rings, mittlere Kennzahl", color: v("--color-positive") },
-  { token: "--font-size-display-sm" as const, weight: 800, label: "Kennzahl in einer Kachel", color: v("--color-positive") },
+  { token: "--font-size-display-md" as const, weight: 800, label: "Mitte eines Rings, mittlere Kennzahl", color: v("--color-positive-text") },
+  { token: "--font-size-display-sm" as const, weight: 800, label: "Kennzahl in einer Kachel", color: v("--color-positive-text") },
   { token: "--font-size-body" as const, weight: 700, label: "Zahl im Fließtext, editierbarer Wert", color: v("--color-text-primary") },
   { token: "--font-size-micro" as const, weight: 500, label: "Zahl an einer Diagramm-Achse", color: v("--color-text-muted") },
 ];
@@ -76,14 +76,14 @@ function isColor(value: string) {
 // Sample chart data for demo
 const sampleScenarios = [
   {
-    id: "pessimistic", color: v("--color-negative"),
+    id: "pessimistic", color: v("--color-negative-text"),
     data: {
       years: Array.from({ length: 26 }, (_, i) => ({ i, kum: -15000 + i * 700 })),
       be: { i: 21, kum: 0 },
     },
   },
   {
-    id: "realistic", color: v("--color-positive"),
+    id: "realistic", color: v("--color-positive-text"),
     data: {
       years: Array.from({ length: 26 }, (_, i) => ({ i, kum: -15000 + i * 1100 })),
       be: { i: 14, kum: 0 },
@@ -315,7 +315,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: 16, border: `1px solid ${v('--color-border')}` }}>
               <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</div>
-              <div style={{ fontSize: v("--font-size-display-sm"), fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 4 }}>+18.450 €</div>
+              <div style={{ fontSize: v("--font-size-display-sm"), fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive-text'), marginTop: 4 }}>+18.450 €</div>
             </div>
             <div style={{
               textAlign: "center", padding: "24px 20px", background: v('--color-bg-accent'),

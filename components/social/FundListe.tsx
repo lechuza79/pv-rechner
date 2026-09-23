@@ -238,7 +238,7 @@ export function FundListe({
                       ? "Trägt über Jahre — kann jederzeit raus"
                       : "An ein Zeitfenster gebunden — wird kalt"
                   }
-                  style={{ color: f.evergreen ? v("--color-positive") : v("--color-text-muted") }}
+                  style={{ color: f.evergreen ? v("--color-positive-text") : v("--color-text-muted") }}
                 >
                   {f.evergreen ? "Evergreen" : "zeitnah"}
                 </span>
@@ -262,7 +262,7 @@ export function FundListe({
                     <span aria-hidden>·</span>
                     <span
                       title={`Zuletzt gefunden am ${new Date(f.zuletztGesehen).toLocaleDateString("de-DE")} — der jüngste Lauf kennt ihn nicht mehr.`}
-                      style={{ color: v("--color-negative") }}
+                      style={{ color: v("--color-negative-text") }}
                     >
                       veraltet
                     </span>

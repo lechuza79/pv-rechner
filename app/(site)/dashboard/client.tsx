@@ -203,7 +203,7 @@ export default function DashboardClient({
                       </div>
                       <div style={{
                         fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'),
-                        color: calc.amortisation_jahre ? v('--color-accent') : v('--color-negative'),
+                        color: calc.amortisation_jahre ? v('--color-accent') : v('--color-negative-text'),
                         flexShrink: 0, marginLeft: 12,
                       }}>
                         {calc.amortisation_jahre ? `${calc.amortisation_jahre} J.` : ">25 J."}
@@ -217,7 +217,7 @@ export default function DashboardClient({
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Gewinn 25 J.</div>
-                        <div style={{ fontSize: v("--font-size-body"), fontWeight: 600, fontFamily: v('--font-mono'), color: (calc.rendite_25j ?? 0) > 0 ? v('--color-positive') : v('--color-negative') }}>
+                        <div style={{ fontSize: v("--font-size-body"), fontWeight: 600, fontFamily: v('--font-mono'), color: (calc.rendite_25j ?? 0) > 0 ? v('--color-positive-text') : v('--color-negative-text') }}>
                           {calc.rendite_25j != null ? `${calc.rendite_25j > 0 ? "+" : ""}${calc.rendite_25j.toLocaleString("de-DE")} €` : "—"}
                         </div>
                       </div>
