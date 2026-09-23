@@ -54240,5 +54240,193 @@
         "evidenceUrl": "https://www.stuhr.de/leben-wohnen/klimaschutz/klimaschutzfoerderung-2026/"
       }
     ]
+  },
+  {
+    "regionId": "03355004",
+    "name": "Bardowick",
+    "checkedAt": "2026-09-23T21:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf bardowick.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Förderseite der Samtgemeinde beschreibt ausschließlich die LEADER-Regionalentwicklung: bis 2029 stehen 2,8 Mio € EU-Mittel für die Region bereit, Projekte unter 7.440 € Gesamtausgaben sind ausgeschlossen. Kein eigener Zuschuss der Samtgemeinde und kein Energiebezug.",
+    "searches": [
+      "Förderseite der Samtgemeinde Bardowick am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bardowick.de/samtgemeinde-verwaltung/allgemeines/foerderprogramme.html",
+        "finding": "Wörtlich: „Eine LEADER-Förderung können Gemeinden, Vereine oder Privatpersonen erhalten. Für Projekte in unserer Region stehen bis 2029 insgesamt 2,8 Millionen € LEADER-Fördermittel bereit.\" Mindestvolumen 7.440 € je Projekt; keine Leistung für Energietechnik."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bardowick.de/samtgemeinde-verwaltung/allgemeines/foerderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; LEADER-Regionalentwicklung.",
+        "evidenceUrl": "https://www.bardowick.de/samtgemeinde-verwaltung/allgemeines/foerderprogramme.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03357055",
+    "name": "Wilstedt",
+    "checkedAt": "2026-09-23T21:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf wilstedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Förderrichtlinie für Wohneigentum: Die Gemeinde gewährt Familien einen Preisnachlass auf gemeindeeigene Baugrundstücke, 2.000 € je Kind und höchstens 4.000 €. Wohnbauförderung, kein Energiebezug.",
+    "searches": [
+      "Förderrichtlinie für Wohneigentum am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wilstedt.de/foerderrichtlinie-fuer-wohneigentum.html",
+        "finding": "Der Preisnachlass wird nach Kindern bemessen: 2.000 € je Kind bis zum vollendeten 16. Lebensjahr, höchstens 4.000 €. Gegenstand ist der Kauf eines gemeindeeigenen Grundstücks, keine Energietechnik."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wilstedt.de/foerderrichtlinie-fuer-wohneigentum.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Preisnachlass auf Baugrundstücke für Familien.",
+        "evidenceUrl": "https://www.wilstedt.de/foerderrichtlinie-fuer-wohneigentum.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03251003",
+    "name": "Bahrenborstel",
+    "checkedAt": "2026-09-23T21:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort zwei Fundstellen auf kirchdorf.de — dieselbe Seite unter zwei Adressen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Samtgemeinde Kirchdorf führt auf ihrer Förderseite drei Programme ihrer Mitgliedsgemeinden: Wohnungsbauförderung in Bahrenborstel und in Wehrbleck sowie einen Zuschuss für die Anpflanzung von Hecken und Laubbäumen in Wehrbleck. Bauen und Begrünung, keine Energieerzeugung.",
+    "searches": [
+      "Seite „Kommunale Förderprogramme\" der Samtgemeinde Kirchdorf am 23.09.2026 unter beiden erfassten Adressen live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kirchdorf.de/leben/wohnen/foerderprogramme",
+        "finding": "Wörtlich: „Unsere Mitgliedsgemeinden unterstützen Bauvorhaben und den Naturschutz mit gezielten Förderprogrammen.\" Verlinkt sind die Wohnungsbauförderprogramme Bahrenborstel und Wehrbleck und eine Richtlinie über Zuschüsse für Hecken und Laubbäume."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kirchdorf.de/leben/wohnen/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Wohnungsbau- und Anpflanzungszuschüsse.",
+        "evidenceUrl": "https://www.kirchdorf.de/leben/wohnen/foerderprogramme"
+      },
+      {
+        "url": "kirchdorf.de/portal/seiten/kommunale-foerderprogramme-900000135-21900.html?rubrik=900000006",
+        "disposition": "reviewed",
+        "reason": "Gelesen; dieselbe Seite unter der Portal-Adresse.",
+        "evidenceUrl": "https://www.kirchdorf.de/leben/wohnen/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "03257008",
+    "name": "Buchholz",
+    "checkedAt": "2026-09-23T21:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf buchholz-schaumburg.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Antragsformular „Förderung von energetischen Dienstleistungen\" nach Gemeinderatsbeschluss vom 21.06.2011: bezuschusst werden Energieberatung und Energieausweis mit 50 % und höchstens 150 €. Gefördert wird die BERATUNG, nicht die Anlage.",
+    "searches": [
+      "Antragsformular der Gemeinde am 23.09.2026 als PDF geholt und gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.buchholz-schaumburg.de/assets/downloads/56049454/antrag-bezuschussung-energiegutachten-s2.pdf",
+        "finding": "Formularkopf: „Förderung von energetischen Dienstleistungen gem. Beschluss vom 21.06.2011\", Fördergegenstände Energieberatung und Energieausweis, „Modernisierung/ Sanierung 50% max. 150,00 €\". Keine Anlagenförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "buchholz-schaumburg.de/assets/downloads/56049454/antrag-bezuschussung-energiegutachten-s2.pdf",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Zuschuss zu Energieberatung und Energieausweis.",
+        "evidenceUrl": "https://www.buchholz-schaumburg.de/assets/downloads/56049454/antrag-bezuschussung-energiegutachten-s2.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03241018",
+    "name": "Uetze",
+    "checkedAt": "2026-09-23T21:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf uetze.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Lebenslagen-Rubrik „Finanzielle Hilfen und Förderprogramme\" des Serviceportals — eine Kategorieseite, die am 23.09.2026 KEINEN einzigen Eintrag führt. Sie ist als Fundstelle in die Erfassung geraten, weil ihr Name auf Förderung hindeutet; einen Inhalt hat sie nicht.",
+    "searches": [
+      "Lebenslagen-Rubrik auf uetze.de am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.uetze.de/buergerservice/lebenslagen/finanzielle-hilfen-und-foerderprogramme-15-0.html",
+        "finding": "Die Seite trägt die Überschrift „Finanzielle Hilfen und Förderprogramme\" und darunter keinen einzigen Eintrag — eine leere Kategorieseite des Serviceportals."
+      }
+    ],
+    "sources": [
+      {
+        "url": "uetze.de/buergerservice/lebenslagen/finanzielle-hilfen-und-foerderprogramme-15-0.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; leere Kategorieseite ohne Eintrag.",
+        "evidenceUrl": "https://www.uetze.de/buergerservice/lebenslagen/finanzielle-hilfen-und-foerderprogramme-15-0.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03159032",
+    "name": "Seeburg",
+    "checkedAt": "2026-09-23T21:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf seeburgersee.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Lebenslagen-Rubrik „Finanzielle Hilfen und Förderprogramme\" des Serviceportals — eine Kategorieseite, die am 23.09.2026 KEINEN einzigen Eintrag führt. Sie ist als Fundstelle in die Erfassung geraten, weil ihr Name auf Förderung hindeutet; einen Inhalt hat sie nicht.",
+    "searches": [
+      "Lebenslagen-Rubrik auf seeburgersee.de am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.seeburgersee.de/buergerservice/lebenslagen/finanzielle-hilfen-und-foerderprogramme-900000017-0.html",
+        "finding": "Die Seite trägt die Überschrift „Finanzielle Hilfen und Förderprogramme\" und darunter keinen einzigen Eintrag — eine leere Kategorieseite des Serviceportals."
+      }
+    ],
+    "sources": [
+      {
+        "url": "seeburgersee.de/buergerservice/lebenslagen/finanzielle-hilfen-und-foerderprogramme-900000017-0.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; leere Kategorieseite ohne Eintrag.",
+        "evidenceUrl": "https://www.seeburgersee.de/buergerservice/lebenslagen/finanzielle-hilfen-und-foerderprogramme-900000017-0.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03159033",
+    "name": "Seulingen",
+    "checkedAt": "2026-09-23T21:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf seulingen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Lebenslagen-Rubrik „Finanzielle Hilfen und Förderprogramme\" des Serviceportals — eine Kategorieseite, die am 23.09.2026 KEINEN einzigen Eintrag führt. Sie ist als Fundstelle in die Erfassung geraten, weil ihr Name auf Förderung hindeutet; einen Inhalt hat sie nicht.",
+    "searches": [
+      "Lebenslagen-Rubrik auf seulingen.de am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.seulingen.de/buergerservice/lebenslagen/finanzielle-hilfen-und-foerderprogramme-900000017-0.html",
+        "finding": "Die Seite trägt die Überschrift „Finanzielle Hilfen und Förderprogramme\" und darunter keinen einzigen Eintrag — eine leere Kategorieseite des Serviceportals."
+      }
+    ],
+    "sources": [
+      {
+        "url": "seulingen.de/buergerservice/lebenslagen/finanzielle-hilfen-und-foerderprogramme-900000017-0.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; leere Kategorieseite ohne Eintrag.",
+        "evidenceUrl": "https://www.seulingen.de/buergerservice/lebenslagen/finanzielle-hilfen-und-foerderprogramme-900000017-0.html"
+      }
+    ]
   }
 ]
