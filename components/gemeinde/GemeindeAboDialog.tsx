@@ -72,6 +72,9 @@ export default function GemeindeAboDialog({ name, ags }: { name: string; ags: st
     <dialog
       ref={ref}
       className="atlas-dialog"
+      // The pre-hydration fallback (lib/abo-sofort.ts) finds the dialog by
+      // this mark; the funding dialog carries the same class.
+      data-abo=""
       aria-labelledby="atlas-abo-titel"
       onClick={(e) => {
         // A click on the backdrop closes, as in the prototype.

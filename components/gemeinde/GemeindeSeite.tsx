@@ -14,6 +14,7 @@ import GemeindeKopfKacheln, { type KopfRang } from "./GemeindeKopfKacheln";
 import GemeindeBeispiele from "./GemeindeBeispiele";
 import GemeindeAboKnopf from "./GemeindeAboKnopf";
 import GemeindeAboDialog from "./GemeindeAboDialog";
+import { ABO_SOFORT_SKRIPT } from "../../lib/abo-sofort";
 import SiteFuss from "../SiteFuss";
 import PersonBox from "../PersonBox";
 import GemeindeFoerderung from "./GemeindeFoerderung";
@@ -450,6 +451,10 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
       <GemeindeAboDialog name={ort.name} ags={ort.ags} />
       {/* The approved design's neon illustrations (the adapter swaps the
           citizen examples' motifs) and its rank confetti, unchanged. */}
+      {/* Opens the sign-up before React has taken the button over — the
+          measurement is in the module. Inline, because a hoisted script
+          would load too late for exactly that window. */}
+      <script dangerouslySetInnerHTML={{ __html: ABO_SOFORT_SKRIPT }} />
       <script src="/illustrations-motion/solar-illustrations.js" defer />
       <script src="/illustrations-neon/solar-neon.js" defer />
       <script src="/gemeinde/konfetti.js" defer />

@@ -9,7 +9,47 @@ import { klickBisWirkung } from "./klick";
 
 const ORT = "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg";
 
+// WARUM DIESE SEITE EIN EIGENES ZEITBUDGET BRAUCHT (gemessen 23.09.2026):
+// Playwrights `goto` wartet ohne Angabe auf das Ereignis „load", und das
+// tritt hier erst ein, wenn AUCH die drei nachgeladenen Rahmen (Kopf-Kachel,
+// Geschichten, Monitor) samt ihrer eigenen Unterressourcen fertig sind — die
+// starten absichtlich erst nach dem ersten Bild der Szene. Gemessen gegen den
+// Entwicklungs-Server: „load" nach 44 s, der Abo-Klick selbst wirkt beim
+// ERSTEN Versuch, sobald man ihn überhaupt erreicht. In der Prüfung fraß die
+// Navigation damit das 30-Sekunden-Budget des Tests auf, und der Fehler las
+// sich als „Klick blieb wirkungslos" — er zeigte auf den Knopf statt auf die
+// Navigation. Deshalb: auf das erste Dokument warten statt auf das letzte
+// Bild, und dem Beweis, dass ein Rahmen ankommt, ein Budget geben, das seine
+// eigene 30-Sekunden-Erwartung überhaupt zulässt.
+//
+// Das ist KEIN Hochsetzen einer Schwelle, damit ein Befund verschwindet: Was
+// die Tests prüfen (Fenster geht auf, Rahmen kommt an), bleibt unverändert
+// scharf — geändert wird nur, worauf gewartet wird.
+test.describe.configure({ timeout: 90_000 });
+
 test.describe("Gemeindeseite", () => {
+  // WEICHES SCROLLEN AUS — sonst misst die Prüfung eine Seite, die sich noch
+  // bewegt. GEMESSEN 23.09.2026: Die Seite scrollt weich (das ist so gewollt,
+  // ihre Abschnittsleiste lebt davon). Playwright schiebt ein Element vor dem
+  // Klick in den Blick und wartet danach, bis es ruhig steht — bei weichem
+  // Scrollen wandert es noch hunderte Millisekunden weiter, die Prüfung
+  // scrollt erneut, und das Ganze kann sich über Sekunden aufschaukeln. Im
+  // Protokoll steht dann bis zum Zeitlimit „warte, dass das Element ruhig
+  // steht", während der Knopf in Wahrheit sichtbar, bedienbar und unverdeckt
+  // ist — der Fehler zeigte auf den Knopf statt auf das Scrollen.
+  //
+  // Das ändert nichts an dem, was geprüft wird: Wie die Seite scrollt, ist
+  // nicht Gegenstand dieser Tests.
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      const stil = document.createElement("style");
+      stil.textContent = "html{scroll-behavior:auto !important}";
+      const anhaengen = () => document.head?.appendChild(stil);
+      if (document.head) anhaengen();
+      else document.addEventListener("DOMContentLoaded", anhaengen);
+    });
+  });
+
   test("ohne JavaScript stehen Überschrift, Zahlen, Geschichten und Platzierungen im HTML", async ({ request }) => {
     const html = await (await request.get(ORT)).text();
     expect(html).toMatch(/<h1[^>]*>Höchberg/);
@@ -24,7 +64,7 @@ test.describe("Gemeindeseite", () => {
   });
 
   test("Geschichten, Monitor und Kopf-Kachel kommen an, die Rangliste wird gebaut", async ({ page }) => {
-    await page.goto(ORT);
+    await page.goto(ORT, { waitUntil: "domcontentloaded" });
     await expect(page.frameLocator(".v3-monitor-card iframe").locator(".hero-story, .sc-widget").first()).toBeVisible({ timeout: 30_000 });
     await page.locator("#atlas-stories").scrollIntoViewIfNeeded();
     await expect(page.frameLocator("#atlas-stories iframe").locator("h3").first()).toBeVisible({ timeout: 30_000 });
@@ -39,7 +79,7 @@ test.describe("Gemeindeseite", () => {
       angemeldet++;
       return r.fulfill({ status: 200, body: "{}" });
     });
-    await page.goto(ORT);
+    await page.goto(ORT, { waitUntil: "domcontentloaded" });
     const fenster = page.locator("dialog.atlas-dialog", { hasText: "Höchberg abonnieren" });
     await klickBisWirkung(page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first(), fenster, "Abo-Fenster");
     await expect(fenster.getByRole("button", { name: "Als Bürger:in" })).toHaveAttribute("aria-pressed", "true");
@@ -99,7 +139,7 @@ test.describe("Gemeindeseite", () => {
   // Verweis auf die Landesseite, der bei Quitzdorf einen BEENDETEN
   // Balkon-Zuschuss als „Landesförderung in Sachsen" anbot.
   test("das Förderprogramm der Gemeinde steht als Box und öffnet seine Einzelheiten", async ({ page }) => {
-    await page.goto("/solar-atlas/hessen/landkreis-wetteraukreis/nidda");
+    await page.goto("/solar-atlas/hessen/landkreis-wetteraukreis/nidda", { waitUntil: "domcontentloaded" });
     const abschnitt = page.locator("#atlas-foerderung");
     await abschnitt.scrollIntoViewIfNeeded();
     await expect(abschnitt).toContainText("Förderung in Nidda");
@@ -117,7 +157,7 @@ test.describe("Gemeindeseite", () => {
   });
 
   test("ein Ort ohne eigenen Zuschuss bekommt den Satz, der wirklich gilt", async ({ page }) => {
-    await page.goto(ORT);
+    await page.goto(ORT, { waitUntil: "domcontentloaded" });
     const abschnitt = page.locator("#atlas-foerderung");
     await abschnitt.scrollIntoViewIfNeeded();
     await expect(abschnitt).toContainText(/kein eigener Zuschuss bekannt|kein eigenes Förderprogramm/);
@@ -129,7 +169,7 @@ test.describe("Gemeindeseite", () => {
   // stand dort mit „Platz 25", obwohl es im Kreis beim Zubau je Einwohner
   // Zweiter ist — und der Ranglisten-Abschnitt eröffnete mit derselben 25.
   test("Kopf und Rangliste zeigen die beste Platzierung, nicht die erstbeste", async ({ page }) => {
-    await page.goto(LANGER_ORT);
+    await page.goto(LANGER_ORT, { waitUntil: "domcontentloaded" });
     await expect(page.locator(".v3-rank-intro")).not.toContainText("Platz 25");
     const abschnitt = page.locator("#atlas-ranking");
     await abschnitt.scrollIntoViewIfNeeded();
@@ -148,14 +188,14 @@ test.describe("Gemeindeseite", () => {
       expect(antwort.status(), lang).toBe(308);
       expect(antwort.headers()["location"], lang).toMatch(/\/solar-atlas\/(hamburg|berlin)$/);
     }
-    await page.goto("/solar-atlas/hamburg");
+    await page.goto("/solar-atlas/hamburg", { waitUntil: "domcontentloaded" });
     await expect(page).toHaveURL(/\/solar-atlas\/hamburg$/);
   });
 
   // Ein Stadtstaat IST sein Bundesland: Hamburg verglich sich mit „1 Ort" —
   // sich selbst. Jetzt startet der Vergleich bundesweit.
   test("ein Stadtstaat vergleicht sich nicht mit sich selbst", async ({ page }) => {
-    await page.goto("/solar-atlas/hamburg");
+    await page.goto("/solar-atlas/hamburg", { waitUntil: "domcontentloaded" });
     const abschnitt = page.locator("#atlas-ranking");
     await abschnitt.scrollIntoViewIfNeeded();
     await expect(abschnitt).toContainText(/Wir vergleichen \d+ Orte in Deutschland/, { timeout: 30_000 });
