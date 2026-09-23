@@ -92,6 +92,11 @@
 .story-caption-overlay .story-reader-context{width:100%;flex:1;min-height:0;margin-top:12px}
 .story-visible-widget{width:100%;aspect-ratio:1;display:flex;align-items:center;overflow:hidden;pointer-events:none}
 .story-visible-widget>div{width:100%}
+/* Die Ranglisten-Karte trägt ihr Motiv als Hintergrund über die ganze
+   Bildfläche. Ohne diese Zeilen ist ihr Kasten nur so hoch wie seine Zeilen,
+   und das Bild endete mitten in der Karte mit einer geraden Kante. */
+.story-visible-widget>div:has([class*="RankStoryChart_chart"]),
+.story-visible-widget>div:has([class*="RankStoryChart_chart"])>div{align-self:stretch;height:100%}
 .story-reader-dialog>div:first-child>div:has(.story-progress-row){flex:1;min-width:0;margin-left:12px!important}
 
 .story-artwork-stage{margin-bottom:88px}
