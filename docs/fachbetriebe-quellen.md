@@ -9,8 +9,9 @@ noch einmal gegangen werden.
 (1 von 12 Betrieben darin) · OpenStreetMap zu dünn · **Handelsregister liefert nicht das
 Gründungsjahr, sondern das Alter der Rechtsform — bei alten Betrieben bis zu 76 Jahre
 daneben** · Ortssuche über die Suchmaschine ist der Weg für die Grundgesamtheit · **die
-Innungsverzeichnisse hätten getragen (33 % der Elektrobetriebe wiedergefunden) und
-untersagen den Abruf ausdrücklich** · Bewertungen liegen bei Google, das heißt: Link statt Wert.
+Innungsverzeichnisse finden 33 % der Elektrobetriebe wieder und sind trotzdem abgesagt —
+nicht wegen ihrer Verbotsklausel, sondern weil eine Anzeige bei zwei Dritteln ohne Treffer
+behauptet, die seien keine Innungsbetriebe** · Bewertungen liegen bei Google, das heißt: Link statt Wert.
 
 ---
 
@@ -842,14 +843,22 @@ und eine Ergänzung der Datenschutzerklärung den Nutzen wert sind.
 Bleibt als amtliche Quelle für den Meisterbetrieb (§ 6 Abs. 2 HwO, Rechtslage im
 Abschnitt 2 oben geprüft). **Der Aufwand ist der Grund, warum sie liegen bleibt:** 53
 Kammern, je ein eigener Antrag mit Darlegung des berechtigten Interesses, Ausgang je
-Kammer offen, keine Schnittstelle, und sie erfasst **nur zulassungspflichtige Handwerke** —
-also gerade nicht die reinen Solarteure. Gegenrechnung: Wir vermuten das Merkmal ohnehin
-bei fast allen Elektrobetrieben; was fehlt, ist nicht die Tatsache, sondern ihr Beleg.
-**Der billigste Beleg bleibt die Frage beim Erstkontakt.**
+Kammer offen, keine Schnittstelle.
+
+**Der Ertrag ist gemessen und kleiner, als er klingt.** Die Handwerksrolle führt nur
+zulassungspflichtige Handwerke; von unseren 3.115 Betrieben tragen **1.757 (56 %)**
+überhaupt eines davon (Elektro, Heizung/Sanitär, Dachdecker, Zimmerer), und bei **1.035**
+davon fehlt der Meisterbeleg — das ist die Obergrenze dessen, was 53 Anträge einbringen
+könnten. Die übrigen 1.358 stehen dort strukturell nicht: 327 sind reine Solarteure oder
+Energieberater, bei 1.031 haben wir bisher gar kein Gewerk erkannt.
+
+Gegenrechnung: Wir vermuten das Merkmal ohnehin bei fast allen Elektrobetrieben; was fehlt,
+ist nicht die Tatsache, sondern ihr Beleg. **Der billigste Beleg bleibt die Frage beim
+Erstkontakt** — sie erreicht alle 3.115 statt 1.035 und kostet keinen Antrag.
 
 ---
 
-## 6. Die Innungsverzeichnisse — fachlich die beste Quelle, und beide verbieten es ausdrücklich
+## 6. Die Innungsverzeichnisse — fachlich die beste Quelle, und trotzdem abgesagt
 
 Die Fachbetriebssuche der Elektro- und Informationstechnischen Handwerke führt die
 Innungsmitglieder; ein Treffer dort IST das Signal „Innungsfachbetrieb" — eines der fünf
@@ -877,7 +886,11 @@ Websites (3 bis 7 %). Auf die 1.454 Betriebe mit Elektro-Gewerk hochgerechnet w�
    Zustimmung zu einem Kartendienst; über den Betriebsnamen geht es ohne.
 2. **Der Treffer trägt eine E-Mail-Adresse** — damit gibt es einen maschinell prüfbaren
    Abgleich gegen unsere Domain statt eines Namensvergleichs.
-3. **Es gibt keine Crawler-Anweisung** (der Abruf liefert eine Fehlerseite).
+3. **Die Crawler-Anweisung erfasst den Such-Endpunkt nicht** (sie sperrt Verwaltungs- und
+   Upload-Pfade). **Meine erste Messung sagte „es gibt gar keine" und war falsch** — ich
+   hatte die Weiterleitungs-Domain abgerufen und bin auf die Suchseite umgeleitet worden,
+   also HTML statt der Datei bekommen. Wer eine solche Datei prüft, folgt keiner
+   Weiterleitung und sieht sich den Antworttyp an.
 
 **Und drei Fallen, die beim Eichen schon zugeschlagen haben:**
 
@@ -920,20 +933,66 @@ Das sind nicht zwei Formulierungen, die man auslegen müsste. Beide nennen unser
 Anwendungsfall bei seinen zwei Bestandteilen: ein Verzeichnis aufbauen und dafür
 maschinell auslesen.
 
-**Die Lehre ist nicht „es gibt eine Klausel", sondern WO sie stand.** Gesucht hatte ich
-unter „Nutzungsbedingungen" und in einer Crawler-Anweisung; gefunden habe ich sie im
-Impressum, zwischen Registernummer und Haftungsausschluss für Links. Dieselbe Falle wie
-beim Registerportal, wo die Nutzungsordnung hinter einer Formular-Navigation liegt und mit
-einem gewöhnlichen Abruf gar nicht erreichbar ist. **Wer eine fremde Quelle bewertet,
-sucht die Nutzungsbedingungen im ganzen Impressum und in der ganzen Datenschutzerklärung,
-nicht nur dort, wo sie hingehören.**
+**Eine Lehre ist, WO die Klausel stand.** Gesucht hatte ich unter „Nutzungsbedingungen"
+und in der Crawler-Anweisung; sie steht im **Impressum**, zwischen Registernummer und
+Haftungsausschluss für Links — und die Überschrift „Nutzungsbedingungen" auf derselben
+Seite betrifft nur Bilder. Dieselbe Falle wie beim Registerportal, dessen Nutzungsordnung
+hinter einer Formular-Navigation liegt. **Wer eine fremde Quelle bewertet, liest das ganze
+Impressum und die ganze Datenschutzerklärung, nicht nur die Stelle, wo so etwas hingehört.**
 
-**Der Merksatz aus dem Förderbereich trägt hier übrigens tatsächlich nicht** — in einem
-Mitgliederverzeichnis wird nichts ausgewählt, es wird eine Mitgliedschaft abgebildet, und
-das Datenbankrecht ist deshalb eine offene Frage. **Es kommt nur nicht mehr darauf an.**
-Eine ausdrückliche, spezifische Untersagung zu übergehen ist unabhängig vom
-Datenbankrecht die falsche Richtung, und für dieses Projekt die teuerste: Die Marke ist
-„belegte Zahlen, ehrlich erhoben". Ein Verband, der uns schreibt, wäre nicht zu erklären.
+### Die zweite Lehre ist unbequemer: meine Begründung war falsch, das Ergebnis richtig
+
+Ich hatte den Abgleich mit „die Klausel verbietet es" abgesagt. **Der Legal-Judge hat das
+gekippt, und er hat recht.** Der BGH sagt in „Flugvermittlung im Internet" (I ZR 224/12,
+Rn. 38) wörtlich, der so erklärte Wille sei „für sich genommen unbeachtlich" — und zwar in
+einem Fall, in dem der Nutzer die Bedingungen **aktiv per Häkchen angenommen** hatte. In
+„Automobil-Onlinebörse" (I ZR 159/10) war die Klausel **schärfer** als die hier („eine
+automatisierte Abfrage durch Scripte o. ä. ist nicht gestattet"), und die Klage wurde
+abgewiesen. Vertraglich kommt bei einer frei bedienbaren Suchmaske nichts zustande, und
+käme etwas zustande, machte § 87e UrhG die Klausel unwirksam, soweit sie unwesentliche
+Teile erfasst. **Wer einen Abruf mit „die Nutzungsbedingungen verbieten es" absagt, sagt
+ihn mit einem Argument ab, das vor Gericht nicht hält — und benutzt es beim nächsten
+Verzeichnis wieder.**
+
+**Was das Ergebnis wirklich trägt, sind vier andere Gründe:**
+
+1. **Die ANZEIGE ist das Risiko, nicht der Abruf — und das ist der Befund dieser Runde.**
+   Bei einem Drittel Trefferquote steht bei einem Drittel der Betriebe „Innungsfachbetrieb"
+   und bei zwei Dritteln nichts. Der Leser schließt daraus, die anderen seien **keine** —
+   und das ist bei den meisten falsch, weil die Lücke an unserem Namensabgleich liegt, nicht
+   an ihrer Mitgliedschaft. Damit ist die Anzeige eine irreführende Angabe über die
+   Mitgliedschaft eines Dritten (§ 5 Abs. 2 Nr. 3 UWG nennt „Mitgliedschaften"
+   ausdrücklich), und anspruchsberechtigt ist **jeder einzelne nicht gefundene Betrieb**.
+   Die Abhilfe — an jedem Betrieb ohne Treffer „nicht geprüft" zu schreiben — nimmt dem
+   Merkmal seinen ganzen Wert.
+2. **Hier steht eine Organisationsfamilie gegenüber, die das Gesetz zur Verfolgung berufen
+   hat.** § 8 Abs. 3 Nr. 4 UWG nennt „die nach der Handwerksordnung errichteten
+   Organisationen" — Innungen, Landes- und Bundesinnungsverbände, ohne dass sie in einer
+   Liste stehen müssten. Das ist das Gegenteil der Kommunen-Lage, aus der dieses Projekt
+   seine Gelassenheit bezieht, und der SHK-Verband kündigt die Verfolgung in seiner Klausel
+   sogar an.
+3. **Unsere eigene Belegpflicht hebelt das tragende Rechtsargument aus.** „Wir behalten nur
+   ein Ja/Nein" gilt nur, solange niemand die Trefferzeile speichert — und CLAUDE.md
+   verlangt „kein Merkmal ohne Beleg" mit Fundstelle und Textstelle. Wer das befolgt,
+   speichert 1.100 Trefferzeilen mit Name, Anschrift, Telefon und Mail, und dann ist das
+   Argument weg. Auflösbar wäre es (Beleg = abgerufene Adresse, Zeitpunkt, Suchbegriff,
+   gefunden ja/nein, **ohne Zitat**), aber es muss vor dem Bauen entschieden werden.
+4. **Der Ertrag ist ein Drittel eines Merkmals, das beim Erstkontakt vollständig zu haben
+   ist.**
+
+**Das Datenbankrecht ist dabei NICHT der Grund**, und der Merksatz aus dem Förderbereich
+trägt hier tatsächlich nicht: In einem Mitgliederverzeichnis wird nichts ausgewählt. Ein
+Schutzrecht besteht wahrscheinlich trotzdem (die Schwelle ist niedrig, und Geokoordinaten,
+Fachgebiete und Qualifikationskategorien sind eine Investition in Überprüfung und
+Darstellung) — aber ein lesender Abgleich, der das Verzeichnis nicht wiedererstellt, ist
+von der Schranke für unwesentliche Teile nicht erfasst.
+
+**Ebenfalls geprüft und entkräftet:** Die Prüfsumme im Suchformular ist **keine technische
+Schutzvorrichtung** im Sinne der Rechtsprechung. Sie steht im Klartext in der ausgelieferten
+Seite, ist für jeden Besucher gleich, sichert die zulässigen Feldnamen und unterscheidet
+einen Bot von keinem Browser. Ein Captcha gibt es nicht. **Sollte bei einem Lauf je eine
+Sperre oder Bot-Erkennung sichtbar werden, kippt diese Bewertung** — ab dann läge eine
+technische Maßnahme vor, und sie zu umgehen wäre unlauter.
 
 **Was bleibt, sind zwei Wege ohne Abruf:**
 
