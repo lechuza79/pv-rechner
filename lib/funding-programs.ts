@@ -11136,6 +11136,92 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     //   keine. Ein Anruf im Rathaus klärt es in fünf Minuten; bis dahin sagt
     //   der Eintrag, was die Gemeinde schreibt, und nicht mehr.
   },
+  "garching-energiespar": {
+    id: "garching-energiespar", name: "Energiesparförderprogramm",
+    traeger: "Stadt Garching b. München", level: "kommune", region: "Garching b. München",
+    bundesland: "Bayern", agsCode: "09184119",
+    url: "https://www.garching.de/Energiesparf%C3%B6rderprogramm",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // `capped` war der einzige Punkt, in dem die beiden Prüfer auseinanderlagen.
+    // Die Richtlinie nennt KEINE Summe und kein Windhundverfahren — insofern ist
+    // „budgetgedeckelt" mehr, als eine einzelne Stelle hergibt. Sie nennt aber
+    // zwei Stellen, die zusammen genau das ausdrücken, was das Feld meint:
+    // Nr. 4.2 „unter Berücksichtigung der verfügbaren Haushaltsmittel … kein
+    // Rechtsanspruch" und Nr. 7 „sofern kein Annahmestopp erfolgt". Gesetzt
+    // bleibt deshalb `true`, weil die vorsichtige Richtung dem Nutzer sagt, dass
+    // die Mittel vorzeitig enden können.
+    // Richtlinie 2026 im Volltext gelesen (23.09.2026): die unterzeichnete
+    // Fassung vom 15.12.2025, Nr. 7 „Diese Richtlinien treten am 01. Januar 2026
+    // in Kraft und gelten bis zum 31. Dezember 2026. Förderanträge können bis
+    // spätestens 31. Dezember 2026 eingereicht werden, sofern kein Annahmestopp
+    // erfolgt." Das PDF ist ein Scan — `pdftotext` liefert nichts, gelesen wurde
+    // es als Bild.
+    beginntIso: "2026-01-01",
+    // KEIN `endetIso`. „Gilt bis 31.12.2026" ist die Befristung der RICHTLINIE,
+    // nicht der Tag, ab dem die Stadt keine Anträge mehr annimmt — genau diese
+    // Unterscheidung steht an dem Feld. Die Frist steht deshalb als Bedingung.
+    eligibility: ["privat"],
+    // DIE DACHANLAGE SELBST BEKOMMT 2026 NICHTS — das ist der Kern des Eintrags
+    // und der Unterschied zu den Vorjahren, in denen 200 € je kWp gezahlt
+    // wurden. Nr. 2.2 fördert ausdrücklich nur den SPEICHER („Gefördert werden
+    // Stromspeicher zur Nutzung der erzeugten Energie aus Photovoltaik- oder
+    // Windkraftanlagen"); in der Liste der förderfähigen Maßnahmen kommt die
+    // reine Photovoltaikanlage nicht mehr vor. Wer eine Anlage ohne Speicher
+    // baut, bekommt von der Stadt nichts.
+    coveredCosts: "Stromspeicher zu einer Photovoltaikanlage und Balkonkraftwerke — die Dachanlage selbst wird 2026 nicht gefördert",
+    maxFoerderung: "2.000 € für den Speicher, 300 € für ein Balkonkraftwerk mit Speicher",
+    rates: [
+      { label: "Stromspeicher zur Photovoltaikanlage", value: "200 € je kWh nutzbarer Kapazität, höchstens 2.000 € je Wohnadresse", nur: ["pv"] },
+      { label: "Balkonkraftwerk ohne Speicher", value: "20 % der Kosten, höchstens 200 €", nur: ["balkon"] },
+      { label: "Balkonkraftwerk mit Speicher", value: "20 % der Kosten, höchstens 300 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Antragsberechtigt sind natürliche und juristische Personen mit Gebäudeeigentum im Stadtgebiet sowie Pächter und Mieter mit Wohnsitz in Garching; Mieter brauchen das schriftliche Einverständnis des Eigentümers",
+      "Die reine Photovoltaikanlage wird 2026 nicht gefördert — Geld gibt es nur für den Stromspeicher und für Balkonkraftwerke; für kombinierte Photovoltaik-Thermie-Kollektoren zahlt die Stadt dagegen 200 € je kWp",
+      { text: "Der Speicherzuschuss setzt eine bestehende oder neue Photovoltaikanlage voraus und gilt ausdrücklich nicht für Balkonkraftwerke; bei Nachrüstung ist die vorhandene Anlage nachzuweisen", nur: ["pv"] },
+      { text: "Die nutzbare Speicherkapazität muss mindestens 0,5 und höchstens 2 kWh je kWp Modulleistung betragen", nur: ["pv"] },
+      { text: "Bei Gebäuden mit mehr als sechs Wohneinheiten sind es höchstens 400 € je Wohneinheit und 6.000 € je Gebäude", nur: ["pv"] },
+      { text: "Mindestbetriebsdauer fünf Jahre", nur: ["pv"] },
+      { text: "Förderfähig sind nur Anlagen mit höchstens 800 W Wechselrichterleistung und höchstens 2 kWp Modulleistung", nur: ["balkon"] },
+      { text: "Wir rechnen mit dem Deckel von 200 € — für ein Set mit Speicher zahlt die Stadt bis zu 300 €", nur: ["balkon"] },
+      { text: "Den Speicherzuschuss weisen wir nicht als Betrag aus: er setzt ein Verhältnis von 0,5 bis 2 kWh je kWp voraus, das der Rechner nicht prüfen kann. Die Stadt zahlt dafür 200 € je kWh, höchstens 2.000 €", nur: ["pv"] },
+      "Erst nach Erhalt des Bewilligungsbescheids darf beauftragt oder begonnen werden — ein gestellter Antrag genügt nicht, anders als bei der Bundesförderung",
+      "Der Bewilligungsbescheid gilt zwei Jahre; wird die Maßnahme später fertig, verfällt der Zuschuss",
+      "Jede Maßnahme wird nur einmal je Antragsteller und je Gebäude beziehungsweise Wohneinheit bezuschusst",
+      "Hersteller, Händler und Planer der geförderten Anlagen sind ausgeschlossen, ebenso städtische Einrichtungen; deren Mieter sind ausgenommen",
+      "Die Entscheidung erfolgt nach pflichtgemäßem Ermessen im Rahmen der verfügbaren Haushaltsmittel; ein Rechtsanspruch besteht nicht",
+      "Eine Kumulierung mit Bundes- oder Landesmitteln (KfW, BAFA) ist ausgeschlossen",
+      "Die Richtlinie gilt bis zum 31. Dezember 2026; bis dahin können Anträge gestellt werden, sofern kein Annahmestopp erfolgt",
+    ],
+    // Nr. 5.2 wörtlich: „Weitere Zuwendungen der öffentlichen Hand (in der
+    // Bundes- oder Landesebene, wie KfW, Bafa, usw.) sind mit dem Garchinger
+    // Förderprogramm nicht kombinierbar." Eine leere Liste ist im Katalog das
+    // „geht nur allein".
+    combinableWith: [],
+    foerdert: ["pv", "balkon"],
+    // KEIN RECHENWERT FÜR DEN SPEICHER, obwohl die Zahl eindeutig ist
+    // (200 €/kWh, höchstens 2.000 €). Der Zuschuss hängt an einem VERHÄLTNIS,
+    // das das Modell nicht ausdrücken kann: Nr. 2.2 verlangt zwischen 0,5 und
+    // 2 kWh nutzbarer Kapazität je kWp Modulleistung, Grenzwerte eingeschlossen.
+    // Gemessen über die zwanzig Standard-Kombinationen des Rechners (vier
+    // Anlagengrößen × fünf Speichergrößen) fallen DREI aus dem Korridor —
+    // 5 kWp mit 12,5 oder 15 kWh und 15 kWp mit 5 kWh —, und dort wiese das
+    // Modell bis zu 2.000 € aus, die Garching nicht zahlt. `speicherMin` und
+    // `speicherMax` sind absolute Grenzen und bilden ein Verhältnis nicht ab;
+    // die Untergrenze lässt sich auch nicht wegkappen, dort gibt es nur ganz
+    // oder gar nicht. Derselbe Fall wie Stuttgart, das aus demselben Grund
+    // ohne strukturierten Satz im Katalog steht.
+    balkonPercentOfCost: 0.2,
+    // DER DECKEL IST BEWUSST DER NIEDRIGERE VON ZWEIEN. Die Richtlinie zahlt
+    // „maximal 200 € für Steckersolaranlagen ohne Speicher bzw. 300 € für
+    // Steckersolaranlagen mit Speicher" — zwei Deckel, je nachdem ob ein
+    // Speicher dabei ist. Das Modell kennt nur einen `balkonCap`. Gerechnet
+    // wird deshalb der niedrigere: Ein Set mit Speicher bekommt bei uns 100 €
+    // zu wenig ausgewiesen, nie zu viel. Dieselbe Richtung wie bei der
+    // BEG-Kumulierungsgrenze — zu wenig anzurechnen ist eine angenehme
+    // Überraschung, zu viel ein Zuschuss, den jemand einplant und nicht bekommt.
+    balkonCap: 200,
+  },
   "ehningen-steckerfertige-pv": {
     id: "ehningen-steckerfertige-pv", name: "Förderprogramm Steckerfertige PV-Anlagen",
     traeger: "Gemeinde Ehningen", level: "kommune", region: "Ehningen",

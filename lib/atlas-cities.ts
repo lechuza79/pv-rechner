@@ -195,6 +195,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   },
   // ── Batch Juni 2026 (je 1 Recherche-Agent → offizielle Quelle) ──────────────
   { slug: "muenchen", name: "München", ags: "09162", bundesland: "Bayern", yieldKwhKwp: 1140, fundingId: "muenchen-fkg" },
+  { slug: "garching-b-muenchen", name: "Garching b. München", ags: "09184119", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1137 },
   { slug: "nuernberg", name: "Nürnberg", ags: "09564", bundesland: "Bayern", yieldKwhKwp: 1071 },
   { slug: "freiburg", name: "Freiburg im Breisgau", ags: "08311", bundesland: "Baden-Württemberg", yieldKwhKwp: 1119, fundingId: "freiburg-stromerzeugung" },
   { slug: "heidelberg", name: "Heidelberg", ags: "08221", bundesland: "Baden-Württemberg", yieldKwhKwp: 1064, fundingId: "heidelberg-rev" },

@@ -332,6 +332,7 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/helmstedt", destination: "/photovoltaik-foerderung/niedersachsen/helmstedt", permanent: true },
       { source: "/photovoltaik-foerderung/meinersen", destination: "/photovoltaik-foerderung/niedersachsen/meinersen", permanent: true },
       { source: "/photovoltaik-foerderung/mueden-aller", destination: "/photovoltaik-foerderung/niedersachsen/mueden-aller", permanent: true },
+      { source: "/photovoltaik-foerderung/garching-b-muenchen", destination: "/photovoltaik-foerderung/bayern/garching-b-muenchen", permanent: true },
       { source: "/photovoltaik-foerderung/goettingen", destination: "/photovoltaik-foerderung/niedersachsen/goettingen", permanent: true },
       { source: "/photovoltaik-foerderung/herzberg-am-harz", destination: "/photovoltaik-foerderung/niedersachsen/herzberg-am-harz", permanent: true },
       { source: "/photovoltaik-foerderung/weyhe", destination: "/photovoltaik-foerderung/niedersachsen/weyhe", permanent: true },

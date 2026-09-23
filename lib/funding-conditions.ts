@@ -452,6 +452,14 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // modules with 600 or 800 W of inverter power per dwelling unit, the five-year
   // use in that same unit, and the factory-new purchase from a specialist
   // dealer. All of them stand in full on the card.
+  // Added 23 Sep 2026: Garching b. Muenchen. Guideline read in full (scanned PDF,
+  // read as images). No test form in this run, and one condition has none at all:
+  // the grant requires that the work is only started AFTER the approval notice,
+  // not merely after the application -- stricter than the federal rule and the
+  // one condition whose breach costs the whole grant. It stands in full on the
+  // card, together with the storage ratio of 0.5 to 2 kWh per kWp, which is the
+  // reason the storage part carries no calculation field.
+  "garching-energiespar",
   "mueden-aller-balkonsolar",
   // Added 23 Sep 2026: Meinersen. Guideline read as images (scanned, no text
   // layer). No test form, and the reason is the same one that keeps the entry
