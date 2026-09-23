@@ -281,8 +281,8 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
         <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-faint"), fontFamily: v("--font-mono") }}>
           {overrideCount === 0 ? "keine Overrides" : `${overrideCount} Override${overrideCount === 1 ? "" : "s"} gesamt`}
         </span>
-        {status === "ok" && <span style={{ fontSize: v("--font-size-small"), color: v("--color-positive"), fontWeight: 600 }}>Gespeichert ✓</span>}
-        {status === "error" && <span style={{ fontSize: v("--font-size-small"), color: v("--color-negative"), fontWeight: 600 }}>{errorMsg}</span>}
+        {status === "ok" && <span style={{ fontSize: v("--font-size-small"), color: v("--color-positive-text"), fontWeight: 600 }}>Gespeichert ✓</span>}
+        {status === "error" && <span style={{ fontSize: v("--font-size-small"), color: v("--color-negative-text"), fontWeight: 600 }}>{errorMsg}</span>}
       </div>
     </div>
   );

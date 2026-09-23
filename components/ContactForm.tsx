@@ -79,13 +79,13 @@ const S = {
     marginTop: space.xs,
   } as React.CSSProperties,
   success: {
-    color: v('--color-positive'),
+    color: v('--color-positive-text'),
     // Derived from the positive token so the tint follows the theme (no fixed green).
     background: 'color-mix(in srgb, var(--color-positive) 9%, transparent)',
     border: '1px solid color-mix(in srgb, var(--color-positive) 24%, transparent)',
   } as React.CSSProperties,
   error: {
-    color: v('--color-negative'),
+    color: v('--color-negative-text'),
     background: v('--color-negative-dim'),
     border: `1px solid ${v('--color-negative-border')}`,
   } as React.CSSProperties,

@@ -302,7 +302,7 @@ export default function PresseAnsicht() {
               m.beleg_titel
             )}
             {tage !== null && tage !== undefined ? (
-              <span style={{ color: alt ? v("--color-negative") : v("--color-text-muted") }}>
+              <span style={{ color: alt ? v("--color-negative-text") : v("--color-text-muted") }}>
                 {" "}
                 · {tage} T.
               </span>
@@ -487,7 +487,7 @@ export default function PresseAnsicht() {
           nicht nur dem besten. Spaltennamen sind stabil und ändern sich nicht mehr.
         </InfoTooltip>
       </div>
-      {fehler && <p style={{ color: v("--color-negative"), marginBottom: space.sm }}>{fehler}</p>}
+      {fehler && <p style={{ color: v("--color-negative-text"), marginBottom: space.sm }}>{fehler}</p>}
 
       <DatenTabelle
         zeilen={medien}
@@ -578,7 +578,7 @@ export default function PresseAnsicht() {
                               </a>{" "}
                               — {w.leistet}
                               {!passt && (
-                                <span style={{ color: v("--color-negative") }}>
+                                <span style={{ color: v("--color-negative-text") }}>
                                   {" "}
                                   · passt nicht zum Thema des Beitrags
                                 </span>
@@ -674,7 +674,7 @@ export default function PresseAnsicht() {
                   </Feld>
                 </div>
                 {(m.hinweis || m.fehler) && (
-                  <p style={{ color: v("--color-negative"), margin: `${space.xs}px 0 0` }}>
+                  <p style={{ color: v("--color-negative-text"), margin: `${space.xs}px 0 0` }}>
                     {m.fehler ? `Abruf: ${m.fehler}` : m.hinweis}
                   </p>
                 )}

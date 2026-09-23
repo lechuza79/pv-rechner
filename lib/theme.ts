@@ -171,6 +171,14 @@ export const tokens = {
   '--color-text-muted': '#527268',      // Dimmed text, hints
   '--color-text-faint': '#61877B',      // Very light text, placeholders
   '--color-text-on-accent': '#132527',  // Text on accent-colored backgrounds (the lime plate)
+  // The SECOND tier on that same plate — units, population, "±0", everything
+  // that stands beside a value without being the value. It is the on-accent ink
+  // at 72 %, so it composites over whatever the plate is instead of assuming
+  // one. Every place that needed this tier typed rgba(255,255,255,0.72) by
+  // hand, from the days when the plate was blue and its ink white; on the lime
+  // plate that reaches 1,1:1 and is gone (measured 23.09.2026, the units in the
+  // marked atlas row). Over the lime it now reaches 5,9:1.
+  '--color-text-on-accent-dim': 'rgba(19,37,39,0.72)',
 
   // ─── Progress (1) ──────────────────────────────────────────────────────────
   '--color-progress-inactive': '#DBE1DC',

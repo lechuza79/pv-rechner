@@ -230,10 +230,17 @@ function sortName(s: Sort, sinceYear: number): string {
   return COLUMNS.find((c) => c.key === s)?.label ?? s;
 }
 
-// Textfarben auf der blau gefüllten Zeile (aktive Kommune). Modulweit, weil
+// Textfarben auf der gefüllten Zeile (aktive Kommune). Modulweit, weil
 // RankDelta außerhalb der Komponente steht und dieselben Töne braucht.
+//
+// BEIDE KOMMEN AUS DEM THEME, KEINER WIRD GETIPPT. Der zweite stand hier bis
+// zum 23.09.2026 als rgba(255,255,255,0.72) — richtig, solange die Zeile blau
+// gefüllt war, und seit der Umstellung auf die Lime-Platte mit 1,1:1
+// unsichtbar. Betroffen war alles, was NEBEN einem Wert steht: jede Einheit,
+// die Einwohnerzahl, das „±0". Von außen sieht eine solche Zeile nicht kaputt
+// aus, sie sieht leer aus.
 const ON_ACCENT = v("--color-text-on-accent");
-const ON_ACCENT_DIM = "rgba(255,255,255,0.72)";
+const ON_ACCENT_DIM = v("--color-text-on-accent-dim");
 
 /**
  * Rangbewegung — steht wieder NEBEN der Platzziffer, auf derselben Zeile.
@@ -303,9 +310,9 @@ function RankDelta({ value, sinceYear, onAccent = false }: { value: number | nul
   return (
     <span
       title={`${Math.abs(value)} ${Math.abs(value) === 1 ? "Platz" : "Plätze"} ${up ? "gutgemacht" : "verloren"} seit Ende ${sinceYear}`}
-      // Auf der blau gefüllten Zeile weiß statt grün/rot — der Pfeil trägt die
-      // Richtung, grün auf Blau würde untergehen.
-      style={{ ...S.delta, color: onAccent ? v("--color-text-on-accent") : up ? v("--color-positive") : v("--color-negative") }}
+      // Auf der gefüllten Zeile die Tinte der Platte statt grün/rot — der Pfeil
+      // trägt die Richtung, und eine Signalfarbe auf der Platte geht unter.
+      style={{ ...S.delta, color: onAccent ? v("--color-text-on-accent") : up ? v("--color-positive-text") : v("--color-negative-text") }}
     >
       <Icon size={9} />
       {Math.abs(value)}
@@ -745,31 +752,60 @@ export default function RankingTable({
   // vorbeigescrollt), klebt die Kopie oben; liegt sie unterhalb (noch nicht
   // erreicht), klebt sie unten. So peekt sie immer an der Kante, hinter der die
   // echte Zeile wirklich steht.
+  //
+  // GEMESSEN WIRD SENKRECHT, UND ZWAR VON HAND — BLOCKER. Hier stand ein
+  // IntersectionObserver mit `threshold: 0.9`, und der beantwortet eine andere
+  // Frage als die gestellte: Er misst den FLÄCHENanteil der Zeile, der durch
+  // ALLE Vorfahren hindurch sichtbar bleibt — und einer dieser Vorfahren ist
+  // der waagerechte Scrollkasten der Tabelle. Läuft die Tabelle seitlich über
+  // (der Normalfall, dafür gibt es den Kasten), ist ein Teil jeder Zeile
+  // abgeschnitten, der Anteil bleibt unter 0,9, und die Zeile gilt als „nicht
+  // im Blick" — auch wenn sie mitten im Fenster steht. Gemessen am 23.09.2026
+  // auf der Deutschland-Seite: Zeile bei 468–518 px in einem 768-px-Fenster,
+  // Anteil 0,885.
+  //
+  // Zwei Schäden, beide sichtbar und beide nicht als Fehler zu erkennen: Die
+  // Kopie stand DAUERHAFT da, also doppelt zur echten Zeile. Und sie stand auf
+  // der falschen Seite — ein Observer meldet sich nur beim ÜBERSCHREITEN
+  // seiner Schwelle, und die wurde nie wieder überschritten; die Richtung
+  // fror also auf dem Stand ein, an dem der Nutzer zuletzt vorbeigescrollt
+  // war. Oben klebend verdeckte die Kopie die Spaltenköpfe und den ersten
+  // Platz der Liste.
+  //
+  // Der Ersatz liest EINE Rechteckskoordinate je Bild und beantwortet genau
+  // die Frage, um die es geht: Steht die Zeile ganz im Fenster? Waagerechtes
+  // Abschneiden kommt darin nicht vor.
   const rootRef = useRef<HTMLDivElement | null>(null);
   const [markedPos, setMarkedPos] = useState<"visible" | "above" | "below">("visible");
   useEffect(() => {
-    if (!markedId) {
+    if (!markedId || typeof window === "undefined") {
       setMarkedPos("visible");
       return;
     }
-    const el = rootRef.current?.querySelector('[data-marked="true"]');
-    if (!el) {
-      setMarkedPos("visible");
-      return;
-    }
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          setMarkedPos("visible");
-        } else {
-          const rootTop = e.rootBounds?.top ?? 0;
-          setMarkedPos(e.boundingClientRect.top < rootTop ? "above" : "below");
-        }
-      },
-      { threshold: 0.9 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    let angefordert = 0;
+    const messen = () => {
+      angefordert = 0;
+      const el = rootRef.current?.querySelector('[data-marked="true"]');
+      if (!el) {
+        setMarkedPos("visible");
+        return;
+      }
+      const r = el.getBoundingClientRect();
+      // 1 px Toleranz: Rundung beim Rendern, kein Verlassen des Fensters.
+      if (r.top >= -1 && r.bottom <= window.innerHeight + 1) setMarkedPos("visible");
+      else setMarkedPos(r.top < 0 ? "above" : "below");
+    };
+    const anstossen = () => {
+      if (!angefordert) angefordert = window.requestAnimationFrame(messen);
+    };
+    messen();
+    window.addEventListener("scroll", anstossen, { passive: true });
+    window.addEventListener("resize", anstossen);
+    return () => {
+      if (angefordert) window.cancelAnimationFrame(angefordert);
+      window.removeEventListener("scroll", anstossen);
+      window.removeEventListener("resize", anstossen);
+    };
   }, [markedId, sort, owner, platz, display]);
 
   // Höhe der oben klebenden Kopie, um sie per negativem Rand aus dem Fluss zu
@@ -840,9 +876,10 @@ export default function RankingTable({
    */
   const cellNumStyle = (): React.CSSProperties => S.valNum;
 
-  // Zellen einer Zeile. `onAccent` = die Zeile ist blau gefüllt (aktive Kommune):
-  // Text wird weiß, der Balken weiß auf hellem Schienen-Weiß. Ein Renderer für
-  // Liste UND schwebende Kopie, damit beide identisch aussehen. Die beiden Töne
+  // Zellen einer Zeile. `onAccent` = die Zeile ist gefüllt (aktive Kommune):
+  // Werte in der Tinte der Platte, Nebenangaben in ihrer gedämpften Stufe, der
+  // Balken in der Tinte auf der gewöhnlichen Schiene. Ein Renderer für Liste
+  // UND schwebende Kopie, damit beide identisch aussehen. Die beiden Töne
   // stehen modulweit oben — RankDelta braucht sie ebenfalls.
 
   /**
@@ -958,7 +995,12 @@ export default function RankingTable({
                 ...S.track,
                 ...(c.key === platz
                   ? onAccent
-                    ? { background: "rgba(255,255,255,0.28)" }
+                    ? // Die Schiene auf der gefüllten Zeile: dasselbe Token wie
+                      // jede andere Schiene der Site. Ein getipptes Weiß stand
+                      // hier, aus der blauen Zeit — auf Lime war die Schiene
+                      // damit nicht mehr zu sehen, und ein Balken ohne Schiene
+                      // sagt nicht, wovon er ein Teil ist.
+                      { background: v("--color-track") }
                     : null
                   : { visibility: "hidden" }),
               }}
@@ -985,7 +1027,15 @@ export default function RankingTable({
   } as React.CSSProperties;
   // Zeilenfarbe der hervorgehobenen Zeile, damit die mitlaufenden Zellen sie
   // decken statt den scrollenden Inhalt durchscheinen zu lassen.
-  const AKZENT_ZEILE = { "--atlas-zeilen-bg": v("--color-accent") } as React.CSSProperties;
+  //
+  // SIE MUSS DIESELBE QUELLE HABEN WIE DER ZEILENGRUND SELBST (S.rowHome,
+  // S.stickyRow). Hier stand --color-accent, dort --color-cta — solange beide
+  // dasselbe Blau meinten, fiel das nicht auf; seit dem 21.09.2026 ist das eine
+  // die Lime-Platte und das andere ein dunkles Petrol, und die markierte Zeile
+  // war zweifarbig: Platz und Ortsname auf einem dunklen Block, der Rest auf
+  // Lime — mit der Platten-Tinte darauf, also 1,3:1. Der Ortsname der eigenen
+  // Gemeinde war damit die am schlechtesten lesbare Angabe der ganzen Tabelle.
+  const AKZENT_ZEILE = { "--atlas-zeilen-bg": v("--color-cta") } as React.CSSProperties;
 
   // Die schwebende Kopie der markierten Zeile — oben wie unten dieselbe. Folgt
   // dem Horizontal-Scroll der Liste (translateX), damit die Spalten fluchten.
@@ -2460,7 +2510,7 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-primary"),
     cursor: "pointer",
   },
-  error: { fontSize: 12, color: v("--color-negative"), margin: "8px 0 0" },
+  error: { fontSize: 12, color: v("--color-negative-text"), margin: "8px 0 0" },
   note: { fontSize: 12, color: v("--color-text-muted"), margin: "12px 0 0" },
   link: { color: v("--color-accent"), textDecoration: "none" },
   linkBtn: {

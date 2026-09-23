@@ -75,12 +75,17 @@ export default defineConfig({
   // ihr eigenes Zeitmass bekommen, und ein langer Flow-Lauf hält die schnellen
   // Prüfungen nicht mehr auf.
   projects: [
-    { name: "smoke", use: { ...devices["Desktop Chrome"] }, testIgnore: /(flows|kein-ueberlauf)\.spec\.ts/ },
+    { name: "smoke", use: { ...devices["Desktop Chrome"] }, testIgnore: /(flows|kein-ueberlauf|kontrast)\.spec\.ts/ },
     { name: "flows", use: { ...devices["Desktop Chrome"] }, testMatch: /flows\.spec\.ts/ },
     // Telefonbreite: 33 Seitenaufrufe mehr. Im Smoke-Job hätten sie dessen
     // 16-Minuten-Grenze gerissen (der stand am 05.09.2026 bei 14,5–15,5 min) —
     // ein Lauf ohne Urteil. Deshalb eigener Job mit Produktionsbau, wie die Flows.
     { name: "telefon", use: { ...devices["Desktop Chrome"] }, testMatch: /kein-ueberlauf\.spec\.ts/ },
+    // Kontrast: noch einmal jede Seite, diesmal auf Schreibtischbreite, und je
+    // Seite jeder sichtbare Textknoten. Aus demselben Grund ein eigener Job wie
+    // die Telefonbreite — nicht weil er anders wäre, sondern weil der
+    // Smoke-Schritt keine 37 Seitenaufrufe mehr trägt.
+    { name: "kontrast", use: { ...devices["Desktop Chrome"] }, testMatch: /kontrast\.spec\.ts/ },
   ],
 
   webServer: {

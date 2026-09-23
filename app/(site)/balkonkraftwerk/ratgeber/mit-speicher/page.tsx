@@ -99,7 +99,7 @@ const S = {
   thZahl: { textAlign: "right" as const },
   td: { padding: "8px 6px", borderBottom: `1px solid ${v("--color-border")}`, color: v("--color-text-muted") },
   tdZahl: { textAlign: "right" as const, fontFamily: v("--font-mono"), whiteSpace: "nowrap" as const },
-  traegt: { color: v("--color-positive"), fontWeight: 700 },
+  traegt: { color: v("--color-positive-text"), fontWeight: 700 },
   traegtNicht: { color: v("--color-text-muted") },
 };
 
