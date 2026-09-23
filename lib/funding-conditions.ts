@@ -115,6 +115,17 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // VG Kandel, aufgenommen am 23.09.2026. Zwei Gründe, jeder für sich
+  // ausreichend. Erstens nimmt die Verbandsgemeinde derzeit gar keine Anträge
+  // an („alle verfügbaren Mittel … ausgeschöpft"). Zweitens ist das Verfahren
+  // das UMGEKEHRTE, wie bei Fritzlar und Mauer: „Eine Beantragung der
+  // Fördermittel vor Kauf, Installation und Registrierung des Balkonkraftwerks
+  // ist NICHT möglich." Die vorhandenen Prüfformen bilden die übliche Regel
+  // „Antrag vor Kauf" ab; hier verlangten sie vom Nutzer das Gegenteil dessen,
+  // was die Richtlinie verlangt. Alle Bedingungen stehen vollständig auf der
+  // Karte, die Antragsreihenfolge als erste Zeile nach dem Ausschöpfungs-
+  // hinweis. Prüfform mit einer Neuauflage.
+  "vg-kandel-balkonkraftwerke",
   // Bremen Heizungstausch, aufgenommen am 23.09.2026. Das Programm nimmt seit
   // dem 31.08.2025 keine Anträge mehr an — eine Prüfform hielte das Vorhaben
   // eines Nutzers gegen ein Verfahren, in das er gar nicht mehr hineinkommt.

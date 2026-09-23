@@ -12479,6 +12479,118 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: [],
   },
+
+  "vg-kandel-balkonkraftwerke": {
+    id: "vg-kandel-balkonkraftwerke",
+    name: "Energiewende für jeden! Balkonkraftwerke für Privathaushalte",
+    traeger: "Verbandsgemeinde Kandel", level: "kommune", region: "Verbandsgemeinde Kandel",
+    bundesland: "Rheinland-Pfalz",
+    // FÖRDERGEBIET: the seven municipalities of the Verbandsgemeinde, each key
+    // looked up singly in the population register on 23 Sep 2026 — Kandel
+    // 07334013, Erlenbach bei Kandel 07334004, Freckenfeld 07334005, Minfeld
+    // 07334020, Steinweiler 07334030, Vollmersweiler 07334031, Winden 07334034.
+    // The shared prefix 07334 is Landkreis Germersheim and would be WRONG: the
+    // county holds further Verbandsgemeinden that do not pay this grant.
+    // The list is complete and unchanged: the Verbandsgemeinde's own menu shows
+    // exactly these seven, and the Statistisches Landesamt Rheinland-Pfalz gives
+    // "7" municipalities for VG Kandel (Kommunaldatenprofil Landkreis
+    // Germersheim, 23 Jun 2025, as of 1 Jan 2025) and states that the county has
+    // had no territorial reorganisation so far.
+    agsCode: "07334013",
+    agsCodes: [
+      "07334004", "07334005", "07334020", "07334030", "07334031", "07334034",
+    ],
+    url: "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/",
+    // NOTE ON THE URL: without the "/vg_kandel/" path segment and without the
+    // trailing slash the server answers 403. The register holds the short form
+    // as a separate row and marks it unreachable — that is the spelling, not a
+    // block.
+    //
+    // Programme page and the guideline it links read in full on 23 Sep 2026
+    // (guideline "Förderrichtlinie der Verbandsgemeinde Kandel zum kommunalen
+    // Förderprogramm 'Energiewende für jeden! Balkonkraftwerke für
+    // Privathaushalte'", version 1.04 of 21 Aug 2025, valid from 1 Jan 2025).
+    // Council of three plus a legal judge, 23 Sep 2026.
+    //
+    // EXHAUSTED, NOT CLOSED. The page says, verbatim, above everything else:
+    // "Zum aktuellen Zeitpunkt wurden alle verfügbaren Mittel für die Förderung
+    // ausgeschöpft. Es können leider keine weiteren Anträge auf Förderung
+    // gestellt werden." — "zum aktuellen Zeitpunkt" describes a state, not an
+    // end. "eingestellt" would claim an end the guideline never declares (it
+    // has no expiry clause); "pausiert" would claim a restart nobody announced.
+    // NO endetIso: neither source names an end date, a budget or a number of
+    // grants paid. Writing one would be inventing it.
+    //
+    // THE 200 EUR ARE A CAP, NOT A FLAT AMOUNT — this was the adversarial
+    // reviewer's strongest point. § 6: "Die Höhe der Fördersumme beträgt
+    // maximal 200€. Sollten die eingereichten Kosten unter 200€ liegen, gelten
+    // diese als Fördersumme." That is min(cost, 200), i.e. 100 % of cost capped
+    // at 200 EUR. As a flat amount a 150-EUR purchase would be credited 200 EUR
+    // — too much, the forbidden direction. The case is real: the page funds
+    // "Sets und Teilkomponenten", and single modules cost less than 200 EUR.
+    // The page's wording "pauschal 200€ … pro Haushalt einmalig" is FAQ text,
+    // not guideline text; the guideline knows neither "pauschal" nor "je
+    // Haushalt".
+    //
+    // THE STICHTAG CONTRADICTS ITSELF ACROSS THE TWO SOURCES. Guideline § 5:
+    // "Die förderfähige Anlage muss ab dem 01.01.2025 errichtet worden sein.
+    // Entscheidend hier ist das Registrierungsdatum." Page: "Maßgeblich ist das
+    // Kaufdatum!" (and in the intro "Rechnungsdatum"). They part company in
+    // exactly one case — bought in 2024, registered in 2025 — and that case is
+    // not contrived. The condition below names the guideline's rule and the
+    // page's deviation, because unlike the BEG guideline this one carries NO
+    // precedence clause: the guideline's priority is our inference from the
+    // hierarchy of norms, not a statement of the Verbandsgemeinde.
+    //
+    // THE EEG CONDITION IS A FÖRDERBEDINGUNG, NOT AN EXCLUSION OF THE STATUTORY
+    // CLAIM (legal judge, 23 Sep 2026). § 12 reads "Eine indirekte Förderung
+    // durch Inanspruchnahme der Einspeisevergütung (EEG Förderung) ist generell
+    // ausgeschlossen, da die über KIPKI bereitgestellten Fördermittel eine
+    // sogenannte wirtschaftliche Tätigkeit … ausschließen." A Verbandsgemeinde
+    // cannot set aside a federal claim against the grid operator; what it can
+    // do is attach a condition whose breach triggers repayment (§ 13). The
+    // condition below therefore uses the house wording and leaves the
+    // Verbandsgemeinde's state-aid reasoning out — whether some 20 EUR a year
+    // is an economic activity is its reading, not our finding.
+    //
+    // combinableWith IS BUND, NOT EMPTY, although § 6 says "Eine Kombination
+    // bzw. Kumulierung mit anderen Förderprogrammen für Balkonkraftwerke oder
+    // PV-Anlagen an sich ist generell ausgeschlossen." An empty list means
+    // "only on its own" and would make the clause exclude the VAT zero rate —
+    // the same error class as the EEG one, a level down: § 6 speaks of
+    // FÖRDERPROGRAMME, and a tax rule is not one. Same handling as the sister
+    // case VG Brohltal.
+    //
+    // KIPKI FUNDED, AND STILL ITS OWN PROGRAMME. § 1: the Verbandsgemeinde
+    // passes on "einen Teil der durch das Land Rheinland-Pfalz zur Verfügung
+    // gestellten KIPKI Mittel". KIPKI pays municipalities, never citizens
+    // directly, and each municipality writes its own rules — Stadt Germersheim
+    // pays 125 EUR from the same pot, VG Kandel 200 EUR. No duplicate of a
+    // state programme.
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beginntIso: "2025-01-01",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Anschaffungskosten eines Balkonkraftwerks, gedeckelt",
+    maxFoerderung: "200 € je Haushalt",
+    balkonPercentOfCost: 1, balkonCap: 200,
+    rates: [
+      { label: "Balkonkraftwerk", value: "bis zu 200 € je Haushalt, einmalig; liegen die eingereichten Kosten darunter, wird dieser Betrag ausgezahlt", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Derzeit sind alle Fördermittel ausgeschöpft; die Verbandsgemeinde nimmt keine weiteren Anträge an (Stand der Programmseite, 23.09.2026)",
+      "Der Antrag wird erst NACH Kauf, Installation und Registrierung gestellt — eine Antragstellung vorab ist nicht möglich",
+      "Höchstens 800 W Wechselrichterleistung und höchstens 2.000 W Modulleistung; Batteriespeicher sind nicht förderfähig",
+      "Die Anlage muss ab dem 01.01.2025 errichtet sein; maßgeblich ist nach der Förderrichtlinie das Registrierungsdatum im Marktstammdatenregister (die Programmseite nennt abweichend das Kaufdatum)",
+      "Antragsberechtigt sind Privatpersonen mit Hauptwohnsitz in der Verbandsgemeinde sowie Vereine ohne wirtschaftliche Tätigkeit; auch Mieter, die Anlage ist am Hauptwohnsitz zu betreiben",
+      "Für den erzeugten Strom darf keine Einspeisevergütung in Anspruch genommen werden",
+      "Eine Kumulierung mit anderen Förderprogrammen für Balkonkraftwerke oder PV-Anlagen ist ausgeschlossen",
+      "Die Anlage muss mindestens fünf Jahre behalten werden; bei Verstößen gegen die Richtlinie kann die Verbandsgemeinde den Zuschuss zurückfordern",
+      "Kein Rechtsanspruch; bewilligt wird nach pflichtgemäßem Ermessen in der Reihenfolge des Eingangs, solange Mittel verfügbar sind",
+      "Finanziert zu 100 Prozent aus dem Landesprogramm KIPKI",
+    ],
+    combinableWith: BUND,
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

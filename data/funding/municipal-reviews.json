@@ -51516,5 +51516,524 @@
         "evidenceUrl": "https://www.rennerod.de/bauen-umwelt/foerderprogramme/lebendiger-ortskern/foerderrichtlinie"
       }
     ]
+  },
+  {
+    "regionId": "01053064",
+    "name": "Klein Pampau",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort drei Nachrichtenbeiträge auf der Gemeinde-Website; Ortsrecht und Bauleitpläne führt das Amt Büchen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Alle drei erfassten Fundstellen sind Nachrichtenbeiträge, in denen die Gemeinde selbst Empfängerin einer Förderung ist oder Bauleitplanung für eine Freiflächen-Photovoltaikanlage bekanntmacht — die Umkehrung „Förderung FÜR die Kommune statt VON der Kommune“. Ein Zuschuss der Gemeinde an private Haushalte ist auf keiner davon belegt. Klein Pampau hat 208 Einwohner und verweist für Ortsrecht und Bauleitplanung auf das Amt Büchen.",
+    "searches": [
+      "klein-pampau.de — alle drei erfassten Fundstellen am 23.09.2026 im Volltext gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.klein-pampau.de/zusage-zur-foerderung-einer-solarstromanlage",
+        "finding": "Beitrag vom 15.03.2023: „Hier finden Sie die Beschlussvorlagen zu den Aufstellungsbeschlüssen der 5. Änderung des Flächennutzungsplanes und des Bebauungsplanes Nr. 8 ‚Photovoltaikanlagen‘ der Gemeinde Klein Pampau“, verlinkt sind Übersichtsplan und Eckdaten „42,3 MWp“. Bauleitplanung für eine Freiflächenanlage, kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.klein-pampau.de/foerderung-einer-energetischen-sanierung",
+        "finding": "Beitrag vom 27.07.2022: „Gemeindezentrum hat die Zusage zur Förderung einer energetischen Sanierung. Durch unseren Antrag bei der Aktiv-Region Sachsenwald konnten wir eine Förderung für die energetische Sanierung unseres Gemeindezentrums erreichen.“ Die Gemeinde ist Empfängerin, nicht Trägerin einer Förderung."
+      },
+      {
+        "url": "https://www.klein-pampau.de/neuer-foerderer-fuer-skogbarn-gewonnen",
+        "finding": "Beitrag vom 25.09.2023: ein Sponsor hat dem Waldkindergarten Skogbarn ein Eingangsschild machen lassen. Kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "klein-pampau.de/zusage-zur-foerderung-einer-solarstromanlage",
+        "disposition": "reviewed",
+        "reason": "Bauleitplanung für eine Freiflächenanlage, kein Zuschuss an Haushalte.",
+        "evidenceUrl": "https://www.klein-pampau.de/zusage-zur-foerderung-einer-solarstromanlage"
+      },
+      {
+        "url": "klein-pampau.de/foerderung-einer-energetischen-sanierung",
+        "disposition": "reviewed",
+        "reason": "Die Gemeinde ist Empfängerin einer LEADER-Förderung für ihr Gemeindezentrum.",
+        "evidenceUrl": "https://www.klein-pampau.de/foerderung-einer-energetischen-sanierung"
+      },
+      {
+        "url": "klein-pampau.de/neuer-foerderer-fuer-skogbarn-gewonnen",
+        "disposition": "reviewed",
+        "reason": "Sponsor für ein Kindergartenschild, kein Förderprogramm.",
+        "evidenceUrl": "https://www.klein-pampau.de/neuer-foerderer-fuer-skogbarn-gewonnen"
+      }
+    ]
+  },
+  {
+    "regionId": "03158014",
+    "name": "Flöthe",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sieben Einträge im Dienstleistungsverzeichnis der Samtgemeinde Oderwald, die für ihre Mitgliedsgemeinden verwaltet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Alle sieben Fundstellen sind Einträge des niedersächsischen Dienstleistungsverzeichnisses, das die Samtgemeinde auf ihrer Website spiegelt — es enthält fremde Leistungen samt fremder Programmtexte. Der Eintrag „Solarförderung“ beschreibt wörtlich das Zuschussprogramm der Stadt Wolfsburg und meldet für Wohnorte der Samtgemeinde selbst „keine zuständige Stelle“. Die übrigen sechs betreffen Unternehmen, Landwirtschaft, ein Bundesprogramm oder eine andere Stadt. Ein eigener Zuschuss der Samtgemeinde Oderwald oder dieser Mitgliedsgemeinde ist auf keiner Fundstelle belegt und in der Volltextsuche der Website nicht auffindbar.",
+    "searches": [
+      "samtgemeinde-oderwald.de Volltextsuche am 23.09.2026: „Solar“ (88 Treffer), „Balkonkraftwerk“ (2), „Solarförderung“ (1)",
+      "Dienstleistungseintrag „Solarförderung“ mit gewähltem Wohnort „Samtgemeinde Oderwald“ im Browser geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Solarf%C3%B6rderung.php",
+        "finding": "Der Eintrag „Solarförderung“ beschreibt wörtlich die Zuschussrichtlinie der STADT WOLFSBURG: „Ziel dieser Zuschussrichtlinie ist die Förderung der Solarstromnutzung … die Erreichung der vom Rat der Stadt Wolfsburg formulierten Klimaschutzziele“, „Die Zuständigkeit liegt bei der Stadt Wolfsburg“, antragsberechtigt nur für „Liegenschaften im Stadtgebiet Wolfsburgs“. Mit dem Wohnort „Samtgemeinde Oderwald“ antwortet dieselbe Seite: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Am 23.09.2026 im Browser gelesen — die Seite lädt ihren Inhalt per Skript nach, ein einfacher Abruf liefert nur das leere Verzeichnis."
+      },
+      {
+        "url": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk",
+        "finding": "Die Volltextsuche der Website liefert zu „Balkonkraftwerk“ genau zwei Treffer: den Informationseintrag „Information zu Balkonkraftwerken“ (reine Anmelde-Auskunft ohne Geld) und die Wolfsburger „Solarförderung“. Zu „Solar“ 88 Treffer, darunter kein Zuschuss der Samtgemeinde oder einer Mitgliedsgemeinde — nur Solarkataster und Energiemonitor des Landkreises Wolfenbüttel, Bebauungspläne und Blendgutachten für Freiflächenanlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Agrarumweltma%C3%9Fnahmen-AUM-F%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Agrarumweltmaßnahmen der Landwirtschaft — kein Zuschuss an Haushalte.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/F%C3%B6rderung-der-Energieberatung-in-kleinen-und-mittleren-Unternehmen-KMU-.php",
+        "disposition": "reviewed",
+        "reason": "Energieberatung für Unternehmen, nicht für Haushalte.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/F%C3%B6rderung-der-Energieberatung-in-kleinen-und-mittleren-Unternehmen-KMU-Gew%C3%A4hrung.php",
+        "disposition": "reviewed",
+        "reason": "Zweite Schreibweise desselben Unternehmens-Eintrags.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/F%C3%B6rderung-der-Nutzung-erneuerbarer-Energien-im-W%C3%A4rmemarkt-im-Rahmen-des-Marktanreizprogramms-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Wärme aus erneuerbaren Energien, kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Fachkundige-Stellungnahme-der-IHK-f%C3%BCr-Gr%C3%BCndungszuschuss-einholen.php",
+        "disposition": "reviewed",
+        "reason": "IHK-Stellungnahme zum Gründungszuschuss — Arbeitsmarktleistung.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Solarf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Syndizierter Eintrag der Stadt Wolfsburg; für Wohnorte der Samtgemeinde ist keine zuständige Stelle hinterlegt.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Solarf%C3%B6rderung.php"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Stadt-Bad-Bevensen-plant-F%C3%B6rderprogramm-f%C3%BCr-notleidende-Betriebe.php",
+        "disposition": "reviewed",
+        "reason": "Nachricht über ein geplantes Programm der Stadt Bad Bevensen, rund 150 km entfernt.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      }
+    ]
+  },
+  {
+    "regionId": "03158019",
+    "name": "Heiningen",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sieben Einträge im Dienstleistungsverzeichnis der Samtgemeinde Oderwald, die für ihre Mitgliedsgemeinden verwaltet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Alle sieben Fundstellen sind Einträge des niedersächsischen Dienstleistungsverzeichnisses, das die Samtgemeinde auf ihrer Website spiegelt — es enthält fremde Leistungen samt fremder Programmtexte. Der Eintrag „Solarförderung“ beschreibt wörtlich das Zuschussprogramm der Stadt Wolfsburg und meldet für Wohnorte der Samtgemeinde selbst „keine zuständige Stelle“. Die übrigen sechs betreffen Unternehmen, Landwirtschaft, ein Bundesprogramm oder eine andere Stadt. Ein eigener Zuschuss der Samtgemeinde Oderwald oder dieser Mitgliedsgemeinde ist auf keiner Fundstelle belegt und in der Volltextsuche der Website nicht auffindbar.",
+    "searches": [
+      "samtgemeinde-oderwald.de Volltextsuche am 23.09.2026: „Solar“ (88 Treffer), „Balkonkraftwerk“ (2), „Solarförderung“ (1)",
+      "Dienstleistungseintrag „Solarförderung“ mit gewähltem Wohnort „Samtgemeinde Oderwald“ im Browser geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Solarf%C3%B6rderung.php",
+        "finding": "Der Eintrag „Solarförderung“ beschreibt wörtlich die Zuschussrichtlinie der STADT WOLFSBURG: „Ziel dieser Zuschussrichtlinie ist die Förderung der Solarstromnutzung … die Erreichung der vom Rat der Stadt Wolfsburg formulierten Klimaschutzziele“, „Die Zuständigkeit liegt bei der Stadt Wolfsburg“, antragsberechtigt nur für „Liegenschaften im Stadtgebiet Wolfsburgs“. Mit dem Wohnort „Samtgemeinde Oderwald“ antwortet dieselbe Seite: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Am 23.09.2026 im Browser gelesen — die Seite lädt ihren Inhalt per Skript nach, ein einfacher Abruf liefert nur das leere Verzeichnis."
+      },
+      {
+        "url": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk",
+        "finding": "Die Volltextsuche der Website liefert zu „Balkonkraftwerk“ genau zwei Treffer: den Informationseintrag „Information zu Balkonkraftwerken“ (reine Anmelde-Auskunft ohne Geld) und die Wolfsburger „Solarförderung“. Zu „Solar“ 88 Treffer, darunter kein Zuschuss der Samtgemeinde oder einer Mitgliedsgemeinde — nur Solarkataster und Energiemonitor des Landkreises Wolfenbüttel, Bebauungspläne und Blendgutachten für Freiflächenanlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Agrarumweltma%C3%9Fnahmen-AUM-F%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Agrarumweltmaßnahmen der Landwirtschaft — kein Zuschuss an Haushalte.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/F%C3%B6rderung-der-Energieberatung-in-kleinen-und-mittleren-Unternehmen-KMU-.php",
+        "disposition": "reviewed",
+        "reason": "Energieberatung für Unternehmen, nicht für Haushalte.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/F%C3%B6rderung-der-Energieberatung-in-kleinen-und-mittleren-Unternehmen-KMU-Gew%C3%A4hrung.php",
+        "disposition": "reviewed",
+        "reason": "Zweite Schreibweise desselben Unternehmens-Eintrags.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/F%C3%B6rderung-der-Nutzung-erneuerbarer-Energien-im-W%C3%A4rmemarkt-im-Rahmen-des-Marktanreizprogramms-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Wärme aus erneuerbaren Energien, kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Fachkundige-Stellungnahme-der-IHK-f%C3%BCr-Gr%C3%BCndungszuschuss-einholen.php",
+        "disposition": "reviewed",
+        "reason": "IHK-Stellungnahme zum Gründungszuschuss — Arbeitsmarktleistung.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Solarf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Syndizierter Eintrag der Stadt Wolfsburg; für Wohnorte der Samtgemeinde ist keine zuständige Stelle hinterlegt.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Solarf%C3%B6rderung.php"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Stadt-Bad-Bevensen-plant-F%C3%B6rderprogramm-f%C3%BCr-notleidende-Betriebe.php",
+        "disposition": "reviewed",
+        "reason": "Nachricht über ein geplantes Programm der Stadt Bad Bevensen, rund 150 km entfernt.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      }
+    ]
+  },
+  {
+    "regionId": "03158038",
+    "name": "Börßum",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich sieben Einträge im Dienstleistungsverzeichnis der Samtgemeinde Oderwald, die für ihre Mitgliedsgemeinden verwaltet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Alle sieben Fundstellen sind Einträge des niedersächsischen Dienstleistungsverzeichnisses, das die Samtgemeinde auf ihrer Website spiegelt — es enthält fremde Leistungen samt fremder Programmtexte. Der Eintrag „Solarförderung“ beschreibt wörtlich das Zuschussprogramm der Stadt Wolfsburg und meldet für Wohnorte der Samtgemeinde selbst „keine zuständige Stelle“. Die übrigen sechs betreffen Unternehmen, Landwirtschaft, ein Bundesprogramm oder eine andere Stadt. Ein eigener Zuschuss der Samtgemeinde Oderwald oder dieser Mitgliedsgemeinde ist auf keiner Fundstelle belegt und in der Volltextsuche der Website nicht auffindbar.",
+    "searches": [
+      "samtgemeinde-oderwald.de Volltextsuche am 23.09.2026: „Solar“ (88 Treffer), „Balkonkraftwerk“ (2), „Solarförderung“ (1)",
+      "Dienstleistungseintrag „Solarförderung“ mit gewähltem Wohnort „Samtgemeinde Oderwald“ im Browser geöffnet"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Solarf%C3%B6rderung.php",
+        "finding": "Der Eintrag „Solarförderung“ beschreibt wörtlich die Zuschussrichtlinie der STADT WOLFSBURG: „Ziel dieser Zuschussrichtlinie ist die Förderung der Solarstromnutzung … die Erreichung der vom Rat der Stadt Wolfsburg formulierten Klimaschutzziele“, „Die Zuständigkeit liegt bei der Stadt Wolfsburg“, antragsberechtigt nur für „Liegenschaften im Stadtgebiet Wolfsburgs“. Mit dem Wohnort „Samtgemeinde Oderwald“ antwortet dieselbe Seite: „Für Ihren Wohnort wurde leider keine zuständige Stelle gefunden.“ Am 23.09.2026 im Browser gelesen — die Seite lädt ihren Inhalt per Skript nach, ein einfacher Abruf liefert nur das leere Verzeichnis."
+      },
+      {
+        "url": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk",
+        "finding": "Die Volltextsuche der Website liefert zu „Balkonkraftwerk“ genau zwei Treffer: den Informationseintrag „Information zu Balkonkraftwerken“ (reine Anmelde-Auskunft ohne Geld) und die Wolfsburger „Solarförderung“. Zu „Solar“ 88 Treffer, darunter kein Zuschuss der Samtgemeinde oder einer Mitgliedsgemeinde — nur Solarkataster und Energiemonitor des Landkreises Wolfenbüttel, Bebauungspläne und Blendgutachten für Freiflächenanlagen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Agrarumweltma%C3%9Fnahmen-AUM-F%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Agrarumweltmaßnahmen der Landwirtschaft — kein Zuschuss an Haushalte.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/F%C3%B6rderung-der-Energieberatung-in-kleinen-und-mittleren-Unternehmen-KMU-.php",
+        "disposition": "reviewed",
+        "reason": "Energieberatung für Unternehmen, nicht für Haushalte.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/F%C3%B6rderung-der-Energieberatung-in-kleinen-und-mittleren-Unternehmen-KMU-Gew%C3%A4hrung.php",
+        "disposition": "reviewed",
+        "reason": "Zweite Schreibweise desselben Unternehmens-Eintrags.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/F%C3%B6rderung-der-Nutzung-erneuerbarer-Energien-im-W%C3%A4rmemarkt-im-Rahmen-des-Marktanreizprogramms-beantragen.php",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm für Wärme aus erneuerbaren Energien, kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Fachkundige-Stellungnahme-der-IHK-f%C3%BCr-Gr%C3%BCndungszuschuss-einholen.php",
+        "disposition": "reviewed",
+        "reason": "IHK-Stellungnahme zum Gründungszuschuss — Arbeitsmarktleistung.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Solarf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Syndizierter Eintrag der Stadt Wolfsburg; für Wohnorte der Samtgemeinde ist keine zuständige Stelle hinterlegt.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Solarf%C3%B6rderung.php"
+      },
+      {
+        "url": "samtgemeinde-oderwald.de/B%C3%BCrgerservice-Informationen/Zust%C3%A4ndigkeitsfinder/Stadt-Bad-Bevensen-plant-F%C3%B6rderprogramm-f%C3%BCr-notleidende-Betriebe.php",
+        "disposition": "reviewed",
+        "reason": "Nachricht über ein geplantes Programm der Stadt Bad Bevensen, rund 150 km entfernt.",
+        "evidenceUrl": "https://www.samtgemeinde-oderwald.de/Kontakt/Suche/index.php?qs=Balkonkraftwerk"
+      }
+    ]
+  },
+  {
+    "regionId": "07141006",
+    "name": "Bad Ems",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine einzige Fundstelle auf der Seite der Verbandsgemeinde Bad Ems-Nassau, die für ihre Ortsgemeinden verwaltet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die erfasste Fundstelle ist ein gespiegelter Fachartikel eines Fachmagazins über Steckersolar, kein Förderangebot der Verbandsgemeinde. Er nennt Förderung nur allgemein („Viele Kommunen … fördern“) und keinen Betrag. Der Klimabereich der Verbandsgemeinde führt Konzept, Solarkataster und Wärmeplanung, aber kein eigenes Zuschussprogramm; das Wort „Zuschuss“ und jede Euro-Angabe fehlen dort. Ein eigenes Programm dieser Ortsgemeinde ist im Quellenbestand nicht erfasst.",
+    "searches": [
+      "vgben.de/energie-klima am 23.09.2026 im Volltext gelesen und auf „Förder“, „Zuschuss“ und Eurobeträge durchsucht",
+      "PDF der Bürgerinformation Steckersolar vollständig gelesen (10 256 Zeichen Text)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Ein Fachartikel des Online-Magazins „Klimaschutz Kommune“ (Leipzig) vom 25.09.2023, „Steckersolar und Balkonkraftwerke: Schneller Einstieg in den Solarstrom“, den die Verbandsgemeinde als Bürgerinformation spiegelt. Zur Förderung enthält er nur den allgemeinen Satz „Viele Kommunen, Landkreise, Bundesländer und Verbände fördern die Anschaffung von PV-Kleinanlagen“ — kein Betrag, kein eigenes Programm, keine Antragstelle."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Der Bereich „Energie & Klima“ der Verbandsgemeinde Bad Ems-Nassau führt Klimaschutzkonzept, landesweites Solarkataster Rheinland-Pfalz, diese Steckersolar-Information und die kommunale Wärmeplanung. Auf der Seite steht kein Euro-Betrag und nicht ein einziges Mal das Wort „Zuschuss“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141008",
+    "name": "Becheln",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine einzige Fundstelle auf der Seite der Verbandsgemeinde Bad Ems-Nassau, die für ihre Ortsgemeinden verwaltet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die erfasste Fundstelle ist ein gespiegelter Fachartikel eines Fachmagazins über Steckersolar, kein Förderangebot der Verbandsgemeinde. Er nennt Förderung nur allgemein („Viele Kommunen … fördern“) und keinen Betrag. Der Klimabereich der Verbandsgemeinde führt Konzept, Solarkataster und Wärmeplanung, aber kein eigenes Zuschussprogramm; das Wort „Zuschuss“ und jede Euro-Angabe fehlen dort. Ein eigenes Programm dieser Ortsgemeinde ist im Quellenbestand nicht erfasst.",
+    "searches": [
+      "vgben.de/energie-klima am 23.09.2026 im Volltext gelesen und auf „Förder“, „Zuschuss“ und Eurobeträge durchsucht",
+      "PDF der Bürgerinformation Steckersolar vollständig gelesen (10 256 Zeichen Text)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Ein Fachartikel des Online-Magazins „Klimaschutz Kommune“ (Leipzig) vom 25.09.2023, „Steckersolar und Balkonkraftwerke: Schneller Einstieg in den Solarstrom“, den die Verbandsgemeinde als Bürgerinformation spiegelt. Zur Förderung enthält er nur den allgemeinen Satz „Viele Kommunen, Landkreise, Bundesländer und Verbände fördern die Anschaffung von PV-Kleinanlagen“ — kein Betrag, kein eigenes Programm, keine Antragstelle."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Der Bereich „Energie & Klima“ der Verbandsgemeinde Bad Ems-Nassau führt Klimaschutzkonzept, landesweites Solarkataster Rheinland-Pfalz, diese Steckersolar-Information und die kommunale Wärmeplanung. Auf der Seite steht kein Euro-Betrag und nicht ein einziges Mal das Wort „Zuschuss“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141025",
+    "name": "Dausenau",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine einzige Fundstelle auf der Seite der Verbandsgemeinde Bad Ems-Nassau, die für ihre Ortsgemeinden verwaltet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die erfasste Fundstelle ist ein gespiegelter Fachartikel eines Fachmagazins über Steckersolar, kein Förderangebot der Verbandsgemeinde. Er nennt Förderung nur allgemein („Viele Kommunen … fördern“) und keinen Betrag. Der Klimabereich der Verbandsgemeinde führt Konzept, Solarkataster und Wärmeplanung, aber kein eigenes Zuschussprogramm; das Wort „Zuschuss“ und jede Euro-Angabe fehlen dort. Ein eigenes Programm dieser Ortsgemeinde ist im Quellenbestand nicht erfasst.",
+    "searches": [
+      "vgben.de/energie-klima am 23.09.2026 im Volltext gelesen und auf „Förder“, „Zuschuss“ und Eurobeträge durchsucht",
+      "PDF der Bürgerinformation Steckersolar vollständig gelesen (10 256 Zeichen Text)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Ein Fachartikel des Online-Magazins „Klimaschutz Kommune“ (Leipzig) vom 25.09.2023, „Steckersolar und Balkonkraftwerke: Schneller Einstieg in den Solarstrom“, den die Verbandsgemeinde als Bürgerinformation spiegelt. Zur Förderung enthält er nur den allgemeinen Satz „Viele Kommunen, Landkreise, Bundesländer und Verbände fördern die Anschaffung von PV-Kleinanlagen“ — kein Betrag, kein eigenes Programm, keine Antragstelle."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Der Bereich „Energie & Klima“ der Verbandsgemeinde Bad Ems-Nassau führt Klimaschutzkonzept, landesweites Solarkataster Rheinland-Pfalz, diese Steckersolar-Information und die kommunale Wärmeplanung. Auf der Seite steht kein Euro-Betrag und nicht ein einziges Mal das Wort „Zuschuss“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141041",
+    "name": "Fachbach",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine einzige Fundstelle auf der Seite der Verbandsgemeinde Bad Ems-Nassau, die für ihre Ortsgemeinden verwaltet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die erfasste Fundstelle ist ein gespiegelter Fachartikel eines Fachmagazins über Steckersolar, kein Förderangebot der Verbandsgemeinde. Er nennt Förderung nur allgemein („Viele Kommunen … fördern“) und keinen Betrag. Der Klimabereich der Verbandsgemeinde führt Konzept, Solarkataster und Wärmeplanung, aber kein eigenes Zuschussprogramm; das Wort „Zuschuss“ und jede Euro-Angabe fehlen dort. Ein eigenes Programm dieser Ortsgemeinde ist im Quellenbestand nicht erfasst.",
+    "searches": [
+      "vgben.de/energie-klima am 23.09.2026 im Volltext gelesen und auf „Förder“, „Zuschuss“ und Eurobeträge durchsucht",
+      "PDF der Bürgerinformation Steckersolar vollständig gelesen (10 256 Zeichen Text)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Ein Fachartikel des Online-Magazins „Klimaschutz Kommune“ (Leipzig) vom 25.09.2023, „Steckersolar und Balkonkraftwerke: Schneller Einstieg in den Solarstrom“, den die Verbandsgemeinde als Bürgerinformation spiegelt. Zur Förderung enthält er nur den allgemeinen Satz „Viele Kommunen, Landkreise, Bundesländer und Verbände fördern die Anschaffung von PV-Kleinanlagen“ — kein Betrag, kein eigenes Programm, keine Antragstelle."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Der Bereich „Energie & Klima“ der Verbandsgemeinde Bad Ems-Nassau führt Klimaschutzkonzept, landesweites Solarkataster Rheinland-Pfalz, diese Steckersolar-Information und die kommunale Wärmeplanung. Auf der Seite steht kein Euro-Betrag und nicht ein einziges Mal das Wort „Zuschuss“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141044",
+    "name": "Frücht",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine einzige Fundstelle auf der Seite der Verbandsgemeinde Bad Ems-Nassau, die für ihre Ortsgemeinden verwaltet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die erfasste Fundstelle ist ein gespiegelter Fachartikel eines Fachmagazins über Steckersolar, kein Förderangebot der Verbandsgemeinde. Er nennt Förderung nur allgemein („Viele Kommunen … fördern“) und keinen Betrag. Der Klimabereich der Verbandsgemeinde führt Konzept, Solarkataster und Wärmeplanung, aber kein eigenes Zuschussprogramm; das Wort „Zuschuss“ und jede Euro-Angabe fehlen dort. Ein eigenes Programm dieser Ortsgemeinde ist im Quellenbestand nicht erfasst.",
+    "searches": [
+      "vgben.de/energie-klima am 23.09.2026 im Volltext gelesen und auf „Förder“, „Zuschuss“ und Eurobeträge durchsucht",
+      "PDF der Bürgerinformation Steckersolar vollständig gelesen (10 256 Zeichen Text)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Ein Fachartikel des Online-Magazins „Klimaschutz Kommune“ (Leipzig) vom 25.09.2023, „Steckersolar und Balkonkraftwerke: Schneller Einstieg in den Solarstrom“, den die Verbandsgemeinde als Bürgerinformation spiegelt. Zur Förderung enthält er nur den allgemeinen Satz „Viele Kommunen, Landkreise, Bundesländer und Verbände fördern die Anschaffung von PV-Kleinanlagen“ — kein Betrag, kein eigenes Programm, keine Antragstelle."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Der Bereich „Energie & Klima“ der Verbandsgemeinde Bad Ems-Nassau führt Klimaschutzkonzept, landesweites Solarkataster Rheinland-Pfalz, diese Steckersolar-Information und die kommunale Wärmeplanung. Auf der Seite steht kein Euro-Betrag und nicht ein einziges Mal das Wort „Zuschuss“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141129",
+    "name": "Singhofen",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine einzige Fundstelle auf der Seite der Verbandsgemeinde Bad Ems-Nassau, die für ihre Ortsgemeinden verwaltet.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die erfasste Fundstelle ist ein gespiegelter Fachartikel eines Fachmagazins über Steckersolar, kein Förderangebot der Verbandsgemeinde. Er nennt Förderung nur allgemein („Viele Kommunen … fördern“) und keinen Betrag. Der Klimabereich der Verbandsgemeinde führt Konzept, Solarkataster und Wärmeplanung, aber kein eigenes Zuschussprogramm; das Wort „Zuschuss“ und jede Euro-Angabe fehlen dort. Ein eigenes Programm dieser Ortsgemeinde ist im Quellenbestand nicht erfasst.",
+    "searches": [
+      "vgben.de/energie-klima am 23.09.2026 im Volltext gelesen und auf „Förder“, „Zuschuss“ und Eurobeträge durchsucht",
+      "PDF der Bürgerinformation Steckersolar vollständig gelesen (10 256 Zeichen Text)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Ein Fachartikel des Online-Magazins „Klimaschutz Kommune“ (Leipzig) vom 25.09.2023, „Steckersolar und Balkonkraftwerke: Schneller Einstieg in den Solarstrom“, den die Verbandsgemeinde als Bürgerinformation spiegelt. Zur Förderung enthält er nur den allgemeinen Satz „Viele Kommunen, Landkreise, Bundesländer und Verbände fördern die Anschaffung von PV-Kleinanlagen“ — kein Betrag, kein eigenes Programm, keine Antragstelle."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Der Bereich „Energie & Klima“ der Verbandsgemeinde Bad Ems-Nassau führt Klimaschutzkonzept, landesweites Solarkataster Rheinland-Pfalz, diese Steckersolar-Information und die kommunale Wärmeplanung. Auf der Seite steht kein Euro-Betrag und nicht ein einziges Mal das Wort „Zuschuss“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07334031",
+    "name": "Vollmersweiler",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich Fundstellen auf vg-kandel.de, der Seite der Verbandsgemeinde.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Verbandsgemeinde Kandel zahlt aus KIPKI-Mitteln des Landes einen Zuschuss für Balkonkraftwerke — bis zu 200 € je Haushalt, einmalig, bei geringeren Kosten nur diese. Das Programm steht als vg-kandel-balkonkraftwerke im Katalog, mit allen sieben Ortsgemeinden der Verbandsgemeinde als Fördergebiet. Derzeit sind die Mittel ausgeschöpft und es werden keine Anträge mehr angenommen; der Eintrag informiert deshalb und zieht nichts ab. Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht. Ein eigenes Programm dieser Ortsgemeinde ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Programmseite der Verbandsgemeinde Kandel und die dort verlinkte Förderrichtlinie am 23.09.2026 im Volltext gelesen",
+      "Council mit drei unabhängigen Prüfern und einem Legal-Judge zu Betrag, Fördergebiet, Status und den vier Rechtsaussagen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/",
+        "finding": "„Energiewende für jeden! Kommunales Förderprogramm für Balkonkraftwerke“ der Verbandsgemeinde Kandel. Ganz oben: „Zum aktuellen Zeitpunkt wurden alle verfügbaren Mittel für die Förderung ausgeschöpft. Es können leider keine weiteren Anträge auf Förderung gestellt werden.“ Weiter: „Eine Beantragung der Fördermittel vor Kauf, Installation und Registrierung des Balkonkraftwerks ist NICHT möglich“, „Die Fördersumme beträgt pauschal 200€ und kann pro Haushalt einmalig abgerufen werden“, „NICHT gefördert werden Kosten für Batteriespeicher“, „Es gilt das Windhundprinzip“. Die Adresse antwortet nur mit dem Pfadteil /vg_kandel/ und abschließendem Schrägstrich; ohne beides kommt HTTP 403."
+      },
+      {
+        "url": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/F%C3%B6rderrichtlinie%20Balkonkraftwerke%20f%C3%BCr%20Privathaushalte%20VG%20Kandel_4%20.pdf",
+        "finding": "„Förderrichtlinie der Verbandsgemeinde Kandel zum kommunalen Förderprogramm ‚Energiewende für jeden! Balkonkraftwerke für Privathaushalte‘, Gültig ab 01.01.2025“, Version 1.04 vom 21.08.2025. § 1: Weitergabe eines Teils der KIPKI-Mittel des Landes Rheinland-Pfalz. § 5: höchstens 800 W Wechselrichter- und 2.000 W Modulleistung, errichtet ab 01.01.2025, „Entscheidend hier ist das Registrierungsdatum“. § 6: „Die Höhe der Fördersumme beträgt maximal 200€. Sollten die eingereichten Kosten unter 200€ liegen, gelten diese als Fördersumme“, dazu der Kumulierungsausschluss. § 7: kein Rechtsanspruch, Reihenfolge des Eingangs. § 11: fünf Jahre Haltedauer. § 12: Ausschluss der Einspeisevergütung. § 13: Rückforderung bei Verstößen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-kandel.de/vg_kandel/Wirtschaft%20&amp;%20Umwelt/Klimaschutz%20&amp;%20Energie/F%C3%B6rderung%20Balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Programmseite gelesen; Programm aufgenommen, derzeit ausgeschöpft.",
+        "evidenceUrl": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/"
+      },
+      {
+        "url": "vg-kandel.de/Wirtschaft%20&amp;%20Umwelt/Klimaschutz%20&amp;%20Energie/F%C3%B6rderung%20Balkonkraftwerke",
+        "disposition": "replaced",
+        "reason": "Kurzform ohne den Pfadteil /vg_kandel/ — der Server antwortet darauf mit HTTP 403; derselbe Inhalt steht unter der vollständigen Adresse.",
+        "evidenceUrl": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/"
+      }
+    ]
+  },
+  {
+    "regionId": "07334034",
+    "name": "Winden",
+    "checkedAt": "2026-09-23T12:10:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich Fundstellen auf vg-kandel.de, der Seite der Verbandsgemeinde.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Verbandsgemeinde Kandel zahlt aus KIPKI-Mitteln des Landes einen Zuschuss für Balkonkraftwerke — bis zu 200 € je Haushalt, einmalig, bei geringeren Kosten nur diese. Das Programm steht als vg-kandel-balkonkraftwerke im Katalog, mit allen sieben Ortsgemeinden der Verbandsgemeinde als Fördergebiet. Derzeit sind die Mittel ausgeschöpft und es werden keine Anträge mehr angenommen; der Eintrag informiert deshalb und zieht nichts ab. Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht. Ein eigenes Programm dieser Ortsgemeinde ist auf keiner erfassten Fundstelle belegt.",
+    "searches": [
+      "Programmseite der Verbandsgemeinde Kandel und die dort verlinkte Förderrichtlinie am 23.09.2026 im Volltext gelesen",
+      "Council mit drei unabhängigen Prüfern und einem Legal-Judge zu Betrag, Fördergebiet, Status und den vier Rechtsaussagen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/",
+        "finding": "„Energiewende für jeden! Kommunales Förderprogramm für Balkonkraftwerke“ der Verbandsgemeinde Kandel. Ganz oben: „Zum aktuellen Zeitpunkt wurden alle verfügbaren Mittel für die Förderung ausgeschöpft. Es können leider keine weiteren Anträge auf Förderung gestellt werden.“ Weiter: „Eine Beantragung der Fördermittel vor Kauf, Installation und Registrierung des Balkonkraftwerks ist NICHT möglich“, „Die Fördersumme beträgt pauschal 200€ und kann pro Haushalt einmalig abgerufen werden“, „NICHT gefördert werden Kosten für Batteriespeicher“, „Es gilt das Windhundprinzip“. Die Adresse antwortet nur mit dem Pfadteil /vg_kandel/ und abschließendem Schrägstrich; ohne beides kommt HTTP 403."
+      },
+      {
+        "url": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/F%C3%B6rderrichtlinie%20Balkonkraftwerke%20f%C3%BCr%20Privathaushalte%20VG%20Kandel_4%20.pdf",
+        "finding": "„Förderrichtlinie der Verbandsgemeinde Kandel zum kommunalen Förderprogramm ‚Energiewende für jeden! Balkonkraftwerke für Privathaushalte‘, Gültig ab 01.01.2025“, Version 1.04 vom 21.08.2025. § 1: Weitergabe eines Teils der KIPKI-Mittel des Landes Rheinland-Pfalz. § 5: höchstens 800 W Wechselrichter- und 2.000 W Modulleistung, errichtet ab 01.01.2025, „Entscheidend hier ist das Registrierungsdatum“. § 6: „Die Höhe der Fördersumme beträgt maximal 200€. Sollten die eingereichten Kosten unter 200€ liegen, gelten diese als Fördersumme“, dazu der Kumulierungsausschluss. § 7: kein Rechtsanspruch, Reihenfolge des Eingangs. § 11: fünf Jahre Haltedauer. § 12: Ausschluss der Einspeisevergütung. § 13: Rückforderung bei Verstößen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Programmseite gelesen; Programm aufgenommen, derzeit ausgeschöpft.",
+        "evidenceUrl": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/"
+      },
+      {
+        "url": "vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/F%C3%B6rderrichtlinie%20Balkonkraftwerke%20f%C3%BCr%20Privathaushalte%20VG%20Kandel_4%20.pdf",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinie im Volltext gelesen; Betrag, Bedingungen und Laufzeit stehen im Katalogeintrag.",
+        "evidenceUrl": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/F%C3%B6rderrichtlinie%20Balkonkraftwerke%20f%C3%BCr%20Privathaushalte%20VG%20Kandel_4%20.pdf"
+      },
+      {
+        "url": "vg-kandel.de/vg_kandel/Wirtschaft%20&amp;%20Umwelt/Klimaschutz%20&amp;%20Energie/F%C3%B6rderung%20Balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Programmseite gelesen; Programm aufgenommen, derzeit ausgeschöpft.",
+        "evidenceUrl": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/"
+      },
+      {
+        "url": "vg-kandel.de/Wirtschaft%20&amp;%20Umwelt/Klimaschutz%20&amp;%20Energie/F%C3%B6rderung%20Balkonkraftwerke",
+        "disposition": "replaced",
+        "reason": "Kurzform ohne den Pfadteil /vg_kandel/ — der Server antwortet darauf mit HTTP 403; derselbe Inhalt steht unter der vollständigen Adresse.",
+        "evidenceUrl": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/"
+      }
+    ]
   }
 ]
