@@ -49610,5 +49610,315 @@
         "evidenceUrl": "https://www.garching.de/Energiesparf%C3%B6rderprogramm"
       }
     ]
+  },
+  {
+    "regionId": "01057026",
+    "name": "Behrensdorf",
+    "checkedAt": "2026-09-23T07:00:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die einzige im Quellenbestand erfasste Adresse dieser Gemeinde führt auf die Mitarbeiterübersicht des Förderzentrums Plön-Lütjenburg, also einer Schule. Ein kommunales Programm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe steht dort nicht.",
+    "searches": [
+      "amt-luetjenburg.de Förderung Photovoltaik Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
+        "finding": "Die Adresse liefert die Mitarbeiterübersicht eines Förderzentrums (Schule), kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; die Seite trägt kein Förderprogramm.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01057027",
+    "name": "Blekendorf",
+    "checkedAt": "2026-09-23T07:00:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die einzige im Quellenbestand erfasste Adresse dieser Gemeinde führt auf die Mitarbeiterübersicht des Förderzentrums Plön-Lütjenburg, also einer Schule. Ein kommunales Programm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe steht dort nicht.",
+    "searches": [
+      "amt-luetjenburg.de Förderung Photovoltaik Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
+        "finding": "Die Adresse liefert die Mitarbeiterübersicht eines Förderzentrums (Schule), kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; die Seite trägt kein Förderprogramm.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01057034",
+    "name": "Dannau",
+    "checkedAt": "2026-09-23T07:00:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die einzige im Quellenbestand erfasste Adresse dieser Gemeinde führt auf die Mitarbeiterübersicht des Förderzentrums Plön-Lütjenburg, also einer Schule. Ein kommunales Programm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe steht dort nicht.",
+    "searches": [
+      "amt-luetjenburg.de Förderung Photovoltaik Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
+        "finding": "Die Adresse liefert die Mitarbeiterübersicht eines Förderzentrums (Schule), kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; die Seite trägt kein Förderprogramm.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01057035",
+    "name": "Giekau",
+    "checkedAt": "2026-09-23T07:00:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die einzige im Quellenbestand erfasste Adresse dieser Gemeinde führt auf die Mitarbeiterübersicht des Förderzentrums Plön-Lütjenburg, also einer Schule. Ein kommunales Programm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe steht dort nicht.",
+    "searches": [
+      "amt-luetjenburg.de Förderung Photovoltaik Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
+        "finding": "Die Adresse liefert die Mitarbeiterübersicht eines Förderzentrums (Schule), kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; die Seite trägt kein Förderprogramm.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      }
+    ]
+  },
+  {
+    "regionId": "01057038",
+    "name": "Helmstorf",
+    "checkedAt": "2026-09-23T07:00:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die einzige im Quellenbestand erfasste Adresse dieser Gemeinde führt auf die Mitarbeiterübersicht des Förderzentrums Plön-Lütjenburg, also einer Schule. Ein kommunales Programm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe steht dort nicht.",
+    "searches": [
+      "amt-luetjenburg.de Förderung Photovoltaik Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
+        "finding": "Die Adresse liefert die Mitarbeiterübersicht eines Förderzentrums (Schule), kein Förderprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; die Seite trägt kein Förderprogramm.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03353008",
+    "name": "Appel",
+    "checkedAt": "2026-09-23T07:00:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die beiden über die Samtgemeinde Hollenstedt erfassten Adressen führen auf Leistungen fremder Träger: die Bundesförderung der Energieberatung für Wohngebäude und die Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben. Ein eigenes kommunales Programm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe steht dort nicht.",
+    "searches": [
+      "hollenstedt.de Dienstleistungen Förderung Energie"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html",
+        "finding": "Bundesförderung der Energieberatung (80 % des Beratungshonorars), kein kommunales Programm."
+      },
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html",
+        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben."
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html"
+      },
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; regionale Projektförderung, nichts für private Anlagen.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03353019",
+    "name": "Drestedt",
+    "checkedAt": "2026-09-23T07:00:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die beiden über die Samtgemeinde Hollenstedt erfassten Adressen führen auf Leistungen fremder Träger: die Bundesförderung der Energieberatung für Wohngebäude und die Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben. Ein eigenes kommunales Programm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe steht dort nicht.",
+    "searches": [
+      "hollenstedt.de Dienstleistungen Förderung Energie"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html",
+        "finding": "Bundesförderung der Energieberatung (80 % des Beratungshonorars), kein kommunales Programm."
+      },
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html",
+        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben."
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html"
+      },
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; regionale Projektförderung, nichts für private Anlagen.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03353028",
+    "name": "Halvesbostel",
+    "checkedAt": "2026-09-23T07:00:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die beiden über die Samtgemeinde Hollenstedt erfassten Adressen führen auf Leistungen fremder Träger: die Bundesförderung der Energieberatung für Wohngebäude und die Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben. Ein eigenes kommunales Programm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe steht dort nicht.",
+    "searches": [
+      "hollenstedt.de Dienstleistungen Förderung Energie"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html",
+        "finding": "Bundesförderung der Energieberatung (80 % des Beratungshonorars), kein kommunales Programm."
+      },
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html",
+        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben."
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html"
+      },
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; regionale Projektförderung, nichts für private Anlagen.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03353039",
+    "name": "Moisburg",
+    "checkedAt": "2026-09-23T07:00:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die beiden über die Samtgemeinde Hollenstedt erfassten Adressen führen auf Leistungen fremder Träger: die Bundesförderung der Energieberatung für Wohngebäude und die Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben. Ein eigenes kommunales Programm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe steht dort nicht.",
+    "searches": [
+      "hollenstedt.de Dienstleistungen Förderung Energie"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html",
+        "finding": "Bundesförderung der Energieberatung (80 % des Beratungshonorars), kein kommunales Programm."
+      },
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html",
+        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben."
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html"
+      },
+      {
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; regionale Projektförderung, nichts für private Anlagen.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html"
+      }
+    ]
+  },
+  {
+    "regionId": "15085230",
+    "name": "Osterwieck",
+    "checkedAt": "2026-09-23T07:00:00Z",
+    "recheckAt": "2027-09-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die beiden erfassten Adressen führen auf die Übersicht der Zuschüsse, die die Einheitsgemeinde selbst für eigene Bauvorhaben erhält, und auf eine EU-geförderte Waldumweltmaßnahme im Gemeindewald. Ein Programm für Bürgerinnen und Bürger zu Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe steht dort nicht.",
+    "searches": [
+      "stadt-osterwieck.de Förderung Photovoltaik Balkonkraftwerk"
+    ],
+    "evidence": [
+      {
+        "url": "https://stadt-osterwieck.de/rathaus-serviceportal/baumassnahmen",
+        "finding": "Übersicht der Investitionszuschüsse, die die Stadt selbst für eigene Bauvorhaben erhält."
+      },
+      {
+        "url": "https://stadt-osterwieck.de/rathaus-serviceportal/baumassnahmen/foerderung-waldumwlet-und-klimadienstleistungen-und-erhalt-der-waelder-biotopbaeume-und-totholz",
+        "finding": "EU-Förderung für Biotopbäume und Totholz im Gemeindewald."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-osterwieck.de/rathaus-serviceportal/baumassnahmen",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; Zuschüsse an die Stadt, nicht an Bürger.",
+        "evidenceUrl": "https://stadt-osterwieck.de/rathaus-serviceportal/baumassnahmen"
+      },
+      {
+        "url": "stadt-osterwieck.de/rathaus-serviceportal/baumassnahmen/foerderung-waldumwlet-und-klimadienstleistungen-und-erhalt-der-waelder-biotopbaeume-und-totholz",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; Waldumweltmaßnahme, nichts für private Anlagen.",
+        "evidenceUrl": "https://stadt-osterwieck.de/rathaus-serviceportal/baumassnahmen/foerderung-waldumwlet-und-klimadienstleistungen-und-erhalt-der-waelder-biotopbaeume-und-totholz"
+      }
+    ]
   }
 ]
