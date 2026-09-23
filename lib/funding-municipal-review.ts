@@ -15,6 +15,30 @@ export type MunicipalReview = {
   enquiry?: { id: string; recipient: string; recipientSource: string; website: string; question: string };
 };
 export type InquiryReceipt = { program_id: string; gesendet_am: string; beleg: string | null; antwort_am: string | null };
+/**
+ * Eine Quelladresse auf EINE Schreibweise bringen, bevor zwei davon verglichen
+ * werden.
+ *
+ * WARUM (23.09.2026, gemessen): Der Quellenvorrat speichert die Adressen so, wie
+ * sie im HTML der Amtsseite stehen — also mit `&amp;` zwischen den Parametern.
+ * Wer eine Adresse aus dem Browser kopiert, bekommt `&`. Beide bezeichnen
+ * dieselbe Seite; ein Zeichenvergleich hält sie für verschieden.
+ *
+ * Die Folge ist unsichtbar und dauerhaft: Die Gemeinde gilt als „Quelle noch
+ * nicht gelesen", steht wieder im Arbeitsvorrat und kann ihn NIE verlassen, egal
+ * wie oft jemand sie prüft. Genau so hingen Leiferde, Meinersen und Müden
+ * (Aller) fest, nachdem ihre Prüfung inhaltlich längst fertig war. Gemessen
+ * waren 99 Quellzeilen in 33 Gemeinden mit nacktem `&` abgelegt, während der
+ * Vorrat dieselben Adressen mit `&amp;` führt — beide Schreibweisen kommen in
+ * beiden Beständen vor, eine davon „richtig" zu erklären hätte die andere Hälfte
+ * kaputtgemacht.
+ *
+ * Bewusst NUR diese eine Ersetzung: Sie ist eine Artefakt der HTML-Maskierung,
+ * nie ein Bedeutungsunterschied. Wer hier weiter normalisiert (Schrägstrich am
+ * Ende, Groß-/Kleinschreibung, Parameterreihenfolge), macht Adressen gleich, die
+ * verschiedene Seiten sein können.
+ */
+export const quellAdresse = (value: string): string => value.replace(/&amp;/g, "&");
 const nonempty = (value: unknown): value is string => typeof value === "string" && !!value.trim();
 const date = (value: unknown): value is string => nonempty(value) && Number.isFinite(Date.parse(value));
 const url = (value: unknown): value is string => {
@@ -63,7 +87,8 @@ export function municipalReviewQueue(rows: ReviewSource[], reviews: MunicipalRev
     const latestReply = receipts.filter(r => r.program_id === `klaerung-${regionId}` && r.antwort_am)
       .some(r => !date(r.antwort_am) || Date.parse(r.antwort_am!) > Date.parse(review.checkedAt));
     if (latestReply) return { ...base, status: "antwort-pruefen", done: false, nextAction: "Neue Behördenantwort im Original prüfen und Ergebnis dokumentieren", dueAt: now, overdue: true };
-    const missing = sources.filter(s => !review.sources.some(r => r.url === s.url));
+    const gelesen = new Set(review.sources.map(r => quellAdresse(r.url)));
+    const missing = sources.filter(s => !gelesen.has(quellAdresse(s.url)));
     const changed = sources.some(s => s.seite_geaendert_am && (!date(s.seite_geaendert_am) || Date.parse(s.seite_geaendert_am) > Date.parse(review.checkedAt)));
     if (review.outcome !== "klaerung" && (missing.length || changed || Date.parse(now) >= Date.parse(review.recheckAt) || Date.parse(review.checkedAt) > Date.parse(now))) {
       return { ...base, status: "erneut-pruefen", done: false, nextAction: "Neue/geänderte Quellen oder fällige Kommune manuell prüfen", dueAt: now, overdue: true };

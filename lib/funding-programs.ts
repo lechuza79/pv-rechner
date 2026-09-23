@@ -8917,6 +8917,72 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // Gegengeprüft am Richtlinien-Volltext (Nr. 3, 4 und 6), 23.09.2026.
   },
 
+  "gifhorn-kreis-balkonkraftwerke": {
+    id: "gifhorn-kreis-balkonkraftwerke",
+    name: "Förderung von Balkonkraftwerken (Stecker-Solargeräte)",
+    traeger: "Landkreis Gifhorn", level: "kommune", region: "Landkreis Gifhorn",
+    bundesland: "Niedersachsen", agsCode: "03151",
+    url: "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beschlossenIso: "2023-12-15", beginntIso: "2024-07-01",
+    eligibility: ["privat"],
+    coveredCosts: "Einmalige Pauschale für den Kauf eines Balkonkraftwerks",
+    maxFoerderung: "200 € je Haushalt",
+    rates: [
+      { label: "Balkonkraftwerk, förderfähige Kosten ab 200 €", value: "200 € pauschal" },
+      { label: "Balkonkraftwerk, förderfähige Kosten unter 200 €", value: "100 % der förderfähigen Kosten" },
+    ],
+    conditions: [
+      "Keine Mittel mehr: Der Kreishaushalt weist für die Förderung ab 2025 keine Ausgaben mehr aus; nach der Richtlinie endet das Programm mit den verfügbaren Haushaltsmitteln",
+      "Die Förderung war an das Einkommen gebunden — gefördert wurden nur Haushalte mit einem Netto-Einkommen bis zum Doppelten des Bürgergeld-Regelsatzes",
+      "Antragsberechtigt waren natürliche Personen mit Hauptwohnsitz im Landkreis, Mieter wie Eigentümer; Mieter brauchten die schriftliche Erlaubnis des Eigentümers",
+      "Ein Gerät je Antragsteller und Haushalt; eine zweite Förderung für dieselbe Wohnung war ausgeschlossen",
+      "Mindestens 350 VA und höchstens 800 VA Wechselrichterleistung bei höchstens 2 kW installierter Modulleistung",
+      "Die Anlage war im Marktstammdatenregister zu registrieren",
+      "Ausgeschlossen waren Geräte, die vor dem 01.07.2024 gekauft wurden, Gebrauchtgeräte, mobile Anlagen, Prototypen, Eigenbau und Leasing — ebenso Haushalte, die bereits eine Photovoltaikanlage hatten",
+      "Eine Kombination mit anderen Fördermitteln war ausgeschlossen",
+      "Es galt das Windhund-Verfahren im Rahmen der verfügbaren Mittel; ein Rechtsanspruch bestand nicht",
+    ],
+    // Nr. 6 der Richtlinie: „Eine Kombination der Förderung nach dieser Richtlinie
+    // mit anderen Fördermitteln ist grundsätzlich ausgeschlossen."
+    combinableWith: [],
+    foerdert: ["balkon"],
+    // KEIN Rechenwert, und zwar aus zwei voneinander unabhängigen Gründen:
+    //
+    // 1. EINKOMMENSGRENZE. Nr. 5 fördert nur Haushalte „bis zum Doppelten des
+    //    Bürgergeld-Regelsatzes". Ob ein Nutzer darunter liegt, weiß der Rechner
+    //    nicht und fragt es auch nicht — das ist genau die Bauform, die der
+    //    Katalog seit Bad Krozingen und Tübingen bewusst ohne Zahl aufnimmt.
+    // 2. KEINE MITTEL. Siehe Statusbegründung unten.
+    //
+    // WARUM TROTZDEM AUFGENOMMEN: „Gab es, ist ausgeschöpft" ist eine echte
+    // Auskunft. Ohne den Eintrag stünde auf den Ortsseiten des Kreises „keine
+    // kommunale Förderung bekannt", und für die Zubau-Auswertung ist gerade die
+    // ausgelaufene Förderung der interessante Fall.
+    //
+    // STATUS „ausgeschöpft", nicht „eingestellt" — die Richtlinie ist nicht
+    // aufgehoben, sie hat nur kein Geld mehr. Drei unabhängige Befunde, alle am
+    // 23.09.2026 gemessen:
+    //   a) Der Haushaltsplanentwurf 2026 des Kreises führt „Förderung
+    //      Balkonkraftwerke" in der Liste der freiwilligen Zuwendungen mit
+    //      1.600 € für 2024 und 0,00 € für 2025, 2026, 2027, 2028 und 2029.
+    //   b) Das Serviceportal des Kreises führt die Leistung nicht mehr: Die
+    //      Volltextsuche des Kreises findet zu „Balkonkraftwerk*" vier Treffer,
+    //      darunter KEINE Dienstleistung (Kontrollwort „Abfall": 109 Treffer,
+    //      davon eine Dienstleistung — die Suche funktioniert also). Auch das
+    //      A–Z-Verzeichnis des Serviceportals kennt nur den Balkon-Zuschuss der
+    //      Gemeinde Müden (Aller), keinen des Kreises.
+    //   c) Nr. 8 der Richtlinie bindet die Laufzeit selbst an die Mittel: „Die
+    //      Dauer des Förderprogramms wird durch die zur Verfügung stehenden
+    //      Haushaltsmittel begrenzt."
+    // Ein AUSDRÜCKLICHER Einstellungsbeschluss ist damit NICHT belegt, und das
+    // steht hier, damit niemand ihn später als belegt weiterträgt.
+    //
+    // Die Richtlinie ist weiterhin über das Serviceportal abrufbar (HTTP 200,
+    // 188 kB PDF) — deshalb zeigt `url` auf sie und nicht auf eine Übersicht,
+    // die das Programm nicht mehr nennt.
+  },
+
   "meinersen-solar": {
     id: "meinersen-solar",
     name: "Förderung von Solarthermie- und Photovoltaikanlagen",

@@ -21,6 +21,21 @@ describe("Municipal completion and follow-through", () => {
     }] }])).not.toThrow();
     expect(() => validateMunicipalReviews([{ ...review, sources: [{ ...replaced, url: "ftp://town.de/file" }] }])).toThrow();
   });
+  it("hält dieselbe Adresse in beiden Schreibweisen für dieselbe Quelle", () => {
+    // Der Vorrat speichert die Adresse so, wie sie im HTML der Amtsseite steht
+    // (`&amp;`), eine aus dem Browser kopierte trägt `&`. Ein Zeichenvergleich
+    // hält beide für verschieden — die Gemeinde gilt dann dauerhaft als „Quelle
+    // nicht gelesen" und kann den Arbeitsvorrat NIE verlassen, egal wie oft
+    // jemand sie prüft. Gemessen am 23.09.2026 an Leiferde, Meinersen und Müden
+    // (Aller), die genau deshalb festhingen.
+    const roh = { ...source, url: "town.de/seite.php?id=7&amp;ref=solar" };
+    const kopiert = { ...review.sources[0], url: "town.de/seite.php?id=7&ref=solar" };
+    expect(state({ ...review, sources: [kopiert] }, [roh]).done).toBe(true);
+    // Und die Gegenrichtung, damit die Ersetzung nicht einseitig gebaut wird.
+    expect(state({ ...review, sources: [{ ...kopiert, url: roh.url }] }, [{ ...roh, url: kopiert.url }]).done).toBe(true);
+    // Was NICHT gleich werden darf: eine wirklich andere Adresse.
+    expect(state({ ...review, sources: [kopiert] }, [{ ...roh, url: "town.de/seite.php?id=8&amp;ref=solar" }]).done).toBe(false);
+  });
   it("counts an evidenced negative finding as done, not an unread town", () => {
     expect(state().done).toBe(true);
     expect(municipalReviewQueue([source], [], [], now).completedMunicipalities).toBe(0);

@@ -411,6 +411,13 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Stadt Aachen (nur Mehrfamilienhaus oder Betriebsgebäude) kennt das Modell
   // als GEBÄUDEART bereits, aber nicht als Ausschluss des Einfamilienhauses.
   "aachen-solar", "staedteregion-aachen-ee",
+  // Added 23 Sep 2026 as an exhausted county programme (no calculation fields).
+  // Its load-bearing condition is an INCOME cap — household net income up to
+  // twice the Buergergeld rate — which the model cannot express and the
+  // calculator never asks. A check form covering only the application date
+  // would suggest the remaining conditions are met once the date fits, for a
+  // programme that has no money left. Written out rather than half-captured.
+  "gifhorn-kreis-balkonkraftwerke",
   // Added 17 Sep 2026 as a closed historical programme (no calculation fields).
   "mainz-bingen-balkonkraftwerke",
   "mayen-koblenz-balkonkraftwerke",

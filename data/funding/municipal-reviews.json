@@ -48725,16 +48725,18 @@
   {
     "regionId": "03151017",
     "name": "Meinersen",
-    "checkedAt": "2026-09-22T23:05:00Z",
-    "recheckAt": "2026-12-22T08:00:00Z",
+    "checkedAt": "2026-09-23T00:18:00Z",
+    "recheckAt": "2027-03-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene.",
-    "outcome": "klaerung",
-    "conclusion": "Die Gemeinde Meinersen fördert Solarthermie- und Photovoltaikanlagen mit 10 % der förderfähigen Kosten, höchstens 1.000 € je Vorhaben (Richtlinie Nr. 8.1). Aufgenommen, aber ohne Rechenwert: Die veröffentlichte Richtlinie erfasst nur den Neubau auf einem bisher unbebauten Grundstück, während die Gemeindeseite eine seit 2022 mögliche Antragstellung für Bestandsgebäude ankündigt und die Richtlinie als in Umstellung bezeichnet — die Bedingungen dafür sind nirgends veröffentlicht. Das Balkonprogramm der Nachbargemeinde Müden (Aller) gilt hier NICHT. Offen bleibt die Kreisebene (siehe nächster Schritt).",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Meinersen fördert Solarthermie- und Photovoltaikanlagen mit 10 % der förderfähigen Kosten, höchstens 1.000 € je Vorhaben (Richtlinie Nr. 8.1). Aufgenommen, aber ohne Rechenwert: Die veröffentlichte Richtlinie erfasst nur den Neubau auf einem bisher unbebauten Grundstück, während die Gemeindeseite eine seit 2022 mögliche Antragstellung für Bestandsgebäude ankündigt und die Richtlinie als in Umstellung bezeichnet — die Bedingungen dafür sind nirgends veröffentlicht. Das Balkonprogramm der Nachbargemeinde Müden (Aller) gilt hier NICHT. Die Kreisebene ist geklaert: Der Landkreis Gifhorn hat Balkonkraftwerke mit 200 Euro pauschal gefoerdert (Richtlinie in Kraft seit 01.07.2024, Kreistagsbeschluss vom 15.12.2023), begrenzt auf Haushalte mit einem Netto-Einkommen bis zum Doppelten des Buergergeld-Regelsatzes. Das Programm hat kein Geld mehr und ist als ausgeschoepft aufgenommen, ohne Rechenwert: Der Haushaltsplanentwurf 2026 des Kreises fuehrt „Foerderung Balkonkraftwerke“ mit 1.600 Euro fuer 2024 und 0,00 Euro fuer 2025 bis 2029, das Serviceportal des Kreises fuehrt die Leistung nicht mehr (Volltextsuche „Balkonkraftwerk*“: vier Treffer, keine Dienstleistung — Kontrollwort „Abfall“: 109 Treffer, davon eine Dienstleistung), und Nr. 8 der Richtlinie bindet die Laufzeit selbst an die verfuegbaren Haushaltsmittel. Ein ausdruecklicher Einstellungsbeschluss ist NICHT belegt. Damit ist fuer diese Gemeinde nichts mehr offen.",
     "searches": [
       "sg-meinersen.de Volltextsuche „Photovoltaik*“ (72 Treffer, nur die zwei Programme plus Beratungswerkzeug)",
       "sg-meinersen.de Volltextsuche „Förderung“ (124 Treffer)",
       "landkreis-gifhorn.de Volltextsuche „Balkonkraftwerk*“ und „Steckersolar*“",
-      "Landkreis Gifhorn Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss private Haushalte Klimaschutz"
+      "Landkreis Gifhorn Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss private Haushalte Klimaschutz",
+      "openrathaus.gifhorn.de Dienstleistungs-A–Z vollstaendig gelesen (692 Eintraege, einziger Balkon-Eintrag ist der der Gemeinde Mueden/Aller)",
+      "landkreis-gifhorn.de Volltextsuche „Balkonkraftwerk*“ (4 Treffer, keine Dienstleistung; Kontrollwort „Abfall“ 109 Treffer mit einer Dienstleistung)"
     ],
     "evidence": [
       {
@@ -48760,6 +48762,14 @@
       {
         "url": "https://www.landkreis-gifhorn.de/suche.php?such=Steckersolar*",
         "finding": "Volltextsuche des Landkreises Gifhorn am 23.09.2026: zwei Treffer, beide im Amtsblatt-Archiv von 2024 („Richtlinien des Landkreises Gifhorn zur Förderung von ‚Balkonkraftwerken‘ (Stecker-Solargeräte)“, Amtsblatt 2024-06). Keine aktuelle Dienstleistungsseite — Laufzeit und Mittelstand sind damit offen."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Richtlinie des Landkreises Gifhorn zur Foerderung von „Balkonkraftwerken“ am 23.09.2026 im Volltext gelesen. Nr. 7: „Der Zuschuss betraegt pauschal 200 € bei foerderfaehigen Kosten von mindestens 200 €.“ Nr. 5: „Die sozial motivierte Foerdergrenze liegt bei einem Haushalts-Nettoeinkommen bis zum Doppelten des Buergergeld-Regelsatzes.“ Nr. 8: „Die Dauer des Foerderprogramms wird durch die zur Verfuegung stehenden Haushaltsmittel begrenzt.“ Nr. 6: „Eine Kombination der Foerderung nach dieser Richtlinie mit anderen Foerdermitteln ist grundsaetzlich ausgeschlossen.“"
+      },
+      {
+        "url": "https://www.landkreis-gifhorn.de/loadDocument.phtml?FID=4083.6949.1&Ext=PDF",
+        "finding": "Haushaltsplanentwurf 2026 des Landkreises Gifhorn, Liste der freiwilligen Zuwendungen, Zeile 148 „Foerderung Balkonkraftwerke“: 2022 0,00 – 2023 0,00 – 2024 1.600,00 – 2025 0,00 – 2026 0,00 – 2027 0,00 – 2028 0,00 – 2029 0,00. Am 23.09.2026 gelesen."
       }
     ],
     "sources": [
@@ -48811,26 +48821,23 @@
         "reason": "Zweiter Kontakt-Detaillink derselben Programmseite: leitet auf die Visitenkarte einer weiteren Mitarbeiterin (Wauschkies) um.",
         "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
       }
-    ],
-    "nextAction": {
-      "kind": "manual",
-      "dueAt": "2026-09-24T08:00:00Z",
-      "detail": "Offen ist allein die KREISEBENE: Der Landkreis Gifhorn hat 2024 eine „Richtlinie zur Förderung von Balkonkraftwerken (Stecker-Solargeräte)“ im Amtsblatt 2024-06 bekannt gemacht (200 € pauschal ab 200 € förderfähigen Kosten, Mindestleistung 350 VA, höchstens 800 VA und 2 kWp; Anträge ab 15.07.2024). Die Volltextsuche des Kreises findet sie heute NUR noch im Amtsblatt-Archiv, nicht als Dienstleistung — die Laufzeit ist laut Richtlinie durch die Haushaltsmittel begrenzt. Zu klären: Läuft das Programm noch, ist es ausgeschöpft oder beendet? Quelle ist der Dienstleistungseintrag im Serviceportal des Kreises (openrathaus.gifhorn.de); die Kennung nicht raten, sondern über die Dienstleistungssuche auflösen. Erst danach lässt sich für diese Gemeinden abschließend sagen, was ein Haushalt bekommt."
-    }
+    ]
   },
   {
     "regionId": "03151018",
     "name": "Müden (Aller)",
-    "checkedAt": "2026-09-22T23:05:00Z",
-    "recheckAt": "2026-12-22T08:00:00Z",
+    "checkedAt": "2026-09-23T00:18:00Z",
+    "recheckAt": "2027-03-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene.",
-    "outcome": "klaerung",
-    "conclusion": "Die Gemeinde Müden (Aller) fördert Balkonkraftwerke pauschal: 100 € für 0,25–0,40 kWp, 200 € darüber (Richtlinie Nr. 4), Antragszeitraum 01.04. bis 31.12., Bestand und Neubau, Eigentümer und Mieter. Aufgenommen und rechenbar. Das Dach-Programm der Nachbargemeinde Meinersen gilt hier NICHT. Offen bleibt die Kreisebene (siehe nächster Schritt).",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Müden (Aller) fördert Balkonkraftwerke pauschal: 100 € für 0,25–0,40 kWp, 200 € darüber (Richtlinie Nr. 4), Antragszeitraum 01.04. bis 31.12., Bestand und Neubau, Eigentümer und Mieter. Aufgenommen und rechenbar. Das Dach-Programm der Nachbargemeinde Meinersen gilt hier NICHT. Die Kreisebene ist geklaert: Der Landkreis Gifhorn hat Balkonkraftwerke mit 200 Euro pauschal gefoerdert (Richtlinie in Kraft seit 01.07.2024, Kreistagsbeschluss vom 15.12.2023), begrenzt auf Haushalte mit einem Netto-Einkommen bis zum Doppelten des Buergergeld-Regelsatzes. Das Programm hat kein Geld mehr und ist als ausgeschoepft aufgenommen, ohne Rechenwert: Der Haushaltsplanentwurf 2026 des Kreises fuehrt „Foerderung Balkonkraftwerke“ mit 1.600 Euro fuer 2024 und 0,00 Euro fuer 2025 bis 2029, das Serviceportal des Kreises fuehrt die Leistung nicht mehr (Volltextsuche „Balkonkraftwerk*“: vier Treffer, keine Dienstleistung — Kontrollwort „Abfall“: 109 Treffer, davon eine Dienstleistung), und Nr. 8 der Richtlinie bindet die Laufzeit selbst an die verfuegbaren Haushaltsmittel. Ein ausdruecklicher Einstellungsbeschluss ist NICHT belegt. Damit ist fuer diese Gemeinde nichts mehr offen.",
     "searches": [
       "sg-meinersen.de Volltextsuche „Photovoltaik*“ (72 Treffer, nur die zwei Programme plus Beratungswerkzeug)",
       "sg-meinersen.de Volltextsuche „Förderung“ (124 Treffer)",
       "landkreis-gifhorn.de Volltextsuche „Balkonkraftwerk*“ und „Steckersolar*“",
-      "Landkreis Gifhorn Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss private Haushalte Klimaschutz"
+      "Landkreis Gifhorn Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss private Haushalte Klimaschutz",
+      "openrathaus.gifhorn.de Dienstleistungs-A–Z vollstaendig gelesen (692 Eintraege, einziger Balkon-Eintrag ist der der Gemeinde Mueden/Aller)",
+      "landkreis-gifhorn.de Volltextsuche „Balkonkraftwerk*“ (4 Treffer, keine Dienstleistung; Kontrollwort „Abfall“ 109 Treffer mit einer Dienstleistung)"
     ],
     "evidence": [
       {
@@ -48856,6 +48863,14 @@
       {
         "url": "https://www.landkreis-gifhorn.de/suche.php?such=Steckersolar*",
         "finding": "Volltextsuche des Landkreises Gifhorn am 23.09.2026: zwei Treffer, beide im Amtsblatt-Archiv von 2024 („Richtlinien des Landkreises Gifhorn zur Förderung von ‚Balkonkraftwerken‘ (Stecker-Solargeräte)“, Amtsblatt 2024-06). Keine aktuelle Dienstleistungsseite — Laufzeit und Mittelstand sind damit offen."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Richtlinie des Landkreises Gifhorn zur Foerderung von „Balkonkraftwerken“ am 23.09.2026 im Volltext gelesen. Nr. 7: „Der Zuschuss betraegt pauschal 200 € bei foerderfaehigen Kosten von mindestens 200 €.“ Nr. 5: „Die sozial motivierte Foerdergrenze liegt bei einem Haushalts-Nettoeinkommen bis zum Doppelten des Buergergeld-Regelsatzes.“ Nr. 8: „Die Dauer des Foerderprogramms wird durch die zur Verfuegung stehenden Haushaltsmittel begrenzt.“ Nr. 6: „Eine Kombination der Foerderung nach dieser Richtlinie mit anderen Foerdermitteln ist grundsaetzlich ausgeschlossen.“"
+      },
+      {
+        "url": "https://www.landkreis-gifhorn.de/loadDocument.phtml?FID=4083.6949.1&Ext=PDF",
+        "finding": "Haushaltsplanentwurf 2026 des Landkreises Gifhorn, Liste der freiwilligen Zuwendungen, Zeile 148 „Foerderung Balkonkraftwerke“: 2022 0,00 – 2023 0,00 – 2024 1.600,00 – 2025 0,00 – 2026 0,00 – 2027 0,00 – 2028 0,00 – 2029 0,00. Am 23.09.2026 gelesen."
       }
     ],
     "sources": [
@@ -48907,26 +48922,23 @@
         "reason": "Zweiter Kontakt-Detaillink derselben Programmseite: leitet auf die Visitenkarte einer weiteren Mitarbeiterin (Wauschkies) um.",
         "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
       }
-    ],
-    "nextAction": {
-      "kind": "manual",
-      "dueAt": "2026-09-24T08:00:00Z",
-      "detail": "Offen ist allein die KREISEBENE: Der Landkreis Gifhorn hat 2024 eine „Richtlinie zur Förderung von Balkonkraftwerken (Stecker-Solargeräte)“ im Amtsblatt 2024-06 bekannt gemacht (200 € pauschal ab 200 € förderfähigen Kosten, Mindestleistung 350 VA, höchstens 800 VA und 2 kWp; Anträge ab 15.07.2024). Die Volltextsuche des Kreises findet sie heute NUR noch im Amtsblatt-Archiv, nicht als Dienstleistung — die Laufzeit ist laut Richtlinie durch die Haushaltsmittel begrenzt. Zu klären: Läuft das Programm noch, ist es ausgeschöpft oder beendet? Quelle ist der Dienstleistungseintrag im Serviceportal des Kreises (openrathaus.gifhorn.de); die Kennung nicht raten, sondern über die Dienstleistungssuche auflösen. Erst danach lässt sich für diese Gemeinden abschließend sagen, was ein Haushalt bekommt."
-    }
+    ]
   },
   {
     "regionId": "03151015",
     "name": "Leiferde",
-    "checkedAt": "2026-09-22T23:05:00Z",
-    "recheckAt": "2026-12-22T08:00:00Z",
+    "checkedAt": "2026-09-23T00:18:00Z",
+    "recheckAt": "2027-03-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde- und Kreisebene.",
-    "outcome": "klaerung",
-    "conclusion": "Leiferde hat kein eigenes Programm. Die beiden im Quellenvorrat erfassten Förderseiten der Samtgemeinde gehören den Nachbargemeinden Meinersen (Dachanlagen) und Müden (Aller) (Balkonkraftwerke) und gelten jeweils nur im eigenen Gemeindegebiet — die Müdener Richtlinie sagt das ausdrücklich („innerhalb des Gemeindegebietes Müden (Aller)“). Die Volltextsuche der Samtgemeinde zeigt kein drittes Programm. Offen bleibt die Kreisebene (siehe nächster Schritt).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Leiferde hat kein eigenes Programm. Die beiden im Quellenvorrat erfassten Förderseiten der Samtgemeinde gehören den Nachbargemeinden Meinersen (Dachanlagen) und Müden (Aller) (Balkonkraftwerke) und gelten jeweils nur im eigenen Gemeindegebiet — die Müdener Richtlinie sagt das ausdrücklich („innerhalb des Gemeindegebietes Müden (Aller)“). Die Volltextsuche der Samtgemeinde zeigt kein drittes Programm. Die Kreisebene ist geklaert: Der Landkreis Gifhorn hat Balkonkraftwerke mit 200 Euro pauschal gefoerdert (Richtlinie in Kraft seit 01.07.2024, Kreistagsbeschluss vom 15.12.2023), begrenzt auf Haushalte mit einem Netto-Einkommen bis zum Doppelten des Buergergeld-Regelsatzes. Das Programm hat kein Geld mehr und ist als ausgeschoepft aufgenommen, ohne Rechenwert: Der Haushaltsplanentwurf 2026 des Kreises fuehrt „Foerderung Balkonkraftwerke“ mit 1.600 Euro fuer 2024 und 0,00 Euro fuer 2025 bis 2029, das Serviceportal des Kreises fuehrt die Leistung nicht mehr (Volltextsuche „Balkonkraftwerk*“: vier Treffer, keine Dienstleistung — Kontrollwort „Abfall“: 109 Treffer, davon eine Dienstleistung), und Nr. 8 der Richtlinie bindet die Laufzeit selbst an die verfuegbaren Haushaltsmittel. Ein ausdruecklicher Einstellungsbeschluss ist NICHT belegt. Damit ist fuer diese Gemeinde nichts mehr offen.",
     "searches": [
       "sg-meinersen.de Volltextsuche „Photovoltaik*“ (72 Treffer, nur die zwei Programme plus Beratungswerkzeug)",
       "sg-meinersen.de Volltextsuche „Förderung“ (124 Treffer)",
       "landkreis-gifhorn.de Volltextsuche „Balkonkraftwerk*“ und „Steckersolar*“",
-      "Landkreis Gifhorn Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss private Haushalte Klimaschutz"
+      "Landkreis Gifhorn Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss private Haushalte Klimaschutz",
+      "openrathaus.gifhorn.de Dienstleistungs-A–Z vollstaendig gelesen (692 Eintraege, einziger Balkon-Eintrag ist der der Gemeinde Mueden/Aller)",
+      "landkreis-gifhorn.de Volltextsuche „Balkonkraftwerk*“ (4 Treffer, keine Dienstleistung; Kontrollwort „Abfall“ 109 Treffer mit einer Dienstleistung)"
     ],
     "evidence": [
       {
@@ -48952,6 +48964,14 @@
       {
         "url": "https://www.landkreis-gifhorn.de/suche.php?such=Steckersolar*",
         "finding": "Volltextsuche des Landkreises Gifhorn am 23.09.2026: zwei Treffer, beide im Amtsblatt-Archiv von 2024 („Richtlinien des Landkreises Gifhorn zur Förderung von ‚Balkonkraftwerken‘ (Stecker-Solargeräte)“, Amtsblatt 2024-06). Keine aktuelle Dienstleistungsseite — Laufzeit und Mittelstand sind damit offen."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Richtlinie des Landkreises Gifhorn zur Foerderung von „Balkonkraftwerken“ am 23.09.2026 im Volltext gelesen. Nr. 7: „Der Zuschuss betraegt pauschal 200 € bei foerderfaehigen Kosten von mindestens 200 €.“ Nr. 5: „Die sozial motivierte Foerdergrenze liegt bei einem Haushalts-Nettoeinkommen bis zum Doppelten des Buergergeld-Regelsatzes.“ Nr. 8: „Die Dauer des Foerderprogramms wird durch die zur Verfuegung stehenden Haushaltsmittel begrenzt.“ Nr. 6: „Eine Kombination der Foerderung nach dieser Richtlinie mit anderen Foerdermitteln ist grundsaetzlich ausgeschlossen.“"
+      },
+      {
+        "url": "https://www.landkreis-gifhorn.de/loadDocument.phtml?FID=4083.6949.1&Ext=PDF",
+        "finding": "Haushaltsplanentwurf 2026 des Landkreises Gifhorn, Liste der freiwilligen Zuwendungen, Zeile 148 „Foerderung Balkonkraftwerke“: 2022 0,00 – 2023 0,00 – 2024 1.600,00 – 2025 0,00 – 2026 0,00 – 2027 0,00 – 2028 0,00 – 2029 0,00. Am 23.09.2026 gelesen."
       }
     ],
     "sources": [
@@ -49003,11 +49023,6 @@
         "reason": "Zweiter Kontakt-Detaillink derselben Programmseite: leitet auf die Visitenkarte einer weiteren Mitarbeiterin (Wauschkies) um.",
         "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
       }
-    ],
-    "nextAction": {
-      "kind": "manual",
-      "dueAt": "2026-09-24T08:00:00Z",
-      "detail": "Offen ist allein die KREISEBENE: Der Landkreis Gifhorn hat 2024 eine „Richtlinie zur Förderung von Balkonkraftwerken (Stecker-Solargeräte)“ im Amtsblatt 2024-06 bekannt gemacht (200 € pauschal ab 200 € förderfähigen Kosten, Mindestleistung 350 VA, höchstens 800 VA und 2 kWp; Anträge ab 15.07.2024). Die Volltextsuche des Kreises findet sie heute NUR noch im Amtsblatt-Archiv, nicht als Dienstleistung — die Laufzeit ist laut Richtlinie durch die Haushaltsmittel begrenzt. Zu klären: Läuft das Programm noch, ist es ausgeschöpft oder beendet? Quelle ist der Dienstleistungseintrag im Serviceportal des Kreises (openrathaus.gifhorn.de); die Kennung nicht raten, sondern über die Dienstleistungssuche auflösen. Erst danach lässt sich für diese Gemeinden abschließend sagen, was ein Haushalt bekommt."
-    }
+    ]
   }
 ]
