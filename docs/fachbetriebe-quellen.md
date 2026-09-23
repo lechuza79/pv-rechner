@@ -1075,10 +1075,35 @@ haben ist. Die Unterseiten sind dabei ungemessen — geprüft wurden nur Startse
 wieder der Erstkontakt:** Nach dem Profil-Link zu fragen kostet eine Zeile im Anschreiben.
 
 **Was NICHT wiederkommen darf:** die alte Begründung „wir können nichts überprüfen, also
-gar nichts anzeigen". Sie ist in dieser Form widerlegt. Was bleibt, ist enger: keine
-Beschriftung, die Echtheit behauptet („Kundenbewertungen", „echte Bewertungen"), kein Wert
-aus einer Quelle, deren Lizenz wir nicht haben — und an jedem angezeigten Wert der Satz,
-woher er stammt und dass wir ihn nicht prüfen.
+gar nichts anzeigen". Sie ist in dieser Form widerlegt.
+
+**Was an ihre Stelle tritt, ist enger und härter belegt — drei Funde der Gegenprüfung:**
+
+- **Ein kleingedruckter oder aufklappbarer Gegenhinweis heilt die Sache NICHT.** Das OLG
+  Köln (6 U 59/24, Rn. 52) hat genau diese Gestaltung verworfen: Die Aufklärung „erfolgt
+  nur dann, wenn das Feld ‚Hinweis zu den Bewertungen' angeklickt wird, was indes nicht
+  alle Verbraucher tun werden und die unzulässige Behauptung als solche mithin nicht
+  beseitigt." Und: „Eine Blickfangwerbung setzt Nr. 23b des Anhangs zu § 3 Abs. 3 UWG
+  nicht voraus." Damit ist der naheliegende Ausweg — Sterne zeigen und daneben klein
+  dazuschreiben, dass wir nicht prüfen — versperrt.
+- **Schon die BESCHRIFTUNG erzeugt die Behauptung.** Die Leitlinien der EU-Kommission zur
+  Richtlinie über unlautere Geschäftspraktiken sagen, „auch allgemeinere Verweise auf
+  ‚Verbraucherbewertungen' oder ‚Kunden-/Nutzerbewertungen'" könnten dazu führen, dass der
+  Durchschnittsverbraucher sie als Bewertungen von Käufern wahrnimmt. Dieselben Leitlinien
+  stellen ausdrücklich klar, dass die Pflicht **auch den trifft, der die Bewertungen eines
+  anderen Gewerbetreibenden zeigt** — also uns.
+- **Der nächstliegende Präzedenzfall liegt in unserer eigenen Branche.** Das OLG Koblenz
+  hat 2026 (9 U 1015/25, Vorinstanz LG Mainz) auf Klage der Wettbewerbszentrale einen
+  **Photovoltaik-Anbieter** unter anderem wegen Kundenbewertungen ohne Echtheitsangabe
+  verurteilt. **Nicht die Handwerkskammern sind hier der realistische Angreifer** (sie sind
+  zwar nach § 8 Abs. 3 Nr. 4 UWG berechtigt, es ist aber kein einziges UWG-Verfahren einer
+  Kammer auffindbar), sondern die Wettbewerbszentrale und Mitbewerber — und die haben in
+  dieser Branche genau diese Normkombination bereits durchgesetzt.
+
+**Daraus die Linie, die bleibt:** kein Sterne-Durchschnitt, solange wir die Echtheit nicht
+positiv zusichern können — und ein Gegenhinweis daneben rettet ihn nicht. Was geht, ist der
+**Link** auf das Profil, das der Betrieb selbst veröffentlicht hat; die Pflicht entsteht
+dort nach der Gesetzesbegründung gar nicht erst.
 
 **Der Hebel, den beide Prüfer erst spät gesehen haben, hat mit Bewertungen gar nichts zu
 tun und greift früher:** Wer Verbrauchern eine Suche über mehrere Anbieter anbietet, muss
