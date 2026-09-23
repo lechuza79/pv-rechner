@@ -121,7 +121,12 @@ test.describe("Gemeindeseite", () => {
   ] as const) {
     test(`die Kopfzeile steht ${tageszeit}`, async ({ page }) => {
       await page.clock.setFixedTime(new Date(zeit));
-      await page.goto(ORT, { waitUntil: "load" });
+      // Auf das erste Dokument warten, nicht auf das letzte Bild: Der
+      // Kontrastmesser hängt am ersten Bild der Szene, nicht daran, dass
+      // die nachgeladenen Rahmen fertig sind — und auf die zu warten kostet
+      // gemessene 44 s. Der Beweis ist die Messung unten, nicht die
+      // Navigation.
+      await page.goto(ORT, { waitUntil: "domcontentloaded" });
       const marke = page.locator(".site-header .brand");
       await expect(marke).toHaveAttribute("data-sc-contrast", "");
       await expect
