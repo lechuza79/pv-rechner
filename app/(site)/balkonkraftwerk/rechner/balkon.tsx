@@ -432,7 +432,20 @@ export default function Balkon() {
                     value={plz}
                     onChange={e => onPlzChange(e.target.value)}
                     style={{
-                      flex: 1, padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
+                      // `minWidth: 0` ist hier kein Feinschliff, sondern das,
+                      // was die Zeile überhaupt schmaler werden lässt: Ein
+                      // Flex-Kind schrumpft von sich aus nicht unter seine
+                      // Eigenbreite, und ein Eingabefeld bringt die aus seiner
+                      // voreingestellten Zeichenzahl mit — rund 20 Zeichen,
+                      // egal wie schmal das Fenster ist. Zusammen mit dem
+                      // Knopf daneben („Übernehmen", umbruchfrei) brauchte die
+                      // Zeile dadurch 339 px. Auf einem 320-px-Telefon zieht
+                      // der Browser daraufhin die ganze Seite auf 339 px auf,
+                      // und jede Seite des Rechners lässt sich seitwärts
+                      // schieben (gemessen 23.09.2026 auf der Produktion, am
+                      // iPhone-SE-Profil und bei 320 px im Fenster).
+                      flex: 1, minWidth: 0,
+                      padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
                       borderRadius: v('--radius-md'), border: `2px solid ${plzConfirmed ? v('--color-positive') : v('--color-border')}`,
                       background: v('--color-bg-muted'), color: v('--color-text-primary'), outline: "none", textAlign: "center", letterSpacing: "0.08em",
                     }}
@@ -552,7 +565,15 @@ export default function Balkon() {
             {/* 2. Speicher — Schalter links, Größen rechts daneben, eine Zeile, ohne Box.
                 Der Tooltip steht bewusst NEBEN dem Schalter (Button im Button wäre
                 ungültiges HTML und würde den Schalter mit auslösen). */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {/* UMBRECHEN ERLAUBT: Schalter, Hinweis und die beiden Größen stehen
+                alle auf „nicht umbrechen" und brauchten zusammen 353 px. Auf
+                einem 320-px-Telefon zieht der Browser daraufhin die ganze Seite
+                auf, und jede Seite des Rechners lässt sich seitwärts schieben
+                (gemessen 23.09.2026). Die Höhe bleibt dabei ruhig: Die Größen
+                stehen ohnehin dauerhaft im Baum und werden nur ein- und
+                ausgeblendet, die zweite Zeile entsteht also nicht erst beim
+                Einschalten. */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", rowGap: 8 }}>
               <button onClick={toggleStorage} aria-pressed={storageOn} style={{
                 background: "none", border: "none", padding: 0, cursor: "pointer", flexShrink: 0,
                 display: "inline-flex", alignItems: "center", gap: 6,
