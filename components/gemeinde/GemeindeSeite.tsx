@@ -385,8 +385,23 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
       <script src="/illustrations-neon/solar-neon.js" defer />
       <script src="/gemeinde/konfetti.js" defer />
       {/* The header is complete in the server HTML; the confetti waits for
-          this mark, which the prototype's nav script set after mounting. */}
-      <script dangerouslySetInnerHTML={{ __html: 'document.querySelector(".site-header")?.setAttribute("data-nav-ready","true")' }} />
+          this mark, which the prototype's nav script set after mounting.
+          The same line hands the header to the scene's contrast sampler: it
+          measures the painted sky behind an element and sets the ink colour,
+          which is why the title over a bright noon sky stays readable. The
+          approved design marks brand, menu, login and toggle for it; our
+          header is React, so the mark is set here instead of in the
+          prototype's mount script. Marking is all it takes — the sampler is
+          already running (it colours the hero title). */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            'const k=document.querySelector(".site-header");' +
+            'if(k){k.setAttribute("data-nav-ready","true");' +
+            'const m=()=>k.querySelectorAll(".brand,.sc-nav-toggle,.sc-nav-login,.sc-global-nav").forEach(e=>e.setAttribute("data-sc-contrast",""));' +
+            'm();new MutationObserver(m).observe(k,{childList:true,subtree:true});}',
+        }}
+      />
       <GemeindeSkripte daten={rangliste} />
     </div>
   );

@@ -70,4 +70,26 @@ test.describe("Gemeindeseite", () => {
       expect(mass.dokument, `Seite ${mass.dokument} px breit im ${mass.fenster} px Fenster`).toBeLessThanOrEqual(mass.fenster + 1);
     });
   }
+  // Der Kopf färbt sich nach dem Himmel. GEMESSEN am 23.09.2026: Der
+  // Kontrastmesser der Szene lief längst (er färbt den Titel), aber die
+  // Kopfzeile war ihm nicht übergeben — bei hellem Mittagshimmel stand die
+  // weiße Wortmarke auf hellem Grau. Der Test stellt die Uhr, nicht das
+  // Wetter: die Sonnenhöhe entscheidet, und sie hängt an der Zeit.
+  for (const [tageszeit, zeit, erwartet] of [
+    ["mittags dunkel auf hellem Himmel", "2026-09-23T10:30:00Z", /^#(122c3b|000)$/],
+    ["nachts hell auf dunklem Himmel", "2026-09-23T22:30:00Z", /^#fff$/],
+  ] as const) {
+    test(`die Kopfzeile steht ${tageszeit}`, async ({ page }) => {
+      await page.clock.setFixedTime(new Date(zeit));
+      await page.goto(ORT, { waitUntil: "load" });
+      const marke = page.locator(".site-header .brand");
+      await expect(marke).toHaveAttribute("data-sc-contrast", "");
+      await expect
+        .poll(
+          () => marke.evaluate((el) => getComputedStyle(el).getPropertyValue("--sc-region-ink").trim()),
+          { timeout: 20_000, message: "Der Kontrastmesser hat die Kopfzeile nicht eingefärbt" },
+        )
+        .toMatch(erwartet);
+    });
+  }
 });
