@@ -125,6 +125,16 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // was die Richtlinie verlangt. Alle Bedingungen stehen vollständig auf der
   // Karte, die Antragsreihenfolge als erste Zeile nach dem Ausschöpfungs-
   // hinweis. Prüfform mit einer Neuauflage.
+  // VG Höhr-Grenzhausen, aufgenommen am 23.09.2026. Dieselbe Lage wie bei
+  // Fritzlar, nur eine Stufe schärfer: Die Frist läuft NACH dem Kauf, nicht
+  // davor („Der Antrag ist innerhalb von 3 Monaten nach Erwerb des
+  // Balkonkraftwerks … zu stellen"), und eine Bewilligung vor dem Kauf ist
+  // gar nicht vorgesehen. Die vorhandenen Prüfformen bilden die übliche Regel
+  // „Antrag vor Kauf" ab; sie hier anzuwenden verlangte vom Nutzer das
+  // Gegenteil dessen, was die Richtlinie verlangt, und verschwiege zugleich
+  // die Frist, die ihn wirklich die Förderung kostet. Halb erfasst gibt es
+  // hier nicht; bis dahin steht die Frist als erste Bedingung auf der Karte.
+  "vg-hoehr-grenzhausen-balkonkraftwerke",
   "vg-kandel-balkonkraftwerke",
   // Bremen Heizungstausch, aufgenommen am 23.09.2026. Das Programm nimmt seit
   // dem 31.08.2025 keine Anträge mehr an — eine Prüfform hielte das Vorhaben

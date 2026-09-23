@@ -12591,6 +12591,148 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // THIRD PROGRAMME IN THE SAME RUBRIC, AND THE FIRST OF THE VERBANDSGEMEINDE
+  // (23 Sep 2026). "Förderung privater Energiegewinnung" holds exactly three
+  // pages: the guideline of the TOWN of Höhr-Grenzhausen
+  // (`hoehr-grenzhausen-energie`, roof PV and storage, exhausted for the 2026
+  // budget year), the one of the VILLAGE of Hillscheid (`hillscheid-energie`,
+  // identical rates, running) -- and this application, which belongs to all
+  // four member municipalities. Skim the rubric and the three read as one
+  // programme; they have three different bodies behind them, two different
+  // technologies and three different council dates. Both existing entries were
+  // re-read at source on the same day and stand unchanged.
+  //
+  // Programme page and the guideline it links read in full on 23 Sep 2026:
+  // "Richtlinie der Verbandsgemeinde Höhr-Grenzhausen über die Förderung von
+  // Balkonkraftwerken", resolved by the Verbandsgemeinderat on 26 Feb 2024,
+  // signed 27 Feb 2024 (gez. Thilo Becker, Bürgermeister). Council of three
+  // plus a legal judge, 23 Sep 2026.
+  //
+  // VALIDITY IS EVIDENCED BY APPLICATION, NOT BY A DATE. Section V lets the
+  // guideline enter into force "am Tag nach ihrer Bekanntmachung"; it does not
+  // name that day, and nobody has fetched the official gazette. What IS
+  // evidenced: resolved 26 Feb 2024, signed 27 Feb 2024, and on 23 Sep 2026 the
+  // Verbandsgemeinde holds a live, unlocked application form and this guideline
+  // ready and names no stop. `status: "aktiv"` rests on that, on nothing else.
+  //
+  // NO `beginntIso`. The draft carried 2024-01-01 and derived it from section
+  // IV -- but that is the date from which a PURCHASE qualifies, i.e. a
+  // retroactive cut-off, not the day the programme started paying. For the
+  // documented purpose of the field (deployment before and after a grant) the
+  // difference is the whole point: whoever bought in January 2024 knew nothing
+  // of this. `beschlossenIso` is hard evidence and stands on its own; the
+  // cut-off is a condition. Both the legal judge and the first reviewer
+  // arrived at this independently.
+  //
+  // THE EXHAUSTION NOTICE IS ABSENT, AND THAT IS AN ASSERTION, NOT AN
+  // OVERSIGHT. The sister page of the same rubric carries, in the same
+  // position, "Für das Haushaltsjahr 2026 sind alle Fördermittel ausgeschöpft."
+  // This administration maintains such notices; its absence here is evidence.
+  // Measured across the WHOLE delivered HTML including the form: no hit for
+  // ausgeschöpft, erschöpft, eingestellt, beendet, Antragsstopp, Kontingent.
+  //
+  // STILL ON WIEDERVORLAGE: the programme is capped BY COUNT. The
+  // Verbandsgemeinde announced 500 systems from the state's KIPKI money on
+  // 26 Jan 2024; the Rhein-Zeitung reported about 140 applications on
+  // 20 Aug 2024. Extrapolating that linearly would put the pot near empty by
+  // now -- which proves nothing (the take-up was expressly slow at first) but
+  // makes the question urgent. Two neighbouring Verbandsgemeinden of the same
+  // region already stand in this catalogue with their KIPKI pot exhausted. The
+  // entry therefore rests on the absence of a stop notice, and whoever reads it
+  // next checks that first -- the KIPKI deadlines run to 31 Jan 2027 (last draw
+  // of funds), so that is when the exception is due for review.
+  //
+  // THE CONTINGENT IS EVIDENCED, NOT INFERRED, and it comes from a different
+  // source than the guideline: the Verbandsgemeinde's own announcement of
+  // 26 Jan 2024. It therefore carries its date in the condition text. What it
+  // does NOT license is Kandel's further step -- that entry derives an
+  // exclusion of the feed-in tariff from its KIPKI funding because its own
+  // section 12 says so. This guideline says nothing of the kind, and reading
+  // one into it would impose a condition on the user that does not exist.
+  //
+  // `balkonTiers` AND NOT A FLAT AMOUNT -- and the neighbouring objection does
+  // NOT apply here. Section I demands BOTH at least 0.6 kWp of inverter and at
+  // least 0.8 kWp of modules; `balkonTiers` compares MODULE power (see the
+  // field comment), so 800 Wp is the first tier's edge. Of the three kits the
+  // balcony calculator offers, the single module (500 Wp) misses it and the
+  // other two (960 and 2,000 Wp) clear it; a flat 200 EUR would credit the
+  // small kit money this administration does not pay for it. Unlike Müden
+  // (Aller), the two limits are not ambiguous: the guideline states them
+  // separately AND the application form asks for them in two separate fields
+  // ("Ausgangsleistung des Wechselrichters in Watt", "Leistung der PV-Module in
+  // Watt"). The inverter minimum never binds -- the three kits carry 600, 800
+  // and 800 W.
+  //
+  // NO UPPER MODULE LIMIT, and none invented. Section I ties the inverter to
+  // "die gesetzlich zulässige Anschlussleistung" and names no figure of its
+  // own; the 2,000 W ceiling of the neighbouring Kandel and Brohltal entries
+  // does not exist here, so the four-module kit qualifies.
+  //
+  // `combinableWith: BUND`, and NOT because the guideline allows it -- it says
+  // nothing about combining at all. The zero VAT rate of section 12(3) UStG is
+  // a statutory rate the seller applies; it is not "claimed", and a municipal
+  // guideline cannot switch it off. That is an assertion about federal law,
+  // independent of what the Verbandsgemeinde writes -- the same reasoning under
+  // which Kandel and Brohltal survive their EXPRESS cumulation bans. An empty
+  // list would mean "only on its own" and assert a ban with no source. Nothing
+  // about cumulation goes into the conditions, in either direction.
+  //
+  // WHAT WOULD BE INVENTED HERE, each of it standing in a neighbouring entry:
+  // order of receipt as the allocation rule, exclusion of the feed-in tariff,
+  // KIPKI as the stated source of funds (the guideline names none), a holding
+  // period, a reclaim clause, a de-minimis limit as a CONDITION OF THE
+  // GUIDELINE, an upper module limit, and a figure for the legally admissible
+  // connected load.
+  "vg-hoehr-grenzhausen-balkonkraftwerke": {
+    id: "vg-hoehr-grenzhausen-balkonkraftwerke",
+    name: "Förderung von Balkonkraftwerken",
+    traeger: "Verbandsgemeinde Höhr-Grenzhausen", level: "kommune",
+    region: "Verbandsgemeinde Höhr-Grenzhausen",
+    bundesland: "Rheinland-Pfalz",
+    // FÖRDERGEBIET: the four member municipalities, each key looked up singly
+    // in the population register on 23 Sep 2026 -- Höhr-Grenzhausen 07143032
+    // (9,415), Hillscheid 07143031 (2,444), Hilgert 07143030 (1,516),
+    // Kammerforst 07143040 (265). The shared prefix 07143 is the
+    // Westerwaldkreis and would be WRONG: the district holds a dozen further
+    // Verbandsgemeinden that do not pay this grant. Both ambiguities resolved:
+    // there is a second Kammerforst (16064032, Thuringia), and Hilgert is not
+    // Hilgertshausen-Tandern (09174147). Completeness evidenced three times
+    // over, twice from the Verbandsgemeinde itself (its council-body menu lists
+    // exactly Stadt Höhr-Grenzhausen, Hillscheid, Hilgert, Kammerforst; its
+    // home page keywords name the same four places) and once independently of
+    // it (Wikipedia: "die Stadt Höhr-Grenzhausen sowie drei weitere
+    // Ortsgemeinden").
+    agsCode: "07143032",
+    agsCodes: ["07143030", "07143031", "07143040"],
+    url: "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2024-02-26",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Pauschale je Wohneinheit",
+    maxFoerderung: "200 € je Wohneinheit",
+    balkonTiers: [{ upTo: 799, amount: 0 }, { upTo: 999999, amount: 200 }],
+    rates: [
+      { label: "Balkonkraftwerk", value: "200 € pauschal je Wohneinheit, einmalig — nur ab 800 Wp Modulleistung", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Der Antrag ist innerhalb von drei Monaten nach dem Kauf über das Formular der Verbandsgemeinde zu stellen",
+      "Gefördert werden nur Balkonkraftwerke, die nach dem 1. Januar 2024 gekauft wurden",
+      "Die Module müssen mindestens 800 Wp leisten, der Wechselrichter mindestens 600 W",
+      "Der Wechselrichter muss die gesetzlich zulässige Anschlussleistung einhalten",
+      "Antragsberechtigt sind Eigentümer und Mieter von Wohngebäuden und Wohnungen in der Verbandsgemeinde",
+      "Mieter müssen das Einverständnis des Vermieters nachweisen",
+      "Wohneinheiten, für die bereits eine Photovoltaikanlage betrieben wird, sind ausgeschlossen",
+      "Dem Antrag sind eine Rechnung auf den Namen des Antragstellers — kein Kassenbon —, der Zahlungsnachweis, der Nachweis der Anmeldung beim Netzbetreiber oder im Marktstammdatenregister und ein Foto vom Installationsort beizufügen",
+      "Das Antragsformular verlangt zusätzlich die Erklärung, ob in den letzten drei Steuerjahren De-minimis-Beihilfen von mehr als 200.000 € bezogen wurden",
+      "Kein Rechtsanspruch; entschieden wird nach pflichtgemäßem Ermessen im Rahmen der verfügbaren Haushaltsmittel",
+      "Die Verbandsgemeinde darf die Angaben vor Ort überprüfen",
+      "Finanziert aus KIPKI-Mitteln des Landes Rheinland-Pfalz; die Verbandsgemeinde kündigte dafür im Januar 2024 ein Kontingent von 500 Anlagen an — ein nachwachsender Haushaltsansatz ist es nicht",
+    ],
+    combinableWith: BUND,
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

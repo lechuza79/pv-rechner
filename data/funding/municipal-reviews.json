@@ -52035,5 +52035,217 @@
         "evidenceUrl": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/"
       }
     ]
+  },
+  {
+    "regionId": "07143030",
+    "name": "Hilgert",
+    "checkedAt": "2026-09-23T14:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich Fundstellen auf hoehr-grenzhausen.de, der Seite der Verbandsgemeinde.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Verbandsgemeinde Höhr-Grenzhausen zahlt für ein Balkonkraftwerk 200 € pauschal je Wohneinheit, einmalig — gefördert wird nur ab 800 Wp Modulleistung und 600 W Wechselrichterleistung, gekauft nach dem 01.01.2024, Antrag binnen drei Monaten nach dem Kauf. Das Programm steht als vg-hoehr-grenzhausen-balkonkraftwerke im Katalog, mit allen vier Ortsgemeinden als Fördergebiet; es nimmt am 23.09.2026 Anträge an. Getragen wird es aus KIPKI-Mitteln des Landes mit einem im Januar 2024 angekündigten Kontingent von 500 Anlagen. Wärmepumpen fördert die Verbandsgemeinde nicht. Ein eigenes Programm dieser Ortsgemeinde gibt es nicht: Die Rubrik der Verbandsgemeinde führt Richtlinien nur für die Stadt Höhr-Grenzhausen und die Ortsgemeinde Hillscheid.",
+    "searches": [
+      "Programmseite und Förderrichtlinie der Verbandsgemeinde Höhr-Grenzhausen am 23.09.2026 im Volltext gelesen",
+      "Rubrik „Förderung privater Energiegewinnung\" vollständig durchgesehen: sie führt genau drei Seiten (Balkon-Antrag der Verbandsgemeinde, Richtlinie der Stadt, Richtlinie der Ortsgemeinde Hillscheid)",
+      "Council mit drei unabhängigen Prüfern und einem Legal-Judge zu Betrag, Mindestleistung, Fördergebiet, Status und Kumulierung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/",
+        "finding": "„Förderantrag Balkonkraftwerke\" der Verbandsgemeinde Höhr-Grenzhausen. Das Antragsformular wird ausgeliefert und ist offen: Pflichtfelder „Ausgangsleistung des Wechselrichters in Watt\", „Leistung der PV-Module in Watt\", „Ich bestätige, dass für die Wohneinheit noch keine Photovoltaikanlage betrieben wird\" und eine Erklärung zu De-minimis-Beihilfen über 200.000 €. Im gesamten HTML kein Treffer auf ausgeschöpft, erschöpft, eingestellt, beendet, Antragsstopp oder Kontingent — die Schwesterseite derselben Rubrik trägt einen solchen Hinweis sehr wohl, die Verwaltung pflegt ihn also."
+      },
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p",
+        "finding": "„Richtlinie der Verbandsgemeinde Höhr-Grenzhausen über die Förderung von Balkonkraftwerken\", beschlossen vom Verbandsgemeinderat am 26.02.2024, unterzeichnet am 27.02.2024. Nr. I: Neuerrichtung, Wechselrichter mindestens 0,6 kWp, Module mindestens 0,8 kWp. Nr. II: „Je Wohneinheit wird ein Balkonkraftwerk mit einem Pauschalbetrag in Höhe von 200 € einmalig gefördert.\" Nr. III: Eigentümer und Mieter von Wohngebäuden und Wohnungen, Mieter mit Einverständnis des Vermieters; ausgeschlossen sind Wohneinheiten, für die bereits eine Photovoltaikanlage betrieben wird. Nr. IV: Kauf nach dem 01.01.2024, Antrag binnen drei Monaten nach Erwerb, Rechnung (kein Kassenbon), Zahlungsnachweis, Registrierungsnachweis, Foto; kein Rechtsanspruch, Ermessen im Rahmen der Haushaltsmittel, Ortstermin möglich. Nr. V: Inkrafttreten am Tag nach der Bekanntmachung, deren Datum die Richtlinie nicht nennt. Keine Behaltefrist, keine Rückforderungsklausel, keine Obergrenze für die Modulleistung."
+      },
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid/",
+        "finding": "„Richtlinie der ORTSGEMEINDE HILLSCHEID über die Förderung von Anlagen zur privaten Energiegewinnung\", beschlossen am 31.01.2024: 150 € je kWp bis 1.500 €, 100 € je kWh Speicher bis 1.000 €, Solarthermie 100/150 € je m² bis 900 €; kein Ausschöpfungshinweis. Die Stadt Höhr-Grenzhausen führt unter derselben Rubrik ihre eigene, wortgleiche Richtlinie (Beschluss 19.02.2024) — diese trägt seit dem Haushaltsjahr 2026 „Für das Haushaltsjahr 2026 sind alle Fördermittel ausgeschöpft.\""
+      }
+    ],
+    "sources": [
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Antragsseite gelesen; Programm der Verbandsgemeinde aufgenommen.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/"
+      },
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinie im Volltext gelesen; Betrag, Mindestleistung und Bedingungen stehen im Katalogeintrag.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p"
+      },
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Ortsgemeinde Hillscheid gelesen; steht im Katalog.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143031",
+    "name": "Hillscheid",
+    "checkedAt": "2026-09-23T14:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich Fundstellen auf hoehr-grenzhausen.de, der Seite der Verbandsgemeinde.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Verbandsgemeinde Höhr-Grenzhausen zahlt für ein Balkonkraftwerk 200 € pauschal je Wohneinheit, einmalig — gefördert wird nur ab 800 Wp Modulleistung und 600 W Wechselrichterleistung, gekauft nach dem 01.01.2024, Antrag binnen drei Monaten nach dem Kauf. Das Programm steht als vg-hoehr-grenzhausen-balkonkraftwerke im Katalog, mit allen vier Ortsgemeinden als Fördergebiet; es nimmt am 23.09.2026 Anträge an. Getragen wird es aus KIPKI-Mitteln des Landes mit einem im Januar 2024 angekündigten Kontingent von 500 Anlagen. Wärmepumpen fördert die Verbandsgemeinde nicht. Die Ortsgemeinde Hillscheid fördert zusätzlich mit einer eigenen Richtlinie Dachanlagen, Speicher und Solarthermie (hillscheid-energie im Katalog, am 23.09.2026 an der Amtsquelle bestätigt).",
+    "searches": [
+      "Programmseite und Förderrichtlinie der Verbandsgemeinde Höhr-Grenzhausen am 23.09.2026 im Volltext gelesen",
+      "Rubrik „Förderung privater Energiegewinnung\" vollständig durchgesehen: sie führt genau drei Seiten (Balkon-Antrag der Verbandsgemeinde, Richtlinie der Stadt, Richtlinie der Ortsgemeinde Hillscheid)",
+      "Council mit drei unabhängigen Prüfern und einem Legal-Judge zu Betrag, Mindestleistung, Fördergebiet, Status und Kumulierung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/",
+        "finding": "„Förderantrag Balkonkraftwerke\" der Verbandsgemeinde Höhr-Grenzhausen. Das Antragsformular wird ausgeliefert und ist offen: Pflichtfelder „Ausgangsleistung des Wechselrichters in Watt\", „Leistung der PV-Module in Watt\", „Ich bestätige, dass für die Wohneinheit noch keine Photovoltaikanlage betrieben wird\" und eine Erklärung zu De-minimis-Beihilfen über 200.000 €. Im gesamten HTML kein Treffer auf ausgeschöpft, erschöpft, eingestellt, beendet, Antragsstopp oder Kontingent — die Schwesterseite derselben Rubrik trägt einen solchen Hinweis sehr wohl, die Verwaltung pflegt ihn also."
+      },
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p",
+        "finding": "„Richtlinie der Verbandsgemeinde Höhr-Grenzhausen über die Förderung von Balkonkraftwerken\", beschlossen vom Verbandsgemeinderat am 26.02.2024, unterzeichnet am 27.02.2024. Nr. I: Neuerrichtung, Wechselrichter mindestens 0,6 kWp, Module mindestens 0,8 kWp. Nr. II: „Je Wohneinheit wird ein Balkonkraftwerk mit einem Pauschalbetrag in Höhe von 200 € einmalig gefördert.\" Nr. III: Eigentümer und Mieter von Wohngebäuden und Wohnungen, Mieter mit Einverständnis des Vermieters; ausgeschlossen sind Wohneinheiten, für die bereits eine Photovoltaikanlage betrieben wird. Nr. IV: Kauf nach dem 01.01.2024, Antrag binnen drei Monaten nach Erwerb, Rechnung (kein Kassenbon), Zahlungsnachweis, Registrierungsnachweis, Foto; kein Rechtsanspruch, Ermessen im Rahmen der Haushaltsmittel, Ortstermin möglich. Nr. V: Inkrafttreten am Tag nach der Bekanntmachung, deren Datum die Richtlinie nicht nennt. Keine Behaltefrist, keine Rückforderungsklausel, keine Obergrenze für die Modulleistung."
+      },
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid/",
+        "finding": "„Richtlinie der ORTSGEMEINDE HILLSCHEID über die Förderung von Anlagen zur privaten Energiegewinnung\", beschlossen am 31.01.2024: 150 € je kWp bis 1.500 €, 100 € je kWh Speicher bis 1.000 €, Solarthermie 100/150 € je m² bis 900 €; kein Ausschöpfungshinweis. Die Stadt Höhr-Grenzhausen führt unter derselben Rubrik ihre eigene, wortgleiche Richtlinie (Beschluss 19.02.2024) — diese trägt seit dem Haushaltsjahr 2026 „Für das Haushaltsjahr 2026 sind alle Fördermittel ausgeschöpft.\""
+      }
+    ],
+    "sources": [
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Antragsseite gelesen; Programm der Verbandsgemeinde aufgenommen.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/"
+      },
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinie im Volltext gelesen; Betrag, Mindestleistung und Bedingungen stehen im Katalogeintrag.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p"
+      },
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Ortsgemeinde Hillscheid gelesen; steht im Katalog.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143032",
+    "name": "Höhr-Grenzhausen",
+    "checkedAt": "2026-09-23T14:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich Fundstellen auf hoehr-grenzhausen.de, der Seite der Verbandsgemeinde.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Verbandsgemeinde Höhr-Grenzhausen zahlt für ein Balkonkraftwerk 200 € pauschal je Wohneinheit, einmalig — gefördert wird nur ab 800 Wp Modulleistung und 600 W Wechselrichterleistung, gekauft nach dem 01.01.2024, Antrag binnen drei Monaten nach dem Kauf. Das Programm steht als vg-hoehr-grenzhausen-balkonkraftwerke im Katalog, mit allen vier Ortsgemeinden als Fördergebiet; es nimmt am 23.09.2026 Anträge an. Getragen wird es aus KIPKI-Mitteln des Landes mit einem im Januar 2024 angekündigten Kontingent von 500 Anlagen. Wärmepumpen fördert die Verbandsgemeinde nicht. Die Stadt Höhr-Grenzhausen fördert zusätzlich mit einer eigenen Richtlinie Dachanlagen, Speicher und Solarthermie (hoehr-grenzhausen-energie im Katalog); für das Haushaltsjahr 2026 sind diese Mittel ausgeschöpft, am 23.09.2026 an der Amtsquelle bestätigt.",
+    "searches": [
+      "Programmseite und Förderrichtlinie der Verbandsgemeinde Höhr-Grenzhausen am 23.09.2026 im Volltext gelesen",
+      "Rubrik „Förderung privater Energiegewinnung\" vollständig durchgesehen: sie führt genau drei Seiten (Balkon-Antrag der Verbandsgemeinde, Richtlinie der Stadt, Richtlinie der Ortsgemeinde Hillscheid)",
+      "Council mit drei unabhängigen Prüfern und einem Legal-Judge zu Betrag, Mindestleistung, Fördergebiet, Status und Kumulierung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/",
+        "finding": "„Förderantrag Balkonkraftwerke\" der Verbandsgemeinde Höhr-Grenzhausen. Das Antragsformular wird ausgeliefert und ist offen: Pflichtfelder „Ausgangsleistung des Wechselrichters in Watt\", „Leistung der PV-Module in Watt\", „Ich bestätige, dass für die Wohneinheit noch keine Photovoltaikanlage betrieben wird\" und eine Erklärung zu De-minimis-Beihilfen über 200.000 €. Im gesamten HTML kein Treffer auf ausgeschöpft, erschöpft, eingestellt, beendet, Antragsstopp oder Kontingent — die Schwesterseite derselben Rubrik trägt einen solchen Hinweis sehr wohl, die Verwaltung pflegt ihn also."
+      },
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p",
+        "finding": "„Richtlinie der Verbandsgemeinde Höhr-Grenzhausen über die Förderung von Balkonkraftwerken\", beschlossen vom Verbandsgemeinderat am 26.02.2024, unterzeichnet am 27.02.2024. Nr. I: Neuerrichtung, Wechselrichter mindestens 0,6 kWp, Module mindestens 0,8 kWp. Nr. II: „Je Wohneinheit wird ein Balkonkraftwerk mit einem Pauschalbetrag in Höhe von 200 € einmalig gefördert.\" Nr. III: Eigentümer und Mieter von Wohngebäuden und Wohnungen, Mieter mit Einverständnis des Vermieters; ausgeschlossen sind Wohneinheiten, für die bereits eine Photovoltaikanlage betrieben wird. Nr. IV: Kauf nach dem 01.01.2024, Antrag binnen drei Monaten nach Erwerb, Rechnung (kein Kassenbon), Zahlungsnachweis, Registrierungsnachweis, Foto; kein Rechtsanspruch, Ermessen im Rahmen der Haushaltsmittel, Ortstermin möglich. Nr. V: Inkrafttreten am Tag nach der Bekanntmachung, deren Datum die Richtlinie nicht nennt. Keine Behaltefrist, keine Rückforderungsklausel, keine Obergrenze für die Modulleistung."
+      },
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid/",
+        "finding": "„Richtlinie der ORTSGEMEINDE HILLSCHEID über die Förderung von Anlagen zur privaten Energiegewinnung\", beschlossen am 31.01.2024: 150 € je kWp bis 1.500 €, 100 € je kWh Speicher bis 1.000 €, Solarthermie 100/150 € je m² bis 900 €; kein Ausschöpfungshinweis. Die Stadt Höhr-Grenzhausen führt unter derselben Rubrik ihre eigene, wortgleiche Richtlinie (Beschluss 19.02.2024) — diese trägt seit dem Haushaltsjahr 2026 „Für das Haushaltsjahr 2026 sind alle Fördermittel ausgeschöpft.\""
+      }
+    ],
+    "sources": [
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Antragsseite gelesen; Programm der Verbandsgemeinde aufgenommen.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/"
+      },
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinie im Volltext gelesen; Betrag, Mindestleistung und Bedingungen stehen im Katalogeintrag.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p"
+      },
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Ortsgemeinde Hillscheid gelesen; steht im Katalog.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid/"
+      }
+    ]
+  },
+  {
+    "regionId": "07143040",
+    "name": "Kammerforst",
+    "checkedAt": "2026-09-23T14:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich Fundstellen auf hoehr-grenzhausen.de, der Seite der Verbandsgemeinde.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Verbandsgemeinde Höhr-Grenzhausen zahlt für ein Balkonkraftwerk 200 € pauschal je Wohneinheit, einmalig — gefördert wird nur ab 800 Wp Modulleistung und 600 W Wechselrichterleistung, gekauft nach dem 01.01.2024, Antrag binnen drei Monaten nach dem Kauf. Das Programm steht als vg-hoehr-grenzhausen-balkonkraftwerke im Katalog, mit allen vier Ortsgemeinden als Fördergebiet; es nimmt am 23.09.2026 Anträge an. Getragen wird es aus KIPKI-Mitteln des Landes mit einem im Januar 2024 angekündigten Kontingent von 500 Anlagen. Wärmepumpen fördert die Verbandsgemeinde nicht. Ein eigenes Programm dieser Ortsgemeinde gibt es nicht: Die Rubrik der Verbandsgemeinde führt Richtlinien nur für die Stadt Höhr-Grenzhausen und die Ortsgemeinde Hillscheid.",
+    "searches": [
+      "Programmseite und Förderrichtlinie der Verbandsgemeinde Höhr-Grenzhausen am 23.09.2026 im Volltext gelesen",
+      "Rubrik „Förderung privater Energiegewinnung\" vollständig durchgesehen: sie führt genau drei Seiten (Balkon-Antrag der Verbandsgemeinde, Richtlinie der Stadt, Richtlinie der Ortsgemeinde Hillscheid)",
+      "Council mit drei unabhängigen Prüfern und einem Legal-Judge zu Betrag, Mindestleistung, Fördergebiet, Status und Kumulierung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/",
+        "finding": "„Förderantrag Balkonkraftwerke\" der Verbandsgemeinde Höhr-Grenzhausen. Das Antragsformular wird ausgeliefert und ist offen: Pflichtfelder „Ausgangsleistung des Wechselrichters in Watt\", „Leistung der PV-Module in Watt\", „Ich bestätige, dass für die Wohneinheit noch keine Photovoltaikanlage betrieben wird\" und eine Erklärung zu De-minimis-Beihilfen über 200.000 €. Im gesamten HTML kein Treffer auf ausgeschöpft, erschöpft, eingestellt, beendet, Antragsstopp oder Kontingent — die Schwesterseite derselben Rubrik trägt einen solchen Hinweis sehr wohl, die Verwaltung pflegt ihn also."
+      },
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p",
+        "finding": "„Richtlinie der Verbandsgemeinde Höhr-Grenzhausen über die Förderung von Balkonkraftwerken\", beschlossen vom Verbandsgemeinderat am 26.02.2024, unterzeichnet am 27.02.2024. Nr. I: Neuerrichtung, Wechselrichter mindestens 0,6 kWp, Module mindestens 0,8 kWp. Nr. II: „Je Wohneinheit wird ein Balkonkraftwerk mit einem Pauschalbetrag in Höhe von 200 € einmalig gefördert.\" Nr. III: Eigentümer und Mieter von Wohngebäuden und Wohnungen, Mieter mit Einverständnis des Vermieters; ausgeschlossen sind Wohneinheiten, für die bereits eine Photovoltaikanlage betrieben wird. Nr. IV: Kauf nach dem 01.01.2024, Antrag binnen drei Monaten nach Erwerb, Rechnung (kein Kassenbon), Zahlungsnachweis, Registrierungsnachweis, Foto; kein Rechtsanspruch, Ermessen im Rahmen der Haushaltsmittel, Ortstermin möglich. Nr. V: Inkrafttreten am Tag nach der Bekanntmachung, deren Datum die Richtlinie nicht nennt. Keine Behaltefrist, keine Rückforderungsklausel, keine Obergrenze für die Modulleistung."
+      },
+      {
+        "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid/",
+        "finding": "„Richtlinie der ORTSGEMEINDE HILLSCHEID über die Förderung von Anlagen zur privaten Energiegewinnung\", beschlossen am 31.01.2024: 150 € je kWp bis 1.500 €, 100 € je kWh Speicher bis 1.000 €, Solarthermie 100/150 € je m² bis 900 €; kein Ausschöpfungshinweis. Die Stadt Höhr-Grenzhausen führt unter derselben Rubrik ihre eigene, wortgleiche Richtlinie (Beschluss 19.02.2024) — diese trägt seit dem Haushaltsjahr 2026 „Für das Haushaltsjahr 2026 sind alle Fördermittel ausgeschöpft.\""
+      }
+    ],
+    "sources": [
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke",
+        "disposition": "reviewed",
+        "reason": "Antragsseite gelesen; Programm der Verbandsgemeinde aufgenommen.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/"
+      },
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Ortsgemeinde Hillscheid gelesen; steht im Katalog.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid/"
+      }
+    ]
+  },
+  {
+    "regionId": "05154040",
+    "name": "Kranenburg",
+    "checkedAt": "2026-09-23T14:25:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort ausschließlich die Förderrichtlinie auf kranenburg.de.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Kranenburg zahlt für ein Balkonkraftwerk 50 Prozent der zuwendungsfähigen Ausgaben, höchstens 200 €. Das Programm steht als kranenburg-steckerfertige-pv mit genau diesen Sätzen im Katalog; die Richtlinie vom 06.02.2025 ist am 23.09.2026 im Volltext gegengelesen und trägt die dort hinterlegten Bedingungen unverändert. Dachanlagen, Speicher und Wärmepumpen fördert die Gemeinde nicht.",
+    "searches": [
+      "Förderrichtlinie der Gemeinde Kranenburg am 23.09.2026 im Volltext gelesen und gegen den bestehenden Katalogeintrag gehalten"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kranenburg.de/system/files/2025-05/2025_gk_foerderrichtlinie_-steckerfertige_photovoltaikanlagen_0.pdf",
+        "finding": "„Förderrichtlinie der Gemeinde Kranenburg über die Gewährung von Zuwendungen für steckerfertige Photovoltaikanlagen (Balkonkraftwerke) vom 06.02.2025\", in Kraft seit 07.02.2025 und die Fassung vom 17.05.2024 ablösend. Nr. 5: „Die Zuwendung beträgt 50 Prozent der zuwendungsfähigen Ausgaben, jedoch maximal 200 EUR.\" Nr. 4.1 b: Wechselrichter von 600 bis 800 W, Gesamtleistung höchstens 2.000 W. Nr. 4.2: kein vorzeitiger Maßnahmebeginn. Nr. 4.4: Planungs- und Installationsleistungen sind nicht zuwendungsfähig. Nr. 8: fünf Jahre Zweckbindung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kranenburg.de/system/files/2025-05/2025_gk_foerderrichtlinie_-steckerfertige_photovoltaikanlagen_0.pdf",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinie im Volltext gelesen; Sätze und Bedingungen stehen unverändert im Katalogeintrag.",
+        "evidenceUrl": "https://www.kranenburg.de/system/files/2025-05/2025_gk_foerderrichtlinie_-steckerfertige_photovoltaikanlagen_0.pdf"
+      }
+    ]
   }
 ]

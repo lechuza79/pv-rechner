@@ -458,9 +458,19 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "gudensberg", name: "Gudensberg", ags: "06634007", kreis: "Schwalm-Eder-Kreis", bundesland: "Hessen", yieldKwhKwp: 1037 },
   { slug: "allendorf-eder", name: "Allendorf (Eder)", ags: "06635001", kreis: "Landkreis Waldeck-Frankenberg", bundesland: "Hessen", yieldKwhKwp: 1020 },
   { slug: "neuwied", name: "Neuwied", ags: "07138045", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1054 },
-  { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009 },
+  // AMBIGUOUS SINCE 23 SEP 2026, therefore pinned. The Verbandsgemeinde's
+  // balcony grant (`vg-hoehr-grenzhausen-balkonkraftwerke`) covers this village
+  // with an eight-digit key, exactly as specific as the village's own
+  // photovoltaic programme. Without `fundingId` both cancel out and this LIVE
+  // page falls to 404 (measured). The page keeps the roof programme it has
+  // always shown; the balcony grant reaches the user through the postcode
+  // lookup and the balcony calculator, which see every matching programme.
+  { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009, fundingId: "hillscheid-energie" },
   { slug: "staudt", name: "Staudt", ags: "07143073", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1046 },
-  { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011 },
+  // AMBIGUOUS SINCE 23 SEP 2026, therefore pinned -- same case as Hillscheid
+  // above: the Verbandsgemeinde's balcony grant is as specific as the town's
+  // own photovoltaic programme, and without the pin both resolve to nothing.
+  { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011, fundingId: "hoehr-grenzhausen-energie" },
   { slug: "wittlich", name: "Wittlich", ags: "07231134", kreis: "Landkreis Bernkastel-Wittlich", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1073 },
   { slug: "limburgerhof", name: "Limburgerhof", ags: "07338017", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1120 },
   { slug: "boeblingen", name: "Böblingen", ags: "08115003", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1134 },
