@@ -34,7 +34,7 @@ import {
 } from "../lib/projekt-kosten";
 import { bilanz, STUNDENSATZ_EUR, STUNDENSATZ_BELEG } from "../lib/projekt-bilanz";
 import { ROLLENSAETZE, ERHEBUNG } from "../lib/rollensaetze";
-import { MESSUNGEN, KI_ANNAHME_STAND, spanneDerMessungen } from "../lib/ki-wirkung";
+import { MESSUNGEN, KI_ANNAHME_STAND, FEHLERRICHTUNG, spanneDerMessungen } from "../lib/ki-wirkung";
 import { schaetzeAufwand, type Zaehlstand } from "../lib/aufwand-schaetzung";
 import { WIDGETS } from "../lib/widget-registry";
 import { allFundingPrograms } from "../lib/funding-programs";
@@ -547,6 +547,7 @@ async function main() {
           : `${Math.round(m.zeitaenderung * 100)} % langsamer`;
         console.log(`    ${v.padEnd(16)} ${m.quelle}`);
       }
+      console.log(`  Der Abschlag ist ${FEHLERRICHTUNG}.`);
       console.log("VERHÄLTNIS");
       if (b.hebelGeld) {
         console.log(`  ${b.hebelGeld}× — Herstellwert je investiertem Euro (Rechnungen + eigene Zeit)`);
