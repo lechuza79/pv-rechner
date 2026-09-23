@@ -87,7 +87,7 @@ export function ruecklaufBericht(e: BerichtEingabe): Bericht {
   // sie geschlossen werden konnte.
   for (const b of e.unklareAntworten ?? []) {
     decisions.push(
-      `${b.von} (${b.datum}): „${b.betreff}" — sieht nach einer echten Antwort aus, ließ sich aber keiner Gemeinde zuordnen. Bitte im Postfach ansehen.`,
+      `${b.von} (${b.datum}): „${b.betreff}" — ${b.name ? `${b.name}, ` : ""}ließ sich aber keiner Gemeinde sicher zuordnen. Bitte im Postfach ansehen.`,
     );
   }
   for (const b of antworten) {

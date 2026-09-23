@@ -41,6 +41,7 @@ import {
   notizZeile,
   notizMitText,
   ortAusAbsender,
+  nenntAngeschriebeneGemeinde,
   STATUS_ZU_ART,
   type Ruecklaufart,
   type RohMail,
@@ -357,7 +358,19 @@ async function main(): Promise<void> {
   if (unklar.length) {
     log();
     log(`${unklar.length} nicht zuzuordnen — bitte selbst ansehen:`, "warn");
-    for (const b of unklar) log(`${b.art.padEnd(13)} ${b.von} — „${b.betreff}"`);
+    const zieleEindeutig = [...new Map(ziele.map((z) => [z.region_id, z])).values()];
+    for (const b of unklar) {
+      // Am Terminal steht, was der Bericht mit der Mail macht: Nur wer eine
+      // angeschriebene Gemeinde nennt, geht als Entscheidung hinaus.
+      const menschlich = b.art === "antwort" || b.art === "widerspruch";
+      const orte = menschlich ? nenntAngeschriebeneGemeinde(`${b.betreff} ${b.text}`, zieleEindeutig) : [];
+      const wohin = !menschlich
+        ? "→ nicht gemeldet (maschinell)"
+        : orte.length
+        ? `→ gemeldet (${orte.map((o) => o.name).join(", ")})`
+        : "→ nicht gemeldet (nennt keine angeschriebene Gemeinde)";
+      log(`${b.art.padEnd(13)} ${b.von} — „${b.betreff}" ${wohin}`);
+    }
   }
   // Gezählt, nicht verschwunden: Wer die Liste kürzt, muss sagen, um wie viel.
   // Sonst ist eine zu weit geratene Ausblendung von einem leeren Postfach nicht
@@ -508,9 +521,30 @@ async function main(): Promise<void> {
     // Nur die, die nach einem Menschen aussehen: Unzustellbarkeiten und
     // maschinelle Meldungen ohne Zuordnung ändern nichts und wären der Lärm,
     // in dem die eine echte Antwort untergeht.
+    // NUR WAS NACH UNSEREM BRIEF KLINGT. Ein ungeordneter Rückläufer geht als
+    // Entscheidung hinaus; ohne diese zweite Bedingung ging auch jede
+    // geschäftliche Post an dasselbe Postfach mit (vier Mails eines
+    // Shop-Partners am 22.09.2026). Gemessen trennt der Gemeindename sauber:
+    // in keiner Partner-Mail steht einer, in jeder echten Rückmeldung schon.
     unklareAntworten: unklar
       .filter((b) => b.art === "antwort" || b.art === "widerspruch")
-      .map((b) => ({ art: b.art, name: null, betreff: b.betreff, von: b.von, datum: b.datum })),
+      .map((b) => ({
+        b,
+        orte: nenntAngeschriebeneGemeinde(
+          `${b.betreff} ${b.text}`,
+          [...new Map(ziele.map((z) => [z.region_id, z])).values()],
+        ),
+      }))
+      .filter((x) => x.orte.length > 0)
+      .map(({ b, orte }) => ({
+        art: b.art,
+        // Der genannte Ort ist ein HINWEIS, keine Zuordnung: Er steht als
+        // Vermutung in der Meldung, nicht als Tatsache in der Datenbank.
+        name: orte.length === 1 ? `vermutlich ${orte[0].name}` : `nennt ${orte.map((o) => o.name).join(", ")}`,
+        betreff: b.betreff,
+        von: b.von,
+        datum: b.datum,
+      })),
     tage,
   });
   log();
