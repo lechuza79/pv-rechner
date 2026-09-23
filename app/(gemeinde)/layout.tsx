@@ -30,7 +30,9 @@ const STYLESHEETS = [
   "/atlas-design-preview/font-test.css",
   "/atlas-design-preview/variant3.css",
   "/shared-nav/nav.css",
-  "/atlas-design-preview/shared-person/person.css",
+  "/shared-person/person.css",
+  // Die Kontakt-Box der Startseite, Regeln aus deren Paket (scripts/person-box-stil.ts).
+  "/shared-person/person-box.css",
   "/shared-footer/footer.css",
   "/atlas-design-preview/current-theme.css",
   "/design-system/feature-card.css",

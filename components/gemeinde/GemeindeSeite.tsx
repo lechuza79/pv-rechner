@@ -14,6 +14,7 @@ import GemeindeBeispiele from "./GemeindeBeispiele";
 import GemeindeAboKnopf from "./GemeindeAboKnopf";
 import GemeindeAboDialog from "./GemeindeAboDialog";
 import SiteFuss from "../SiteFuss";
+import PersonBox from "../PersonBox";
 import GemeindeFoerderung from "./GemeindeFoerderung";
 import { getFundingPrograms } from "../../lib/funding-data";
 import { fundingStandLabel, fundingZaehlt, matchFundingForAgs } from "../../lib/funding-programs";
@@ -345,26 +346,9 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
             </div>
           </section>
 
-          <section className="sc-person atlas-wrap atlas-contact" aria-label="Ihr Kontakt bei Solar Check">
-            <picture className="sc-person-picture">
-              <img src="/atlas-design-preview/sebastian-portrait.png" alt="Sebastian Schäder" loading="lazy" />
-            </picture>
-            <div className="sc-person-body">
-              <p className="sc-person-text">
-                Wir machen erneuerbare Energien <strong>verständlich und berechenbar</strong>. Mit kostenlosen Rechnern und aktuellen
-                Energiedaten.
-              </p>
-              <p className="sc-person-signature">
-                <strong>Sebastian Schäder</strong> · Solar Check
-              </p>
-              <div className="sc-person-actions">
-                <a href="/kontakt" className="sc-person-primary">
-                  Schreib mir
-                </a>
-              </div>
-            </div>
-            <p className="atlas-contact-reassurance">Ohne Anmeldung und ohne Verkaufsanrufe.</p>
-          </section>
+          {/* Dieselbe Box wie auf der Startseite — ein Baustein, nicht eine
+              zweite Fassung (Betreiber, 23.09.2026). */}
+          <PersonBox />
 
         </main>
       </div>

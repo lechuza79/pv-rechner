@@ -227,6 +227,20 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Modal"],
   },
   {
+    datei: "components/PersonBox.tsx",
+    name: "PersonBox",
+    zweck:
+      "Die Kontakt-Box mit Portrait, Satz, Signatur und den beiden Knöpfen — dieselbe wie auf der Startseite. Ihr Stil kommt aus dem Design-Paket (scripts/person-box-stil.ts), nicht aus einer zweiten Fassung.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: [],
+    // Kein Beispiel in der Galerie: Die Box zeigt eine reale Person mit realen
+    // Wegen (Über uns, Kontakt) — eine Attrappe davon wäre ein zweiter
+    // Auftritt derselben Person.
+    keinBeispielWeil: "Zeigt eine reale Person mit echten Kontaktwegen; eine Attrappe wäre ein zweiter Auftritt derselben Person.",
+  },
+  {
     datei: "components/FlowSchritte.tsx",
     name: "FlowSchritte",
     zweck:
