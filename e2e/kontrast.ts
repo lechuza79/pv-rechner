@@ -127,6 +127,10 @@ window.__kontrastMessen = function () {
     if (s.webkitTextFillColor === "rgba(0, 0, 0, 0)") continue;
     var r = el.getBoundingClientRect();
     if (r.width < 2 || r.height < 2) continue;
+    // Schrift ohne Groesse ist kein Text, den jemand liest — ein Aufklapp-
+    // Zeichen mit Schriftgroesse 0 meldete sich sonst mit 1:1, weil Vorder-
+    // und Hintergrund dieselbe Farbe tragen (gemessen 23.09.2026).
+    if (parseFloat(s.fontSize) < 4) continue;
     var grund = grundVon(el);
     // TEXT IN EINEM DIAGRAMM BLEIBT AUSSEN VOR — und das ist eine Grenze der
     // Messung, keine Entwarnung. Zwei Gruende, beide gemessen am 23.09.2026:
