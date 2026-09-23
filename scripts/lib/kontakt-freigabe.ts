@@ -17,7 +17,7 @@ import { postfachTauglich } from "../../lib/kontakt-tauglichkeit";
 import { contactCandidates } from "../../lib/contact-evidence";
 import { host } from "../../lib/kontakt-suche";
 import { fetchLive } from "./kontakt-lauf";
-import { browserSchliessen, seiteGerendert } from "./kontakt-browser";
+import { browserSchliessen, mitFrist, seiteGerendert } from "./kontakt-browser";
 
 export type Pruefling = { schluessel: string; email: string; belegUrl: string | null; domain: string };
 export type Freigabe = { schluessel: string; email: string; grund: string | null };
@@ -28,27 +28,49 @@ function nimmtMails(domain: string): Promise<boolean> {
   return mxCache.get(domain)!;
 }
 
-/** The addresses a page carries, read plainly and, if needed, in a browser. */
-async function adressenAuf(url: string, domain: string, gesucht: string[]): Promise<Set<string>> {
+/**
+ * The addresses a page carries, read plainly and, if needed, in a browser.
+ *
+ * `gelesen` says whether we got the page AT ALL. Without it an unreachable page
+ * is indistinguishable from one the address has left, and the contact is then
+ * blocked with a reason that states something we never observed — the same
+ * fault class as a check date nobody checked.
+ */
+async function adressenAuf(url: string, domain: string, gesucht: string[]): Promise<{ gefunden: Set<string>; gelesen: boolean }> {
   const gefunden = new Set<string>();
-  const lesen = (html: string) => { for (const c of contactCandidates(html, url, domain)) gefunden.add(c.email.toLowerCase()); };
+  let gelesen = false;
+  const lesen = (html: string) => {
+    gelesen = true;
+    for (const c of contactCandidates(html, url, domain)) gefunden.add(c.email.toLowerCase());
+  };
   const live = await fetchLive(url);
   if ("html" in live) lesen(live.html);
-  if (gesucht.every(m => gefunden.has(m))) return gefunden;
+  if (gelesen && gesucht.every(m => gefunden.has(m))) return { gefunden, gelesen };
   const gerendert = await seiteGerendert(url);
   if (gerendert) lesen(gerendert);
-  return gefunden;
+  return { gefunden, gelesen };
 }
 
-export async function freigeben(liste: Pruefling[], opts: { parallel?: number; fortschritt?: (n: number) => void } = {}): Promise<Freigabe[]> {
+/** No single proof page may hold the run; see mitFrist in kontakt-browser. */
+const SEITE_MAX_MS = 120_000;
+
+/**
+ * `urteil` is called as soon as a contact is decided, so a run that dies late
+ * keeps what it already learned — collecting everything and writing at the end
+ * threw away 45 minutes of reads when one page hung (23.09.2026).
+ */
+export async function freigeben(
+  liste: Pruefling[],
+  opts: { parallel?: number; fortschritt?: (n: number) => void; urteil?: (u: Freigabe) => Promise<void> | void } = {},
+): Promise<Freigabe[]> {
   const ergebnis: Freigabe[] = [];
   const offen: Pruefling[] = [];
   for (const p of liste) {
     const email = p.email.trim().toLowerCase();
     const t = postfachTauglich(email);
-    if (!t.ok) { ergebnis.push({ schluessel: p.schluessel, email, grund: t.grund }); continue; }
-    if (!(await nimmtMails(email.split("@")[1]))) { ergebnis.push({ schluessel: p.schluessel, email, grund: "Domain nimmt keine Mails an" }); continue; }
-    if (!p.belegUrl) { ergebnis.push({ schluessel: p.schluessel, email, grund: "keine Fundstelle" }); continue; }
+    if (!t.ok) { const u = { schluessel: p.schluessel, email, grund: t.grund }; ergebnis.push(u); await opts.urteil?.(u); continue; }
+    if (!(await nimmtMails(email.split("@")[1]))) { const u = { schluessel: p.schluessel, email, grund: "Domain nimmt keine Mails an" }; ergebnis.push(u); await opts.urteil?.(u); continue; }
+    if (!p.belegUrl) { const u = { schluessel: p.schluessel, email, grund: "keine Fundstelle" }; ergebnis.push(u); await opts.urteil?.(u); continue; }
     offen.push({ ...p, email });
   }
   // One read per proof page; pages of one host one after another, hosts in parallel.
@@ -62,8 +84,19 @@ export async function freigeben(liste: Pruefling[], opts: { parallel?: number; f
     for (let urls = hosts.shift(); urls; urls = hosts.shift()) {
       for (const url of urls) {
         const pruef = jeSeite.get(url)!;
-        const da = await adressenAuf(url, pruef[0].domain, pruef.map(p => p.email));
-        for (const p of pruef) ergebnis.push({ schluessel: p.schluessel, email: p.email, grund: da.has(p.email) ? null : "Adresse steht nicht mehr auf der Fundstelle" });
+        const da = await mitFrist(
+          adressenAuf(url, pruef[0].domain, pruef.map(p => p.email)),
+          SEITE_MAX_MS,
+          { gefunden: new Set<string>(), gelesen: false },
+        );
+        for (const p of pruef) {
+          const grund = da.gelesen
+            ? (da.gefunden.has(p.email) ? null : "Adresse steht nicht mehr auf der Fundstelle")
+            : "Fundstelle war nicht lesbar";
+          const u = { schluessel: p.schluessel, email: p.email, grund };
+          ergebnis.push(u);
+          await opts.urteil?.(u);
+        }
         opts.fortschritt?.(++fertig);
       }
     }

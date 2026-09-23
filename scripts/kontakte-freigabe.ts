@@ -125,12 +125,16 @@ async function main() {
   liste = liste.filter(p => teil(p.domain) === part);
   console.log(`${liste.length} Adressen · ${name}`);
   const heute = heuteInBerlin();
-  const urteile = await freigeben(liste, { fortschritt: n => { if (n % 100 === 0) console.log(`  ${n} Fundstellen gelesen`); } });
+  // Written as decided, not collected and written at the end: a run that dies
+  // late keeps what it already learned.
   const zaehler: Record<string, number> = {};
-  for (const u of urteile) {
-    zaehler[u.grund ?? "freigegeben"] = (zaehler[u.grund ?? "freigegeben"] ?? 0) + 1;
-    if (schreiben) await b.schreiben(c, u.schluessel, heute, u.grund);
-  }
+  const urteile = await freigeben(liste, {
+    fortschritt: n => { if (n % 100 === 0) console.log(`  ${n} Fundstellen gelesen`); },
+    urteil: async u => {
+      zaehler[u.grund ?? "freigegeben"] = (zaehler[u.grund ?? "freigegeben"] ?? 0) + 1;
+      if (schreiben) await b.schreiben(c, u.schluessel, heute, u.grund);
+    },
+  });
   console.log(JSON.stringify({ bestand: name, schreiben, geprueft: urteile.length, ...zaehler }));
 }
 
