@@ -1739,10 +1739,16 @@ Rundungsregeln und Freigabe ohne eine eigene Zeile Zeichnung.
   sonst unten aus der Karte und nahm das Logo halb mit. Ein beschnittener
   Lizenzvermerk ist schlimmer als eine zu kleine Zeichnung.
 - **Beurteilt wird am gerenderten Bild** (`npm run orts:visual`), nicht am Code:
-  Alle vier Befunde waren nur dort sichtbar. Im Browser hält
-  `e2e/ortsgeschichte-karte.spec.ts` die Skalierung fest — der Maßstab kommt aus
-  einer Messung, nicht aus einer Zahl, weil ein fester Faktor entweder auf dem
-  Telefon überläuft oder auf dem Schreibtisch zu klein bleibt.
+  Alle vier Befunde waren nur dort sichtbar. Der Maßstab kommt aus einer
+  Messung, nicht aus einer Zahl, weil ein fester Faktor entweder auf dem Telefon
+  überläuft oder auf dem Schreibtisch zu klein bleibt.
+  **OFFEN (bis 10/2026): Der Browser-Test dazu fehlt.** Er hielt die Skalierung
+  auf Telefon- und Schreibtischbreite fest und ist am 22.09.2026 mit den übrigen
+  Tests der alten Ortsseite gelöscht worden — die Karte selbst gibt es weiter,
+  jetzt im Geschichten-Streifen der neuen Seite. Damit ist die eine Zusage offen,
+  die der Betreiber ausdrücklich verlangt hat („ich kann das nicht testen. das
+  muss ein system 100 % zuverlässig testen"). Ein Blick ersetzt ihn nicht: Ob
+  eine Karte ein paar Pixel über ihren Rahmen ragt, entscheidet keine Sichtung.
 - **Der Redaktionstisch der Schübe:** `/admin/redaktion/kommunen`, ein Ort auf
   einmal. Die Kette je Ort kostet ein halbes Dutzend Abfragen; fünfundzwanzig
   auf einer Seite wären die Kopplung „teurer mit den Daten". Beide Seiten holen

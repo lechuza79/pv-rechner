@@ -41,6 +41,12 @@ export type Kontrastbefund = {
   px: number;
   /** Fett? Zusammen mit px entscheidet das über die geltende Grenze. */
   fett: boolean;
+  /** Die Textfarbe allein, noch nicht über den Grund gelegt. */
+  tinte: string;
+  /** Marke am Element — damit die Nachprüfung es anfassen kann, auch weit
+   *  unterhalb des Fensters. Ein Rechteck allein genügt dafür nicht: Es gilt
+   *  nur für die gerade sichtbare Stelle. */
+  marke: string;
 };
 
 /**
@@ -109,6 +115,7 @@ window.__kontrastMessen = function () {
   }
 
   var befunde = [];
+  var lfd = 0;
   var gesehen = new Set();
   var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   var n;
@@ -127,6 +134,10 @@ window.__kontrastMessen = function () {
     if (s.webkitTextFillColor === "rgba(0, 0, 0, 0)") continue;
     var r = el.getBoundingClientRect();
     if (r.width < 2 || r.height < 2) continue;
+    // Schrift ohne Groesse ist kein Text, den jemand liest — ein Aufklapp-
+    // Zeichen mit Schriftgroesse 0 meldete sich sonst mit 1:1, weil Vorder-
+    // und Hintergrund dieselbe Farbe tragen (gemessen 23.09.2026).
+    if (parseFloat(s.fontSize) < 4) continue;
     var grund = grundVon(el);
     // TEXT IN EINEM DIAGRAMM BLEIBT AUSSEN VOR — und das ist eine Grenze der
     // Messung, keine Entwarnung. Zwei Gruende, beide gemessen am 23.09.2026:
@@ -149,6 +160,8 @@ window.__kontrastMessen = function () {
     // das ist eine Gestaltungsfrage, keine Korrektur nebenbei.
     if (el.namespaceURI === "http://www.w3.org/2000/svg") continue;
     var vg = ueber(parse(s.color), grund);
+    var marke = "k" + (lfd++);
+    el.setAttribute("data-kontrast", marke);
     var px = parseFloat(s.fontSize);
     var fett = parseInt(s.fontWeight, 10) >= 700;
     befunde.push({
@@ -159,6 +172,8 @@ window.__kontrastMessen = function () {
       wo: el.tagName.toLowerCase() + (typeof el.className === "string" && el.className ? "." + el.className.trim().split(/\s+/)[0] : ""),
       px: Math.round(px),
       fett: fett,
+      tinte: s.color,
+      marke: marke,
     });
   }
   return befunde;
@@ -194,3 +209,69 @@ export function grenzeFuer(b: Kontrastbefund): number {
 export function zeile(b: Kontrastbefund): string {
   return `${b.kontrast}:1 · ${b.px}px ${b.wo} · "${b.text}" · ${b.vordergrund} auf ${b.grund}`;
 }
+
+/** Eine Farbe in ihre vier Zahlen — dieselbe Rechnung wie im Messkopf. */
+export type Farbe = { r: number; g: number; b: number; a: number };
+
+export function zahlen(c: string): Farbe {
+  const n = (c.match(/[\d.]+/g) ?? []).map(Number);
+  const f = /^color\(/.test(c) ? 255 : 1;
+  return { r: (n[0] ?? 0) * f, g: (n[1] ?? 0) * f, b: (n[2] ?? 0) * f, a: n.length > 3 ? n[3] : 1 };
+}
+
+export function ueberlegen(v: Farbe, g: Farbe): Farbe {
+  return { r: v.r * v.a + g.r * (1 - v.a), g: v.g * v.a + g.g * (1 - v.a), b: v.b * v.a + g.b * (1 - v.a), a: 1 };
+}
+
+function helligkeit(c: Farbe): number {
+  const f = (x: number) => { const v = x / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b);
+}
+
+/** Kontrast zweier Farben nach WCAG 2.1. */
+export function kontrastVon(vorne: Farbe, hinten: Farbe): number {
+  const a = helligkeit(vorne), b = helligkeit(hinten);
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+
+/**
+ * Der Grund, wie er WIRKLICH GEMALT ist — aus dem Bild, nicht aus dem Baum.
+ *
+ * DER ANLASS (23.09.2026, gemeldet von der Nachbar-Sitzung und nachgemessen):
+ * Die Ortsseite legt hinter ihre Überschrift einen Himmel-Verlauf. Der steht
+ * in `background-image`, nicht in `background-color` — der Messkopf im Browser
+ * läuft daran vorbei und nimmt die Farbe der SEITE. Dasselbe gilt für jedes
+ * Foto und jede gezeichnete Fläche hinter Text.
+ *
+ * Fotografiert wird das ELEMENT, nicht ein Ausschnitt des Fensters: Playwright
+ * holt es dafür selbst in den Blick. Ein Fensterausschnitt kann das nicht —
+ * er scheitert an allem, was weiter unten auf der Seite steht, und ein
+ * übersprungener Befund ist von einem behobenen nicht zu unterscheiden.
+ * Genau daran ist die erste Fassung dieser Nachprüfung gescheitert: Die
+ * absichtlich eingebaute Lücke lag unterhalb des Fensters, und der Lauf blieb
+ * grün.
+ *
+ * Genommen wird die HÄUFIGSTE Farbe im Textkasten: Die Buchstaben selbst sind
+ * dort in der Minderheit, der Grund gewinnt — auch wenn er ein Verlauf ist.
+ * Kantenglättung erzeugt Zwischentöne, deshalb wird auf Zehnerstufen gerundet,
+ * bevor gezählt wird.
+ */
+
+/** Im Browser: häufigste Farbe eines Bildausschnitts. */
+export const HAEUFIGSTE_FARBE = String.raw`
+window.__haeufigsteFarbe = async function (b64) {
+  var bm = await createImageBitmap(await (await fetch("data:image/png;base64," + b64)).blob());
+  var cv = new OffscreenCanvas(bm.width, bm.height);
+  var ctx = cv.getContext("2d");
+  ctx.drawImage(bm, 0, 0);
+  var d = ctx.getImageData(0, 0, bm.width, bm.height).data;
+  var zaehler = new Map(), beste = null, max = 0;
+  for (var i = 0; i < d.length; i += 4) {
+    var k = (Math.round(d[i] / 10) * 10) + "," + (Math.round(d[i + 1] / 10) * 10) + "," + (Math.round(d[i + 2] / 10) * 10);
+    var n = (zaehler.get(k) || 0) + 1;
+    zaehler.set(k, n);
+    if (n > max) { max = n; beste = k; }
+  }
+  return beste ? "rgb(" + beste + ")" : null;
+};
+`;

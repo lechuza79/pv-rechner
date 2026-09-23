@@ -7,6 +7,7 @@ import {
   atlasOrtEinzelfreigabe,
   atlasRobots,
   GEMEINDE_MIN_ANLAGEN,
+  ortsseiteIndexierbar,
 } from "../atlas-index";
 import { freigegebeneOrte, planBefunde, RELEASE_PLAN, type Schub } from "../release-plan";
 
@@ -173,8 +174,14 @@ describe("Automatische Freigabe verlinkender Gemeinden", () => {
   });
 
   it("hält auch auf diesem Weg die Thin-Schwelle", () => {
-    const robotsZeile = echteRobotsZeile();
-    expect(robotsZeile).toContain("GEMEINDE_MIN_ANLAGEN");
+    // Geprüft wird die REGEL, nicht ihr Wortlaut in der Seite: Die
+    // Entscheidung ist am 23.09.2026 in die Freigabe-Regeln gewandert (ein
+    // Stadtstaat wird als Bundesland beurteilt), und ein Test, der nach dem
+    // Namen der Schwelle in einer Datei sucht, wird dann rot, ohne dass sich
+    // am Verhalten etwas geändert hätte — er hat es auch getan.
+    const ags = "09679147"; // eine gewöhnliche Gemeinde, kein Stadtstaat
+    expect(ortsseiteIndexierbar(ags, { einzeln: true, anlagen: GEMEINDE_MIN_ANLAGEN })).toBe(true);
+    expect(ortsseiteIndexierbar(ags, { einzeln: true, anlagen: GEMEINDE_MIN_ANLAGEN - 1 })).toBe(false);
   });
 
   it("nimmt die Orte in die Sitemap auf", () => {

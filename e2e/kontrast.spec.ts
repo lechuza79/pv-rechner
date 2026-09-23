@@ -1,10 +1,14 @@
 import { test, expect } from "@playwright/test";
 import { SEITEN } from "./routen";
 import {
+  HAEUFIGSTE_FARBE,
   MESSKOPF,
   UNLESBAR_UNTER,
   grenzeFuer,
+  kontrastVon,
   stufePinnen,
+  ueberlegen,
+  zahlen,
   zeile,
   type Kontrastbefund,
   type Tagesstufe,
@@ -80,12 +84,58 @@ for (const stufe of STUFEN) {
       // Nachgeladene Blöcke ändern Farben nicht mehr, wenn sie einmal stehen.
       await page.waitForTimeout(2000);
       await page.addScriptTag({ content: MESSKOPF });
+      await page.addScriptTag({ content: HAEUFIGSTE_FARBE });
 
-      const alle = (await page.evaluate(() => (window as unknown as {
-        __kontrastMessen: () => Kontrastbefund[];
-      }).__kontrastMessen())) as Kontrastbefund[];
+      const messen = () =>
+        page.evaluate(() => (window as unknown as {
+          __kontrastMessen: () => Kontrastbefund[];
+        }).__kontrastMessen()) as Promise<Kontrastbefund[]>;
 
-      const befunde = alle.filter((b) => b.kontrast < grenzeFuer(b));
+      // ZWEIMAL MESSEN, MIT ABSTAND — und nur behalten, was beide Male dasteht.
+      // Manche Farbe steht erst fest, wenn ein Skript sie gesetzt hat: Die
+      // Überschrift der Ortsseite nimmt ihre Tinte aus dem gemalten Himmel
+      // dahinter und trägt bis dahin die Anfangsfarbe Schwarz. Eine einzelne
+      // Messung meldete daraus einen Befund, den es eine Sekunde später nicht
+      // mehr gab (gemeldet von der Nachbar-Sitzung, 23.09.2026, nachgemessen).
+      const ersteRunde = await messen();
+      await page.waitForTimeout(1200);
+      const zweiteRunde = await messen();
+      const bestaendig = new Set(zweiteRunde.map((b) => `${b.wo}|${b.text}|${b.tinte}`));
+
+      const verdaechtig = ersteRunde.filter(
+        (b) => b.kontrast < grenzeFuer(b) && bestaendig.has(`${b.wo}|${b.text}|${b.tinte}`),
+      );
+
+      // NACHGEPRÜFT WIRD AM BILD, nicht am Baum: Ein Verlauf, ein Foto oder
+      // eine gezeichnete Fläche hinter dem Text hat keine Hintergrund-FARBE,
+      // und der Messkopf sieht dann den Grund der Seite statt den, auf dem der
+      // Text wirklich steht. Genau daran ist der erste Fehlalarm entstanden.
+      //
+      // Fotografiert wird das ELEMENT — Playwright holt es dafür in den Blick.
+      // Ein Ausschnitt des Fensters scheitert an allem, was weiter unten
+      // steht, und ein übersprungener Befund sieht aus wie ein behobener: Mit
+      // dieser Fassung blieb der Lauf bei absichtlich eingebauter Lücke grün.
+      const befunde: Kontrastbefund[] = [];
+      for (const b of verdaechtig) {
+        const el = page.locator(`[data-kontrast="${b.marke}"]`).first();
+        const bild = await el.screenshot({ timeout: 5_000 }).catch(() => null);
+        if (!bild) {
+          // Kein Urteil möglich — und das wird gemeldet, nicht verschwiegen.
+          befunde.push(b);
+          continue;
+        }
+        const grund = await page.evaluate(
+          (x) => (window as unknown as { __haeufigsteFarbe: (s: string) => Promise<string | null> }).__haeufigsteFarbe(x),
+          bild.toString("base64"),
+        );
+        if (!grund) {
+          befunde.push(b);
+          continue;
+        }
+        const echt = kontrastVon(ueberlegen(zahlen(b.tinte), zahlen(grund)), zahlen(grund));
+        if (echt < grenzeFuer(b)) befunde.push({ ...b, kontrast: Math.round(echt * 100) / 100, grund });
+      }
+
       // Gleiche Farbpaarung nur einmal melden: Eine Tabelle mit neunzig Zahlen
       // in derselben Farbe ist EIN Fehler, keine neunzig — und eine Meldung mit
       // neunzig Zeilen liest niemand.
