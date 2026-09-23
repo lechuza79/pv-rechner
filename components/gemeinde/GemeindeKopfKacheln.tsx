@@ -9,6 +9,9 @@ import { useEffect, useRef, useState } from "react";
  * seconds, pauses on hover/focus, when off screen, when the tab is hidden and
  * for reduced motion; the dots switch it by hand.
  */
+/** Wie lange das fertige Bild noch steht, bevor die nächste Kachel kommt. */
+const RUHE_NACH_LAUF = 2200;
+
 const WIDGETS = [
   { id: "feed-in-value", label: "Einspeisevergütung" },
   { id: "live", label: "Solarleistung heute" },
@@ -36,7 +39,7 @@ export default function GemeindeKopfKacheln({ ags, name, rang }: { ags: string; 
       setIndex(i);
       frame.contentWindow?.postMessage({ type: "atlas-hero-widget", widget: WIDGETS[i].id }, location.origin);
     };
-    const planen = () => {
+    const planen = (wartezeit?: number) => {
       clearTimeout(timer);
       if (!document.hidden && sichtbar && !reduziert.matches && !hero.matches(":hover,:focus-within")) {
         timer = setTimeout(
@@ -44,13 +47,21 @@ export default function GemeindeKopfKacheln({ ags, name, rang }: { ags: string; 
             senden((indexRef.current + 1) % WIDGETS.length);
             planen();
           },
-          indexRef.current === 2 ? 22000 : 7000,
+          // Der Tagesverlauf läuft, bis er fertig ist, und meldet sich dann
+          // selbst (siehe unten). Die Zeit hier ist nur die Notbremse, falls
+          // die Meldung ausbleibt — vorher wurde nach fester Zeit mitten in
+          // die Bewegung hinein weitergeschaltet.
+          wartezeit ?? (indexRef.current === 2 ? 30000 : 7000),
         );
       }
     };
     const onMessage = (event: MessageEvent) => {
       if (event.origin !== location.origin || event.source !== frame.contentWindow) return;
       if (event.data?.type === "atlas-hero-ready") setBereit(true);
+      // „Bewegung durch": Das Bild bleibt noch einen Moment stehen, dann geht
+      // es weiter. Ohne diese Ruhe verschwindet der fertige Tagesverlauf in
+      // derselben Sekunde, in der er zu Ende gelaufen ist.
+      if (event.data?.type === "atlas-hero-finished" && WIDGETS[indexRef.current]?.id === event.data.widget) planen(RUHE_NACH_LAUF);
       if (event.data?.type === "atlas-hero-open-monitor") {
         history.replaceState(null, "", "#atlas-data");
         document.querySelector("#atlas-data")?.scrollIntoView({ behavior: reduziert.matches ? "instant" : "smooth" });
@@ -61,7 +72,10 @@ export default function GemeindeKopfKacheln({ ags, name, rang }: { ags: string; 
       planen();
     };
     const stop = () => clearTimeout(timer);
-    const spaeter = () => setTimeout(planen, 0);
+    // Ereignis-Hörer bekommen ein Ereignis übergeben; die Wartezeit von
+    // `planen` darf das nicht als Zahl missverstehen.
+    const neuPlanen = () => planen();
+    const spaeter = () => setTimeout(neuPlanen, 0);
     const beobachter = new IntersectionObserver(([e]) => {
       sichtbar = e.isIntersecting;
       planen();
@@ -70,11 +84,11 @@ export default function GemeindeKopfKacheln({ ags, name, rang }: { ags: string; 
     window.addEventListener("message", onMessage);
     frame.addEventListener("load", onLoad);
     hero.addEventListener("mouseenter", stop);
-    hero.addEventListener("mouseleave", planen);
+    hero.addEventListener("mouseleave", neuPlanen);
     hero.addEventListener("focusin", stop);
     hero.addEventListener("focusout", spaeter);
-    document.addEventListener("visibilitychange", planen);
-    reduziert.addEventListener("change", planen);
+    document.addEventListener("visibilitychange", neuPlanen);
+    reduziert.addEventListener("change", neuPlanen);
     (hero as HTMLElement & { __waehlen?: (i: number) => void }).__waehlen = (i: number) => {
       senden(i);
       planen();
@@ -85,11 +99,11 @@ export default function GemeindeKopfKacheln({ ags, name, rang }: { ags: string; 
       window.removeEventListener("message", onMessage);
       frame.removeEventListener("load", onLoad);
       hero.removeEventListener("mouseenter", stop);
-      hero.removeEventListener("mouseleave", planen);
+      hero.removeEventListener("mouseleave", neuPlanen);
       hero.removeEventListener("focusin", stop);
       hero.removeEventListener("focusout", spaeter);
-      document.removeEventListener("visibilitychange", planen);
-      reduziert.removeEventListener("change", planen);
+      document.removeEventListener("visibilitychange", neuPlanen);
+      reduziert.removeEventListener("change", neuPlanen);
     };
   }, []);
 

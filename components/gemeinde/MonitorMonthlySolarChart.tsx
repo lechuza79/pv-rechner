@@ -8,15 +8,19 @@ import {WidgetSetting} from '../dashboard/WidgetSetting';
 import styles from './MonitorMonthlySolarChart.module.css';
 import {energieTeile,leistungTeile} from '../../lib/gemeinde-einheiten';
 
-function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=false,paused=false}:{data:SolarMonth;months:SolarMonth[];onMonthChange:(value:string)=>void;compact?:boolean;autoPlay?:boolean;paused?:boolean}) {
+function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished}:{data:SolarMonth;months:SolarMonth[];onMonthChange:(value:string)=>void;compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void}) {
  const gradientId=useId();
  const [selected,setSelected]=useState(data.peakDay),[focused,setFocused]=useState(false),[hovered,setHovered]=useState<string|null>(null),[playing,setPlaying]=useState(false),[frame,setFrame]=useState<number|null>(null);
  const firstDate=data.days[0]?.date;
- useEffect(()=>{if(!autoPlay||!firstDate){setPlaying(false);return;}const motion=window.matchMedia('(prefers-reduced-motion: reduce)');if(motion.matches){setPlaying(false);return;}setHovered(null);setFrame(0);setSelected(firstDate);setFocused(true);setPlaying(true);const stop=()=>{if(motion.matches)setPlaying(false)};motion.addEventListener('change',stop);return()=>motion.removeEventListener('change',stop)},[autoPlay,firstDate]);
+ // Der Lauf beginnt mit einer kurzen Ruhe: Ohne sie steht die Kachel im
+ // Moment des Wechsels schon mitten in der Bewegung, und der Leser sieht den
+ // Anfang nie (Betreiber, 23.09.2026). Meldet sich am Ende zurück, damit die
+ // Kachel erst danach weiterschaltet.
+ useEffect(()=>{if(!autoPlay||!firstDate){setPlaying(false);return;}const motion=window.matchMedia('(prefers-reduced-motion: reduce)');if(motion.matches){setPlaying(false);onFinished?.();return;}setHovered(null);setFrame(null);setSelected(firstDate);setFocused(true);const start=window.setTimeout(()=>{setFrame(0);setPlaying(true)},startDelayMs);const stop=()=>{if(motion.matches)setPlaying(false)};motion.addEventListener('change',stop);return()=>{window.clearTimeout(start);motion.removeEventListener('change',stop)}},[autoPlay,firstDate,startDelayMs,onFinished]);
  const displayDate=focused?selected:hovered,active=data.days.find(day=>day.date===displayDate)??data.days[0],hasActive=displayDate!==null;
  const chooseDay=(date:string)=>{setPlaying(false);setFrame(null);setHovered(null);setSelected(date);setFocused(true)};
  const clearDay=()=>{setPlaying(false);setFrame(null);setHovered(null);setFocused(false)};
- useEffect(()=>{if(!playing||paused||frame===null)return;const timer=window.setTimeout(()=>{if(frame>=data.days.length-1){setPlaying(false);setFrame(null);setFocused(false);return;}setFrame(frame+1);setSelected(data.days[frame+1].date)},650);return()=>window.clearTimeout(timer)},[playing,paused,frame,data.days]);
+ useEffect(()=>{if(!playing||paused||frame===null)return;const timer=window.setTimeout(()=>{if(frame>=data.days.length-1){setPlaying(false);setFrame(null);setFocused(false);onFinished?.();return;}setFrame(frame+1);setSelected(data.days[frame+1].date)},650);return()=>window.clearTimeout(timer)},[playing,paused,frame,data.days,onFinished]);
  const togglePlayback=()=>{if(playing){setPlaying(false);return;}const nextFrame=frame??0;setHovered(null);setFrame(nextFrame);setSelected(data.days[nextFrame].date);setFocused(true);setPlaying(true)};
  const max=Math.max(...data.days.flatMap(day=>day.mw),Number.EPSILON);
  const point=(hour:number,value:number)=>{const angle=hour/24*Math.PI*2+Math.PI/2,r=90+value/max*150;return [280+Math.cos(angle)*r,280+Math.sin(angle)*r]};
@@ -39,9 +43,9 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
  </div>;
 }
 
-export function MonitorMonthlySolarChart({data,datasets=[data],compact=false,autoPlay=false,paused=false}:{data:SolarMonth;datasets?:SolarMonth[];compact?:boolean;autoPlay?:boolean;paused?:boolean}){
+export function MonitorMonthlySolarChart({data,datasets=[data],compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished}:{data:SolarMonth;datasets?:SolarMonth[];compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void}){
  const [month,setMonth]=useState(data.month);
  const selected=datasets.find(item=>item.month===month)??data;
- return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={setMonth} compact={compact} autoPlay={autoPlay} paused={paused}/>;
+ return <MonthlySolarProfile key={selected.month} data={selected} months={datasets} onMonthChange={setMonth} compact={compact} autoPlay={autoPlay} paused={paused} startDelayMs={startDelayMs} onFinished={onFinished}/>;
 }
 export default MonitorMonthlySolarChart;

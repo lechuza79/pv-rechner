@@ -3,6 +3,7 @@ import type {StoryConcept} from '../../lib/story-konzepte';
 import {formatStoryDate} from '../../lib/story-format';
 import {rankingHighlights,rankingDistinction,type RankMonthRow} from '../../lib/story-ranking-month';
 import {IconArrowRight,IconArrowUp,IconArrowDown} from '../Icons';
+import {brandAssets} from '../../lib/brand-assets';
 import styles from './RankStoryChart.module.css';
 
 function badge(row:RankMonthRow){
@@ -30,7 +31,7 @@ export function RankStoryChart({story,compact=false}:{story:StoryConcept;compact
  const artwork=lead?(/Speicher/i.test(lead.label)?'battery':/Balkon/i.test(lead.label)?'balcony-modern':/Dach|privat|Solar/i.test(lead.label)?'house':null):null;
  const rankingHref=rows.find(row=>row.href)?.href??'/solar-atlas/ranking';
  return <div className={styles.chart} data-compact={compact}>
-  {artwork&&<img className={styles.backdrop} src={`/brand/rank-${artwork}.webp`} alt="" aria-hidden="true"/>}
+  {artwork&&<><div className={styles.splash} aria-hidden="true" style={{maskImage:`url(${brandAssets.splashMask})`,WebkitMaskImage:`url(${brandAssets.splashMask})`}}/><img className={styles.backdrop} src={`/brand/rank-${artwork}.webp`} alt="" aria-hidden="true"/></>}
   {!compact&&<header><h2>{highlights.length===1?`Top-Platzierung im ${formatStoryDate(story.period).replace(/^(Jan\.|Feb\.|März|Apr\.|Mai|Juni|Juli|Aug\.|Sept\.|Okt\.|Nov\.|Dez\.)/,month=>({ 'Jan.':'Januar','Feb.':'Februar','März':'März','Apr.':'April','Mai':'Mai','Juni':'Juni','Juli':'Juli','Aug.':'August','Sept.':'September','Okt.':'Oktober','Nov.':'November','Dez.':'Dezember'}[month]??month))}`:story.title}</h2><p>{formatStoryDate(story.period)} · Stand {formatStoryDate(story.sourceDate??story.period)}</p></header>}
   <div className={styles.rows}>{rows.map(row=>{
    const image=badge(row),distinction=rankingDistinction(row.rank,row.size);

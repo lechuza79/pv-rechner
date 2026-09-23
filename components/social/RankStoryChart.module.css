@@ -23,9 +23,12 @@
 .rankLink{margin-top:0;font-size:var(--atlas-body-size)}
 
 .chart{position:relative;isolation:isolate;overflow:hidden;border-radius:var(--atlas-card-radius)}
-.backdrop{position:absolute;z-index:-1;pointer-events:none;width:92%;max-width:none;height:auto;right:4%;top:50%;transform:translateY(-45%);filter:grayscale(1);opacity:.1;-webkit-mask-image:radial-gradient(120% 100% at 50% 50%,#000 42%,transparent 88%);mask-image:radial-gradient(120% 100% at 50% 50%,#000 42%,transparent 88%)}
-/* Das Motiv bleibt IM Rahmen. Vorher war es breiter als die Karte und nach
-   rechts geschoben — auf der Ortsseite stand ein hart abgeschnittenes Haus
-   hinter dem Text (Betreiber, 23.09.2026). Jetzt passt es hinein und läuft
-   nach allen Seiten aus, statt an der Kartenkante abzureißen. */
-.chart[data-compact=true] .backdrop{width:88%;right:6%;transform:translateY(-50%);opacity:.12}
+/* Das Motiv läuft randabfallend über die Karte, wie in den Monitor-Kacheln:
+   groß, entsättigt, sehr schwach — plus ein Aquarell-Klecks dahinter. Eine
+   verkleinerte Fassung MIT sichtbarer Kante war der Fehlgriff davor; ein Bild,
+   das an der Kartenkante endet, sieht abgeschnitten aus, eines, das über sie
+   hinausläuft, sieht nach Hintergrund aus. */
+.backdrop{position:absolute;z-index:-1;pointer-events:none;width:138%;max-width:none;height:auto;left:-19%;top:50%;transform:translateY(-48%);filter:grayscale(1);opacity:.12}
+.splash{position:absolute;inset:-28%;z-index:-2;pointer-events:none;background:var(--atlas-action);opacity:.07;mask-size:contain;mask-position:center;mask-repeat:no-repeat;-webkit-mask-size:contain;-webkit-mask-position:center;-webkit-mask-repeat:no-repeat}
+.chart[data-compact=true] .backdrop{width:150%;left:-25%;transform:translateY(-50%);opacity:.14}
+.chart[data-compact=true] .splash{inset:-34%;opacity:.08}

@@ -469,7 +469,7 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
  * monitor readings, chosen by the hero stack. Rendered inline on the page,
  * not in a frame, so it shows as soon as the page is interactive.
  */
-export function GemeindeKopfMonitor({ paket, widget, paused }: { paket: GemeindePaket; widget: string; paused: boolean }) {
+export function GemeindeKopfMonitor({ paket, widget, paused, onFertig }: { paket: GemeindePaket; widget: string; paused: boolean; onFertig?: () => void }) {
   const charts = paket.charts as Any;
   const item = (charts?.charts ?? []).find((c: Any) => c.template === widget);
   const installedKwp = ((paket.register?.chartMix as Any)?.values ?? []).reduce((sum: number, row: Any) => sum + row.value, 0);
@@ -490,7 +490,7 @@ export function GemeindeKopfMonitor({ paket, widget, paused }: { paket: Gemeinde
           <h3>{(widget === "radial" ? "Solarerzeugung " : "Einspeisevergütung ") + month}</h3>
           <div className="hero-story-visual">
             {item.story.solarMonth ? (
-              <MonitorMonthlySolarChart data={item.story.solarMonth} compact autoPlay paused={paused} />
+              <MonitorMonthlySolarChart data={item.story.solarMonth} compact autoPlay paused={paused} startDelayMs={900} onFinished={onFertig} />
             ) : (
               <MunicipalChart story={item.story as StoryConcept} compact />
             )}
