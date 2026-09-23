@@ -10,15 +10,15 @@ const b = (art: string, name: string | null, betreff = "Betreff"): BerichtBefund
 });
 
 describe("Rücklauf-Bericht: was den Betreiber erreicht", () => {
-  // DER ANLASSFALL. Trier antwortete am 09.09.2026, und niemand erfuhr davon —
-  // der Lauf trug den Status nach und schwieg. Eine Antwort ist der einzige
-  // Rücklauf, der ohne Zutun verfällt.
-  it("eine echte Antwort ist eine Entscheidung und nennt die Gemeinde", () => {
+  // KEINE MAIL ÜBER EINE ANTWORT (Betreiber, 23.09.2026): Sie geht an dieselbe
+  // Adresse, an die unser Brief zurückverweist — er hat sie also schon gelesen,
+  // bevor unsere Meldung ankommt. Zwei Nachrichten über denselben Vorgang sind
+  // genau der Lärm, den diese Schleuse verhindern soll.
+  it("eine Antwort löst keine Mail aus, steht aber im Bericht", () => {
     const r = ruecklaufBericht({ neu: [b("antwort", "Trier", "AW: PLATZ 1")], unklar: 0, tage: 7 });
-    expect(r.audience).toBe("betreiber");
-    expect(r.decisions).toHaveLength(1);
-    expect(r.decisions[0]).toContain("Trier");
-    expect(r.decisions[0]).toContain("AW: PLATZ 1");
+    expect(r.decisions).toEqual([]);
+    expect(r.audience).toBe("claude");
+    expect(r.done.join(" ")).toContain("Trier");
   });
 
   // Der Widerspruch ist bereits vollzogen und deshalb gerade meldepflichtig:
@@ -73,9 +73,9 @@ describe("Rücklauf-Bericht: was den Betreiber erreicht", () => {
 
   // Ein Ortsschlüssel sagt einem Menschen nichts; steht kein Name fest, muss
   // wenigstens der Absender in der Zeile stehen.
-  it("ohne Gemeindenamen steht der Absender in der Entscheidung", () => {
+  it("ohne Gemeindenamen steht der Absender im Bericht", () => {
     const r = ruecklaufBericht({ neu: [b("antwort", null)], unklar: 0, tage: 7 });
-    expect(r.decisions[0]).toContain("@");
+    expect(r.done.join(" ")).toContain("@");
   });
 
   it("nicht zuzuordnende Mails stehen in den Details, nicht in den Entscheidungen", () => {
@@ -89,13 +89,13 @@ describe("Rücklauf-Bericht: was den Betreiber erreicht", () => {
 describe("Antworten ohne Zuordnung", () => {
   const mail = { art: "antwort", name: null, betreff: "Pressemitteilung", von: "bgm.berkenthin@amt-berkenthin.de", datum: "2026-09-13" };
 
-  it("meldet eine nicht zuzuordnende Antwort als Entscheidung", () => {
-    // Echter Fall: Neun Tage ungelesen, weil er nur als Zahl im
-    // Kleingedruckten stand und der Bericht ohne Entscheidung stumm blieb.
+  it("nennt eine nicht zuzuordnende Antwort im Bericht, ohne Mail", () => {
+    // Auch dieser Fall liegt im Postfach des Betreibers — er braucht darüber
+    // keine zweite Nachricht, sondern er braucht, dass der Wächter sie liest.
     const b = ruecklaufBericht({ neu: [], unklar: 1, unklareAntworten: [mail], tage: 14 });
-    expect(b.audience).toBe("betreiber");
-    expect(b.decisions.join(" ")).toContain("bgm.berkenthin@amt-berkenthin.de");
-    expect(b.decisions.join(" ")).toContain("Pressemitteilung");
+    expect(b.decisions).toEqual([]);
+    expect(b.audience).toBe("claude");
+    expect(b.done.join(" ")).toContain("bgm.berkenthin@amt-berkenthin.de");
   });
 
   it("bleibt still, wenn nur Maschinenpost unzuzuordnen war", () => {

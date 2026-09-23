@@ -24,8 +24,8 @@ DIESEM Lauf angesehen** — nicht gemeldet und liegengelassen:
   nachtragen (dieselbe Form wie der Lauf sie schreibt: Datum, Art, Betreff, Absender,
   darunter der Text). **Eine Veröffentlichung wird nicht zu „geantwortet" herabgestuft**,
   das Antwortdatum wird trotzdem gesetzt.
-- Bleibt es mehrdeutig — zwei Orte gleichen Namens, keine erkennbare Gemeinde —, geht
-  die Mail als Entscheidung an den Betreiber. **Raten ist hier teurer als fragen:** ein
+- Bleibt es mehrdeutig — zwei Orte gleichen Namens, keine erkennbare Gemeinde —, bleibt
+  die Mail ungeordnet und steht im Bericht. **Raten ist hier teurer als offenlassen:** ein
   falsch gesetztes „gesperrt" verliert eine Gemeinde für immer.
 - Fremde Post (Partnerprogramme, Dienstleister, Behördenregistrierungen) wird ignoriert.
   Kommt dieselbe Quelle mehrfach vor, gehört sie in die Ausblendliste des Laufs.
@@ -51,13 +51,16 @@ diesem Lauf **gelesen**, nicht weitergereicht:
 
 ## 3. Was dem Betreiber gehört
 
-Nur zwei Dinge, beide als `decisions` (alles andere geht stumm in die Ablage):
+**Über eine Antwort wird NICHT gemeldet** (Betreiber, 23.09.2026). Sie liegt bereits in
+seinem Postfach — der Brief verweist als Antwortadresse genau dorthin. Eine Mail „X hat
+geantwortet" ist die zweite Nachricht über denselben Vorgang; er hat sie sich ausdrücklich
+verbeten. Dasselbe gilt für eine Mail, die sich nicht zuordnen ließ: Auch die liegt dort.
+Beides gehört in den Bericht (`done`), nicht in `decisions`.
 
-- **Eine Gemeinde hat geschrieben und wartet auf eine Reaktion.** Der Brief lebt davon,
-  dass ein Mensch antwortet; eine Antwort im Namen des Betreibers zu schreiben ist
-  Außenkontakt und nicht Sache des Wächters. Nenne Ort, Datum, Betreff und in einem Satz,
-  was die Gemeinde will.
-- **Eine Mail, die sich nicht zuordnen ließ** (siehe 1) — mit Absender und Betreff.
+Als Entscheidung geht nur hinaus, was eine FOLGE hat, die am Postfach nicht sichtbar ist:
+
+- **Ein Widerspruch.** Die Gemeinde ist ab sofort dauerhaft gesperrt, und nur der Betreiber
+  kann das zurücknehmen, falls die Einstufung falsch war.
 
 Eingetragene Veröffentlichungen, verworfene Hinweise und nachgetragene Antworten sind
 `done`-Zeilen: erledigt, nichts zu entscheiden.

@@ -15,9 +15,11 @@
  * WAS EINE ENTSCHEIDUNG IST, UND WAS NICHT (die Schleuse stellt nur
  * Entscheidungen zu — alles andere landet stumm in der Ablage):
  *
- *  · ANTWORT → Entscheidung. Ein Mensch hat geschrieben und wartet. Das ist
- *    der einzige Rücklauf, der ohne Zutun verfällt: Eine Gemeinde, die keine
- *    Antwort bekommt, fragt kein zweites Mal.
+ *  · ANTWORT → KEINE Entscheidung mehr (23.09.2026). Die Antwort der Gemeinde
+ *    liegt bereits im Postfach des Betreibers — sie geht an dieselbe Adresse,
+ *    an die unser Brief zurückverweist. Eine Mail „X hat geantwortet" ist damit
+ *    die zweite Nachricht über denselben Vorgang, und genau das hat er
+ *    beanstandet. Der Lauf trägt die Antwort nach und schweigt.
  *  · WIDERSPRUCH → Entscheidung. Er ist bereits vollzogen (die Gemeinde steht
  *    auf „gesperrt", und das ist eine Einbahnstraße). Gerade deshalb gehört er
  *    gemeldet: Ist er falsch erkannt, ist das die einzige Gelegenheit, es zu
@@ -75,7 +77,14 @@ export function ruecklaufBericht(e: BerichtEingabe): Bericht {
   const unzustellbar = e.neu.filter((b) => b.art === "unzustellbar");
 
   const decisions: string[] = [];
-  // EINE ANTWORT, DIE NIEMAND ZUORDNEN KONNTE, IST DER GEFÄHRLICHSTE FALL.
+  // FRÜHER STAND HIER: jede Antwort und jede nicht zuzuordnende Mail als
+  // Entscheidung. Beides ist weggefallen, weil beides doppelt war — die Mail
+  // der Gemeinde liegt schon im selben Postfach, das der Betreiber ohnehin
+  // liest. Was bleibt, ist der Widerspruch: Er hat eine FOLGE, die der
+  // Betreiber am Postfach nicht sieht (die Gemeinde ist ab sofort dauerhaft
+  // gesperrt), und die nur er zurücknehmen kann.
+  //
+  // ALTE FASSUNG, ZUR WARNUNG: EINE ANTWORT, DIE NIEMAND ZUORDNEN KONNTE.
   //
   // Sie stand bis zum 22.09.2026 nur als Zahl im Kleingedruckten („3 Mails
   // ließen sich keiner Gemeinde zuordnen"), und ohne weitere Entscheidung ging
@@ -85,14 +94,7 @@ export function ruecklaufBericht(e: BerichtEingabe): Bericht {
   // wird immer Lücken haben (fremde Amtsdomain, privates Postfach, Betreff
   // ohne Bezug); dass eine Lücke SICHTBAR wird, darf nicht davon abhängen, ob
   // sie geschlossen werden konnte.
-  for (const b of e.unklareAntworten ?? []) {
-    decisions.push(
-      `${b.von} (${b.datum}): „${b.betreff}" — ${b.name ? `${b.name}, ` : ""}ließ sich aber keiner Gemeinde sicher zuordnen. Bitte im Postfach ansehen.`,
-    );
-  }
-  for (const b of antworten) {
-    decisions.push(`${zeile(b)} — hat geantwortet und wartet auf eine Reaktion.`);
-  }
+
   for (const b of widersprueche) {
     decisions.push(
       `${zeile(b)} — als Widerspruch eingestuft und dauerhaft gesperrt. Falls das ein Irrtum ist, jetzt melden.`,
@@ -100,6 +102,19 @@ export function ruecklaufBericht(e: BerichtEingabe): Bericht {
   }
 
   const done: string[] = [];
+  if (antworten.length) {
+    done.push(
+      `${antworten.length} ${antworten.length === 1 ? "Antwort" : "Antworten"} nachgetragen: ` +
+        antworten.map((b) => b.name ?? b.von).join(", ") +
+        " — die Mails liegen im Postfach.",
+    );
+  }
+  if ((e.unklareAntworten ?? []).length) {
+    done.push(
+      `${e.unklareAntworten!.length} Mail${e.unklareAntworten!.length === 1 ? "" : "s"} nennen eine angeschriebene Gemeinde, ließen sich aber nicht sicher zuordnen: ` +
+        e.unklareAntworten!.map((b) => `${b.von} (${b.name ?? "?"})`).join(", "),
+    );
+  }
   if (unzustellbar.length) {
     done.push(
       `${unzustellbar.length} ${unzustellbar.length === 1 ? "Adresse" : "Adressen"} als unzustellbar vermerkt: ` +
