@@ -49614,7 +49614,7 @@
   {
     "regionId": "01057026",
     "name": "Behrensdorf",
-    "checkedAt": "2026-09-23T07:00:00Z",
+    "checkedAt": "2026-09-23T08:00:00Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -49625,7 +49625,7 @@
     "evidence": [
       {
         "url": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
-        "finding": "Die Adresse liefert die Mitarbeiterübersicht eines Förderzentrums (Schule), kein Förderprogramm."
+        "finding": "Die Adresse liefert die Mitarbeiterübersicht des Förderzentrums Plön-Lütjenburg, also einer Schule. Ein Förderprogramm steht dort nicht."
       }
     ],
     "sources": [
@@ -49633,6 +49633,36 @@
         "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
         "disposition": "reviewed",
         "reason": "Gelesen am 23.09.2026; die Seite trägt kein Förderprogramm.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter A des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter B des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter E des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter F des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=G",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter G des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
         "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
       }
     ]
@@ -49640,7 +49670,7 @@
   {
     "regionId": "01057027",
     "name": "Blekendorf",
-    "checkedAt": "2026-09-23T07:00:00Z",
+    "checkedAt": "2026-09-23T08:00:00Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -49651,7 +49681,7 @@
     "evidence": [
       {
         "url": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
-        "finding": "Die Adresse liefert die Mitarbeiterübersicht eines Förderzentrums (Schule), kein Förderprogramm."
+        "finding": "Die Adresse liefert die Mitarbeiterübersicht des Förderzentrums Plön-Lütjenburg, also einer Schule. Ein Förderprogramm steht dort nicht."
       }
     ],
     "sources": [
@@ -49659,6 +49689,36 @@
         "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
         "disposition": "reviewed",
         "reason": "Gelesen am 23.09.2026; die Seite trägt kein Förderprogramm.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter A des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter B des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter E des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter F des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=G",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter G des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
         "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
       }
     ]
@@ -49666,7 +49726,7 @@
   {
     "regionId": "01057034",
     "name": "Dannau",
-    "checkedAt": "2026-09-23T07:00:00Z",
+    "checkedAt": "2026-09-23T08:00:00Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -49677,7 +49737,7 @@
     "evidence": [
       {
         "url": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
-        "finding": "Die Adresse liefert die Mitarbeiterübersicht eines Förderzentrums (Schule), kein Förderprogramm."
+        "finding": "Die Adresse liefert die Mitarbeiterübersicht des Förderzentrums Plön-Lütjenburg, also einer Schule. Ein Förderprogramm steht dort nicht."
       }
     ],
     "sources": [
@@ -49685,6 +49745,36 @@
         "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
         "disposition": "reviewed",
         "reason": "Gelesen am 23.09.2026; die Seite trägt kein Förderprogramm.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter A des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter B des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter E des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter F des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=G",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter G des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
         "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
       }
     ]
@@ -49692,7 +49782,7 @@
   {
     "regionId": "01057035",
     "name": "Giekau",
-    "checkedAt": "2026-09-23T07:00:00Z",
+    "checkedAt": "2026-09-23T08:00:00Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -49703,7 +49793,7 @@
     "evidence": [
       {
         "url": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
-        "finding": "Die Adresse liefert die Mitarbeiterübersicht eines Förderzentrums (Schule), kein Förderprogramm."
+        "finding": "Die Adresse liefert die Mitarbeiterübersicht des Förderzentrums Plön-Lütjenburg, also einer Schule. Ein Förderprogramm steht dort nicht."
       }
     ],
     "sources": [
@@ -49711,6 +49801,36 @@
         "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
         "disposition": "reviewed",
         "reason": "Gelesen am 23.09.2026; die Seite trägt kein Förderprogramm.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter A des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter B des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter E des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter F des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=G",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter G des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
         "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
       }
     ]
@@ -49718,7 +49838,7 @@
   {
     "regionId": "01057038",
     "name": "Helmstorf",
-    "checkedAt": "2026-09-23T07:00:00Z",
+    "checkedAt": "2026-09-23T08:00:00Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -49729,7 +49849,7 @@
     "evidence": [
       {
         "url": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php",
-        "finding": "Die Adresse liefert die Mitarbeiterübersicht eines Förderzentrums (Schule), kein Förderprogramm."
+        "finding": "Die Adresse liefert die Mitarbeiterübersicht des Förderzentrums Plön-Lütjenburg, also einer Schule. Ein Förderprogramm steht dort nicht."
       }
     ],
     "sources": [
@@ -49738,13 +49858,43 @@
         "disposition": "reviewed",
         "reason": "Gelesen am 23.09.2026; die Seite trägt kein Förderprogramm.",
         "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=A",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter A des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=B",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter B des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=E",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter E des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=F",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter F des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
+      },
+      {
+        "url": "amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php?NavID=3909.82&such=F%C3%B6rderzentrum%25Pl%C3%B6n%25L%C3%BCtjenburg&sfkat=1&sfplz=1&sfort=1&kat=1.101&k_sub=1&ModID=9&object=tx%7C3909.1.1&amp;alpha=G",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 23.09.2026; dieselbe Seite unter dem Buchstabenfilter G des A-Z-Verzeichnisses — der Filter wählt den Anfangsbuchstaben aus, am ausgelieferten Inhalt ändert er nichts.",
+        "evidenceUrl": "https://www.amt-luetjenburg.de/B%C3%BCrgerservice/Mitarbeiter%C3%BCbersicht/F%C3%B6rderzentrum-Pl%C3%B6n-L%C3%BCtjenburg.php"
       }
     ]
   },
   {
     "regionId": "03353008",
     "name": "Appel",
-    "checkedAt": "2026-09-23T07:00:00Z",
+    "checkedAt": "2026-09-23T08:00:00Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -49755,32 +49905,32 @@
     "evidence": [
       {
         "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html",
-        "finding": "Bundesförderung der Energieberatung (80 % des Beratungshonorars), kein kommunales Programm."
+        "finding": "Bundesförderung der Energieberatung für Wohngebäude, kein kommunales Programm."
       },
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html",
-        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben."
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html",
+        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben: Anteilfinanzierung bis 75 % der zuwendungsfähigen Kosten für Vorhaben, die den Kooperationsraum strukturell weiterentwickeln. Nichts für private Anlagen."
       }
     ],
     "sources": [
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "url": "hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
         "disposition": "reviewed",
-        "reason": "Gelesen am 23.09.2026; Bundesförderung, kein kommunales Programm.",
+        "reason": "Gelesen am 23.09.2026 im Original; Bundesförderung der Energieberatung, kein kommunales Programm.",
         "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html"
       },
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "url": "hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html?myMedium=1&amp;auswahl=0",
         "disposition": "reviewed",
-        "reason": "Gelesen am 23.09.2026; regionale Projektförderung, nichts für private Anlagen.",
-        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html"
+        "reason": "Gelesen am 23.09.2026 im Original; regionale Projektförderung, nichts für private Anlagen.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html"
       }
     ]
   },
   {
     "regionId": "03353019",
     "name": "Drestedt",
-    "checkedAt": "2026-09-23T07:00:00Z",
+    "checkedAt": "2026-09-23T08:00:00Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -49791,32 +49941,32 @@
     "evidence": [
       {
         "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html",
-        "finding": "Bundesförderung der Energieberatung (80 % des Beratungshonorars), kein kommunales Programm."
+        "finding": "Bundesförderung der Energieberatung für Wohngebäude, kein kommunales Programm."
       },
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html",
-        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben."
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html",
+        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben: Anteilfinanzierung bis 75 % der zuwendungsfähigen Kosten für Vorhaben, die den Kooperationsraum strukturell weiterentwickeln. Nichts für private Anlagen."
       }
     ],
     "sources": [
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "url": "hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
         "disposition": "reviewed",
-        "reason": "Gelesen am 23.09.2026; Bundesförderung, kein kommunales Programm.",
+        "reason": "Gelesen am 23.09.2026 im Original; Bundesförderung der Energieberatung, kein kommunales Programm.",
         "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html"
       },
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "url": "hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html?myMedium=1&amp;auswahl=0",
         "disposition": "reviewed",
-        "reason": "Gelesen am 23.09.2026; regionale Projektförderung, nichts für private Anlagen.",
-        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html"
+        "reason": "Gelesen am 23.09.2026 im Original; regionale Projektförderung, nichts für private Anlagen.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html"
       }
     ]
   },
   {
     "regionId": "03353028",
     "name": "Halvesbostel",
-    "checkedAt": "2026-09-23T07:00:00Z",
+    "checkedAt": "2026-09-23T08:00:00Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -49827,32 +49977,32 @@
     "evidence": [
       {
         "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html",
-        "finding": "Bundesförderung der Energieberatung (80 % des Beratungshonorars), kein kommunales Programm."
+        "finding": "Bundesförderung der Energieberatung für Wohngebäude, kein kommunales Programm."
       },
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html",
-        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben."
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html",
+        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben: Anteilfinanzierung bis 75 % der zuwendungsfähigen Kosten für Vorhaben, die den Kooperationsraum strukturell weiterentwickeln. Nichts für private Anlagen."
       }
     ],
     "sources": [
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "url": "hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
         "disposition": "reviewed",
-        "reason": "Gelesen am 23.09.2026; Bundesförderung, kein kommunales Programm.",
+        "reason": "Gelesen am 23.09.2026 im Original; Bundesförderung der Energieberatung, kein kommunales Programm.",
         "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html"
       },
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "url": "hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html?myMedium=1&amp;auswahl=0",
         "disposition": "reviewed",
-        "reason": "Gelesen am 23.09.2026; regionale Projektförderung, nichts für private Anlagen.",
-        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html"
+        "reason": "Gelesen am 23.09.2026 im Original; regionale Projektförderung, nichts für private Anlagen.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html"
       }
     ]
   },
   {
     "regionId": "03353039",
     "name": "Moisburg",
-    "checkedAt": "2026-09-23T07:00:00Z",
+    "checkedAt": "2026-09-23T08:00:00Z",
     "recheckAt": "2027-09-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
     "outcome": "keine-passende-foerderung",
@@ -49863,25 +50013,25 @@
     "evidence": [
       {
         "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html",
-        "finding": "Bundesförderung der Energieberatung (80 % des Beratungshonorars), kein kommunales Programm."
+        "finding": "Bundesförderung der Energieberatung für Wohngebäude, kein kommunales Programm."
       },
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html",
-        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben."
+        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html",
+        "finding": "Projektförderung der Metropolregion Bremen-Oldenburg für regionale Kooperationsvorhaben: Anteilfinanzierung bis 75 % der zuwendungsfähigen Kosten für Vorhaben, die den Kooperationsraum strukturell weiterentwickeln. Nichts für private Anlagen."
       }
     ],
     "sources": [
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "url": "hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
         "disposition": "reviewed",
-        "reason": "Gelesen am 23.09.2026; Bundesförderung, kein kommunales Programm.",
+        "reason": "Gelesen am 23.09.2026 im Original; Bundesförderung der Energieberatung, kein kommunales Programm.",
         "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-901003211-0.html"
       },
       {
-        "url": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html?myMedium=1&amp;auswahl=0",
+        "url": "hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html?myMedium=1&amp;auswahl=0",
         "disposition": "reviewed",
-        "reason": "Gelesen am 23.09.2026; regionale Projektförderung, nichts für private Anlagen.",
-        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003211-0.html"
+        "reason": "Gelesen am 23.09.2026 im Original; regionale Projektförderung, nichts für private Anlagen.",
+        "evidenceUrl": "https://www.hollenstedt.de/buergerservice/dienstleistungen/foerderung-der-metropolregion-bremen-oldenburg-im-nordwesten-beantragen-901003496-0.html"
       }
     ]
   },
