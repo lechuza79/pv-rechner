@@ -54584,5 +54584,135 @@
         "evidenceUrl": "https://www.sielenbach.de/communice-pubserv/pubserv-bayernportal/lebenslagen/detail/finanzielle-hilfen-und-foerderprogramme-19000557"
       }
     ]
+  },
+  {
+    "regionId": "01058073",
+    "name": "Haßmoor",
+    "checkedAt": "2026-09-23T22:43:12Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Haßmoor eine Fundstelle auf amt-eiderkanal.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Radverkehrs-Projekt „RaD stark!“ des Amtes Eiderkanal — die bekannte Umkehrung: Die Kommunen sind dort EMPFÄNGER einer Bundesförderung, nicht Geber. Das Projekt ist zudem seit dem 30.06.2022 beendet.",
+    "searches": [
+      "Seite „Fördervorhaben ‚RaD stark!‘“ auf amt-eiderkanal.de am 24.09.2026 live gelesen (Haßmoor)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "finding": "Gemeinsamer Förderantrag der 13 Kommunen im Raum Rendsburg aus der Nationalen Klimaschutzinitiative: „Stärkung des Alltagsradverkehrs in der Region Rendsburg“, bewilligt Juni 2019, Laufzeit der Projekte in den Gemeinden 01.07.2019 bis 30.06.2022. Velorouten, Fahrradabstellanlagen, Zählstellen, Leihräder — eine Förderung, die die Kommunen selbst ERHALTEN haben, keine Leistung an Haushalte, und seit 2022 abgelaufen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "reason": "Am 24.09.2026 live gelesen: ein vom Bund gefördertes Radverkehrs-Projekt der Kommunen, Laufzeit bis 30.06.2022 — kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "01058122",
+    "name": "Ostenfeld (Rendsburg)",
+    "checkedAt": "2026-09-23T22:43:12Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Ostenfeld (Rendsburg) eine Fundstelle auf amt-eiderkanal.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Radverkehrs-Projekt „RaD stark!“ des Amtes Eiderkanal — die bekannte Umkehrung: Die Kommunen sind dort EMPFÄNGER einer Bundesförderung, nicht Geber. Das Projekt ist zudem seit dem 30.06.2022 beendet.",
+    "searches": [
+      "Seite „Fördervorhaben ‚RaD stark!‘“ auf amt-eiderkanal.de am 24.09.2026 live gelesen (Ostenfeld (Rendsburg))"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "finding": "Gemeinsamer Förderantrag der 13 Kommunen im Raum Rendsburg aus der Nationalen Klimaschutzinitiative: „Stärkung des Alltagsradverkehrs in der Region Rendsburg“, bewilligt Juni 2019, Laufzeit der Projekte in den Gemeinden 01.07.2019 bis 30.06.2022. Velorouten, Fahrradabstellanlagen, Zählstellen, Leihräder — eine Förderung, die die Kommunen selbst ERHALTEN haben, keine Leistung an Haushalte, und seit 2022 abgelaufen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "reason": "Am 24.09.2026 live gelesen: ein vom Bund gefördertes Radverkehrs-Projekt der Kommunen, Laufzeit bis 30.06.2022 — kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "01058132",
+    "name": "Rade b. Rendsburg",
+    "checkedAt": "2026-09-23T22:43:12Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Rade b. Rendsburg eine Fundstelle auf amt-eiderkanal.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Radverkehrs-Projekt „RaD stark!“ des Amtes Eiderkanal — die bekannte Umkehrung: Die Kommunen sind dort EMPFÄNGER einer Bundesförderung, nicht Geber. Das Projekt ist zudem seit dem 30.06.2022 beendet.",
+    "searches": [
+      "Seite „Fördervorhaben ‚RaD stark!‘“ auf amt-eiderkanal.de am 24.09.2026 live gelesen (Rade b. Rendsburg)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "finding": "Gemeinsamer Förderantrag der 13 Kommunen im Raum Rendsburg aus der Nationalen Klimaschutzinitiative: „Stärkung des Alltagsradverkehrs in der Region Rendsburg“, bewilligt Juni 2019, Laufzeit der Projekte in den Gemeinden 01.07.2019 bis 30.06.2022. Velorouten, Fahrradabstellanlagen, Zählstellen, Leihräder — eine Förderung, die die Kommunen selbst ERHALTEN haben, keine Leistung an Haushalte, und seit 2022 abgelaufen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "reason": "Am 24.09.2026 live gelesen: ein vom Bund gefördertes Radverkehrs-Projekt der Kommunen, Laufzeit bis 30.06.2022 — kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "01058146",
+    "name": "Schülldorf",
+    "checkedAt": "2026-09-23T22:43:12Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Schülldorf eine Fundstelle auf amt-eiderkanal.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Radverkehrs-Projekt „RaD stark!“ des Amtes Eiderkanal — die bekannte Umkehrung: Die Kommunen sind dort EMPFÄNGER einer Bundesförderung, nicht Geber. Das Projekt ist zudem seit dem 30.06.2022 beendet.",
+    "searches": [
+      "Seite „Fördervorhaben ‚RaD stark!‘“ auf amt-eiderkanal.de am 24.09.2026 live gelesen (Schülldorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "finding": "Gemeinsamer Förderantrag der 13 Kommunen im Raum Rendsburg aus der Nationalen Klimaschutzinitiative: „Stärkung des Alltagsradverkehrs in der Region Rendsburg“, bewilligt Juni 2019, Laufzeit der Projekte in den Gemeinden 01.07.2019 bis 30.06.2022. Velorouten, Fahrradabstellanlagen, Zählstellen, Leihräder — eine Förderung, die die Kommunen selbst ERHALTEN haben, keine Leistung an Haushalte, und seit 2022 abgelaufen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-eiderkanal.de/bauen-umwelt-mobilitaet/klimaschutz-energie/foerdervorhaben-rad-stark",
+        "reason": "Am 24.09.2026 live gelesen: ein vom Bund gefördertes Radverkehrs-Projekt der Kommunen, Laufzeit bis 30.06.2022 — kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "01058092",
+    "name": "Kronshagen",
+    "checkedAt": "2026-09-23T22:43:12Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Kronshagen eine Fundstelle auf kronshagen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle listet Zuwendungen, die die Gemeinde SELBST erhalten hat — barrierefreie Bushaltestelle, Fahrgastanzeiger, Umbau der Radverkehrsanlagen. Wieder die Umkehrung: Förderung für die Kommune, nicht von ihr.",
+    "searches": [
+      "Seite „Förderprojekte“ auf kronshagen.de am 24.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kronshagen.de/leben-wohnen/bauen-wohnen/foerderprojekte",
+        "finding": "„Hier erhalten Sie Informationen zu geförderten Projekten“ — drei Vorhaben der Gemeinde mit Zuwendungen von Kreis, Land und Bund (66.145,14 €, 23.882,00 € und 1.525.500,00 €), alle für Bushaltestellen und Radverkehr. Kein Zuschuss an Haushalte, kein Bezug zu Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kronshagen.de/leben-wohnen/bauen-wohnen/foerderprojekte",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.kronshagen.de/leben-wohnen/bauen-wohnen/foerderprojekte",
+        "reason": "Am 24.09.2026 live gelesen: Liste der Zuwendungen, die die Gemeinde selbst erhalten hat — kein Zuschuss an Haushalte."
+      }
+    ]
   }
 ]
