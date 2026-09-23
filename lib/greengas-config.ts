@@ -568,7 +568,21 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // GModG-Infoportal des BBSR gelesen — Wortlaut und Stufen unverändert, kein
   // Quotengesetz vorgelegt. Achtundzwanzigste Bioheizöl-Gegensuche ohne
   // Trägerquelle für eine Preisreihe.
-  geprueftRechtIso: "2026-09-22",
+  // 23.09.2026: § 42a im amtlichen Volltext (gesetze-im-internet.de/geg/__42a.html)
+  // erneut gelesen — Wortlaut zellgleich, weiterhin nur der Auftrag „In einem bis
+  // zum 1. Dezember 2026 durch die Bundesregierung vorzulegenden Gesetz wird eine
+  // Grüngas-/Grünheizölquote eingeführt" samt Zieljahr 2045, ohne Prozentsätze und
+  // ohne Startjahre. Ein Quotengesetz ist nicht vorgelegt; gegengeprüft an der
+  // Tagesordnung der laufenden Sitzungswoche des Bundestages (95.–97. Sitzung,
+  // 24.–26.09.2026) — dort steht keine Quotenvorlage. Die Frist läuft noch gut
+  // zehn Wochen. Neunundzwanzigste Bioheizöl-Gegensuche: weiterhin KEINE
+  // Trägerquelle mit einer Preisreihe für den Bio-Anteil. Was die Suche liefert,
+  // sind erneut Gesamtpreis-Charts für Heizöl (heizoel24, TotalEnergies, Statista)
+  // und die Zusammensetzung des Heizöl-Verbraucherpreises, in der die
+  // Beimischungskosten seit 2007 im Deckungsbeitrag AUFGEHEN statt getrennt
+  // ausgewiesen zu werden — genau das macht sie als Preisreihe unbrauchbar. Die
+  // Lücke im Öl-Ergebnis bleibt samt ihrer benannten Fehlerrichtung stehen.
+  geprueftRechtIso: "2026-09-23",
   reviewBy: "2027-07-25",
 };
 

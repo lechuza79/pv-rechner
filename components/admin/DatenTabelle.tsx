@@ -86,6 +86,7 @@ export function DatenTabelle<T>({
   startSortierung,
   leerText = "Nichts vorhanden.",
   minBreite = 720,
+  nummeriert = false,
 }: {
   zeilen: T[];
   spalten: Spalte<T>[];
@@ -96,6 +97,12 @@ export function DatenTabelle<T>({
   startSortierung?: SortStufe[];
   leerText?: string;
   minBreite?: number;
+  /**
+   * Running count as the first column. It counts the rows as they are shown,
+   * not a stored order — after sorting, 1 is still the top row, so the last
+   * number is always the total.
+   */
+  nummeriert?: boolean;
 }) {
   const [sortierung, setSortierung] = useState<SortStufe[]>(startSortierung ?? []);
   const [offen, setOffen] = useState<Set<string>>(new Set());
@@ -145,7 +152,7 @@ export function DatenTabelle<T>({
     });
   }
 
-  const spaltenZahl = spalten.length + (detail ? 1 : 0);
+  const spaltenZahl = spalten.length + (detail ? 1 : 0) + (nummeriert ? 1 : 0);
 
   return (
     <div
@@ -171,6 +178,7 @@ export function DatenTabelle<T>({
         <thead>
           <tr>
             {detail && <th style={{ ...thStyle, width: 24 }} aria-hidden />}
+            {nummeriert && <th style={{ ...thStyle, textAlign: "right", width: 32 }}>#</th>}
             {spalten.map((s) => {
               const stufe = sortierung.find((x) => x.key === s.key);
               const rang = sortierung.findIndex((x) => x.key === s.key);
@@ -211,7 +219,7 @@ export function DatenTabelle<T>({
           </tr>
         </thead>
         <tbody>
-          {sortiert.map((zeile) => {
+          {sortiert.map((zeile, i) => {
             const k = schluessel(zeile);
             const auf = offen.has(k);
             return (
@@ -236,6 +244,11 @@ export function DatenTabelle<T>({
                       >
                         ›
                       </span>
+                    </td>
+                  )}
+                  {nummeriert && (
+                    <td style={{ ...tdStyle, textAlign: "right", color: v("--color-text-muted"), fontVariantNumeric: "tabular-nums" }}>
+                      {i + 1}
                     </td>
                   )}
                   {spalten.map((s) => (

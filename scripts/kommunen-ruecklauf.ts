@@ -36,7 +36,16 @@ import { readMail } from "./lib/read-mail";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
-import { ordneEin, notizZeile, notizMitText, STATUS_ZU_ART, type Ruecklaufart, type RohMail } from "../lib/outreach-ruecklauf";
+import {
+  ordneEin,
+  notizZeile,
+  notizMitText,
+  ortAusAbsender,
+  nenntAngeschriebeneGemeinde,
+  STATUS_ZU_ART,
+  type Ruecklaufart,
+  type RohMail,
+} from "../lib/outreach-ruecklauf";
 import { berichtAblegen } from "../lib/alert-senden";
 import { ruecklaufBericht } from "../lib/outreach-ruecklauf-bericht";
 import { heuteInBerlin } from "../lib/zeit";
@@ -289,6 +298,13 @@ async function main(): Promise<void> {
         const gefunden = ziele.filter((z) => (roh + "\n" + text).toLowerCase().includes(z.email));
         treffer = [...new Map(gefunden.map(z => [z.region_id, { region_id: z.region_id, name: z.name }])).values()];
       }
+      // Zuletzt der Ortsname im Absender — für Ämter und Verbünde, die unter
+      // einer anderen Domain antworten als der, an die wir geschrieben haben
+      // (siehe ortAusAbsender).
+      if (treffer.length !== 1) {
+        const ort = ortAusAbsender(von, [...new Map(ziele.map(z => [z.region_id, z])).values()]);
+        treffer = ort ? [{ region_id: ort.region_id, name: ort.name }] : [];
+      }
       // DASSELBE POSTFACH TRÄGT ZWEI GESPRÄCHE: die Antworten auf den
       // Kommunen-Brief und die auf die Sachfragen an Förderstellen
       // (scripts/funding-anfrage.ts). Letztere kommen oft von Orten, die nie
@@ -342,7 +358,19 @@ async function main(): Promise<void> {
   if (unklar.length) {
     log();
     log(`${unklar.length} nicht zuzuordnen — bitte selbst ansehen:`, "warn");
-    for (const b of unklar) log(`${b.art.padEnd(13)} ${b.von} — „${b.betreff}"`);
+    const zieleEindeutig = [...new Map(ziele.map((z) => [z.region_id, z])).values()];
+    for (const b of unklar) {
+      // Am Terminal steht, was der Bericht mit der Mail macht: Nur wer eine
+      // angeschriebene Gemeinde nennt, geht als Entscheidung hinaus.
+      const menschlich = b.art === "antwort" || b.art === "widerspruch";
+      const orte = menschlich ? nenntAngeschriebeneGemeinde(`${b.betreff} ${b.text}`, zieleEindeutig) : [];
+      const wohin = !menschlich
+        ? "→ nicht gemeldet (maschinell)"
+        : orte.length
+        ? `→ gemeldet (${orte.map((o) => o.name).join(", ")})`
+        : "→ nicht gemeldet (nennt keine angeschriebene Gemeinde)";
+      log(`${b.art.padEnd(13)} ${b.von} — „${b.betreff}" ${wohin}`);
+    }
   }
   // Gezählt, nicht verschwunden: Wer die Liste kürzt, muss sagen, um wie viel.
   // Sonst ist eine zu weit geratene Ausblendung von einem leeren Postfach nicht
@@ -433,6 +461,20 @@ async function main(): Promise<void> {
     // später eine Rückfrage → geantwortet, und die Gemeinde stünde beim nächsten
     // Schub wieder auf der Liste. Innerhalb eines Laufs hätte sogar die
     // Reihenfolge der Befunde entschieden.
+    // EINE VERÖFFENTLICHUNG IST MEHR ALS EINE ANTWORT — und wurde von ihr
+    // überschrieben (22.09.2026): Berkenthins Bürgermeister schickte seine
+    // fertige Pressemitteilung, der Lauf setzte den Status von
+    // „veröffentlicht" auf „geantwortet" zurück. Der Zeitstempel der Antwort
+    // wird trotzdem geschrieben — an ihm hängt jede Auswertung der Antwortzeit,
+    // und ohne ihn zählte eine Gemeinde, die geantwortet UND veröffentlicht
+    // hat, als eine, die nie geantwortet hat. Genau so kamen Wallertheim und
+    // Heringen nie in die Antwort-Zahl.
+    const { data: jetzt } = await db
+      .from("kommunen_kontakt")
+      .select("outreach_status")
+      .eq("region_id", b.region_id)
+      .maybeSingle();
+    if (jetzt?.outreach_status === "veroeffentlicht") delete patch.outreach_status;
     const { error } = await db
       .from("kommunen_kontakt")
       .update(patch)
@@ -476,6 +518,33 @@ async function main(): Promise<void> {
       datum: b.datum,
     })),
     unklar: unklar.length,
+    // Nur die, die nach einem Menschen aussehen: Unzustellbarkeiten und
+    // maschinelle Meldungen ohne Zuordnung ändern nichts und wären der Lärm,
+    // in dem die eine echte Antwort untergeht.
+    // NUR WAS NACH UNSEREM BRIEF KLINGT. Ein ungeordneter Rückläufer geht als
+    // Entscheidung hinaus; ohne diese zweite Bedingung ging auch jede
+    // geschäftliche Post an dasselbe Postfach mit (vier Mails eines
+    // Shop-Partners am 22.09.2026). Gemessen trennt der Gemeindename sauber:
+    // in keiner Partner-Mail steht einer, in jeder echten Rückmeldung schon.
+    unklareAntworten: unklar
+      .filter((b) => b.art === "antwort" || b.art === "widerspruch")
+      .map((b) => ({
+        b,
+        orte: nenntAngeschriebeneGemeinde(
+          `${b.betreff} ${b.text}`,
+          [...new Map(ziele.map((z) => [z.region_id, z])).values()],
+        ),
+      }))
+      .filter((x) => x.orte.length > 0)
+      .map(({ b, orte }) => ({
+        art: b.art,
+        // Der genannte Ort ist ein HINWEIS, keine Zuordnung: Er steht als
+        // Vermutung in der Meldung, nicht als Tatsache in der Datenbank.
+        name: orte.length === 1 ? `vermutlich ${orte[0].name}` : `nennt ${orte.map((o) => o.name).join(", ")}`,
+        betreff: b.betreff,
+        von: b.von,
+        datum: b.datum,
+      })),
     tage,
   });
   log();

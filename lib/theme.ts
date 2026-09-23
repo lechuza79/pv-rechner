@@ -174,6 +174,18 @@ export const tokens = {
   '--color-text-faint': '#61877B',      // Very light text, placeholders
   '--color-text-on-accent': '#132527',  // Text on accent-colored backgrounds (the lime plate)
 
+  // ─── Raised (1) ────────────────────────────────────────────────────────────
+  // Eine Flaeche, die ueber dem Seitengrund SCHWEBT — fuer die eine Zeile, die
+  // dem Leser gehoert (seine Gemeinde in der Rangliste), und fuer deren
+  // schwebende Kopie. Sie hebt sich durch Hoehe ab, nicht durch Farbe: Eine
+  // gefuellte Zeile faerbt jede Zahl darin mit und zwingt alles darauf in eine
+  // eigene Tinte — genau daran ist die Lime-Fassung am 23.09.2026 gescheitert.
+  //
+  // Sie liegt IMMER ueber dem Grund, auch nachts: Auf Dunkel ist eine
+  // angehobene Karte heller, nicht dunkler. --color-bg-muted taugt dafuer
+  // nicht, es kippt die Richtung (hell: dunkler als bg, dunkel: heller).
+  '--color-bg-raised': '#FFFFFF',
+
   // ─── Progress (1) ──────────────────────────────────────────────────────────
   '--color-progress-inactive': '#DBE1DC',
 
@@ -510,6 +522,7 @@ export function getCssVariables(): string {
 const darkTokens: Partial<Record<TokenName, string>> = {
   '--color-bg-page': '#08191C',         // Grund und Karte fallen nachts zusammen
   '--color-bg': '#08191C',
+  '--color-bg-raised': '#17383E',    // dunkel: die Karte liegt ueber dem Grund
   '--color-bg-muted': '#163338',
   '--color-bg-accent': '#12292E',
   '--color-border': '#24413F',
@@ -560,6 +573,7 @@ const darkTokens: Partial<Record<TokenName, string>> = {
 const duskTokens: Partial<Record<TokenName, string>> = {
   '--color-bg-page': '#1E2B26',
   '--color-bg': '#1E2B26',                          // warm dim teal-green (not deep dark)
+  '--color-bg-raised': '#2C3B35',
   '--color-bg-muted': '#27352E',
   '--color-bg-accent': '#2A3B31',
   '--color-border': '#374840',
@@ -604,6 +618,7 @@ const duskTokens: Partial<Record<TokenName, string>> = {
 const overcastTokens: Partial<Record<TokenName, string>> = {
   '--color-bg-page': '#C2C8BF',
   '--color-bg': '#C2C8BF',
+  '--color-bg-raised': '#E2E6DE',
   '--color-bg-muted': '#B7BEB4',
   '--color-bg-accent': '#BBC3B8',
   '--color-border': '#979E94',

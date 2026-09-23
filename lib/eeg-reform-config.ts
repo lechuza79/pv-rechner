@@ -593,7 +593,20 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   24. September 2026, in erster Lesung den Gesetzentwurf …" (21/7867), nach
   //   20-minütiger Aussprache Überweisung. Der Termin liegt weiter vor uns,
   //   keine Kammer hat seit gestern beschlossen. Zustand unverändert.
-  geprueftIso: "2026-09-22",
+  // 23.09.2026, 00:05 Uhr: erstmals gegen die TAGESORDNUNG der Sitzungswoche
+  //   selbst geprüft statt gegen die Ankündigungsseite — „Tagesordnung komplett
+  //   (95.–97. Sitzung)" als amtliches PDF des Bundestages. Donnerstag, TOP 14 a:
+  //   „Erste Beratung des von der Bundesregierung eingebrachten Entwurfs eines
+  //   Gesetzes für einen planbaren, kosteneffizienten, netzverträglichen und
+  //   marktorientierten Ausbau der erneuerbaren Energien im Stromsektor",
+  //   Drucksache 21/7867, 30 Minuten verbundene Beratung, Überweisungsvorschlag
+  //   an den Ausschuss für Wirtschaft und Energie (federführend). Eine ERSTE
+  //   Beratung mit Überweisungsvorschlag ist das Gegenteil eines Beschlusses:
+  //   Der Entwurf geht danach in den Ausschuss. Zustand unverändert.
+  //   Die Tagesordnung ist dabei die bessere Quelle als die Ankündigungsseite —
+  //   sie führt den Verfahrensschritt und den Überweisungsvorschlag mit, nicht
+  //   nur den Termin.
+  geprueftIso: "2026-09-23",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

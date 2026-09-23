@@ -203,7 +203,7 @@ async function gehe(
         }
       }
       await uebrigeFragenBeantworten(page);
-      await weiterKlicken(page);
+      await weiterKlicken(page, `${pfad.join(" → ") || "Start"} · Schritt nur mit Akkordeon-Fragen`);
       await gehe(page, flowName, flowPfad, startKnopf, ergebnisEnthaelt, [...pfad, VORBELEGT], erg);
       return;
     }
@@ -242,7 +242,7 @@ async function gehe(
       erg.wege++;
       return;
     }
-    await weiterKlicken(page);
+    await weiterKlicken(page, `${pfad.join(" → ") || "Start"} · Schritt ohne Auswahlkarten`);
     await gehe(page, flowName, flowPfad, startKnopf, ergebnisEnthaelt, [...pfad, VORBELEGT], erg);
     return;
   }
@@ -296,7 +296,15 @@ async function gehe(
     // zuverlässig wieder her, und ein Läufer, der auf halb aufgeräumten
     // Zuständen weiterläuft, prüft etwas, das kein Nutzer je sieht.
     await oeffne(page, flowPfad, startKnopf);
-    for (const vorher of pfad) {
+    // Der Kontext für geworfene Meldungen — BLOCKER, siehe `wegPraefix` in
+    // flows.ts. Er nennt BEIDES: die Zielkombination dieses Wegs und, beim
+    // Nachspielen, die Stelle, an der es klemmte. Nur das Ziel allein sagt
+    // nicht, welcher Schritt hängt; nur die Stelle allein nicht, welcher der
+    // ~1.700 Wege gerade lief — und genau diese Unterscheidung trennt einen
+    // echten Produktfehler von einer ausgelasteten Maschine.
+    const ziel = [...pfad, wahl].join(" → ");
+    for (const [i, vorher] of pfad.entries()) {
+      const stelle = `Ziel ${ziel} · beim Nachspielen von Schritt ${i + 1} „${vorher}"`;
       if (vorher === VORBELEGT) {
         // Ein „vorbelegter" Schritt kann Akkordeon-Fragen tragen, von denen
         // eine Pflicht ist (Haustyp im Empfehlungsweg seit 21.09.2026). Ohne
@@ -305,13 +313,13 @@ async function gehe(
         await uebrigeFragenBeantworten(page);
       }
       else {
-        await waehle(page, vorher);
+        await waehle(page, vorher, stelle);
         await uebrigeFragenBeantworten(page);
       }
-      await weiterKlicken(page);
+      await weiterKlicken(page, stelle);
     }
 
-    await waehle(page, wahl);
+    await waehle(page, wahl, ziel);
 
     // Akkordeon-Fragen dieses Schritts: jede Wahl einmal, mit dem Nachweis,
     // dass sie stehen bleibt. VOR dem Beantworten der übrigen Fragen, weil die
@@ -355,7 +363,7 @@ async function gehe(
       continue;
     }
 
-    await weiterKlicken(page);
+    await weiterKlicken(page, ziel);
     await bildAblegen(page, flowName, [...pfad, wahl].join("__"), erg);
     await gehe(page, flowName, flowPfad, startKnopf, ergebnisEnthaelt, [...pfad, wahl], erg);
   }

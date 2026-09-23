@@ -115,6 +115,48 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // VG Kandel, aufgenommen am 23.09.2026. Zwei Gründe, jeder für sich
+  // ausreichend. Erstens nimmt die Verbandsgemeinde derzeit gar keine Anträge
+  // an („alle verfügbaren Mittel … ausgeschöpft"). Zweitens ist das Verfahren
+  // das UMGEKEHRTE, wie bei Fritzlar und Mauer: „Eine Beantragung der
+  // Fördermittel vor Kauf, Installation und Registrierung des Balkonkraftwerks
+  // ist NICHT möglich." Die vorhandenen Prüfformen bilden die übliche Regel
+  // „Antrag vor Kauf" ab; hier verlangten sie vom Nutzer das Gegenteil dessen,
+  // was die Richtlinie verlangt. Alle Bedingungen stehen vollständig auf der
+  // Karte, die Antragsreihenfolge als erste Zeile nach dem Ausschöpfungs-
+  // hinweis. Prüfform mit einer Neuauflage.
+  // VG Höhr-Grenzhausen, aufgenommen am 23.09.2026. Dieselbe Lage wie bei
+  // Fritzlar, nur eine Stufe schärfer: Die Frist läuft NACH dem Kauf, nicht
+  // davor („Der Antrag ist innerhalb von 3 Monaten nach Erwerb des
+  // Balkonkraftwerks … zu stellen"), und eine Bewilligung vor dem Kauf ist
+  // gar nicht vorgesehen. Die vorhandenen Prüfformen bilden die übliche Regel
+  // „Antrag vor Kauf" ab; sie hier anzuwenden verlangte vom Nutzer das
+  // Gegenteil dessen, was die Richtlinie verlangt, und verschwiege zugleich
+  // die Frist, die ihn wirklich die Förderung kostet. Halb erfasst gibt es
+  // hier nicht; bis dahin steht die Frist als erste Bedingung auf der Karte.
+  "vg-hoehr-grenzhausen-balkonkraftwerke",
+  "vg-kandel-balkonkraftwerke",
+  // VG Leiningerland, aufgenommen am 23.09.2026. Dasselbe wie bei Bremen: Das
+  // Programm ist BEENDET (Meldung der Verbandsgemeinde vom 26.06.2025, 400
+  // geförderte Anträge), eine Prüfform hielte das Vorhaben eines Nutzers also
+  // gegen ein Verfahren, in das er gar nicht mehr hineinkommt. Die Bedingungen
+  // stehen vollständig auf der Karte, in der Vergangenheitsform und mit dem
+  // Ende als erster Zeile. Wird das Programm je neu aufgelegt, gehört die
+  // Prüfform zur Neuauflage — dann aber an der dann geltenden Richtlinie, nicht
+  // an dieser von 2024.
+  "vg-leiningerland-balkonkraftwerke",
+  // Bremen Heizungstausch, aufgenommen am 23.09.2026. Das Programm nimmt seit
+  // dem 31.08.2025 keine Anträge mehr an — eine Prüfform hielte das Vorhaben
+  // eines Nutzers gegen ein Verfahren, in das er gar nicht mehr hineinkommt.
+  // Was es an Bedingungen gab, steht vollständig auf der Karte. Wird das
+  // Programm je neu aufgelegt, gehört die Prüfform mit der Neuauflage dazu.
+  "bremen-heizungstausch",
+  // Kaufungen Sondervermögen, aufgenommen am 23.09.2026. Es ist ein zinsloses
+  // DARLEHEN; die Prüfformen bilden Zuschussverfahren ab. Die eine Bedingung,
+  // die ein Modell hier tragen könnte — Antrag vor Beginn der Baumaßnahme —
+  // steht im Wortlaut auf der Karte, und das zweite Kriterium (Wohngebäude,
+  // bei allen übrigen Maßnahmen Fachwerk vor 1950) kennt der Rechner nicht.
+  "kaufungen-sondervermoegen",
   // Fritzlar, aufgenommen am 20.09.2026. Richtlinie im Volltext gelesen, jede
   // Bedingung steht am Programm. Die Prüfform fehlt noch und ist hier nicht
   // trivial, weil das Antragsverfahren das UMGEKEHRTE ist: „Es handelt sich um
@@ -411,6 +453,13 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Stadt Aachen (nur Mehrfamilienhaus oder Betriebsgebäude) kennt das Modell
   // als GEBÄUDEART bereits, aber nicht als Ausschluss des Einfamilienhauses.
   "aachen-solar", "staedteregion-aachen-ee",
+  // Added 23 Sep 2026 as an exhausted county programme (no calculation fields).
+  // Its load-bearing condition is an INCOME cap — household net income up to
+  // twice the Buergergeld rate — which the model cannot express and the
+  // calculator never asks. A check form covering only the application date
+  // would suggest the remaining conditions are met once the date fits, for a
+  // programme that has no money left. Written out rather than half-captured.
+  "gifhorn-kreis-balkonkraftwerke",
   // Added 17 Sep 2026 as a closed historical programme (no calculation fields).
   "mainz-bingen-balkonkraftwerke",
   "mayen-koblenz-balkonkraftwerke",
@@ -438,6 +487,47 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "berkenthin-balkon-solar",
   "altenkirchen-balkonkraftwerke",
   "altenkirchen-solarspeicher",
+  // Added 23 Sep 2026: Mueden (Aller). Guideline read in full. The usual
+  // application-before-purchase rule does apply here, so a test form is possible
+  // -- it just has not been written in this run, and half-recorded is not an
+  // option. Three further conditions have no test form at all: at most two
+  // modules with 600 or 800 W of inverter power per dwelling unit, the five-year
+  // use in that same unit, and the factory-new purchase from a specialist
+  // dealer. All of them stand in full on the card.
+  // Added 23 Sep 2026: Garching b. Muenchen. Guideline read in full (scanned PDF,
+  // read as images). No test form in this run, and one condition has none at all:
+  // the grant requires that the work is only started AFTER the approval notice,
+  // not merely after the application -- stricter than the federal rule and the
+  // one condition whose breach costs the whole grant. It stands in full on the
+  // card, together with the storage ratio of 0.5 to 2 kWh per kWp, which is the
+  // reason the storage part carries no calculation field.
+  "garching-energiespar",
+  // Added 23 Sep 2026: Petershausen. Closed programme without a rate; the
+  // municipal page is four sentences long and names no condition at all, so
+  // there is nothing to turn into a test form.
+  "petershausen-photovoltaik",
+  // Added 23 Sep 2026: Bruehl (Baden). Guideline read in full (28 pages).
+  // No test form in this run. Two conditions have none at all: the obligation
+  // under section 23 of the Baden-Wuerttemberg climate act, which depends on
+  // whether the roof is being renovated, and the 10 kWp threshold above which
+  // the roof rate starts. Both stand in full on the card, and the threshold is
+  // the reason the roof part carries no calculation field.
+  "bruehl-baden-umweltschutz",
+  // Added 23 Sep 2026: Wertingen. Exhausted programme, no published guideline;
+  // the only figures the town names stand in a retrospective list inside its
+  // 2023 climate concept, which is not a rule anyone could be held to. There
+  // is nothing to turn into a test form.
+  "wertingen-photovoltaik",
+  "mueden-aller-balkonsolar",
+  // Added 23 Sep 2026: Meinersen. Guideline read as images (scanned, no text
+  // layer). No test form, and the reason is the same one that keeps the entry
+  // from carrying a calculation field: the published guideline only covers a NEW
+  // building on a previously undeveloped plot, while the municipality announces
+  // that existing buildings have been eligible since 2022 and that the guideline
+  // is being revised. A test form would hold the user's project against a rule
+  // the municipality itself says is out of date. The conditions stand in full on
+  // the card.
+  "meinersen-solar",
   "cochem-zell-solarstromspeicher",
   // Added 19 Sep 2026: discretionary EKM grant without a rate; the committee
   // decision, the start-after-receipt rule and the new-building exclusion have

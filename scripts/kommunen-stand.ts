@@ -20,6 +20,8 @@ import { OUTREACH_STATUS_LABEL, istUnbeantwortet, UNBEANTWORTET_TAGE } from "../
 import { liesNotiz } from "../lib/outreach-ruecklauf";
 import { heuteInBerlin } from "../lib/zeit";
 import { domainAus, verlinkendeDomains } from "./lib/verweise";
+import { bilanz, quoteText, type Veroeffentlichung } from "../lib/kommunen-veroeffentlichung";
+import { offeneHinweisZeilen } from "../lib/kommunen-hinweise";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -136,17 +138,40 @@ async function main(): Promise<void> {
   // kann. „Keine Veröffentlichung verzeichnet" heißt nicht „keine Reaktion".
   log();
   log("Was daraus geworden ist:");
-  const geantwortet = raus.filter((z) => z.outreach_status === "geantwortet");
+  // Geantwortet heißt: Es kam eine Antwort — unabhängig davon, ob die Gemeinde
+  // später auch veröffentlicht hat. Am Status gezählt fiel Nidda heraus, sobald
+  // er von „geantwortet" auf „veröffentlicht" wechselte.
+  const geantwortet = raus.filter((z) => z.responded_at || z.outreach_status === "geantwortet");
   const veroeffentlicht = raus.filter((z) => z.outreach_status === "veroeffentlicht");
   log(`    ${raus.length} ${raus.length === 1 ? "Brief" : "Briefe"} verschickt`);
   log(
     `    ${geantwortet.length} ${geantwortet.length === 1 ? "Gemeinde hat" : "Gemeinden haben"} geantwortet` +
       (geantwortet.length ? `: ${geantwortet.map((z) => z.mastr_regions.name).join(", ")}` : ""),
   );
-  log(
-    `    ${veroeffentlicht.length} ${veroeffentlicht.length === 1 ? "Veröffentlichung" : "Veröffentlichungen"} von Hand verzeichnet` +
-      (veroeffentlicht.length ? `: ${veroeffentlicht.map((z) => z.mastr_regions.name).join(", ")}` : ""),
-  );
+  // Belegte Veröffentlichungen je BEITRAG (lib/kommunen-veroeffentlichung.ts) —
+  // dieselbe Zählung wie die Übersicht im Admin-Bereich. Der Status an der
+  // Gemeinde sagt nur „ja/nein", nicht wie oft und wo.
+  const { data: pubs, error: pubFehler } = await db
+    .from("kommunen_veroeffentlichung")
+    .select("region_id, url, kanal, mit_link, gesehen_ab, noch_online");
+  if (pubFehler) {
+    log(`    Veröffentlichungen nicht lesbar: ${pubFehler.message}`, "warn");
+  } else {
+    const zugestellt = raus.filter(
+      (z) => z.outreach_status !== "bounce" && !liesNotiz(z.notes).verlauf.some((v) => v.art === "unzustellbar"),
+    );
+    const b = bilanz((pubs ?? []) as Veroeffentlichung[], zugestellt.length);
+    log(
+      `    ${b.gemeinden} von ${b.angeschrieben} zugestellten Briefen haben zu einer Veröffentlichung geführt (${quoteText(b.quote)}): ` +
+        `${b.beitraege} Beiträge, ${b.mitLink} mit Link, ${b.woanders} woanders als auf der Gemeindeseite`,
+    );
+    const name = new Map(raus.map((z) => [z.region_id, z.mastr_regions.name]));
+    log(`      ${b.jeGemeinde.map((g) => `${name.get(g.region_id) ?? g.region_id} ${g.beitraege}`).join(" · ")}`);
+    const ohneBeleg = veroeffentlicht.filter((z) => !b.jeGemeinde.some((g) => g.region_id === z.region_id));
+    if (ohneBeleg.length) {
+      log(`    Als veröffentlicht markiert, aber ohne belegten Beitrag: ${ohneBeleg.map((z) => z.mastr_regions.name).join(", ")}`, "warn");
+    }
+  }
 
   // The hand-set status misses every publication nobody noted: Nidda linked to
   // us for weeks and stood here as "answered" only (21.09.2026). The backlink
@@ -205,6 +230,59 @@ async function main(): Promise<void> {
     if (offen) log(`    ${offen} unbestätigt (Bestätigungsmail nicht eingelöst)`);
   }
   log("    Nicht sichtbar: Veröffentlichungen ohne Verweis auf uns (App-Plattformen, Print).");
+
+  // OFFENE HINWEISE aus dem wöchentlichen Lauf (Besucherherkunft + Websuche).
+  // Sie stehen hier, weil dies der erste Befehl jeder Sitzung ist: Ein Hinweis,
+  // den nur die Ablage kennt, liegt dort wie am 22.09.2026 Berkenthin in der
+  // Besucherstatistik — gefunden und nie angesehen. Erledigt ist er, sobald
+  // das Ergebnis in der Notiz der Gemeinde steht; der nächste Lauf meldet ihn
+  // dann nicht mehr. Fehlt der Bericht ganz, sagt die Zeile das — ein stummer
+  // Lauf ist von einem ausgefallenen sonst nicht zu unterscheiden.
+  const { data: hinweisBerichte, error: hinweisFehler } = await db
+    .from("waechter_reports")
+    .select("created_at, subject, details")
+    .eq("tag", "kommunen-hinweise")
+    .order("created_at", { ascending: false })
+    .limit(20);
+  if (hinweisFehler) log(`    Hinweis-Berichte nicht lesbar: ${hinweisFehler.message}`, "warn");
+  else if (!hinweisBerichte?.length) log("    Wöchentliche Hinweis-Suche: noch kein Bericht abgelegt", "warn");
+  else {
+    // Je Quelle nur der jüngste Lauf — zwei Läufe derselben Quelle
+    // nebeneinander zeigten einen längst erledigten Stand als offen.
+    const jeQuelle = new Map<string, { created_at: string; subject: string; details: string | null }>();
+    for (const b of hinweisBerichte as { created_at: string; subject: string; details: string | null }[]) {
+      if (!jeQuelle.has(b.subject)) jeQuelle.set(b.subject, b);
+    }
+    // Der abgelegte Bericht ist der Stand des LAUFS, nicht der von heute: Er
+    // hält fest, was am Montag neu war. Wer einen Hinweis am Dienstag abarbeitet
+    // und das Ergebnis in die Notiz schreibt, sah ihn hier bis zum nächsten
+    // Montag weiter als offen — und hat ihn ein zweites Mal aufgerufen. Genau so
+    // ist es am 23.09.2026 mit Bocholt passiert, zweimal geprüft und zweimal
+    // verworfen. Gefiltert wird mit derselben Funktion, die auch der wöchentliche
+    // Lauf benutzt; eine zweite Auslegung von „schon angesehen" wäre eine zweite
+    // Wahrheit.
+    const notizenJeName = new Map<string, (string | null)[]>();
+    for (const z of alle) {
+      const n = z.mastr_regions.name;
+      if (!notizenJeName.has(n)) notizenJeName.set(n, []);
+      notizenJeName.get(n)!.push(z.notes);
+    }
+    for (const b of jeQuelle.values()) {
+      const roh = (b.details ?? "").split("\n").filter(Boolean);
+      const zeilen = offeneHinweisZeilen(roh, notizenJeName);
+      const erledigt = roh.length - zeilen.length;
+      const quelle = b.subject.match(/\(([^)]+)\)/)?.[1] ?? b.subject;
+      // „Seither erledigt" wird MITGEZÄHLT, nicht verschwiegen: Sonst sieht ein
+      // Lauf, dessen Hinweise alle abgearbeitet sind, aus wie einer, der nichts
+      // gefunden hat.
+      const seither = erledigt ? ` (${erledigt} seither erledigt)` : "";
+      log(
+        `    ${quelle}, Lauf vom ${b.created_at.slice(0, 10)}: ${zeilen.length ? `${zeilen.length} offene Hinweise` : "nichts Offenes"}${seither}`,
+        zeilen.length ? "warn" : undefined,
+      );
+      for (const z of zeilen.slice(0, 15)) log(`      ${z}`);
+    }
+  }
 
   // ─── Darf heute gesendet werden? ────────────────────────────────────────────
   //

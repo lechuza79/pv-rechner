@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
 import { STATISTIK_DDL } from "../../../../lib/projekt-statistik";
+import { KOSTEN_DDL } from "../../../../lib/projekt-kosten";
 
-// Einmalige Einrichtung der Projekt-Statistik (projekt_statistik, projekt_bestand).
+// Einmalige Einrichtung der Projekt-Statistik samt Kostenreihe.
 // Aufruf: GET mit Authorization: Bearer $CRON_SECRET, mehrfach aufrufbar.
 //
 // RLS ist an und es gibt keine Policy: Geschrieben und gelesen wird
@@ -24,7 +25,16 @@ export async function GET(req: NextRequest) {
   if (!supabase) {
     return NextResponse.json({ error: "Database not configured" }, { status: 500 });
   }
-  const { error } = await supabase.rpc("exec_sql", { sql: STATISTIK_DDL });
+  // Beide Teile in EINEM Aufruf: Zeit, Tokens und Geld gehören zur selben
+  // Auswertung, und zwei Einrichtungsrouten wären zwei Stellen, von denen
+  // irgendwann eine vergessen wird.
+  const { error } = await supabase.rpc("exec_sql", { sql: STATISTIK_DDL + KOSTEN_DDL });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ ok: true, tables: ["projekt_statistik", "projekt_bestand"] });
+  return NextResponse.json({
+    ok: true,
+    tables: [
+      "projekt_statistik", "projekt_arbeitszeit", "projekt_bestand",
+      "projekt_kosten", "projekt_listenwert",
+    ],
+  });
 }

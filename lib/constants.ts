@@ -158,12 +158,19 @@ export const EA_KM_PRESETS = [10000, 15000, 20000];
 // 05.09.2026 nannte er nur den Strompreis, dabei stammte die größere Hälfte
 // des Szenario-Unterschieds aus dem Eigenverbrauch (optimistisch: 6.833 €
 // aus dem EV-Sprung, 6.262 € aus dem Preis).
+//
+// JEDES SZENARIO TRÄGT ZWEI FARBEN, UND DAS IST KEINE DOPPELUNG. `color` ist
+// die Kurvenfarbe — eine Grafikfarbe, die auf hellem Grund als 12-px-Text
+// 1,9:1 erreicht und dort niemand liest. `textColor` ist dieselbe Aussage als
+// LESBARER Text (die Stufen aus lib/theme.ts, ~6:1). Wer einen Szenarionamen
+// als Text setzt, nimmt `textColor`; wer eine Linie, eine Fläche oder einen
+// Balken zeichnet, `color`.
 export const SCENARIOS = [
-  { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), strom: 0.01, evDelta: -5,
+  { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), textColor: v("--color-negative-text"), strom: 0.01, evDelta: -5,
     explain: "Vorsichtig gerechnet: Der Strompreis steigt nur langsam (+1 %/Jahr) und du nutzt 5 Prozentpunkte weniger Strom selbst als geschätzt — beides drückt die Ersparnis." },
-  { id: "realistic", label: "Realistisch", color: v("--color-positive"), strom: 0.02, evDelta: 0,
+  { id: "realistic", label: "Realistisch", color: v("--color-positive"), textColor: v("--color-positive-text"), strom: 0.02, evDelta: 0,
     explain: "Mittlere Annahme: Der Strompreis steigt moderat (+2 %/Jahr), wie die aktuellen Prognosen erwarten." },
-  { id: "optimistic", label: "Optimistisch", color: v("--color-accent"), strom: 0.05, evDelta: 5,
+  { id: "optimistic", label: "Optimistisch", color: v("--color-accent"), textColor: v("--color-accent"), strom: 0.05, evDelta: 5,
     explain: "Günstige Entwicklung: Steigt der Strompreis kräftig (+5 %/Jahr), lohnt sich jede selbst genutzte Kilowattstunde stärker — und du nutzt 5 Prozentpunkte mehr Strom selbst als geschätzt." },
 ];
 

@@ -220,7 +220,7 @@ function Empfehlung({ eintrag }: { eintrag: BewertetesAngebot }) {
         <div>
           <div style={{
             fontSize: v("--font-size-caption"), fontWeight: 700,
-            color: v("--color-positive"), textTransform: "uppercase",
+            color: v("--color-positive-text"), textTransform: "uppercase",
             letterSpacing: "0.04em",
           }}>
             Rechnet sich am besten

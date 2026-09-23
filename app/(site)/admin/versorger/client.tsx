@@ -261,7 +261,7 @@ export default function VersorgerCockpit() {
 
           <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.sm }}>
             {loading ? "Lädt…" : `${total.toLocaleString("de-DE")} Versorger`}
-            {error && <span style={{ color: v("--color-negative"), marginLeft: space.sm }}>Fehler: {error}</span>}
+            {error && <span style={{ color: v("--color-negative-text"), marginLeft: space.sm }}>Fehler: {error}</span>}
           </div>
 
           <div style={{ overflowX: "auto", border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md") }}>
@@ -551,7 +551,7 @@ function Detail({
               <span style={{ color: v("--color-text-muted") }}>— {u.kontakt.art}</span>
             </div>
           ) : (
-            <div style={{ color: v("--color-negative") }}>
+            <div style={{ color: v("--color-negative-text") }}>
               {u.kontakt.adresse ? (
                 <>
                   <span style={{ textDecoration: "line-through" }}>{u.kontakt.adresse}</span> — {u.kontakt.art}
@@ -737,7 +737,7 @@ function Detail({
               )}
               <span style={{ color: v("--color-text-muted") }}>{ZUORDNUNG_ROLLE_LABEL[g.rolle]}</span>
               <span style={quelleBadge(g.quelle)}>{ZUORDNUNG_QUELLE_LABEL[g.quelle]}</span>
-              {!g.hatDaten && <span style={{ color: v("--color-negative") }}>keine Anlagendaten</span>}
+              {!g.hatDaten && <span style={{ color: v("--color-negative-text") }}>keine Anlagendaten</span>}
               <button style={miniBtn} onClick={() => entfernen(g.regionId)} aria-label={`${g.name} entfernen`}>
                 ✕
               </button>
@@ -1046,7 +1046,7 @@ function NeuModal({
         <Feld label="Kontaktseite">
           <input value={kontaktseite} onChange={(e) => setKontaktseite(e.target.value)} placeholder="https://…/kontakt" style={{ ...inputStyle, width: "100%" }} />
         </Feld>
-        {fehler && <div style={{ color: v("--color-negative"), fontSize: v("--font-size-small") }}>{fehler}</div>}
+        {fehler && <div style={{ color: v("--color-negative-text"), fontSize: v("--font-size-small") }}>{fehler}</div>}
         <button style={primaryBtn} disabled={busy || !name.trim()} onClick={speichern}>
           {busy ? "Speichert…" : "Anlegen"}
         </button>

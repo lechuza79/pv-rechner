@@ -319,7 +319,7 @@ const S: Record<string, React.CSSProperties> = {
     border: "none",
     color: v("--color-text-on-accent"),
   },
-  fehler: { fontSize: v("--font-size-small"), color: v("--color-negative"), marginTop: space.sm, lineHeight: 1.4 },
+  fehler: { fontSize: v("--font-size-small"), color: v("--color-negative-text"), marginTop: space.sm, lineHeight: 1.4 },
   fusszeile: {
     marginTop: space.xl,
     display: "flex",

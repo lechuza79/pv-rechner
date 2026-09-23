@@ -135,7 +135,7 @@ export function ErfolgMessen({ thema }: { thema: string }) {
         <p
           style={{
             fontSize: v("--font-size-body"),
-            color: v("--color-negative"),
+            color: v("--color-negative-text"),
             marginTop: space.sm,
           }}
         >

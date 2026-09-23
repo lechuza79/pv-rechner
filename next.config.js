@@ -99,6 +99,7 @@ const nextConfig = {
       {"source": "/photovoltaik-foerderung/kirchlengern", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/kirchlengern", "permanent": true},
       {"source": "/photovoltaik-foerderung/floersheim-am-main", "destination": "/photovoltaik-foerderung/hessen/floersheim-am-main", "permanent": true},
       {"source": "/photovoltaik-foerderung/eppelheim", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/eppelheim", "permanent": true},
+      {"source": "/photovoltaik-foerderung/bruehl-baden", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/bruehl-baden", "permanent": true},
       {"source": "/photovoltaik-foerderung/radolfzell-am-bodensee", "destination": "/photovoltaik-foerderung/baden-wuerttemberg/radolfzell-am-bodensee", "permanent": true},
       {"source": "/photovoltaik-foerderung/meschede", "destination": "/photovoltaik-foerderung/nordrhein-westfalen/meschede", "permanent": true},
       {"source": "/photovoltaik-foerderung/ingelheim-am-rhein", "destination": "/photovoltaik-foerderung/rheinland-pfalz/ingelheim-am-rhein", "permanent": true},
@@ -342,6 +343,9 @@ const nextConfig = {
       // Ausnahmeliste einzuführen, die niemand pflegt.
       { source: "/photovoltaik-foerderung/klempau", destination: "/photovoltaik-foerderung/schleswig-holstein/klempau", permanent: true },
       { source: "/photovoltaik-foerderung/helmstedt", destination: "/photovoltaik-foerderung/niedersachsen/helmstedt", permanent: true },
+      { source: "/photovoltaik-foerderung/meinersen", destination: "/photovoltaik-foerderung/niedersachsen/meinersen", permanent: true },
+      { source: "/photovoltaik-foerderung/mueden-aller", destination: "/photovoltaik-foerderung/niedersachsen/mueden-aller", permanent: true },
+      { source: "/photovoltaik-foerderung/garching-b-muenchen", destination: "/photovoltaik-foerderung/bayern/garching-b-muenchen", permanent: true },
       { source: "/photovoltaik-foerderung/goettingen", destination: "/photovoltaik-foerderung/niedersachsen/goettingen", permanent: true },
       { source: "/photovoltaik-foerderung/herzberg-am-harz", destination: "/photovoltaik-foerderung/niedersachsen/herzberg-am-harz", permanent: true },
       { source: "/photovoltaik-foerderung/weyhe", destination: "/photovoltaik-foerderung/niedersachsen/weyhe", permanent: true },

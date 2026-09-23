@@ -566,7 +566,7 @@ const S: Record<string, React.CSSProperties> = {
     gap: space.sm,
     fontSize: v("--font-size-body"),
     fontWeight: 700,
-    color: v("--color-positive"),
+    color: v("--color-positive-text"),
   },
   quittungText: {
     fontSize: v("--font-size-small"),
@@ -592,7 +592,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   fehler: {
     fontSize: v("--font-size-small"),
-    color: v("--color-negative"),
+    color: v("--color-negative-text"),
     margin: `${space.md}px 0 0`,
   },
   zusage: {

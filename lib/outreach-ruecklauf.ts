@@ -375,3 +375,93 @@ export const ART_LABEL: Record<Ruecklaufart, string> = {
   abwesenheit: "Abwesenheitsnotiz",
   antwort: "Antwort",
 };
+
+/**
+ * Wem gehört eine Antwort, die von einer UNBEKANNTEN Adresse kommt?
+ *
+ * WARUM (22.09.2026): Berkenthins Bürgermeister hat auf unseren Brief mit einer
+ * fertigen Pressemitteilung geantwortet — von `amt-berkenthin.de`, während der
+ * Brief an `berkenthin.de` ging. Weder die Domain noch eine zitierte Adresse
+ * passten, der Betreff hieß „Pressemitteilung", und die Antwort landete in der
+ * Liste „bitte selbst ansehen", wo sie neun Tage lag. Ein Amt, ein
+ * Verwaltungsverbund oder ein privates Postfach der Verwaltung trägt den
+ * Ortsnamen regelmäßig, aber eben nicht die Domain des Briefes.
+ *
+ * GERATEN WIRD DABEI NICHT: Der Ortsname muss im Absender als eigenes Wort
+ * stehen (von Buchstaben umgeben zählt nicht — „Linden" in „lindenberg.de" ist
+ * kein Treffer), er muss mindestens fünf Buchstaben haben, und es darf genau
+ * EINE angeschriebene Gemeinde passen. Bleibt es mehrdeutig, bleibt die Mail
+ * ungeordnet — dieselbe Richtung wie überall sonst: lieber offen als falsch
+ * zugeschrieben.
+ */
+function normOrt(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+export function ortAusAbsender<T extends { region_id: string; name: string }>(
+  von: string,
+  gemeinden: T[],
+): T | null {
+  const norm = normOrt;
+  const absender = ` ${norm(von)} `;
+  const treffer = new Map<string, T>();
+  const namen = gemeinden.map((g) => ({ g, voll: ` ${norm(g.name)} ` }));
+  for (const g of gemeinden) {
+    // Nur der Hauptname zählt: „Heringen (Werra)" sucht nach „heringen",
+    // „Burg (Spreewald)/Bórkowy" nach „burg" — das ist dann zu kurz und fällt
+    // ohnehin heraus.
+    const name = norm(g.name.split(/[(/,]/)[0]);
+    if (name.replace(/ /g, "").length < 5) continue;
+    if (!absender.includes(` ${name} `)) continue;
+    // Ein zweiter Ort, der denselben Namen im eigenen trägt („Niendorf bei
+    // Berkenthin"), sitzt regelmäßig auf derselben Amtsdomain. Dann ist die
+    // Mail nicht zuzuordnen — auch wenn nur einer der beiden den Namen genau
+    // trägt.
+    const auchMoeglich = namen.some((n) => n.g.region_id !== g.region_id && n.voll.includes(` ${name} `));
+    if (auchMoeglich) return null;
+    treffer.set(g.region_id, g);
+  }
+  return treffer.size === 1 ? [...treffer.values()][0] : null;
+}
+
+
+/**
+ * Nennt eine Mail, die sich sonst nicht zuordnen ließ, überhaupt eine
+ * angeschriebene Gemeinde?
+ *
+ * WOZU (23.09.2026): Eine ungeordnete Antwort geht als Entscheidung an den
+ * Betreiber — sonst verschwindet sie, wie Berkenthins Pressemitteilung neun
+ * Tage lang. Ohne weitere Bedingung landete darin aber auch jede geschäftliche
+ * Post, die zufällig an dasselbe Postfach ging: Vier Mails eines Shop-Partners
+ * zur Provisionsanmeldung kamen so als „sieht nach einer echten Antwort aus"
+ * beim Betreiber an. Sein Einwand war richtig: Nicht alles, was in diesem
+ * Postfach liegt, ist ein Rückläufer.
+ *
+ * GEMESSEN am echten Postfach über fünf Wochen (46 Mails): In KEINER der
+ * Partner-Mails steht der Name einer angeschriebenen Gemeinde, in jeder echten
+ * Rückmeldung steht er. Das ist die Trennlinie — nicht ein Stichwort aus dem
+ * Brief: Berkenthins Antwort trug weder unseren Betreff noch einen Bezug auf
+ * unsere Nachricht, sondern nur „Pressemitteilung".
+ *
+ * Die Regel ist bewusst SCHWÄCHER als die Zuordnung: Sie schreibt nichts in die
+ * Datenbank, sie entscheidet nur, ob ein Mensch hinsehen soll. Bleibt es
+ * mehrdeutig (mehrere Gemeinden genannt), wird trotzdem gemeldet — dann ist
+ * gerade das Hinsehen nötig.
+ */
+export function nenntAngeschriebeneGemeinde<T extends { region_id: string; name: string }>(
+  text: string,
+  gemeinden: T[],
+): T[] {
+  const heu = ` ${normOrt(text)} `;
+  const treffer = new Map<string, T>();
+  for (const g of gemeinden) {
+    const name = normOrt(g.name.split(/[(/,]/)[0]);
+    if (name.replace(/ /g, "").length < 5) continue;
+    if (heu.includes(` ${name} `)) treffer.set(g.region_id, g);
+  }
+  return [...treffer.values()];
+}

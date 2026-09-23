@@ -425,7 +425,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
           <div className="fu">
             {/* Hitzewellen-Banner (akut, aus 16-Tage-Vorhersage) */}
             {heatwave && heatwave.hotDays > 0 && (
-              <div style={{ padding: "10px 14px", marginBottom: 16, background: v('--color-negative-dim'), border: `1px solid ${v('--color-negative-border')}`, borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), color: v('--color-negative'), lineHeight: 1.5 }}>
+              <div style={{ padding: "10px 14px", marginBottom: 16, background: v('--color-negative-dim'), border: `1px solid ${v('--color-negative-border')}`, borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), color: v('--color-negative-text'), lineHeight: 1.5 }}>
                 <strong>{heatwave.active ? "Hitzewelle voraus:" : "Heiß:"}</strong> in den nächsten 16 Tagen bis {heatwave.maxTemp} °C
                 {heatwave.hotDays > 0 && <> · {heatwave.hotDays} {heatwave.hotDays === 1 ? "Hitzetag" : "Hitzetage"} (≥ {CFG.heatwaveThreshold} °C)</>}
                 {plz && ` an PLZ ${plz}`}.
@@ -601,9 +601,9 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     </span>
                   </div>
                   <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
-                    Die Sonne übernimmt rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> deines Kühlstroms.{" "}
+                    Die Sonne übernimmt rund <span style={{ fontWeight: 700, color: v('--color-positive-text'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> deines Kühlstroms.{" "}
                     {COVERAGE_COPY[battery ? "battery" : "noBattery"][window_]} Reststromkosten:{" "}
-                    <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.netRunningCost.toLocaleString("de-DE")} €/Jahr</span>{" "}
+                    <span style={{ fontWeight: 700, color: v('--color-positive-text'), fontFamily: v('--font-mono') }}>{result.netRunningCost.toLocaleString("de-DE")} €/Jahr</span>{" "}
                     statt {result.runningCost.toLocaleString("de-DE")} €/Jahr.
                     <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-faint'), marginTop: 4 }}>
                       {battery
@@ -615,9 +615,9 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                 </>
               ) : (
                 <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: v("--font-size-body"), color: v('--color-text-secondary'), lineHeight: 1.6 }}>
-                  Mit einer Solaranlage und Speicher würde die Sonne rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(potentialCoverage * 100)} %</span> deines Kühlstroms übernehmen.{" "}
+                  Mit einer Solaranlage und Speicher würde die Sonne rund <span style={{ fontWeight: 700, color: v('--color-positive-text'), fontFamily: v('--font-mono') }}>{Math.round(potentialCoverage * 100)} %</span> deines Kühlstroms übernehmen.{" "}
                   {COVERAGE_COPY.battery[window_]} Statt {result.runningCost.toLocaleString("de-DE")} €/Jahr nur noch{" "}
-                  <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{potentialNet.toLocaleString("de-DE")} €/Jahr</span>.{" "}
+                  <span style={{ fontWeight: 700, color: v('--color-positive-text'), fontFamily: v('--font-mono') }}>~{potentialNet.toLocaleString("de-DE")} €/Jahr</span>.{" "}
                   <Link href="/photovoltaik-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Details im PV-Rechner</Link>
                 </div>
               )}
@@ -652,7 +652,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
                       <div style={{ flex: 1, padding: "10px 12px", borderRadius: v('--radius-sm'), background: v('--color-chart-positive-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
                         <div style={{ fontSize: v("--font-size-micro"), fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Split (Arbeitszahl {heat.scop.toString().replace(".", ",")})</div>
-                        <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 2 }}>{heat.costPerKwhHeatSplitCt.toString().replace(".", ",")} ct</div>
+                        <div style={{ fontSize: v("--font-size-h3"), fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive-text'), marginTop: 2 }}>{heat.costPerKwhHeatSplitCt.toString().replace(".", ",")} ct</div>
                         <div style={{ fontSize: v("--font-size-micro"), color: v('--color-text-faint') }}>je kWh Wärme</div>
                       </div>
                       <div style={{ flex: 1, padding: "10px 12px", borderRadius: v('--radius-sm'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
@@ -703,7 +703,7 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                       <strong style={{ fontFamily: v('--font-mono'), color: v('--color-text-primary') }}>{heat.heatCost.toLocaleString("de-DE")} €/Jahr</strong>.
                       {heat.saving > 0 ? (
                         <> Mit Gas wären es {heat.gasCost.toLocaleString("de-DE")} €/Jahr — du sparst{" "}
-                          <strong style={{ color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{heat.saving.toLocaleString("de-DE")} €/Jahr</strong>.</>
+                          <strong style={{ color: v('--color-positive-text'), fontFamily: v('--font-mono') }}>~{heat.saving.toLocaleString("de-DE")} €/Jahr</strong>.</>
                       ) : (
                         <> Mit Gas wären es {heat.gasCost.toLocaleString("de-DE")} €/Jahr — hier liegt Gas beim reinen Energiepreis gleichauf oder günstiger.</>
                       )}

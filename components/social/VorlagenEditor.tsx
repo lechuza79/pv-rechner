@@ -98,7 +98,7 @@ export function VorlagenEditor({
         />
 
         {unbekannt.length > 0 && (
-          <p style={{ color: v("--color-negative"), fontSize: v("--font-size-small"), marginTop: space.xs }}>
+          <p style={{ color: v("--color-negative-text"), fontSize: v("--font-size-small"), marginTop: space.xs }}>
             Unbekannt: {unbekannt.map((p) => `{${p}}`).join(", ")} — so gespeichert stünde die Klammer im Beitrag.
           </p>
         )}

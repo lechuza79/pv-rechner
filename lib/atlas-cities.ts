@@ -195,6 +195,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   },
   // ── Batch Juni 2026 (je 1 Recherche-Agent → offizielle Quelle) ──────────────
   { slug: "muenchen", name: "München", ags: "09162", bundesland: "Bayern", yieldKwhKwp: 1140, fundingId: "muenchen-fkg" },
+  { slug: "garching-b-muenchen", name: "Garching b. München", ags: "09184119", kreis: "Landkreis München", bundesland: "Bayern", yieldKwhKwp: 1137 },
   { slug: "nuernberg", name: "Nürnberg", ags: "09564", bundesland: "Bayern", yieldKwhKwp: 1071 },
   { slug: "freiburg", name: "Freiburg im Breisgau", ags: "08311", bundesland: "Baden-Württemberg", yieldKwhKwp: 1119, fundingId: "freiburg-stromerzeugung" },
   { slug: "heidelberg", name: "Heidelberg", ags: "08221", bundesland: "Baden-Württemberg", yieldKwhKwp: 1064, fundingId: "heidelberg-rev" },
@@ -236,7 +237,15 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "bottrop", name: "Bottrop", ags: "05512", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1019, fundingId: "bottrop-solaroffensive" },
   { slug: "brandenburg-havel", name: "Brandenburg an der Havel", ags: "12051", bundesland: "Brandenburg", yieldKwhKwp: 1059 },
   { slug: "braunschweig", name: "Braunschweig", ags: "03101", bundesland: "Niedersachsen", yieldKwhKwp: 1032 },
-  { slug: "bremerhaven", name: "Bremerhaven", ags: "04012", bundesland: "Bremen", yieldKwhKwp: 1002 },
+  // `fundingId` NUR, WEIL DAS LAND ZWEI PROGRAMME HAT. Bremen ist Stadtstaat,
+  // beide Landesprogramme tragen den Schlüssel 04 und sind damit gleich
+  // spezifisch — `fundingForFrom` gibt dann bewusst `undefined` zurück, die
+  // Adresse fällt aus `generateStaticParams` und die Seite antwortet 404, ohne
+  // dass irgendetwas kaputt aussähe. Genau so ist diese Zeile beim Aufnehmen
+  // der Heizungstausch-Richtlinie am 23.09.2026 rot geworden; die Zeile für
+  // Bremen trägt denselben Verweis aus demselben Grund. Im Rechner bleibt das
+  // zweite Programm voll wirksam — die Postleitzahl-Auflösung kennt beide.
+  { slug: "bremerhaven", name: "Bremerhaven", ags: "04012", bundesland: "Bremen", yieldKwhKwp: 1002, fundingId: "bremen-rundumshaus" },
   { slug: "chemnitz", name: "Chemnitz", ags: "14511", bundesland: "Sachsen", yieldKwhKwp: 1041 },
   { slug: "coburg", name: "Coburg", ags: "09463", bundesland: "Bayern", yieldKwhKwp: 1046 },
   { slug: "cottbus", name: "Cottbus", ags: "12052", bundesland: "Brandenburg", yieldKwhKwp: 1075 },
@@ -423,6 +432,8 @@ export const ATLAS_CITIES: AtlasCity[] = [
   // gefasst (achtstellig statt fünfstellig), nicht der Eintrag falsch.
   { slug: "klempau", name: "Klempau", ags: "01053067", kreis: "Kreis Herzogtum Lauenburg", bundesland: "Schleswig-Holstein", yieldKwhKwp: 1007 },
   { slug: "helmstedt", name: "Helmstedt", ags: "03154028", kreis: "Landkreis Helmstedt", bundesland: "Niedersachsen", yieldKwhKwp: 1041 },
+  { slug: "meinersen", name: "Meinersen", ags: "03151017", kreis: "Landkreis Gifhorn", bundesland: "Niedersachsen", yieldKwhKwp: 1028 },
+  { slug: "mueden-aller", name: "Müden (Aller)", ags: "03151018", kreis: "Landkreis Gifhorn", bundesland: "Niedersachsen", yieldKwhKwp: 1010 },
   { slug: "goettingen", name: "Göttingen", ags: "03159016", kreis: "Landkreis Göttingen", bundesland: "Niedersachsen", yieldKwhKwp: 1007 },
   { slug: "herzberg-am-harz", name: "Herzberg am Harz", ags: "03159019", kreis: "Landkreis Göttingen", bundesland: "Niedersachsen", yieldKwhKwp: 1031 },
   { slug: "weyhe", name: "Weyhe", ags: "03251047", kreis: "Landkreis Diepholz", bundesland: "Niedersachsen", yieldKwhKwp: 1013 },
@@ -447,9 +458,19 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "gudensberg", name: "Gudensberg", ags: "06634007", kreis: "Schwalm-Eder-Kreis", bundesland: "Hessen", yieldKwhKwp: 1037 },
   { slug: "allendorf-eder", name: "Allendorf (Eder)", ags: "06635001", kreis: "Landkreis Waldeck-Frankenberg", bundesland: "Hessen", yieldKwhKwp: 1020 },
   { slug: "neuwied", name: "Neuwied", ags: "07138045", kreis: "Landkreis Neuwied", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1054 },
-  { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009 },
+  // AMBIGUOUS SINCE 23 SEP 2026, therefore pinned. The Verbandsgemeinde's
+  // balcony grant (`vg-hoehr-grenzhausen-balkonkraftwerke`) covers this village
+  // with an eight-digit key, exactly as specific as the village's own
+  // photovoltaic programme. Without `fundingId` both cancel out and this LIVE
+  // page falls to 404 (measured). The page keeps the roof programme it has
+  // always shown; the balcony grant reaches the user through the postcode
+  // lookup and the balcony calculator, which see every matching programme.
+  { slug: "hillscheid", name: "Hillscheid", ags: "07143031", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1009, fundingId: "hillscheid-energie" },
   { slug: "staudt", name: "Staudt", ags: "07143073", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1046 },
-  { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011 },
+  // AMBIGUOUS SINCE 23 SEP 2026, therefore pinned -- same case as Hillscheid
+  // above: the Verbandsgemeinde's balcony grant is as specific as the town's
+  // own photovoltaic programme, and without the pin both resolve to nothing.
+  { slug: "hoehr-grenzhausen", name: "Höhr-Grenzhausen", ags: "07143032", kreis: "Westerwaldkreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1011, fundingId: "hoehr-grenzhausen-energie" },
   { slug: "wittlich", name: "Wittlich", ags: "07231134", kreis: "Landkreis Bernkastel-Wittlich", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1073 },
   { slug: "limburgerhof", name: "Limburgerhof", ags: "07338017", kreis: "Rhein-Pfalz-Kreis", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1120 },
   { slug: "boeblingen", name: "Böblingen", ags: "08115003", kreis: "Landkreis Böblingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1134 },
@@ -516,6 +537,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   {"slug": "kirchlengern", "name": "Kirchlengern", "ags": "05758020", "bundesland": "Nordrhein-Westfalen", "kreis": "05758", "yieldKwhKwp": 1020},
   {"slug": "floersheim-am-main", "name": "Flörsheim am Main", "ags": "06436004", "bundesland": "Hessen", "kreis": "06436", "yieldKwhKwp": 1089},
   {"slug": "eppelheim", "name": "Eppelheim", "ags": "08226018", "bundesland": "Baden-Württemberg", "kreis": "08226", "yieldKwhKwp": 1100},
+  {"slug": "bruehl-baden", "name": "Brühl (Baden)", "ags": "08226009", "bundesland": "Baden-Württemberg", "kreis": "08226", "yieldKwhKwp": 1115},
   {"slug": "radolfzell-am-bodensee", "name": "Radolfzell am Bodensee", "ags": "08335063", "bundesland": "Baden-Württemberg", "kreis": "08335", "yieldKwhKwp": 1135},
   {"slug": "meschede", "name": "Meschede", "ags": "05958032", "bundesland": "Nordrhein-Westfalen", "kreis": "05958", "yieldKwhKwp": 969},
   {"slug": "ingelheim-am-rhein", "name": "Ingelheim am Rhein", "ags": "07339030", "bundesland": "Rheinland-Pfalz", "kreis": "07339", "yieldKwhKwp": 1113},
