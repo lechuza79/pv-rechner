@@ -12850,6 +12850,184 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // wörtliches Zitat mit Datum, nie umformuliert.
     combinableWith: [],
   },
+
+  // ── Stadt Germersheim, Rheinland-Pfalz ──────────────────────────────────────
+  //
+  // BEENDETES Programm, aufgenommen weil "gab es, ist beendet" eine echte
+  // Auskunft ist und wir eine Neuauflage sonst nicht bemerken (Betreiber,
+  // 17.08.2026). Es zieht kein Geld ab -- `fundingZaehlt()` verlangt
+  // `status === "aktiv"`.
+  //
+  // KEIN RECHENFELD, obwohl die Pauschale echt ist. Nr. 5 der Richtlinie sagt
+  // "Festbetragsfinanzierung in Form einer nicht rückzahlbaren Pauschale von
+  // 125 €" -- anders als bei `vg-kandel-balkonkraftwerke` ist das keine Kappe
+  // auf die Kosten, sondern ein fester Betrag, und der Legal-Judge hat
+  // `balkonPauschale: 125` deshalb ausdrücklich für zutreffend gehalten.
+  // Trotzdem bleibt es Text, wie bei `vg-leiningerland-balkonkraftwerke` und
+  // `berkenthin-balkon-solar`: Ein beendetes Programm zahlt nichts, und wer
+  // den Status je auf "aktiv" dreht, soll erst einen Betrag eintragen müssen,
+  // statt einen Abzug aus einer Richtlinie von 2024 zu erben. Die abweichende
+  // Auffassung steht hier, damit sie nicht als Versehen gelesen wird.
+  //
+  // QUELLENLAGE, und die Arbeitsteilung darin ist der Punkt (Council
+  // 23.09.2026, drei Prüfer plus Legal-Judge):
+  //   * Die KONDITIONEN stehen in der "Förderrichtlinie der Stadt Germersheim
+  //     für Photovoltaik-Balkonanlagen" (Stadtratsbeschluss 21.05.2024,
+  //     unterzeichnet im November 2024, in Kraft zum 01.01.2025). Sie ist heute
+  //     nicht mehr veröffentlicht: Programmseite UND Richtlinien-PDF antworten
+  //     am 23.09.2026 mit HTTP 404, die Elternseite lebt und verlinkt nichts
+  //     mehr dorthin -- eine echte Entfernung, kein Ausfall. Gelesen wurde die
+  //     Richtlinie im Archiv der Amtsseite (Fassung 18.05.2026, der jüngste
+  //     Zeitstand), Volltext in docs/quellen/germersheim/.
+  //   * Das ENDE steht LIVE, und deshalb zeigt `url` dorthin: Die Klimaschutz-
+  //     Chronik der Stadt sagt am 23.09.2026 in der Vergangenheitsform
+  //     "Januar - Start von kommunalem Förderprogramm für Balkonkraftwerke …
+  //     einen Zuschuss von 125 € … Das Programm war zeitlich bis zum Oktober
+  //     2025 begrenzt."
+  //   Das ist die im Projekt vorgesehene Teilung: Das Archiv belegt den
+  //   INHALT, nie die Aktualität -- die kommt aus dem Live-Abruf. Deshalb
+  //   trägt dieser Eintrag KEIN Prüfdatum: Die Seite, auf der die Sätze
+  //   standen, lässt sich nicht mehr prüfen.
+  //
+  // WARUM `url` NICHT auf die Programmseite zeigt und NICHT ins Archiv: Ein
+  // Quellenlink, der 404 antwortet, ist unter einer Auskunft mit Stand-Angabe
+  // ein Widerspruch in einem Klick. Und eine Archiv-Adresse als `url` machte
+  // den Seiten-Wächter für diesen Eintrag STRUKTURELL BLIND: Er bildete einen
+  // `archiv:`-Fingerabdruck einer eingefrorenen Kopie, die sich nie bewegt,
+  // und `page_seen_at` würde nie gesetzt (nur ein Live-Abruf bestätigt).
+  // Bekannter Preis der gewählten Adresse: Die Chronik wächst, ihr
+  // Fingerabdruck bewegt sich also gelegentlich und der Eintrag landet im
+  // Arbeitsvorrat. Für ein Programm ohne Geldabzug kostet das nichts -- und es
+  // ist genau der Kanal, über den eine Neuauflage auffiele.
+  //   AUSDRÜCKLICH NICHT die KIPKI-Seite der Stadt: Sie führt das Programm
+  //   weiter unter der Überschrift "JETZT FÖRDERUNG BEANTRAGEN", und ihr
+  //   Weiterleitungs-Link ist im CMS der Stadt selbst als "dead-link" mit
+  //   `title="Verweisziel nicht erreichbar"` ausgezeichnet. Ein stehen-
+  //   gebliebener Redaktionsrest, kein Hinweis auf eine neue Runde -- aber als
+  //   Quellenlink wäre er eine Einladung zu einem Programm, das es nicht gibt.
+  //
+  // "eingestellt" IST FRISTABLAUF, NICHT ERSCHÖPFUNG -- und das ist gemessen,
+  // nicht angenommen. Die Programmseite trug einen datierten Antragszähler,
+  // den drei Archivstände festhalten: 31 Anträge (18.03.2025), 52 und 268
+  // freie Plätze (18.06.2025), 76 und 244 freie Plätze (05.09.2025). Acht
+  // Wochen vor Fristende waren also 76 von 320 Plätzen belegt, rund 9.500 €
+  // von 40.000 €. `ausgeschoepft` wäre damit eine NACHWEISLICH FALSCHE
+  // Tatsachenbehauptung -- und die falsche Richtung dazu, weil das Label ein
+  // Wiederauffüllen nahelegt. Eine ABSCHLUSSZAHL nennt dagegen keine Quelle;
+  // der Zähler verschwand mit der Frist. Die 76 stehen deshalb als datierter
+  // Zwischenstand in der Bedingung, nie als Ergebnis.
+  //
+  // DER TAG IST BELEGT, aber die beiden Quellen widersprechen sich um einen:
+  // Die Richtlinie (Nr. 6) sagt "spätestens jedoch BIS ZUM 31.10.2025", also
+  // einschließlich; die Programmseite sagt "Anträge können SEIT DEM 31.10.25
+  // nicht mehr gestellt werden", also ausschließend. `endetIso` folgt der
+  // Richtlinie -- sie ist die verbindliche Fassung. Bei einem abgeschlossenen
+  // Programm ist der eine Tag folgenlos; er steht hier, damit ihn niemand
+  // später für einen Tippfehler hält.
+  //
+  // DREI ANGABEN DER PROGRAMMSEITE SIND NICHT ÜBERNOMMEN, weil die
+  // verbindliche Richtlinie etwas anderes sagt. Die Seite hat KEINE
+  // Vorrangklausel, der Vorrang der Richtlinie ist unsere Ableitung aus der
+  // Normenhierarchie -- dieselbe Lage wie beim Stichtags-Konflikt in Kandel:
+  //   * "je Haushalt" (Seite) gegen "pro Immobilie" beim Einfamilienhaus und
+  //     "pro Wohnpartei" beim Mehrfamilienhaus (Nr. 4). Im Mehrfamilienhaus
+  //     deckt sich das; beim Einfamilienhaus MIT EINLIEGERWOHNUNG nicht --
+  //     zwei Haushalte, eine Immobilie, nach der Seite 250 € und nach der
+  //     Richtlinie 125 €. Das ist kein Randfall.
+  //   * "Erstwohnsitz" (Seite) gegen "Eigentümer:innen selbst bewohnter
+  //     Wohngebäude oder Mieter:innen" (Nr. 3). Das Wort Erstwohnsitz kommt in
+  //     der Richtlinie nicht vor, und die Fassungen laufen in BEIDE Richtungen
+  //     auseinander. Die Bedingung nennt die Richtlinie; der Meldestatus wäre
+  //     eine Verengung, die Berechtigte ausschlösse.
+  //   * "Eigenleistungen" (Seite) gegen "Eigenbauten" (Nr. 4). Nicht dasselbe:
+  //     "Eigenbauten" schließt das selbstgebaute Gerät aus, "Eigenleistungen"
+  //     die eigene Montage -- die dieselbe Seite zwei Absätze höher
+  //     ausdrücklich erlaubt. Die Seite widerspricht sich, die Richtlinie löst
+  //     es auf.
+  //   Ebenfalls nur auf der Seite: der Ausschluss der Speicherkosten. Die
+  //   Richtlinie sagt in Nr. 2 gegenteilig "inklusive aller Anlagenkomponenten".
+  //   Bei einer festen Pauschale ist das ohnehin wirkungslos, also weggelassen.
+  //
+  // DER EINSPEISEVERGÜTUNGS-SATZ IST WEGGELASSEN, und hier liegt der Fall
+  // ANDERS als bei `vg-kandel-balkonkraftwerke` -- der Unterschied ist
+  // grammatisch (Legal-Judge, 23.09.2026). Kandel § 12 ist eine ANORDNUNG
+  // ("ist generell ausgeschlossen"), in § 13 mit Rückforderung bewehrt, und
+  // wurde deshalb zu Recht als Verhaltenspflicht abgebildet. Germersheim Nr. 4
+  // ist eine TATSACHENBEHAUPTUNG im Indikativ: "Sollte mehr Strom produziert
+  // werden als verbraucht wird, erhalten die Betreibenden dieser Anlagen keine
+  // Einspeisevergütung von den Energieversorgern." Kein "darf nicht", keine
+  // Rechtsfolge, und sie ist in der Sache unzutreffend: Der Anspruch aus § 21
+  // Abs. 1 S. 1 Nr. 1 EEG kennt keine Bagatellgrenze, Anspruchsgegner ist der
+  // NETZBETREIBER, und dass die Vergütung praktisch entfällt, folgt aus der
+  // Zuordnung zur unentgeltlichen Abnahme (§ 8 Abs. 5a EEG), die der Betreiber
+  // nach § 21b Abs. 1 S. 2 EEG monatlich ändern kann. Sie als Bedingung zu
+  // führen machte aus einer falschen Auskunft der Stadt eine Pflicht, die die
+  // Richtlinie nicht aufstellt und nicht sanktioniert -- Nr. 7 erlaubt die
+  // Rückforderung nur bei arglistiger Täuschung oder falschen Angaben.
+  // Dieselbe Entscheidung wie bei Leiningerland.
+  //
+  // `combinableWith` IST EINE TEILLISTE, weder [] noch BUND. Nr. 4 sagt "Eine
+  // Doppelförderung durch andere FÖRDERPROGRAMME ist nicht zulässig". Der
+  // Nullsteuersatz ist keins -- ein Steuersatz wird nicht in Anspruch
+  // genommen, der Verkäufer wendet ihn an; eine leere Liste ("geht nur
+  // allein") schlösse ihn mit ein. `BUND` wäre die Gegenrichtung: Die
+  // Konstante enthält auch `bund-kfw270`, und ein Kredit des Bundes IST ein
+  // Förderprogramm im Sinn der Klausel. Beide Council-Prüfer, die das
+  // untersucht haben, kommen unabhängig auf `["bund-nullsteuer"]`.
+  //   OFFEN, aber NICHT hier zu beheben: Nach demselben Maßstab können
+  //   `vg-kandel-balkonkraftwerke` (BUND) und `vg-leiningerland-balkonkraftwerke`
+  //   ([]) nicht beide richtig sein -- beide Richtlinien tragen dieselbe
+  //   Klausel. Das ist ein eigener Befund mit eigenem Council, kein Nebenbei-
+  //   Fix in einem fremden Eintrag; keiner der drei bewegt Geld, weil alle drei
+  //   nicht aktiv sind.
+  //
+  // FÖRDERGEBIET ist genau die Stadt, ein Schlüssel, KEIN `agsCodes`. Nr. 3
+  // stellt auf "Gemarkungsgrenzen der Kommune Germersheim" ab; Sondernheim ist
+  // laut Richtlinie selbst ein STADTTEIL und im Melderegister keine eigene
+  // Gemeinde. Der Schlüssel ist am 23.09.2026 im Melderegister nachgeschlagen:
+  // 07334007 Germersheim, 21.715 Einwohner.
+  //   ACHTUNG, und der Nachbareintrag warnt schon davor: Der fünfstellige
+  //   Präfix 07334 ist der LANDKREIS Germersheim. Trüge dieser Eintrag ihn,
+  //   erschienen 125 € der Stadt in jeder Gemeinde des Kreises -- ohne
+  //   Absturz, ohne roten Test, nur als falsche Auskunft an rund 30 Orten. Der
+  //   Mehrgebiets-Wächter fängt das NICHT: Er überspringt jedes Programm ohne
+  //   `agsCodes`, und dieses hat bewusst keine.
+  "germersheim-balkonkraftwerke": {
+    id: "germersheim-balkonkraftwerke",
+    name: "Förderprogramm für Photovoltaik-Balkonanlagen",
+    traeger: "Stadt Germersheim", level: "kommune", region: "Germersheim",
+    bundesland: "Rheinland-Pfalz",
+    agsCode: "07334007",
+    url: "https://www.germersheim.eu/lokales-soziales/nachhaltigkeit/klimaschutz-energie/",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2025-01-01",
+    endetIso: "2025-10-31",
+    beschlossenIso: "2024-05-21",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Pauschale je Balkonkraftwerk",
+    maxFoerderung: "125 € je Einfamilienhaus bzw. je Wohnpartei",
+    rates: [
+      { label: "Balkonkraftwerk bis 800 W (Richtlinie, in Kraft ab 01.01.2025)", value: "125 € pauschal — Programm beendet", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Die Stadt nimmt keine Anträge mehr an: Die Antragsfrist endete am 31. Oktober 2025, und die Richtlinie sah dieses Ende von Anfang an vor",
+      "Ob der Fördertopf vorher aufgebraucht war, ist nicht bekannt: Am 5. September 2025 waren nach Angabe der Stadt 76 Anträge eingegangen und 244 der 320 Plätze noch frei",
+      "Gefördert wurde die Neuanschaffung eines Balkonkraftwerks mit höchstens 800 W Wechselrichterleistung und höchstens 2.000 Wp Modulleistung; der Wechselrichter musste einen zertifizierten Netz- und Anlagenschutz haben",
+      "Förderfähig waren nur Anlagen, die ab dem 1. Januar 2025 gekauft wurden; maßgeblich war das Rechnungsdatum",
+      "Antragsberechtigt waren Privatpersonen, die selbst bewohntes Wohneigentum besaßen oder eine Wohnung mieteten, innerhalb der Gemarkungsgrenzen der Stadt Germersheim; mit Eigentümergemeinschaft oder Vermieter war vorher Rücksprache zu halten",
+      "Je Einfamilienhaus wurde eine Maßnahme gefördert, im Mehrfamilienhaus eine je Wohnpartei",
+      "Der Antrag war erst NACH Kauf, Installation und Registrierung möglich — vorher ausdrücklich nicht",
+      "Nach der Installation war die Anlage im Marktstammdatenregister anzumelden; einzureichen waren eine Rechnungskopie, ein Foto der errichteten Anlage und der Registerauszug",
+      "Nicht förderfähig waren Geschäfts- und Gewerbeimmobilien, Anlagen auf Gebäuden juristischer Personen des öffentlichen Rechts, Photovoltaik-Contracting sowie Eigenbauten, Prototypen und gebrauchte Anlagen",
+      "Im Innenstadtbereich Germersheim und im Stadtteil Sondernheim galten zusätzlich die Vorgaben der städtischen Gestaltungsfibel",
+      "Eine Doppelförderung durch andere Förderprogramme war nicht zulässig",
+      "Die Geförderten verpflichteten sich, die Anlage über ihre gesamte technische Lebensdauer zu behalten; ein Verkauf war während dieser Zeit nicht zulässig. Eine Dauer in Jahren nennt die Richtlinie nicht",
+      "Kein Rechtsanspruch: Die Stadt entschied nach pflichtgemäßem Ermessen im Rahmen der Haushaltsmittel und in der Reihenfolge des Eingangs vollständiger Anträge — auch ein vollständiger Antrag konnte deshalb leer ausgehen",
+      "Finanziert aus KIPKI-Mitteln des Landes Rheinland-Pfalz",
+    ],
+    combinableWith: ["bund-nullsteuer"],
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
