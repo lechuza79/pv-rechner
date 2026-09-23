@@ -22,7 +22,8 @@ import {
 import { tokenPreisUsd, bekannteModelle, PREISE_STAND } from "../modellpreise";
 import { bilanz, STUNDEN_JE_TAG, STUNDENSATZ_EUR } from "../projekt-bilanz";
 import { ROLLENSAETZE, MIX, ERHEBUNG, mischsatz, kostenFuerTage, stundenJeRolle } from "../rollensaetze";
-import type { Bestandstag, Summe } from "../projekt-statistik";
+import { ABSCHLAG, MESSUNGEN, spanneDerMessungen } from "../ki-wirkung";
+import { verteileZeit, type Arbeitstag, type Bestandstag, type Summe } from "../projekt-statistik";
 import { schaetzeAufwand, type Zaehlstand } from "../aufwand-schaetzung";
 
 const monat = (anbieter: string, m: string, betrag: number): Kostenmonat => ({
@@ -349,5 +350,116 @@ describe("Rollen und Sätze", () => {
   it("macht Konzeptarbeit teurer als Fleißarbeit", () => {
     expect(mischsatz(MIX.konzeptlastig)).toBeGreaterThan(mischsatz(MIX.umsetzung));
     expect(mischsatz(MIX.umsetzung)).toBeGreaterThan(mischsatz(MIX.fleissarbeit));
+  });
+});
+
+describe("KI-Unterstützung", () => {
+  const BESTAND2: Bestandstag = {
+    tag: "2026-09-22", dateien: 2332, codezeilen: 221285, dokuzeilen: 28696,
+    testdateien: 300, testfaelle: 4572, commitsGesamt: 2591,
+  };
+  const ZAEHL2: Zaehlstand = {
+    rechner: 5, seiten: 97, widgets: 9, routen: 105, komponenten: 162,
+    foerderprogramme: 237,
+  };
+
+  it("senkt die Tage, hält die klassische Schätzung aber sichtbar", () => {
+    // DIE GRUNDLAGE BLEIBT STEHEN: Der Abschlag ist die unsicherste Annahme der
+    // Aufstellung. Wer nur das Ergebnis sieht, kann sie nicht prüfen.
+    const a = schaetzeAufwand(BESTAND2, ZAEHL2);
+    expect(a.tage).toBeLessThan(a.tageKlassisch);
+    expect(a.tageKlassisch).toBeGreaterThan(0);
+    for (const p of a.positionen) expect(p.tage, p.name).toBeLessThanOrEqual(p.tageKlassisch);
+  });
+
+  it("wirkt je Gewerk verschieden stark, nicht pauschal", () => {
+    // Ein einheitlicher Faktor würde behaupten, eine Rechtsrecherche profitiere
+    // so stark wie eine Reihe gleichförmiger Schnittstellen.
+    //
+    // GEPRÜFT WIRD DIE STAFFEL SELBST, nicht nur, dass zwei Ergebnisse
+    // auseinanderliegen: Eine erste Fassung verglich die Quoten der Positionen
+    // und blieb grün, als zwei der drei Stufen gleichgesetzt wurden — es gab ja
+    // noch eine dritte, die abwich.
+    expect(new Set(Object.values(ABSCHLAG)).size).toBe(Object.keys(ABSCHLAG).length);
+    expect(ABSCHLAG.stark).toBeGreaterThan(ABSCHLAG.mittel);
+    expect(ABSCHLAG.mittel).toBeGreaterThan(ABSCHLAG.gering);
+
+    // Und die Staffel muss bei den Positionen wirklich ankommen.
+    const a = schaetzeAufwand(BESTAND2, ZAEHL2);
+    const quoten = new Set(
+      a.positionen.filter((p) => p.tageKlassisch >= 20).map((p) => Math.round((p.tage / p.tageKlassisch) * 100)),
+    );
+    expect(quoten.size).toBeGreaterThan(2);
+  });
+
+  it("bleibt innerhalb dessen, was gemessen wurde", () => {
+    // Kein Abschlag darf über dem Laborwert liegen — das wäre eine Behauptung
+    // jenseits jeder Messung. Und keiner unter null: Eine Verlangsamung wäre
+    // zwar belegt (METR), aber als Grundannahme für ein ganzes Projekt nicht
+    // vertretbar; sie steht stattdessen sichtbar in der Messliste.
+    const schnellste = Math.abs(spanneDerMessungen().schnellste);
+    for (const [name, a] of Object.entries(ABSCHLAG)) {
+      expect(a, name).toBeGreaterThan(0);
+      expect(a, name).toBeLessThan(schnellste);
+    }
+  });
+
+  it("nennt auch die Messung, die gegen die Annahme spricht", () => {
+    // OHNE SIE WÄRE DIE LISTE EINE AUSWAHL: Der einzige Versuch mit echten
+    // Aufgaben in vertrautem Code fand eine Verlangsamung. Ihn wegzulassen
+    // würde die Spanne künstlich verengen.
+    expect(MESSUNGEN.some((m) => m.zeitaenderung > 0)).toBe(true);
+    expect(MESSUNGEN.length).toBeGreaterThanOrEqual(4);
+    for (const m of MESSUNGEN) expect(m.aufbau.length, m.quelle).toBeGreaterThan(30);
+  });
+});
+
+const basisMitZeit = {
+  statistik: {
+    tage: 0, tokensGelesen: 0, tokensNeu: 0, tokensEingabe: 0, tokensAusgabe: 0,
+    tokensGesamt: 1e9, sitzungen: 0, nachrichtenGetippt: 0, nachrichtenLang: 0,
+    antworten: 0, werkzeugschritte: 0, commits: 0,
+  } as Summe,
+  arbeitsminuten: 600,
+  arbeitstage: 5,
+  kosten: summiereKosten([monat("claude-abo", "2026-08", 1000)]),
+  listenwertUsd: 50000,
+  bestand: {
+    tag: "2026-09-22", dateien: 2332, codezeilen: 221285, dokuzeilen: 28696,
+    testdateien: 300, testfaelle: 4572, commitsGesamt: 2591,
+  } as Bestandstag,
+  aufwand: schaetzeAufwand(
+    { tag: "2026-09-22", dateien: 2332, codezeilen: 221285, dokuzeilen: 28696,
+      testdateien: 300, testfaelle: 4572, commitsGesamt: 2591 },
+    { rechner: 5, seiten: 97, widgets: 9, routen: 105, komponenten: 162, foerderprogramme: 237 },
+  ),
+};
+
+describe("Zeit über mehrere Projekte", () => {
+  it("schreibt mit, was gleichzeitig woanders lief", () => {
+    // Die Vereinigung legt parallele Stände DESSELBEN Projekts zusammen. Wer
+    // zwischen zwei Projekten springt, wird in beiden voll gezählt — gemessen
+    // ein knappes Drittel der Zeit. Ohne diese Spalte hieße „410 Stunden"
+    // stillschweigend etwas anderes, als man liest.
+    const tage = new Map<string, Arbeitstag>();
+    const eigene = [{ von: Date.parse("2026-09-01T10:00:00Z"), bis: Date.parse("2026-09-01T12:00:00Z") }];
+    const fremde = [{ von: Date.parse("2026-09-01T11:00:00Z"), bis: Date.parse("2026-09-01T13:00:00Z") }];
+    verteileZeit(eigene, tage, fremde);
+    const t = tage.get("2026-09-01")!;
+    expect(t.minuten).toBe(120);
+    expect(t.minutenParallel).toBe(60);
+  });
+
+  it("zählt ohne fremde Blöcke gar nichts als parallel", () => {
+    const tage = new Map<string, Arbeitstag>();
+    verteileZeit([{ von: Date.parse("2026-09-01T10:00:00Z"), bis: Date.parse("2026-09-01T12:00:00Z") }], tage);
+    expect(tage.get("2026-09-01")!.minutenParallel).toBe(0);
+  });
+
+  it("rechnet die parallele Zeit zur Hälfte an", () => {
+    const b = bilanz({ ...basisMitZeit, arbeitsminuten: 600, minutenParallel: 240 });
+    expect(b.investiert.stunden).toBe(10);
+    expect(b.investiert.stundenParallel).toBe(4);
+    expect(b.investiert.stundenBereinigt).toBe(8);
   });
 });

@@ -71,6 +71,20 @@ export interface Investiert {
   /** Tage, an denen überhaupt gearbeitet wurde. */
   arbeitstage: number;
   /**
+   * Davon Stunden, in denen gleichzeitig an einem anderen Projekt gearbeitet
+   * wurde — gemessen, nicht geschätzt.
+   */
+  stundenParallel: number;
+  /**
+   * Die Stunden, mit denen gerechnet wird: die parallelen zur Hälfte.
+   *
+   * Halbieren ist die neutrale Annahme bei zwei gleichzeitig offenen Projekten
+   * — wie sich eine solche Stunde wirklich aufteilt, weiß niemand. Sie ganz zu
+   * zählen überschätzt den Einsatz um fast ein Drittel, sie ganz wegzulassen
+   * unterschätzt ihn genauso.
+   */
+  stundenBereinigt: number;
+  /**
    * Hochgerechnete Stunden der Zeit vor der Messung.
    *
    * Sie stehen GETRENNT, nicht addiert: Die Arbeitszeit-Reihe enthält nur
@@ -157,6 +171,8 @@ export function bilanz(args: {
   codexStatistik?: Summe;
   arbeitsminuten: number;
   arbeitstage: number;
+  /** Minuten, die gleichzeitig einem anderen Projekt gehörten. */
+  minutenParallel?: number;
   /** Hochgerechnete Stunden für die Zeit ohne Protokolle. */
   stundenHochgerechnet?: number;
   kosten: Kostensumme;
@@ -171,6 +187,8 @@ export function bilanz(args: {
   zeitraum?: Investiert["zeitraum"];
 }): Bilanz {
   const stunden = Math.round(args.arbeitsminuten / 60);
+  const stundenParallel = Math.round((args.minutenParallel ?? 0) / 60);
+  const stundenBereinigt = stunden - Math.round(stundenParallel / 2);
   const tokens = args.statistik.tokensGesamt + (args.codexStatistik?.tokensGesamt ?? 0);
 
   const wert: Herstellwert = {
@@ -186,10 +204,12 @@ export function bilanz(args: {
   const investiert: Investiert = {
     stunden,
     arbeitstage: args.arbeitstage,
+    stundenParallel,
+    stundenBereinigt,
     stundenHochgerechnet: args.stundenHochgerechnet ?? 0,
     bezahltEur: args.kosten.solarCheckEur,
     bezahltAlleProjekteEur: args.kosten.gesamtEur,
-    eigeneZeitEur: (stunden + (args.stundenHochgerechnet ?? 0)) * STUNDENSATZ_EUR,
+    eigeneZeitEur: (stundenBereinigt + (args.stundenHochgerechnet ?? 0)) * STUNDENSATZ_EUR,
     tokens,
     listenwertUsd: args.listenwertUsd,
     zeitraum: args.zeitraum ?? { zeit: null, geld: null, listenwert: null },
@@ -222,6 +242,9 @@ export function bilanz(args: {
     hebelNurGeld: teile(wert.eur, investiert.bezahltEur),
     hebelRechenleistung: u ? teile(u.listenwertUsd * KURS_USD_EUR, u.bezahltEur) : null,
     hebelRechenleistungMonate: u?.monate ?? 0,
-    hebelZeit: teile(wert.personentage, (stunden + investiert.stundenHochgerechnet) / STUNDEN_JE_TAG),
+    hebelZeit: teile(
+      wert.personentage,
+      (stundenBereinigt + investiert.stundenHochgerechnet) / STUNDEN_JE_TAG,
+    ),
   };
 }

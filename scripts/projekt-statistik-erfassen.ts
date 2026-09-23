@@ -78,14 +78,57 @@ function textAus(inhalt: unknown): string | null {
 
 /** Alle Protokolldateien dieses Projekts, samt aller Arbeitskopien. */
 function protokolldateien(): string[] {
+  return protokolleAus((d) => d.startsWith(PRAEFIX));
+}
+
+/**
+ * Die Protokolle der ANDEREN Projekte.
+ *
+ * Gebraucht für eine einzige Frage: Wie viel der hier gezählten Zeit lief
+ * gleichzeitig woanders? Ihre Inhalte werden nicht gelesen, nur die Zeitpunkte
+ * — es geht um die Überschneidung, nicht um fremde Zahlen.
+ */
+function fremdeProtokolldateien(): string[] {
+  return protokolleAus((d) => d.startsWith("-Users-eule-projects-") && !d.startsWith(PRAEFIX));
+}
+
+function protokolleAus(passt: (verzeichnis: string) => boolean): string[] {
   if (!existsSync(PROTOKOLLE)) return [];
   const out: string[] = [];
   for (const d of readdirSync(PROTOKOLLE)) {
-    if (!d.startsWith(PRAEFIX)) continue;
+    if (!passt(d)) continue;
     const p = join(PROTOKOLLE, d);
-    for (const f of readdirSync(p)) if (f.endsWith(".jsonl")) out.push(join(p, f));
+    try {
+      for (const f of readdirSync(p)) if (f.endsWith(".jsonl")) out.push(join(p, f));
+    } catch { /* Verzeichnis verschwunden */ }
   }
   return out;
+}
+
+/** Nur die Arbeitsblöcke einer Dateiliste — ohne deren Inhalte auszuwerten. */
+function bloeckeAus(dateien: string[]): Block[] {
+  const bloecke: Block[] = [];
+  for (const datei of dateien) {
+    let inhalt: string;
+    try { inhalt = readFileSync(datei, "utf8"); } catch { continue; }
+    const zeitpunkte: number[] = [];
+    for (const zeile of inhalt.split("\n")) {
+      if (!zeile.startsWith("{")) continue;
+      let o: any;
+      try { o = JSON.parse(zeile); } catch { continue; }
+      if (o.timestamp) zeitpunkte.push(Date.parse(o.timestamp));
+    }
+    zeitpunkte.sort((a, b) => a - b);
+    let start: number | null = null;
+    let vorher: number | null = null;
+    for (const z of zeitpunkte) {
+      if (start === null) start = z;
+      else if (vorher !== null && z - vorher > PAUSE_MS) { bloecke.push({ von: start, bis: vorher }); start = z; }
+      vorher = z;
+    }
+    if (start !== null && vorher !== null) bloecke.push({ von: start, bis: vorher });
+  }
+  return bloecke;
 }
 
 interface Roh {
@@ -373,7 +416,7 @@ async function main() {
   // Tag abgelegt: Wer neben einer Claude- eine Codex-Sitzung offen hat,
   // arbeitet trotzdem nur eine Stunde.
   const arbeitszeit = new Map<string, Arbeitstag>();
-  verteileZeit([...claude.bloecke, ...codex.bloecke], arbeitszeit);
+  verteileZeit([...claude.bloecke, ...codex.bloecke], arbeitszeit, bloeckeAus(fremdeProtokolldateien()));
 
   const commits = commitsJeTag();
   for (const t of claude.tage.values()) t.commits = commits.get(t.tag) ?? 0;
@@ -425,7 +468,10 @@ async function main() {
     console.log(`  Nachrichten         ${z(c.nachrichtenGetippt)}`);
     console.log(`  Sitzungen           ${z(c.sitzungen)}`);
   }
+  const parallel = Math.round([...arbeitszeit.values()].reduce((x, a) => x + a.minutenParallel, 0) / 60);
   console.log(`Arbeitszeit:       ${stunden} h an ${arbeitszeit.size} Tagen (beide Werkzeuge zusammengelegt)`);
+  console.log(`  davon parallel   ${parallel} h gleichzeitig mit einem anderen Projekt` +
+    `${stunden > 0 ? ` (${Math.round((parallel / stunden) * 100)} %)` : ""}`);
   if (geschaetzt.length) {
     console.log(`Geschätzt:         ${g.tage} Tage, ${z(g.tokensGesamt)} Tokens (nur Claude)`);
   }
@@ -441,7 +487,9 @@ async function main() {
   if (geschaetzt.length) await schreibe("projekt_statistik", geschaetzt.map(zeile));
   await schreibe("projekt_statistik", gemessen.map(zeile));
   if (gemessenCodex.length) await schreibe("projekt_statistik", gemessenCodex.map(zeile));
-  await schreibe("projekt_arbeitszeit", [...arbeitszeit.values()].map((a) => ({ tag: a.tag, minuten: a.minuten })));
+  await schreibe("projekt_arbeitszeit", [...arbeitszeit.values()].map((a) => ({
+    tag: a.tag, minuten: a.minuten, minuten_parallel: a.minutenParallel,
+  })));
   await schreibe("projekt_bestand", [{
     tag: bestand.tag,
     dateien: bestand.dateien,

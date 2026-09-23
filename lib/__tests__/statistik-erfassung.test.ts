@@ -69,7 +69,25 @@ describe("Erfassungslauf", () => {
   it("legt die Zeit über BEIDE Werkzeuge zusammen", () => {
     // Wer neben einer Claude- eine Codex-Sitzung offen hat, arbeitet trotzdem
     // nur eine Stunde. Getrennt gezählt käme sie zweimal heraus.
-    expect(QUELLE).toMatch(/verteileZeit\(\[\.\.\.claude\.bloecke, \.\.\.codex\.bloecke\], arbeitszeit\)/);
+    //
+    // GEPRÜFT WIRD DIE REGEL, NICHT DER WORTLAUT: Die erste Fassung verglich
+    // die Aufrufzeile Zeichen für Zeichen und wurde rot, als ein drittes
+    // Argument dazukam — an der Regel hatte sich nichts geändert. Ein Test, der
+    // Formatierung vergleicht, meldet Umbauten und verpasst Fehler.
+    const aufruf = /verteileZeit\(([\s\S]{0,200}?)\)/.exec(QUELLE)?.[1] ?? "";
+    expect(aufruf).toMatch(/claude\.bloecke/);
+    expect(aufruf).toMatch(/codex\.bloecke/);
+    // Und zwar in EINEM Aufruf — zwei getrennte Aufrufe wären genau die
+    // doppelte Zählung, gegen die die Zusammenlegung gebaut ist.
+    expect(QUELLE.match(/verteileZeit\(/g)?.length).toBe(1);
+  });
+
+  it("misst mit, was gleichzeitig an anderen Projekten lief", () => {
+    // „410 Stunden" heißt sonst stillschweigend „Stunden, in denen dieses
+    // Projekt offen war" — gemessen sind rund 29 % davon mit einem anderen
+    // Projekt geteilt.
+    expect(QUELLE).toMatch(/fremdeProtokolldateien/);
+    expect(QUELLE).toMatch(/minuten_parallel/);
   });
 });
 

@@ -34,6 +34,7 @@ import {
 } from "../lib/projekt-kosten";
 import { bilanz, STUNDENSATZ_EUR, STUNDENSATZ_BELEG } from "../lib/projekt-bilanz";
 import { ROLLENSAETZE, ERHEBUNG } from "../lib/rollensaetze";
+import { MESSUNGEN, KI_ANNAHME_STAND, spanneDerMessungen } from "../lib/ki-wirkung";
 import { schaetzeAufwand, type Zaehlstand } from "../lib/aufwand-schaetzung";
 import { WIDGETS } from "../lib/widget-registry";
 import { allFundingPrograms } from "../lib/funding-programs";
@@ -314,10 +315,10 @@ async function schreibe(pfad: string, zeilen: unknown[]): Promise<void> {
   }
 }
 
-async function leseStatistik(): Promise<{ tage: Statistiktag[]; minuten: number; arbeitstage: number }> {
+async function leseStatistik(): Promise<{ tage: Statistiktag[]; minuten: number; minutenParallel: number; arbeitstage: number }> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
-  if (!url || !key) return { tage: [], minuten: 0, arbeitstage: 0 };
+  if (!url || !key) return { tage: [], minuten: 0, minutenParallel: 0, arbeitstage: 0 };
   const hol = async (p: string) => {
     const r = await fetch(`${url}/rest/v1/${p}`, {
       headers: { apikey: key, Authorization: `Bearer ${key}` },
@@ -337,6 +338,7 @@ async function leseStatistik(): Promise<{ tage: Statistiktag[]; minuten: number;
   return {
     tage,
     minuten: zeit.reduce((s, z) => s + Number(z.minuten), 0),
+    minutenParallel: zeit.reduce((s, z) => s + Number(z.minuten_parallel ?? 0), 0),
     arbeitstage: zeit.length,
   };
 }
@@ -450,7 +452,13 @@ async function main() {
       // Hochgerechnet wird über die Änderungen, mit dem Verhältnis, das im
       // gemessenen Zeitraum galt: dieselbe Regel wie bei den Tokens. Sie steht
       // getrennt und wird NICHT in die Messreihe geschrieben.
-      const gemessen = st.tage.filter((t) => t.herkunft === "gemessen" && t.werkzeug === "claude");
+      // SORTIERT, sonst steht im Zeitraum das Ende vor dem Anfang: Die Ablage
+      // gibt die Zeilen in beliebiger Reihenfolge zurück, und ein Zeitraum
+      // „von 20.08. bis 19.08." sieht aus wie ein Rechenfehler, wo nur eine
+      // Sortierung fehlt.
+      const gemessen = st.tage
+        .filter((t) => t.herkunft === "gemessen" && t.werkzeug === "claude")
+        .sort((a, b) => a.tag.localeCompare(b.tag));
       const geschaetzt = st.tage.filter((t) => t.herkunft === "geschaetzt");
       const commitsGemessen = gemessen.reduce((x, t) => x + t.commits, 0);
       const commitsGeschaetzt = geschaetzt.reduce((x, t) => x + t.commits, 0);
@@ -475,6 +483,7 @@ async function main() {
       const b = bilanz({
         statistik: claude, codexStatistik: codex,
         arbeitsminuten: st.minuten, arbeitstage: st.arbeitstage,
+        minutenParallel: st.minutenParallel,
         stundenHochgerechnet,
         kosten: s, listenwertUsd: listenwertSumme, ueberlappung, bestand, aufwand,
         zeitraum: {
@@ -490,10 +499,15 @@ async function main() {
         },
       });
       const raum = (r: { von: string; bis: string } | null) => (r ? ` [${r.von} bis ${r.bis}]` : "");
+      const spanne = spanneDerMessungen();
       const i = b.investiert;
       console.log("\n── Übersicht ──────────────────────────────────────────────");
       console.log("INVESTIERT");
       console.log(`  Zeit            ${z(i.stunden)} Stunden an ${z(i.arbeitstage)} Tagen${raum(i.zeitraum.zeit)}`);
+      if (i.stundenParallel) {
+        console.log(`                  davon ${z(i.stundenParallel)} h gleichzeitig mit einem anderen Projekt` +
+          ` — gerechnet wird mit ${z(i.stundenBereinigt)} h (die parallelen zur Hälfte)`);
+      }
       if (i.stundenHochgerechnet) {
         console.log(`                  + ${z(i.stundenHochgerechnet)} Stunden hochgerechnet für die Zeit ohne Protokolle`);
       }
@@ -507,7 +521,10 @@ async function main() {
       console.log(`  ${z(b.entstanden.codezeilen)} Zeilen Code, ${z(b.entstanden.dokuzeilen)} Zeilen Doku`);
       console.log(`  ${z(b.entstanden.testfaelle)} Prüfungen, ${z(b.entstanden.dateien)} Dateien, ${z(b.entstanden.commits)} Änderungen`);
       console.log("WERT — was ein Team dafür verlangt hätte (geschätzt, nicht gemessen)");
-      console.log(`  ${z(b.wert.personentage)} Personentage (${b.wert.personenjahre} Personenjahre)`);
+      console.log(`  ${z(aufwand.tageKlassisch)} Personentage klassisch entwickelt`);
+      console.log(`  ${z(b.wert.personentage)} Personentage mit KI-Unterstützung ` +
+        `(−${Math.round((1 - b.wert.personentage / aufwand.tageKlassisch) * 100)} %) ` +
+        `= ${b.wert.personenjahre} Personenjahre — damit wird gerechnet`);
       for (const r of ROLLENSAETZE) {
         const std = b.wert.stundenJeRolle[r.rolle];
         if (!std) continue;
@@ -522,6 +539,14 @@ async function main() {
       console.log(`  Mischsatz ${eur(b.wert.mischsatzEurProStunde)}/h. Anker: ${ERHEBUNG.quelle},`);
       console.log(`  Median Software-/Webentwicklung ${eur(ERHEBUNG.softwareEntwicklungEurProStunde)}/h (n=${ERHEBUNG.stichprobeSoftware});`);
       console.log("  die Rollenspreizung ist Marktbeobachtung, keine Erhebung.");
+      console.log(`  KI-Abschlag je Gewerk (Stand ${KI_ANNAHME_STAND}) — die Messungen dazu reichen von`);
+      console.log(`  ${Math.round(spanne.langsamste * 100)} % langsamer bis ${Math.abs(Math.round(spanne.schnellste * 100))} % schneller:`);
+      for (const m of MESSUNGEN) {
+        const v = m.zeitaenderung < 0
+          ? `${Math.abs(Math.round(m.zeitaenderung * 100))} % schneller`
+          : `${Math.round(m.zeitaenderung * 100)} % langsamer`;
+        console.log(`    ${v.padEnd(16)} ${m.quelle}`);
+      }
       console.log("VERHÄLTNIS");
       if (b.hebelGeld) {
         console.log(`  ${b.hebelGeld}× — Herstellwert je investiertem Euro (Rechnungen + eigene Zeit)`);

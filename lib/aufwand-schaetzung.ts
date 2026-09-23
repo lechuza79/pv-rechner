@@ -24,6 +24,7 @@ import {
   MIX, ROLLENSAETZE, kostenFuerTage, stundenJeRolle,
   type MixName, type Rolle, type Rollenmix,
 } from "./rollensaetze";
+import { faktor, type KiWirkung } from "./ki-wirkung";
 
 /** Eine Position des Angebots. */
 export interface Gewerk {
@@ -42,6 +43,15 @@ export interface Gewerk {
    * Konzeptarbeit liegt beim Mischsatz das Anderthalbfache.
    */
   mix?: MixName;
+  /**
+   * Wie stark KI-Unterstützung dieses Gewerk beschleunigt.
+   *
+   * Ohne Angabe gilt „mittel". Der Abschlag steht je Gewerk und nicht pauschal,
+   * weil Routinearbeit und Modellentscheidung nachweislich verschieden stark
+   * profitieren — bei letzterer hat der beste kontrollierte Versuch sogar eine
+   * Verlangsamung gemessen.
+   */
+  ki?: KiWirkung;
 }
 
 /** Gezählte Bestände, die nicht im Zeilen-Bestand stecken. */
@@ -58,35 +68,48 @@ export interface Zaehlstand {
 // einem eingespielten Team aus, das die Fachlichkeit erst erarbeiten muss —
 // also mit Recherche, Abstimmung und Nacharbeit, nicht mit reiner Tippzeit.
 export const GEWERKE: Gewerk[] = [
-  { name: "Rechner samt Modell, Quellen und Validierung", menge: (_, z) => z.rechner, tage: 20, einheit: "Rechner", mix: "konzeptlastig" },
-  { name: "Inhaltsseiten mit Redaktion und Suchmaschinen-Arbeit", menge: (_, z) => z.seiten, tage: 1, einheit: "Seiten", mix: "fleissarbeit" },
-  { name: "Einbettbare Widgets mit Theming, Bildexport, Lizenz", menge: (_, z) => z.widgets, tage: 2.5, einheit: "Widgets", mix: "umsetzung" },
-  { name: "Schnittstellen, Zwischenspeicher, Datenbank", menge: (_, z) => z.routen, tage: 0.7, einheit: "Routen", mix: "handwerk" },
-  { name: "Energie-Atlas: Registerimport, Aggregation, Tempo", menge: null, tage: 40, mix: "konzeptlastig" },
-  { name: "Förderkatalog samt Such- und Prüfautomatik", menge: null, tage: 50, mix: "umsetzung" },
-  { name: "Erhebung Kommunen, Fachbetriebe, Versorger und Versand", menge: null, tage: 40, mix: "fleissarbeit" },
-  { name: "Redaktions- und Veröffentlichungssystem", menge: null, tage: 30, mix: "umsetzung" },
-  { name: "Anmeldung, Abo, Datenschutz, Lizenzabgrenzung", menge: null, tage: 25, mix: "konzeptlastig" },
-  { name: "Testabdeckung", menge: (b) => b.testdateien, tage: 0.3, einheit: "Testdateien", mix: "handwerk" },
-  { name: "Design-System und Bausteine", menge: (_, z) => z.komponenten, tage: 0.2, einheit: "Komponenten", mix: "handwerk" },
-  { name: "Betrieb, Überwachung, Kostenwache", menge: null, tage: 25, mix: "konzeptlastig" },
-  { name: "Rechtsrecherche im Volltext (sonst Anwaltsleistung)", menge: null, tage: 20, mix: "recht" },
+  { name: "Rechner samt Modell, Quellen und Validierung", menge: (_, z) => z.rechner, tage: 20, einheit: "Rechner", mix: "konzeptlastig", ki: "gering" },
+  { name: "Inhaltsseiten mit Redaktion und Suchmaschinen-Arbeit", menge: (_, z) => z.seiten, tage: 1, einheit: "Seiten", mix: "fleissarbeit", ki: "stark" },
+  { name: "Einbettbare Widgets mit Theming, Bildexport, Lizenz", menge: (_, z) => z.widgets, tage: 2.5, einheit: "Widgets", mix: "umsetzung", ki: "mittel" },
+  { name: "Schnittstellen, Zwischenspeicher, Datenbank", menge: (_, z) => z.routen, tage: 0.7, einheit: "Routen", mix: "handwerk", ki: "stark" },
+  { name: "Energie-Atlas: Registerimport, Aggregation, Tempo", menge: null, tage: 40, mix: "konzeptlastig", ki: "gering" },
+  { name: "Förderkatalog samt Such- und Prüfautomatik", menge: null, tage: 50, mix: "umsetzung", ki: "mittel" },
+  { name: "Erhebung Kommunen, Fachbetriebe, Versorger und Versand", menge: null, tage: 40, mix: "fleissarbeit", ki: "mittel" },
+  { name: "Redaktions- und Veröffentlichungssystem", menge: null, tage: 30, mix: "umsetzung", ki: "mittel" },
+  { name: "Anmeldung, Abo, Datenschutz, Lizenzabgrenzung", menge: null, tage: 25, mix: "konzeptlastig", ki: "gering" },
+  { name: "Testabdeckung", menge: (b) => b.testdateien, tage: 0.3, einheit: "Testdateien", mix: "handwerk", ki: "stark" },
+  { name: "Design-System und Bausteine", menge: (_, z) => z.komponenten, tage: 0.2, einheit: "Komponenten", mix: "handwerk", ki: "stark" },
+  { name: "Betrieb, Überwachung, Kostenwache", menge: null, tage: 25, mix: "konzeptlastig", ki: "gering" },
+  { name: "Rechtsrecherche im Volltext (sonst Anwaltsleistung)", menge: null, tage: 20, mix: "recht", ki: "gering" },
 ];
 
 export interface Position {
   name: string;
   menge: number | null;
   einheit?: string;
+  /** Personentage ohne KI-Unterstützung — die klassische Schätzung. */
+  tageKlassisch: number;
+  /** Personentage mit KI-Unterstützung; das ist die Zahl, mit der gerechnet wird. */
   tage: number;
   mix: Rollenmix;
+  ki: KiWirkung;
   /** Was diese Position zu Agentursätzen kostet, in Euro. */
   eur: number;
 }
 
 export interface Aufwand {
   positionen: Position[];
-  /** Punktwert in Personentagen. */
+  /** Punktwert in Personentagen, mit KI-Unterstützung. */
   tage: number;
+  /**
+   * Dieselbe Schätzung ohne KI-Unterstützung.
+   *
+   * SIE BLEIBT SICHTBAR, statt ersetzt zu werden: Der Abschlag ist die
+   * unsicherste Annahme der ganzen Aufstellung (die Messungen dazu reichen von
+   * deutlich langsamer bis doppelt so schnell), und wer die Grundlage nicht
+   * sieht, kann die Annahme nicht prüfen.
+   */
+  tageKlassisch: number;
   /** Spanne, die genannt wird — ein Punktwert täuscht Genauigkeit vor. */
   von: number;
   bis: number;
@@ -117,11 +140,20 @@ const SPANNE = 0.25;
 export function schaetzeAufwand(b: Bestandstag, z: Zaehlstand): Aufwand {
   const positionen: Position[] = GEWERKE.map((g) => {
     const menge = g.menge ? g.menge(b, z) : null;
-    const tage = menge === null ? g.tage : Math.round(menge * g.tage);
+    const tageKlassisch = menge === null ? g.tage : Math.round(menge * g.tage);
+    const ki = g.ki ?? "mittel";
+    // Gerundet wird ERST NACH dem Abschlag: Ein vorher gerundeter Wert zieht
+    // seinen Rundungsfehler in die Multiplikation, und über dreizehn Posten
+    // summiert sich das sichtbar.
+    const tage = Math.round(tageKlassisch * faktor(ki));
     const mix = MIX[g.mix ?? "umsetzung"];
-    return { name: g.name, menge, einheit: g.einheit, tage, mix, eur: kostenFuerTage(tage, mix) };
+    return {
+      name: g.name, menge, einheit: g.einheit,
+      tageKlassisch, tage, mix, ki, eur: kostenFuerTage(tage, mix),
+    };
   });
   const tage = positionen.reduce((s, p) => s + p.tage, 0);
+  const tageKlassisch = positionen.reduce((s, p) => s + p.tageKlassisch, 0);
   const eur = positionen.reduce((s, p) => s + p.eur, 0);
 
   // Die Stunden je Rolle kommen aus den Positionen, nicht aus einer zweiten
@@ -137,6 +169,7 @@ export function schaetzeAufwand(b: Bestandstag, z: Zaehlstand): Aufwand {
   return {
     positionen,
     tage,
+    tageKlassisch,
     von: Math.round((tage * (1 - SPANNE)) / 10) * 10,
     bis: Math.round((tage * (1 + SPANNE)) / 10) * 10,
     eur,
