@@ -14,6 +14,8 @@ import GemeindeBeispiele from "./GemeindeBeispiele";
 import GemeindeAboKnopf from "./GemeindeAboKnopf";
 import GemeindeAboDialog from "./GemeindeAboDialog";
 import SiteFuss from "../SiteFuss";
+import { publishedCities, cityPath } from "../../lib/atlas-cities";
+import { landProgramBundeslaender } from "../../lib/funding-programs";
 
 /**
  * The new municipality page (approved design, 09/2026), server-rendered.
@@ -88,6 +90,24 @@ export function kopfRang(p: GemeindePaket): KopfRang | null {
 }
 
 export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; ort: Ortsangaben }) {
+  // Kommunale Förderung: dieselbe Bedingung wie auf der bisherigen Ortsseite —
+  // verlinkt wird nur, was hier auch gilt. Ein Ort ohne eigenes Programm
+  // bekommt den Landes-Zuschuss seines Bundeslands, sonst nichts.
+  const foerderOrt = publishedCities().find((c) => ort.ags.startsWith(c.ags));
+  // Das Bundesland kommt aus der Adresse, nicht aus der Krümelspur: Bei
+  // Stadtstaaten lässt die Spur das Land weg, damit sich Hamburg nicht dreimal
+  // nennt — Hamburgs Landesförderung wäre so nie gefunden worden.
+  const landSlug = ort.liveUrl.split("/")[2] ?? "";
+  const foerderLand = landProgramBundeslaender().find((b) => b.slug === landSlug);
+  const foerderung = foerderOrt
+    ? { href: cityPath(foerderOrt), text: `Zuschüsse in ${foerderOrt.name}`, titel: `Förderung in ${foerderOrt.name}` }
+    : foerderLand
+      ? {
+          href: `/photovoltaik-foerderung/${landSlug}`,
+          text: `Landesförderung in ${foerderLand.name}`,
+          titel: `Förderung in ${foerderLand.name}`,
+        }
+      : null;
   const z = bestandsZahlen(paket);
   const stand = formatStoryDate(paket.registerStand);
   // The monitor's figures end with the last complete month.
@@ -178,6 +198,7 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             <a href="#atlas-stories">Insights</a>
             <a href="#atlas-ranking">Ranking</a>
             <a href="#atlas-data">Energiemonitor</a>
+            {foerderung && <a href="#atlas-foerderung">Förderung</a>}
             <div className="atlas-page-actions">
               <GemeindeAboKnopf name={ort.name} />
               <button type="button" data-page-copy aria-label="Link zur Seite kopieren" title="Link kopieren" />
@@ -257,7 +278,7 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             </div>
           )}
 
-          <GemeindeBeispiele name={ort.name} plz={ort.plz} lat={ort.lat} lon={ort.lon} />
+          <GemeindeBeispiele name={ort.name} plz={ort.plz} lat={ort.lat} lon={ort.lon} foerderung={foerderung} />
 
           <section className="atlas-section atlas-overview" id="atlas-data">
             <div className="atlas-wrap">

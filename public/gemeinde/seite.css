@@ -23,3 +23,84 @@
 @media(max-width:600px){
   .solar-page .v3-section-nav .atlas-page-actions button[data-page-subscribe]{min-height:32px}
 }
+
+/* ── Das Ranglisten-Fenster in unserer Farbwelt ──────────────────────────────
+   Der Entwurf färbt es lila (Schließen-Knopf, Fokusring, Hinweiszeile) und
+   setzt reines Weiß als Papier. Beides ist Prototyp-Farbe, nicht unsere. */
+#atlas-ranking {
+  --ranking-action: var(--atlas-ink);
+  --ranking-action-light: color-mix(in srgb, var(--atlas-ink) 10%, transparent);
+  --ranking-dialog-paper: #edf0ec;
+  --ranking-dialog-ink: var(--atlas-ink);
+  --ranking-dialog-line: var(--atlas-line);
+}
+/* Überschrift kleiner, Gebiet und Anzahl daneben statt darunter. */
+#atlas-ranking .ranking-dialog-head h2 {
+  font-size: clamp(18px, 2.2vw, 22px) !important;
+  letter-spacing: -.02em !important;
+}
+#atlas-ranking .ranking-dialog-titel { display: grid; gap: 4px; }
+#atlas-ranking .ranking-dialog-context { padding: 0 !important; }
+/* Der eigene Ort bleibt beim Scrollen sichtbar und liegt als weiße Karte
+   über der Liste — vorher leuchtete die ganze Zeile neongrün. */
+#atlas-ranking .ranking-dialog .ranking-table tr.is-own {
+  position: sticky;
+  top: 37px;
+  bottom: 0;
+  z-index: 1;
+  background: #fff;
+  box-shadow: 0 6px 18px #18323e1f;
+}
+#atlas-ranking .ranking-dialog .ranking-table tr.is-own :is(td, th) {
+  border-bottom-color: transparent;
+  background: #fff;
+}
+#atlas-ranking .ranking-dialog .ranking-table tr.is-own :is(td, th):first-child {
+  border-radius: 10px 0 0 10px;
+}
+#atlas-ranking .ranking-dialog .ranking-table tr.is-own :is(td, th):last-child {
+  border-radius: 0 10px 10px 0;
+}
+#atlas-ranking .ranking-dialog .ranking-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--ranking-dialog-paper);
+}
+/* Die Liste endet sichtbar, statt mitten in einer Zeile abgeschnitten zu sein. */
+#atlas-ranking .ranking-dialog .ranking-table {
+  padding-bottom: 8px;
+  scrollbar-gutter: stable;
+}
+#atlas-ranking .ranking-dialog .ranking-table table { border-collapse: separate; border-spacing: 0; }
+/* Rangänderung: gestiegen in unserem Grün, gefallen gedämpft, beides als
+   Plakette. „Keine Änderung" ist ein Strich in Grau, keine Betonung. */
+#atlas-ranking .ranking-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+#atlas-ranking .ranking-delta.ranking-up { background: var(--theme-action); color: var(--theme-action-ink); }
+#atlas-ranking .ranking-delta.ranking-down {
+  background: color-mix(in srgb, var(--atlas-ink) 8%, transparent);
+  color: var(--atlas-muted);
+}
+#atlas-ranking .ranking-pfeil { display: inline-flex; }
+#atlas-ranking .ranking-pfeil-runter { transform: rotate(180deg); }
+#atlas-ranking .ranking-flat { color: var(--atlas-muted); }
+
+/* Der Förder-Hinweis steht unter den Beispielrechnungen, nicht als vierte
+   Karte: Er trägt keinen Betrag, weil die Höhe an Bedingungen hängt. Als
+   eigener Abschnitt mit Sprungziel, damit die Leiste ihn anspringen kann. */
+.solar-page .v3-examples-foerderung {
+  margin: 32px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--atlas-line);
+  scroll-margin-top: 96px;
+}
+.solar-page .v3-examples-foerderung h3 { margin: 0 0 4px; }
+.solar-page .v3-examples-foerderung p { margin: 0 0 12px; color: var(--atlas-muted); }

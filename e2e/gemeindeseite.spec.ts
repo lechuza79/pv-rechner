@@ -92,4 +92,14 @@ test.describe("Gemeindeseite", () => {
         .toMatch(erwartet);
     });
   }
+  // Die kommunale Förderung stand auf der bisherigen Ortsseite und fehlte im
+  // neuen Entwurf ganz — aufgefallen ist es dem Betreiber, nicht uns. Sie
+  // erscheint nur, wo sie gilt: Nidda hat ein eigenes Programm, Höchberg keins.
+  test("der Zuschuss der Gemeinde steht auf der Seite und führt zu seinem Programm", async ({ page }) => {
+    await page.goto("/solar-atlas/hessen/landkreis-wetteraukreis/nidda");
+    const link = page.getByRole("link", { name: /Zuschüsse in Nidda/ });
+    await expect(link).toHaveAttribute("href", "/photovoltaik-foerderung/hessen/nidda");
+    await page.goto(ORT);
+    await expect(page.getByRole("link", { name: /Zuschüsse in|Landesförderung in/ })).toHaveCount(0);
+  });
 });
