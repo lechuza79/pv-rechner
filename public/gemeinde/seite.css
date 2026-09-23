@@ -161,17 +161,13 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
 #atlas-sources a { color: inherit; }
 
 /* Der Tipp-Kreis über „Alle … Orte ansehen" und über der nächsten Kategorie
-   ist im Entwurf lila und mit festen Farbwerten in die Bewegung geschrieben —
-   er blinkte als einziger Fremdkörper auf der Seite. Dieselbe Geste in unserem
-   Grün; der Fokusring ebenso. */
+   ist ersatzlos weg (Betreiber, zweimal beanstandet): ein blinkender Ring auf
+   einer Seite, die sonst ruhig ist. */
 #atlas-ranking .ranking-list-invite::before,
-#atlas-ranking .ranking-choice.ranking-invite-visible::before {
-  background: color-mix(in srgb, var(--theme-action) 22%, transparent);
-  border-color: color-mix(in srgb, var(--theme-action) 80%, transparent);
-}
 #atlas-ranking .ranking-list-invite::after,
+#atlas-ranking .ranking-choice.ranking-invite-visible::before,
 #atlas-ranking .ranking-choice.ranking-invite-visible::after {
-  border-color: color-mix(in srgb, var(--theme-action) 60%, transparent);
+  content: none !important;
 }
 #atlas-ranking .ranking-open:focus-visible,
 #atlas-ranking .ranking-choice:focus-visible,

@@ -4,6 +4,12 @@ import {useState,useEffect,useRef} from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import AutoScroll from 'embla-carousel-auto-scroll';
 import './story-swipe.css';
+// Die Karten der Startseite sind das Original: ihr Stylesheet liegt fertig im
+// Design-Paket. Unsere Kopie daneben trug 84 Regeln, das Original 559 —
+// gemessen 23.09.2026, darunter die Karte selbst. Statt einer zweiten Fassung
+// wird hier das Original geladen; story-swipe.css hält nur noch, was auf der
+// Ortsseite anders ist.
+const KARTEN_STIL = "/homepage-study/story-dist/atlas-story-cards.css";
 import type {StoryConcept} from '../../lib/story-konzepte';
 import {formatStoryDate} from '../../lib/story-format';
 import {MunicipalChart} from '../social/MunicipalChart';
@@ -66,13 +72,18 @@ export default function MunicipalStoryPreview({stories,name,embedded=false,surfa
  if(!stories.length)return null;
  const open=(index:number)=>{if(onStoryOpen){setFeed(false);onStoryOpen(stories[index]);return;}lastSelected.current=index;setOpenId(id=>id+1);setSelected(index);};
  const previewVisual=(story:StoryConcept,compact:boolean,autoPlay=false)=>storyVisual(story,compact,autoPlay,visualScheme);
- const cards=(all:boolean)=><div className={all?styles.feed:'story-strip'} ref={all?undefined:stripRef}><div className={all?'story-feed-grid':'story-strip-track'}>{(all?stories:[...stories,...stories,...stories]).map((story,index)=><div className={all?'story-feed-cell':'story-strip-slide'} key={`${story.id}-${index}`}><button className={`${styles.card} story-preview-card`} data-preview-scheme={surfaceScheme} onClick={()=>{open(index%stories.length);}}>{<VisibleWidget enabled={selected===null&&!paused} story={story} visual={previewVisual}/>}<div className={styles.copy}>{showTown&&<small>{story.town}</small>}{showDate&&<small>{formatStoryDate(story.period)}</small>}<h3>{story.thumbLabel??story.title}</h3></div></button></div>)}</div></div>;
- return <section ref={sectionRef} data-story-scheme={surfaceScheme} id="geschichten" className={`${foundation.foundation} ${styles.section} ${embedded?styles.embedded:''}`}>
+ // Beim offenen Lesefenster verschwindet die Karten-Reihe: Sie stand sonst
+ // hinter dem Fenster und lief dort als zweite Bühne mit (Betreiber,
+ // 23.09.2026). Sie bleibt im Dokument, damit ihr Platz erhalten bleibt und
+ // beim Schließen nichts springt.
+ const cards=(all:boolean)=><div className={`${all?styles.feed:'story-strip'}${!all&&selected!==null?' story-strip-verdeckt':''}`} ref={all?undefined:stripRef}><div className={all?'story-feed-grid':'story-strip-track'}>{(all?stories:[...stories,...stories,...stories]).map((story,index)=><div className={all?'story-feed-cell':'story-strip-slide'} key={`${story.id}-${index}`}><button className={`${styles.card} story-preview-card`} data-preview-scheme={surfaceScheme} onClick={()=>{open(index%stories.length);}}>{<VisibleWidget enabled={selected===null&&!paused} story={story} visual={previewVisual}/>}<div className={styles.copy}>{showTown&&<small>{story.town}</small>}{showDate&&<small>{formatStoryDate(story.period)}</small>}<h3>{story.thumbLabel??story.title}</h3></div></button></div>)}</div></div>;
+ return <><link rel="stylesheet" href={KARTEN_STIL} precedence="default"/>
+ <section ref={sectionRef} data-story-scheme={surfaceScheme} id="geschichten" className={`${foundation.foundation} ${styles.section} ${embedded?styles.embedded:''}`}>
  {showHeader&&<header><h2>Insights aus {name}</h2></header>}
  {cards(false)}
  <Modal scheme={surfaceScheme} open={feed&&selected===null} onClose={()=>setFeed(false)} title={`Geschichten aus ${name}`} maxWidth={1040} className={foundation.foundation}>{cards(true)}</Modal>
  {!onStoryOpen&&<MunicipalStoryModal key={openId} stories={stories} name={name} initial={lastSelected.current} surfaceScheme={surfaceScheme} open={selected!==null} onSelect={setSelected} onClose={()=>setSelected(null)}/>}
- </section>;
+ </section></>;
 }
 
 function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose}:any){

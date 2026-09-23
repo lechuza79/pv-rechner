@@ -193,3 +193,8 @@
   max-height: 100%;
   margin-inline: auto;
 }
+
+/* Hinter dem geöffneten Lesefenster ist die Karten-Reihe unsichtbar. Sie
+   behält ihren Platz (sonst springt die Seite beim Schließen) und ist für
+   Maus und Tastatur nicht erreichbar. */
+.story-strip-verdeckt { visibility: hidden }

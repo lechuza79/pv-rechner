@@ -691,7 +691,10 @@
               : area === G.landAgs
                 ? G.landLabel
                 : "Deutschland";
-        if (m.snapshot?.key?.startsWith("speicherquote") && scopeDetail) {
+        // Die Speicherquote bringt ihre eigene Erklärung mit; dann entfällt die
+        // allgemeine, sonst stehen zwei Fragezeichen nebeneinander.
+        const eigeneErklaerung = Boolean(m.snapshot?.key?.startsWith("speicherquote")) && Boolean(scopeDetail);
+        if (eigeneErklaerung && scopeDetail) {
           const help = document.createElement("details");
           help.className = "ranking-ratio-help";
           help.innerHTML =
@@ -700,7 +703,7 @@
         }
 
         const detail = stage.querySelector(".ranking-detail");
-        if (detail) {
+        if (detail && !eigeneErklaerung) {
           const help = document.createElement("button");
           help.type = "button";
           help.className = "v3-metric-help";
