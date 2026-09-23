@@ -4,10 +4,12 @@ import { join } from "node:path";
 import { mastrAlterTage, MASTR_WORKFLOW } from "../../scripts/health-check";
 import {
   IMPORT_NACHFRIST_TAGE,
+  IMPORT_TAGE,
   importNoetig,
   importPlanBefund,
   importTageAusZeitplan,
   importlaufMeldung,
+  naechsterImport,
   zyklusStart,
 } from "../mastr-import-plan";
 
@@ -39,6 +41,26 @@ describe("Import-Termin: aus dem Zeitplan gelesen, nicht getippt", () => {
   it("liest die Tage aus dem echten Zeitplan der Action", () => {
     const yaml = readFileSync(join(__dirname, "..", "..", ".github", "workflows", MASTR_WORKFLOW), "utf8");
     expect(importTageAusZeitplan(yaml)).toEqual(TAGE);
+  });
+
+  it("hält die Konstante der Ortsseite gegen denselben Zeitplan", () => {
+    // Die Ortsseite sagt am Abo-Knopf, wann die nächsten Zahlen kommen. Sie
+    // kann die Workflow-Datei nicht lesen (die liegt nicht im ausgelieferten
+    // Bündel) und hält die Termine deshalb als Konstante. Wer den Zeitplan
+    // verschiebt und sie vergisst, verspricht 11.000 Ortsseiten lang ein
+    // Datum, an dem nichts passiert — hier wird es rot.
+    const yaml = readFileSync(join(__dirname, "..", "..", ".github", "workflows", MASTR_WORKFLOW), "utf8");
+    expect(IMPORT_TAGE).toEqual(importTageAusZeitplan(yaml));
+  });
+
+  it("nennt den NÄCHSTEN Termin, nie einen vergangenen", () => {
+    // Innerhalb des Monats der nächste Termin …
+    expect(naechsterImport([5, 7, 9], new Date("2026-09-06T00:00:00Z"))).toBe("2026-09-07");
+    // … am Termin selbst schon der folgende (der Lauf ist dann angestoßen) …
+    expect(naechsterImport([5, 7, 9], new Date("2026-09-07T00:00:00Z"))).toBe("2026-09-09");
+    // … und nach dem letzten der erste des Folgemonats, über den Jahreswechsel.
+    expect(naechsterImport([5, 7, 9], new Date("2026-09-10T00:00:00Z"))).toBe("2026-10-05");
+    expect(naechsterImport([5, 7, 9], new Date("2026-12-20T00:00:00Z"))).toBe("2027-01-05");
   });
 
   it("nimmt Kommalisten und mehrere Zeilen", () => {

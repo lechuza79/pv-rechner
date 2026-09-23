@@ -2,13 +2,14 @@ import { HERO_SZENE_INNER_HTML } from "./hero-szene";
 import SharedSiteHeader from "../SharedSiteHeader";
 import { anlagenZahlTeile, fmtPvLeistung } from "../../lib/atlas-format";
 import { formatStoryDate } from "../../lib/story-format";
+import { IMPORT_TAGE, naechsterImport } from "../../lib/mastr-import-plan";
 import { DATA_SOURCES } from "../../lib/data-sources";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../lib/json-ld";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import GemeindeSzene from "./GemeindeSzene";
 import GemeindeSkripte from "./GemeindeSkripte";
 import GemeindeRahmen from "./GemeindeRahmen";
-import { ranglistenDaten } from "./rangliste-daten";
+import { ranglistenDaten, kopfPlatzierung } from "./rangliste-daten";
 import GemeindeKopfKacheln, { type KopfRang } from "./GemeindeKopfKacheln";
 import GemeindeBeispiele from "./GemeindeBeispiele";
 import GemeindeAboKnopf from "./GemeindeAboKnopf";
@@ -69,28 +70,26 @@ export function bestandsZahlen(p: GemeindePaket) {
 }
 
 /**
- * The hero's rank tile, as the approved design builds it (variant3.js): the
- * town's place by number of solar installations among the same-size towns of
- * its district. Where there is no district comparison (kreisfreie Stadt,
- * Stadtstaat) it takes the town's leading distinction instead.
+ * The hero's rank tile, as the approved design builds it (variant3.js).
+ *
+ * Die ENTSCHEIDUNG, welche Platzierung das ist, steht in kopfPlatzierung()
+ * (rangliste-daten.ts) — dieselbe Quelle, aus der der Ranking-Abschnitt seine
+ * Startkategorie nimmt. Vorher entschied jede Seite für sich: Der Kopf zeigte
+ * bei Höchberg „Platz 2 · Anzahl der Solaranlagen", der Abschnitt darunter
+ * eröffnete mit „Batteriespeicher" — zwei Platzierungen desselben Orts auf
+ * einer Seite, ohne dass man sähe, welche gilt.
  */
 export function kopfRang(p: GemeindePaket): KopfRang | null {
-  const peers = p.district.peers as { region_id: string; sums: { alle: { count: number } } }[];
-  const own = peers.find((r) => r.region_id === p.ags);
-  if (peers.length >= 3 && own) {
-    const platz = 1 + peers.filter((r) => r.sums.alle.count > own.sums.alle.count).length;
-    // Nur ein Podestplatz ist eine Nachricht. Quitzdorf stand hier mit „Platz
-    // 25" im Kopf, während es im Kreis Platz 2 beim Zubau je Einwohner hält —
-    // die schwächste Zahl des Orts an seiner sichtbarsten Stelle. Reicht es
-    // nicht aufs Podest, gilt die beste ausgezeichnete Platzierung, und wo es
-    // keine gibt, bleibt die Kachel weg.
-    if (platz <= 3) {
-      const bild = platz === 2 ? "/atlas-design-preview/rank-badges/roof-2-no-banner.svg" : `/gemeinde/rank-badges/roof-${platz}.png`;
-      return { titel: `Platz ${platz}`, text: "Anzahl der Solaranlagen", bild };
-    }
+  const wahl = kopfPlatzierung(p);
+  if (!wahl) return null;
+  if (wahl.art === "anzahl") {
+    const bild =
+      wahl.platz === 2
+        ? "/atlas-design-preview/rank-badges/roof-2-no-banner.svg"
+        : `/gemeinde/rank-badges/roof-${wahl.platz}.png`;
+    return { titel: `Platz ${wahl.platz}`, text: "Anzahl der Solaranlagen", bild };
   }
-  const r = p.rankings.find((x) => x.distinction);
-  if (!r) return null;
+  const r = p.rankings[wahl.index];
   const d = r.distinction as string;
   const platz = /^Platz ([123])$/.exec(d)?.[1];
   const top = /^Top (10|25|50|100)$/.exec(d)?.[1];
@@ -109,6 +108,12 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
     .map((programm) => ({ programm, standLabel: fundingStandLabel(programm), zaehlt: fundingZaehlt(programm) }));
   const z = bestandsZahlen(paket);
   const stand = formatStoryDate(paket.registerStand);
+  // Der nächste geplante Lauf des Anlagenregisters, gerechnet vom jüngeren aus
+  // Datenstand und heute (siehe Kommentar an der Zeile in der Aktionsleiste).
+  const naechstesUpdate = naechsterImport(
+    IMPORT_TAGE,
+    new Date(Math.max(Date.parse(paket.registerStand), Date.now())),
+  );
   // The monitor's figures end with the last complete month.
   const letzterMonat = (paket.monitorHistory as { observations?: { end: string }[] } | undefined)?.observations?.[0]?.end;
   const kennzahlenBis = letzterMonat
@@ -193,21 +198,49 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
         </section>
 
         <main className="atlas-content">
+          {/* Auf dem Schreibtisch eine Reihe, auf schmalen Bildschirmen EIN
+              Punkt mit Aufklappliste (Betreiber, 23.09.2026): Vier Marken
+              neben Abo-Knopf und zwei Symbolen brachen dort in eine zweite
+              Zeile, und die Leiste klebt oben — zwei Zeilen kosten ein
+              Zehntel der Bildhöhe auf jeder Seite. Der Kopf zeigt immer den
+              Abschnitt, in dem man gerade liest.
+
+              Als aufklappbarer Block, nicht als eigenes Menü: Er ist ohne
+              JavaScript bedienbar, und auf dem Schreibtisch löst „display:
+              contents" ihn wieder auf, sodass dort genau die Reihe des
+              Entwurfs steht. */}
           <nav className="v3-section-nav" aria-label="Auf dieser Seite">
-            <a href="#atlas-stories">Insights</a>
-            <a href="#atlas-ranking">Ranking</a>
-            <a href="#atlas-data">Energiemonitor</a>
-            <a href="#atlas-foerderung">Förderung</a>
+            {/* OFFEN ausgeliefert: Ein zugeklappter Block versteckt seinen
+                Inhalt auch dann, wenn seine Box per „display: contents"
+                aufgelöst ist — gemessen, die vier Marken standen dann
+                untereinander statt in der Reihe. Breit bleibt er offen und
+                löst sich auf, schmal klappt ankernav.js ihn zu. Ohne
+                JavaScript steht die Liste da, statt zu fehlen. */}
+            <details className="v3-nav-menu" open>
+              <summary aria-label="Abschnitt wählen">
+                <span className="v3-nav-aktiv">Insights</span>
+              </summary>
+              <div className="v3-nav-links">
+                <a href="#atlas-stories">Insights</a>
+                <a href="#atlas-ranking">Ranking</a>
+                <a href="#atlas-data">Energiemonitor</a>
+                <a href="#atlas-foerderung">Förderung</a>
+              </div>
+            </details>
             <div className="atlas-page-actions">
-              {/* Wann die Seite zuletzt neue Zahlen bekommen hat — direkt am
-                  Abo-Knopf, weil er genau das anbietet: Bescheid bekommen,
-                  wenn hier wieder etwas steht. Heute ist das der Stichtag des
-                  Registerauszugs (er wechselt mit dem Monatslauf); sobald die
-                  Datengeschichten in eigenem Takt nachwachsen, tritt deren
-                  Datum an diese Stelle. Kein mitlaufendes Datum: Was hier
-                  steht, muss eine echte Aktualisierung gewesen sein. */}
+              {/* Wann die Seite das NÄCHSTE Mal neue Zahlen bekommt — direkt
+                  am Abo-Knopf, weil er genau das anbietet: Bescheid bekommen,
+                  wenn hier wieder etwas steht (Betreiber, 23.09.2026; zuerst
+                  stand hier das letzte Update, das beantwortet die Frage
+                  daneben nicht). Termin ist der nächste geplante Lauf des
+                  Anlagenregisters — aus derselben Liste, gegen die die
+                  Aufsicht einen ausgefallenen Lauf meldet. Gerechnet vom
+                  jüngeren der beiden Zeitpunkte: Bleibt ein Lauf aus, wandert
+                  der Termin mit, statt einen vergangenen Tag zu versprechen.
+                  Sobald die Datengeschichten in eigenem Takt nachwachsen,
+                  tritt deren Termin an diese Stelle. */}
               <span className="atlas-page-update">
-                Update <time dateTime={paket.registerStand}>{stand}</time>
+                Nächstes Update <time dateTime={naechstesUpdate}>{formatStoryDate(naechstesUpdate)}</time>
               </span>
               <GemeindeAboKnopf name={ort.name} />
               <button type="button" data-page-copy aria-label="Link zur Seite kopieren" title="Link kopieren" />

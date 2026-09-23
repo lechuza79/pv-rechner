@@ -60,18 +60,25 @@
     })),
   );
   let discovered = 1;
-  // Womit der Abschnitt aufmacht: mit der BESTEN ausgezeichneten Platzierung,
-  // wenn es eine gibt. Der Entwurf startete immer auf „Zahl der Solaranlagen" —
-  // Quitzdorf eröffnete damit mit Platz 25 von 40, obwohl es im selben Kreis
-  // beim Zubau je Einwohner Zweiter ist. Die Reihenfolge der gespeicherten
-  // Platzierungen ist bereits die beste zuerst.
+  // Womit der Abschnitt aufmacht: mit DERSELBEN Platzierung, die im Kopf der
+  // Seite steht. Die Entscheidung trifft der Server (kopfPlatzierung), damit
+  // es nur eine gibt — vorher entschied jede Seite für sich, und bei Höchberg
+  // standen zwei verschiedene Platzierungen übereinander. Fällt sie aus,
+  // bleibt die beste ausgezeichnete als Rückfall.
+  const startKategorie =
+    G.startKategorie && (G.startKategorie === "count" || discoveries[Number(G.startKategorie.slice(6))])
+      ? G.startKategorie
+      : null;
   const besteEntdeckung = discoveries.findIndex((d) => d.distinction);
   // Nur für den ersten Aufbau: Danach ist jede Auswahl die des Lesers.
   let ersterAufbau = true;
   let area = G.startArea,
     owner = "alle",
     classId = G.klasse,
-    active = besteEntdeckung >= 0 ? "saved-" + besteEntdeckung : "count",
+    active = startKategorie ?? (besteEntdeckung >= 0 ? "saved-" + besteEntdeckung : "count"),
+    // Die Startkategorie bleibt als Sortier-Anker erhalten, auch wenn der
+    // Leser weiterklickt — sonst wandert die Liste unter der Hand.
+    active0 = active,
     playing = false,
     visible = false,
     busy = false,
@@ -894,11 +901,18 @@
       }
 
       update();
-      const availableMetrics = metrics.filter((metric) =>
-        metric.snapshot
-          ? area === G.startArea && owner === "alle" && classId === G.klasse
-          : area === G.kreisAgs || metric.id === "power",
-      );
+      // Die Platzierung, mit der die Seite aufmacht, steht OBEN in der Liste
+      // (Betreiber, 23.09.2026). Sie stand vorher irgendwo dazwischen, während
+      // die Bühne daneben sie zeigte — man sah nicht, welcher Eintrag gerade
+      // offen ist. Sortiert wird nach der STARTkategorie, nicht nach der
+      // gerade gewählten: Sonst springt die Liste bei jedem Klick um.
+      const availableMetrics = metrics
+        .filter((metric) =>
+          metric.snapshot
+            ? area === G.startArea && owner === "alle" && classId === G.klasse
+            : area === G.kreisAgs || metric.id === "power",
+        )
+        .sort((a, b) => (a.id === active0 ? -1 : 0) - (b.id === active0 ? -1 : 0));
       const shown = availableMetrics;
       const previousScrollTop = choices.scrollTop;
       choices.innerHTML = "";
@@ -1056,10 +1070,13 @@
         "Der gewählte Vergleich wird geladen …";
       updateReset();
       section.querySelector(".ranking-scope").textContent = "";
-      section.querySelector(".ranking-availability").textContent =
-        area === G.kreisAgs
-          ? ""
-          : "Für " + G.landLabel + " und Deutschland liefert die bestehende Rangliste derzeit Solarleistung je Einwohner." + (G.kreisAgs ? " Weitere Kategorien sind im " + G.kreisLabel + " verfügbar." : "");
+      // KEIN Satz über die Grenzen unserer Ranglisten (Betreiber, 23.09.2026).
+      // Hier stand „Für Hamburg und Deutschland liefert die bestehende
+      // Rangliste derzeit Solarleistung je Einwohner" — eine Auskunft über
+      // unsere Technik, nicht über den Ort, und für einen Leser nicht zu
+      // deuten. Was verfügbar ist, zeigt die Liste der Platzierungen daneben
+      // ohnehin.
+      section.querySelector(".ranking-availability").textContent = "";
       // Ohne Kreisvergleich liefert die Live-Rangliste nur Solarleistung je
       // Einwohner. Das ist für die Auswahl aber die LETZTE Wahl: Berlin steht
       // dort auf Platz 80 von 80 und eröffnete damit seinen Abschnitt, während

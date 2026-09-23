@@ -14,7 +14,13 @@ declare global {
  * ranking and the share dialogs on the server-rendered sections; their text
  * content for crawlers is already in the HTML.
  */
-const SKRIPTE = ["/gemeinde/icons.js", "/gemeinde/rangliste.js", "/gemeinde/teilen.js"];
+const SKRIPTE = [
+  "/gemeinde/icons.js",
+  "/gemeinde/rangliste.js",
+  "/gemeinde/teilen.js",
+  "/gemeinde/hilfe.js",
+  "/gemeinde/ankernav.js",
+];
 
 // Classic scripts with top-level globals: loading them twice (React's
 // development double effect, or a remount) would redeclare those globals.

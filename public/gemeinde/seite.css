@@ -12,16 +12,58 @@
    MEASURED (22.09.2026): the subscribe button carries the town name and the
    design keeps every button on one line — at "Quitzdorf am See / Kwětanecy
    při jězoru" the page was 40 px wider than a 375 px phone and 113 px wider
-   than a tablet, so the whole page scrolled sideways. The label may wrap
-   instead; for the usual short names nothing changes, because there is room
-   for one line. */
-.solar-page .v3-section-nav{flex-wrap:wrap;min-width:0}
-.solar-page .v3-section-nav .atlas-page-actions{min-width:0;flex-wrap:wrap}
-.solar-page .v3-section-nav .atlas-page-actions button[data-page-subscribe]{
-  min-width:0;max-width:100%;height:auto;min-height:36px;
-  white-space:normal;text-align:center;line-height:1.2;padding-top:6px;padding-bottom:6px}
-@media(max-width:600px){
-  .solar-page .v3-section-nav .atlas-page-actions button[data-page-subscribe]{min-height:32px}
+   than a tablet, so the whole page scrolled sideways.
+
+   Die erste Antwort darauf war Umbrechen. Sie ist zurückgenommen (Betreiber,
+   23.09.2026): Die Leiste klebt oben, eine zweite Zeile kostet auf jeder
+   Seite dauerhaft Bildhöhe. Nachgeben darf jetzt nur die BESCHRIFTUNG des
+   Knopfs — sie wird gekürzt, die Leiste bleibt einzeilig. */
+.solar-page .v3-section-nav{flex-wrap:nowrap;min-width:0;align-items:center}
+
+/* ── Sprungmarken: Reihe auf dem Schreibtisch, EIN Punkt auf dem Telefon ─────
+   Der Aufklappblock löst sich breit auf („display: contents"), dann steht
+   genau die Reihe des Entwurfs da. Schmal wird er zum Menü, dessen Kopf den
+   Abschnitt nennt, in dem gerade gelesen wird — den setzt ankernav.js. Die
+   Leiste bricht NIE um: Sie klebt oben, eine zweite Zeile kostet auf jeder
+   Seite dauerhaft Bildhöhe. */
+/* Breit: der Block ist ein gewöhnliches Element der Leiste und trägt die
+   Marken als Reihe. NICHT „display: contents" — gemessen (23.09.2026): Chrome
+   löst die Box eines Aufklappblocks damit nicht auf, die vier Marken standen
+   untereinander. */
+.solar-page .v3-section-nav .v3-nav-menu{display:flex;align-items:center;min-width:0}
+.solar-page .v3-section-nav .v3-nav-menu>summary{display:none}
+.solar-page .v3-section-nav .v3-nav-links{display:flex;align-items:center;gap:4px}
+
+@media(max-width:860px){
+  /* Der Abschnittsname gibt NICHT nach: Er ist der Zweck der Leiste („immer
+     der aktive sichtbar"). Nachgeben muss die Beschriftung des Abo-Knopfs —
+     sie steht neben einer Glocke und über einer Seite, die den Ortsnamen im
+     Titel trägt. Einzeilig bleibt sie trotzdem: Die Leiste klebt oben. */
+  .solar-page .v3-section-nav .v3-nav-menu{display:block;position:relative;flex:0 0 auto}
+  .solar-page .v3-section-nav .v3-nav-menu>summary{
+    display:flex;align-items:center;gap:6px;list-style:none;cursor:pointer;
+    padding:9px 12px;border-radius:999px;white-space:nowrap;overflow:hidden;
+    background:color-mix(in srgb,var(--atlas-ink) 8%,transparent);color:var(--atlas-ink)}
+  .solar-page .v3-section-nav .v3-nav-menu>summary::-webkit-details-marker{display:none}
+  .solar-page .v3-section-nav .v3-nav-menu>summary::marker{content:""}
+  /* Der Pfeil sagt, dass hier mehr dahintersteckt — ohne ihn liest sich der
+     Kopf wie eine Beschriftung, nicht wie ein Menü. */
+  .solar-page .v3-section-nav .v3-nav-menu>summary::after{
+    content:"";flex:none;width:7px;height:7px;margin-left:2px;
+    border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+    transform:translateY(-2px) rotate(45deg)}
+  .solar-page .v3-section-nav .v3-nav-menu[open]>summary::after{transform:translateY(1px) rotate(225deg)}
+  .solar-page .v3-section-nav .v3-nav-aktiv{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .solar-page .v3-section-nav .v3-nav-links{
+    display:block;position:absolute;z-index:60;top:calc(100% + 8px);left:0;min-width:200px;
+    padding:6px;background:var(--atlas-paper);border:1px solid var(--atlas-line);
+    border-radius:14px;box-shadow:0 12px 32px #18323e1f}
+  .solar-page .v3-section-nav .v3-nav-links a{display:block}
+  .solar-page .v3-section-nav .atlas-page-actions{margin-left:auto;min-width:0;flex-wrap:nowrap}
+  .solar-page .v3-section-nav .atlas-page-actions button[data-page-subscribe]{
+    min-width:0;white-space:nowrap;padding-top:0;padding-bottom:0;height:36px;min-height:36px}
+  .solar-page .v3-section-nav .atlas-page-actions button[data-page-subscribe] span{
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 }
 /* Das Datum der letzten Aktualisierung steht vor dem Abo-Knopf: leise, weil es
    eine Auskunft ist und keine Handlung, und einzeilig, damit es die Leiste
@@ -34,6 +76,29 @@
 @media(max-width:860px){
   .solar-page .v3-section-nav .atlas-page-update{display:none}
 }
+
+/* ── Die „?"-Erklärungen sehen aus wie überall sonst ─────────────────────────
+   Der Entwurf setzt sie als umrandeten Kreis, in zwei Größen (18 und 24 px),
+   und lässt sie nur auf Klick aufgehen. Der Baustein der übrigen Site ist ein
+   nacktes Zeichen in der leisen Textfarbe mit Hilfe-Zeiger, das beim
+   Überfahren aufgeht. Zwei Hilfe-Gesten auf einer Seite sind eine zu viel
+   (Betreiber, 23.09.2026). Das Öffnen beim Überfahren macht hilfe.js.
+   Die Fläche zum Antippen bleibt trotzdem fingergroß (24 px): Ohne Rahmen ist
+   das Zeichen selbst sieben Pixel breit, und auf einem Telefon ist der Klick
+   der einzige Weg zur Erklärung. */
+#atlas-ranking .ranking-ratio-help summary,
+.solar-page .v3-calculation-help summary {
+  border: 0 !important;
+  border-radius: 0 !important;
+  width: 24px !important;
+  height: 24px !important;
+  cursor: help;
+  opacity: .72;
+  font-size: var(--font-size-sm, 14px) !important;
+  line-height: 1 !important;
+}
+#atlas-ranking .ranking-ratio-help summary:hover,
+.solar-page .v3-calculation-help summary:hover { opacity: 1 }
 
 /* ── Das Ranglisten-Fenster in unserer Farbwelt ──────────────────────────────
    Der Entwurf färbt es lila (Schließen-Knopf, Fokusring, Hinweiszeile) und

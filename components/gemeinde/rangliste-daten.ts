@@ -27,6 +27,35 @@ export function genitiv(name: string): string {
   return /[sßxz]$/i.test(name) ? `${name}’` : `${name}s`;
 }
 
+/**
+ * WELCHE Platzierung dieser Ort führt — die EINE Entscheidung, aus der sowohl
+ * die Kachel im Kopf als auch die Startkategorie des Ranking-Abschnitts folgt.
+ *
+ * WARUM AN EINER STELLE (Betreiber, 23.09.2026): Beide entschieden es vorher
+ * getrennt, mit verschiedenem Ergebnis — der Kopf zeigte bei Höchberg „Platz 2
+ * · Anzahl der Solaranlagen", der Abschnitt darunter öffnete auf
+ * „Batteriespeicher". Zwei Platzierungen desselben Orts auf einer Seite, und
+ * keine sagt, welche gilt.
+ *
+ * Die Regel selbst ist die des abgenommenen Entwurfs: der Platz nach der Zahl
+ * der Solaranlagen unter den gleich großen Orten des Kreises, aber NUR aufs
+ * Podest (Quitzdorf stand hier mit „Platz 25", während es im Kreis beim Zubau
+ * je Einwohner Zweiter ist). Sonst die beste ausgezeichnete Platzierung, und
+ * wo es keine gibt, keine.
+ */
+export type KopfPlatzierung = { art: "anzahl"; platz: number } | { art: "auszeichnung"; index: number };
+
+export function kopfPlatzierung(p: GemeindePaket): KopfPlatzierung | null {
+  const peers = p.district.peers as { region_id: string; sums: { alle: { count: number } } }[];
+  const own = peers.find((r) => r.region_id === p.ags);
+  if (peers.length >= 3 && own) {
+    const platz = 1 + peers.filter((r) => r.sums.alle.count > own.sums.alle.count).length;
+    if (platz <= 3) return { art: "anzahl", platz };
+  }
+  const index = p.rankings.findIndex((x) => x.distinction);
+  return index >= 0 ? { art: "auszeichnung", index } : null;
+}
+
 export function ranglistenDaten(
   paket: GemeindePaket,
   ort: { name: string; ags: string; landName: string; kreisBase: string; liveUrlAbsolut: string; widgetUrl: string },
@@ -54,6 +83,13 @@ export function ranglistenDaten(
     landLabel: ort.landName,
     startArea: kreisAgs ?? (alleinImLand ? "" : landAgs),
     startLabel: kreisAgs ? paket.kreis.name : alleinImLand ? "Deutschland" : ort.landName,
+    // Die Kategorie, mit der der Abschnitt aufmacht — dieselbe, die im Kopf
+    // steht. "count" ist die eingebaute Anzahl-Rangliste, sonst der Platz der
+    // ausgezeichneten Platzierung in der Liste darunter.
+    startKategorie: (() => {
+      const wahl = kopfPlatzierung(paket);
+      return wahl ? (wahl.art === "anzahl" ? "count" : `saved-${wahl.index}`) : null;
+    })(),
     klasse: klasse?.slug ?? "gemeinden-und-kleinstaedte",
     einwohnerLabel: population ? `${population.toLocaleString("de-DE")} Einwohner` : "keine Einwohnerzahl",
     kreisBase: ort.kreisBase,
