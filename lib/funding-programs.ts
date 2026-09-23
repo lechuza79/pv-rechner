@@ -12992,6 +12992,125 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   //   Absturz, ohne roten Test, nur als falsche Auskunft an rund 30 Orten. Der
   //   Mehrgebiets-Wächter fängt das NICHT: Er überspringt jedes Programm ohne
   //   `agsCodes`, und dieses hat bewusst keine.
+  // AUFGENOMMEN AM 23.09.2026. Gefunden nicht über den Förder-Suchlauf, sondern
+  // beim Abarbeiten des QUELLEN-Vorrats: Die Gemeindeseite lag als offene
+  // Fundstelle da und war nie gelesen worden. Zweiter Fall dieser Art binnen
+  // eines Tages (siehe Germersheim) — der Engpass des Katalogs ist nach wie vor
+  // das Lesen der Treffer, nicht das Finden.
+  //
+  // WAS GEFÖRDERT WIRD, IST DER SPEICHER — und sonst nichts aus diesem Rechner.
+  // Die Gemeinde hat Dach-Photovoltaik NIE gefördert (Begründung 2022 in der
+  // Lokalpresse: es wären „höhere Fördersummen notwendig, um Gebäudeeigentümer
+  // zu motivieren"), Wärmepumpen nie, und das Balkonkraftwerk genau EIN Jahr:
+  // 2023 auf Antrag der CDU-Fraktion mit 200 € je Anlage, zum Jahr 2024 wieder
+  // gestrichen. Die Begründung des Umweltbeauftragten dafür steht so in der
+  // Lokalpresse: „Sie sind inzwischen so günstig, dass wir keine öffentliche
+  // Förderung mehr brauchen."
+  //   `foerdert: ["pv"]` ist deshalb eine Aussage über die SICHTBARKEIT, nicht
+  //   über die Anlage: Wer einen Speicher plant, plant ihn im PV-Rechner. Wer
+  //   diesem Eintrag je einen Rechenwert gibt, gibt ihm einen SPEICHER-Satz —
+  //   ein €/kWp-Satz zöge hier von einer Dachanlage ab, für die die Gemeinde
+  //   nichts zahlt.
+  //
+  // KEIN RECHENWERT, obwohl die Pauschale eindeutig ist: Der Topf 2026 ist leer.
+  // Dieselbe Entscheidung wie bei Leiningerland, Berkenthin und Germersheim —
+  // wer den Status eines Tages umlegt, soll einen Betrag eintragen müssen,
+  // statt einen aus einer alten Richtlinie zu erben.
+  //
+  // DAS PROGRAMM WIRD JEDES JAHR NEU AUFGELEGT, und das ist die eigentliche
+  // Gefahr an diesem Eintrag: für 2020 bis 2026 ist es durchgehend belegt (die
+  // Gemeinde selbst schreibt, es laufe noch länger -- ungeprüft), und es ging
+  // jedes Mal vor Jahresende aus, 2026 Ende Juli, 2025 erst Mitte September.
+  // „Jeweils zur Jahresmitte" wäre deshalb schon zu scharf. Steht hier im
+  // Frühjahr 2027 „ausgeschöpft",
+  // während in Stuhr wieder Geld abrufbar ist, ist das dieselbe Falschauskunft
+  // wie ein zu hoher Betrag — nur andersherum. Der Seiten-Wächter fängt das
+  // nicht: Die Gemeinde leert ihre Programmseiten nach der Ausschöpfung und
+  // recycelt die Adressen, ein Wechsel sieht dort aus wie jede andere Bewegung.
+  // Deshalb steht der Fall mit Frist in der Ausnahmeliste von
+  // lib/__tests__/atlas-funding-sync.test.ts.
+  //
+  // DIE RICHTLINIE STECKT IM ANTRAGSFORMULAR, seit 2024 gibt es kein eigenes
+  // Dokument mehr — die Programmseite sagt das selbst: „Die Förderrichtlinien
+  // entnehmen Sie bitte den jeweiligen Förderanträgen." Seite 2 des Antrags
+  // „Förderung eines Solarstromspeichers" trägt die Überschrift „Richtlinien zur
+  // Förderung von Maßnahmen zum Klimaschutz"; von dort stammen die Bedingungen,
+  // am 23.09.2026 im Volltext am Server der Gemeinde gelesen, Auszug in
+  // docs/quellen/stuhr/. Die Ablage ist hier kein Formalismus: Ein zweiter
+  // Prüfer kam am selben Tag NICHT mehr an das Formular (die Programmseite ist
+  // nach der Ausschöpfung geleert), und ein Archivstand existiert nicht. Die 5 kWh sind NEU für 2026: bis 2023 lag die Untergrenze bei
+  // 2,5 kWh, und die Erstinstallations-Bedingung kam erst mit dem Beschluss für
+  // 2026 dazu — wer eine ältere Fassung als Beleg nimmt, trägt beide falsch ein.
+  //
+  // DER BESCHLUSS liegt im Ratsinformationssystem (Vorlage 179.0/25 „Förderung
+  // von Maßnahmen zum Klimaschutz in 2026", Ausschuss für Klima- und Naturschutz
+  // 02.12.2025 ungeändert beschlossen, Entscheidung im Verwaltungsausschuss am
+  // 10.12.2025): „Der Verwaltungsausschuss der Gemeinde Stuhr beschließt, das
+  // Förderprogramm … im Jahr 2026 fortzusetzen. Die Gesamt-Fördersumme beträgt
+  // weiterhin 30.000,00 €. Die Förderung von Erweiterungen bestehender
+  // Stromspeicher wird künftig ausgeschlossen."
+  //
+  // `combinableWith: ["bund-nullsteuer"]`, nicht die leere Liste — und das ist
+  // der einzige Punkt, an dem der Legal-Judge den ersten Entwurf gekippt hat.
+  // Die Richtlinie verbietet zweimal („Die Anlage darf nicht anderweitig mit
+  // öffentlichen Geldern gefördert werden", „Eine Doppelförderung im
+  // Zusammenhang mit sonstigen Förderprogrammen ist ausgeschlossen"), und der
+  // Antragsteller erklärt, keine anderweitige öffentliche Förderung in Anspruch
+  // genommen zu haben. Der Nullsteuersatz ist davon nicht erfasst: Es fließt
+  // kein Geld, es gibt kein Programm, keinen Antrag und keine Bewilligung — und
+  // er ist nicht abwählbar, weshalb eine Lesart, die ihn einschließt, das
+  // Programm leerlaufen ließe. Dieselbe Überlegung trägt die EEG-Vergütung;
+  // wer sie mitzählte, könnte keine netzgekoppelte Anlage mehr fördern.
+  //   OFFEN, NICHT NEBENBEI ZU BEHEBEN: `weyhe-klimaschutz` trägt bei fast
+  //   wortgleicher Klausel die leere Liste. Nach diesem Maßstab ist eine der
+  //   beiden falsch. Das ist ein eigener Befund mit eigenem Council — es bewegt
+  //   kein Geld, beide Programme sind ausgeschöpft — und reiht sich in den
+  //   schon offenen Fall Kandel/Leiningerland/Germersheim ein.
+  //
+  // GEGENGEPRÜFT von drei Prüfern, einer davon adversarial (23.09.2026). Der
+  // adversariale Lauf hat den Betrag über zwei Jahrgänge nachgerechnet
+  // (2026: 101 × 500 € + 1 × 1.000 € = 51.500 € bei 50.000 € Topf; 2024:
+  // 55 × 500 € + 3 × 1.000 € = 30.500 € bei 30.000 €) und damit belegt, dass
+  // die 500 € seit mindestens 2024 unverändert gelten. Der dritte Prüfer hat
+  // die Jahrgänge 2020 bis 2023 im Archiv der Vereinsseite im Volltext gelesen.
+  //
+  // ZWEI FALLEN FÜR DIE NÄCHSTE PRÜFUNG, beide gemessen: stuhr.de schiebt jedem
+  // Aufruf eine Wahl-Zwischenseite vor (ein angehängtes `vs=1` kommt daran
+  // vorbei), und fremde Förderportale führen die 200 € für Balkonkraftwerke bis
+  // heute als aktuell — der Satz stammt aus 2023 und ist seit 2024 gestrichen.
+  "stuhr-klimaschutz-speicher": {
+    id: "stuhr-klimaschutz-speicher",
+    name: "Förderung von Maßnahmen zum Klimaschutz — Solarstromspeicher",
+    traeger: "Gemeinde Stuhr", level: "kommune", region: "Stuhr",
+    bundesland: "Niedersachsen", agsCode: "03251037",
+    url: "https://www.stuhr.de/leben-wohnen/klimaschutz/klimaschutzfoerderung-2026/",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    beschlossenIso: "2025-12-10",
+    beginntIso: "2026-01-01",
+    endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    foerdert: ["pv"],
+    coveredCosts: "Pauschale je Solarstromspeicher — der Jahrestopf 2026 ist leer",
+    maxFoerderung: "500 € je Haushalt",
+    rates: [
+      { label: "Solarstromspeicher ab 5 kWh (Erstinstallation)", value: "500 € pauschal — Mittel 2026 vergeben" },
+    ],
+    conditions: [
+      "Die Mittel für 2026 sind vollständig vergeben: Der Topf wurde unterjährig von 30.000 € auf 50.000 € erhöht und war bis Ende Juli ausgezahlt; bewilligt wurden 102 Anträge, darunter 45 Solarstromspeicher",
+      "Gefördert wurde die ERSTINSTALLATION eines Batteriespeichers zu einer eigenen Photovoltaikanlage — die Erweiterung eines vorhandenen Speichers ist seit 2026 ausdrücklich ausgeschlossen",
+      "Die Richtlinie verlangt wörtlich ein „stationäres, an das elektrische Netz angeschlossenes Batteriespeichersystem gemäß § 14a EnWG\". Die Vorschrift regelt die netzorientierte Steuerung von Verbrauchseinrichtungen und beschreibt keine Bauart; wie die Gemeinde sie im Einzelfall anwendet, sagt die Richtlinie nicht",
+      "Nutzbare Speicherkapazität mindestens 5 kWh; die Zeitwertersatzgarantie musste mindestens zehn Jahre laufen — die Richtlinie verlangt sie ausdrücklich vom HÄNDLER, während sie marktüblich der Hersteller ausstellt",
+      "Je Photovoltaikanlage wurde ein Speicher gefördert, je Haushalt eine Förderung",
+      "Die Dachanlage selbst wird nicht gefördert — sie ist nur Voraussetzung für den Speicherzuschuss",
+      "Der Antrag war erst NACH Kauf und Inbetriebnahme möglich; gefördert wurden nur Maßnahmen des laufenden Förderjahres",
+      "Einzureichen waren Kaufbeleg, der Nachweis der Inbetriebnahme durch eine Fachfirma und der Nachweis der Zeitwertersatzgarantie",
+      "Nicht gefördert wurden Eigenbauanlagen und gebrauchte Anlagen; die Anlage durfte nicht anderweitig mit öffentlichen Geldern gefördert werden",
+      "Kein Rechtsanspruch: Die Auszahlung setzte voraus, dass die Mittel im Haushalt der Gemeinde zur Verfügung stehen",
+      "Anträge gehen an den Verein Stuhr plus e. V., der sie auch bewilligt; das Geld stellt die Gemeinde bereit. Es ergeht kein Bescheid einer Behörde",
+      "Über eine Fortsetzung im Jahr 2027 entscheidet der Rat der Gemeinde noch 2026",
+    ],
+    combinableWith: ["bund-nullsteuer"],
+  },
   "germersheim-balkonkraftwerke": {
     id: "germersheim-balkonkraftwerke",
     name: "Förderprogramm für Photovoltaik-Balkonanlagen",

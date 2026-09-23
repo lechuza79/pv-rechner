@@ -157,6 +157,15 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // vollständig auf der Karte, in der Vergangenheitsform und mit dem Ende als
   // erster Zeile. Prüfform mit einer Neuauflage -- dann aber an der dann
   // geltenden Richtlinie, nicht an dieser von 2024.
+  // Stuhr Solarstromspeicher, aufgenommen am 23.09.2026. Der Jahrestopf 2026 ist
+  // seit Ende Juli leer; eine Prüfform hielte das Vorhaben eines Nutzers gegen ein
+  // Verfahren, in das er dieses Jahr nicht mehr hineinkommt. Die Bedingungen
+  // stehen vollständig auf der Karte. Mit der Neuauflage 2027 gehört die Prüfform
+  // dazu — dann aber an der dann geltenden Fassung: Die Untergrenze stieg zum
+  // Jahr 2026 von 2,5 auf 5 kWh, und die Erstinstallations-Bedingung ist ebenso
+  // neu. Wer die Form aus einer älteren Richtlinie übernimmt, prüft zwei
+  // Bedingungen falsch.
+  "stuhr-klimaschutz-speicher",
   "germersheim-balkonkraftwerke",
   // Bremen Heizungstausch, aufgenommen am 23.09.2026. Das Programm nimmt seit
   // dem 31.08.2025 keine Anträge mehr an — eine Prüfform hielte das Vorhaben

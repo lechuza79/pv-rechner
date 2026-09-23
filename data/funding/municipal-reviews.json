@@ -54200,5 +54200,45 @@
         "evidenceUrl": "https://www.sehnde.de/portal/seiten/beratung-und-foerderung-915001585-22550.html?rubrik=915000016"
       }
     ]
+  },
+  {
+    "regionId": "03251037",
+    "name": "Stuhr",
+    "checkedAt": "2026-09-23T20:56:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort zwei Fundstellen auf stuhr.de — dieselbe Programmseite unter zwei Adressen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Die Gemeinde Stuhr zahlt privaten Haushalten 500 € pauschal für einen SOLARSTROMSPEICHER, seit 2020 jedes Jahr neu aufgelegt. Der Topf 2026 ist LEER: unterjährig von 30.000 € auf 50.000 € erhöht, bis Ende Juli ausgezahlt, 102 bewilligte Anträge, darunter 45 Speicher. Das Programm steht seit dem 23.09.2026 als stuhr-klimaschutz-speicher im Katalog, mit Status „ausgeschöpft\" und ohne Rechenfeld — es informiert also und zieht nichts ab. Bedingungen für 2026: Erstinstallation (die Erweiterung eines vorhandenen Speichers ist ausdrücklich ausgeschlossen), mindestens 5 kWh nutzbar, zehn Jahre Zeitwertersatzgarantie, ein Speicher je Photovoltaikanlage und eine Förderung je Haushalt, Antrag erst NACH Inbetriebnahme. Gelesen wurde die verbindliche Richtlinie selbst — sie steht seit 2024 nicht mehr als eigenes Dokument da, sondern auf Seite 2 des Antragsformulars; die Programmseite sagt das selbst. DACH-PHOTOVOLTAIK HAT STUHR NIE GEFÖRDERT (Begründung 2022 in der Lokalpresse: es wären höhere Fördersummen nötig, um Eigentümer zu motivieren), Wärmepumpen nie, und das Balkonkraftwerk genau ein Jahr — 2023 mit 200 € je Anlage, zum Jahr 2024 wieder gestrichen. Fremde Förderportale führen diese 200 € bis heute als aktuell; wer sie übernimmt, trägt ein seit drei Jahren gestrichenes Programm ein. Der Landkreis Diepholz hat kein eigenes Programm für private Haushalte — sein Förderprogramm ist betriebsbezogene Wirtschaftsförderung. EINE KORREKTUR IN EIGENER SACHE: Die Programmseite stand seit dem 19.08.2026 als „keine passende Förderung\" abgehakt, mit der Notiz „Abschlussmeldung ohne Fördersätze; Jahresbudget 2026 aufgebraucht\". Die Beobachtung war richtig, das Urteil falsch — eine Seite ohne Sätze ist keine Gemeinde ohne Programm. Fünf Wochen lang galt Stuhr deshalb als geprüft und ohne Förderung.",
+    "searches": [
+      "Programmseite der Gemeinde am 23.09.2026 live gelesen (stuhr.de schiebt jedem Aufruf eine Wahl-Zwischenseite vor; ein angehängtes vs=1 kommt daran vorbei)",
+      "Antragsformular „Förderung eines Solarstromspeichers\" 2026 am 23.09.2026 als PDF am Server der Gemeinde geholt und im Volltext gelesen — Seite 2 trägt die Richtlinie; Auszug in docs/quellen/stuhr/",
+      "Seite des abwickelnden Vereins Stuhr plus e. V. am 23.09.2026 gelesen (Fördergegenstände und Budget 30.000 €, Stand Februar 2026)",
+      "Gemeindeschlüssel 03251037 am 23.09.2026 gegen das Melderegister geprüft — ein einziger Treffer bundesweit",
+      "Jahrgänge 2020 bis 2023 der Richtlinie, Ratsvorlage 179.0/25 und die Lokalpresse zur Balkon-Episode von einem dritten Prüfer im Volltext gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stuhr.de/leben-wohnen/klimaschutz/klimaschutzfoerderung-2026/",
+        "finding": "Programmseite der Gemeinde, am 23.09.2026 gelesen: „Die im Jahre 2026 durch die Gemeinde Stuhr zur Verfügung gestellten Fördergelder für individuelle Klimaschutzmaßnahmen sind vollständig aufgebraucht. Wieder war die Nachfrage so groß, dass die auf 50.000 € erhöhten Fördermittel bereits bis Ende Juli ausgezahlt wurden.\" Aufgezählt: 45 Stromspeicher, 53 Wallboxen, 2 Dachfenster, 1 Gründach, 1 Regenwasserzisterne. „Insgesamt konnten 102 Förderanträge durch den Verein Stuhrplus bewilligt werden.\""
+      },
+      {
+        "url": "https://www.stuhr.de/downloads/datei/OGVmNDZlYTMzMDBlZjE1YlhTckFmV0Z5YThvdGhXUHZKeEpiNTJtVUxDa2RDMU9aZTY0WTlVR3NvRXVRYlZMalhJdW9COWxvWE1yVFhZTENuUmpuWHF1K1lKUjNkRVBvclZudk5UTHJJZG1iZldlcmx4OFpYeGY2S2VVVno1SXVCd0dBbk90N2xWMFozVUhKdm5hM2ZmZmJUVEtRamtxRHZqUDF6TzVIRm5ibGtSQ0NvWk51ZFMwTmZqWjhqMkF1SGdodm9ocGVEYnJBYk94Ng",
+        "finding": "Antragsformular 2026, Seite 2 „Richtlinien zur Förderung von Maßnahmen zum Klimaschutz\", am 23.09.2026 im Volltext gelesen: „500,00 Euro Förderung für Solarstromspeicher — Förderung der Erstinstallation von stationären Batteriespeichersystemen gemäß § 14a EnWG in Verbindung mit einer Photovoltaikanlage, die an das elektrische Stromnetz angeschlossen ist · Nutzbare Mindestspeicherkapazität von 5 kWh · Zeitwertersatzgarantie von Händler für mindestens zehn Jahre · Pro Photovoltaikanlage nur Förderung für ein Batteriespeichersystem · Maximal eine Förderung pro Haushalt … Die Anlage darf nicht anderweitig mit öffentlichen Geldern gefördert werden.\" Und: „Eine Doppelförderung im Zusammenhang mit sonstigen Förderprogrammen ist ausgeschlossen. Ein Rechtsanspruch auf Gewährung der Förderung besteht nicht.\""
+      }
+    ],
+    "sources": [
+      {
+        "url": "stuhr.de/leben-wohnen/klimaschutz/klimaschutzfoerderung-2026",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Programmseite der Gemeinde. Urteil am 23.09.2026 von „keine Förderung\" auf „aufgenommen\" korrigiert.",
+        "evidenceUrl": "https://www.stuhr.de/leben-wohnen/klimaschutz/klimaschutzfoerderung-2026/"
+      },
+      {
+        "url": "stuhr.de/portal/seiten/klimaschutzfoerderung-2026-900001215-21780.html?naviID=900000569&brotID=900000569&rubrik=4000016",
+        "disposition": "reviewed",
+        "reason": "Gelesen; dieselbe Programmseite unter der Portal-Adresse.",
+        "evidenceUrl": "https://www.stuhr.de/leben-wohnen/klimaschutz/klimaschutzfoerderung-2026/"
+      }
+    ]
   }
 ]
