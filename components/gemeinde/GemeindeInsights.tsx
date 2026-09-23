@@ -1,5 +1,6 @@
 'use client';
 import {IconChevronLeft,IconChevronRight,IconShare,IconPlay,IconPause,IconCopy,IconDownload,IconClose} from '../Icons';
+import {mitLizenzangaben} from '../../lib/data-sources';
 import {useState,useEffect,useRef} from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import AutoScroll from 'embla-carousel-auto-scroll';
@@ -150,7 +151,7 @@ function StoryArtwork({story,visual,name,active}:any){
  const fit=()=>{const card=inner;if(!card)return;card.style.height='auto';const breite=outer.clientWidth,hoehe=outer.clientHeight;const eigen=card.firstElementChild as HTMLElement|null;const natur=eigen?.offsetHeight||card.offsetHeight||1;const faktor=Math.min(1,breite/(card.offsetWidth||breite),hoehe/natur);card.style.transform=`translate(-50%,-50%) scale(${faktor})`;};
  const observer=new ResizeObserver(fit);observer.observe(outer);if(inner.firstElementChild)observer.observe(inner.firstElementChild);fit();return()=>observer.disconnect();},[]);
  return <div className="story-artwork-stage" ref={stage}><div ref={canvas} className="story-export-card" data-sc-export-css="position:static;transform:none;height:auto;min-height:0;background:#08191c;border-radius:12px;display:block;">
- {visual(story,false,active&&foreground)}<div className="story-export-credit" data-sc-export-only="block">Solar Check · {name} · {formatStoryDate(story.sourceDate??story.period)}<br/>{story.sourceCaption??'Marktstammdatenregister · eigene Auswertung'}</div>
+ {visual(story,false,active&&foreground)}<div className="story-export-credit" data-sc-export-only="block">Solar Check · {name} · {formatStoryDate(story.sourceDate??story.period)}<br/>{mitLizenzangaben(story.sourceCaption??'Marktstammdatenregister · eigene Auswertung')}</div>
  </div></div>;
 }
 function VisibleWidget({story,visual,enabled}:any){

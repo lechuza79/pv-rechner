@@ -506,6 +506,43 @@ export const DATA_SOURCES = {
  * Kürzung überleben, weil die Lizenzen sie verlangen: WER die Daten
  * bereitstellt, unter WELCHER Lizenz, und DASS wir sie verändert haben.
  */
+/**
+ * Ergaenzt an einer von Hand geschriebenen Quellenzeile die fehlenden
+ * Lizenzangaben — BLOCKER (23.09.2026).
+ *
+ * DER ANLASS: Der Bild-Fuss der Ortsgeschichten trug „Marktstammdatenregister ·
+ * eigene Auswertung" — den Namen, sonst nichts. Geschuldet sind drei Teile: wer
+ * bereitstellt, unter welcher Lizenz, und dass wir veraendert haben; dl-de/by-2-0
+ * verlangt genau das. Der Fuss ist der Teil, der im geteilten Bild mitreist, also
+ * dort, wo die Pflicht ueberhaupt herkommt.
+ *
+ * DIESELBE FEHLERKLASSE HAT DAS PROJEKT DREIMAL BEZAHLT: bei den drei
+ * CC-BY-Quellen, in der Quellenkante, die sich ihre Kurzform selbst baute, und in
+ * der Social-Zeile, die Name und Datum als eine Zeichenkette fuehrte. Jedes Mal
+ * eine zweite Fassung derselben Angabe — und die zweite verliert.
+ *
+ * ERGAENZT, NICHT ERSETZT: Eine Zeile nennt oft mehr als eine Quelle und dazu
+ * eigene Modelle („Atlas-Stromwertmodell"), fuer die es keine fremde Lizenz gibt.
+ * Wer die ganze Zeile austauscht, wirft diese Angaben weg; wer einem eigenen
+ * Modell eine fremde Lizenz anhaengt, macht die naechste Falschangabe. Ergaenzt
+ * wird deshalb nur, was eine bekannte Quelle NENNT und ihre Lizenz noch nicht
+ * traegt.
+ */
+export function mitLizenzangaben(zeile: string): string {
+  const fehlend: string[] = [];
+  for (const eintrag of Object.values(DATA_SOURCES)) {
+    const quelle = eintrag as DataSource;
+    if (!quelle.license) continue;
+    const namen = [quelle.name, quelle.shortName].filter(Boolean) as string[];
+    // Der Name des Registers steht in der Zeile meist ohne seinen Klammerzusatz.
+    const genannt = namen.some((n) => zeile.includes(n) || zeile.includes(n.replace(/\s*\(.*\)$/, "")));
+    if (!genannt || zeile.includes(quelle.license)) continue;
+    const teile = [quelle.license, quelle.note].filter(Boolean) as string[];
+    for (const teil of teile) if (!fehlend.includes(teil) && !zeile.includes(teil)) fehlend.push(teil);
+  }
+  return fehlend.length ? `${zeile}, ${fehlend.join(", ")}` : zeile;
+}
+
 export function sourceLabel(source: DataSource, { kurz = false } = {}): string {
   // `kurz` tauscht NUR den Namen gegen die Kurzform — Lizenz und
   // Änderungshinweis bleiben, weil beide Lizenzbestandteile sind.

@@ -41,13 +41,30 @@ for (const { pfad } of SEITEN) {
       dokument: document.documentElement.scrollWidth,
       fenster: window.innerWidth,
       // Der breiteste sichtbare Übeltäter, damit ein roter Lauf sagt, WO.
+      //
+      // WAS IN EINEM KLEMMENDEN VORFAHREN LIEGT, ZÄHLT NICHT (23.09.2026):
+      // Die Dekoration der Szene ist breiter als das Fenster und trägt zur
+      // Seitenbreite trotzdem nichts bei, weil ihr Rahmen sie abschneidet. Eine
+      // Meldung, die sie nennt, zeigt auf Zierde statt auf die Ursache — genau
+      // so ist eine Messung auf der Ortsseite auf eine Wolke gelaufen, während
+      // die echte Ursache eine Leiste mit vier Elementen in einer Zeile war.
       breitestes: (() => {
+        const geklemmt = (el: HTMLElement) => {
+          let p = el.parentElement;
+          while (p) {
+            const o = getComputedStyle(p).overflowX;
+            if (o === "hidden" || o === "clip" || o === "auto" || o === "scroll") return true;
+            p = p.parentElement;
+          }
+          return false;
+        };
         let best: { tag: string; breite: number; text: string } | null = null;
         for (const el of Array.from(document.body.querySelectorAll<HTMLElement>("*"))) {
           const r = el.getBoundingClientRect();
           if (r.width === 0 || r.right <= window.innerWidth + 1) continue;
           const s = getComputedStyle(el);
           if (s.visibility === "hidden" || s.display === "none") continue;
+          if (geklemmt(el)) continue;
           if (!best || r.right > best.breite) best = { tag: el.tagName.toLowerCase() + (el.className && typeof el.className === "string" ? "." + el.className.split(" ")[0] : ""), breite: Math.round(r.right), text: (el.textContent || "").trim().slice(0, 40) };
         }
         return best;
