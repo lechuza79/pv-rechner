@@ -52988,5 +52988,983 @@
         "evidenceUrl": "https://www.germersheim.eu/verwaltung-buergerservice/stadtentwicklung/foerderprojekte/natuerlicher-klimaschutz-in-kommunen-piko-park-und-technische-ausstattung"
       }
     ]
+  },
+  {
+    "regionId": "01057006",
+    "name": "Bendfeld",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf amt-probstei.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Seite „Geförderte Maßnahmen\" des Amtes Probstei, am 23.09.2026 gelesen: Sie listet eigene Vorhaben des Amtes, die von Dritten finanziert wurden — Neugestaltung der Erlebnispromenade Wendtorf aus der Bund-Länder-Gemeinschaftsaufgabe „Verbesserung der regionalen Wirtschaftsstruktur\", Sanierung sanitärer Räume in der Grundschule an den Salzwiesen aus dem Landesprogramm SANI III. Das ist Förderung FÜR die Kommune, nicht VON ihr; eine Leistung an Haushalte steht dort nicht.",
+    "searches": [
+      "Seite „Geförderte Maßnahmen\" des Amtes Probstei am 23.09.2026 live gelesen (HTTP 200)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-probstei.de/buergerservice/ausschreibungen/foerdermassnahmen",
+        "finding": "Wörtlich: „Sehen Sie auf dieser Seite die laufenden Projekte innerhalb des Amtsgebietes, welche durch verschiedene Träger finanziell gefördert wurden.\" Aufgeführt sind Promenade, Schulsanierung und weitere Bauvorhaben des Amtes."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-probstei.de/buergerservice/ausschreibungen/foerdermassnahmen",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Liste eigener Vorhaben des Amtes mit Bundes- und Landesmitteln.",
+        "evidenceUrl": "https://www.amt-probstei.de/buergerservice/ausschreibungen/foerdermassnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "01057018",
+    "name": "Fahren",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf amt-probstei.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Seite „Geförderte Maßnahmen\" des Amtes Probstei, am 23.09.2026 gelesen: Sie listet eigene Vorhaben des Amtes, die von Dritten finanziert wurden — Neugestaltung der Erlebnispromenade Wendtorf aus der Bund-Länder-Gemeinschaftsaufgabe „Verbesserung der regionalen Wirtschaftsstruktur\", Sanierung sanitärer Räume in der Grundschule an den Salzwiesen aus dem Landesprogramm SANI III. Das ist Förderung FÜR die Kommune, nicht VON ihr; eine Leistung an Haushalte steht dort nicht.",
+    "searches": [
+      "Seite „Geförderte Maßnahmen\" des Amtes Probstei am 23.09.2026 live gelesen (HTTP 200)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-probstei.de/buergerservice/ausschreibungen/foerdermassnahmen",
+        "finding": "Wörtlich: „Sehen Sie auf dieser Seite die laufenden Projekte innerhalb des Amtsgebietes, welche durch verschiedene Träger finanziell gefördert wurden.\" Aufgeführt sind Promenade, Schulsanierung und weitere Bauvorhaben des Amtes."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-probstei.de/buergerservice/ausschreibungen/foerdermassnahmen",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Liste eigener Vorhaben des Amtes mit Bundes- und Landesmitteln.",
+        "evidenceUrl": "https://www.amt-probstei.de/buergerservice/ausschreibungen/foerdermassnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "01057087",
+    "name": "Wendtorf",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf amt-probstei.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Seite „Geförderte Maßnahmen\" des Amtes Probstei, am 23.09.2026 gelesen: Sie listet eigene Vorhaben des Amtes, die von Dritten finanziert wurden — Neugestaltung der Erlebnispromenade Wendtorf aus der Bund-Länder-Gemeinschaftsaufgabe „Verbesserung der regionalen Wirtschaftsstruktur\", Sanierung sanitärer Räume in der Grundschule an den Salzwiesen aus dem Landesprogramm SANI III. Das ist Förderung FÜR die Kommune, nicht VON ihr; eine Leistung an Haushalte steht dort nicht.",
+    "searches": [
+      "Seite „Geförderte Maßnahmen\" des Amtes Probstei am 23.09.2026 live gelesen (HTTP 200)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-probstei.de/buergerservice/ausschreibungen/foerdermassnahmen",
+        "finding": "Wörtlich: „Sehen Sie auf dieser Seite die laufenden Projekte innerhalb des Amtsgebietes, welche durch verschiedene Träger finanziell gefördert wurden.\" Aufgeführt sind Promenade, Schulsanierung und weitere Bauvorhaben des Amtes."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-probstei.de/buergerservice/ausschreibungen/foerdermassnahmen",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Liste eigener Vorhaben des Amtes mit Bundes- und Landesmitteln.",
+        "evidenceUrl": "https://www.amt-probstei.de/buergerservice/ausschreibungen/foerdermassnahmen"
+      }
+    ]
+  },
+  {
+    "regionId": "01054165",
+    "name": "Galmsbüll",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf galmsbuell.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Seite „Richtlinien / Zuschüsse\" der Gemeinde, am 23.09.2026 gelesen, führt genau zwei Leistungen an Einwohner: einen Kommunikationszuschuss von 500 € im Jahr auf Antrag und einen Zuschuss von 70 % auf die KITA-Elternbeiträge. Energie kommt darin nicht vor.",
+    "searches": [
+      "Richtlinien- und Zuschussseite der Gemeinde Galmsbüll am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.galmsbuell.de/gemeinde/richtlinien-zusch%C3%BCsse",
+        "finding": "Wörtlich: „auf Antrag wird ein Kommunikationszuschlag von 500 € jährlich gezahlt.\" Daneben ein Zuschuss von 70 % auf KITA-Elternbeiträge. Keine Leistung für Photovoltaik, Speicher oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "galmsbuell.de/gemeinde/richtlinien-zusch%C3%BCsse",
+        "disposition": "reviewed",
+        "reason": "Gelesen; nur Kommunikations- und KITA-Zuschuss.",
+        "evidenceUrl": "https://www.galmsbuell.de/gemeinde/richtlinien-zusch%C3%BCsse"
+      }
+    ]
+  },
+  {
+    "regionId": "01054073",
+    "name": "Ladelund",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf ladelund.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle beschreibt ein bundesgefördertes Radwegebauprojekt (18 km neue Radwege, 70 Abstellanlagen, Servicestationen, gemeindeübergreifender Fahrradverleih), finanziert von Bund, Land und Kreis — Förderung FÜR die Kommune, nicht VON ihr.",
+    "searches": [
+      "Seite zum bundesgeförderten Radwegebauprojekt am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ladelund.de/wohnen-bauen/vom-bund-gef%C3%B6rdertes-radwegebauprojekt.html",
+        "finding": "Wörtlich: „Das Projekt wird durch Bund, Land und Kreis gefördert.\" Gegenstand sind Radwege und Abstellanlagen, keine Leistung an Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ladelund.de/wohnen-bauen/vom-bund-gef%C3%B6rdertes-radwegebauprojekt.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; bundesgefördertes Radwegeprojekt der Gemeinde.",
+        "evidenceUrl": "https://www.ladelund.de/wohnen-bauen/vom-bund-gef%C3%B6rdertes-radwegebauprojekt.html"
+      }
+    ]
+  },
+  {
+    "regionId": "01056050",
+    "name": "Wedel",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf wedel.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine Meldung vom Juni über bis zu vier Millionen Euro Landesmittel aus dem Programm „Neubau von Schwimmsportstätten in Schleswig-Holstein\" für den Umbau des Erlebnisbeckens in der Badebucht — Förderung FÜR die Stadt, nicht VON ihr.",
+    "searches": [
+      "Meldung „Vier Millionen Euro Förderung für die Wedeler Badebucht\" am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wedel.de/rathaus-politik/newsdetail/vier-millionen-euro-foerderung-fuer-die-wedeler-badebucht",
+        "finding": "Wörtlich: „Das Land Schleswig-Holstein bewilligt damit Mittel in Höhe von bis zu vier Millionen Euro\" für den Umbau des Erlebnisbeckens. Keine Leistung an Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wedel.de/rathaus-politik/newsdetail/vier-millionen-euro-foerderung-fuer-die-wedeler-badebucht",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Landesmittel für ein Bauvorhaben der Stadt.",
+        "evidenceUrl": "https://www.wedel.de/rathaus-politik/newsdetail/vier-millionen-euro-foerderung-fuer-die-wedeler-badebucht"
+      }
+    ]
+  },
+  {
+    "regionId": "01058058",
+    "name": "Gettorf",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf gettorf.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die Seite verweist auf das Landesprogramm Wirtschaft 2021–2027 aus Mitteln der Gemeinschaftsaufgabe zur Verbesserung der regionalen Wirtschaftsstruktur: gefördert werden gewerbliche Investitionen kleiner und mittlerer Betriebe. Träger ist das Land, Zielgruppe sind Unternehmen, nicht Haushalte.",
+    "searches": [
+      "Seite zur Förderung von Unternehmensgründungen am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gettorf.de/wirtschaft-bauen-umwelt/foerderung-von-unternehmensgruendungen",
+        "finding": "Wörtlich: „Gefördert werden Errichtungs- und Erweiterungsinvestitionen sowie Modernisierungsinvestitionen bei kleinen und mittleren Betrieben (KMU) der gewerblichen Wirtschaft.\" Landesprogramm, keine kommunale Leistung an Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gettorf.de/wirtschaft-bauen-umwelt/foerderung-von-unternehmensgruendungen",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Landesprogramm für gewerbliche Investitionen.",
+        "evidenceUrl": "https://www.gettorf.de/wirtschaft-bauen-umwelt/foerderung-von-unternehmensgruendungen"
+      }
+    ]
+  },
+  {
+    "regionId": "01058037",
+    "name": "Dänischenhagen",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf amt-daenischenhagen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle beschreibt die AktivRegion „Eckernförder Bucht\", einen Verein im Rahmen des Landesprogramms ländlicher Raum, der EU-Mittel für Regionalentwicklungsprojekte vergibt. Kein Zuschuss der Gemeinde und kein Energiebezug; die Seite nennt weder Sätze noch Technik. Die Seite verweist zudem auf eine Photovoltaik-Standortstudie des Amtes — eine Standortuntersuchung, keine Förderung.",
+    "searches": [
+      "Seite zur AktivRegion Eckernförder Bucht am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-daenischenhagen.de/amt_daenischenhagen/Amt%20und%20Gemeinden/Aktivregion%20Eckernf%C3%B6rder%20Bucht",
+        "finding": "Wörtlich: „Unterstützt aus Mitteln der EU sollen Lebensqualität, Wirtschaftskraft und Gemeinschaft verbessert werden.\" EU-Regionalentwicklung über einen Verein, keine kommunale Leistung für Photovoltaik, Speicher oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-daenischenhagen.de/amt_daenischenhagen/Amt%20und%20Gemeinden/Aktivregion%20Eckernf%C3%B6rder%20Bucht",
+        "disposition": "reviewed",
+        "reason": "Gelesen; EU-Regionalentwicklung (AktivRegion/LEADER).",
+        "evidenceUrl": "https://www.amt-daenischenhagen.de/amt_daenischenhagen/Amt%20und%20Gemeinden/Aktivregion%20Eckernf%C3%B6rder%20Bucht"
+      }
+    ]
+  },
+  {
+    "regionId": "01058116",
+    "name": "Noer",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf amt-daenischenhagen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle beschreibt die AktivRegion „Eckernförder Bucht\", einen Verein im Rahmen des Landesprogramms ländlicher Raum, der EU-Mittel für Regionalentwicklungsprojekte vergibt. Kein Zuschuss der Gemeinde und kein Energiebezug; die Seite nennt weder Sätze noch Technik. Die Seite verweist zudem auf eine Photovoltaik-Standortstudie des Amtes — eine Standortuntersuchung, keine Förderung.",
+    "searches": [
+      "Seite zur AktivRegion Eckernförder Bucht am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-daenischenhagen.de/amt_daenischenhagen/Amt%20und%20Gemeinden/Aktivregion%20Eckernf%C3%B6rder%20Bucht",
+        "finding": "Wörtlich: „Unterstützt aus Mitteln der EU sollen Lebensqualität, Wirtschaftskraft und Gemeinschaft verbessert werden.\" EU-Regionalentwicklung über einen Verein, keine kommunale Leistung für Photovoltaik, Speicher oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-daenischenhagen.de/amt_daenischenhagen/Amt%20und%20Gemeinden/Aktivregion%20Eckernf%C3%B6rder%20Bucht",
+        "disposition": "reviewed",
+        "reason": "Gelesen; EU-Regionalentwicklung (AktivRegion/LEADER).",
+        "evidenceUrl": "https://www.amt-daenischenhagen.de/amt_daenischenhagen/Amt%20und%20Gemeinden/Aktivregion%20Eckernf%C3%B6rder%20Bucht"
+      }
+    ]
+  },
+  {
+    "regionId": "01054071",
+    "name": "Kolkerheide",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf amnf.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle beschreibt den „Verein zur Förderung des bürgerschaftlichen Engagements in der Region Mittleres Nordfriesland\", getragen von den 20 Kommunen des Amtes. Er fördert nach eigener Satzung ausdrücklich KEINE Sachleistungen, sondern „das Wirken am Menschen\", etwa in Jugendfeuerwehren. Damit ist eine Geräteförderung dort ausgeschlossen.",
+    "searches": [
+      "Seite „Förderung des bürgerschaftlichen Engagements\" des Amtes Mittleres Nordfriesland am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amnf.de/buergerservice/foerderung-des-buergerschaftlichen-engagements",
+        "finding": "Wörtlich: „Mit dem Ziel ehrenamtliches Engagement insbesondere im Bereich der Jugendarbeit finanziell zu unterstützen\" — und weiter: der Verein fördert nach Satzung „keine Sachleistungen\". Keine Leistung für Photovoltaik, Speicher oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amnf.de/buergerservice/foerderung-des-buergerschaftlichen-engagements",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Verein für bürgerschaftliches Engagement, keine Sachleistungen.",
+        "evidenceUrl": "https://www.amnf.de/buergerservice/foerderung-des-buergerschaftlichen-engagements"
+      }
+    ]
+  },
+  {
+    "regionId": "01054146",
+    "name": "Vollstedt",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf amnf.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle beschreibt den „Verein zur Förderung des bürgerschaftlichen Engagements in der Region Mittleres Nordfriesland\", getragen von den 20 Kommunen des Amtes. Er fördert nach eigener Satzung ausdrücklich KEINE Sachleistungen, sondern „das Wirken am Menschen\", etwa in Jugendfeuerwehren. Damit ist eine Geräteförderung dort ausgeschlossen.",
+    "searches": [
+      "Seite „Förderung des bürgerschaftlichen Engagements\" des Amtes Mittleres Nordfriesland am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amnf.de/buergerservice/foerderung-des-buergerschaftlichen-engagements",
+        "finding": "Wörtlich: „Mit dem Ziel ehrenamtliches Engagement insbesondere im Bereich der Jugendarbeit finanziell zu unterstützen\" — und weiter: der Verein fördert nach Satzung „keine Sachleistungen\". Keine Leistung für Photovoltaik, Speicher oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amnf.de/buergerservice/foerderung-des-buergerschaftlichen-engagements",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Verein für bürgerschaftliches Engagement, keine Sachleistungen.",
+        "evidenceUrl": "https://www.amnf.de/buergerservice/foerderung-des-buergerschaftlichen-engagements"
+      }
+    ]
+  },
+  {
+    "regionId": "01056016",
+    "name": "Groß Nordende",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort acht Fundstellen auf amt-geest-und-marsch-suedholstein.de und gross-nordende.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Sechs der acht Fundstellen gehören dem Fördermittelmanagement des Amtes und listen Projektumsetzungen in den Mitgliedsgemeinden samt Ansprechpartner — Förderung FÜR die Kommunen. Eine Fundstelle war eine tote Adresse (HTTP 404, geprüft am 20.09.2026). Die letzte, heute am 23.09.2026 gelesen, ist ein Flyer des Kreises Pinneberg: Der Kreis bezuschusst Dachbegrünungen mit 20 bis 30 Euro je Quadratmeter und kleinkronige Hausbäume mit höchstens 100 Euro — Begrünung, keine Energieerzeugung, und damit keine Technik dieses Katalogs.",
+    "searches": [
+      "Flyer „Mehr Grün für den Kreis Pinneberg\" (Baumpflanzungen und Dachbegrünungen) am 23.09.2026 im Volltext gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/fileadmin/Amt/Dateien/Unser_Amt_und_Gemeinden/Klimaschutzmanagement/flyer_zuschuss_baumpflanzungen_dachbegruenungen.pdf",
+        "finding": "Flyer des Kreises Pinneberg: Dachbegrünung 20 € je m² bei Neubauten bzw. 30 € je m² bei Nachrüstung, gedeckelt bei 1.500 €; Hausbaum höchstens 100 €. Photovoltaik, Speicher und Wärmepumpen kommen nicht vor."
+      },
+      {
+        "url": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein",
+        "finding": "Stabsstelle Fördermittelmanagement des Amtes, am 21.09.2026 gelesen, Überschrift „Förderprojekte der Amtsverwaltung“. Die sechs Seiten dieses Zweigs listen Projektumsetzungen in den Mitgliedsgemeinden (Spielplätze, Kita, Feuerwehr) und den Ansprechpartner — Förderung FÜR die Kommunen, keine Zuschüsse an private Haushalte."
+      },
+      {
+        "url": "https://www.gross-nordende.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner",
+        "finding": "Am 20.09.2026 in allen geprüften Schreibweisen HTTP 404 — die Adresse liefert keine Seite mehr."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/fileadmin/Amt/Dateien/Unser_Amt_und_Gemeinden/Klimaschutzmanagement/flyer_zuschuss_baumpflanzungen_dachbegruenungen.pdf",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Kreis-Zuschuss für Dachbegrünung und Hausbäume, keine Energietechnik.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/fileadmin/Amt/Dateien/Unser_Amt_und_Gemeinden/Klimaschutzmanagement/flyer_zuschuss_baumpflanzungen_dachbegruenungen.pdf"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein",
+        "disposition": "reviewed",
+        "reason": "Am 21.09.2026 gelesen; Übersicht der Stabsstelle im Fördermittelmanagement des Amtes, nur eigene Vorhaben der Gemeinden.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner",
+        "disposition": "reviewed",
+        "reason": "Am 21.09.2026 gelesen; Ansprechpartner der Stabsstelle im Fördermittelmanagement des Amtes, nur eigene Vorhaben der Gemeinden.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-appen",
+        "disposition": "reviewed",
+        "reason": "Am 21.09.2026 gelesen; Projektumsetzungen Appen im Fördermittelmanagement des Amtes, nur eigene Vorhaben der Gemeinden.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-gross-nordende",
+        "disposition": "reviewed",
+        "reason": "Am 21.09.2026 gelesen; Projektumsetzungen Groß Nordende im Fördermittelmanagement des Amtes, nur eigene Vorhaben der Gemeinden.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haselau",
+        "disposition": "reviewed",
+        "reason": "Am 21.09.2026 gelesen; Projektumsetzungen Haselau im Fördermittelmanagement des Amtes, nur eigene Vorhaben der Gemeinden.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein"
+      },
+      {
+        "url": "amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/gemeinde-haseldorf",
+        "disposition": "reviewed",
+        "reason": "Am 21.09.2026 gelesen; Projektumsetzungen Haseldorf im Fördermittelmanagement des Amtes, nur eigene Vorhaben der Gemeinden.",
+        "evidenceUrl": "https://www.amt-geest-und-marsch-suedholstein.de/buergerservice-politik/foerdermittelmanagement/amt-geest-und-marsch-suedholstein"
+      },
+      {
+        "url": "gross-nordende.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 20.09.2026).",
+        "evidenceUrl": "https://www.gross-nordende.de/buergerservice-politik/foerdermittelmanagement/ansprechpartner"
+      }
+    ]
+  },
+  {
+    "regionId": "03357003",
+    "name": "Anderlingen",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf selsingen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Potenzialflächenanalyse der Samtgemeinde Selsingen für FREIFLÄCHEN-Photovoltaik — Bauleitplanung nach den Zielen der Landesplanung (Ausbauziel rund 113 ha, ermittelte Potenzialflächen rund 533 ha), kein Zuschuss und keine Leistung an Haushalte. Das Wort Photovoltaik im Titel ist hier ein Planungsbegriff, kein Förderprogramm.",
+    "searches": [
+      "Seite zur Potenzialflächenanalyse für Freiflächen-Photovoltaik am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.selsingen.de/leben-und-wohnen/potenzialflaechenanalyse-fuer-freiflaechen-photovoltaikanlagen",
+        "finding": "Wörtlich: „Die in der Potenzialfläche ermittelten Potenzialflächen haben eine Größe von ca. 533 ha\" gegenüber einem Ausbauziel von ca. 113 ha. Gegenstand ist die Flächenausweisung, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "selsingen.de/leben-und-wohnen/potenzialflaechenanalyse-fuer-freiflaechen-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Bauleitplanung für Freiflächen-PV, kein Zuschuss.",
+        "evidenceUrl": "https://www.selsingen.de/leben-und-wohnen/potenzialflaechenanalyse-fuer-freiflaechen-photovoltaikanlagen"
+      }
+    ]
+  },
+  {
+    "regionId": "03357042",
+    "name": "Seedorf",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf selsingen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Potenzialflächenanalyse der Samtgemeinde Selsingen für FREIFLÄCHEN-Photovoltaik — Bauleitplanung nach den Zielen der Landesplanung (Ausbauziel rund 113 ha, ermittelte Potenzialflächen rund 533 ha), kein Zuschuss und keine Leistung an Haushalte. Das Wort Photovoltaik im Titel ist hier ein Planungsbegriff, kein Förderprogramm.",
+    "searches": [
+      "Seite zur Potenzialflächenanalyse für Freiflächen-Photovoltaik am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.selsingen.de/leben-und-wohnen/potenzialflaechenanalyse-fuer-freiflaechen-photovoltaikanlagen",
+        "finding": "Wörtlich: „Die in der Potenzialfläche ermittelten Potenzialflächen haben eine Größe von ca. 533 ha\" gegenüber einem Ausbauziel von ca. 113 ha. Gegenstand ist die Flächenausweisung, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "selsingen.de/leben-und-wohnen/potenzialflaechenanalyse-fuer-freiflaechen-photovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Bauleitplanung für Freiflächen-PV, kein Zuschuss.",
+        "evidenceUrl": "https://www.selsingen.de/leben-und-wohnen/potenzialflaechenanalyse-fuer-freiflaechen-photovoltaikanlagen"
+      }
+    ]
+  },
+  {
+    "regionId": "13073016",
+    "name": "Deyelsdorf",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort drei Fundstellen auf recknitz-trebeltal.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Zwei der drei Fundstellen sind dieselbe Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal in Bildschirm- und Druckansicht, am 23.09.2026 gelesen: Sie listet Vorhaben, die das Amt SELBST mit EU- und Landesmitteln umgesetzt hat — Radweg Tribsees, Straßenausbau Bad Sülze, Untersuchung eines Dorfteichs, Umrüstung der Straßenbeleuchtung auf LED. Das ist Förderung FÜR die Kommune, nicht VON ihr. Die dritte Fundstelle war eine tote Adresse (HTTP 404, geprüft am 23.09.2026).",
+    "searches": [
+      "Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal am 23.09.2026 live gelesen, Bildschirm- und Druckansicht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "finding": "Aufgeführt sind ausschließlich eigene Vorhaben des Amtes, darunter wörtlich „Umrüstung der Straßenbeleuchtung auf energieeffiziente LED-Technik (Gefördert durch die Europäische Union)\". Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.recknitz-trebeltal.de/contact/index/link",
+        "finding": "Am 23.09.2026 in allen geprüften Schreibweisen HTTP 404. War eine Weiterleitung des Kontaktformulars des Amtes, keine Förderseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; eigene Vorhaben des Amtes mit EU-Mitteln.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Druckansicht derselben Seite.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026); war ohnehin eine Kontaktformular-Weiterleitung.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13073020",
+    "name": "Drechow",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort drei Fundstellen auf recknitz-trebeltal.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Zwei der drei Fundstellen sind dieselbe Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal in Bildschirm- und Druckansicht, am 23.09.2026 gelesen: Sie listet Vorhaben, die das Amt SELBST mit EU- und Landesmitteln umgesetzt hat — Radweg Tribsees, Straßenausbau Bad Sülze, Untersuchung eines Dorfteichs, Umrüstung der Straßenbeleuchtung auf LED. Das ist Förderung FÜR die Kommune, nicht VON ihr. Die dritte Fundstelle war eine tote Adresse (HTTP 404, geprüft am 23.09.2026).",
+    "searches": [
+      "Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal am 23.09.2026 live gelesen, Bildschirm- und Druckansicht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "finding": "Aufgeführt sind ausschließlich eigene Vorhaben des Amtes, darunter wörtlich „Umrüstung der Straßenbeleuchtung auf energieeffiziente LED-Technik (Gefördert durch die Europäische Union)\". Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.recknitz-trebeltal.de/contact/index/link",
+        "finding": "Am 23.09.2026 in allen geprüften Schreibweisen HTTP 404. War eine Weiterleitung des Kontaktformulars des Amtes, keine Förderseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; eigene Vorhaben des Amtes mit EU-Mitteln.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Druckansicht derselben Seite.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026); war ohnehin eine Kontaktformular-Weiterleitung.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13073032",
+    "name": "Grammendorf",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort drei Fundstellen auf recknitz-trebeltal.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Zwei der drei Fundstellen sind dieselbe Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal in Bildschirm- und Druckansicht, am 23.09.2026 gelesen: Sie listet Vorhaben, die das Amt SELBST mit EU- und Landesmitteln umgesetzt hat — Radweg Tribsees, Straßenausbau Bad Sülze, Untersuchung eines Dorfteichs, Umrüstung der Straßenbeleuchtung auf LED. Das ist Förderung FÜR die Kommune, nicht VON ihr. Die dritte Fundstelle war eine tote Adresse (HTTP 404, geprüft am 23.09.2026).",
+    "searches": [
+      "Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal am 23.09.2026 live gelesen, Bildschirm- und Druckansicht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "finding": "Aufgeführt sind ausschließlich eigene Vorhaben des Amtes, darunter wörtlich „Umrüstung der Straßenbeleuchtung auf energieeffiziente LED-Technik (Gefördert durch die Europäische Union)\". Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.recknitz-trebeltal.de/contact/index/link",
+        "finding": "Am 23.09.2026 in allen geprüften Schreibweisen HTTP 404. War eine Weiterleitung des Kontaktformulars des Amtes, keine Förderseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; eigene Vorhaben des Amtes mit EU-Mitteln.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Druckansicht derselben Seite.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026); war ohnehin eine Kontaktformular-Weiterleitung.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13073033",
+    "name": "Gransebieth",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort drei Fundstellen auf recknitz-trebeltal.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Zwei der drei Fundstellen sind dieselbe Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal in Bildschirm- und Druckansicht, am 23.09.2026 gelesen: Sie listet Vorhaben, die das Amt SELBST mit EU- und Landesmitteln umgesetzt hat — Radweg Tribsees, Straßenausbau Bad Sülze, Untersuchung eines Dorfteichs, Umrüstung der Straßenbeleuchtung auf LED. Das ist Förderung FÜR die Kommune, nicht VON ihr. Die dritte Fundstelle war eine tote Adresse (HTTP 404, geprüft am 23.09.2026).",
+    "searches": [
+      "Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal am 23.09.2026 live gelesen, Bildschirm- und Druckansicht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "finding": "Aufgeführt sind ausschließlich eigene Vorhaben des Amtes, darunter wörtlich „Umrüstung der Straßenbeleuchtung auf energieeffiziente LED-Technik (Gefördert durch die Europäische Union)\". Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.recknitz-trebeltal.de/contact/index/link",
+        "finding": "Am 23.09.2026 in allen geprüften Schreibweisen HTTP 404. War eine Weiterleitung des Kontaktformulars des Amtes, keine Förderseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; eigene Vorhaben des Amtes mit EU-Mitteln.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Druckansicht derselben Seite.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026); war ohnehin eine Kontaktformular-Weiterleitung.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13073039",
+    "name": "Hugoldsdorf",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort drei Fundstellen auf recknitz-trebeltal.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Zwei der drei Fundstellen sind dieselbe Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal in Bildschirm- und Druckansicht, am 23.09.2026 gelesen: Sie listet Vorhaben, die das Amt SELBST mit EU- und Landesmitteln umgesetzt hat — Radweg Tribsees, Straßenausbau Bad Sülze, Untersuchung eines Dorfteichs, Umrüstung der Straßenbeleuchtung auf LED. Das ist Förderung FÜR die Kommune, nicht VON ihr. Die dritte Fundstelle war eine tote Adresse (HTTP 404, geprüft am 23.09.2026).",
+    "searches": [
+      "Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal am 23.09.2026 live gelesen, Bildschirm- und Druckansicht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "finding": "Aufgeführt sind ausschließlich eigene Vorhaben des Amtes, darunter wörtlich „Umrüstung der Straßenbeleuchtung auf energieeffiziente LED-Technik (Gefördert durch die Europäische Union)\". Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.recknitz-trebeltal.de/contact/index/link",
+        "finding": "Am 23.09.2026 in allen geprüften Schreibweisen HTTP 404. War eine Weiterleitung des Kontaktformulars des Amtes, keine Förderseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; eigene Vorhaben des Amtes mit EU-Mitteln.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Druckansicht derselben Seite.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026); war ohnehin eine Kontaktformular-Weiterleitung.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "13073050",
+    "name": "Lindholz",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort drei Fundstellen auf recknitz-trebeltal.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Zwei der drei Fundstellen sind dieselbe Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal in Bildschirm- und Druckansicht, am 23.09.2026 gelesen: Sie listet Vorhaben, die das Amt SELBST mit EU- und Landesmitteln umgesetzt hat — Radweg Tribsees, Straßenausbau Bad Sülze, Untersuchung eines Dorfteichs, Umrüstung der Straßenbeleuchtung auf LED. Das ist Förderung FÜR die Kommune, nicht VON ihr. Die dritte Fundstelle war eine tote Adresse (HTTP 404, geprüft am 23.09.2026).",
+    "searches": [
+      "Seite „Förderprogramme\" des Amtes Recknitz-Trebeltal am 23.09.2026 live gelesen, Bildschirm- und Druckansicht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "finding": "Aufgeführt sind ausschließlich eigene Vorhaben des Amtes, darunter wörtlich „Umrüstung der Straßenbeleuchtung auf energieeffiziente LED-Technik (Gefördert durch die Europäische Union)\". Keine Leistung an Haushalte."
+      },
+      {
+        "url": "https://www.recknitz-trebeltal.de/contact/index/link",
+        "finding": "Am 23.09.2026 in allen geprüften Schreibweisen HTTP 404. War eine Weiterleitung des Kontaktformulars des Amtes, keine Förderseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; eigene Vorhaben des Amtes mit EU-Mitteln.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Druckansicht derselben Seite.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/seite/329757/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "recknitz-trebeltal.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026); war ohnehin eine Kontaktformular-Weiterleitung.",
+        "evidenceUrl": "https://www.recknitz-trebeltal.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16065048",
+    "name": "Niederbösa",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf vgem-greussen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Webseitenförderprogramm „Greußen vernetzt\": Ein Förderverein für regionale Entwicklung erstellt Einrichtungen, Vereinen und Unternehmen der Verwaltungsgemeinschaft kostenfrei Internetseiten, zehn geförderte Projektplätze. Gegenstand ist eine Webseite, nicht Energietechnik.",
+    "searches": [
+      "Seite zum Webseitenförderprogramm „Greußen vernetzt\" am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "finding": "Wörtlich: „Die professionelle Webseitenerstellung ist zu 100 Prozent gefördert und daher für alle Projektpartner kostenfrei.\" Gegenstand sind Internetauftritte von Vereinen, Schulen und Unternehmen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Förderung von Internetseiten durch einen Förderverein.",
+        "evidenceUrl": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html"
+      }
+    ]
+  },
+  {
+    "regionId": "16065051",
+    "name": "Oberbösa",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf vgem-greussen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Webseitenförderprogramm „Greußen vernetzt\": Ein Förderverein für regionale Entwicklung erstellt Einrichtungen, Vereinen und Unternehmen der Verwaltungsgemeinschaft kostenfrei Internetseiten, zehn geförderte Projektplätze. Gegenstand ist eine Webseite, nicht Energietechnik.",
+    "searches": [
+      "Seite zum Webseitenförderprogramm „Greußen vernetzt\" am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "finding": "Wörtlich: „Die professionelle Webseitenerstellung ist zu 100 Prozent gefördert und daher für alle Projektpartner kostenfrei.\" Gegenstand sind Internetauftritte von Vereinen, Schulen und Unternehmen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Förderung von Internetseiten durch einen Förderverein.",
+        "evidenceUrl": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html"
+      }
+    ]
+  },
+  {
+    "regionId": "16065074",
+    "name": "Topfstedt",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf vgem-greussen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Webseitenförderprogramm „Greußen vernetzt\": Ein Förderverein für regionale Entwicklung erstellt Einrichtungen, Vereinen und Unternehmen der Verwaltungsgemeinschaft kostenfrei Internetseiten, zehn geförderte Projektplätze. Gegenstand ist eine Webseite, nicht Energietechnik.",
+    "searches": [
+      "Seite zum Webseitenförderprogramm „Greußen vernetzt\" am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "finding": "Wörtlich: „Die professionelle Webseitenerstellung ist zu 100 Prozent gefördert und daher für alle Projektpartner kostenfrei.\" Gegenstand sind Internetauftritte von Vereinen, Schulen und Unternehmen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Förderung von Internetseiten durch einen Förderverein.",
+        "evidenceUrl": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html"
+      }
+    ]
+  },
+  {
+    "regionId": "16065075",
+    "name": "Trebra",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf vgem-greussen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Webseitenförderprogramm „Greußen vernetzt\": Ein Förderverein für regionale Entwicklung erstellt Einrichtungen, Vereinen und Unternehmen der Verwaltungsgemeinschaft kostenfrei Internetseiten, zehn geförderte Projektplätze. Gegenstand ist eine Webseite, nicht Energietechnik.",
+    "searches": [
+      "Seite zum Webseitenförderprogramm „Greußen vernetzt\" am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "finding": "Wörtlich: „Die professionelle Webseitenerstellung ist zu 100 Prozent gefördert und daher für alle Projektpartner kostenfrei.\" Gegenstand sind Internetauftritte von Vereinen, Schulen und Unternehmen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Förderung von Internetseiten durch einen Förderverein.",
+        "evidenceUrl": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html"
+      }
+    ]
+  },
+  {
+    "regionId": "16065077",
+    "name": "Wasserthaleben",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf vgem-greussen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Webseitenförderprogramm „Greußen vernetzt\": Ein Förderverein für regionale Entwicklung erstellt Einrichtungen, Vereinen und Unternehmen der Verwaltungsgemeinschaft kostenfrei Internetseiten, zehn geförderte Projektplätze. Gegenstand ist eine Webseite, nicht Energietechnik.",
+    "searches": [
+      "Seite zum Webseitenförderprogramm „Greußen vernetzt\" am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "finding": "Wörtlich: „Die professionelle Webseitenerstellung ist zu 100 Prozent gefördert und daher für alle Projektpartner kostenfrei.\" Gegenstand sind Internetauftritte von Vereinen, Schulen und Unternehmen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Förderung von Internetseiten durch einen Förderverein.",
+        "evidenceUrl": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html"
+      }
+    ]
+  },
+  {
+    "regionId": "16065079",
+    "name": "Westgreußen",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf vgem-greussen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Webseitenförderprogramm „Greußen vernetzt\": Ein Förderverein für regionale Entwicklung erstellt Einrichtungen, Vereinen und Unternehmen der Verwaltungsgemeinschaft kostenfrei Internetseiten, zehn geförderte Projektplätze. Gegenstand ist eine Webseite, nicht Energietechnik.",
+    "searches": [
+      "Seite zum Webseitenförderprogramm „Greußen vernetzt\" am 23.09.2026 live gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "finding": "Wörtlich: „Die professionelle Webseitenerstellung ist zu 100 Prozent gefördert und daher für alle Projektpartner kostenfrei.\" Gegenstand sind Internetauftritte von Vereinen, Schulen und Unternehmen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen; Förderung von Internetseiten durch einen Förderverein.",
+        "evidenceUrl": "https://www.vgem-greussen.de/seite/206580/webseitenfoerderprogramm-der-verwaltungsgemeinschaft-greu%C3%9Fen.html"
+      }
+    ]
+  },
+  {
+    "regionId": "07235003",
+    "name": "Baldringen",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf saarburg-kell.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt — und die einzige erfasste Fundstelle gibt es nicht mehr: Die Förderseite der Verbandsgemeinde Saarburg-Kell antwortet am 23.09.2026 in jeder geprüften Schreibweise mit HTTP 404. Eine tote Adresse ist ein Befund, kein Hindernis; sie ist damit abgehakt. Ob die Verbandsgemeinde an anderer Stelle etwas fördert, ist offen und wäre bei einer neuen Fundstelle erneut zu prüfen.",
+    "searches": [
+      "Adresse der Förderseite am 23.09.2026 in allen geprüften Schreibweisen abgerufen — durchgehend HTTP 404"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "finding": "Am 23.09.2026 gemessen: HTTP 404. Die Adresse liefert keine Seite mehr; ein Inhalt, der beurteilt werden könnte, existiert nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026).",
+        "evidenceUrl": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07235057",
+    "name": "Kastel-Staadt",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf saarburg-kell.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt — und die einzige erfasste Fundstelle gibt es nicht mehr: Die Förderseite der Verbandsgemeinde Saarburg-Kell antwortet am 23.09.2026 in jeder geprüften Schreibweise mit HTTP 404. Eine tote Adresse ist ein Befund, kein Hindernis; sie ist damit abgehakt. Ob die Verbandsgemeinde an anderer Stelle etwas fördert, ist offen und wäre bei einer neuen Fundstelle erneut zu prüfen.",
+    "searches": [
+      "Adresse der Förderseite am 23.09.2026 in allen geprüften Schreibweisen abgerufen — durchgehend HTTP 404"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "finding": "Am 23.09.2026 gemessen: HTTP 404. Die Adresse liefert keine Seite mehr; ein Inhalt, der beurteilt werden könnte, existiert nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026).",
+        "evidenceUrl": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07235062",
+    "name": "Kirf",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf saarburg-kell.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt — und die einzige erfasste Fundstelle gibt es nicht mehr: Die Förderseite der Verbandsgemeinde Saarburg-Kell antwortet am 23.09.2026 in jeder geprüften Schreibweise mit HTTP 404. Eine tote Adresse ist ein Befund, kein Hindernis; sie ist damit abgehakt. Ob die Verbandsgemeinde an anderer Stelle etwas fördert, ist offen und wäre bei einer neuen Fundstelle erneut zu prüfen.",
+    "searches": [
+      "Adresse der Förderseite am 23.09.2026 in allen geprüften Schreibweisen abgerufen — durchgehend HTTP 404"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "finding": "Am 23.09.2026 gemessen: HTTP 404. Die Adresse liefert keine Seite mehr; ein Inhalt, der beurteilt werden könnte, existiert nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026).",
+        "evidenceUrl": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07235098",
+    "name": "Ockfen",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf saarburg-kell.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt — und die einzige erfasste Fundstelle gibt es nicht mehr: Die Förderseite der Verbandsgemeinde Saarburg-Kell antwortet am 23.09.2026 in jeder geprüften Schreibweise mit HTTP 404. Eine tote Adresse ist ein Befund, kein Hindernis; sie ist damit abgehakt. Ob die Verbandsgemeinde an anderer Stelle etwas fördert, ist offen und wäre bei einer neuen Fundstelle erneut zu prüfen.",
+    "searches": [
+      "Adresse der Förderseite am 23.09.2026 in allen geprüften Schreibweisen abgerufen — durchgehend HTTP 404"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "finding": "Am 23.09.2026 gemessen: HTTP 404. Die Adresse liefert keine Seite mehr; ein Inhalt, der beurteilt werden könnte, existiert nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026).",
+        "evidenceUrl": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07235126",
+    "name": "Serrig",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf saarburg-kell.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt — und die einzige erfasste Fundstelle gibt es nicht mehr: Die Förderseite der Verbandsgemeinde Saarburg-Kell antwortet am 23.09.2026 in jeder geprüften Schreibweise mit HTTP 404. Eine tote Adresse ist ein Befund, kein Hindernis; sie ist damit abgehakt. Ob die Verbandsgemeinde an anderer Stelle etwas fördert, ist offen und wäre bei einer neuen Fundstelle erneut zu prüfen.",
+    "searches": [
+      "Adresse der Förderseite am 23.09.2026 in allen geprüften Schreibweisen abgerufen — durchgehend HTTP 404"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "finding": "Am 23.09.2026 gemessen: HTTP 404. Die Adresse liefert keine Seite mehr; ein Inhalt, der beurteilt werden könnte, existiert nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026).",
+        "evidenceUrl": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07235154",
+    "name": "Merzkirchen",
+    "checkedAt": "2026-09-23T20:30:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf saarburg-kell.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt — und die einzige erfasste Fundstelle gibt es nicht mehr: Die Förderseite der Verbandsgemeinde Saarburg-Kell antwortet am 23.09.2026 in jeder geprüften Schreibweise mit HTTP 404. Eine tote Adresse ist ein Befund, kein Hindernis; sie ist damit abgehakt. Ob die Verbandsgemeinde an anderer Stelle etwas fördert, ist offen und wäre bei einer neuen Fundstelle erneut zu prüfen.",
+    "searches": [
+      "Adresse der Förderseite am 23.09.2026 in allen geprüften Schreibweisen abgerufen — durchgehend HTTP 404"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "finding": "Am 23.09.2026 gemessen: HTTP 404. Die Adresse liefert keine Seite mehr; ein Inhalt, der beurteilt werden könnte, existiert nicht."
+      }
+    ],
+    "sources": [
+      {
+        "url": "saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Adresse entfernt (HTTP 404 beim Gegenlesen am 23.09.2026).",
+        "evidenceUrl": "https://www.saarburg-kell.de/bauen-wirtschaft/projektentwicklung/foerderprogramme"
+      }
+    ]
   }
 ]
