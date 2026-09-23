@@ -2334,6 +2334,29 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { text: "Haltedauer zehn Jahre für Anlage und Speicher, sonst wird der Zuschuss zurückgefordert", nur: ["pv"] as FundingTechnik[] },
       { text: "Nicht gefördert werden Anlagen, die aus einer rechtlich bindenden Verpflichtung heraus installiert werden müssen, etwa nach dem Gebäudeenergiegesetz", nur: ["pv"] as FundingTechnik[] },
       // Nur Balkonkraftwerk
+      // OB „MAX. 2 MODULE" DAS GROSSE SET AUSSCHLIESST, IST OFFEN — geprüft am
+      // 23.09.2026 (Council, Volltext beider Richtlinien), Ergebnis:
+      // unentscheidbar. Der Satz lautet „Pro Haushalt wird im Förderzeitraum
+      // nur eine Mini-PV-Anlage (max. 2 Module) gefördert." Zwei vertretbare
+      // Lesarten: die Klammer ist eine Eigenschaft des Fördergegenstands (dann
+      // bekommt ein Vier-Modul-Set nichts) oder sie sagt, was als EINE Anlage
+      // zählt (dann bekommt es die 200 €). Für die zweite spricht stark die
+      // Schwester-Richtlinie, die an derselben Satzstelle zweifelsfrei eine
+      // Zählregel trägt („Hierbei wird die gleichzeitige Anschaffung einer PVA
+      // und eines Stromspeichers als eine Anlage gewertet"); für die erste,
+      // dass „max." die Sprache der Obergrenze ist und die Klammer sonst keinen
+      // eigenen Regelungsgehalt hätte.
+      //
+      // WAS NICHT TRÄGT: das Argument, die Kriterienliste in „Was wird
+      // gefördert?" sei erschöpfend und nenne die Modulzahl nicht. Sie ist nur
+      // erschöpfend für das, was sie ankündigt — nach derselben Logik wäre
+      // Mietkauf förderfähig, und der steht ausdrücklich in der Negativliste
+      // desselben Abschnitts.
+      //
+      // Nichts außerhalb der Richtlinie entscheidet es: Der Online-Antrag hat
+      // ein einziges Feld „Leistung:" ohne Einheit und fragt die Modulzahl gar
+      // nicht ab. Deshalb bleibt die Rechnung, wie sie ist (200 € für alle
+      // Sets); wer sie ändern will, braucht eine Auskunft der Stadt.
       { text: "Höchstens zwei Module je Haushalt, höchstens 800 W Einspeisung", nur: ["balkon"] as FundingTechnik[] },
       { text: "Hauptwohnsitz in Nidda genügt — Mieterinnen und Mieter sind ausdrücklich antragsberechtigt", nur: ["balkon"] as FundingTechnik[] },
       { text: "Haltedauer drei Jahre im Stadtgebiet, gerechnet ab der Auszahlung", nur: ["balkon"] as FundingTechnik[] },
@@ -11382,6 +11405,41 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: ["bund-nullsteuer", "bund-kfw270"],
     foerdert: ["balkon"],
     balkonPercentOfCost: 0.20, balkonCap: 100,
+    // DIE 800 Wp SIND NICHT ENTSCHIEDEN — und deshalb steht hier KEINE
+    // Rechengrenze (Council 23.09.2026, zwei Prüfer, einer adversarial).
+    //
+    // Abschnitt 4: „Zuschussfähig sind Balkonkraftwerke mit einer Leistung bis
+    // maximal 800 Wp." Meint das die MODULLEISTUNG, wäre unser Standard-Set
+    // (960 Wp) nicht förderfähig und die 100 €, die wir ihm anrechnen, wären
+    // falsch. Meint es die EINSPEISELEISTUNG, ist alles richtig, wie es ist.
+    //
+    // Für die Modul-Lesart spricht die Einheit (Wp ist Modul-Spitzenleistung,
+    // ein Wechselrichter trägt W oder VA) und das Antragsformular: Es fragt
+    // „Modulleistung", „Modulanzahl" und „Modulleistung gesamt" ab und keine
+    // Wechselrichterleistung.
+    //
+    // DAGEGEN SPRICHT DIE ZAHL SELBST, und das wiegt schwerer, als es zuerst
+    // aussah: Der Gemeinderat hat die Kriterien am 12.09.2023 beschlossen —
+    // ACHT MONATE bevor § 8 Abs. 5a EEG in Kraft trat (16.05.2024). Damals war
+    // „800" die im Umlauf befindliche Zahl der angekündigten
+    // Wechselrichtergrenze; eine Modulgrenze von 2.000 Wp, an der sich die
+    // Gemeinde hätte orientieren können, gab es noch gar nicht. Das Gesetz
+    // trennt beide Größen ausdrücklich (2 kW Module / 800 VA Wechselrichter):
+    // Wer eine Modulgrenze meint, schreibt 2.000. Dazu zielt die einzige
+    // technische Bezugnahme des Dokuments auf die Einspeiseseite (VDE
+    // „Erzeugungsanlagen am Niederspannungsnetz", Abschnitt 3), und der für die
+    // Auszahlung verlangte Registerauszug (Abschnitt 6) weist beide Größen aus
+    // — die Modulfelder im Formular sind damit auch als bloße
+    // Anlagenbeschreibung erklärbar.
+    //
+    // WER DAS HIER SCHARF STELLT, SCHALTET DAS GÄNGIGSTE SET STILL AUS DER
+    // FÖRDERUNG. Das darf nur nach einer Auskunft der Gemeinde passieren; die
+    // Richtlinie selbst gibt es nicht her, und Abschnitt 2 sagt ohnehin „Ein
+    // Rechtsanspruch auf Gewährung von Zuschüssen besteht nicht" — was gilt,
+    // entscheidet die Verwaltungspraxis. Eine Rechengrenze war am 23.09.2026
+    // gebaut, getestet und wieder zurückgenommen, nachdem der Gegenprüfer den
+    // Beschlusszeitpunkt beigebracht hatte.
+    //
     // NEU AUFGENOMMEN 20.09.2026, aus dem Treffer-Vorrat. Die Förderkriterien
     // sind im Volltext gelesen (PDF „Förderkriterien für Balkon 2026" unter der
     // eigenen Adresse der Gemeinde, HTTP 200 am selben Tag). Abschnitt 4: „Die
