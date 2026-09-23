@@ -331,7 +331,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
             plz={ort.plz}
             lat={ort.lat}
             lon={ort.lon}
-            foerderung={<GemeindeFoerderung ort={ort.name} programme={foerderProgramme} uebersichtHref="/photovoltaik-foerderung" />}
+            foerderung={<GemeindeFoerderung ort={ort.name} programme={foerderProgramme} />}
             foerderTechniken={foerderTechniken}
           />
 

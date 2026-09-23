@@ -18,7 +18,9 @@ import { saetzeFuer, technikenVon, type FundingProgram, type FundingTechnik } fr
  *
  * Die Bundesprogramme (Nullsteuersatz, KfW 270) bekommen KEINE Box: Sie gelten
  * überall gleich und sagen über diesen Ort nichts aus. Sie stehen als Satz
- * darunter, mit dem Weg zur vollständigen Übersicht.
+ * darüber. Ein Weg zur bundesweiten Übersicht stand hier und ist weg
+ * (Betreiber, 23.09.2026): Der Abschnitt beantwortet die Frage nach DIESEM
+ * Ort, und ein Link in eine Liste aller Programme führt davon weg.
  */
 const TECHNIK_WORT: Record<FundingTechnik, string> = {
   pv: "Photovoltaik",
@@ -59,12 +61,9 @@ export type FoerderProgrammAnsicht = {
 export default function GemeindeFoerderung({
   ort,
   programme,
-  uebersichtHref,
 }: {
   ort: string;
   programme: FoerderProgrammAnsicht[];
-  /** Die bundesweite Übersicht — der Weg für alles, was hier nicht steht. */
-  uebersichtHref: string;
 }) {
   const [offen, setOffen] = useState<FoerderProgrammAnsicht | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -118,9 +117,6 @@ export default function GemeindeFoerderung({
           })}
         </div>
       )}
-      <a className="atlas-link gemeinde-foerder-alle" href={uebersichtHref}>
-        Alle Förderprogramme {pfeil}
-      </a>
 
       {/* aria-modal, damit die Farbtoken der Site in diesem Fenster gelten —
           die Sätze und Bedingungen kommen aus den geteilten Bausteinen. */}

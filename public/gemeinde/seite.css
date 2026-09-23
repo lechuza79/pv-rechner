@@ -73,8 +73,13 @@
 .solar-page .v3-section-nav .atlas-page-update{
   display:inline-flex;align-items:center;gap:4px;white-space:nowrap;
   font-size:var(--font-size-xs,12px);color:var(--atlas-muted);margin-right:4px}
+/* Auch auf dem Telefon sichtbar (Betreiber, 23.09.2026). Fehlt der Platz,
+   spart der Abo-Knopf den Ortsnamen — die Seite traegt ihn im Titel, in der
+   Ueberschrift und in der Kruemelspur; das Datum steht sonst nirgends in
+   dieser Leiste. */
 @media(max-width:860px){
-  .solar-page .v3-section-nav .atlas-page-update{display:none}
+  .solar-page .v3-section-nav .atlas-page-update{font-size:11px}
+  .solar-page .v3-section-nav [data-page-subscribe] .sc-abo-ort{display:none}
 }
 
 /* ── Die „?"-Erklärungen sehen aus wie überall sonst ─────────────────────────
@@ -175,7 +180,9 @@
 .solar-page .v3-examples-foerderung {
   margin: 0;
   padding: 56px 0 40px;
-  border-top: 1px solid var(--atlas-line);
+  /* Nur UNTEN eine Linie (Betreiber, 23.09.2026): Oben grenzt der Abschnitt
+     schon an die letzte Beispielrechnung, ein Strich dazwischen ist eine
+     zweite Kante an derselben Stelle. */
   border-bottom: 1px solid var(--atlas-line);
   scroll-margin-top: 96px;
 }
@@ -348,12 +355,6 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
    mit ihm — deshalb ein Umbruch statt eines eigenen Blocks mit eigener Hoehe. */
 .solar-page .sc-feature-card .gemeinde-foerder-hinweis a::before { content: "\A"; white-space: pre }
 
-/* Der Weg zur vollstaendigen Uebersicht steht mittig unter den Karten — wie
-   der Knopf der Karten darueber, nur als Link. */
-.gemeinde-foerder-alle {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  width: fit-content; margin: 8px auto 0;
-}
 .gemeinde-foerder-dialog .gemeinde-foerder-traeger { display: flex; align-items: center; gap: 10px; flex-wrap: wrap }
 .gemeinde-foerder-dialog .gemeinde-foerder-quelle {
   display: flex;
@@ -393,3 +394,11 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
 /* Die gelieferten Abzeichen tragen eine halbdurchsichtige Papierfläche als
    Rechteck um das Motiv; sie sind freigestellt abgelegt (Werkzeug:
    scripts/rangabzeichen-freistellen.ts). Hier deshalb nichts mehr zu tun. */
+
+/* ── Die Kontakt-Box steht auf der Seite, nicht auf einer eigenen Flaeche ────
+   Das Startseiten-Paket legt unter diesen Abschnitt einen Verlauf von hell
+   nach dunkelgruen — dort geht damit ein heller Seitenteil in den dunklen Fuss
+   ueber. Auf der Ortsseite ist oben wie unten alles dunkel; der Verlauf stand
+   deshalb als heller Streifen mitten im Dunkeln (Betreiber, 23.09.2026). Die
+   helle Karte selbst bleibt, sie ist die Box. */
+.solar-page .hs-person-section { background: none !important; }
