@@ -8,6 +8,8 @@
  */
 
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import {
   ANBIETER,
   anbieterFuer,
@@ -22,7 +24,7 @@ import {
 import { tokenPreisUsd, bekannteModelle, PREISE_STAND } from "../modellpreise";
 import { bilanz, STUNDEN_JE_TAG, STUNDENSATZ_EUR } from "../projekt-bilanz";
 import { ROLLENSAETZE, MIX, ERHEBUNG, mischsatz, kostenFuerTage, stundenJeRolle } from "../rollensaetze";
-import { ABSCHLAG, MESSUNGEN, spanneDerMessungen } from "../ki-wirkung";
+import { ABSCHLAG, MESSUNGEN, FEHLERRICHTUNG, spanneDerMessungen } from "../ki-wirkung";
 import { verteileZeit, type Arbeitstag, type Bestandstag, type Summe } from "../projekt-statistik";
 import { schaetzeAufwand, type Zaehlstand } from "../aufwand-schaetzung";
 
@@ -461,5 +463,25 @@ describe("Zeit über mehrere Projekte", () => {
     expect(b.investiert.stunden).toBe(10);
     expect(b.investiert.stundenParallel).toBe(4);
     expect(b.investiert.stundenBereinigt).toBe(8);
+  });
+});
+
+describe("Fehlerrichtung", () => {
+  it("benennt, dass der KI-Abschlag gegen uns rechnet", () => {
+    // SIE GEHÖRT AN DIE ZAHL, nicht in einen Kommentar: Wer eine Schätzung
+    // veröffentlicht, deren beste Einzelquelle ihr widerspricht, muss sagen, in
+    // welche Richtung er sich geirrt haben könnte. Zu niedrig ist dabei die
+    // vertretbare Richtung — dieselbe Bauweise wie beim Nutzungsgrad der
+    // Ölheizung im Wärmepumpen-Modell.
+    expect(FEHLERRICHTUNG).toMatch(/Ungunsten|vorsichtig|zu niedrig/i);
+    expect(FEHLERRICHTUNG).toMatch(/höher|Verlangsamung/i);
+  });
+
+  it("steht in der Ausgabe, nicht nur im Modul", () => {
+    const lauf = readFileSync(
+      resolve(process.cwd(), "scripts", "projekt-kosten-erfassen.ts"),
+      "utf8",
+    );
+    expect(lauf).toMatch(/FEHLERRICHTUNG/);
   });
 });

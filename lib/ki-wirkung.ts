@@ -95,6 +95,24 @@ export function faktor(wirkung: KiWirkung): number {
 export const KI_ANNAHME_STAND = "2026-09-23";
 
 /**
+ * Die Richtung des Fehlers — sie gehört an jede Zahl, die hier herauskommt.
+ *
+ * DER ABSCHLAG RECHNET GEGEN UNS, und das ist Absicht. Der einzige
+ * kontrollierte Versuch mit echten Aufgaben in vertrautem Code (METR) fand eine
+ * VERLANGSAMUNG; wer ihm folgte, dürfte gar nichts abziehen und käme auf einen
+ * höheren Vergleichswert. Wir ziehen trotzdem ab — lieber eine Zahl, die
+ * angreifbar zu niedrig ist, als eine, die angreifbar zu hoch ist.
+ *
+ * Dieselbe Bauweise wie beim Nutzungsgrad der Ölheizung im Wärmepumpen-Modell:
+ * bewusst zu vorsichtig, mit benannter Fehlerrichtung, statt genauer
+ * auszusehen, als die Quellenlage hergibt.
+ */
+export const FEHLERRICHTUNG =
+  "bewusst zu unseren Ungunsten: Der einzige Versuch mit echten Aufgaben in " +
+  "vertrautem Code fand eine Verlangsamung — ohne Abschlag läge der " +
+  "Vergleichswert höher";
+
+/**
  * Die Spanne der Messungen, für die Ausgabe.
  *
  * Sie gehört an jede Zahl, die aus diesen Abschlägen entsteht: Eine Schätzung,
