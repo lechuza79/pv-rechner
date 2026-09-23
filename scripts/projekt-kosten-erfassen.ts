@@ -33,6 +33,7 @@ import {
   type Listenwerttag,
 } from "../lib/projekt-kosten";
 import { bilanz, STUNDENSATZ_EUR, STUNDENSATZ_BELEG } from "../lib/projekt-bilanz";
+import { ROLLENSAETZE, ERHEBUNG } from "../lib/rollensaetze";
 import { schaetzeAufwand, type Zaehlstand } from "../lib/aufwand-schaetzung";
 import { WIDGETS } from "../lib/widget-registry";
 import { allFundingPrograms } from "../lib/funding-programs";
@@ -498,17 +499,36 @@ async function main() {
       }
       console.log(`  Geld            ${eur(i.bezahltEur)}${raum(i.zeitraum.geld)}`);
       console.log(`                  alle Projekte zusammen ${eur(i.bezahltAlleProjekteEur)}`);
+      console.log(`  Eigene Zeit     ${eur(i.eigeneZeitEur)} — ${z(Math.round(i.eigeneZeitEur / STUNDENSATZ_EUR))} h à ${eur(STUNDENSATZ_EUR)}`);
+      console.log(`                  ${STUNDENSATZ_BELEG}`);
       console.log(`  Rechenleistung  ${(i.tokens / 1e9).toFixed(1)} Mrd. Tokens (ganze Laufzeit, Frühphase hochgerechnet)`);
       console.log(`                  Listenwert ${usd(i.listenwertUsd)}${raum(i.zeitraum.listenwert)}`);
       console.log("ENTSTANDEN");
       console.log(`  ${z(b.entstanden.codezeilen)} Zeilen Code, ${z(b.entstanden.dokuzeilen)} Zeilen Doku`);
       console.log(`  ${z(b.entstanden.testfaelle)} Prüfungen, ${z(b.entstanden.dateien)} Dateien, ${z(b.entstanden.commits)} Änderungen`);
-      console.log("WERT (geschätzt, nicht gemessen)");
+      console.log("WERT — was ein Team dafür verlangt hätte (geschätzt, nicht gemessen)");
       console.log(`  ${z(b.wert.personentage)} Personentage (${b.wert.personenjahre} Personenjahre)`);
-      console.log(`  ${eur(b.wert.eur)} zum Satz ${eur(STUNDENSATZ_EUR)}/Stunde — Spanne ${eur(b.wert.vonEur)} bis ${eur(b.wert.bisEur)}`);
-      console.log(`  Satz: ${STUNDENSATZ_BELEG}`);
+      for (const r of ROLLENSAETZE) {
+        const std = b.wert.stundenJeRolle[r.rolle];
+        if (!std) continue;
+        const anteil = Math.round((std / (b.wert.personentage * 8)) * 100);
+        console.log(
+          `    ${r.name.padEnd(18)}${z(Math.round(std)).padStart(7)} h` +
+          `${(anteil + " %").padStart(7)}` +
+          `${eur(std * r.eurProStunde).padStart(12)}   à ${eur(r.eurProStunde)}/h`,
+        );
+      }
+      console.log(`  ${eur(b.wert.eur)} — Spanne ${eur(b.wert.vonEur)} bis ${eur(b.wert.bisEur)}`);
+      console.log(`  Mischsatz ${eur(b.wert.mischsatzEurProStunde)}/h. Anker: ${ERHEBUNG.quelle},`);
+      console.log(`  Median Software-/Webentwicklung ${eur(ERHEBUNG.softwareEntwicklungEurProStunde)}/h (n=${ERHEBUNG.stichprobeSoftware});`);
+      console.log("  die Rollenspreizung ist Marktbeobachtung, keine Erhebung.");
       console.log("VERHÄLTNIS");
-      if (b.hebelGeld) console.log(`  ${b.hebelGeld}× — Herstellwert je bezahltem Euro`);
+      if (b.hebelGeld) {
+        console.log(`  ${b.hebelGeld}× — Herstellwert je investiertem Euro (Rechnungen + eigene Zeit)`);
+      }
+      if (b.hebelNurGeld) {
+        console.log(`  ${b.hebelNurGeld}× — derselbe Wert nur gegen die Rechnungen, ohne die eigene Zeit`);
+      }
       if (b.hebelRechenleistung) {
         console.log(`  ${b.hebelRechenleistung}× — Listenwert der Rechenleistung je bezahltem Euro` +
           ` (nur die ${b.hebelRechenleistungMonate} Monate, für die beide Zahlen vorliegen)`);

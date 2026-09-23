@@ -20,7 +20,8 @@ import {
   type Listenwerttag,
 } from "../projekt-kosten";
 import { tokenPreisUsd, bekannteModelle, PREISE_STAND } from "../modellpreise";
-import { bilanz, STUNDEN_JE_TAG } from "../projekt-bilanz";
+import { bilanz, STUNDEN_JE_TAG, STUNDENSATZ_EUR } from "../projekt-bilanz";
+import { ROLLENSAETZE, MIX, ERHEBUNG, mischsatz, kostenFuerTage, stundenJeRolle } from "../rollensaetze";
 import type { Bestandstag, Summe } from "../projekt-statistik";
 import { schaetzeAufwand, type Zaehlstand } from "../aufwand-schaetzung";
 
@@ -263,11 +264,27 @@ describe("Übersicht", () => {
     expect(mit.hebelZeit!).toBeLessThan(ohne.hebelZeit!);
   });
 
-  it("rechnet den Herstellwert zum belegten Stundensatz", () => {
+  it("rechnet den Herstellwert über die Rollenmischung, nicht über einen Einheitssatz", () => {
     const b = bilanz(basis);
-    expect(b.wert.eur).toBe(b.wert.personentage * 100 * STUNDEN_JE_TAG);
+    // Der Mischsatz muss zwischen dem günstigsten und dem teuersten Rollensatz
+    // liegen — ein Wert daneben hieße, dass die Anteile nicht aufgehen.
+    const saetze = ROLLENSAETZE.map((r) => r.eurProStunde);
+    expect(b.wert.mischsatzEurProStunde).toBeGreaterThan(Math.min(...saetze));
+    expect(b.wert.mischsatzEurProStunde).toBeLessThan(Math.max(...saetze));
+    // Und er muss die Summe erklären: Stunden × Mischsatz ergibt den Betrag.
+    const stunden = b.wert.personentage * STUNDEN_JE_TAG;
+    expect(b.wert.eur).toBeCloseTo(stunden * b.wert.mischsatzEurProStunde, 4);
     expect(b.wert.vonEur).toBeLessThan(b.wert.eur);
     expect(b.wert.bisEur).toBeGreaterThan(b.wert.eur);
+  });
+
+  it("zählt die eigene Arbeitszeit als Einsatz mit", () => {
+    // OHNE SIE FÄLLT DAS VERHÄLTNIS ZU GUT AUS: Die erste Fassung teilte den
+    // Herstellwert nur durch die Rechnungsbeträge und kam auf das
+    // Fünfundzwanzigfache des ehrlichen Werts.
+    const b = bilanz({ ...basis, stundenHochgerechnet: 100 });
+    expect(b.investiert.eigeneZeitEur).toBe((b.investiert.stunden + 100) * STUNDENSATZ_EUR);
+    expect(b.hebelGeld!).toBeLessThan(b.hebelNurGeld!);
   });
 
   it("nennt keine Gesamtsumme über Bezahltes und Geschätztes", () => {
@@ -278,5 +295,59 @@ describe("Übersicht", () => {
     for (const feld of Object.keys(b)) {
       expect(feld).not.toMatch(/gesamt|summe/i);
     }
+  });
+});
+
+describe("Rollen und Sätze", () => {
+  it("lässt jeden Rollenmix genau auf eins aufgehen", () => {
+    // EIN MIX, DER NICHT AUFGEHT, IST IM ERGEBNIS UNSICHTBAR: Er liefert eine
+    // plausible Summe, die nur einen Teil der Tage bezahlt — oder einen zu
+    // vielen. Auffallen würde es erst, wenn jemand die Personentage gegen den
+    // Betrag nachrechnet.
+    for (const [name, mix] of Object.entries(MIX)) {
+      const summe = mix.cto + mix.senior + mix.junior;
+      expect(summe, name).toBeCloseTo(1, 10);
+    }
+  });
+
+  it("hält jeden Satz mit einem Beleg und in belegbarer Höhe", () => {
+    for (const r of ROLLENSAETZE) {
+      expect(r.beleg.length, r.name).toBeGreaterThan(40);
+      // Untergrenze: der erhobene Median der Software-/Webentwicklung.
+      // Obergrenze: das obere Ende dessen, was Marktbeobachtungen für
+      // Spezialistenrollen nennen. Ein Satz außerhalb wäre frei erfunden.
+      expect(r.eurProStunde, r.name).toBeGreaterThanOrEqual(ERHEBUNG.softwareEntwicklungEurProStunde);
+      expect(r.eurProStunde, r.name).toBeLessThanOrEqual(180);
+    }
+  });
+
+  it("nennt die Erhebung mit Stichprobe und Lesedatum", () => {
+    expect(ERHEBUNG.stichprobeSoftware).toBeGreaterThan(100);
+    expect(ERHEBUNG.gelesenAm).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(ERHEBUNG.quelle).toMatch(/Freelancer-Kompass/);
+  });
+
+  it("spreizt die Rollen nicht weiter, als die Erhebung es hergibt", () => {
+    // Die einzige belegte Spreizung ist die nach Alter: 80 € gegen 96 €, also
+    // ein Fünftel. Unsere Rollenstaffel darf darüber hinausgehen — sie bildet
+    // Agenturpreise ab, nicht Arbeitskraftpreise —, aber nicht beliebig weit.
+    // Faktor zwei wäre eine Behauptung, die keine Quelle trägt.
+    const saetze = ROLLENSAETZE.map((r) => r.eurProStunde);
+    expect(Math.max(...saetze) / Math.min(...saetze)).toBeLessThan(2);
+  });
+
+  it("rechnet Stunden je Rolle und Kosten aus derselben Mischung", () => {
+    const tage = 10;
+    const mix = MIX.umsetzung;
+    const std = stundenJeRolle(tage, mix);
+    const summeStunden = std.cto + std.senior + std.junior;
+    expect(summeStunden).toBeCloseTo(tage * 8, 6);
+    // Kosten und Mischsatz müssen dieselbe Zahl ergeben — zwei Wege, ein Wert.
+    expect(kostenFuerTage(tage, mix)).toBeCloseTo(tage * 8 * mischsatz(mix), 6);
+  });
+
+  it("macht Konzeptarbeit teurer als Fleißarbeit", () => {
+    expect(mischsatz(MIX.konzeptlastig)).toBeGreaterThan(mischsatz(MIX.umsetzung));
+    expect(mischsatz(MIX.umsetzung)).toBeGreaterThan(mischsatz(MIX.fleissarbeit));
   });
 });

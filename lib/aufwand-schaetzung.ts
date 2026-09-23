@@ -20,6 +20,10 @@
 // Messung hält — und damit die Summe mitwächst, wenn das Projekt wächst.
 
 import type { Bestandstag } from "./projekt-statistik";
+import {
+  MIX, ROLLENSAETZE, kostenFuerTage, stundenJeRolle,
+  type MixName, type Rolle, type Rollenmix,
+} from "./rollensaetze";
 
 /** Eine Position des Angebots. */
 export interface Gewerk {
@@ -30,6 +34,14 @@ export interface Gewerk {
   tage: number;
   /** Wie die Menge zu lesen ist, für die Anzeige. */
   einheit?: string;
+  /**
+   * Wer diese Tage leistet.
+   *
+   * Ohne Angabe gilt der Normalfall. Die Mischung entscheidet über die Summe
+   * stärker als jeder einzelne Satz — zwischen reiner Fleißarbeit und reiner
+   * Konzeptarbeit liegt beim Mischsatz das Anderthalbfache.
+   */
+  mix?: MixName;
 }
 
 /** Gezählte Bestände, die nicht im Zeilen-Bestand stecken. */
@@ -46,19 +58,19 @@ export interface Zaehlstand {
 // einem eingespielten Team aus, das die Fachlichkeit erst erarbeiten muss —
 // also mit Recherche, Abstimmung und Nacharbeit, nicht mit reiner Tippzeit.
 export const GEWERKE: Gewerk[] = [
-  { name: "Rechner samt Modell, Quellen und Validierung", menge: (_, z) => z.rechner, tage: 20, einheit: "Rechner" },
-  { name: "Inhaltsseiten mit Redaktion und Suchmaschinen-Arbeit", menge: (_, z) => z.seiten, tage: 1, einheit: "Seiten" },
-  { name: "Einbettbare Widgets mit Theming, Bildexport, Lizenz", menge: (_, z) => z.widgets, tage: 2.5, einheit: "Widgets" },
-  { name: "Schnittstellen, Zwischenspeicher, Datenbank", menge: (_, z) => z.routen, tage: 0.7, einheit: "Routen" },
-  { name: "Energie-Atlas: Registerimport, Aggregation, Tempo", menge: null, tage: 40 },
-  { name: "Förderkatalog samt Such- und Prüfautomatik", menge: null, tage: 50 },
-  { name: "Erhebung Kommunen, Fachbetriebe, Versorger und Versand", menge: null, tage: 40 },
-  { name: "Redaktions- und Veröffentlichungssystem", menge: null, tage: 30 },
-  { name: "Anmeldung, Abo, Datenschutz, Lizenzabgrenzung", menge: null, tage: 25 },
-  { name: "Testabdeckung", menge: (b) => b.testdateien, tage: 0.3, einheit: "Testdateien" },
-  { name: "Design-System und Bausteine", menge: (_, z) => z.komponenten, tage: 0.2, einheit: "Komponenten" },
-  { name: "Betrieb, Überwachung, Kostenwache", menge: null, tage: 25 },
-  { name: "Rechtsrecherche im Volltext (sonst Anwaltsleistung)", menge: null, tage: 20 },
+  { name: "Rechner samt Modell, Quellen und Validierung", menge: (_, z) => z.rechner, tage: 20, einheit: "Rechner", mix: "konzeptlastig" },
+  { name: "Inhaltsseiten mit Redaktion und Suchmaschinen-Arbeit", menge: (_, z) => z.seiten, tage: 1, einheit: "Seiten", mix: "fleissarbeit" },
+  { name: "Einbettbare Widgets mit Theming, Bildexport, Lizenz", menge: (_, z) => z.widgets, tage: 2.5, einheit: "Widgets", mix: "umsetzung" },
+  { name: "Schnittstellen, Zwischenspeicher, Datenbank", menge: (_, z) => z.routen, tage: 0.7, einheit: "Routen", mix: "handwerk" },
+  { name: "Energie-Atlas: Registerimport, Aggregation, Tempo", menge: null, tage: 40, mix: "konzeptlastig" },
+  { name: "Förderkatalog samt Such- und Prüfautomatik", menge: null, tage: 50, mix: "umsetzung" },
+  { name: "Erhebung Kommunen, Fachbetriebe, Versorger und Versand", menge: null, tage: 40, mix: "fleissarbeit" },
+  { name: "Redaktions- und Veröffentlichungssystem", menge: null, tage: 30, mix: "umsetzung" },
+  { name: "Anmeldung, Abo, Datenschutz, Lizenzabgrenzung", menge: null, tage: 25, mix: "konzeptlastig" },
+  { name: "Testabdeckung", menge: (b) => b.testdateien, tage: 0.3, einheit: "Testdateien", mix: "handwerk" },
+  { name: "Design-System und Bausteine", menge: (_, z) => z.komponenten, tage: 0.2, einheit: "Komponenten", mix: "handwerk" },
+  { name: "Betrieb, Überwachung, Kostenwache", menge: null, tage: 25, mix: "konzeptlastig" },
+  { name: "Rechtsrecherche im Volltext (sonst Anwaltsleistung)", menge: null, tage: 20, mix: "recht" },
 ];
 
 export interface Position {
@@ -66,6 +78,9 @@ export interface Position {
   menge: number | null;
   einheit?: string;
   tage: number;
+  mix: Rollenmix;
+  /** Was diese Position zu Agentursätzen kostet, in Euro. */
+  eur: number;
 }
 
 export interface Aufwand {
@@ -75,6 +90,21 @@ export interface Aufwand {
   /** Spanne, die genannt wird — ein Punktwert täuscht Genauigkeit vor. */
   von: number;
   bis: number;
+  /**
+   * Was das Ganze zu Agentursätzen kostet, in Euro — mit der Rollenmischung
+   * gerechnet, nicht mit einem Einheitssatz.
+   */
+  eur: number;
+  /** Dieselbe Spanne wie oben, in Geld. */
+  eurVon: number;
+  eurBis: number;
+  /** Stunden je Rolle über alle Positionen. */
+  stundenJeRolle: Record<Rolle, number>;
+  /**
+   * Der Mischsatz, der sich daraus ergibt — die eine Zahl, mit der sich das
+   * Ergebnis nachrechnen lässt.
+   */
+  mischsatzEurProStunde: number;
 }
 
 /** Arbeitstage im Jahr nach Abzug von Urlaub, Feiertagen und Krankheit. */
@@ -87,19 +117,33 @@ const SPANNE = 0.25;
 export function schaetzeAufwand(b: Bestandstag, z: Zaehlstand): Aufwand {
   const positionen: Position[] = GEWERKE.map((g) => {
     const menge = g.menge ? g.menge(b, z) : null;
-    return {
-      name: g.name,
-      menge,
-      einheit: g.einheit,
-      tage: menge === null ? g.tage : Math.round(menge * g.tage),
-    };
+    const tage = menge === null ? g.tage : Math.round(menge * g.tage);
+    const mix = MIX[g.mix ?? "umsetzung"];
+    return { name: g.name, menge, einheit: g.einheit, tage, mix, eur: kostenFuerTage(tage, mix) };
   });
   const tage = positionen.reduce((s, p) => s + p.tage, 0);
+  const eur = positionen.reduce((s, p) => s + p.eur, 0);
+
+  // Die Stunden je Rolle kommen aus den Positionen, nicht aus einer zweiten
+  // Rechnung über die Gesamttage: Jedes Gewerk hat seine eigene Mischung, und
+  // ein Durchschnittsmix über alle wäre eine andere Zahl.
+  const stunden: Record<Rolle, number> = { cto: 0, senior: 0, junior: 0 };
+  for (const p of positionen) {
+    const s = stundenJeRolle(p.tage, p.mix);
+    for (const r of ROLLENSAETZE) stunden[r.rolle] += s[r.rolle];
+  }
+  const stundenGesamt = stunden.cto + stunden.senior + stunden.junior;
+
   return {
     positionen,
     tage,
     von: Math.round((tage * (1 - SPANNE)) / 10) * 10,
     bis: Math.round((tage * (1 + SPANNE)) / 10) * 10,
+    eur,
+    eurVon: eur * (1 - SPANNE),
+    eurBis: eur * (1 + SPANNE),
+    stundenJeRolle: stunden,
+    mischsatzEurProStunde: stundenGesamt > 0 ? eur / stundenGesamt : 0,
   };
 }
 
