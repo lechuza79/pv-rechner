@@ -1031,10 +1031,19 @@ nicht sicherstellen können. **Zwei von drei Bausteinen dieser Begründung halte
   Gegenprüfer hat das Urteil im Volltext gelesen: **Zu dieser Angabe hat das Landgericht
   verurteilt, und nur die Klägerin ging in Revision, allein wegen der
   Sterneklassen-Aufschlüsselung.** Der BGH bezeichnet die Verurteilung selbst als
-  rechtskräftig und hat die Frage nie geprüft. Ein Landgerichtsurteil, das niemand
-  angegriffen hat, ist keine höchstrichterliche Anforderung — **wer diesen Blocker
-  wiederverwendet, beschafft zuerst die Fundstelle.** (Ob die Angabe trotzdem geschuldet
-  ist, bleibt offen; sie ist nur nicht so belegt, wie sie behauptet wurde.)
+  rechtskräftig und hat die Frage nie geprüft. **Wer diesen Blocker wiederverwendet,
+  beschafft zuerst die Fundstelle.**
+
+  **Praktisch bleibt die Angabe trotzdem geschuldet, und das ist die ehrliche Fassung:**
+  Der amtliche Leitsatz des BGH stellt die Entbehrlichkeit der Sterneklassen-Aufschlüsselung
+  ausdrücklich unter die Bedingung, „wenn die Gesamtzahl und der Zeitraum der
+  berücksichtigten Bewertungen angegeben ist". Getragen ist sie nur von einer ersten
+  Instanz, aber es gibt keine Gegenstimme, und die Wettbewerbszentrale verfolgt das Thema.
+  **Und ein „Stand des Abrufs" ersetzt den Zeitraum nicht** — verlangt ist die
+  Erhebungsspanne der eingeflossenen Bewertungen, damit der Leser einschätzen kann, was
+  eine Note aussagt; 4,7 aus 30 Bewertungen eines halben Jahres und 4,7 aus 30 über zwölf
+  Jahre sind zwei verschiedene Aussagen und können am selben Tag abgerufen sein. Aus einer
+  strukturierten Angabe auf einer fremden Website ist diese Spanne nicht ableitbar.
 
 **Und dann die Messung, die die Quellenfrage entscheidet.** An 157 bzw. 116 zufälligen
 Betriebs-Startseiten geprüft, wer überhaupt auf welche Bewertungsplattform verweist:
