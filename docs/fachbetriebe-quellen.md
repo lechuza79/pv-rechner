@@ -964,22 +964,37 @@ nicht sicherstellen können. **Zwei von drei Bausteinen dieser Begründung halte
 - **Ein reiner LINK löst die Pflicht gar nicht aus.** Wieder die Begründung im Wortlaut:
   „Verweist der Unternehmer lediglich über einen Link auf Verbraucherbewertungen […],
   besteht die Pflicht nicht."
-- **Was dagegen hält und neu ist:** Der BGH verlangt bei Werbung mit einem
-  Sterne-Durchschnitt zusätzlich die Gesamtzahl **und den berücksichtigten Zeitraum**
-  (I ZR 143/23). Den Zeitraum liefert eine strukturierte Bewertungsangabe auf einer
-  Website nicht, und wir können ihn nicht ableiten. Das ist der eigentliche Blocker für
-  die 160 Werte, die wir haben — nicht die Echtheitsfrage.
+- **Ein dritter Befund hielt der Gegenprüfung NICHT stand, und das ist festzuhalten,
+  damit er nicht zurückkommt.** Der erste Prüfer entnahm der BGH-Entscheidung I ZR 143/23,
+  bei Werbung mit einem Sterne-Durchschnitt seien zusätzlich Gesamtzahl **und
+  berücksichtigter Zeitraum** anzugeben — und folgerte daraus einen harten Blocker, weil
+  eine strukturierte Bewertungsangabe auf einer Website keinen Zeitraum liefert. Der
+  Gegenprüfer hat das Urteil im Volltext gelesen: **Zu dieser Angabe hat das Landgericht
+  verurteilt, und nur die Klägerin ging in Revision, allein wegen der
+  Sterneklassen-Aufschlüsselung.** Der BGH bezeichnet die Verurteilung selbst als
+  rechtskräftig und hat die Frage nie geprüft. Ein Landgerichtsurteil, das niemand
+  angegriffen hat, ist keine höchstrichterliche Anforderung — **wer diesen Blocker
+  wiederverwendet, beschafft zuerst die Fundstelle.** (Ob die Angabe trotzdem geschuldet
+  ist, bleibt offen; sie ist nur nicht so belegt, wie sie behauptet wurde.)
 
-**Und dann die Messung, die die Quellenfrage entscheidet.** An 157 zufälligen
+**Und dann die Messung, die die Quellenfrage entscheidet.** An 157 bzw. 116 zufälligen
 Betriebs-Startseiten geprüft, wer überhaupt auf welche Bewertungsplattform verweist:
 
 | Plattform | Anteil der Betriebe |
 |---|---|
-| **Google** (Profil- oder Kartenlink auf der eigenen Startseite) | **34 %** |
+| **Google, echter Profil- oder Bewertungslink** (Kurzlink zum Eintrag, Rezensionsansicht) | **12 %** |
+| Google, aber nur eine eingebettete Karte — kein Weg zu den Bewertungen | 8 % |
 | strukturierte Bewertungsangabe im Seitenquelltext | 7 % |
 | ProvenExpert | 3 % |
 | Trustpilot | 1 % |
 | Trusted Shops | 0 % |
+
+**Die erste Fassung dieser Messung sagte 34 % und war falsch.** Das Muster zählte jede
+Google-Karten-Adresse mit — also auch die Anfahrtskarte im Seitenfuß, die zu keiner
+einzigen Bewertung führt. Erst ein Muster, das ausschließlich Eintrags-Kurzlinks und
+Rezensionsansichten zählt, ergibt die 12 %. **Ein Link auf eine Karte ist kein Link auf
+Bewertungen**, und der Unterschied ist hier der zwischen einem Drittel und einem Achtel
+des Bestands.
 
 **Daraus folgt die ganze Strategie.** Eine Lizenz bei der einzigen Plattform, die eine
 Drittanzeige überhaupt vertraglich vorsieht (Trustpilot, „Review Syndication", Preis nicht
@@ -990,16 +1005,29 @@ dreifach zu (Maps-Bedingungen, Business-Profile-Regeln, allgemeine API-Bedingung
 mit schriftlicher Zustimmung des Betriebs, weil die Klauseln **uns als Abrufer** binden.
 
 **Der Weg, der bleibt und nichts kostet: den Google-Profil-LINK vom Betrieb selbst
-einsammeln.** Er steht bei einem Drittel der Betriebe auf ihrer eigenen Startseite, der
-Betrieb hat ihn dort selbst hingesetzt, und ein Link ist keine Vervielfältigung. „Bewertungen
-bei Google ansehen" beantwortet die Nutzerfrage, ohne eine einzige der drei Hürden zu
-berühren.
+einsammeln.** Er steht bei 12 % der Betriebe auf ihrer eigenen Startseite, der Betrieb hat
+ihn dort selbst hingesetzt, und ein Link ist keine Vervielfältigung. „Bewertungen bei
+Google ansehen" beantwortet die Nutzerfrage, ohne eine einzige der drei Hürden zu berühren.
+
+**Zwölf Prozent sind wenig, und das gehört dazugesagt.** Der Weg trägt die Nutzerfrage
+nicht allein; er ist das, was ohne Lizenz, ohne Abruf bei Google und ohne Rechtsfrage zu
+haben ist. Die Unterseiten sind dabei ungemessen — geprüft wurden nur Startseiten, und ein
+„Über uns" oder „Kontakt" trägt den Link vermutlich häufiger. **Der zweite, sichere Weg ist
+wieder der Erstkontakt:** Nach dem Profil-Link zu fragen kostet eine Zeile im Anschreiben.
 
 **Was NICHT wiederkommen darf:** die alte Begründung „wir können nichts überprüfen, also
-gar nichts anzeigen". Sie ist in dieser Form widerlegt. Was bleibt, ist enger und härter:
-kein Sterne-Durchschnitt ohne Zeitraum, keine Beschriftung, die Echtheit behauptet
-(„Kundenbewertungen", „echte Bewertungen"), und kein Wert aus einer Quelle, deren Lizenz
-wir nicht haben.
+gar nichts anzeigen". Sie ist in dieser Form widerlegt. Was bleibt, ist enger: keine
+Beschriftung, die Echtheit behauptet („Kundenbewertungen", „echte Bewertungen"), kein Wert
+aus einer Quelle, deren Lizenz wir nicht haben — und an jedem angezeigten Wert der Satz,
+woher er stammt und dass wir ihn nicht prüfen.
+
+**Der Hebel, den beide Prüfer erst spät gesehen haben, hat mit Bewertungen gar nichts zu
+tun und greift früher:** Wer Verbrauchern eine Suche über mehrere Anbieter anbietet, muss
+die Hauptparameter seiner Reihenfolge und deren Gewichtung offenlegen (§ 5b Abs. 2 UWG).
+Das gilt, sobald das Verzeichnis sortiert — also ab dem ersten Tag und unabhängig davon,
+ob je eine Bewertung angezeigt wird. Die Wettbewerbszentrale hat deswegen nach Angabe des
+Gegenprüfers 33 Vergleichsportale abgemahnt. **Das ist vor dem Livegang des Verzeichnisses
+zu klären, nicht danach.**
 
 ---
 
