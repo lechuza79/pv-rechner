@@ -115,6 +115,18 @@ export interface FundingChecks {
  * Entscheidung, kein Versehen.
  */
 export const NOCH_NICHT_ERFASST: string[] = [
+  // Bremen Heizungstausch, aufgenommen am 23.09.2026. Das Programm nimmt seit
+  // dem 31.08.2025 keine Anträge mehr an — eine Prüfform hielte das Vorhaben
+  // eines Nutzers gegen ein Verfahren, in das er gar nicht mehr hineinkommt.
+  // Was es an Bedingungen gab, steht vollständig auf der Karte. Wird das
+  // Programm je neu aufgelegt, gehört die Prüfform mit der Neuauflage dazu.
+  "bremen-heizungstausch",
+  // Kaufungen Sondervermögen, aufgenommen am 23.09.2026. Es ist ein zinsloses
+  // DARLEHEN; die Prüfformen bilden Zuschussverfahren ab. Die eine Bedingung,
+  // die ein Modell hier tragen könnte — Antrag vor Beginn der Baumaßnahme —
+  // steht im Wortlaut auf der Karte, und das zweite Kriterium (Wohngebäude,
+  // bei allen übrigen Maßnahmen Fachwerk vor 1950) kennt der Rechner nicht.
+  "kaufungen-sondervermoegen",
   // Fritzlar, aufgenommen am 20.09.2026. Richtlinie im Volltext gelesen, jede
   // Bedingung steht am Programm. Die Prüfform fehlt noch und ist hier nicht
   // trivial, weil das Antragsverfahren das UMGEKEHRTE ist: „Es handelt sich um

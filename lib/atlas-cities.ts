@@ -237,7 +237,15 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "bottrop", name: "Bottrop", ags: "05512", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1019, fundingId: "bottrop-solaroffensive" },
   { slug: "brandenburg-havel", name: "Brandenburg an der Havel", ags: "12051", bundesland: "Brandenburg", yieldKwhKwp: 1059 },
   { slug: "braunschweig", name: "Braunschweig", ags: "03101", bundesland: "Niedersachsen", yieldKwhKwp: 1032 },
-  { slug: "bremerhaven", name: "Bremerhaven", ags: "04012", bundesland: "Bremen", yieldKwhKwp: 1002 },
+  // `fundingId` NUR, WEIL DAS LAND ZWEI PROGRAMME HAT. Bremen ist Stadtstaat,
+  // beide Landesprogramme tragen den Schlüssel 04 und sind damit gleich
+  // spezifisch — `fundingForFrom` gibt dann bewusst `undefined` zurück, die
+  // Adresse fällt aus `generateStaticParams` und die Seite antwortet 404, ohne
+  // dass irgendetwas kaputt aussähe. Genau so ist diese Zeile beim Aufnehmen
+  // der Heizungstausch-Richtlinie am 23.09.2026 rot geworden; die Zeile für
+  // Bremen trägt denselben Verweis aus demselben Grund. Im Rechner bleibt das
+  // zweite Programm voll wirksam — die Postleitzahl-Auflösung kennt beide.
+  { slug: "bremerhaven", name: "Bremerhaven", ags: "04012", bundesland: "Bremen", yieldKwhKwp: 1002, fundingId: "bremen-rundumshaus" },
   { slug: "chemnitz", name: "Chemnitz", ags: "14511", bundesland: "Sachsen", yieldKwhKwp: 1041 },
   { slug: "coburg", name: "Coburg", ags: "09463", bundesland: "Bayern", yieldKwhKwp: 1046 },
   { slug: "cottbus", name: "Cottbus", ags: "12052", bundesland: "Brandenburg", yieldKwhKwp: 1075 },

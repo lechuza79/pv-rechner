@@ -3194,6 +3194,91 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  "bremen-heizungstausch": {
+    // 23.09.2026 aufgenommen. Landesprogramm eines STADTSTAATS — der Blocker
+    // gegen Landesprogramme von Flächenländern greift hier nicht: Berlin und
+    // Bremen leben davon, und der zweistellige Schlüssel 04 ist für beide
+    // Stadtgemeinden des Landes richtig (Präzedenzfall: bremen-rundumshaus).
+    //   BREMERHAVEN IST DABEI NICHT ZITIERT, SONDERN RECHTSTATSACHE. Keine der
+    //   drei gelesenen Quellen nennt Bremerhaven ausdrücklich; alle sagen „Land
+    //   Bremen". Tragend ist, dass das Land Bremen aus den Stadtgemeinden Bremen
+    //   und Bremerhaven besteht — nicht ein Satz der Quelle. Wer hier je ein
+    //   Zitat behauptet, behauptet eines, das es nicht gibt.
+    id: "bremen-heizungstausch", name: "Förderrichtlinie Heizungstausch",
+    traeger: "Die Senatorin für Umwelt, Klima und Wissenschaft (Land Bremen), Antragsbearbeitung: BAB Bremer Aufbau-Bank",
+    level: "land", region: "Bremen", bundesland: "Bremen", agsCode: "04",
+    // DIE KANONISCHE ADRESSE, NICHT DIE GEFUNDENE. Der Weg hierher lief über
+    // eine Adresse, die mit HTTP 302 auf diese weiterleitet; ein Fingerabdruck
+    // auf der Weiterleitung käme von einer anderen Seite als der hinterlegten
+    // und würde zur 404, sobald die Weiterleitung wegfällt. Am 23.09.2026
+    // gemessen: die alte Adresse 302, diese 200.
+    url: "https://www.service.bremen.de/dienstleistungen/foerderung-fuer-den-heizungstausch-beantragen-190934",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    // ENDE = ANTRAGSSTOPP, NICHT AUSSERKRAFTTRETEN. Die Richtlinie selbst gilt
+    // weiter (Inkrafttreten 28.06.2024, fünf Jahre Laufzeit); eingestellt ist
+    // die Annahme von Anträgen. Für ein beendetes Programm ist das der
+    // Unterschied zwischen „weg" und „ruht" — und der Grund, warum eine
+    // Neuauflage ohne neue Rechtsgrundlage möglich wäre.
+    beginntIso: "2024-06-28",
+    endetIso: "2025-08-31",
+    // KEIN eligibility-Eintrag: Die Richtlinie gilt für Bestandsgebäude
+    // „unabhängig von ihrer Nutzungsart (Wohnnutzung, gewerbliche Nutzung)",
+    // und unter den Antragsberechtigten stehen neben Privatpersonen auch
+    // Contractoren, also Unternehmen. „Nur für Privatpersonen" wäre falsch,
+    // „für Privatpersonen und Gewerbe" griffe der Nutzungsart vor. Leere Liste
+    // = keine Behauptung.
+    eligibility: [],
+    coveredCosts: "Ersatz fossiler Wärmeerzeuger und elektrischer Widerstandsheizungen in Bestandsgebäuden — seit 31.08.2025 keine Antragsannahme",
+    rates: [
+      {
+        label: "Aufstockung auf 60 % (historisch)",
+        value: "Die Landesförderung wurde so bemessen, dass die Summe aller Fördermittel — die des Bundes eingeschlossen — 60 % der förderfähigen Investitionsausgaben erreichte",
+        nur: ["waermepumpe"],
+      },
+    ],
+    conditions: [
+      "Das Programm ist eingestellt: Seit dem 1. September 2025 sind keine neuen Anträge mehr möglich; eingehende Neuanträge werden gelöscht. Beschlossen wurde die Einstellung im Rahmen der Haushaltsverhandlungen, kurz vor dem Wechsel der Projektträgerschaft von der swb zur BAB zum 1. Juli 2025",
+      "Gefördert wurden drei Dinge: der Einbau effizienter Wärmeerzeuger (darunter elektrische Wärmepumpen), Anlagen zur Heizungsunterstützung (Solarthermie) und der Anschluss an ein Gebäude- oder Wärmenetz",
+      "Ersetzt werden musste eine funktionstüchtige Öl-, Kohle-, Gas-Etagen- oder elektrische Widerstandsheizung; bei einer funktionstüchtigen Gasheizung musste die Inbetriebnahme mindestens 15 Jahre zurückliegen",
+      { text: "Eine Wärmepumpe wurde nur in Wohngebäuden mit höchstens zwei Wohneinheiten gefördert", nur: ["waermepumpe"] },
+      "Die Landesförderung gab es nur, wenn für dieselbe Maßnahme eine Bundesförderung nach der Richtlinie für effiziente Gebäude — Einzelmaßnahmen beantragt UND bewilligt wurde; förderfähig war nur, was der Bund im Verwendungsnachweis anerkannt hatte",
+      "Der Landesantrag musste VOR dem Bundesantrag gestellt sein: Mit der Förderzusage der KfW gilt das Vorhaben als begonnen, danach war ein Landesantrag nicht mehr möglich",
+      "Mieterinnen, Mieter und Pächter brauchten die Zustimmung der Eigentümerseite",
+      "Über die ordnungsgemäße Stilllegung der alten Anlage war eine Stilllegungsbescheinigung eines Fach- oder Entsorgungsbetriebs vorzulegen",
+      "Die Maßnahme war innerhalb von 13 Monaten nach dem Zuwendungsbescheid abzuschließen, der Verwendungsnachweis spätestens 6 Monate nach Fertigstellung vorzulegen",
+      "Ein Rechtsanspruch auf Förderung besteht nicht",
+    ],
+    // KUMULIERUNG IST HIER KEINE FREIE WAHL, SONDERN PFLICHT — und deshalb
+    // steht BUND: Ohne bewilligte Bundesförderung gab es die Landesförderung
+    // gar nicht. Der Katalog kennt dafür kein eigenes Feld; der Zwang steht im
+    // Wortlaut in den Bedingungen.
+    //   DIE RECHTSGRUNDLAGE STEHT BEWUSST NICHT DA. Der Gegenprüfer nannte
+    //   §§ 10, 12 BremKEG; nachgeschlagen habe ich sie nicht. Ein Paragraf, den
+    //   niemand im Original gesehen hat, ist keine Fundstelle, sondern
+    //   Dekoration — und für einen Haushalt, der von einem eingestellten
+    //   Programm liest, trägt er ohnehin nichts. Wer ihn ergänzt, liest ihn
+    //   vorher.
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
+    // KEIN RECHENWERT, und dafür gibt es drei unabhängige Gründe:
+    //   1. Das Programm nimmt seit dem 31.08.2025 keine Anträge an.
+    //   2. Das Modell kann „Aufstockung auf 60 % ABZÜGLICH dessen, was der Bund
+    //      zahlt" nicht ausdrücken — der Landesanteil hängt an einer fremden
+    //      Bewilligung, die der Rechner nicht kennt.
+    //   3. Seit die Bundesförderung bis 70 % reicht, wäre der Landesanteil in
+    //      vielen Fällen rechnerisch NULL gewesen. Ein Prozentsatz hier wäre
+    //      nicht vorsichtig, sondern falsch.
+    // WEDER GEPRÜFT NOCH AUFGENOMMEN: Die Stadt Bremerhaven hatte laut
+    // Sekundärquellen ab 16.02.2023 einen eigenen Zuschuss von 25 % für
+    // Photovoltaik mit Speicher über die BIS Bremerhaven, eingestellt im Juni
+    // 2024. Die Richtlinie im Ratsinformationssystem antwortet derzeit mit 404;
+    // ohne Amtsquelle wird sie nicht aufgenommen.
+    // EBENFALLS NICHT AUFGENOMMEN: Ein „Kreditförderprogramm Wärmewende" für
+    // ältere und einkommensschwache Gebäudeeigentümer steht im Aktionsplan
+    // Klimaschutz und war am 04.06.2026 auf der Tagesordnung der Deputation.
+    // Beschlossen ist, es zu entwickeln — nicht, es aufzulegen. Ein Startdatum
+    // ist nicht belegt.
+  },
   "hamburg-balkon-einkommen": {
     id: "hamburg-balkon-einkommen", name: "Balkonkraftwerk für Haushalte mit geringem Einkommen",
     traeger: "Behörde für Umwelt, Klima, Energie und Agrarwirtschaft (Hamburg)",
@@ -11315,6 +11400,95 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     //   bekommt keinen Betrag ausgewiesen — lieber keine Zahl als eine falsche.
     speicherPerKwh: 80,
     speicherCap: 1600,
+  },
+  "kaufungen-sondervermoegen": {
+    id: "kaufungen-sondervermoegen", name: "Zinslose Darlehen aus dem Sondervermögen",
+    traeger: "Kunigundengemeinde Kaufungen", level: "kommune", region: "Kaufungen",
+    bundesland: "Hessen", agsCode: "06633015",
+    // 06633015, im Melderegister nachgeschlagen: genau ein Treffer, Gemeinde im
+    // Landkreis Kassel (Präfix 06633). Das gleichnamige Kaufungen in Sachsen
+    // ist Ortsteil von Limbach-Oberfrohna und trägt keinen eigenen Schlüssel.
+    //
+    // DIE QUELLE IST DIE ORTSRECHT-SEITE, NIE DER DIREKTE DATEI-LINK — und das
+    // ist hier keine Vorsicht, sondern aus einem Fehlgriff dieses Laufs gelernt:
+    // Die Datei-Kennung wechselt mit jeder Änderung (7. Änderung: 2655.2028.1,
+    // 8. Änderung: 4182.237.1). Die ALTE Datei antwortet weiterhin mit HTTP 200
+    // und ist von der aktuellen an nichts zu unterscheiden — ein Fingerabdruck
+    // auf ihr bewegte sich nie, während die Fassung längst gewechselt hat.
+    // Genau so ist der erste Entwurf dieses Eintrags auf der überholten Fassung
+    // entstanden; gefunden hat es erst der adversariale Gegenprüfer.
+    //   UND DIE BESCHRIFTUNG DORT LÜGT: Der Eintrag im Ortsrecht heißt bis
+    //   heute „… 7. Änderung", die Datei dahinter ist die 8. Wer nach dem
+    //   Linktext geht, holt sich denselben Fehler ein zweites Mal.
+    //   DESHALB STEHT HIER DIE ORTSRECHT-ÜBERSICHT und nicht die Datei: Sie
+    //   trägt immer die geltende Fassung. Gelesen wurde am 23.09.2026 die
+    //   Fassung der 8. Änderung vom 02.10.2025 unter
+    //   kaufungen.eu/loadDocument.phtml?FID=4182.237.1&Ext=PDF (6 Seiten).
+    url: "https://www.kaufungen.eu/Rathaus-Politik/Rathaus/Ortsrecht-/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    // KEIN `beschlossenIso`. Das Dokument trägt zwei Daten und sagt zu keinem,
+    // was es ist: die Kopfzeile „in der Fassung der 8. Änderung vom 02.10.2025"
+    // und den Unterschriftsblock „Kaufungen, 30.10.2025, gez. Arnim Roß,
+    // Bürgermeister (S)". Welches davon der Gemeindevertretungsbeschluss ist,
+    // steht nirgends — daraus ein Beschlussdatum zu machen wäre eine Zahl ohne
+    // Fundstelle. Ein Enddatum nennt die Richtlinie nicht.
+    //   NEBENBEI, UND NICHT UNSER FEHLER: Nr. 9 der 8. Änderung sagt bis heute
+    //   „Die Richtlinien in der Fassung der 7. Änderung treten am Tag nach der
+    //   amtlichen Bekanntmachung in Kraft." Die Gemeinde hat die Nummer in
+    //   ihrer eigenen Inkrafttretensklausel nicht mitgezogen.
+    // KEIN eligibility-Eintrag. Die Richtlinie richtet sich an
+    // Gebäudeeigentümer (Überschrift Nr. 8) und unterscheidet nicht zwischen
+    // privat und gewerblich; für Solar und Heizung verlangt sie ein
+    // Wohngebäude. Beides steht im Wortlaut in den Bedingungen — die
+    // Katalog-Beschriftungen „Nur für Privatpersonen" und „Für Privatpersonen
+    // und Gewerbe" träfen keine davon.
+    eligibility: [],
+    coveredCosts: "Zinsloses Darlehen (kein Zuschuss) für Photovoltaik, Solarthermie und Heizungserneuerung — sowie für Fachwerksanierung",
+    maxFoerderung: "5.000 € Darlehen je Maßnahme für Photovoltaik, Solarthermie oder Heizung",
+    rates: [
+      { label: "Fotovoltaikanlage", value: "zinsloses Darlehen über 60 % der förderfähigen Kosten, höchstens 5.000 €, Rückzahlung in 30 Monatsraten — kein Zuschuss", nur: ["pv"] },
+      { label: "Heizung einschließlich erstmaligen Einbaus von Sammel- oder Etagenheizungen", value: "zinsloses Darlehen über 60 % der förderfähigen Kosten, höchstens 5.000 €, Rückzahlung in 60 Monatsraten — kein Zuschuss", nur: ["waermepumpe"] },
+    ],
+    conditions: [
+      "Es ist ein zinsloses Darlehen, kein Zuschuss: Der Betrag ist in gleichen Monatsraten zurückzuzahlen, abgewickelt über die Kasseler Sparkasse oder die Raiffeisenbank Baunatal",
+      "Antragsberechtigt sind Gebäudeeigentümer; Photovoltaik, Solarthermie und Heizungserneuerung sind bei allen Wohngebäuden ohne Stichtagsregelung möglich — für alle übrigen Maßnahmen gilt die Beschränkung auf erhaltenswerte Fachwerkhäuser mit Baujahr vor 1950",
+      "Der Antrag ist vor Beginn der Baumaßnahme mit Kostenvoranschlag zu stellen",
+      { text: "Solarthermie zur Brauchwassererwärmung wird gleichrangig gefördert: ebenfalls 60 %, höchstens 5.000 €, Rückzahlung in 60 Monatsraten", nur: ["pv"] },
+      "Je Gebäude wird das Darlehen grundsätzlich einmal bis zur jeweiligen Höchsthöhe gewährt; ein weiterer Antrag für Solaranlagen oder Heizung ist erst nach jeweils 20 Jahren möglich. Weitere Anträge bis zum Höchstbetrag bleiben möglich, solange dieser noch nicht ausgeschöpft ist",
+      "Zuschüsse und Zuwendungen anderer Zuschussgeber sind bei den förderfähigen Kosten abzuziehen",
+      "Eine kumulative Förderung nach dieser Richtlinie und nach den Richtlinien über die Dorferneuerung beziehungsweise sonstigen Sanierungsprogrammen ist nicht zulässig",
+      "Bei Eigenleistung sind nur nachgewiesene Materialkosten förderfähig, keine Arbeitsstunden",
+      "Die Auszahlung erfolgt erst nach Bestätigung des Gemeindevorstands, dass die Arbeiten antrags- und sachgemäß ausgeführt sind; die Fertigstellung muss spätestens ein Jahr nach dem Bewilligungsbescheid erfolgen",
+      "Voraussetzung ist, dass Haushaltsmittel zur Verfügung stehen; ein Rechtsanspruch auf Zuwendungen besteht nicht",
+    ],
+    // `combinableWith: null` heißt „nicht festgestellt", und das ist hier die
+    // einzige ehrliche Angabe. Die Richtlinie schließt die Kumulierung mit
+    // „Dorferneuerung bzw. sonstigen Sanierungsprogrammen" aus — ein offener
+    // Auffangbegriff, unter den die Bundesförderung für effiziente GEBÄUDE
+    // fallen kann. Sie als kombinierbar auszuweisen wäre eine Auslegung, die
+    // der Text nicht hergibt; sie auszuschließen ebenso. Beide Sätze stehen
+    // deshalb im Wortlaut in den Bedingungen und die Auslegung bleibt beim
+    // Leser, der die Gemeinde fragen kann.
+    combinableWith: null,
+    foerdert: ["pv", "waermepumpe"],
+    // WÄRMEPUMPE STEHT NIRGENDS IN DER RICHTLINIE, und deshalb steht sie auch
+    // in der Anzeige nicht als Behauptung: Die Zeile zitiert Nr. 8.3.4 a) im
+    // Wortlaut („Heizung einschließlich erstmaligen Einbaus von Sammel- oder
+    // Etagenheizungen"), damit der Leser selbst entscheidet, ob sein Vorhaben
+    // darunter fällt. Dafür spricht, dass „Heizung" unqualifiziert steht und
+    // „einschließlich" erweitert statt beschränkt, und dass Nr. 8.2 für genau
+    // diese Nummer den Fachwerk-Stichtag aufhebt — Heizungserneuerung in allen
+    // Wohngebäuden ist gewollt. Dagegen spricht, dass der Zweckabsatz 8.1 nur
+    // Fachwerk, Solarthermie und Fotovoltaik nennt und 8.3.4 unter
+    // „Baumaßnahmen im INNEREN des Hauses" steht. Der Fehlgriff kostet keine
+    // Zahl, weil dieser Eintrag ohnehin keinen Euro abzieht.
+    // KEINE RECHENFELDER — und das ist nicht übervorsichtig. Der geldwerte
+    // Vorteil eines zinslosen Darlehens ist der ersparte Zins, bei 5.000 € über
+    // 30 Monate grob 250 €. Diese Zahl entstünde vollständig aus einer
+    // Zinsannahme, die das Modell nicht trägt und die sich monatlich ändert.
+    // Präzedenzfall im Katalog: bund-kfw270 („Kredit, kein Zuschuss").
+    //   Der EINE echte Zuschuss der Richtlinie (50 %, höchstens 1.000 € für das
+    //   Freilegen von Fachwerk) betrifft keine unserer Techniken.
   },
   "wertingen-photovoltaik": {
     id: "wertingen-photovoltaik", name: "Zuschuss PV-Anlagen / Balkonkraftwerke",
