@@ -49024,5 +49024,39 @@
         "evidenceUrl": "https://www.sg-meinersen.de/Samtgemeinde/Gemeinde-Meinersen/Photovoltaik-und-Solarthermief%C3%B6rderung/"
       }
     ]
+  },
+  {
+    "regionId": "01053090",
+    "name": "Mölln",
+    "checkedAt": "2026-09-23T02:45:00Z",
+    "recheckAt": "2027-03-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Kaufzuschüsse für Photovoltaik, Batteriespeicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mölln fördert nichts davon, und die Stadt sagt das für Balkonkraftwerke ausdrücklich selbst: „Der Bauausschuß beschließt: So genannte Balkonkraftwerke werden von der Stadt Mölln nicht gefördert!“ Das ist die seltene Form des Negativbefunds — eine Aussage der Gemeinde statt eines Nichtfindens. Die Seite „Förderprogramme“ des städtischen Klimaschutzes ist ein Wegweiser auf die Datenbanken von Bund, Ländern und EU sowie auf die Investitionsbank Schleswig-Holstein; die einzige eigene Leistung der Stadt ist eine kostenfreie Energieberatung für die ersten 100 Haushalte durch die Verbraucherzentrale Schleswig-Holstein — eine Beratung, kein Zuschuss auf eine Anlage, und deshalb kein Katalogeintrag. Die Volltextsuche der Stadt zeigt zu Photovoltaik nur eigene Liegenschaften (PV-Anlage am Marion-Dönhoff-Gymnasium, Blockheizkraftwerke) und zu Wärmepumpe nur die kommunale Wärmeplanung; kein weiteres Programm für private Haushalte.",
+    "searches": [
+      "moelln.de Volltextsuche „Balkonkraftwerk“ (tx_kesearch_pi1[sword]) — Treffer: Klimaschutz-Seite „Balkonkraftwerke“ mit dem Beschluss des Bauausschusses und die Seite „Förderprogramme“",
+      "moelln.de Volltextsuche „Photovoltaik“ — nur städtische Liegenschaften (PV am Marion-Dönhoff-Gymnasium, Energieversorgung/Bestandsaufnahme)",
+      "moelln.de Volltextsuche „Wärmepumpe“ — nur kommunale Wärme- und Kälteplanung, Treibhausgasbilanz",
+      "moelln.de Volltextsuche „Zuschuss“ — Städtebauförderung, Familienurlaube; kein Anlagen-Zuschuss",
+      "Kontrollwort: moelln.de Volltextsuche „Abfall“ — liefert Treffer (Behördenwegweiser, Wertstoffe), die Suche funktioniert also"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.moelln.de/die-eulenspiegelstadt/klimaschutz/aktuelles-wissenswertes/balkonkraftwerke",
+        "finding": "Am 23.09.2026 im Volltext gelesen. Die Seite trägt genau einen Satz: „Der Bauausschuß beschließt: So genannte Balkonkraftwerke werden von der Stadt Mölln nicht gefördert!“ — eine ausdrückliche Negativauskunft der Stadt, kein bloßes Fehlen eines Programms."
+      },
+      {
+        "url": "https://www.moelln.de/die-eulenspiegelstadt/klimaschutz/foerderprogramme",
+        "finding": "Am 23.09.2026 im Volltext gelesen: „Mithilfe der nachfolgenden Datenbanken finden Sie eine Übersicht sowie weitere Details zu den aktuellen Förderprogrammen für Verbraucher:innen, Unternehmen und Vereine/Verbände auf Landes-, Bundes- und EU-Ebene.“ Verwiesen wird auf foerderdatenbank.de, energiewechsel.de und die IB-SH. Einzige eigene Leistung: „Stadt Mölln fördert Energieberatung: Kostenlose Erstberatung für 100 Haushalte“ durch die Verbraucherzentrale Schleswig-Holstein."
+      }
+    ],
+    "sources": [
+      {
+        "url": "moelln.de/die-eulenspiegelstadt/klimaschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Die einzige erfasste Quelle. Gelesen: ein Wegweiser auf fremde Förderdatenbanken plus eine kostenfreie Energieberatung — kein kommunaler Zuschuss auf PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.moelln.de/die-eulenspiegelstadt/klimaschutz/foerderprogramme"
+      }
+    ]
   }
 ]
