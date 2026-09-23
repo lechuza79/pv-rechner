@@ -55260,5 +55260,395 @@
         "reason": "Am 24.09.2026 live gelesen: vom Bund gefördertes Klimaschutzkonzept des Amtes, ein Planungsdokument ohne eigenen Zuschuss."
       }
     ]
+  },
+  {
+    "regionId": "09773119",
+    "name": "Blindheim",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Blindheim eine Fundstelle auf vg-hoechstaedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Aufgabenübersicht des Sachgebiets Zuschüsse und Abgaben — Beiträge, Steuern, Vereins- und Städtebauförderung.",
+    "searches": [
+      "Fundstelle auf vg-hoechstaedt.de am 24.09.2026 live geprüft (Blindheim)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "finding": "Aufgabenseite des Sachgebiets „Zuschüsse & Abgaben“ der Verwaltungsgemeinschaft: Beitragswesen (Erschließung, Wasser und Kanal), Steuer- und Gebührenamt, Vereinsförderung mit eigener Richtlinie, Städtebauförderung, Obstbaumvergabe. Kein Zuschuss an Haushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "reason": "Am 24.09.2026 live gelesen: Aufgabenübersicht eines Verwaltungssachgebiets, kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "09773139",
+    "name": "Höchstädt a.d.Donau",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Höchstädt a.d.Donau eine Fundstelle auf vg-hoechstaedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Aufgabenübersicht des Sachgebiets Zuschüsse und Abgaben — Beiträge, Steuern, Vereins- und Städtebauförderung.",
+    "searches": [
+      "Fundstelle auf vg-hoechstaedt.de am 24.09.2026 live geprüft (Höchstädt a.d.Donau)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "finding": "Aufgabenseite des Sachgebiets „Zuschüsse & Abgaben“ der Verwaltungsgemeinschaft: Beitragswesen (Erschließung, Wasser und Kanal), Steuer- und Gebührenamt, Vereinsförderung mit eigener Richtlinie, Städtebauförderung, Obstbaumvergabe. Kein Zuschuss an Haushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "reason": "Am 24.09.2026 live gelesen: Aufgabenübersicht eines Verwaltungssachgebiets, kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "09773146",
+    "name": "Lutzingen",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Lutzingen eine Fundstelle auf vg-hoechstaedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Aufgabenübersicht des Sachgebiets Zuschüsse und Abgaben — Beiträge, Steuern, Vereins- und Städtebauförderung.",
+    "searches": [
+      "Fundstelle auf vg-hoechstaedt.de am 24.09.2026 live geprüft (Lutzingen)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "finding": "Aufgabenseite des Sachgebiets „Zuschüsse & Abgaben“ der Verwaltungsgemeinschaft: Beitragswesen (Erschließung, Wasser und Kanal), Steuer- und Gebührenamt, Vereinsförderung mit eigener Richtlinie, Städtebauförderung, Obstbaumvergabe. Kein Zuschuss an Haushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "reason": "Am 24.09.2026 live gelesen: Aufgabenübersicht eines Verwaltungssachgebiets, kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "09773150",
+    "name": "Finningen",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Finningen eine Fundstelle auf vg-hoechstaedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Aufgabenübersicht des Sachgebiets Zuschüsse und Abgaben — Beiträge, Steuern, Vereins- und Städtebauförderung.",
+    "searches": [
+      "Fundstelle auf vg-hoechstaedt.de am 24.09.2026 live geprüft (Finningen)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "finding": "Aufgabenseite des Sachgebiets „Zuschüsse & Abgaben“ der Verwaltungsgemeinschaft: Beitragswesen (Erschließung, Wasser und Kanal), Steuer- und Gebührenamt, Vereinsförderung mit eigener Richtlinie, Städtebauförderung, Obstbaumvergabe. Kein Zuschuss an Haushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "reason": "Am 24.09.2026 live gelesen: Aufgabenübersicht eines Verwaltungssachgebiets, kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "09773164",
+    "name": "Schwenningen",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Schwenningen eine Fundstelle auf vg-hoechstaedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist die Aufgabenübersicht des Sachgebiets Zuschüsse und Abgaben — Beiträge, Steuern, Vereins- und Städtebauförderung.",
+    "searches": [
+      "Fundstelle auf vg-hoechstaedt.de am 24.09.2026 live geprüft (Schwenningen)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "finding": "Aufgabenseite des Sachgebiets „Zuschüsse & Abgaben“ der Verwaltungsgemeinschaft: Beitragswesen (Erschließung, Wasser und Kanal), Steuer- und Gebührenamt, Vereinsförderung mit eigener Richtlinie, Städtebauförderung, Obstbaumvergabe. Kein Zuschuss an Haushalte für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.vg-hoechstaedt.de/verwaltung/zuschuesse-und-abgaben",
+        "reason": "Am 24.09.2026 live gelesen: Aufgabenübersicht eines Verwaltungssachgebiets, kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "12064061",
+    "name": "Bliesdorf",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Bliesdorf eine Fundstelle auf barnim-oderbruch.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle beschreibt ein EU-Radwegeprojekt, für das das Amt selbst Mittel bekommt — die bekannte Umkehrung.",
+    "searches": [
+      "Fundstelle auf barnim-oderbruch.de am 24.09.2026 live geprüft (Bliesdorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "finding": "Seite zur Öffentlichkeitsarbeit des Amtes mit dem EU-Projekt „Cycling-Net Europabrücke“ (INTERREG VI A, 01.07.2025 bis 30.06.2028, Projektkosten 2.638.146,76 €): Ausbau touristischer Radwege, Leadpartner ist der Landkreis. Das Amt ist Projektpartner und Empfänger, nicht Geber."
+      }
+    ],
+    "sources": [
+      {
+        "url": "barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "reason": "Am 24.09.2026 live gelesen: EU-Radwegeprojekt, das Amt ist Empfänger, kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "12064349",
+    "name": "Neulewin",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Neulewin eine Fundstelle auf barnim-oderbruch.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle beschreibt ein EU-Radwegeprojekt, für das das Amt selbst Mittel bekommt — die bekannte Umkehrung.",
+    "searches": [
+      "Fundstelle auf barnim-oderbruch.de am 24.09.2026 live geprüft (Neulewin)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "finding": "Seite zur Öffentlichkeitsarbeit des Amtes mit dem EU-Projekt „Cycling-Net Europabrücke“ (INTERREG VI A, 01.07.2025 bis 30.06.2028, Projektkosten 2.638.146,76 €): Ausbau touristischer Radwege, Leadpartner ist der Landkreis. Das Amt ist Projektpartner und Empfänger, nicht Geber."
+      }
+    ],
+    "sources": [
+      {
+        "url": "barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "reason": "Am 24.09.2026 live gelesen: EU-Radwegeprojekt, das Amt ist Empfänger, kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "12064371",
+    "name": "Oderaue",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Oderaue eine Fundstelle auf barnim-oderbruch.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle beschreibt ein EU-Radwegeprojekt, für das das Amt selbst Mittel bekommt — die bekannte Umkehrung.",
+    "searches": [
+      "Fundstelle auf barnim-oderbruch.de am 24.09.2026 live geprüft (Oderaue)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "finding": "Seite zur Öffentlichkeitsarbeit des Amtes mit dem EU-Projekt „Cycling-Net Europabrücke“ (INTERREG VI A, 01.07.2025 bis 30.06.2028, Projektkosten 2.638.146,76 €): Ausbau touristischer Radwege, Leadpartner ist der Landkreis. Das Amt ist Projektpartner und Empfänger, nicht Geber."
+      }
+    ],
+    "sources": [
+      {
+        "url": "barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "reason": "Am 24.09.2026 live gelesen: EU-Radwegeprojekt, das Amt ist Empfänger, kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "12064393",
+    "name": "Prötzel",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Prötzel eine Fundstelle auf barnim-oderbruch.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle beschreibt ein EU-Radwegeprojekt, für das das Amt selbst Mittel bekommt — die bekannte Umkehrung.",
+    "searches": [
+      "Fundstelle auf barnim-oderbruch.de am 24.09.2026 live geprüft (Prötzel)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "finding": "Seite zur Öffentlichkeitsarbeit des Amtes mit dem EU-Projekt „Cycling-Net Europabrücke“ (INTERREG VI A, 01.07.2025 bis 30.06.2028, Projektkosten 2.638.146,76 €): Ausbau touristischer Radwege, Leadpartner ist der Landkreis. Das Amt ist Projektpartner und Empfänger, nicht Geber."
+      }
+    ],
+    "sources": [
+      {
+        "url": "barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "reason": "Am 24.09.2026 live gelesen: EU-Radwegeprojekt, das Amt ist Empfänger, kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "12064417",
+    "name": "Reichenow-Möglin",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Reichenow-Möglin eine Fundstelle auf barnim-oderbruch.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle beschreibt ein EU-Radwegeprojekt, für das das Amt selbst Mittel bekommt — die bekannte Umkehrung.",
+    "searches": [
+      "Fundstelle auf barnim-oderbruch.de am 24.09.2026 live geprüft (Reichenow-Möglin)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "finding": "Seite zur Öffentlichkeitsarbeit des Amtes mit dem EU-Projekt „Cycling-Net Europabrücke“ (INTERREG VI A, 01.07.2025 bis 30.06.2028, Projektkosten 2.638.146,76 €): Ausbau touristischer Radwege, Leadpartner ist der Landkreis. Das Amt ist Projektpartner und Empfänger, nicht Geber."
+      }
+    ],
+    "sources": [
+      {
+        "url": "barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.barnim-oderbruch.de/leben/oeffentlichkeitsarbeit",
+        "reason": "Am 24.09.2026 live gelesen: EU-Radwegeprojekt, das Amt ist Empfänger, kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "12073085",
+    "name": "Brüssow",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Brüssow eine Fundstelle auf amt-bruessow.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine entfernte Adresse (HTTP 404), die ohnehin nur ein Kontakt-Weiterleiter war.",
+    "searches": [
+      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Brüssow)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-bruessow.de/contact/index/link",
+        "finding": "Die Adresse antwortet mit HTTP 404 („Die Seite wurde nicht gefunden“), am 24.09.2026 gemessen. Sie war ohnehin ein Kontakt-Weiterleiter der Amtsseite und nie eine Förderseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-bruessow.de/contact/index/link",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/contact/index/link",
+        "reason": "Am 24.09.2026 gemessen: HTTP 404, Adresse entfernt."
+      }
+    ]
+  },
+  {
+    "regionId": "12073093",
+    "name": "Carmzow-Wallmow",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Carmzow-Wallmow eine Fundstelle auf amt-bruessow.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine entfernte Adresse (HTTP 404), die ohnehin nur ein Kontakt-Weiterleiter war.",
+    "searches": [
+      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Carmzow-Wallmow)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-bruessow.de/contact/index/link",
+        "finding": "Die Adresse antwortet mit HTTP 404 („Die Seite wurde nicht gefunden“), am 24.09.2026 gemessen. Sie war ohnehin ein Kontakt-Weiterleiter der Amtsseite und nie eine Förderseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-bruessow.de/contact/index/link",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/contact/index/link",
+        "reason": "Am 24.09.2026 gemessen: HTTP 404, Adresse entfernt."
+      }
+    ]
+  },
+  {
+    "regionId": "12073216",
+    "name": "Göritz",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Göritz eine Fundstelle auf amt-bruessow.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine entfernte Adresse (HTTP 404), die ohnehin nur ein Kontakt-Weiterleiter war.",
+    "searches": [
+      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Göritz)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-bruessow.de/contact/index/link",
+        "finding": "Die Adresse antwortet mit HTTP 404 („Die Seite wurde nicht gefunden“), am 24.09.2026 gemessen. Sie war ohnehin ein Kontakt-Weiterleiter der Amtsseite und nie eine Förderseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-bruessow.de/contact/index/link",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/contact/index/link",
+        "reason": "Am 24.09.2026 gemessen: HTTP 404, Adresse entfernt."
+      }
+    ]
+  },
+  {
+    "regionId": "12073490",
+    "name": "Schenkenberg",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Schenkenberg eine Fundstelle auf amt-bruessow.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine entfernte Adresse (HTTP 404), die ohnehin nur ein Kontakt-Weiterleiter war.",
+    "searches": [
+      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Schenkenberg)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-bruessow.de/contact/index/link",
+        "finding": "Die Adresse antwortet mit HTTP 404 („Die Seite wurde nicht gefunden“), am 24.09.2026 gemessen. Sie war ohnehin ein Kontakt-Weiterleiter der Amtsseite und nie eine Förderseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-bruessow.de/contact/index/link",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/contact/index/link",
+        "reason": "Am 24.09.2026 gemessen: HTTP 404, Adresse entfernt."
+      }
+    ]
+  },
+  {
+    "regionId": "12073520",
+    "name": "Schönfeld",
+    "checkedAt": "2026-09-23T23:05:09Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Schönfeld eine Fundstelle auf amt-bruessow.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine entfernte Adresse (HTTP 404), die ohnehin nur ein Kontakt-Weiterleiter war.",
+    "searches": [
+      "Fundstelle auf amt-bruessow.de am 24.09.2026 live geprüft (Schönfeld)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-bruessow.de/contact/index/link",
+        "finding": "Die Adresse antwortet mit HTTP 404 („Die Seite wurde nicht gefunden“), am 24.09.2026 gemessen. Sie war ohnehin ein Kontakt-Weiterleiter der Amtsseite und nie eine Förderseite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-bruessow.de/contact/index/link",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-bruessow.de/contact/index/link",
+        "reason": "Am 24.09.2026 gemessen: HTTP 404, Adresse entfernt."
+      }
+    ]
   }
 ]
