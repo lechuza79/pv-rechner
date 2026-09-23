@@ -1,5 +1,6 @@
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import { klasseVon } from "../../lib/gemeindegroesse";
+import { STUFEN } from "../../lib/atlas-format";
 import { anzeigeOrtsname, istStadtstaat, ortPraeposition } from "../../lib/atlas-orte";
 
 /**
@@ -90,6 +91,11 @@ export function ranglistenDaten(
       const wahl = kopfPlatzierung(paket);
       return wahl ? (wahl.art === "anzahl" ? "count" : `saved-${wahl.index}`) : null;
     })(),
+    // Die Staffelung der Einheiten kommt aus dem Einheiten-Modul der Site —
+    // das Browser-Skript der Rangliste kann es nicht importieren und hatte
+    // deshalb eine eigene, kürzere Tabelle. Die kannte die Leistung eines
+    // Technologie-Mix nicht („Windleistung 121.712" statt 121,7 MW).
+    stufen: STUFEN,
     klasse: klasse?.slug ?? "gemeinden-und-kleinstaedte",
     einwohnerLabel: population ? `${population.toLocaleString("de-DE")} Einwohner` : "keine Einwohnerzahl",
     kreisBase: ort.kreisBase,

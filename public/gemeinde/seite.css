@@ -264,14 +264,11 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
 #atlas-sources a { color: inherit; }
 
 /* Der Tipp-Kreis über „Alle … Orte ansehen" und über der nächsten Kategorie
-   ist ersatzlos weg (Betreiber, zweimal beanstandet): ein blinkender Ring auf
-   einer Seite, die sonst ruhig ist. */
-#atlas-ranking .ranking-list-invite::before,
-#atlas-ranking .ranking-list-invite::after,
-#atlas-ranking .ranking-choice.ranking-invite-visible::before,
-#atlas-ranking .ranking-choice.ranking-invite-visible::after {
-  content: none !important;
-}
+   ist WIEDER DA (Betreiber, 23.09.2026). Er war auf frühere Ansage
+   abgeschaltet; die Abschaltung ist zurückgenommen, weil er genau dort fehlte,
+   wo der nächste Schritt sonst niemandem auffällt: an der nächsten Kategorie
+   beim Scrollen und am Knopf, wenn die Platzierung nicht aufs Podest reicht.
+   Er kommt unverändert aus dem Stylesheet des Entwurfs. */
 #atlas-ranking .ranking-open:focus-visible,
 #atlas-ranking .ranking-choice:focus-visible,
 #atlas-ranking .ranking-icon-action:focus-visible {

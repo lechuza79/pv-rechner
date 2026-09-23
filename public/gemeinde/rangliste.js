@@ -33,18 +33,21 @@
   const metrics = [
     {
       id: "count",
+      format: "count",
       title: "Zahl der Solaranlagen",
       unit: "Anlagen",
       value: (r, o) => r.sums[o].count,
     },
     {
       id: "storage",
+      format: "whProKopf",
       title: "Speicherkapazität je Einwohner",
       unit: "Wh / Einwohner",
       value: (r, o) => (1000 * r.sums[o].speicher) / r.population,
     },
     {
       id: "power",
+      format: "wattProKopf",
       title: "Solarleistung je Einwohner",
       unit: "Wp / Einwohner",
       value: (r, o) => (1000 * r.sums[o].kwp) / r.population,
@@ -54,6 +57,7 @@
   metrics.push(
     ...discoveries.map((snapshot, index) => ({
       id: "saved-" + index,
+      format: snapshot.format,
       title: snapshot.label,
       unit: snapshot.unit ?? "",
       snapshot,
@@ -107,15 +111,16 @@
   const PFEIL_HOCH = '<span class="ranking-pfeil">' + PFEIL + "</span>";
   const PFEIL_RUNTER =
     '<span class="ranking-pfeil ranking-pfeil-runter">' + PFEIL + "</span>";
-  const STUFEN = {
-    kWp: [[1e6, "GWp"], [1e3, "MWp"]],
-    kWh: [[1e6, "GWh"], [1e3, "MWh"]],
-    Anlagen: [[1e6, "Mio. Anlagen"]],
-  };
-  const skala = (unit, max) => {
-    for (const [grenze, name] of STUFEN[unit] ?? [])
-      if (max >= grenze) return { teiler: grenze, unit: name, stellen: 1 };
-    return { teiler: 1, unit, stellen: 0 };
+  // Die Staffelung kommt vom Server aus dem Einheiten-Modul der Site
+  // (lib/atlas-format.ts). Eine eigene Tabelle hier war eine zweite Wahrheit:
+  // Sie kannte kW nicht, also stand „Windleistung 121.712" statt „121,7 MW",
+  // und Anlagenzahlen bekamen nie eine Stufe. Gestaffelt wird nach der GRÖSSE
+  // (dem Format), nicht nach der Beschriftung — „kW" und „kWp" sehen gleich
+  // aus und sind es nicht.
+  const skala = (format, max) => {
+    const stufen = (G.stufen || {})[format];
+    const treffer = stufen && stufen.find((st) => max >= st.ab);
+    return treffer ?? { teiler: 1, unit: null, stellen: 0 };
   };
   const fmt = (n) => Math.round(n).toLocaleString("de-DE"),
     wert = (n, sk) =>
@@ -518,10 +523,12 @@
               ? "private Anlagen"
               : "gewerbliche Anlagen und Freiflächen",
       });
-      const sk = skala(
-        m.unit,
+      const roh = skala(
+        m.format,
         Math.max(...[...top.map((r) => r.value), me ? me.value : 0]),
       );
+      // Ohne Stufe gilt die Beschriftung des Eintrags (etwa „Wp / Einwohner").
+      const sk = { ...roh, unit: roh.unit ?? m.unit };
       const html =
         m.snapshot && !m.snapshot.rows
           ? `<p class="atlas-kicker">${escape(m.snapshot.scope)}</p><h3>${escape(m.title)}</h3><div class="ranking-snapshot-result"><strong>${escape(m.snapshot.distinction ?? "Platz " + fmt(m.snapshot.rank))}</strong><p>${escape(G.name)} · Platz ${fmt(m.snapshot.rank)} von ${fmt(total)} Orten</p></div><p class="ranking-detail">Erfasst am ${new Date(m.snapshot.asOf).toLocaleDateString("de-DE", { day: "numeric", month: "short", year: "numeric" })}</p>`
@@ -854,7 +861,11 @@
                 e = 1 - Math.pow(1 - t, 3);
               bar.style.transform = `scaleY(${e})`;
               label.style.transform = `translateY(${height * (1 - e)}px)`;
-              value.textContent = fmt(Number(value.dataset.value) * e);
+              // MIT der Skala des Podests, nicht roh: „fmt" schreibt die
+              // Grundeinheit, und weil diese Schleife am Ende auf den vollen
+              // Wert läuft, blieb dort die ungekürzte Zahl stehen — 562.937
+              // statt 562,9, während die Einheit daneben MWp sagte.
+              value.textContent = wert(Number(value.dataset.value) * e, sk);
               if (t < 1) requestAnimationFrame(tick);
               else resolve();
             }
