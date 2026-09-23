@@ -378,14 +378,6 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                 </svg>
               </button>
-              <p style={{ marginTop: 15 }}>
-                <a className="atlas-link" href={rangliste.widgetUrl} target="_blank" rel="noopener">
-                  Weitere Möglichkeit: Daten als Widget einbetten{" "}
-                  <svg className="sc-live-icon" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M5.5 4.5 2 8l3.5 3.5M10.5 4.5 14 8l-3.5 3.5" stroke="currentColor" strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </a>
-              </p>
             </div>
           </section>
 

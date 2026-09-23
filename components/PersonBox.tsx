@@ -47,11 +47,13 @@ export default function PersonBox() {
             <p className="sc-person-signature">
               <strong>Sebastian Schäder</strong> · Solar Check
             </p>
+            {/* Kontakt ist der Hauptweg, „Über Solar Check" ist weg
+                (Betreiber, 23.09.2026): Der Kasten zeigt eine Person und lädt
+                ein, ihr zu schreiben — zwei Knöpfe nebeneinander teilen genau
+                diese Einladung auf, und der zweite führte auf eine Seite, die
+                dasselbe noch einmal erzählt. */}
             <div className="sc-person-actions">
-              <a href="/ueber" className="sc-person-primary">
-                Über Solar Check
-              </a>
-              <a href="/kontakt" className="hs-person-message" aria-label="Kontakt" title="Kontakt">
+              <a href="/kontakt" className="sc-person-primary hs-person-message" title="Kontakt">
                 {NACHRICHT_ICON}
                 <span>Kontakt</span>
               </a>
