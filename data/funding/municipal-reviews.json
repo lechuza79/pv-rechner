@@ -54714,5 +54714,551 @@
         "reason": "Am 24.09.2026 live gelesen: Liste der Zuwendungen, die die Gemeinde selbst erhalten hat — kein Zuschuss an Haushalte."
       }
     ]
+  },
+  {
+    "regionId": "03357019",
+    "name": "Hamersen",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Hamersen eine Fundstelle auf sittensen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist ein Artikel über Digitalisierungs-Förderung für Unternehmen von Bund und Ländern — nicht kommunal, nicht für Haushalte.",
+    "searches": [
+      "Fundstelle auf sittensen.de am 24.09.2026 live gelesen (Hamersen)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "finding": "Redaktioneller Artikel über Förderprogramme des Bundes und der Länder für die Digitalisierung: „Förderungen für Unternehmen, Handwerksbetriebe und Freiberufler“, aufgeteilt in Zuschüsse, Kredite und fachliche Förderung. Keine eigene Leistung der Samtgemeinde und kein Bezug zu Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "reason": "Am 24.09.2026 live gelesen: Artikel über Digitalisierungs-Förderung für Unternehmen, keine Leistung der Samtgemeinde."
+      }
+    ]
+  },
+  {
+    "regionId": "03357029",
+    "name": "Kalbe",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Kalbe eine Fundstelle auf sittensen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist ein Artikel über Digitalisierungs-Förderung für Unternehmen von Bund und Ländern — nicht kommunal, nicht für Haushalte.",
+    "searches": [
+      "Fundstelle auf sittensen.de am 24.09.2026 live gelesen (Kalbe)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "finding": "Redaktioneller Artikel über Förderprogramme des Bundes und der Länder für die Digitalisierung: „Förderungen für Unternehmen, Handwerksbetriebe und Freiberufler“, aufgeteilt in Zuschüsse, Kredite und fachliche Förderung. Keine eigene Leistung der Samtgemeinde und kein Bezug zu Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "reason": "Am 24.09.2026 live gelesen: Artikel über Digitalisierungs-Förderung für Unternehmen, keine Leistung der Samtgemeinde."
+      }
+    ]
+  },
+  {
+    "regionId": "03357034",
+    "name": "Lengenbostel",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Lengenbostel eine Fundstelle auf sittensen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist ein Artikel über Digitalisierungs-Förderung für Unternehmen von Bund und Ländern — nicht kommunal, nicht für Haushalte.",
+    "searches": [
+      "Fundstelle auf sittensen.de am 24.09.2026 live gelesen (Lengenbostel)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "finding": "Redaktioneller Artikel über Förderprogramme des Bundes und der Länder für die Digitalisierung: „Förderungen für Unternehmen, Handwerksbetriebe und Freiberufler“, aufgeteilt in Zuschüsse, Kredite und fachliche Förderung. Keine eigene Leistung der Samtgemeinde und kein Bezug zu Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "reason": "Am 24.09.2026 live gelesen: Artikel über Digitalisierungs-Förderung für Unternehmen, keine Leistung der Samtgemeinde."
+      }
+    ]
+  },
+  {
+    "regionId": "03357044",
+    "name": "Sittensen",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Sittensen eine Fundstelle auf sittensen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist ein Artikel über Digitalisierungs-Förderung für Unternehmen von Bund und Ländern — nicht kommunal, nicht für Haushalte.",
+    "searches": [
+      "Fundstelle auf sittensen.de am 24.09.2026 live gelesen (Sittensen)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "finding": "Redaktioneller Artikel über Förderprogramme des Bundes und der Länder für die Digitalisierung: „Förderungen für Unternehmen, Handwerksbetriebe und Freiberufler“, aufgeteilt in Zuschüsse, Kredite und fachliche Förderung. Keine eigene Leistung der Samtgemeinde und kein Bezug zu Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "reason": "Am 24.09.2026 live gelesen: Artikel über Digitalisierungs-Förderung für Unternehmen, keine Leistung der Samtgemeinde."
+      }
+    ]
+  },
+  {
+    "regionId": "03357056",
+    "name": "Wohnste",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Wohnste eine Fundstelle auf sittensen.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist ein Artikel über Digitalisierungs-Förderung für Unternehmen von Bund und Ländern — nicht kommunal, nicht für Haushalte.",
+    "searches": [
+      "Fundstelle auf sittensen.de am 24.09.2026 live gelesen (Wohnste)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "finding": "Redaktioneller Artikel über Förderprogramme des Bundes und der Länder für die Digitalisierung: „Förderungen für Unternehmen, Handwerksbetriebe und Freiberufler“, aufgeteilt in Zuschüsse, Kredite und fachliche Förderung. Keine eigene Leistung der Samtgemeinde und kein Bezug zu Photovoltaik, Speicher, Balkonkraftwerken oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.sittensen.de/foerdermoeglichkeiten-so-gelingt-die-digitalisierung-deines-unternehmens",
+        "reason": "Am 24.09.2026 live gelesen: Artikel über Digitalisierungs-Förderung für Unternehmen, keine Leistung der Samtgemeinde."
+      }
+    ]
+  },
+  {
+    "regionId": "03251006",
+    "name": "Barver",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Barver eine Fundstelle auf rehden.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine Linkliste zur Wirtschaftsförderung von Landkreis und Region — die bekannte Umkehrung, und für Gewerbe statt für Haushalte.",
+    "searches": [
+      "Fundstelle auf rehden.de am 24.09.2026 live gelesen (Barver)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&brotID=900000085&id=140058&ordner=1&containerSort=0",
+        "finding": "Linkliste unter „Wirtschaft / Gewerbe / Förderungen“: Verweise auf die „Wirtschaftsförderung des Landkreis Diepholz“ und auf die Wirtschaftsförderung der Region. Eine eigene Leistung der Samtgemeinde ist dort nicht verzeichnet, und kein Eintrag betrifft Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&amp;brotID=900000085&amp;id=140058&amp;ordner=1&amp;containerSort=0",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&brotID=900000085&id=140058&ordner=1&containerSort=0",
+        "reason": "Am 24.09.2026 live gelesen: Linkliste zur Wirtschaftsförderung des Landkreises, keine eigene Leistung der Samtgemeinde."
+      }
+    ]
+  },
+  {
+    "regionId": "03251011",
+    "name": "Dickel",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Dickel eine Fundstelle auf rehden.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine Linkliste zur Wirtschaftsförderung von Landkreis und Region — die bekannte Umkehrung, und für Gewerbe statt für Haushalte.",
+    "searches": [
+      "Fundstelle auf rehden.de am 24.09.2026 live gelesen (Dickel)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&brotID=900000085&id=140058&ordner=1&containerSort=0",
+        "finding": "Linkliste unter „Wirtschaft / Gewerbe / Förderungen“: Verweise auf die „Wirtschaftsförderung des Landkreis Diepholz“ und auf die Wirtschaftsförderung der Region. Eine eigene Leistung der Samtgemeinde ist dort nicht verzeichnet, und kein Eintrag betrifft Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&amp;brotID=900000085&amp;id=140058&amp;ordner=1&amp;containerSort=0",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&brotID=900000085&id=140058&ordner=1&containerSort=0",
+        "reason": "Am 24.09.2026 live gelesen: Linkliste zur Wirtschaftsförderung des Landkreises, keine eigene Leistung der Samtgemeinde."
+      }
+    ]
+  },
+  {
+    "regionId": "03251019",
+    "name": "Hemsloh",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Hemsloh eine Fundstelle auf rehden.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine Linkliste zur Wirtschaftsförderung von Landkreis und Region — die bekannte Umkehrung, und für Gewerbe statt für Haushalte.",
+    "searches": [
+      "Fundstelle auf rehden.de am 24.09.2026 live gelesen (Hemsloh)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&brotID=900000085&id=140058&ordner=1&containerSort=0",
+        "finding": "Linkliste unter „Wirtschaft / Gewerbe / Förderungen“: Verweise auf die „Wirtschaftsförderung des Landkreis Diepholz“ und auf die Wirtschaftsförderung der Region. Eine eigene Leistung der Samtgemeinde ist dort nicht verzeichnet, und kein Eintrag betrifft Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&amp;brotID=900000085&amp;id=140058&amp;ordner=1&amp;containerSort=0",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&brotID=900000085&id=140058&ordner=1&containerSort=0",
+        "reason": "Am 24.09.2026 live gelesen: Linkliste zur Wirtschaftsförderung des Landkreises, keine eigene Leistung der Samtgemeinde."
+      }
+    ]
+  },
+  {
+    "regionId": "03251030",
+    "name": "Rehden",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Rehden eine Fundstelle auf rehden.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine Linkliste zur Wirtschaftsförderung von Landkreis und Region — die bekannte Umkehrung, und für Gewerbe statt für Haushalte.",
+    "searches": [
+      "Fundstelle auf rehden.de am 24.09.2026 live gelesen (Rehden)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&brotID=900000085&id=140058&ordner=1&containerSort=0",
+        "finding": "Linkliste unter „Wirtschaft / Gewerbe / Förderungen“: Verweise auf die „Wirtschaftsförderung des Landkreis Diepholz“ und auf die Wirtschaftsförderung der Region. Eine eigene Leistung der Samtgemeinde ist dort nicht verzeichnet, und kein Eintrag betrifft Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&amp;brotID=900000085&amp;id=140058&amp;ordner=1&amp;containerSort=0",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&brotID=900000085&id=140058&ordner=1&containerSort=0",
+        "reason": "Am 24.09.2026 live gelesen: Linkliste zur Wirtschaftsförderung des Landkreises, keine eigene Leistung der Samtgemeinde."
+      }
+    ]
+  },
+  {
+    "regionId": "03251046",
+    "name": "Wetschen",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Wetschen eine Fundstelle auf rehden.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist eine Linkliste zur Wirtschaftsförderung von Landkreis und Region — die bekannte Umkehrung, und für Gewerbe statt für Haushalte.",
+    "searches": [
+      "Fundstelle auf rehden.de am 24.09.2026 live gelesen (Wetschen)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&brotID=900000085&id=140058&ordner=1&containerSort=0",
+        "finding": "Linkliste unter „Wirtschaft / Gewerbe / Förderungen“: Verweise auf die „Wirtschaftsförderung des Landkreis Diepholz“ und auf die Wirtschaftsförderung der Region. Eine eigene Leistung der Samtgemeinde ist dort nicht verzeichnet, und kein Eintrag betrifft Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&amp;brotID=900000085&amp;id=140058&amp;ordner=1&amp;containerSort=0",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.rehden.de/portal/linksplus-140058-21910.html?naviID=900000085&brotID=900000085&id=140058&ordner=1&containerSort=0",
+        "reason": "Am 24.09.2026 live gelesen: Linkliste zur Wirtschaftsförderung des Landkreises, keine eigene Leistung der Samtgemeinde."
+      }
+    ]
+  },
+  {
+    "regionId": "03357010",
+    "name": "Bülstedt",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Bülstedt eine Fundstelle auf tarmstedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist der Bericht zur kommunalen Wärmeplanung — ein Planungsdokument, das die Gemeinde selbst beauftragt hat.",
+    "searches": [
+      "Fundstelle auf tarmstedt.de am 24.09.2026 live gelesen (Bülstedt)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "finding": "„Kommunale Wärmeplanung für die Samtgemeinde Tarmstedt“, August 2025, erstellt von einem Planungsbüro im Auftrag der Samtgemeinde. Ein Planungsdokument nach dem Wärmeplanungsgesetz, kein Förderprogramm — es nennt keinen Zuschuss und kein Antragsverfahren."
+      }
+    ],
+    "sources": [
+      {
+        "url": "tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "reason": "Am 24.09.2026 live gelesen: Bericht zur kommunalen Wärmeplanung, ein Planungsdokument ohne Zuschuss und ohne Antragsverfahren."
+      }
+    ]
+  },
+  {
+    "regionId": "03357026",
+    "name": "Hepstedt",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Hepstedt eine Fundstelle auf tarmstedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist der Bericht zur kommunalen Wärmeplanung — ein Planungsdokument, das die Gemeinde selbst beauftragt hat.",
+    "searches": [
+      "Fundstelle auf tarmstedt.de am 24.09.2026 live gelesen (Hepstedt)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "finding": "„Kommunale Wärmeplanung für die Samtgemeinde Tarmstedt“, August 2025, erstellt von einem Planungsbüro im Auftrag der Samtgemeinde. Ein Planungsdokument nach dem Wärmeplanungsgesetz, kein Förderprogramm — es nennt keinen Zuschuss und kein Antragsverfahren."
+      }
+    ],
+    "sources": [
+      {
+        "url": "tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "reason": "Am 24.09.2026 live gelesen: Bericht zur kommunalen Wärmeplanung, ein Planungsdokument ohne Zuschuss und ohne Antragsverfahren."
+      }
+    ]
+  },
+  {
+    "regionId": "03357030",
+    "name": "Kirchtimke",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Kirchtimke eine Fundstelle auf tarmstedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist der Bericht zur kommunalen Wärmeplanung — ein Planungsdokument, das die Gemeinde selbst beauftragt hat.",
+    "searches": [
+      "Fundstelle auf tarmstedt.de am 24.09.2026 live gelesen (Kirchtimke)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "finding": "„Kommunale Wärmeplanung für die Samtgemeinde Tarmstedt“, August 2025, erstellt von einem Planungsbüro im Auftrag der Samtgemeinde. Ein Planungsdokument nach dem Wärmeplanungsgesetz, kein Förderprogramm — es nennt keinen Zuschuss und kein Antragsverfahren."
+      }
+    ],
+    "sources": [
+      {
+        "url": "tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "reason": "Am 24.09.2026 live gelesen: Bericht zur kommunalen Wärmeplanung, ein Planungsdokument ohne Zuschuss und ohne Antragsverfahren."
+      }
+    ]
+  },
+  {
+    "regionId": "03357047",
+    "name": "Tarmstedt",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Tarmstedt eine Fundstelle auf tarmstedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist der Bericht zur kommunalen Wärmeplanung — ein Planungsdokument, das die Gemeinde selbst beauftragt hat.",
+    "searches": [
+      "Fundstelle auf tarmstedt.de am 24.09.2026 live gelesen (Tarmstedt)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "finding": "„Kommunale Wärmeplanung für die Samtgemeinde Tarmstedt“, August 2025, erstellt von einem Planungsbüro im Auftrag der Samtgemeinde. Ein Planungsdokument nach dem Wärmeplanungsgesetz, kein Förderprogramm — es nennt keinen Zuschuss und kein Antragsverfahren."
+      }
+    ],
+    "sources": [
+      {
+        "url": "tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "reason": "Am 24.09.2026 live gelesen: Bericht zur kommunalen Wärmeplanung, ein Planungsdokument ohne Zuschuss und ohne Antragsverfahren."
+      }
+    ]
+  },
+  {
+    "regionId": "03357052",
+    "name": "Vorwerk",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Vorwerk eine Fundstelle auf tarmstedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist der Bericht zur kommunalen Wärmeplanung — ein Planungsdokument, das die Gemeinde selbst beauftragt hat.",
+    "searches": [
+      "Fundstelle auf tarmstedt.de am 24.09.2026 live gelesen (Vorwerk)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "finding": "„Kommunale Wärmeplanung für die Samtgemeinde Tarmstedt“, August 2025, erstellt von einem Planungsbüro im Auftrag der Samtgemeinde. Ein Planungsdokument nach dem Wärmeplanungsgesetz, kein Förderprogramm — es nennt keinen Zuschuss und kein Antragsverfahren."
+      }
+    ],
+    "sources": [
+      {
+        "url": "tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Klimaschutz/SGT_Bericht_Kommunale_Waermeplanung.pdf",
+        "reason": "Am 24.09.2026 live gelesen: Bericht zur kommunalen Wärmeplanung, ein Planungsdokument ohne Zuschuss und ohne Antragsverfahren."
+      }
+    ]
+  },
+  {
+    "regionId": "03357007",
+    "name": "Breddorf",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Breddorf eine Fundstelle auf tarmstedt.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das integrierte Klimaschutzkonzept der Samtgemeinde — eine Planung, kein Programm.",
+    "searches": [
+      "Fundstelle auf tarmstedt.de am 24.09.2026 live gelesen (Breddorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Integriertes%20Klimaschutzkonzept_Samtgemeinde%20%20Tarmstedt_2024.pdf",
+        "finding": "„Integriertes Klimaschutzkonzept der Samtgemeinde Tarmstedt“ (2024) — ein Planungsdokument. Es nennt keinen Zuschuss an Haushalte und kein Antragsverfahren."
+      }
+    ],
+    "sources": [
+      {
+        "url": "tarmstedt.de/files/Tarmstedt/Dateien/Integriertes%20Klimaschutzkonzept_Samtgemeinde%20%20Tarmstedt_2024.pdf",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.tarmstedt.de/files/Tarmstedt/Dateien/Integriertes%20Klimaschutzkonzept_Samtgemeinde%20%20Tarmstedt_2024.pdf",
+        "reason": "Am 24.09.2026 live gelesen: integriertes Klimaschutzkonzept, ein Planungsdokument ohne Zuschuss."
+      }
+    ]
+  },
+  {
+    "regionId": "12062134",
+    "name": "Fichtwald",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Fichtwald eine Fundstelle auf amt-schlieben.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist ein vom Bund gefördertes Klimaschutzkonzept des Amtes von 2018 — die bekannte Umkehrung, und ein Planungsdokument dazu.",
+    "searches": [
+      "Fundstelle auf amt-schlieben.de am 24.09.2026 live gelesen (Fichtwald)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "finding": "„Integriertes Klimaschutzkonzept für das Amt Schlieben — Schlussbericht“ vom 30.01.2018, laut Deckblatt „Gefördert aufgrund eines Beschlusses des Deutschen Bundestages, Fördernummer 03 K 04 788“. Das Amt ist dort EMPFÄNGER einer Bundesförderung; ein eigener Zuschuss an Haushalte steht nicht darin."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "reason": "Am 24.09.2026 live gelesen: vom Bund gefördertes Klimaschutzkonzept des Amtes, ein Planungsdokument ohne eigenen Zuschuss."
+      }
+    ]
+  },
+  {
+    "regionId": "12062237",
+    "name": "Hohenbucko",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Hohenbucko eine Fundstelle auf amt-schlieben.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist ein vom Bund gefördertes Klimaschutzkonzept des Amtes von 2018 — die bekannte Umkehrung, und ein Planungsdokument dazu.",
+    "searches": [
+      "Fundstelle auf amt-schlieben.de am 24.09.2026 live gelesen (Hohenbucko)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "finding": "„Integriertes Klimaschutzkonzept für das Amt Schlieben — Schlussbericht“ vom 30.01.2018, laut Deckblatt „Gefördert aufgrund eines Beschlusses des Deutschen Bundestages, Fördernummer 03 K 04 788“. Das Amt ist dort EMPFÄNGER einer Bundesförderung; ein eigener Zuschuss an Haushalte steht nicht darin."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "reason": "Am 24.09.2026 live gelesen: vom Bund gefördertes Klimaschutzkonzept des Amtes, ein Planungsdokument ohne eigenen Zuschuss."
+      }
+    ]
+  },
+  {
+    "regionId": "12062282",
+    "name": "Kremitzaue",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Kremitzaue eine Fundstelle auf amt-schlieben.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist ein vom Bund gefördertes Klimaschutzkonzept des Amtes von 2018 — die bekannte Umkehrung, und ein Planungsdokument dazu.",
+    "searches": [
+      "Fundstelle auf amt-schlieben.de am 24.09.2026 live gelesen (Kremitzaue)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "finding": "„Integriertes Klimaschutzkonzept für das Amt Schlieben — Schlussbericht“ vom 30.01.2018, laut Deckblatt „Gefördert aufgrund eines Beschlusses des Deutschen Bundestages, Fördernummer 03 K 04 788“. Das Amt ist dort EMPFÄNGER einer Bundesförderung; ein eigener Zuschuss an Haushalte steht nicht darin."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "reason": "Am 24.09.2026 live gelesen: vom Bund gefördertes Klimaschutzkonzept des Amtes, ein Planungsdokument ohne eigenen Zuschuss."
+      }
+    ]
+  },
+  {
+    "regionId": "12062289",
+    "name": "Lebusa",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Lebusa eine Fundstelle auf amt-schlieben.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist ein vom Bund gefördertes Klimaschutzkonzept des Amtes von 2018 — die bekannte Umkehrung, und ein Planungsdokument dazu.",
+    "searches": [
+      "Fundstelle auf amt-schlieben.de am 24.09.2026 live gelesen (Lebusa)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "finding": "„Integriertes Klimaschutzkonzept für das Amt Schlieben — Schlussbericht“ vom 30.01.2018, laut Deckblatt „Gefördert aufgrund eines Beschlusses des Deutschen Bundestages, Fördernummer 03 K 04 788“. Das Amt ist dort EMPFÄNGER einer Bundesförderung; ein eigener Zuschuss an Haushalte steht nicht darin."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "reason": "Am 24.09.2026 live gelesen: vom Bund gefördertes Klimaschutzkonzept des Amtes, ein Planungsdokument ohne eigenen Zuschuss."
+      }
+    ]
+  },
+  {
+    "regionId": "12062445",
+    "name": "Schlieben",
+    "checkedAt": "2026-09-23T22:49:36Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Schlieben eine Fundstelle auf amt-schlieben.de.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist ein vom Bund gefördertes Klimaschutzkonzept des Amtes von 2018 — die bekannte Umkehrung, und ein Planungsdokument dazu.",
+    "searches": [
+      "Fundstelle auf amt-schlieben.de am 24.09.2026 live gelesen (Schlieben)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "finding": "„Integriertes Klimaschutzkonzept für das Amt Schlieben — Schlussbericht“ vom 30.01.2018, laut Deckblatt „Gefördert aufgrund eines Beschlusses des Deutschen Bundestages, Fördernummer 03 K 04 788“. Das Amt ist dort EMPFÄNGER einer Bundesförderung; ein eigener Zuschuss an Haushalte steht nicht darin."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.amt-schlieben.de/verwaltung/standort/klimaschutz/images/amt_schlieben_ksk-schlussbericht_18-01-30.pdf",
+        "reason": "Am 24.09.2026 live gelesen: vom Bund gefördertes Klimaschutzkonzept des Amtes, ein Planungsdokument ohne eigenen Zuschuss."
+      }
+    ]
   }
 ]
