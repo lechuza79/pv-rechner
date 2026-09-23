@@ -360,7 +360,11 @@ export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
                     value={plz}
                     onChange={e => onPlzChange(e.target.value)}
                     style={{
-                      flex: 1, padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
+                      // Siehe Balkon-Rechner: Ohne `minWidth: 0` schrumpft das
+                      // Feld nicht unter seine voreingestellte Zeichenzahl, und
+                      // die Zeile aus Feld und Knopf braucht 339 px statt 320.
+                      flex: 1, minWidth: 0,
+                      padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
                       borderRadius: v('--radius-md'), border: `2px solid ${v('--color-border')}`,
                       background: v('--color-bg-muted'), color: v('--color-text-primary'), outline: "none", textAlign: "center", letterSpacing: "0.08em",
                     }}

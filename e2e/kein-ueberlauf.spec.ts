@@ -29,50 +29,75 @@ import { SEITEN } from "./routen";
 // Dokumentbreite nicht mehr, weil sein Rahmen längst gesetzt ist.
 test.describe.configure({ timeout: 30_000 });
 
-const TELEFON = { width: 375, height: 812 };
+// ZWEI BREITEN, und die schmale ist die, die etwas findet. 375 px ist das
+// iPhone seit 2017; 320 px sind das erste SE, kleine Android-Geräte und jedes
+// Fenster, das jemand halb zuzieht. Am 23.09.2026 lief der Balkon-Rechner bei
+// 320 px um 19 px über (Postleitzahl-Feld plus Knopf), bei 375 px nicht —
+// dieser Test war grün, während die Seite auf einem kleinen Telefon seitwärts
+// zu schieben war. Was dort passiert, ist nicht bloß ein Rand: Der Browser
+// zieht die LAYOUT-Breite auf die des Inhalts auf, also die ganze Seite.
+const BREITEN = [375, 320];
 
-for (const { pfad } of SEITEN) {
-  test(`${pfad} läuft auf ${TELEFON.width} px nicht seitlich über`, async ({ page }) => {
-    await page.setViewportSize(TELEFON);
-    const antwort = await page.goto(pfad, { waitUntil: "domcontentloaded" });
-    expect(antwort?.status(), `${pfad} antwortet nicht mit 200`).toBe(200);
-    await page.waitForTimeout(1500);
-    const mass = await page.evaluate(() => ({
-      dokument: document.documentElement.scrollWidth,
-      fenster: window.innerWidth,
-      // Der breiteste sichtbare Übeltäter, damit ein roter Lauf sagt, WO.
-      //
-      // WAS IN EINEM KLEMMENDEN VORFAHREN LIEGT, ZÄHLT NICHT (23.09.2026):
-      // Die Dekoration der Szene ist breiter als das Fenster und trägt zur
-      // Seitenbreite trotzdem nichts bei, weil ihr Rahmen sie abschneidet. Eine
-      // Meldung, die sie nennt, zeigt auf Zierde statt auf die Ursache — genau
-      // so ist eine Messung auf der Ortsseite auf eine Wolke gelaufen, während
-      // die echte Ursache eine Leiste mit vier Elementen in einer Zeile war.
-      breitestes: (() => {
-        const geklemmt = (el: HTMLElement) => {
-          let p = el.parentElement;
-          while (p) {
-            const o = getComputedStyle(p).overflowX;
-            if (o === "hidden" || o === "clip" || o === "auto" || o === "scroll") return true;
-            p = p.parentElement;
+/**
+ * Seiten, die auf 320 px NOCH überlaufen — mit Maß, Ursache und Frist.
+ *
+ * Sie stehen hier, statt die schmale Breite ganz wegzulassen: Ohne sie wäre
+ * der Fund, um den es geht, weiterhin unsichtbar (der Balkon-Rechner lief um
+ * 19 px über, und dieser Test war grün). Eine Ausnahme mit Datum ist sichtbar,
+ * eine fehlende Prüfung nicht.
+ *
+ * OFFEN (bis 11/2026): Beide Seiten hängen an derselben Stelle — dem
+ * Kennzahlen-Block der geteilten Übersichts-Sektion. Er sitzt 16 px vom linken
+ * Rand und ist 308 px breit, macht 324 bei 320 px Fenster (gemessen
+ * 23.09.2026). Vier Pixel, eine Ursache, zwei Seiten.
+ */
+const NOCH_NICHT_AUF_320: string[] = ["/solar-atlas/bayern", "/photovoltaik-foerderung/bayern"];
+
+for (const breite of BREITEN) {
+  for (const { pfad } of SEITEN) {
+    if (breite === 320 && NOCH_NICHT_AUF_320.includes(pfad)) continue;
+    test(`${pfad} läuft auf ${breite} px nicht seitlich über`, async ({ page }) => {
+      await page.setViewportSize({ width: breite, height: 812 });
+      const antwort = await page.goto(pfad, { waitUntil: "domcontentloaded" });
+      expect(antwort?.status(), `${pfad} antwortet nicht mit 200`).toBe(200);
+      await page.waitForTimeout(1500);
+      const mass = await page.evaluate(() => ({
+        dokument: document.documentElement.scrollWidth,
+        fenster: window.innerWidth,
+        // Der breiteste sichtbare Übeltäter, damit ein roter Lauf sagt, WO.
+        //
+        // WAS IN EINEM KLEMMENDEN VORFAHREN LIEGT, ZÄHLT NICHT (23.09.2026):
+        // Die Dekoration der Szene ist breiter als das Fenster und trägt zur
+        // Seitenbreite trotzdem nichts bei, weil ihr Rahmen sie abschneidet. Eine
+        // Meldung, die sie nennt, zeigt auf Zierde statt auf die Ursache — genau
+        // so ist eine Messung auf der Ortsseite auf eine Wolke gelaufen, während
+        // die echte Ursache eine Leiste mit vier Elementen in einer Zeile war.
+        breitestes: (() => {
+          const geklemmt = (el: HTMLElement) => {
+            let p = el.parentElement;
+            while (p) {
+              const o = getComputedStyle(p).overflowX;
+              if (o === "hidden" || o === "clip" || o === "auto" || o === "scroll") return true;
+              p = p.parentElement;
+            }
+            return false;
+          };
+          let best: { tag: string; breite: number; text: string } | null = null;
+          for (const el of Array.from(document.body.querySelectorAll<HTMLElement>("*"))) {
+            const r = el.getBoundingClientRect();
+            if (r.width === 0 || r.right <= window.innerWidth + 1) continue;
+            const s = getComputedStyle(el);
+            if (s.visibility === "hidden" || s.display === "none") continue;
+            if (geklemmt(el)) continue;
+            if (!best || r.right > best.breite) best = { tag: el.tagName.toLowerCase() + (el.className && typeof el.className === "string" ? "." + el.className.split(" ")[0] : ""), breite: Math.round(r.right), text: (el.textContent || "").trim().slice(0, 40) };
           }
-          return false;
-        };
-        let best: { tag: string; breite: number; text: string } | null = null;
-        for (const el of Array.from(document.body.querySelectorAll<HTMLElement>("*"))) {
-          const r = el.getBoundingClientRect();
-          if (r.width === 0 || r.right <= window.innerWidth + 1) continue;
-          const s = getComputedStyle(el);
-          if (s.visibility === "hidden" || s.display === "none") continue;
-          if (geklemmt(el)) continue;
-          if (!best || r.right > best.breite) best = { tag: el.tagName.toLowerCase() + (el.className && typeof el.className === "string" ? "." + el.className.split(" ")[0] : ""), breite: Math.round(r.right), text: (el.textContent || "").trim().slice(0, 40) };
-        }
-        return best;
-      })(),
-    }));
-    expect(
-      mass.dokument,
-      `${pfad}: Seite ist ${mass.dokument} px breit bei ${mass.fenster} px Fenster — ragt heraus: ${JSON.stringify(mass.breitestes)}`,
-    ).toBeLessThanOrEqual(mass.fenster + 1);
-  });
+          return best;
+        })(),
+      }));
+      expect(
+        mass.dokument,
+        `${pfad} bei ${breite} px: Seite ist ${mass.dokument} px breit bei ${mass.fenster} px Fenster — ragt heraus: ${JSON.stringify(mass.breitestes)}`,
+      ).toBeLessThanOrEqual(mass.fenster + 1);
+    });
+  }
 }
