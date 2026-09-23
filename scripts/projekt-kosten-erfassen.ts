@@ -18,7 +18,7 @@
  */
 
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import { homedir } from "node:os";
 import { execFileSync } from "node:child_process";
 import * as unzipper from "unzipper";
@@ -27,6 +27,8 @@ import {
   anbieterFuer,
   summiereKosten,
   listenwertUsd,
+  spalteAus,
+  istUebersicht,
   type Kostenmonat,
   type Listenwerttag,
 } from "../lib/projekt-kosten";
@@ -182,14 +184,6 @@ async function leseXlsx(datei: string): Promise<Buchung[]> {
   return out;
 }
 
-/** Spaltenbuchstaben („A", „AB") in einen Index ab null. */
-export function spalteAus(buchstaben: string | undefined): number | null {
-  if (!buchstaben) return null;
-  let n = 0;
-  for (const c of buchstaben) n = n * 26 + (c.charCodeAt(0) - 64);
-  return n - 1;
-}
-
 function entschaerft(s: string): string {
   return s
     .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
@@ -197,16 +191,7 @@ function entschaerft(s: string): string {
     .replace(/&amp;/g, "&");
 }
 
-/**
- * Alle Übersichtsdateien unter dem Buchhaltungsordner, gleich welcher Tiefe.
- *
- * DER NAME WIRD NORMALISIERT, BEVOR ER VERGLICHEN WIRD — BLOCKER auf dieser
- * Plattform. macOS legt Dateinamen in ZERLEGTER Form ab: Das „Ü" in „Übersicht"
- * ist dort ein U plus ein Trema-Zeichen, im Quelltext dagegen ein einzelnes
- * Zeichen. Beide sehen im Terminal identisch aus, und der Vergleich schlägt
- * trotzdem fehl. Beim Bauen genau so passiert: Der Lauf meldete „0 Buchungen
- * gelesen" und sah aus, als gäbe es die Dateien nicht.
- */
+/** Alle Übersichtsdateien unter dem Buchhaltungsordner, gleich welcher Tiefe. */
 function uebersichten(wurzel: string): string[] {
   const out: string[] = [];
   const lauf = (v: string, tiefe: number) => {
@@ -218,18 +203,11 @@ function uebersichten(wurzel: string): string[] {
       let s;
       try { s = statSync(voll); } catch { continue; }
       if (s.isDirectory()) { lauf(voll, tiefe + 1); continue; }
-      // Die Sperre für „~$…" gilt den Sicherungskopien, die ein
-      // Tabellenprogramm neben einer geöffneten Datei anlegt.
       if (istUebersicht(name)) out.push(voll);
     }
   };
   lauf(wurzel, 0);
   return out.sort();
-}
-
-export function istUebersicht(dateiname: string): boolean {
-  const n = dateiname.normalize("NFC");
-  return /^Übersicht.*\.(csv|xlsx)$/i.test(n) && !n.startsWith("~$");
 }
 
 async function leseKosten(): Promise<{ zeilen: Kostenmonat[]; gelesen: number; verworfen: number }> {
@@ -561,4 +539,9 @@ async function main() {
   console.log(`\nAbgelegt: ${z(zeilen.length)} Monatszeilen, ${z(listenwert.length)} Tageszeilen.`);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+// NUR BEIM DIREKTSTART. Ein Skript, das ein Test importiert, führt sonst beim
+// Laden seinen ganzen Ablauf aus und beendet den Prüfprozess — lokal unsichtbar,
+// weil dort alles vorhanden ist, worüber es auf dem Prüfrechner stolpert.
+if (process.argv[1] && import.meta.url.endsWith(basename(process.argv[1]))) {
+  main().catch((e) => { console.error(e); process.exit(1); });
+}

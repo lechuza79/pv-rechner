@@ -14,12 +14,13 @@ import {
   anteilBetrag,
   summiereKosten,
   listenwertUsd,
+  spalteAus,
+  istUebersicht,
   type Kostenmonat,
   type Listenwerttag,
 } from "../projekt-kosten";
 import { tokenPreisUsd, bekannteModelle, PREISE_STAND } from "../modellpreise";
 import { bilanz, STUNDEN_JE_TAG } from "../projekt-bilanz";
-import { spalteAus, istUebersicht } from "../../scripts/projekt-kosten-erfassen";
 import type { Bestandstag, Summe } from "../projekt-statistik";
 import { schaetzeAufwand, type Zaehlstand } from "../aufwand-schaetzung";
 

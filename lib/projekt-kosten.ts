@@ -349,3 +349,37 @@ export function summiereListenwert(tage: Listenwerttag[]): number {
   for (const t of tage) s += listenwertUsd(t) ?? 0;
   return s;
 }
+
+// ─── Hilfen beim Einlesen der Buchungsübersichten ────────────────────────────
+//
+// SIE STEHEN HIER UND NICHT IM ERFASSUNGSLAUF, damit eine Prüfung sie benutzen
+// kann, ohne das Skript zu laden: Ein Skript, das ein Test importiert, führt
+// beim Laden seinen ganzen Ablauf aus. Genau das hat den Prüflauf umgeworfen —
+// lokal unsichtbar, weil dort die Buchungsunterlagen liegen und der Lauf
+// anstandslos durchläuft.
+
+/** Spaltenbuchstaben („A", „AB") in einen Index ab null. */
+export function spalteAus(buchstaben: string | undefined): number | null {
+  if (!buchstaben) return null;
+  let n = 0;
+  for (const c of buchstaben) n = n * 26 + (c.charCodeAt(0) - 64);
+  return n - 1;
+}
+
+/**
+ * Ist das eine Buchungsübersicht?
+ *
+ * DER NAME WIRD NORMALISIERT, BEVOR ER VERGLICHEN WIRD — BLOCKER auf dieser
+ * Plattform. macOS legt Dateinamen in ZERLEGTER Form ab: Das „Ü" in „Übersicht"
+ * ist dort ein U plus ein Trema-Zeichen, im Quelltext dagegen ein einzelnes
+ * Zeichen. Beide sehen im Terminal identisch aus, und der Vergleich schlägt
+ * trotzdem fehl. Beim Bauen genau so passiert: Der Lauf meldete „0 Buchungen
+ * gelesen" und sah aus, als gäbe es die Dateien nicht.
+ *
+ * Die Sperre für „~$…" gilt den Sicherungskopien, die ein Tabellenprogramm
+ * neben einer geöffneten Datei anlegt.
+ */
+export function istUebersicht(dateiname: string): boolean {
+  const n = dateiname.normalize("NFC");
+  return /^Übersicht.*\.(csv|xlsx)$/i.test(n) && !n.startsWith("~$");
+}
