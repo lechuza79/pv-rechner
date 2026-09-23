@@ -8872,23 +8872,49 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     coveredCosts: "Pauschale je Haushalt, gestaffelt nach Anlagenleistung",
     maxFoerderung: "200 € je Haushalt",
     rates: [
-      { label: "Balkonkraftwerk 0,25–0,40 kWp", value: "100 € pauschal" },
-      { label: "Balkonkraftwerk über 0,40 kWp", value: "200 € pauschal" },
+      { label: "Balkonkraftwerk 0,25 bis 0,40 kWp", value: "100 € pauschal" },
+      { label: "Balkonkraftwerk über 0,40 bis 0,60 bzw. 0,80 kWp", value: "200 € pauschal" },
     ],
     conditions: [
       "Antragsberechtigt sind volljährige Privatpersonen, die Eigentümer oder Mieter mit Hauptwohnsitz in der Gemeinde sind; Mieter brauchen das Einverständnis des Eigentümers",
       "Gefördert werden Bestandsgebäude und Neubauten, solange das Gebäude überwiegend Wohnzwecken dient",
-      "Höchstens zwei Module und höchstens 600 beziehungsweise 800 W Wechselrichterleistung je Wohneinheit",
+      "Höchstens zwei Module und höchstens 600 beziehungsweise 800 W Wechselrichterleistung je Wohneinheit — ein Set mit vier Modulen ist damit ausgeschlossen",
       "Ein Antrag je Haushalt; wer mehrere Wohnungen besitzt, darf nur für eine beantragen",
       "Das Gerät muss fabrikneu sein und von einem Fachbetrieb oder Online-Fachbetrieb stammen — Gebrauchtgeräte, Eigenbau, Prototypen und Leasing sind ausgeschlossen",
       "Der Antrag ist vor dem Vorhabenbeginn zu stellen; als Beginn gilt die Bestellung oder die Beauftragung eines Betriebs",
       "Fünf Jahre Nutzung in derselben Wohneinheit; ein Umzug innerhalb der Gemeinde ist vorher anzuzeigen",
       "Die fertige Anlage ist im Marktstammdatenregister zu registrieren",
+      "Die Förderung schließt eine Finanzierung mit anderen öffentlichen Mitteln aus",
       "Antragszeitraum ist der 01.04. bis 31.12. eines Jahres, im Rahmen der verfügbaren Mittel; ein Rechtsanspruch besteht nicht",
     ],
-    combinableWith: BUND,
+    // Nr. 6 der Richtlinie: „Die Förderung nach dieser Richtlinie schließt eine
+    // Finanzierung mit anderen öffentlichen Mitteln aus." Eine leere Liste ist im
+    // Katalog das „geht nur allein" (wie Gaiberg). Die frühere Fassung trug hier
+    // BUND und behauptete damit das Gegenteil des Richtlinientextes.
+    combinableWith: [],
     foerdert: ["balkon"],
-    balkonPauschale: 200,
+    // KEIN Rechenwert — und das ist die Korrektur eines eigenen Fehlers vom
+    // 23.09.2026, an dem hier `balkonPauschale: 200` stand.
+    //
+    // WARUM NICHT: Der Rechner übergibt die MODULLEISTUNG (500 / 960 / 2.000 Wp
+    // seiner drei Sets). Eine Pauschale zahlt darauf immer 200 €, auch dem
+    // 4-Modul-Set — das Nr. 3 der Richtlinie mit „maximal zwei Modulen"
+    // ausdrücklich ausschließt. `balkonTiers` repariert das NICHT: `tierAmount`
+    // fällt oberhalb der letzten Stufe auf deren Betrag zurück (das ist gewollt,
+    // mehrere Programme nutzen eine offene Endstufe), das 4-Modul-Set bekäme
+    // also weiter 200 €.
+    //
+    // Die einzige Bedingung, die trägt, ist die MODULZAHL — und die kann das
+    // Modell heute nicht ausdrücken. Über die kWp-Spalte der Betragstabelle lässt
+    // sich das nicht ersatzweise lösen: Ob „0,60 bzw. 0,80 kWp" die Modul- oder
+    // die Wechselrichterleistung meint, ist aus der Richtlinie NICHT zu
+    // entscheiden (die Fußnote daran ist wortgleich mit der an der
+    // Wechselrichtergrenze, die Einheit lautet aber „kWp"). Unter der einen
+    // Lesart bekommt das 2-Modul-Set 200 €, unter der anderen nichts.
+    //
+    // Also: Das Programm steht auf der Stadtseite, nennt seine Stufen und seine
+    // Grenzen, und zieht nichts ab. Lieber keine Zahl als eine falsche.
+    // Gegengeprüft am Richtlinien-Volltext (Nr. 3, 4 und 6), 23.09.2026.
   },
 
   "meinersen-solar": {
