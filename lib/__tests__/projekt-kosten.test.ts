@@ -485,3 +485,25 @@ describe("Fehlerrichtung", () => {
     expect(lauf).toMatch(/FEHLERRICHTUNG/);
   });
 });
+
+describe("Quellenangabe der KI-Messungen", () => {
+  it("nennt jede Messung mit Titel, Urheber, Jahr und Fundstelle", () => {
+    // EIN KURZNAME IST KEINE QUELLE. „McKinsey, Laborexperiment" lässt sich
+    // nicht nachschlagen; wer eine Zahl auf ein Blatt schreibt, das andere
+    // lesen, muss sagen, wo sie herkommt — sonst ist sie im ersten Gespräch,
+    // das jemand ernst nimmt, nicht mehr zu verteidigen.
+    for (const m of MESSUNGEN) {
+      expect(m.titel.length, m.quelle).toBeGreaterThan(20);
+      expect(m.urheber.length, m.quelle).toBeGreaterThan(3);
+      expect(m.jahr, m.quelle).toBeGreaterThan(2020);
+      expect(m.fundstelle, m.quelle).toMatch(/arXiv:|\.com|\.org|\.de/);
+    }
+  });
+
+  it("sagt bei jeder Messung, woran gemessen wurde", () => {
+    // Der Aufbau ist der Grund, warum die vier Ergebnisse auseinandergehen —
+    // ohne ihn steht da nur eine Zahlenreihe ohne Erklärung, und der Leser
+    // nimmt die größte.
+    for (const m of MESSUNGEN) expect(m.aufbau.length, m.quelle).toBeGreaterThan(40);
+  });
+});
