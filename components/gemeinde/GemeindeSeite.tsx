@@ -382,8 +382,18 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
           </section>
 
           {/* Dieselbe Box wie auf der Startseite — ein Baustein, nicht eine
-              zweite Fassung (Betreiber, 23.09.2026). */}
-          <PersonBox />
+              zweite Fassung (Betreiber, 23.09.2026). Der Text ist hier ein
+              anderer: Auf der Startseite ordnet er das Angebot ein, hier lädt
+              er zu dem ein, wozu auf einer Ortsseite jemand etwas zu sagen
+              hat. */}
+          <PersonBox
+            text={
+              <>
+                Diese Seite rechnet mit den amtlichen Zahlen für {ort.name} — <strong>fehlt etwas oder sieht eine Zahl falsch aus?</strong>{" "}
+                Schreiben Sie mir, ich lese jede Nachricht selbst.
+              </>
+            }
+          />
 
         </main>
       </div>

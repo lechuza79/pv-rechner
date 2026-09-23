@@ -29,7 +29,22 @@ const HAENDE_ICON = (
 // Ausbaustufe dieser Box im Paket: 15 ihrer Regeln hängen daran, und sie
 // stehen als NACHFAHREN-Regeln da (".homepage-study .hs-person-section").
 // Deshalb eine eigene Hülle darum — auf demselben Element greifen sie nicht.
-export default function PersonBox() {
+/**
+ * Der TEXT und die Beschriftung des Knopfs sind Parameter (Betreiber,
+ * 23.09.2026): Derselbe Kasten steht auf verschiedenen Seiten, und was dort
+ * sinnvoll danebensteht, ist verschieden — auf der Startseite die Einordnung
+ * des Angebots, auf einer Ortsseite die Einladung, zu den Zahlen dieses Orts
+ * etwas zu sagen. Die Voreinstellung ist der Wortlaut der Startseite; Bild,
+ * Signatur, Zusage und alles Gestalterische bleiben fest, sonst wäre es
+ * wieder ein Nachbau statt eines Bausteins.
+ */
+export default function PersonBox({
+  text,
+  knopf = "Nachricht schreiben",
+}: {
+  text?: React.ReactNode;
+  knopf?: string;
+} = {}) {
   return (
     <div className="homepage-study">
     <section className="hs-section hs-person-section">
@@ -41,8 +56,12 @@ export default function PersonBox() {
           </picture>
           <div className="sc-person-body">
             <p className="sc-person-text">
-              Wir machen erneuerbare Energien <strong>verständlich und berechenbar</strong>. Mit kostenlosen Rechnern und aktuellen
-              Energiedaten.
+              {text ?? (
+                <>
+                  Wir machen erneuerbare Energien <strong>verständlich und berechenbar</strong>. Mit kostenlosen Rechnern und aktuellen
+                  Energiedaten.
+                </>
+              )}
             </p>
             <p className="sc-person-signature">
               <strong>Sebastian Schäder</strong> · Solar Check
@@ -52,10 +71,10 @@ export default function PersonBox() {
                 ein, ihr zu schreiben — zwei Knöpfe nebeneinander teilen genau
                 diese Einladung auf, und der zweite führte auf eine Seite, die
                 dasselbe noch einmal erzählt. */}
-            <div className="sc-person-actions">
-              <a href="/kontakt" className="sc-person-primary hs-person-message" title="Kontakt">
+            <div className="sc-person-actions sc-person-actions-solo">
+              <a href="/kontakt" className="sc-person-primary hs-person-message" title={knopf}>
                 {NACHRICHT_ICON}
-                <span>Kontakt</span>
+                <span>{knopf}</span>
               </a>
             </div>
           </div>
