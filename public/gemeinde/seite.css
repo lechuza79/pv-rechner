@@ -104,3 +104,58 @@
 }
 .solar-page .v3-examples-foerderung h3 { margin: 0 0 4px; }
 .solar-page .v3-examples-foerderung p { margin: 0 0 12px; color: var(--atlas-muted); }
+
+/* ── Fenster: mittig, sanft, auf dem Telefon von unten ──────────────────────
+   Der Entwurf gibt dem Fenster keine Ränder, deshalb klebte es in der oberen
+   linken Ecke und erschien ohne Übergang. Die Bewegung fällt bei reduzierter
+   Bewegung weg, das Einblenden bleibt — sonst sieht es aus wie ein Fehler. */
+dialog.atlas-dialog {
+  margin: auto;
+  opacity: 0;
+  transform: translateY(10px) scale(.985);
+  transition: opacity .2s ease, transform .2s ease, overlay .2s allow-discrete, display .2s allow-discrete;
+}
+dialog.atlas-dialog[open] { opacity: 1; transform: none; }
+@starting-style { dialog.atlas-dialog[open] { opacity: 0; transform: translateY(10px) scale(.985); } }
+dialog.atlas-dialog::backdrop {
+  opacity: 0;
+  transition: opacity .2s ease, overlay .2s allow-discrete, display .2s allow-discrete;
+}
+dialog.atlas-dialog[open]::backdrop { opacity: 1; }
+@starting-style { dialog.atlas-dialog[open]::backdrop { opacity: 0; } }
+@media (max-width: 640px) {
+  dialog.atlas-dialog {
+    margin: auto auto 0;
+    width: 100%;
+    max-width: none;
+    border-radius: 18px 18px 0 0;
+    transform: translateY(100%);
+  }
+  dialog.atlas-dialog[open] { transform: none; }
+  @starting-style { dialog.atlas-dialog[open] { transform: translateY(100%); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog.atlas-dialog,
+  dialog.atlas-dialog[open] { transform: none; transition: opacity .14s ease, overlay .14s allow-discrete, display .14s allow-discrete; }
+  @starting-style { dialog.atlas-dialog[open] { transform: none; } }
+}
+
+/* „Daten & Quellen" steht seit 23.09.2026 zwischen Vertrauensleiste und
+   Fußzeile (Betreiber). Dort gelten die Tokens der Fußzeile, nicht die des
+   hellen Inhalts — die Angaben brauchen deshalb ihre eigene Typografie. */
+#atlas-sources {
+  max-width: var(--sc-layout-content, 1040px);
+  margin: 0 auto;
+  padding: 8px 16px 40px;
+  color: var(--sc-footer-text, #b9c6c2);
+  font-size: 13px;
+  line-height: 1.7;
+}
+#atlas-sources h2 {
+  margin: 0 0 12px;
+  color: var(--sc-footer-heading, #edf2ef);
+  font-size: 16px;
+  letter-spacing: -.01em;
+}
+#atlas-sources p { margin: 0 0 10px; }
+#atlas-sources a { color: inherit; }

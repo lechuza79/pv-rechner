@@ -124,7 +124,6 @@ export default function GemeindeAboDialog({ name, ags }: { name: string; ags: st
                 aria-hidden="true"
                 style={{ position: "absolute", left: -9999, width: 1, height: 1, opacity: 0 }}
               />
-              <p className="gemeinde-abo-hinweis">Kostenlos. Nur wenn es etwas zu berichten gibt. Jederzeit abbestellbar.</p>
               <button className="atlas-button" disabled={status === "sendet"}>
                 Kostenlos abonnieren
               </button>

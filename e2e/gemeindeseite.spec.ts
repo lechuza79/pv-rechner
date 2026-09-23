@@ -102,4 +102,13 @@ test.describe("Gemeindeseite", () => {
     await page.goto(ORT);
     await expect(page.getByRole("link", { name: /Zuschüsse in|Landesförderung in/ })).toHaveCount(0);
   });
+  // Ein Stadtstaat IST sein Bundesland: Hamburg verglich sich mit „1 Ort" —
+  // sich selbst. Jetzt startet der Vergleich bundesweit.
+  test("ein Stadtstaat vergleicht sich nicht mit sich selbst", async ({ page }) => {
+    await page.goto("/solar-atlas/hamburg/hamburg/hamburg");
+    const abschnitt = page.locator("#atlas-ranking");
+    await abschnitt.scrollIntoViewIfNeeded();
+    await expect(abschnitt).toContainText(/Wir vergleichen \d+ Orte in Deutschland/, { timeout: 30_000 });
+    await expect(abschnitt).not.toContainText("1 Orte in");
+  });
 });

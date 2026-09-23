@@ -30,3 +30,18 @@
 .compact .power small{font-size:clamp(10px,16cqi,14px)}
 
 .shareValue{font-family:var(--atlas-display);font-size:30px;font-weight:700;letter-spacing:normal;fill:var(--atlas-text);font-variant-numeric:proportional-nums}.shareUnit{font-family:var(--atlas-number-unit-font);font-size:13px;font-weight:var(--atlas-number-unit-weight);fill:var(--atlas-secondary)}
+
+/* Auf dunklem Grund stehen die Hintergrundflächen zu hart im Bild: Sie reichen
+   über die Karte hinaus und enden dort, wo die Karte endet — eine gerade Kante
+   quer durch die Grafik. GEMESSEN (Ortsseite, 23.09.2026): Der Bildbereich ist
+   dort 251 px hoch, die Flächen 567–733 px. Auf hellem Grund fällt es nicht auf,
+   deshalb gilt die Dämpfung nur für die dunkle Fassung. */
+:global([data-story-scheme="dark"]) .splash {
+  opacity: .05;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 22%, #000 78%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
+}
+:global([data-story-scheme="dark"]) .splash[data-layer="1"] { opacity: .04; }
+:global([data-story-scheme="dark"]) .splash[data-layer="2"] { opacity: .035; }

@@ -1,5 +1,6 @@
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
 import { klasseVon } from "../../lib/gemeindegroesse";
+import { istStadtstaat } from "../../lib/atlas-orte";
 
 /**
  * What public/gemeinde/rangliste.js and teilen.js read as window.__GEMEINDE__.
@@ -38,6 +39,11 @@ export function ranglistenDaten(
   const lokal = paket.district.peers.length >= 3;
   const kreisAgs = lokal ? paket.kreis.ags : null;
   const landAgs = ort.ags.slice(0, 2);
+  // Ein Stadtstaat IST sein Bundesland: Der Landesvergleich enthält dann nur
+  // diese eine Stadt, und die Rangliste zeigte „Top 1 von 1" — ein Podest aus
+  // dem Nichts (dieselbe Regel wie die Dreier-Schwelle im Kreis). Hamburg und
+  // Berlin starten deshalb bundesweit, Bremen auch: dort wären es zwei.
+  const alleinImLand = istStadtstaat(ort.ags);
   return {
     ags: ort.ags,
     name: ort.name,
@@ -46,8 +52,8 @@ export function ranglistenDaten(
     kreisLabel: paket.kreis.name,
     landAgs,
     landLabel: ort.landName,
-    startArea: kreisAgs ?? landAgs,
-    startLabel: kreisAgs ? paket.kreis.name : ort.landName,
+    startArea: kreisAgs ?? (alleinImLand ? "" : landAgs),
+    startLabel: kreisAgs ? paket.kreis.name : alleinImLand ? "Deutschland" : ort.landName,
     klasse: klasse?.slug ?? "gemeinden-und-kleinstaedte",
     einwohnerLabel: population ? `${population.toLocaleString("de-DE")} Einwohner` : "keine Einwohnerzahl",
     kreisBase: ort.kreisBase,

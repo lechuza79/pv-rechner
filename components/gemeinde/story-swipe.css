@@ -150,3 +150,10 @@
 
 /* Preview surfaces follow their host; reader styling remains independent. */
 .story-strip .story-preview-card[data-preview-scheme="light"],.story-feed-grid .story-preview-card[data-preview-scheme="light"]{background:var(--atlas-card)}
+
+/* Der Streifen läuft dauerhaft; ohne eigene Ebene rechnet der Browser die
+   Maske über dem wandernden Band in jedem Bild neu. Auf dieser Maschine war
+   kein Ruckeln messbar (Median 16,7 ms, kein Bild über 32 ms) — die
+   Kompositions-Hinweise kosten nichts und helfen dort, wo es ruckelt. */
+.story-strip { transform: translateZ(0); }
+.story-strip-track { will-change: transform; backface-visibility: hidden; }

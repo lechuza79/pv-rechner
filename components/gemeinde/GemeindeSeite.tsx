@@ -362,41 +362,42 @@ export default function GemeindeSeite({ paket, ort }: { paket: GemeindePaket; or
             <p className="atlas-contact-reassurance">Ohne Anmeldung und ohne Verkaufsanrufe.</p>
           </section>
 
-          <section id="atlas-sources" className="atlas-wrap atlas-sources" aria-labelledby="atlas-sources-title">
-            <h2 id="atlas-sources-title">Daten &amp; Quellen</h2>
-            <p>
-              <strong>Anlagen, Leistung, Speicher und Zubau:</strong>{" "}
-              <a href={quellen.mastr.url} target="_blank" rel="noopener">{quellen.mastr.name}</a>.{" "}
-              <strong>Einwohner und Ortsvergleiche:</strong>{" "}
-              <a href={quellen.destatis.url} target="_blank" rel="noopener">{quellen.destatis.name}</a>. Datenlizenz:{" "}
-              <a href={quellen.mastr.licenseUrl} target="_blank" rel="noopener">{quellen.mastr.license}</a>. Für diese Seite
-              durch Solar Check zusammengefasst, berechnet und grafisch aufbereitet.
-            </p>
-            <p>
-              <strong>Wetter heute und modellierte Solarleistung:</strong> {quellen.iconD2Archive.name} ·{" "}
-              <a href={quellen.iconD2Archive.licenseUrl} target="_blank" rel="noopener">{quellen.iconD2Archive.license}</a>.{" "}
-              <strong>Historische Tages- und Jahresverläufe:</strong> {quellen.era5Archive.name} ·{" "}
-              <a href={quellen.era5Archive.licenseUrl} target="_blank" rel="noopener">{quellen.era5Archive.license}</a>. Eigene
-              Modellrechnung; keine gemessene Stromerzeugung.
-            </p>
-            <p>
-              <strong>Standortertrag der Beispielrechnungen:</strong>{" "}
-              <a href={quellen.pvgis.url} target="_blank" rel="noopener">{quellen.pvgis.name}</a>.
-            </p>
-            <p>
-              <strong>Kartengeometrien:</strong> {quellen.bkg.name},{" "}
-              <a href={quellen.bkg.licenseUrl} target="_blank" rel="noopener">{quellen.bkg.license}</a>, vereinfacht.
-            </p>
-            <p>
-              Der Datenstand steht jeweils bei den Zahlen. Die Rangliste basiert auf dem Atlas-Registerstand vom{" "}
-              {datumLang(paket.rangStand)}, die Bestandsdiagramme auf dem Export vom {datumLang(paket.registerStand)}.
-              {paket.einwohnerStand && <> Einwohnerstand: {datumLang(paket.einwohnerStand)}.</>}{" "}
-              <a href="/datenstand">Mehr zu Datenstand und Quellen</a> · <a href="/methodik">So rechnen wir</a>
-            </p>
-          </section>
         </main>
       </div>
-      <SiteFuss />
+      <SiteFuss zwischen={
+          <section id="atlas-sources" className="atlas-wrap atlas-sources" aria-labelledby="atlas-sources-title">
+          <h2 id="atlas-sources-title">Daten &amp; Quellen</h2>
+          <p>
+            <strong>Anlagen, Leistung, Speicher und Zubau:</strong>{" "}
+            <a href={quellen.mastr.url} target="_blank" rel="noopener">{quellen.mastr.name}</a>.{" "}
+            <strong>Einwohner und Ortsvergleiche:</strong>{" "}
+            <a href={quellen.destatis.url} target="_blank" rel="noopener">{quellen.destatis.name}</a>. Datenlizenz:{" "}
+            <a href={quellen.mastr.licenseUrl} target="_blank" rel="noopener">{quellen.mastr.license}</a>. Für diese Seite
+            durch Solar Check zusammengefasst, berechnet und grafisch aufbereitet.
+          </p>
+          <p>
+            <strong>Wetter heute und modellierte Solarleistung:</strong> {quellen.iconD2Archive.name} ·{" "}
+            <a href={quellen.iconD2Archive.licenseUrl} target="_blank" rel="noopener">{quellen.iconD2Archive.license}</a>.{" "}
+            <strong>Historische Tages- und Jahresverläufe:</strong> {quellen.era5Archive.name} ·{" "}
+            <a href={quellen.era5Archive.licenseUrl} target="_blank" rel="noopener">{quellen.era5Archive.license}</a>. Eigene
+            Modellrechnung; keine gemessene Stromerzeugung.
+          </p>
+          <p>
+            <strong>Standortertrag der Beispielrechnungen:</strong>{" "}
+            <a href={quellen.pvgis.url} target="_blank" rel="noopener">{quellen.pvgis.name}</a>.
+          </p>
+          <p>
+            <strong>Kartengeometrien:</strong> {quellen.bkg.name},{" "}
+            <a href={quellen.bkg.licenseUrl} target="_blank" rel="noopener">{quellen.bkg.license}</a>, vereinfacht.
+          </p>
+          <p>
+            Der Datenstand steht jeweils bei den Zahlen. Die Rangliste basiert auf dem Atlas-Registerstand vom{" "}
+            {datumLang(paket.rangStand)}, die Bestandsdiagramme auf dem Export vom {datumLang(paket.registerStand)}.
+            {paket.einwohnerStand && <> Einwohnerstand: {datumLang(paket.einwohnerStand)}.</>}{" "}
+            <a href="/datenstand">Mehr zu Datenstand und Quellen</a> · <a href="/methodik">So rechnen wir</a>
+          </p>
+        </section>
+      } />
       {/* The sign-up dialog in the approved design; the section bar's
           subscribe button opens it. */}
       <GemeindeAboDialog name={ort.name} ags={ort.ags} />
