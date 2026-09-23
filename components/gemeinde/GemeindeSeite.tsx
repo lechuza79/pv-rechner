@@ -2,7 +2,7 @@ import { HERO_SZENE_INNER_HTML } from "./hero-szene";
 import SharedSiteHeader from "../SharedSiteHeader";
 import { anlagenZahlTeile, fmtPvLeistung } from "../../lib/atlas-format";
 import { formatStoryDate } from "../../lib/story-format";
-import { IMPORT_TAGE, naechsterImport } from "../../lib/mastr-import-plan";
+import { IMPORT_TAGE, naechsteAktualisierung } from "../../lib/mastr-import-plan";
 import { DATA_SOURCES } from "../../lib/data-sources";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../lib/json-ld";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
@@ -114,12 +114,9 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
   ];
   const z = bestandsZahlen(paket);
   const stand = formatStoryDate(paket.registerStand);
-  // Der nächste geplante Lauf des Anlagenregisters, gerechnet vom jüngeren aus
-  // Datenstand und heute (siehe Kommentar an der Zeile in der Aktionsleiste).
-  const naechstesUpdate = naechsterImport(
-    IMPORT_TAGE,
-    new Date(Math.max(Date.parse(paket.registerStand), Date.now())),
-  );
+  // Wann kommen die nächsten Zahlen? Im Normalfall der 1. des kommenden
+  // Monats; stehen die dieses Monats noch aus, der nächste Anlauf.
+  const naechstesUpdate = naechsteAktualisierung(IMPORT_TAGE, paket.registerStand, new Date());
   // The monitor's figures end with the last complete month.
   const letzterMonat = (paket.monitorHistory as { observations?: { end: string }[] } | undefined)?.observations?.[0]?.end;
   const kennzahlenBis = letzterMonat
@@ -256,7 +253,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
                   Sobald die Datengeschichten in eigenem Takt nachwachsen,
                   tritt deren Termin an diese Stelle. */}
               <span className="atlas-page-update">
-                Nächstes Update <time dateTime={naechstesUpdate}>{formatStoryDate(naechstesUpdate)}</time>
+                <b>Nächstes Update</b> <time dateTime={naechstesUpdate}>{formatStoryDate(naechstesUpdate)}</time>
               </span>
               <GemeindeAboKnopf name={ort.name} />
               <button type="button" data-page-copy aria-label="Link zur Seite kopieren" title="Link kopieren" />

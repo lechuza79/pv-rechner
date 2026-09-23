@@ -55,7 +55,7 @@ export const IMPORT_NACHFRIST_TAGE = 2;
  * Termin verschiebt und die Konstante vergisst. Wer sie von Hand pflegt, ohne
  * den Zeitplan anzufassen, wird ebenso rot.
  */
-export const IMPORT_TAGE = [5, 7, 9];
+export const IMPORT_TAGE = [1, 3, 5];
 
 /**
  * Wann kommen das nächste Mal neue Zahlen?
@@ -83,7 +83,7 @@ export function naechsterImport(importTage: number[], jetzt: Date): string {
 /**
  * An welchen Tagen des Monats ist der Import geplant?
  *
- * Gelesen aus dem Zeitplan der Action (`cron: "0 4 5,7,9 * *"` → `[5, 7, 9]`).
+ * Gelesen aus dem Zeitplan der Action (`cron: "0 4 1,3,5 * *"` → `[1, 3, 5]`).
  * Das dritte Feld eines Zeitplans ist der Tag des Monats. Mehrere Zeilen und
  * Kommalisten werden zusammengefasst; alles andere (Sternchen, Schrittweiten,
  * Bereiche) gilt als nicht auswertbar.
@@ -136,6 +136,29 @@ export function zyklusStart(importTage: number[], jetzt: Date): string {
   // Vor dem Termin dieses Monats läuft noch der Zyklus des Vormonats.
   if (jetzt.getTime() < start.getTime()) return alsTag(new Date(Date.UTC(jahr, monat - 1, ersterTag)));
   return alsTag(start);
+}
+
+/**
+ * Welcher Termin steht am Abo-Knopf?
+ *
+ * NICHT der nächste geplante ANLAUF, sondern der nächste Tag, an dem wirklich
+ * neue Zahlen zu erwarten sind (Betreiber, 23.09.2026: „können wir das Update
+ * nicht immer am 1. machen?"). Der Unterschied ist der ganze Punkt: Die zwei
+ * Nachhol-Termine sind ein Sicherheitsnetz für den Fall, dass der Server der
+ * Behörde nicht antwortet — sie stehen im Zeitplan, bringen aber im Normalfall
+ * nichts Neues. Wer sie ansagt, nennt am 2. den 3. und am 4. den 5., und der
+ * Termin wandert innerhalb einer Woche dreimal, ohne dass etwas passiert.
+ *
+ * Deshalb: Sind die Zahlen dieses Zyklus da, ist der nächste Termin der ERSTE
+ * Tag des nächsten Zyklus — der 1. des kommenden Monats. Fehlen sie noch, wird
+ * der nächste geplante Anlauf genannt; einen Monat in die Zukunft zu zeigen,
+ * während die Zahlen noch ausstehen, wäre ein falsches Versprechen.
+ */
+export function naechsteAktualisierung(importTage: number[], datenstand: string, jetzt: Date): string {
+  if (importNoetig(datenstand, importTage, jetzt)) return naechsterImport(importTage, jetzt);
+  const erster = Math.min(...importTage);
+  const [j, m] = zyklusStart(importTage, jetzt).split("-").map(Number);
+  return alsTag(new Date(Date.UTC(j, m, erster)));
 }
 
 /**

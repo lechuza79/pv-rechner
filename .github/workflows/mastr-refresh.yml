@@ -24,12 +24,18 @@ on:
     # niemand mehr. Der Atlas zeigte vier Tage lang die Zahlen des Vormonats,
     # bemerkt hat es ein Mensch, zufaellig.
     #
-    # Sie kosten fast nichts: Der Lauf am 7. und 9. traegt `--nur-wenn-faellig`
-    # und hoert nach einer Datenbank-Abfrage auf, wenn der 5. geglueckt ist.
+    # Sie kosten fast nichts: Der Lauf am 3. und 5. traegt `--nur-wenn-faellig`
+    # und hoert nach einer Datenbank-Abfrage auf, wenn der 1. geglueckt ist.
+    #
+    # DER ERSTE DES MONATS (Betreiber, 23.09.2026): Die Ortsseite sagt am
+    # Abo-Knopf an, wann die naechsten Zahlen kommen. Ein Termin, den man sich
+    # merken kann, ist dort mehr wert als einer, der irgendwo in der ersten
+    # Woche liegt — und der Gesamtdatenexport der Behoerde erscheint taeglich,
+    # der 1. ist also keine schlechtere Quelle als der 5.
     # Der Zeitplan ist zugleich die QUELLE fuer das Urteil des Gesundheitschecks
     # ("ist ein Import ausgefallen?") — er liest die Tage hier heraus, statt sie
     # ein zweites Mal zu fuehren.
-    - cron: "0 4 5,7,9 * *"
+    - cron: "0 4 1,3,5 * *"
   workflow_dispatch: {}
 
 permissions:

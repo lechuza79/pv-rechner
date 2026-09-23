@@ -74,6 +74,10 @@
 .solar-page .v3-section-nav .atlas-page-update{
   display:inline-flex;align-items:center;gap:4px;white-space:nowrap;
   font-size:var(--font-size-xs,12px);color:var(--atlas-muted);margin-right:4px}
+/* Die Beschriftung traegt den Akzent, das Datum bleibt ruhig (Betreiber,
+   23.09.2026). Farbe aus dem Token des Entwurfs, nie als eigener Wert. */
+.solar-page .v3-section-nav .atlas-page-update b{
+  font-weight:700;color:var(--theme-action,#d4ff24)}
 /* Auch auf dem Telefon sichtbar (Betreiber, 23.09.2026). Fehlt der Platz,
    spart der Abo-Knopf den Ortsnamen — die Seite traegt ihn im Titel, in der
    Ueberschrift und in der Kruemelspur; das Datum steht sonst nirgends in

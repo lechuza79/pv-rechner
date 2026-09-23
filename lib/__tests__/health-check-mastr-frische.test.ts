@@ -10,6 +10,7 @@ import {
   importTageAusZeitplan,
   importlaufMeldung,
   naechsterImport,
+  naechsteAktualisierung,
   zyklusStart,
 } from "../mastr-import-plan";
 
@@ -35,7 +36,18 @@ import {
  * stimmt?
  */
 
-const TAGE = [5, 7, 9]; // wie im Zeitplan der Action
+const TAGE = [1, 3, 5]; // wie im Zeitplan der Action
+
+/**
+ * Der Zeitplan, unter dem der Ausfall vom 05.09.2026 passiert ist.
+ *
+ * Die Termine liegen seit dem 23.09.2026 auf dem 1., 3. und 5. — die Fälle
+ * unten beschreiben aber einen echten Vorgang mit echten Daten. Sie auf den
+ * neuen Rhythmus umzuschreiben hieße, einen Vorfall nachzuerzählen, der so nie
+ * stattgefunden hat; geprüft wird hier die Rechnung, und die muss für jeden
+ * Rhythmus stimmen.
+ */
+const TAGE_DAMALS = [5, 7, 9];
 
 describe("Import-Termin: aus dem Zeitplan gelesen, nicht getippt", () => {
   it("liest die Tage aus dem echten Zeitplan der Action", () => {
@@ -63,6 +75,26 @@ describe("Import-Termin: aus dem Zeitplan gelesen, nicht getippt", () => {
     expect(naechsterImport([5, 7, 9], new Date("2026-12-20T00:00:00Z"))).toBe("2027-01-05");
   });
 
+  it("sagt den ERSTEN des kommenden Monats an, nicht den nächsten Nachhol-Anlauf", () => {
+    // Die Zahlen des laufenden Zyklus sind da (Stand vom 1.) — angesagt wird
+    // der 1. des Folgemonats, an jedem Tag dazwischen derselbe. Die Termine am
+    // 3. und 5. sind das Sicherheitsnetz und bringen dann nichts Neues; sie
+    // anzusagen ließe den Termin dreimal je Woche wandern.
+    for (const tag of ["2026-09-01", "2026-09-04", "2026-09-06", "2026-09-30"]) {
+      expect(naechsteAktualisierung([1, 3, 5], "2026-09-01", new Date(`${tag}T12:00:00Z`))).toBe("2026-10-01");
+    }
+    // Über den Jahreswechsel.
+    expect(naechsteAktualisierung([1, 3, 5], "2026-12-01", new Date("2026-12-20T12:00:00Z"))).toBe("2027-01-01");
+  });
+
+  it("verspricht keinen fernen Termin, solange die Zahlen dieses Zyklus fehlen", () => {
+    // Stand noch aus dem August, der Lauf am 1. ist ausgeblieben: Angesagt wird
+    // der nächste Anlauf, nicht der 1. Oktober. Sonst stünde dort ein Datum in
+    // vier Wochen, während die Zahlen jeden Moment kommen können.
+    expect(naechsteAktualisierung([1, 3, 5], "2026-08-01", new Date("2026-09-02T12:00:00Z"))).toBe("2026-09-03");
+    expect(naechsteAktualisierung([1, 3, 5], "2026-08-01", new Date("2026-09-04T12:00:00Z"))).toBe("2026-09-05");
+  });
+
   it("nimmt Kommalisten und mehrere Zeilen", () => {
     expect(importTageAusZeitplan('    - cron: "0 4 5,7,9 * *"')).toEqual([5, 7, 9]);
     expect(importTageAusZeitplan('- cron: "0 4 5 * *"\n- cron: "0 4 9 * *"')).toEqual([5, 9]);
@@ -83,16 +115,16 @@ describe("Import-Termin: aus dem Zeitplan gelesen, nicht getippt", () => {
 
 describe("Zyklus: welcher Termin gilt gerade", () => {
   it("der erste Termin des Monats, sobald er angebrochen ist", () => {
-    expect(zyklusStart(TAGE, new Date("2026-09-05T04:00:00Z"))).toBe("2026-09-05");
-    expect(zyklusStart(TAGE, new Date("2026-09-30T23:00:00Z"))).toBe("2026-09-05");
+    expect(zyklusStart(TAGE_DAMALS, new Date("2026-09-05T04:00:00Z"))).toBe("2026-09-05");
+    expect(zyklusStart(TAGE_DAMALS, new Date("2026-09-30T23:00:00Z"))).toBe("2026-09-05");
   });
 
   it("vor dem Termin läuft noch der Zyklus des Vormonats", () => {
-    expect(zyklusStart(TAGE, new Date("2026-09-04T23:00:00Z"))).toBe("2026-08-05");
+    expect(zyklusStart(TAGE_DAMALS, new Date("2026-09-04T23:00:00Z"))).toBe("2026-08-05");
   });
 
   it("trägt über den Jahreswechsel", () => {
-    expect(zyklusStart(TAGE, new Date("2026-01-03T00:00:00Z"))).toBe("2025-12-05");
+    expect(zyklusStart(TAGE_DAMALS, new Date("2026-01-03T00:00:00Z"))).toBe("2025-12-05");
   });
 });
 
@@ -104,7 +136,7 @@ describe("Der echte Ausfall vom 05.09.2026", () => {
   const stand = "2026-08-05";
 
   it("am Tag des Fehlschlags: der Zyklus ist offen, gemeldet wird der rote Lauf", () => {
-    const b = importPlanBefund(stand, TAGE, new Date("2026-09-05T09:00:00Z"));
+    const b = importPlanBefund(stand, TAGE_DAMALS, new Date("2026-09-05T09:00:00Z"));
     expect(b.art).toBe("unterwegs");
     // Ohne den Ausgang des Laufs ist das noch kein Befund — der Zyklus läuft ja.
     expect(importlaufMeldung(b, "success")).toBeNull();
@@ -114,7 +146,7 @@ describe("Der echte Ausfall vom 05.09.2026", () => {
   });
 
   it("nach dem letzten Anlauf samt Nachfrist: Befund für Claude", () => {
-    const b = importPlanBefund(stand, TAGE, new Date("2026-09-11T13:00:00Z"));
+    const b = importPlanBefund(stand, TAGE_DAMALS, new Date("2026-09-11T13:00:00Z"));
     expect(b.art).toBe("ausgefallen");
     // Auch ohne jede Kenntnis der Lauf-Historie — der Termin allein trägt hier.
     expect(importlaufMeldung(b, null)?.stufe).toBe("claude");
@@ -124,8 +156,8 @@ describe("Der echte Ausfall vom 05.09.2026", () => {
     // Am letzten Anlauf selbst läuft der Lauf noch (rund zweieinhalb Stunden,
     // danach Ungültig-Erklären und Aufwärmen). Wer hier schon meldet, meldet
     // jeden Monat grundlos — und eine Meldung, die immer angeht, filtert man weg.
-    expect(importPlanBefund(stand, TAGE, new Date("2026-09-09T09:00:00Z")).art).toBe("unterwegs");
-    expect(importPlanBefund(stand, TAGE, new Date("2026-09-10T23:00:00Z")).art).toBe("unterwegs");
+    expect(importPlanBefund(stand, TAGE_DAMALS, new Date("2026-09-09T09:00:00Z")).art).toBe("unterwegs");
+    expect(importPlanBefund(stand, TAGE_DAMALS, new Date("2026-09-10T23:00:00Z")).art).toBe("unterwegs");
   });
 
   it("die alte Tagesschwelle hätte hier geschwiegen", () => {
@@ -135,30 +167,30 @@ describe("Der echte Ausfall vom 05.09.2026", () => {
     expect(mastrAlterTage("2026-08-05T00:00:00+00:00", new Date("2026-09-05T09:00:00Z"))).toBeLessThan(45);
     expect(mastrAlterTage("2026-08-05T00:00:00+00:00", new Date("2026-09-11T13:00:00Z"))).toBeLessThan(45);
     // Und die neue Aufsicht meldet an genau diesem Tag.
-    expect(importPlanBefund("2026-08-05", TAGE, new Date("2026-09-11T13:00:00Z")).art).toBe("ausgefallen");
+    expect(importPlanBefund("2026-08-05", TAGE_DAMALS, new Date("2026-09-11T13:00:00Z")).art).toBe("ausgefallen");
   });
 });
 
 describe("Der Normalfall darf nicht melden", () => {
   it("frisch importierter Bestand ist aktuell", () => {
-    expect(importPlanBefund("2026-09-05", TAGE, new Date("2026-09-20T00:00:00Z")).art).toBe("aktuell");
+    expect(importPlanBefund("2026-09-05", TAGE_DAMALS, new Date("2026-09-20T00:00:00Z")).art).toBe("aktuell");
   });
 
   it("kurz vor dem nächsten Termin ist ein Monat alter Bestand noch richtig", () => {
     // Am 04.10. ist der Bestand vom 05.09. 29 Tage alt — und vollkommen in
     // Ordnung, weil der Oktober-Zyklus noch gar nicht begonnen hat. Genau diese
     // Unterscheidung kann eine Tagesschwelle nicht treffen.
-    expect(importPlanBefund("2026-09-05", TAGE, new Date("2026-10-04T00:00:00Z")).art).toBe("aktuell");
+    expect(importPlanBefund("2026-09-05", TAGE_DAMALS, new Date("2026-10-04T00:00:00Z")).art).toBe("aktuell");
   });
 
   it("ein roter Lauf bei aktuellem Bestand ist eine Warnung, kein Ausfall", () => {
-    const b = importPlanBefund("2026-09-05", TAGE, new Date("2026-09-20T00:00:00Z"));
+    const b = importPlanBefund("2026-09-05", TAGE_DAMALS, new Date("2026-09-20T00:00:00Z"));
     expect(importlaufMeldung(b, "failure")?.stufe).toBe("warnung");
     expect(importlaufMeldung(b, "success")).toBeNull();
   });
 
   it("ohne Kenntnis der Lauf-Historie wird nichts behauptet", () => {
-    const b = importPlanBefund("2026-09-05", TAGE, new Date("2026-09-20T00:00:00Z"));
+    const b = importPlanBefund("2026-09-05", TAGE_DAMALS, new Date("2026-09-20T00:00:00Z"));
     expect(importlaufMeldung(b, null)).toBeNull();
   });
 });
@@ -167,16 +199,16 @@ describe("Der Lauf selbst: hat er noch etwas zu tun?", () => {
   it("der Nachhol-Termin überspringt sich, wenn der erste geglückt ist", () => {
     // Ohne das wären die zusätzlichen Termine keine Absicherung, sondern
     // dreifache Arbeit: dreimal 3,2 GB und dreimal zwei Stunden Aufwärmen.
-    expect(importNoetig("2026-09-05", TAGE, new Date("2026-09-07T04:00:00Z"))).toBe(false);
-    expect(importNoetig("2026-09-05", TAGE, new Date("2026-09-09T04:00:00Z"))).toBe(false);
+    expect(importNoetig("2026-09-05", TAGE_DAMALS, new Date("2026-09-07T04:00:00Z"))).toBe(false);
+    expect(importNoetig("2026-09-05", TAGE_DAMALS, new Date("2026-09-09T04:00:00Z"))).toBe(false);
   });
 
   it("der Nachhol-Termin arbeitet, wenn der erste ausgefallen ist", () => {
-    expect(importNoetig("2026-08-05", TAGE, new Date("2026-09-07T04:00:00Z"))).toBe(true);
+    expect(importNoetig("2026-08-05", TAGE_DAMALS, new Date("2026-09-07T04:00:00Z"))).toBe(true);
   });
 
   it("und er arbeitet im neuen Monat wieder", () => {
-    expect(importNoetig("2026-09-05", TAGE, new Date("2026-10-05T04:00:00Z"))).toBe(true);
+    expect(importNoetig("2026-09-05", TAGE_DAMALS, new Date("2026-10-05T04:00:00Z"))).toBe(true);
   });
 });
 
