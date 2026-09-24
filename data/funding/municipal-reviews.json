@@ -61376,5 +61376,237 @@
         "evidenceUrl": "https://www.gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben"
       }
     ]
+  },
+  {
+    "regionId": "09779117",
+    "name": "Auhausen",
+    "checkedAt": "2026-09-24T16:13:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Auhausen (VG Oettingen i. Bay., Landkreis Donau-Ries). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Verwaltungsgemeinschaft führt für ihre Mitgliedsgemeinden als einzige Förderseite die Innenortsbelebung von Hainsfarth; die Energieseiten enthalten nur Kriterien für Freiflächen-PV; der Landkreis hat kein eigenes Programm.",
+    "searches": [
+      "Menü der VG-Oettingen-Website für alle fünf Mitgliedsgemeinden durchgesehen und alle Förder-/Energieseiten gelesen (24.09.2026)",
+      "Suchfunktion der VG-Website nicht per Adresse ansprechbar (kesearch, Zielseite unbekannt); ersatzweise Websuche nach Förderprogramm Photovoltaik/Balkonkraftwerk für Oettingen, Hainsfarth, Auhausen, Munningen, Megesheim, Ehingen a. Ries: keine Fundstelle (24.09.2026)",
+      "Websuche Landkreis Donau-Ries Förderung Balkonkraftwerk/Photovoltaik/Speicher 2026: kein Kreisprogramm; einziges Ortsprogramm im Kreis Donauwörth (nicht zuständig)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-oettingen.de/mitgliedsgemeinden/auhausen/erneuerbare-energien",
+        "finding": "Am 24.09.2026 gelesen: nur Kriterienkatalog Freiflächenphotovoltaikanlagen (Stand 25.01.2024) — Planungsvorgabe, kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-oettingen.de/mitgliedsgemeinden/auhausen/staedtebaufoerderung",
+        "finding": "Am 24.09.2026 gelesen: nur Gestaltungshandbuch-Flyer der Städtebauförderung — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "finding": "Am 24.09.2026 gelesen: einzige Förderseite der Verwaltungsgemeinschaft führt nur die Förderrichtlinien zur Innenortsbelebung der Gemeinde Hainsfarth (06.07.2021; § 2: Erwerb leerstehender Gebäude, Ersatzneubau, Sanierung) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-oettingen.de/",
+        "finding": "Am 24.09.2026 Menü aller Mitgliedsgemeinden durchgesehen: Förder-/Energieseiten gibt es nur als „Erneuerbare Energien“ (Auhausen, Ehingen a. Ries: Kriterienkataloge für Freiflächen-PV), „Städtebauförderung“ (Auhausen: Gestaltungshandbuch) und „Förderprogramme“ (Hainsfarth: Innenortsbelebung)."
+      },
+      {
+        "url": "https://www.donau-ries.de/themen/testseite-27-07-2022/ortskern/foerderprogramme",
+        "finding": "Am 24.09.2026 gelesen: Landkreis beschreibt kommunale Förderprogramme für Bauen im Bestand/Innenentwicklung — kein Landkreis-Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://auhausen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "finding": "Am 24.09.2026 gegengelesen: HTTP 404 — fehlerhaft gebildete Adresse, keine Quelle."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinien zur Innenortsbelebung der Gemeinde Hainsfarth — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; zudem Seite einer anderen Mitgliedsgemeinde.",
+        "evidenceUrl": "https://www.vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme"
+      },
+      {
+        "url": "auhausen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Fehlerhaft gebildete Adresse (Pfad der VG-Seite auf fremder Domain); beim Gegenlesen am 24.09.2026 HTTP 404.",
+        "evidenceUrl": "https://auhausen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "09779138",
+    "name": "Ehingen a. Ries",
+    "checkedAt": "2026-09-24T16:13:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ehingen a. Ries (VG Oettingen i. Bay., Landkreis Donau-Ries). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Verwaltungsgemeinschaft führt für ihre Mitgliedsgemeinden als einzige Förderseite die Innenortsbelebung von Hainsfarth; die Energieseiten enthalten nur Kriterien für Freiflächen-PV; der Landkreis hat kein eigenes Programm.",
+    "searches": [
+      "Menü der VG-Oettingen-Website für alle fünf Mitgliedsgemeinden durchgesehen und alle Förder-/Energieseiten gelesen (24.09.2026)",
+      "Suchfunktion der VG-Website nicht per Adresse ansprechbar (kesearch, Zielseite unbekannt); ersatzweise Websuche nach Förderprogramm Photovoltaik/Balkonkraftwerk für Oettingen, Hainsfarth, Auhausen, Munningen, Megesheim, Ehingen a. Ries: keine Fundstelle (24.09.2026)",
+      "Websuche Landkreis Donau-Ries Förderung Balkonkraftwerk/Photovoltaik/Speicher 2026: kein Kreisprogramm; einziges Ortsprogramm im Kreis Donauwörth (nicht zuständig)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-oettingen.de/mitgliedsgemeinden/ehingen-am-ries/erneuerbare-energien",
+        "finding": "Am 24.09.2026 gelesen: nur Kriterienkatalog für Freiflächenphotovoltaikanlagen — Planungsvorgabe, kein Zuschuss."
+      },
+      {
+        "url": "https://www.vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "finding": "Am 24.09.2026 gelesen: einzige Förderseite der Verwaltungsgemeinschaft führt nur die Förderrichtlinien zur Innenortsbelebung der Gemeinde Hainsfarth (06.07.2021; § 2: Erwerb leerstehender Gebäude, Ersatzneubau, Sanierung) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-oettingen.de/",
+        "finding": "Am 24.09.2026 Menü aller Mitgliedsgemeinden durchgesehen: Förder-/Energieseiten gibt es nur als „Erneuerbare Energien“ (Auhausen, Ehingen a. Ries: Kriterienkataloge für Freiflächen-PV), „Städtebauförderung“ (Auhausen: Gestaltungshandbuch) und „Förderprogramme“ (Hainsfarth: Innenortsbelebung)."
+      },
+      {
+        "url": "https://www.donau-ries.de/themen/testseite-27-07-2022/ortskern/foerderprogramme",
+        "finding": "Am 24.09.2026 gelesen: Landkreis beschreibt kommunale Förderprogramme für Bauen im Bestand/Innenentwicklung — kein Landkreis-Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://ehingen-am-ries.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "finding": "Am 24.09.2026 gegengelesen: HTTP 404 — fehlerhaft gebildete Adresse, keine Quelle."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinien zur Innenortsbelebung der Gemeinde Hainsfarth — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; zudem Seite einer anderen Mitgliedsgemeinde.",
+        "evidenceUrl": "https://www.vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme"
+      },
+      {
+        "url": "ehingen-am-ries.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Fehlerhaft gebildete Adresse (Pfad der VG-Seite auf fremder Domain); beim Gegenlesen am 24.09.2026 HTTP 404.",
+        "evidenceUrl": "https://ehingen-am-ries.de/mitgliedsgemeinden/hainsfarth/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "09779154",
+    "name": "Hainsfarth",
+    "checkedAt": "2026-09-24T16:13:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hainsfarth (VG Oettingen i. Bay., Landkreis Donau-Ries). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Verwaltungsgemeinschaft führt für ihre Mitgliedsgemeinden als einzige Förderseite die Innenortsbelebung von Hainsfarth; die Energieseiten enthalten nur Kriterien für Freiflächen-PV; der Landkreis hat kein eigenes Programm.",
+    "searches": [
+      "Menü der VG-Oettingen-Website für alle fünf Mitgliedsgemeinden durchgesehen und alle Förder-/Energieseiten gelesen (24.09.2026)",
+      "Suchfunktion der VG-Website nicht per Adresse ansprechbar (kesearch, Zielseite unbekannt); ersatzweise Websuche nach Förderprogramm Photovoltaik/Balkonkraftwerk für Oettingen, Hainsfarth, Auhausen, Munningen, Megesheim, Ehingen a. Ries: keine Fundstelle (24.09.2026)",
+      "Websuche Landkreis Donau-Ries Förderung Balkonkraftwerk/Photovoltaik/Speicher 2026: kein Kreisprogramm; einziges Ortsprogramm im Kreis Donauwörth (nicht zuständig)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "finding": "Am 24.09.2026 gelesen: einzige Förderseite der Verwaltungsgemeinschaft führt nur die Förderrichtlinien zur Innenortsbelebung der Gemeinde Hainsfarth (06.07.2021; § 2: Erwerb leerstehender Gebäude, Ersatzneubau, Sanierung) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-oettingen.de/",
+        "finding": "Am 24.09.2026 Menü aller Mitgliedsgemeinden durchgesehen: Förder-/Energieseiten gibt es nur als „Erneuerbare Energien“ (Auhausen, Ehingen a. Ries: Kriterienkataloge für Freiflächen-PV), „Städtebauförderung“ (Auhausen: Gestaltungshandbuch) und „Förderprogramme“ (Hainsfarth: Innenortsbelebung)."
+      },
+      {
+        "url": "https://www.donau-ries.de/themen/testseite-27-07-2022/ortskern/foerderprogramme",
+        "finding": "Am 24.09.2026 gelesen: Landkreis beschreibt kommunale Förderprogramme für Bauen im Bestand/Innenentwicklung — kein Landkreis-Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinien zur Innenortsbelebung der Gemeinde Hainsfarth — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen.",
+        "evidenceUrl": "https://www.vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "09779180",
+    "name": "Megesheim",
+    "checkedAt": "2026-09-24T16:13:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Megesheim (VG Oettingen i. Bay., Landkreis Donau-Ries). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Verwaltungsgemeinschaft führt für ihre Mitgliedsgemeinden als einzige Förderseite die Innenortsbelebung von Hainsfarth; die Energieseiten enthalten nur Kriterien für Freiflächen-PV; der Landkreis hat kein eigenes Programm.",
+    "searches": [
+      "Menü der VG-Oettingen-Website für alle fünf Mitgliedsgemeinden durchgesehen und alle Förder-/Energieseiten gelesen (24.09.2026)",
+      "Suchfunktion der VG-Website nicht per Adresse ansprechbar (kesearch, Zielseite unbekannt); ersatzweise Websuche nach Förderprogramm Photovoltaik/Balkonkraftwerk für Oettingen, Hainsfarth, Auhausen, Munningen, Megesheim, Ehingen a. Ries: keine Fundstelle (24.09.2026)",
+      "Websuche Landkreis Donau-Ries Förderung Balkonkraftwerk/Photovoltaik/Speicher 2026: kein Kreisprogramm; einziges Ortsprogramm im Kreis Donauwörth (nicht zuständig)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "finding": "Am 24.09.2026 gelesen: einzige Förderseite der Verwaltungsgemeinschaft führt nur die Förderrichtlinien zur Innenortsbelebung der Gemeinde Hainsfarth (06.07.2021; § 2: Erwerb leerstehender Gebäude, Ersatzneubau, Sanierung) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-oettingen.de/",
+        "finding": "Am 24.09.2026 Menü aller Mitgliedsgemeinden durchgesehen: Förder-/Energieseiten gibt es nur als „Erneuerbare Energien“ (Auhausen, Ehingen a. Ries: Kriterienkataloge für Freiflächen-PV), „Städtebauförderung“ (Auhausen: Gestaltungshandbuch) und „Förderprogramme“ (Hainsfarth: Innenortsbelebung)."
+      },
+      {
+        "url": "https://www.donau-ries.de/themen/testseite-27-07-2022/ortskern/foerderprogramme",
+        "finding": "Am 24.09.2026 gelesen: Landkreis beschreibt kommunale Förderprogramme für Bauen im Bestand/Innenentwicklung — kein Landkreis-Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://megesheim.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "finding": "Am 24.09.2026 gegengelesen: HTTP 404 — fehlerhaft gebildete Adresse, keine Quelle."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinien zur Innenortsbelebung der Gemeinde Hainsfarth — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; zudem Seite einer anderen Mitgliedsgemeinde.",
+        "evidenceUrl": "https://www.vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme"
+      },
+      {
+        "url": "megesheim.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Fehlerhaft gebildete Adresse (Pfad der VG-Seite auf fremder Domain); beim Gegenlesen am 24.09.2026 HTTP 404.",
+        "evidenceUrl": "https://megesheim.de/mitgliedsgemeinden/hainsfarth/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "09779188",
+    "name": "Munningen",
+    "checkedAt": "2026-09-24T16:13:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Munningen (VG Oettingen i. Bay., Landkreis Donau-Ries). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Verwaltungsgemeinschaft führt für ihre Mitgliedsgemeinden als einzige Förderseite die Innenortsbelebung von Hainsfarth; die Energieseiten enthalten nur Kriterien für Freiflächen-PV; der Landkreis hat kein eigenes Programm.",
+    "searches": [
+      "Menü der VG-Oettingen-Website für alle fünf Mitgliedsgemeinden durchgesehen und alle Förder-/Energieseiten gelesen (24.09.2026)",
+      "Suchfunktion der VG-Website nicht per Adresse ansprechbar (kesearch, Zielseite unbekannt); ersatzweise Websuche nach Förderprogramm Photovoltaik/Balkonkraftwerk für Oettingen, Hainsfarth, Auhausen, Munningen, Megesheim, Ehingen a. Ries: keine Fundstelle (24.09.2026)",
+      "Websuche Landkreis Donau-Ries Förderung Balkonkraftwerk/Photovoltaik/Speicher 2026: kein Kreisprogramm; einziges Ortsprogramm im Kreis Donauwörth (nicht zuständig)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "finding": "Am 24.09.2026 gelesen: einzige Förderseite der Verwaltungsgemeinschaft führt nur die Förderrichtlinien zur Innenortsbelebung der Gemeinde Hainsfarth (06.07.2021; § 2: Erwerb leerstehender Gebäude, Ersatzneubau, Sanierung) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-oettingen.de/",
+        "finding": "Am 24.09.2026 Menü aller Mitgliedsgemeinden durchgesehen: Förder-/Energieseiten gibt es nur als „Erneuerbare Energien“ (Auhausen, Ehingen a. Ries: Kriterienkataloge für Freiflächen-PV), „Städtebauförderung“ (Auhausen: Gestaltungshandbuch) und „Förderprogramme“ (Hainsfarth: Innenortsbelebung)."
+      },
+      {
+        "url": "https://www.donau-ries.de/themen/testseite-27-07-2022/ortskern/foerderprogramme",
+        "finding": "Am 24.09.2026 gelesen: Landkreis beschreibt kommunale Förderprogramme für Bauen im Bestand/Innenentwicklung — kein Landkreis-Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://munningen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "finding": "Am 24.09.2026 gegengelesen: HTTP 404 — fehlerhaft gebildete Adresse, keine Quelle."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinien zur Innenortsbelebung der Gemeinde Hainsfarth — kein Programm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; zudem Seite einer anderen Mitgliedsgemeinde.",
+        "evidenceUrl": "https://www.vg-oettingen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme"
+      },
+      {
+        "url": "munningen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Fehlerhaft gebildete Adresse (Pfad der VG-Seite auf fremder Domain); beim Gegenlesen am 24.09.2026 HTTP 404.",
+        "evidenceUrl": "https://munningen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme"
+      }
+    ]
   }
 ]
