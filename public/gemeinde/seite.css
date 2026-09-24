@@ -497,3 +497,13 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
 
 /* Map the shared funding badge onto the municipality page's color tokens. */
 #atlas-foerderung{--color-positive-text:var(--sc-profit-outline);--color-chart-positive-bg:var(--sc-profit-fill);--color-text-muted:var(--atlas-muted)}
+
+/* Compact status boxes match the result boxes without changing shared badges. */
+.gemeinde-foerder-kopf{--funding-status-color:var(--atlas-muted);--funding-status-fill:transparent}
+.gemeinde-foerder-kopf[data-status="aktiv"]{--funding-status-color:var(--sc-profit-outline);--funding-status-fill:var(--sc-profit-fill)}
+.gemeinde-foerder-kopf[data-status="ausgeschoepft"],.gemeinde-foerder-kopf[data-status="eingestellt"]{--funding-status-color:var(--color-negative,#ff6b6b);--funding-status-fill:color-mix(in srgb,var(--funding-status-color) 14%,transparent)}
+.gemeinde-foerder-kopf>span{display:inline-flex;align-items:center;gap:7px;font-size:12px!important;line-height:1.3;font-weight:600!important;padding:5px 9px!important;border-radius:4px!important;border:1px solid var(--funding-status-color)!important;color:var(--funding-status-color)!important;background:var(--funding-status-fill)!important}
+.gemeinde-foerder-kopf>span::before{content:"";width:6px;height:6px;flex:none;border-radius:50%;background:currentColor}
+.gemeinde-foerder-kopf[data-status="aktiv"]>span::before{animation:funding-status-pulse 2s ease-out infinite}
+@keyframes funding-status-pulse{0%,100%{box-shadow:0 0 0 0 transparent}25%{box-shadow:0 0 0 0 color-mix(in srgb,currentColor 45%,transparent)}75%{box-shadow:0 0 0 5px transparent}}
+@media(prefers-reduced-motion:reduce){.gemeinde-foerder-kopf[data-status="aktiv"]>span::before{animation:none}}

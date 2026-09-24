@@ -85,7 +85,7 @@ export default function GemeindeFoerderung({
                   loading="lazy"
                 />
                 <div className="v3-example-copy sc-feature-content">
-                  <div className="gemeinde-foerder-kopf"><p className="atlas-kicker">{techniken.map((t) => TECHNIK_WORT[t]).join(" · ")}</p><FundingStatusBadge status={p.programm.status} /></div>
+                  <div className="gemeinde-foerder-kopf" data-status={p.programm.status}><p className="atlas-kicker">{techniken.map((t) => TECHNIK_WORT[t]).join(" · ")}</p><FundingStatusBadge status={p.programm.status} /></div>
                   <h3>{p.programm.name}</h3>
                   <p>{satz ? `${satz.value}${satz.label ? ` · ${satz.label}` : ""}` : p.programm.coveredCosts}</p>
                   <p className="gemeinde-foerder-ebene"><a href={p.programm.url} target="_blank" rel="noopener noreferrer">{p.programm.traeger} ↗</a></p>
