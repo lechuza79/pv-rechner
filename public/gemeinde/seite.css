@@ -290,6 +290,20 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
   outline-color: var(--atlas-ink);
 }
 
+/* DER FOKUSRING DER PLATZIERUNGS-KACHEL WURDE AN BEIDEN SEITEN ABGESCHNITTEN.
+   Gemessen am 24.09.2026 auf 1440 px: Die Kacheln füllen ihre Liste exakt aus,
+   der Ring ist 3 px breit und wird außerhalb der Kachel gezeichnet — und die
+   Liste schneidet seitlich ab (sie scrollt senkrecht). Also fehlten links und
+   rechts genau diese 3 px, während oben und unten der Ring zu sehen war: die
+   aktive Kachel sah aus, als wäre sie am Rand abgeschnitten.
+
+   Die Liste bekommt deshalb seitlich Platz, statt den Ring nach innen zu
+   ziehen — so bleibt der Abstand zwischen Kachel und Ring erhalten, den das
+   abgenommene Design vorsieht. 4 px reichen mit einem Pixel Luft. */
+#atlas-ranking .ranking-choices {
+  padding-inline: 4px;
+}
+
 /* ── Das Fenster mit der vollständigen Liste ───────────────────────────────── */
 /* Unter der Tabelle standen 76 px leer: Platz für den schwebenden Knopf, den
    die klebende eigene Zeile ersetzt hat. Ohne ihn sah die Liste unten

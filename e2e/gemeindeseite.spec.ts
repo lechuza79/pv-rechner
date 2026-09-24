@@ -170,6 +170,38 @@ test.describe("Gemeindeseite", () => {
     await expect(page.getByRole("link", { name: /Landesförderung in/ })).toHaveCount(0);
   });
 
+  // GEMESSEN 24.09.2026: Der Fokusring der aktiven Platzierungs-Kachel wurde
+  // links und rechts abgeschnitten — die Kacheln füllen ihre Liste exakt aus,
+  // der Ring wird außerhalb der Kachel gezeichnet, und die Liste schneidet
+  // seitlich ab, weil sie senkrecht scrollt. Oben und unten war er zu sehen,
+  // an den Seiten nicht: Die Kachel sah aus, als wäre sie am Rand abgeschnitten.
+  //
+  // Geprüft wird die GEOMETRIE, nicht eine Zahl im Stylesheet: Der Ring muss in
+  // seine Liste passen, egal wie breit er ist und egal, woher der Platz kommt.
+  test("der Fokusring der Platzierungs-Kachel wird nicht abgeschnitten", async ({ page }) => {
+    await page.goto(ORT, { waitUntil: "domcontentloaded" });
+    const abschnitt = page.locator("#atlas-ranking");
+    await abschnitt.scrollIntoViewIfNeeded();
+    const kachel = page.locator("#atlas-ranking .ranking-choice").first();
+    await expect(kachel).toBeVisible({ timeout: 30_000 });
+    const mass = await kachel.evaluate((el) => {
+      const liste = el.closest<HTMLElement>(".ranking-choices")!;
+      const s = getComputedStyle(el);
+      const r = el.getBoundingClientRect();
+      const lr = liste.getBoundingClientRect();
+      const aussen = parseFloat(s.outlineWidth) + parseFloat(s.outlineOffset);
+      return {
+        clippt: getComputedStyle(liste).overflowX !== "visible",
+        links: Math.round(r.left - aussen - lr.left),
+        rechts: Math.round(lr.right - (r.right + aussen)),
+      };
+    });
+    // Ohne seitliches Abschneiden gibt es nichts zu prüfen.
+    if (!mass.clippt) return;
+    expect(mass.links, "links ist kein Platz für den Fokusring").toBeGreaterThanOrEqual(0);
+    expect(mass.rechts, "rechts ist kein Platz für den Fokusring").toBeGreaterThanOrEqual(0);
+  });
+
   // Der Kopf zeigt eine Platzierung nur, wenn sie eine Nachricht ist. Quitzdorf
   // stand dort mit „Platz 25", obwohl es im Kreis beim Zubau je Einwohner
   // Zweiter ist — und der Ranglisten-Abschnitt eröffnete mit derselben 25.
