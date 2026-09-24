@@ -57897,5 +57897,1680 @@
         "evidenceUrl": "https://www.rathaus-muenchenbernsdorf.de/contact/index/link"
       }
     ]
+  },
+  {
+    "regionId": "03360002",
+    "name": "Bad Bevensen",
+    "checkedAt": "2026-09-24T06:12:27Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Bad Bevensen gehört zur Samtgemeinde Bevensen-Ebstorf (Landkreis Uelzen). Weder die Gemeinde noch die Samtgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutzseite nennt nur Stadtradeln, Radverkehr und das Klimaschutzkonzept, die Volltextsuche findet zu Balkonkraftwerken nichts und zu Photovoltaik, Solar, Speicher und Wärmepumpe nur Bauleitplanung und kommunale Gebäude, das Ortsrecht kennt nur Vereins-, Kultur- und Sportförderung. Der Landkreis Uelzen verweist für Privatpersonen nur auf Förderdatenbanken von Bund und Land, die NBank führt kein passendes Programm (Stand 24.09.2026).",
+    "searches": [
+      "Volltextsuche bevensen-ebstorf.de (24.09.2026): Balkonkraftwerk 0; Photovoltaik 6, Solar 3, Wärmepumpe 7, Speicher 4, Zuschuss 10, Förderprogramm 15 — kein Bürgerzuschuss darunter; Gegenprobe Stadtradeln 11 Treffer",
+      "Klimaschutz-Seite und Ortsrecht der Samtgemeinde und der Stadt Bad Bevensen gelesen",
+      "Landkreis Uelzen: Klimaschutz, Fördermittelberatung (Privatpersonen) und Förderprogramme gelesen",
+      "NBank: Liste der aktuellen Förderprogramme gelesen",
+      "Katalog nach Programmen des Landkreises Uelzen (03360) und des Landes Niedersachsen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "Gespeicherte Adresse antwortete am 24.09.2026 mit HTTP 404 (Weiterleitung auf die Fehlerseite); der Beitrag liegt heute unter home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "„Förderprogramm Perspektive Innenstadt“, am 24.09.2026 gelesen: Landesprogramm (REACT-EU) FÜR die Samtgemeinde, 793.500 € Budget für Innenstadt-Projekte in Bad Bevensen und Ebstorf (z. B. Entschlammung Mühlenteich) — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://bevensen-ebstorf.de/DownloadCount.aspx?raid=21422&docid=2803&rn=54fdfd50-b467-4aaa-abea-cfc04b1612d2",
+        "finding": "Download, am 24.09.2026 abgerufen (PDF „05_Informationen_Konditionen“): „Allgemeine Informationen über Baugrundstücke im Bereich des Bebauungsplanes ‚In der Hese IV‘“ der Stadt Bad Bevensen — Grundstückspreis 95 €/qm, Kinder-Nachlass; kein Energiebezug."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/klimaschutz.aspx",
+        "finding": "Klimaschutz-Seite der Samtgemeinde, am 24.09.2026 gelesen: Stadtradeln, Radverkehrskonzept/Ideenkarte, Klimaschutzkonzept (NKI-gefördert), Projekt „Gutes Essen für alle“ (Robert Bosch Stiftung) — kein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/desktopdefault.aspx/tabid-837/",
+        "finding": "Volltextsuche der Samtgemeinde (Suchadresse aus dem Seitenskript, je Anfrage neue Sitzung), 24.09.2026: Balkonkraftwerk 0 Treffer; Photovoltaik 6 (Bauleitplanung Freiflächenanlage Natendorf, KiTa-Neubau, Ideenkarte, Mensa); Solar 3 (E-Bauhoffahrzeug, Weihnachtsbaum); Wärmepumpe 7 (Freibad-Technik, KiTa); Speicher 4 (Datenschutz, Wandertag, Stadtradeln); Zuschuss 10 (Elternbeitrag, Vereine, Glasfaser); Förderprogramm 15 (Innenstadt, Betriebe, Straßenbäume, LED-Ortsbeleuchtung). Gegenprobe Stadtradeln: 11 Treffer."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/verwaltung-und-politik/verwaltung/satzungen-und-verordnungen/satzungen-und-verordnungen-der-stadt-bad-bevensen.aspx",
+        "finding": "Ortsrecht der Stadt Bad Bevensen, 24.09.2026: Förder- und Zuschussrichtlinien nur für Raummieten von Vereinen, Jugendarbeit/Sport, Kulturpreis, Ehrengabe, Aktion „Farbige Stadt“ und Umweltpreis — keine Richtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Samtgemeinde enthält gar keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.landkreis-uelzen.de/desktopdefault.aspx/tabid-1490/2855_read-18329/",
+        "finding": "Landkreis Uelzen, „Fördermittel für Privatpersonen“ (24.09.2026): nur Verweise auf die Förderdatenbank des Bundes, ZUG, KEAN-Fördersuche und KfW; „Förderprogramme“ (tabid-1295) nennt nur NBank-Wohnraumförderung und Denkmalförderung — kein eigenes Programm des Landkreises."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
+        "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "disposition": "reviewed",
+        "reason": "Tote Adresse (HTTP 404); der gemeinte Beitrag „Perspektive Innenstadt“ wurde unter seiner heutigen Adresse gelesen: Landesprogramm für kommunale Innenstadtprojekte, kein Bürgerzuschuss.",
+        "evidenceUrl": "https://bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx"
+      },
+      {
+        "url": "bevensen-ebstorf.de/DownloadCount.aspx?raid=21422&docid=2803&rn=54fdfd50-b467-4aaa-abea-cfc04b1612d2",
+        "disposition": "reviewed",
+        "reason": "Grundstücksinformation zum Baugebiet „In der Hese IV“, kein Energiebezug.",
+        "evidenceUrl": "https://bevensen-ebstorf.de/DownloadCount.aspx?raid=21422&docid=2803&rn=54fdfd50-b467-4aaa-abea-cfc04b1612d2"
+      }
+    ]
+  },
+  {
+    "regionId": "03360010",
+    "name": "Hanstedt",
+    "checkedAt": "2026-09-24T06:12:27Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hanstedt gehört zur Samtgemeinde Bevensen-Ebstorf (Landkreis Uelzen). Weder die Gemeinde noch die Samtgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutzseite nennt nur Stadtradeln, Radverkehr und das Klimaschutzkonzept, die Volltextsuche findet zu Balkonkraftwerken nichts und zu Photovoltaik, Solar, Speicher und Wärmepumpe nur Bauleitplanung und kommunale Gebäude, das Ortsrecht kennt nur Vereins-, Kultur- und Sportförderung. Der Landkreis Uelzen verweist für Privatpersonen nur auf Förderdatenbanken von Bund und Land, die NBank führt kein passendes Programm (Stand 24.09.2026).",
+    "searches": [
+      "Volltextsuche bevensen-ebstorf.de (24.09.2026): Balkonkraftwerk 0; Photovoltaik 6, Solar 3, Wärmepumpe 7, Speicher 4, Zuschuss 10, Förderprogramm 15 — kein Bürgerzuschuss darunter; Gegenprobe Stadtradeln 11 Treffer",
+      "Klimaschutz-Seite und Ortsrecht der Samtgemeinde und der Stadt Bad Bevensen gelesen",
+      "Landkreis Uelzen: Klimaschutz, Fördermittelberatung (Privatpersonen) und Förderprogramme gelesen",
+      "NBank: Liste der aktuellen Förderprogramme gelesen",
+      "Katalog nach Programmen des Landkreises Uelzen (03360) und des Landes Niedersachsen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "Gespeicherte Adresse antwortete am 24.09.2026 mit HTTP 404 (Weiterleitung auf die Fehlerseite); der Beitrag liegt heute unter home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "„Förderprogramm Perspektive Innenstadt“, am 24.09.2026 gelesen: Landesprogramm (REACT-EU) FÜR die Samtgemeinde, 793.500 € Budget für Innenstadt-Projekte in Bad Bevensen und Ebstorf (z. B. Entschlammung Mühlenteich) — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://bevensen-ebstorf.de/DownloadCount.aspx?raid=21422&docid=2803&rn=54fdfd50-b467-4aaa-abea-cfc04b1612d2",
+        "finding": "Download, am 24.09.2026 abgerufen (PDF „05_Informationen_Konditionen“): „Allgemeine Informationen über Baugrundstücke im Bereich des Bebauungsplanes ‚In der Hese IV‘“ der Stadt Bad Bevensen — Grundstückspreis 95 €/qm, Kinder-Nachlass; kein Energiebezug."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/klimaschutz.aspx",
+        "finding": "Klimaschutz-Seite der Samtgemeinde, am 24.09.2026 gelesen: Stadtradeln, Radverkehrskonzept/Ideenkarte, Klimaschutzkonzept (NKI-gefördert), Projekt „Gutes Essen für alle“ (Robert Bosch Stiftung) — kein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/desktopdefault.aspx/tabid-837/",
+        "finding": "Volltextsuche der Samtgemeinde (Suchadresse aus dem Seitenskript, je Anfrage neue Sitzung), 24.09.2026: Balkonkraftwerk 0 Treffer; Photovoltaik 6 (Bauleitplanung Freiflächenanlage Natendorf, KiTa-Neubau, Ideenkarte, Mensa); Solar 3 (E-Bauhoffahrzeug, Weihnachtsbaum); Wärmepumpe 7 (Freibad-Technik, KiTa); Speicher 4 (Datenschutz, Wandertag, Stadtradeln); Zuschuss 10 (Elternbeitrag, Vereine, Glasfaser); Förderprogramm 15 (Innenstadt, Betriebe, Straßenbäume, LED-Ortsbeleuchtung). Gegenprobe Stadtradeln: 11 Treffer."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/verwaltung-und-politik/verwaltung/satzungen-und-verordnungen/satzungen-und-verordnungen-der-stadt-bad-bevensen.aspx",
+        "finding": "Ortsrecht der Stadt Bad Bevensen, 24.09.2026: Förder- und Zuschussrichtlinien nur für Raummieten von Vereinen, Jugendarbeit/Sport, Kulturpreis, Ehrengabe, Aktion „Farbige Stadt“ und Umweltpreis — keine Richtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Samtgemeinde enthält gar keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.landkreis-uelzen.de/desktopdefault.aspx/tabid-1490/2855_read-18329/",
+        "finding": "Landkreis Uelzen, „Fördermittel für Privatpersonen“ (24.09.2026): nur Verweise auf die Förderdatenbank des Bundes, ZUG, KEAN-Fördersuche und KfW; „Förderprogramme“ (tabid-1295) nennt nur NBank-Wohnraumförderung und Denkmalförderung — kein eigenes Programm des Landkreises."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
+        "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "disposition": "reviewed",
+        "reason": "Tote Adresse (HTTP 404); der gemeinte Beitrag „Perspektive Innenstadt“ wurde unter seiner heutigen Adresse gelesen: Landesprogramm für kommunale Innenstadtprojekte, kein Bürgerzuschuss.",
+        "evidenceUrl": "https://bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx"
+      }
+    ]
+  },
+  {
+    "regionId": "03360017",
+    "name": "Römstedt",
+    "checkedAt": "2026-09-24T06:12:27Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Römstedt gehört zur Samtgemeinde Bevensen-Ebstorf (Landkreis Uelzen). Weder die Gemeinde noch die Samtgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutzseite nennt nur Stadtradeln, Radverkehr und das Klimaschutzkonzept, die Volltextsuche findet zu Balkonkraftwerken nichts und zu Photovoltaik, Solar, Speicher und Wärmepumpe nur Bauleitplanung und kommunale Gebäude, das Ortsrecht kennt nur Vereins-, Kultur- und Sportförderung. Der Landkreis Uelzen verweist für Privatpersonen nur auf Förderdatenbanken von Bund und Land, die NBank führt kein passendes Programm (Stand 24.09.2026).",
+    "searches": [
+      "Volltextsuche bevensen-ebstorf.de (24.09.2026): Balkonkraftwerk 0; Photovoltaik 6, Solar 3, Wärmepumpe 7, Speicher 4, Zuschuss 10, Förderprogramm 15 — kein Bürgerzuschuss darunter; Gegenprobe Stadtradeln 11 Treffer",
+      "Klimaschutz-Seite und Ortsrecht der Samtgemeinde und der Stadt Bad Bevensen gelesen",
+      "Landkreis Uelzen: Klimaschutz, Fördermittelberatung (Privatpersonen) und Förderprogramme gelesen",
+      "NBank: Liste der aktuellen Förderprogramme gelesen",
+      "Katalog nach Programmen des Landkreises Uelzen (03360) und des Landes Niedersachsen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "Gespeicherte Adresse antwortete am 24.09.2026 mit HTTP 404 (Weiterleitung auf die Fehlerseite); der Beitrag liegt heute unter home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "„Förderprogramm Perspektive Innenstadt“, am 24.09.2026 gelesen: Landesprogramm (REACT-EU) FÜR die Samtgemeinde, 793.500 € Budget für Innenstadt-Projekte in Bad Bevensen und Ebstorf (z. B. Entschlammung Mühlenteich) — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://bevensen-ebstorf.de/DownloadCount.aspx?raid=21422&docid=2803&rn=54fdfd50-b467-4aaa-abea-cfc04b1612d2",
+        "finding": "Download, am 24.09.2026 abgerufen (PDF „05_Informationen_Konditionen“): „Allgemeine Informationen über Baugrundstücke im Bereich des Bebauungsplanes ‚In der Hese IV‘“ der Stadt Bad Bevensen — Grundstückspreis 95 €/qm, Kinder-Nachlass; kein Energiebezug."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/klimaschutz.aspx",
+        "finding": "Klimaschutz-Seite der Samtgemeinde, am 24.09.2026 gelesen: Stadtradeln, Radverkehrskonzept/Ideenkarte, Klimaschutzkonzept (NKI-gefördert), Projekt „Gutes Essen für alle“ (Robert Bosch Stiftung) — kein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/desktopdefault.aspx/tabid-837/",
+        "finding": "Volltextsuche der Samtgemeinde (Suchadresse aus dem Seitenskript, je Anfrage neue Sitzung), 24.09.2026: Balkonkraftwerk 0 Treffer; Photovoltaik 6 (Bauleitplanung Freiflächenanlage Natendorf, KiTa-Neubau, Ideenkarte, Mensa); Solar 3 (E-Bauhoffahrzeug, Weihnachtsbaum); Wärmepumpe 7 (Freibad-Technik, KiTa); Speicher 4 (Datenschutz, Wandertag, Stadtradeln); Zuschuss 10 (Elternbeitrag, Vereine, Glasfaser); Förderprogramm 15 (Innenstadt, Betriebe, Straßenbäume, LED-Ortsbeleuchtung). Gegenprobe Stadtradeln: 11 Treffer."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/verwaltung-und-politik/verwaltung/satzungen-und-verordnungen/satzungen-und-verordnungen-der-stadt-bad-bevensen.aspx",
+        "finding": "Ortsrecht der Stadt Bad Bevensen, 24.09.2026: Förder- und Zuschussrichtlinien nur für Raummieten von Vereinen, Jugendarbeit/Sport, Kulturpreis, Ehrengabe, Aktion „Farbige Stadt“ und Umweltpreis — keine Richtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Samtgemeinde enthält gar keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.landkreis-uelzen.de/desktopdefault.aspx/tabid-1490/2855_read-18329/",
+        "finding": "Landkreis Uelzen, „Fördermittel für Privatpersonen“ (24.09.2026): nur Verweise auf die Förderdatenbank des Bundes, ZUG, KEAN-Fördersuche und KfW; „Förderprogramme“ (tabid-1295) nennt nur NBank-Wohnraumförderung und Denkmalförderung — kein eigenes Programm des Landkreises."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
+        "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "disposition": "reviewed",
+        "reason": "Tote Adresse (HTTP 404); der gemeinte Beitrag „Perspektive Innenstadt“ wurde unter seiner heutigen Adresse gelesen: Landesprogramm für kommunale Innenstadtprojekte, kein Bürgerzuschuss.",
+        "evidenceUrl": "https://bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx"
+      }
+    ]
+  },
+  {
+    "regionId": "03360019",
+    "name": "Schwienau",
+    "checkedAt": "2026-09-24T06:12:27Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwienau gehört zur Samtgemeinde Bevensen-Ebstorf (Landkreis Uelzen). Weder die Gemeinde noch die Samtgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutzseite nennt nur Stadtradeln, Radverkehr und das Klimaschutzkonzept, die Volltextsuche findet zu Balkonkraftwerken nichts und zu Photovoltaik, Solar, Speicher und Wärmepumpe nur Bauleitplanung und kommunale Gebäude, das Ortsrecht kennt nur Vereins-, Kultur- und Sportförderung. Der Landkreis Uelzen verweist für Privatpersonen nur auf Förderdatenbanken von Bund und Land, die NBank führt kein passendes Programm (Stand 24.09.2026).",
+    "searches": [
+      "Volltextsuche bevensen-ebstorf.de (24.09.2026): Balkonkraftwerk 0; Photovoltaik 6, Solar 3, Wärmepumpe 7, Speicher 4, Zuschuss 10, Förderprogramm 15 — kein Bürgerzuschuss darunter; Gegenprobe Stadtradeln 11 Treffer",
+      "Klimaschutz-Seite und Ortsrecht der Samtgemeinde und der Stadt Bad Bevensen gelesen",
+      "Landkreis Uelzen: Klimaschutz, Fördermittelberatung (Privatpersonen) und Förderprogramme gelesen",
+      "NBank: Liste der aktuellen Förderprogramme gelesen",
+      "Katalog nach Programmen des Landkreises Uelzen (03360) und des Landes Niedersachsen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "Gespeicherte Adresse antwortete am 24.09.2026 mit HTTP 404 (Weiterleitung auf die Fehlerseite); der Beitrag liegt heute unter home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "„Förderprogramm Perspektive Innenstadt“, am 24.09.2026 gelesen: Landesprogramm (REACT-EU) FÜR die Samtgemeinde, 793.500 € Budget für Innenstadt-Projekte in Bad Bevensen und Ebstorf (z. B. Entschlammung Mühlenteich) — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://bevensen-ebstorf.de/DownloadCount.aspx?raid=21422&docid=2803&rn=54fdfd50-b467-4aaa-abea-cfc04b1612d2",
+        "finding": "Download, am 24.09.2026 abgerufen (PDF „05_Informationen_Konditionen“): „Allgemeine Informationen über Baugrundstücke im Bereich des Bebauungsplanes ‚In der Hese IV‘“ der Stadt Bad Bevensen — Grundstückspreis 95 €/qm, Kinder-Nachlass; kein Energiebezug."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/klimaschutz.aspx",
+        "finding": "Klimaschutz-Seite der Samtgemeinde, am 24.09.2026 gelesen: Stadtradeln, Radverkehrskonzept/Ideenkarte, Klimaschutzkonzept (NKI-gefördert), Projekt „Gutes Essen für alle“ (Robert Bosch Stiftung) — kein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/desktopdefault.aspx/tabid-837/",
+        "finding": "Volltextsuche der Samtgemeinde (Suchadresse aus dem Seitenskript, je Anfrage neue Sitzung), 24.09.2026: Balkonkraftwerk 0 Treffer; Photovoltaik 6 (Bauleitplanung Freiflächenanlage Natendorf, KiTa-Neubau, Ideenkarte, Mensa); Solar 3 (E-Bauhoffahrzeug, Weihnachtsbaum); Wärmepumpe 7 (Freibad-Technik, KiTa); Speicher 4 (Datenschutz, Wandertag, Stadtradeln); Zuschuss 10 (Elternbeitrag, Vereine, Glasfaser); Förderprogramm 15 (Innenstadt, Betriebe, Straßenbäume, LED-Ortsbeleuchtung). Gegenprobe Stadtradeln: 11 Treffer."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/verwaltung-und-politik/verwaltung/satzungen-und-verordnungen/satzungen-und-verordnungen-der-stadt-bad-bevensen.aspx",
+        "finding": "Ortsrecht der Stadt Bad Bevensen, 24.09.2026: Förder- und Zuschussrichtlinien nur für Raummieten von Vereinen, Jugendarbeit/Sport, Kulturpreis, Ehrengabe, Aktion „Farbige Stadt“ und Umweltpreis — keine Richtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Samtgemeinde enthält gar keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.landkreis-uelzen.de/desktopdefault.aspx/tabid-1490/2855_read-18329/",
+        "finding": "Landkreis Uelzen, „Fördermittel für Privatpersonen“ (24.09.2026): nur Verweise auf die Förderdatenbank des Bundes, ZUG, KEAN-Fördersuche und KfW; „Förderprogramme“ (tabid-1295) nennt nur NBank-Wohnraumförderung und Denkmalförderung — kein eigenes Programm des Landkreises."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
+        "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "disposition": "reviewed",
+        "reason": "Tote Adresse (HTTP 404); der gemeinte Beitrag „Perspektive Innenstadt“ wurde unter seiner heutigen Adresse gelesen: Landesprogramm für kommunale Innenstadtprojekte, kein Bürgerzuschuss.",
+        "evidenceUrl": "https://bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx"
+      }
+    ]
+  },
+  {
+    "regionId": "03360026",
+    "name": "Weste",
+    "checkedAt": "2026-09-24T06:12:27Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weste gehört zur Samtgemeinde Bevensen-Ebstorf (Landkreis Uelzen). Weder die Gemeinde noch die Samtgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutzseite nennt nur Stadtradeln, Radverkehr und das Klimaschutzkonzept, die Volltextsuche findet zu Balkonkraftwerken nichts und zu Photovoltaik, Solar, Speicher und Wärmepumpe nur Bauleitplanung und kommunale Gebäude, das Ortsrecht kennt nur Vereins-, Kultur- und Sportförderung. Der Landkreis Uelzen verweist für Privatpersonen nur auf Förderdatenbanken von Bund und Land, die NBank führt kein passendes Programm (Stand 24.09.2026).",
+    "searches": [
+      "Volltextsuche bevensen-ebstorf.de (24.09.2026): Balkonkraftwerk 0; Photovoltaik 6, Solar 3, Wärmepumpe 7, Speicher 4, Zuschuss 10, Förderprogramm 15 — kein Bürgerzuschuss darunter; Gegenprobe Stadtradeln 11 Treffer",
+      "Klimaschutz-Seite und Ortsrecht der Samtgemeinde und der Stadt Bad Bevensen gelesen",
+      "Landkreis Uelzen: Klimaschutz, Fördermittelberatung (Privatpersonen) und Förderprogramme gelesen",
+      "NBank: Liste der aktuellen Förderprogramme gelesen",
+      "Katalog nach Programmen des Landkreises Uelzen (03360) und des Landes Niedersachsen durchsucht: keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "Gespeicherte Adresse antwortete am 24.09.2026 mit HTTP 404 (Weiterleitung auf die Fehlerseite); der Beitrag liegt heute unter home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "finding": "„Förderprogramm Perspektive Innenstadt“, am 24.09.2026 gelesen: Landesprogramm (REACT-EU) FÜR die Samtgemeinde, 793.500 € Budget für Innenstadt-Projekte in Bad Bevensen und Ebstorf (z. B. Entschlammung Mühlenteich) — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://bevensen-ebstorf.de/DownloadCount.aspx?raid=21422&docid=2803&rn=54fdfd50-b467-4aaa-abea-cfc04b1612d2",
+        "finding": "Download, am 24.09.2026 abgerufen (PDF „05_Informationen_Konditionen“): „Allgemeine Informationen über Baugrundstücke im Bereich des Bebauungsplanes ‚In der Hese IV‘“ der Stadt Bad Bevensen — Grundstückspreis 95 €/qm, Kinder-Nachlass; kein Energiebezug."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/aktuelles/neuigkeiten/klimaschutz.aspx",
+        "finding": "Klimaschutz-Seite der Samtgemeinde, am 24.09.2026 gelesen: Stadtradeln, Radverkehrskonzept/Ideenkarte, Klimaschutzkonzept (NKI-gefördert), Projekt „Gutes Essen für alle“ (Robert Bosch Stiftung) — kein Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/desktopdefault.aspx/tabid-837/",
+        "finding": "Volltextsuche der Samtgemeinde (Suchadresse aus dem Seitenskript, je Anfrage neue Sitzung), 24.09.2026: Balkonkraftwerk 0 Treffer; Photovoltaik 6 (Bauleitplanung Freiflächenanlage Natendorf, KiTa-Neubau, Ideenkarte, Mensa); Solar 3 (E-Bauhoffahrzeug, Weihnachtsbaum); Wärmepumpe 7 (Freibad-Technik, KiTa); Speicher 4 (Datenschutz, Wandertag, Stadtradeln); Zuschuss 10 (Elternbeitrag, Vereine, Glasfaser); Förderprogramm 15 (Innenstadt, Betriebe, Straßenbäume, LED-Ortsbeleuchtung). Gegenprobe Stadtradeln: 11 Treffer."
+      },
+      {
+        "url": "https://www.bevensen-ebstorf.de/home/verwaltung-und-politik/verwaltung/satzungen-und-verordnungen/satzungen-und-verordnungen-der-stadt-bad-bevensen.aspx",
+        "finding": "Ortsrecht der Stadt Bad Bevensen, 24.09.2026: Förder- und Zuschussrichtlinien nur für Raummieten von Vereinen, Jugendarbeit/Sport, Kulturpreis, Ehrengabe, Aktion „Farbige Stadt“ und Umweltpreis — keine Richtlinie für PV, Speicher, Balkonkraftwerke oder Wärmepumpen. Das Ortsrecht der Samtgemeinde enthält gar keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.landkreis-uelzen.de/desktopdefault.aspx/tabid-1490/2855_read-18329/",
+        "finding": "Landkreis Uelzen, „Fördermittel für Privatpersonen“ (24.09.2026): nur Verweise auf die Förderdatenbank des Bundes, ZUG, KEAN-Fördersuche und KfW; „Förderprogramme“ (tabid-1295) nennt nur NBank-Wohnraumförderung und Denkmalförderung — kein eigenes Programm des Landkreises."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
+        "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx",
+        "disposition": "reviewed",
+        "reason": "Tote Adresse (HTTP 404); der gemeinte Beitrag „Perspektive Innenstadt“ wurde unter seiner heutigen Adresse gelesen: Landesprogramm für kommunale Innenstadtprojekte, kein Bürgerzuschuss.",
+        "evidenceUrl": "https://bevensen-ebstorf.de/home/verwaltung-und-politik/politik/mitgliedsgemeinden/home/aktuelles/neuigkeiten/foerderprogramm-perspektive-innenstadt.aspx"
+      }
+    ]
+  },
+  {
+    "regionId": "03158009",
+    "name": "Dettum",
+    "checkedAt": "2026-09-24T06:14:24Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Dettum gehört zur Samtgemeinde Sickte (Landkreis Wolfenbüttel). Weder die Gemeinde noch die Samtgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutz-Rubrik enthält nur Solarkataster und Energiemonitor, die Volltextsuche findet zu Balkonkraftwerken nichts und sonst nur Bauleitplanung und Haushaltspläne. Das Programm des Landkreises Wolfenbüttel fördert nur Gebäudehülle und Klimaanpassung, die NBank führt kein passendes Programm (Stand 24.09.2026). Das Balkon-Programm der Nachbargemeinde Cremlingen gilt nur dort.",
+    "searches": [
+      "Volltextsuche sickte.de (24.09.2026): Balkonkraftwerk 0; Photovoltaik 22, Solar 11, Wärmepumpe 2, Speicher 2, Förderprogramm 3, Klimaschutz 20 — kein Bürgerzuschuss darunter; Gegenprobe SolarDachAtlas 4 Treffer",
+      "Klimaschutz-Rubrik der Samtgemeinde gelesen",
+      "Landkreis Wolfenbüttel: Programm „Klimaschutzmaßnahmen für private Haushalte“ gelesen",
+      "NBank: Liste der aktuellen Förderprogramme gelesen",
+      "Katalog nach Programmen des Landkreises Wolfenbüttel (03158) und des Landes Niedersachsen durchsucht: nur Cremlingen (03158006, gilt nicht hier)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas",
+        "finding": "„SolarDachAtlas“ der Samtgemeinde, am 24.09.2026 gelesen: Hinweis auf das regionale Solarpotenzialkataster des Zweckverbands Großraum Braunschweig (kostenlos dank Sponsoring) — Information, kein Zuschuss."
+      },
+      {
+        "url": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "finding": "Adressdatenbank-Seite „Ansprechpartnerinnen und Ansprechpartner“ (Titel „Wir fördern Volzum e.V.“), am 24.09.2026 abgerufen: Suchmaske ohne Treffer („Es wurden leider keine Adressen gefunden“) — kein Förderprogramm, Förderung eines örtlichen Vereins."
+      },
+      {
+        "url": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/",
+        "finding": "Klimaschutz-Rubrik der Samtgemeinde (24.09.2026): nur SolarDachAtlas, „Wolf“ und Energiemonitor — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.sickte.de/?qs=Balkonkraftwerk",
+        "finding": "Volltextsuche sickte.de (24.09.2026): Balkonkraftwerk keine Ergebnisse; Photovoltaik 22 (Bauleitplanung Solarpark Mönchevahlberg u. a.); Solar 11 (SolarDachAtlas, Kataster, Bauleitplanung); Wärmepumpe 2 (Haushaltsplan 2026: Anschaffung für eine kommunale Einrichtung); Speicher 2 (Bauleitplanung); Förderprogramm 3 (Haushaltspläne, „Perspektive Innenstadt“); Klimaschutz 20 (Landkreis-Leistungen Gebäudehülle/Klimaanpassung, SolarDachAtlas, Energiemonitor). Gegenprobe SolarDachAtlas: 4 Treffer."
+      },
+      {
+        "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
+        "finding": "Landkreis Wolfenbüttel, „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029, am 24.09.2026 gelesen: gefördert werden Gebäudehülle (Dämmung, Fenster) und Klimaanpassung (Begrünung, Regenwasserrückhalt); zu Heizung oder Photovoltaik nur Beratung über die Verbraucherzentrale — PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
+        "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas",
+        "disposition": "reviewed",
+        "reason": "Hinweis auf das regionale Solarkataster, kein Zuschuss.",
+        "evidenceUrl": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas"
+      },
+      {
+        "url": "sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "disposition": "reviewed",
+        "reason": "Leere Adressdatenbank-Seite zu einem Verein, kein Förderprogramm.",
+        "evidenceUrl": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03158012",
+    "name": "Erkerode",
+    "checkedAt": "2026-09-24T06:14:24Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Erkerode gehört zur Samtgemeinde Sickte (Landkreis Wolfenbüttel). Weder die Gemeinde noch die Samtgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutz-Rubrik enthält nur Solarkataster und Energiemonitor, die Volltextsuche findet zu Balkonkraftwerken nichts und sonst nur Bauleitplanung und Haushaltspläne. Das Programm des Landkreises Wolfenbüttel fördert nur Gebäudehülle und Klimaanpassung, die NBank führt kein passendes Programm (Stand 24.09.2026). Das Balkon-Programm der Nachbargemeinde Cremlingen gilt nur dort.",
+    "searches": [
+      "Volltextsuche sickte.de (24.09.2026): Balkonkraftwerk 0; Photovoltaik 22, Solar 11, Wärmepumpe 2, Speicher 2, Förderprogramm 3, Klimaschutz 20 — kein Bürgerzuschuss darunter; Gegenprobe SolarDachAtlas 4 Treffer",
+      "Klimaschutz-Rubrik der Samtgemeinde gelesen",
+      "Landkreis Wolfenbüttel: Programm „Klimaschutzmaßnahmen für private Haushalte“ gelesen",
+      "NBank: Liste der aktuellen Förderprogramme gelesen",
+      "Katalog nach Programmen des Landkreises Wolfenbüttel (03158) und des Landes Niedersachsen durchsucht: nur Cremlingen (03158006, gilt nicht hier)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas",
+        "finding": "„SolarDachAtlas“ der Samtgemeinde, am 24.09.2026 gelesen: Hinweis auf das regionale Solarpotenzialkataster des Zweckverbands Großraum Braunschweig (kostenlos dank Sponsoring) — Information, kein Zuschuss."
+      },
+      {
+        "url": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "finding": "Adressdatenbank-Seite „Ansprechpartnerinnen und Ansprechpartner“ (Titel „Wir fördern Volzum e.V.“), am 24.09.2026 abgerufen: Suchmaske ohne Treffer („Es wurden leider keine Adressen gefunden“) — kein Förderprogramm, Förderung eines örtlichen Vereins."
+      },
+      {
+        "url": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/",
+        "finding": "Klimaschutz-Rubrik der Samtgemeinde (24.09.2026): nur SolarDachAtlas, „Wolf“ und Energiemonitor — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.sickte.de/?qs=Balkonkraftwerk",
+        "finding": "Volltextsuche sickte.de (24.09.2026): Balkonkraftwerk keine Ergebnisse; Photovoltaik 22 (Bauleitplanung Solarpark Mönchevahlberg u. a.); Solar 11 (SolarDachAtlas, Kataster, Bauleitplanung); Wärmepumpe 2 (Haushaltsplan 2026: Anschaffung für eine kommunale Einrichtung); Speicher 2 (Bauleitplanung); Förderprogramm 3 (Haushaltspläne, „Perspektive Innenstadt“); Klimaschutz 20 (Landkreis-Leistungen Gebäudehülle/Klimaanpassung, SolarDachAtlas, Energiemonitor). Gegenprobe SolarDachAtlas: 4 Treffer."
+      },
+      {
+        "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
+        "finding": "Landkreis Wolfenbüttel, „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029, am 24.09.2026 gelesen: gefördert werden Gebäudehülle (Dämmung, Fenster) und Klimaanpassung (Begrünung, Regenwasserrückhalt); zu Heizung oder Photovoltaik nur Beratung über die Verbraucherzentrale — PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
+        "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas",
+        "disposition": "reviewed",
+        "reason": "Hinweis auf das regionale Solarkataster, kein Zuschuss.",
+        "evidenceUrl": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas"
+      },
+      {
+        "url": "sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "disposition": "reviewed",
+        "reason": "Leere Adressdatenbank-Seite zu einem Verein, kein Förderprogramm.",
+        "evidenceUrl": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03158013",
+    "name": "Evessen",
+    "checkedAt": "2026-09-24T06:14:24Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Evessen gehört zur Samtgemeinde Sickte (Landkreis Wolfenbüttel). Weder die Gemeinde noch die Samtgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutz-Rubrik enthält nur Solarkataster und Energiemonitor, die Volltextsuche findet zu Balkonkraftwerken nichts und sonst nur Bauleitplanung und Haushaltspläne. Das Programm des Landkreises Wolfenbüttel fördert nur Gebäudehülle und Klimaanpassung, die NBank führt kein passendes Programm (Stand 24.09.2026). Das Balkon-Programm der Nachbargemeinde Cremlingen gilt nur dort.",
+    "searches": [
+      "Volltextsuche sickte.de (24.09.2026): Balkonkraftwerk 0; Photovoltaik 22, Solar 11, Wärmepumpe 2, Speicher 2, Förderprogramm 3, Klimaschutz 20 — kein Bürgerzuschuss darunter; Gegenprobe SolarDachAtlas 4 Treffer",
+      "Klimaschutz-Rubrik der Samtgemeinde gelesen",
+      "Landkreis Wolfenbüttel: Programm „Klimaschutzmaßnahmen für private Haushalte“ gelesen",
+      "NBank: Liste der aktuellen Förderprogramme gelesen",
+      "Katalog nach Programmen des Landkreises Wolfenbüttel (03158) und des Landes Niedersachsen durchsucht: nur Cremlingen (03158006, gilt nicht hier)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas",
+        "finding": "„SolarDachAtlas“ der Samtgemeinde, am 24.09.2026 gelesen: Hinweis auf das regionale Solarpotenzialkataster des Zweckverbands Großraum Braunschweig (kostenlos dank Sponsoring) — Information, kein Zuschuss."
+      },
+      {
+        "url": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "finding": "Adressdatenbank-Seite „Ansprechpartnerinnen und Ansprechpartner“ (Titel „Wir fördern Volzum e.V.“), am 24.09.2026 abgerufen: Suchmaske ohne Treffer („Es wurden leider keine Adressen gefunden“) — kein Förderprogramm, Förderung eines örtlichen Vereins."
+      },
+      {
+        "url": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/",
+        "finding": "Klimaschutz-Rubrik der Samtgemeinde (24.09.2026): nur SolarDachAtlas, „Wolf“ und Energiemonitor — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.sickte.de/?qs=Balkonkraftwerk",
+        "finding": "Volltextsuche sickte.de (24.09.2026): Balkonkraftwerk keine Ergebnisse; Photovoltaik 22 (Bauleitplanung Solarpark Mönchevahlberg u. a.); Solar 11 (SolarDachAtlas, Kataster, Bauleitplanung); Wärmepumpe 2 (Haushaltsplan 2026: Anschaffung für eine kommunale Einrichtung); Speicher 2 (Bauleitplanung); Förderprogramm 3 (Haushaltspläne, „Perspektive Innenstadt“); Klimaschutz 20 (Landkreis-Leistungen Gebäudehülle/Klimaanpassung, SolarDachAtlas, Energiemonitor). Gegenprobe SolarDachAtlas: 4 Treffer."
+      },
+      {
+        "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
+        "finding": "Landkreis Wolfenbüttel, „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029, am 24.09.2026 gelesen: gefördert werden Gebäudehülle (Dämmung, Fenster) und Klimaanpassung (Begrünung, Regenwasserrückhalt); zu Heizung oder Photovoltaik nur Beratung über die Verbraucherzentrale — PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
+        "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas",
+        "disposition": "reviewed",
+        "reason": "Hinweis auf das regionale Solarkataster, kein Zuschuss.",
+        "evidenceUrl": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas"
+      },
+      {
+        "url": "sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "disposition": "reviewed",
+        "reason": "Leere Adressdatenbank-Seite zu einem Verein, kein Förderprogramm.",
+        "evidenceUrl": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03158030",
+    "name": "Sickte",
+    "checkedAt": "2026-09-24T06:14:24Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sickte gehört zur Samtgemeinde Sickte (Landkreis Wolfenbüttel). Weder die Gemeinde noch die Samtgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutz-Rubrik enthält nur Solarkataster und Energiemonitor, die Volltextsuche findet zu Balkonkraftwerken nichts und sonst nur Bauleitplanung und Haushaltspläne. Das Programm des Landkreises Wolfenbüttel fördert nur Gebäudehülle und Klimaanpassung, die NBank führt kein passendes Programm (Stand 24.09.2026). Das Balkon-Programm der Nachbargemeinde Cremlingen gilt nur dort.",
+    "searches": [
+      "Volltextsuche sickte.de (24.09.2026): Balkonkraftwerk 0; Photovoltaik 22, Solar 11, Wärmepumpe 2, Speicher 2, Förderprogramm 3, Klimaschutz 20 — kein Bürgerzuschuss darunter; Gegenprobe SolarDachAtlas 4 Treffer",
+      "Klimaschutz-Rubrik der Samtgemeinde gelesen",
+      "Landkreis Wolfenbüttel: Programm „Klimaschutzmaßnahmen für private Haushalte“ gelesen",
+      "NBank: Liste der aktuellen Förderprogramme gelesen",
+      "Katalog nach Programmen des Landkreises Wolfenbüttel (03158) und des Landes Niedersachsen durchsucht: nur Cremlingen (03158006, gilt nicht hier)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas",
+        "finding": "„SolarDachAtlas“ der Samtgemeinde, am 24.09.2026 gelesen: Hinweis auf das regionale Solarpotenzialkataster des Zweckverbands Großraum Braunschweig (kostenlos dank Sponsoring) — Information, kein Zuschuss."
+      },
+      {
+        "url": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "finding": "Adressdatenbank-Seite „Ansprechpartnerinnen und Ansprechpartner“ (Titel „Wir fördern Volzum e.V.“), am 24.09.2026 abgerufen: Suchmaske ohne Treffer („Es wurden leider keine Adressen gefunden“) — kein Förderprogramm, Förderung eines örtlichen Vereins."
+      },
+      {
+        "url": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/",
+        "finding": "Klimaschutz-Rubrik der Samtgemeinde (24.09.2026): nur SolarDachAtlas, „Wolf“ und Energiemonitor — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.sickte.de/?qs=Balkonkraftwerk",
+        "finding": "Volltextsuche sickte.de (24.09.2026): Balkonkraftwerk keine Ergebnisse; Photovoltaik 22 (Bauleitplanung Solarpark Mönchevahlberg u. a.); Solar 11 (SolarDachAtlas, Kataster, Bauleitplanung); Wärmepumpe 2 (Haushaltsplan 2026: Anschaffung für eine kommunale Einrichtung); Speicher 2 (Bauleitplanung); Förderprogramm 3 (Haushaltspläne, „Perspektive Innenstadt“); Klimaschutz 20 (Landkreis-Leistungen Gebäudehülle/Klimaanpassung, SolarDachAtlas, Energiemonitor). Gegenprobe SolarDachAtlas: 4 Treffer."
+      },
+      {
+        "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
+        "finding": "Landkreis Wolfenbüttel, „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029, am 24.09.2026 gelesen: gefördert werden Gebäudehülle (Dämmung, Fenster) und Klimaanpassung (Begrünung, Regenwasserrückhalt); zu Heizung oder Photovoltaik nur Beratung über die Verbraucherzentrale — PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
+        "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas",
+        "disposition": "reviewed",
+        "reason": "Hinweis auf das regionale Solarkataster, kein Zuschuss.",
+        "evidenceUrl": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas"
+      },
+      {
+        "url": "sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "disposition": "reviewed",
+        "reason": "Leere Adressdatenbank-Seite zu einem Verein, kein Förderprogramm.",
+        "evidenceUrl": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03158033",
+    "name": "Veltheim (Ohe)",
+    "checkedAt": "2026-09-24T06:14:24Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Veltheim (Ohe) gehört zur Samtgemeinde Sickte (Landkreis Wolfenbüttel). Weder die Gemeinde noch die Samtgemeinde führen ein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Klimaschutz-Rubrik enthält nur Solarkataster und Energiemonitor, die Volltextsuche findet zu Balkonkraftwerken nichts und sonst nur Bauleitplanung und Haushaltspläne. Das Programm des Landkreises Wolfenbüttel fördert nur Gebäudehülle und Klimaanpassung, die NBank führt kein passendes Programm (Stand 24.09.2026). Das Balkon-Programm der Nachbargemeinde Cremlingen gilt nur dort.",
+    "searches": [
+      "Volltextsuche sickte.de (24.09.2026): Balkonkraftwerk 0; Photovoltaik 22, Solar 11, Wärmepumpe 2, Speicher 2, Förderprogramm 3, Klimaschutz 20 — kein Bürgerzuschuss darunter; Gegenprobe SolarDachAtlas 4 Treffer",
+      "Klimaschutz-Rubrik der Samtgemeinde gelesen",
+      "Landkreis Wolfenbüttel: Programm „Klimaschutzmaßnahmen für private Haushalte“ gelesen",
+      "NBank: Liste der aktuellen Förderprogramme gelesen",
+      "Katalog nach Programmen des Landkreises Wolfenbüttel (03158) und des Landes Niedersachsen durchsucht: nur Cremlingen (03158006, gilt nicht hier)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas",
+        "finding": "„SolarDachAtlas“ der Samtgemeinde, am 24.09.2026 gelesen: Hinweis auf das regionale Solarpotenzialkataster des Zweckverbands Großraum Braunschweig (kostenlos dank Sponsoring) — Information, kein Zuschuss."
+      },
+      {
+        "url": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "finding": "Adressdatenbank-Seite „Ansprechpartnerinnen und Ansprechpartner“ (Titel „Wir fördern Volzum e.V.“), am 24.09.2026 abgerufen: Suchmaske ohne Treffer („Es wurden leider keine Adressen gefunden“) — kein Förderprogramm, Förderung eines örtlichen Vereins."
+      },
+      {
+        "url": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/",
+        "finding": "Klimaschutz-Rubrik der Samtgemeinde (24.09.2026): nur SolarDachAtlas, „Wolf“ und Energiemonitor — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.sickte.de/?qs=Balkonkraftwerk",
+        "finding": "Volltextsuche sickte.de (24.09.2026): Balkonkraftwerk keine Ergebnisse; Photovoltaik 22 (Bauleitplanung Solarpark Mönchevahlberg u. a.); Solar 11 (SolarDachAtlas, Kataster, Bauleitplanung); Wärmepumpe 2 (Haushaltsplan 2026: Anschaffung für eine kommunale Einrichtung); Speicher 2 (Bauleitplanung); Förderprogramm 3 (Haushaltspläne, „Perspektive Innenstadt“); Klimaschutz 20 (Landkreis-Leistungen Gebäudehülle/Klimaanpassung, SolarDachAtlas, Energiemonitor). Gegenprobe SolarDachAtlas: 4 Treffer."
+      },
+      {
+        "url": "https://www.lkwf.de/Aktuelles/Presse-und-Meldungen/Ihr-Haus-fit-f%C3%BCr-die-Zukunft-Landkreis-Wolfenb%C3%BCttel-f%C3%B6rdert-und-ber%C3%A4t.php?ModID=255&FID=3282.64646.1",
+        "finding": "Landkreis Wolfenbüttel, „Klimaschutzmaßnahmen für private Haushalte“ 2026–2029, am 24.09.2026 gelesen: gefördert werden Gebäudehülle (Dämmung, Fenster) und Klimaanpassung (Begrünung, Regenwasserrückhalt); zu Heizung oder Photovoltaik nur Beratung über die Verbraucherzentrale — PV, Speicher, Balkonkraftwerke und Wärmepumpen sind nicht Fördergegenstand."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/?zielgruppe=Privatpersonen",
+        "finding": "NBank, Liste der aktuellen Förderprogramme (110 Einträge, 24.09.2026): kein Programm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas",
+        "disposition": "reviewed",
+        "reason": "Hinweis auf das regionale Solarkataster, kein Zuschuss.",
+        "evidenceUrl": "https://www.sickte.de/Bauen-und-Umwelt/Umwelt-und-Energie/SolarDachAtlas"
+      },
+      {
+        "url": "sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php",
+        "disposition": "reviewed",
+        "reason": "Leere Adressdatenbank-Seite zu einem Verein, kein Förderprogramm.",
+        "evidenceUrl": "https://www.sickte.de/Rathaus-und-Politik/Verwaltung/Ansprechpartnerinnen-und-Ansprechpartner/Wir-f%C3%B6rdern-Volzum-e-V-.php"
+      }
+    ]
+  },
+  {
+    "regionId": "12070096",
+    "name": "Gerdshagen",
+    "checkedAt": "2026-09-24T06:14:35Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale und kreisliche Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; zusätzlich kurz die Landesebene (ILB Brandenburg). Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gerdshagen gehört zum Amt Meyenburg (Landkreis Prignitz). Die erfasste Seite „Unternehmensförderung“ verweist nur auf ein PDF der Wirtschaftsfördergesellschaft Prignitz mbH, die Unternehmen berät; die Kontaktadresse antwortet mit HTTP 404. Die Volltextsuche des Amtes findet zu Photovoltaik nur Bauleitplanung und Kriterienkataloge für Freiflächenanlagen, zu Balkonkraftwerk nichts, zu Wärmepumpe nur die kommunale Wärmeplanung. Weder Landkreis Prignitz noch ILB bieten nach heutigem Stand einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen an.",
+    "searches": [
+      "amtmeyenburg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Förderung",
+      "landkreis-prignitz.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz",
+      "ilb.de Volltextsuche: Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe, Solar"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html",
+        "finding": "Seite „Unternehmensförderung“ (HTTP 200): Inhalt ist ausschließlich ein verlinktes PDF, kein Förderprogramm des Amtes."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken",
+        "finding": "Druckansicht derselben Seite (HTTP 200): nur Überschrift „Unternehmensförderung“, kein weiterer Inhalt."
+      },
+      {
+        "url": "https://daten2.verwaltungsportal.de/dateien/seitengenerator/0341a2e1878ce1159c6c6ea292c13b1016767/Unternehmensfoerderung.pdf",
+        "finding": "PDF „Unternehmensförderung“: Die Wirtschaftsfördergesellschaft Prignitz mbH „berät die Unternehmen im Landkreis Prignitz kostenfrei, neutral und individuell“; kein Zuschuss für private Anlagen."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/contact/index/link",
+        "finding": "HTTP 404, Fehlerseite „Die Seite wurde nicht gefunden.“ (Formular „Link verschicken“, auch mit Referrer-Parameter 404)."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/suche/index.php?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche am 24.09.2026: „Balkonkraftwerk“ – „Leider keine Treffer gefunden.“ „Photovoltaik“ und „Solar“: Bekanntmachungen zu Bebauungsplänen für Freiflächen-Photovoltaik, Kriterienkataloge, Solarpark-Meldungen; „Förderprogramm“/„Zuschuss“/„Klimaschutz“: Regionalbudget LEADER, Pflege vor Ort, Webseitenförderung, Familienpass – nichts für private Energieanlagen."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/suche/index.php?suchbegriff=Photovoltaik&modul=seiten",
+        "finding": "Seiten-Treffer zu Photovoltaik: nur „Bauleitplanung“ und „Kriterienkataloge PV“ (Bewertung von Freiflächenanlagen)."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/seite/847396/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Kommunale Wärmeplanung seit März 2026, Abschluss voraussichtlich Dezember; „Sie legt noch keine unmittelbaren Maßnahmen für einzelne Gebäude fest“. Kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-prignitz.de/de/wirtschaft/natur_umwelt/klimaschutz/klimaschutzprojekt.php",
+        "finding": "Landkreis Prignitz, Klimaschutzkonzept: für Photovoltaik nur Verweis auf den Solaratlas Brandenburg, für Wärmepumpen auf Eignungsrechner, für Förderung auf BAFA und KfW. Kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.landkreis-prignitz.de/de/suche/index.php?searchTerm=Photovoltaik",
+        "finding": "Kreissuche am 24.09.2026: „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“ ohne Ergebnis; „Förderprogramm“ und „Zuschuss“ ohne Programm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.ilb.de/de/service/solrsuche/?q=Speicher",
+        "finding": "ILB-Volltextsuche am 24.09.2026 im Browser: „Speicher“ liefert vier Förderprogramme (Wasserstoff-Speicher Brandenburg 2024 – derzeit nicht beantragbar; Erneuerbarer Wasserstoff und Erneuerbare Energien-Speicher Brandenburg 2025; Stärkung Energieresilienz Studentenwerke 2023; Wassermanagement), „Photovoltaik“ zwei (Brandenburg-Kredit Transformationsfinanzierung Infrastruktur; Studentenwerke), „Wärmepumpe“ einen (Studentenwerke), „Balkonkraftwerk“ keinen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.ilb.de/de/wirtschaft/zuschuesse/eintausend-speicher-1000-speicher/",
+        "finding": "Die frühere Programmseite des 1000-Speicher-Programms antwortet mit HTTP 404 („Seite nicht gefunden“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtmeyenburg.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; HTTP 404, Formular „Link verschicken“ ohne Inhalt.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/contact/index/link"
+      },
+      {
+        "url": "amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original samt verlinktem PDF; Beratung der Wirtschaftsfördergesellschaft für Unternehmen, kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html"
+      },
+      {
+        "url": "amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; Druckansicht derselben Seite, nur Überschrift, kein Förderprogramm.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken"
+      }
+    ]
+  },
+  {
+    "regionId": "12070153",
+    "name": "Halenbeck-Rohlsdorf",
+    "checkedAt": "2026-09-24T06:14:35Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale und kreisliche Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; zusätzlich kurz die Landesebene (ILB Brandenburg). Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Halenbeck-Rohlsdorf gehört zum Amt Meyenburg (Landkreis Prignitz). Die erfasste Seite „Unternehmensförderung“ verweist nur auf ein PDF der Wirtschaftsfördergesellschaft Prignitz mbH, die Unternehmen berät; die Kontaktadresse antwortet mit HTTP 404. Die Volltextsuche des Amtes findet zu Photovoltaik nur Bauleitplanung und Kriterienkataloge für Freiflächenanlagen, zu Balkonkraftwerk nichts, zu Wärmepumpe nur die kommunale Wärmeplanung. Weder Landkreis Prignitz noch ILB bieten nach heutigem Stand einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen an.",
+    "searches": [
+      "amtmeyenburg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Förderung",
+      "landkreis-prignitz.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz",
+      "ilb.de Volltextsuche: Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe, Solar"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html",
+        "finding": "Seite „Unternehmensförderung“ (HTTP 200): Inhalt ist ausschließlich ein verlinktes PDF, kein Förderprogramm des Amtes."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken",
+        "finding": "Druckansicht derselben Seite (HTTP 200): nur Überschrift „Unternehmensförderung“, kein weiterer Inhalt."
+      },
+      {
+        "url": "https://daten2.verwaltungsportal.de/dateien/seitengenerator/0341a2e1878ce1159c6c6ea292c13b1016767/Unternehmensfoerderung.pdf",
+        "finding": "PDF „Unternehmensförderung“: Die Wirtschaftsfördergesellschaft Prignitz mbH „berät die Unternehmen im Landkreis Prignitz kostenfrei, neutral und individuell“; kein Zuschuss für private Anlagen."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/contact/index/link",
+        "finding": "HTTP 404, Fehlerseite „Die Seite wurde nicht gefunden.“ (Formular „Link verschicken“, auch mit Referrer-Parameter 404)."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/suche/index.php?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche am 24.09.2026: „Balkonkraftwerk“ – „Leider keine Treffer gefunden.“ „Photovoltaik“ und „Solar“: Bekanntmachungen zu Bebauungsplänen für Freiflächen-Photovoltaik, Kriterienkataloge, Solarpark-Meldungen; „Förderprogramm“/„Zuschuss“/„Klimaschutz“: Regionalbudget LEADER, Pflege vor Ort, Webseitenförderung, Familienpass – nichts für private Energieanlagen."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/suche/index.php?suchbegriff=Photovoltaik&modul=seiten",
+        "finding": "Seiten-Treffer zu Photovoltaik: nur „Bauleitplanung“ und „Kriterienkataloge PV“ (Bewertung von Freiflächenanlagen)."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/seite/847396/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Kommunale Wärmeplanung seit März 2026, Abschluss voraussichtlich Dezember; „Sie legt noch keine unmittelbaren Maßnahmen für einzelne Gebäude fest“. Kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-prignitz.de/de/wirtschaft/natur_umwelt/klimaschutz/klimaschutzprojekt.php",
+        "finding": "Landkreis Prignitz, Klimaschutzkonzept: für Photovoltaik nur Verweis auf den Solaratlas Brandenburg, für Wärmepumpen auf Eignungsrechner, für Förderung auf BAFA und KfW. Kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.landkreis-prignitz.de/de/suche/index.php?searchTerm=Photovoltaik",
+        "finding": "Kreissuche am 24.09.2026: „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“ ohne Ergebnis; „Förderprogramm“ und „Zuschuss“ ohne Programm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.ilb.de/de/service/solrsuche/?q=Speicher",
+        "finding": "ILB-Volltextsuche am 24.09.2026 im Browser: „Speicher“ liefert vier Förderprogramme (Wasserstoff-Speicher Brandenburg 2024 – derzeit nicht beantragbar; Erneuerbarer Wasserstoff und Erneuerbare Energien-Speicher Brandenburg 2025; Stärkung Energieresilienz Studentenwerke 2023; Wassermanagement), „Photovoltaik“ zwei (Brandenburg-Kredit Transformationsfinanzierung Infrastruktur; Studentenwerke), „Wärmepumpe“ einen (Studentenwerke), „Balkonkraftwerk“ keinen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.ilb.de/de/wirtschaft/zuschuesse/eintausend-speicher-1000-speicher/",
+        "finding": "Die frühere Programmseite des 1000-Speicher-Programms antwortet mit HTTP 404 („Seite nicht gefunden“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtmeyenburg.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; HTTP 404, Formular „Link verschicken“ ohne Inhalt.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/contact/index/link"
+      },
+      {
+        "url": "amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original samt verlinktem PDF; Beratung der Wirtschaftsfördergesellschaft für Unternehmen, kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html"
+      },
+      {
+        "url": "amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; Druckansicht derselben Seite, nur Überschrift, kein Förderprogramm.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken"
+      }
+    ]
+  },
+  {
+    "regionId": "12070222",
+    "name": "Kümmernitztal",
+    "checkedAt": "2026-09-24T06:14:35Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale und kreisliche Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; zusätzlich kurz die Landesebene (ILB Brandenburg). Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kümmernitztal gehört zum Amt Meyenburg (Landkreis Prignitz). Die erfasste Seite „Unternehmensförderung“ verweist nur auf ein PDF der Wirtschaftsfördergesellschaft Prignitz mbH, die Unternehmen berät; die Kontaktadresse antwortet mit HTTP 404. Die Volltextsuche des Amtes findet zu Photovoltaik nur Bauleitplanung und Kriterienkataloge für Freiflächenanlagen, zu Balkonkraftwerk nichts, zu Wärmepumpe nur die kommunale Wärmeplanung. Weder Landkreis Prignitz noch ILB bieten nach heutigem Stand einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen an.",
+    "searches": [
+      "amtmeyenburg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Förderung",
+      "landkreis-prignitz.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz",
+      "ilb.de Volltextsuche: Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe, Solar"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html",
+        "finding": "Seite „Unternehmensförderung“ (HTTP 200): Inhalt ist ausschließlich ein verlinktes PDF, kein Förderprogramm des Amtes."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken",
+        "finding": "Druckansicht derselben Seite (HTTP 200): nur Überschrift „Unternehmensförderung“, kein weiterer Inhalt."
+      },
+      {
+        "url": "https://daten2.verwaltungsportal.de/dateien/seitengenerator/0341a2e1878ce1159c6c6ea292c13b1016767/Unternehmensfoerderung.pdf",
+        "finding": "PDF „Unternehmensförderung“: Die Wirtschaftsfördergesellschaft Prignitz mbH „berät die Unternehmen im Landkreis Prignitz kostenfrei, neutral und individuell“; kein Zuschuss für private Anlagen."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/contact/index/link",
+        "finding": "HTTP 404, Fehlerseite „Die Seite wurde nicht gefunden.“ (Formular „Link verschicken“, auch mit Referrer-Parameter 404)."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/suche/index.php?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche am 24.09.2026: „Balkonkraftwerk“ – „Leider keine Treffer gefunden.“ „Photovoltaik“ und „Solar“: Bekanntmachungen zu Bebauungsplänen für Freiflächen-Photovoltaik, Kriterienkataloge, Solarpark-Meldungen; „Förderprogramm“/„Zuschuss“/„Klimaschutz“: Regionalbudget LEADER, Pflege vor Ort, Webseitenförderung, Familienpass – nichts für private Energieanlagen."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/suche/index.php?suchbegriff=Photovoltaik&modul=seiten",
+        "finding": "Seiten-Treffer zu Photovoltaik: nur „Bauleitplanung“ und „Kriterienkataloge PV“ (Bewertung von Freiflächenanlagen)."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/seite/847396/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Kommunale Wärmeplanung seit März 2026, Abschluss voraussichtlich Dezember; „Sie legt noch keine unmittelbaren Maßnahmen für einzelne Gebäude fest“. Kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-prignitz.de/de/wirtschaft/natur_umwelt/klimaschutz/klimaschutzprojekt.php",
+        "finding": "Landkreis Prignitz, Klimaschutzkonzept: für Photovoltaik nur Verweis auf den Solaratlas Brandenburg, für Wärmepumpen auf Eignungsrechner, für Förderung auf BAFA und KfW. Kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.landkreis-prignitz.de/de/suche/index.php?searchTerm=Photovoltaik",
+        "finding": "Kreissuche am 24.09.2026: „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“ ohne Ergebnis; „Förderprogramm“ und „Zuschuss“ ohne Programm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.ilb.de/de/service/solrsuche/?q=Speicher",
+        "finding": "ILB-Volltextsuche am 24.09.2026 im Browser: „Speicher“ liefert vier Förderprogramme (Wasserstoff-Speicher Brandenburg 2024 – derzeit nicht beantragbar; Erneuerbarer Wasserstoff und Erneuerbare Energien-Speicher Brandenburg 2025; Stärkung Energieresilienz Studentenwerke 2023; Wassermanagement), „Photovoltaik“ zwei (Brandenburg-Kredit Transformationsfinanzierung Infrastruktur; Studentenwerke), „Wärmepumpe“ einen (Studentenwerke), „Balkonkraftwerk“ keinen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.ilb.de/de/wirtschaft/zuschuesse/eintausend-speicher-1000-speicher/",
+        "finding": "Die frühere Programmseite des 1000-Speicher-Programms antwortet mit HTTP 404 („Seite nicht gefunden“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtmeyenburg.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; HTTP 404, Formular „Link verschicken“ ohne Inhalt.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/contact/index/link"
+      },
+      {
+        "url": "amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original samt verlinktem PDF; Beratung der Wirtschaftsfördergesellschaft für Unternehmen, kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html"
+      },
+      {
+        "url": "amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; Druckansicht derselben Seite, nur Überschrift, kein Förderprogramm.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken"
+      }
+    ]
+  },
+  {
+    "regionId": "12070266",
+    "name": "Marienfließ",
+    "checkedAt": "2026-09-24T06:14:35Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale und kreisliche Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; zusätzlich kurz die Landesebene (ILB Brandenburg). Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Marienfließ gehört zum Amt Meyenburg (Landkreis Prignitz). Die erfasste Seite „Unternehmensförderung“ verweist nur auf ein PDF der Wirtschaftsfördergesellschaft Prignitz mbH, die Unternehmen berät; die Kontaktadresse antwortet mit HTTP 404. Die Volltextsuche des Amtes findet zu Photovoltaik nur Bauleitplanung und Kriterienkataloge für Freiflächenanlagen, zu Balkonkraftwerk nichts, zu Wärmepumpe nur die kommunale Wärmeplanung. Weder Landkreis Prignitz noch ILB bieten nach heutigem Stand einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen an.",
+    "searches": [
+      "amtmeyenburg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Förderung",
+      "landkreis-prignitz.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz",
+      "ilb.de Volltextsuche: Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe, Solar"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html",
+        "finding": "Seite „Unternehmensförderung“ (HTTP 200): Inhalt ist ausschließlich ein verlinktes PDF, kein Förderprogramm des Amtes."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken",
+        "finding": "Druckansicht derselben Seite (HTTP 200): nur Überschrift „Unternehmensförderung“, kein weiterer Inhalt."
+      },
+      {
+        "url": "https://daten2.verwaltungsportal.de/dateien/seitengenerator/0341a2e1878ce1159c6c6ea292c13b1016767/Unternehmensfoerderung.pdf",
+        "finding": "PDF „Unternehmensförderung“: Die Wirtschaftsfördergesellschaft Prignitz mbH „berät die Unternehmen im Landkreis Prignitz kostenfrei, neutral und individuell“; kein Zuschuss für private Anlagen."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/contact/index/link",
+        "finding": "HTTP 404, Fehlerseite „Die Seite wurde nicht gefunden.“ (Formular „Link verschicken“, auch mit Referrer-Parameter 404)."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/suche/index.php?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche am 24.09.2026: „Balkonkraftwerk“ – „Leider keine Treffer gefunden.“ „Photovoltaik“ und „Solar“: Bekanntmachungen zu Bebauungsplänen für Freiflächen-Photovoltaik, Kriterienkataloge, Solarpark-Meldungen; „Förderprogramm“/„Zuschuss“/„Klimaschutz“: Regionalbudget LEADER, Pflege vor Ort, Webseitenförderung, Familienpass – nichts für private Energieanlagen."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/suche/index.php?suchbegriff=Photovoltaik&modul=seiten",
+        "finding": "Seiten-Treffer zu Photovoltaik: nur „Bauleitplanung“ und „Kriterienkataloge PV“ (Bewertung von Freiflächenanlagen)."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/seite/847396/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Kommunale Wärmeplanung seit März 2026, Abschluss voraussichtlich Dezember; „Sie legt noch keine unmittelbaren Maßnahmen für einzelne Gebäude fest“. Kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-prignitz.de/de/wirtschaft/natur_umwelt/klimaschutz/klimaschutzprojekt.php",
+        "finding": "Landkreis Prignitz, Klimaschutzkonzept: für Photovoltaik nur Verweis auf den Solaratlas Brandenburg, für Wärmepumpen auf Eignungsrechner, für Förderung auf BAFA und KfW. Kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.landkreis-prignitz.de/de/suche/index.php?searchTerm=Photovoltaik",
+        "finding": "Kreissuche am 24.09.2026: „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“ ohne Ergebnis; „Förderprogramm“ und „Zuschuss“ ohne Programm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.ilb.de/de/service/solrsuche/?q=Speicher",
+        "finding": "ILB-Volltextsuche am 24.09.2026 im Browser: „Speicher“ liefert vier Förderprogramme (Wasserstoff-Speicher Brandenburg 2024 – derzeit nicht beantragbar; Erneuerbarer Wasserstoff und Erneuerbare Energien-Speicher Brandenburg 2025; Stärkung Energieresilienz Studentenwerke 2023; Wassermanagement), „Photovoltaik“ zwei (Brandenburg-Kredit Transformationsfinanzierung Infrastruktur; Studentenwerke), „Wärmepumpe“ einen (Studentenwerke), „Balkonkraftwerk“ keinen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.ilb.de/de/wirtschaft/zuschuesse/eintausend-speicher-1000-speicher/",
+        "finding": "Die frühere Programmseite des 1000-Speicher-Programms antwortet mit HTTP 404 („Seite nicht gefunden“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtmeyenburg.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; HTTP 404, Formular „Link verschicken“ ohne Inhalt.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/contact/index/link"
+      },
+      {
+        "url": "amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original samt verlinktem PDF; Beratung der Wirtschaftsfördergesellschaft für Unternehmen, kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html"
+      },
+      {
+        "url": "amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; Druckansicht derselben Seite, nur Überschrift, kein Förderprogramm.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken"
+      }
+    ]
+  },
+  {
+    "regionId": "12070280",
+    "name": "Meyenburg",
+    "checkedAt": "2026-09-24T06:14:35Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale und kreisliche Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; zusätzlich kurz die Landesebene (ILB Brandenburg). Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Meyenburg gehört zum Amt Meyenburg (Landkreis Prignitz). Die erfasste Seite „Unternehmensförderung“ verweist nur auf ein PDF der Wirtschaftsfördergesellschaft Prignitz mbH, die Unternehmen berät; die Kontaktadresse antwortet mit HTTP 404. Die Volltextsuche des Amtes findet zu Photovoltaik nur Bauleitplanung und Kriterienkataloge für Freiflächenanlagen, zu Balkonkraftwerk nichts, zu Wärmepumpe nur die kommunale Wärmeplanung. Weder Landkreis Prignitz noch ILB bieten nach heutigem Stand einen Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen an.",
+    "searches": [
+      "amtmeyenburg.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Förderung",
+      "landkreis-prignitz.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz",
+      "ilb.de Volltextsuche: Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe, Solar"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html",
+        "finding": "Seite „Unternehmensförderung“ (HTTP 200): Inhalt ist ausschließlich ein verlinktes PDF, kein Förderprogramm des Amtes."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken",
+        "finding": "Druckansicht derselben Seite (HTTP 200): nur Überschrift „Unternehmensförderung“, kein weiterer Inhalt."
+      },
+      {
+        "url": "https://daten2.verwaltungsportal.de/dateien/seitengenerator/0341a2e1878ce1159c6c6ea292c13b1016767/Unternehmensfoerderung.pdf",
+        "finding": "PDF „Unternehmensförderung“: Die Wirtschaftsfördergesellschaft Prignitz mbH „berät die Unternehmen im Landkreis Prignitz kostenfrei, neutral und individuell“; kein Zuschuss für private Anlagen."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/contact/index/link",
+        "finding": "HTTP 404, Fehlerseite „Die Seite wurde nicht gefunden.“ (Formular „Link verschicken“, auch mit Referrer-Parameter 404)."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/suche/index.php?suchbegriff=Balkonkraftwerk",
+        "finding": "Volltextsuche am 24.09.2026: „Balkonkraftwerk“ – „Leider keine Treffer gefunden.“ „Photovoltaik“ und „Solar“: Bekanntmachungen zu Bebauungsplänen für Freiflächen-Photovoltaik, Kriterienkataloge, Solarpark-Meldungen; „Förderprogramm“/„Zuschuss“/„Klimaschutz“: Regionalbudget LEADER, Pflege vor Ort, Webseitenförderung, Familienpass – nichts für private Energieanlagen."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/suche/index.php?suchbegriff=Photovoltaik&modul=seiten",
+        "finding": "Seiten-Treffer zu Photovoltaik: nur „Bauleitplanung“ und „Kriterienkataloge PV“ (Bewertung von Freiflächenanlagen)."
+      },
+      {
+        "url": "https://www.amtmeyenburg.de/seite/847396/kommunale-w%C3%A4rmeplanung.html",
+        "finding": "Kommunale Wärmeplanung seit März 2026, Abschluss voraussichtlich Dezember; „Sie legt noch keine unmittelbaren Maßnahmen für einzelne Gebäude fest“. Kein Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-prignitz.de/de/wirtschaft/natur_umwelt/klimaschutz/klimaschutzprojekt.php",
+        "finding": "Landkreis Prignitz, Klimaschutzkonzept: für Photovoltaik nur Verweis auf den Solaratlas Brandenburg, für Wärmepumpen auf Eignungsrechner, für Förderung auf BAFA und KfW. Kein eigenes Kreisprogramm."
+      },
+      {
+        "url": "https://www.landkreis-prignitz.de/de/suche/index.php?searchTerm=Photovoltaik",
+        "finding": "Kreissuche am 24.09.2026: „Photovoltaik“, „Balkonkraftwerk“, „Wärmepumpe“ ohne Ergebnis; „Förderprogramm“ und „Zuschuss“ ohne Programm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.ilb.de/de/service/solrsuche/?q=Speicher",
+        "finding": "ILB-Volltextsuche am 24.09.2026 im Browser: „Speicher“ liefert vier Förderprogramme (Wasserstoff-Speicher Brandenburg 2024 – derzeit nicht beantragbar; Erneuerbarer Wasserstoff und Erneuerbare Energien-Speicher Brandenburg 2025; Stärkung Energieresilienz Studentenwerke 2023; Wassermanagement), „Photovoltaik“ zwei (Brandenburg-Kredit Transformationsfinanzierung Infrastruktur; Studentenwerke), „Wärmepumpe“ einen (Studentenwerke), „Balkonkraftwerk“ keinen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.ilb.de/de/wirtschaft/zuschuesse/eintausend-speicher-1000-speicher/",
+        "finding": "Die frühere Programmseite des 1000-Speicher-Programms antwortet mit HTTP 404 („Seite nicht gefunden“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amtmeyenburg.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; HTTP 404, Formular „Link verschicken“ ohne Inhalt.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/contact/index/link"
+      },
+      {
+        "url": "amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original samt verlinktem PDF; Beratung der Wirtschaftsfördergesellschaft für Unternehmen, kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html"
+      },
+      {
+        "url": "amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; Druckansicht derselben Seite, nur Überschrift, kein Förderprogramm.",
+        "evidenceUrl": "https://www.amtmeyenburg.de/seite/627139/unternehmensf%C3%B6rderung.html?modus=drucken"
+      }
+    ]
+  },
+  {
+    "regionId": "12066116",
+    "name": "Grünewald",
+    "checkedAt": "2026-09-24T06:14:35Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale und kreisliche Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; zusätzlich kurz die Landesebene (ILB Brandenburg). Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Grünewald gehört zum Amt Ruhland (Landkreis Oberspreewald-Lausitz). Die vier erfassten Adressen sind eine Einladung des Landesumweltministeriums zu Online-Terminen über die Förderrichtlinie „Nachhaltigkeit in KMU“, eine Pressemitteilung zum geförderten Glasfaserausbau und eine Meldung zum Fördermittelbescheid für die Mehrzweckhalle Ruhland. Die Volltextsuche des Amtes findet zu Photovoltaik, Balkonkraftwerk, Steckersolar und Wärmepumpe nichts, als Förderung nur die Vereinsförderung der Stadt Ruhland. Der Landkreis nennt für Privatpersonen nur die Bundesförderung der KfW; die ILB führt kein Programm für private Anlagen.",
+    "searches": [
+      "amt-ruhland.de Volltextsuche (Suchschnittstelle der Website): Balkonkraftwerk, Steckersolar, Photovoltaik, Solar, Solaranlage, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Förderung",
+      "osl-online.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz",
+      "ilb.de Volltextsuche: Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe, Solar"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/",
+        "finding": "Kalendereintrag (HTTP 200): Einladung des MLEUV zu Online-Informationsveranstaltungen zur Förderrichtlinie „Nachhaltigkeit in KMU (2025)“ für kleine und mittlere Unternehmen, bis zu 60 Prozent der zuwendungsfähigen Ausgaben. Nichts für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0",
+        "finding": "Derselbe Kalendereintrag unter der Terminkennung 6277 (HTTP 200), gleicher Inhalt."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet/",
+        "finding": "Pressemitteilung des Landkreises vom 10.06.2026: Start des geförderten Glasfaserausbaus („Graue Flecken“), Fördermittel von Bund und Land rund 50,7 Mio. Euro. Keine Förderung für private Energieanlagen."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides/",
+        "finding": "Meldung vom 03.07.2026: Übergabe des Fördermittelbescheids über mehr als 5 Mio. Euro für den Neubau der Mehrzweckhalle Ruhland. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/foerderantraege-der-vereine-in-ruhland-fuer-das-jahr-2027/",
+        "finding": "Einziger Förder-Treffer der Amtssuche mit eigenem Programm: Vereinsförderung der Stadt Ruhland für 2027. Die Suchen nach Photovoltaik, Balkonkraftwerk, Steckersolar und Wärmepumpe ergaben am 24.09.2026 null Treffer; „Solar“ und „Speicher“ nur Flächennutzungs- und Bebauungspläne."
+      },
+      {
+        "url": "https://www.osl-online.de/seite/573632/f%C3%B6rderprogramme.html",
+        "finding": "Landkreis OSL, Seite „Förderprogramme“: Ehrenamtsförderung, ILB-Programm „Speicher für Brandenburg“ für Unternehmen, Stadt- und Kreiswerke und Energieversorger (Zuschuss ab 200.000 € Investition), Just Transition Fund für Unternehmen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.osl-online.de/news/1/1244680/nachrichten/1244680.html",
+        "finding": "Meldung des Landkreises vom 05.06.2026 zur Heizungsförderung der KfW (Zuschuss Nr. 458) für Privatpersonen – Bundesprogramm, kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.osl-online.de/suche/index.php?suchbegriff=Balkonkraftwerk",
+        "finding": "Kreissuche am 24.09.2026: „Balkonkraftwerk“ ohne Treffer; „Photovoltaik“, „Wärmepumpe“, „Förderprogramm“, „Klimaschutz“ ohne eigenes Kreisprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.ilb.de/de/service/solrsuche/?q=Speicher",
+        "finding": "ILB-Volltextsuche am 24.09.2026 im Browser: „Speicher“ liefert vier Förderprogramme (Wasserstoff-Speicher Brandenburg 2024 – derzeit nicht beantragbar; Erneuerbarer Wasserstoff und Erneuerbare Energien-Speicher Brandenburg 2025; Stärkung Energieresilienz Studentenwerke 2023; Wassermanagement), „Photovoltaik“ zwei (Brandenburg-Kredit Transformationsfinanzierung Infrastruktur; Studentenwerke), „Wärmepumpe“ einen (Studentenwerke), „Balkonkraftwerk“ keinen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.ilb.de/de/wirtschaft/zuschuesse/eintausend-speicher-1000-speicher/",
+        "finding": "Die frühere Programmseite des 1000-Speicher-Programms antwortet mit HTTP 404 („Seite nicht gefunden“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original; Informationsveranstaltung zu einem Landesprogramm für KMU, nichts für private Haushalte.",
+        "evidenceUrl": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/"
+      },
+      {
+        "url": "amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; gleicher Kalendereintrag unter Terminkennung, KMU-Programm.",
+        "evidenceUrl": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0"
+      },
+      {
+        "url": "amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; geförderter Glasfaserausbau, keine Förderung für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet/"
+      },
+      {
+        "url": "amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; Fördermittelbescheid für die Mehrzweckhalle Ruhland, kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides/"
+      }
+    ]
+  },
+  {
+    "regionId": "12066120",
+    "name": "Guteborn",
+    "checkedAt": "2026-09-24T06:14:35Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale und kreisliche Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; zusätzlich kurz die Landesebene (ILB Brandenburg). Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Guteborn gehört zum Amt Ruhland (Landkreis Oberspreewald-Lausitz). Die vier erfassten Adressen sind eine Einladung des Landesumweltministeriums zu Online-Terminen über die Förderrichtlinie „Nachhaltigkeit in KMU“, eine Pressemitteilung zum geförderten Glasfaserausbau und eine Meldung zum Fördermittelbescheid für die Mehrzweckhalle Ruhland. Die Volltextsuche des Amtes findet zu Photovoltaik, Balkonkraftwerk, Steckersolar und Wärmepumpe nichts, als Förderung nur die Vereinsförderung der Stadt Ruhland. Der Landkreis nennt für Privatpersonen nur die Bundesförderung der KfW; die ILB führt kein Programm für private Anlagen.",
+    "searches": [
+      "amt-ruhland.de Volltextsuche (Suchschnittstelle der Website): Balkonkraftwerk, Steckersolar, Photovoltaik, Solar, Solaranlage, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Förderung",
+      "osl-online.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz",
+      "ilb.de Volltextsuche: Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe, Solar"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/",
+        "finding": "Kalendereintrag (HTTP 200): Einladung des MLEUV zu Online-Informationsveranstaltungen zur Förderrichtlinie „Nachhaltigkeit in KMU (2025)“ für kleine und mittlere Unternehmen, bis zu 60 Prozent der zuwendungsfähigen Ausgaben. Nichts für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0",
+        "finding": "Derselbe Kalendereintrag unter der Terminkennung 6277 (HTTP 200), gleicher Inhalt."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet/",
+        "finding": "Pressemitteilung des Landkreises vom 10.06.2026: Start des geförderten Glasfaserausbaus („Graue Flecken“), Fördermittel von Bund und Land rund 50,7 Mio. Euro. Keine Förderung für private Energieanlagen."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides/",
+        "finding": "Meldung vom 03.07.2026: Übergabe des Fördermittelbescheids über mehr als 5 Mio. Euro für den Neubau der Mehrzweckhalle Ruhland. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/foerderantraege-der-vereine-in-ruhland-fuer-das-jahr-2027/",
+        "finding": "Einziger Förder-Treffer der Amtssuche mit eigenem Programm: Vereinsförderung der Stadt Ruhland für 2027. Die Suchen nach Photovoltaik, Balkonkraftwerk, Steckersolar und Wärmepumpe ergaben am 24.09.2026 null Treffer; „Solar“ und „Speicher“ nur Flächennutzungs- und Bebauungspläne."
+      },
+      {
+        "url": "https://www.osl-online.de/seite/573632/f%C3%B6rderprogramme.html",
+        "finding": "Landkreis OSL, Seite „Förderprogramme“: Ehrenamtsförderung, ILB-Programm „Speicher für Brandenburg“ für Unternehmen, Stadt- und Kreiswerke und Energieversorger (Zuschuss ab 200.000 € Investition), Just Transition Fund für Unternehmen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.osl-online.de/news/1/1244680/nachrichten/1244680.html",
+        "finding": "Meldung des Landkreises vom 05.06.2026 zur Heizungsförderung der KfW (Zuschuss Nr. 458) für Privatpersonen – Bundesprogramm, kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.osl-online.de/suche/index.php?suchbegriff=Balkonkraftwerk",
+        "finding": "Kreissuche am 24.09.2026: „Balkonkraftwerk“ ohne Treffer; „Photovoltaik“, „Wärmepumpe“, „Förderprogramm“, „Klimaschutz“ ohne eigenes Kreisprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.ilb.de/de/service/solrsuche/?q=Speicher",
+        "finding": "ILB-Volltextsuche am 24.09.2026 im Browser: „Speicher“ liefert vier Förderprogramme (Wasserstoff-Speicher Brandenburg 2024 – derzeit nicht beantragbar; Erneuerbarer Wasserstoff und Erneuerbare Energien-Speicher Brandenburg 2025; Stärkung Energieresilienz Studentenwerke 2023; Wassermanagement), „Photovoltaik“ zwei (Brandenburg-Kredit Transformationsfinanzierung Infrastruktur; Studentenwerke), „Wärmepumpe“ einen (Studentenwerke), „Balkonkraftwerk“ keinen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.ilb.de/de/wirtschaft/zuschuesse/eintausend-speicher-1000-speicher/",
+        "finding": "Die frühere Programmseite des 1000-Speicher-Programms antwortet mit HTTP 404 („Seite nicht gefunden“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original; Informationsveranstaltung zu einem Landesprogramm für KMU, nichts für private Haushalte.",
+        "evidenceUrl": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/"
+      },
+      {
+        "url": "amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; gleicher Kalendereintrag unter Terminkennung, KMU-Programm.",
+        "evidenceUrl": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0"
+      },
+      {
+        "url": "amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; geförderter Glasfaserausbau, keine Förderung für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet/"
+      },
+      {
+        "url": "amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; Fördermittelbescheid für die Mehrzweckhalle Ruhland, kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides/"
+      }
+    ]
+  },
+  {
+    "regionId": "12066124",
+    "name": "Hermsdorf",
+    "checkedAt": "2026-09-24T06:14:35Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale und kreisliche Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; zusätzlich kurz die Landesebene (ILB Brandenburg). Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hermsdorf gehört zum Amt Ruhland (Landkreis Oberspreewald-Lausitz). Die vier erfassten Adressen sind eine Einladung des Landesumweltministeriums zu Online-Terminen über die Förderrichtlinie „Nachhaltigkeit in KMU“, eine Pressemitteilung zum geförderten Glasfaserausbau und eine Meldung zum Fördermittelbescheid für die Mehrzweckhalle Ruhland. Die Volltextsuche des Amtes findet zu Photovoltaik, Balkonkraftwerk, Steckersolar und Wärmepumpe nichts, als Förderung nur die Vereinsförderung der Stadt Ruhland. Der Landkreis nennt für Privatpersonen nur die Bundesförderung der KfW; die ILB führt kein Programm für private Anlagen.",
+    "searches": [
+      "amt-ruhland.de Volltextsuche (Suchschnittstelle der Website): Balkonkraftwerk, Steckersolar, Photovoltaik, Solar, Solaranlage, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Förderung",
+      "osl-online.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz",
+      "ilb.de Volltextsuche: Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe, Solar"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/",
+        "finding": "Kalendereintrag (HTTP 200): Einladung des MLEUV zu Online-Informationsveranstaltungen zur Förderrichtlinie „Nachhaltigkeit in KMU (2025)“ für kleine und mittlere Unternehmen, bis zu 60 Prozent der zuwendungsfähigen Ausgaben. Nichts für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0",
+        "finding": "Derselbe Kalendereintrag unter der Terminkennung 6277 (HTTP 200), gleicher Inhalt."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet/",
+        "finding": "Pressemitteilung des Landkreises vom 10.06.2026: Start des geförderten Glasfaserausbaus („Graue Flecken“), Fördermittel von Bund und Land rund 50,7 Mio. Euro. Keine Förderung für private Energieanlagen."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides/",
+        "finding": "Meldung vom 03.07.2026: Übergabe des Fördermittelbescheids über mehr als 5 Mio. Euro für den Neubau der Mehrzweckhalle Ruhland. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/foerderantraege-der-vereine-in-ruhland-fuer-das-jahr-2027/",
+        "finding": "Einziger Förder-Treffer der Amtssuche mit eigenem Programm: Vereinsförderung der Stadt Ruhland für 2027. Die Suchen nach Photovoltaik, Balkonkraftwerk, Steckersolar und Wärmepumpe ergaben am 24.09.2026 null Treffer; „Solar“ und „Speicher“ nur Flächennutzungs- und Bebauungspläne."
+      },
+      {
+        "url": "https://www.osl-online.de/seite/573632/f%C3%B6rderprogramme.html",
+        "finding": "Landkreis OSL, Seite „Förderprogramme“: Ehrenamtsförderung, ILB-Programm „Speicher für Brandenburg“ für Unternehmen, Stadt- und Kreiswerke und Energieversorger (Zuschuss ab 200.000 € Investition), Just Transition Fund für Unternehmen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.osl-online.de/news/1/1244680/nachrichten/1244680.html",
+        "finding": "Meldung des Landkreises vom 05.06.2026 zur Heizungsförderung der KfW (Zuschuss Nr. 458) für Privatpersonen – Bundesprogramm, kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.osl-online.de/suche/index.php?suchbegriff=Balkonkraftwerk",
+        "finding": "Kreissuche am 24.09.2026: „Balkonkraftwerk“ ohne Treffer; „Photovoltaik“, „Wärmepumpe“, „Förderprogramm“, „Klimaschutz“ ohne eigenes Kreisprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.ilb.de/de/service/solrsuche/?q=Speicher",
+        "finding": "ILB-Volltextsuche am 24.09.2026 im Browser: „Speicher“ liefert vier Förderprogramme (Wasserstoff-Speicher Brandenburg 2024 – derzeit nicht beantragbar; Erneuerbarer Wasserstoff und Erneuerbare Energien-Speicher Brandenburg 2025; Stärkung Energieresilienz Studentenwerke 2023; Wassermanagement), „Photovoltaik“ zwei (Brandenburg-Kredit Transformationsfinanzierung Infrastruktur; Studentenwerke), „Wärmepumpe“ einen (Studentenwerke), „Balkonkraftwerk“ keinen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.ilb.de/de/wirtschaft/zuschuesse/eintausend-speicher-1000-speicher/",
+        "finding": "Die frühere Programmseite des 1000-Speicher-Programms antwortet mit HTTP 404 („Seite nicht gefunden“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original; Informationsveranstaltung zu einem Landesprogramm für KMU, nichts für private Haushalte.",
+        "evidenceUrl": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/"
+      },
+      {
+        "url": "amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; gleicher Kalendereintrag unter Terminkennung, KMU-Programm.",
+        "evidenceUrl": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0"
+      },
+      {
+        "url": "amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; geförderter Glasfaserausbau, keine Förderung für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet/"
+      },
+      {
+        "url": "amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; Fördermittelbescheid für die Mehrzweckhalle Ruhland, kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides/"
+      }
+    ]
+  },
+  {
+    "regionId": "12066132",
+    "name": "Hohenbocka",
+    "checkedAt": "2026-09-24T06:14:35Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale und kreisliche Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; zusätzlich kurz die Landesebene (ILB Brandenburg). Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hohenbocka gehört zum Amt Ruhland (Landkreis Oberspreewald-Lausitz). Die vier erfassten Adressen sind eine Einladung des Landesumweltministeriums zu Online-Terminen über die Förderrichtlinie „Nachhaltigkeit in KMU“, eine Pressemitteilung zum geförderten Glasfaserausbau und eine Meldung zum Fördermittelbescheid für die Mehrzweckhalle Ruhland. Die Volltextsuche des Amtes findet zu Photovoltaik, Balkonkraftwerk, Steckersolar und Wärmepumpe nichts, als Förderung nur die Vereinsförderung der Stadt Ruhland. Der Landkreis nennt für Privatpersonen nur die Bundesförderung der KfW; die ILB führt kein Programm für private Anlagen.",
+    "searches": [
+      "amt-ruhland.de Volltextsuche (Suchschnittstelle der Website): Balkonkraftwerk, Steckersolar, Photovoltaik, Solar, Solaranlage, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Förderung",
+      "osl-online.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz",
+      "ilb.de Volltextsuche: Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe, Solar"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/",
+        "finding": "Kalendereintrag (HTTP 200): Einladung des MLEUV zu Online-Informationsveranstaltungen zur Förderrichtlinie „Nachhaltigkeit in KMU (2025)“ für kleine und mittlere Unternehmen, bis zu 60 Prozent der zuwendungsfähigen Ausgaben. Nichts für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0",
+        "finding": "Derselbe Kalendereintrag unter der Terminkennung 6277 (HTTP 200), gleicher Inhalt."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet/",
+        "finding": "Pressemitteilung des Landkreises vom 10.06.2026: Start des geförderten Glasfaserausbaus („Graue Flecken“), Fördermittel von Bund und Land rund 50,7 Mio. Euro. Keine Förderung für private Energieanlagen."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides/",
+        "finding": "Meldung vom 03.07.2026: Übergabe des Fördermittelbescheids über mehr als 5 Mio. Euro für den Neubau der Mehrzweckhalle Ruhland. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/foerderantraege-der-vereine-in-ruhland-fuer-das-jahr-2027/",
+        "finding": "Einziger Förder-Treffer der Amtssuche mit eigenem Programm: Vereinsförderung der Stadt Ruhland für 2027. Die Suchen nach Photovoltaik, Balkonkraftwerk, Steckersolar und Wärmepumpe ergaben am 24.09.2026 null Treffer; „Solar“ und „Speicher“ nur Flächennutzungs- und Bebauungspläne."
+      },
+      {
+        "url": "https://www.osl-online.de/seite/573632/f%C3%B6rderprogramme.html",
+        "finding": "Landkreis OSL, Seite „Förderprogramme“: Ehrenamtsförderung, ILB-Programm „Speicher für Brandenburg“ für Unternehmen, Stadt- und Kreiswerke und Energieversorger (Zuschuss ab 200.000 € Investition), Just Transition Fund für Unternehmen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.osl-online.de/news/1/1244680/nachrichten/1244680.html",
+        "finding": "Meldung des Landkreises vom 05.06.2026 zur Heizungsförderung der KfW (Zuschuss Nr. 458) für Privatpersonen – Bundesprogramm, kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.osl-online.de/suche/index.php?suchbegriff=Balkonkraftwerk",
+        "finding": "Kreissuche am 24.09.2026: „Balkonkraftwerk“ ohne Treffer; „Photovoltaik“, „Wärmepumpe“, „Förderprogramm“, „Klimaschutz“ ohne eigenes Kreisprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.ilb.de/de/service/solrsuche/?q=Speicher",
+        "finding": "ILB-Volltextsuche am 24.09.2026 im Browser: „Speicher“ liefert vier Förderprogramme (Wasserstoff-Speicher Brandenburg 2024 – derzeit nicht beantragbar; Erneuerbarer Wasserstoff und Erneuerbare Energien-Speicher Brandenburg 2025; Stärkung Energieresilienz Studentenwerke 2023; Wassermanagement), „Photovoltaik“ zwei (Brandenburg-Kredit Transformationsfinanzierung Infrastruktur; Studentenwerke), „Wärmepumpe“ einen (Studentenwerke), „Balkonkraftwerk“ keinen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.ilb.de/de/wirtschaft/zuschuesse/eintausend-speicher-1000-speicher/",
+        "finding": "Die frühere Programmseite des 1000-Speicher-Programms antwortet mit HTTP 404 („Seite nicht gefunden“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original; Informationsveranstaltung zu einem Landesprogramm für KMU, nichts für private Haushalte.",
+        "evidenceUrl": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/"
+      },
+      {
+        "url": "amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; gleicher Kalendereintrag unter Terminkennung, KMU-Programm.",
+        "evidenceUrl": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0"
+      },
+      {
+        "url": "amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; geförderter Glasfaserausbau, keine Förderung für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet/"
+      },
+      {
+        "url": "amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; Fördermittelbescheid für die Mehrzweckhalle Ruhland, kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides/"
+      }
+    ]
+  },
+  {
+    "regionId": "12066272",
+    "name": "Ruhland",
+    "checkedAt": "2026-09-24T06:14:35Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale und kreisliche Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; zusätzlich kurz die Landesebene (ILB Brandenburg). Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ruhland gehört zum Amt Ruhland (Landkreis Oberspreewald-Lausitz). Die vier erfassten Adressen sind eine Einladung des Landesumweltministeriums zu Online-Terminen über die Förderrichtlinie „Nachhaltigkeit in KMU“, eine Pressemitteilung zum geförderten Glasfaserausbau und eine Meldung zum Fördermittelbescheid für die Mehrzweckhalle Ruhland. Die Volltextsuche des Amtes findet zu Photovoltaik, Balkonkraftwerk, Steckersolar und Wärmepumpe nichts, als Förderung nur die Vereinsförderung der Stadt Ruhland. Der Landkreis nennt für Privatpersonen nur die Bundesförderung der KfW; die ILB führt kein Programm für private Anlagen.",
+    "searches": [
+      "amt-ruhland.de Volltextsuche (Suchschnittstelle der Website): Balkonkraftwerk, Steckersolar, Photovoltaik, Solar, Solaranlage, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Förderung",
+      "osl-online.de Suche: Balkonkraftwerk, Photovoltaik, Solar, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz",
+      "ilb.de Volltextsuche: Photovoltaik, Speicher, Balkonkraftwerk, Wärmepumpe, Solar"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/",
+        "finding": "Kalendereintrag (HTTP 200): Einladung des MLEUV zu Online-Informationsveranstaltungen zur Förderrichtlinie „Nachhaltigkeit in KMU (2025)“ für kleine und mittlere Unternehmen, bis zu 60 Prozent der zuwendungsfähigen Ausgaben. Nichts für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0",
+        "finding": "Derselbe Kalendereintrag unter der Terminkennung 6277 (HTTP 200), gleicher Inhalt."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet/",
+        "finding": "Pressemitteilung des Landkreises vom 10.06.2026: Start des geförderten Glasfaserausbaus („Graue Flecken“), Fördermittel von Bund und Land rund 50,7 Mio. Euro. Keine Förderung für private Energieanlagen."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides/",
+        "finding": "Meldung vom 03.07.2026: Übergabe des Fördermittelbescheids über mehr als 5 Mio. Euro für den Neubau der Mehrzweckhalle Ruhland. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.amt-ruhland.de/neuigkeiten/foerderantraege-der-vereine-in-ruhland-fuer-das-jahr-2027/",
+        "finding": "Einziger Förder-Treffer der Amtssuche mit eigenem Programm: Vereinsförderung der Stadt Ruhland für 2027. Die Suchen nach Photovoltaik, Balkonkraftwerk, Steckersolar und Wärmepumpe ergaben am 24.09.2026 null Treffer; „Solar“ und „Speicher“ nur Flächennutzungs- und Bebauungspläne."
+      },
+      {
+        "url": "https://www.osl-online.de/seite/573632/f%C3%B6rderprogramme.html",
+        "finding": "Landkreis OSL, Seite „Förderprogramme“: Ehrenamtsförderung, ILB-Programm „Speicher für Brandenburg“ für Unternehmen, Stadt- und Kreiswerke und Energieversorger (Zuschuss ab 200.000 € Investition), Just Transition Fund für Unternehmen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.osl-online.de/news/1/1244680/nachrichten/1244680.html",
+        "finding": "Meldung des Landkreises vom 05.06.2026 zur Heizungsförderung der KfW (Zuschuss Nr. 458) für Privatpersonen – Bundesprogramm, kein Kreisprogramm."
+      },
+      {
+        "url": "https://www.osl-online.de/suche/index.php?suchbegriff=Balkonkraftwerk",
+        "finding": "Kreissuche am 24.09.2026: „Balkonkraftwerk“ ohne Treffer; „Photovoltaik“, „Wärmepumpe“, „Förderprogramm“, „Klimaschutz“ ohne eigenes Kreisprogramm für private Energieanlagen."
+      },
+      {
+        "url": "https://www.ilb.de/de/service/solrsuche/?q=Speicher",
+        "finding": "ILB-Volltextsuche am 24.09.2026 im Browser: „Speicher“ liefert vier Förderprogramme (Wasserstoff-Speicher Brandenburg 2024 – derzeit nicht beantragbar; Erneuerbarer Wasserstoff und Erneuerbare Energien-Speicher Brandenburg 2025; Stärkung Energieresilienz Studentenwerke 2023; Wassermanagement), „Photovoltaik“ zwei (Brandenburg-Kredit Transformationsfinanzierung Infrastruktur; Studentenwerke), „Wärmepumpe“ einen (Studentenwerke), „Balkonkraftwerk“ keinen. Kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.ilb.de/de/wirtschaft/zuschuesse/eintausend-speicher-1000-speicher/",
+        "finding": "Die frühere Programmseite des 1000-Speicher-Programms antwortet mit HTTP 404 („Seite nicht gefunden“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original; Informationsveranstaltung zu einem Landesprogramm für KMU, nichts für private Haushalte.",
+        "evidenceUrl": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/"
+      },
+      {
+        "url": "amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; gleicher Kalendereintrag unter Terminkennung, KMU-Programm.",
+        "evidenceUrl": "https://www.amt-ruhland.de/kalender/2026-07-15-ressourcen-sparen-in-kmu-informationen-zu-foerdermoeglichkeiten-im-land-brandenburg/6277:0"
+      },
+      {
+        "url": "amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; geförderter Glasfaserausbau, keine Förderung für private Energieanlagen.",
+        "evidenceUrl": "https://www.amt-ruhland.de/neuigkeiten/start-des-gefoerderten-glasfaserausbaus-in-osl-zur-versorgung-der-grauen-flecken-mit-schnellerem-internet/"
+      },
+      {
+        "url": "amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026; Fördermittelbescheid für die Mehrzweckhalle Ruhland, kein Programm für private Haushalte.",
+        "evidenceUrl": "https://www.amt-ruhland.de/neuigkeiten/uebergabe-des-foerdermittelbescheides/"
+      }
+    ]
+  },
+  {
+    "regionId": "03357011",
+    "name": "Deinstedt",
+    "checkedAt": "2026-09-24T06:16:21Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse (Gemeinde, Samtgemeinde Selsingen, Landkreis Rotenburg (Wümme)) für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; Landesangebote der NBank kurz geprüft. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die erfasste Adresse ist eine Vortragspräsentation der Verbraucherzentrale zur Bundesförderung (BEG, KfW/BAFA, Steuerermäßigung) aus der Wärmeplanung der Samtgemeinde Selsingen, kein kommunales Programm. Auf selsingen.de, beim Landkreis Rotenburg (Wümme) und bei der NBank steht aktuell kein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; das frühere NBank-Speicherprogramm für Privathaushalte ist ausgelaufen.",
+    "searches": [
+      "selsingen.de Suche: Balkonkraftwerk",
+      "selsingen.de Suche: Photovoltaik",
+      "selsingen.de Suche: Solar",
+      "selsingen.de Suche: Wärmepumpe",
+      "selsingen.de Suche: Speicher",
+      "selsingen.de Suche: Zuschuss",
+      "selsingen.de Suche: Förderprogramm",
+      "selsingen.de Suche: Klimaschutz",
+      "selsingen.de Suche: Förderung",
+      "selsingen.de alle 139 Navigationsseiten nach Balkonkraftwerk, Photovoltaik, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz durchsucht",
+      "lk-row.de Suche: Balkonkraftwerk, Photovoltaik, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Solar",
+      "nbank.de aktuelle und ausgelaufene Förderprogramme",
+      "Websuche: Landkreis Rotenburg (Wümme) Förderprogramm Photovoltaik Batteriespeicher Zuschuss private Haushalte",
+      "Websuche: Selsingen Förderprogramm Balkonkraftwerk Photovoltaik Wärmepumpe Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1",
+        "finding": "Vortragsfolien der Verbraucherzentrale-Energieberatung (Dipl.-Ing. Thomas Behnke, Bremervörde) vom 23.09.2025 zur Wärmeplanung: behandelt ausschließlich Bundesförderung (BEG Einzelmaßnahmen und Effizienzhaus, Heizungsförderung der KfW, BAFA, Steuerermäßigung nach § 35c EStG). Kein Programm der Samtgemeinde oder einer Mitgliedsgemeinde."
+      },
+      {
+        "url": "https://www.selsingen.de/leben-und-wohnen/kommunaler-waermeplan-der-samtgemeinde-selsingen",
+        "finding": "Seite zum kommunalen Wärmeplan (beschlossen 18.03.2026): Der Plan 'verpflichtet weder zum Austausch bestehender Heizungen noch beeinflusst er direkte Fördermöglichkeiten'; gefördert wurde nur die Planerstellung über die Kommunalrichtlinie des Bundes. Kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.lk-row.de/portal/seiten/klimaschutz-900002312-23700.html",
+        "finding": "Klimaschutzseite des Landkreises Rotenburg (Wümme): verweist für Haushalte auf kostenlose Energieberatung der Verbraucherzentrale, co2online-Fördermittelcheck, Solarkataster und KEAN; kein eigenes Kreisprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Kreis-Suche nach diesen Begriffen liefert nur diese Seite, Planungshinweise zu Freiflächenanlagen und das Wohnraumförderprogramm (kleine Mietwohnungen)."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Ausgelaufene-F%C3%B6rderungen/",
+        "finding": "NBank: Die Landesförderung 'Photovoltaik (PV) - Batteriespeicher für Privathaushalte' steht unter den ausgelaufenen Programmen; die aktuelle Programmliste enthält kein Angebot für private PV-, Speicher-, Balkonkraftwerk- oder Wärmepumpen-Vorhaben."
+      }
+    ],
+    "sources": [
+      {
+        "url": "selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBE",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original (PDF, 15 Seiten); Verbraucherzentrale-Vortrag zur Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1"
+      },
+      {
+        "url": "docs.google.com/viewer?url=https%3A%2F%2Fwww.selsingen.de%2Ffiles%2F268%2FWaermeplanung%2F1405%2F20250923FoerderprogrammeVZTBEpdf%3Ftoken%3Dab0d495e627f6f2671a1ec69ebce2252%26preview%3D1&embedded=true",
+        "disposition": "reviewed",
+        "reason": "Google-Dokumentenansicht derselben PDF (Titel '20250923FoerderprogrammeVZTBEpdf'); Inhalt identisch mit der direkt geladenen Datei, Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1"
+      }
+    ]
+  },
+  {
+    "regionId": "03357014",
+    "name": "Farven",
+    "checkedAt": "2026-09-24T06:16:21Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse (Gemeinde, Samtgemeinde Selsingen, Landkreis Rotenburg (Wümme)) für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; Landesangebote der NBank kurz geprüft. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die erfasste Adresse ist eine Vortragspräsentation der Verbraucherzentrale zur Bundesförderung (BEG, KfW/BAFA, Steuerermäßigung) aus der Wärmeplanung der Samtgemeinde Selsingen, kein kommunales Programm. Auf selsingen.de, beim Landkreis Rotenburg (Wümme) und bei der NBank steht aktuell kein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; das frühere NBank-Speicherprogramm für Privathaushalte ist ausgelaufen.",
+    "searches": [
+      "selsingen.de Suche: Balkonkraftwerk",
+      "selsingen.de Suche: Photovoltaik",
+      "selsingen.de Suche: Solar",
+      "selsingen.de Suche: Wärmepumpe",
+      "selsingen.de Suche: Speicher",
+      "selsingen.de Suche: Zuschuss",
+      "selsingen.de Suche: Förderprogramm",
+      "selsingen.de Suche: Klimaschutz",
+      "selsingen.de Suche: Förderung",
+      "selsingen.de alle 139 Navigationsseiten nach Balkonkraftwerk, Photovoltaik, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz durchsucht",
+      "lk-row.de Suche: Balkonkraftwerk, Photovoltaik, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Solar",
+      "nbank.de aktuelle und ausgelaufene Förderprogramme",
+      "Websuche: Landkreis Rotenburg (Wümme) Förderprogramm Photovoltaik Batteriespeicher Zuschuss private Haushalte",
+      "Websuche: Selsingen Förderprogramm Balkonkraftwerk Photovoltaik Wärmepumpe Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1",
+        "finding": "Vortragsfolien der Verbraucherzentrale-Energieberatung (Dipl.-Ing. Thomas Behnke, Bremervörde) vom 23.09.2025 zur Wärmeplanung: behandelt ausschließlich Bundesförderung (BEG Einzelmaßnahmen und Effizienzhaus, Heizungsförderung der KfW, BAFA, Steuerermäßigung nach § 35c EStG). Kein Programm der Samtgemeinde oder einer Mitgliedsgemeinde."
+      },
+      {
+        "url": "https://www.selsingen.de/leben-und-wohnen/kommunaler-waermeplan-der-samtgemeinde-selsingen",
+        "finding": "Seite zum kommunalen Wärmeplan (beschlossen 18.03.2026): Der Plan 'verpflichtet weder zum Austausch bestehender Heizungen noch beeinflusst er direkte Fördermöglichkeiten'; gefördert wurde nur die Planerstellung über die Kommunalrichtlinie des Bundes. Kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.lk-row.de/portal/seiten/klimaschutz-900002312-23700.html",
+        "finding": "Klimaschutzseite des Landkreises Rotenburg (Wümme): verweist für Haushalte auf kostenlose Energieberatung der Verbraucherzentrale, co2online-Fördermittelcheck, Solarkataster und KEAN; kein eigenes Kreisprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Kreis-Suche nach diesen Begriffen liefert nur diese Seite, Planungshinweise zu Freiflächenanlagen und das Wohnraumförderprogramm (kleine Mietwohnungen)."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Ausgelaufene-F%C3%B6rderungen/",
+        "finding": "NBank: Die Landesförderung 'Photovoltaik (PV) - Batteriespeicher für Privathaushalte' steht unter den ausgelaufenen Programmen; die aktuelle Programmliste enthält kein Angebot für private PV-, Speicher-, Balkonkraftwerk- oder Wärmepumpen-Vorhaben."
+      }
+    ],
+    "sources": [
+      {
+        "url": "selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBE",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original (PDF, 15 Seiten); Verbraucherzentrale-Vortrag zur Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1"
+      },
+      {
+        "url": "docs.google.com/viewer?url=https%3A%2F%2Fwww.selsingen.de%2Ffiles%2F268%2FWaermeplanung%2F1405%2F20250923FoerderprogrammeVZTBEpdf%3Ftoken%3D0b0e83801f586fb19dec82a3eb311842%26preview%3D1&embedded=true",
+        "disposition": "reviewed",
+        "reason": "Google-Dokumentenansicht derselben PDF (Titel '20250923FoerderprogrammeVZTBEpdf'); Inhalt identisch mit der direkt geladenen Datei, Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1"
+      }
+    ]
+  },
+  {
+    "regionId": "03357036",
+    "name": "Ostereistedt",
+    "checkedAt": "2026-09-24T06:16:21Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse (Gemeinde, Samtgemeinde Selsingen, Landkreis Rotenburg (Wümme)) für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; Landesangebote der NBank kurz geprüft. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die erfasste Adresse ist eine Vortragspräsentation der Verbraucherzentrale zur Bundesförderung (BEG, KfW/BAFA, Steuerermäßigung) aus der Wärmeplanung der Samtgemeinde Selsingen, kein kommunales Programm. Auf selsingen.de, beim Landkreis Rotenburg (Wümme) und bei der NBank steht aktuell kein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; das frühere NBank-Speicherprogramm für Privathaushalte ist ausgelaufen.",
+    "searches": [
+      "selsingen.de Suche: Balkonkraftwerk",
+      "selsingen.de Suche: Photovoltaik",
+      "selsingen.de Suche: Solar",
+      "selsingen.de Suche: Wärmepumpe",
+      "selsingen.de Suche: Speicher",
+      "selsingen.de Suche: Zuschuss",
+      "selsingen.de Suche: Förderprogramm",
+      "selsingen.de Suche: Klimaschutz",
+      "selsingen.de Suche: Förderung",
+      "selsingen.de alle 139 Navigationsseiten nach Balkonkraftwerk, Photovoltaik, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz durchsucht",
+      "lk-row.de Suche: Balkonkraftwerk, Photovoltaik, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Solar",
+      "nbank.de aktuelle und ausgelaufene Förderprogramme",
+      "Websuche: Landkreis Rotenburg (Wümme) Förderprogramm Photovoltaik Batteriespeicher Zuschuss private Haushalte",
+      "Websuche: Selsingen Förderprogramm Balkonkraftwerk Photovoltaik Wärmepumpe Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1",
+        "finding": "Vortragsfolien der Verbraucherzentrale-Energieberatung (Dipl.-Ing. Thomas Behnke, Bremervörde) vom 23.09.2025 zur Wärmeplanung: behandelt ausschließlich Bundesförderung (BEG Einzelmaßnahmen und Effizienzhaus, Heizungsförderung der KfW, BAFA, Steuerermäßigung nach § 35c EStG). Kein Programm der Samtgemeinde oder einer Mitgliedsgemeinde."
+      },
+      {
+        "url": "https://www.selsingen.de/leben-und-wohnen/kommunaler-waermeplan-der-samtgemeinde-selsingen",
+        "finding": "Seite zum kommunalen Wärmeplan (beschlossen 18.03.2026): Der Plan 'verpflichtet weder zum Austausch bestehender Heizungen noch beeinflusst er direkte Fördermöglichkeiten'; gefördert wurde nur die Planerstellung über die Kommunalrichtlinie des Bundes. Kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.lk-row.de/portal/seiten/klimaschutz-900002312-23700.html",
+        "finding": "Klimaschutzseite des Landkreises Rotenburg (Wümme): verweist für Haushalte auf kostenlose Energieberatung der Verbraucherzentrale, co2online-Fördermittelcheck, Solarkataster und KEAN; kein eigenes Kreisprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Kreis-Suche nach diesen Begriffen liefert nur diese Seite, Planungshinweise zu Freiflächenanlagen und das Wohnraumförderprogramm (kleine Mietwohnungen)."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Ausgelaufene-F%C3%B6rderungen/",
+        "finding": "NBank: Die Landesförderung 'Photovoltaik (PV) - Batteriespeicher für Privathaushalte' steht unter den ausgelaufenen Programmen; die aktuelle Programmliste enthält kein Angebot für private PV-, Speicher-, Balkonkraftwerk- oder Wärmepumpen-Vorhaben."
+      }
+    ],
+    "sources": [
+      {
+        "url": "selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBE",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original (PDF, 15 Seiten); Verbraucherzentrale-Vortrag zur Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1"
+      },
+      {
+        "url": "docs.google.com/viewer?url=https%3A%2F%2Fwww.selsingen.de%2Ffiles%2F268%2FWaermeplanung%2F1405%2F20250923FoerderprogrammeVZTBEpdf%3Ftoken%3De5860ff6005250d1ad12ece5f083a011%26preview%3D1&embedded=true",
+        "disposition": "reviewed",
+        "reason": "Google-Dokumentenansicht derselben PDF (Titel '20250923FoerderprogrammeVZTBEpdf'); Inhalt identisch mit der direkt geladenen Datei, Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1"
+      }
+    ]
+  },
+  {
+    "regionId": "03357040",
+    "name": "Sandbostel",
+    "checkedAt": "2026-09-24T06:16:21Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse (Gemeinde, Samtgemeinde Selsingen, Landkreis Rotenburg (Wümme)) für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; Landesangebote der NBank kurz geprüft. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die erfasste Adresse ist eine Vortragspräsentation der Verbraucherzentrale zur Bundesförderung (BEG, KfW/BAFA, Steuerermäßigung) aus der Wärmeplanung der Samtgemeinde Selsingen, kein kommunales Programm. Auf selsingen.de, beim Landkreis Rotenburg (Wümme) und bei der NBank steht aktuell kein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; das frühere NBank-Speicherprogramm für Privathaushalte ist ausgelaufen.",
+    "searches": [
+      "selsingen.de Suche: Balkonkraftwerk",
+      "selsingen.de Suche: Photovoltaik",
+      "selsingen.de Suche: Solar",
+      "selsingen.de Suche: Wärmepumpe",
+      "selsingen.de Suche: Speicher",
+      "selsingen.de Suche: Zuschuss",
+      "selsingen.de Suche: Förderprogramm",
+      "selsingen.de Suche: Klimaschutz",
+      "selsingen.de Suche: Förderung",
+      "selsingen.de alle 139 Navigationsseiten nach Balkonkraftwerk, Photovoltaik, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz durchsucht",
+      "lk-row.de Suche: Balkonkraftwerk, Photovoltaik, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Solar",
+      "nbank.de aktuelle und ausgelaufene Förderprogramme",
+      "Websuche: Landkreis Rotenburg (Wümme) Förderprogramm Photovoltaik Batteriespeicher Zuschuss private Haushalte",
+      "Websuche: Selsingen Förderprogramm Balkonkraftwerk Photovoltaik Wärmepumpe Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1",
+        "finding": "Vortragsfolien der Verbraucherzentrale-Energieberatung (Dipl.-Ing. Thomas Behnke, Bremervörde) vom 23.09.2025 zur Wärmeplanung: behandelt ausschließlich Bundesförderung (BEG Einzelmaßnahmen und Effizienzhaus, Heizungsförderung der KfW, BAFA, Steuerermäßigung nach § 35c EStG). Kein Programm der Samtgemeinde oder einer Mitgliedsgemeinde."
+      },
+      {
+        "url": "https://www.selsingen.de/leben-und-wohnen/kommunaler-waermeplan-der-samtgemeinde-selsingen",
+        "finding": "Seite zum kommunalen Wärmeplan (beschlossen 18.03.2026): Der Plan 'verpflichtet weder zum Austausch bestehender Heizungen noch beeinflusst er direkte Fördermöglichkeiten'; gefördert wurde nur die Planerstellung über die Kommunalrichtlinie des Bundes. Kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.lk-row.de/portal/seiten/klimaschutz-900002312-23700.html",
+        "finding": "Klimaschutzseite des Landkreises Rotenburg (Wümme): verweist für Haushalte auf kostenlose Energieberatung der Verbraucherzentrale, co2online-Fördermittelcheck, Solarkataster und KEAN; kein eigenes Kreisprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Kreis-Suche nach diesen Begriffen liefert nur diese Seite, Planungshinweise zu Freiflächenanlagen und das Wohnraumförderprogramm (kleine Mietwohnungen)."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Ausgelaufene-F%C3%B6rderungen/",
+        "finding": "NBank: Die Landesförderung 'Photovoltaik (PV) - Batteriespeicher für Privathaushalte' steht unter den ausgelaufenen Programmen; die aktuelle Programmliste enthält kein Angebot für private PV-, Speicher-, Balkonkraftwerk- oder Wärmepumpen-Vorhaben."
+      }
+    ],
+    "sources": [
+      {
+        "url": "selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBE",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original (PDF, 15 Seiten); Verbraucherzentrale-Vortrag zur Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1"
+      },
+      {
+        "url": "docs.google.com/viewer?url=https%3A%2F%2Fwww.selsingen.de%2Ffiles%2F268%2FWaermeplanung%2F1405%2F20250923FoerderprogrammeVZTBEpdf%3Ftoken%3Df6e09410671d9e858aaea591bbbdc800%26preview%3D1&embedded=true",
+        "disposition": "reviewed",
+        "reason": "Google-Dokumentenansicht derselben PDF (Titel '20250923FoerderprogrammeVZTBEpdf'); Inhalt identisch mit der direkt geladenen Datei, Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1"
+      }
+    ]
+  },
+  {
+    "regionId": "03357043",
+    "name": "Selsingen",
+    "checkedAt": "2026-09-24T06:16:21Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse (Gemeinde, Samtgemeinde Selsingen, Landkreis Rotenburg (Wümme)) für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen; Landesangebote der NBank kurz geprüft. Geprüft wurden alle im Quellenbestand erfassten Adressen dieser Gemeinde.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die erfasste Adresse ist eine Vortragspräsentation der Verbraucherzentrale zur Bundesförderung (BEG, KfW/BAFA, Steuerermäßigung) aus der Wärmeplanung der Samtgemeinde Selsingen, kein kommunales Programm. Auf selsingen.de, beim Landkreis Rotenburg (Wümme) und bei der NBank steht aktuell kein Zuschuss für private Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; das frühere NBank-Speicherprogramm für Privathaushalte ist ausgelaufen. Die Städtebauförderung im Sanierungsgebiet Selsingen-Mitte betrifft allgemein die Modernisierung privater Gebäude in diesem Gebiet und ist kein Technikprogramm.",
+    "searches": [
+      "selsingen.de Suche: Balkonkraftwerk",
+      "selsingen.de Suche: Photovoltaik",
+      "selsingen.de Suche: Solar",
+      "selsingen.de Suche: Wärmepumpe",
+      "selsingen.de Suche: Speicher",
+      "selsingen.de Suche: Zuschuss",
+      "selsingen.de Suche: Förderprogramm",
+      "selsingen.de Suche: Klimaschutz",
+      "selsingen.de Suche: Förderung",
+      "selsingen.de alle 139 Navigationsseiten nach Balkonkraftwerk, Photovoltaik, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz durchsucht",
+      "lk-row.de Suche: Balkonkraftwerk, Photovoltaik, Wärmepumpe, Speicher, Zuschuss, Förderprogramm, Klimaschutz, Solar",
+      "nbank.de aktuelle und ausgelaufene Förderprogramme",
+      "Websuche: Landkreis Rotenburg (Wümme) Förderprogramm Photovoltaik Batteriespeicher Zuschuss private Haushalte",
+      "Websuche: Selsingen Förderprogramm Balkonkraftwerk Photovoltaik Wärmepumpe Zuschuss"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1",
+        "finding": "Vortragsfolien der Verbraucherzentrale-Energieberatung (Dipl.-Ing. Thomas Behnke, Bremervörde) vom 23.09.2025 zur Wärmeplanung: behandelt ausschließlich Bundesförderung (BEG Einzelmaßnahmen und Effizienzhaus, Heizungsförderung der KfW, BAFA, Steuerermäßigung nach § 35c EStG). Kein Programm der Samtgemeinde oder einer Mitgliedsgemeinde."
+      },
+      {
+        "url": "https://www.selsingen.de/leben-und-wohnen/kommunaler-waermeplan-der-samtgemeinde-selsingen",
+        "finding": "Seite zum kommunalen Wärmeplan (beschlossen 18.03.2026): Der Plan 'verpflichtet weder zum Austausch bestehender Heizungen noch beeinflusst er direkte Fördermöglichkeiten'; gefördert wurde nur die Planerstellung über die Kommunalrichtlinie des Bundes. Kein Zuschuss an private Haushalte."
+      },
+      {
+        "url": "https://www.selsingen.de/leben-und-wohnen/staedtebausanierung-selsingen-mitte",
+        "finding": "Sanierungsgebiet 'Selsingen-Mitte': Im Kernbereich können Sanierung und Instandsetzung privater Gebäude über das Städtebauförderungsprogramm 'Lebendige Zentren' bezuschusst werden, sonst steuerliche Sonderabschreibungen und Sanierungsberatung. Gebietsbezogene Städtebauförderung, kein Programm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.lk-row.de/portal/seiten/klimaschutz-900002312-23700.html",
+        "finding": "Klimaschutzseite des Landkreises Rotenburg (Wümme): verweist für Haushalte auf kostenlose Energieberatung der Verbraucherzentrale, co2online-Fördermittelcheck, Solarkataster und KEAN; kein eigenes Kreisprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Kreis-Suche nach diesen Begriffen liefert nur diese Seite, Planungshinweise zu Freiflächenanlagen und das Wohnraumförderprogramm (kleine Mietwohnungen)."
+      },
+      {
+        "url": "https://www.nbank.de/F%C3%B6rderprogramme/Ausgelaufene-F%C3%B6rderungen/",
+        "finding": "NBank: Die Landesförderung 'Photovoltaik (PV) - Batteriespeicher für Privathaushalte' steht unter den ausgelaufenen Programmen; die aktuelle Programmliste enthält kein Angebot für private PV-, Speicher-, Balkonkraftwerk- oder Wärmepumpen-Vorhaben."
+      }
+    ],
+    "sources": [
+      {
+        "url": "selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBE",
+        "disposition": "reviewed",
+        "reason": "Gelesen am 24.09.2026 im Original (PDF, 15 Seiten); Verbraucherzentrale-Vortrag zur Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1"
+      },
+      {
+        "url": "docs.google.com/viewer?url=https%3A%2F%2Fwww.selsingen.de%2Ffiles%2F268%2FWaermeplanung%2F1405%2F20250923FoerderprogrammeVZTBEpdf%3Ftoken%3D1329835398c4466cee76ec00babb24f0%26preview%3D1&embedded=true",
+        "disposition": "reviewed",
+        "reason": "Google-Dokumentenansicht derselben PDF (Titel '20250923FoerderprogrammeVZTBEpdf'); Inhalt identisch mit der direkt geladenen Datei, Bundesförderung, kein kommunales Programm.",
+        "evidenceUrl": "https://www.selsingen.de/files/268/Waermeplanung/1405/20250923FoerderprogrammeVZTBEpdf?preview=1"
+      }
+    ]
   }
 ]
