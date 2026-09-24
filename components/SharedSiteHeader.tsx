@@ -7,7 +7,7 @@ import Logo from "./Logo";
 import { useAuth, useIsAdmin, signOut } from "../lib/auth";
 import { ratgeberBySlug } from "../lib/ratgeber";
 import { navigationContent } from "../public/shared-nav/nav-content.js";
-import { mountGlobalNav } from "../public/shared-nav/nav.js";
+import { mountGlobalNav, SUCHE_IM_MENUE } from "../public/shared-nav/nav.js";
 import "../public/shared-nav/nav.css";
 
 /** Keep the same menu on React pages and the standalone homepage. */
@@ -101,6 +101,8 @@ export default function SharedSiteHeader({ aktiv }: { aktiv?: string } = {}) {
     <details className="sc-react-fallback">
       <summary>Menü</summary>
       <div dangerouslySetInnerHTML={{ __html: navigationContent() }} />
+      {/* Same switch as the magnifier: without JavaScript the search is a link. */}
+      {SUCHE_IM_MENUE && <Link href="/suche">Suche</Link>}
       <Link href="/login">Login</Link>
     </details>
   </header>;

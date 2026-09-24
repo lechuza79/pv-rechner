@@ -384,3 +384,55 @@
 .sc-nav-art img[data-geladen]{opacity:1;animation:sc-nav-art-ein 320ms ease-out}
 @keyframes sc-nav-art-ein{from{opacity:0}}
 @media(prefers-reduced-motion:reduce){.sc-nav-art img[data-geladen]{animation:none}}
+/* Site search: the button takes the login's shape, the panel the menu flyout's surface. */
+.sc-search-toggle{display:inline-grid;place-items:center;width:34px;height:34px;flex:0 0 34px;padding:0;border:1px solid color-mix(in srgb,currentColor 28%,transparent);border-radius:50%;background:none;color:inherit;cursor:pointer;opacity:.8}
+.sc-search-toggle:hover,.sc-search-toggle[aria-expanded=true]{opacity:1}
+.sc-global-header>.sc-search-toggle{margin-left:-8px}
+.sc-search-panel{position:absolute;left:0;right:0;top:calc(100% - 18px);z-index:40;width:min(1120px,100%);margin-inline:auto;box-sizing:border-box;padding:32px;max-height:calc(100dvh - 108px);overflow:auto;background:var(--sc-nav-surface,#edf3ef);color:var(--sc-nav-ink,#153740);border-radius:18px;box-shadow:0 20px 64px #071d2933;font:var(--sc-nav-copy,14px)/1.5 'DM Sans',sans-serif}
+.sc-search-panel[hidden]{display:none}
+.sc-search-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.sc-search-field{display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--sc-nav-line,#15374026);padding:0 48px 12px 0}
+.sc-search-field svg{flex:none;color:var(--sc-nav-muted,#3d5b60)}
+.sc-search-field input{flex:1;min-width:0;border:0;background:none;color:inherit;font:600 22px/1.3 Montserrat,'DM Sans',sans-serif;padding:4px 0;outline:none}
+.sc-search-field input::placeholder{color:var(--sc-nav-muted,#3d5b60);opacity:1;font-weight:500}
+.sc-search-field input::-webkit-search-cancel-button{display:none}
+.sc-search-field:focus-within{border-bottom-color:var(--sc-nav-ink,#153740)}
+.sc-search-close{position:absolute;top:28px;right:28px;display:grid;place-items:center;width:40px;height:40px;border:0;background:none;color:inherit;cursor:pointer;border-radius:50%}
+.sc-search-close:hover{background:#dce8e2}
+.sc-search-results:not(:empty){margin-top:24px;display:grid;gap:32px}
+.sc-search-note{margin:0;color:var(--sc-nav-muted,#3d5b60);max-width:60ch}
+.sc-search-places{display:grid;gap:16px}
+.sc-search-places>.sc-nav-section-title{margin:0}
+.sc-search-place+.sc-search-place{border-top:1px solid var(--sc-nav-line,#15374026);padding-top:16px}
+.sc-search-place h4{display:flex;align-items:flex-start;gap:10px;margin:0 0 8px;font:700 var(--sc-nav-heading,18px)/1.3 Montserrat,'DM Sans',sans-serif}
+.sc-search-place h4 svg{flex:none;margin-top:2px}
+.sc-search-place h4 small{display:block;margin-top:4px;font:400 var(--sc-nav-copy,14px)/1.5 'DM Sans',sans-serif;color:var(--sc-nav-muted,#3d5b60)}
+.sc-search-place{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:8px 24px;align-items:center}
+.sc-search-place h4{margin:0}
+.sc-search-place-links{display:flex;flex-wrap:wrap;gap:8px}
+.sc-search-place-links>a{display:inline-flex;align-items:center;min-height:40px;box-sizing:border-box;border:1px solid #15374080;border-radius:999px;padding:8px 14px;color:inherit;text-decoration:none;font-weight:600;line-height:1.35}
+.sc-search-place-links>a:hover{background:#d7e4dc}
+/* Result links are menu links: they take the menu's own .sc-nav-column>a card rules. */
+.sc-search-results .sc-nav-column>a{color:inherit;text-decoration:none}
+.sc-search-results .sc-nav-column small{max-width:none}
+.sc-search-results a:focus-visible{outline:2px solid #1265e8;outline-offset:2px}
+.sc-search-pages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+.sc-search-pages small{display:block;margin-top:4px;font-weight:400;color:var(--sc-nav-muted,#3d5b60)}
+@media(max-width:1280px){
+ .sc-global-header>.sc-search-toggle{margin-left:auto;margin-right:-12px;width:44px;height:44px;flex-basis:44px;border:0}
+ .sc-search-panel{position:fixed;top:var(--search-top,72px);left:12px;right:12px;width:auto;padding:20px;max-height:calc(100dvh - var(--search-top,72px) - 12px);border-radius:16px}
+ .sc-search-close{top:14px;right:12px}
+ .sc-search-field input{font-size:18px}
+ .sc-menu-open>.sc-search-toggle{visibility:hidden}
+}
+@media(max-width:700px){.sc-search-pages{grid-template-columns:1fr;gap:24px}.sc-search-place{grid-template-columns:1fr}}
+/* The /suche page shows the same results in the flyout's surface, in the page flow. */
+.sc-search-page .sc-search-panel{position:static;display:block;width:auto;max-height:none;overflow:visible;box-shadow:none;border:1px solid var(--sc-nav-line,#15374026)}
+.sc-search-page .sc-search-field{padding-right:0}
+/* The underline of the field shows focus; the header's outline would box it in. */
+.sc-search-field input:focus-visible{outline:none}
+/* Host pages style bare headings (the homepage sets its h2 white for the sky).
+   Inside the panel every heading takes the panel's ink — measured: "Ort" stood
+   white on the light panel at 1.1:1 on the homepage and the simulation. */
+.sc-search-panel :is(h2,h3,h4){color:var(--sc-nav-ink,#153740)}
+.sc-search-panel .sc-nav-section-title{color:var(--sc-nav-muted,#3d5b60)}

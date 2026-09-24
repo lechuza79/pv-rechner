@@ -169,6 +169,9 @@ export type RegionHit = {
   region_id: string;
   name: string;
   label: string;
+  /** Parent region (Kreis of a Gemeinde, Land of a Kreis) — lets the site
+   *  search tell the twenty Neustadts apart. */
+  parent_region_id: string | null;
 };
 
 const LEVEL_FALLBACK: Record<string, string> = {
@@ -186,20 +189,21 @@ const LEVEL_FALLBACK: Record<string, string> = {
  * über ein Mindest-Query (2 Zeichen), ein hartes Limit und den CDN-Cache der
  * Route geschont.
  */
-export async function searchRegions(q: string): Promise<RegionHit[]> {
+export async function searchRegions(q: string, timeoutMs?: number): Promise<RegionHit[]> {
   const term = q.trim().replace(/[%_,]/g, ""); // ILIKE-Platzhalter + PostgREST-Trenner raus
   if (term.length < 2) return [];
   const supabase = await db();
   const { data, error } = await withDbTimeout(
     supabase
       .from("mastr_regions")
-      .select("region_id, level, name, bezeichnung, population")
+      .select("region_id, level, name, bezeichnung, population, parent_region_id")
       .ilike("name", `%${term}%`)
       .in("level", ["bundesland", "landkreis", "gemeinde"])
       .not("slug", "is", null)
       .order("population", { ascending: false, nullsFirst: false })
       .limit(40),
     "searchRegions",
+    timeoutMs,
   );
   if (error) throw new Error(`searchRegions failed: ${error.message}`);
   const lower = term.toLowerCase();
@@ -214,6 +218,7 @@ export async function searchRegions(q: string): Promise<RegionHit[]> {
       // Echte Gattung statt technischer Ebene: eine kreisfreie Stadt ist kein
       // „Landkreis", auch wenn sie auf dessen Ebene liegt.
       label: (r.bezeichnung as string | null) || LEVEL_FALLBACK[r.level] || "Region",
+      parent_region_id: (r.parent_region_id as string | null) ?? null,
     }));
   // Stabil: Präfix-Treffer nach vorn, sonst bleibt die Population-Ordnung.
   rows.sort(

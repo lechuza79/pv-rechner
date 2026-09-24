@@ -6,7 +6,7 @@
 // funding dataset (lib/funding-programs.ts) and is referenced by id, so the
 // program data can also power an overview page and cross-program links.
 
-import { allFundingPrograms, foerdergebiete, type FundingStatus, type FundingProgram } from "./funding-programs";
+import { allFundingPrograms, foerdergebiete, landProgramBundeslaender, type FundingStatus, type FundingProgram } from "./funding-programs";
 import { releaseFreigegeben } from "./release-plan";
 
 export interface AtlasCity {
@@ -835,4 +835,17 @@ export function publishedBundeslaender(): { name: string; slug: string }[] {
   const bySlug = new Map<string, string>();
   for (const c of publishedCities()) bySlug.set(slugify(c.bundesland), c.bundesland);
   return Array.from(bySlug, ([slug, name]) => ({ slug, name })).sort((a, b) => a.name.localeCompare(b.name, "de"));
+}
+
+/**
+ * Bundesländer that have a funding page under /photovoltaik-foerderung/<land>:
+ * those with a published city plus those with a Land-level program. The page
+ * route builds its params from this, and the site search links to it — one
+ * answer to "does this Land have a page".
+ */
+export function foerderBundeslaender(): { name: string; slug: string }[] {
+  const m = new Map<string, string>();
+  for (const b of publishedBundeslaender()) m.set(b.slug, b.name);
+  for (const b of landProgramBundeslaender()) m.set(b.slug, b.name);
+  return Array.from(m, ([slug, name]) => ({ slug, name }));
 }
