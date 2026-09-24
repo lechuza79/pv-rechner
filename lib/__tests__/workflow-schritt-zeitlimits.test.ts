@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 
+import { FLOW_TEST_ZEITLIMIT_MIN } from "../../e2e/flows";
+
 /**
  * WARUM ES DIESEN TEST GIBT (gemessen am 27.08.2026)
  *
@@ -110,6 +112,44 @@ describe("Zeitlimits der Browser-Test-Workflows", () => {
       expect(kopf).toMatch(/^\s*timeout-minutes:\s*\d+/m);
     },
   );
+
+  /**
+   * DIE DRITTE, INNERSTE GRENZE — und sie war drei Naechte lang die engste
+   * (gemessen 24.09.2026).
+   *
+   * Die beiden Prüfungen darüber halten Schritt gegen Job. Darunter liegt aber
+   * noch eine: das Zeitlimit, das der Läufer sich selbst setzt
+   * (`FLOW_TEST_ZEITLIMIT_MIN`). Genau die ist am 07.09.2026 beim Aufteilen der
+   * Jobs nicht mitgezogen worden — aussen 200 Minuten, innen 180 — und hat den
+   * nächtlichen Lauf vom 21. bis 23.09. dreimal rot gemacht, jedes Mal mit
+   * einer Meldung, die auf einen Produktfehler zeigte („Weiter kam nicht
+   * durch") statt auf einen Zeitablauf.
+   *
+   * Die Reihenfolge ist keine Förmlichkeit, sie entscheidet die AUSSAGE des
+   * Fehlschlags: Reißt das Test-Limit zuerst, nennt der Bericht den Weg, an dem
+   * der Läufer stand. Reißt das Schritt-Limit zuerst, endet der Job „failure"
+   * ohne diese Angabe. Reißt das Job-Limit zuerst, endet er „cancelled" und
+   * fällt erst nach drei stummen Nächten auf.
+   *
+   * Geprüft wird gegen den nächtlichen Wert, nicht gegen den Modus dieses
+   * Laufs: `ALLE_KOMBINATIONEN` haengt an einer Umgebungsvariablen, die hier
+   * nicht gesetzt ist — verglichen würde sonst das 10-Minuten-Limit des
+   * schnellen Läufers, und der Test wäre grün, ohne die Grenze zu sehen, um
+   * die es geht.
+   */
+  it("flows-nightly.yml — das Zeitlimit des Tests liegt unter dem des Schritts", () => {
+    const job = MIT_TESTSCHRITT.find((j) => j.datei === "flows-nightly.yml");
+    expect(job, "der nächtliche Flow-Job ist nicht mehr auffindbar").toBeDefined();
+    const schrittLimit = Math.max(...job!.schrittLimits);
+    // ABSTAND, NICHT NUR REIHENFOLGE — die erste Fassung verlangte bloß
+    // „größer" und blieb bei 200 gegen 195 grün. Rechnerisch richtig und
+    // praktisch nutzlos: Im Schritt steckt nicht nur der Test, sondern auch der
+    // Produktionsbau samt Vorwärmen (gemessen 23.09.2026: Jobstart 07:54:05,
+    // erster Test 07:57:02, also 3 Minuten) und danach der Bericht. Bei
+    // 5 Minuten Abstand reißt wieder der Schritt zuerst, und der Fehlschlag
+    // sagt dann nicht mehr, wo der Läufer stand.
+    expect(schrittLimit).toBeGreaterThanOrEqual(FLOW_TEST_ZEITLIMIT_MIN.alleKombinationen + 10);
+  });
 
   it.each(MIT_TESTSCHRITT.map((j) => [`${j.datei} :: ${j.name}`, j] as const))(
     "%s — das Job-Limit liegt über der Summe der Schritt-Limits",
