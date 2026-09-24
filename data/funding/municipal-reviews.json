@@ -60720,5 +60720,661 @@
         "evidenceUrl": "https://www.schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402"
       }
     ]
+  },
+  {
+    "regionId": "13073009",
+    "name": "Barth",
+    "checkedAt": "2026-09-24T14:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Barth (Amt Barth, Landkreis Vorpommern-Rügen). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Alle sechs erfassten Adressen des Amtes sind Publizitätsvermerke zu Vorhaben, die Gemeinden selbst gefördert bekamen (Radweg, LED-Straßenbeleuchtung, INTERREG). Die Volltextsuche des Amtes (24.09.2026) führt für „Balkonkraftwerk“ nur die Leistungsbeschreibung des Landesprogramms für steckerfertige PV-Anlagen (im Katalog als Landesprogramm Mecklenburg-Vorpommern), für Photovoltaik und Solar Bebauungspläne für Freiflächenanlagen, für Förderprogramm/Zuschuss/Klimaschutz nur Bundes- und Landesleistungen und Sportförderung, für Wärmepumpe nur Bebauungspläne.",
+    "searches": [
+      "Alle sechs erfassten Förderseiten des Amtes Barth gelesen (24.09.2026)",
+      "Volltextsuche amt-barth.de: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen der Gemeinden des Amtes Barth (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-barth.de/suche/?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "1 Treffer: „Zuschuss für steckerfertige Photovoltaikanlagen (Balkon-PV-Anlagen) beantragen“ — Leistungsbeschreibung des Landesprogramms aus dem MV-Serviceportal, kein Programm des Amtes oder der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Übersicht: Sanierung Pavillon Trinwillershagen, Straßenbeleuchtung Hermannshagen-Heide, INTERREG V A, LED Lüdershagen, LED Barth, Radweg Kückenshagen, Kulturforum Papenhof — alles geförderte Vorhaben der Kommunen."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=40e608bfab9358b3473edce970ab8f77",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Gemeinde Saal für den Radwegausbau (Kommunale Radbaurichtlinie M-V) — kommunales Bauprojekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217",
+        "finding": "Am 24.09.2026 gelesen: Publizitätsvermerk zur Erneuerung der Straßenbeleuchtung — kommunales Bauprojekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217",
+        "finding": "Am 24.09.2026 gelesen: INTERREG-V-A-Projekt zum Radweg R10 — kommunales Projekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=5e9e4881de2a93659b82e4118fcb46b1",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Gemeinde Lüdershagen für LED-Straßenbeleuchtung (Klimaschutzförderrichtlinie Kommunen) — Förderung der Kommune, nicht der Haushalte."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=139d64f1b951994adbd2802af81929a5",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Stadt Barth für LED-Straßenbeleuchtung (25 %, Land/EFRE) — Förderung der Kommune."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Publizitätserklärungen zu Fördervorhaben der amtsangehörigen Gemeinden (Pavillon, Straßenbeleuchtung, Radwege, Kulturforum) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=40e608bfab9358b3473edce970ab8f77",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Gemeinde Saal für den Radwegausbau (Kommunale Radbaurichtlinie M-V) — kommunales Bauprojekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=40e608bfab9358b3473edce970ab8f77"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217",
+        "disposition": "reviewed",
+        "reason": "Publizitätsvermerk zur Erneuerung der Straßenbeleuchtung — kommunales Bauprojekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217",
+        "disposition": "reviewed",
+        "reason": "INTERREG-V-A-Projekt zum Radweg R10 — kommunales Projekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=5e9e4881de2a93659b82e4118fcb46b1",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Gemeinde Lüdershagen für LED-Straßenbeleuchtung (Klimaschutzförderrichtlinie Kommunen) — Förderung der Kommune, nicht der Haushalte.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=5e9e4881de2a93659b82e4118fcb46b1"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=139d64f1b951994adbd2802af81929a5",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Stadt Barth für LED-Straßenbeleuchtung (25 %, Land/EFRE) — Förderung der Kommune.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=139d64f1b951994adbd2802af81929a5"
+      }
+    ]
+  },
+  {
+    "regionId": "13073018",
+    "name": "Divitz-Spoldershagen",
+    "checkedAt": "2026-09-24T14:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Divitz-Spoldershagen (Amt Barth, Landkreis Vorpommern-Rügen). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Alle sechs erfassten Adressen des Amtes sind Publizitätsvermerke zu Vorhaben, die Gemeinden selbst gefördert bekamen (Radweg, LED-Straßenbeleuchtung, INTERREG). Die Volltextsuche des Amtes (24.09.2026) führt für „Balkonkraftwerk“ nur die Leistungsbeschreibung des Landesprogramms für steckerfertige PV-Anlagen (im Katalog als Landesprogramm Mecklenburg-Vorpommern), für Photovoltaik und Solar Bebauungspläne für Freiflächenanlagen, für Förderprogramm/Zuschuss/Klimaschutz nur Bundes- und Landesleistungen und Sportförderung, für Wärmepumpe nur Bebauungspläne.",
+    "searches": [
+      "Alle sechs erfassten Förderseiten des Amtes Barth gelesen (24.09.2026)",
+      "Volltextsuche amt-barth.de: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen der Gemeinden des Amtes Barth (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-barth.de/suche/?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "1 Treffer: „Zuschuss für steckerfertige Photovoltaikanlagen (Balkon-PV-Anlagen) beantragen“ — Leistungsbeschreibung des Landesprogramms aus dem MV-Serviceportal, kein Programm des Amtes oder der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Übersicht: Sanierung Pavillon Trinwillershagen, Straßenbeleuchtung Hermannshagen-Heide, INTERREG V A, LED Lüdershagen, LED Barth, Radweg Kückenshagen, Kulturforum Papenhof — alles geförderte Vorhaben der Kommunen."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=40e608bfab9358b3473edce970ab8f77",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Gemeinde Saal für den Radwegausbau (Kommunale Radbaurichtlinie M-V) — kommunales Bauprojekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217",
+        "finding": "Am 24.09.2026 gelesen: Publizitätsvermerk zur Erneuerung der Straßenbeleuchtung — kommunales Bauprojekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217",
+        "finding": "Am 24.09.2026 gelesen: INTERREG-V-A-Projekt zum Radweg R10 — kommunales Projekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=5e9e4881de2a93659b82e4118fcb46b1",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Gemeinde Lüdershagen für LED-Straßenbeleuchtung (Klimaschutzförderrichtlinie Kommunen) — Förderung der Kommune, nicht der Haushalte."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=139d64f1b951994adbd2802af81929a5",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Stadt Barth für LED-Straßenbeleuchtung (25 %, Land/EFRE) — Förderung der Kommune."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Publizitätserklärungen zu Fördervorhaben der amtsangehörigen Gemeinden (Pavillon, Straßenbeleuchtung, Radwege, Kulturforum) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=40e608bfab9358b3473edce970ab8f77",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Gemeinde Saal für den Radwegausbau (Kommunale Radbaurichtlinie M-V) — kommunales Bauprojekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=40e608bfab9358b3473edce970ab8f77"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217",
+        "disposition": "reviewed",
+        "reason": "Publizitätsvermerk zur Erneuerung der Straßenbeleuchtung — kommunales Bauprojekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217",
+        "disposition": "reviewed",
+        "reason": "INTERREG-V-A-Projekt zum Radweg R10 — kommunales Projekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=5e9e4881de2a93659b82e4118fcb46b1",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Gemeinde Lüdershagen für LED-Straßenbeleuchtung (Klimaschutzförderrichtlinie Kommunen) — Förderung der Kommune, nicht der Haushalte.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=5e9e4881de2a93659b82e4118fcb46b1"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=139d64f1b951994adbd2802af81929a5",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Stadt Barth für LED-Straßenbeleuchtung (25 %, Land/EFRE) — Förderung der Kommune.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=139d64f1b951994adbd2802af81929a5"
+      }
+    ]
+  },
+  {
+    "regionId": "13073042",
+    "name": "Karnin",
+    "checkedAt": "2026-09-24T14:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Karnin (Amt Barth, Landkreis Vorpommern-Rügen). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Alle sechs erfassten Adressen des Amtes sind Publizitätsvermerke zu Vorhaben, die Gemeinden selbst gefördert bekamen (Radweg, LED-Straßenbeleuchtung, INTERREG). Die Volltextsuche des Amtes (24.09.2026) führt für „Balkonkraftwerk“ nur die Leistungsbeschreibung des Landesprogramms für steckerfertige PV-Anlagen (im Katalog als Landesprogramm Mecklenburg-Vorpommern), für Photovoltaik und Solar Bebauungspläne für Freiflächenanlagen, für Förderprogramm/Zuschuss/Klimaschutz nur Bundes- und Landesleistungen und Sportförderung, für Wärmepumpe nur Bebauungspläne.",
+    "searches": [
+      "Alle sechs erfassten Förderseiten des Amtes Barth gelesen (24.09.2026)",
+      "Volltextsuche amt-barth.de: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen der Gemeinden des Amtes Barth (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-barth.de/suche/?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "1 Treffer: „Zuschuss für steckerfertige Photovoltaikanlagen (Balkon-PV-Anlagen) beantragen“ — Leistungsbeschreibung des Landesprogramms aus dem MV-Serviceportal, kein Programm des Amtes oder der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Übersicht: Sanierung Pavillon Trinwillershagen, Straßenbeleuchtung Hermannshagen-Heide, INTERREG V A, LED Lüdershagen, LED Barth, Radweg Kückenshagen, Kulturforum Papenhof — alles geförderte Vorhaben der Kommunen."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=40e608bfab9358b3473edce970ab8f77",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Gemeinde Saal für den Radwegausbau (Kommunale Radbaurichtlinie M-V) — kommunales Bauprojekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217",
+        "finding": "Am 24.09.2026 gelesen: Publizitätsvermerk zur Erneuerung der Straßenbeleuchtung — kommunales Bauprojekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217",
+        "finding": "Am 24.09.2026 gelesen: INTERREG-V-A-Projekt zum Radweg R10 — kommunales Projekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=5e9e4881de2a93659b82e4118fcb46b1",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Gemeinde Lüdershagen für LED-Straßenbeleuchtung (Klimaschutzförderrichtlinie Kommunen) — Förderung der Kommune, nicht der Haushalte."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=139d64f1b951994adbd2802af81929a5",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Stadt Barth für LED-Straßenbeleuchtung (25 %, Land/EFRE) — Förderung der Kommune."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Publizitätserklärungen zu Fördervorhaben der amtsangehörigen Gemeinden (Pavillon, Straßenbeleuchtung, Radwege, Kulturforum) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=40e608bfab9358b3473edce970ab8f77",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Gemeinde Saal für den Radwegausbau (Kommunale Radbaurichtlinie M-V) — kommunales Bauprojekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=40e608bfab9358b3473edce970ab8f77"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217",
+        "disposition": "reviewed",
+        "reason": "Publizitätsvermerk zur Erneuerung der Straßenbeleuchtung — kommunales Bauprojekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217",
+        "disposition": "reviewed",
+        "reason": "INTERREG-V-A-Projekt zum Radweg R10 — kommunales Projekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=5e9e4881de2a93659b82e4118fcb46b1",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Gemeinde Lüdershagen für LED-Straßenbeleuchtung (Klimaschutzförderrichtlinie Kommunen) — Förderung der Kommune, nicht der Haushalte.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=5e9e4881de2a93659b82e4118fcb46b1"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=139d64f1b951994adbd2802af81929a5",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Stadt Barth für LED-Straßenbeleuchtung (25 %, Land/EFRE) — Förderung der Kommune.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=139d64f1b951994adbd2802af81929a5"
+      }
+    ]
+  },
+  {
+    "regionId": "13073077",
+    "name": "Saal",
+    "checkedAt": "2026-09-24T14:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Saal (Amt Barth, Landkreis Vorpommern-Rügen). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Alle sechs erfassten Adressen des Amtes sind Publizitätsvermerke zu Vorhaben, die Gemeinden selbst gefördert bekamen (Radweg, LED-Straßenbeleuchtung, INTERREG). Die Volltextsuche des Amtes (24.09.2026) führt für „Balkonkraftwerk“ nur die Leistungsbeschreibung des Landesprogramms für steckerfertige PV-Anlagen (im Katalog als Landesprogramm Mecklenburg-Vorpommern), für Photovoltaik und Solar Bebauungspläne für Freiflächenanlagen, für Förderprogramm/Zuschuss/Klimaschutz nur Bundes- und Landesleistungen und Sportförderung, für Wärmepumpe nur Bebauungspläne.",
+    "searches": [
+      "Alle sechs erfassten Förderseiten des Amtes Barth gelesen (24.09.2026)",
+      "Volltextsuche amt-barth.de: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen der Gemeinden des Amtes Barth (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.amt-barth.de/suche/?tx_kesearch_pi1%5Bsword%5D=Balkonkraftwerk",
+        "finding": "1 Treffer: „Zuschuss für steckerfertige Photovoltaikanlagen (Balkon-PV-Anlagen) beantragen“ — Leistungsbeschreibung des Landesprogramms aus dem MV-Serviceportal, kein Programm des Amtes oder der Gemeinden."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "finding": "Übersicht: Sanierung Pavillon Trinwillershagen, Straßenbeleuchtung Hermannshagen-Heide, INTERREG V A, LED Lüdershagen, LED Barth, Radweg Kückenshagen, Kulturforum Papenhof — alles geförderte Vorhaben der Kommunen."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=40e608bfab9358b3473edce970ab8f77",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Gemeinde Saal für den Radwegausbau (Kommunale Radbaurichtlinie M-V) — kommunales Bauprojekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217",
+        "finding": "Am 24.09.2026 gelesen: Publizitätsvermerk zur Erneuerung der Straßenbeleuchtung — kommunales Bauprojekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217",
+        "finding": "Am 24.09.2026 gelesen: INTERREG-V-A-Projekt zum Radweg R10 — kommunales Projekt."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=5e9e4881de2a93659b82e4118fcb46b1",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Gemeinde Lüdershagen für LED-Straßenbeleuchtung (Klimaschutzförderrichtlinie Kommunen) — Förderung der Kommune, nicht der Haushalte."
+      },
+      {
+        "url": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=139d64f1b951994adbd2802af81929a5",
+        "finding": "Am 24.09.2026 gelesen: Zuwendung an die Stadt Barth für LED-Straßenbeleuchtung (25 %, Land/EFRE) — Förderung der Kommune."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Publizitätserklärungen zu Fördervorhaben der amtsangehörigen Gemeinden (Pavillon, Straßenbeleuchtung, Radwege, Kulturforum) — keine Förderung für Privathaushalte.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/europaeische-foerdermittel-in-den-amtsangehoerigen-gemeinden"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=40e608bfab9358b3473edce970ab8f77",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Gemeinde Saal für den Radwegausbau (Kommunale Radbaurichtlinie M-V) — kommunales Bauprojekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-ausbau-radweg-kueckenshagen-gemeinde-saal-1/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=40e608bfab9358b3473edce970ab8f77"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217",
+        "disposition": "reviewed",
+        "reason": "Publizitätsvermerk zur Erneuerung der Straßenbeleuchtung — kommunales Bauprojekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-erneuerung-der-strassenbeleuchtung-in-hermannshagen-heide/217"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217",
+        "disposition": "reviewed",
+        "reason": "INTERREG-V-A-Projekt zum Radweg R10 — kommunales Projekt.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-im-kooperationsprogramm-interreg-v-a-mecklenburg-vorpommern-brandenburg-polen-im-rahmen-des-ziels-europaeische-territoriale-zusammenarbeit-des-europaeischen-fonds-fuer-regionale-entwicklung-efre-interreg-v-a/217"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=5e9e4881de2a93659b82e4118fcb46b1",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Gemeinde Lüdershagen für LED-Straßenbeleuchtung (Klimaschutzförderrichtlinie Kommunen) — Förderung der Kommune, nicht der Haushalte.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/foerderprojekt-umruestung-der-strassenbeleuchtung-auf-led-technik-gemeinde-luedershagen/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=5e9e4881de2a93659b82e4118fcb46b1"
+      },
+      {
+        "url": "amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&amp;cHash=139d64f1b951994adbd2802af81929a5",
+        "disposition": "reviewed",
+        "reason": "Zuwendung an die Stadt Barth für LED-Straßenbeleuchtung (25 %, Land/EFRE) — Förderung der Kommune.",
+        "evidenceUrl": "https://www.amt-barth.de/bekanntmachungen/oeffentliche-bekanntmachungen-der-amtsangehoerigen-gemeinden/anzeige/umruestung-der-strassenbeleuchtung-auf-led-technik-stadt-barth/blog/0/?tx_news_pi1%5BactbackPid%5D=217&cHash=139d64f1b951994adbd2802af81929a5"
+      }
+    ]
+  },
+  {
+    "regionId": "16070021",
+    "name": "Geschwenda",
+    "checkedAt": "2026-09-24T14:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Geschwenda (Ilm-Kreis). Der Schlüssel 16070021 ist der frühere von Geschwenda, seit 2019 Ortsteil der Landgemeinde Geratal; es gilt deren Website. Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die sechs erfassten Seiten der Gemeinde betreffen Landmusik, Dorferneuerung und kommunale Klimaschutzprojekte, Breitband, Regionalbudget und einen Ehrenamtswettbewerb. Die Suche der Gemeinde-Website (24.09.2026) liefert für Balkonkraftwerk nichts, für Photovoltaik/Solar/Klimaschutz nur Nachrichten (TU Ilmenau, Kindergarten, Biosphärenreservat), für Förderprogramm/Zuschuss nur Landmusik, „Aktiv vor Ort“, EU-Mittel für Projekte, für Wärmepumpe eine Presseinformation der Verbraucherzentrale Thüringen von 2021 ohne kommunales Programm.",
+    "searches": [
+      "Alle sechs erfassten Förderseiten der Gemeinde Geratal gelesen (24.09.2026)",
+      "Suche gemeinde-geratal.de: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen von Geratal und Ilm-Kreis (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-geratal.de/gefoerderte-massnahmen",
+        "finding": "Dorferneuerungsprogramm 2020–2024 (Ortsteile Gräfenroda, Geschwenda, Gossel, Liebenstein), geförderte Gemeindeprojekte, Klimaschutzprojekt „Austausch der Pumpen … im Freibad“ — kein Haushaltsprogramm für PV/Speicher/Balkon/Wärmepumpe."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/?s=Balkonkraftwerk",
+        "finding": "Keine Beiträge zum Suchbegriff; Wärmepumpe nur Presseinformation der Verbraucherzentrale Thüringen vom 23.09.2021 („Heizungstausch frühzeitig planen“)."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/foerderprogramm-landmusik",
+        "finding": "Am 24.09.2026 gelesen: Förderprogramm Landmusik des Deutschen Musikrats 2022 für Kulturprojekte — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/gefoerderte-projekte",
+        "finding": "Am 24.09.2026 gelesen: Leere Sammelseite ohne Inhalt außer Titel."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis",
+        "finding": "Am 24.09.2026 gelesen: Breitbandausbau des Landkreises — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen",
+        "finding": "Am 24.09.2026 gelesen: Regionalbudget 2024 der RAG für Kleinprojekte von Vereinen/Kommunen — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben",
+        "finding": "Am 24.09.2026 gelesen: Ehrenamtswettbewerb „machen!2025“ — außerhalb des Umfangs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-geratal.de/foerderprogramm-landmusik",
+        "disposition": "reviewed",
+        "reason": "Förderprogramm Landmusik des Deutschen Musikrats 2022 für Kulturprojekte — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/foerderprogramm-landmusik"
+      },
+      {
+        "url": "gemeinde-geratal.de/gefoerderte-massnahmen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung 2020–2024 und kommunale Klimaschutzprojekte (Freibadpumpen) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/gefoerderte-massnahmen"
+      },
+      {
+        "url": "gemeinde-geratal.de/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Leere Sammelseite ohne Inhalt außer Titel.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/gefoerderte-projekte"
+      },
+      {
+        "url": "gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis",
+        "disposition": "reviewed",
+        "reason": "Breitbandausbau des Landkreises — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis"
+      },
+      {
+        "url": "gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen",
+        "disposition": "reviewed",
+        "reason": "Regionalbudget 2024 der RAG für Kleinprojekte von Vereinen/Kommunen — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen"
+      },
+      {
+        "url": "gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben",
+        "disposition": "reviewed",
+        "reason": "Ehrenamtswettbewerb „machen!2025“ — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben"
+      }
+    ]
+  },
+  {
+    "regionId": "16070023",
+    "name": "Gossel",
+    "checkedAt": "2026-09-24T14:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gossel (Ilm-Kreis). Der Schlüssel 16070023 ist der frühere von Gossel, seit 2019 Ortsteil der Landgemeinde Geratal; es gilt deren Website. Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die sechs erfassten Seiten der Gemeinde betreffen Landmusik, Dorferneuerung und kommunale Klimaschutzprojekte, Breitband, Regionalbudget und einen Ehrenamtswettbewerb. Die Suche der Gemeinde-Website (24.09.2026) liefert für Balkonkraftwerk nichts, für Photovoltaik/Solar/Klimaschutz nur Nachrichten (TU Ilmenau, Kindergarten, Biosphärenreservat), für Förderprogramm/Zuschuss nur Landmusik, „Aktiv vor Ort“, EU-Mittel für Projekte, für Wärmepumpe eine Presseinformation der Verbraucherzentrale Thüringen von 2021 ohne kommunales Programm.",
+    "searches": [
+      "Alle sechs erfassten Förderseiten der Gemeinde Geratal gelesen (24.09.2026)",
+      "Suche gemeinde-geratal.de: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen von Geratal und Ilm-Kreis (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-geratal.de/gefoerderte-massnahmen",
+        "finding": "Dorferneuerungsprogramm 2020–2024 (Ortsteile Gräfenroda, Geschwenda, Gossel, Liebenstein), geförderte Gemeindeprojekte, Klimaschutzprojekt „Austausch der Pumpen … im Freibad“ — kein Haushaltsprogramm für PV/Speicher/Balkon/Wärmepumpe."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/?s=Balkonkraftwerk",
+        "finding": "Keine Beiträge zum Suchbegriff; Wärmepumpe nur Presseinformation der Verbraucherzentrale Thüringen vom 23.09.2021 („Heizungstausch frühzeitig planen“)."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/foerderprogramm-landmusik",
+        "finding": "Am 24.09.2026 gelesen: Förderprogramm Landmusik des Deutschen Musikrats 2022 für Kulturprojekte — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/gefoerderte-projekte",
+        "finding": "Am 24.09.2026 gelesen: Leere Sammelseite ohne Inhalt außer Titel."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis",
+        "finding": "Am 24.09.2026 gelesen: Breitbandausbau des Landkreises — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen",
+        "finding": "Am 24.09.2026 gelesen: Regionalbudget 2024 der RAG für Kleinprojekte von Vereinen/Kommunen — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben",
+        "finding": "Am 24.09.2026 gelesen: Ehrenamtswettbewerb „machen!2025“ — außerhalb des Umfangs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-geratal.de/foerderprogramm-landmusik",
+        "disposition": "reviewed",
+        "reason": "Förderprogramm Landmusik des Deutschen Musikrats 2022 für Kulturprojekte — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/foerderprogramm-landmusik"
+      },
+      {
+        "url": "gemeinde-geratal.de/gefoerderte-massnahmen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung 2020–2024 und kommunale Klimaschutzprojekte (Freibadpumpen) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/gefoerderte-massnahmen"
+      },
+      {
+        "url": "gemeinde-geratal.de/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Leere Sammelseite ohne Inhalt außer Titel.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/gefoerderte-projekte"
+      },
+      {
+        "url": "gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis",
+        "disposition": "reviewed",
+        "reason": "Breitbandausbau des Landkreises — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis"
+      },
+      {
+        "url": "gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen",
+        "disposition": "reviewed",
+        "reason": "Regionalbudget 2024 der RAG für Kleinprojekte von Vereinen/Kommunen — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen"
+      },
+      {
+        "url": "gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben",
+        "disposition": "reviewed",
+        "reason": "Ehrenamtswettbewerb „machen!2025“ — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben"
+      }
+    ]
+  },
+  {
+    "regionId": "16070024",
+    "name": "Gräfenroda",
+    "checkedAt": "2026-09-24T14:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gräfenroda (Ilm-Kreis). Der Schlüssel 16070024 ist der frühere von Gräfenroda, seit 2019 Ortsteil der Landgemeinde Geratal; es gilt deren Website. Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die sechs erfassten Seiten der Gemeinde betreffen Landmusik, Dorferneuerung und kommunale Klimaschutzprojekte, Breitband, Regionalbudget und einen Ehrenamtswettbewerb. Die Suche der Gemeinde-Website (24.09.2026) liefert für Balkonkraftwerk nichts, für Photovoltaik/Solar/Klimaschutz nur Nachrichten (TU Ilmenau, Kindergarten, Biosphärenreservat), für Förderprogramm/Zuschuss nur Landmusik, „Aktiv vor Ort“, EU-Mittel für Projekte, für Wärmepumpe eine Presseinformation der Verbraucherzentrale Thüringen von 2021 ohne kommunales Programm.",
+    "searches": [
+      "Alle sechs erfassten Förderseiten der Gemeinde Geratal gelesen (24.09.2026)",
+      "Suche gemeinde-geratal.de: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen von Geratal und Ilm-Kreis (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-geratal.de/gefoerderte-massnahmen",
+        "finding": "Dorferneuerungsprogramm 2020–2024 (Ortsteile Gräfenroda, Geschwenda, Gossel, Liebenstein), geförderte Gemeindeprojekte, Klimaschutzprojekt „Austausch der Pumpen … im Freibad“ — kein Haushaltsprogramm für PV/Speicher/Balkon/Wärmepumpe."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/?s=Balkonkraftwerk",
+        "finding": "Keine Beiträge zum Suchbegriff; Wärmepumpe nur Presseinformation der Verbraucherzentrale Thüringen vom 23.09.2021 („Heizungstausch frühzeitig planen“)."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/foerderprogramm-landmusik",
+        "finding": "Am 24.09.2026 gelesen: Förderprogramm Landmusik des Deutschen Musikrats 2022 für Kulturprojekte — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/gefoerderte-projekte",
+        "finding": "Am 24.09.2026 gelesen: Leere Sammelseite ohne Inhalt außer Titel."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis",
+        "finding": "Am 24.09.2026 gelesen: Breitbandausbau des Landkreises — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen",
+        "finding": "Am 24.09.2026 gelesen: Regionalbudget 2024 der RAG für Kleinprojekte von Vereinen/Kommunen — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben",
+        "finding": "Am 24.09.2026 gelesen: Ehrenamtswettbewerb „machen!2025“ — außerhalb des Umfangs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-geratal.de/foerderprogramm-landmusik",
+        "disposition": "reviewed",
+        "reason": "Förderprogramm Landmusik des Deutschen Musikrats 2022 für Kulturprojekte — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/foerderprogramm-landmusik"
+      },
+      {
+        "url": "gemeinde-geratal.de/gefoerderte-massnahmen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung 2020–2024 und kommunale Klimaschutzprojekte (Freibadpumpen) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/gefoerderte-massnahmen"
+      },
+      {
+        "url": "gemeinde-geratal.de/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Leere Sammelseite ohne Inhalt außer Titel.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/gefoerderte-projekte"
+      },
+      {
+        "url": "gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis",
+        "disposition": "reviewed",
+        "reason": "Breitbandausbau des Landkreises — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis"
+      },
+      {
+        "url": "gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen",
+        "disposition": "reviewed",
+        "reason": "Regionalbudget 2024 der RAG für Kleinprojekte von Vereinen/Kommunen — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen"
+      },
+      {
+        "url": "gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben",
+        "disposition": "reviewed",
+        "reason": "Ehrenamtswettbewerb „machen!2025“ — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben"
+      }
+    ]
+  },
+  {
+    "regionId": "16070057",
+    "name": "Geratal",
+    "checkedAt": "2026-09-24T14:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Geratal (Ilm-Kreis). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die sechs erfassten Seiten der Gemeinde betreffen Landmusik, Dorferneuerung und kommunale Klimaschutzprojekte, Breitband, Regionalbudget und einen Ehrenamtswettbewerb. Die Suche der Gemeinde-Website (24.09.2026) liefert für Balkonkraftwerk nichts, für Photovoltaik/Solar/Klimaschutz nur Nachrichten (TU Ilmenau, Kindergarten, Biosphärenreservat), für Förderprogramm/Zuschuss nur Landmusik, „Aktiv vor Ort“, EU-Mittel für Projekte, für Wärmepumpe eine Presseinformation der Verbraucherzentrale Thüringen von 2021 ohne kommunales Programm.",
+    "searches": [
+      "Alle sechs erfassten Förderseiten der Gemeinde Geratal gelesen (24.09.2026)",
+      "Suche gemeinde-geratal.de: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen von Geratal und Ilm-Kreis (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-geratal.de/gefoerderte-massnahmen",
+        "finding": "Dorferneuerungsprogramm 2020–2024 (Ortsteile Gräfenroda, Geschwenda, Gossel, Liebenstein), geförderte Gemeindeprojekte, Klimaschutzprojekt „Austausch der Pumpen … im Freibad“ — kein Haushaltsprogramm für PV/Speicher/Balkon/Wärmepumpe."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/?s=Balkonkraftwerk",
+        "finding": "Keine Beiträge zum Suchbegriff; Wärmepumpe nur Presseinformation der Verbraucherzentrale Thüringen vom 23.09.2021 („Heizungstausch frühzeitig planen“)."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/foerderprogramm-landmusik",
+        "finding": "Am 24.09.2026 gelesen: Förderprogramm Landmusik des Deutschen Musikrats 2022 für Kulturprojekte — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/gefoerderte-projekte",
+        "finding": "Am 24.09.2026 gelesen: Leere Sammelseite ohne Inhalt außer Titel."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis",
+        "finding": "Am 24.09.2026 gelesen: Breitbandausbau des Landkreises — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen",
+        "finding": "Am 24.09.2026 gelesen: Regionalbudget 2024 der RAG für Kleinprojekte von Vereinen/Kommunen — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben",
+        "finding": "Am 24.09.2026 gelesen: Ehrenamtswettbewerb „machen!2025“ — außerhalb des Umfangs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-geratal.de/foerderprogramm-landmusik",
+        "disposition": "reviewed",
+        "reason": "Förderprogramm Landmusik des Deutschen Musikrats 2022 für Kulturprojekte — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/foerderprogramm-landmusik"
+      },
+      {
+        "url": "gemeinde-geratal.de/gefoerderte-massnahmen",
+        "disposition": "reviewed",
+        "reason": "Dorferneuerung 2020–2024 und kommunale Klimaschutzprojekte (Freibadpumpen) — kein Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/gefoerderte-massnahmen"
+      },
+      {
+        "url": "gemeinde-geratal.de/gefoerderte-projekte",
+        "disposition": "reviewed",
+        "reason": "Leere Sammelseite ohne Inhalt außer Titel.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/gefoerderte-projekte"
+      },
+      {
+        "url": "gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis",
+        "disposition": "reviewed",
+        "reason": "Breitbandausbau des Landkreises — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/informationen-des-lra-ilm-kreis-zum-gefoerderten-breitbandausbau-im-ilm-kreis"
+      },
+      {
+        "url": "gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen",
+        "disposition": "reviewed",
+        "reason": "Regionalbudget 2024 der RAG für Kleinprojekte von Vereinen/Kommunen — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/projektaufruf-regionalbudget-2024-jetzt-kleinprojekte-mit-bis-zu-80-foerdern-lassen"
+      },
+      {
+        "url": "gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben",
+        "disposition": "reviewed",
+        "reason": "Ehrenamtswettbewerb „machen!2025“ — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.gemeinde-geratal.de/wettbewerb-machen-ostbeauftragter-und-dsee-praemieren-engagement-in-ostdeutschland-engagierte-koennen-sich-ab-jetzt-bewerben"
+      }
+    ]
   }
 ]
