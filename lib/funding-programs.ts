@@ -9272,7 +9272,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "gifhorn-kreis-balkonkraftwerke": {
     id: "gifhorn-kreis-balkonkraftwerke",
     name: "Förderung von Balkonkraftwerken (Stecker-Solargeräte)",
-    traeger: "Landkreis Gifhorn", level: "kommune", region: "Landkreis Gifhorn",
+    traeger: "Landkreis Gifhorn", level: "landkreis", region: "Landkreis Gifhorn",
     bundesland: "Niedersachsen", agsCode: "03151",
     url: "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
     stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,

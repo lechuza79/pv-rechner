@@ -43,3 +43,10 @@ Meinersen: aktives PV-Programm oben; ausgeschöpfter Kreis-Balkonzuschuss im ges
 ## Ergänzung: Änderung melden
 
 Jede Förderkarte hat neben Einzelheiten einen Button mit Flaggen-Icon. Er öffnet den bestehenden Modal-Baustein (mobil Bottomsheet) mit ContactForm, Thema Fehler melden und vorbelegtem Programm, Ort, Fördergeber und Quellenlink. Versand ausschließlich über den bestehenden Kontakt-Endpunkt; keine neue Route, Datenablage oder automatische Statusänderung. Desktop und Mobilansicht geprüft, keine Testnachricht verschickt. Weitere Backend-Integration bleibt bei Claude.
+
+## Erledigt durch Claude (24.09.2026)
+
+1. Gifhorn bleibt „ausgeschöpft“ — richtig so, die Richtlinie ist nicht aufgehoben.
+2. Ebene auf `landkreis` korrigiert (Träger und fünfstelliger Kreisschlüssel waren schon richtig; nur die Ebenenangabe passte nicht zu den übrigen 20 Kreisprogrammen). Tests grün, Gebietsauswahl unverändert, weil sie über den Schlüssel läuft.
+3. Meinersen: inhaltlich geprüft am 23.09.2026, Amtsseite am 24.09.2026 live abgerufen und unverändert — kein Handlungsbedarf.
+4. Keine zweite Frischelogik in der Oberfläche; bleibt beim Fördermodell.
