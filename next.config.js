@@ -344,6 +344,8 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/klempau", destination: "/photovoltaik-foerderung/schleswig-holstein/klempau", permanent: true },
       { source: "/photovoltaik-foerderung/helmstedt", destination: "/photovoltaik-foerderung/niedersachsen/helmstedt", permanent: true },
       { source: "/photovoltaik-foerderung/meinersen", destination: "/photovoltaik-foerderung/niedersachsen/meinersen", permanent: true },
+      { source: "/photovoltaik-foerderung/quakenbrueck", destination: "/photovoltaik-foerderung/niedersachsen/quakenbrueck", permanent: true },
+      { source: "/photovoltaik-foerderung/menslage", destination: "/photovoltaik-foerderung/niedersachsen/menslage", permanent: true },
       { source: "/photovoltaik-foerderung/mueden-aller", destination: "/photovoltaik-foerderung/niedersachsen/mueden-aller", permanent: true },
       { source: "/photovoltaik-foerderung/garching-b-muenchen", destination: "/photovoltaik-foerderung/bayern/garching-b-muenchen", permanent: true },
       { source: "/photovoltaik-foerderung/goettingen", destination: "/photovoltaik-foerderung/niedersachsen/goettingen", permanent: true },

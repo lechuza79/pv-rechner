@@ -440,6 +440,8 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "wietzen", name: "Wietzen", ags: "03256036", kreis: "Landkreis Nienburg (Weser)", bundesland: "Niedersachsen", yieldKwhKwp: 1017 },
   { slug: "moormerland", name: "Moormerland", ags: "03457014", kreis: "Landkreis Leer", bundesland: "Niedersachsen", yieldKwhKwp: 1002 },
   { slug: "bad-rothenfelde", name: "Bad Rothenfelde", ags: "03459006", kreis: "Landkreis Osnabrück", bundesland: "Niedersachsen", yieldKwhKwp: 1019 },
+  { slug: "quakenbrueck", name: "Quakenbrück", ags: "03459030", kreis: "Landkreis Osnabrück", bundesland: "Niedersachsen", yieldKwhKwp: 1010 },
+  { slug: "menslage", name: "Menslage", ags: "03459025", kreis: "Landkreis Osnabrück", bundesland: "Niedersachsen", yieldKwhKwp: 1009 },
   { slug: "goch", name: "Goch", ags: "05154016", kreis: "Kreis Kleve", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1048 },
   { slug: "hueckelhoven", name: "Hückelhoven", ags: "05370020", kreis: "Kreis Heinsberg", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1083 },
   { slug: "nottuln", name: "Nottuln", ags: "05558032", kreis: "Kreis Coesfeld", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1039 },

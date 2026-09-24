@@ -59622,5 +59622,540 @@
         "evidenceUrl": "https://www.selsingen.de/leben-und-wohnen/potenzialflaechenanalyse-fuer-freiflaechen-photovoltaikanlagen"
       }
     ]
+  },
+  {
+    "regionId": "03459030",
+    "name": "Quakenbrück",
+    "checkedAt": "2026-09-24T08:10:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Ein Programm im Umfang, neu aufgenommen: „Quakenbrücker Klimafonds“ (quakenbrueck-klimafonds) — Dachanlage ab 4 kWp 50 %, höchstens 500 €; Speicher 50 %, höchstens 500 €; Balkonkraftwerk 100 € unter 600 Wp, 200 € darüber. Richtlinie 2. Fassung, in Kraft seit 05.03.2024, bis 31.12.2026; Seite: 2026 erneut Haushaltsmittel bereitgestellt.",
+    "searches": [
+      "Klimafonds-Seite der Samtgemeinde Artland mit allen Reitern gelesen",
+      "Richtlinien Quakenbrück (Scan, Seite für Seite), Badbergen und Menslage im Volltext gelesen; verlinkte Dateien byte-identisch mit der Akte",
+      "Übersicht „Kommunale Förderungen“ der Samtgemeinde gelesen",
+      "Websuche nach Programmen des Landkreises Osnabrück und nach einem Nortruper Klimafonds: nichts gefunden"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+        "finding": "„Auch in 2026 wurden erneut Haushaltsmittel bereitgestellt, somit sind Antragsstellungen möglich.“ (Reiter Stadt Quakenbrück); Richtlinie § 4: Dachflächen-PV „50%; max. 500 €“."
+      },
+      {
+        "url": "https://www.artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
+        "finding": "Bundesprogramm „Demokratie leben!“, außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen",
+        "finding": "Übersicht der Samtgemeinde: medizinische Versorgung, Klimafonds, Vereinsförderung — kein weiteres Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung",
+        "finding": "Ärzteansiedlung, außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&brotID=900001383&navi_id=900001383",
+        "finding": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten."
+      }
+    ],
+    "sources": [
+      {
+        "url": "artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm „Demokratie leben!“, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Samtgemeinde: medizinische Versorgung, Klimafonds, Vereinsförderung — kein weiteres Programm für private Haushalte.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+        "disposition": "reviewed",
+        "reason": "Gemeinsame Klimafonds-Seite mit Reitern und Richtlinien für Quakenbrück, Badbergen und Menslage im Volltext gelesen.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung",
+        "disposition": "reviewed",
+        "reason": "Ärzteansiedlung, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung"
+      },
+      {
+        "url": "artland.de/portal/seiten/foerderprogramm-klimafonds-in-der-samtgemeinde-artland-900000468-31440.html?naviID=900001388&amp;brotID=900001388&amp;rubrik=900000004",
+        "disposition": "replaced",
+        "reason": "Alte Portal-Adresse derselben Klimafonds-Seite.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland"
+      },
+      {
+        "url": "artland.de/portal/sitemap-mosaik.html?naviID=900001383&amp;brotID=900001383&amp;navi_id=900001383",
+        "disposition": "reviewed",
+        "reason": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten.",
+        "evidenceUrl": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&brotID=900001383&navi_id=900001383"
+      }
+    ]
+  },
+  {
+    "regionId": "03459025",
+    "name": "Menslage",
+    "checkedAt": "2026-09-24T08:10:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Ein Programm im Umfang, neu aufgenommen: „Menslager Klimafonds“ (menslage-klimafonds) — dieselben Sätze wie Quakenbrück; Richtlinie in Kraft seit 01.01.2026, bis 31.12.2026; Seite: Haushalt 2026 genehmigt.",
+    "searches": [
+      "Klimafonds-Seite der Samtgemeinde Artland mit allen Reitern gelesen",
+      "Richtlinien Quakenbrück (Scan, Seite für Seite), Badbergen und Menslage im Volltext gelesen; verlinkte Dateien byte-identisch mit der Akte",
+      "Übersicht „Kommunale Förderungen“ der Samtgemeinde gelesen",
+      "Websuche nach Programmen des Landkreises Osnabrück und nach einem Nortruper Klimafonds: nichts gefunden"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+        "finding": "„Auch in 2026 wurden erneut Haushaltsmittel bereitgestellt. Der Haushalt 2026 wurde kürzlich genehmigt, somit sind Antragsstellungen möglich.“ (Reiter Menslage)"
+      },
+      {
+        "url": "https://www.artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
+        "finding": "Bundesprogramm „Demokratie leben!“, außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen",
+        "finding": "Übersicht der Samtgemeinde: medizinische Versorgung, Klimafonds, Vereinsförderung — kein weiteres Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung",
+        "finding": "Ärzteansiedlung, außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&brotID=900001383&navi_id=900001383",
+        "finding": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten."
+      }
+    ],
+    "sources": [
+      {
+        "url": "artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm „Demokratie leben!“, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Samtgemeinde: medizinische Versorgung, Klimafonds, Vereinsförderung — kein weiteres Programm für private Haushalte.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+        "disposition": "reviewed",
+        "reason": "Gemeinsame Klimafonds-Seite mit Reitern und Richtlinien für Quakenbrück, Badbergen und Menslage im Volltext gelesen.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung",
+        "disposition": "reviewed",
+        "reason": "Ärzteansiedlung, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung"
+      },
+      {
+        "url": "artland.de/portal/seiten/foerderprogramm-klimafonds-in-der-samtgemeinde-artland-900000468-31440.html?naviID=900001388&amp;brotID=900001388&amp;rubrik=900000004",
+        "disposition": "replaced",
+        "reason": "Alte Portal-Adresse derselben Klimafonds-Seite.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland"
+      },
+      {
+        "url": "artland.de/portal/sitemap-mosaik.html?naviID=900001383&amp;brotID=900001383&amp;navi_id=900001383",
+        "disposition": "reviewed",
+        "reason": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten.",
+        "evidenceUrl": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&brotID=900001383&navi_id=900001383"
+      }
+    ]
+  },
+  {
+    "regionId": "03459007",
+    "name": "Badbergen",
+    "checkedAt": "2026-09-24T08:10:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Ein Programm im Umfang, neu aufgenommen: „Badberger Klimafonds“ (badbergen-klimafonds) — Dachanlage ab 4 kWp und Speicher je 50 %, höchstens 250 €; keine Balkonkraftwerke. Status unsicher: Die Seite nennt nur Mittel für 2025, die Richtlinie (3. Fassung 23.06.2025) erneuert sich zum 1. Januar, ausgezahlt wird aber nur aus dem Haushalt des Jahres.",
+    "searches": [
+      "Klimafonds-Seite der Samtgemeinde Artland mit allen Reitern gelesen",
+      "Richtlinien Quakenbrück (Scan, Seite für Seite), Badbergen und Menslage im Volltext gelesen; verlinkte Dateien byte-identisch mit der Akte",
+      "Übersicht „Kommunale Förderungen“ der Samtgemeinde gelesen",
+      "Websuche nach Programmen des Landkreises Osnabrück und nach einem Nortruper Klimafonds: nichts gefunden"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+        "finding": "„Auch in 2025 wurden erneut Haushaltsmittel bereitgestellt … ACHTUNG: Die Richtlinie wurde aktualisiert.“ (Reiter Badbergen) — keine Angabe zu 2026."
+      },
+      {
+        "url": "https://www.artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
+        "finding": "Bundesprogramm „Demokratie leben!“, außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen",
+        "finding": "Übersicht der Samtgemeinde: medizinische Versorgung, Klimafonds, Vereinsförderung — kein weiteres Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung",
+        "finding": "Ärzteansiedlung, außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&brotID=900001383&navi_id=900001383",
+        "finding": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten."
+      }
+    ],
+    "sources": [
+      {
+        "url": "artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm „Demokratie leben!“, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Samtgemeinde: medizinische Versorgung, Klimafonds, Vereinsförderung — kein weiteres Programm für private Haushalte.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+        "disposition": "reviewed",
+        "reason": "Gemeinsame Klimafonds-Seite mit Reitern und Richtlinien für Quakenbrück, Badbergen und Menslage im Volltext gelesen.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung",
+        "disposition": "reviewed",
+        "reason": "Ärzteansiedlung, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung"
+      },
+      {
+        "url": "artland.de/portal/seiten/foerderprogramm-klimafonds-in-der-samtgemeinde-artland-900000468-31440.html?naviID=900001388&amp;brotID=900001388&amp;rubrik=900000004",
+        "disposition": "replaced",
+        "reason": "Alte Portal-Adresse derselben Klimafonds-Seite.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland"
+      },
+      {
+        "url": "artland.de/portal/sitemap-mosaik.html?naviID=900001383&amp;brotID=900001383&amp;navi_id=900001383",
+        "disposition": "reviewed",
+        "reason": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten.",
+        "evidenceUrl": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&brotID=900001383&navi_id=900001383"
+      }
+    ]
+  },
+  {
+    "regionId": "03459028",
+    "name": "Nortrup",
+    "checkedAt": "2026-09-24T08:10:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Nortrup hat keinen Klimafonds und kein anderes Zuschussprogramm für PV, Speicher, Balkonkraftwerke oder Wärmepumpen: Die gemeinsame Klimafonds-Seite der Samtgemeinde Artland führt nur Quakenbrück, Badbergen und Menslage, die Übersicht „Kommunale Förderungen“ sonst nur medizinische Versorgung und Vereinsförderung. Nortrup hat keine eigene Website (nortrup.de nicht erreichbar). Der Landkreis Osnabrück führt kein Programm für private Haushalte (Websuche 24.09.2026). Die Fonds der Nachbarn gelten nur dort (Erstwohnsitz).",
+    "searches": [
+      "Klimafonds-Seite der Samtgemeinde Artland mit allen Reitern gelesen",
+      "Richtlinien Quakenbrück (Scan, Seite für Seite), Badbergen und Menslage im Volltext gelesen; verlinkte Dateien byte-identisch mit der Akte",
+      "Übersicht „Kommunale Förderungen“ der Samtgemeinde gelesen",
+      "Websuche nach Programmen des Landkreises Osnabrück und nach einem Nortruper Klimafonds: nichts gefunden"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+        "finding": "Reiter nur „Stadt Quakenbrück · Gemeinde Badbergen · Gemeinde Menslage“ — Nortrup nicht darunter."
+      },
+      {
+        "url": "https://www.artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
+        "finding": "Bundesprogramm „Demokratie leben!“, außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen",
+        "finding": "Übersicht der Samtgemeinde: medizinische Versorgung, Klimafonds, Vereinsförderung — kein weiteres Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung",
+        "finding": "Ärzteansiedlung, außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&brotID=900001383&navi_id=900001383",
+        "finding": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten."
+      }
+    ],
+    "sources": [
+      {
+        "url": "artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-",
+        "disposition": "reviewed",
+        "reason": "Bundesprogramm „Demokratie leben!“, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.artland.de/leben-bei-uns/buergerbeteiligung/foerderprogramm-demokratie-leben-"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen",
+        "disposition": "reviewed",
+        "reason": "Übersicht der Samtgemeinde: medizinische Versorgung, Klimafonds, Vereinsförderung — kein weiteres Programm für private Haushalte.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+        "disposition": "reviewed",
+        "reason": "Gemeinsame Klimafonds-Seite mit Reitern und Richtlinien für Quakenbrück, Badbergen und Menslage im Volltext gelesen.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland"
+      },
+      {
+        "url": "artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung",
+        "disposition": "reviewed",
+        "reason": "Ärzteansiedlung, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramme-medizinische-versorgung"
+      },
+      {
+        "url": "artland.de/portal/seiten/foerderprogramm-klimafonds-in-der-samtgemeinde-artland-900000468-31440.html?naviID=900001388&amp;brotID=900001388&amp;rubrik=900000004",
+        "disposition": "replaced",
+        "reason": "Alte Portal-Adresse derselben Klimafonds-Seite.",
+        "evidenceUrl": "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland"
+      },
+      {
+        "url": "artland.de/portal/sitemap-mosaik.html?naviID=900001383&amp;brotID=900001383&amp;navi_id=900001383",
+        "disposition": "reviewed",
+        "reason": "Sitemap der Samtgemeinde, kein eigener Inhalt; führt nur die bekannten Förderseiten.",
+        "evidenceUrl": "https://www.artland.de/portal/sitemap-mosaik.html?naviID=900001383&brotID=900001383&navi_id=900001383"
+      }
+    ]
+  },
+  {
+    "regionId": "07133002",
+    "name": "Allenfeld",
+    "checkedAt": "2026-09-24T08:12:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Allenfeld gehört zur Verbandsgemeinde Rüdesheim (Landkreis Bad Kreuznach). Heute gibt es dort kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Balkonkraftwerk-Programm der VG (100 € je Anlage, seit April 2023) ist laut Mitteilungsblatt vom 24.03.2026 ausgeschöpft und eingestellt — neu als beendetes Programm katalogisiert (vg-ruedesheim-balkonkraftwerke), ein adversarialer Prüfer fand keine Neuauflage. Die Förderung von Klimaschutzprojekten richtet sich ausschließlich an Ortsgemeinden. Der Landkreis Bad Kreuznach führt kein eigenes Programm; die Programme der Stadt und der VG Bad Kreuznach gelten nur dort.",
+    "searches": [
+      "Klimaschutz-Seite und Förderangebote der VG Rüdesheim gelesen",
+      "Beendigungsmeldung samt Mitteilungsblatt-PDF gelesen",
+      "Ortsgemeinden-Liste der VG gelesen (32 Gemeinden)",
+      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/foerderangebote",
+        "finding": "„Das Förderprogramm richtet sich ausschließlich an die verbandsgemeindeeigenen Ortsgemeinden. Privatpersonen sind nicht antragsberechtigt.“ — daneben nur der Verweis auf die beendete Balkonkraftwerk-Förderung."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet",
+        "finding": "Mitteilungsblatt 24.03.2026: „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“ (100 € je Balkonkraftwerk seit 01.04.2023)"
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien",
+        "finding": "Bundesförderung für drei Potenzialstudien der Kläranlagen (NKI), kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz",
+        "finding": "Klimaschutz-Seite der VG: Förderangebote nur „Förderung von Balkonkraftwerken“ (beendet) und Klimaschutzprojekte für Ortsgemeinden; Beratung über die Verbraucherzentrale."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-ruedesheim.de/klimaschutz/foerderangebote",
+        "disposition": "reviewed",
+        "reason": "Förderangebote der VG gelesen: Klimaschutzprojekte nur für Ortsgemeinden, Balkon-Programm beendet (katalogisiert als vg-ruedesheim-balkonkraftwerke).",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/foerderangebote"
+      },
+      {
+        "url": "vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien",
+        "disposition": "reviewed",
+        "reason": "Geförderte Kläranlagen-Studien der VG-Werke, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien"
+      }
+    ]
+  },
+  {
+    "regionId": "07133033",
+    "name": "Gebroth",
+    "checkedAt": "2026-09-24T08:12:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Gebroth gehört zur Verbandsgemeinde Rüdesheim (Landkreis Bad Kreuznach). Heute gibt es dort kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Balkonkraftwerk-Programm der VG (100 € je Anlage, seit April 2023) ist laut Mitteilungsblatt vom 24.03.2026 ausgeschöpft und eingestellt — neu als beendetes Programm katalogisiert (vg-ruedesheim-balkonkraftwerke), ein adversarialer Prüfer fand keine Neuauflage. Die Förderung von Klimaschutzprojekten richtet sich ausschließlich an Ortsgemeinden. Der Landkreis Bad Kreuznach führt kein eigenes Programm; die Programme der Stadt und der VG Bad Kreuznach gelten nur dort.",
+    "searches": [
+      "Klimaschutz-Seite und Förderangebote der VG Rüdesheim gelesen",
+      "Beendigungsmeldung samt Mitteilungsblatt-PDF gelesen",
+      "Ortsgemeinden-Liste der VG gelesen (32 Gemeinden)",
+      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/foerderangebote",
+        "finding": "„Das Förderprogramm richtet sich ausschließlich an die verbandsgemeindeeigenen Ortsgemeinden. Privatpersonen sind nicht antragsberechtigt.“ — daneben nur der Verweis auf die beendete Balkonkraftwerk-Förderung."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet",
+        "finding": "Mitteilungsblatt 24.03.2026: „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“ (100 € je Balkonkraftwerk seit 01.04.2023)"
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien",
+        "finding": "Bundesförderung für drei Potenzialstudien der Kläranlagen (NKI), kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz",
+        "finding": "Klimaschutz-Seite der VG: Förderangebote nur „Förderung von Balkonkraftwerken“ (beendet) und Klimaschutzprojekte für Ortsgemeinden; Beratung über die Verbraucherzentrale."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-ruedesheim.de/klimaschutz/foerderangebote",
+        "disposition": "reviewed",
+        "reason": "Förderangebote der VG gelesen: Klimaschutzprojekte nur für Ortsgemeinden, Balkon-Programm beendet (katalogisiert als vg-ruedesheim-balkonkraftwerke).",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/foerderangebote"
+      },
+      {
+        "url": "vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien",
+        "disposition": "reviewed",
+        "reason": "Geförderte Kläranlagen-Studien der VG-Werke, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien"
+      }
+    ]
+  },
+  {
+    "regionId": "07133075",
+    "name": "Oberstreit",
+    "checkedAt": "2026-09-24T08:12:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oberstreit gehört zur Verbandsgemeinde Rüdesheim (Landkreis Bad Kreuznach). Heute gibt es dort kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Balkonkraftwerk-Programm der VG (100 € je Anlage, seit April 2023) ist laut Mitteilungsblatt vom 24.03.2026 ausgeschöpft und eingestellt — neu als beendetes Programm katalogisiert (vg-ruedesheim-balkonkraftwerke), ein adversarialer Prüfer fand keine Neuauflage. Die Förderung von Klimaschutzprojekten richtet sich ausschließlich an Ortsgemeinden. Der Landkreis Bad Kreuznach führt kein eigenes Programm; die Programme der Stadt und der VG Bad Kreuznach gelten nur dort.",
+    "searches": [
+      "Klimaschutz-Seite und Förderangebote der VG Rüdesheim gelesen",
+      "Beendigungsmeldung samt Mitteilungsblatt-PDF gelesen",
+      "Ortsgemeinden-Liste der VG gelesen (32 Gemeinden)",
+      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/foerderangebote",
+        "finding": "„Das Förderprogramm richtet sich ausschließlich an die verbandsgemeindeeigenen Ortsgemeinden. Privatpersonen sind nicht antragsberechtigt.“ — daneben nur der Verweis auf die beendete Balkonkraftwerk-Förderung."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet",
+        "finding": "Mitteilungsblatt 24.03.2026: „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“ (100 € je Balkonkraftwerk seit 01.04.2023)"
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien",
+        "finding": "Bundesförderung für drei Potenzialstudien der Kläranlagen (NKI), kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz",
+        "finding": "Klimaschutz-Seite der VG: Förderangebote nur „Förderung von Balkonkraftwerken“ (beendet) und Klimaschutzprojekte für Ortsgemeinden; Beratung über die Verbraucherzentrale."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-ruedesheim.de/klimaschutz/foerderangebote",
+        "disposition": "reviewed",
+        "reason": "Förderangebote der VG gelesen: Klimaschutzprojekte nur für Ortsgemeinden, Balkon-Programm beendet (katalogisiert als vg-ruedesheim-balkonkraftwerke).",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/foerderangebote"
+      },
+      {
+        "url": "vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien",
+        "disposition": "reviewed",
+        "reason": "Geförderte Kläranlagen-Studien der VG-Werke, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien"
+      }
+    ]
+  },
+  {
+    "regionId": "07133088",
+    "name": "Sankt Katharinen",
+    "checkedAt": "2026-09-24T08:12:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sankt Katharinen gehört zur Verbandsgemeinde Rüdesheim (Landkreis Bad Kreuznach). Heute gibt es dort kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Balkonkraftwerk-Programm der VG (100 € je Anlage, seit April 2023) ist laut Mitteilungsblatt vom 24.03.2026 ausgeschöpft und eingestellt — neu als beendetes Programm katalogisiert (vg-ruedesheim-balkonkraftwerke), ein adversarialer Prüfer fand keine Neuauflage. Die Förderung von Klimaschutzprojekten richtet sich ausschließlich an Ortsgemeinden. Der Landkreis Bad Kreuznach führt kein eigenes Programm; die Programme der Stadt und der VG Bad Kreuznach gelten nur dort.",
+    "searches": [
+      "Klimaschutz-Seite und Förderangebote der VG Rüdesheim gelesen",
+      "Beendigungsmeldung samt Mitteilungsblatt-PDF gelesen",
+      "Ortsgemeinden-Liste der VG gelesen (32 Gemeinden)",
+      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/foerderangebote",
+        "finding": "„Das Förderprogramm richtet sich ausschließlich an die verbandsgemeindeeigenen Ortsgemeinden. Privatpersonen sind nicht antragsberechtigt.“ — daneben nur der Verweis auf die beendete Balkonkraftwerk-Förderung."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet",
+        "finding": "Mitteilungsblatt 24.03.2026: „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“ (100 € je Balkonkraftwerk seit 01.04.2023)"
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien",
+        "finding": "Bundesförderung für drei Potenzialstudien der Kläranlagen (NKI), kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz",
+        "finding": "Klimaschutz-Seite der VG: Förderangebote nur „Förderung von Balkonkraftwerken“ (beendet) und Klimaschutzprojekte für Ortsgemeinden; Beratung über die Verbraucherzentrale."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-ruedesheim.de/klimaschutz/foerderangebote",
+        "disposition": "reviewed",
+        "reason": "Förderangebote der VG gelesen: Klimaschutzprojekte nur für Ortsgemeinden, Balkon-Programm beendet (katalogisiert als vg-ruedesheim-balkonkraftwerke).",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/foerderangebote"
+      },
+      {
+        "url": "vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien",
+        "disposition": "reviewed",
+        "reason": "Geförderte Kläranlagen-Studien der VG-Werke, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien"
+      }
+    ]
+  },
+  {
+    "regionId": "07133098",
+    "name": "Sommerloch",
+    "checkedAt": "2026-09-24T08:12:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Sommerloch gehört zur Verbandsgemeinde Rüdesheim (Landkreis Bad Kreuznach). Heute gibt es dort kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Das Balkonkraftwerk-Programm der VG (100 € je Anlage, seit April 2023) ist laut Mitteilungsblatt vom 24.03.2026 ausgeschöpft und eingestellt — neu als beendetes Programm katalogisiert (vg-ruedesheim-balkonkraftwerke), ein adversarialer Prüfer fand keine Neuauflage. Die Förderung von Klimaschutzprojekten richtet sich ausschließlich an Ortsgemeinden. Der Landkreis Bad Kreuznach führt kein eigenes Programm; die Programme der Stadt und der VG Bad Kreuznach gelten nur dort.",
+    "searches": [
+      "Klimaschutz-Seite und Förderangebote der VG Rüdesheim gelesen",
+      "Beendigungsmeldung samt Mitteilungsblatt-PDF gelesen",
+      "Ortsgemeinden-Liste der VG gelesen (32 Gemeinden)",
+      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/foerderangebote",
+        "finding": "„Das Förderprogramm richtet sich ausschließlich an die verbandsgemeindeeigenen Ortsgemeinden. Privatpersonen sind nicht antragsberechtigt.“ — daneben nur der Verweis auf die beendete Balkonkraftwerk-Förderung."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet",
+        "finding": "Mitteilungsblatt 24.03.2026: „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“ (100 € je Balkonkraftwerk seit 01.04.2023)"
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien",
+        "finding": "Bundesförderung für drei Potenzialstudien der Kläranlagen (NKI), kein Programm für private Haushalte."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz",
+        "finding": "Klimaschutz-Seite der VG: Förderangebote nur „Förderung von Balkonkraftwerken“ (beendet) und Klimaschutzprojekte für Ortsgemeinden; Beratung über die Verbraucherzentrale."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-ruedesheim.de/klimaschutz/foerderangebote",
+        "disposition": "reviewed",
+        "reason": "Förderangebote der VG gelesen: Klimaschutzprojekte nur für Ortsgemeinden, Balkon-Programm beendet (katalogisiert als vg-ruedesheim-balkonkraftwerke).",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/foerderangebote"
+      },
+      {
+        "url": "vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien",
+        "disposition": "reviewed",
+        "reason": "Geförderte Kläranlagen-Studien der VG-Werke, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien"
+      }
+    ]
   }
 ]

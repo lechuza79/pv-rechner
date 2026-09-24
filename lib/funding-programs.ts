@@ -13519,6 +13519,182 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
     balkonPauschale: 120,
   },
+
+  // ─── Aufgenommen am 24.09.2026: die drei Klimafonds der Samtgemeinde Artland ─
+  //
+  // Gefunden über den Quellen-Vorrat: Die gemeinsame Seite der Samtgemeinde
+  // stand seit Wochen ungelesen für vier Mitgliedsgemeinden darin. Seite und
+  // alle drei Richtlinien am 24.09.2026 an der Quelle im Volltext gelesen
+  // (Quakenbrück liegt nur als eingescanntes Bild vor und wurde Seite für Seite
+  // gelesen); die neun verlinkten Dateien sind byte-identisch mit den Kopien in
+  // der Akte. Council aus drei Prüfern samt adversarialem Prüfer und
+  // Legal-Judge, 24.09.2026. Die vierte Mitgliedsgemeinde, Nortrup, hat keinen
+  // Fonds: Die Seite führt nur die drei hier.
+  //
+  // DIE DACHANLAGE IST ALS PAUSCHALE MODELLIERT, obwohl die Richtlinien „50 %,
+  // höchstens X €" schreiben. Sie muss mindestens 4 kWp haben, und die Hälfte
+  // davon liegt selbst bei reinen Materialkosten (Eigenleistung) über dem
+  // Deckel — die Pauschale ist dieselbe Zahl. `percentOfCost` wäre hier
+  // FALSCHER, nicht genauer: Es rechnet auf die Kosten samt Speicher.
+  //
+  // DER SPEICHER WIRD BEWUSST NICHT GERECHNET. Er ist in allen drei
+  // Richtlinien ein Unterpunkt der Dachanlage ab 4 kWp (§ 3, „b.a)"), also an
+  // sie gebunden; `pvMin` wirkt aber nur auf den PV-Teil, und ein
+  // Speicher-Satz zahlte auch neben einer 3-kWp-Anlage (adversarialer Prüfer).
+  // Dazu kommt „50 %": bei einem kleinen Speicher bindet der Deckel nicht
+  // sicher. Zu wenig anzurechnen ist hier die günstigere Richtung; der Satz
+  // steht auf der Karte.
+  //
+  // DER ANTRAGSZEITPUNKT IST NICHT IN ALLEN DREI GLEICH — BLOCKER. Die Seite
+  // der Samtgemeinde schreibt für alle drei „Kaufen Sie nichts bevor Sie den
+  // Bescheid haben". Die Richtlinien sagen es verschieden: Badbergen verlangt
+  // den vollständigen Antrag vor der Auftragsvergabe (§ 5 Abs. 3), Quakenbrück
+  // und Menslage schließen nur aus, was VOR Inkrafttreten der Richtlinie
+  // beauftragt wurde (§ 5 Abs. 3). „Bescheid abwarten" steht deshalb als Rat
+  // der Samtgemeinde da, nicht als Bedingung der Richtlinie (Legal-Judge).
+  //
+  // An der 600-Wp-Grenze beim Balkonkraftwerk schreiben beide Richtlinien
+  // „< 600 Wp" und „> 600 Wp"; genau 600 Wp regeln sie nicht. Gerechnet wird
+  // dort der kleinere Betrag. Der Speicher am Balkonkraftwerk (50 %, höchstens
+  // 200 €) wird nicht gerechnet — das Modell kennt ihn nicht; er steht als
+  // Satz auf der Karte.
+  "quakenbrueck-klimafonds": {
+    id: "quakenbrueck-klimafonds", name: "Quakenbrücker Klimafonds",
+    traeger: "Stadt Quakenbrück", level: "kommune", region: "Quakenbrück",
+    bundesland: "Niedersachsen", agsCode: "03459030",
+    url: "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2024-03-05", beschlossenIso: "2023-03-13",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss für Dachanlagen ab 4 kWp, Batteriespeicher und Balkonkraftwerke, daneben Dämmung, Lastenräder und Entsiegelung",
+    rates: [
+      { label: "Dachanlage ab 4 kWp", value: "50 %, höchstens 500 €", nur: ["pv"] },
+      { label: "Batteriespeicher zur Dachanlage", value: "50 %, höchstens 500 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk unter 600 Wp", value: "100 €", nur: ["balkon"] },
+      { label: "Balkonkraftwerk über 600 Wp", value: "200 €", nur: ["balkon"] },
+      { label: "Speicher zum Balkonkraftwerk", value: "50 %, höchstens 200 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Privatpersonen mit Erstwohnsitz in Quakenbrück",
+      "Der Auftrag darf nicht vor Inkrafttreten der Richtlinie am 5. März 2024 vergeben worden sein; die Samtgemeinde rät, erst nach dem Bescheid zu kaufen",
+      { text: "Gefördert werden Dachanlagen ab 4 kWp auf bestehenden Gebäuden", nur: ["pv"] },
+      "Mieter brauchen die schriftliche Zustimmung des Vermieters",
+      { text: "Der Speicher wird nur zusammen mit einer geförderten Dachanlage bezuschusst und darf nur erneuerbaren Strom aufnehmen", nur: ["pv"] },
+      "Je Haushalt ein Antrag pro Förderbereich, auch wenn schon nach der Fassung von 2023 gefördert wurde",
+      "Kein Rechtsanspruch; gefördert wird im Rahmen der Haushaltsmittel des Jahres",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    pvTiers: [{ upTo: 999999, amount: 500 }],
+    pvMin: 4,
+    balkonTiers: [{ upTo: 600, amount: 100 }, { upTo: 999999, amount: 200 }],
+  },
+
+  "menslage-klimafonds": {
+    id: "menslage-klimafonds", name: "Menslager Klimafonds",
+    traeger: "Gemeinde Menslage", level: "kommune", region: "Menslage",
+    bundesland: "Niedersachsen", agsCode: "03459025",
+    url: "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-01-01", beschlossenIso: "2025-12-08",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss für Dachanlagen ab 4 kWp, Batteriespeicher und Balkonkraftwerke, daneben Dämmung und Entsiegelung",
+    rates: [
+      { label: "Dachanlage ab 4 kWp", value: "50 %, höchstens 500 €", nur: ["pv"] },
+      { label: "Batteriespeicher zur Dachanlage", value: "50 %, höchstens 500 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk unter 600 Wp", value: "100 €", nur: ["balkon"] },
+      { label: "Balkonkraftwerk über 600 Wp", value: "200 €", nur: ["balkon"] },
+      { label: "Speicher zum Balkonkraftwerk", value: "50 %, höchstens 200 €", nur: ["balkon"] },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Privatpersonen mit Erstwohnsitz in Menslage",
+      "Der Auftrag darf nicht vor Inkrafttreten der Richtlinie am 1. Januar 2026 vergeben worden sein; die Samtgemeinde rät, erst nach dem Bescheid zu kaufen",
+      { text: "Gefördert werden Dachanlagen ab 4 kWp auf bestehenden Gebäuden", nur: ["pv"] },
+      "Mieter brauchen die schriftliche Zustimmung des Vermieters",
+      { text: "Der Speicher wird nur zusammen mit einer geförderten Dachanlage bezuschusst und darf nur erneuerbaren Strom aufnehmen", nur: ["pv"] },
+      "Der Nachweis der Verwendung ist binnen zwei Monaten nach dem Bescheid vorzulegen",
+      "Je Haushalt ein Antrag pro Förderbereich",
+      "Kein Rechtsanspruch; die Richtlinie gilt zunächst bis 31. Dezember 2026",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    pvTiers: [{ upTo: 999999, amount: 500 }],
+    pvMin: 4,
+    balkonTiers: [{ upTo: 600, amount: 100 }, { upTo: 999999, amount: 200 }],
+  },
+
+  // Badbergen steht auf „unsicher": Die Richtlinie tritt nach § 9 jedes Jahr
+  // zum 1. Januar von selbst wieder in Kraft, ausgezahlt wird aber nur aus dem
+  // Haushalt des Jahres (§ 7 Abs. 4) — und die Seite nennt für Badbergen nur
+  // Mittel für 2025, anders als für die beiden Nachbarn. Kein Abzug, bis eine
+  // Amtsquelle Mittel für 2026 nennt (Legal-Judge, 24.09.2026).
+  "badbergen-klimafonds": {
+    id: "badbergen-klimafonds", name: "Badberger Klimafonds",
+    traeger: "Gemeinde Badbergen", level: "kommune", region: "Badbergen",
+    bundesland: "Niedersachsen", agsCode: "03459007",
+    url: "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland",
+    stand: "September 2026", status: "unsicher", capped: true, verified: true,
+    beginntIso: "2025-06-23", beschlossenIso: "2023-03-13",
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss für Dachanlagen ab 4 kWp und Batteriespeicher, daneben Dämmung, Lastenräder und Entsiegelung — Balkonkraftwerke nicht",
+    rates: [
+      { label: "Dachanlage ab 4 kWp", value: "50 %, höchstens 250 €" },
+      { label: "Batteriespeicher zur Dachanlage", value: "50 %, höchstens 250 €" },
+    ],
+    conditions: [
+      "Ob 2026 Haushaltsmittel bereitstehen, ist nicht bestätigt; die Seite nennt nur Mittel für 2025",
+      "Antragsberechtigt sind Privatpersonen mit Erstwohnsitz in Badbergen oder mit einem vermieteten Objekt dort",
+      "Der vollständige Antrag muss vorliegen, bevor der Auftrag vergeben wird",
+      "Gefördert werden Dachanlagen ab 4 kWp auf bestehenden Gebäuden",
+      "Der Speicher wird nur zusammen mit einer geförderten Dachanlage bezuschusst und darf nur erneuerbaren Strom aufnehmen",
+      "Je Haushalt ein Antrag pro Förderbereich",
+      "Kein Rechtsanspruch; bearbeitet wird in der Reihenfolge der Eingänge",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+    pvTiers: [{ upTo: 999999, amount: 250 }],
+    pvMin: 4,
+  },
+
+  // ─── Aufgenommen am 24.09.2026: VG Rüdesheim (Nahe), beendetes Programm ─────
+  //
+  // Gefunden über den Quellen-Vorrat (Seite „Förderangebote" der
+  // Verbandsgemeinde, fünf Quellzeilen). Beendet — aufgenommen trotzdem, weil
+  // „gab es, ist beendet" eine echte Auskunft ist (Betreiber, 17.08.2026).
+  // Beleg: Mitteilungsblatt vom 24.03.2026, als PDF auf der Seite verlinkt und
+  // am 24.09.2026 gelesen: Start 01.04.2023, 100 € je Anlage, Wechselrichter
+  // zunächst 600 W, ab 2024 bis 800 W, insgesamt 120.000 €, „vollständig
+  // ausgeschöpft … planmäßig eingestellt". Ein adversarialer Prüfer fand weder
+  // eine Neuauflage noch ein früheres Ende. Fördergebiet: alle 32
+  // Ortsgemeinden laut Ortsgemeinden-Seite der VG, jeder Schlüssel im
+  // Melderegister nachgeschlagen — Oberhausen AN DER NAHE (07133074), nicht
+  // Oberhausen bei Kirn im selben Kreis. Bedingungen der Richtlinie von 2023
+  // hat nur der Prüfer im Archiv gelesen; sie stehen deshalb nicht hier.
+  "vg-ruedesheim-balkonkraftwerke": {
+    id: "vg-ruedesheim-balkonkraftwerke", name: "Förderprogramm für Balkonkraftwerke",
+    traeger: "Verbandsgemeinde Rüdesheim", level: "kommune", region: "Verbandsgemeinde Rüdesheim",
+    bundesland: "Rheinland-Pfalz", agsCode: "07133117",
+    agsCodes: [
+      "07133002", "07133004", "07133013", "07133014", "07133015", "07133019",
+      "07133021", "07133027", "07133033", "07133036", "07133040", "07133044",
+      "07133048", "07133061", "07133068", "07133070", "07133071", "07133074",
+      "07133075", "07133086", "07133088", "07133089", "07133098", "07133099",
+      "07133100", "07133101", "07133105", "07133107", "07133109", "07133112",
+      "07133115", "07133117",
+    ],
+    url: "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2023-04-01", endetIso: "2026-03",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Balkonkraftwerk — Programm beendet",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € je Anlage — Programm beendet" }],
+    conditions: [
+      "Die Mittel von insgesamt 120.000 € sind ausgeschöpft; die Verbandsgemeinde hat das Programm im März 2026 eingestellt",
+      "Gefördert wurden Balkonkraftwerke mit zunächst 600 W, ab 2024 bis 800 W Wechselrichterleistung",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

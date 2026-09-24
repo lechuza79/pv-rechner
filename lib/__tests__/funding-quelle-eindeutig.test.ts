@@ -40,6 +40,8 @@ const GETEILTE_ADRESSE_ERLAUBT: Record<string, string> = {
   // each technique has its own guideline PDF, but only the page carries the stop
   // of 16.11.2023 and the decision not to continue - which is what the page
   // watcher must see if the state ever restarts it.
+  "https://www.artland.de/politik-verwaltung/kommunale-foerderungen/foerderprogramm-klimafonds-in-der-samtgemeinde-artland":
+    "Eine Seite der Samtgemeinde Artland für die Klimafonds von Quakenbrück, Badbergen und Menslage, je eigener Reiter und eigene Richtlinie; eine eigene Seite je Gemeinde gibt es nicht (24.09.2026)",
   "https://www.schleswig-holstein.de/de/landesregierung/themen/energie/energiewende/foerderung/klimaschutz_bub/klimaschutz_bub":
     "Eine Programmseite des Landes für drei Fördergegenstände, je eigene Richtlinie verlinkt",
 };

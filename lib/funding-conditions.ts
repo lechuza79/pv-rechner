@@ -145,6 +145,17 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Bedingungen stehen vollständig auf der Karte, der Kontingent-Hinweis als
   // erste Zeile und die Antragsreihenfolge weiter oben. Prüfform, sobald es
   // eine Prüfform für „Antrag NACH Kauf" gibt.
+  // Die drei Klimafonds der Samtgemeinde Artland, aufgenommen am 24.09.2026.
+  // Der Antragszeitpunkt ist in den drei Richtlinien VERSCHIEDEN geregelt
+  // (Badbergen: vollständiger Antrag vor Auftragsvergabe; Quakenbrück und
+  // Menslage: nur kein Auftrag vor Inkrafttreten der Richtlinie), und der Rat
+  // der Samtgemeinde „erst nach dem Bescheid kaufen" steht nur auf der Seite.
+  // Eine Prüfform „vor-auftrag" gäbe bei zwei von dreien eine Pflicht aus, die
+  // die Richtlinie nicht kennt. Alle Bedingungen stehen auf der Karte.
+  "quakenbrueck-klimafonds", "menslage-klimafonds", "badbergen-klimafonds",
+  // VG Rüdesheim, aufgenommen am 24.09.2026 als BEENDETES Programm; es gibt
+  // nichts mehr zu beantragen und damit nichts zu prüfen.
+  "vg-ruedesheim-balkonkraftwerke",
   "vg-langenlonsheim-stromberg-balkonkraftwerke",
   "vg-hoehr-grenzhausen-balkonkraftwerke",
   "vg-kandel-balkonkraftwerke",
