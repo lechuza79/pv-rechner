@@ -13696,6 +13696,65 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // ─── Aufgenommen am 24.09.2026: VG Bad Kreuznach, beendetes Programm ───────
+  //
+  // Gefunden als Nebenbefund beim Abschluss der VG Rüdesheim (Websuche nach
+  // Programmen im Landkreis, 24.09.2026) und nicht im Katalog. Beendet —
+  // aufgenommen trotzdem, weil „gab es, ist beendet" eine echte Auskunft ist
+  // (Betreiber, 17.08.2026). NICHT zu verwechseln mit dem Programm der STADT
+  // Bad Kreuznach (bad-kreuznach-balkonkraftwerke, 250 €, läuft): Die Stadt
+  // gehört nicht zur Verbandsgemeinde.
+  //
+  // Belege, alle am 24.09.2026 gelesen:
+  // - Richtlinie vom 26.06.2024 (unterschrieben, gesiegelt, drei Seiten, als
+  //   Scan — nur über das Archiv der Amtsseite abrufbar, Kopie vom
+  //   13.02.2025, live antwortet die Adresse mit 404): 210 € pauschal je
+  //   Wohneinheit und Antragstellendem, höchstens 2.000 W Module und 800 W
+  //   Wechselrichter, Rechnungsdatum ab 01.07.2024, Privatpersonen mit
+  //   Hauptwohnsitz in der VG (Eigentümer selbstgenutzter Wohngebäude UND
+  //   Mieter), keine andere Förderung für dieselbe Anlage (Nr. 4 Abs. 4).
+  //   Nr. 8: „Die Anträge können vom 01.07.2024 bis maximal 31.12.2025
+  //   gestellt werden." 210.000 € für 1.000 Anlagen; Verlängerung vorbehalten.
+  // - Seite „Förderprogramme" der VG: im Archiv vom 24.04.2025 mit dem
+  //   Programm, im Archiv vom 21.02.2026 ohne es (nur noch LEADER-Aufrufe),
+  //   live am 24.09.2026 HTTP 404. Die Startseite und das gesamte Menü nennen
+  //   am 24.09.2026 kein Balkonkraftwerk-Programm mehr.
+  // Eine Verlängerung ist damit nicht belegt, ein früheres Ende durch
+  // Ausschöpfung aber auch nicht — endetIso deshalb nur als Monat der
+  // Richtlinienfrist.
+  // Fördergebiet: die 13 Ortsgemeinden laut Gemeinden-Menü der VG, jeder
+  // Schlüssel im Melderegister nachgeschlagen (foerder:ags, 24.09.2026).
+  // Council 3/3 am 24.09.2026, ein Prüfer adversarial und als Legal-Judge;
+  // freigegeben mit den hier eingearbeiteten Änderungen.
+  "vg-bad-kreuznach-balkonkraftwerke": {
+    id: "vg-bad-kreuznach-balkonkraftwerke", name: "Balkonkraftwerke für Privathaushalte",
+    traeger: "Verbandsgemeinde Bad Kreuznach", level: "kommune", region: "Verbandsgemeinde Bad Kreuznach",
+    bundesland: "Rheinland-Pfalz",
+    agsCodes: [
+      "07133003", "07133012", "07133030", "07133031", "07133032", "07133037",
+      "07133039", "07133045", "07133069", "07133078", "07133080", "07133104",
+      "07133106",
+    ],
+    // The programme page and the guideline answer 404; an archive address as
+    // url would let the page watcher stamp a frozen copy as a live check, so
+    // the link is the Verbandsgemeinde's own homepage. verified rests on the
+    // archived guideline and programme page, not on a live reading.
+    url: "https://www.vg-badkreuznach.de/",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    beginntIso: "2024-07-01", endetIso: "2025-12",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Balkonkraftwerk — Programm beendet",
+    rates: [{ label: "Balkonkraftwerk", value: "210 € je Wohneinheit — Programm beendet" }],
+    conditions: [
+      "Anträge waren laut Richtlinie bis höchstens 31.12.2025 möglich; die Verbandsgemeinde führt das Programm spätestens seit Februar 2026 nicht mehr auf ihrer Förderseite",
+      "Gefördert wurden Balkonkraftwerke mit höchstens 2.000 W Modulleistung und 800 W Wechselrichter, neu gekauft ab 01.07.2024",
+      "Antragsberechtigt waren Eigentümer selbstgenutzter Wohngebäude und Mieter mit Hauptwohnsitz in der Verbandsgemeinde",
+      "Nicht mit anderen Förderprogrammen für dieselbe Anlage kombinierbar",
+    ],
+    combinableWith: [],
+    foerdert: ["balkon"],
+  },
+
   // ─── Aufgenommen am 24.09.2026: Stadt Bad Kreuznach, Balkonkraftwerke ──────
   //
   // Gefunden als Nebenbefund beim Abschluss der VG Rüdesheim (Suche nach

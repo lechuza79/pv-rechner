@@ -29534,7 +29534,7 @@
   {
     "regionId": "07143231",
     "name": "Hahn bei Marienberg",
-    "checkedAt": "2026-09-17T03:22:18.694850+00:00",
+    "checkedAt": "2026-09-24T10:25:00Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -29585,6 +29585,10 @@
       {
         "url": "https://westerwaldkreis.klimaschutzportal.rlp.de/portal/aktiv-vor-ort/vg-bad-marienberg",
         "finding": "Zusätzliche unabhängige Prüfung: Privatfördermeldung 2023 beschreibt Vorgänger des bekannten VG-Programms, keinen weiteren aktuell offenen Topf; durch Richtlinie 2026 ersetzt/vereinigt."
+      },
+      {
+        "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "finding": "Förderrichtlinie der VG Bad Marienberg 2026 (22 Seiten) am 24.09.2026 erneut gelesen: Anlage 3 nennt Wärmepumpe 1.000 € pauschal, Brauchwasserwärmepumpe 500 €, Stromspeicher für PV sowie Balkonkraftwerke „100 EUR / Kilowatt pauschal, maximal 600 EUR“ — deckungsgleich mit dem Katalogeintrag bad-marienberg-erneuerbare-energien (Mittel 2026 laut Mitteilung vom 16.09.2026 ausgeschöpft)."
       }
     ],
     "sources": [
@@ -29623,6 +29627,12 @@
         "disposition": "replaced",
         "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozgleistung mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Richtlinie, die dem Katalogeintrag bad-marienberg-erneuerbare-energien zugrunde liegt; Anlage 3 unverändert.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
       }
     ]
   },
@@ -29754,7 +29764,7 @@
   {
     "regionId": "07143234",
     "name": "Hardt",
-    "checkedAt": "2026-09-17T08:17:21.948987+00:00",
+    "checkedAt": "2026-09-24T10:25:00Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -29846,6 +29856,12 @@
         "disposition": "replaced",
         "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozgleistung mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Richtlinie, die dem Katalogeintrag bad-marienberg-erneuerbare-energien zugrunde liegt; Anlage 3 unverändert.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
       }
     ]
   },
@@ -30788,7 +30804,7 @@
   {
     "regionId": "07143255",
     "name": "Lautzenbrücken",
-    "checkedAt": "2026-09-17T10:06:34.758882+00:00",
+    "checkedAt": "2026-09-24T10:25:00Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -30888,6 +30904,12 @@
         "disposition": "replaced",
         "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozgleistung mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Richtlinie, die dem Katalogeintrag bad-marienberg-erneuerbare-energien zugrunde liegt; Anlage 3 unverändert.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
       }
     ]
   },
@@ -32971,7 +32993,7 @@
   {
     "regionId": "07143297",
     "name": "Stockhausen-Illfurth",
-    "checkedAt": "2026-09-17T10:06:34.758882+00:00",
+    "checkedAt": "2026-09-24T10:25:00Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
@@ -33071,6 +33093,12 @@
         "disposition": "replaced",
         "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozgleistung mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Richtlinie, die dem Katalogeintrag bad-marienberg-erneuerbare-energien zugrunde liegt; Anlage 3 unverändert.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
       }
     ]
   },
@@ -49202,7 +49230,7 @@
   {
     "regionId": "13076007",
     "name": "Barnin",
-    "checkedAt": "2026-09-18T06:15:00Z",
+    "checkedAt": "2026-09-24T10:25:00Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -49251,6 +49279,10 @@
       {
         "url": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union",
         "finding": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "finding": "Eintrag eines Unternehmens im Bereich „Externe Nutzer“ (Kategorie Unternehmen, Hinweis: „Für diese Seite ist … das Unternehmen … selbst verantwortlich“): Werbung eines Solar-Installateurs mit 400 € Cashback für Weiterempfehlungen. Kein kommunales Förderprogramm."
       }
     ],
     "sources": [
@@ -49289,6 +49321,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte.",
         "evidenceUrl": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union"
+      },
+      {
+        "url": "amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "disposition": "reviewed",
+        "reason": "Selbstdarstellung eines privaten Installateurs auf der Amtsseite, kein Zuschuss der Gemeinde oder des Amtes.",
+        "evidenceUrl": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma"
       }
     ]
   },
@@ -50792,7 +50830,7 @@
   {
     "regionId": "13076044",
     "name": "Gneven",
-    "checkedAt": "2026-09-18T06:15:00Z",
+    "checkedAt": "2026-09-24T10:25:00Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -50841,6 +50879,10 @@
       {
         "url": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union",
         "finding": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "finding": "Eintrag eines Unternehmens im Bereich „Externe Nutzer“ (Kategorie Unternehmen, Hinweis: „Für diese Seite ist … das Unternehmen … selbst verantwortlich“): Werbung eines Solar-Installateurs mit 400 € Cashback für Weiterempfehlungen. Kein kommunales Förderprogramm."
       }
     ],
     "sources": [
@@ -50879,6 +50921,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte.",
         "evidenceUrl": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union"
+      },
+      {
+        "url": "amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "disposition": "reviewed",
+        "reason": "Selbstdarstellung eines privaten Installateurs auf der Amtsseite, kein Zuschuss der Gemeinde oder des Amtes.",
+        "evidenceUrl": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma"
       }
     ]
   },
@@ -52156,7 +52204,7 @@
   {
     "regionId": "13076080",
     "name": "Langen Brütz",
-    "checkedAt": "2026-09-18T06:15:00Z",
+    "checkedAt": "2026-09-24T10:25:00Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -52205,6 +52253,10 @@
       {
         "url": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union",
         "finding": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "finding": "Eintrag eines Unternehmens im Bereich „Externe Nutzer“ (Kategorie Unternehmen, Hinweis: „Für diese Seite ist … das Unternehmen … selbst verantwortlich“): Werbung eines Solar-Installateurs mit 400 € Cashback für Weiterempfehlungen. Kein kommunales Förderprogramm."
       }
     ],
     "sources": [
@@ -52243,6 +52295,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte.",
         "evidenceUrl": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union"
+      },
+      {
+        "url": "amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "disposition": "reviewed",
+        "reason": "Selbstdarstellung eines privaten Installateurs auf der Amtsseite, kein Zuschuss der Gemeinde oder des Amtes.",
+        "evidenceUrl": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma"
       }
     ]
   },
@@ -54848,7 +54906,7 @@
   {
     "regionId": "13076158",
     "name": "Zapel",
-    "checkedAt": "2026-09-18T06:15:00Z",
+    "checkedAt": "2026-09-24T10:25:00Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -54897,6 +54955,10 @@
       {
         "url": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union",
         "finding": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "finding": "Eintrag eines Unternehmens im Bereich „Externe Nutzer“ (Kategorie Unternehmen, Hinweis: „Für diese Seite ist … das Unternehmen … selbst verantwortlich“): Werbung eines Solar-Installateurs mit 400 € Cashback für Weiterempfehlungen. Kein kommunales Förderprogramm."
       }
     ],
     "sources": [
@@ -54935,6 +54997,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte.",
         "evidenceUrl": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union"
+      },
+      {
+        "url": "amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "disposition": "reviewed",
+        "reason": "Selbstdarstellung eines privaten Installateurs auf der Amtsseite, kein Zuschuss der Gemeinde oder des Amtes.",
+        "evidenceUrl": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma"
       }
     ]
   },
@@ -60067,7 +60135,7 @@
   {
     "regionId": "07133088",
     "name": "Sankt Katharinen",
-    "checkedAt": "2026-09-24T08:12:00Z",
+    "checkedAt": "2026-09-24T10:25:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -60094,6 +60162,10 @@
       {
         "url": "https://www.vg-ruedesheim.de/klimaschutz",
         "finding": "Klimaschutz-Seite der VG: Förderangebote nur „Förderung von Balkonkraftwerken“ (beendet) und Klimaschutzprojekte für Ortsgemeinden; Beratung über die Verbraucherzentrale."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "finding": "Mitteilungsblatt vom 24.03.2026: „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“ 100 € je Anlage seit 01.04.2023, insgesamt 120.000 € — deckungsgleich mit dem Katalogeintrag vg-ruedesheim-balkonkraftwerke (eingestellt)."
       }
     ],
     "sources": [
@@ -60108,13 +60180,19 @@
         "disposition": "reviewed",
         "reason": "Geförderte Kläranlagen-Studien der VG-Werke, außerhalb des Umfangs.",
         "evidenceUrl": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien"
+      },
+      {
+        "url": "vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "disposition": "reviewed",
+        "reason": "Beendigungsmeldung des bereits als eingestellt katalogisierten VG-Programms; kein weiteres Programm.",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj"
       }
     ]
   },
   {
     "regionId": "07133098",
     "name": "Sommerloch",
-    "checkedAt": "2026-09-24T08:12:00Z",
+    "checkedAt": "2026-09-24T10:25:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -60141,6 +60219,10 @@
       {
         "url": "https://www.vg-ruedesheim.de/klimaschutz",
         "finding": "Klimaschutz-Seite der VG: Förderangebote nur „Förderung von Balkonkraftwerken“ (beendet) und Klimaschutzprojekte für Ortsgemeinden; Beratung über die Verbraucherzentrale."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "finding": "Mitteilungsblatt vom 24.03.2026: „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“ 100 € je Anlage seit 01.04.2023, insgesamt 120.000 € — deckungsgleich mit dem Katalogeintrag vg-ruedesheim-balkonkraftwerke (eingestellt)."
       }
     ],
     "sources": [
@@ -60155,6 +60237,12 @@
         "disposition": "reviewed",
         "reason": "Geförderte Kläranlagen-Studien der VG-Werke, außerhalb des Umfangs.",
         "evidenceUrl": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien"
+      },
+      {
+        "url": "vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "disposition": "reviewed",
+        "reason": "Beendigungsmeldung des bereits als eingestellt katalogisierten VG-Programms; kein weiteres Programm.",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj"
       }
     ]
   }
