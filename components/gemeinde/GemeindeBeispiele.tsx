@@ -173,10 +173,10 @@ export default function GemeindeBeispiele({
                     </span>
                   </p>
                 )}
-              </div>
               <a className="v3-example-cta sc-feature-action" href={k.href}>
                 {k.cta} {pfeil}
               </a>
+              </div>
             </article>
           ))}
         </div>

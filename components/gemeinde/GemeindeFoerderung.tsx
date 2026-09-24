@@ -35,13 +35,6 @@ const MOTIV: Record<FundingTechnik, string> = {
   waermepumpe: "heatpump-modern",
 };
 
-const EBENE_WORT: Record<string, string> = {
-  kommune: "Programm der Gemeinde",
-  landkreis: "Programm des Landkreises",
-  land: "Landesprogramm",
-  bund: "Bundesprogramm",
-};
-
 const pfeil = (
   <svg className="sc-live-icon" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
     <path d="M3.333 8h9.334m0 0L8 3.333M12.667 8 8 12.667" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -73,6 +66,38 @@ export default function GemeindeFoerderung({
   }, [offen]);
 
   const aktive = programme.filter((p) => p.zaehlt);
+  const archiviert = (p: FoerderProgrammAnsicht) => ["ausgeschoepft", "eingestellt", "pausiert"].includes(p.programm.status);
+  const archiv = programme.filter(archiviert);
+  const aktuell = programme.filter((p) => !archiviert(p));
+  const karten = (liste: FoerderProgrammAnsicht[]) => (
+        <div className="v3-examples sc-feature-list gemeinde-foerder-liste">
+          {liste.map((p) => {
+            const satz = saetzeFuer(p.programm.rates)[0];
+            const techniken = technikenVon(p.programm);
+            return (
+              <article key={p.programm.id} className="sc-feature-card">
+                {/* @ts-expect-error — web component from /illustrations-motion/solar-illustrations.js */}
+                <solar-illustration
+                  class="v3-example-art sc-feature-visual"
+                  motif={MOTIV[techniken[0]] ?? "house"}
+                  label={TECHNIK_WORT[techniken[0]] ?? "Förderung"}
+                  circle=""
+                  loading="lazy"
+                />
+                <div className="v3-example-copy sc-feature-content">
+                  <div className="gemeinde-foerder-kopf"><p className="atlas-kicker">{techniken.map((t) => TECHNIK_WORT[t]).join(" · ")}</p><FundingStatusBadge status={p.programm.status} /></div>
+                  <h3>{p.programm.name}</h3>
+                  <p>{satz ? `${satz.value}${satz.label ? ` · ${satz.label}` : ""}` : p.programm.coveredCosts}</p>
+                  <p className="gemeinde-foerder-ebene"><a href={p.programm.url} target="_blank" rel="noopener noreferrer">{p.programm.traeger} ↗</a></p>
+                <button type="button" className="v3-example-cta sc-feature-action" onClick={() => setOffen(p)}>
+                  Einzelheiten {pfeil}
+                </button>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+  );
   return (
     <div className="v3-examples-foerderung" id="atlas-foerderung">
       <h3>Förderung in {ort}</h3>
@@ -88,35 +113,11 @@ export default function GemeindeFoerderung({
           Abstände, und nichts davon passte zur Seite. Hier kommt nur der
           Inhalt hinzu; Aufbau, Bild und Knopf sind die des geteilten
           Bausteins. */}
-      {programme.length > 0 && (
-        <div className="v3-examples sc-feature-list gemeinde-foerder-liste">
-          {programme.map((p) => {
-            const satz = saetzeFuer(p.programm.rates)[0];
-            const techniken = technikenVon(p.programm);
-            return (
-              <article key={p.programm.id} className="sc-feature-card">
-                {/* @ts-expect-error — web component from /illustrations-motion/solar-illustrations.js */}
-                <solar-illustration
-                  class="v3-example-art sc-feature-visual"
-                  motif={MOTIV[techniken[0]] ?? "house"}
-                  label={TECHNIK_WORT[techniken[0]] ?? "Förderung"}
-                  circle=""
-                  loading="lazy"
-                />
-                <div className="v3-example-copy sc-feature-content">
-                  <p className="atlas-kicker">{techniken.map((t) => TECHNIK_WORT[t]).join(" · ")}</p>
-                  <h3>{p.programm.name}</h3>
-                  <p>{satz ? `${satz.value}${satz.label ? ` · ${satz.label}` : ""}` : p.programm.coveredCosts}</p>
-                  <p className="gemeinde-foerder-ebene">{EBENE_WORT[p.programm.level] ?? p.programm.traeger}</p>
-                </div>
-                <button type="button" className="v3-example-cta sc-feature-action" onClick={() => setOffen(p)}>
-                  Einzelheiten {pfeil}
-                </button>
-              </article>
-            );
-          })}
-        </div>
-      )}
+      {aktuell.length > 0 && karten(aktuell)}
+      {archiv.length > 0 && <details className="gemeinde-foerder-archiv">
+        <summary>Archiv: derzeit nicht verfügbare Förderprogramme ({archiv.length})</summary>
+        {karten(archiv)}
+      </details>}
 
       {/* aria-modal, damit die Farbtoken der Site in diesem Fenster gelten —
           die Sätze und Bedingungen kommen aus den geteilten Bausteinen. */}
