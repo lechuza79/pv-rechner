@@ -150,7 +150,7 @@ test.describe("Gemeindeseite", () => {
     await expect(abschnitt).toContainText("Förderung in Nidda");
     // Dieselbe Karte wie die Beispielrechnungen darueber (sc-feature-card).
     const box = abschnitt.locator(".sc-feature-card").first();
-    const knopf = box.locator("button.sc-feature-action");
+    const knopf = box.locator("button.sc-feature-action:not(.gemeinde-foerder-melden)");
     await expect(box).toContainText("Photovoltaik");
     // Der Dialog steht immer im Dokument; geöffnet ist er erst mit [open].
     const fenster = page.locator("dialog.gemeinde-foerder-dialog[open]");
