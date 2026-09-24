@@ -1,6 +1,7 @@
 import React, {useId} from 'react';
 import {storyCountGrid} from '../../lib/story-count-grid';
 import styles from './MonitorComposition.module.css';
+import {CompositionBackdrop} from '../social/CompositionBackdrop';
 
 type CompositionStory = {
   countComparison?: {total: number; selected: number; label: string};
@@ -20,8 +21,6 @@ export function MonitorComposition({story}: {story: CompositionStory}) {
 
   const {cells, perCell} = storyCountGrid(counts.total, counts.selected);
   const gradientId = useId();
-  const isBalcony = /balkon|stecker/i.test(counts.label);
-  const image = isBalcony ? '/shared-nav/illustrations/balcony-modern-neon.webp' : '/shared-nav/illustrations/house-neon.webp';
   const powerLabel = `${powerShare.toLocaleString('de-DE')} Prozent der Solarleistung`;
 
   // Use a filled annular sector: tiny shares must not depend on dash rendering.
@@ -32,7 +31,7 @@ export function MonitorComposition({story}: {story: CompositionStory}) {
   const largeArc = share > 50 ? 1 : 0;
   const sector = `M50 5 A45 45 0 ${largeArc} 1 ${outerX} ${outerY} L${innerX} ${innerY} A35 35 0 ${largeArc} 0 50 15 Z`;
   return <div className={styles.chart}>
-    <img className={styles.background} src={image} alt="" aria-hidden="true" />
+    <CompositionBackdrop label={counts.label} />
     <div className={styles.top}>
       <div className={styles.power}>
         <svg viewBox="0 0 100 100" role="img" aria-label={powerLabel}>
