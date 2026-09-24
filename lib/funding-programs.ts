@@ -6006,11 +6006,18 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   // Eintrag am 01.01.2027 „beendet" — der Seiten-Wächter fängt das nicht, weil
   // die Stadt dieselbe Adresse weiterbenutzt.
   //
-  // OFFEN, eigener Vorgang: Dieselbe Stadt fördert über die „Sanierungsprämie"
-  // (Stand 15.04.2026) unter „Modul B II: Heizungstausch" auch den Einbau einer
-  // strombetriebenen Wärmepumpe, „Die Antragsstellung ist ab sofort möglich".
-  // Im Wärmepumpen-Fördercheck steht Tübingen damit heute als Ort ohne
-  // kommunale Förderung da. Aufnahme braucht ihren eigenen Quellen-Lauf.
+  // ERLEDIGT am 24.09.2026: Die Wärmepumpen-Förderung derselben Stadt steht
+  // jetzt als `tuebingen-sanierungspraemie-wp` im Katalog, ebenfalls ohne
+  // Rechenwert.
+  //
+  // WARNUNG AUS JENEM EINTRAG, die HIER dieselbe ist: Die Sanierungsprämie
+  // schließt die Kombination mit anderen Förderprogrammen der Stadt aus.
+  // Heute kollidiert nichts — keines der drei Tübinger Programme trägt einen
+  // Rechenwert, und PV- und Wärmepumpen-Rechner fragen getrennt. Fällt die
+  // Vollbelegungs-Hürde oben je weg und bekommt dieser Eintrag seine
+  // kWp-Staffel, rechnen zwei Programme, deren Kombination die Stadt
+  // verbietet — in zwei getrennten Rechnern, also ohne dass `stackFunding`
+  // es je sähe.
   "tuebingen-pv-speicher": {
     id: "tuebingen-pv-speicher", name: "Photovoltaik und Batteriespeicher",
     traeger: "Universitätsstadt Tübingen", level: "kommune", region: "Tübingen",
@@ -6049,6 +6056,141 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
     foerdert: ["pv"],
+  },
+
+  // GEFUNDEN AM 24.09.2026, als benannter Folgefall des Tübinger PV-Eintrags:
+  // Dieselbe Stadt fördert über die „Sanierungsprämie" auch den Einbau einer
+  // strombetriebenen Wärmepumpe. Im Wärmepumpen-Fördercheck stand Tübingen
+  // damit als Ort ohne kommunale Förderung da — dieselbe Falschauskunft wie
+  // ein zu hoher Betrag, nur andersherum.
+  //
+  // Alles am 24.09.2026 an der Trägerseite im Volltext gelesen: Übersicht
+  // (tuebingen.de/tuebingen-macht-blau/33173.html), „Ziel und Gegenstand"
+  // (33173/46946), „Grundsätze" (46942), „Antragsberechtigung" (46941),
+  // Modul A (46940), Modul B I (46939), Modul B II (46938), Rückzahlung
+  // (46937), Zuständigkeit (46935), dazu die Pressemitteilung vom 15.07.2026
+  // (46316/47565). EIN RICHTLINIEN-PDF GIBT ES NICHT: Die Seiten SIND die
+  // Richtlinie („Förderrichtlinien und Antragstellung: Stand 15. April 2026")
+  // — dieselbe Bauart wie beim PV-Programm derselben Stadt.
+  //
+  // BEWUSST OHNE Rechenwert (kein `wpPauschale`). Tragend ist GENAU EIN Grund:
+  //   DIE VORBEDINGUNG KOSTET MEHR, ALS DAS PROGRAMM ZAHLT. Modul B II setzt
+  //   einen individuellen Sanierungsfahrplan nach der Bundesförderung
+  //   Energieberatung für Wohngebäude voraus, höchstens fünf Jahre alt, mit
+  //   der Wärmepumpe als empfohlener Maßnahme. Das ist keine kostenlose
+  //   Formalie wie eine Registeranmeldung, sondern eine BEPREISTE Vorstufe:
+  //   Die BAFA trägt 50 % des Beratungshonorars, höchstens 650 € beim
+  //   Einfamilienhaus (am 24.09.2026 an der Behördenseite gelesen) — der
+  //   Eigenanteil ist also immer mindestens die Hälfte. Tübingen zahlt im
+  //   Referenzfall unseres Rechners (Einfamilienhaus, Luft/Wasser) 500 €.
+  //   Ein Abzug wäre nur dann ein Gewinn, wenn der Fahrplan unter 1.000 €
+  //   brutto kostet. Und er fällt auf dem Weg zur Wärmepumpe auch nicht
+  //   nebenbei an: Die BEG-EM-Richtlinie (17.07.2026, Nr. 8.4.2 letzter Satz,
+  //   Volltext in docs/quellen/) nimmt Leistungen nach Nr. 5.3 — den
+  //   Heizungstausch — AUSDRÜCKLICH vom iSFP-Bonus aus, und das KfW-Merkblatt
+  //   458 kennt den Begriff überhaupt nicht. 500 € abzuziehen hieße also, eine
+  //   Vorleistung zu unterschlagen, die den Abzug auffrisst: Das Ergebnis wäre
+  //   nicht zu vorsichtig, sondern in der SCHÄDLICHEN Richtung falsch (zu
+  //   niedrige Nettokosten, zu kurze Amortisation).
+  // NICHT TRAGEND, obwohl naheliegend, und deshalb ausdrücklich benannt:
+  //   · Die Bauart-Staffel. Sie hat vier Zeilen, für unsere Nutzer aber nur
+  //     ZWEI: Der Rechner hat gar keine Mehrfamilienhaus-Option, und `HAUSTYP_WP`
+  //     meint geteilte Wände, nicht Wohneinheiten — alle vier Einträge dort
+  //     sind „EFH" im Sinne des Programms („bis zu zwei Wohneinheiten").
+  //     `wpType` kennt Luft/Wasser und Sole/Wasser; `wpPauschale: 500` wäre für
+  //     den Vorgabefall exakt. Rechnen wäre also MÖGLICH — es ist eine
+  //     Entscheidung, kein Sachzwang. Wer hier „geht nicht" liest, hat die
+  //     Widerlegung frei Haus.
+  //   · Windhundprinzip, Haushaltsvorbehalt, fehlender Rechtsanspruch. Das ist
+  //     `capped: true` und sonst nichts; der PV-Eintrag derselben Stadt sagt
+  //     das bereits.
+  //   Beide wurden vom Council am 24.09.2026 als Mitbegründung gestrichen
+  //   (drei Prüfer, adversarialer und Legal-Judge eingeschlossen).
+  //
+  // ZWEI VERSCHIEDENE 60-%-GRENZEN, DIE NEBENEINANDER GELTEN — nicht
+  // verrechnen. Die Stadt verlangt, dass KfW 458 plus städtischer Zuschuss
+  // 60 % der Investitionskosten FÜR DIE WÄRMEPUMPE nicht übersteigen; das ist
+  // eine Fördervoraussetzung (wird sie gerissen, entfällt der städtische
+  // Zuschuss ganz, er wird nicht gekappt). Die BEG-Grenze in Nr. 8.6 zählt
+  // dagegen ALLE öffentlichen Mittel gegen die am Höchstbetrag gekappten
+  // Kosten der ganzen Maßnahme und kürzt im Überschreitungsfall die
+  // BUNDES-Förderung. Praktische Folge, die in die Bedingungen gehört: Wer über
+  // den Einkommens-Bonus auf 70 % kommt, ist mit der BEG allein zulässig
+  // unterwegs — nimmt er die 500 € der Stadt dazu, löst er Nr. 8.6 aus und
+  // verliert am Bund mehr, als er in der Stadt gewinnt. `begKumulierungsGrenze`
+  // ist deshalb NICHT dieselbe Zahl und darf hier nicht herangezogen werden.
+  //
+  // KEIN `endetIso`: Die Sanierungsprämie nennt kein Enddatum — anders als das
+  // PV-Programm derselben Stadt, das ausdrücklich nur 2026 läuft. Das Datum
+  // von dort herüberzukopieren wäre eine erfundene Frist. `beginntIso` ist das
+  // früheste zulässige Rechnungsdatum, nicht der Programmstart (das Programm
+  // besteht seit 2016).
+  //
+  // DER EWÄRMEG-AUSSCHLUSS STEHT IM WORTLAUT DER STADT, OHNE UNSERE DEUTUNG.
+  // Er ist die schärfste Klausel des Programms: In Baden-Württemberg löst gerade
+  // der Heizungstausch die Landespflicht zu 15 % erneuerbarer Wärme aus, und
+  // eine Wärmepumpe erfüllt sie nach der amtlichen Übersicht des
+  // Umweltministeriums allein und vollständig. Wörtlich gelesen träfe der
+  // Ausschluss damit den Regelfall. Gegen eine Gattungssperre sprechen drei
+  // Belege aus der Quelle selbst: Die Klausel hängt an der tatsächlichen
+  // Anrechnung („genutzt werden"), nicht an der Eignung · der zweite
+  // Aufzählungspunkt nimmt strombetriebene Wärmepumpen ausdrücklich von der
+  // Heizungssperre aus, was bei der weiten Lesart leerliefe · und die
+  // Pressemitteilung nennt Höchstsummen (3.500 € / 7.000 €), die sich nur mit
+  // Modul B II erreichen lassen. WELCHE Lesart die Stadt im Vollzug anwendet,
+  // ist aus dem Text NICHT zu entscheiden — deshalb steht hier ihr Satz und
+  // kein Urteil von uns. (Das Landesgesetz gilt weiter, GERADE WEIL das
+  // Gebäudemodernisierungsgesetz die 65-%-Pflicht des Bundes am 29.07.2026
+  // gestrichen hat; nie „das GEG verlangt 65 %" schreiben.)
+  //
+  // WARNUNG FÜR BEIDE TÜBINGER EINTRÄGE: Die Stadt schließt die Kombination
+  // dieses Programms mit ihren ANDEREN Förderprogrammen aus. Heute kollidiert
+  // nichts (PV- und Wärmepumpen-Rechner fragen getrennt, keines der drei
+  // Tübinger Programme trägt einen Rechenwert). Fällt beim PV-Eintrag je die
+  // Vollbelegungs-Hürde, rechnen zwei Programme, deren Kombination die Stadt
+  // verbietet — in zwei getrennten Rechnern, also ohne dass `stackFunding` es
+  // je sähe.
+  "tuebingen-sanierungspraemie-wp": {
+    id: "tuebingen-sanierungspraemie-wp", name: "Sanierungsprämie, Modul B II: Wärmepumpe",
+    traeger: "Universitätsstadt Tübingen", level: "kommune", region: "Tübingen",
+    bundesland: "Baden-Württemberg", agsCode: "08416041",
+    // DIE SPRECHENDE ADRESSE, NICHT DIE ZAHLEN-ADRESSE. Die Stadt nennt auf
+    // ihrer Wärmepumpen-Seite selbst „www.tuebingen-macht-blau.de/
+    // sanierungspraemie" als Antragsweg; sie leitet auf
+    // tuebingen.de/tuebingen-macht-blau/sanierungspraemie (am 24.09.2026
+    // gemessen, HTTP 200) und liefert dieselbe Programmseite wie 33173.html.
+    // Eine Zahlen-Adresse eines Redaktionssystems kann sich beim nächsten Umbau
+    // ändern, die sprechende bleibt — und unsere eigene Suche erkennt sie
+    // (siehe funding-suche-gegenprobe).
+    url: "https://www.tuebingen.de/tuebingen-macht-blau/sanierungspraemie",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-01-01",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je nach Bauart der Wärmepumpe und Gebäudegröße, nur beim Austausch einer fossil betriebenen Heizung",
+    maxFoerderung: "500 bis 2.000 € je nach Bauart und Gebäudegröße",
+    rates: [
+      { label: "Einfamilienhaus (bis zwei Wohneinheiten), Luft/Wasser oder Luft/Luft", value: "500 € pauschal" },
+      { label: "Einfamilienhaus (bis zwei Wohneinheiten), Sole/Wasser oder Wasser/Wasser", value: "1.000 € pauschal" },
+      { label: "Mehrfamilienhaus (ab drei Wohneinheiten), Luft/Wasser oder Luft/Luft", value: "1.000 € pauschal" },
+      { label: "Mehrfamilienhaus (ab drei Wohneinheiten), Sole/Wasser oder Wasser/Wasser", value: "2.000 € pauschal" },
+    ],
+    conditions: [
+      "Zwingende Voraussetzung ist ein individueller Sanierungsfahrplan nach der Bundesförderung Energieberatung für Wohngebäude, der höchstens fünf Jahre alt ist und in dem die Wärmepumpe als Maßnahme empfohlen wird — ohne ihn gibt es nichts",
+      "Gefördert wird der Austausch einer fossil betriebenen Heizung (Erdgas, Flüssiggas, Heizöl); hybride Anlagen, die weiterhin mit fossilen Anteilen heizen, werden nicht gefördert",
+      "Die Anlage muss auf der BAFA-Liste der förderfähigen Wärmepumpen mit Prüf- und Effizienznachweis stehen",
+      "Geplante oder erhaltene Mittel aus dem KfW-Zuschuss 458 und der städtische Zuschuss dürfen zusammen 60 % der Investitionskosten für die Wärmepumpe nicht übersteigen; sonst entfällt die städtische Förderung. Achtung: Wer beim Bund über 60 % liegt, kann durch den städtischen Zuschuss dort mehr verlieren, als er hier gewinnt",
+      "Die eingereichte Rechnung darf höchstens sechs Monate alt sein, frühestes Rechnungsdatum ist der 1. Januar 2026; der Antrag wird also nach der Installation gestellt, nicht vorher",
+      "Antragsberechtigt sind Privatpersonen, Wohnungseigentümergemeinschaften, Projekte des Mietshäuser Syndikates sowie Mieterinnen und Mieter für ihr Mietobjekt; Mieter brauchen die Zustimmung der Eigentümerseite oder der Eigentümergemeinschaft",
+      "Das Gebäude muss im Siedlungsgebiet des Gemeindegebietes Tübingen liegen",
+      "Keine Antragsberechtigung besteht für Sanierungsmaßnahmen, die zur Anrechnung für das Erneuerbare-Wärme-Gesetz des Landes genutzt werden oder anderen gesetzlichen Vorgaben unterliegen",
+      "Je Gebäude wird in einem Fünf-Jahres-Zeitraum höchstens einmal eine Sanierungsprämie ausgezahlt; je Gebäude ist nur eines der Module A oder B möglich, die Module B I (Gebäudehülle) und B II (Wärmepumpe) lassen sich kombinieren",
+      "Eine Kombination dieses Förderprogramms mit anderen Förderprogrammen der Universitätsstadt Tübingen ist nicht zulässig",
+      "Der ausgezahlte Betrag kann die tatsächlichen Kosten der Maßnahme nicht übersteigen",
+      "Es handelt sich um eine Freiwilligkeitsleistung: vergeben wird im Windhundprinzip nach Eingang vollständiger Unterlagen und nur, solange Haushaltsmittel da sind; ein Rechtsanspruch besteht nicht, unvollständige Anträge werden abgelehnt und Unterlagen nicht nachgefordert",
+      "Die Förderung ist zurückzuzahlen, wenn sie durch unrichtige oder unvollständige Angaben erwirkt wurde",
+    ],
+    combinableWith: BUND,
+    foerdert: ["waermepumpe"],
   },
 
   "tuebingen-balkon-pv": {
