@@ -48,17 +48,11 @@ const S: Record<string, React.CSSProperties> = {
     minHeight: "100vh",
     padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--chart-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  textCol: { maxWidth: v("--content-max-width"), margin: "0 auto" },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    lineHeight: 1.25,
-    marginBottom: 10,
-  },
+  wrap: { maxWidth: v("--chart-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  textCol: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto" },
+  h1: { marginBottom: 10 },
   subtitle: { fontSize: v("--font-size-lead"), color: v("--color-text-muted"), marginBottom: 24, lineHeight: 1.6 },
-  h2: { fontSize: v("--font-size-h2"), fontWeight: 700, marginTop: 36, marginBottom: 10 },
+  h2: { marginTop: 36, marginBottom: 10 },
   p: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: 12 },
   strong: { fontWeight: 700, color: v("--color-text-primary") },
   hero: {
@@ -174,7 +168,7 @@ export default async function BestandDeutschlandPage() {
           <Breadcrumb
             items={[
               { label: "Start", href: "/" },
-              { label: "Solar-Atlas", href: "/solar-atlas" },
+              { label: "Energie-Atlas", href: "/solar-atlas" },
               { label: "Solaranlagen in Deutschland" },
             ]}
             jsonLd
@@ -350,7 +344,7 @@ export default async function BestandDeutschlandPage() {
           <RelatedLinks
             currentPath="/photovoltaik-bestand-deutschland"
             links={[
-              { href: "/solar-atlas", label: "Solar-Atlas", desc: "Dieselben Registerdaten für deinen Ort: Anlagen, Leistung und Speicher je Gemeinde und Landkreis." },
+              { href: "/solar-atlas", label: "Energie-Atlas", desc: "Dieselben Registerdaten für deinen Ort: Anlagen, Leistung und Speicher je Gemeinde und Landkreis." },
               { href: "/photovoltaik-zubau-deutschland", label: "PV-Zubau seit 2000", desc: "Wie Einspeisevergütung und Strompreis die Ausbaukurve geformt haben — mit interaktivem Chart." },
               { href: "/balkonkraftwerk", label: "Balkonkraftwerk", desc: "Was ein Steckersolargerät bringt, was es kostet und was bei der Anmeldung zu tun ist." },
               { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Amortisation und Rendite für das eigene Dach — alle Annahmen sichtbar und anpassbar." },

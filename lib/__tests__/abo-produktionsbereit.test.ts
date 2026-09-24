@@ -73,7 +73,7 @@ describe("Der Gesundheitscheck fragt danach", () => {
     // Ab dem AUFRUF im Lauf gesucht, nicht ab der Funktionsdefinition — die
     // steht weiter oben in der Datei und enthält die Meldestelle gar nicht.
     const stelle = hc.slice(hc.indexOf("const aboBereit = await messeAboBereit()"));
-    expect(stelle.slice(0, 1500)).toMatch(/forClaude\.push/);
+    expect(stelle.slice(0, 1500)).toContain('technical("subscription-config", true,');
   });
 
   it("hält einen fehlgeschlagenen Abruf NICHT für einen Befund", () => {
@@ -119,5 +119,34 @@ describe("Die Versandprüfung selbst", () => {
       OUTREACH_SMTP_PORT: "465",
     });
     expect(befund.ok, "ok" in befund && !befund.ok ? befund.fehler.join(" · ") : "").toBe(true);
+  });
+});
+
+describe("Die Anmeldung fällt nicht auf die Produktionsadresse zurück", () => {
+  const route = lies("app/api/abo/anmelden/route.ts");
+
+  // DER ANLASS (23.09.2026, vom Betreiber gemeldet): Eine Anmeldung aus einer
+  // Entwicklungsumgebung legte die Zeile in der ECHTEN Datenbank an und
+  // verschickte eine Bestätigungsmail, deren Link auf die ECHTE Seite zeigte —
+  // signiert aber mit dem Geheimnis der Entwicklungsumgebung. Dort ist die
+  // Unterschrift wertlos: Der Klick landete auf „Dieser Link stimmt nicht",
+  // ununterscheidbar von einem echten Fehler, und der Eintrag blieb
+  // unbestätigt liegen. Möglich war das nur durch den stillen Rückfall auf die
+  // Produktionsadresse.
+  it("verlangt die Basis-Adresse, statt sie zu erfinden", () => {
+    expect(route).toMatch(/const basis = process\.env\.NEXT_PUBLIC_BASE_URL;/);
+    expect(route, "Rückfall auf die Produktionsadresse").not.toMatch(
+      /NEXT_PUBLIC_BASE_URL\s*\|\|/,
+    );
+  });
+
+  it("prüft sie VOR dem Eintrag, nicht erst vor dem Versand", () => {
+    // Sonst steht die Zeile schon in der Produktions-Datenbank, wenn der
+    // Abbruch kommt — genau der Zustand, der hier aufgeräumt werden musste.
+    const beiBasis = route.indexOf("const basis = process.env.NEXT_PUBLIC_BASE_URL;");
+    const beiAnlegen = route.indexOf("await aboAnlegen(");
+    expect(beiBasis).toBeGreaterThan(-1);
+    expect(beiAnlegen).toBeGreaterThan(-1);
+    expect(beiBasis).toBeLessThan(beiAnlegen);
   });
 });

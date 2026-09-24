@@ -55,7 +55,7 @@ export const RATGEBER: RatgeberEntry[] = [
     teaser:
       "Der ehrliche Realitätscheck: wann sich ein Batteriespeicher zur PV-Anlage rechnet und wann nicht — mit live gerechneter Beispielrechnung auf Basis aktueller Marktpreise.",
     live: "2026-07-19",
-    updated: "2026-07-26",
+    updated: "2026-09-05",
   },
   {
     slug: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung",

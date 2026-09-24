@@ -68,6 +68,14 @@ export default function InternalShell({
       title: "Fachbetriebe",
       links: [{ href: "/admin/fachbetriebe", label: "Verzeichnis" }],
     });
+    // Presse steht als EIGENE Gruppe und nicht unter Outreach: Die Zielgruppe
+    // ist eine andere (Redaktionen statt Verwaltungen), der Rechtsrahmen auch —
+    // und der Bereich wächst um Regionalmedien und Creator. Dieselbe Begründung
+    // wie bei den Fachbetrieben eine Gruppe darüber.
+    sections.push({
+      title: "Presse",
+      links: [{ href: "/admin/presse", label: "Katalog" }],
+    });
     // Zwei Beitragsarten unter einem Dach. Sie teilen sich die Redaktion, aber
     // sonst wenig: Ein Post hat einen Wochentag und eine Bildform, ein Artikel
     // eine Suchfrage und eine Indexierung. Deshalb getrennte Gruppen statt einer
@@ -78,7 +86,16 @@ export default function InternalShell({
         {
           label: "Social Media",
           children: [
-            { href: "/admin/redaktion", label: "Entwicklung", exact: true },
+            // Der Vorrat steht VOR der Entwicklung, weil er ihr vorausgeht:
+            // Erst wird gestöbert und ausgewählt, dann entsteht daraus ein
+            // Beitrag. Die Reihenfolge im Menü ist der Arbeitsweg.
+            { href: "/admin/redaktion/bucket", label: "Story-Bucket" },
+            { href: "/admin/redaktion/entwicklung-v2", label: "Entwicklung V2", exact: true },
+            { href: "/admin/redaktion", label: "Bisherige Entwicklung", exact: true },
+            // Die Templates stehen bei Social Media, weil ein Template dort
+            // seinen Zweck hat: Es ist die Bildform eines Posts, nicht die eines
+            // Artikels. Ein Blog-Beitrag trägt kein Kartenbild.
+            { href: "/admin/redaktion/templates", label: "Templates" },
             { href: "/admin/redaktion/planung", label: "Planung" },
             { href: "/admin/redaktion/auswertung", label: "Auswertung" },
           ],
@@ -98,6 +115,7 @@ export default function InternalShell({
         { href: "/admin", label: "Übersicht", exact: true },
         { href: "/admin/theme", label: "Designsystem" },
         { href: "/admin/komponenten", label: "Komponenten" },
+        { href: "/admin/vorschauen", label: "Vorschauen" },
         { href: "/admin/prices", label: "Marktpreise" },
         { href: "/admin/charts", label: "Chart-Baukasten" },
         { href: "/admin/waechter", label: "Wächter-Berichte" },
@@ -110,10 +128,10 @@ export default function InternalShell({
     <div
       style={{
         // Der interne Bereich ist breiter als die öffentlichen Seiten: dort
-        // begrenzt `--header-max-width` (960px) die Lesebreite, hier stehen
-        // Arbeitstabellen mit vielen Spalten. Mit 960px wurde die
-        // Kommunen-Tabelle abgeschnitten. 1440px plus Seiten-Gutter, aber nie
-        // breiter als das Fenster.
+        // begrenzt die Lesebreite den Inhalt, hier stehen Arbeitstabellen mit
+        // vielen Spalten. Mit der öffentlichen Breite wurde die Kommunen-Tabelle
+        // abgeschnitten. 1440px plus Seiten-Gutter, aber nie breiter als das
+        // Fenster.
         maxWidth: 1440,
         width: "100%",
         margin: "0 auto",
@@ -253,7 +271,7 @@ function pillStyle(active: boolean): React.CSSProperties {
     fontSize: v("--font-size-small"),
     fontWeight: active ? 700 : 600,
     color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
-    background: active ? v("--color-accent") : v("--color-bg-muted"),
+    background: active ? v("--color-cta") : v("--color-bg-muted"),
     border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
     borderRadius: 999,
     padding: pad("xs", "md"),

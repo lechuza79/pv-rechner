@@ -181,7 +181,9 @@ export const ROLLEN_WORTE = [
 export const ROLLEN_WORTE_TECHNISCH = ["webmaster", "webteam", "web", "online", "internet"];
 
 /** Postfächer, an die grundsätzlich nichts geht. */
-export const POSTFACH_UNGEEIGNET = ["datenschutz", "dsb", "abuse", "noreply", "no-reply", "postmaster", "mailer-daemon"];
+// One list for every population; see there why it grew.
+export { POSTFACH_UNGEEIGNET } from "./kontakt-tauglichkeit";
+import { POSTFACH_UNGEEIGNET } from "./kontakt-tauglichkeit";
 
 const ohneUmlaute = (s: string) =>
   s
@@ -235,6 +237,13 @@ export function postfachBefund(
    * geschrieben wurde.
    */
   verwaltungDomain?: string | null,
+  /**
+   * Die Kontaktsuche hat die Rolle der Adresse auf der Seite der Verwaltung
+   * belegt (Presse, Klimaschutz). Dann darf der Postfachname eine Person sein —
+   * die Prüfung auf Personennamen gibt es nur, weil beim Einsammeln niemand
+   * wusste, wem ein Postfach gehört. Die Domain wird weiter geprüft.
+   */
+  opts: { belegteRolle?: boolean } = {},
 ): PostfachBefund {
   const adresse = email.trim().toLowerCase();
   const [lokal, domain] = adresse.split("@");
@@ -261,10 +270,10 @@ export function postfachBefund(
   if (ROLLEN_WORTE_TECHNISCH.includes(teile[0])) {
     return { ok: false, grund: `${teile[0]}@ betreut die Website, nicht die Verwaltung` };
   }
-  if (!istRollenwort(teile[0])) {
+  if (!opts.belegteRolle && !istRollenwort(teile[0])) {
     return { ok: false, grund: `„${teile[0]}" ist kein Funktionsname — sieht nach einer Person aus` };
   }
-  for (const t of teile.slice(1)) {
+  for (const t of opts.belegteRolle ? [] : teile.slice(1)) {
     const passtZumOrt = kern.length >= 4 && (t.includes(kern.slice(0, 5)) || kern.includes(t) || domainStamm.includes(t));
     if (!istRollenwort(t) && !/^\d+$/.test(t) && !passtZumOrt) {
       return { ok: false, grund: `„${t}" im Postfachnamen ist vermutlich ein Personenname` };
@@ -279,8 +288,16 @@ export function postfachBefund(
   // Verwaltung belegt ist. Das Kennzeichen allein reicht nicht mehr — es sagt
   // nur, dass die Domain nach Verwaltung aussieht, nicht, dass sie zu diesem
   // Ort gehört.
-  const belegt =
-    !!verwaltungDomain && domain.toLowerCase().endsWith(verwaltungDomain.trim().toLowerCase().replace(/^www\./, ""));
+  // Callers hand over the verified website as a full URL ("https://www.x.de")
+  // as often as a bare domain. Compared as a string, the URL never matched, and
+  // every enquiry to a shared administration was rejected (21.09.2026).
+  const belegteDomain = verwaltungDomain
+    ?.trim()
+    .toLowerCase()
+    .replace(/^[a-z]+:\/\//, "")
+    .replace(/[/?#].*$/, "")
+    .replace(/^www\./, "");
+  const belegt = !!belegteDomain && (domain === belegteDomain || domain.endsWith(`.${belegteDomain}`));
   if (!passt && !belegt) {
     return {
       ok: false,

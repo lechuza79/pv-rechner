@@ -12,8 +12,8 @@ import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 // darf bewusst breiter sein als der Fließtext (Breakout) — bei 640 px wären
 // 28 Jahresbalken zu gedrängt.
 const S: Record<string, React.CSSProperties> = {
-  textCol: { maxWidth: v("--content-max-width"), margin: "0 auto" },
-  wide: { maxWidth: v("--chart-max-width"), margin: "0 auto" },
+  textCol: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto" },
+  wide: { maxWidth: v("--chart-max-width"), containerType: "inline-size", margin: "0 auto" },
   label: {
     fontSize: v("--font-size-caption"),
     fontWeight: 700,
@@ -23,27 +23,14 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: 6,
     display: "block",
   },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: v("--color-text-primary"),
-    lineHeight: 1.25,
-    marginBottom: 10,
-  },
+  h1: { color: v("--color-text-primary"), marginBottom: 10 },
   subtitle: {
     fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
     marginBottom: 24,
     lineHeight: 1.6,
   },
-  h2: {
-    fontSize: v("--font-size-h2"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-    marginTop: 32,
-    marginBottom: 10,
-  },
+  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
   p: {
     fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
@@ -56,12 +43,12 @@ const S: Record<string, React.CSSProperties> = {
     display: "inline-flex",
     alignItems: "center",
     gap: 8,
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     color: v("--color-text-on-accent"),
     fontSize: v("--font-size-body"),
     fontWeight: 700,
     padding: "10px 18px",
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     textDecoration: "none",
   },
   // Quellen bewusst mit deutlichem Abstand unter dem Artikel abgesetzt.

@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import useEmblaCarousel from "embla-carousel-react";
-import { v, space, pad } from "../lib/theme";
-import { IconExternal, IconCheck, IconAlert, IconInfo } from "./Icons";
-import ResultSection from "./ResultSection";
 import ContactPerson from "./ContactPerson";
+import InfoTooltip from "./InfoTooltip";
+import Modal from "./Modal";
+
+import { useEffect, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import { v, space, pad, iconSizes } from "../lib/theme";
+import { IconExternal, IconAlert, IconInfo, IconShare, IconCopy, IconChevronDown } from "./Icons";
+import ResultSection from "./ResultSection";
 import {
   geraetLeistungTeile,
   geraetPreisTeile,
@@ -27,7 +29,6 @@ import {
   type Hinweis,
   type WpHinweisFall,
 } from "../lib/wp-hinweise";
-import { BEG_ANTRAG_HREF } from "../lib/beg-antrag";
 
 // ─── Passende Geräte zum Ergebnis ─────────────────────────────────────────────
 //
@@ -54,7 +55,11 @@ import { BEG_ANTRAG_HREF } from "../lib/beg-antrag";
  * machen" gewählt hat, bekommt sonst einen Hinweis, der ihm genau das noch
  * einmal vorschlägt.
  */
-interface Props extends WpHinweisFall {}
+interface Props extends WpHinweisFall {
+  buildShareUrl: () => string;
+  onFundingDetails: () => void;
+  fundingEstimate?: { gross: number; net: number; grant: number; assumptions: string };
+}
 
 interface Antwort {
   empfehlungen: Empfehlung[];
@@ -88,8 +93,8 @@ function kennwerte(g: WpGeraet): { label: string; wert: string; mono: boolean }[
       mono: false,
     });
   }
-  if (g.aufbau) {
-    w.push({ label: "Bauart", wert: g.aufbau === "monoblock" ? "Monoblock" : "Split", mono: false });
+  if (g.aufbau === "split") {
+    w.push({ label: "Bauart", wert: "Split", mono: false });
   }
   return w;
 }
@@ -202,55 +207,31 @@ function HinweisZeile({ hinweis }: { hinweis: Hinweis }) {
  */
 function HinweisBloecke({ hinweise }: { hinweise: Hinweis[] }) {
   const { auswahl, apropos } = hinweiseNachArt(hinweise);
-  if (auswahl.length === 0 && apropos.length === 0) return null;
+  return <div className="wp-selection-explanation">
+    {auswahl.length > 0 && <section>
+      <h3>Was die Auswahl beeinflusst</h3>
+      <ul>{auswahl.map(h => <li key={h.id}>{h.text}</li>)}</ul>
+    </section>}
+    {apropos.length > 0 && <ResultSection title="Was sonst noch dazugehört" summary={`${apropos.length} Punkte`}>
+      <ul>{apropos.map(h => <li key={h.id}>{h.text}</li>)}</ul>
+    </ResultSection>}
+  </div>;
+}
 
-  return (
-    <div
-      style={{
-        borderTop: `1px solid ${v("--color-border")}`,
-        paddingTop: space.md,
-        display: "grid",
-        gap: space.md,
-      }}
-    >
-      {auswahl.length > 0 && (
-        <div style={{ display: "grid", gap: space.sm }}>
-          <p style={{ margin: 0, fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary") }}>
-            Was die Auswahl beeinflusst
-          </p>
-          {auswahl.map((h) => (
-            <HinweisZeile key={h.id} hinweis={h} />
-          ))}
-        </div>
-      )}
-
-      {/* EINGEKLAPPT, anders als der Auswahl-Block darüber.
-          
-          Gemessen am 05.09.2026: Die Geräte-Spalte trug 777 Wörter gegen 548 im
-          eigentlichen Ergebnis — das Angebot redete mehr als die Rechnung. Der
-          Betreiber hat das beanstandet, und der Apropos-Teil ist der richtige
-          Ort zum Einklappen: Man liest ihn einmal vor dem Kauf, nicht beim
-          Vergleichen der drei Geräte. Der Auswahl-Block bleibt offen, weil er
-          genau beim Vergleichen hilft.
-
-          Über den geteilten Abschnitts-Baustein, nicht als eigener Aufklapper:
-          Die Kopfzeile trägt damit dieselbe Bedienung wie im Ergebnis daneben,
-          und die Anzahl steht darin — eingeklappt soll man sehen, wie viel
-          dahinter liegt, sonst öffnet es niemand. */}
-      {apropos.length > 0 && (
-        <ResultSection
-          title="Apropos — was sonst noch dazugehört"
-          summary={`${apropos.length} Punkte`}
-        >
-          <div style={{ display: "grid", gap: space.sm }}>
-            {apropos.map((h) => (
-              <HinweisZeile key={h.id} hinweis={h} />
-            ))}
-          </div>
-        </ResultSection>
-      )}
+export function WpAuswahlHeading(fall: WpHinweisFall) {
+  const [open, setOpen] = useState(false);
+  return <>
+    <div className="wp-section-heading wp-products-heading">
+      <h2>Passende Wärmepumpen</h2>
+      <button type="button" className="wp-selection-learn-more" onClick={() => setOpen(true)}>Mehr erfahren</button>
     </div>
-  );
+    <Modal open={open} onClose={() => setOpen(false)} title="So wählen wir passende Wärmepumpen aus">
+      <div className="wp-selection-explanation">
+        <p>Die Vorauswahl richtet sich nach deiner berechneten Auslegung: <strong>{fall.auslegungKw.toLocaleString("de-DE")} kW · {fall.vorlaufC} °C Vorlauf.</strong> Die passenden Geräte werden nach Preis sortiert.</p>
+      </div>
+      <HinweisBloecke hinweise={fallHinweise(fall)} />
+    </Modal>
+  </>;
 }
 
 /**
@@ -291,9 +272,31 @@ function Karte({
   const hinweise = geraeteHinweise(g, fall, undefined, ohneHinweise);
   const preis = geraetPreisTeile(g.preisEur);
   const empfohlen = rang === 0;
+  // Allocate the capped project subsidy proportionally; never deduct the whole
+  // project grant from one merchant item or imply an uncapped personal rate.
+  const fundingFraction = fall.fundingEstimate && fall.fundingEstimate.gross > 0
+    ? Math.min(1, Math.max(0, fall.fundingEstimate.grant / fall.fundingEstimate.gross)) : 0;
+  const estimatedOwnPrice = Math.round(g.preisEur * (1 - fundingFraction));
+  const displayName = g.name.replace(/Luft\s*\/\s*Wasser[- ]?/gi, "").replace(/Wärmepumpe[n]?/gi, "").replace(/-+(?=[ ,]|$)/g, "").replace(/\s+,/g, ",").replace(/,\s*,/g, ",").replace(/\s{2,}/g, " ").trim();
+  const [linkStatus, setLinkStatus] = useState("");
+  const [shareText, setShareText] = useState<string | null>(null);
+  const [copyStatus, setCopyStatus] = useState("");
+  const openShare = () => {
+    setCopyStatus("");
+    setShareText(`Hallo, könnten Sie bitte prüfen, ob diese Wärmepumpe für mein Haus geeignet ist, und mir ein vollständiges Angebot inklusive benötigtem Zubehör und Montage erstellen?
+
+${g.name}
+${g.preisEur.toLocaleString("de-DE")} € (${umfangText(g)}, ${preisZusatz(g)}${preisStand ? `, Preisabruf ${preisStand}` : ""}; maßgeblich ist der Shoppreis)
+${g.link}
+
+Geschätzte Auslegung: ${fall.auslegungKw.toLocaleString("de-DE")} kW, Vorlauf: ${fall.vorlaufC} °C. Bitte vor Ort prüfen.
+Meine Modellrechnung: ${fall.buildShareUrl()}
+
+Vielen Dank!`);
+  };
 
   return (
-    <div
+    <div className="wp-product-card" data-recommended={empfohlen}
       style={{
         // Im Karussell trägt der Rahmen die Kachelbreite, in der Spalte die
         // Spalte selbst — deshalb volle Breite und die Begrenzung außen.
@@ -322,33 +325,8 @@ function Karte({
           ein pauschaler Hinweis für ein ganzes Angebot genüge nicht. Wer auf
           der Wischleiste bei der dritten Kachel ankommt, hatte den Block oben
           längst aus dem Blick. */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "baseline",
-          justifyContent: "space-between",
-          gap: space.sm,
-          marginBottom: space.sm,
-        }}
-      >
-        <span style={{ fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-accent") }}>
-          {empfohlen ? `Günstigstes passendes bei ${WP_HAENDLER.kurz}` : "\u00a0"}
-        </span>
-        <span
-          style={{
-            fontSize: v("--font-size-micro"),
-            fontWeight: 700,
-            letterSpacing: "0.04em",
-            color: v("--color-text-muted"),
-            flex: "0 0 auto",
-          }}
-        >
-          ANZEIGE
-        </span>
-      </div>
-
-      <div style={{ display: "flex", gap: space.md, marginBottom: space.sm }}>
-        <div
+      <div className="wp-product-heading" style={{ display: "flex", gap: space.md, marginBottom: space.sm }}>
+        <a href={g.link} target="_blank" rel="nofollow sponsored noopener noreferrer" aria-label={`${displayName} im Shop ansehen`} className="wp-product-image"
           style={{
             width: 64,
             height: 64,
@@ -364,24 +342,42 @@ function Karte({
             overflow: "hidden",
           }}
         >
-          {g.bildUrl && (
+      <div className="wp-product-rank"
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          justifyContent: "space-between",
+          gap: space.sm,
+          marginBottom: space.sm,
+        }}
+      >
+        <span title={empfohlen ? `Günstigstes passendes bei ${WP_HAENDLER.kurz}` : undefined} className={empfohlen ? "wp-product-badge" : undefined}>
+          {empfohlen ? "Günstigstes Angebot" : "\u00a0"}
+        </span>
+        <span
+          style={{
+            fontSize: v("--font-size-micro"),
+            fontWeight: 700,
+            letterSpacing: "0.04em",
+            color: v("--color-text-muted"),
+            flex: "0 0 auto",
+          }}
+        >
+          ANZEIGE
+        </span>
+      </div>
+
+          <span className="wp-product-photo">{g.bildUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={g.bildUrl}
-              alt=""
-              loading="lazy"
+              alt={g.name}
+              loading="eager"
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
-          )}
-        </div>
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginBottom: 2 }}>
-            {g.marke}
-          </div>
-          <div style={{ fontSize: v("--font-size-body"), lineHeight: 1.35, color: v("--color-text-primary") }}>
-            {g.name}
-          </div>
-        </div>
+          )}</span>
+          <span className="wp-product-name wp-product-image-title" title={g.name}>{displayName}</span>
+        </a>
       </div>
 
       <div
@@ -396,7 +392,7 @@ function Karte({
         <span style={{ whiteSpace: "nowrap" }}>
           <span
             style={{
-              fontFamily: v("--font-mono"),
+              fontFamily: v("--font-heading"),
               fontSize: v("--font-size-display-sm"),
               fontWeight: 700,
               color: v("--color-text-primary"),
@@ -410,9 +406,7 @@ function Karte({
             kostet für dieselbe Anlagengröße rund 4.000 € weniger als ein Paket
             mit Speicher — ohne diese Zeile sieht das eine schlicht günstiger
             aus, und der Nutzer kauft die Hälfte. */}
-        <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginLeft: "auto" }}>
-          {umfangText(g)}
-        </span>
+        {g.umfang === "paket" && <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginLeft: "auto" }}>{umfangText(g)}</span>}
       </div>
 
       {/* Pflichtangaben zum Preis (§ 5b Abs. 1 Nr. 3 UWG): Gesamtpreis und
@@ -421,6 +415,7 @@ function Karte({
           `preisZusatz` — an der Kachel getippt stünde er beim nächsten Gerät
           mit Versandkosten falsch da. */}
       <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted"), marginTop: -4 }}>
+        {g.umfang === "paket" && <span className="wp-product-extras">Vollständige Installation nicht enthalten.</span>}
         {preisZusatz(g)}
         {/* Datum UND Vorrang — der Zusatz war beim Umbau auf drei Stellen
             ersatzlos entfallen (Gegenprüfung 05.09.2026). Das Datum allein sagt,
@@ -429,10 +424,22 @@ function Karte({
             aus dem Hinweis einen „klaren gegenteiligen Hinweis" im Sinne der
             Espressomaschinen-Entscheidung — ohne sie bleibt die Erwartung
             höchstmöglicher Aktualität unwidersprochen. */}
-        {preisStand ? ` · Preis vom ${preisStand}, es gilt der Preis im Shop` : null}
+        {preisStand ? ` · Preis vom ${preisStand}; es gilt der Preis im Shop.` : null}
       </div>
 
-      {werte.length > 0 && (
+      {fundingFraction > 0 && <div className="wp-product-funded-price">
+        <div className="wp-funded-amount"><strong><small>ca.</small> {estimatedOwnPrice.toLocaleString("de-DE")} <small>€</small></strong></div>
+        <div className="wp-funded-label"><span>mit Förderung</span></div>
+        <span className="wp-funded-help">
+          <InfoTooltip ariaLabel="Wie wird der Gerätepreis mit Förderung geschätzt?" title="Geschätzter Geräteanteil nach Förderung">
+            Die Förderung aus deiner Modellrechnung wird anteilig auf den Gerätepreis verteilt ({(fundingFraction * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %). Der Förderdeckel ist dabei berücksichtigt. {fall.fundingEstimate?.assumptions} Voraussetzung ist, dass das Gerät und dein Vorhaben förderfähig sind; das ist noch nicht bestätigt. Beim Händler zahlst du zunächst den vollen Preis, die Förderung wird separat ausgezahlt. Montage und weiteres Zubehör sind in diesem Geräteanteil nicht enthalten.
+          </InfoTooltip>
+        </span>
+        <button className="wp-funded-footer" onClick={fall.onFundingDetails} aria-label="Förderung genau berechnen">Förderung genau berechnen</button>
+      </div>}
+
+      {(werte.length > 0 || satz || g.kaeltemittel === "r32" || hinweise.length > 0) && (
+        <details className="wp-card-disclosure wp-card-specs"><summary><span>Details</span><IconChevronDown size={iconSizes.sm} /></summary>
         <dl
           style={{
             display: "grid",
@@ -469,80 +476,36 @@ function Karte({
             </div>
           ))}
         </dl>
+      {(satz || g.kaeltemittel === "r32" || hinweise.length > 0) && <div className="wp-card-notes"><p>Anmerkungen</p>
+        <ul className="wp-product-notes">
+          {satz && <li>{satz}</li>}
+          {g.kaeltemittel === "r32" && <li>Ab {KAELTEMITTEL_STICHTAG_JAHR} nicht mehr förderfähig — dann fördert die BEG nur noch natürliche Kältemittel</li>}
+          {hinweise.map((h) => <li key={h.id}>{h.text}</li>)}
+        </ul>
+      </div>}
+        </details>
       )}
 
-      {satz && (
-        <div
-          style={{
-            display: "flex",
-            gap: space.xs,
-            fontSize: v("--font-size-small"),
-            lineHeight: 1.4,
-            color: v("--color-text-secondary"),
-            marginBottom: space.sm,
-          }}
-        >
-          <span aria-hidden style={{ flex: "0 0 auto", marginTop: 1, color: v("--color-positive") }}>
-            <IconCheck size={13} />
-          </span>
-          <span>{satz}</span>
+      <div className="wp-product-actions">
+        <button className="wp-product-forward" onClick={openShare} aria-label="An deinen Heizungsbauer weiterleiten"><IconShare size={16} /> Weiterleiten</button>
+        <a className="wp-product-shop" href={g.link} target="_blank" rel="nofollow sponsored noopener noreferrer">Zum Shop <IconExternal size={14} /></a>
+        <button className="wp-product-copy" aria-label="Produktlink kopieren" title="Produktlink kopieren" onClick={async () => {
+          try { await navigator.clipboard.writeText(g.link); setLinkStatus("Link kopiert"); }
+          catch { setLinkStatus("Kopieren nicht möglich. Nutze Weiterleiten."); }
+        }}><IconCopy size={16} /></button>
+      </div>
+      {linkStatus && <p className="wp-product-copy-status" role="status">{linkStatus}</p>}
+      <Modal open={shareText !== null} onClose={() => setShareText(null)} title="An deinen Heizungsbauer weiterleiten" intro="Die Nachricht enthält das Gerät und deine Auslegung zur Prüfung durch den Fachbetrieb.">
+        <textarea className="wp-product-share-text" aria-label="Nachricht an deinen Heizungsbauer" value={shareText ?? ""} readOnly rows={10} />
+        <div className="wp-product-share-actions">
+          <button onClick={async () => {
+            try { await navigator.clipboard.writeText(shareText ?? ""); setCopyStatus("Nachricht kopiert."); }
+            catch { setCopyStatus("Bitte den Nachrichtentext markieren und kopieren."); }
+          }}>Nachricht kopieren</button>
+          <a href={`mailto:?subject=${encodeURIComponent("Wärmepumpe – Bitte um Prüfung und Angebot")}&body=${encodeURIComponent(shareText ?? "")}`}>E-Mail vorbereiten</a>
         </div>
-      )}
-
-      {g.kaeltemittel === "r32" && (
-        <div
-          style={{
-            display: "flex",
-            gap: space.xs,
-            fontSize: v("--font-size-small"),
-            lineHeight: 1.4,
-            color: v("--color-text-muted"),
-            marginBottom: space.sm,
-          }}
-        >
-          <span aria-hidden style={{ flex: "0 0 auto", marginTop: 1 }}>·</span>
-          <span>
-            Ab {KAELTEMITTEL_STICHTAG_JAHR} nicht mehr förderfähig — dann fördert die BEG nur
-            noch natürliche Kältemittel
-          </span>
-        </div>
-      )}
-
-      {/* Die fachliche Einordnung zu DIESEM Gerät — höchstens zwei Zeilen, die
-          dringendste zuerst. Sie steht bewusst vor dem Kaufknopf und nicht
-          darunter: Was ein Gerät zum Fehlkauf machen kann, gehört gelesen,
-          bevor jemand klickt. */}
-      {hinweise.length > 0 && (
-        <div style={{ display: "grid", gap: space.xs, marginBottom: space.sm }}>
-          {hinweise.map((h) => (
-            <HinweisZeile key={h.id} hinweis={h} />
-          ))}
-        </div>
-      )}
-
-      <a
-        href={g.link}
-        target="_blank"
-        rel="nofollow sponsored noopener noreferrer"
-        style={{
-          marginTop: "auto",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: space.xs,
-          padding: pad("sm", "md"),
-          fontSize: v("--font-size-small"),
-          fontWeight: 700,
-          color: v("--color-accent"),
-          background: v("--color-accent-dim"),
-          border: `1px solid ${v("--color-border-accent")}`,
-          borderRadius: v("--radius-sm"),
-          textDecoration: "none",
-        }}
-      >
-        Beim Händler ansehen
-        <IconExternal size={13} />
-      </a>
+        <p role="status">{copyStatus}</p>
+      </Modal>
     </div>
   );
 }
@@ -551,6 +514,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
   const { auslegungKw, vorlaufC, wpType } = fall;
   const [antwort, setAntwort] = useState<Antwort | null>(null);
   const [laedt, setLaedt] = useState(true);
+  const [selectionDetailsOpen, setSelectionDetailsOpen] = useState(false);
 
   // Wischleiste auf schmalen Schirmen, ab der Seitenspalte abgeschaltet — die
   // Umschaltung macht Embla selbst über seine Breakpoint-Option, damit es nur
@@ -558,7 +522,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
   const [emblaRef] = useEmblaCarousel({
     align: "start",
     containScroll: "trimSnaps",
-    breakpoints: { "(min-width: 1024px)": { active: false } },
+    breakpoints: { "(min-width: 1200px)": { active: false } },
   });
 
   useEffect(() => {
@@ -611,7 +575,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
       grund === "katalog-unerreichbar"
         ? "Die Geräteliste lässt sich gerade nicht abrufen. Das sagt nichts über das Sortiment — bitte später noch einmal versuchen."
         : grund === "katalog-veraltet"
-          ? `Unsere Geräteliste ist nicht aktuell genug, um Preise daneben zu stellen. Wir zeigen sie deshalb lieber nicht, als mit Preisen von vorletzter Woche zu werben.`
+          ? `Aktuelle Gerätepreise sind derzeit nicht verfügbar.`
           : `Für diese Anlagengröße und Vorlauftemperatur ist gerade kein passendes Gerät im Sortiment von ${WP_HAENDLER.kurz}. Das heißt nicht, dass es keins gibt — nur, dass wir keins belegen können.`;
     return (
       <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.5 }}>
@@ -664,7 +628,7 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
   const paketLage = antwort?.paketLage;
 
   return (
-    <div style={{ display: "grid", gap: space.md }}>
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", minWidth: 0, overflow: "hidden", overflowWrap: "anywhere", gap: space.md }}>
       {/* Werbekennzeichnung — Stelle und Wortlaut sind geprüft, nicht gewählt.
 
           DREI STELLEN, NICHT EIN ABSATZ. Eine frühere Fassung packte alle fünf
@@ -718,105 +682,21 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
           eine wesentliche Information ist (I ZR 55/16). Unser Fall ist enger —
           ein einziger Händler. Ohne den Satz lesen sich Überschrift und
           „ausgewählt aus N Geräten" als Marktüberblick. */}
-      <div
-        style={{
-          border: `1px solid ${v("--color-border")}`,
-          borderRadius: v("--radius-md"),
-          padding: pad("md", "md"),
-          display: "grid",
-          gap: space.sm,
-        }}
-      >
-        <p style={{ margin: 0, fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-secondary") }}>
-          <strong style={{ color: v("--color-text-primary") }}>Anzeige</strong> — Diese Geräte
-          stammen aus dem Sortiment eines einzelnen Händlers, sind also kein Marktüberblick. Wir
-          erhalten eine Provision, wenn du dort kaufst; für dich ändert sich am Preis nichts.
-        </p>
-        {/* Das Versprechen steht NEBEN der Kennzeichnung, nicht statt ihrer.
+      <div className="wp-product-package-note"><span className="wp-awareness-icon"><IconAlert size={iconSizes.lg} /></span><div>
+        <p>{(paketLage === "keine" || paketLage === "unpassend")
+          ? <><strong>{WP_HAENDLER.kurz} hat kein passendes Komplettset für deinen Bedarf.</strong> Hier siehst du Einzelgeräte; Zubehör und Montage kommen hinzu.</>
+          : <>Auch bei Komplettsets können Zubehör und Montage hinzukommen. Prüfe den Lieferumfang.</>}
+        {" "}<button type="button" className="wp-selection-details-link" onClick={() => setSelectionDetailsOpen(true)}>Details</button></p>
+        <Modal open={selectionDetailsOpen} onClose={() => setSelectionDetailsOpen(false)} title="Lieferumfang und zusätzliche Kosten">
+          <ul className="wp-product-notes">
+            {[...new Map(treffer.flatMap(e => geraeteHinweise(e.geraet, fall, Infinity).filter(h => h.id.startsWith("umfang-"))).map(h => [h.id, h])).values()].map(h => <li key={h.id}>{h.text}</li>)}
+            <li>{WP_HINWEIS_SCHLUSS}</li>
+            <li>Mit „Zum Shop“ verlässt du solar-check.io. Den Kaufvertrag schließt du mit {WP_HAENDLER.kurz}; dort besteht ein Widerrufsrecht. Der Gerätepreis ist nicht der Preis der fertigen Anlage.</li>
+          </ul>
+        </Modal>
+      </div></div>
 
-            Ein Gesicht und ein Satz in der ersten Person sind kein Ersatz für
-            die Offenlegung — sie sind die Antwort auf die Frage, die sie
-            aufwirft: Wenn ihr mitverdient, wonach wählt ihr dann aus?
-
-            DER SATZ NENNT SEINE DIMENSION — das ist die ganze Korrektur.
-
-            Die erste Fassung endete auf "nie nach unserer Provision". Angreifbar
-            war daran nicht die Aussage, sondern ihre Reichweite: Ein Leser
-            bezieht sie darauf, ob Provision beeinflusst, WAS ER ÜBERHAUPT SIEHT
-            — und da lautet die ehrliche Antwort: ja, vollständig, es gibt genau
-            einen Partnershop. Eine absolute Aussage über die eigenen Beweggründe
-            ist zudem als irreführungsfähig ausdrücklich benannt (§ 5 Abs. 2
-            Nr. 3 UWG), und wer sie aufstellt, trägt sie.
-
-            Ein zweiter Anlauf schrieb daraufhin nur noch über Sortierreihenfolge
-            und Partnerprogramm — und warf damit die Zusage weg, um die es geht:
-            dass wir nach Sinnhaftigkeit für den Nutzer entscheiden. Das war
-            überkorrigiert. Eine wahre Aussage vorsichtshalber vager zu machen
-            ist keine Verbesserung, und der Gegenprüfer hatte ausdrücklich davor
-            gewarnt.
-
-            Jetzt steht dort, WORAUF sich das Versprechen bezieht: auf die Wahl
-            des Geräts. Die ist vollständig durch Heizlast, Vorlauftemperatur und
-            Preis bestimmt — nachprüfbar in `beurteile` und `empfehlungenFuer`,
-            wo die Provision überhaupt nicht vorkommt. Dass die Geräte alle aus
-            einem Sortiment stammen, sagt der Absatz darüber ("kein
-            Marktüberblick"), und zwar bevor das Versprechen kommt. */}
-        <ContactPerson note="Mein Versprechen: Welches Gerät wir dir empfehlen, entscheiden deine Heizlast, deine Vorlauftemperatur und der Preis für dich — nicht, woran wir mehr verdienen." />
-      </div>
-
-      {/* Warum hier nur Einzelgeräte stehen, gehört gesagt.
-
-          Ohne diesen Satz sieht es aus, als hätten wir grundsätzlich keine
-          Pakete im Programm, und der Nutzer vergleicht einen Gerätepreis mit dem
-          Anlagenpreis oben, ohne zu wissen, woran es liegt.
-
-          DER GRUND KOMMT AUS DEM KATALOG, NICHT AUS DER TREFFERLISTE. Die erste
-          Fassung leitete ihn allein daraus ab, dass unter den Treffern kein
-          Paket war, und schrieb dann „führt keine Komplettpakete". Das ist eine
-          andere Aussage: Die Auswahl filtert erst auf Eignung und wählt danach
-          Pakete. Ein Altbau mit 55 °C, für den es ein passend großes Paket gibt,
-          das aber nur 50 °C schafft, bekam so die Auskunft, es gebe in seiner
-          Größe keins — falsch über ein fremdes Sortiment, und die eigentliche
-          Ursache blieb ungenannt. Gefunden von einer Gegenprüfung am
-          05.09.2026. */}
-      {paketLage === "keine" && (
-        <p style={{ margin: 0, fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-muted") }}>
-          In dieser Anlagengröße führt {WP_HAENDLER.kurz} keine Komplettpakete. Die Geräte unten sind
-          die Wärmepumpe allein — Speicher, Regelung und Montage kommen dazu.
-        </p>
-      )}
-      {paketLage === "unpassend" && (
-        <p style={{ margin: 0, fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-muted") }}>
-          Komplettpakete dieser Größe gibt es bei {WP_HAENDLER.kurz}, aber keins davon schafft deine
-          Vorlauftemperatur oder deine Heizlast. Die Geräte unten sind die Wärmepumpe allein —
-          Speicher, Regelung und Montage kommen dazu.
-        </p>
-      )}
-
-      {/* Was an JEDER Kachel gleich stünde, steht hier einmal.
-
-          Gemessen am 05.09.2026: Bei einem Altbau mit 55 °C trugen alle drei
-          Geräte wörtlich denselben Propan-Satz und denselben Satz über den
-          Lieferumfang — dreimal untereinander. Das ist keine Information mehr,
-          sondern Füllung, und es war ein Grund dafür, dass die Geräte-Spalte
-          mehr Text trug (777 Wörter) als das Ergebnis daneben (548).
-
-          Über der Liste und nicht darunter: Der Satz gilt allen Kacheln, und
-          wer die Preise vergleicht, soll vorher wissen, was in keinem davon
-          steckt. */}
-      {gemeinsam.length > 0 && (
-        <div style={{ display: "grid", gap: space.xs }}>
-          {gemeinsam.map((h) => (
-            <HinweisZeile key={h.id} hinweis={h} />
-          ))}
-        </div>
-      )}
-
-      {/* Ein Baum für beide Anordnungen: Der Rahmen ist auf schmalen Schirmen
-          das Sichtfenster des Karussells, ab 1024 px ein gewöhnlicher Stapel.
-          Die Breiten stehen als Inline-Regel am Element, weil sie zur Mechanik
-          des Karussells gehören — CSS-Klassen dafür würden die Zuständigkeit
-          zwischen Stylesheet und Karussell aufteilen. */}
+      {/* One product list: swipe on mobile, three columns on desktop. */}
       <div ref={emblaRef} style={{ overflow: "hidden" }}>
         <ul
           className="wp-geraete-reihe"
@@ -856,136 +736,15 @@ export default function WpGeraeteEmpfehlung(fall: Props) {
         </div>
       )}
 
-      {/* Was am HAUS hängt, nicht am einzelnen Gerät — einmal unter der ganzen
-          Liste statt an jeder Kachel.
-
-          Die Trennung ist der Grund, aus dem die Hinweise überhaupt lesbar
-          bleiben: Ein Bestandsgebäude mit alten Heizkörpern erfüllt neun
-          Regeln gleichzeitig. Stünden alle an der Kachel, stünden sie dort
-          dreimal untereinander — einmal je Gerät — und niemand läse eine davon.
-
-          ZWEI BLÖCKE, Vorgabe des Betreibers am 05.09.2026: „in erster linie
-          sollten hinweise zur auswahl dort stehen. dann evtl. noch sowas wie:
-          apropos…". Oben, was die Wahl zwischen den gezeigten Geräten
-          beeinflusst; darunter abgesetzt, was zum Vorhaben gehört, aber für
-          alle drei gleich gilt.
-
-          Der Unterschied ist eine Zuständigkeit, keine Wichtigkeit: Die
-          Erdwärmebohrung braucht drei Monate Vorlauf — eine Warnung, und für
-          die Auswahl zwischen drei Geräten trotzdem ohne Bedeutung.
-
-          Beide aufgeklappt, nicht hinter einem Knopf: Der Schlusssatz darunter
-          ordnet die ganze Liste ein, und eine Einordnung, die man erst öffnen
-          muss, ist bei einer Kaufentscheidung keine. */}
-      <HinweisBloecke hinweise={fallHinweise(fall)} />
-
-      {/* Die Gesamteinordnung — was diese Liste ist und was sie nicht ist.
-
-          Ohne sie liest sich eine Reihe von Geräten mit Preisen und Kaufknöpfen
-          wie eine Kaufempfehlung. Sie ist eine Vorauswahl: Wir kennen Heizlast
-          und Vorlauftemperatur aus einer Schätzung, nicht aus einer Berechnung,
-          und den Aufstellort gar nicht. Der Wortlaut steht in
-          `lib/wp-hinweise.ts`, damit er nicht zweimal getippt dasteht. */}
-      <p
-        style={{
-          margin: 0,
-          fontSize: v("--font-size-small"),
-          lineHeight: 1.5,
-          color: v("--color-text-muted"),
-          fontStyle: "italic",
-        }}
-      >
-        {WP_HINWEIS_SCHLUSS}
-      </p>
-
-      {/* Der teuerste Satz der Seite — und er wird hier NICHT formuliert.
-
-          Ziel und Wortlaut kommen aus `lib/beg-antrag.ts`, der einen Quelle für
-          diese Regel; ein Test verbietet, sie ein zweites Mal zu tippen.
-
-          Hier steht bewusst NUR der Merksatz mit Verweis, nicht die ganze Regel:
-          Der Förderblock derselben Seite trägt sie bereits im Volltext. Am
-          Bildschirm standen beide untereinander — zweimal dasselbe, einmal beim
-          Betrag und einmal beim Kaufknopf. Der Merksatz gehört trotzdem hierher,
-          weil an dieser Stelle geklickt wird.
-
-          Warum das mehr ist als Ordnungsliebe: Die erste hier getippte Fassung
-          war FALSCH und zu streng („ein Kauf vor der Förderzusage schließt die
-          Förderung aus"). Der Ausschluss hängt an der ANTRAGSTELLUNG — die
-          Richtlinie erklärt den Beginn zwischen Antrag und Zusage ausdrücklich
-          für zulässig (Nr. 9.2.1). Aufgefallen ist das einer Parallel-Sitzung,
-          nicht hier. Aus einer geteilten Quelle korrigiert man solche Sätze
-          einmal statt an vier Stellen, von denen man drei vergisst. */}
-      <div
-        style={{
-          borderLeft: `3px solid ${v("--color-negative")}`,
-          padding: pad("sm", "md"),
-          fontSize: v("--font-size-small"),
-          lineHeight: 1.5,
-          color: v("--color-text-secondary"),
-          background: v("--color-negative-dim"),
-        }}
-      >
-        <strong style={{ color: v("--color-text-primary") }}>Erst der Antrag, dann der Kauf.</strong>{" "}
-        <Link href={BEG_ANTRAG_HREF} style={{ color: v("--color-accent") }}>
-          Die Reihenfolge Schritt für Schritt
-        </Link>
+      <div className="wp-product-trust">
+        <ContactPerson beforeName={<span className="wp-product-promise"><strong>Mein Versprechen:</strong> Die Empfehlungen sind nach Preis und passender Heizleistung für deinen Bedarf ausgewählt – nicht nach unserer Provision.</span>} />
+        <p className="wp-product-disclosure">Die Geräte stammen von unserem Partner {WP_HAENDLER.kurz}, nicht aus dem gesamten Markt. Bei einem Kauf über unsere Links erhalten wir eine Provision; dein Preis bleibt gleich.</p>
       </div>
 
-      {/* EINE Zeile statt zweier Absätze — Betreiber-Entscheidung 05.09.2026,
-          nach zwei Prüfungen mit gegenläufigem Ergebnis.
+      {/* Shared safety restrictions stay visible; longer cost explanations are optional. */}
+      {gemeinsam.filter((h) => !h.id.startsWith("umfang-")).map((h) => <HinweisZeile key={h.id} hinweis={h} />)}
 
-          WAS HIER STAND: Verkäufer mit voller Anschrift und ein Satz zum
-          Widerrufsrecht, dazu ein Absatz über Messbedingungen, Eigenleistung
-          und Auswahlgröße. Zusammen rund die Hälfte des sichtbaren Textes der
-          Spalte, die insgesamt mehr Wörter trug (777) als das Ergebnis daneben
-          (548).
 
-          DIE RECHTSPRÜFUNG HAT DAS GEDECKT — und ist überstimmt worden. Sie
-          stützt sich auf BGH I ZR 231/14 (MeinPaket.de II, 14.09.2017): Dort
-          verlor ein Vermittler, weil der Verweis aufs Shop-Impressum "zu spät"
-          komme, und der Senat hielt fest, die Angaben beanspruchten "keinen
-          nennenswerten Raum". Die Aufforderung zum Kauf setzt nach Leitsatz 2
-          ausdrücklich NICHT voraus, dass man bei uns kaufen kann.
-
-          DIE PRAXIS SIEHT ANDERS AUS, und zwar ausnahmslos. Am 05.09.2026 an
-          echten Seiten erhoben: CHIP, SPIEGEL, Computer Bild, FOCUS, heise,
-          Stiftung Warentest, Öko-Test, dazu Geizhals, billiger.de, CHECK24,
-          Verivox, Finanztip. KEINER nennt eine Händleranschrift, KEINER ein
-          Widerrufsrecht. Der gemeinsame Nenner ist ein Provisionshinweis, bei
-          den Gründlichsten zusätzlich "Anzeige" an jedem Produkt.
-
-          DIE ENTSCHEIDUNG GEHÖRT DEM BETREIBER, weil sie Risiko gegen
-          Außenwirkung abwägt — nicht Recht gegen Recht. Er hat sie getroffen
-          ("mach wie der wettbewerb") und dabei auf happycoffee.org verwiesen,
-          das Angebot eines Bekannten, der in solchen Dingen sorgfältig ist.
-
-          DER SATZ UNTEN IST DESSEN BAUFORM. Er lautet dort: "Preise inkl.
-          MwSt. Versandkosten geprüft. Bei einem Klick auf 'Zum Angebot'
-          verlässt du happycoffee.org. Wir erhalten beim Kauf ggf. eine
-          Provision – für dich ändert sich am Preis nichts."
-
-          Der tragende Teil ist der mittlere Halbsatz: "du verlässt unsere
-          Seite" sagt in fünf Wörtern, was die Anschrift umständlich sagt —
-          dass der Vertrag anderswo zustande kommt und wir nicht Verkäufer
-          sind. Das ist der Punkt, um den es in Rn. 29 des Urteils geht (der
-          Verbraucher soll wissen, mit wem er es zu tun bekommt), nur ohne die
-          Postanschrift.
-
-          WAS BLEIBT UND WARUM: der Händlername an jeder Kachel (er steht dort
-          ohnehin), das Wort "Anzeige" (die einzige Angabe, die auch der
-          Wettbewerb durchweg führt, und Gegenstand der Abmahnpraxis), und der
-          Hinweis auf den Gerätepreis (er verhindert eine Fehlvorstellung über
-          die Zahl daneben, nicht über den Verkäufer).
-
-          WER DAS ZURÜCKDREHEN WILL, braucht keinen neuen Rechtsrat — der liegt
-          vor und sagt "Anschrift". Er braucht die Entscheidung des Betreibers,
-          und die lautet heute anders. */}
-      <p style={{ margin: 0, fontSize: v("--font-size-caption"), lineHeight: 1.5, color: v("--color-text-muted") }}>
-        Preise inkl. MwSt., Versand geprüft. Mit einem Klick auf „Beim Händler ansehen" verlässt du
-        solar-check.io — den Kaufvertrag schließt du mit {WP_HAENDLER.kurz}, dort besteht auch ein
-        Widerrufsrecht. Angegeben ist der Gerätepreis, nicht der Preis der fertigen Anlage.
-      </p>
     </div>
   );
 }

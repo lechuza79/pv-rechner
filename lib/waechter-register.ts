@@ -223,7 +223,7 @@ export const WAECHTER: WaechterJob[] = [
   },
   {
     id: "solar-atlas-welle-monitor",
-    titel: "Solar-Atlas: Index-Wellen",
+    titel: "Energie-Atlas: Index-Wellen",
     zweck: "Prüft Indexierungsstatus und Sitemap-Frische und empfiehlt die nächste Freigabe-Welle.",
     art: "auftrag",
     rhythmus: "wöchentlich, montags",
@@ -314,11 +314,6 @@ export const WAECHTER: WaechterJob[] = [
     pruefFelder: [
       "DEFAULT_HEATPUMP_CONFIG.geprueftIso",
       "DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso",
-      // Die Preispfade hängen mit dran statt einen eigenen Lauf zu bekommen:
-      // Ihre Leitquelle (Rahmendaten des Umweltbundesamtes) erscheint einmal im
-      // Jahr, ein eigener Auftrag stünde elf Monate lang still — und ein Lauf,
-      // der nie etwas findet, wird irgendwas anderes.
-      "DEFAULT_HEATPUMP_CONFIG.geprueftPreispfadeIso",
       // Der Förderreport der KfW hängt mit dran, statt einen eigenen Lauf zu
       // bekommen: Er erscheint einmal im Jahr, ein eigener Auftrag fände elf
       // Monate lang nichts. Sein Ablauf steht in scripts/kfw-report-verify.md
@@ -372,7 +367,13 @@ export const WAECHTER: WaechterJob[] = [
     rhythmus: "halbjährlich, am 28. Januar und 28. Juli",
     tag: "eeg-verguetung-verify-halbjaehrlich",
     beleg: "pruefdatum",
-    pruefFelder: ["FEED_IN_GEPRUEFT_ISO", "MARKTWERT_GEPRUEFT_ISO"],
+    pruefFelder: [
+      "FEED_IN_GEPRUEFT_ISO",
+      "MARKTWERT_GEPRUEFT_ISO",
+      // The retrospective's yearly window move: its trigger is reviewBy in the
+      // health check; this run is where its steps are carried out.
+      "RUECKBLICK_STAND.geprueftIso",
+    ],
     runbook: "scripts/eeg-verify.md",
   },
   {

@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
-import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, SCHRITTE_OHNE_AUSWAHL, MAX_WEGE_JE_FLOW, ALLE_KOMBINATIONEN, uebrigeFragenBeantworten, akkordeonWahlenPruefen, akkordeonFragen, waehle, weiterKlicken } from "./flows";
+import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, SCHRITTE_OHNE_AUSWAHL, MAX_WEGE_JE_FLOW, ALLE_KOMBINATIONEN, FLOW_TEST_ZEITLIMIT_MS, flowTestTitel, uebrigeFragenBeantworten, akkordeonWahlenPruefen, akkordeonFragen, waehle, weiterKlicken } from "./flows";
+import { meldungstext } from "./konsole";
 
 /**
  * Der Flow-Läufer: klickt jede OPTION jedes Schritts und jeden ZWEIG durch
@@ -202,7 +203,7 @@ async function gehe(
         }
       }
       await uebrigeFragenBeantworten(page);
-      await weiterKlicken(page);
+      await weiterKlicken(page, `${pfad.join(" → ") || "Start"} · Schritt nur mit Akkordeon-Fragen`);
       await gehe(page, flowName, flowPfad, startKnopf, ergebnisEnthaelt, [...pfad, VORBELEGT], erg);
       return;
     }
@@ -241,7 +242,7 @@ async function gehe(
       erg.wege++;
       return;
     }
-    await weiterKlicken(page);
+    await weiterKlicken(page, `${pfad.join(" → ") || "Start"} · Schritt ohne Auswahlkarten`);
     await gehe(page, flowName, flowPfad, startKnopf, ergebnisEnthaelt, [...pfad, VORBELEGT], erg);
     return;
   }
@@ -295,16 +296,30 @@ async function gehe(
     // zuverlässig wieder her, und ein Läufer, der auf halb aufgeräumten
     // Zuständen weiterläuft, prüft etwas, das kein Nutzer je sieht.
     await oeffne(page, flowPfad, startKnopf);
-    for (const vorher of pfad) {
-      if (vorher === VORBELEGT) await fuelleFelder(page);
-      else {
-        await waehle(page, vorher);
+    // Der Kontext für geworfene Meldungen — BLOCKER, siehe `wegPraefix` in
+    // flows.ts. Er nennt BEIDES: die Zielkombination dieses Wegs und, beim
+    // Nachspielen, die Stelle, an der es klemmte. Nur das Ziel allein sagt
+    // nicht, welcher Schritt hängt; nur die Stelle allein nicht, welcher der
+    // ~1.700 Wege gerade lief — und genau diese Unterscheidung trennt einen
+    // echten Produktfehler von einer ausgelasteten Maschine.
+    const ziel = [...pfad, wahl].join(" → ");
+    for (const [i, vorher] of pfad.entries()) {
+      const stelle = `Ziel ${ziel} · beim Nachspielen von Schritt ${i + 1} „${vorher}"`;
+      if (vorher === VORBELEGT) {
+        // Ein „vorbelegter" Schritt kann Akkordeon-Fragen tragen, von denen
+        // eine Pflicht ist (Haustyp im Empfehlungsweg seit 21.09.2026). Ohne
+        // sie hier mitzubeantworten, bliebe Weiter beim Nachspielen gesperrt.
+        await fuelleFelder(page);
         await uebrigeFragenBeantworten(page);
       }
-      await weiterKlicken(page);
+      else {
+        await waehle(page, vorher, stelle);
+        await uebrigeFragenBeantworten(page);
+      }
+      await weiterKlicken(page, stelle);
     }
 
-    await waehle(page, wahl);
+    await waehle(page, wahl, ziel);
 
     // Akkordeon-Fragen dieses Schritts: jede Wahl einmal, mit dem Nachweis,
     // dass sie stehen bleibt. VOR dem Beantworten der übrigen Fragen, weil die
@@ -348,14 +363,14 @@ async function gehe(
       continue;
     }
 
-    await weiterKlicken(page);
+    await weiterKlicken(page, ziel);
     await bildAblegen(page, flowName, [...pfad, wahl].join("__"), erg);
     await gehe(page, flowName, flowPfad, startKnopf, ergebnisEnthaelt, [...pfad, wahl], erg);
   }
 }
 
 for (const flow of FLOWS) {
-  test(`Flow „${flow.name}": jede Option führt zu einem Ergebnis`, async ({ page }) => {
+  test(flowTestTitel(flow.name), async ({ page }) => {
     // Durchklicken braucht Zeit: Jeder Weg wird von vorn aufgebaut, und im
     // Dev-Server kommt die erste Übersetzung jeder Route dazu. Der Standard
     // von 30 s reicht dafür nicht — er hat den Läufer beim ersten Lauf mitten
@@ -365,8 +380,12 @@ for (const flow of FLOWS) {
     // an dem etwas kaputtgeht.
     //
     // Der nächtliche Alle-Kombinationen-Lauf braucht ein Vielfaches: Die
-    // Wärmepumpe allein hat ~1600 Kombinationen à ~3 s Seitenaufbau.
-    test.setTimeout(ALLE_KOMBINATIONEN ? 10_800_000 : 600_000);
+    // Wärmepumpe allein hat ~1600 Kombinationen à ~3 s Seitenaufbau. Die Zahl
+    // steht in flows.ts — sie muss unter dem Schritt-Limit des Workflows
+    // liegen, und diese Beziehung prüft ein Test. Drei Nächte rot, weil sie
+    // hier als nackte Zahl stand und beim Aufteilen der Jobs niemand sie
+    // mitgezogen hat; die Begründung im Kommentar dort.
+    test.setTimeout(FLOW_TEST_ZEITLIMIT_MS);
     const konsolenFehler: string[] = [];
     page.on("console", (m) => {
       if (m.type() !== "error") return;
@@ -381,7 +400,9 @@ for (const flow of FLOWS) {
       // lokal antwortet die Adresse mit 404. Betrifft keine Seitenfunktion.
       if (m.text().includes("_vercel/insights")) return;
       if (m.text().includes("Failed to load resource") && m.location().url.includes("_vercel/")) return;
-      konsolenFehler.push(m.text());
+      // MIT der Adresse ablegen (geteilter Baustein, siehe dort): Der Satz
+      // allein nennt nicht, WAS fehlgeschlagen ist.
+      konsolenFehler.push(meldungstext(m));
     });
     page.on("pageerror", (e) => konsolenFehler.push(`Ausnahme: ${e.message}`));
 

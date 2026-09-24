@@ -46,10 +46,10 @@ export const metadata: Metadata = pageMetadata({
 
 const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.25, marginBottom: 10 },
+  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  h1: { marginBottom: 10 },
   subtitle: { fontSize: v("--font-size-lead"), color: v("--color-text-muted"), marginBottom: 24, lineHeight: 1.6 },
-  h2: { fontSize: v("--font-size-h2"), fontWeight: 700, marginTop: 32, marginBottom: 10 },
+  h2: { marginTop: 32, marginBottom: 10 },
   p: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: 12 },
   strong: { fontWeight: 700, color: v("--color-text-primary") },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
@@ -99,7 +99,7 @@ const S = {
   thZahl: { textAlign: "right" as const },
   td: { padding: "8px 6px", borderBottom: `1px solid ${v("--color-border")}`, color: v("--color-text-muted") },
   tdZahl: { textAlign: "right" as const, fontFamily: v("--font-mono"), whiteSpace: "nowrap" as const },
-  traegt: { color: v("--color-positive"), fontWeight: 700 },
+  traegt: { color: v("--color-positive-text"), fontWeight: 700 },
   traegtNicht: { color: v("--color-text-muted") },
 };
 

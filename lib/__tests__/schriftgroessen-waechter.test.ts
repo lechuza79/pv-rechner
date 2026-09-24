@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { heuteInBerlin } from "../zeit";
 
 /**
  * Wächter gegen getippte Schriftgrößen.
@@ -202,7 +203,7 @@ describe("Wächter: keine getippten Schriftgrößen", () => {
   });
 
   it("lässt keine offene Frist verstreichen", () => {
-    const heute = new Date().toISOString().slice(0, 10);
+    const heute = heuteInBerlin();
     for (const a of NOCH_OFFEN) {
       expect(a.grund.length, a.datei).toBeGreaterThan(40);
       expect(() => statSync(join(ROOT, a.datei)), a.datei).not.toThrow();

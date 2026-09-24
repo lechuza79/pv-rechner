@@ -191,9 +191,9 @@ export default function SunControl({
               style={{
                 height: 34,
                 padding: "0 12px",
-                borderRadius: v("--radius-sm"),
+                borderRadius: v("--radius-pill"),
                 border: "none",
-                background: isValidPlz(draft) && draft !== plz ? v("--color-accent") : v("--color-border"),
+                background: isValidPlz(draft) && draft !== plz ? v("--color-cta") : v("--color-border"),
                 color: isValidPlz(draft) && draft !== plz ? v("--color-text-on-accent") : v("--color-text-muted"),
                 fontFamily: v("--font-text"),
                 fontSize: v("--font-size-small"),
@@ -258,8 +258,8 @@ export default function SunControl({
                   style={{
                     height: 28,
                     border: "none",
-                    borderRadius: 4,
-                    background: active ? v("--color-accent") : "transparent",
+                    borderRadius: v("--radius-pill"),
+                    background: active ? v("--color-cta") : "transparent",
                     color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
                     fontFamily: v("--font-text"),
                     fontSize: v("--font-size-small"),

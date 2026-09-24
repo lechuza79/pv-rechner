@@ -1,73 +1,234 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { mastrAlterTage, MASTR_WORKFLOW } from "../../scripts/health-check";
 import {
-  MASTR_FRISCHE_FAIL_TAGE,
-  MASTR_FRISCHE_WARN_TAGE,
-  mastrAlterTage,
-  mastrFrischeVerdict,
-} from "../../scripts/health-check";
+  IMPORT_NACHFRIST_TAGE,
+  IMPORT_TAGE,
+  importNoetig,
+  importPlanBefund,
+  importTageAusZeitplan,
+  importlaufMeldung,
+  naechsterImport,
+  naechsteAktualisierung,
+  zyklusStart,
+} from "../mastr-import-plan";
 
 /**
  * Der Totmann-Schalter für den Anlagenbestand.
  *
- * Anlass (Audit 19.08.2026): Über 11.000 Atlas-Seiten rechnen mit den Zahlen aus
- * EINEM monatlichen Import. Bleibt der aus, liefern alle diese Seiten weiterhin
- * HTTP 200, sind schnell, sehen richtig aus — und zeigen den Bestand von
- * vorletztem Monat. Der Gesundheitscheck las das Importdatum bereits, benutzte
- * es aber nur als Latenz-Vergleichswert; sein ALTER hat nie jemand bewertet.
+ * ANLASS DER ERSTEN FASSUNG (Audit 19.08.2026): Über 11.000 Atlas-Seiten rechnen
+ * mit den Zahlen aus EINEM monatlichen Import. Bleibt der aus, liefern alle
+ * diese Seiten weiterhin HTTP 200, sind schnell, sehen richtig aus — und zeigen
+ * den Bestand von vorletztem Monat.
  *
- * Geprüft wird hier die Aufsicht, nicht die Zahl: Schlägt sie an, wenn sich
- * nichts mehr bewegt — und schweigt sie, solange der Rhythmus stimmt?
+ * ANLASS DER ZWEITEN (09.09.2026): Genau dieser Fall trat am 05.09.2026 ein, und
+ * die Aufsicht hat geschwiegen. Sie urteilte über das ALTER in Tagen (ab 45
+ * gelb, ab 70 rot); am Tag des Fehlschlags war der Bestand 31 Tage alt, also
+ * grün. Rot wäre er erst am 14.10. geworden — nach dem Oktober-Lauf, der die
+ * Lücke stillschweigend geschlossen hätte. Bemerkt hat es ein Mensch, zufällig,
+ * vier Tage später.
+ *
+ * Eine Tagesschwelle kann „ein Lauf ist ausgefallen" nicht ausdrücken: Sie misst
+ * den Abstand zum letzten Erfolg, nicht den zum letzten TERMIN. Geprüft wird
+ * hier deshalb die Terminrechnung — und zwar in beide Richtungen: Schlägt sie
+ * an, wenn ein Zyklus verstrichen ist, und schweigt sie, solange der Rhythmus
+ * stimmt?
  */
 
-describe("MaStR-Frische: Schwellen", () => {
-  it("schweigt innerhalb eines Import-Zyklus", () => {
-    expect(mastrFrischeVerdict(0)).toBe("gruen");
-    expect(mastrFrischeVerdict(14)).toBe("gruen");
-    expect(mastrFrischeVerdict(MASTR_FRISCHE_WARN_TAGE - 1)).toBe("gruen");
+const TAGE = [1, 3, 5]; // wie im Zeitplan der Action
+
+/**
+ * Der Zeitplan, unter dem der Ausfall vom 05.09.2026 passiert ist.
+ *
+ * Die Termine liegen seit dem 23.09.2026 auf dem 1., 3. und 5. — die Fälle
+ * unten beschreiben aber einen echten Vorgang mit echten Daten. Sie auf den
+ * neuen Rhythmus umzuschreiben hieße, einen Vorfall nachzuerzählen, der so nie
+ * stattgefunden hat; geprüft wird hier die Rechnung, und die muss für jeden
+ * Rhythmus stimmen.
+ */
+const TAGE_DAMALS = [5, 7, 9];
+
+describe("Import-Termin: aus dem Zeitplan gelesen, nicht getippt", () => {
+  it("liest die Tage aus dem echten Zeitplan der Action", () => {
+    const yaml = readFileSync(join(__dirname, "..", "..", ".github", "workflows", MASTR_WORKFLOW), "utf8");
+    expect(importTageAusZeitplan(yaml)).toEqual(TAGE);
   });
 
-  it("warnt, wenn ein monatlicher Import fehlt", () => {
-    expect(mastrFrischeVerdict(MASTR_FRISCHE_WARN_TAGE)).toBe("gelb");
-    expect(mastrFrischeVerdict(MASTR_FRISCHE_FAIL_TAGE - 1)).toBe("gelb");
+  it("hält die Konstante der Ortsseite gegen denselben Zeitplan", () => {
+    // Die Ortsseite sagt am Abo-Knopf, wann die nächsten Zahlen kommen. Sie
+    // kann die Workflow-Datei nicht lesen (die liegt nicht im ausgelieferten
+    // Bündel) und hält die Termine deshalb als Konstante. Wer den Zeitplan
+    // verschiebt und sie vergisst, verspricht 11.000 Ortsseiten lang ein
+    // Datum, an dem nichts passiert — hier wird es rot.
+    const yaml = readFileSync(join(__dirname, "..", "..", ".github", "workflows", MASTR_WORKFLOW), "utf8");
+    expect(IMPORT_TAGE).toEqual(importTageAusZeitplan(yaml));
   });
 
-  it("wird rot, wenn zwei Importe ausgefallen sind", () => {
-    expect(mastrFrischeVerdict(MASTR_FRISCHE_FAIL_TAGE)).toBe("rot");
-    expect(mastrFrischeVerdict(365)).toBe("rot");
+  it("nennt den NÄCHSTEN Termin, nie einen vergangenen", () => {
+    // Innerhalb des Monats der nächste Termin …
+    expect(naechsterImport([5, 7, 9], new Date("2026-09-06T00:00:00Z"))).toBe("2026-09-07");
+    // … am Termin selbst schon der folgende (der Lauf ist dann angestoßen) …
+    expect(naechsterImport([5, 7, 9], new Date("2026-09-07T00:00:00Z"))).toBe("2026-09-09");
+    // … und nach dem letzten der erste des Folgemonats, über den Jahreswechsel.
+    expect(naechsterImport([5, 7, 9], new Date("2026-09-10T00:00:00Z"))).toBe("2026-10-05");
+    expect(naechsterImport([5, 7, 9], new Date("2026-12-20T00:00:00Z"))).toBe("2027-01-05");
   });
 
-  it("die Schwellen bleiben, wo der Import-Rhythmus sie hinsetzt", () => {
-    // CLAUDE.md: „kein Hochsetzen der Schwellen, damit ein Befund verschwindet."
-    // Der Import läuft monatlich — eine Warngrenze jenseits von zwei Monaten
-    // würde einen ausgefallenen Lauf durchwinken, und genau dagegen gibt es
-    // diese Prüfung. Wer sie anhebt, lässt diesen Test fallen.
-    expect(MASTR_FRISCHE_WARN_TAGE).toBeLessThanOrEqual(45);
-    expect(MASTR_FRISCHE_FAIL_TAGE).toBeLessThanOrEqual(70);
-    expect(MASTR_FRISCHE_WARN_TAGE).toBeLessThan(MASTR_FRISCHE_FAIL_TAGE);
+  it("sagt den ERSTEN des kommenden Monats an, nicht den nächsten Nachhol-Anlauf", () => {
+    // Die Zahlen des laufenden Zyklus sind da (Stand vom 1.) — angesagt wird
+    // der 1. des Folgemonats, an jedem Tag dazwischen derselbe. Die Termine am
+    // 3. und 5. sind das Sicherheitsnetz und bringen dann nichts Neues; sie
+    // anzusagen ließe den Termin dreimal je Woche wandern.
+    for (const tag of ["2026-09-01", "2026-09-04", "2026-09-06", "2026-09-30"]) {
+      expect(naechsteAktualisierung([1, 3, 5], "2026-09-01", new Date(`${tag}T12:00:00Z`))).toBe("2026-10-01");
+    }
+    // Über den Jahreswechsel.
+    expect(naechsteAktualisierung([1, 3, 5], "2026-12-01", new Date("2026-12-20T12:00:00Z"))).toBe("2027-01-01");
+  });
+
+  it("verspricht keinen fernen Termin, solange die Zahlen dieses Zyklus fehlen", () => {
+    // Stand noch aus dem August, der Lauf am 1. ist ausgeblieben: Angesagt wird
+    // der nächste Anlauf, nicht der 1. Oktober. Sonst stünde dort ein Datum in
+    // vier Wochen, während die Zahlen jeden Moment kommen können.
+    expect(naechsteAktualisierung([1, 3, 5], "2026-08-01", new Date("2026-09-02T12:00:00Z"))).toBe("2026-09-03");
+    expect(naechsteAktualisierung([1, 3, 5], "2026-08-01", new Date("2026-09-04T12:00:00Z"))).toBe("2026-09-05");
+  });
+
+  it("nimmt Kommalisten und mehrere Zeilen", () => {
+    expect(importTageAusZeitplan('    - cron: "0 4 5,7,9 * *"')).toEqual([5, 7, 9]);
+    expect(importTageAusZeitplan('- cron: "0 4 5 * *"\n- cron: "0 4 9 * *"')).toEqual([5, 9]);
+  });
+
+  it("sagt „weiß nicht“ statt zu raten", () => {
+    // Ein Sternchen ist kein Monatsrhythmus, eine Schrittweite auch nicht. Beides
+    // hier zu deuten hieße raten — und ein geratener Termin erzeugt entweder
+    // Fehlalarme oder Schweigen, je nachdem wie man rät.
+    expect(importTageAusZeitplan('- cron: "0 4 * * *"')).toBeNull();
+    expect(importTageAusZeitplan('- cron: "0 4 */3 * *"')).toBeNull();
+    expect(importTageAusZeitplan("kein Zeitplan hier")).toBeNull();
+    // Ein Tag jenseits des 28. gibt es nicht in jedem Monat — der Februar wäre
+    // eine stille Lücke.
+    expect(importTageAusZeitplan('- cron: "0 4 31 * *"')).toBeNull();
   });
 });
 
-describe("MaStR-Frische: Altersrechnung", () => {
+describe("Zyklus: welcher Termin gilt gerade", () => {
+  it("der erste Termin des Monats, sobald er angebrochen ist", () => {
+    expect(zyklusStart(TAGE_DAMALS, new Date("2026-09-05T04:00:00Z"))).toBe("2026-09-05");
+    expect(zyklusStart(TAGE_DAMALS, new Date("2026-09-30T23:00:00Z"))).toBe("2026-09-05");
+  });
+
+  it("vor dem Termin läuft noch der Zyklus des Vormonats", () => {
+    expect(zyklusStart(TAGE_DAMALS, new Date("2026-09-04T23:00:00Z"))).toBe("2026-08-05");
+  });
+
+  it("trägt über den Jahreswechsel", () => {
+    expect(zyklusStart(TAGE_DAMALS, new Date("2026-01-03T00:00:00Z"))).toBe("2025-12-05");
+  });
+});
+
+describe("Der echte Ausfall vom 05.09.2026", () => {
+  // Gemessen: Der Lauf am 05.09. brach nach 26 Sekunden ab (der Server der
+  // Behörde war vom Läufer aus nicht erreichbar), in der Datenbank stand am
+  // 09.09. weiterhin der 05.08. Die alte Aufsicht meldete an keinem dieser Tage
+  // irgendetwas.
+  const stand = "2026-08-05";
+
+  it("am Tag des Fehlschlags: der Zyklus ist offen, gemeldet wird der rote Lauf", () => {
+    const b = importPlanBefund(stand, TAGE_DAMALS, new Date("2026-09-05T09:00:00Z"));
+    expect(b.art).toBe("unterwegs");
+    // Ohne den Ausgang des Laufs ist das noch kein Befund — der Zyklus läuft ja.
+    expect(importlaufMeldung(b, "success")).toBeNull();
+    // Mit rotem Lauf schon, aber als Warnung: Am 07. steht der nächste Anlauf an.
+    expect(importlaufMeldung(b, "failure")?.stufe).toBe("warnung");
+    expect(importlaufMeldung(b, "cancelled")?.stufe).toBe("warnung");
+  });
+
+  it("nach dem letzten Anlauf samt Nachfrist: Befund für Claude", () => {
+    const b = importPlanBefund(stand, TAGE_DAMALS, new Date("2026-09-11T13:00:00Z"));
+    expect(b.art).toBe("ausgefallen");
+    // Auch ohne jede Kenntnis der Lauf-Historie — der Termin allein trägt hier.
+    expect(importlaufMeldung(b, null)?.stufe).toBe("claude");
+  });
+
+  it("die Nachfrist wird eingehalten, nicht übersprungen", () => {
+    // Am letzten Anlauf selbst läuft der Lauf noch (rund zweieinhalb Stunden,
+    // danach Ungültig-Erklären und Aufwärmen). Wer hier schon meldet, meldet
+    // jeden Monat grundlos — und eine Meldung, die immer angeht, filtert man weg.
+    expect(importPlanBefund(stand, TAGE_DAMALS, new Date("2026-09-09T09:00:00Z")).art).toBe("unterwegs");
+    expect(importPlanBefund(stand, TAGE_DAMALS, new Date("2026-09-10T23:00:00Z")).art).toBe("unterwegs");
+  });
+
+  it("die alte Tagesschwelle hätte hier geschwiegen", () => {
+    // Der Beleg dafür, dass die Umstellung nötig war und nicht Geschmack ist:
+    // 31 Tage am Tag des Fehlschlags, 37 am Tag der Entdeckung — beides lag
+    // unter den 45, ab denen die alte Aufsicht überhaupt erst gelb wurde.
+    expect(mastrAlterTage("2026-08-05T00:00:00+00:00", new Date("2026-09-05T09:00:00Z"))).toBeLessThan(45);
+    expect(mastrAlterTage("2026-08-05T00:00:00+00:00", new Date("2026-09-11T13:00:00Z"))).toBeLessThan(45);
+    // Und die neue Aufsicht meldet an genau diesem Tag.
+    expect(importPlanBefund("2026-08-05", TAGE_DAMALS, new Date("2026-09-11T13:00:00Z")).art).toBe("ausgefallen");
+  });
+});
+
+describe("Der Normalfall darf nicht melden", () => {
+  it("frisch importierter Bestand ist aktuell", () => {
+    expect(importPlanBefund("2026-09-05", TAGE_DAMALS, new Date("2026-09-20T00:00:00Z")).art).toBe("aktuell");
+  });
+
+  it("kurz vor dem nächsten Termin ist ein Monat alter Bestand noch richtig", () => {
+    // Am 04.10. ist der Bestand vom 05.09. 29 Tage alt — und vollkommen in
+    // Ordnung, weil der Oktober-Zyklus noch gar nicht begonnen hat. Genau diese
+    // Unterscheidung kann eine Tagesschwelle nicht treffen.
+    expect(importPlanBefund("2026-09-05", TAGE_DAMALS, new Date("2026-10-04T00:00:00Z")).art).toBe("aktuell");
+  });
+
+  it("ein roter Lauf bei aktuellem Bestand ist eine Warnung, kein Ausfall", () => {
+    const b = importPlanBefund("2026-09-05", TAGE_DAMALS, new Date("2026-09-20T00:00:00Z"));
+    expect(importlaufMeldung(b, "failure")?.stufe).toBe("warnung");
+    expect(importlaufMeldung(b, "success")).toBeNull();
+  });
+
+  it("ohne Kenntnis der Lauf-Historie wird nichts behauptet", () => {
+    const b = importPlanBefund("2026-09-05", TAGE_DAMALS, new Date("2026-09-20T00:00:00Z"));
+    expect(importlaufMeldung(b, null)).toBeNull();
+  });
+});
+
+describe("Der Lauf selbst: hat er noch etwas zu tun?", () => {
+  it("der Nachhol-Termin überspringt sich, wenn der erste geglückt ist", () => {
+    // Ohne das wären die zusätzlichen Termine keine Absicherung, sondern
+    // dreifache Arbeit: dreimal 3,2 GB und dreimal zwei Stunden Aufwärmen.
+    expect(importNoetig("2026-09-05", TAGE_DAMALS, new Date("2026-09-07T04:00:00Z"))).toBe(false);
+    expect(importNoetig("2026-09-05", TAGE_DAMALS, new Date("2026-09-09T04:00:00Z"))).toBe(false);
+  });
+
+  it("der Nachhol-Termin arbeitet, wenn der erste ausgefallen ist", () => {
+    expect(importNoetig("2026-08-05", TAGE_DAMALS, new Date("2026-09-07T04:00:00Z"))).toBe(true);
+  });
+
+  it("und er arbeitet im neuen Monat wieder", () => {
+    expect(importNoetig("2026-09-05", TAGE_DAMALS, new Date("2026-10-05T04:00:00Z"))).toBe(true);
+  });
+});
+
+describe("Die Nachfrist bleibt, wo der Rhythmus sie hinsetzt", () => {
+  it("keine Nachfrist jenseits eines halben Zyklus", () => {
+    // CLAUDE.md: „kein Hochsetzen der Schwellen, damit ein Befund verschwindet."
+    // Eine Nachfrist von zwei Wochen machte aus der Aufsicht wieder das, was sie
+    // vorher war: eine, die den Ausfall erst bemerkt, wenn der nächste Import
+    // ihn geheilt hat.
+    expect(IMPORT_NACHFRIST_TAGE).toBeGreaterThanOrEqual(1);
+    expect(IMPORT_NACHFRIST_TAGE).toBeLessThanOrEqual(5);
+  });
+});
+
+describe("Das Alter bleibt Auskunft, nicht Urteil", () => {
   it("rechnet gegen einen hereingereichten Stichtag, nicht gegen die Uhr", () => {
-    // Eine Bewertungsfunktion mit eigener Uhr lässt sich nicht prüfen — und im
-    // Projekt ist schon einmal ein Prüfdatum falsch geworden, weil es sich seine
-    // Zeit selbst geholt hat.
     expect(mastrAlterTage("2026-08-05T00:00:00+00:00", new Date("2026-08-19T00:00:00Z"))).toBe(14);
-    expect(mastrAlterTage("2026-06-01T00:00:00+00:00", new Date("2026-08-19T00:00:00Z"))).toBe(79);
   });
 
   it("schneidet angebrochene Tage ab, statt aufzurunden", () => {
-    // Die vorsichtige Richtung: Das Alter wird eher zu klein als zu groß
-    // ausgewiesen, damit die Meldung nicht einen Tag zu früh kommt.
     expect(mastrAlterTage("2026-08-05T00:00:00+00:00", new Date("2026-08-05T23:59:00Z"))).toBe(0);
-  });
-
-  it("ein 14 Tage alter Bestand ist der Normalfall, kein Befund", () => {
-    // Gemessen am 19.08.2026: Stand 2026-08-05. Wäre das schon gelb, meldete die
-    // Prüfung bei jedem Lauf — und eine Warnung, die immer angeht, filtert man
-    // weg und verpasst dann die echte.
-    expect(mastrFrischeVerdict(mastrAlterTage("2026-08-05T00:00:00+00:00", new Date("2026-08-19T00:00:00Z")))).toBe(
-      "gruen",
-    );
   });
 });

@@ -4,6 +4,9 @@ import { v } from "../../../../lib/theme";
 import { DEFAULT_PRICES } from "../../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
 import { estimateCost } from "../../../../lib/calc";
+// Der Gültigkeitsbeginn ist ein deutsches Datum — die Voreinstellung „heute"
+// kommt deshalb aus der deutschen Uhr, nicht aus der Weltzeit (lib/zeit.ts).
+import { heuteInBerlin } from "../../../../lib/zeit";
 
 interface PriceRow {
   id: string;
@@ -24,21 +27,21 @@ interface PriceRow {
 const S = {
   page: { fontFamily: v("--font-text"), color: v("--color-text-primary") } as const,
   wrap: { maxWidth: 600 } as const,
-  h1: { fontSize: v("--font-size-h1"), fontWeight: 700, marginBottom: 24 } as const,
-  h2: { fontSize: v("--font-size-h3"), fontWeight: 600, marginTop: 32, marginBottom: 12 } as const,
+  h1: { marginBottom: 24 } as const,
+  h2: { marginTop: 32, marginBottom: 12 } as const,
   card: { background: "#fff", border: `1px solid ${v("--color-border")}`, borderRadius: 14, padding: 20, marginBottom: 16 } as const,
   label: { display: "block", fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary"), textTransform: "uppercase" as const, letterSpacing: "0.5px", marginBottom: 6 },
   input: { width: "100%", padding: "8px 12px", border: `1px solid ${v("--color-border")}`, borderRadius: 8, fontSize: v("--font-size-body"), fontFamily: v("--font-mono"), background: v("--color-bg-muted") } as const,
   row: { display: "flex", gap: 12, marginBottom: 12 } as const,
-  btn: { background: v("--color-accent"), color: "#fff", border: "none", borderRadius: 10, padding: "12px 24px", fontSize: v("--font-size-body"), fontWeight: 600, cursor: "pointer", width: "100%" } as const,
+  btn: { background: v("--color-cta"), color: v("--color-cta-ink"), border: "none", borderRadius: v("--radius-pill"), padding: "12px 24px", fontSize: v("--font-size-body"), fontWeight: 600, cursor: "pointer", width: "100%" } as const,
   btnSecondary: { background: "transparent", color: v("--color-accent"), border: `1px solid ${v("--color-accent")}`, borderRadius: 10, padding: "10px 20px", fontSize: v("--font-size-body"), fontWeight: 600, cursor: "pointer" } as const,
   preview: { fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), color: v("--color-accent"), marginTop: 12 } as const,
   table: { width: "100%", borderCollapse: "collapse" as const, fontSize: v("--font-size-small") },
   th: { textAlign: "left" as const, padding: "6px 8px", borderBottom: `2px solid ${v("--color-border")}`, fontWeight: 600, color: v("--color-text-secondary") },
   td: { padding: "6px 8px", borderBottom: `1px solid ${v("--color-border")}`, fontFamily: v("--font-mono") },
   muted: { color: v("--color-text-muted"), fontSize: v("--font-size-small") },
-  success: { color: v("--color-positive"), fontSize: v("--font-size-body"), fontWeight: 600, marginTop: 8 },
-  error: { color: v("--color-negative"), fontSize: v("--font-size-body"), fontWeight: 600, marginTop: 8 },
+  success: { color: v("--color-positive-text"), fontSize: v("--font-size-body"), fontWeight: 600, marginTop: 8 },
+  error: { color: v("--color-negative-text"), fontSize: v("--font-size-body"), fontWeight: 600, marginTop: 8 },
   link: { color: v("--color-accent"), textDecoration: "none", fontSize: v("--font-size-small") },
 };
 
@@ -66,7 +69,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
   const [battKwh, setBattKwh] = useState(current?.battery_per_kwh ?? DEFAULT_PRICES.batteryPerKwh);
   const [elecPrice, setElecPrice] = useState(current?.electricity_price ?? DEFAULT_PRICES.electricityPrice);
   const [elecIncrease, setElecIncrease] = useState(current?.electricity_increase ?? DEFAULT_PRICES.electricityIncrease);
-  const [validFrom, setValidFrom] = useState(new Date().toISOString().split("T")[0]);
+  const [validFrom, setValidFrom] = useState(heuteInBerlin());
   const [source, setSource] = useState("");
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
@@ -133,7 +136,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
   const [fiTeilO, setFiTeilO] = useState(currentFeedIn?.teil_over_10 ?? DEFAULT_FEED_IN.teilOver10);
   const [fiVollU, setFiVollU] = useState(currentFeedIn?.voll_under_10 ?? DEFAULT_FEED_IN.vollUnder10);
   const [fiVollO, setFiVollO] = useState(currentFeedIn?.voll_over_10 ?? DEFAULT_FEED_IN.vollOver10);
-  const [fiValidFrom, setFiValidFrom] = useState(new Date().toISOString().split("T")[0]);
+  const [fiValidFrom, setFiValidFrom] = useState(heuteInBerlin());
   const [fiSource, setFiSource] = useState("");
   const [fiNotes, setFiNotes] = useState("");
   const [fiStatus, setFiStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
@@ -292,7 +295,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
                     </td>
                     <td style={{ ...S.td, fontFamily: v("--font-text"), fontSize: v("--font-size-small"), maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {row.source === "SCRAPE_ERROR" ? (
-                        <span style={{ color: v("--color-negative") }} title={row.notes || ""}>Fehler</span>
+                        <span style={{ color: v("--color-negative-text") }} title={row.notes || ""}>Fehler</span>
                       ) : (
                         <span title={row.notes || ""}>{row.source || row.updated_by || "—"}</span>
                       )}

@@ -30,7 +30,13 @@ on:
     # Täglich früh, vor den scheduled tasks des Betreibers: Findet der Crawler
     # etwas, liegt es schon im Arbeitsvorrat, wenn dessen Lauf startet.
     - cron: "40 3 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      resume_after_discovery:
+        description: "Resume a failed run after its completed discovery stage"
+        type: boolean
+        required: false
+        default: false
 
 concurrency:
   group: foerder-watch
@@ -39,6 +45,9 @@ concurrency:
 jobs:
   watch:
     runs-on: ubuntu-latest
+    env:
+      FUNDING_RUN_ID: github-${{ github.run_id }}-${{ github.run_attempt }}
+      FUNDING_EVIDENCE_DIR: scripts/.cache/funding-evidence/current
     # 35 → 60 Minuten (23.08.2026). Das ist AUSDRÜCKLICH kein Hochsetzen einer
     # Schwelle, damit ein Befund verschwindet — der Befund IST, dass die Arbeit
     # gewachsen ist: Der Seitenbestand ging von 2.672 (19.08.) auf 6.922
@@ -80,7 +89,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install public-source readers
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y poppler-utils
+          npx playwright install --with-deps chromium
+
+      - name: Source evidence schema
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npx tsx scripts/funding-evidence-setup.ts
+
       - name: Amtsseiten abrufen und vergleichen
+        if: ${{ !inputs.resume_after_discovery }}
+        id: programs
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -91,6 +114,7 @@ jobs:
         run: npm run foerder:watch
 
       - name: Arbeitsvorrat zeigen
+        if: ${{ !inputs.resume_after_discovery }}
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -151,6 +175,8 @@ jobs:
       # Job-Limit ist wirkungslos, dann reißt wieder der Job zuerst und der
       # Ausgang heißt erneut „abgebrochen" (CLAUDE.md, Monitoring).
       - name: Förderseiten auf den Amtsdomains suchen
+        if: ${{ !inputs.resume_after_discovery }}
+        id: discovery
         timeout-minutes: 40
         continue-on-error: true
         env:
@@ -166,6 +192,8 @@ jobs:
       # Altbestand (Bad Homburg hing an Glashütten). Dieser Schritt DARF rot
       # werden; er braucht kein Urteil, sondern vergleicht nur Namen.
       - name: Gemeindeschlüssel der Programme prüfen
+        if: ${{ !inputs.resume_after_discovery }}
+        id: ags
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -183,6 +211,7 @@ jobs:
       # gekippt hat. Bewegt sich ein Fingerabdruck, steht die Gemeinde im
       # Screening-Schritt darunter am selben Tag wieder oben.
       - name: Bekannte Förderseiten auf Bewegung prüfen
+        id: coverage
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -236,6 +265,7 @@ jobs:
       # bleibt ohne Limit und ohne continue-on-error — wenn DER nicht durchläuft,
       # soll der Lauf rot werden.
       - name: Jede einzelne Förderseite auf Bewegung prüfen
+        id: pages
         timeout-minutes: 12
         continue-on-error: true
         env:
@@ -254,6 +284,7 @@ jobs:
       # die Wärmepumpe bloß erwähnt, ohne dass in Reichweite Geld steht, ist
       # keine Wärmepumpen-Förderseite.
       - name: Technik je Förderseite einordnen
+        id: technology
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -268,14 +299,6 @@ jobs:
       # Die Schleuse bleibt, wie sie ist: Der Bericht landet in der Ablage
       # (/admin/waechter) und wird NUR zugestellt, wenn er eine Entscheidung
       # enthält, die dem Betreiber gehört. Fortschrittszahlen sind keine.
-      - name: Tagesbericht der Erfassung
-        if: always()
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-          CRON_SECRET: ${{ secrets.CRON_SECRET }}
-        run: npm run foerder:bericht
 
       # Verfallene Abo-Einträge löschen.
       #
@@ -311,6 +334,7 @@ jobs:
       # (gemessen gut hundert) — sonst wächst der Rückstand schneller, als er
       # abgetragen wird.
       - name: Abdeckung weiter durchsehen
+        id: screen
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -320,6 +344,7 @@ jobs:
       # Nach Technik getrennt, weil die Treffer in drei verschiedene Rechner
       # führen und drei verschiedene Leselisten sind.
       - name: Treffer zum Nachlesen
+        id: reading_list
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -328,3 +353,40 @@ jobs:
           npm run foerder:screen -- --treffer --technik balkon
           npm run foerder:screen -- --treffer --technik waermepumpe
           npm run foerder:screen -- --treffer --technik pv
+          npm run foerder:suche -- --externe
+
+      # Getaktet nach dem Versand (Tag 3/7/14/28), nicht nach dem Kalender.
+      # Ist nichts fällig, wird nichts abgerufen und nichts bezahlt.
+      - name: Wirkung der Ansprache messen
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          DATAFORSEO_LOGIN: ${{ secrets.DATAFORSEO_LOGIN }}
+          DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
+        run: |
+          if [ -z "$DATAFORSEO_LOGIN" ] || [ -z "$DATAFORSEO_PASSWORD" ]; then
+            echo "::warning::Kein DataForSEO-Zugang hinterlegt - Wirkung wurde NICHT gemessen."
+            exit 0
+          fi
+          npm run wirkung -- --schreiben
+
+      - name: Abschlussbericht der Erfassung
+        if: always()
+        env:
+          FUNDING_STEP_OUTCOMES: ${{ toJSON(steps) }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: npm run foerder:bericht
+
+      - name: Preserve original source observations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: funding-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: scripts/.cache/funding-evidence/current
+          retention-days: 90
+          if-no-files-found: warn

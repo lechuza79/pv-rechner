@@ -16,6 +16,7 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
 
 // The admin tools. Add a row here when a new admin page ships.
 const TOOLS: { href: string; title: string; desc: string }[] = [
+  { href: "/admin/vorschauen", title: "Vorschauen", desc: "Entwürfe aus allen Solar-Check-Sessions zentral öffnen — mit automatischem Start der lokalen Vorschau-Server." },
   { href: "/admin/theme", title: "Designsystem", desc: "Farben, Schriften, Abstände, Ecken — die eine Quelle, aus der die Oberfläche gebaut wird. Signalfarben je Helligkeitsstufe live anpassbar." },
   { href: "/admin/komponenten", title: "Komponenten", desc: "Die Bausteine als Galerie: jeder echt und bedienbar, mit seinen Zuständen und dem, woraus er besteht." },
   { href: "/admin/prices", title: "Marktpreise", desc: "PV-/Speicher-Preise scrapen, manuell überschreiben, Historie ansehen." },
@@ -23,6 +24,7 @@ const TOOLS: { href: string; title: string; desc: string }[] = [
   { href: "/admin/kommunen", title: "Kommunen-Outreach", desc: "Kontaktdaten der ~11.000 Gemeinden: filtern, Status pflegen, Kontaktseite öffnen." },
   { href: "/admin/versorger", title: "Stadtwerke & Energieversorger", desc: "Versorger erfassen, Gemeinden zuordnen, Kennzahlen im Versorgungsgebiet ansehen." },
   { href: "/admin/fachbetriebe", title: "PV-Fachbetriebe", desc: "Erhobene Solarteure und Elektrobetriebe mit PV-Geschäft — filtern, ansehen, vormerken." },
+  { href: "/admin/presse", title: "Presse & Creator", desc: "Redaktionen, Fachdienste und Creator mit Ansprechpartner, Beleg und Aufhänger — filtern, vormerken, aussortieren." },
   { href: "/admin/waechter", title: "Wächter-Berichte", desc: "Ablage aller Wächter-Läufe — auch der stummen, die keine Mail ausgelöst haben." },
   { href: "/admin/einbettungen", title: "Einbettungen", desc: "Fremde Seiten, auf denen unsere Widgets laufen — der Erfolg des Outreach, ohne auf eine Antwort zu warten." },
 ];

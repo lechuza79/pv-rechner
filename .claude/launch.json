@@ -2,10 +2,50 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "wp-geraete",
+      "name": "dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "3391"],
-      "port": 3391
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "neon-integration",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "next",
+        "dev",
+        "-p",
+        "3087"
+      ],
+      "port": 3087
+    },
+    {
+      "name": "angebot-check",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "3648"
+      ],
+      "port": 3648
+    },
+    {
+      "name": "gemeinde-vorschau",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "GEMEINDE_PAKET_LOKAL=/Users/eule/projects/pv-rechner/.claude/worktrees/atlas-handoff-release-notes-356dd8/scripts/.cache/gemeinde-pakete/2026-09-10",
+        "npx",
+        "next",
+        "dev",
+        "-p",
+        "3217"
+      ],
+      "port": 3217
     }
   ]
 }

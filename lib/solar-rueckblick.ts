@@ -1,0 +1,230 @@
+import { calcCurrentPower } from "./simulation";
+import { calcHourlyConsumption } from "./consumption";
+import { calcHeatDemand, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING } from "./heatpump-core";
+import { PERSONEN, NUTZUNG, DEGRAD } from "./constants";
+import { feedInArchivRates } from "./feedin-archiv";
+import preise from "./solar-rueckblick-preise.json";
+
+/**
+ * Ten-year solar retrospective (2016–2025) for one reference household.
+ *
+ * WHAT IT IS: the energy-cost advantage the SAME household would have had
+ * with a 10 kWp roof system, hour by hour, against the weather that actually
+ * happened at a location. Once without and once with a heat pump — in both
+ * cases the household is identical on both sides of the comparison; only the
+ * PV system differs.
+ *
+ * WHAT IT IS NOT: an investment return. No purchase price, grant, finance,
+ * maintenance or tax enter. It must never be labelled "Gewinn" (that word is
+ * reserved for the 25-year figure of the calculator). It is also not measured
+ * live output — the page keeps the two apart.
+ *
+ * Shared basis (CLAUDE.md, "Geteilte Rechen-Basis"): hourly load from
+ * calcHourlyConsumption, PV output from calcCurrentPower, household size from
+ * PERSONEN, daytime share from NUTZUNG, degradation DEGRAD, the reference
+ * building DEFAULT_WP_BUILDING and the archived 2016 feed-in tariff. No
+ * constant of its own except the ten-year window.
+ *
+ * Deliberate deviation: money comes from the hourly balance, not from the
+ * calculator's HTW power law. The retrospective replays real weather hour by
+ * hour; the power law has no weather input. Without a battery the hourly
+ * balance is the direct quantity.
+ *
+ * Known approximations, all stated in the page's help text (review
+ * 2026-09-18): a constant seasonal performance factor (JAZ) instead of a
+ * temperature-dependent one, the heat pump's power priced like household
+ * power (both push the heat-pump figure up), and no 70 % feed-in cap.
+ * Feed-in revenue is the larger part of both figures (measured: 76–78 %
+ * without, 53–55 % with heat pump) — which is why the page says "gebracht".
+ */
+
+export const RUECKBLICK_VON = 2016;
+export const RUECKBLICK_BIS = 2025;
+
+/**
+ * When the ten-year window was last moved, and by when the next move is due.
+ *
+ * The window moves by one year once the previous year's second-half household
+ * prices are published by Eurostat (usually in spring) — then 2017–2026 can be
+ * computed. `reviewBy` is the date after which the health check reports the
+ * window as overdue (lib/pruefstand.ts), so the move cannot be forgotten.
+ * Steps: scripts/solar-rueckblick-verify.md.
+ */
+export const RUECKBLICK_STAND = { geprueftIso: "2026-09-18", reviewBy: "2027-06-30" } as const;
+const JAHRE = RUECKBLICK_BIS - RUECKBLICK_VON + 1;
+
+/**
+ * One calendar year of hourly weather on a UTC axis: index i is labelled
+ * 1 Jan 00:00 UTC + i h and holds the mean of the hour BEFORE that label
+ * (ERA5 / Open-Meteo convention). Never feed a fixed-offset local axis.
+ */
+export interface WetterJahr {
+  jahr: number;
+  /** Air temperature 2 m, °C. */
+  temperaturC: number[];
+  /** Irradiance on a south-facing 35° plane, W/m². */
+  einstrahlungGeneigtWm2: number[];
+}
+
+export interface RueckblickJahr {
+  jahr: number;
+  /** € advantage of PV, household without heat pump. */
+  vorteilOhneWp: number;
+  /** € advantage of PV, same household with heat pump. */
+  vorteilMitWp: number;
+  erzeugungKwh: number;
+  eigenverbrauchOhneWpKwh: number;
+  eigenverbrauchMitWpKwh: number;
+  netzbezugMitWpKwh: number;
+  waermeKwh: number;
+}
+
+export interface Rueckblick {
+  von: number;
+  bis: number;
+  vorteilOhneWp: number;
+  vorteilMitWp: number;
+  jahre: RueckblickJahr[];
+  annahmen: {
+    kwp: number;
+    haushaltKwh: number;
+    personen: string;
+    wohnflaeche: number;
+    jaz: number;
+    einspeiseEuroKwh: number;
+    waermeKwhJahr: number;
+    neigung: number;
+    ausrichtung: "Süd";
+  };
+  preisquelle: typeof preise;
+}
+
+function stundenImJahr(jahr: number): number {
+  return (Date.UTC(jahr + 1, 0, 1) - Date.UTC(jahr, 0, 1)) / 3_600_000;
+}
+
+const BERLIN = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Berlin", month: "numeric", hour: "numeric", hourCycle: "h23" });
+
+/** Local month (0–11) and clock hour (0–23) in Germany for a UTC instant. */
+export function berlinStunde(ms: number): { monat: number; stunde: number } {
+  let monat = 0;
+  let stunde = 0;
+  for (const t of BERLIN.formatToParts(new Date(ms))) {
+    if (t.type === "month") monat = Number(t.value) - 1;
+    else if (t.type === "hour") stunde = Number(t.value);
+  }
+  return { monat, stunde };
+}
+
+/**
+ * Berlin month/hour for every interval of a year, computed once per year and
+ * shared by all postcodes — the preparation run evaluates thousands of them,
+ * and the time-zone lookup is the expensive part of an hour.
+ */
+const UHR_JE_JAHR = new Map<number, { monat: Uint8Array; stunde: Uint8Array }>();
+function uhrFuerJahr(jahr: number): { monat: Uint8Array; stunde: Uint8Array } {
+  const vorhanden = UHR_JE_JAHR.get(jahr);
+  if (vorhanden) return vorhanden;
+  const n = stundenImJahr(jahr);
+  const monat = new Uint8Array(n);
+  const stunde = new Uint8Array(n);
+  for (let i = 0; i < n; i++) {
+    const t = berlinStunde(Date.UTC(jahr, 0, 1) + (i - 1) * 3_600_000);
+    monat[i] = t.monat;
+    stunde[i] = t.stunde;
+  }
+  const uhr = { monat, stunde };
+  UHR_JE_JAHR.set(jahr, uhr);
+  return uhr;
+}
+
+export function solarRueckblick(wetter: WetterJahr[], kwp = 10): Rueckblick {
+  if (!Number.isFinite(kwp) || kwp < 0 || kwp > 10) throw new Error("Anlagengröße außerhalb des Modells");
+  if (wetter.length !== JAHRE) throw new Error("Es braucht genau zehn Wetterjahre");
+
+  const person = PERSONEN[2];
+  const gebaeude = DEFAULT_WP_BUILDING;
+  const waerme = calcHeatDemand(gebaeude.situation, gebaeude.wohnflaeche, gebaeude.insulationIdx, person.count);
+  const jaz = calcJAZ(gebaeude.wpType, flowTempForSystem(gebaeude.heizsystem));
+  const satz = feedInArchivRates("2016-01-01");
+  if (!satz) throw new Error("Einspeisesatz 2016 fehlt");
+  const einspeisung = satz.teilUnder10 / 100;
+  const haushalt = { baseKwh: person.verbrauch, tagQuote: NUTZUNG[1].tagQuote, wpActive: false, eaActive: false };
+  const strompreise = preise.series.electricity.values as Record<string, number>;
+
+  let gradSumme = 0;
+  let stundenGesamt = 0;
+  const zeilen = wetter.map((w, index) => {
+    const jahr = RUECKBLICK_VON + index;
+    const n = stundenImJahr(jahr);
+    if (w.jahr !== jahr) throw new Error(`Wetterjahr ${w.jahr} an Stelle von ${jahr}`);
+    if (w.temperaturC.length !== n || w.einstrahlungGeneigtWm2.length !== n) throw new Error(`Wetterjahr ${jahr} unvollständig`);
+    let lastSumme = 0;
+    const uhr = uhrFuerJahr(jahr);
+    const stunden = w.temperaturC.map((temp, i) => {
+      const strahlung = w.einstrahlungGeneigtWm2[i];
+      if (typeof temp !== "number" || !Number.isFinite(temp) || typeof strahlung !== "number" || !Number.isFinite(strahlung) || strahlung < 0) {
+        throw new Error(`Ungültiger Wetterwert ${jahr}, Stunde ${i}`);
+      }
+      // A weather value at label t is the mean of the PRECEDING hour, so the
+      // interval starts at t − 1 h. The household lives by the German clock:
+      // load profile and price period use Berlin local time (with DST), not UTC.
+      const monat = uhr.monat[i];
+      const stunde = uhr.stunde[i];
+      const preis = strompreise[`${jahr}-S${monat < 6 ? 1 : 2}`];
+      if (!(preis > 0)) throw new Error(`Strompreis ${jahr} fehlt`);
+      // Heating degree hours (G20/15), used only to distribute annual heat.
+      const grad = temp < 15 ? 20 - temp : 0;
+      gradSumme += grad;
+      stundenGesamt++;
+      const last = calcHourlyConsumption(haushalt, stunde, monat) / 1000;
+      lastSumme += last;
+      const pv = (calcCurrentPower(kwp, strahlung, temp) / 1000) * Math.pow(1 - DEGRAD, index);
+      return { last, pv, grad, preis };
+    });
+    return { jahr, stunden, lastSumme };
+  });
+  if (gradSumme <= 0) throw new Error("Heizwetter fehlt");
+
+  const jahre: RueckblickJahr[] = zeilen.map(({ jahr, stunden, lastSumme }) => {
+    const r: RueckblickJahr = {
+      jahr, vorteilOhneWp: 0, vorteilMitWp: 0, erzeugungKwh: 0,
+      eigenverbrauchOhneWpKwh: 0, eigenverbrauchMitWpKwh: 0, netzbezugMitWpKwh: 0, waermeKwh: 0,
+    };
+    for (const h of stunden) {
+      const last = (h.last * person.verbrauch) / lastSumme;
+      const bedarf = (waerme.qHeiz * JAHRE * h.grad) / gradSumme + (waerme.qWw * JAHRE) / stundenGesamt;
+      const wp = bedarf / jaz;
+      const selbstOhne = Math.min(h.pv, last);
+      const selbstMit = Math.min(h.pv, last + wp);
+      r.vorteilOhneWp += selbstOhne * h.preis + (h.pv - selbstOhne) * einspeisung;
+      r.vorteilMitWp += selbstMit * h.preis + (h.pv - selbstMit) * einspeisung;
+      r.erzeugungKwh += h.pv;
+      r.eigenverbrauchOhneWpKwh += selbstOhne;
+      r.eigenverbrauchMitWpKwh += selbstMit;
+      r.netzbezugMitWpKwh += last + wp - selbstMit;
+      r.waermeKwh += bedarf;
+    }
+    return r;
+  });
+
+  return {
+    von: RUECKBLICK_VON,
+    bis: RUECKBLICK_BIS,
+    vorteilOhneWp: jahre.reduce((s, x) => s + x.vorteilOhneWp, 0),
+    vorteilMitWp: jahre.reduce((s, x) => s + x.vorteilMitWp, 0),
+    jahre,
+    annahmen: {
+      kwp,
+      haushaltKwh: person.verbrauch,
+      personen: person.label,
+      wohnflaeche: gebaeude.wohnflaeche,
+      jaz,
+      einspeiseEuroKwh: einspeisung,
+      waermeKwhJahr: waerme.qGes,
+      neigung: 35,
+      ausrichtung: "Süd",
+    },
+    preisquelle: preise,
+  };
+}

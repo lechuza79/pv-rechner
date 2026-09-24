@@ -1,0 +1,65 @@
+name: Kommunen-Rücklauf
+
+# Holt das Anschreiben-Postfach ab, trägt den Status der Gemeinde nach und
+# meldet, was ein Mensch sehen muss.
+#
+# WARUM ES DIESEN LAUF GIBT (09.09.2026): Den Abruf gab es längst, aber nur als
+# Befehl, den jemand von Hand startet. Also startete ihn niemand. Trier
+# antwortete am 09.09. auf ein Anschreiben; die Antwort lag Tage später
+# unentdeckt im Postfach, während die Auswertung „keine Reaktion" meldete.
+# Vierzehn automatische Antworten von Gemeinden waren aus demselben Grund
+# nirgends verzeichnet. Ein Rücklauf, dessen Abholung an einer Erinnerung
+# hängt, ist keine Auswertung — dieselbe Lehre wie bei den Länderreihen.
+#
+# WARUM ER OHNE MENSCHEN SCHREIBEN DARF, obwohl der VERSAND es ausdrücklich
+# nicht darf: Er liest ein Postfach und trägt nach, was dort steht. Nach außen
+# geht nichts. Die beiden gefährlichen Fälle sind abgesichert — „gesperrt" ist
+# im Skript eine Einbahnstraße, die keine spätere Mail wieder aufhebt, und
+# jede Notiz wird nur einmal eingetragen (sonst stünde dieselbe Antwort nach
+# einer Woche siebenmal da; genau so ist es Nidda ergangen).
+#
+# ES WIRD NICHTS GELÖSCHT UND NICHTS ALS GELESEN MARKIERT. Das Postfach gehört
+# dem Betreiber; er soll jede Mail selbst sehen können.
+#
+# Zeitpunkt: täglich um 6:10 UTC, also vor dem Arbeitstag. Eine Antwort, die
+# morgens gemeldet wird, kann am selben Tag beantwortet werden.
+
+on:
+  schedule:
+    - cron: "10 6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kommunen-ruecklauf
+  cancel-in-progress: false
+
+jobs:
+  ruecklauf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Der Zeitraum ist bewusst größer als der Abstand zweier Läufe: Fällt ein
+      # Tag aus, holt der nächste ihn mit. Doppelt eingetragen wird dabei
+      # nichts — das verhindert die Dublettenprüfung im Skript.
+      - name: Postfach abholen, nachtragen und melden
+        run: npm run kommunen:ruecklauf -- --tage=14 --schreiben --melden
+        env:
+          OUTREACH_IMAP_HOST: ${{ secrets.OUTREACH_IMAP_HOST }}
+          OUTREACH_IMAP_PORT: ${{ secrets.OUTREACH_IMAP_PORT }}
+          OUTREACH_IMAP_USER: ${{ secrets.OUTREACH_IMAP_USER }}
+          OUTREACH_IMAP_PASS: ${{ secrets.OUTREACH_IMAP_PASS }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}

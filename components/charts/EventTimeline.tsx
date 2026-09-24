@@ -147,7 +147,7 @@ export default function EventTimeline({ events, active, onChange, startYear, end
               width: `${pos(events[progressIdx].year) - pos(events[0].year)}%`,
               top: 14,
               height: 2,
-              background: v("--color-accent"),
+              background: v("--color-cta"),
               transition: "width .25s ease, left .25s ease",
             }}
           />
@@ -176,8 +176,13 @@ export default function EventTimeline({ events, active, onChange, startYear, end
                   borderRadius: "50%",
                   border: `2px solid ${v("--color-bg")}`,
                   cursor: "pointer",
-                  background: isPlanned ? PALE : v("--color-accent"),
-                  color: v("--color-bg"),
+                  background: isPlanned ? PALE : v("--color-cta"),
+                  // NICHT der Seitenhintergrund: Der dreht mit der Tagesstufe,
+                  // die Akzentfläche darunter nicht. Auf den dunklen Stufen
+                  // stand damit dunkle Schrift auf blauem Grund. Der Rand
+                  // darüber ist ein anderer Fall — er soll sich vom
+                  // Seitengrund abheben und dreht deshalb richtig mit.
+                  color: v("--color-text-on-accent"),
                   fontSize: v("--font-size-small"),
                   fontWeight: 700,
                   fontFamily: v("--font-text"),

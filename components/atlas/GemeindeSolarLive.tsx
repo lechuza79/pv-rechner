@@ -11,7 +11,7 @@ import { fmtPvLeistung } from "../../lib/atlas-format";
 // Einbettbares Widget: standortgenaue Simulation der Solarleistung des Gemeinde-
 // Bestands, gerendert im echten Live-Radial (MastrLiveRadial, chromeless in der
 // geteilten Widget-Hülle). Nur die Datenquelle ist anders als beim bundesweiten
-// Feed: das heutige Wetter am Standort (Open-Meteo, via /api/weather) ×
+// Feed: das heutige Wetter am Standort (DWD ICON-D2-Schnappschuss, via /api/weather) ×
 // installierte Leistung (NOCT-Modell). Es gibt keine echten Erzeugungsdaten je
 // Gemeinde — daher simuliert, klar so beschriftet. Steht auf der Atlas-Seite UND
 // unter /embed/gemeinde-solarleistung.
@@ -19,9 +19,9 @@ import { fmtPvLeistung } from "../../lib/atlas-format";
 type Weather = {
   current: { time: string };
   hourly: { time: string[]; irradiance: number[]; temperature: number[] };
-  // /api/weather liefert bei Open-Meteo-Ausfall HTTP 200 mit source:"error" und
+  // /api/weather liefert ohne vollständigen Schnappschuss HTTP 200 mit source:"error" und
   // leeren Reihen — daher NICHT über r.ok erkennbar, muss am Body geprüft werden.
-  source?: "open-meteo" | "error";
+  source?: "dwd-icon-d2" | "error";
 };
 
 export default function GemeindeSolarLive({
@@ -33,6 +33,7 @@ export default function GemeindeSolarLive({
   onsite = false,
   share = true,
   showEmbed = true,
+  einbetten,
   branding = true,
 }: {
   lat: number;
@@ -46,6 +47,8 @@ export default function GemeindeSolarLive({
   /** Aktionsleiste zeigen (Einbettende können sie über share=0 abwählen). */
   share?: boolean;
   showEmbed?: boolean;
+  /** Fertiger Einbett-Code für diesen Ort — siehe GemeindeWidgetShell. */
+  einbetten?: { params: Record<string, string>; height: number; width?: number };
   branding?: boolean;
 }) {
   const [weather, setWeather] = useState<Weather | null>(null);
@@ -115,6 +118,7 @@ export default function GemeindeSolarLive({
       onsite={onsite}
       share={share}
       showEmbed={showEmbed}
+      einbetten={einbetten}
       branding={branding}
     >
       {failed ? (

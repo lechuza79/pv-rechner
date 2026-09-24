@@ -189,8 +189,8 @@ describe("Pflichtangaben zum Preis", () => {
     const ausgeliefert = ausgelieferterText(KACHEL_DATEI);
 
     // Oben: Kennzeichnung, ein Händler, Provision — mehr nicht.
-    expect(ausgeliefert).toMatch(/Sortiment eines einzelnen Händlers/);
-    expect(ausgeliefert).toMatch(/kein Marktüberblick/);
+    expect(ausgeliefert).toMatch(/Die Geräte stammen von unserem Partner/);
+    expect(ausgeliefert).toMatch(/nicht aus dem gesamten Markt/);
     // Unter den Kacheln: EINE Zeile, die sagt, wo der Vertrag zustande kommt.
     //
     // Bis 05.09.2026 standen hier zwei Absätze mit voller Händleranschrift und
@@ -312,11 +312,11 @@ describe("Kacheln als Aufforderung zum Kauf", () => {
     // die ist vollständig durch Heizlast, Vorlauf und Preis bestimmt.
     const ausgeliefert = ausgelieferterText(KACHEL_DATEI);
     expect(ausgeliefert).not.toMatch(/nie nach unserer Provision/);
-    expect(ausgeliefert).toMatch(/Welches Gerät wir dir empfehlen/);
-    expect(ausgeliefert).toMatch(/nicht, woran wir mehr verdienen/);
+    expect(ausgeliefert).toMatch(/Die Empfehlungen sind nach Preis und passender Heizleistung für deinen Bedarf ausgewählt/);
+    expect(ausgeliefert).toMatch(/nicht nach unserer Provision/);
     // Dass die Geräte aus einem Sortiment stammen, sagt die Kennzeichnung —
     // nicht das Versprechen. Beides an einer Stelle wäre wieder zu viel.
-    expect(ausgeliefert).toMatch(/kein Marktüberblick/);
+    expect(ausgeliefert).toMatch(/nicht aus dem gesamten Markt/);
   });
 });
 

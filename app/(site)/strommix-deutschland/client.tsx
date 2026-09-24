@@ -17,6 +17,9 @@ import { useChartExport } from "../../../lib/useChartExport";
 import ChartExportBar from "../../../components/ChartExportBar";
 import { IconChevronLeft, IconChevronRight, IconChevronDown } from "../../../components/Icons";
 import { LoadingDots as BouncingDots } from "../../../components/LoadingDots";
+// Das Ende eines Datenbereichs ist ein deutscher Kalendertag — mit der Weltzeit
+// fehlten zwischen 00:00 und 02:00 die letzten Stunden (lib/zeit.ts).
+import { heuteInBerlin } from "../../../lib/zeit";
 
 // ─── Time Range Selector ─────────────────────────────────────────────────────
 
@@ -61,7 +64,7 @@ function getYtdHours(): number {
 function getYearRange(year: number): { start: string; end: string } {
   const currentYear = new Date().getFullYear();
   const end = year === currentYear
-    ? new Date().toISOString().slice(0, 10)
+    ? heuteInBerlin()
     : `${year}-12-31`;
   return { start: `${year}-01-01`, end };
 }
@@ -77,9 +80,9 @@ function splitValueUnit(formatted: string): [string, string] {
 function rangeButtonStyle(active: boolean) {
   return {
     padding: "6px 10px",
-    borderRadius: v("--radius-sm"),
+    borderRadius: v("--radius-pill"),
     border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
-    background: active ? v("--color-accent") : v("--color-bg"),
+    background: active ? v("--color-cta") : v("--color-bg"),
     color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
     fontSize: v("--font-size-caption"),
     fontWeight: 600 as const,
@@ -244,7 +247,7 @@ export default function EnergieClient() {
   }, [selected, isYear, isMax]);
 
   const dateRange = useMemo(() => {
-    if (isMax) return { start: "2015-01-01", end: new Date().toISOString().slice(0, 10) };
+    if (isMax) return { start: "2015-01-01", end: heuteInBerlin() };
     if (isYear) return getYearRange(Number(selected));
     return undefined;
   }, [selected, isYear, isMax]);
@@ -367,7 +370,7 @@ export default function EnergieClient() {
     <div style={{ maxWidth: 640, margin: "0 auto" }}>
       {/* Hero */}
       <div style={{ textAlign: "center", marginBottom: 28 }}>
-        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+        <h1 style={{}}>
           Strommix Deutschland – live
         </h1>
         <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: 6, lineHeight: 1.5 }}>
@@ -671,9 +674,9 @@ export default function EnergieClient() {
                 onClick={refetch}
                 style={{
                   padding: "8px 20px",
-                  borderRadius: v("--radius-sm"),
+                  borderRadius: v("--radius-pill"),
                   border: `1px solid ${v("--color-accent")}`,
-                  background: v("--color-accent"),
+                  background: v("--color-cta"),
                   color: v("--color-text-on-accent"),
                   fontSize: v("--font-size-small"),
                   fontWeight: 600,

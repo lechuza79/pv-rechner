@@ -20,6 +20,7 @@ import { verbrauchSpecKwh } from "../../../lib/heatpump-core";
 import { preboundAnteil } from "../../../lib/heat-consumption";
 import { DEFAULT_BALKON_CONFIG as BK } from "../../../lib/balkon-config";
 import { referenceYearKwh } from "../../../lib/solar-year";
+import { heuteInBerlin } from "../../../lib/zeit";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS, FUEL } from "../../../lib/constants";
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
@@ -53,7 +54,7 @@ const S = {
     minHeight: "100vh",
     padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   back: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
@@ -61,14 +62,7 @@ const S = {
     display: "inline-block",
     marginBottom: 24,
   },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: v("--color-text-primary"),
-    lineHeight: 1.2,
-    marginBottom: 10,
-  },
+  h1: { color: v("--color-text-primary"), marginBottom: 10 },
   subtitle: {
     fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
@@ -77,11 +71,7 @@ const S = {
   },
   section: { marginTop: 30 },
   h2row: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 4 },
-  h2: {
-    fontSize: v("--font-size-h2"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-  },
+  h2: { color: v("--color-text-primary") },
   stand: {
     fontSize: v("--font-size-caption"),
     fontWeight: 700,
@@ -200,7 +190,7 @@ async function fetchPrices(): Promise<PriceConfig> {
       .select("*")
       .neq("source", "SCRAPE_ERROR")
       .gt("pv_price_small", 0)
-      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .lte("valid_from", heuteInBerlin())
       .order("valid_from", { ascending: false })
       // Tiebreaker on created_at must match /api/prices exactly — otherwise this
       // transparency page can read a different (older) duplicate row than the
@@ -231,7 +221,7 @@ async function fetchFeedIn(): Promise<FeedInRates> {
     const { data } = await supabase
       .from("feed_in_rates")
       .select("*")
-      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .lte("valid_from", heuteInBerlin())
       .order("valid_from", { ascending: false })
       .limit(1)
       .single();
@@ -446,7 +436,7 @@ export default async function DatenstandPage() {
             { label: "Spez. Heizbedarf Neubau (KfW 40+–EnEV)", value: `${HP.specDemandNeubau[HP.specDemandNeubau.length - 1]}–${HP.specDemandNeubau[0]} kWh/m²·a Norm-Bedarf; gerechnet wird mit ${verbrauchSpecKwh("neubau", HP.specDemandNeubau.length - 1)}–${verbrauchSpecKwh("neubau", 0)} kWh/m²·a` },
             { label: "Bedarf → Verbrauch (Prebound)", value: `Norm-Bedarf wird auf den erwarteten realen Verbrauch umgerechnet: bei ${HP.specDemandBestand[0]} kWh/m²·a rund ${Math.round(preboundAnteil(HP.specDemandBestand[0]) * 100)} % Abschlag, bei ${HP.specDemandNeubau[0]} kWh/m²·a rund ${Math.round(preboundAnteil(HP.specDemandNeubau[0]) * 100)} %. Quelle: Sunikka-Blank/Galvin (2012), Building Research & Information 40(3), 3.400 deutsche Wohnungen. Heizlast und Warmwasser bleiben unkorrigiert` },
             { label: "Warmwasser je Person", value: `${nf(HP.wwPerPerson)} kWh/a` },
-            { label: "Investition Luft/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investLwwpBase)} € + ${nf(HP.investLwwpPerKw)} €/kW` },
+            { label: "Investition Luft/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investLwwpBase)} € pauschaler Rest + leistungsabhängige Kernkosten (bei 10 kW: ${nf(HP.investLwwpCoreAt10Kw)} €)` },
             { label: "Investition Sole/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },
             // Grundsatz und Höchstbetrag aus dem Fahrplan der Richtlinie, nicht
             // aus der Config-Konstante: Beide ändern sich zu festen Stichtagen.
@@ -458,7 +448,7 @@ export default async function DatenstandPage() {
             // Der Öl-Fall ist seit 28.07.2026 ein eigener Rechenweg (anderer Preis,
             // anderer Kessel-Wirkungsgrad, mehr CO₂, keine Grundgebühr) — er fehlte hier.
             { label: "Heizöl-Referenz", value: `${nf(FUEL.oil.price * 100)} ct/kWh, ${nf(FUEL.oil.co2PerKwh * 1000)} g CO₂/kWh, ${nf(FUEL.oil.efficiency * 100)} % Kessel` },
-            { label: "Neue fossile Heizung (Anschaffung, im Ergebnis editierbar)", value: `${nf(HP.fossilErsatzInvest)} €` },
+            { label: "Neue Gasheizung: kleinste Kostenreferenz (10 kW, darüber leistungsabhängig)", value: `${nf(HP.fossilErsatzInvest)} €` },
             { label: "Grundpreis je Jahr (Gas / Heizöl / WP-Zähler)", value: `${nf(HP.fixCostPerYear.gas)} / ${nf(HP.fixCostPerYear.oil)} / ${nf(HP.wpFixCostPerYear)} €` },
             { label: "Wartung je Jahr (fossil / Wärmepumpe)", value: `${nf(HP.gasMaintenance)} / ${nf(HP.wpMaintenance)} €` },
             { label: "Betrachtungszeitraum · Teuerung Strom/Brennstoff", value: `${HP.years} Jahre · ${nf(HP.stromInflation * 100)} / ${nf(HP.gasInflation * 100)} % pro Jahr` },
@@ -500,7 +490,7 @@ export default async function DatenstandPage() {
             { label: "Anschaffung Monoblock / mobile Split", value: `~${nf(AC.devices[0].pricePerUnit!)} € / ~${nf(AC.devices[1].pricePerUnit!)} € je Gerät·Raum` },
             { label: "Anschaffung fest installierte Split", value: `${nf(AC.devices[2].priceBase!)} € + ${nf(AC.devices[2].pricePerRoom!)} €/Raum (Innengerät inkl. Montage Fachbetrieb)` },
             { label: "Kühlgradstunden Ø Deutschland", value: `${nf(AC.cdhNational)} K·h/a (Schwelle ${nf(AC.coolBaseTemp)} °C)` },
-            { label: "Standort-Modi", value: `Ø ${nf(AC.avgYears)} Sommer · letzter Sommer · Projektion (CMIP6, ${AC.climateModel})` },
+            { label: "Standort-Modi", value: `Ø ${nf(AC.avgYears)} Sommer · letzter Sommer · Projektion (acht CMIP6-Modelle über NASA NEX-GDDP-CMIP6)` },
             { label: "Sonnen-/Lage-Faktor", value: `${AC.exposureOptions.map((o) => nf(o.factor)).join(" / ")} (sehr sonnig / normal / schattig)` },
             { label: "Dimensionierung", value: `${nf(AC.sizingWPerM2)} W/m² Kühlleistung` },
             { label: "Strommix CO₂", value: `${nf(AC.gridCo2PerKwh * 1000)} g/kWh` },
@@ -576,9 +566,9 @@ export default async function DatenstandPage() {
           source="Branchenübliche Konventionen · PVGIS (Photovoltaic Geographical Information System, EU JRC) · PLZ-Koordinaten: WZB plz_geocoord (Markus Konrad), Apache License 2.0"
         />
 
-        {/* ── Solar-Atlas & Karte ── */}
+        {/* ── Energie-Atlas & Karte ── */}
         <Section
-          title="Solar-Atlas & Karte"
+          title="Energie-Atlas & Karte"
           stand="Amtliche Register"
           intro="Der Bestand an Solaranlagen je Bundesland, Landkreis und Gemeinde stammt aus dem Marktstammdatenregister. Die Umrisse auf der Karte sind amtliche Verwaltungsgebiete, für das Web vereinfacht."
           rows={[

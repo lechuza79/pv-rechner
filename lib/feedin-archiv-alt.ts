@@ -23,11 +23,14 @@
 //     "Vergütungssätze nach dem EEG 2004" (Abschnitt 7) abgelesen. Beide Wege
 //     liefern zellgleich dieselben vier Werte — das ist die Quer-Validierung,
 //     mit der die 2006er Zeile hier steht.
-//   · Warum die Kette bei 2006 ANFÄNGT und nicht bei 2004: Dieses Modul dient
-//     der Bestandsbewertung im Solar-Atlas, und dort zählt ein Jahrgang nur,
-//     solange seine 20 Jahre laufen (§ 25 EEG). Jahrgang 2005 ist Ende 2025
-//     ausgelaufen, 2006 läuft noch bis Ende 2026. Eine 2005er Zeile wäre also
-//     Datenpflege für einen Fall, den es nicht mehr gibt.
+//   · Warum die Kette bei 2005 ANFÄNGT und nicht bei 2004: Ein Jahrgang zählt
+//     nur, solange seine 20 Jahre laufen (§ 25 EEG). Jahrgang 2005 ist Ende
+//     2025 ausgelaufen — für eine Bewertung von HEUTE also überflüssig. Die
+//     Monatsbewertung der Gemeindeseite rechnet aber auch Monate des Jahres
+//     2025, und da bekam Jahrgang 2005 noch seine Vergütung. Ohne diese Zeile
+//     fiel jeder solche Monat aus (gemessen 22.09.2026: in Höchberg zehn
+//     Anlagen, alle zwölf Monate 2025 ohne Stromwert). Der 2005er Satz ist der
+//     erste Schritt derselben Kette (siehe unten), kein neuer Wert.
 //   · 2009 — EEG 2009 (BGBl. I 2008 S. 2074) im Wortlaut: § 33 Abs. 1 Nr. 1
 //     (43,01 ct), Nr. 2 (40,91 ct), § 32 Abs. 1 (31,94 ct).
 //   · 01.01.2010 — Bundesnetzagentur, "Degressions- und Vergütungssätze für
@@ -73,7 +76,7 @@
 //     versiegelte Flächen und Konversionsflächen (§ 32 Abs. 3 Satz 1 Nr. 1
 //     und 2 — 2011: 22,07 statt 21,11 ct; 2012: 18,76 statt 17,94 ct).
 //     Gespeichert ist immer die ALLGEMEINE, also niedrigere Freiflächenklasse.
-//   · Diese Sätze sind für die BESTANDSBEWERTUNG im Solar-Atlas gedacht —
+//   · Diese Sätze sind für die BESTANDSBEWERTUNG im Energie-Atlas gedacht —
 //     "was verdient der Anlagenbestand einer Gemeinde ungefähr". Der
 //     Einspeisevergütungs-RECHNER bietet für diese Jahrgänge weiterhin bewusst
 //     die manuelle Eingabe aus dem Bescheid an (Begründung im Kopf von
@@ -95,7 +98,7 @@ export interface AltFeedInRow {
 }
 
 /** Erster Inbetriebnahme-Tag, für den dieses Modul Sätze kennt. */
-export const FEED_IN_ALT_START = "2006-01-01";
+export const FEED_IN_ALT_START = "2005-01-01";
 
 /**
  * Ausgangswerte der Degressionskette — § 11 Abs. 1 und Abs. 2 Satz 1 EEG 2004
@@ -119,6 +122,15 @@ export const EEG2004_DEGRESSION = { dach: 0.05, freiflaecheAb2005: 0.05, freifla
 export const FEED_IN_ALT_END = "2012-04-01";
 
 export const FEED_IN_ARCHIV_ALT: ReadonlyArray<AltFeedInRow> = [
+  {
+    // Ein Degressionsschritt auf die Basiswerte von 2004, gerundet:
+    // Dach 57,40 → 54,53 bzw. 54,60 → 51,87 (−5 %); Freifläche 45,70 → 43,42 (−5 %).
+    from: "2005-01-01",
+    roofUpTo30: 54.53,
+    roofUpTo100: 51.87,
+    groundMounted: 43.42,
+    source: "EEG 2004 § 11 Abs. 1, 2 und 5 (BGBl. I 2004 Nr. 40 S. 1922 f.), Degressionsschritt 2005",
+  },
   {
     // Zwei Degressionsschritte auf die Basiswerte von 2004, je Jahr gerundet:
     // Dach 57,40 → 54,53 → 51,80 bzw. 54,60 → 51,87 → 49,28 (−5 %/Jahr);
@@ -193,7 +205,7 @@ export const FEED_IN_ARCHIV_ALT: ReadonlyArray<AltFeedInRow> = [
 
 /**
  * Sätze für ein Inbetriebnahme-Datum (ISO "YYYY-MM-DD" oder "YYYY-MM").
- * Liefert null außerhalb des Bereichs 01.01.2006 – 31.03.2012 — für spätere
+ * Liefert null außerhalb des Bereichs 01.01.2005 – 31.03.2012 — für spätere
  * Inbetriebnahmen ist lib/feedin-archiv.ts zuständig, für frühere gibt es
  * bewusst keinen automatischen Satz (siehe Kopfkommentar: ihre 20 Jahre sind
  * vorbei).

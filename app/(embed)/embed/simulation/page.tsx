@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 
 export default async function SimulationEmbedPage(
   props: {
-    searchParams?: Promise<{ plz?: string }>;
+    searchParams?: Promise<{ plz?: string; presentation?: string }>;
   }
 ) {
   const searchParams = await props.searchParams;
-  return <SimulationWidget plz={searchParams?.plz ?? ""} />;
+  return <SimulationWidget plz={searchParams?.plz ?? ""} sitePresentation={searchParams?.presentation === "site"} />;
 }

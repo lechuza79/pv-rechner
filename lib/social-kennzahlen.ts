@@ -33,6 +33,7 @@ type AwardZeile = {
   privat_dach_count: number | null;
   gewerbe_dach_kwp: string | number | null;
   freiflaeche_kwp: string | number | null;
+  balkon_kwp: string | number | null;
   batterie_privat_count: number | null;
   solar_kwp: string | number | null;
   solar_kwp_ly: string | number | null;
@@ -50,7 +51,7 @@ async function ladeGemeinden(): Promise<AwardZeile[]> {
   if (!supabase) throw new Error("Datenbank nicht konfiguriert");
   const spalten =
     "region_id,population,balkon_count,balkon_count_ly,privat_dach_kwp,privat_dach_count," +
-    "gewerbe_dach_kwp,freiflaeche_kwp,batterie_privat_count,solar_kwp,solar_kwp_ly,solar_kwp_l5";
+    "gewerbe_dach_kwp,freiflaeche_kwp,balkon_kwp,batterie_privat_count,solar_kwp,solar_kwp_ly,solar_kwp_l5";
   const alle: AwardZeile[] = [];
   const schritt = 1000;
   for (let von = 0; ; von += schritt) {
@@ -134,7 +135,16 @@ async function rechneFoerderung(): Promise<SocialKennzahlen["foerderung"]> {
   };
 }
 
-async function rechne(): Promise<SocialKennzahlen> {
+/**
+ * Die Rechnung selbst, ohne Zwischenspeicher.
+ *
+ * Exportiert, damit die Werkbank (`npm run social:zahlen`) dieselbe Rechnung
+ * fahren kann wie die Ansicht. Eine zweite Abfrage daneben zu bauen wäre die
+ * Fehlerklasse, gegen die dieses ganze Modul gebaut ist: Wer Bildformen an
+ * eigens beschafften Zahlen beurteilt, beurteilt eine andere Verteilung als die,
+ * die später im Beitrag steht.
+ */
+export async function rechne(): Promise<SocialKennzahlen> {
   const [zeilen, namen, standIso, foerderung, bund] = await Promise.all([
     ladeGemeinden(),
     ladeNamen(),
@@ -238,6 +248,12 @@ async function rechne(): Promise<SocialKennzahlen> {
       privatDachKwp: bundSeg("privat_dach")?.kwp ?? 0,
       gewerbeDachKwp: bundSeg("gewerbe_dach")?.kwp ?? 0,
       freiflaecheKwp: bundSeg("freiflaeche")?.kwp ?? 0,
+      // Der vierte Teil, gemessen statt als Differenz gerechnet — die Begründung
+      // steht am Feld in lib/social-posts. Er kommt aus DEMSELBEN Rollup wie die
+      // drei anderen: Aus der Summe der Gemeindezeilen gerechnet verfehlte er
+      // den Bund, und dann gingen die vier Teile nicht mehr auf — genau die
+      // Bilanz, die dieser Beitrag zeigt.
+      steckersolarKwp: balkonBund?.kwp ?? 0,
       solarGesamtKwp: bund.gesamt.kwp,
     },
     ueberEinwohner: {
@@ -283,7 +299,7 @@ async function rechne(): Promise<SocialKennzahlen> {
  * aber ein Fehler in der Haltbarkeit. Wer ein Feld ergänzt oder entfernt, zählt
  * hier hoch.
  */
-const FORM_VERSION = "v6";
+const FORM_VERSION = "v7";
 
 export const socialKennzahlen = unstable_cache(rechne, ["social-kennzahlen", FORM_VERSION], {
   revalidate: 86_400,

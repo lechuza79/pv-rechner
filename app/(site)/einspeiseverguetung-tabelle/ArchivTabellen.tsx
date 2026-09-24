@@ -141,7 +141,7 @@ export default function ArchivTabelle({ field }: { field: "u10" | "u40" }) {
         style={{
           marginTop: 6,
           padding: "7px 14px",
-          borderRadius: v("--radius-md"),
+          borderRadius: v("--radius-pill"),
           border: `1px solid ${v("--color-border")}`,
           background: v("--color-bg"),
           color: v("--color-accent"),

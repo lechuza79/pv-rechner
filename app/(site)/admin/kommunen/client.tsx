@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../../../lib/theme";
+import { GROESSE_LABEL } from "../../../../lib/seitenwert";
+import type { SeitenwertZeile } from "../../../../lib/seitenwert-laden";
 import AdminSeitenkopf from "../../../../components/admin/AdminSeitenkopf";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import {
@@ -43,6 +45,11 @@ type Lead = {
   kampagne: string | null;
   charge: number | null;
   rollen_email: string | null;
+  /** Belegte Fachkontakte aus der Kontaktsuche — Klimaschutz zuerst, dann Presse. */
+  klima_email: string | null;
+  klima_beleg_url: string | null;
+  presse_kontakt_email: string | null;
+  presse_kontakt_beleg_url: string | null;
   verantwortlich_funktion: string | null;
   verantwortlich_operativ: boolean | null;
   verwaltung_domain: string | null;
@@ -59,6 +66,8 @@ type Lead = {
   /** Eintragungen ins Gemeinde-Abo. null, solange es keine gibt — oder wenn die
    *  Abfrage ausgefallen ist; die Liste soll daran nicht hängen. */
   abo: AboSpiegel | null;
+  /** Fremdschätzung zur Reichweite der Gemeinde-Website. */
+  seitenwert?: SeitenwertZeile | null;
   mastr_regions: Region | Region[];
 };
 
@@ -275,7 +284,7 @@ export default function KommunenCockpit() {
       {/* Ergebniszeile */}
       <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.sm }}>
         {loading ? "Lädt…" : `${total.toLocaleString("de-DE")} Gemeinden`}
-        {error && <span style={{ color: v("--color-negative"), marginLeft: space.sm }}>Fehler: {error}</span>}
+        {error && <span style={{ color: v("--color-negative-text"), marginLeft: space.sm }}>Fehler: {error}</span>}
       </div>
 
       {/* Tabelle */}
@@ -283,7 +292,7 @@ export default function KommunenCockpit() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: v("--font-size-small"), minWidth: 720 }}>
           <thead>
             <tr>
-              {["Gemeinde", "Website-Themen", "Variante", "Kontakt", "Status", "Korrespondenz", "Notiz"].map((h) => (
+              {["Gemeinde", "Reichweite", "Website-Themen", "Variante", "Kontakt", "Status", "Korrespondenz", "Notiz"].map((h) => (
                 <th key={h} style={thStyle}>
                   {h}
                 </th>
@@ -296,7 +305,7 @@ export default function KommunenCockpit() {
             ))}
             {!loading && rows.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
+                <td colSpan={8} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
                   Keine Gemeinden für diesen Filter.
                 </td>
               </tr>
@@ -332,7 +341,11 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
   const [draftOpen, setDraftOpen] = useState(false);
   // Aus derselben Notiz gelesen wie der Verlauf im Fenster — eine zweite
   // Zählung hier hieße zwei Wahrheiten über dieselbe Zeile.
-  const rueckläufe = liesNotiz(lead.notes).verlauf.length;
+  const verlauf = liesNotiz(lead.notes).verlauf;
+  const rueckläufe = verlauf.length;
+  // Die letzte echte Antwort — Abwesenheitsnotizen und Zustellmeldungen zählen
+  // nicht: Deren Absender hat nichts geschrieben.
+  const antwortAdresse = [...verlauf].reverse().find((z) => z.art === "antwort")?.von ?? null;
   const savedNotes = useRef(lead.notes ?? "");
 
   const patch = useCallback(
@@ -393,10 +406,45 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
             style={{
               fontSize: v("--font-size-caption"),
               marginTop: 3,
-              color: lead.abo?.mitAngabeVerwaltung ? v("--color-positive") : v("--color-text-muted"),
+              color: lead.abo?.mitAngabeVerwaltung ? v("--color-positive-text") : v("--color-text-muted"),
             }}
           >
             {aboSatz(lead.abo)}
+          </div>
+        )}
+      </td>
+
+      {/* REICHWEITE DER GEMEINDE-WEBSITE — eine Fremdschätzung, kein
+          gemessener Wert, und ausdrücklich keine Aussage über den Ort: Eine
+          kleine Gemeinde mit gepflegter Seite steht hier über einer großen mit
+          Baukasten-Auftritt. Sie sagt, wie viele Menschen eine Veröffentlichung
+          dort überhaupt erreichen könnte. */}
+      <td style={tdStyle}>
+        <div>
+          {lead.seitenwert ? GROESSE_LABEL[lead.seitenwert.groesse] : "—"}
+          {lead.seitenwert?.rang != null && (
+            <span style={{ color: v("--color-text-muted") }}> · Rang {lead.seitenwert.rang}</span>
+          )}
+        </div>
+        {lead.seitenwert?.besucher != null && (
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+            {lead.seitenwert.besucher.toLocaleString("de-DE")}/Mon. geschätzt
+          </div>
+        )}
+        {/* VERLINKT UNS — der stärkste Befund dieser Spalte und der einzige
+            gemessene: Er kommt aus den echten Verweisen auf solar-check.io,
+            nicht aus einer Schätzung. Mit Fundstelle, sonst wäre es eine
+            Behauptung über eine fremde Seite. */}
+        {lead.seitenwert?.verlinkt_uns && (
+          <div style={{ fontSize: v("--font-size-caption"), marginTop: 2 }}>
+            <a
+              href={lead.seitenwert.verlinkt_url ?? `https://${""}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ ...linkStyle, color: v("--color-positive-text") }}
+            >
+              verlinkt uns ↗
+            </a>
           </div>
         )}
       </td>
@@ -418,13 +466,13 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           )}
         </div>
         {lead.verantwortlich_funktion && (
-          <div style={{ fontSize: v("--font-size-caption"), color: lead.verantwortlich_operativ ? v("--color-positive") : v("--color-text-muted") }}>
+          <div style={{ fontSize: v("--font-size-caption"), color: lead.verantwortlich_operativ ? v("--color-positive-text") : v("--color-text-muted") }}>
             {lead.verantwortlich_operativ ? "zuständig: " : "nur Vertretung: "}
             {lead.verantwortlich_funktion}
           </div>
         )}
         {lead.verwaltung_domain && (
-          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-negative") }} title="Gemeinsame Verwaltung laut Impressum">
+          <div style={{ fontSize: v("--font-size-caption"), color: v("--color-negative-text") }} title="Gemeinsame Verwaltung laut Impressum">
             Verbund: {lead.verwaltung_domain}
           </div>
         )}
@@ -489,6 +537,27 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           ) : (
             <span style={{ color: v("--color-text-muted"), fontSize: v("--font-size-small") }}>kein Kontaktlink</span>
           )}
+          {/* BELEGTE FACHKONTAKTE ZUERST — Klimaschutz vor Presse vor Postfach.
+              Sie stehen mit ihrer Belegseite da: Wer eine Person anschreibt,
+              muss nachsehen können, woher die Adresse stammt. */}
+          {([
+            ["Klimaschutz", lead.klima_email, lead.klima_beleg_url],
+            ["Presse", lead.presse_kontakt_email, lead.presse_kontakt_beleg_url],
+          ] as const)
+            .filter(([, mail]) => !!mail)
+            .map(([rolle, mail, beleg]) => (
+              <span key={rolle} style={{ display: "flex", alignItems: "baseline", gap: 4, flexWrap: "wrap" }}>
+                <span style={{ fontSize: v("--font-size-micro"), color: v("--color-text-muted") }}>{rolle}</span>
+                <a href={`mailto:${mail}`} style={{ ...linkStyle, fontSize: v("--font-size-small") }}>
+                  {mail}
+                </a>
+                {beleg && (
+                  <a href={beleg} target="_blank" rel="noopener noreferrer" style={{ ...linkStyle, fontSize: v("--font-size-micro"), color: v("--color-text-muted") }}>
+                    Beleg ↗
+                  </a>
+                )}
+              </span>
+            ))}
           {(lead.rollen_email || lead.email) && (
             <a href={`mailto:${lead.rollen_email ?? lead.email}`} style={{ ...linkStyle, fontSize: v("--font-size-small") }}>
               {lead.rollen_email ?? lead.email}
@@ -540,6 +609,17 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
               ? "Entwurf ✎"
               : "Entwurf +"}
         </button>
+        {/* WER GEANTWORTET HAT, steht in der Zeile — nicht erst im Fenster.
+            Die Adresse des Antwortenden ist der wertvollste Kontakt der ganzen
+            Liste: ein Mensch, der schon einmal zurückgeschrieben hat. Sie lag
+            bisher nur in der Notiz und war damit unsichtbar. */}
+        {antwortAdresse && (
+          <div style={{ fontSize: v("--font-size-caption"), marginTop: 2 }}>
+            <a href={`mailto:${antwortAdresse}`} style={linkStyle}>
+              {antwortAdresse}
+            </a>
+          </div>
+        )}
         <DraftModal open={draftOpen} lead={lead} onClose={() => setDraftOpen(false)} onPatched={onPatched} />
       </td>
 
@@ -690,7 +770,7 @@ function DraftModal({
             der Sperr-Kasten beides. */}
         {blocked && (
           <div style={{ background: v("--color-bg-muted"), border: `1px solid ${v("--color-negative")}`, borderRadius: v("--radius-sm"), padding: pad("md", "md"), fontSize: v("--font-size-small"), color: v("--color-text-secondary") }}>
-            Diese Gemeinde ist <strong style={{ color: v("--color-negative") }}>gesperrt</strong> — es wird kein weiteres
+            Diese Gemeinde ist <strong style={{ color: v("--color-negative-text") }}>gesperrt</strong> — es wird kein weiteres
             Anschreiben erzeugt oder versendet. Um die Sperre aufzuheben, den Status in der Tabelle ändern.
           </div>
         )}
@@ -722,7 +802,7 @@ function DraftModal({
             </div>
 
             {lead.draft_manuell && lead.draft_generated_at && (
-              <div style={{ fontSize: v("--font-size-caption"), color: v("--color-negative") }}>
+              <div style={{ fontSize: v("--font-size-caption"), color: v("--color-negative-text") }}>
                 Von Hand bearbeitet am {new Date(lead.draft_generated_at).toLocaleString("de-DE")} — wird nicht automatisch
                 aktualisiert. „Neu generieren" verwirft die Änderungen.
               </div>
@@ -744,7 +824,7 @@ function DraftModal({
               aria-label="Nachricht"
             />
 
-            {genError && <div style={{ color: v("--color-negative"), fontSize: v("--font-size-small") }}>Fehler: {genError}</div>}
+            {genError && <div style={{ color: v("--color-negative-text"), fontSize: v("--font-size-small") }}>Fehler: {genError}</div>}
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center" }}>
               <button style={primaryBtn} disabled={busy} onClick={() => copy(body, "body")}>
@@ -773,7 +853,7 @@ function DraftModal({
                   <option value="telefon">Telefon</option>
                 </SelectField>
                 <button
-                  style={{ ...pagerBtn, color: v("--color-positive"), fontWeight: 700 }}
+                  style={{ ...pagerBtn, color: v("--color-positive-text"), fontWeight: 700 }}
                   disabled={busy}
                   onClick={() => setStatus("kontaktiert", kanal)}
                 >
@@ -887,7 +967,7 @@ function Verlauf({
             genau hier, wenn man gerade die Antwort liest. */}
         {lead.outreach_status !== "veroeffentlicht" && (
           <button
-            style={{ ...pagerBtn, color: v("--color-positive"), fontWeight: 700 }}
+            style={{ ...pagerBtn, color: v("--color-positive-text"), fontWeight: 700 }}
             disabled={busy}
             onClick={() => onStatus("veroeffentlicht")}
           >
@@ -943,7 +1023,7 @@ function Merkmal({ label, href, stark }: { label: string; href: string; stark?: 
         padding: "1px 6px",
         borderRadius: 999,
         color: stark ? v("--color-text-on-accent") : v("--color-accent-dark"),
-        background: stark ? v("--color-accent") : v("--color-accent-dim"),
+        background: stark ? v("--color-cta") : v("--color-accent-dim"),
       }}
     >
       {label}
@@ -959,7 +1039,7 @@ function StatusTab({ active, label, onClick }: { active: boolean; label: string;
         fontSize: v("--font-size-small"),
         fontWeight: active ? 700 : 600,
         color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
-        background: active ? v("--color-accent") : v("--color-bg-muted"),
+        background: active ? v("--color-cta") : v("--color-bg-muted"),
         border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
         borderRadius: 999,
         padding: pad("xs", "md"),
@@ -1023,9 +1103,9 @@ const primaryBtn: React.CSSProperties = {
   fontSize: v("--font-size-small"),
   fontWeight: 700,
   padding: pad("sm", "md"),
-  borderRadius: v("--radius-sm"),
+  borderRadius: v("--radius-pill"),
   border: `1px solid ${v("--color-accent")}`,
-  background: v("--color-accent"),
+  background: v("--color-cta"),
   color: v("--color-text-on-accent"),
   cursor: "pointer",
 };

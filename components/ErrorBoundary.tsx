@@ -28,8 +28,8 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { hasError
               Die Daten in der URL sind ungültig. Starte eine neue Berechnung.
             </div>
             <a href="/photovoltaik-rechner" style={{
-              display: "inline-block", padding: "10px 32px", borderRadius: v('--radius-md'),
-              fontSize: v("--font-size-body"), fontWeight: 700, background: v('--color-accent'),
+              display: "inline-block", padding: "10px 32px", borderRadius: v("--radius-pill"),
+              fontSize: v("--font-size-body"), fontWeight: 700, background: v('--color-cta'),
               color: v('--color-text-on-accent'), textDecoration: "none",
             }}>
               Neu berechnen

@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { GROESSE_LABEL } from "../../../../lib/seitenwert";
+import type { SeitenwertZeile } from "../../../../lib/seitenwert-laden";
 import { v, space, pad } from "../../../../lib/theme";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import { GEWERKE } from "../../../../lib/fachbetrieb-extrakt";
@@ -27,6 +29,8 @@ import SelectField from "../../../../components/SelectField";
 
 type Zeile = {
   domain: string;
+  /** Fremdschätzung zur Größe der Seite; fehlt, solange sie nicht erhoben ist. */
+  seitenwert?: SeitenwertZeile | null;
   firmenname: string | null;
   rechtsform: string | null;
   hr_nummer: string | null;
@@ -120,6 +124,18 @@ const SPALTEN: {
     ),
   },
   { text: "Merkmale", breite: "0 0 210px" },
+  {
+    text: "Relevanz",
+    breite: "0 0 96px",
+    hilfe: (
+      <>
+        Wie groß die Seite ist: geschätzte Besucher im Monat aus der Google-Suche, dazu
+        ein Rangwert über die Verlinkung (0–1000). Beides eine Fremdschätzung
+        (DataForSEO), keine Messung — sie ordnet, welcher Betrieb Reichweite hat, und
+        taugt nicht als Zahl für eine Aussage nach außen.
+      </>
+    ),
+  },
   {
     text: "belegt",
     breite: "0 0 62px",
@@ -246,7 +262,7 @@ export default function FachbetriebeAnsicht() {
 
   return (
     <div style={{ maxWidth: 1320, margin: "0 auto", paddingBottom: space.xxl }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.xs }}>PV-Fachbetriebe</h1>
+      <h1 style={{ marginBottom: space.xs }}>PV-Fachbetriebe</h1>
       <p
         style={{
           color: v("--color-text-muted"),
@@ -344,7 +360,7 @@ export default function FachbetriebeAnsicht() {
         {laedt ? "lädt …" : `${gesamt.toLocaleString("de-DE")} Treffer`}
         {seiten > 1 && !laedt ? ` · Seite ${seite + 1} von ${seiten}` : ""}
       </p>
-      {fehler && <p style={{ color: v("--color-negative"), marginBottom: space.sm }}>{fehler}</p>}
+      {fehler && <p style={{ color: v("--color-negative-text"), marginBottom: space.sm }}>{fehler}</p>}
 
       {/* ── Kopfzeile ──────────────────────────────────────────────────── */}
       <div
@@ -520,6 +536,25 @@ export default function FachbetriebeAnsicht() {
                   ))}
                 </span>
 
+                {/* Relevanz: Größe der Seite, geschätzt. Die Zahl steht klein
+                    darunter — der Rang ordnet, die Besucher erklären ihn. */}
+                <span style={{ flex: "0 0 96px", minWidth: 0, lineHeight: 1.25 }}>
+                  <span style={{ ...einzeilig, color: v("--color-text-muted") }}>
+                    {z.seitenwert ? GROESSE_LABEL[z.seitenwert.groesse] : "—"}
+                  </span>
+                  {z.seitenwert?.besucher != null && (
+                    <span
+                      style={{
+                        ...einzeilig,
+                        fontSize: v("--font-size-caption"),
+                        color: v("--color-text-muted"),
+                      }}
+                    >
+                      {z.seitenwert.besucher.toLocaleString("de-DE")}/Mon.
+                    </span>
+                  )}
+                </span>
+
                 <span
                   style={{
                     flex: "0 0 62px",
@@ -533,7 +568,7 @@ export default function FachbetriebeAnsicht() {
                 <span
                   style={{
                     flex: "0 0 92px",
-                    color: hatKontaktweg(z) ? v("--color-positive") : v("--color-text-muted"),
+                    color: hatKontaktweg(z) ? v("--color-positive-text") : v("--color-text-muted"),
                   }}
                 >
                   {hatKontaktweg(z) ? "erreichbar" : "kein Kontakt"}
@@ -613,7 +648,7 @@ export default function FachbetriebeAnsicht() {
                               aria-hidden
                               style={{
                                 flex: "0 0 12px",
-                                color: wert ? v("--color-positive") : "transparent",
+                                color: wert ? v("--color-positive-text") : "transparent",
                               }}
                             >
                               ✓
@@ -674,11 +709,11 @@ export default function FachbetriebeAnsicht() {
                         title={s.hinweis}
                         style={{
                           padding: pad("xs", "sm"),
-                          borderRadius: v("--radius-sm"),
+                          borderRadius: v("--radius-pill"),
                           border: `1px solid ${
                             z.stand === s.wert ? v("--color-accent") : v("--color-border")
                           }`,
-                          background: z.stand === s.wert ? v("--color-accent") : "transparent",
+                          background: z.stand === s.wert ? v("--color-cta") : "transparent",
                           color:
                             z.stand === s.wert
                               ? v("--color-text-on-accent")

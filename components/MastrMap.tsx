@@ -30,12 +30,21 @@ export type MastrMapProps = {
   values: RegionValue[];
   /** Highlighted region (BL / LK / Gemeinde depending on level). */
   selectedAgs?: string;
+  selectionStyle?: "outline" | "pin";
   /** name is the clicked region's label from the geometry — lets the caller show
    *  it immediately, before the (slower) summary API returns. */
   onSelect?: (ags: string, name?: string, kreisfrei?: boolean) => void;
   valueLabel?: string;
   /** True while choropleth data is fetching — polygons animate with a pulse. */
   loading?: boolean;
+  /**
+   * Höchste Höhe der Kartenfläche in Pixeln.
+   *
+   * Ohne Angabe 620 — die Karte einer Seite, die sonst nichts zeigt. In einer
+   * Karte neben anderen Widgets (Ortsseite) ist das zu hoch: Die Box wuchs dort
+   * auf über 800 px und hing unten aus dem Rahmen.
+   */
+  maxHeight?: number;
 };
 
 // Choropleth shades derive from the accent color (mixed toward the background),
@@ -62,9 +71,11 @@ export function MastrMap({
   parentAgs,
   values,
   selectedAgs,
+  selectionStyle = "outline",
   onSelect,
   valueLabel = "MW",
   loading = false,
+  maxHeight = 620,
 }: MastrMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   // Only the WIDTH is measured. The height is derived from the geometry: we fit
@@ -201,7 +212,7 @@ export function MastrMap({
     const PAD = 12;
     // Cap so a tall outline (Deutschland, schmale Kreise) can't grow the box
     // without bound; flatter outlines stay below it and shrink to fit exactly.
-    const MAX_H = 620;
+    const MAX_H = maxHeight;
     // Fit the shape to the WIDTH and make the box exactly as tall as the shape —
     // no letterbox gap. If that would exceed MAX_H, fall back to fitting both
     // dimensions into width × MAX_H (centered). `fitObject` is the outline we
@@ -249,7 +260,7 @@ export function MastrMap({
     // Default: de-level. Fit the whole country outline (the Bundesländer union
     // — identical bounds to the old Landkreis-based fit), render Bundesländer.
     return fitToWidth(blGeo, blGeo.features);
-  }, [level, parentAgs, lkGeo, blGeo, gemGeo, gemKreis, width]);
+  }, [level, parentAgs, lkGeo, blGeo, gemGeo, gemKreis, width, maxHeight]);
 
   const pathGen = useMemo(() => (projection ? geoPath(projection) : null), [projection]);
 
@@ -263,6 +274,7 @@ export function MastrMap({
         label: regionLabel(props.name, props.kind),
         kreisfrei: KREISFREI_KINDS.has(props.kind ?? ""),
         d: pathGen(f as never) ?? "",
+        center: pathGen.centroid(f as never),
       };
     });
   }, [fillFeatures, pathGen]);
@@ -306,7 +318,7 @@ export function MastrMap({
           }}
         />
       ) : (
-        <svg width={width} height={contentHeight} role="img" aria-label="Deutschlandkarte">
+        <svg width={width} height={contentHeight} role="img" aria-label={level === "landkreis" ? "Gemeinden im Landkreis" : "Deutschlandkarte"}>
           <g
             style={
               loading ? { animation: "sc-map-pulse 1.4s ease-in-out infinite" } : undefined
@@ -314,7 +326,7 @@ export function MastrMap({
           >
             {fillPaths.map((p) => {
               const isHovered = hovered === p.id;
-              const isSelected = selectedAgs === p.id;
+              const isSelected = selectedAgs === p.id && selectionStyle === "outline";
               return (
                 <path
                   key={p.id}
@@ -334,6 +346,7 @@ export function MastrMap({
               );
             })}
           </g>
+          {selectionStyle === "pin" && fillPaths.filter(p=>p.id===selectedAgs && p.center.every(Number.isFinite)).map(p=><g key={p.id} transform={`translate(${p.center[0]-12},${p.center[1]-24})`} pointerEvents="none"><path d="M12 23s8-8 8-14a8 8 0 0 0-16 0c0 6 8 14 8 14Z" fill="white" stroke="var(--color-bg)" strokeWidth="1.5"/><circle cx="12" cy="9" r="3" fill="var(--color-bg)"/></g>)}
         </svg>
       )}
 

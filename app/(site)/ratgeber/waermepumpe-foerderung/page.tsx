@@ -85,28 +85,15 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: 60, paddingBottom: 88 },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: v("--color-text-primary"),
-    lineHeight: 1.25,
-    marginBottom: 10,
-  },
+  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: 60, paddingBottom: 88 },
+  h1: { color: v("--color-text-primary"), marginBottom: 10 },
   subtitle: {
     fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
     marginBottom: 24,
     lineHeight: 1.6,
   },
-  h2: {
-    fontSize: v("--font-size-h2"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-    marginTop: 32,
-    marginBottom: 10,
-  },
+  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
   p: {
     fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
@@ -177,16 +164,16 @@ const S = {
     display: "block",
   },
   accent: { color: v("--color-accent"), fontWeight: 600 },
-  positive: { color: v("--color-positive"), fontWeight: 600 },
+  positive: { color: v("--color-positive-text"), fontWeight: 600 },
   muted: { color: v("--color-text-muted") },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
   ctaButton: {
     display: "inline-block",
     padding: "10px 18px",
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     fontSize: v("--font-size-body"),
     fontWeight: 700,
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     color: v("--color-text-on-accent"),
     textDecoration: "none",
   },
@@ -320,7 +307,9 @@ export default async function WaermepumpeFoerderungPage() {
   // Ausblick unten mitwandert, statt beim ersten Wechsel von einer künftigen
   // Änderung im Präsens zu erzählen, die längst eingetreten ist.
   const NAECHSTE = begNaechsteStufe(new Date());
-  const NACH_NAECHSTE = NAECHSTE ? begNaechsteStufe(new Date(NAECHSTE.abIso)) : undefined;
+  // Der Stichtag der nächsten Stufe ist ein gemeinter TAG und wird als solcher
+  // übergeben — als Zeitpunkt gelesen verschöbe ihn die Umrechnung ein zweites Mal.
+  const NACH_NAECHSTE = NAECHSTE ? begNaechsteStufe(NAECHSTE.abIso) : undefined;
   const gueltigAb = formatFullDate(BEG_ANTRAG_STAND.validFrom);
   const verfahrenGeprueft = formatFullDate(BEG_ANTRAG_STAND.geprueftIso);
 
@@ -498,10 +487,10 @@ export default async function WaermepumpeFoerderungPage() {
                     <span style={{ ...S.strong, display: "block" }}>{r.label}</span>
                     <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>{r.desc}</span>
                   </td>
-                  <td style={{ ...S.tdNum, borderBottom: i === rows.length - 1 ? "none" : undefined, color: r.highlight ? v("--color-positive") : v("--color-text-primary") }}>
+                  <td style={{ ...S.tdNum, borderBottom: i === rows.length - 1 ? "none" : undefined, color: r.highlight ? v("--color-positive-text") : v("--color-text-primary") }}>
                     {pct(r.rate)}
                   </td>
-                  <td style={{ ...S.tdNum, borderBottom: i === rows.length - 1 ? "none" : undefined, color: v("--color-positive"), fontWeight: 700 }}>
+                  <td style={{ ...S.tdNum, borderBottom: i === rows.length - 1 ? "none" : undefined, color: v("--color-positive-text"), fontWeight: 700 }}>
                     {eur(r.amount)}
                   </td>
                   <td style={{ ...S.tdNum, borderBottom: i === rows.length - 1 ? "none" : undefined }}>
@@ -843,7 +832,7 @@ export default async function WaermepumpeFoerderungPage() {
                         {jetzt ? "gilt jetzt" : vorbei ? "vorbei" : stufe.aenderung}
                       </span>
                     </td>
-                    <td style={{ ...S.tdNum, ...rand, ...blass, color: jetzt ? v("--color-positive") : v("--color-text-primary"), fontWeight: jetzt ? 700 : undefined }}>
+                    <td style={{ ...S.tdNum, ...rand, ...blass, color: jetzt ? v("--color-positive-text") : v("--color-text-primary"), fontWeight: jetzt ? 700 : undefined }}>
                       {pct(stufe.grundfoerderung)}
                       {mitEuBonus ? (
                         <span style={{ display: "block", fontFamily: v("--font-text"), fontSize: v("--font-size-caption"), color: v("--color-text-muted"), whiteSpace: "normal" }}>

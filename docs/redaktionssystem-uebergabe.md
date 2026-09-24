@@ -180,13 +180,88 @@ damit keine Freigabe für das, was heute rausginge. Sie verfallen, und das ist d
 Story und rechnet ihn bei jeder Änderung neu, damit sichtbar ist, dass die Sperre wirkt. Das
 Erteilen gehört zur Kette „planen → senden", die der Betreiber als nächsten Schritt genannt hat.
 
+## ERLEDIGT: das quadratische Story-Visual (06.09.2026)
+
+**Die Karte hat eine dritte Stufe.** `quadrat` ist dieselbe Zeichnung wie im
+Feed-Bild — 1:1 statt 4:5, und mit der Möglichkeit, die Farben der SEITE zu
+erben statt eine eigene Palette mitzubringen. Beides zusammen ist der Grund,
+warum die Ortsseiten sie jetzt zeigen können; an genau diesen zwei Punkten sind
+die drei Anläufe vom 05.09.2026 gescheitert.
+
+**Keine eigene Schriftskala und keine eigene Zeichnung.** Die Größen skalieren
+wie in der vollen Stufe; der Teaser bleibt, was er ist (er LÄSST WEG statt zu
+schrumpfen — auf 240 Pixeln wären zwei Ringe zwei graue Kringel, und die
+Formenwahl wirkt im FENSTER, wo die Karte quadratisch steht).
+
+**Vier Befunde, jeder nur am gerenderten Bild sichtbar:**
+
+1. **Der Höhenfaktor gehört an die AUSGABEGRÖSSE, nie an das
+   Koordinatensystem.** In die viewBox gerechnet standen die Ringradien (232,
+   152) außerhalb, und der Ring wurde an seiner eigenen Zeichenfläche
+   abgeschnitten — im Bild ein blaues Quadrat dahinter. Dieselbe Falle beim
+   Verlauf, wo die y-Achse gegen ein anderes System gezeichnet hätte als ihre
+   Marken.
+2. **Der Fuß gibt nie nach.** Die zweizeilige Quellenzeile (Zensus plus
+   Anlagenregister) brach unten aus der Karte und nahm das Logo halb mit. Ein
+   beschnittener Lizenzvermerk ist schlimmer als eine zu kleine Zeichnung.
+3. **Der Inhaltsbereich braucht `min-height: 0`.** Ein Flex-Kind hält sonst
+   seine Inhaltshöhe — so wurde die Quellenzeile hinausgedrückt, obwohl der Fuß
+   nicht nachgab.
+4. **Drei Werte in der Einzelkennzahl** überlappten die Trennlinie: Diese Form
+   setzt EINE Zahl sehr groß und braucht im Quadrat dieselbe Zurücknahme wie die
+   Zeichnungen.
+
+**Der Maßstab wird GEMESSEN, nicht angenommen** (`ResizeObserver` in der
+Ortsseiten-Komponente). Ein fester Faktor müsste auf die schmalste Breite
+ausgelegt sein und ließe die Karte auf dem Schreibtisch kleiner als nötig; auf
+die breiteste ausgelegt läuft sie auf dem Telefon aus dem Fenster. Beim ersten
+Anlauf stand sie in voller Größe im Dialog, links und rechts abgeschnitten.
+
+**Ansehen:** `npm run orts:visual` rendert die Geschichten eines Referenzorts in
+allen drei Farbschemata und in beiden Seiten-Paletten (hell und dunkel), in den
+Ablageordner — nie nach `public/`, dieselbe Grenze wie bei der Formen-Werkbank.
+`NUR=<Teil der Kennung>` zeigt eine einzelne. Im Browser hält
+`e2e/ortsgeschichte-karte.spec.ts` die Skalierung auf Telefon- und
+Schreibtischbreite fest.
+
+## Die Ortsgeschichten sind Beiträge (06.09.2026)
+
+**Sie waren es an den Daten immer.** Dieselben Familien des Katalogs, eine
+Schlagzeile, benannte Werte mit Einheit, eine Grundlage — die Form eines Fundes.
+Was fehlte, waren vier Angaben: Farbschema, Quellenzeile, Messzeile und die
+Frage, welche Formen ihre Zahlen hergeben. `lib/orts-posts.ts` ergänzt sie.
+
+**Der ORT ist eine zweite Dimension, keine Kategorie.** Eine 21. Familie
+„Kommune" hätte die sieben Familien, aus denen eine Ortsgeschichte kommen kann,
+unter einen Reiter geworfen. Er steht am Beitrag; die Kennung trägt den
+Gemeindeschlüssel, und daran hängt die redaktionelle Fassung — deshalb bleibt
+eine Einstellung an ihrem Ort.
+
+**Der Tisch der Versandschübe:** `/admin/redaktion/kommunen`. Ein Ort auf
+einmal, weil die Kette je Ort ein halbes Dutzend Abfragen kostet.
+
+**Zwei Fehler, die dabei aufgefallen sind und schon ausgeliefert waren:**
+- Ein Fund reichte den Kategorie-SCHLÜSSEL als Beschriftung durch — auf der
+  Ortsseite stand wörtlich „g10". Unsichtbar geblieben, weil der Block
+  ausgeblendet war.
+- Die Flächen-Geschichte zeigte drei Anteile ohne Ganzes; der Balken normierte
+  am größten Wert statt an hundert — genau der Fehler, den der bundesweite
+  Segment-Beitrag schon einmal bezahlt hat.
+
+**Und eine Lizenzangabe, die nicht stimmte:** Der Zensus steht NICHT unter
+dl-de/by-2-0. Auf zensus2022.de trägt allein das Shapefile der
+Verwaltungsgrenzen die Datenlizenz (Quellenvermerk „© GeoBasis-DE / BKG 2023"),
+bei Destatis gilt sie ausdrücklich nur für GENESIS-Online. Für die
+Regionaltabelle gilt der allgemeine Quellennachweis-Vorbehalt.
+
 ## Das Template-System (27.08.2026)
 
 **Ein Template ist Bildform × Farbschema**, und beliebig viele Beiträge hängen daran — „Säule
-hell", „Ringpaar Highlight", „Gefüllte Umrisse hell". Vier sind abgenommen. Fünf Bildformen gibt es
-(Balken, Einzelkennzahl, Ringpaar, Säule, gefüllte Umrisse), jede mit ihrer Regel an einer Stelle:
-Wofür sie taugt, und unter welcher Bedingung sie TRÄGT. Der Umschalter im Redaktionstisch liest
-diese Regel und bietet nur an, was für die Zahlen des Beitrags passt.
+hell", „Ringpaar Highlight", „Gefüllte Umrisse hell". Vier sind abgenommen. Acht Bildformen gibt es
+(Balken, Einzelkennzahl, Ringpaar, Säule, gefüllte Umrisse, Rangliste, Aufteilung, Verlauf), jede
+mit ihrer Regel an einer Stelle: Wofür sie taugt, und unter welcher Bedingung sie TRÄGT. Der
+Umschalter im Redaktionstisch liest diese Regel und bietet nur an, was für die Zahlen des Beitrags
+passt. Die drei zuletzt dazugekommenen sind noch kein Template — siehe unten.
 
 **Die Regel, an der alles hängt: Ring und gefüllter Umriss brauchen ein GANZES, die Säule das
 Fehlen eines.** Ein Ring bildet einen Anteil ab; ohne Ganzes behauptet der leere Rest etwas, das es
@@ -212,6 +287,182 @@ nicht.
 Ordnung sortiert wie die Ansicht. Template und Farbschema können NICHT hinein — sie sind
 umschaltbar, und eine Kennung, die sich beim Umfärben ändert, verliert ihre gespeicherte Fassung.
 Der Kopier-Knopf liefert deshalb beides nebeneinander: Kennung plus Template.
+
+## Drei neue Bildformen (27.08.2026, abends)
+
+**Acht Formen statt fünf: dazu Rangliste, Aufteilung, Verlauf.** Keine davon ist ein
+abgenommenes Template — sie sind über den Umschalter erreichbar, die Abnahme steht aus.
+
+**Geprüft wurde am BESTAND, nicht an der Idee** — das war die Vorgabe, und sie hat zwei der drei
+Formen zurechtgestutzt. Ergebnis der Messung (`npm run social:zahlen`, dann `npm run social:formen`):
+
+- **Rangliste** trägt zwei Beiträge (Freiflächenanteil, Privatdach-Anteil) und weist zwei ab.
+- **Aufteilung** trägt einen (die drei Solarsegmente) und weist einen ab.
+- **Verlauf** trägt einen (Pro-Kopf-Vergleich mit dem Ausland) — die einzige Story mit einer echten
+  Zeitreihe dahinter. Die Registerzahlen kennen nur Stichtage.
+
+**Die Reihe ist keine zweite Liste** (`PostBild.reihe`). Die Serien sind die zwei Werte, die der
+Beitragstext nennt; die Reihe ist die Menge, aus der sie stammen. Ein Test verlangt, dass jede Serie
+darin vorkommt — mit demselben Wert. Ohne diese Bindung wären es zwei Listen, die beim nächsten
+Datenstand auseinanderlaufen.
+
+**Zwei Bedingungen, die am Bild entstanden sind und ohne Bild nicht gefunden worden wären:**
+
+- **Eine Rangliste braucht ABSTAND.** „Ein Balkenpaar taugt nur, wenn die Längen auseinandergehen"
+  gilt bei sechzehn Werten genauso — nur sieht man den Verstoß dort nicht: Zwei fast gleich lange
+  Balken fallen auf, sechzehn liest man als Liste und hält sie für eine Aussage. Gemessen (kleinster
+  Wert als Anteil des größten): Freifläche 1 %, Privatdach 18 %, Wachstum 22 %, Balkonquote 26 %,
+  Heimspeicher 58 %. Die Schwelle steht bei 40 % und trennt den Speicher-Fall ab.
+- **Eine Reihe, die nicht bei null beginnt, ist keine Länge** (`PostBild.nullpunkt`). Ein
+  Wachstumsfaktor startet bei 1. Beide Zeichenweisen ausprobiert und beide sind falsch: ab 1
+  gezeichnet füllt Thüringen (1,75) 22 Prozent von Hamburg (4,38) — richtig als Zuwachs, aber wer
+  die beiden Zahlen ins Verhältnis setzt, kommt auf 40 und liest im Balken einen Fehler. Ab 0
+  gezeichnet stimmt die Länge mit den Zahlen und verzerrt die Aussage. Deshalb gar keine Balkenform
+  für solche Reihen. **Die Säule hat dasselbe Problem und wurde nicht angefasst** — sie ist
+  abgenommen; siehe offene Punkte.
+
+**Die Rundung ist eine Eigenschaft der REIHE, nicht der einzelnen Zahl.** Zwei Fälle, beide nur im
+Bild sichtbar: Berlin und Hamburg standen als „0 %" da (tatsächlich 0,4) neben einem Balken, der
+sichtbar nicht null war; und Schleswig-Holstein (50,2) stand neben Sachsen (50,0) mit derselben Zahl
+bei verschieden langen Balken. `ranglistenStellen` erhöht deshalb um eine Stelle, wenn ein Wert auf
+null fiele oder zwei Ränge ununterscheidbar würden. **Der Balken zeigt die ANGEZEIGTE Zahl**, nicht
+den Rohwert — sonst widerspricht die Grafik der Beschriftung, und im Zweifel glaubt man der Grafik.
+
+**Zwei verschiedene Werte dürfen in KEINEM Bild dieselbe Zahl tragen.** Ich hatte diese Regel
+zweimal gebaut — einmal für die Rangliste, einmal unvollständig für die Aufteilung — und für die
+übrigen Formen gar nicht. Eine parallele Sitzung hat den offenen Fall gemessen: Im Balken des
+Aufteilungs-Beitrags standen Gewerbedach (35,04) und Freifläche (35,25) als zweimal „35", während
+der Text daneben beide unterschied. Zwei Balken verschiedener Länge mit derselben Zahl lesen sich
+als Fehler in der Grafik, und im Zweifel glaubt man dem Balken. Ausdrücklich nur bei
+**verschiedenen** Werten — zwei Länder, die wirklich gleich stehen, dürfen dieselbe Zahl tragen.
+
+**Und die Grenze dazu, weil sie zählt:** Ob zwei Werte bei einem Datenstand auf dieselbe Zahl
+fallen, entscheidet der Datenstand, nicht der Code. Ein Test mit festen Testwerten kann das nicht
+garantieren — er hält nur die Mechanik fest. Die Werkbank prüft es deshalb an den **echten** Zahlen
+und meldet; gemeldet und nicht behoben, weil die nötige Rundung eine redaktionelle Entscheidung ist.
+Einen Lauf, der bei jedem neuen Datenstand von selbst meldet, gibt es dafür **nicht** — die
+Freigabe-Sitzung nimmt den Abgleich in ihre Prüfkette vor dem Senden auf, und dort zählt er. Die
+beiden Prüffunktionen sind exportiert, damit niemand sie nachbaut.
+
+**Eine Aufteilung muss aufgehen.** Als ganze Prozente standen in der Legende 35 + 35 + 28 + 1 = 99
+neben einem vollen Balken. `aufteilungsStellen` wählt die Genauigkeit so, dass die gezeigten Teile
+das Ganze ergeben. Und der Rest zum Ganzen wird **mitgezeichnet und benannt** (`restLabel`) — bei
+den Solarsegmenten sind es 1,2 Prozent, im Wesentlichen Steckersolar. Ohne Namen wäre er eine Lücke,
+über die das Bild nichts sagt.
+
+**Zwei überlappende Anteile sind keine Aufteilung.** Bei den Förderlücken sind es 21 und 20 Prozent
+derselben Programmmenge — ein Programm kann beides haben. Gestapelt behauptete das Bild, sie
+ergänzten sich. `schoepftAus` weist das ab.
+
+**Die Aufteilung beschriftet IM Segment, nicht in einer Legende — wegen des Highlight-Schemas.**
+Erste Fassung: Balken oben, Legende darunter, Teile über absteigende Deckkraft unterschieden. Im
+hellen Schema sah das gut aus und war im Highlight kaputt: Auf blauem Grund wird aus einer
+durchscheinenden Fläche wieder Blau, zwei Segmente standen als fast gleiche Töne nebeneinander, der
+Rest verschwand. Die Regel des Farbschemas sagt genau das — im Highlight sind Flächen Vollton. Ein
+Segment, das seinen Namen trägt, braucht die Farbe zur Unterscheidung nicht, und damit fällt die
+Legende weg.
+
+**Steckersolar ist der VIERTE Teil der Solarleistung, nicht ein Rest.** Zuerst als Differenz
+gerechnet und mit „vor allem Steckersolar" beschriftet — eine Überschlagsrechnung, keine Messung.
+Das Register führt jede Solaranlage in genau einem Segment, und Steckersolar ist eines davon; die
+Zahl steht als eigene Spalte in der Gemeinde-Auswertung. Nachgemessen: 36,203 + 44,544 + 44,808 +
+1,560 = 127,115 GWp, unerklärter Rest exakt null. Die Aufteilung zeigt jetzt vier gemessene Teile.
+**Die Vermutung war richtig und trotzdem falsch am Platz** — eine ungeprüfte Sachaussage im Bild ist
+genau die Sorte Fehler, gegen die dieses Modul gebaut ist. Aufgefallen ist es einer parallelen
+Sitzung, nicht mir.
+
+**Dass die Rechnung aufgeht, ist eine Eigenschaft der QUELLE — und die wird jetzt nachgehalten.**
+Die vier Teile ergeben das Ganze nur, solange die Erfassung jede Anlage in genau ein Segment legt.
+Kommt eines dazu oder wird eines doppelt gezählt, stimmt das Bild nicht mehr, und im Code wird
+nichts rot. Die Bildform fiele zwar von selbst weg (die Teile schöpfen das Ganze nicht mehr aus) —
+aber **still**, und ein Beitrag, der seine Darstellung verliert, fällt niemandem auf. Die
+Plausibilitätsprüfung des Datenlaufs hält die Summe deshalb gegen die Gesamtleistung und wird rot;
+sie läuft ohnehin nach jedem Einlesen. Toleranz ein Promille — das kleinste echte Segment trägt
+1,2 Prozent und liegt gut zehnfach darüber. Gegenprobe gemacht: Ein weggelassenes Segment meldet
+1,23 Prozent Abweichung.
+
+**Zwei Fehler im Bestand, gefunden beim Ansehen der Bilder:**
+
+- **Anteile ohne Bezugsgröße.** Die drei Solarsegmente sind Prozentwerte, trugen aber kein `ganzes` —
+  der Balken normierte am größten der drei. Das private Dach mit 28,5 Prozent bekam vier Fünftel der
+  Länge, während die Überschrift daneben „nur gut ein Viertel" sagte. Ein Test verlangt jetzt: Wo
+  Prozentwerte stehen, steht ihre Bezugsgröße am Bild.
+- **Eine Jahreszahl mit Tausenderpunkt.** „Wind- und Solarstrom je Einwohner, 2.024" im Bild und
+  „Stand 2.024" im Text — durch die Zahlenformatierung geschickt, die für Mengen gedacht ist.
+
+**Ein Superlativ, den niemand gerechnet hatte.** Der Speicher-Beitrag sagte, das 1,7-fache sei „der
+größte Unterschied zwischen den Ländern, den wir im Bestand finden. Größer als beim Zubau, größer
+als bei der Anlagengröße". Nachgemessen ist es der **kleinste**: Freiflächenanteil 188-fach, Leistung
+je Kopf 9-fach, Balkonquote 3,8-fach, Wachstum 2,5-fach. Der Satz vergleicht die Spannen jetzt
+selbst und kippt mit ihnen. Dieselbe Klasse wie das erfundene Ost-West-Gefälle im Katalog, nur eine
+Ebene tiefer versteckt — **jede vergleichende Aussage über die Länder gehört gerechnet.**
+
+## Die Templates sind ein Bereich der Redaktion (28.08.2026)
+
+**Unter „Redaktion → Templates", nicht als lose Datei daneben** (Betreiber: „wieso sind die
+eigentlich wieder irgendwo im Äther?"). Zwei Ansichten, und die Trennung ist der Arbeitszustand:
+**Bibliothek** zeigt, was abgenommen ist — die Referenz, an der sich das nächste Design misst.
+**Neu entwickeln** zeigt die Formen ohne abgenommene Variante, darunter die Beiträge, die eine
+ungeprüfte Kombination verwenden. Das ist der Arbeitsvorrat, nicht der Bestand.
+
+**Je Form eine Zeile, darin die drei Farbvarianten** — das ist die Einheit, die abgenommen wird, und
+die Ansicht, in der man sieht, ob ein Design in allen drei Schemata trägt. Genau dort saßen die
+Fehler der letzten Runden, beide nur im Highlight sichtbar.
+
+**Ein Design wird an MEHREREN Beiträgen beurteilt, nicht an einem.** Je Zeile lässt sich
+durchschalten, mit welchem Beitrag die Form gefüllt ist; angeboten wird nur, was sie wirklich trägt
+— dieselbe Bedingung wie im Umschalter des Redaktionstischs. Ohne das nimmt man ein Design für den
+Referenzfall ab und hofft für die übrigen, und genau diese Fehlerklasse hat das Projekt schon
+einmal bezahlt: Eine Ratgeber-Aussage galt am Standard-Set und kippte an der größeren
+Konfiguration. Die Formen scheitern an verschiedenen Beiträgen verschieden — ein langer Ländername
+sprengt die Namensspur, eine enge Verteilung macht sechzehn gleich lange Balken, ein winziger
+Anteil verschwindet.
+
+**Die Wahl steht in der Adresse, je Form einzeln.** „Welche Form mit welchem Beitrag" ist der
+Zustand, den man teilen und wiederfinden können muss; im Browser gehalten wäre er nach dem Neuladen
+weg. Das Umschalten einer Zeile lässt die übrigen stehen.
+
+**Jede Variante trägt eine Kennung** (`ringpaar-dunkel`), auch die nicht abgenommenen: Man muss über
+eine Variante reden können, bevor sie einen Template-Namen hat — sonst hat gerade das, woran
+gearbeitet wird, keinen Namen. Sie hängt NICHT am Anzeigenamen, sonst wanderte sie beim Umbenennen
+mit und ein Verweis von gestern zeigte auf etwas anderes.
+
+**Die Karte wird immer in Ausgabegröße gerendert und nur für die Anzeige verkleinert.** Nicht
+kleiner gerechnet: Dann bricht der Text an anderen Stellen um als im ausgelieferten Bild — der
+Lizenzvermerk brach so mitten im Kürzel, im echten Bild sauber dahinter. Wer eine verkleinert
+gerechnete Karte beurteilt, beurteilt eine, die es nicht gibt.
+
+**Die Kommandozeilen-Fassung bleibt** (`npm run social:zahlen`, dann `npm run social:formen`) und
+rendert **dieselbe Komponente** — sie ist der Weg, ein Design ohne Anmeldung anzusehen, und der
+einzige Ort, an dem die Rundungsprüfung gegen die echten Zahlen läuft. Zwei Fassungen derselben
+Ansicht würden driften. `FORM=` zeigt eine Form größer und schreibt in eine EIGENE Datei — sonst
+überschreibt die gefilterte Ansicht die Übersicht, was zweimal passiert ist. Sie steht fest auf der
+hellsten Tagesstufe, sonst erbt sie die Uhrzeit und wird abends unlesbar.
+
+**Ihre Ausgabe gehört NICHT nach `public/` — BLOCKER.** Sie lag dort zwischenzeitlich, damit der
+Dev-Server sie ausliefert, und war damit über eine Adresse erreichbar, die kein Zugang schützt
+(Betreiber, 28.08.2026: „ohne Login brauchen wir nicht, was soll das? das ist eine Lücke"). Dass
+eine `.gitignore`-Zeile sie vom Deploy fernhielt, ist ein Geländer und keine Grenze: Ein
+`git add public/` hätte sie live gestellt, und niemand hätte es bemerkt. Das Skript weist ein Ziel
+in `public/` jetzt ab, statt sich auf eine Regel zu verlassen, an die jemand denken muss.
+
+**Was der Testlauf NICHT konnte, bis er nachgeschärft wurde:** Die Enge-Schwelle war zunächst gegen
+sich selbst geprüft (`reihenEnge(...) < RANGLISTE_MAX_ENGE`) — auf 0,99 hochgesetzt blieb alles
+grün. Und die Testdaten trugen für alle Länder denselben Speicherwert, also gab es gar keine
+Verteilung zu prüfen. Beides behoben, beide Gegenproben laufen. **Wer hier eine Schwelle ändert,
+macht den Test einmal absichtlich kaputt und sieht nach, ob er rot wird.**
+
+**Der Quellenvermerk kommt aus dem Quellenregister, nicht aus der Tastatur.** Beide Zeilen waren
+getippt, und sie wichen **verschieden** ab: Die Anlagenregister-Fassung ließ die Lizenz ganz weg
+(„Marktstammdatenregister (Bundesnetzagentur), Stand …" ohne „dl-de/by-2-0"), die Ember-Fassung
+schrieb einen anderen Änderungshinweis als das Register. Welche stimmte, hing daran, wer die Zeile
+gerade schrieb. Der Vermerk steht im **Bild** — also in dem Teil, der beim Weiterteilen mitreist und
+für den die Lizenzpflicht überhaupt der Grund war.
+
+**Der Test hatte die Lücke selbst offen gelassen:** Er verlangte „dl-de/by-2-0 ODER CC BY 4.0 ODER
+Bundesnetzagentur" und nahm damit den Behördennamen als Ersatz für eine Lizenz. Zwei Prüfungen jetzt:
+eine Lizenz ohne Ersatzbedingung, und der Vermerk muss mit einem Registereintrag beginnen. Gefunden
+hat es eine parallele Sitzung, kein Test.
 
 ## Was diese Runde an Zahlen gefunden hat
 
@@ -246,3 +497,28 @@ Gesundheitscheck warnt gestaffelt vorher.
 
 **Tabellen:** `social_konten`, `social_pruefungen`, `social_vorlagen` — angelegt über
 `/api/social/setup` (Admin-Session oder Cron-Schlüssel).
+
+**`server-only` liegt als Entwicklungs-Abhängigkeit im Projekt.** Next löst den Import selbst auf,
+außerhalb des Bundlers gibt es ihn nicht — die Werkbank braucht ihn deshalb, und `npm run
+social:zahlen` läuft mit `--conditions react-server`, damit der leere Einstiegspunkt greift statt
+des werfenden.
+
+## Offen für die nächste Runde
+
+**Die Säule rechnet ihren Sockel ohne Nullpunkt.** Beim Fünf-Jahres-Wachstum steckt Thüringen
+(1,75-fach) als Sockel in Hamburg (4,38-fach) und füllt 40 Prozent der Höhe — als Verhältnis der
+Faktoren richtig, als Bild über den Zuwachs (75 gegen 338 Prozent) irreführend. Dasselbe Problem,
+wegen dem die Rangliste solche Reihen ablehnt. **Nicht angefasst, weil „Säule hell" ein abgenommenes
+Template ist** und die Änderung an einer Karte sichtbar wäre, die der Betreiber schon freigegeben
+hat. Gehört ihm vorgelegt, nicht still repariert.
+
+**Bild und Text runden beim Freiflächen-Beitrag verschieden.** Der Text sagt „70 Prozent" und
+„9 Prozent", die Rangliste zeigt 70,3 und 9,1 — sie MUSS die Stelle zeigen, sonst stünden Berlin und
+Hamburg als „0 %" da. In den anderen Formen desselben Beitrags steht weiter 70. Zwei Auswege: den
+Text auf eine Nachkommastelle bringen (dann überall gleich, liest sich im Fließtext technischer) oder
+es so lassen (eine Tabellenzeile ist keine Kernaussage). Betreiber-Entscheidung, weil sie die
+Formulierung betrifft.
+
+**Die drei neuen Formen sind keine Templates.** Sie stehen im Umschalter, aber `TEMPLATES` kennt sie
+nicht — „gestaltet" bleibt an den vier abgenommenen hängen. Das ist Absicht: Abnahme ist keine
+Sache, die eine Sitzung sich selbst erteilt.

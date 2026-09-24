@@ -1,0 +1,39 @@
+import type { Metadata } from "next";
+import { resolveSlugPath } from "../../lib/atlas";
+import { getRegionAtlasData } from "../../lib/mastr-data";
+import { pageMetadata } from "../../lib/seo";
+import { atlasSeitenTitel } from "../../lib/atlas-titel";
+import { atlasLevelReleased, atlasOrtEinzelfreigabe, atlasRobots, ortsseiteIndexierbar } from "../../lib/atlas-index";
+import { verlinkendeGemeinden } from "../../lib/atlas-outreach-freigabe";
+import { istStadtstaat, ortsseitenPfad } from "../../lib/atlas-orte";
+
+export type GemeindeParams = { bundesland: string; kreis: string; gemeinde: string };
+
+/**
+ * Title, description, canonical address and index rule of a municipality
+ * page — the old page's rules unchanged (generateMetadata of
+ * app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]), so the switch to
+ * the new design changes nothing a search engine reads except the content.
+ * `vorschau` keeps the preview out of every index regardless.
+ */
+export async function gemeindeMetadata(params: GemeindeParams, { vorschau }: { vorschau: boolean }): Promise<Metadata> {
+  const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
+  if (!region) return { robots: atlasRobots(false) };
+  const kreisfrei = params.kreis === params.gemeinde;
+  const stadtstaat = istStadtstaat(region.region_id);
+  const bezugsebene = stadtstaat ? "Bundesgebiet" : kreisfrei ? "Bundesland" : "Landkreis";
+  const angeschrieben = await verlinkendeGemeinden();
+  const einzeln = atlasOrtEinzelfreigabe(region.region_id) || angeschrieben.includes(region.region_id);
+  const anlagen = atlasLevelReleased("gemeinde") || einzeln ? (await getRegionAtlasData(region.region_id)).solar.total_count : 0;
+  const meta: Metadata = {
+    ...pageMetadata({
+      title: atlasSeitenTitel({ name: region.name, level: "gemeinde" }),
+      description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
+      path: ortsseitenPfad(region.region_id, params.bundesland, params.kreis, params.gemeinde),
+    }),
+    // Die Entscheidung steht in lib/atlas-index.ts ("ortsseiteIndexierbar"),
+    // zusammen mit den uebrigen Freigabe-Regeln und ihrem Test.
+    robots: atlasRobots(ortsseiteIndexierbar(region.region_id, { einzeln, anlagen })),
+  };
+  return vorschau ? { ...meta, title: `Vorschau: ${String(meta.title)}`, robots: { index: false, follow: false } } : meta;
+}

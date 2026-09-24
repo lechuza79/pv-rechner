@@ -16,7 +16,7 @@ import { traegtRangliste, RANGLISTE_MIN_KOMMUNEN, vergleichsBasisPfad } from "..
 // Frankenthal, Neustadt an der Weinstraße) — und die Ranglisten-Seite des Landes
 // enthielt die toten Adressen nachweislich selbst im HTML.
 //
-// Das zählt doppelt: Ein Nutzer landet im Nichts, und der Solar-Atlas ist der
+// Das zählt doppelt: Ein Nutzer landet im Nichts, und der Energie-Atlas ist der
 // SEO-Hebel des Projekts — intern verlinkte 404er verbrennt der Crawler
 // stellvertretend für Seiten, die es gibt.
 //
@@ -143,11 +143,11 @@ describe("Gemeindeseite: die Vergleichstabelle verlinkt die richtige Ebene", () 
 
   it("die Seite baut den Stamm nicht wieder selbst zusammen", () => {
     const quelle = readFileSync(
-      join(__dirname, "../../app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx"),
+      join(__dirname, "../../app/(gemeinde)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx"),
       "utf8",
     );
     expect(quelle, "die Vergleichstabelle bekommt den Stamm nicht mehr aus der Regel").toMatch(
-      /basePath=\{vergleichsBasisPfad\(/,
+      /vergleichsBasisPfad\("gemeinde"/,
     );
   });
 });

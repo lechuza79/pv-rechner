@@ -1,12 +1,6 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, DACHARTEN, NATIONAL_AVG_YIELD, SCENARIOS, YEARS } from "../../../lib/constants";
-import { dachErtragKwp } from "../../../lib/dach-ertrag";
-import { type TiltOrientation } from "../../../lib/tilt-config";
-import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
-import { calcWpAnnualElectricity } from "../../../lib/heatpump";
-import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
-import { DEFAULT_PRICES } from "../../../lib/prices-config";
+import { ogRechnung } from "../../../lib/og-rechnung";
 import { tokens } from "../../../lib/theme";
 import { zeitpunktInBerlin } from "../../../lib/zeit";
 
@@ -17,6 +11,11 @@ const C_POSITIVE = tokens["--color-positive"];
 const C_ACCENT = tokens["--color-accent"];
 const C_NEGATIVE = tokens["--color-negative"];
 const C_TEXT = tokens["--color-text-primary"];
+const C_SECONDARY = tokens["--color-text-secondary"];
+const C_MUTED = tokens["--color-text-muted"];
+const C_BG = tokens["--color-bg"];
+const C_LINE = tokens["--color-border"];
+const C_LINE_SOFT = tokens["--color-border-muted"];
 
 export const runtime = "edge";
 
@@ -81,12 +80,32 @@ async function loadEnergyRadial(origin: string, bars: number): Promise<RadialDat
   }
 }
 
+/**
+ * Die Schrift des Bildes — aus dem BUNDLE, nie über die eigene Adresse geholt.
+ *
+ * Sie lag bis zum 09.09.2026 in `public/` und wurde von dieser Funktion per
+ * HTTP von der eigenen Domain zurückgeholt. Das ist eine Abhängigkeit von der
+ * öffentlichen Auslieferung, und sie ist gerissen, als am 08.09.2026 der
+ * Bot-Schutz scharf gestellt wurde: Eine Serverless-Function verhält sich nicht
+ * wie ein Browser, bekam die Prüfaufgabe als HTML zurück, und der Schriftleser
+ * scheiterte an deren ersten vier Zeichen („Unsupported OpenType signature
+ * <!DO"). Ausnahmen im Bot-Schutz wären die schlechtere Antwort gewesen — dann
+ * müsste jeder Pfad, den eine Funktion je selbst abruft, in einer Liste stehen,
+ * die beim nächsten Pfad still veraltet.
+ *
+ * `import.meta.url` löst gegen die gebaute Datei auf; die Schrift liegt deshalb
+ * NEBEN dieser Route und nicht mehr im öffentlichen Ordner (dort wurde sie von
+ * nichts anderem gebraucht). Auf der Edge-Laufzeit ist das der vorgesehene Weg —
+ * `fs` gibt es dort nicht.
+ */
+async function ladeSchrift(): Promise<ArrayBuffer> {
+  return fetch(new URL("./JetBrainsMono-Bold.ttf", import.meta.url)).then(r => r.arrayBuffer());
+}
+
 export async function GET(req: NextRequest) {
   const params = Object.fromEntries(req.nextUrl.searchParams.entries());
 
-  const jetBrainsMono = await fetch(
-    new URL("/fonts/JetBrainsMono-Bold.ttf", req.nextUrl.origin)
-  ).then(r => r.arrayBuffer());
+  const jetBrainsMono = await ladeSchrift();
   const fonts = [
     { name: "JetBrains Mono", data: jetBrainsMono, weight: 700 as const },
   ];
@@ -101,23 +120,23 @@ export async function GET(req: NextRequest) {
         <div style={{
           width: "100%", height: "100%", display: "flex", flexDirection: "column",
           justifyContent: "space-between", padding: "56px 64px",
-          background: "#FFFFFF", color: "#3F3F3F",
+          background: C_BG, color: C_TEXT,
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 28, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
-            <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
+            <span style={{ fontSize: 28, fontWeight: 700, color: C_TEXT }}>Solar Check</span>
+            <span style={{ fontSize: 20, color: C_MUTED }}>solar-check.io</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: 58, fontWeight: 700, color: "#1365EA", lineHeight: 1.15 }}>
+            <span style={{ fontSize: 58, fontWeight: 700, color: C_ACCENT, lineHeight: 1.15 }}>
               {title}
             </span>
             {subtitle ? (
-              <span style={{ fontSize: 28, color: "#777777", lineHeight: 1.4, marginTop: 20 }}>
+              <span style={{ fontSize: 28, color: C_SECONDARY, lineHeight: 1.4, marginTop: 20 }}>
                 {subtitle}
               </span>
             ) : null}
           </div>
-          <span style={{ fontSize: 18, color: "#949494" }}>
+          <span style={{ fontSize: 18, color: C_MUTED }}>
             Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.
           </span>
         </div>
@@ -139,17 +158,17 @@ export async function GET(req: NextRequest) {
           <div style={{
             width: "100%", height: "100%", display: "flex", flexDirection: "column",
             justifyContent: "space-between", padding: "56px 64px",
-            background: "#FFFFFF", color: "#3F3F3F",
+            background: C_BG, color: C_TEXT,
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 28, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
-              <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
+              <span style={{ fontSize: 28, fontWeight: 700, color: C_TEXT }}>Solar Check</span>
+              <span style={{ fontSize: 20, color: C_MUTED }}>solar-check.io</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 58, fontWeight: 700, color: "#1365EA", lineHeight: 1.15 }}>
+              <span style={{ fontSize: 58, fontWeight: 700, color: C_ACCENT, lineHeight: 1.15 }}>
                 Energie ehrlich berechnet.
               </span>
-              <span style={{ fontSize: 28, color: "#777777", lineHeight: 1.4, marginTop: 20 }}>
+              <span style={{ fontSize: 28, color: C_SECONDARY, lineHeight: 1.4, marginTop: 20 }}>
                 {/* Hier stand „Fünf Tools" — es sind acht. Der Beleg dafür, dass
                     eine getippte Anzahl still veraltet: Dieses Rückfallbild
                     erscheint nur, wenn die Live-Daten ausfallen, und niemandem
@@ -157,7 +176,7 @@ export async function GET(req: NextRequest) {
                 Ohne Anmeldung, ohne Verkaufsanrufe.
               </span>
             </div>
-            <span style={{ fontSize: 18, color: "#949494" }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</span>
+            <span style={{ fontSize: 18, color: C_MUTED }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</span>
           </div>
         ),
         { width: 1200, height: 630, fonts, headers: { "cache-control": "public, max-age=0, s-maxage=300" } },
@@ -185,47 +204,47 @@ export async function GET(req: NextRequest) {
         <div style={{
           width: "100%", height: "100%", display: "flex", flexDirection: "column",
           justifyContent: "space-between", padding: "44px 56px",
-          background: "#FFFFFF", color: "#3F3F3F",
+          background: C_BG, color: C_TEXT,
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: 24, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
-            <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
+            <span style={{ fontSize: 24, fontWeight: 700, color: C_TEXT }}>Solar Check</span>
+            <span style={{ fontSize: 20, color: C_MUTED }}>solar-check.io</span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", flexDirection: "column", width: 560 }}>
               <div style={{ display: "flex", alignItems: "center" }}>
                 <div style={{ width: 12, height: 12, borderRadius: 6, background: C_POSITIVE, marginRight: 10 }} />
-                <span style={{ fontSize: 17, color: "#777777", letterSpacing: 1 }}>
+                <span style={{ fontSize: 17, color: C_SECONDARY, letterSpacing: 1 }}>
                   {stand ? `ERNEUERBARE · ${stand}` : "ERNEUERBARE"}
                 </span>
               </div>
-              <span style={{ fontSize: 50, fontWeight: 700, color: "#1365EA", lineHeight: 1.15, marginTop: 14 }}>
+              <span style={{ fontSize: 50, fontWeight: 700, color: C_ACCENT, lineHeight: 1.15, marginTop: 14 }}>
                 Energie ehrlich berechnet.
               </span>
-              <span style={{ fontSize: 23, color: "#777777", lineHeight: 1.4, marginTop: 16 }}>
+              <span style={{ fontSize: 23, color: C_SECONDARY, lineHeight: 1.4, marginTop: 16 }}>
                 Live-Stromdaten, PV- und Wärmepumpen-Rechner. Ohne Anmeldung.
               </span>
             </div>
 
             <div style={{ display: "flex", position: "relative", width: 380, height: 380, alignItems: "center", justifyContent: "center" }}>
               <svg width="380" height="380" viewBox="0 0 380 380">
-                <circle cx={cx} cy={cy} r={innerR + maxLen} fill="none" stroke="#EFEFEF" strokeWidth="1" />
-                <circle cx={cx} cy={cy} r={innerR + maxLen * 0.55} fill="none" stroke="#F3F3F3" strokeWidth="1" />
+                <circle cx={cx} cy={cy} r={innerR + maxLen} fill="none" stroke={C_LINE} strokeWidth="1" />
+                <circle cx={cx} cy={cy} r={innerR + maxLen * 0.55} fill="none" stroke={C_LINE_SOFT} strokeWidth="1" />
                 {lines.map((l, i) => (
                   <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke={l.color} strokeWidth="3.4" strokeLinecap="round" />
                 ))}
               </svg>
               <div style={{ position: "absolute", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                <span style={{ fontSize: 58, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#3F3F3F", lineHeight: 1 }}>
+                <span style={{ fontSize: 58, fontWeight: 700, fontFamily: "JetBrains Mono", color: C_TEXT, lineHeight: 1 }}>
                   {gwStr}
                 </span>
-                <span style={{ fontSize: 22, color: "#777777", marginTop: 4 }}>GW</span>
+                <span style={{ fontSize: 22, color: C_SECONDARY, marginTop: 4 }}>GW</span>
               </div>
             </div>
           </div>
 
-          <span style={{ fontSize: 16, color: "#949494" }}>
+          <span style={{ fontSize: 16, color: C_MUTED }}>
             {/* „letzte 24 Stunden" ist relativ und wird in einem eingefrorenen
                 Bild ebenso falsch wie „gerade eben" darüber. Der Verlauf selbst
                 umfasst 24 Stunden — das bleibt wahr, der Bezugspunkt steht oben. */}
@@ -237,73 +256,10 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const anlageIdx = paramInt(params, "a", 2, 0, 4);
-  const speicherIdx = paramInt(params, "s", 0, 0, 3);
-  const personenIdx = paramInt(params, "p", 1, 0, 3);
-  const nutzungIdx = paramInt(params, "n", 1, 0, 3);
-  const wp = paramStr(params, "wp", "nein", ["nein", "geplant", "ja"]);
-  const ea = paramStr(params, "ea", "nein", ["nein", "geplant", "ja"]);
-  const eaKm = paramInt(params, "km", 15000, 1000, 50000);
-  const customKwp = paramFloat(params, "ck", 12, 1, 50);
-  // `er` ist das Standort-OPTIMUM (PVGIS mit optimaler Neigung nach Süden);
-  // `da`/`az` machen daraus den Ertrag DIESES Dachs. Ohne diesen Schritt zeigt
-  // das Vorschaubild eines Ost/West-Links die Amortisation eines Süddachs —
-  // dieselbe Regel wie im Rechner (lib/dach-ertrag.ts).
-  const ertragOptimum = paramInt(params, "er", NATIONAL_AVG_YIELD, 700, 1400);
-  const ogDachart = params.da !== undefined ? paramInt(params, "da", -1, 0, DACHARTEN.length - 1) : -1;
-  const ogAusrichtung = paramStr(params, "az", "", ["sued", "suedostwest", "ostwest", "nord"]) as TiltOrientation | "";
-  const ertragKwp = dachErtragKwp(ertragOptimum, ogDachart >= 0 ? ogDachart : null, ogAusrichtung || null);
-  const strompreis = paramFloat(params, "st", DEFAULT_PRICES.electricityPrice, 0.05, 1.0);
-  const einspeisungModus = params.eia === "2" ? "voll" : params.eia === "0" ? "aus" : "teil";
+  // Die ganze Rechnung steht in lib/og-rechnung.ts — dieselben Bausteine wie im
+  // Rechner, und ein Test hält jeden Schlüssel des Teilen-Links dagegen.
   const plz = params.plz || "";
-
-  const kwp = anlageIdx < 4 ? ANLAGEN[anlageIdx].kwp : customKwp;
-  const spKwh = SPEICHER[speicherIdx].kwh;
-
-  const oKosten = params.k ? paramFloat(params, "k", 0, 500, 200000) : null;
-  const oEv = params.ev ? paramInt(params, "ev", 0, 5, 95) : null;
-
-  // WP-Jahresstrom aus den Gebäudedaten (gleiche Physik wie der Rechner), damit
-  // das Vorschaubild bei WP-Links dieselbe Amortisation zeigt wie die Seite.
-  const wpKwh = wp !== "nein"
-    ? calcWpAnnualElectricity({
-        situation: "bestand",
-        wohnflaeche: paramInt(params, "wf", 140, 20, 1000),
-        insulationIdx: paramInt(params, "wi", 1, 0, INSULATION_BESTAND.length - 1),
-        personen: PERSONEN[personenIdx].count,
-        heizsystem: paramStr(params, "wh", "hk_neu", ["fbh", "hk_neu", "hk_alt"]) as "fbh" | "hk_neu" | "hk_alt",
-        wpType: "lwwp",
-        haustypFaktor: HAUSTYP_WP[paramInt(params, "wht", 0, 0, HAUSTYP_WP.length - 1)].faktor,
-      })
-    : null;
-
-  const ev = oEv ?? calcEigenverbrauch({
-    personenIdx, nutzungIdx, speicherKwh: spKwh, wp, ea, eaKm, wpKwh, kwp, ertragKwp,
-  });
-  const kosten = oKosten ?? estimateCost(kwp, spKwh);
-  const oEinsp = params.ei ? paramFloat(params, "ei", 0, 0, 20) : null;
-  const autoEinsp = einspeisungModus === "voll"
-    ? calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.vollUnder10, DEFAULT_FEED_IN.vollOver10)
-    : calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
-  const einsp = einspeisungModus === "aus" ? 0 : (oEinsp ?? autoEinsp);
-  const effEv = einspeisungModus === "voll" ? 0 : ev;
-
-  const result = calc({
-    kwp, kosten, strompreis, eigenverbrauch: effEv, einspeisung: einsp,
-    // Dasselbe Szenario wie die Seite ohne Reiterwahl (realistisch). Hier stand
-    // 0,03 — das Bild im Chat zeigte 13.241 € Gewinn, die Seite 11.485 €.
-    // Was strukturell bleibt: Das Bild läuft ohne Datenbank, also ohne Live-
-    // Preise und ohne Monatsprofil; die Formeln sind dieselben, die Eingaben
-    // nicht vollständig.
-    stromSteigerung: SCENARIOS.find((s) => s.id === "realistic")!.strom, ertragKwp, monthly: null,
-    batteryReplace: batteryReplaceCost(spKwh),
-  });
-
-  const amortYears = result.be ? result.be.i : null;
-  const rendite25j = result.total;
-  // Dieselbe Formel wie „⌀ Ersparnis / Jahr" auf der Seite: mittlerer
-  // Jahresnutzen, nicht Gewinn durch 25 (das war um die Investition zu klein).
-  const avgSavings = Math.round((rendite25j + kosten) / YEARS);
+  const { kwp, spKwh, ev, amortYears, gewinn25: rendite25j, avgSavings } = ogRechnung(params);
 
   const amortColor = amortYears !== null ? C_ACCENT : C_NEGATIVE;
   const amortText = amortYears !== null ? `${amortYears}` : ">25";
@@ -313,7 +269,7 @@ export async function GET(req: NextRequest) {
   const cards = [
     { value: `${kwp} kWp`, label: "ANLAGE" },
     { value: spKwh > 0 ? `${spKwh} kWh` : "Ohne", label: "SPEICHER" },
-    { value: `${ev}%`, label: "EIGENVERBR." },
+    { value: `${Math.round(ev)}%`, label: "EIGENVERBR." },
   ];
   if (plz) cards.push({ value: plz, label: "STANDORT" });
 
@@ -322,17 +278,17 @@ export async function GET(req: NextRequest) {
       <div style={{
         width: "100%", height: "100%", display: "flex", flexDirection: "column",
         justifyContent: "space-between", padding: "48px 56px",
-        background: "#FFFFFF", color: "#3F3F3F",
+        background: C_BG, color: C_TEXT,
       }}>
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: 24, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
-          <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
+          <span style={{ fontSize: 24, fontWeight: 700, color: C_TEXT }}>Solar Check</span>
+          <span style={{ fontSize: 20, color: C_MUTED }}>solar-check.io</span>
         </div>
 
         {/* Main metric */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <span style={{ fontSize: 22, color: "#777777", letterSpacing: 1 }}>
+          <span style={{ fontSize: 22, color: C_SECONDARY, letterSpacing: 1 }}>
             AMORTISATION IN
           </span>
           <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginTop: 8 }}>
@@ -350,13 +306,13 @@ export async function GET(req: NextRequest) {
           {cards.map((card) => (
             <div key={card.label} style={{
               display: "flex", flexDirection: "column", alignItems: "center",
-              padding: "16px 28px", background: "#F8F8F8",
-              border: "1px solid #E9E9E9", borderRadius: 12, minWidth: 120,
+              padding: "16px 28px", background: C_BG,
+              border: `1px solid ${C_LINE}`, borderRadius: 12, minWidth: 120,
             }}>
-              <span style={{ fontSize: 22, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#3F3F3F" }}>
+              <span style={{ fontSize: 22, fontWeight: 700, fontFamily: "JetBrains Mono", color: C_TEXT }}>
                 {card.value}
               </span>
-              <span style={{ fontSize: 14, color: "#777777", marginTop: 4, letterSpacing: 1 }}>
+              <span style={{ fontSize: 14, color: C_SECONDARY, marginTop: 4, letterSpacing: 1 }}>
                 {card.label}
               </span>
             </div>
@@ -367,19 +323,19 @@ export async function GET(req: NextRequest) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
           <div style={{ display: "flex", gap: 40 }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>GEWINN 25 J.</span>
+              <span style={{ fontSize: 14, color: C_SECONDARY, letterSpacing: 1 }}>GEWINN 25 J.</span>
               <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: rendite25j > 0 ? C_POSITIVE : C_NEGATIVE }}>
                 {`${renditeStr} \u20AC`}
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>ERSPARNIS / JAHR</span>
+              <span style={{ fontSize: 14, color: C_SECONDARY, letterSpacing: 1 }}>ERSPARNIS / JAHR</span>
               <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: avgSavings > 0 ? C_POSITIVE : C_TEXT }}>
                 {`${savingsStr} \u20AC`}
               </span>
             </div>
           </div>
-          <span style={{ fontSize: 16, color: "#949494" }}>
+          <span style={{ fontSize: 16, color: C_MUTED }}>
             Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.
           </span>
         </div>

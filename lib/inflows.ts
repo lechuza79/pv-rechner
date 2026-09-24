@@ -53,7 +53,7 @@ export interface Inflow {
 }
 
 const PV_RECHNER = "app/(site)/photovoltaik-rechner/rechner.tsx";
-const EMPFEHLUNG = "app/(site)/pv-bedarf-berechnen/empfehlung.tsx";
+const EMPFEHLUNG = "app/(site)/photovoltaik-rechner/empfehlung.tsx";
 const EINSPEISE = "app/(site)/einspeiseverguetung-rechner/rechner.tsx";
 const WP_RECHNER = "app/(site)/waermepumpe-rechner/waermepumpe.tsx";
 const KLIMA = "app/(site)/klimaanlage-stromkosten/klimaanlage.tsx";

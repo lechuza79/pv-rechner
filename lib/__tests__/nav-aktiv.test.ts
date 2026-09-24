@@ -1,84 +1,125 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync, existsSync } from "fs";
 import { resolve } from "path";
-import { RATGEBER } from "../ratgeber";
+import { load } from "cheerio";
+import { RATGEBER, ratgeberBySlug } from "../ratgeber";
+import { navigationContent, navigationOwner } from "../../public/shared-nav/nav-content.js";
 
 /**
  * Welcher Menüpunkt auf welcher Seite leuchtet.
  *
- * WARUM ES DIESEN TEST GIBT (18.08.2026): Die Zuordnung ist eine handgepflegte
- * Kette von Pfad-Präfixen in components/Header.tsx. Sie hatte zwei Lücken, und
- * beide waren von außen unsichtbar — die Seite funktioniert, nur die Markierung
- * fehlt:
+ * WARUM ES DIESEN TEST GIBT (18.08.2026): Die Zuordnung war eine handgepflegte
+ * Kette von Pfad-Präfixen in der damaligen Kopfzeile. Sie hatte zwei Lücken,
+ * und beide waren von außen unsichtbar — die Seite funktioniert, nur die
+ * Markierung fehlt:
  *
  *   1. Nach dem Umzug des Balkon-Rechners nach /balkonkraftwerk/rechner prüfte
- *      die Kette genau diesen Pfad. Hub (/balkonkraftwerk) und Anmelde-Ratgeber
- *      fielen durch.
+ *      die Kette genau diesen Pfad. Hub und Anmelde-Ratgeber fielen durch.
  *   2. Ratgeber mit Top-Level-Slug (/photovoltaik-neigungswinkel,
  *      /einspeiseverguetung-tabelle) wurden NIE erkannt, weil nur auf das
  *      Präfix /ratgeber geprüft wurde. Das war seit ihrer Einführung so.
  *
- * Der Test liest die Header-Datei als Text statt die Komponente zu rendern:
- * Er soll die Zuordnungs-REGEL prüfen, nicht React. Ein Rendering-Test bräuchte
- * eine Testing-Library, die bewusst nicht im Stack ist.
+ * WARUM ER UMGEBAUT WURDE (20.09.2026): Er las bis dahin die alte Kopfzeile als
+ * Text — eine Datei, die seit dem Release der neuen Oberfläche am 19.09.2026
+ * keine Seite mehr ausliefert. Er war also grün, ohne etwas zu sehen; dieselbe
+ * Klasse wie ein Wächter, der das Vorhandensein statt der Verwendung prüft.
+ *
+ * WAS DIE NEUE MARKIERUNG KANN — und was daraus für den Test folgt: Die
+ * Navigation ordnet einen Pfad über `navigationOwner` genau einer von sechs
+ * Gruppen zu. Innerhalb dieser Gruppe sucht sie den Eintrag, dessen Adresse
+ * exakt dem Pfad entspricht, und markiert ihn. Die früheren Schlüssel je Seite
+ * gibt es nicht mehr: **der Eintrag IST der Schlüssel**. Daraus folgt die eine
+ * Bedingung, an der alles hängt und die niemand sonst prüft — ein Eintrag, der
+ * nur in einer fremden Gruppe steht, kann nie leuchten, weil nur die
+ * besitzende Gruppe durchsucht wird.
+ *
+ * WAS ER NICHT KANN: ob die Markierung am Ende wirklich gesetzt wird. Das
+ * entscheidet das Skript des Design-Pakets, und das misst
+ * e2e/header-ohne-js.spec.ts im Browser an einer echten Seite. Ohne diesen
+ * zweiten Teil wäre der Umbau nur ein Ortswechsel derselben Blindheit.
+ *
+ * WER WAS PRÜFT — damit hier keine dritte Fassung entsteht:
+ * lib/__tests__/shared-navigation.test.ts hält die Zuordnung Pfad → Gruppe
+ * fest (benannte Fälle plus die Regel über alle Registry-Ratgeber, also auch
+ * „Förderung schlägt Ratgeber"). Hier steht ausschließlich die Gegenrichtung:
+ * Steht jede Seite dort, wo ihre Markierung sie sucht?
  */
-const header = readFileSync(resolve(__dirname, "..", "..", "components", "Header.tsx"), "utf8");
+
+/** Jeder Menü-Eintrag mit der Gruppe, in der er steht. */
+function menueLinks(html: string): { gruppe: string; pfad: string }[] {
+  const $ = load(html);
+  const links: { gruppe: string; pfad: string }[] = [];
+  $("[data-section]").each((_, sektion) => {
+    const gruppe = $(sektion).attr("data-section")!;
+    $(sektion)
+      .find("a[href^='/']")
+      .each((_, a) => {
+        links.push({ gruppe, pfad: $(a).attr("href")!.split("#")[0] });
+      });
+  });
+  return links;
+}
+
+/** Was eine Seite an das Menü meldet — genau wie components/SharedSiteHeader.tsx. */
+const besitzer = (pfad: string) => navigationOwner(pfad, ratgeberBySlug(pfad) ? "ratgeber" : "");
+
+/**
+ * Ein Menü-Eintrag kann nur leuchten, wenn die Gruppe, die seine Seite besitzt,
+ * ihn auch führt. Mehrere Einstiege auf dieselbe Seite sind ausdrücklich
+ * erlaubt (der Atlas steht unter „Energiemonitor" und unter „Vor Ort") — aber
+ * einer davon muss in der besitzenden Gruppe liegen.
+ */
+function eintraegeOhneMarkierung(html: string): string[] {
+  const links = menueLinks(html);
+  const gruppen = new Set(links.map(l => l.gruppe));
+  const fehler: string[] = [];
+  for (const pfad of new Set(links.map(l => l.pfad))) {
+    const gruppe = besitzer(pfad);
+    if (!gruppe) {
+      fehler.push(`${pfad}: keine Gruppe besitzt diese Adresse — auf der Seite leuchtet nichts`);
+    } else if (!gruppen.has(gruppe)) {
+      fehler.push(`${pfad}: gehört zu „${gruppe}", diese Gruppe wird hier gar nicht angezeigt`);
+    } else if (!links.some(l => l.gruppe === gruppe && l.pfad === pfad)) {
+      fehler.push(`${pfad}: steht nur in „${links.filter(l => l.pfad === pfad).map(l => l.gruppe).join(", ")}", gesucht wird aber in „${gruppe}"`);
+    }
+  }
+  return fehler;
+}
 
 describe("Menü-Markierung: Zuordnung Pfad → Menüpunkt", () => {
-  it("der ganze Balkon-Cluster zeigt auf einen Menüpunkt, nicht nur der Rechner", () => {
-    // Ein Präfix auf /balkonkraftwerk deckt Hub, Rechner und Anmelde-Ratgeber ab.
-    // Stünde hier wieder ein tieferer Pfad, wären zwei von drei Seiten unmarkiert.
-    expect(header).toMatch(/startsWith\("\/balkonkraftwerk"\)\s*\?\s*"balkon"/);
-    // Je Seite ein eigener Schlüssel — mit einem gemeinsamen leuchteten im
-    // Ausklappmenü alle drei Einträge gleichzeitig (gemeldet 19.08.2026).
-    expect(header).toMatch(/startsWith\("\/balkonkraftwerk\/rechner"\)\s*\?\s*"balkon-rechner"/);
-    expect(header).toMatch(/startsWith\("\/balkonkraftwerk\/ratgeber\/anmelden"\)\s*\?\s*"balkon-anmelden"/);
-    expect(header).toMatch(/startsWith\("\/balkonkraftwerk\/ratgeber\/mit-speicher"\)\s*\?\s*"balkon-speicher"/);
-    // Die spezifischen Pfade müssen vor dem Hub stehen, sonst fängt dessen
-    // Präfix sie ab und alles ist wieder "balkon".
-    expect(header.indexOf('"/balkonkraftwerk/rechner"')).toBeLessThan(header.indexOf('startsWith("/balkonkraftwerk")'));
-    expect(header.indexOf('"/balkonkraftwerk/ratgeber/mit-speicher"')).toBeLessThan(header.indexOf('startsWith("/balkonkraftwerk")'));
+  const produktion = navigationContent();
+  const mitOrganisationen = navigationContent({ showOrganisations: true });
 
-    // Gegenrichtung: JEDE Seite des Clusters steht im Menü und hat dort einen
-    // eigenen Schlüssel. Ohne diese Prüfung fällt eine neue Cluster-Seite
-    // stillschweigend aus dem Menü — genau so ist der Speicher-Ratgeber am
-    // 19.08.2026 zunächst als einzige der vier Seiten dort gefehlt.
-    for (const slug of ["/balkonkraftwerk", "/balkonkraftwerk/rechner", "/balkonkraftwerk/ratgeber/anmelden", "/balkonkraftwerk/ratgeber/mit-speicher"]) {
-      expect(header, `${slug} fehlt im Balkon-Menü`).toContain(`href: "${slug}"`);
-    }
+  it("findet die Menüpunkte überhaupt (sonst prüft der Test nichts)", () => {
+    const links = menueLinks(produktion);
+    expect(new Set(links.map(l => l.gruppe)).size).toBeGreaterThanOrEqual(5);
+    expect(links.length).toBeGreaterThanOrEqual(20);
   });
 
-  // Als REGEL statt als Aufzählung — die Fassung darüber kannte genau drei
-  // Pfade, und als am 19.08.2026 /balkonkraftwerk/foerderung dazukam, blieb sie
-  // grün, während im Menü „Überblick" leuchtete. Ein Test, der eine Liste
-  // wiederholt, prüft den Stand von gestern; dieser liest die Menüpunkte selbst.
-  it("JEDE Seite des Balkon-Clusters hat ihren eigenen Schlüssel — vor dem Hub", () => {
-    const block = header.slice(header.indexOf("const BALKON_ITEMS"), header.indexOf("];", header.indexOf("const BALKON_ITEMS")));
-    const hrefs = [...block.matchAll(/href: "(\/balkonkraftwerk[^"]*)"/g)].map((m) => m[1]);
-    const tiefer = hrefs.filter((h) => h !== "/balkonkraftwerk");
-    expect(tiefer.length, "der Cluster hat Unterseiten").toBeGreaterThanOrEqual(3);
-
-    const hub = header.indexOf('startsWith("/balkonkraftwerk")');
-    for (const h of tiefer) {
-      const zweig = header.indexOf(`startsWith("${h}")`);
-      expect(zweig, `${h} hat keinen eigenen Zweig in der Zuordnung`).toBeGreaterThan(-1);
-      expect(zweig, `${h} steht hinter dem Hub-Präfix und wird davon verschluckt`).toBeLessThan(hub);
-    }
+  it("jeder Eintrag des ausgelieferten Menüs steht in der Gruppe, die seine Seite besitzt", () => {
+    // Das ausgelieferte Menü ist das ohne „Für Organisationen" — die Gruppe ist
+    // vorbereitet und bis zu passenden Zielgruppenseiten ausgeblendet. Ein
+    // Eintrag, dessen Gruppe gar nicht angezeigt wird, leuchtet deshalb nie:
+    // Wer den Kontakt-Link aus einer sichtbaren Gruppe heraus anbietet, während
+    // seine eigene versteckt ist, baut genau diesen Fall.
+    expect(eintraegeOhneMarkierung(produktion)).toEqual([]);
   });
 
-  it("Ratgeber werden über die Registry erkannt, nicht über das Pfad-Präfix", () => {
-    // Sonst leuchtet der Menüpunkt auf jedem Ratgeber mit eigenem Slug nicht.
-    expect(header).toMatch(/ratgeberBySlug\(pathname\)\s*\?\s*"ratgeber"/);
+  it("dasselbe gilt für die vorbereitete Gruppe, bevor sie sichtbar wird", () => {
+    // Sonst fällt der Fehler erst auf, wenn jemand sie einschaltet — und dann
+    // ist er eine sichtbare Änderung statt eines roten Tests.
+    expect(eintraegeOhneMarkierung(mitOrganisationen)).toEqual([]);
   });
 
-  it("die Balkon-Regel steht VOR der Ratgeber-Regel", () => {
-    // /balkonkraftwerk/ratgeber/anmelden ist beides — Registry-Eintrag und Teil des
-    // Clusters. Es soll „Balkonkraftwerk" hervorheben, nicht „Ratgeber".
-    const balkon = header.indexOf('"/balkonkraftwerk"');
-    const ratgeber = header.indexOf("ratgeberBySlug(pathname)");
-    expect(balkon).toBeGreaterThan(-1);
-    expect(ratgeber).toBeGreaterThan(-1);
-    expect(balkon).toBeLessThan(ratgeber);
+  it("mehrere Einstiege auf dieselbe Seite gibt es wirklich (sonst prüft die Regel darüber nichts)", () => {
+    // Realitäts-Anker: Ohne diesen Fall wäre die Regel „einer davon muss in der
+    // besitzenden Gruppe liegen" trivial erfüllt, und niemand merkte, wenn sie
+    // durch eine Umstellung wirkungslos würde.
+    const links = menueLinks(mitOrganisationen);
+    const mehrfach = [...new Set(links.map(l => l.pfad))].filter(
+      pfad => new Set(links.filter(l => l.pfad === pfad).map(l => l.gruppe)).size > 1,
+    );
+    expect(mehrfach.length).toBeGreaterThan(0);
   });
 
   it("jeder Ratgeber mit eigenem Slug wird von der Registry-Regel erfasst", () => {
@@ -89,6 +130,7 @@ describe("Menü-Markierung: Zuordnung Pfad → Menüpunkt", () => {
     expect(eigenerSlug.length).toBeGreaterThanOrEqual(2);
     for (const r of eigenerSlug) {
       expect(r.slug.startsWith("/")).toBe(true);
+      expect(besitzer(r.slug), `${r.slug} bekommt keinen Menüpunkt zugewiesen`).not.toBeNull();
     }
   });
 });
@@ -97,11 +139,12 @@ describe("Menü-Markierung: Zuordnung Pfad → Menüpunkt", () => {
 // ─── Drei Listen, eine Wahrheit ────────────────────────────────────────────
 //
 // WARUM ES DIESEN TEST GIBT (19.08.2026): Eine neue Seite in einem Themen-Cluster
-// muss heute an DREI Stellen von Hand eingetragen werden — Menügruppe und
-// Markierungs-Kette in components/Header.tsx, Fußzeile in components/Footer.tsx,
-// dazu die Ratgeber-Registry. Beim Speicher-Ratgeber sind zwei davon vergessen
-// worden, und keine davon fällt im Browser auf: Die Seite funktioniert, sie ist
-// nur nirgends verlinkt.
+// muss an mehreren Stellen von Hand eingetragen werden — Menügruppe,
+// Fußzeile in lib/site-fuss.ts und Ratgeber-Registry. Beim Speicher-Ratgeber
+// sind zwei davon vergessen worden, und keine davon fällt im Browser auf: Die
+// Seite funktioniert, sie ist nur nirgends verlinkt. Seit dem 20.09.2026 liegt
+// die Menügruppe im Design-Paket (public/shared-nav/nav-content.js) statt in
+// der alten Kopfzeile; an der Zahl der Stellen ändert das nichts.
 //
 // Die Fußzeile ist dabei die WICHTIGE der beiden: Sie ist neben dem
 // Themen-Einstieg der einzige Ort, an dem der Cluster crawlbar verlinkt ist —
@@ -169,7 +212,7 @@ describe("Interne Links zeigen nie auf eine Weiterleitung", () => {
 });
 
 describe("Themen-Cluster: jede Seite ist auch verlinkt", () => {
-  const footer = readFileSync(resolve(__dirname, "../../components/Footer.tsx"), "utf8");
+  const footer = readFileSync(resolve(__dirname, "../site-fuss.ts"), "utf8");
 
   /** Alle Seiten eines Clusters, direkt aus dem Dateibaum — auch die in
    *  Kategorie-Unterordnern (seit 19.08.2026 liegen die Ratgeber eine Ebene
@@ -236,13 +279,26 @@ describe("Themen-Cluster: jede Seite ist auch verlinkt", () => {
     }
   });
 
-  it("Bereichs-Seiten stehen im Menü und haben einen eigenen Markierungs-Schlüssel", () => {
+  it("jede Seite des Clusters bekommt überhaupt einen Menüpunkt zugewiesen", () => {
+    // Auch die Artikel: Sie stehen nicht im Menü, aber ihre GRUPPE muss
+    // leuchten. Ohne Zuordnung ist auf der Seite kein Menüpunkt hervorgehoben,
+    // und man sieht ihr nicht an, wo sie hingehört.
+    for (const pfad of seiten) {
+      expect(besitzer(pfad), `${pfad} gehört zu keiner Menügruppe`).not.toBeNull();
+    }
+  });
+
+  it("Bereichs-Seiten stehen im Menü, und zwar in der Gruppe, die sie besitzt", () => {
+    // Der frühere Markierungs-Schlüssel je Seite ist seit der neuen Navigation
+    // der Eintrag selbst: Markiert wird der Link, dessen Adresse exakt dem
+    // Pfad entspricht — gesucht aber nur innerhalb der besitzenden Gruppe.
+    // Ein Eintrag in einer fremden Gruppe leuchtet deshalb nie.
+    const links = menueLinks(navigationContent({ showOrganisations: true }));
     for (const pfad of [bereichsWurzel, ...direktUnterBereich]) {
-      expect(header, `${pfad} fehlt in der Menügruppe`).toContain(`href: "${pfad}"`);
-      if (pfad !== bereichsWurzel) {
-        expect(header, `${pfad} hat keinen eigenen Markierungs-Schlüssel — im Menü leuchtet dann der Bereich statt der Seite`)
-          .toContain(`startsWith("${pfad}")`);
-      }
+      const gruppe = besitzer(pfad);
+      expect(links.some(l => l.pfad === pfad), `${pfad} fehlt im Menü`).toBe(true);
+      expect(links.some(l => l.gruppe === gruppe && l.pfad === pfad),
+        `${pfad} steht im Menü, aber nicht unter „${gruppe}" — dort sucht die Markierung`).toBe(true);
     }
   });
 

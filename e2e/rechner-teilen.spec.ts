@@ -27,9 +27,9 @@ const GROSS = "/photovoltaik-rechner?a=3&s=3&p=3&n=3&wp=ja&ea=ja&ht=2&da=0&az=su
 const MUSTER = [/amortisiert sich in\s*([\d.,]+)/, /Gewinn[^\n]{0,20}25[^\n]{0,40}?([\d.,]+)\s*€/];
 
 test.describe("Rechner: geteilte Ergebnisse bleiben getrennt", () => {
-  test("die nackte Adresse zeigt die Fragestrecke, nie ein fremdes Ergebnis", async ({ page }) => {
+  test("die nackte Adresse zeigt die Fragestrecke des Empfehlungswegs, nie ein fremdes Ergebnis", async ({ page }) => {
     await page.goto("/photovoltaik-rechner");
-    await expect(page.getByRole("heading", { name: /Wie groß soll die Anlage werden/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Haus", exact: true })).toBeVisible();
     // „Neu berechnen" gibt es ausschliesslich im Ergebnis. Steht es hier, wurde
     // die Rechnung eines Fremden aus dem Zwischenspeicher ausgeliefert.
     await expect(page.getByText("Neu berechnen")).toHaveCount(0);
@@ -59,7 +59,7 @@ test.describe("Rechner: geteilte Ergebnisse bleiben getrennt", () => {
     await page.goto(GROSS);
     await expect(page.getByText(/amortisiert sich in/)).toBeVisible();
     await page.goto("/photovoltaik-rechner");
-    await expect(page.getByRole("heading", { name: /Wie groß soll die Anlage werden/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Haus", exact: true })).toBeVisible();
 
     await page.goto(KLEIN);
     await expect(page.getByText(/amortisiert sich in/)).toBeVisible();

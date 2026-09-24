@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { DataSourceNote } from "../../../../components/PoweredBy";
+import { DATA_SOURCES } from "../../../../lib/data-sources";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "../../../../components/Breadcrumb";
@@ -6,9 +8,9 @@ import RelatedLinks from "../../../../components/RelatedLinks";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
-import { publishedBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify, fundingForFrom } from "../../../../lib/atlas-cities";
+import { foerderBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify, fundingForFrom } from "../../../../lib/atlas-cities";
 import { getFundingPrograms } from "../../../../lib/funding-data";
-import { landProgramBundeslaender, fundingAmount, fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../lib/funding-programs";
+import { fundingAmount, fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../lib/funding-programs";
 import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
 import ScenarioCards from "../../../../components/ScenarioCards";
 import { MastrHeroSection } from "../../../../components/MastrHeroSection";
@@ -87,19 +89,12 @@ function segmentInsight(name: string, solar: RegionSummary | null) {
 // Bundesländer that get a page: those with published cities (live or archived)
 // AND those with a Land-level program (e.g. Berlin has no cities here but a
 // landesweites Programm).
-function allBundeslaender(): { name: string; slug: string }[] {
-  const m = new Map<string, string>();
-  for (const b of publishedBundeslaender()) m.set(b.slug, b.name);
-  for (const b of landProgramBundeslaender()) m.set(b.slug, b.name);
-  return Array.from(m, ([slug, name]) => ({ slug, name }));
-}
-
 export function generateStaticParams() {
-  return allBundeslaender().map((bl) => ({ bundesland: bl.slug }));
+  return foerderBundeslaender().map((bl) => ({ bundesland: bl.slug }));
 }
 
 function blName(slug: string): string | undefined {
-  return allBundeslaender().find((bl) => bl.slug === slug)?.name;
+  return foerderBundeslaender().find((bl) => bl.slug === slug)?.name;
 }
 
 export async function generateMetadata(props: { params: Promise<{ bundesland: string }> }): Promise<Metadata> {
@@ -120,7 +115,7 @@ const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
   breadcrumb: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), marginBottom: 6 } as React.CSSProperties,
-  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
+  h1: { margin: "0 0 8px" } as React.CSSProperties,
   intro: { fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" } as React.CSSProperties,
   card: { display: "block", background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "14px 16px", marginBottom: 10, textDecoration: "none", color: "inherit" } as React.CSSProperties,
   metricsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, margin: "10px 0 14px" } as React.CSSProperties,
@@ -333,7 +328,7 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
         <RelatedLinks
           links={[
             { href: "/ratgeber/lohnt-sich-pv-mit-speicher", label: "Lohnt sich PV mit Speicher?", desc: "Die ehrliche Rechnung mit aktuellen Marktpreisen — und wann sich ein Speicher wirklich rechnet." },
-            { href: "/pv-bedarf-berechnen", label: "Welche Anlage passt zu mir?", desc: "In wenigen Fragen zur passenden Anlagengröße — mit Empfehlung und Begründung." },
+            { href: "/photovoltaik-rechner", label: "PV-Rechner: Welche Anlage passt zu mir?", desc: "In wenigen Fragen zur passenden Anlagengröße — mit Empfehlung und Begründung." },
             { href: "/pv-simulation", label: "PV-Simulation: Was produziert ein Dach gerade?", desc: "Live-Leistung einer PV-Anlage an deinem Standort, gerechnet aus aktuellen Wetterdaten." },
             { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Für Miete oder ohne eigenes Dach: was Steckersolar bringt und wann es sich amortisiert." },
             { href: "/ratgeber/waermepumpe-foerderung", label: "Wärmepumpen-Förderung 2026", desc: "Wie viel Zuschuss es für den Heizungstausch gibt — und wer welchen Bonus bekommt." },
@@ -364,14 +359,7 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
           )}
           {blAgs && BL_CENTROID[blAgs] && solar && solar.total_kwp > 0 && (
             <>
-              {" "}Die simulierte Solarleistung nutzt Wetterdaten von{" "}
-              <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
-                Open-Meteo
-              </a>{" "}
-              (DWD, NOAA), Lizenz{" "}
-              <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
-                CC BY 4.0
-              </a>.
+              {" "}<DataSourceNote label="Die simulierte Solarleistung nutzt Wetterdaten. Datenbasis:" source={DATA_SOURCES.iconD2Archive} />.
             </>
           )}
         </p>

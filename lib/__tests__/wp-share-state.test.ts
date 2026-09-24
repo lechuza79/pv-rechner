@@ -43,6 +43,7 @@ const ALLES_ANDERS: WpZustand = {
   foerderungAn: false,
   plz: "71032",
   pvStatus: "vorhanden",
+  pvConfirmed: true,
   pvKwp: 14,
   pvSpeicher: 6,
   gaspreis: 0.14,

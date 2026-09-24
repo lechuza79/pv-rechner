@@ -24,22 +24,9 @@ const S: Record<string, React.CSSProperties> = {
     minHeight: "100vh",
     padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: v("--color-text-primary"),
-    lineHeight: 1.2,
-    marginBottom: space.xxl,
-  },
-  h2: {
-    fontSize: v("--font-size-h2"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-    marginTop: space.xxxl,
-    marginBottom: space.md,
-  },
+  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  h1: { color: v("--color-text-primary"), marginBottom: space.xxl },
+  h2: { color: v("--color-text-primary"), marginTop: space.xxxl, marginBottom: space.md },
   p: {
     fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
@@ -118,7 +105,7 @@ export default function LizenzPage() {
           <li style={S.li}>die Charts und Grafiken auf dieser Seite, auch als heruntergeladenes Bild,</li>
           <li style={S.li}>die einbettbaren Widgets und ihre Darstellung,</li>
           <li style={S.li}>
-            die Darstellung unserer Auswertungen im Solar-Atlas und in den Datengeschichten — also
+            die Darstellung unserer Auswertungen im Energie-Atlas und in den Datengeschichten — also
             die Karten, Tabellen und Diagramme,
           </li>
           <li style={S.li}>die Ratgeber- und Methodiktexte.</li>

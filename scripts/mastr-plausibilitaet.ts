@@ -192,6 +192,43 @@ async function main() {
     }
   }
 
+  // 2b. Ergeben die Solar-Segmente die Solarleistung?
+  //
+  // WARUM (27.08.2026): Der Beitrag ueber die Aufteilung der Solarleistung zeigt
+  // vier Teile — privates Dach, Gewerbedach, Freiflaeche, Steckersolar — und
+  // behauptet damit, dass sie zusammen alles sind. Das stimmt nur, solange die
+  // Erfassung jede Anlage in GENAU EIN Segment legt. Gemessen ist das heute so
+  // (unerklaerter Rest exakt null), aber es ist eine Eigenschaft der Quelle, nicht
+  // unserer Rechnung: Kommt ein Segment dazu oder wird eines doppelt gezaehlt,
+  // stimmt das Bild nicht mehr, und im Code wird nichts rot.
+  //
+  // Die Bildform faellt in dem Fall zwar von selbst weg (die Teile schoepfen das
+  // Ganze nicht mehr aus) — aber STILL. Ein Beitrag, der seine Darstellung
+  // verliert, faellt niemandem auf; deshalb meldet es dieser Lauf.
+  //
+  // Toleranz ein Promille: Fliesskomma-Summen ueber 10.700 Gemeinden treffen sich
+  // nicht auf die Stelle genau. Das kleinste echte Segment traegt 1,2 Prozent,
+  // liegt also gut zehnfach darueber.
+  console.log("");
+  const solarGesamt = summe("solar_kwp");
+  const segmenteSumme =
+    summe("privat_dach_kwp") + summe("gewerbe_dach_kwp") + summe("freiflaeche_kwp") + summe("balkon_kwp");
+  const luecke = solarGesamt - segmenteSumme;
+  const lueckeAnteil = solarGesamt > 0 ? Math.abs(luecke) / solarGesamt : 0;
+  const bilanzOk = lueckeAnteil <= 0.001;
+  console.log(
+    `  ${bilanzOk ? "ok  " : "FEHL"} Solar-Segmente ergeben das Ganze     ` +
+      `${(segmenteSumme / 1e6).toFixed(3)} von ${(solarGesamt / 1e6).toFixed(3)} GWp ` +
+      `(Abweichung ${(lueckeAnteil * 100).toFixed(3)} %)`,
+  );
+  if (!bilanzOk) {
+    befunde.push(
+      `Solar-Segmente ergeben nicht die Gesamtleistung: ${(luecke / 1e6).toFixed(3)} GWp Abweichung ` +
+        `(${(lueckeAnteil * 100).toFixed(2)} %). Entweder fuehrt die Erfassung ein neues Segment, oder eines ` +
+        `wird doppelt gezaehlt. Der Aufteilungs-Beitrag zeigt dann eine Aufteilung, die keine ist.`,
+    );
+  }
+
   // 3. Steht in der Award-Tabelle ueberhaupt der aktuelle Lauf?
   //
   // WARUM: Am 29.07.2026 schrieb der Lauf frische Segmente in die Rohtabelle,

@@ -1,3 +1,5 @@
+import { HEATING_INVESTMENT, lwwpCoreGross } from "./heating-investment";
+import { OIL_REFERENCE, oilProjectedPricePerKwh } from "./oil-reference";
 // ─── Heat Pump Calculation Engine ──────────────────────────────────────────
 // Pure functions — no React, no I/O. Reusable in server/client.
 //
@@ -7,7 +9,7 @@
 //   Auslegung = Heizlast × Auslegungsfaktor                        (Anlagengröße, bestimmt den Preis)
 //   JAZ      = a − b × T_Vorlauf                            (Fraunhofer ISE WPsmart)
 //   E_WP     = Q_ges / JAZ                                  (Energiebilanz)
-//   Invest   = base + perKw × Auslegung                     (VZ-Angebotsauswertung)
+//   Investment: KWW capacity-dependent core + VZ-calibrated fixed remainder.
 //   BEG      = Grund 30% + Klima 16% (+Einkommen 40/30/10%, einkommensgestaffelt)  — Bestand only
 //              Grund, Klima und Höchstbetrag folgen dem Fahrplan der Richtlinie
 //              (BEG_FAHRPLAN); der Fördersatz halbiert sich zum 01.01.2027.
@@ -28,11 +30,11 @@ import {
   type BegStufe,
 } from "./heatpump-config";
 import { calcWeightedFeedIn, calcPvBenefitPerYear } from "./calc";
-import { calcFossilReference, wpStandingCostPerYear } from "./fossil-reference";
+import { calcFossilReference, wpStandingCostPerYear, fossilReplacementInvestment } from "./fossil-reference";
 import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { calcHeatDemand, calcHeatLoad, auslegungsleistung, flowTempForSystem, calcJAZ } from "./heatpump-core";
-import { type FuelKind } from "./constants";
+import { YEAR, type FuelKind } from "./constants";
 import type { GasScenario } from "./greengas-config";
 import { v } from "./theme";
 
@@ -165,6 +167,17 @@ export interface HeatPumpResult {
   co2WpProM2Jahr: number;         // kg CO₂/m²·a Ausstoß der WP (Energieausweis-Kennzahl)
   // Chart data: cumulative savings per year (starts negative at −mehrinvest)
   years: { i: number; kum: number; annual: number }[];
+  /**
+   * Die Jahreskosten BEIDER Seiten einzeln, ungerundet — dieselben Zahlen, aus
+   * denen `years` und die TCO-Summen entstehen, nur nicht vorab verrechnet.
+   * Wer eine Seite für sich zeichnen will (Heizkosten-Rennen), nimmt sie hier,
+   * statt die Rechnung ein zweites Mal aufzubauen. Anschaffung steht getrennt:
+   * `invest` fällt am Tag null, alles andere je Betriebsjahr (Index 0 = Jahr 1).
+   */
+  kostenJeJahr: {
+    wp: { invest: number; strom: number[]; neben: number; pvNutzen: number[] };
+    fossil: { invest: number; brennstoff: number[]; neben: number };
+  };
 }
 
 export interface HeatPumpScenarioResult extends HeatPumpResult {
@@ -182,9 +195,12 @@ export interface HeatPumpScenarioResult extends HeatPumpResult {
 // heatpump-core.ts (siehe Re-Export oben) und werden hier importiert genutzt.
 
 export function calcInvestBrutto(wpType: "lwwp" | "swwp", auslegungKw: number, doHeizkoerperTausch: boolean, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
-  const base = wpType === "swwp" ? cfg.investSwwpBase : cfg.investLwwpBase;
-  const perKw = wpType === "swwp" ? cfg.investSwwpPerKw : cfg.investLwwpPerKw;
-  const heatpumpCost = base + perKw * auslegungKw;
+  // Capacity is a COST CLASS proxy, not a conversion to the KWW A2/W35
+  // operating point or a manufacturer-specific technical sizing result.
+  const heatpumpCost = wpType === "swwp"
+    ? cfg.investSwwpBase + cfg.investSwwpPerKw * auslegungKw
+    : cfg.investLwwpBase + cfg.investLwwpCoreAt10Kw *
+      lwwpCoreGross(auslegungKw) / HEATING_INVESTMENT.lwwp.referenceCoreGross;
   // Tauschkosten nur wenn die Maßnahme aktiv gewählt ist — nicht mehr automatisch
   // an "alte Heizkörper" gekoppelt (sonst zahlt man den Tausch ohne JAZ-Nutzen).
   const hkTausch = doHeizkoerperTausch ? cfg.heizkoerperTauschKosten : 0;
@@ -429,9 +445,13 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   // PV-Rechner exakt dieselbe Grundlage benutzt (er hatte vorher eine eigene, die
   // auseinandergelaufen war). Zahlen weiterhin aus heatpump-config.ts.
   const fuelKind: FuelKind = inputs.fuelKind ?? "gas";
-  const gasPrice = inputs.override?.gasPrice ?? cfg.gasPriceCtPerKwh / 100;
-  const gasEff = Math.max(0.5, inputs.override?.gasEfficiency ?? cfg.gasEfficiency);  // gegen /0
-  const gasCo2 = inputs.override?.gasCo2 ?? cfg.gasCo2PerKwh;
+  const gasInvest = inputs.override?.fossilErsatzInvest ?? fossilReplacementInvestment(fuelKind, cfg, heizlastKw);
+  const gasPrice = inputs.override?.gasPrice ?? (fuelKind === "oil" ? oilProjectedPricePerKwh(YEAR) : cfg.gasPriceCtPerKwh / 100);
+  const defaultEfficiency = fuelKind === "oil"
+    ? (gasInvest > 0 ? OIL_REFERENCE.newEfficiency : OIL_REFERENCE.existingEfficiency)
+    : cfg.gasEfficiency;
+  const gasEff = Math.max(0.5, inputs.override?.gasEfficiency ?? defaultEfficiency);
+  const gasCo2 = inputs.override?.gasCo2 ?? (fuelKind === "oil" ? OIL_REFERENCE.co2PerKwh : cfg.gasCo2PerKwh);
   const fuelKwh = qGes / gasEff;
   // Anschaffung der fossilen Alternative — auch im BESTAND. Wer sich gegen die
   // Wärmepumpe entscheidet, betreibt nicht 20 Jahre lang eine alte Heizung weiter,
@@ -441,7 +461,6 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   // die zugehörige Investition anzusetzen, also zwei Hälften verschiedener Fälle.
   // Wer eine junge Heizung hat, setzt den Betrag im Ergebnis auf 0 — dann fällt über
   // greenGasApplies() auch die Beimischungspflicht weg (die Regel steht nur dort).
-  const gasInvest = inputs.override?.fossilErsatzInvest ?? cfg.fossilErsatzInvest;
   // Grüngas-Modus (GModG Bio-Treppe): der Gaspreis wird Jahr für Jahr neu gemischt
   // (teures Biomethan verdrängt Erdgas, Netzentgelt + CO₂ steigen eigenständig) —
   // das kann das simple „Preis × Teuerung"-Modell nicht abbilden. Modell +
@@ -518,6 +537,10 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
     gasKosten, gasFix, gasWartung, gasInvest, tcoGas,
     tcoEinsparung, einsparungProJahr, amortisationsJahre,
     co2Einsparung, co2WpProM2Jahr, years,
+    kostenJeJahr: {
+      wp: { invest: investNetto, strom: stromPerYear, neben: wpStandingCostPerYear(cfg), pvNutzen: pvBenefitPerYear },
+      fossil: { invest: gasInvest, brennstoff: gasPerYear, neben: fixPerYear + ref.wartungPerYear },
+    },
   };
 }
 
@@ -712,7 +735,9 @@ export function calcHeatPumpScenarios(inputs: HeatPumpInputs, cfg: HeatPumpConfi
     { id: "optimistic",  label: "Optimistisch",  color: v("--color-accent"), sub: `Strom ${pct(STROM_PFAD.niedrig)}/a`,
       explain: `Günstig für die Wärmepumpe: Der Strompreis bleibt fast stabil (${pct(STROM_PFAD.niedrig)}/Jahr), Gas verteuert sich stärker (${pct(GAS_PFAD.hoch)}/Jahr) — die Wärmepumpe spart mehr. Der Strompfad ist die amtliche Projektion, nach der der Wärmepumpentarif bis 2045 real sogar fällt; beim Gas steigen die Netzentgelte nach der Studie des Öko-Instituts auf 8 Cent je Kilowattstunde. Dazu kommt der CO₂-Preis.` },
   ];
-  return meta.map(s => ({ ...s, ...calcHeatPump(inputs, cfg, heatPumpScenarioAdj(s.id, cfg)) }));
+  return meta.map(s => ({ ...s,
+    ...(inputs.fuelKind === "oil" ? { explain: "Für Heizöl verwenden alle drei Szenarien denselben UBA-Preispfad einschließlich CO₂ und Mehrwertsteuer. Sie unterscheiden sich beim Strompreis und der Arbeitszahl der Wärmepumpe. Dein eingetragener Ölpreis bestimmt das Ausgangsniveau; die weitere Entwicklung folgt der Projektion. Zusätzliche Kosten für Bioheizöl sind nicht enthalten." } : {}),
+    ...calcHeatPump(inputs, cfg, heatPumpScenarioAdj(s.id, cfg)) }));
 }
 
 // ─── PV synergy: how much of WP electricity can a PV system cover? ─────────
@@ -723,4 +748,34 @@ export function estimatePvCoverageOfWp(kwp: number, eWp: number, speicherKwh: nu
   const base = 0.15 * Math.pow(kwp / eWpMwh, 0.3);
   const speicherBoost = speicherKwh > 0 ? 0.05 + 0.02 * Math.min(speicherKwh / eWpMwh, 4) : 0;
   return Math.max(0.05, Math.min(base + speicherBoost, 0.35));
+}
+
+
+/** Opposing installation-price stress cases. These hold energy assumptions
+ * fixed, recalculate grants from gross costs and never vary entered net quotes.
+ * The ±20% is a sensitivity choice, not a confidence interval.
+ */
+export function calcHeatPumpInvestmentSensitivity(
+  inputs: HeatPumpInputs,
+  cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG,
+  scenarioAdj?: Parameters<typeof calcHeatPump>[2],
+): { central: HeatPumpResult; favorable: HeatPumpResult; adverse: HeatPumpResult } {
+  const central = calcHeatPump(inputs, cfg, scenarioAdj);
+  const vary = (wpFactor: number, fossilFactor: number): HeatPumpResult => {
+    const wp = inputs.override?.investNetto === undefined ? wpFactor : 1;
+    const adjusted = {
+      ...cfg,
+      investLwwpBase: cfg.investLwwpBase * wp,
+      investLwwpCoreAt10Kw: cfg.investLwwpCoreAt10Kw * wp,
+      investSwwpBase: cfg.investSwwpBase * wp,
+      investSwwpPerKw: cfg.investSwwpPerKw * wp,
+      heizkoerperTauschKosten: cfg.heizkoerperTauschKosten * wp,
+    };
+    return calcHeatPump({ ...inputs, override: { ...inputs.override,
+      fossilErsatzInvest: inputs.override?.fossilErsatzInvest
+        ?? Math.round(central.gasInvest * fossilFactor),
+    } }, adjusted, scenarioAdj);
+  };
+  const spread = HEATING_INVESTMENT.sensitivityFraction;
+  return { central, favorable: vary(1 - spread, 1 + spread), adverse: vary(1 + spread, 1 - spread) };
 }

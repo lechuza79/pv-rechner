@@ -48,7 +48,7 @@ export default function PasswortSetzen() {
   return (
     <div style={{ background: v("--color-bg"), minHeight: "70vh", padding: "0 16px 40px", fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
       <div style={{ maxWidth: 420, margin: "0 auto" }}>
-        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", marginBottom: space.sm }}>Passwort setzen</h1>
+        <h1 style={{ marginBottom: space.sm }}>Passwort setzen</h1>
 
         <div style={card}>
           {fertig ? (
@@ -102,7 +102,7 @@ export default function PasswortSetzen() {
               <button type="submit" disabled={busy} style={{ ...knopf, marginTop: space.xl, opacity: busy ? 0.7 : 1, cursor: busy ? "default" : "pointer" }}>
                 {busy ? "Einen Moment…" : "Passwort speichern"}
               </button>
-              {fehler && <div role="alert" style={{ fontSize: v("--font-size-small"), color: v("--color-negative"), marginTop: space.md, lineHeight: 1.4 }}>{fehler}</div>}
+              {fehler && <div role="alert" style={{ fontSize: v("--font-size-small"), color: v("--color-negative-text"), marginTop: space.md, lineHeight: 1.4 }}>{fehler}</div>}
             </form>
           )}
         </div>
@@ -143,11 +143,11 @@ const feld: React.CSSProperties = {
 const knopf: React.CSSProperties = {
   width: "100%",
   padding: pad("lg", "lg"),
-  borderRadius: v("--radius-md"),
+  borderRadius: v("--radius-pill"),
   fontSize: v("--font-size-body"),
   fontWeight: 700,
   fontFamily: v("--font-text"),
-  background: v("--color-accent"),
+  background: v("--color-cta"),
   border: "none",
   color: v("--color-text-on-accent"),
   boxSizing: "border-box",

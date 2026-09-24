@@ -19,7 +19,9 @@ export default function Switch({
   /** Sichtbare Beschriftung rechts neben dem Schieber. */
   text,
   size = "md",
+  className,
 }: {
+  className?: string;
   an: boolean;
   onChange: (an: boolean) => void;
   label: string;
@@ -38,7 +40,7 @@ export default function Switch({
         width: breite,
         height: hoehe,
         borderRadius: hoehe / 2,
-        background: an ? v("--color-accent") : v("--color-border"),
+        background: an ? v("--color-cta") : v("--color-border"),
         transition: "background .2s ease",
         position: "relative",
         display: "block",
@@ -63,6 +65,7 @@ export default function Switch({
   return (
     <button
       type="button"
+      className={className}
       onClick={() => onChange(!an)}
       role="switch"
       aria-checked={an}

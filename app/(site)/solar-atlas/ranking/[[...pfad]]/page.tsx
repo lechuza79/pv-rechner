@@ -313,10 +313,10 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
 
   // KRUEMELSPUR UEBER DAS GEBIET, nicht ueber die Kategorie: Eine Rangliste ist
   // eine Ansicht auf ein Gebiet ("Zubau im Landkreis München"), keine eigene
-  // Ebene neben dem Atlas. Vorher lief sie ueber "Solar-Atlas > Rankings > …"
+  // Ebene neben dem Atlas. Vorher lief sie ueber "Energie-Atlas > Rankings > …"
   // und widersprach damit dem Menue, in dem beide gleichrangig standen.
   const crumbs: Crumb[] = [
-    { label: "Solar-Atlas", href: "/solar-atlas" },
+    { label: "Energie-Atlas", href: "/solar-atlas" },
     ...d.gebiet.map((_, i) => ({
       label: i === 0 ? bundeslandByAgs(region.region_id.slice(0, 2))?.name ?? d.gebiet[0] : region.name,
       href: `/solar-atlas/${d.gebiet.slice(0, i + 1).join("/")}`,
@@ -343,7 +343,7 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
   const katStil = (aktiv: boolean, klein = false): React.CSSProperties => ({
     ...S.kat,
     ...(klein ? S.katKlein : null),
-    background: aktiv ? v("--color-accent") : "transparent",
+    background: aktiv ? v("--color-cta") : "transparent",
     color: aktiv ? v("--color-text-on-accent") : v("--color-text-secondary"),
     borderColor: aktiv ? v("--color-accent") : v("--color-border"),
   });
@@ -684,7 +684,7 @@ function Uebersicht() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <Breadcrumb items={[{ label: "Solar-Atlas", href: "/solar-atlas" }, { label: "Rankings" }]} />
+        <Breadcrumb items={[{ label: "Energie-Atlas", href: "/solar-atlas" }, { label: "Rankings" }]} />
         <h1 style={S.h1}>Rankings der Städte und Gemeinden</h1>
         <p style={S.intro}>
           {`Wer baut am meisten — gemessen an der Einwohnerzahl. ${GROESSENKLASSEN_WARUM} `}
@@ -729,7 +729,7 @@ const S: Record<string, React.CSSProperties> = {
     padding: "0 16px 20px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  h1: { marginTop: space.lg, fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  h1: { marginTop: space.lg, margin: `0 0 ${space.md}px` },
   intro: { fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
   navReihe: { display: "flex", flexWrap: "wrap", gap: space.xl, marginBottom: space.md },

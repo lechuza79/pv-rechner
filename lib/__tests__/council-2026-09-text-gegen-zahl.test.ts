@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { calc, calcEigenverbrauch, calcWeightedFeedIn, estimateCost, batteryReplaceCost } from "../calc";
+import { calc, calcEigenverbrauchExakt, calcWeightedFeedIn, estimateCost, batteryReplaceCost } from "../calc";
 import { DEFAULT_PRICES } from "../prices-config";
 import { DEFAULT_FEED_IN } from "../feedin-config";
 import { NATIONAL_AVG_YIELD, SCENARIOS, YEARS } from "../constants";
@@ -22,14 +22,18 @@ const lies = (p: string) => readFileSync(join(ROOT, p), "utf8");
 
 describe("Das Teilen-Vorschaubild rechnet wie die Seite", () => {
   const og = lies("app/api/og/route.tsx");
-  it("nimmt das realistische Szenario, nicht getippte 3 %", () => {
-    expect(og).not.toMatch(/stromSteigerung:\s*0\.03/);
-    expect(og).toMatch(/SCENARIOS\.find\(\(s\) => s\.id === "realistic"\)!\.strom/);
+  // Seit 12.09.2026 steht die Rechnung des Bildes in lib/og-rechnung.ts, und sie
+  // folgt dem Szenario-Reiter des Links statt fest „realistisch" (Council
+  // 12.09.2026; Verhalten geprüft in og-rechnung.test.ts).
+  const ogRechnungQuelle = lies("lib/og-rechnung.ts");
+  it("nimmt den Strompreis-Anstieg aus dem Szenario, nicht getippt", () => {
+    expect(og + ogRechnungQuelle).not.toMatch(/stromSteigerung:\s*0\.0\d/);
+    expect(ogRechnungQuelle).toMatch(/stromSteigerung: szenario\.strom/);
   });
   it("„⌀ Ersparnis / Jahr“ ist dieselbe Formel wie auf der Seite", () => {
     // Seite: (total + kosten) / YEARS. Im Bild stand total / 25 — um die
     // Investition zu klein, Faktor 2 im Standardfall.
-    expect(og).toMatch(/\(rendite25j \+ kosten\) \/ YEARS/);
+    expect(ogRechnungQuelle).toMatch(/\(result\.total \+ kosten\) \/ YEARS/);
     expect(lies("app/(site)/photovoltaik-rechner/_components/ResultStats.tsx")).toMatch(/\(total \+ kosten\) \/ YEARS/);
   });
   it("beschriftet den Euro-Betrag als Gewinn", () => {
@@ -80,7 +84,7 @@ describe("Förderseiten-Beispiele rechnen wie der Rechner", () => {
   it("ziehen den Akkutausch ab", () => {
     const [, mitSpeicher] = buildFundingExamples(1050);
     expect(mitSpeicher.spKwh).toBeGreaterThan(0);
-    const ev = calcEigenverbrauch({ personenIdx: 2, nutzungIdx: 1, speicherKwh: mitSpeicher.spKwh, wp: "nein", ea: "nein", eaKm: 15000, kwp: mitSpeicher.kwp, ertragKwp: 1050 });
+    const ev = calcEigenverbrauchExakt({ personenIdx: 2, nutzungIdx: 1, speicherKwh: mitSpeicher.spKwh, wp: "nein", ea: "nein", eaKm: 15000, kwp: mitSpeicher.kwp, ertragKwp: 1050 });
     const einsp = calcWeightedFeedIn(mitSpeicher.kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
     const basis = { kwp: mitSpeicher.kwp, kosten: mitSpeicher.netto, strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev, einspeisung: einsp, stromSteigerung: DEFAULT_PRICES.electricityIncrease, ertragKwp: 1050, monthly: null };
     const ohne = calc(basis).total;
@@ -104,7 +108,7 @@ describe("Die FAQ-Spannen sind gerechnet", () => {
   });
   it("der Standardfall der FAQ ist der Standardfall des Rechners", () => {
     // 10 kWp, kein Speicher, 2 Personen (Index 1), „teils zuhause" (Index 1).
-    const ev = calcEigenverbrauch({ personenIdx: 1, nutzungIdx: 1, speicherKwh: 0, wp: "nein", ea: "nein", eaKm: 15000, kwp: 10, ertragKwp: NATIONAL_AVG_YIELD });
+    const ev = calcEigenverbrauchExakt({ personenIdx: 1, nutzungIdx: 1, speicherKwh: 0, wp: "nein", ea: "nein", eaKm: 15000, kwp: 10, ertragKwp: NATIONAL_AVG_YIELD });
     const r = calc({ kwp: 10, kosten: estimateCost(10, 0), strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev, einspeisung: calcWeightedFeedIn(10, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10), stromSteigerung: DEFAULT_PRICES.electricityIncrease, ertragKwp: NATIONAL_AVG_YIELD, monthly: null });
     expect(faqAmortisationSpanne(10).standard).toBe(r.be!.i);
   });

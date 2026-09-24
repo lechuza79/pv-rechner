@@ -268,6 +268,46 @@ export async function GET(req: NextRequest) {
   });
   results.push({ step: "funding_history", status: e2c ? "error" : "ok", error: e2c?.message });
 
+  // funding_anfragen: was an eine Förderstelle hinausgegangen ist — und ob je
+  // etwas zurückkam.
+  //
+  // WARUM IN DER DATENBANK UND NICHT ALS DATEI: Der Versand läuft künftig im
+  // nächtlichen Lauf, und der hat kein Verzeichnis, das den Lauf überlebt. Eine
+  // Datei auf dem Rechner des Betreibers wäre für den Automatismus dasselbe wie
+  // kein Protokoll — und ein Protokoll, das nur manchmal entsteht, ist von
+  // keinem nicht zu unterscheiden.
+  //
+  // DER WORTLAUT STEHT MIT DRIN. Anders als bei den Abo-Mails lässt er sich
+  // hier NICHT aus einer gespeicherten Fassung neu erzeugen: Er hängt an den
+  // Katalogwerten des Versandtags, und die ändern sich — genau deshalb fragen
+  // wir ja. Wer später wissen will, was die Gemeinde gelesen hat, findet es
+  // sonst nirgends.
+  //
+  // `antwort_am` bleibt leer, bis der Rücklauf-Lauf etwas zuordnet. Genau diese
+  // Leere ist die Auskunft, um die es geht: Wo nichts zurückkam, steht nichts —
+  // und das ist etwas anderes als „nie gefragt".
+  const { error: e2d } = await supabase.rpc("exec_sql", {
+    sql: `
+      CREATE TABLE IF NOT EXISTS funding_anfragen (
+        id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        program_id text NOT NULL,
+        traeger text,
+        empfaenger text NOT NULL,
+        anlass text NOT NULL,
+        betreff text NOT NULL,
+        text text NOT NULL,
+        gesendet_am timestamptz NOT NULL DEFAULT now(),
+        beleg text,
+        antwort_am timestamptz,
+        antwort_art text,
+        antwort_notiz text
+      );
+      CREATE INDEX IF NOT EXISTS idx_fa_program ON funding_anfragen (program_id, gesendet_am DESC);
+      CREATE INDEX IF NOT EXISTS idx_fa_offen ON funding_anfragen (antwort_am) WHERE antwort_am IS NULL;
+    `,
+  });
+  results.push({ step: "funding_anfragen", status: e2d ? "error" : "ok", error: e2d?.message });
+
   // RLS: anon may read programs (public pages); only the service role writes.
   const { error: e3 } = await supabase.rpc("exec_sql", {
     sql: `
@@ -276,6 +316,7 @@ export async function GET(req: NextRequest) {
       ALTER TABLE funding_coverage ENABLE ROW LEVEL SECURITY;
       ALTER TABLE funding_url_suche ENABLE ROW LEVEL SECURITY;
       ALTER TABLE funding_history ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE funding_anfragen ENABLE ROW LEVEL SECURITY;
       DO $$ BEGIN
         IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'fp_anon_read') THEN
           CREATE POLICY fp_anon_read ON funding_programs FOR SELECT TO anon USING (true);
@@ -290,6 +331,10 @@ export async function GET(req: NextRequest) {
         -- Service-Key. Was der Browser nicht braucht, bekommt er nicht.
         IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'fh_service_all') THEN
           CREATE POLICY fh_service_all ON funding_history FOR ALL TO service_role USING (true);
+        END IF;
+        -- Anfragen tragen eine Empfaengeradresse. Kein anon-Lesen, nirgends.
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'fa_service_all') THEN
+          CREATE POLICY fa_service_all ON funding_anfragen FOR ALL TO service_role USING (true);
         END IF;
       END $$;
     `,

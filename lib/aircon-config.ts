@@ -307,10 +307,7 @@ export interface AcConfig {
   avgYears: number;            // „Ø letzte N Jahre" (Wetterarchiv)
   // Fallback-Faktoren relativ zur Ø-Klimatologie, falls die Live-Daten fehlen:
   lastSummerFactor: number;    // letzter Sommer war wärmer als der Schnitt
-  projectionFactor: number;    // Projektion ~20 Jahre vs. heute (Klimawandel)
-  // Projektionsfenster relativ zum aktuellen Jahr (rollover-sicher, gegen 2050 geclamped)
-  projectionYearsAhead: { start: number; end: number };
-  climateModel: string;        // CMIP6-Downscaling-Modell (Open-Meteo Climate API)
+  projectionFactor: number;    // Projektion ~20 Jahre vs. heute, nur wo kein Rasterfeld greift (lib/klima-projektion.ts)
 
   // Hitzewelle (DWD-nahe Definition: ≥ 3 Tage mit Tagesmaximum ≥ Schwelle)
   heatwaveThreshold: number;   // °C
@@ -485,9 +482,10 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
 
   avgYears: 5,
   lastSummerFactor: 1.3,
-  projectionFactor: 1.5,
-  projectionYearsAhead: { start: 18, end: 22 },
-  climateModel: "MRI_AGCM3_2_S",   // CMIP6-Downscaling, 10 km (Open-Meteo Climate API)
+  // Median der Faktoren über alle Postleitzahlen aus lib/klima-projektion.json
+  // (1,35 beim Bau am 18.09.2026, Spanne 1,28–1,44 zwischen P10 und P90). Vorher
+  // stand hier 1,5 ohne Herleitung; ein Test hält den Wert am Median der Tabelle.
+  projectionFactor: 1.35,
 
   heatwaveThreshold: 30,
   heatwaveMinDays: 3,
@@ -498,7 +496,7 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
   // waren der Befund der Inhalts-Inventur vom 25.08.2026.
   gridCo2PerKwh: 0.38,
 
-  source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), EU-Verordnung 626/2011 + EN 14825/14511 (Effizienz-Skalen), Topten.eu + Hersteller-Datenblätter (Labelwerte), Energy and Buildings 2025 + test.de 2025/26 (Realbetrieb), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), dena Gebäudereport/DIN V 18599 (Heizwärmebedarf je Gebäudestandard, geteilt mit dem Wärmepumpen-Rechner), BDEW (Strom/Gas), UBA (Strommix-CO₂)",
+  source: "ERA5 (Copernicus) über das offene Datenarchiv von Open-Meteo (Kühlgradstunden heute), NASA NEX-GDDP-CMIP6 mit acht Klimamodellen (Projektion), DWD/UBA (Hitzetage-Trend), EU-Verordnung 626/2011 + EN 14825/14511 (Effizienz-Skalen), Topten.eu + Hersteller-Datenblätter (Labelwerte), Energy and Buildings 2025 + test.de 2025/26 (Realbetrieb), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), dena Gebäudereport/DIN V 18599 (Heizwärmebedarf je Gebäudestandard, geteilt mit dem Wärmepumpen-Rechner), BDEW (Strom/Gas), UBA (Strommix-CO₂)",
   validFrom: "2026-07-15",
   // Jüngster Tag, für den eine Prüfung der KÜHL-Werte im Repo belegt ist: der
   // Monoblock-Preis wurde am 27.07.2026 gegen Que Choisir (via test.de) neu

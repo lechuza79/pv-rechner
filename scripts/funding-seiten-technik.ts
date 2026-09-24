@@ -1,3 +1,5 @@
+import { FundingSourceReader, recordStage } from "./lib/funding-source-reader";
+import { holeSeite, seiteFaellig } from "./lib/funding-seiten-abruf";
 /**
  * Welche Technik trägt diese Förderseite? — die Einordnung je EINZELNER Seite.
  *
@@ -52,9 +54,7 @@ if (!url || !key) {
   process.exit(1);
 }
 const sb = createClient(url, key);
-
-const UA =
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
+const sources = new FundingSourceReader(sb, "technology", process.argv.includes("--dry"));
 
 function zahl(name: string, standard: number): number {
   const i = process.argv.indexOf(`--${name}`);
@@ -99,6 +99,7 @@ async function stand(): Promise<void> {
 }
 
 async function main(): Promise<void> {
+  await sources.ready();
   if (process.argv.includes("--stand")) return stand();
 
   const limit = zahl("limit", 400);
@@ -108,6 +109,7 @@ async function main(): Promise<void> {
   // Nie eingeordnete zuerst, danach die ältesten — dasselbe Reihum wie beim
   // Seiten-Wächter, damit kein Teil des Bestands liegen bleibt.
   const dran = zeilen
+    .filter(z => !!z.url && seiteFaellig(sources, z.url))
     .filter(offen)
     .sort((a, b) => (a.eingeordnet_am ?? "").localeCompare(b.eingeordnet_am ?? ""))
     .slice(0, limit);
@@ -120,17 +122,8 @@ async function main(): Promise<void> {
   const jetzt = new Date().toISOString();
 
   await inSchueben(dran, zahl("gleichzeitig", 8), async (z) => {
-    let html: string | null = null;
-    try {
-      const res = await fetch(z.url.startsWith("http") ? z.url : `https://${z.url}`, {
-        headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
-        redirect: "follow",
-        signal: AbortSignal.timeout(15_000),
-      });
-      if (res.ok) html = await res.text();
-    } catch {
-      /* unerreichbar */
-    }
+    // Stored host first, www form as fallback — see seitenAbrufAdressen.
+    const html = await holeSeite(sources, z.url);
 
     if (!html) {
       // Kein Durchgang, kein Stempel: Eine Seite, die wir nicht lesen konnten,
@@ -143,6 +136,7 @@ async function main(): Promise<void> {
     }
 
     const befund = einordnen(sichtbarerText(html));
+    recordStage("technology-result", { url: z.url, region_id: z.region_id, extracted: befund.techniken.length, verdict: befund.verdikt, evaluated_at: new Date().toISOString() });
     zaehler[befund.verdikt] = (zaehler[befund.verdikt] ?? 0) + 1;
     for (const t of befund.techniken) technikZaehler[t]++;
 

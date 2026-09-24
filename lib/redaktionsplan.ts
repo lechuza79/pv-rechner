@@ -379,6 +379,34 @@ export const FAMILIEN: Familie[] = [
     zustand: "daten-da",
     haltbarkeit: { art: "dauerhaft" },
   },
+  {
+    schluessel: "g21",
+    bereich: "daten",
+    kuerzel: "G21",
+    kurz: "Angebote",
+    name: "Was in Angeboten fehlt",
+    beschreibung:
+      "Die Kostenstruktur echter Handwerkerangebote: Der Umbau des Zählerschranks ist in 73 von 160 ausgewerteten Angeboten ausdrücklich nicht enthalten und kostet im Mittel 2.966 € nach; nur jedes zweite Angebot weist Montage und Lohn überhaupt als eigenen Posten aus. Die einzige Familie, deren Zahlen nicht aus einem Register stammen, sondern aus Dokumenten, die Verbraucher in der Hand hatten.",
+    zustand: "daten-da",
+    haltbarkeit: { art: "zeitgebunden", tage: 365, grund: "die Auswertung erscheint jährlich neu" },
+    // DREI SCHRANKEN, jede schärfer als sonst.
+    //
+    // Kein Betriebsname, keine Region, kein Zitat aus einem Angebot — auch nicht
+    // anonymisiert.
+    //
+    // Die Vergleichsgruppe gehört ins Bild, nicht nur in den Text.
+    //
+    // Und die dritte ist die, an der ein Beitrag scheitert: DIE STICHPROBE IST
+    // NICHT DER MARKT, und zwar nicht wegen ihrer Größe. 160 Angebote tragen
+    // einen Anteil auf rund vier Prozentpunkte genau. Das Problem ist die
+    // Auswahl — diese Angebote haben Leute eingereicht, die schon Zweifel
+    // hatten. Wer ein sauberes Angebot bekommt, schickt es nicht zur Prüfung.
+    // Unsere Lücken-Zahlen zeichnen den Markt deshalb eher zu schlecht. Ein
+    // Beitrag der Form „in X % der deutschen Angebote fehlt Y" ist damit falsch,
+    // egal wie vorsichtig er formuliert ist; tragfähig ist nur die Aussage über
+    // die geprüften Angebote selbst.
+    hinweis: "Nie über einen Betrieb, immer über die Gattung",
+  },
 ];
 
 export type Regel = {

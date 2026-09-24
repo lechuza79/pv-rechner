@@ -68,6 +68,7 @@ export const MIN_BATTERIEN_FUER_MELDUNG = 5;
  */
 export { FEED_IN_YEARS } from "./constants";
 import { FEED_IN_YEARS } from "./constants";
+import { jahrInBerlin } from "./zeit";
 
 // ─── Was hereingereicht wird ─────────────────────────────────────────────────
 
@@ -166,6 +167,13 @@ const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
  *  die Gemeinde, deshalb genügt die Präposition. */
 const wo = (name: string) => `${ortPraeposition(name)} ${name}`;
 
+/** Dasselbe am Satzanfang. Die Präposition wechselt („in", „im", „in der"),
+ *  deshalb wird groß geschrieben statt ein zweiter Wortlaut getippt. */
+const grossWo = (name: string) => {
+  const s = wo(name);
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
 /** Singular oder Plural — Grammatik ist Teil der Richtigkeit. */
 function anlagenWort(n: number): string {
   return n === 1 ? "eine Anlage" : `${nf(n)} Anlagen`;
@@ -188,7 +196,7 @@ function batterien(d: MeldungsDaten): number {
 /** Das letzte Jahr, für das der Datenstand vollständig ist. */
 function letztesVollesJahr(standIso: string): number {
   const jahr = Number(standIso.slice(0, 4));
-  if (!Number.isFinite(jahr)) return new Date().getUTCFullYear() - 1;
+  if (!Number.isFinite(jahr)) return jahrInBerlin() - 1;
   // Der Datenstand des laufenden Jahres ist per Bauart unvollständig: Anlagen
   // werden verspätet gemeldet. Das volle Jahr ist deshalb das vorige.
   return jahr - 1;
@@ -228,7 +236,7 @@ function meldungZubau(d: MeldungsDaten): Meldung | null {
     art: "bewegung",
     titel: `${anlagenWort(zeile.count)} kamen ${jahr} in ${d.name} dazu`,
     text:
-      `${jahr} gingen in ${wo(d.name)} ${anlagenWort(zeile.count)} mit zusammen ` +
+      `${jahr} gingen ${wo(d.name)} ${anlagenWort(zeile.count)} mit zusammen ` +
       `${teile.value} ${teile.unit} ans Netz.${vergleich}`,
     gewicht: 70,
   };
@@ -255,7 +263,7 @@ function meldungAuslauf(d: MeldungsDaten, heuteJahr: number): Meldung | null {
     art: "stichtag",
     titel: `${anlagenWort(betroffen)} in ${d.name} verlieren Ende ${heuteJahr} die Einspeisevergütung`,
     text:
-      `In ${wo(d.name)} stehen ${anlagenWort(betroffen)} auf privaten Dächern, die ` +
+      `${grossWo(d.name)} stehen ${anlagenWort(betroffen)} auf privaten Dächern, die ` +
       `${jahrgang} ans Netz gingen. Für sie endet die EEG-Vergütung am 31. Dezember ${heuteJahr} — ` +
       `nach zwanzig Jahren, wie im Gesetz vorgesehen. Danach gibt es für den eingespeisten Strom ` +
       `nur noch den Marktwert. Wer davon betroffen ist, hat drei Möglichkeiten: den Eigenverbrauch ` +
@@ -291,7 +299,7 @@ function meldungFoerderung(d: MeldungsDaten, programme: MeldungsFoerderung[]): M
         ? `In ${d.name} gibt es einen kommunalen Zuschuss`
         : `In ${d.name} gibt es ${nf(aktiv.length)} kommunale Zuschüsse`,
     text:
-      `${wo(d.name)} fördert Solaranlagen aus eigenen Mitteln: ${liste}. ` +
+      `${d.name} fördert Solaranlagen aus eigenen Mitteln: ${liste}. ` +
       `Das kommt zu Bundes- und Landesmitteln dazu, solange das jeweilige Programm ` +
       `die Kombination zulässt. Verbindlich ist immer die Auskunft der Gemeinde.`,
     gewicht: 90,
@@ -326,7 +334,7 @@ function meldungBestand(d: MeldungsDaten): Meldung | null {
     art: "bestand",
     titel: `${anlagenWort(anlagen)} auf privaten Dächern in ${d.name}`,
     text:
-      `Auf den privaten Dächern in ${wo(d.name)} stehen ${anlagenWort(anlagen)} mit zusammen ` +
+      `Auf den privaten Dächern ${wo(d.name)} stehen ${anlagenWort(anlagen)} mit zusammen ` +
       `${fmtPvLeistung(kwp)}. Die durchschnittliche Anlage hat damit ${fmtPvLeistung(mittel)}.` +
       speicherSatz,
     gewicht: 40,
@@ -355,7 +363,7 @@ function meldungPlatzierung(d: MeldungsDaten, p: MeldungsPlatzierung | null): Me
     art: "bestand",
     titel: `${d.name} steht ${rangWort} — ${p.messgroesse}`,
     text:
-      `Gemessen an ${p.messgroesse} steht ${wo(d.name)} ${p.gruppe} auf Platz ${p.rang} ` +
+      `Gemessen an ${p.messgroesse} steht ${d.name} ${p.gruppe} auf Platz ${p.rang} ` +
       `von ${nf(p.ausN)}. Was dort steht, haben die Bürgerinnen und Bürger gebaut, nicht die Verwaltung.`,
     gewicht: 80,
   };

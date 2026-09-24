@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { releaseFreigegeben } from "./release-plan";
+import { istStadtstaat } from "./atlas-orte";
 
-// Gestufte Index-Freischaltung des Solar-Atlas (Plan: docs/atlas-index-wellen.md).
+// Gestufte Index-Freischaltung des Energie-Atlas (Plan: docs/atlas-index-wellen.md).
 // Solange eine Ebene hier nicht freigeschaltet ist, bleibt sie noindex (Pilot) und
 // steht nicht in der Sitemap. So kippen wir nicht ~11.000 dünne Seiten auf einmal
 // in den Index. Ausrollen = diese Datei ändern + deployen.
@@ -119,11 +120,33 @@ export const FREIGABE_NACHWEIS: Record<AtlasLevel, FreigabeNachweis | null> = {
       "zur Ortsebene, kein eigenes Suchziel.",
     beleg: "docs/seo/befund-2026-08-18-atlas-wellen.md",
   },
-  // OFFEN (bis 12/2026): Vor Welle 1 zu erbringen. Die Nachfrage ist belegt
-  // (Ortsanfragen tragen das Volumen), die Kannibalisierung NICHT: 33 von 108
-  // sichtbaren Förder-Anfragen tragen kein Geld-Wort, bei drei Anfragen steht die
-  // Förderseite auf einem reinen Bestands-Wort besser als die Atlasseite. Das ist
-  // je Ort der geplanten Charge zu messen, nicht pauschal.
+  // OFFEN (bis 12/2026): Vor Welle 1 zu erbringen.
+  //
+  // NEU AM 12.09.2026, und es ist die erste Messung an UNSEREN eigenen Seiten
+  // statt am Wettbewerber: Die 289 einzeln freigegebenen Ortsseiten (Outreach)
+  // sind Welle 1 im Kleinen und laufen seit Wochen. Ergebnis über 28 Tage:
+  // **24 von 289 haben überhaupt Einblendungen (8 %), zusammen 115, ein Klick.**
+  // Das sind 0,4 Einblendungen je Seite und Monat — gegen 1.889 Einblendungen,
+  // die allein die 16 Landesseiten holen.
+  //
+  // Die Positionen sind dabei GUT (4,7 bis 13,8 auf den sichtbaren Seiten). Es
+  // ist also kein Qualitäts-, sondern ein Nachfrageproblem: Wer sucht, findet
+  // uns vorn — es sucht nur fast niemand. Und die 289 sind die günstigste
+  // denkbare Stichprobe, weil es die angeschriebenen Gemeinden sind, teils mit
+  // Verweis von der eigenen Gemeinde-Website.
+  //
+  // Die Kannibalisierung ist damit ebenfalls präziser: Von den 289 haben **4**
+  // auch eine Förder-Stadtseite (Darmstadt, Düsseldorf, Hohenahr, Nidda). Die
+  // Familien überlappen heute kaum — Förderseiten sitzen auf größeren Städten.
+  // Eine Ortswelle über kleine Orte kollidiert fast nicht; eine über die 63
+  // Städte mit Förderseite kollidiert frontal, und dort stehen die Förderseiten
+  // auf reinen Ortsanfragen weit vorn („balkonkraftwerk osnabrück" Position 2,
+  // „photovoltaik osnabrück" 3, „photovoltaik krefeld" 4).
+  //
+  // Beides zusammen heißt: Der Nachweis ist nicht bloß unvollständig, die
+  // bisherige Messung deutet in die GEGENRICHTUNG. Wer Welle 1 dennoch will,
+  // widerlegt diese Zahlen, statt sie zu ergänzen — und beantwortet beide
+  // Fragen je Ort der geplanten Charge, nicht pauschal.
   gemeinde: null,
 };
 
@@ -194,6 +217,30 @@ export function atlasIsIndexable(level: AtlasLevel, anlagen?: number, ags?: stri
   if (!frei) return false;
   if (level === "gemeinde") return (anlagen ?? 0) >= GEMEINDE_MIN_ANLAGEN;
   return true;
+}
+
+/**
+ * Darf die ORTSSEITE dieses Schlüssels in den Index?
+ *
+ * EIN STADTSTAAT WIRD ALS BUNDESLAND BEURTEILT — BLOCKER (23.09.2026). Seit
+ * Hamburg und Berlin unter der kurzen Adresse ihres Bundeslands wohnen, IST
+ * ihre Ortsseite die Landesseite. Nach der Gemeinde-Regel beurteilt (die Ebene
+ * ist gesperrt) fielen beide auf „nicht indexieren" — zwei seit Monaten
+ * indexierte Landesseiten wären still aus dem Index gefallen, während sie
+ * weiter in der Sitemap stehen. Angemeldet und gleichzeitig abgemeldet ist
+ * genau der Widerspruch, den Google als Fehler meldet.
+ *
+ * Gemessen an der Produktion am 23.09.2026: Bayern und Bremen „index, follow",
+ * Hamburg und Berlin „noindex, nofollow" — alle vier in der Sitemap. Bremen
+ * gehört bewusst nicht dazu: Dort ist Bremerhaven ein echter zweiter Kreis,
+ * das Land also eine echte Ebene über der Stadt.
+ */
+export function ortsseiteIndexierbar(
+  regionId: string,
+  { einzeln, anlagen }: { einzeln: boolean; anlagen: number },
+): boolean {
+  if (istStadtstaat(regionId)) return atlasIsIndexable("bundesland");
+  return einzeln ? anlagen >= GEMEINDE_MIN_ANLAGEN : atlasIsIndexable("gemeinde", anlagen);
 }
 
 /**

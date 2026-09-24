@@ -9,10 +9,11 @@ import SelectField from "../../../components/SelectField";
 import StandortField from "../../../components/StandortField";
 import DachField from "../../../components/DachField";
 import ResultSection from "../../../components/ResultSection";
-import { calcEigenverbrauch, calcWeightedFeedIn } from "../../../lib/calc";
+import { calcEigenverbrauchExakt, calcWeightedFeedIn } from "../../../lib/calc";
 import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor } from "../../../lib/dach-ertrag";
 import { DACHARTEN, DEGRAD, FEED_IN_YEARS, NATIONAL_AVG_YIELD, PERSONEN } from "../../../lib/constants";
 import { eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
+import { heuteInBerlin } from "../../../lib/zeit";
 import {
   FEED_IN_BASIS,
   feedInEndIso,
@@ -132,7 +133,9 @@ export default function EinspeiseRechner() {
   // Datum-Schritt noch nichts gewählt ist (kein Vorauswahl-Standard).
   const datumGesetzt = ibMonat !== null && ibJahr !== null;
   const ibIso = datumGesetzt ? `${ibJahr}-${String(ibMonat).padStart(2, "0")}-15` : null;
-  const inZukunft = anlage === "bestand" && ibIso !== null && ibIso > heute.toISOString().slice(0, 10);
+  // Deutscher Kalendertag, nicht Weltzeit: Ob eine Inbetriebnahme in der Zukunft
+  // liegt, entscheidet über den angesetzten Vergütungssatz (siehe lib/zeit.ts).
+  const inZukunft = anlage === "bestand" && ibIso !== null && ibIso > heuteInBerlin(heute);
 
   const rates: FeedInRates | null =
     anlage !== "bestand" || inZukunft
@@ -183,7 +186,7 @@ export default function EinspeiseRechner() {
   // the whole yield is exported by definition.
   const evPct = useMemo(
     () =>
-      calcEigenverbrauch({
+      calcEigenverbrauchExakt({
         personenIdx: personenVal,
         nutzungIdx: 1, // "Teils zuhause" — HTW-Standardprofil, same default as the PV calculator
         speicherKwh: speicherVal,
@@ -249,7 +252,7 @@ export default function EinspeiseRechner() {
   const h2: React.CSSProperties = { fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18, color: v("--color-text-primary") };
   const zurueckBtn: React.CSSProperties = {
     padding: "10px 20px",
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     fontSize: v("--font-size-body"),
     fontWeight: 600,
     background: "transparent",
@@ -272,7 +275,7 @@ export default function EinspeiseRechner() {
       {!isResult && (
         <div style={{ display: "flex", gap: 6, marginBottom: 22 }}>
           {order.map((k, i) => (
-            <div key={k} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= stepIdx ? v("--color-accent") : v("--color-progress-inactive"), transition: "background 0.3s" }} />
+            <div key={k} style={{ flex: 1, height: 3, borderRadius: v("--radius-pill"), background: i <= stepIdx ? v("--color-cta") : v("--color-progress-inactive"), transition: "background 0.3s" }} />
           ))}
         </div>
       )}
@@ -425,8 +428,8 @@ export default function EinspeiseRechner() {
                 type="button"
                 onClick={() => { if (opt.m !== verbrauchMode) { setVerbrauchMode(opt.m); if (!opt.m) setOVerbrauch(null); } }}
                 style={{
-                  flex: 1, padding: "8px 4px", borderRadius: v("--radius-sm"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
-                  background: verbrauchMode === opt.m ? v("--color-accent") : "transparent",
+                  flex: 1, padding: "8px 4px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
+                  background: verbrauchMode === opt.m ? v("--color-cta") : "transparent",
                   border: "none",
                   color: verbrauchMode === opt.m ? v("--color-text-on-accent") : v("--color-text-muted"),
                   transition: "all 0.15s",
@@ -544,13 +547,13 @@ export default function EinspeiseRechner() {
               </div>
               <div>
                 <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Vergütung pro Jahr</div>
-                <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive") }}>
+                <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive-text") }}>
                   {geld(jahresverguetung)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>€</span>
                 </div>
               </div>
               <div>
                 <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Summe über die {FEED_IN_YEARS} Vergütungsjahre</div>
-                <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive") }}>
+                <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive-text") }}>
                   {geld(summeGesamt)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>€</span>
                 </div>
               </div>
@@ -558,7 +561,7 @@ export default function EinspeiseRechner() {
                 <div>
                   <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Eigenverbrauch (geschätzt)</div>
                   <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary") }}>
-                    {evPct} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>%</span>
+                    {Math.round(evPct)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>%</span>
                   </div>
                 </div>
               )}
@@ -572,7 +575,7 @@ export default function EinspeiseRechner() {
                   </div>
                   <div>
                     <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>Noch ausstehend (geschätzt)</div>
-                    <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive") }}>
+                    <div style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-positive-text") }}>
                       {geld(nochAusstehend)} <span style={{ fontSize: v("--font-size-small"), fontWeight: 400 }}>€</span>
                     </div>
                   </div>
@@ -637,7 +640,7 @@ export default function EinspeiseRechner() {
           {anlage === "neu" && (
             <Link
               href="/photovoltaik-rechner"
-              style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "11px 20px", borderRadius: v("--radius-md"), fontSize: v("--font-size-body"), fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent"), textDecoration: "none", marginBottom: space.xl }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "11px 20px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700, background: v("--color-cta"), color: v("--color-text-on-accent"), textDecoration: "none", marginBottom: space.xl }}
             >
               Komplette Rechnung: Lohnt sich die Anlage? <IconArrowRight size={iconSizes.sm} />
             </Link>

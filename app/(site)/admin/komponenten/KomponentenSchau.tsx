@@ -14,13 +14,16 @@ import RelatedLinks from "../../../../components/RelatedLinks";
 import ResultSection from "../../../../components/ResultSection";
 import SelectField from "../../../../components/SelectField";
 import { SortPfeil } from "../../../../components/SortPfeil";
+import StorySlider from "../../../../components/StorySlider";
 import Switch from "../../../../components/Switch";
+import { Auswahl } from "../../../../components/Auswahl";
 import Toast from "../../../../components/Toast";
 import TriToggle from "../../../../components/TriToggle";
 import Logo from "../../../../components/Logo";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import DataSourceList from "../../../../components/DataSourceList";
 import FlowNav from "../../../../components/FlowNav";
+import FlowSchritte from "../../../../components/FlowSchritte";
 import StandortField from "../../../../components/StandortField";
 import StandNoteView from "../../../../components/StandNoteView";
 import { AuswahlSkipper } from "../../../../components/AuswahlSkipper";
@@ -350,6 +353,16 @@ function DreifachBeispiel() {
 }
 
 
+function FlowSchritteBeispiel() {
+  const [schritt, setSchritt] = useState(1);
+  return (
+    <div>
+      <FlowSchritte schritte={["Haus", "Haushalt", "Verbraucher"]} aktiv={schritt} onSprung={setSchritt} />
+      <button type="button" onClick={() => setSchritt(s => (s + 1) % 3)}>Nächster Schritt</button>
+    </div>
+  );
+}
+
 function FlowNavBeispiel() {
   const [gewaehlt, setGewaehlt] = useState(false);
   const [schritt, setSchritt] = useState(1);
@@ -615,7 +628,49 @@ function SzenarienBeispiel() {
   );
 }
 
+/**
+ * Das Multitool in seinen beiden Bauformen.
+ *
+ * Nebeneinander, weil erst der Vergleich zeigt, wovon die Pfeile abhängen: Vier
+ * Einträge steppt man durch, zweihundert nicht — dort wäre der Pfeil ein
+ * Versprechen, das niemand einlöst, und stattdessen sucht man.
+ */
+function MultitoolBeispiel() {
+  const [stand, setStand] = useState("vorgemerkt");
+  const [ort, setOrt] = useState("Fürfeld");
+  const orte = [
+    "Bad Freienwalde (Oder)",
+    "Feilbingert",
+    "Frittlingen",
+    "Fürfeld",
+    "Kettig",
+    "Lichtenau (Kreis Paderborn)",
+    "Trendelburg",
+  ];
+  return (
+    <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", alignItems: "center" }}>
+      <Auswahl
+        titel={stand}
+        eintraege={["offen", "vorgemerkt", "verworfen"].map((n) => ({ schluessel: n, name: n }))}
+        aktiv={stand}
+        onWahl={setStand}
+        breite={140}
+      />
+      <Auswahl
+        titel={ort}
+        eintraege={orte.map((n) => ({ schluessel: n, name: n, zahl: n.length }))}
+        aktiv={ort}
+        onWahl={setOrt}
+        breite={200}
+        pfeile={false}
+        suchPlatzhalter="Ort suchen"
+      />
+    </div>
+  );
+}
+
 const BEISPIELE: Record<string, Beispiel> = {
+  Auswahl: MultitoolBeispiel,
   OptionCard: OptionCardBeispiel,
   Switch: SchalterBeispiel,
   TriToggle: DreifachBeispiel,
@@ -680,12 +735,36 @@ const BEISPIELE: Record<string, Beispiel> = {
   ),
   Logo: () => <Logo />,
   FlowNav: FlowNavBeispiel,
+  FlowSchritte: FlowSchritteBeispiel,
   StandortField: StandortBeispiel,
   AuswahlSkipper: SkipperBeispiel,
   ErrorBoundary: AbsturzBeispiel,
   Icons: IconsBeispiel,
   ChartActionBar: AktionsleisteBeispiel,
   CiteModal: ZitierBeispiel,
+  // SECHS Teaser, nicht drei: Unterhalb von vier dreht sich die Reihe bewusst
+  // nicht (siehe MIN_FUER_SCHLEIFE), und ein Beispiel, das die Schleife nicht
+  // zeigt, zeigt genau das nicht, wofür es den Baustein gibt.
+  StorySlider: () => (
+    <StorySlider ariaLabel="Beispiel-Reihe">
+      {["Erste", "Zweite", "Dritte", "Vierte", "Fünfte", "Sechste"].map((t) => (
+        <div
+          key={t}
+          style={{
+            flex: 1,
+            padding: 16,
+            border: `1px solid ${v("--color-border")}`,
+            borderRadius: v("--radius-md"),
+            background: v("--color-bg"),
+            fontSize: v("--font-size-body"),
+            fontWeight: 700,
+          }}
+        >
+          {t} Meldung
+        </div>
+      ))}
+    </StorySlider>
+  ),
   ChartExportBar: () => (
     <ChartExportBar
       onDownload={() => undefined}
@@ -848,7 +927,7 @@ export default function KomponentenSchau() {
         return (
           <div key={g.schluessel} id={`gruppe-${g.schluessel}`} style={{ marginBottom: space.huge }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: space.sm, marginBottom: space.md }}>
-              <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, margin: 0 }}>{g.titel}</h2>
+              <h2 style={{ margin: 0 }}>{g.titel}</h2>
               <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>{g.text}</span>
             </div>
             <div
@@ -872,7 +951,7 @@ export default function KomponentenSchau() {
 
       <div id="gruppe-zusammensetzungen" style={{ marginBottom: space.huge }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: space.sm, marginBottom: space.md }}>
-          <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, margin: 0 }}>Zusammensetzungen</h2>
+          <h2 style={{ margin: 0 }}>Zusammensetzungen</h2>
           <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
             Kennen ein Fach und sind deshalb nicht allgemein einsetzbar — hier ohne Beispiel, weil eines
             ohne echte Daten eine Attrappe wäre.

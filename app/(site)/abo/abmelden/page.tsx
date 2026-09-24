@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import AboErgebnis from "../_ergebnis";
+import { redirect } from "next/navigation";
+import AboErgebnis, { ABO_KNOPF_STIL } from "../_ergebnis";
 import { pruefeAbmeldung } from "../../../../lib/abo-token";
 import { aboAbmelden } from "../../../../lib/gemeinde-abo";
 
@@ -18,15 +19,39 @@ import { aboAbmelden } from "../../../../lib/gemeinde-abo";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Abgemeldet – Solar Check",
+  title: "Meldungen abbestellen – Solar Check",
   robots: { index: false, follow: false },
 };
 
-export default async function Seite(props: { searchParams: Promise<{ t?: string }> }) {
-  const { t } = await props.searchParams;
-  const befund = pruefeAbmeldung(t ?? "");
-  if (befund.ok) {
-    await aboAbmelden(befund.aboId, new Date().toISOString());
+// The step happens on the press, not on opening the link: mail scanners open
+// links on their own and would unsubscribe people silently (legal review
+// 18.09.). The mailbox one-click route (RFC 8058, POST) stays without a
+// question — that request comes from the person's own unsubscribe button.
+async function abmelden(formData: FormData) {
+  "use server";
+  const t = String(formData.get("t") ?? "");
+  const befund = pruefeAbmeldung(t);
+  if (befund.ok) await aboAbmelden(befund.aboId, new Date().toISOString());
+  redirect(`/abo/abmelden?t=${encodeURIComponent(t)}&fertig=1`);
+}
+
+export default async function Seite(props: { searchParams: Promise<{ t?: string; fertig?: string }> }) {
+  const { t, fertig } = await props.searchParams;
+  if (!fertig) {
+    return (
+      <AboErgebnis
+        titel="Meldungen abbestellen?"
+        saetze={["Ein Klick genügt, danach kommt zu diesem Ort keine Mail mehr von uns."]}
+        aktion={
+          <form action={abmelden}>
+            <input type="hidden" name="t" value={t ?? ""} />
+            <button type="submit" style={ABO_KNOPF_STIL}>
+              Abbestellen
+            </button>
+          </form>
+        }
+      />
+    );
   }
 
   return (

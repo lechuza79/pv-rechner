@@ -61,7 +61,7 @@ export default function ResultSection({
   const inhaltSichtbar = open && (!schaltbar || aktiv);
 
   return (
-    <div style={{
+    <div className="sc-result-section" style={{
       background: v("--color-bg"),
       borderRadius: v("--radius-md"),
       border: `1px solid ${v("--color-border")}`,

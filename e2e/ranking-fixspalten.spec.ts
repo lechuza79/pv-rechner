@@ -1,4 +1,16 @@
 import { test, expect } from "@playwright/test";
+import { stufePinnen } from "./kontrast";
+
+// DIE TAGESSTUFE WIRD FESTGENAGELT — sonst entscheidet die Uhr des Prüfrechners
+// über das Urteil. Dieser Test zählt Bildpunkte in der Farbe der
+// Platzierungs-Box; die Palette wird zum Abend hin gedämpft, und dort liegen
+// Box, Kartengrund und Seitengrund nur noch wenige Stufen auseinander. Am
+// 23.09.2026 meldete er abends in ALLEN zehn Stellungen je EINEN Bildpunkt —
+// auch in der Stellung 0, in der die Box gar nicht unter den mitlaufenden
+// Spalten liegen kann. Ein einzelner kantengeglätteter Punkt, der die
+// Toleranz von ±2 zufällig trifft, kein Durchscheinen. Tagsüber lief derselbe
+// Stand grün, und gegengeprüft an der Fassung VOR den Farbkorrekturen
+// desselben Tages: ebenfalls rot. Es ist also die Uhr, nicht der Code.
 
 /**
  * Die mitlaufenden Spalten der Rangliste dürfen keine Zahl anschneiden.
@@ -75,6 +87,27 @@ async function pruefeUeberdeckung(page: import("@playwright/test").Page, schritt
   }, schritte);
 }
 
+/** Misst, ob die schwebende Kopie Spalte für Spalte mit der echten Zeile fluchtet. */
+function messeFlucht(page: import("@playwright/test").Page) {
+  return page.evaluate((tol: number) => {
+    const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
+    const echt = document.querySelector<HTMLElement>('[data-marked="true"]')!;
+    // Die schwebende Kopie ist die einzige Zeile AUSSERHALB des
+    // Scrollkastens — sie erscheint nur, wenn die echte aus dem Blick ist.
+    const kopie = [...document.querySelectorAll<HTMLElement>(".atlas-rank-row")].find((el) => !sc.contains(el));
+    const pos = Math.round(sc.scrollLeft);
+    if (!kopie) return { pos, gemessen: false, raus: [] as { pos: number; spalte: number; delta: number }[] };
+    const raus: { pos: number; spalte: number; delta: number }[] = [];
+    for (let s = 0; s < echt.children.length; s++) {
+      const a = (echt.children[s] as HTMLElement).getBoundingClientRect();
+      const b = (kopie.children[s] as HTMLElement).getBoundingClientRect();
+      const delta = Math.abs(a.left - b.left);
+      if (delta > tol) raus.push({ pos, spalte: s, delta: Math.round(delta) });
+    }
+    return { pos, gemessen: true, raus };
+  }, 1.5);
+}
+
 for (const [name, viewport] of [
   ["Telefon", { width: 375, height: 812 }],
   ["Desktop", { width: 1280, height: 800 }],
@@ -83,6 +116,7 @@ for (const [name, viewport] of [
     test.use({ viewport });
 
     test("keine Zahl wird von der Haltekante angeschnitten", async ({ page }) => {
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       // Der Scrollkasten rastet erst ein, wenn der gemessene Überlauf feststeht
@@ -170,28 +204,24 @@ for (const [name, viewport] of [
         await page.evaluate((x: number) => {
           (document.querySelector(".atlas-tabelle-scroller") as HTMLElement).scrollLeft = x;
         }, Math.round((max * i) / 8));
-        // Die Kopie folgt über einen React-Zustand aus dem Scroll-Ereignis. Der
-        // braucht ein Ereignis UND ein Rendern — deshalb hier eine echte Pause
-        // statt zweier Bilder in derselben evaluate-Schleife.
-        await page.waitForTimeout(150);
-
-        const schritt = await page.evaluate((tol: number) => {
-          const sc = document.querySelector(".atlas-tabelle-scroller") as HTMLElement;
-          const echt = document.querySelector<HTMLElement>('[data-marked="true"]')!;
-          // Die schwebende Kopie ist die einzige Zeile AUSSERHALB des
-          // Scrollkastens — sie erscheint nur, wenn die echte aus dem Blick ist.
-          const kopie = [...document.querySelectorAll<HTMLElement>(".atlas-rank-row")].find((el) => !sc.contains(el));
-          const pos = Math.round(sc.scrollLeft);
-          if (!kopie) return { pos, gemessen: false, raus: [] as { pos: number; spalte: number; delta: number }[] };
-          const raus: { pos: number; spalte: number; delta: number }[] = [];
-          for (let s = 0; s < echt.children.length; s++) {
-            const a = (echt.children[s] as HTMLElement).getBoundingClientRect();
-            const b = (kopie.children[s] as HTMLElement).getBoundingClientRect();
-            const delta = Math.abs(a.left - b.left);
-            if (delta > tol) raus.push({ pos, spalte: s, delta: Math.round(delta) });
-          }
-          return { pos, gemessen: true, raus };
-        }, 1.5);
+        // Die Kopie folgt über einen React-Zustand aus dem Scroll-Ereignis: ein
+        // Ereignis, dann ein Rendern. Eine feste Pause davor war unter Last zu
+        // kurz (21.09.2026: 2 von 5 Läufen rot, an genau EINER Stellung jede
+        // Spalte um den Scrollweg daneben — die Kopie stand noch auf der
+        // vorigen Stellung). Deshalb wird gewartet, bis die Messung ruhig ist:
+        // dreimal in Folge dieselbe Stellung und dieselben Abweichungen. Erst
+        // dann wird geurteilt — eine echte, bleibende Abweichung ist ruhig und
+        // fällt weiter durch; ein Nachhinken ist es nicht.
+        let schritt = await messeFlucht(page);
+        let ruhig = 0;
+        const bis = Date.now() + 5_000;
+        while (ruhig < 3 && Date.now() < bis) {
+          await page.waitForTimeout(50);
+          const neu = await messeFlucht(page);
+          ruhig = JSON.stringify(neu) === JSON.stringify(schritt) ? ruhig + 1 : 0;
+          schritt = neu;
+        }
+        expect(ruhig, `Stellung ${schritt.pos}: die Kopie kam in 5 s nicht zur Ruhe`).toBe(3);
 
         if (schritt.gemessen) gemessen++;
         abweichungen.push(...schritt.raus);
@@ -227,6 +257,7 @@ for (const [name, viewport] of [
      *     bedienen (WCAG 2.1.1) — deshalb Fokus + Enter statt Klick.
      */
     test("springt mit den Pfeilen spaltenweise und zeigt sie nur, wo es weitergeht", async ({ page }) => {
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       // Erst wenn der Überlauf gemessen ist, stehen auch die Knöpfe — beides
@@ -306,6 +337,7 @@ for (const [name, viewport] of [
      *     die Rastpunkte, und ein verschobener Rastpunkt schneidet Zahlen an.
      */
     test("markiert sortierte und platzierte Spalte verschieden — ohne die Tabelle zu verbreitern", async ({ page }) => {
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
@@ -501,6 +533,7 @@ test.describe("Rangliste: die Platzierungs-Box bleibt in ihrer Spalte", () => {
   ] as const) {
     test(`${name}: Box überdeckt weder den eigenen noch den benachbarten „?"`, async ({ page }) => {
       await page.setViewportSize(viewport);
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
@@ -622,6 +655,7 @@ test.describe("Rangliste: die Platzierungs-Box scheint nicht hinter den mitlaufe
       // die liest sich wie ein Fehler an der Tabelle, obwohl sie keiner ist.
       test.setTimeout(180_000);
       await page.setViewportSize(viewport);
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
@@ -779,6 +813,7 @@ test.describe("Rangliste: die Blätter-Pfeile schweben auf der Tabelle", () => {
       // die 30 Sekunden aus der Voreinstellung sind dafür zu knapp.
       test.setTimeout(120_000);
       await page.setViewportSize(viewport);
+      await page.addInitScript(stufePinnen("light"));
       await page.goto("/solar-atlas");
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
       await expect(page.locator(".atlas-tabelle-scroller")).toHaveAttribute("tabindex", "0", { timeout: 15_000 });
@@ -1001,6 +1036,7 @@ test.describe("Rangliste, mitlaufende Spalten tragen in jeder Zeile ihren Inhalt
   test.use({ viewport: TELEFON });
 
   test("direkt auf 390 px geladen", async ({ page }) => {
+    await page.addInitScript(stufePinnen("light"));
     await page.goto("/solar-atlas");
     const { geprueft, funde } = await pruefeFixSpalten(page);
     // Ohne diese Zusicherung wäre der Test still grün, wenn gar keine Zeile im
@@ -1011,6 +1047,7 @@ test.describe("Rangliste, mitlaufende Spalten tragen in jeder Zeile ihren Inhalt
 
   test("nach einer Größenänderung von 1280 auf 390 px", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
+    await page.addInitScript(stufePinnen("light"));
     await page.goto("/solar-atlas");
     await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
     // Erst wenn die Tabelle steht, wird schmal gemacht: Alles, was beim ersten

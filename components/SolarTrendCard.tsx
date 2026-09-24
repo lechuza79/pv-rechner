@@ -156,7 +156,7 @@ export default function SolarTrendCard({ series }: { series: SolarMonat[] }) {
 
   const linkStyle = { color: v("--color-accent"), fontWeight: 600, textDecoration: "none" } as const;
   const num = (s: string | number, positive?: boolean) => (
-    <strong style={{ color: positive ? v("--color-positive") : v("--color-text-primary"), fontFamily: v("--font-mono") }}>{s}</strong>
+    <strong style={{ color: positive ? v("--color-positive-text") : v("--color-text-primary"), fontFamily: v("--font-mono") }}>{s}</strong>
   );
 
   return (

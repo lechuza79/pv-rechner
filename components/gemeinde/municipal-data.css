@@ -1,0 +1,73 @@
+/* Municipality adapter only. Reusable geometry lives in dashboard.css. */
+.municipal-data{background:transparent;padding:0 0 16px;color:var(--atlas-text);--color-accent:var(--atlas-action);--color-accent-light:color-mix(in srgb,var(--atlas-action) 55%,var(--atlas-card));--color-bg:var(--atlas-card);--color-text:var(--atlas-text);--color-text-primary:var(--atlas-text);--color-text-secondary:var(--atlas-secondary);--color-text-muted:var(--atlas-secondary);}
+.municipal-data-stand,.municipal-data-missing{color:var(--atlas-secondary);font-size:14px;line-height:1.65}
+.municipal-data>section{margin-top:32px}
+.municipal-data>section>h3{font-size:20px;margin:0 0 20px}
+.municipal-data-missing{max-width:65ch;margin:0}
+/* Legacy story renderers still supply editorial headers. The widget owns its title. */
+.sc-widget .monitor-widget-body>div>header{display:none;}
+.monitor-widget-body{min-width:0;overflow:hidden;border-radius:0 0 var(--widget-radius) var(--widget-radius);}
+.monitor-native-chart{padding:var(--widget-padding);min-width:0;--font-mono:var(--atlas-display);--font-body:var(--atlas-body);}
+.monitor-map{padding:24px;background:var(--atlas-card);border-radius:var(--widget-radius);}
+.monitor-map>p{font-size:14px;line-height:1.6;color:var(--atlas-secondary);}
+.monitor-map-select{display:flex;align-items:center;gap:12px;font-size:14px;margin-bottom:20px;}
+.monitor-map-select select{font:inherit;background:var(--atlas-card);color:var(--atlas-text);border:1px solid var(--atlas-secondary);border-radius:8px;padding:8px;max-width:65%;}
+.monitor-method{font-size:12px;line-height:1.6;color:var(--atlas-secondary);margin:18px 0 32px;max-width:680px;}
+.monitor-method summary{cursor:pointer;}
+.monitor-method p{margin:12px 0;}
+.municipal-data>.sc-kpi-overview{margin-top:16px;}
+/* Legacy editorial plots have generous image-export dimensions. Cap the plot,
+   keeping the widget title and controls in normal document flow. */
+.sc-widget[data-widget-kind="time-series"] .monitor-widget-body{max-width:680px;margin-inline:auto;}
+.sc-widget[data-widget-kind="radial"] .monitor-widget-body{max-width:380px;margin-inline:auto;}
+.sc-widget[data-widget-kind="composition"] .monitor-widget-body{max-width:760px;margin-inline:auto;}
+.monitor-method summary {display:flex;align-items:center;gap:10px;list-style:none;}
+.monitor-method summary::-webkit-details-marker {display:none;}
+.monitor-method summary::after {content:"";width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);margin-left:4px;margin-top:-4px;}
+.monitor-method[open] summary::after {transform:rotate(225deg);margin-top:4px;}
+.municipal-data{--font-text:var(--atlas-body);--font-size-small:13px;--font-size-caption:12px;--radius-sm:8px;}
+.sc-widget-context .sc-widget-setting{margin-top:12px;}
+.monitor-map>.sc-widget-setting{margin-bottom:20px;}
+
+.monitor-hero{height:100vh;box-sizing:border-box;padding:0;background:transparent!important;}
+.monitor-hero>.sc-widget{height:100%;box-sizing:border-box;display:flex;flex-direction:column;}
+.monitor-hero>.sc-widget>.sc-widget-body{flex:1;min-height:0;}
+.monitor-hero .monitor-widget-body{width:100%;}
+.monitor-current-power{height:100%;box-sizing:border-box;display:flex;flex-direction:column;}
+
+.sc-widget:has(.monitor-current-power){display:flex;flex-direction:column;}
+.sc-widget:has(.monitor-current-power)>.sc-widget-body{flex:1;min-height:0;}
+.monitor-live-radial,.monitor-live-radial>div,.monitor-live-radial .sc-mastr-live-radial-card{height:100%;min-height:0;}
+
+/* Hero stories sit on the parent glass surface, independently of dashboard sizing. */
+.monitor-hero .sc-widget{background:transparent;border:0;border-radius:0;box-shadow:none;}
+.monitor-hero .hero-story{height:100%;padding:20px;display:flex;flex-direction:column;}
+.monitor-hero .hero-story h3{font-size:18px;line-height:1.25;margin:0;}
+.monitor-hero .hero-story p{font-size:12px;color:var(--atlas-secondary);margin:6px 0 0;}
+.monitor-hero .hero-story-visual{flex:1;min-height:0;display:flex;justify-content:center;align-items:center;}
+.monitor-hero .hero-story-visual>div{width:100%;height:100%;min-height:0;background:transparent;padding:0;}
+.monitor-hero .hero-story-visual [class*="singleValue"]{height:100%;min-height:0;}
+.monitor-hero .hero-story-visual [class*="compact"]>svg{max-height:100%;}
+.monitor-hero .sc-widget-head{padding:20px 20px 0;}
+.monitor-hero .sc-widget-head h4{font-size:18px;}
+.monitor-hero .sc-widget-context{font-size:11px;padding:6px 20px 0;}
+.monitor-hero .monitor-native-chart{padding:4px 20px 12px;}
+.monitor-hero .sc-mastr-live-radial-card{background:transparent!important;}
+
+.monitor-hero .hero-story-visual>div{aspect-ratio:auto;}
+.monitor-hero .hero-story-visual svg{max-height:100%;}
+.monitor-hero .monitor-live-radial div:has(>svg[aria-label="24-Stunden-Verlauf"]){width:min(100%,calc(100vh - 76px))!important;}
+.monitor-hero .monitor-current-power{justify-content:center;}
+.monitor-hero .monitor-live-radial div:has(>svg[aria-label="24-Stunden-Verlauf"]){container-type:inline-size;}
+.monitor-hero .monitor-live-radial div:has(>svg[aria-label="24-Stunden-Verlauf"])>div>div:first-child{font-size:clamp(28px,12cqi,40px)!important;}
+.monitor-hero .monitor-live-radial div:has(>svg[aria-label="24-Stunden-Verlauf"])>div>div:nth-child(2){font-size:13px!important;}
+
+.hero-monitor-link{display:block;color:inherit;text-decoration:none;height:100vh;}
+.hero-monitor-link:focus-visible{outline:2px solid #d4ff24;outline-offset:-3px;border-radius:24px;}
+.monitor-hero .hero-story-visual:has([data-solar-month-preview])>div{width:88%;height:88%;max-height:300px;}
+.monitor-hero .monitor-live-radial div:has(>svg[aria-label="24-Stunden-Verlauf"]){width:min(88%,280px)!important;}
+.sc-widget:has(.monitor-current-power)>.sc-widget-body{display:flex;}
+.monitor-current-power{flex:1;height:auto;}
+.monitor-current-power .monitor-live-radial{flex:1;height:100%;}
+.monitor-live-radial>div>div{height:100%;}
+

@@ -14,7 +14,83 @@ import { createHash } from "node:crypto";
  * zählen. Bewusst grob: Ein zu feiner Abdruck schlägt bei jedem Deploy der Stadt
  * an, wird dann ignoriert — und so stirbt ein Wächter.
  */
-export function fingerprintOf(html: string): string {
+/**
+ * Wie viele Token eine Seite mindestens tragen muss, damit ihr Abdruck etwas
+ * bedeutet.
+ *
+ * WARUM ES DIE SCHRANKE GIBT (09.09.2026): Ein leerer Abruf ergab bis dahin
+ * einen völlig gültigen Abdruck — den Hash über nichts. Der ist stabil, also
+ * meldete der Wächter für eine Seite, die er gar nicht lesen konnte, jede Nacht
+ * „unverändert"; eine echte Änderung hätte er nie gesehen. Dieselbe Fehlerklasse
+ * wie ein Abruf, der scheitert und trotzdem grün meldet — nur langlebiger, weil
+ * niemand hinsieht, solange nichts anschlägt.
+ *
+ * Die Zahl ist gemessen, nicht gegriffen: Fünf echte Förderseiten am 09.09.2026
+ * abgerufen, die dünnste trug 365 Token, die dickste 1.164. Eine Fehlerseite
+ * („403 Zugriff verweigert") trägt drei. Fünfzig liegt weit unter jeder echten
+ * Seite und weit über jeder Hülle.
+ */
+export const FINGERPRINT_MIN_TOKEN = 50;
+
+/**
+ * Fingerabdruck oder `null`, wenn die Seite zu wenig hergibt.
+ *
+ * `null` heißt „nicht gelesen", nicht „leer" — die Aufrufer behandeln es wie
+ * einen gescheiterten Abruf, nicht wie eine unveränderte Seite. Der Rückgabetyp
+ * erzwingt das: Ein Aufrufer, der den Fall vergisst, kompiliert nicht.
+ */
+export function fingerprintOf(html: string): string | null {
+  // Page chrome first, whole page as fallback — see ohneSeitenrahmen below.
+  const ohneRahmen = tokensOf(ohneSeitenrahmen(html));
+  const tokens = ohneRahmen.length >= FINGERPRINT_MIN_TOKEN ? ohneRahmen : tokensOf(html);
+  if (tokens.length < FINGERPRINT_MIN_TOKEN) return null;
+  return hashOf(tokens);
+}
+
+/**
+ * Menü, Kopf, Fuß und Randspalte zählen seit Fassung 5 (18.09.2026) nicht mit.
+ *
+ * GEMESSEN an den gespeicherten Abrufen zweier Nächte (17./18.09.2026): Von 155
+ * Programmseiten wechselten 26 ihren Abdruck, und fast alle wegen Dingen, die
+ * mit der Förderung nichts zu tun haben — ein Wetter-Widget („leicht bewölkt,
+ * 17 °C"), eine Öffnungszeiten-Anzeige („jetzt geöffnet" / „schließt"), das
+ * heutige Datum im Kopf („Donnerstag 17" → „Freitag 18"), Veranstaltungs- und
+ * Nachrichtenteaser in der Randspalte. Jede davon startete die 14-Tage-Uhr eines
+ * Programms und kostete den nächsten Lauf eine volle Nachprüfung; an einem Tag
+ * standen 43 Programme gleichzeitig als „Amtsseite hat sich geändert" im Vorrat.
+ * Mit diesem Schnitt blieben 5 von 26 übrig.
+ *
+ * DER KOPF EINES ARTIKELS IST INHALT, DER KOPF DER SEITE NICHT. Die erste
+ * Fassung warf jedes `<header>` weg und hätte bei Bottrop genau die Angabe
+ * verschluckt, für die es den Wächter gibt: „Der Fördertopf für die
+ * Solaroffensive ist ausgeschöpft" steht dort im `<header>` des Artikels,
+ * innerhalb von `<main>`. Deshalb: Gibt es `<main>`, zählt nur dessen Inhalt,
+ * und darin fallen nur Menüs und Randspalten weg; Kopf und Fuß bleiben. Nur
+ * Seiten ohne `<main>` verlieren alle vier Bereiche. Nachgesehen an allen 193
+ * Programmseiten des 18.09.: In keinem weggeschnittenen Bereich stand ein
+ * Betrag, ein „ausgeschöpft" oder eine Frist zu einer Förderung.
+ *
+ * Verwandt mit `sichtbarerText` im Screener (funding-screen-erkennung.ts), aber
+ * bewusst nicht dieselbe Funktion: Der Screener sucht Wörter und darf grob
+ * schneiden, der Abdruck entscheidet über eine Frist und darf keinen
+ * Statussatz verlieren.
+ *
+ * RÜCKFALL, NICHT VERWURF: Bleiben weniger als die Mindestmenge Token übrig,
+ * gilt die ganze Seite. Ohne Rückfall wären am 18.09. über hundert Förderseiten
+ * als „nicht gelesen" liegen geblieben — eine lesbare Seite, die wir wegwerfen,
+ * ist schlimmer als eine, die rauscht.
+ */
+function ohneSeitenrahmen(html: string): string {
+  const main = /<main\b[^>]*>([\s\S]*)<\/main>/i.exec(html);
+  if (main) return main[1].replace(/<(nav|aside)\b[^>]*>[\s\S]*?<\/\1>/gi, " ");
+  return html.replace(/<(nav|header|footer|aside)\b[^>]*>[\s\S]*?<\/\1>/gi, " ");
+}
+
+function hashOf(tokens: string[]): string {
+  return createHash("sha256").update([...tokens].sort().join(" ")).digest("hex");
+}
+
+function tokensOf(html: string): string[] {
   const roh = html
     .replace(/<(script|style|noscript|svg)[^>]*>[\s\S]*?<\/\1>/gi, " ")
     .replace(/<!--[\s\S]*?-->/g, " ")
@@ -60,6 +136,8 @@ export function fingerprintOf(html: string): string {
     .split(/[^0-9a-zäöüß€%]+/)
     .filter((t) => t.length >= zeichen || /[0-9€%]/.test(t));
 
+  // Zu dünn, um etwas zu bedeuten: leere Antwort, Fehlerseite, Bot-Prüfung.
+
   // SORTIERT, nicht in Dokumentreihenfolge — der Abdruck fragt nach dem INHALT,
   // nicht nach seiner Anordnung.
   //
@@ -96,7 +174,7 @@ export function fingerprintOf(html: string): string {
   // Frist, eine Bedingung, ein gestrichenes Programm ändern immer den Bestand
   // der Token, nie bloß deren Anordnung. Der Abdruck beantwortet weiterhin die
   // Frage, für die es ihn gibt: Steht auf dieser Seite noch dasselbe?
-  return createHash("sha256").update([...tokens].sort().join(" ")).digest("hex");
+  return tokens;
 }
 
 /**
@@ -131,8 +209,12 @@ export function fingerprintOf(html: string): string {
  * vergleichbar" und „109 fremde Änderungen". Der nächste Lauf weist die Seiten
  * deshalb als **nicht vergleichbar** aus (kein Fehlversuch, keine Nachprüffrist)
  * und legt am Tag darauf wieder los.
+ *
+ * FASSUNG 5 (18.09.2026): Menü, Kopf, Fuß und Randspalte zählen nicht mehr mit
+ * (siehe `ohneSeitenrahmen`). Wieder ein anderer Abdruck für jede Seite — der erste Lauf
+ * danach meldet „nicht vergleichbar", keine Änderung.
  */
-export const FINGERPRINT_VERSION = 4;
+export const FINGERPRINT_VERSION = 5;
 
 /** Kennzeichnet, auf welchem Weg der Abdruck entstand. Nur Gleiches vergleichen. */
 export type Abrufweg = "live" | "archiv";

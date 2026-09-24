@@ -57,7 +57,8 @@ import { entschluesseltOderRoh } from "./uri-sicher";
  * Gemeinden), und die Förderwortliste kannte nur die erwarteten Wörter, nicht
  * die erfundenen („Förderbaustein", „Klimabonus"). Danach 81,0 %.
  */
-export const SUCH_VERSION = 4;
+// Version 6 transfers the published-source navigation learned from outreach.
+export const SUCH_VERSION = 6;
 
 /**
  * Wortstämme, die auf eine Förderseite deuten, mit ihrem Gewicht.

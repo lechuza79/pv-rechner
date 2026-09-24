@@ -1,0 +1,18 @@
+/* Current homepage and Atlas reference; provenance in docs/design-reference/sources.json. */
+@font-face{font-family:AtlasConcept;src:url('/fonts/atlas-montserrat-bold.woff2') format('woff2'),url('/fonts/atlas-montserrat-bold.ttf') format('truetype');font-weight:700;font-style:normal;font-display:swap}
+.foundation {
+ --atlas-picker-bg:#d5ddd5;--atlas-action:#1365ea;--atlas-action-ink:#fff;
+ --atlas-surface:#edf0ec;--atlas-card:#fafbf8;--atlas-text:#18323e;--atlas-secondary:#617279;--atlas-border:#cdd6d2;
+ --atlas-display:AtlasConcept,'DM Sans',sans-serif;--atlas-body:'DM Sans',sans-serif;
+ --atlas-action-radius:999px;--atlas-card-radius:12px;
+ --atlas-number-unit-scale:.55em;--atlas-number-unit-weight:400;--atlas-number-unit-color:var(--atlas-secondary);--atlas-number-unit-font:var(--atlas-body);
+ --atlas-body-size:16px;--atlas-label-size:14px;--atlas-caption-size:13px;
+ --atlas-title-size:clamp(28px,3vw,42px);--atlas-card-title-size:24px;--atlas-number-size:clamp(40px,6vw,72px);
+ --color-bg:var(--atlas-surface);--color-bg-muted:var(--atlas-card);--color-text-primary:var(--atlas-text);--color-text-secondary:var(--atlas-secondary);--color-text-muted:var(--atlas-secondary);--color-border:var(--atlas-border);--color-accent:var(--atlas-action);--color-text-on-accent:var(--atlas-action-ink);--color-accent-dim:color-mix(in srgb,var(--atlas-action) 10%,var(--atlas-surface));
+ color:var(--atlas-text);font-family:var(--atlas-body);font-size:var(--atlas-body-size);line-height:1.65;
+}
+.foundation[data-story-scheme=dark]{--atlas-picker-bg:#0b2024;--atlas-surface:#08191c;--atlas-card:#163338;--atlas-text:#e8eee9;--atlas-secondary:#a7bcbb;--atlas-border:#b0c8c325;--atlas-action:#d4ff24;--atlas-action-ink:#132527;color-scheme:dark}
+.foundation[data-story-scheme=highlight]{--atlas-picker-bg:#b5ce5e;--atlas-surface:#d4ff24;--atlas-card:#e2ff78;--atlas-text:#132527;--atlas-secondary:#3e5032;--atlas-border:#13252740;--atlas-action:#132527;--atlas-action-ink:#d4ff24}
+.foundation :is(h1,h2,h3){font-family:var(--atlas-display);font-weight:700;letter-spacing:normal;line-height:1.2}
+.foundation :is(button,select){font-family:var(--atlas-body)}
+.foundation :focus-visible{outline:2px solid var(--atlas-action);outline-offset:4px}

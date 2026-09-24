@@ -1,0 +1,24 @@
+
+.sc-person{display:grid;grid-template-columns:minmax(230px,.75fr) minmax(0,1.65fr);gap:clamp(26px,4vw,55px);align-items:stretch;margin-top:85px;border-bottom:1px solid var(--atlas-line,#bac9c4);color:inherit;background:none}.sc-person-picture{position:relative;display:block;min-height:320px;overflow:hidden}.sc-person-picture img{position:absolute;bottom:0;left:50%;transform:translateX(-50%);height:100%;width:auto;max-width:none;object-fit:contain;display:block}.sc-person-body{padding:28px 0 40px;min-width:0}.sc-person-body h3{font-family:var(--atlas-display-font,'Montserrat Bold'),sans-serif;font-weight:700;font-size:clamp(24px,2.5vw,32px);line-height:1.25;margin:0 0 22px}.sc-person-text{font-size:17px;line-height:1.65;color:var(--atlas-muted,inherit);margin:0}.sc-person-text strong,.sc-person-signature strong{font-weight:700}.sc-person-signature{font-size:14px;line-height:1.6;margin:24px 0;color:var(--atlas-muted,inherit)}.sc-person-actions{display:flex;align-items:center;gap:24px;flex-wrap:wrap}.sc-person-actions>a{font-size:14px;color:inherit;text-decoration:none}.sc-person-primary{display:inline-flex;align-items:center;gap:9px;border:1px solid currentColor;border-radius:8px;background:transparent;color:inherit;font:inherit;font-size:15px;padding:14px 20px;text-decoration:none;cursor:pointer}.sc-person :focus-visible{outline:2px solid #2362df;outline-offset:4px}@media(max-width:700px){.sc-person{display:flex;flex-direction:column;gap:20px;margin-top:55px;padding-bottom:30px}.sc-person-picture{width:88px;height:88px;min-height:0;border-radius:50%;overflow:hidden;background:#dce5de}.sc-person-picture img{position:static;transform:none;width:100%;height:100%;max-width:100%;object-fit:cover}.sc-person-body{display:contents}.sc-person-body h3{font-size:24px;margin:0;order:2}.sc-person-signature{order:1;margin:-8px 0 4px;font-size:13px}.sc-person-picture{order:0}.sc-person-text{order:3;font-size:16px}.sc-person-actions{order:4;gap:18px}.sc-person-primary{font-size:14px;padding:12px 16px}}
+
+/* Mobile keeps the portrait left and the signature below the copy. */
+@media(max-width:700px){.sc-person{display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;align-items:start}.sc-person-picture{width:64px;height:64px;order:initial}.sc-person-body{display:block;padding:0}.sc-person-body h3{font-size:22px;margin:0 0 18px}.sc-person-signature{margin:20px 0;font-size:13px}.sc-person-actions{display:flex;flex-direction:column;align-items:flex-start;gap:18px}.sc-person-primary{max-width:100%;font-size:13px;padding:11px 12px}}
+
+/* Der Kasten hat nur noch EINE Aktion (Betreiber, 23.09.2026: „primary
+   Kontakt, about weg"). Das Design-Paket versteckt die Beschriftung dieses
+   Knopfs unter 850 Pixeln, weil er dort der zweite, kleinere von zweien war —
+   als einziger Knopf bleibt davon ein nacktes Symbol übrig, und ein Symbol
+   ohne Wort ist keine Einladung. Beschriftung und Pillenform gelten deshalb
+   in jeder Breite; nur der Abstand wird schmal etwas kleiner.
+
+   Mit „.homepage-study" davor, weil die Regeln des Pakets dieselbe Anzahl
+   Klassen tragen und spaeter geladen werden — ohne den Zusatz gewinnt deren
+   „display: none". */
+.homepage-study .hs-person-section .sc-person-actions-solo a.hs-person-message{
+  display:inline-flex;align-items:center;gap:8px;
+  width:auto;height:auto;min-height:46px;flex:0 0 auto;
+  padding:10px 22px;border-radius:999px}
+.homepage-study .hs-person-section .sc-person-actions-solo a.hs-person-message>span{display:inline}
+@media(max-width:700px){
+  .homepage-study .hs-person-section .sc-person-actions-solo a.hs-person-message{min-height:42px;padding:9px 18px}
+}

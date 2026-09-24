@@ -16,14 +16,14 @@ const FLACHDACH = 1;
 const NORD = 3;       // Reihenfolge aus TILT_ORIENTATIONS
 
 test("Empfehlung flow ends on a recommendation with kWp + storage suggestion", async ({ page }) => {
-  await page.goto("/pv-bedarf-berechnen");
+  await page.goto("/photovoltaik-rechner");
 
   // Step 0: Haus + Dach — Einfamilienhaus, Satteldach, dann die Ausrichtung.
   // Die Ausrichtung erscheint erst NACH der Dachform (progressive Disclosure in
   // components/DachField) — ohne sie rechnet der Flow mit dem Standort-Optimum,
   // also einem perfekten Süddach. Der Test klickt sie deshalb mit: er soll den
   // Weg abbilden, den ein Nutzer geht, nicht den kürzesten durch die Seite.
-  await waehle(page, "Einfamilienhaus");
+  await akkordeonWaehlen(page, "Haustyp", 2); // Einfamilienhaus
   await akkordeonWaehlen(page, DACHFORM, SATTELDACH);
   await akkordeonWaehlen(page, "Ausrichtung", 0); // Süd
   await weiterKlicken(page);
@@ -41,8 +41,9 @@ test("Empfehlung flow ends on a recommendation with kWp + storage suggestion", a
   await page.waitForURL(/view=ergebnis/, { timeout: 10_000 });
 
   // Recommendation page: must show kWp suggestion + reasoning
-  await expect(page.getByText(/kWp/i).first()).toBeVisible({ timeout: 10_000 });
-  await expect(page.getByText(/Empfehlung|Anlage|Speicher/i).first()).toBeVisible();
+  // Visible matches only: the site menu carries the same words in its closed flyouts.
+  await expect(page.getByText(/kWp/i).filter({ visible: true }).first()).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText(/Empfehlung|Anlage|Speicher/i).filter({ visible: true }).first()).toBeVisible();
 
   const bodyText = await page.locator("body").innerText();
   // Must contain a kWp recommendation
@@ -72,8 +73,10 @@ test.describe("Ein Klick darf keine andere Antwort aus der Adresse werfen", () =
     page.getByRole("button", { name: /^Dachform/ });
 
   test("Dachform überlebt den Klick, der zugleich die Neigung zurücknimmt", async ({ page }) => {
-    await page.goto("/pv-bedarf-berechnen?haus=reihenhaus");
+    await page.goto("/photovoltaik-rechner?haus=reihenhaus");
 
+    // Der Haustyp ist die erste Frage; die Dach-Fragen erscheinen erst danach.
+    await akkordeonWaehlen(page, "Haustyp", 0); // Reihenhaus
     await akkordeonWaehlen(page, DACHFORM, FLACHDACH);
 
     await expect(dachformZeile(page)).toContainText("Flachdach");
@@ -83,7 +86,8 @@ test.describe("Ein Klick darf keine andere Antwort aus der Adresse werfen", () =
   });
 
   test("Dachform überlebt auch den Wechsel, der zusätzlich die Nord-Ausrichtung verwirft", async ({ page }) => {
-    await page.goto("/pv-bedarf-berechnen");
+    await page.goto("/photovoltaik-rechner");
+    await akkordeonWaehlen(page, "Haustyp", 2); // Einfamilienhaus
 
     // Satteldach + Nord: Nord ist auf einem aufgeständerten Dach keine Wahl —
     // der Wechsel darauf schreibt deshalb gleich dreimal in die Adresse.
@@ -98,7 +102,7 @@ test.describe("Ein Klick darf keine andere Antwort aus der Adresse werfen", () =
     // Die Nord-Ausrichtung ist verworfen und die Frage wieder offen — sonst
     // rechnete der Flow still mit dem Bestfall weiter.
     await expect(page).not.toHaveURL(/az=nord/);
-    await expect(page.getByRole("button", { name: "Süd", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: /^Süd\b/ })).toBeVisible();
   });
 });
 
@@ -112,7 +116,8 @@ test.describe("Ein Klick darf keine andere Antwort aus der Adresse werfen", () =
 // Dachfaktor). Der Hinweis unter der Dach-Frage ist die sichtbare Stelle: Ohne
 // den Abschlag gab es ihn überhaupt nicht.
 test("ohne PLZ steht der Dach-Abschlag trotzdem da", async ({ page }) => {
-  await page.goto("/pv-bedarf-berechnen");
+  await page.goto("/photovoltaik-rechner");
+  await akkordeonWaehlen(page, "Haustyp", 2); // Einfamilienhaus
   await akkordeonWaehlen(page, DACHFORM, SATTELDACH);
   await akkordeonWaehlen(page, "Ausrichtung", 2); // Ost / West
 

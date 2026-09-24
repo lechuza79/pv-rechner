@@ -329,7 +329,302 @@ export const EEG_REFORM_STAND: EegReformStand = {
   // Ausschussberatung durchläuft; daraus zu schließen, es gehe um DIESEN
   // Entwurf, wäre trotzdem geraten. Notiert als Anlass, in der kommenden Woche
   // die Drucksache im Bundestag selbst nachzusehen — nicht als Zustand.
-  geprueftIso: "2026-09-05",
+  //
+  // 06.09.2026 (Sonntag): unverändert. Vorgangsseite 470/26 erneut gelesen —
+  // Titel, Eingang 14.08.2026, Eilbedürftigkeitsvermerk, Ausschusszuweisung,
+  // sonst nichts: kein Plenarabschnitt, keine Stellungnahme, kein Beschluss.
+  // Die Sondersitzung des Wirtschaftsausschusses fällt auf Dienstag, den
+  // 08.09.2026; bis dahin kann sich hier nichts bewegt haben.
+  //
+  // 07.09.2026 (Montag, erster Tag der Sitzungswoche): unverändert — und jetzt
+  // erstmals mit der TAGESORDNUNG statt mit dem Sitzungskalender, so wie es der
+  // Stichtag oben verlangt. Zwei amtliche Dokumente des Bundestages im Volltext
+  // gelesen: die „Tagesordnung komplett" für die 91.–94. Sitzung (Dienstag
+  // 08.09. bis Freitag 11.09.2026, Stand 26.08.2026) und der „Geplante Ablauf
+  // der Plenarsitzungen" (Stand 03.09.2026, 10:59 Uhr). In KEINEM von beiden
+  // kommt „Erneuerbare", „EEG", „Stromsektor", „Photovoltaik" oder
+  // „Brennstoffemission" vor; die einzige Fundstelle zum Thema ist der
+  // Haushaltsplan 09 „Wirtschaft und Energie" am Mittwoch — es ist die
+  // Haushaltswoche. Eine erste Lesung DIESES Entwurfs ist für diese Woche also
+  // nicht angesetzt. Die Bundesrats-Vorgangsseite zu 470/26 führt unter
+  // „Drucksachen" weiterhin allein die „BReg 470/26 Grunddrucksache", keine
+  // Beschluss- oder Stellungnahmedrucksache.
+  //
+  // DIE SONDERSITZUNG DES WIRTSCHAFTSAUSSCHUSSES BLEIBT OFFEN, und sie wird
+  // durch diesen Befund nicht weniger wahrscheinlich: Ihre Tagesordnung wird
+  // nicht veröffentlicht, und ein Ausschuss kann eine Vorlage beraten, die im
+  // Plenum dieser Woche gar nicht aufgerufen ist. Der Plenar-Terminplan sagt
+  // nichts über sie aus — er sagt nur, dass eine erste Lesung im Plenum diese
+  // Woche nicht geplant war. Nächster Lauf: Drucksache im Bundestag selbst.
+  //
+  // 08.09.2026: DER ENTWURF IST IM BUNDESTAG ANGEKOMMEN — und der Zustand
+  // bleibt trotzdem „regierungsentwurf". Genau das war der Auftrag des letzten
+  // Laufs („Nächster Lauf: Drucksache im Bundestag selbst"), und er hat einen
+  // Treffer: Bundestags-Drucksache 21/7867 vom 07.09.2026, „Gesetzentwurf der
+  // Bundesregierung", Titel wortgleich mit der Bundesrats-Drucksache 470/26.
+  // Heute im Volltext gelesen (5,3 MB, 15.015 Zeilen als Text).
+  //
+  // EINBRINGEN IST KEIN BESCHLUSS. Eine Drucksache entsteht, wenn die
+  // Bundesregierung ihren Entwurf zuleitet; beschlossen hat damit weder die eine
+  // noch die andere Kammer etwas. Der Zustand kippt erst mit einer Entscheidung,
+  // nicht mit einem Aktenzeichen — dieselbe Unterscheidung wie am 19.08.2026 bei
+  // der Bundesrats-Drucksache („eine Drucksache ist die amtlich gedruckte
+  // Fassung desselben Entwurfs, kein Verfahrensfortschritt"). Der öffentliche
+  // Satz aus eegVerfahrenSatz() stimmt unverändert: „Als Nächstes befassen sich
+  // Bundesrat und Bundestag mit dem Entwurf."
+  //
+  // WARUM DER BUNDESTAG SIE VOR DER BUNDESRATS-STELLUNGNAHME HAT: Die
+  // Vorgangsseite zu 470/26 vermerkt „bes. eilbedürftige Vorlage gem. Art. 76
+  // Abs. 2 Satz 4 GG". Dann darf die Bundesregierung ihren Entwurf dem Bundestag
+  // zuleiten, ohne die Stellungnahme abzuwarten. Das erklärt den Befund und
+  // ersetzt ihn nicht: Auf der Bundesrats-Vorgangsseite steht heute weiterhin
+  // allein die „BReg 470/26 Grunddrucksache", keine Stellungnahme, kein
+  // Beschluss; das nächste Plenum bleibt der 25.09.2026.
+  //
+  // KEINE ERSTE LESUNG DIESE WOCHE, jetzt an der tagesaktuellen Fassung geprüft
+  // statt an der vom Freitag: „Tagesordnung komplett" der 91.–94. Sitzung, Stand
+  // 7. September 2026, 13.30 Uhr, und „Geplanter Ablauf der Plenarsitzungen",
+  // Stand 07.09.2026, 19.49 Uhr. Beide führen sechs Punkte — zwei Eidesleistungen,
+  // Haushaltsgesetz 2027, Haushaltsbegleitgesetz 2027, ein Gewerbemietrecht-Antrag
+  // und ein Verkehrsantrag. Weder „Erneuerbare" noch „EEG", „Stromsektor",
+  // „Photovoltaik" oder „Brennstoffemission" kommt vor; die einzige energienahe
+  // Fundstelle ist der Einzelplan 09 „Wirtschaft und Energie" am Dienstagabend.
+  //
+  // ALLE WERTE ZELLGLEICH mit unserer Kabinettsfassung — die Drucksache Zeile für
+  // Zeile gegen EEG_ENTWURF_WERTE gehalten, weil sich Referenten- und
+  // Kabinettsfassung schon einmal an drei Stellen unterschieden hatten:
+  //   · „In der Angabe vor Nummer 1 wird die Angabe ‚7 Cent‘ durch die Angabe
+  //     ‚6,2 Cent‘ ersetzt." (Zeile 2168), Begründung „ein einheitlicher
+  //     anzulegender Wert in Höhe von 6,2 Cent pro Kilowattstunde".
+  //   · § 21 Abs. 1 S. 1 Nr. 1 Buchst. c: „mit einer installierten Leistung von
+  //     weniger als 7 Kilowatt, die vor dem 1. Januar 2031 in Betrieb genommen"
+  //     — Begründung wörtlich „also im Laufe der Jahre 2029 und 2030". Die
+  //     7-kW-Stufe bleibt bei 2031.
+  //   · § 9 Abs. 2b: „Solaranlagen des zweiten Segments mit einer installierten
+  //     Leistung von weniger als 100 Kilowatt … auf maximal 50 Prozent",
+  //     Steckersolar bis 2 kW und 800 VA ausgenommen.
+  //   · § 50c: „weniger als 25 Kilowatt", Bonus „1,5 Cent pro eingespeiste
+  //     Kilowattstunde", „längstens bis zum Ende des 48. auf die erstmalige
+  //     Zuordnung … folgenden Kalendermonats".
+  //   · § 53 Abs. 1: „von den anzulegenden Werten 1 Cent pro Kilowattstunde
+  //     abzuziehen ist"; Übergangszahlung „temporär für maximal 36 Monate".
+  //   · § 49 S. 1: „Der anzulegende Wert nach § 48 Absatz 1 verringert sich ab
+  //     dem 1. August 2027".
+  // Kein Wert bewegt, kein Zustand bewegt — nur das Prüfdatum.
+  //
+  // EINE WARNUNG AN DIE DRUCKSACHE SELBST: Sie trägt auf jeder Seite quer
+  // „Vorabfassung – wird durch die lektorierte Fassung ersetzt". Die lektorierte
+  // Fassung ändert erfahrungsgemäß nichts Inhaltliches, aber wer hier künftig
+  // eine Absatznummer abschreibt, prüft sie an der endgültigen nach.
+  //
+  // 09.09.2026: Keine erste Lesung in dieser Sitzungswoche — nachgesehen in der
+  // Tagesordnung selbst (Stand 8. September 2026, 14.15 Uhr, Sitzungen 91–94 vom
+  // 8. bis 11. September). Es ist eine Haushaltswoche: Die Tagesordnung enthält
+  // KEINEN einzigen Punkt zum EEG, zur Photovoltaik oder zur Einspeisung. Der
+  // Zustand bleibt damit „regierungsentwurf"; eingebracht ist nicht beschlossen.
+  //
+  // 10.09.2026: unverändert — und die beiden offenen Spuren von gestern sind
+  // beide zu Ende verfolgt.
+  //
+  //   SPUR 1 ERLEDIGT, die Sondersitzung war es NICHT. Der Wirtschaftsausschuss
+  //   hat am 08.09.2026 keinen EEG-Punkt behandelt: einziger Tagesordnungspunkt
+  //   waren „Berichte des Bundesministeriums für Wirtschaft und Energie" zu
+  //   Gasspeicherständen, den volkswirtschaftlichen Kosten des Hitzesommers, der
+  //   Krise bei Volkswagen und dem Antragsstopp des Mittelstandsprogramms ZIM.
+  //   NEBENBEFUND, und deshalb steht er hier: Die Vermutung von gestern, die
+  //   Tagesordnung einer nicht öffentlichen Ausschusssitzung werde „nicht
+  //   veröffentlicht", ist FALSCH. Sie liegt als PDF auf bundestag.de
+  //   (Mitteilung vom 31.08.2026 zur 45. Sitzung) und ist frei abrufbar. Eine
+  //   Annahme über das Verhalten einer fremden Stelle, ungeprüft in eine
+  //   Arbeitsnotiz geschrieben — genau die Klasse, gegen die Gate-Regel 3 steht,
+  //   nur über fremdes Verfahren statt über unseren Code. Wer künftig eine
+  //   Ausschusssitzung einordnen will, holt ihre Tagesordnung, statt sie für
+  //   geheim zu halten.
+  //
+  //   SPUR 2: auch am Donnerstag der Sitzungswoche kein EEG-Punkt. Nachgesehen
+  //   in der tagesaktuellen Tagesordnung (Stand 9. September 2026, 12.45 Uhr)
+  //   und noch einmal in der kompletten (Stand 8. September, 14.15 Uhr): kein
+  //   Treffer auf EEG, Erneuerbare, Einspeisung, Photovoltaik oder Solar — die
+  //   einzigen Energie-Fundstellen sind der Haushalts-Einzelplan 09 und eine
+  //   Ausschussüberweisung.
+  //
+  // ERSTMALS EIN AMTLICHER BERATUNGSTERMIN, und er gehört dem BUNDESRAT: Die
+  // Drucksache 470/26 steht als TOP 55 auf dem TAGESORDNUNGS-ENTWURF der 1068.
+  // Sitzung am 25.09.2026 (Entwurfsstand 08.09.2026). Das ist der erste
+  // Durchgang nach Art. 76 Abs. 2 GG, also die Stellungnahme — KEIN Beschluss
+  // und kein Zustandswechsel. Bewusst NICHT in einen sichtbaren Text übernommen:
+  // Der Bundesrat nennt seine eigene Liste „Entwurf Tagesordnung", sie kann sich
+  // bis zur Sitzung ändern, und ein Datum in einer Nutzer-Auskunft wäre dann
+  // eine Behauptung über die Zukunft. Die Vorgangsseite zu 470/26 selbst ist
+  // heute unverändert: Titel, Eingang 14.08.2026, Eilbedürftigkeitsvermerk,
+  // Ausschusszuweisung — kein Plenarabschnitt, keine Stellungnahme.
+  //
+  // Nächster Lauf: die Bundesratssitzung am 25.09.2026 (Stellungnahme?) und
+  // parallel weiter die Bundestags-Tagesordnung — der Entwurf ist als besonders
+  // eilbedürftig eingebracht und läuft dort unabhängig vom Bundesrat.
+  //
+  // 11.09.2026: unverändert. Tagesordnung der 94. Sitzung (Freitag, Stand
+  // 10.09.2026, 13.00 Uhr) gelesen: allein Haushaltsgesetz 2027 und Finanzplan,
+  // kein EEG-Punkt; „Nächste Plenarsitzung: Mittwoch, den 23. September 2026".
+  // Für diese Woche ist auf bundestag.de noch keine Tagesordnung verlinkt. Die
+  // Presse kündigt die erste Lesung „voraussichtlich in der Woche ab dem
+  // 21. September" an — eine Ankündigung, kein Termin, und die erste Lesung
+  // wäre ohnehin kein Zustandswechsel.
+  //
+  // 12.09.2026, DER ENTWURF LIEGT SEIT DEM 07.09.2026 ALS BUNDESTAGS-DRUCKSACHE
+  // 21/7867 VOR — und sechs Läufe haben das nicht gesehen, weil sie
+  // Tagesordnungen abgefragt haben statt des Drucksachenbestands. Eine
+  // Tagesordnung beantwortet „wird heute beraten", nicht „ist eingebracht"; wer
+  // nur sie liest, sieht einen Verfahrensschritt erst, wenn er im Plenum
+  // aufgerufen wird. Volltext heute gelesen (dserver.bundestag.de, 21 058
+  // Zeilen), Anschreiben des Bundeskanzlers im Wortlaut: „Der Gesetzentwurf ist
+  // dem Bundesrat am 14. August 2026 als besonders eilbedürftig zugeleitet
+  // worden. Die Stellungnahme des Bundesrates zu dem Gesetzentwurf sowie die
+  // Auffassung der Bundesregierung zu der Stellungnahme des Bundesrates werden
+  // unverzüglich nachgereicht."
+  //   EINBRINGEN IST KEIN BESCHLUSS, der Zustand bleibt „regierungsentwurf" —
+  //   dieselbe Trennung, die der CO2-Pfad für die BEHG-Novelle (21/7869, Eingang
+  //   am selben Tag) schon trägt. Was sich ändert, ist allein die Fundstelle:
+  //   Der Entwurf ist jetzt in BEIDEN Kammern amtlich gedruckt.
+  //   ALLE FÜNF ENTWURFSWERTE IM BT-VOLLTEXT NACHGESCHLAGEN und zellgleich mit
+  //   EEG_ENTWURF_WERTE vorgefunden: „die Angabe ‚7 Cent' durch die Angabe
+  //   ‚6,2 Cent'" (Art. 1 zu § 48 Abs. 1) · „maximal 50 Prozent der installierten
+  //   Leistung der hinter dem Verknüpfungspunkt angeschlossenen Solaranlage des
+  //   zweiten Segments … nicht anzuwenden auf Steckersolargeräte" (§ 9 Abs. 2b) ·
+  //   „vor dem 1. Januar 2031 — also im Laufe der Jahre 2029 und 2030" (Staffel
+  //   unter 7 kW) · „für maximal 36 Monate gewährt" (Übergangszahlung) · „Die
+  //   Höhe des Bonus nach Absatz 1 beträgt 1,5 Cent pro eingespeiste
+  //   Kilowattstunde" (§ 50c Abs. 4) samt „für vier Jahre nach erstmaligem
+  //   Eintritt in die Direktvermarktung".
+  //   PRIMÄRQUELLE BLEIBT DIE BR-DRUCKSACHE. 21/7867 trägt auf jeder Seite
+  //   „Vorabfassung – wird durch die lektorierte Fassung ersetzt", ist also die
+  //   noch nicht endredigierte Ausgabe; 470/26 ist dieselbe Kabinettsfassung in
+  //   endgültigem Satz. Eine Fundstelle, die sich noch ändern kann, taugt nicht
+  //   als die eine zitierte — sie steht hier daneben, nicht an ihrer Stelle.
+  //   Die Tagesordnungsseite des Bundestages trägt heute den Stand 12.09.2026
+  //   und kündigt die 95.–97. Sitzung an; ein EEG-Punkt ist dort nicht
+  //   ausgewiesen. Nächster Lauf: Bundesrat am 25.09.2026 (Stellungnahme?) und
+  //   die Tagesordnung der Woche ab dem 21.09.2026 (erste Lesung?) — beides
+  //   wäre ein Verfahrensschritt, keiner davon ein Zustandswechsel.
+  // 13.09.2026: Drucksache 21/7867 erneut im Volltext gelesen (Deckblatt
+  //   „Entwurf eines Gesetzes …", 07.09.2026) — „6,2 Cent", „1,5 Cent",
+  //   „maximal 36 Monate" und „vor dem 1. Januar 2031" stehen weiter so da.
+  //   Die Tagesordnungsseite zeigt noch die 95.–97. Sitzung (10.–11.09.), ohne
+  //   EEG-Punkt; die erste Lesung ist nur aus der Fachpresse für die Woche ab
+  //   21.09. angekündigt. Zustand unverändert: Regierungsentwurf, eingebracht.
+  // 15.09.2026: Drucksache 21/7867 erneut geladen und durchsucht — die vier
+  //   Werte stehen unverändert (Zeilen 120, 1464, 3004, 3139 der Textfassung).
+  //   NEU, und jetzt AMTLICH statt nur aus der Fachpresse: Das Textarchiv des
+  //   Bundestages (bundestag.de, kw39, „Grundlegende Reform des
+  //   Erneuerbare-Energien-Gesetzes geplant") setzt die erste Lesung auf
+  //   Donnerstag, 24.09.2026, mit Überweisung an den Ausschuss für Wirtschaft
+  //   und Energie. Eine erste Lesung ist kein Zustandswechsel; der Zustand
+  //   bleibt „regierungsentwurf", und der Verfahrenssatz nennt bewusst weiter
+  //   keinen Termin (ein Plenartermin verschiebt sich, der Satz stünde dann
+  //   still falsch da).
+  // 16.09.2026: Der Termin der ersten Lesung steht jetzt auf der amtlichen
+  //   Tagesordnungsseite des Bundestages selbst (bundestag.de, kw39-de-energie-
+  //   stromsektor): „Der Bundestag berät am Donnerstag, 24. September 2026,
+  //   in erster Lesung den Gesetzentwurf" — 20.35 Uhr, Überweisung an den
+  //   federführenden Ausschuss für Wirtschaft und Energie. Die Lesung steht
+  //   noch bevor; der Zustand bleibt „regierungsentwurf", der Verfahrenssatz
+  //   nennt weiterhin keinen Termin. Drucksache 21/7867 erneut geladen und
+  //   durchsucht: „6,2 Cent" (Z. 3004), „1,5 Cent pro eingespeiste
+  //   Kilowattstunde" (Z. 3139), „maximal 36 Monate" (Z. 120), „vor dem
+  //   1. Januar 2031" (Z. 1464) — alle vier unverändert.
+  // 18.09.2026: Drucksache 21/7867 erneut geladen und im Volltext durchsucht,
+  //   alle vier Werte unverändert und im Satzzusammenhang gelesen: „In der
+  //   Angabe vor Nummer 1 wird die Angabe ‚7 Cent' durch die Angabe ‚6,2 Cent'
+  //   ersetzt" samt der Begründung dazu, „Die Höhe des Bonus nach Absatz 1
+  //   beträgt 1,5 Cent pro eingespeiste Kilowattstunde", „längstens bis zum Ende
+  //   des 48. …" und „mit einer installierten Leistung von weniger als 7
+  //   Kilowatt, die vor dem 1. Januar 2031 in …". Der Bundestag selbst führt den
+  //   Entwurf am 10.09.2026 weiter als Vorlage der Bundesregierung ohne
+  //   Beschluss; die erste Lesung am 24.09.2026 steht bevor. Zustand unverändert:
+  //   Regierungsentwurf, eingebracht.
+  // 20.09.2026: Drucksache 21/7867 (dserver.bundestag.de/btd/21/078/2107867.pdf)
+  //   erneut geladen und im Volltext durchsucht; alle fünf Entwurfswerte stehen
+  //   unverändert da: „In der Angabe vor Nummer 1 wird die Angabe ‚7 Cent' durch
+  //   die Angabe ‚6,2 Cent' ersetzt" (Z. 2168), „Die Höhe des Bonus nach Absatz 1
+  //   beträgt 1,5 Cent pro eingespeiste Kilowattstunde" (Z. 2295), „maximal 36
+  //   Monate" (Z. 125), „mit einer installierten Leistung von weniger als 7
+  //   Kilowatt, die vor dem 1. Januar 2031 in …" (Z. 1093) und „maximal 50
+  //   Prozent der installierten Leistung … des zweiten Segments" (Z. 960). Das
+  //   Deckblatt trägt weiter „Vorabfassung – wird durch die lektorierte Fassung
+  //   ersetzt"; Primärquelle bleibt deshalb die BR-Drucksache 470/26. Deren
+  //   Seite beim Bundesrat führt unverändert allein die Grunddrucksache ohne
+  //   Plenarabschnitt und ohne Stellungnahme. Der 20.09.2026 ist ein Sonntag —
+  //   zwischen dem Stand von gestern und heute hat keine der beiden Kammern
+  //   getagt, ein Verfahrensschritt ist ausgeschlossen. Die erste Lesung im
+  //   Bundestag steht weiter für Donnerstag, 24.09.2026 an, die Sitzung des
+  //   Bundesrates für den 25.09.2026. Zustand unverändert: Regierungsentwurf,
+  //   eingebracht.
+  // 19.09.2026: Drucksache 21/7867 erneut geladen, die vier Werte stehen
+  //   unverändert im Satzzusammenhang da („6,2 Cent" Z. 2168, „1,5 Cent pro
+  //   eingespeiste Kilowattstunde" Z. 2295, „maximal 36 Monate" Z. 125, „vor dem
+  //   1. Januar 2031" Z. 1093). Das Textarchiv des Bundestages
+  //   (kw39-de-energie-stromsektor-1211294) führt die erste Lesung weiter für
+  //   Donnerstag, 24.09.2026 — sie steht bevor. Zustand unverändert:
+  //   Regierungsentwurf, eingebracht.
+  // 21.09.2026: Drucksache 21/7867 erneut geladen (5,3 MB, 15 015 Zeilen
+  //   Textfassung) und alle fünf Entwurfswerte im Satzzusammenhang gefunden,
+  //   zellgleich und an denselben Stellen wie gestern: „In der Angabe vor
+  //   Nummer 1 wird die Angabe ‚7 Cent‘ durch die Angabe ‚6,2 Cent‘ ersetzt"
+  //   (Z. 2168), „Die Höhe des Bonus nach Absatz 1 beträgt 1,5 Cent pro
+  //   eingespeiste Kilowattstunde" (Z. 2295), „temporär für maximal 36 Monate
+  //   gewährt" (Z. 125), „mit einer installierten Leistung von weniger als 7
+  //   Kilowatt, die vor dem 1. Januar 2031 in …" (Z. 1093) und „maximal 50
+  //   Prozent der installierten Leistung … des zweiten Segments" (Z. 960). Das
+  //   Deckblatt trägt weiter „Vorabfassung – wird durch die lektorierte Fassung
+  //   ersetzt"; Primärquelle bleibt die BR-Drucksache 470/26.
+  //   Der 21.09.2026 ist der MONTAG der Sitzungswoche, und es ist 00:05 Uhr —
+  //   seit dem gestrigen Stand hat keine der beiden Kammern getagt. Die erste
+  //   Lesung im Bundestag steht für Donnerstag, 24.09.2026 an, die Sitzung des
+  //   Bundesrates für den 25.09.2026; beide liegen noch vor uns.
+  //   EINE SUCHFALLE, die heute zugeschnappt ist und deshalb hier steht: Eine
+  //   Suchzusammenfassung meldete „der Bundestag BERIET den Entwurf am
+  //   24. September 2026 in erster Lesung" — im Perfekt, über einen Termin, der
+  //   drei Tage in der Zukunft liegt. Ein angekündigter Termin liest sich in
+  //   einer Zusammenfassung wie ein erledigter Verfahrensschritt; nur das Datum
+  //   gegen den Kalender gehalten deckt es auf. Zustand unverändert:
+  //   Regierungsentwurf, eingebracht.
+  // 22.09.2026, 00:10 Uhr (Dienstag der Sitzungswoche): Die Ankündigungsseite
+  //   des Bundestages im Rohtext gelesen — „Der Bundestag berät am Donnerstag,
+  //   24. September 2026, in erster Lesung den Gesetzentwurf …" (21/7867), nach
+  //   20-minütiger Aussprache Überweisung. Der Termin liegt weiter vor uns,
+  //   keine Kammer hat seit gestern beschlossen. Zustand unverändert.
+  // 23.09.2026, 00:05 Uhr: erstmals gegen die TAGESORDNUNG der Sitzungswoche
+  //   selbst geprüft statt gegen die Ankündigungsseite — „Tagesordnung komplett
+  //   (95.–97. Sitzung)" als amtliches PDF des Bundestages. Donnerstag, TOP 14 a:
+  //   „Erste Beratung des von der Bundesregierung eingebrachten Entwurfs eines
+  //   Gesetzes für einen planbaren, kosteneffizienten, netzverträglichen und
+  //   marktorientierten Ausbau der erneuerbaren Energien im Stromsektor",
+  //   Drucksache 21/7867, 30 Minuten verbundene Beratung, Überweisungsvorschlag
+  //   an den Ausschuss für Wirtschaft und Energie (federführend). Eine ERSTE
+  //   Beratung mit Überweisungsvorschlag ist das Gegenteil eines Beschlusses:
+  //   Der Entwurf geht danach in den Ausschuss. Zustand unverändert.
+  //   Die Tagesordnung ist dabei die bessere Quelle als die Ankündigungsseite —
+  //   sie führt den Verfahrensschritt und den Überweisungsvorschlag mit, nicht
+  //   nur den Termin.
+  // 24.09.2026, 00:15 Uhr — der Tag der ersten Lesung, und sie hat noch nicht
+  //   stattgefunden: Die Tagesordnung der Sitzungswoche (amtliches PDF des
+  //   Bundestages, Stand 22.09.2026, 18.45 Uhr, 95.–97. Sitzung) führt für
+  //   Donnerstag, den 24.09.2026, TOP 14 a „Erste Beratung des von der
+  //   Bundesregierung eingebrachten Entwurfs eines Gesetzes für einen planbaren,
+  //   kosteneffizienten, netzverträglichen und marktorientierten Ausbau der
+  //   erneuerbaren Energien im Stromsektor", Drucksache 21/7867, mit
+  //   Überweisungsvorschlag an den Ausschuss für Wirtschaft und Energie
+  //   (federführend). Die Sitzung beginnt um 9 Uhr, der Punkt liegt am Abend;
+  //   zum Zeitpunkt dieser Prüfung ist noch nichts beraten. Eine erste Beratung
+  //   mit Überweisung wäre ohnehin kein Beschluss. Zustand unverändert:
+  //   Regierungsentwurf, eingebracht.
+  //   DIESELBE SUCHFALLE wie am 21.09., erneut zugeschnappt: Eine
+  //   Suchzusammenfassung meldete im Perfekt, der Bundestag „held its first
+  //   reading" am 24.09.2026 — über einen Termin, der zum Zeitpunkt der Suche
+  //   zwanzig Stunden in der Zukunft lag. Nur der Abgleich mit der Uhr deckt es
+  //   auf; eine Zusammenfassung kennt den Unterschied zwischen angekündigt und
+  //   erledigt nicht.
+  geprueftIso: "2026-09-24",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.
@@ -359,7 +654,9 @@ export function eegReformStandLabel(stand: EegReformStand = EEG_REFORM_STAND): s
  *  und nicht sechsmal im Code. `kurz` für enge Stellen (Ergebnis-Notiz,
  *  Zeitleisten-Marke), Langform für FAQ und Ratgeber.
  *
- *  Kein Beratungstermin: Den hat keine amtliche Stelle genannt. */
+ *  Kein Beratungstermin, auch nicht, seit der Bundestag die erste Lesung für den
+ *  24.09.2026 angesetzt hat: Ein Plenartermin verschiebt sich, und eine erste
+ *  Lesung ändert den Zustand nicht. */
 export function eegVerfahrenSatz(
   opts: { kurz?: boolean } = {},
   stand: EegReformStand = EEG_REFORM_STAND,

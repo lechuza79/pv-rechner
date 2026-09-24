@@ -323,7 +323,7 @@ export function PlatzModal({
       )}
 
       {fehler && (
-        <p style={{ color: v("--color-negative"), fontSize: v("--font-size-small"), marginTop: space.md }}>{fehler}</p>
+        <p style={{ color: v("--color-negative-text"), fontSize: v("--font-size-small"), marginTop: space.md }}>{fehler}</p>
       )}
 
       <div style={{ display: "flex", gap: space.sm, marginTop: space.lg, flexWrap: "wrap" }}>
@@ -334,9 +334,9 @@ export function PlatzModal({
             onClick={() => speichern()}
             style={{
               padding: pad("xs", "lg"),
-              borderRadius: v("--radius-sm"),
+              borderRadius: v("--radius-pill"),
               border: "none",
-              background: bereit ? v("--color-accent") : v("--color-border"),
+              background: bereit ? v("--color-cta") : v("--color-border"),
               color: bereit ? v("--color-text-on-accent") : v("--color-text-muted"),
               cursor: bereit ? "pointer" : "default",
               fontSize: v("--font-size-small"),

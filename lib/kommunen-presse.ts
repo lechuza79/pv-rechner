@@ -160,20 +160,39 @@ export function istPressePostfach(email: string | null | undefined): boolean {
 /**
  * Wohin geht der Brief?
  *
- * Die Presseadresse hat Vorrang — sie ist die Stelle, die eine fertige Meldung
- * verwendet. Fehlt sie, bleibt es beim allgemeinen Postfach.
+ * Belegter Klimaschutz-Kontakt vor belegtem Pressekontakt vor Pressepostfach
+ * vor allgemeinem Postfach.
  *
  * NUR EINE ADRESSE, nie beide: Zwei Empfänger derselben Verwaltung in einer
  * unverlangten Mail sind kein doppelter Versuch, sondern ein doppelter
  * Widerspruchsgrund.
  */
+/**
+ * Which kind of mailbox a letter went to. Stored with every send
+ * (`sent_to_rolle`): the address alone does not say it later — a municipality's
+ * addresses get replaced after bounces and new contact searches, and the first
+ * 289 letters went out without any record of their recipient, so the question
+ * "did the climate contact answer more often than info@?" was unanswerable.
+ */
+export type EmpfaengerRolle = "klima" | "presse-kontakt" | "presse-postfach" | "allgemein";
+
 export function empfaengerFuerBrief(o: {
   rollenEmail: string | null;
   presseEmail?: string | null;
-}): { email: string | null; anPresse: boolean } {
+  /** Belegte Fachkontakte der Kontaktsuche, siehe lib/kommunen-fachkontakt.ts. */
+  klimaEmail?: string | null;
+  presseKontaktEmail?: string | null;
+}): { email: string | null; anPresse: boolean; fach: boolean; rolle: EmpfaengerRolle } {
+  // Belegte Fachkontakte schlagen jedes Funktionspostfach — sie sind Personen
+  // oder Stellen, deren Rolle auf der Seite der Verwaltung steht. Klimaschutz
+  // ist der bevorzugte Kontakt (Betreiber, 19.09.2026), Presse der zweite.
+  const klima = (o.klimaEmail ?? "").trim();
+  if (klima) return { email: klima, anPresse: false, fach: true, rolle: "klima" };
+  const presseKontakt = (o.presseKontaktEmail ?? "").trim();
+  if (presseKontakt) return { email: presseKontakt, anPresse: true, fach: true, rolle: "presse-kontakt" };
   const presse = (o.presseEmail ?? "").trim();
-  if (presse && istPressePostfach(presse)) return { email: presse, anPresse: true };
-  return { email: o.rollenEmail?.trim() || null, anPresse: false };
+  if (presse && istPressePostfach(presse)) return { email: presse, anPresse: true, fach: false, rolle: "presse-postfach" };
+  return { email: o.rollenEmail?.trim() || null, anPresse: false, fach: false, rolle: "allgemein" };
 }
 
 /**

@@ -142,8 +142,8 @@ describe("Laufende Nebenkosten stehen auf beiden Seiten", () => {
   it("Gas trägt einen Netz-Grundpreis, Heizöl nicht (Strukturfrage, kein Preis)", () => {
     expect(fossilStandingCostPerYear("gas").fix).toBeGreaterThan(0);
     expect(fossilStandingCostPerYear("oil").fix).toBe(0);
-    // Wartung ist für beide Brennstoffe gleich angesetzt (belegt ist nichts anderes).
-    expect(fossilStandingCostPerYear("oil").wartung).toBe(fossilStandingCostPerYear("gas").wartung);
+    // KWW oil upkeep is independently sourced, including VAT.
+    expect(fossilStandingCostPerYear("oil").wartung).toBe(476);
   });
 
   it("die Ölheizung wird ohne Gas-Grundpreis gerechnet", () => {
@@ -151,6 +151,8 @@ describe("Laufende Nebenkosten stehen auf beiden Seiten", () => {
     const oel = calcFossilReference({ fuelKind: "oil", fuelKwh: 15000, pricePerKwh: 0.11, co2PerKwh: 0.2, fossilInvest: 0 });
     expect(gas.fix).toBeGreaterThan(0);
     expect(oel.fix).toBe(0);
-    expect(gas.fuel).toBe(oel.fuel);   // gleicher Brennstoffpreis → gleiche Brennstoffkosten
+    // Same starting price, but different published trajectories thereafter.
+    expect(gas.fuelPerYear[0]).toBe(oel.fuelPerYear[0]);
+    expect(gas.fuel).not.toBe(oel.fuel);
   });
 });

@@ -244,9 +244,9 @@ export function geraeteHinweise(
         : {
             id: "vorlauf-unbekannt-unkritisch",
             text:
-              "Der Händler nennt keine höchste Vorlauftemperatur. Für deine Heizung mit " +
-              `${fall.vorlaufC} °C spielt das keine Rolle; fürs Warmwasser braucht das Gerät ` +
-              "rund 50 °C, und das schafft heute jede aktuelle Baureihe.",
+              "Der Händler nennt keine höchste Vorlauftemperatur. Lass im Datenblatt prüfen, " +
+              `ob das Gerät die angesetzten ${fall.vorlaufC} °C bei der nötigen Außentemperatur ` +
+              "und die Anforderungen deiner Warmwasserbereitung erfüllt.",
             gewicht: "einordnung",
             art: "auswahl",
           },
@@ -417,9 +417,9 @@ export function geraeteHinweise(
     alle.push({
       id: "umfang-nacktes-geraet",
       text:
-        "Das ist die Wärmepumpe allein. Warmwasserspeicher, Puffer, Regelung, Hydraulik, " +
-        "Elektroanschluss, Fundament und Inbetriebnahme fehlen — nach der Auswertung von 160 " +
-        "echten Angeboten ist das Gerät nur rund ein Viertel bis ein Drittel der Gesamtkosten.",
+        "Der Preis gilt für das Einzelgerät mit dem vom Händler genannten Lieferumfang; " +
+        "prüfe, welche Regelung und welches Zubehör enthalten sind. Je nach Planung kommen " +
+        "Speicher, hydraulische Einbindung, Elektroarbeiten, Aufstellung, Montage und Inbetriebnahme hinzu.",
       gewicht: "warnung",
       art: "auswahl",
     });
@@ -429,9 +429,9 @@ export function geraeteHinweise(
     alle.push({
       id: "umfang-paket",
       text:
-        "Im Paket stecken Außen- und Innenteil. Montage, Elektroanschluss, Fundament, " +
-        "hydraulischer Abgleich und Inbetriebnahme kommen zum Preis dazu — sie sind der " +
-        "größere Teil der Kosten.",
+        "Ein Paket bündelt mehrere Komponenten, ist aber nicht automatisch eine fertig installierte Heizung. " +
+        "Prüfe den konkreten Lieferumfang sowie die Kosten für Montage, Elektroarbeiten, Aufstellung, " +
+        "hydraulischen Abgleich und Inbetriebnahme im Angebot.",
       gewicht: "hinweis",
       art: "auswahl",
     });
@@ -481,9 +481,9 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
     alle.push({
       id: "grosse-anlage",
       text:
-        "In dieser Anlagengröße wird das Angebot dünn. Prüf mit dem Fachbetrieb, ob sich die " +
-        "Heizlast senken lässt — ein Heizkörpertausch oder einzelne Dämmmaßnahmen machen ein " +
-        "kleineres Gerät möglich, und das ist in Anschaffung und Betrieb günstiger.",
+        "Lass die benötigte Heizleistung vor der Gerätewahl durch eine Heizlastberechnung prüfen: " +
+        "Geplante Dämmmaßnahmen können den Wärmebedarf senken und damit ein kleineres Gerät ermöglichen. " +
+        "Größere Heizkörper können die nötige Vorlauftemperatur senken; die Heizlast des Hauses senken sie nicht.",
       gewicht: "einordnung",
       art: "auswahl",
     });
@@ -497,9 +497,9 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
     alle.push({
       id: "heizkoerper-einzelne-raeume",
       text:
-        `An den ${fall.vorlaufC} °C Vorlauf hängt, welche Geräte überhaupt in Frage kommen. ` +
-        "Meist erzwingen nur zwei oder drei Räume diese Temperatur — mit getauschten " +
-        "Heizkörpern dort reicht ein kleineres und günstigeres Gerät.",
+        `Prüfe mit dem Fachbetrieb, welche Räume die angesetzten ${fall.vorlaufC} °C Vorlauf brauchen und ` +
+        "ob größere Heizkörper dort eine niedrigere Temperatur ermöglichen. " +
+        "Daraus folgt nicht automatisch eine kleinere Wärmepumpe.",
       gewicht: "hinweis",
       art: "auswahl",
     });
@@ -519,9 +519,9 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
     alle.push({
       id: "vorlauf-geschaetzt",
       text:
-        "Die Vorlauftemperatur ist hier aus dem Gebäudetyp geschätzt, und sie entscheidet, " +
-        "welches Gerät passt. Nachprüfen kostet nichts: an einem kalten Tag den Vorlauf der " +
-        "jetzigen Heizung auf den Zielwert stellen und schauen, ob alle Räume warm werden.",
+        `Die Vorauswahl rechnet mit ${fall.vorlaufC} °C Vorlauf; dieser Rechenwert ist keine Messung am Haus; ` +
+        "ein Heiztest an kalten Tagen kann zeigen, ob die Räume damit warm werden. " +
+        "Die endgültige Auslegung braucht eine Prüfung der Heizlast und der Heizflächen.",
       gewicht: "hinweis",
       art: "auswahl",
     });
@@ -653,9 +653,9 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
     alle.push({
       id: "speicher-haushaltsgroesse",
       text:
-        "Bei eurer Haushaltsgröße gehört ein Warmwasserspeicher ab etwa 300 Litern dazu — " +
-        "mehr als bei der alten Heizung, weil eine Wärmepumpe den Speicher kühler lädt. Prüf " +
-        "im Angebot, welche Größe drinsteht.",
+        "Prüfe die Speichergröße im Angebot anhand eures tatsächlichen Bedarfs: " +
+        "Personenzahl, Dusch- und Badegewohnheiten sowie die Nachheizleistung zählen. " +
+        "Eine feste Mindestgröße lässt sich aus der Haushaltsgröße allein nicht ableiten.",
       gewicht: "hinweis",
       art: "auswahl",
     });
@@ -768,7 +768,5 @@ export function fallHinweise(fall: WpHinweisFall): Hinweis[] {
  * Kaufempfehlung; sie ist eine Vorauswahl.
  */
 export const WP_HINWEIS_SCHLUSS =
-  "Diese Liste sagt, welche Geräte zu deiner gerechneten Heizlast und Vorlauftemperatur " +
-  "passen könnten — sie ersetzt keine Heizlastberechnung und keinen Blick auf Aufstellort, " +
-  "Heizflächen und Elektrik vor Ort, und genau daran entscheidet sich am Ende, welches Gerät " +
-  "in dein Haus gehört.";
+  "Diese Vorauswahl ersetzt keine Heizlastberechnung. Ein Fachbetrieb muss Aufstellort, " +
+  "Heizflächen und Elektrik vor Ort prüfen.";

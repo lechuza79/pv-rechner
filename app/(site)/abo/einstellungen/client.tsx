@@ -33,14 +33,8 @@ const S: Record<string, React.CSSProperties> = {
     minHeight: "60vh",
     padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    lineHeight: 1.2,
-    marginBottom: space.sm,
-  },
+  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  h1: { marginBottom: space.sm },
   lede: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: space.xxl },
   karte: {
     border: `1px solid ${v("--color-border")}`,
@@ -58,11 +52,11 @@ const S: Record<string, React.CSSProperties> = {
   haken: { marginTop: "0.25em", flexShrink: 0 },
   aktionen: { display: "flex", gap: space.md, alignItems: "center", flexWrap: "wrap", marginTop: space.lg },
   cta: {
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     color: v("--color-text-on-accent"),
     border: "none",
     padding: "11px 18px",
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     fontWeight: 600,
     fontSize: v("--font-size-body"),
     cursor: "pointer",
@@ -124,7 +118,7 @@ export default function Client() {
             neuesten Mail.
           </p>
           <Link href="/solar-atlas" style={{ color: v("--color-accent") }}>
-            Zum Solar-Atlas
+            Zum Energie-Atlas
           </Link>
         </div>
       </main>

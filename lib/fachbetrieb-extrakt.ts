@@ -1,3 +1,4 @@
+import { chooseOwnedMailbox } from "./contact-evidence";
 /**
  * Was aus einer Betriebs-Website herauszulesen ist — die reine Logik.
  *
@@ -833,16 +834,7 @@ export function mailBrauchbar(mail: string): boolean {
  * die erste im Text — und das war im Eichlauf zweimal die falsche.
  */
 export function besteMail(kandidaten: string[], domain: string): string | null {
-  const brauchbar = kandidaten
-    .map((m) => m.toLowerCase().replace(/[.,;:)]+$/, ""))
-    .filter(mailBrauchbar);
-  const kern = domain.split(".").slice(-2)[0];
-  return (
-    brauchbar.find((m) => m.endsWith("@" + domain)) ??
-    brauchbar.find((m) => m.includes("@" + kern)) ??
-    brauchbar[0] ??
-    null
-  );
+  return chooseOwnedMailbox(kandidaten.filter(mailBrauchbar), domain);
 }
 
 // ─── Gründungsjahr ───────────────────────────────────────────────────────────

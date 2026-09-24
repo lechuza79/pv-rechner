@@ -257,6 +257,8 @@ const feldBasis: React.CSSProperties = {
 const S: Record<string, React.CSSProperties> = {
   google: {
     ...feldBasis,
+    // Knöpfe sind im neuen Design Pillen; die Eingabefelder behalten ihre Ecke.
+    borderRadius: v("--radius-pill"),
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -310,13 +312,14 @@ const S: Record<string, React.CSSProperties> = {
   },
   absenden: {
     ...feldBasis,
+    borderRadius: v("--radius-pill"),
     marginTop: space.xl,
     fontWeight: 700,
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     border: "none",
     color: v("--color-text-on-accent"),
   },
-  fehler: { fontSize: v("--font-size-small"), color: v("--color-negative"), marginTop: space.sm, lineHeight: 1.4 },
+  fehler: { fontSize: v("--font-size-small"), color: v("--color-negative-text"), marginTop: space.sm, lineHeight: 1.4 },
   fusszeile: {
     marginTop: space.xl,
     display: "flex",

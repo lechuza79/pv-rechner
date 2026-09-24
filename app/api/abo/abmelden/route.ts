@@ -15,8 +15,7 @@ import { pruefeAbmeldung } from "../../../../lib/abo-token";
 // abbestellbar ein, was der Zustellbarkeit mehr schadet als jede Beschwerde.
 //
 // GET gibt es zusätzlich, weil manche Postfächer die Kopfzeile als gewöhnlichen
-// Link anbieten. Dann soll ein Mensch danach etwas sehen — deshalb die
-// Weiterleitung auf die Seite, die dasselbe tut und es bestätigt.
+// Link anbieten. Er leitet nur auf die Seite mit dem Knopf weiter (siehe unten).
 //
 // Ein unbekanntes oder gefälschtes Token führt NICHT zu einer Fehlermeldung:
 // Die Antwort ist immer „abgemeldet". Sonst verrät diese Adresse, welche
@@ -37,9 +36,10 @@ export async function POST(req: NextRequest) {
   return new NextResponse(null, { status: 200 });
 }
 
+// GET only leads to the page with the button and unsubscribes NOTHING: a GET
+// is exactly what mail scanners send when they open links on their own.
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const token = url.searchParams.get("t") ?? "";
-  await abmelden(token);
   return NextResponse.redirect(new URL(`/abo/abmelden?t=${encodeURIComponent(token)}`, url.origin));
 }

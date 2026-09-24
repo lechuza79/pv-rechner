@@ -1,13 +1,13 @@
 "use client";
 
-import { v } from "../../lib/theme";
+import { tokens, v } from "../../lib/theme";
 import DonutChart from "../charts/DonutChart";
 import GemeindeWidgetShell from "./GemeindeWidgetShell";
 import { WIDGETS, widgetForPlace } from "../../lib/widget-registry";
 import { fmtAnteilProzentFein, fmtSpeicherKwh } from "../../lib/atlas-format";
 
 // Einbettbares Widget: installierte erneuerbare Leistung nach Technologie je
-// Gemeinde (echte MaStR-Daten, kein Modell). Donut in unseren Blau-Shades;
+// Gemeinde (echte MaStR-Daten, kein Modell). Donut in unserer Akzent-Rampe;
 // Speicher separat (kWh-Kapazität, andere Einheit). Steht in der geteilten
 // Widget-Hülle — auf der Atlas-Seite UND unter /embed/gemeinde-erneuerbare.
 
@@ -15,12 +15,19 @@ type Gen = { count: number; kwp: number };
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 const fmtKwh = fmtSpeicherKwh;
-// Unsere Blau-Shades (dunkel → hell), fest je Technologie.
+// Unsere Akzent-Rampe, fest je Technologie — AUS DEN TOKENS, nicht getippt.
+// Hier stand vier Mal der alte blaue Wert als Hex; als die Rampe am 20.09.2026
+// auf Grün ging, blieb der Donut als einzige blaue Fläche der Seite stehen.
+//
+// tokens[…] statt v(…): Die Farbe landet als `fill`-Attribut im SVG und geht
+// durch den Bild-Export. Im Browser löst ein var() dort auf, im komponierten
+// Export nicht zuverlässig — und ein schwarz gerendertes Segment fällt erst
+// im geteilten Bild auf.
 const TECH: { key: string; label: string; color: string }[] = [
-  { key: "solar", label: "Solar", color: "#1365EA" },
-  { key: "wind", label: "Wind", color: "#073C93" },
-  { key: "biomasse", label: "Biomasse", color: "#6A9EF2" },
-  { key: "wasser", label: "Wasserkraft", color: "#BCD6FF" },
+  { key: "solar", label: "Solar", color: tokens["--color-accent"] },
+  { key: "wind", label: "Wind", color: tokens["--color-accent-dark"] },
+  { key: "biomasse", label: "Biomasse", color: tokens["--color-accent-light"] },
+  { key: "wasser", label: "Wasserkraft", color: tokens["--color-border-accent"] },
 ];
 
 export default function GemeindeErneuerbareWidget({
@@ -32,6 +39,7 @@ export default function GemeindeErneuerbareWidget({
   onsite = false,
   share = true,
   showEmbed = true,
+  einbetten,
   branding = true,
 }: {
   name: string;
@@ -45,6 +53,8 @@ export default function GemeindeErneuerbareWidget({
   /** Aktionsleiste zeigen (Einbettende können sie über share=0 abwählen). */
   share?: boolean;
   showEmbed?: boolean;
+  /** Fertiger Einbett-Code für diesen Ort — siehe GemeindeWidgetShell. */
+  einbetten?: { params: Record<string, string>; height: number; width?: number };
   branding?: boolean;
 }) {
   const kwpOf = (key: string): number =>
@@ -78,6 +88,7 @@ export default function GemeindeErneuerbareWidget({
       onsite={onsite}
       share={share}
       showEmbed={showEmbed}
+      einbetten={einbetten}
       branding={branding}
     >
       {rows.length === 0 ? (

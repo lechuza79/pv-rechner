@@ -36,7 +36,7 @@ describe("Gesundheitscheck: stillstehende Wächter", () => {
   it("meldet den Befund an Claude, nicht an den Betreiber", () => {
     const block = check.slice(check.indexOf("const offen = faelligkeiten"));
     const bisBericht = block.slice(0, block.indexOf("── Bericht"));
-    expect(bisBericht, "der Befund geht nicht an Claude").toMatch(/forClaude\.push/);
+    expect(bisBericht, "der Befund geht nicht an Claude").toMatch(/technical\(/);
     expect(
       bisBericht,
       "ein stillstehender Wächter darf keine Mail an den Betreiber auslösen — er kann ihn nicht beheben",

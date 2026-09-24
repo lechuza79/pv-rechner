@@ -1,5 +1,6 @@
 import { test, expect, type ConsoleMessage, type Page } from "@playwright/test";
 import { SEITEN, EMBEDS } from "./routen";
+import { meldungstext } from "./konsole";
 
 // Breiter Rundgang: jede Seite einmal aufrufen und auf Laufzeitfehler prüfen.
 //
@@ -38,22 +39,30 @@ const IGNORIEREN = [
   /Failed to load resource: the server responded with a status of (429|5\d\d)/i,
   // Vercel Analytics meldet im Entwicklungsmodus, dass es nichts sendet.
   /Vercel Web Analytics/i,
+  // Das Messskript liegt NUR auf Vercels Plattform. Gegen einen lokal
+  // gestarteten Produktionsbau — so laeuft dieser Lauf seit 07.09.2026 — gibt
+  // es die Adresse nicht, also 404 und ein abgelehntes Skript. Gegen den
+  // Entwicklungsserver trat es nie auf, weil der das Skript gar nicht erst
+  // einbindet; entsprechend meldeten alle 30 Adressen es auf einmal.
+  // Eng gefasst auf genau diese Adresse: Ein 404 auf irgendetwas anderem
+  // bleibt ein Befund.
+  /_vercel\/insights/i,
 ];
 // Bewusst NICHT ignoriert: Supabase-Fehler. Die Werkbank hat echte
 // Zugangsdaten (ci.yml), also ist ein Datenbankfehler hier ein echter Befund —
 // ihn wegzufiltern hätte genau die Klasse verdeckt, für die es den Rundgang gibt.
 
+
 function istEchterFehler(msg: ConsoleMessage): boolean {
   if (msg.type() !== "error") return false;
-  const text = msg.text();
-  return !IGNORIEREN.some((re) => re.test(text));
+  return !IGNORIEREN.some((re) => re.test(meldungstext(msg)));
 }
 
 /** Ruft eine Seite auf und gibt zurück, was dabei schiefging. */
 async function rundgang(page: Page, pfad: string) {
   const fehler: string[] = [];
   page.on("console", (msg) => {
-    if (istEchterFehler(msg)) fehler.push(`Konsole: ${msg.text()}`);
+    if (istEchterFehler(msg)) fehler.push(`Konsole: ${meldungstext(msg)}`);
   });
   // Nicht abgefangene Ausnahmen erscheinen NICHT zwingend als Konsolenfehler —
   // ohne diesen Zweig würde ein harter Absturz im Browser durchrutschen.

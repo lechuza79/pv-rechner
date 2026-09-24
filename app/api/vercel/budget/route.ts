@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { POST as alertHandler } from "../../alert/route";
 import {
   deuteMeldung,
   pruefeSignatur,
@@ -36,7 +37,22 @@ import {
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-/** Wohin die Meldung geht. Der Empfänger läuft nur in der Produktion. */
+/**
+ * Wohin die Meldung geht. Die Adresse wird nur noch GEBAUT, nicht mehr
+ * ABGERUFEN: Die Schleuse läuft seit 21.09.2026 im selben Prozess.
+ *
+ * Vorher holte diese Funktion ihre eigene öffentliche Adresse über HTTP. Seit
+ * der Bot-Schutz scharf steht (08.09.2026) kann er den Abruf einer Function
+ * selbst beantworten — am 21.09.2026 gemessen: eine neutrale Kennung bekommt
+ * auf solar-check.io HTML statt Daten. Getroffen hätte das ausgerechnet die
+ * Meldung der Ausgabenbremse, also genau den Teil, der laut Bauplan dieser
+ * Datei nie stumm ausfallen darf. Dass die 50-Prozent-Meldung am 05.09.2026
+ * ankam, belegt nichts: Der Bot-Schutz war da noch nicht scharf, und er
+ * entscheidet ohnehin von Fall zu Fall.
+ *
+ * Die Adresse bleibt als Kennung der Anfrage stehen — die Schleuse liest aus
+ * ihr den Trockenlauf-Parameter.
+ */
 const ALERT_URL = "https://solar-check.io/api/alert";
 
 type Meldung = {
@@ -62,19 +78,29 @@ async function melden(m: Meldung, anClaude: boolean): Promise<void> {
     return;
   }
   try {
-    const res = await fetch(ALERT_URL, {
-      method: "POST",
-      headers: { "content-type": "application/json", authorization: `Bearer ${secret}` },
-      body: JSON.stringify({
-        subject: m.subject,
-        decisions: m.decisions,
-        done: m.done,
-        details: m.details,
-        audience: anClaude ? "claude" : "operator",
-        tag: "ausgabenbremse",
-      }),
-      signal: AbortSignal.timeout(10_000),
-    });
+    // IN-PROCESS, nicht über die eigene öffentliche Adresse — siehe ALERT_URL.
+    // Die Schleuse nimmt ein schlichtes Request entgegen und liest daraus
+    // Kopfzeilen, Rumpf und Abfrageteil; mehr braucht sie nicht.
+    //
+    // DAS ZEITLIMIT MUSS BLEIBEN, und es kommt jetzt von hier: Ein Abruf trug
+    // seines selbst, ein Funktionsaufruf tut das nicht. Dahinter liegen eine
+    // Schreibung in die Ablage und der Mailversand — beides kann hängen, und
+    // die Meldung darf das Schalten nie aufhalten.
+    const res = await Promise.race([
+      alertHandler(new Request(ALERT_URL, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${secret}` },
+        body: JSON.stringify({
+          subject: m.subject,
+          decisions: m.decisions,
+          done: m.done,
+          details: m.details,
+          audience: anClaude ? "claude" : "operator",
+          tag: "ausgabenbremse",
+        }),
+      })),
+      new Promise<never>((_, ab) => setTimeout(() => ab(new Error("Zeitlimit 10 s")), 10_000).unref?.()),
+    ]);
     if (!res.ok) console.error(`[Ausgabenbremse] Meldung fehlgeschlagen: ${res.status}`);
   } catch (err) {
     console.error(`[Ausgabenbremse] Meldung fehlgeschlagen: ${err instanceof Error ? err.message : "unbekannt"}`);

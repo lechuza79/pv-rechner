@@ -29,7 +29,7 @@ const lies = (p: string) => readFileSync(join(wurzel, p), "utf8");
 /** Jeder Rechner mit Frage-Flow. Wächst die Liste, wächst der Test mit. */
 const RECHNER = [
   { name: "PV-Rechner", datei: "app/(site)/photovoltaik-rechner/rechner.tsx" },
-  { name: "Empfehlung", datei: "app/(site)/pv-bedarf-berechnen/empfehlung.tsx" },
+  { name: "Empfehlung", datei: "app/(site)/photovoltaik-rechner/empfehlung.tsx" },
   { name: "Wärmepumpe", datei: "app/(site)/waermepumpe-rechner/waermepumpe.tsx" },
   { name: "Klimaanlage", datei: "app/(site)/klimaanlage-stromkosten/klimaanlage.tsx" },
   { name: "Balkonkraftwerk", datei: "app/(site)/balkonkraftwerk/rechner/balkon.tsx" },

@@ -147,9 +147,9 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
               title={s.hint}
               style={{
                 display: "flex", alignItems: "center", gap: 7,
-                padding: "7px 11px", borderRadius: v("--radius-sm"), cursor: "pointer",
+                padding: "7px 11px", borderRadius: v("--radius-pill"), cursor: "pointer",
                 fontSize: v("--font-size-small"), fontWeight: active ? 700 : 500, fontFamily: v("--font-text"),
-                background: active ? v("--color-accent") : v("--color-bg-muted"),
+                background: active ? v("--color-cta") : v("--color-bg-muted"),
                 color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
                 border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
               }}
@@ -259,8 +259,8 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
           onClick={save}
           disabled={!dirty || status === "saving"}
           style={{
-            padding: "12px 28px", borderRadius: v("--radius-md"), fontSize: v("--font-size-body"), fontWeight: 700,
-            background: dirty ? v("--color-accent") : v("--color-bg-muted"),
+            padding: "12px 28px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700,
+            background: dirty ? v("--color-cta") : v("--color-bg-muted"),
             color: dirty ? v("--color-text-on-accent") : v("--color-text-faint"),
             border: "none", cursor: dirty && status !== "saving" ? "pointer" : "default",
             fontFamily: v("--font-text"), boxShadow: dirty ? v("--shadow-sm") : "none",
@@ -269,20 +269,20 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
           {status === "saving" ? "Speichern…" : dirty ? "Speichern" : "Gespeichert ✓"}
         </button>
         {dirty && (
-          <button onClick={discard} style={{ padding: "10px 16px", borderRadius: v("--radius-md"), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v("--color-border")}`, color: v("--color-text-secondary"), cursor: "pointer" }}>
+          <button onClick={discard} style={{ padding: "10px 16px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v("--color-border")}`, color: v("--color-text-secondary"), cursor: "pointer" }}>
             Verwerfen
           </button>
         )}
         {Object.keys(draft[stage] ?? {}).length > 0 && (
-          <button onClick={resetStage} style={{ padding: "10px 16px", borderRadius: v("--radius-md"), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v("--color-border")}`, color: v("--color-text-muted"), cursor: "pointer" }}>
+          <button onClick={resetStage} style={{ padding: "10px 16px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v("--color-border")}`, color: v("--color-text-muted"), cursor: "pointer" }}>
             Diese Stufe zurücksetzen
           </button>
         )}
         <span style={{ fontSize: v("--font-size-small"), color: v("--color-text-faint"), fontFamily: v("--font-mono") }}>
           {overrideCount === 0 ? "keine Overrides" : `${overrideCount} Override${overrideCount === 1 ? "" : "s"} gesamt`}
         </span>
-        {status === "ok" && <span style={{ fontSize: v("--font-size-small"), color: v("--color-positive"), fontWeight: 600 }}>Gespeichert ✓</span>}
-        {status === "error" && <span style={{ fontSize: v("--font-size-small"), color: v("--color-negative"), fontWeight: 600 }}>{errorMsg}</span>}
+        {status === "ok" && <span style={{ fontSize: v("--font-size-small"), color: v("--color-positive-text"), fontWeight: 600 }}>Gespeichert ✓</span>}
+        {status === "error" && <span style={{ fontSize: v("--font-size-small"), color: v("--color-negative-text"), fontWeight: 600 }}>{errorMsg}</span>}
       </div>
     </div>
   );

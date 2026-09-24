@@ -18,7 +18,7 @@ import { simulateSolarYear, monthlyFromAnnual } from "../../../../lib/balkon-sim
 import RenditeVergleich from "./_components/RenditeVergleich";
 import {
   calc,
-  calcEigenverbrauch,
+  calcEigenverbrauchExakt,
   calcWeightedFeedIn,
   estimateCost,
   batteryReplaceCost,
@@ -62,7 +62,7 @@ const S = {
     minHeight: "100vh",
     padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   back: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
@@ -70,27 +70,14 @@ const S = {
     display: "inline-block",
     marginBottom: 24,
   },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: v("--color-text-primary"),
-    lineHeight: 1.25,
-    marginBottom: 10,
-  },
+  h1: { color: v("--color-text-primary"), marginBottom: 10 },
   subtitle: {
     fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
     marginBottom: 24,
     lineHeight: 1.6,
   },
-  h2: {
-    fontSize: v("--font-size-h2"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-    marginTop: 32,
-    marginBottom: 10,
-  },
+  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
   p: {
     fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
@@ -127,16 +114,16 @@ const S = {
     display: "block",
   },
   accent: { color: v("--color-accent"), fontWeight: 600 },
-  positive: { color: v("--color-positive"), fontWeight: 600 },
+  positive: { color: v("--color-positive-text"), fontWeight: 600 },
   muted: { color: v("--color-text-muted") },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
   ctaButton: {
     display: "inline-block",
     padding: "10px 18px",
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     fontSize: v("--font-size-body"),
     fontWeight: 700,
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     color: v("--color-text-on-accent"),
     textDecoration: "none",
   },
@@ -225,7 +212,7 @@ const SPEICHER_IDX: Record<number, number> = Object.fromEntries(
 
 function computeExample(speicherKwh: number, feedInActive: boolean, prices: PriceConfig): ExampleRow {
   const baseKwh = PERSONEN[EX.personenIdx].verbrauch;
-  const ev = calcEigenverbrauch({
+  const evExakt = calcEigenverbrauchExakt({
     personenIdx: EX.personenIdx,
     nutzungIdx: EX.nutzungIdx,
     speicherKwh,
@@ -244,7 +231,7 @@ function computeExample(speicherKwh: number, feedInActive: boolean, prices: Pric
     kwp: EX.kwp,
     kosten,
     strompreis: prices.electricityPrice,
-    eigenverbrauch: ev,
+    eigenverbrauch: evExakt,
     einspeisung: feedIn,
     stromSteigerung: prices.electricityIncrease,
     ertragKwp: EX.ertragKwp,
@@ -270,7 +257,7 @@ function computeExample(speicherKwh: number, feedInActive: boolean, prices: Pric
       kwp: EX.kwp,
       kosten,
       strompreis: prices.electricityPrice,
-      eigenverbrauch: Math.min(ev + s.evDelta, 95, (baseKwh / jahresertrag) * 100),
+      eigenverbrauch: Math.min(evExakt + s.evDelta, 95, (baseKwh / jahresertrag) * 100),
       einspeisung: feedIn,
       stromSteigerung: s.strom,
       ertragKwp: EX.ertragKwp,
@@ -293,7 +280,8 @@ function computeExample(speicherKwh: number, feedInActive: boolean, prices: Pric
   return {
     speicherKwh,
     kosten,
-    ev,
+    // Gezeigt in ganzen Prozent, gerechnet ungerundet — wie im Rechner.
+    ev: Math.round(evExakt),
     autarkie: sim.autarky,
     amortisation: result.be?.i ?? null,
     gewinn25: result.total,
@@ -698,7 +686,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           ]}
           conItems={[
             { term: "Volleinspeisung", desc: <>Konzepte, die den gesamten Strom einspeisen (z. B. große Dächer ohne Eigenverbrauch), leben komplett von der Vergütung — ohne sie tragen sie sich nicht.</> },
-            { term: "Überdimensionierung", desc: <>„Das Dach voll machen" lohnt ohne Vergütung weniger. Was über den eigenen Verbrauch hinausgeht, bringt nichts mehr ein — die Anlage passend zum Verbrauch auszulegen wird wichtiger. Die <Link href="/pv-bedarf-berechnen" style={S.link}>Empfehlung</Link> rechnet die passende Größe aus.</> },
+            { term: "Überdimensionierung", desc: <>„Das Dach voll machen" lohnt ohne Vergütung weniger. Was über den eigenen Verbrauch hinausgeht, bringt nichts mehr ein — die Anlage passend zum Verbrauch auszulegen wird wichtiger. Die <Link href="/photovoltaik-rechner" style={S.link}>Empfehlung</Link> rechnet die passende Größe aus.</> },
             { term: "Sehr niedriger Verbrauch", desc: <>Ein 1-Personen-Haushalt mit 1.800 kWh/Jahr kann nur wenig Solarstrom selbst nutzen — hier verlängert sich die Amortisation deutlich. Ein <Link href="/balkonkraftwerk/rechner" style={S.link}>Balkonkraftwerk</Link> passt dann oft besser als eine große Dachanlage.</> },
             { term: "Überteuerte Angebote", desc: <>Die Rechnung oben gilt für Marktpreise. Ohne den Vergütungs-Puffer kippt sie bei deutlich überhöhten Angebotspreisen schneller — Vergleichsangebote werden wichtiger.</> },
           ]}
@@ -730,7 +718,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
             <Link href={mitSpNull.href} style={S.ctaButton}>
               Ohne Vergütung rechnen →
             </Link>
-            <Link href="/pv-bedarf-berechnen" style={S.ctaSecondary}>
+            <Link href="/photovoltaik-rechner" style={S.ctaSecondary}>
               Was passt zu mir?
             </Link>
           </div>

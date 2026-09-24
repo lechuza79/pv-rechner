@@ -50,31 +50,26 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   die Wärmepumpe ihren Ursprung in der Union hat — betragsgleich mit der
   Halbierung. Wer nur die Kürzung prüft und meldet, meldet die halbe Sache. Der
   Rechner fragt den Ursprung deshalb ab, statt ihn anzunehmen.
-- `investLwwpBase` / `investLwwpPerKw` / `investSwwpBase` / `investSwwpPerKw` /
-  `heizkoerperTauschKosten` — **Leitquelle: die jährliche Auswertung echter
-  Wärmepumpen-Angebote der Verbraucherzentrale Rheinland-Pfalz.** Beide Jahrgänge
-  liegen im Repo: `docs/quellen/VZ-RLP_Auswertung-160-Waermepumpen-Angebote_2025-06.pdf`
-  und `…_2026-07.pdf` (zweiter Check, veröffentlicht 02.07.2026). Sie ist die
-  einzige uns bekannte Quelle mit echten Angebotspreisen inkl. Leistungsverteilung
-  und Kostenkategorien. Abgleich in dieser Reihenfolge:
-    1. **Median-Gesamtkosten** bei **Median-Leistung** (2025: 34.979 € bei 10 kW;
-       2026: 34.898 €, häufigste Leistungsklasse 10–12 kW)
-       → muss `investLwwpBase + investLwwpPerKw × 10` treffen (±10 %).
-    2. **Summe der leistungsunabhängigen Kategorien** (Montage/Lohn, Elektro,
-       Fundament, hydraulischer Abgleich, Warmwasser, Puffer; 2025: 16.652 €,
-       2026: 15.868 € als Summe der Mittelwerte, Tabelle 5)
-       → das ist `investLwwpBase`.
-    3. **Heizkörpertausch**: Ø-Preis je Heizkörper × ~6 kritische Heizkörper.
-       **Die 2026er Auswertung beziffert ihn nicht** — sie nennt nur die Häufigkeit
-       (36 von 160 Angeboten, 23 %). Der hinterlegte Wert bleibt deshalb auf der
-       2025er Grundlage; das ist ein Befund, kein Versäumnis.
+- Investment model: read `docs/lehren/heating-investment-model.md` first.
+  LWWP uses `investLwwpBase` (calibrated fixed remainder) plus
+  `investLwwpCoreAt10Kw` scaled by KWW absolute core costs. Do not restore a
+  linear total-price slope or treat the remainder as a measured cost subtotal.
+  - KWW Tab 10 rows 6/10: plant INCLUDING associated installation, without its
+    additional-cost row. Interpolate absolute EUR, apply VAT once, no extrapolation.
+  - VZ 2025 pp.7–8 Table 3: 42 offers, EUR 36,011 median, with DHW/balancing/
+    foundation/electrical work and WITHOUT radiators. The 10-kW calibration point
+    is our assumption; the filtered subgroup has no published median capacity.
+  - VZ 2026 Table 1 is UNFILTERED: do not replace the anchor with that median and
+    then add radiator costs again. The national 2026 average excludes heating
+    surfaces and supports the approximate price level, not a measured slope.
+  - Gas: KWW Tab 5 published total-cost regression, full building heat load,
+    minimum 10-kW COST reference. `fossilErsatzInvest` is its 10-kW gross anchor,
+    no longer a constant total for all buildings. Oil remains independent.
+  - Radiator replacement remains a separate assumption based on VZ 2025 per-unit
+    prices. Never add KWW additional costs containing heating surfaces on top.
+  - Preserve quotes and zero. Recalculate subsidies in opposing ±20% investment
+    sensitivity cases; those are stress cases, not a confidence interval.
 
-  **Stand des Laufs vom 17.08.2026 (erster Lauf dieses Wächters überhaupt):**
-  Median 34.898 € gegen unsere 35.000 € im 10-kW-Fall = 0,3 % — bestätigt, kein
-  Wert geändert. Die Kategorien-Summe liegt 3,8 % unter `investLwwpBase`; das ist
-  innerhalb der Streuung zweier Erhebungen und war kein Anlass zu ändern. Wer beim
-  nächsten Lauf doch nachzieht, muss BEIDE Größen zusammen bewegen (Basis runter →
-  Steigung rauf), sonst verfehlt der Median-Fall seinen Anker.
   **Kein Scraping mehr** (2026-07 abgeschaltet): Die frühere Ableitung aus einer
   Portal-Kostenübersicht bezifferte den Einbau mit 3.000–7.500 € und ergab für ein
   kleines Haus 15.020 € — weniger als das **günstigste** von 160 echten Angeboten.
@@ -318,7 +313,7 @@ Dem Assistenten sagen: **„Lauf die Wärmepumpen-Prüfung."**
 > von solar-check.io gegen offizielle Quellen. Heute ist {DATUM}.
 >
 > Hinterlegt (aus lib/heatpump-config.ts): BEG-Sätze {beg…}, Cap {begMaxCap}/
-> {begMaxRate}; Investition LWWP {investLwwpBase}+{investLwwpPerKw}/kW, SWWP
+> {begMaxRate}; Investition LWWP {investLwwpBase} fixed + KWW core (10 kW: {investLwwpCoreAt10Kw}), SWWP
 > {investSwwpBase}+{investSwwpPerKw}/kW, HK-Tausch {heizkoerperTauschKosten};
 > WP-Tarif {wpTarif}; Gas {gasPriceCtPerKwh} ct/kWh.
 >
@@ -352,7 +347,7 @@ Dem Assistenten sagen: **„Lauf die Wärmepumpen-Prüfung."**
 
 ### Investition — Auto-Fix erlaubt (seit 27.07.2026)
 
-Betrifft `investLwwpBase`, `investLwwpPerKw`, `investSwwpBase`, `investSwwpPerKw`,
+Betrifft `investLwwpBase`, `investLwwpCoreAt10Kw`, `investSwwpBase`, `investSwwpPerKw`,
 `heizkoerperTauschKosten`. Der Fix wird selbst committet und deployt, **wenn ALLE
 fünf Bedingungen erfüllt sind**:
 
@@ -367,8 +362,9 @@ fünf Bedingungen erfüllt sind**:
 2. **Council-Konsens**, adversarialer Prüfer eingeschlossen.
 3. **Rechenregel eingehalten** (nicht frei geschätzt): Basis = Summe der
    leistungsunabhängigen Kategorien (Montage/Lohn, Elektro, Fundament,
-   hydraulischer Abgleich, Warmwasser, Puffer); Steigung so, dass
-   `Basis + Steigung × Median-kW` den Median-Preis trifft. Ein Handfaktor
+   hydraulischer Abgleich, Warmwasser, Puffer). The current investment rule is
+   documented in `docs/lehren/heating-investment-model.md`; do not reconstruct
+   a linear total-price slope from these categories. Ein Handfaktor
    („wirkt zu hoch/zu niedrig") ist kein zulässiger Fix.
 4. **Sprung ≤ 30 %** je Feld gegenüber dem hinterlegten Wert. Darüber nur
    Vorschlag — ein größerer Sprung ist eher ein Lesefehler als ein Marktereignis.

@@ -237,6 +237,39 @@ export function ohneAdressVerschleierung(html: string): string {
       return klar ? ` <a href="mailto:${klar}">${klar}</a> ` : ganz;
     },
   );
+  // JOOMLAS SPAMBOT-SCHUTZ: Die Adresse steht stückweise in Skript-Variablen
+  // und wird erst im Browser zusammengesetzt. Gemessen am 05.09.2026: mehrere
+  // Lokalzeitungen galten allein deshalb als „ohne Kontakt".
+  //
+  // Zusammengefügt werden ALLE Zeichenketten eines Skripts, das eine
+  // `addy`-Variable trägt — die Bauform variiert je Joomla-Fassung, und ein
+  // Muster für die eine bricht an der nächsten. Das Kennzeichen `addy` hält
+  // den Eingriff eng: Es kommt außerhalb dieses Spamschutzes nicht vor.
+  s = s.replace(/<script\b[^>]*>([\s\S]{0,4000}?)<\/script>/gi, (ganz, code: string) => {
+    if (!/\baddy\w*\s*=/.test(code)) return ganz;
+    const zusammen = Array.from(code.matchAll(/'([^']*)'/g))
+      .map((m) => m[1])
+      .join("")
+      .replace(/&#(\d+);/g, (_a, d: string) => String.fromCharCode(Number(d)));
+    const mail = zusammen.match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/)?.[0];
+    return mail ? `${ganz} <a href="mailto:${mail}">${mail}</a> ` : ganz;
+  });
+
+  // DER INHALT EINER EINSEITEN-ANWENDUNG steckt als JSON im Skript-Element.
+  // Gemessen: radioton.de liefert 395 kB und hat neun Zeichen sichtbaren Text;
+  // elf Radio- und Fernsehsender waren allein deshalb stumm. Herausgeholt
+  // werden nur ADRESSEN, nicht der ganze Rohtext — sonst zieht die Auswertung
+  // Bezeichner und Konfigurationswerte als Inhalt heran.
+  const ausSkript = Array.from(
+    s.matchAll(/<script\b[^>]*>([\s\S]{0,200000}?)<\/script>/gi),
+  ).flatMap((m) =>
+    Array.from(m[1].matchAll(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g)).map((a) => a[0]),
+  );
+  if (ausSkript.length) {
+    const einmalig = [...new Set(ausSkript)].slice(0, 20);
+    s += einmalig.map((a) => ` <a href="mailto:${a}">${a}</a> `).join("");
+  }
+
   // Übrig gebliebene Platzhalter entfernen — sie würden im Text als „E-Mail"
   // durchgehen, ohne eine zu sein.
   s = s.replace(/\[email(?:&#160;|&nbsp;|\s)*protected\]/gi, " ");
@@ -562,12 +595,24 @@ export function postfaecherAus(html: string, domain: string): Postfach[] {
   for (const m of Array.from(text.matchAll(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g))) {
     const mail = m[0].toLowerCase().replace(/\.$/, "");
     if (MAIL_UNBRAUCHBAR.test(mail)) continue;
-    // Eine Adresse auf fremder Domain ist der Dienstleister, nicht die
-    // Redaktion — dieselbe Regel wie bei Gemeinden und Fachbetrieben, wo sie
-    // zwei Agenturadressen abgefangen hat. Verlags-Dachdomains sind erlaubt,
-    // wenn der Kern übereinstimmt (`redaktion@verlag.de` bei `magazin.de` nicht).
+    // DIE VERLAGSADRESSE IST DIE RICHTIGE — auch auf fremder Domain.
+    //
+    // Diese Regel hieß bis zum 05.09.2026 „fremde Domain heißt Dienstleister",
+    // übernommen von Gemeinden und Fachbetrieben. Bei der Presse ist sie der
+    // größte Einzelfehler der ganzen Erhebung: Gemessen an 119 Medien ohne
+    // Kontaktweg lagen **255 von 288** gefundenen Adressen auf einer anderen
+    // Domain als der Titel — deutsche Zeitungen werden von Verlagen
+    // herausgegeben, deren Mail-Domain nicht der Titel-Domain entspricht
+    // (`redaktion.kaufbeuren@azv.de` für all-in.de, `mborlinghaus@ulmer.de` für
+    // bw-wochenblatt.de). Der Lauf hat sie gelesen und wieder weggeworfen.
+    //
+    // Was bleibt, ist der Ausschluss des DIENSTLEISTERS — und der entscheidet
+    // sich am Satz daneben, nicht an der Domain. Die Gegenprobe des Nachlaufs
+    // hat damit zwei Durchrutscher gefunden (die Design-Agentur hinter zwei
+    // Fachmagazinen), die die Domainregel ebenfalls nicht gefangen hätte.
     const mailHost = mail.split("@")[1];
-    if (!mailHost.endsWith(domain) && !domain.endsWith(mailHost)) continue;
+    const eigene = mailHost.endsWith(domain) || domain.endsWith(mailHost);
+    if (!eigene && dienstleisterUmfeld(text, m.index ?? 0)) continue;
     const treffer = POSTFACH_RANG.find((r) => r.muster.test(mail));
     const rang = treffer?.rang ?? 50;
     const werblich = (treffer?.rang ?? 50) <= 10;
@@ -577,6 +622,21 @@ export function postfaecherAus(html: string, domain: string): Postfach[] {
     }
   }
   return [...out.values()].sort((a, b) => b.rang - a.rang);
+}
+
+/**
+ * Steht diese Adresse im Umfeld eines DIENSTLEISTERS?
+ *
+ * Geprüft wird ein Fenster um die Fundstelle, nicht die ganze Seite: Ein
+ * Impressum nennt fast immer irgendwo eine Agentur, und wer die ganze Seite
+ * prüft, wirft damit auch die Redaktionsadresse weg.
+ */
+export function dienstleisterUmfeld(text: string, pos: number, fenster = 120): boolean {
+  const von = Math.max(0, pos - fenster);
+  const um = text.slice(von, pos + fenster);
+  return /technische umsetzung|webdesign|web-design|realisierung|programmierung|gestaltung der (?:website|seite)|umsetzung der (?:website|seite)|hosting|servertechnik|internetagentur|werbeagentur|full-?service-?agentur|konzeption und umsetzung/i.test(
+    um,
+  );
 }
 
 function mailtoLinks(html: string): string[] {
@@ -666,7 +726,15 @@ export const THEMEN: { name: string; geschichte: string; muster: RegExp }[] = [
   {
     name: "verbraucher",
     geschichte: "Methoden-, Fehler- und Datenqualitätsgeschichten",
-    muster: /\b(?:verbraucher|rechner|vergleich|kosten|test|ratgeber|lohnt sich)\b/gi,
+    // AN DIE ENERGIE GEBUNDEN, und das ist der Kern der Korrektur vom
+    // 04.09.2026. Die erste Fassung suchte „verbraucher|rechner|vergleich|
+    // kosten|test|ratgeber|lohnt sich" — Wörter, die JEDE Publikumsseite
+    // dauernd benutzt. Gemessen: heise stand damit auf Priorität A mit 30
+    // Treffern in dieser Gruppe und ganzen ZWEI für Photovoltaik, COMPUTER BILD
+    // mit 82 zu null. Ein Wort wie „Test" sagt über die Passung zu diesem
+    // Projekt nichts; „Stromkosten" schon.
+    muster:
+      /\b(?:strompreisvergleich|stromkosten|energiekosten|heizkosten|stromtarif|stromrechner|solarrechner|energieberatung|eigenverbrauch|amortisation|wirtschaftlichkeit)\b|\blohnt sich[^.]{0,30}\b(?:solar|photovoltaik|pv|wärmepumpe|speicher|balkon)/gi,
   },
   {
     name: "daten",
@@ -793,23 +861,110 @@ export function medienurteil(html: string): Medienurteil {
  * zweite Größe, weil ein perfekt passendes Medium ohne erreichbare Redaktion
  * kein A-Kontakt sein kann — man kommt nicht hin.
  */
+/**
+ * Die Kernthemen — das, worüber wir wirklich etwas zu sagen haben.
+ *
+ * Getrennt von den Randthemen, weil nur diese eine Ansprache tragen: Wer über
+ * Photovoltaik, Balkonkraftwerke, Speicher oder den Strommix schreibt, kann mit
+ * unseren Zahlen etwas anfangen. „Kommunal" oder „Verbraucher" allein sagt das
+ * nicht — jede Lokalzeitung und jedes Technikportal trägt diese Wörter.
+ */
+export const KERNTHEMEN = ["photovoltaik", "balkonkraftwerk", "speicher", "strommix"] as const;
+export const RANDTHEMEN = ["foerderung", "kommunal", "waermepumpe", "verbraucher", "daten"] as const;
+
+export function kernTreffer(themen: Themenfund[]): number {
+  return themen
+    .filter((t) => (KERNTHEMEN as readonly string[]).includes(t.name))
+    .reduce((s, t) => s + t.treffer, 0);
+}
+
+export function randTreffer(themen: Themenfund[]): number {
+  return themen
+    .filter((t) => (RANDTHEMEN as readonly string[]).includes(t.name))
+    .reduce((s, t) => s + t.treffer, 0);
+}
+
+/**
+ * Fachmedium oder Publikumsmedium — gemessen an der DICHTE, nicht an der Zahl.
+ *
+ * Der Betreiber hat am 04.09.2026 gesagt, was die Einstufung übersehen hatte:
+ * „ZEIT und COMPUTER BILD brauche ich nicht anschreiben." Er hat recht, und der
+ * Grund lässt sich messen — eine Tageszeitung nennt unser Thema zwei- bis
+ * dreimal auf einer Startseite mit tausenden Wörtern, ein Fachtitel
+ * fünfundvierzigmal auf einer kürzeren. Nicht die absolute Zahl trennt die
+ * beiden, sondern der Anteil.
+ *
+ * Bewusst DREI Klassen: „unklar" ist keine Verlegenheit, sondern der ehrliche
+ * Zustand für alles, dessen Startseite nicht abrufbar war — dort ist gar nichts
+ * gemessen worden, und das darf nicht wie ein schwaches Ergebnis aussehen.
+ */
+export type Gattung = "fach" | "publikum" | "unklar";
+
+/**
+ * Ab wie vielen Kerntreffern je 1.000 Wörtern gilt eine Seite als Fachmedium?
+ *
+ * BEIDSEITIG EINGEKLEMMT an einer Handprüfung von 24 bekannten Titeln
+ * (04.09.2026). Gemessene Dichten:
+ *
+ *   Fachtitel:      Solarserver 18,4 · photovoltaik 13,5 · pv magazine 13,3 ·
+ *                   stadt+werk 5,3 · Erneuerbare Energien 4,7 · IKZ 4,3 · ZfK 4,1
+ *   Publikumstitel: energiezukunft 1,8 · heise 1,1 · DAS HAUS 0,8 · n-tv 0,6 ·
+ *                   test.de 0,4 · SPIEGEL 0,3 · ZEIT, taz, Süddeutsche 0,0
+ *
+ * Zwischen 4,1 und 1,8 liegt die Lücke, und die Schwelle liegt darin. Die erste
+ * Fassung stand bei 2,5 mit einer Mindestzahl von 8 Treffern — und die
+ * MINDESTZAHL war der Fehler: Sie hat stadt+werk, Erneuerbare Energien und die
+ * IKZ als Publikumsmedien eingestuft, weil ihre Startseite an diesem Tag nur
+ * fünf bis sieben Fundstellen trug. Drei Fachtitel als Publikum: Das ist der
+ * teurere Fehler, denn sie fallen aus der Ansicht heraus.
+ */
+export const FACH_DICHTE = 3.0;
+/** Ein Mindestmaß an absoluten Treffern bleibt — eine sehr kurze Startseite mit
+ *  zwei Fundstellen käme sonst über die Dichte durch. Aber niedrig: Der
+ *  Trennschärfe dient die Dichte, nicht diese Zahl. */
+export const FACH_MINDESTTREFFER = 4;
+
+/**
+ * Die gemessene Einordnung — sie ist ein VORSCHLAG, kein Urteil.
+ *
+ * Sie beruht auf EINER Startseite an EINEM Tag. Das trennt die klaren Fälle
+ * zuverlässig (eine Tageszeitung kommt nie über 2, ein Fachtitel selten unter
+ * 4), aber ein Fachtitel, der an diesem Tag zufällig über etwas anderes
+ * schreibt, fällt durch. Deshalb kann die Einordnung von Hand überschrieben
+ * werden, und die Handentscheidung überlebt jeden neuen Erhebungslauf.
+ */
+export function gattungAus(themen: Themenfund[], woerter: number | null): Gattung {
+  if (!woerter) return "unklar";
+  const kern = kernTreffer(themen);
+  const dichte = (kern / woerter) * 1000;
+  return kern >= FACH_MINDESTTREFFER && dichte >= FACH_DICHTE ? "fach" : "publikum";
+}
+
 export function prioritaet(opts: {
   themen: Themenfund[];
   hatPerson: boolean;
   hatRedaktionsPostfach: boolean;
   hatIrgendeinenWeg: boolean;
+  gattung: Gattung;
 }): "A" | "B" | "C" {
-  const kern = opts.themen
-    .filter((t) => ["photovoltaik", "balkonkraftwerk", "speicher", "strommix"].includes(t.name))
-    .reduce((s, t) => s + t.treffer, 0);
-  const rand = opts.themen
-    .filter((t) => ["foerderung", "kommunal", "waermepumpe", "verbraucher", "daten"].includes(t.name))
-    .reduce((s, t) => s + t.treffer, 0);
+  const kern = kernTreffer(opts.themen);
+  const rand = randTreffer(opts.themen);
+  const erreichbar = opts.hatPerson || opts.hatRedaktionsPostfach;
 
   if (!opts.hatIrgendeinenWeg) return "C";
-  if (kern >= 5 && (opts.hatPerson || opts.hatRedaktionsPostfach)) return "A";
-  if (kern >= 2 && rand >= 3 && (opts.hatPerson || opts.hatRedaktionsPostfach)) return "A";
-  if (kern >= 2 || rand >= 6) return "B";
+  // EIN A BRAUCHT DAS KERNTHEMA — die Randthemen können es nie allein tragen.
+  //
+  // Die erste Fassung ließ „kern >= 2 und rand >= 3" für ein A genügen. Damit
+  // stand heise auf A (Kern 3, Rand 32) und der SPIEGEL ebenso; ein Fachtitel
+  // mit 45 Kerntreffern bekam dieselbe Note. Wer die Liste danach abarbeitet,
+  // schreibt zuerst den Häusern, die am wenigsten anfangen können.
+  //
+  // Zusätzlich muss es ein FACHMEDIUM sein: Ein Publikumsmedium mit vielen
+  // Treffern ist eine große Seite, kein passendes Gegenüber.
+  if (opts.gattung === "fach" && kern >= 8 && erreichbar) return "A";
+  if (opts.gattung === "fach" && kern >= 3 && erreichbar) return "B";
+  if (kern >= 8) return "B";
+  if (kern >= 2 || rand >= 10) return "C";
   return "C";
 }
 

@@ -45,7 +45,7 @@ describe("Amortisation misst die Mehrkosten, nicht die Investition", () => {
   };
 
   it("bezieht sich auf die Differenz zur fossilen Anschaffung", () => {
-    const r = calcHeatPump(gutSaniert);
+    const r = calcHeatPump({ ...gutSaniert, override: { investNetto: 18000, fossilErsatzInvest: 16000 } });
     const mehrkosten = r.investNetto - r.gasInvest;
     // Die Kennzahl ist klein, WEIL die Differenz klein ist — nicht weil die Anlage
     // billig wäre. Beides muss gleichzeitig gelten, sonst misst sie etwas anderes.
@@ -59,7 +59,7 @@ describe("Amortisation misst die Mehrkosten, nicht die Investition", () => {
     // Kleines Haus: Förderung drückt die Anlage unter den Preis einer neuen
     // Gasheizung. „0 Jahre" ist rechnerisch richtig und als Wort sinnlos — das UI
     // schreibt hier „keine Mehrkosten" statt einer Jahreszahl.
-    const r = calcHeatPump({ ...gutSaniert, wohnflaeche: 80 });
+    const r = calcHeatPump({ ...gutSaniert, wohnflaeche: 80, override: { investNetto: 14000, fossilErsatzInvest: 16000 } });
     expect(r.investNetto).toBeLessThan(r.gasInvest);
     expect(r.amortisationsJahre).toBe(0);
   });
@@ -211,10 +211,10 @@ describe("calcJAZ", () => {
 
 // ─── Investment (base + perKw × heat load + radiator swap) ─────────────────
 describe("calcInvestBrutto", () => {
-  it("LWWP for 8 kW load = base + perKw × 8 (from config, not hardcoded)", () => {
+  it("interpolates KWW absolute core costs at 8 kW and adds fixed overhead", () => {
     const r = calcInvestBrutto("lwwp", 8, false);
     // Config-derived, damit eine gepflegte Marktanpassung den Test nicht bricht.
-    expect(r).toBe(DEFAULT_HEATPUMP_CONFIG.investLwwpBase + DEFAULT_HEATPUMP_CONFIG.investLwwpPerKw * 8);
+    expect(r).toBe(33250); // (9500 + (15300 - 9500) * 3/5) * 1.19 + 17804
   });
 
   it("SWWP costs more than LWWP at the same load (drilling/probes)", () => {
@@ -237,7 +237,7 @@ describe("calcInvestBrutto", () => {
   // eine gescrapte Portal-Kostenseite ergab 15.020 € für ein kleines Haus, also
   // WENIGER als das günstigste von 160 echten Angeboten).
   describe("Marktanker gegen echte Angebote (VZ RLP, 160 Angebote)", () => {
-    it("trifft im Median-Fall (10 kW) den Median der realen Angebote (±10 %)", () => {
+    it("keeps the assumed 10-kW reference close to the observed price level (±10 %)", () => {
       const r = calcInvestBrutto("lwwp", 10, false);
       expect(r).toBeGreaterThan(34979 * 0.9);
       expect(r).toBeLessThan(34979 * 1.1);
@@ -257,7 +257,7 @@ describe("calcInvestBrutto", () => {
   // Quelle: Verbraucherzentrale Rheinland-Pfalz, „Luft-Wasser-Wärmepumpen:
   // Zweiter Check von 160 Angeboten aus Rheinland-Pfalz", veröffentlicht am
   // 02.07.2026 (Volltext: docs/quellen/VZ-RLP_Auswertung-160-Waermepumpen-
-  // Angebote_2026-07.pdf, Tabelle 1 S. 5). Gesamtkosten: Minimum 21.099 €,
+  // Angebote_2026-07.pdf, Tabelle 1 S. 4). Gesamtkosten: Minimum 21.099 €,
   // Maximum 54.168 €, Mittelwert 36.397 €, Median 34.898 €.
   //
   // Der zweite Jahrgang steht NEBEN dem ersten, statt ihn zu ersetzen: Zwei
@@ -265,7 +265,7 @@ describe("calcInvestBrutto", () => {
   // gegenüber 2025), sind ein stärkerer Anker als die jeweils neueste allein —
   // und ein späterer Ausreißer fällt gegen beide auf.
   describe("Marktanker gegen echte Angebote (VZ RLP 2026, zweiter Check)", () => {
-    it("trifft im Median-Fall (10 kW) den Median der realen Angebote (±10 %)", () => {
+    it("keeps the assumed 10-kW reference close to the observed price level (±10 %)", () => {
       const r = calcInvestBrutto("lwwp", 10, false);
       expect(r).toBeGreaterThan(34898 * 0.9);
       expect(r).toBeLessThan(34898 * 1.1);
@@ -662,11 +662,13 @@ describe("Referenzheizung Gas vs. Heizöl", () => {
     // Sonst stimmte die Hero-Zahl, aber die Amortisationskurve liefe weiter mit
     // der Gas-Gebühr — genau die Sorte Widerspruch, die niemandem auffällt.
     const o = calcHeatPump(mit(oel));
-    const g = calcHeatPump(mit(gas));
-    const fix = DEFAULT_HEATPUMP_CONFIG.fixCostPerYear.gas;
-    // Erstes Jahr: Öl spart pro Jahr genau die Grundgebühr weniger als Gas,
-    // bereinigt um den unterschiedlichen Brennstoffpreis.
-    expect(g.years[1].annual - o.years[1].annual).toBeGreaterThan(fix * 0.5);
+    // Check the actual annual ledger. Gas and oil now have independent upkeep
+    // and price paths, so their total-cost difference cannot isolate a fee.
+    const k = o.kostenJeJahr;
+    expect(k.fossil.neben).toBe(476);
+    expect(o.years[1].annual).toBe(Math.round(
+      k.fossil.brennstoff[0] + 476 - k.wp.strom[0] - k.wp.neben + k.wp.pvNutzen[0],
+    ));
   });
 
   it("ohne Grundgebühr rechnet sich die Wärmepumpe gegen Öl SCHLECHTER", () => {

@@ -1,4 +1,4 @@
-// Ortsangaben und Ebenen-Identität im Solar-Atlas — EINE Quelle.
+// Ortsangaben und Ebenen-Identität im Energie-Atlas — EINE Quelle.
 //
 // Warum das hier zentral steht (Juli 2026): Beides war über die Atlas-Seiten
 // verstreut und driftete auseinander. Die Präposition wurde einmal aus der
@@ -116,6 +116,27 @@ export function kurzOrtsname(name: string): string {
   return ohneZusatz.length >= 3 ? ohneZusatz : ohneKlammer || name;
 }
 
+/**
+ * Der Ortsname, wie ihn die Ortsseite zeigt: ohne die zweisprachige Zweitform.
+ * „Quitzdorf am See / Kwětanecy při jězoru" → „Quitzdorf am See".
+ *
+ * 46 Gemeinden in Sachsen und Brandenburg führen amtlich beide Namen, deutsch
+ * und sorbisch. Auf einer Seite, die den Ortsnamen in der Überschrift, im
+ * Abo-Knopf, in jeder Rangzeile und in jedem Geschichten-Titel trägt,
+ * verdoppelt das die Länge an jeder dieser Stellen — der Abo-Knopf allein
+ * schob die Seite auf dem Telefon aus dem Fenster.
+ *
+ * NUR das Trennzeichen mit Leerzeichen zählt: „Boxberg/O.L." und
+ * „Lübbenau/Spreewald" tragen ihren Schrägstrich im Namen selbst.
+ *
+ * NICHT für Adressen, Verzeichnisse oder amtliche Angaben — dort steht der
+ * vollständige Name.
+ */
+export function anzeigeOrtsname(name: string): string {
+  const erste = name.split(" / ")[0].trim();
+  return erste.length >= 2 ? erste : name;
+}
+
 /** Gattungswort der untergeordneten Ebene, mit korrektem Numerus. */
 export function childNoun(childLevel: string | null, anzahl?: number): string {
   const eins = anzahl === 1;
@@ -150,4 +171,23 @@ export function istKreisfrei(
  */
 export function istStadtstaat(regionId: string): boolean {
   return regionId.length >= 5 && regionId.slice(2, 5) === "000";
+}
+
+/**
+ * Die Adresse der Ortsseite. Für einen Stadtstaat ist das die kurze Adresse
+ * des Bundeslands, sonst der dreiteilige Pfad.
+ *
+ * WARUM (Betreiber, 23.09.2026): Hamburg und Berlin SIND ihr Bundesland. Es
+ * gab zwei Seiten für dasselbe Gebiet mit denselben Zahlen (gemessen: beide
+ * 32.523 Anlagen, 302 MWp) — und die Ortsseite lag unter einer Adresse, die
+ * den Namen dreimal trägt. Bremen bleibt außen vor: Dort ist das Bundesland
+ * die Summe aus Bremen UND Bremerhaven, die Landesseite also eine echte
+ * Ebene darüber.
+ *
+ * Die Weiterleitung der langen Adressen und das Umschreiben der kurzen stehen
+ * in next.config.js; hier steht, was in Kanonisch-Angabe, Teilen-Link,
+ * Krümelspur und strukturierten Daten erscheint.
+ */
+export function ortsseitenPfad(regionId: string, bundesland: string, kreis: string, gemeinde: string): string {
+  return istStadtstaat(regionId) ? `/solar-atlas/${bundesland}` : `/solar-atlas/${bundesland}/${kreis}/${gemeinde}`;
 }

@@ -5,7 +5,7 @@ import {
   volumenGesamt,
   ZUSTAND_LABEL,
 } from "../../../../../lib/artikelplan";
-import { v, space } from "../../../../../lib/theme";
+import { space } from "../../../../../lib/theme";
 import { ArtikelBereich } from "../../../../../components/redaktion/ArtikelBereich";
 
 // Der Artikelteil der Redaktion — Schwester der Social-Ansicht, aber eine
@@ -30,7 +30,7 @@ export default async function RedaktionArtikel() {
 
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-      <h1 style={{ fontSize: v("--font-size-h1"), marginBottom: space.xl }}>Artikel</h1>
+      <h1 style={{ marginBottom: space.xl }}>Artikel</h1>
 
       <ArtikelBereich
         vorhaben={ARTIKELPLAN}

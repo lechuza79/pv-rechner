@@ -1,0 +1,57 @@
+body[data-lab-accent]{--lab-accent:#1365ea;--lab-ink:#fff}body[data-lab-accent=lime]{--lab-accent:#d4ff24;--lab-ink:#132527}body[data-lab-accent=pink]{--lab-accent:#ff70bb;--lab-ink:#281025}
+body[data-lab-accent] .primary-cta,body[data-lab-accent] .hs-product-primary,body[data-lab-accent] .hs-person-section .sc-person-primary{background:var(--lab-accent)!important;color:var(--lab-ink)!important;border-color:var(--lab-accent)!important}
+/* Fixed asymmetric placements avoid repetition and layout changes on reload. */
+body[data-lab-accent] :is(.hs-tools,.hs-guides){position:relative;isolation:isolate;overflow:hidden}
+body[data-lab-accent] :is(.hs-tools,.hs-guides):before,body[data-lab-accent] :is(.hs-tools,.hs-guides):after{content:'';position:absolute;pointer-events:none;background:#adc6bb;mask:var(--splash-mask) center/contain no-repeat;-webkit-mask:var(--splash-mask) center/contain no-repeat;opacity:calc(var(--lab-wash)*.36);z-index:-1}
+body[data-lab-accent] .hs-tools:before{--splash-mask:url('/design-lab/splash-blue.svg');width:79%;height:760px;top:-130px;left:-39%;transform:rotate(29deg)}
+body[data-lab-accent] .hs-tools:after{--splash-mask:url('/design-lab/splash-sage.svg');width:62%;height:610px;bottom:6%;right:-27%;transform:rotate(-47deg) scaleX(-1);opacity:calc(var(--lab-wash)*.26)}
+body[data-lab-accent] .hs-guides:before{--splash-mask:url('/design-lab/splash-ochre.svg');width:65%;height:570px;top:-210px;right:-23%;transform:rotate(117deg);opacity:calc(var(--lab-wash)*.30)}
+body[data-lab-accent] .hs-guides:after{--splash-mask:url('/design-lab/splash-blue.svg');width:38%;height:340px;bottom:-150px;left:8%;transform:rotate(-23deg);opacity:calc(var(--lab-wash)*.22)}
+/* The color wash belongs to the light card background, behind the portrait. */
+body[data-lab-accent] .hs-person-section>.hs-wrap{position:relative;isolation:isolate}
+body[data-lab-accent] .hs-person-section>.hs-wrap:before{content:'';position:absolute;left:0;bottom:0;width:55%;height:100%;background:url('/design-lab/splash-color.svg') 35% 60%/120% auto no-repeat;opacity:.72;z-index:-1;pointer-events:none;border-radius:inherit}
+body[data-lab-splash=none] :is(.hs-tools,.hs-guides):before,body[data-lab-splash=none] :is(.hs-tools,.hs-guides):after,body[data-lab-splash=none] .hs-person-section>.hs-wrap:before{display:none}
+body[data-lab-splash=all] .hs-tools:before{left:-10%;width:100%}body[data-lab-splash=all] .hs-guides:before{right:-5%;width:90%}
+.lab-back{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:9999;border:1px solid #ffffff50;border-radius:50px;background:#142c30;color:#fff;padding:8px 18px;font:13px system-ui;text-decoration:none}
+@media(max-width:700px){body[data-lab-accent] .hs-person-section>.hs-wrap:before{width:65%;background-size:150% auto;opacity:.5}body[data-lab-accent] .hs-tools:before{width:110%;left:-70%}body[data-lab-accent] .hs-guides:before{width:100%;right:-50%}}
+/* Homepage trial: chamfered CTA corners, matching gallery variant 05. */
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){border-radius:0!important;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));transition:filter .2s,transform .2s}
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary):hover{filter:brightness(1.06)}
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary):focus-visible{outline:0;box-shadow:inset 0 0 0 3px var(--lab-ink)}
+@media(prefers-reduced-motion:reduce){body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){transition:none}}
+/* Rounded button trial with the site's Montserrat typeface. */
+body[data-lab-accent] :is(button,.primary-cta,.header-cta,.hs-product-primary,.sc-person-primary,.hs-person-message){font-family:Montserrat,system-ui,sans-serif!important;font-weight:600!important}
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){clip-path:none;border-radius:10px!important;font-family:Montserrat,system-ui,sans-serif!important;font-weight:600!important}
+@media(max-width:850px){body[data-lab-accent] .hs-person-section>.hs-wrap:before{top:0;bottom:auto;width:100%;height:240px;background-position:center;background-size:430px auto;opacity:.6}}
+@media(min-width:601px){body[data-lab-accent] .hs-person-section>.hs-wrap:before{top:0;bottom:0;width:51%;height:100%;background-position:center;background-size:120% auto;opacity:.65}}
+/* One accent across actions and data emphasis. Comparison series stay blue-grey. */
+body[data-lab-accent] :is(button,.primary-cta,.header-cta,.hs-product-primary,.sc-person-primary,.hs-person-message){border-radius:999px!important}
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){border-radius:999px!important;clip-path:none}
+body[data-lab-accent] input[type=range],body[data-lab-accent] input[type=checkbox]{accent-color:var(--lab-accent)}
+body[data-lab-accent] :is(.hs-race,.hs-simulation-content) svg [stroke='#bbdea4'],body[data-lab-accent] .hs-reading svg path[stroke='#f5cd73']{stroke:var(--lab-accent)!important}
+body[data-lab-accent] :is(.hs-race,.hs-simulation-content) svg [fill='#bbdea4']{fill:var(--lab-accent)!important}
+body[data-lab-accent] .hs-race-legend span+span i,body[data-lab-accent] .hs-reading .hs-coverage i{background:var(--lab-accent)!important}
+body[data-lab-accent] .hs-reading-visual svg path[stroke='currentColor']:first-child{stroke:var(--lab-accent);filter:drop-shadow(0 1px 1px #193b4266)}
+body[data-lab-accent] .hs-reading svg path[stroke='#f5cd73']{filter:drop-shadow(0 1px .5px #193b4266)}
+body[data-lab-accent] :is(.hs-layout-picker,.hs-race-tabs,.hs-reading-dots,.av-controls,.hs-tabs) button[aria-pressed=true]{background:var(--lab-accent)!important;color:var(--lab-ink)!important;border-color:var(--lab-accent)!important}
+body[data-lab-accent] .reading-dots button[aria-pressed=true]{background:var(--lab-accent)!important;border-color:var(--lab-accent)!important}
+body[data-lab-accent] .hs-effect-grid button[aria-pressed=true]{border-color:var(--lab-accent)!important}
+/* Give pill labels sufficient room at the curved edges. */
+body[data-lab-accent] :is(.primary-cta,.hs-product-primary,.hs-person-section .sc-person-primary){padding-inline:28px!important}
+
+/* Secondary navigation actions use the surrounding monochrome palette. */
+body[data-lab-accent] .hs-secondary-cta{background:transparent!important;color:#173b42!important;border:1px solid #173b4266!important;box-shadow:none!important}
+body[data-lab-accent] .hs-secondary-cta:hover{background:#173b420a!important;filter:none}
+body[data-lab-accent] .hs-more{border-bottom:0;text-align:center;margin-top:32px}
+body[data-lab-accent] .hs-more summary{display:inline-flex;align-items:center;gap:20px;padding:13px 28px;border:1px solid #aec4bd66;border-radius:999px;color:#e8eee9;font:600 14px/1.4 Montserrat,system-ui,sans-serif}
+body[data-lab-accent] .hs-more summary:hover{background:#ffffff08}
+body[data-lab-accent] .hs-more>div{text-align:left;margin-top:16px}
+/* Match the compact tile layout selectors. */
+body[data-lab-accent] :is(.hs-race-tabs,.hs-race-player) button{font-size:12px!important;line-height:16px!important;padding:8px 12px!important;min-height:34px;min-width:0}
+body[data-lab-accent] .hs-race-tabs{flex-wrap:wrap}
+
+body[data-lab-accent] .hs-secondary-cta{line-height:1.4;padding-block:13px;align-items:center}
+body[data-lab-accent] .hs-secondary-cta span{margin:0;line-height:1;font-size:inherit}
+
+/* The variant accent also colors the logo mark. */
+body[data-lab-accent] .site-header .brand{--color-brand:var(--lab-accent);--color-brand-deep:color-mix(in srgb,var(--lab-accent) 55%,#fff)}

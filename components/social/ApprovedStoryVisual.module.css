@@ -1,0 +1,73 @@
+.visual{--font-text:var(--atlas-body);--font-mono:var(--atlas-display);background:var(--atlas-card);color:var(--atlas-text);padding:28px 24px;width:100%;box-sizing:border-box;position:relative;overflow:hidden;font-family:var(--atlas-body);border-radius:var(--atlas-card-radius);line-height:1.5}
+.visual .header{display:block;padding:0;border:0;margin:0 0 28px}
+.visual .header h2{font-family:var(--atlas-display);font-size:var(--atlas-card-title-size);font-weight:700;line-height:1.25;margin:0 0 16px;max-width:85%}
+.visual .header p{font-size:var(--atlas-caption-size);color:var(--atlas-secondary);margin:6px 0}
+.visual strong{font-family:var(--atlas-display);font-weight:700;font-variant-numeric:proportional-nums;letter-spacing:normal}
+.visual small{font-family:var(--atlas-body);font-size:var(--atlas-caption-size);font-weight:400;color:var(--atlas-secondary)}
+.ring{width:min(100%,320px);aspect-ratio:1;position:relative;margin:12px auto 24px}
+.ring svg{display:block;width:100%;height:100%}
+.center{position:absolute;inset:28%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+.center strong{font-size:clamp(32px,5vw,48px);line-height:1.1;white-space:nowrap}
+.center span{font-size:var(--atlas-caption-size);color:var(--atlas-secondary);margin-top:10px}
+.legend{display:grid;gap:16px;position:relative;z-index:1}
+.legend>div{display:flex;gap:12px;align-items:baseline;font-size:var(--atlas-label-size)}
+.legend i{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.legend span{flex:1}
+.legend strong{white-space:nowrap;font-size:20px}
+.columns{display:flex;gap:28px;max-width:400px;margin:44px auto 8px;align-items:end}
+.column{flex:1;min-width:0;text-align:center}
+.column>strong{font-size:32px;white-space:nowrap;display:block;margin-bottom:12px}
+.barSpace{height:220px;display:flex;align-items:end;justify-content:center;border-bottom:2px solid var(--atlas-text)}
+.barSpace i{display:block;width:62%;border-radius:6px 6px 0 0}
+.column>span{display:block;margin-top:12px;color:var(--atlas-secondary);font-size:var(--atlas-label-size)}
+.artwork{height:95px;width:180px;background:var(--atlas-action);opacity:.2;margin:24px auto -28px;mask-size:contain;mask-position:center;mask-repeat:no-repeat}
+.compact{padding:24px 18px;min-height:270px;display:flex;justify-content:center;flex-direction:column}
+.compact .ring{width:190px;margin:0 auto 12px}
+.compact .center strong{font-size:32px}
+.compact .legend{gap:8px}
+.compact .legend>div{font-size:var(--atlas-caption-size);gap:8px}
+.compact .legend strong{font-size:18px}
+.compact .columns{margin:16px auto 0;width:100%;gap:14px}
+.compact .barSpace{height:145px}
+.compact .column>strong{font-size:24px}
+@media(max-width:450px){.visual{padding:24px 18px}.visual .header h2{max-width:100%}.legend>div{flex-wrap:wrap}.columns{gap:16px}.column>strong{font-size:28px}}
+
+.visual .numberSuffix,.visual .numberUnit{font-family:var(--atlas-number-unit-font);font-size:max(11px,var(--atlas-number-unit-scale));font-weight:var(--atlas-number-unit-weight);color:var(--atlas-number-unit-color);letter-spacing:normal;vertical-align:baseline}
+.visual .center>span{font-family:var(--atlas-number-unit-font);font-weight:var(--atlas-number-unit-weight);color:var(--atlas-number-unit-color)}
+
+.originalChart{display:flex;width:100%;align-items:center;justify-content:center;--color-bg:var(--atlas-card);--font-mono:var(--atlas-display);--font-text:var(--atlas-body)}
+
+.headlineValue{color:var(--atlas-action)}
+
+.compact{min-height:0;height:100%;padding:24px;box-sizing:border-box}
+.compact .ring{width:min(100%,190px);margin:0 auto;container-type:inline-size}
+.compact .center strong{font-size:clamp(20px,17cqi,32px)}
+.visual .center>span{margin-top:2px;line-height:1.2}
+.ring::after{content:"";position:absolute;inset:18.1818182%;border-radius:50%;box-shadow:0 0 0 4px rgb(0 0 0 / .28);pointer-events:none}
+
+.singleValue{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;isolation:isolate;container-type:inline-size;width:100%}.singleValue strong{font-size:clamp(48px,23cqi,110px);line-height:1.1;color:var(--atlas-action)}.singleValue>span{font-size:var(--atlas-caption-size);color:var(--atlas-secondary);font-weight:400;margin-top:4px}.valueSplash{position:absolute;inset:-30%;z-index:-1;background:var(--atlas-action);opacity:.09;mask-size:contain;mask-position:center;mask-repeat:no-repeat}.compact .singleValue{min-height:0;height:100%}
+
+.valueIllustration{position:absolute;width:135%;height:135%;max-width:none;object-fit:contain;left:-17.5%;top:-17.5%;z-index:-1;pointer-events:none;filter:grayscale(1);opacity:.2}.singleValue:has(.valueIllustration){min-height:340px}.compact .singleValue:has(.valueIllustration){min-height:0}
+
+.singleValue{--money-x:0;--money-y:0}.valueIllustration{transform:translate(calc(var(--money-x)*-5px),calc(var(--money-y)*-4px));transition:transform 250ms ease-out}.valueIllustration.valueCoins{z-index:2;opacity:.8;transform:translate(calc(var(--money-x)*10px),calc(var(--money-y)*8px - 18px))}.singleValue>strong,.singleValue>span{position:relative;z-index:1}@media(prefers-reduced-motion:reduce){.valueIllustration,.valueIllustration.valueCoins{transform:none;transition:none}}
+
+.valueIllustration.valueCoins{filter:none;opacity:1;transform:translate(calc(var(--money-x)*10px - 2px),calc(var(--money-y)*8px - 24px))}
+@media(prefers-reduced-motion:reduce){.valueIllustration.valueCoins{transform:translate(-2px,-24px)}}
+
+.additions{width:100%;color:var(--atlas-text)}.metricButtons{display:flex;gap:8px}.metricButtons button{border:1px solid var(--atlas-secondary);border-radius:999px;padding:8px 14px;background:transparent;color:var(--atlas-text);font:inherit;cursor:pointer}.metricButtons button[aria-pressed=true]{background:var(--atlas-action);color:var(--atlas-action-ink);border-color:var(--atlas-action)}
+
+/* Anchor the foreground to the measured number, including longer amounts. */
+.singleValue .valueIllustration.valueCoins{width:clamp(64px,24cqi,120px);height:auto;left:min(calc(var(--value-right, 70%) - 20px),calc(100% - 64px));top:calc(var(--value-bottom, 60%) - 22px);bottom:auto;transform:translate(calc(var(--money-x)*4px),calc(var(--money-y)*3px));}
+@media(prefers-reduced-motion:reduce){.singleValue .valueIllustration.valueCoins{transform:none}}
+
+/* Siehe ApprovedStoryVisual.tsx, "geladen": Das Bild erscheint als Blende.
+   Die Deckkraft bleibt dabei die eigene des Bildes (Hintergrund .2, Muenzen 1)
+   und wird nur mit dem Schalter multipliziert -- ein pauschales opacity:1
+   haette den Hintergrund fuenffach sichtbar gemacht. Als ANIMATION, nicht als
+   Transition: Beide Bilder haben eine transform-Transition, die ein zweites
+   transition-Kurzschreiben ersetzen wuerde. */
+.valueIllustration{--bild-an:0;opacity:calc(.2*var(--bild-an))}
+.valueIllustration.valueCoins{opacity:var(--bild-an)}
+.valueIllustration[data-geladen]{--bild-an:1;animation:bildEin 420ms ease-out}
+@keyframes bildEin{from{opacity:0}}
+@media (prefers-reduced-motion: reduce){.valueIllustration[data-geladen]{animation:none}}

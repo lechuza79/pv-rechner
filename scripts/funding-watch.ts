@@ -1,3 +1,4 @@
+import { FundingSourceReader } from "./lib/funding-source-reader";
 /**
  * Seiten-Wächter für die Förderprogramme — der deterministische Teil der Prüfung.
  *
@@ -50,6 +51,7 @@ if (!url || !key) {
   process.exit(1);
 }
 const sb = createClient(url, key);
+const sources = new FundingSourceReader(sb, "program-watch", process.argv.includes("--dry"));
 const dry = process.argv.includes("--dry");
 const SITE = process.env.SITE_URL ?? "https://solar-check.io";
 const CRON_SECRET = process.env.CRON_SECRET;
@@ -61,6 +63,7 @@ const UA =
 type Zeile = { id: string; data: FundingProgram; page_fingerprint: string | null };
 
 async function main(): Promise<void> {
+  await sources.ready();
   const { data, error } = await sb
     .from("funding_programs")
     .select("id, data, page_fingerprint, archived");
@@ -91,7 +94,7 @@ async function main(): Promise<void> {
     let status = 0;
     for (const versuch of [0, 1, 2]) {
       try {
-        const res = await fetch(p.url, {
+        const res = await sources.fetch(p.url, {
           headers: {
             "User-Agent": UA,
             "Accept-Language": "de-DE,de;q=0.9",
@@ -272,7 +275,21 @@ async function main(): Promise<void> {
     // Der Fingerabdruck trägt seine Herkunft. Live- und Archivfassung derselben
     // Seite unterscheiden sich immer ein wenig; ohne diese Kennzeichnung meldete
     // jeder Wechsel zwischen beiden Wegen eine Änderung, die es nie gab.
-    const fp = ausProduktion ?? markiert(ausArchiv ? "archiv" : "live", fingerprintOf(html));
+    const roher = ausProduktion ? null : fingerprintOf(html);
+    if (!ausProduktion && !roher) {
+      // Die Antwort trägt keinen lesbaren Inhalt — Hülle, Fehlerseite oder
+      // Bot-Prüfung. Das ist ein gescheiterter Abruf und KEINE unveränderte
+      // Seite: Ein Abdruck über nichts wäre stabil, und die Seite stünde für
+      // immer als bestätigt da, ohne dass sie je jemand gelesen hätte.
+      await sb.from("funding_checks").insert({
+        program_id: z.id,
+        verdict: "UNREACHABLE",
+        source: "seite-unerreichbar",
+        note: "Seiten-Wächter: Antwort ohne lesbaren Inhalt (Hülle, Fehlerseite oder Bot-Prüfung)",
+      });
+      continue;
+    }
+    const fp = ausProduktion ?? markiert(ausArchiv ? "archiv" : "live", roher!);
     const herkunft = wegVon(fp);
     const istVergleichbar = vergleichbar(z.page_fingerprint, fp);
     const hatSichGeaendert = istVergleichbar && z.page_fingerprint !== fp;

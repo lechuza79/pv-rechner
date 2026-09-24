@@ -14,7 +14,7 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = pageMetadata({
   path: "/einspeiseverguetung-rechner",
-  title: `Einspeisevergütung-Rechner ${new Date().getFullYear()} – aktueller Satz & Jahresvergütung`,
+  title: `Einspeisevergütung-Rechner ${new Date().getFullYear()}: Satz & Jahresbetrag`,
   description:
     "Wie viel bringt die Einspeisevergütung? Aktuelle EEG-Sätze für Teil- und Volleinspeisung, historische Sätze für Bestandsanlagen seit 2012 und die geschätzte Jahresvergütung — kostenlos, ohne Anmeldung.",
   ogImageTitle: "Was bringt die Einspeisevergütung?",
@@ -53,7 +53,7 @@ function SaetzeBlock() {
   const stichtag = rates.validFrom.split("-").reverse().join(".");
   return (
     <section style={{ marginTop: space.huge * 2 }}>
-      <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 8 }}>
+      <h2 style={{ color: v("--color-text-primary"), marginBottom: 8 }}>
         Einspeisevergütung {year}: die aktuellen EEG-Sätze
       </h2>
       <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.7, color: v("--color-text-muted"), marginBottom: 14 }}>
@@ -97,9 +97,9 @@ function SaetzeBlock() {
 export default function EinspeiseverguetungPage() {
   return (
     <div style={{ background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 32px" }}>
-      <div style={{ maxWidth: v("--page-max-width"), margin: "0 auto" }}>
+      <div style={{ maxWidth: v("--page-max-width"), containerType: "inline-size", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", color: v("--color-text-primary"), lineHeight: 1.2 }}>
+          <h1 style={{ color: v("--color-text-primary") }}>
             Einspeisevergütung-Rechner
           </h1>
           <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-muted"), marginTop: 6, lineHeight: 1.5 }}>

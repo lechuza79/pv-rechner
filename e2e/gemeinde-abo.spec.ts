@@ -14,33 +14,25 @@ import { test, expect } from "@playwright/test";
 // das Fenster. Ohne diesen Test wäre das eine Zusage geblieben, die man erst
 // bemerkt, wenn sich niemand anmeldet.
 
-const ORT = "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg";
+// Seit dem neuen Design (09/2026) steht dieses Anmeldefeld nur noch auf den
+// Förder-Stadtseiten; die Ortsseite des Atlas hat ein eigenes Fenster im
+// freigegebenen Design (e2e/gemeindeseite.spec.ts).
+const ORT = "/photovoltaik-foerderung/hessen/nidda";
 
 test.describe("Gemeinde-Abo", () => {
   test("der Knopf neben der Überschrift öffnet das Anmeldefenster", async ({ page }) => {
     await page.goto(ORT);
 
     // Die Überschrift steht über die volle Breite, der Knopf rechts daneben.
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Höchberg");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Nidda");
 
-    const knopf = page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first();
+    const knopf = page.getByRole("button", { name: /^Nidda abonnieren$/ }).first();
     await knopf.click();
 
     const fenster = page.getByRole("dialog");
     await expect(fenster).toBeVisible();
-    await expect(fenster).toContainText("Meldungen zu Höchberg");
+    await expect(fenster).toContainText("Meldungen zu Nidda");
     await expect(fenster.getByLabel("E-Mail-Adresse")).toBeVisible();
-  });
-
-  test("der Erklärtext steht außerhalb des Knopfes", async ({ page }) => {
-    await page.goto(ORT);
-    // Betreiber-Vorgabe 31.08.2026: Eine Beschriftung wie „Förderprogramm,
-    // Leistung u. v. m. abonnieren" macht den Knopf so breit, dass er die
-    // Überschrift daneben erdrückt.
-    const knopf = page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first();
-    // Der Knopf nennt den Ort und die Handlung — mehr nicht.
-    await expect(knopf).toHaveText("Höchberg abonnieren");
-    await expect(page.getByText(/Förderprogramm, Leistung/)).toBeVisible();
   });
 
   test("die klebende Leiste öffnet dasselbe Fenster", async ({ page }) => {
@@ -53,107 +45,12 @@ test.describe("Gemeinde-Abo", () => {
     const leiste = page.locator("#sc-cta-sentinel");
     await expect(leiste).toHaveCount(1); // der Merker, an dem sie sich ausblendet
 
-    const stickyKnopf = page.getByRole("button", { name: /^Höchberg abonnieren$/ }).last();
+    const stickyKnopf = page.getByRole("button", { name: /^Nidda abonnieren$/ }).last();
     await expect(stickyKnopf).toBeVisible();
     await stickyKnopf.click();
 
     await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(page.getByRole("dialog")).toContainText("Meldungen zu Höchberg");
-  });
-
-  test("der Block steht rechts neben der Überschrift, Text unter dem Knopf", async ({ page }) => {
-    await page.setViewportSize({ width: 1200, height: 900 });
-    await page.goto(ORT);
-
-    const h1 = page.getByRole("heading", { level: 1 });
-    const knopf = page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first();
-    const text = page.getByText(/Förderprogramm, Leistung/);
-
-    const [hb, kb, tb] = await Promise.all([h1.boundingBox(), knopf.boundingBox(), text.boundingBox()]);
-    if (!hb || !kb || !tb) throw new Error("Element ohne Ausdehnung");
-
-    // RECHTS DANEBEN, nicht darunter: Der Knopf beginnt rechts vom Ende der
-    // Überschrift, und beide teilen sich dieselbe Zeile.
-    expect(kb.x).toBeGreaterThan(hb.x + hb.width - 1);
-    expect(kb.y).toBeLessThan(hb.y + hb.height);
-
-    // Innerhalb des Blocks: Text UNTER dem Knopf, rechtsbündig zu ihm.
-    expect(tb.y).toBeGreaterThan(kb.y + kb.height - 1);
-    expect(Math.abs(tb.x + tb.width - (kb.x + kb.width))).toBeLessThanOrEqual(2);
-
-    // Der Block bleibt im sichtbaren Bereich (zum Dokument-Überlauf siehe die
-    // Begründung im Mobil-Test).
-    const [blockRechts, sichtbar] = await page.evaluate(() => [
-      Math.round(document.querySelector(".gemeinde-abo")!.getBoundingClientRect().right),
-      document.documentElement.clientWidth,
-    ]);
-    expect(blockRechts).toBeLessThanOrEqual(sichtbar);
-  });
-
-  test("auf schmalen Schirmen steht der Block unter der Überschrift", async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 800 });
-    await page.goto(ORT);
-
-    const h1 = page.getByRole("heading", { level: 1 });
-    const knopf = page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first();
-    const hb = await h1.boundingBox();
-    if (!hb) throw new Error("Überschrift ohne Ausdehnung");
-    const text = page.getByText(/Förderprogramm, Leistung/);
-    const [kb, tb] = await Promise.all([knopf.boundingBox(), text.boundingBox()]);
-    if (!kb || !tb) throw new Error("Element ohne Ausdehnung");
-
-    // Unter die Überschrift gerutscht statt daneben.
-    expect(kb.y).toBeGreaterThan(hb.y + hb.height - 1);
-    // Und der Text unter den Knopf.
-    expect(tb.y).toBeGreaterThan(kb.y + kb.height - 1);
-
-    // Der Knopf nimmt die volle Breite — mit dem Daumen zu treffen.
-    expect(kb.width).toBeGreaterThan(280);
-
-    // Der Abo-Block bleibt im sichtbaren Bereich.
-    //
-    // GEZIELT AUF DEN BLOCK, nicht auf das ganze Dokument: Die erste Fassung maß
-    // den seitlichen Überlauf der Seite und wurde dadurch flackernd — die
-    // Kennzahlen-Kachelreihe darunter lädt nach und ragt auf 375 px rund 60 px
-    // hinaus. Der Test war je nach Ladezeitpunkt grün oder rot und hätte am Ende
-    // einen fremden Befund meinem Block angelastet. Dass die Kachelreihe
-    // überläuft, ist ein eigener, bestehender Punkt.
-    const blockRechts = await page.evaluate(() => {
-      const b = document.querySelector(".gemeinde-abo");
-      return b ? Math.round(b.getBoundingClientRect().right) : -1;
-    });
-    const sichtbar = await page.evaluate(() => document.documentElement.clientWidth);
-    expect(blockRechts).toBeGreaterThan(0);
-    expect(blockRechts).toBeLessThanOrEqual(sichtbar);
-  });
-
-  test("ein sehr langer Ortsname wird gekürzt, die Handlung bleibt lesbar", async ({ page }) => {
-    // „Alt Zauche-Wußwerk/Stara Niwa-Wózwjerch" — 39 Zeichen, der längste
-    // Gemeindename im Bestand. Ohne Kürzung wäre entweder der Knopf breiter
-    // als die Seite oder „abonnieren" abgeschnitten.
-    await page.setViewportSize({ width: 375, height: 800 });
-    await page.goto("/solar-atlas/brandenburg/landkreis-dahme-spreewald/alt-zauche-wusswerk-stara-niwa-w-zwjerch");
-
-    const knopf = page.getByRole("button", { name: /abonnieren$/ }).first();
-    await expect(knopf).toBeVisible();
-
-    // Die Handlung steht vollständig da.
-    await expect(knopf).toContainText("abonnieren");
-
-    // Und der Knopf bleibt im Fenster.
-    const [rechts, sichtbar] = await page.evaluate(() => [
-      Math.round(document.querySelector(".gemeinde-abo")!.getBoundingClientRect().right),
-      document.documentElement.clientWidth,
-    ]);
-    expect(rechts).toBeLessThanOrEqual(sichtbar);
-
-    // Der Name ist wirklich beschnitten, nicht bloß klein: Der sichtbare
-    // Bereich ist schmaler als der Text, den er trägt.
-    const beschnitten = await page.evaluate(() => {
-      const o = document.querySelector(".gemeinde-abo-ort") as HTMLElement | null;
-      return o ? o.scrollWidth > o.clientWidth : false;
-    });
-    expect(beschnitten).toBe(true);
+    await expect(page.getByRole("dialog")).toContainText("Meldungen zu Nidda");
   });
 
   test("die Förderseite trägt dieselbe Kopfzeile", async ({ page }) => {
@@ -202,7 +99,7 @@ test.describe("Gemeinde-Abo", () => {
 
   test("der Abo-Knopf trägt die Glocke", async ({ page }) => {
     await page.goto(ORT);
-    const knopf = page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first();
+    const knopf = page.getByRole("button", { name: /^Nidda abonnieren$/ }).first();
     // Das Zeichen sitzt IM Knopf, und der Knopf trägt die Klasse, an der der
     // Schwing-Effekt hängt — der Effekt gehört an die Handlung, nicht ans
     // Symbol (dasselbe Symbol steht anderswo nur beschreibend da).
@@ -335,7 +232,7 @@ test.describe("Gemeinde-Abo", () => {
       /(mail|meldung|nachricht)\w*\s+(im|pro|je)\s+(monat|woche|jahr)|(monatlich|wöchentlich|jährlich)\w*(\s+\w+){0,2}\s+(mail|meldung|nachricht)/i;
 
     await page.goto(ORT);
-    await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
+    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
     const bestand = page.getByRole("dialog");
     await expect(bestand).toContainText(/Zuschuss/);
     expect((await bestand.innerText()).match(verbotenerTakt)).toBeNull();
@@ -347,41 +244,6 @@ test.describe("Gemeinde-Abo", () => {
     // nennt die tägliche Prüfung, die Bestandsseite nennt ihre drei Auslöser.
     await expect(foerder).toContainText("täglich");
     expect((await foerder.innerText()).match(verbotenerTakt)).toBeNull();
-  });
-
-  test("nach der Verwaltung fragt nur das Bestands-Abo", async ({ page }) => {
-    // SPIEGELBILDLICH zur Technik-Frage: Jede Gattung stellt genau eine
-    // Zusatzfrage. Bestandszahlen sind für eine Verwaltung ein anderer
-    // Gegenstand als für einen Hausbesitzer; die Förderprogramme des eigenen
-    // Orts kennt sie dagegen längst — dort wäre die Angabe eine ohne
-    // Verwendung, und eine solche zu erheben ist die Datensammlung, die dieses
-    // Projekt überall sonst ablehnt.
-    //
-    // Und NICHT vorausgewählt: Ein gesetzter Haken wäre eine Angabe, die wir
-    // dem Anmeldenden untergeschoben haben.
-    await page.goto(ORT);
-    await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
-    const haken = page
-      .getByRole("dialog")
-      .getByRole("checkbox", { name: /Stadt- oder Gemeindeverwaltung/ });
-    await expect(haken).toBeVisible();
-    await expect(haken).not.toBeChecked();
-    await haken.check();
-    await expect(haken).toBeChecked();
-
-    await page.goto("/photovoltaik-foerderung/hessen/nidda");
-    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
-    await expect(
-      page.getByRole("dialog").getByRole("checkbox", { name: /Stadt- oder Gemeindeverwaltung/ }),
-    ).toHaveCount(0);
-  });
-
-  test("das Bestands-Abo fragt keine Technik", async ({ page }) => {
-    await page.goto(ORT);
-    await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
-    const fenster = page.getByRole("dialog");
-    await expect(fenster.getByLabel("E-Mail-Adresse")).toBeVisible();
-    await expect(fenster.getByText("Wofür interessierst du dich?")).toHaveCount(0);
   });
 
   test("eine beanstandete Adresse färbt das Feld, ein Serverfehler nicht", async ({ page }) => {
@@ -405,7 +267,7 @@ test.describe("Gemeinde-Abo", () => {
     );
 
     await page.goto(ORT);
-    await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
+    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
     const fenster = page.getByRole("dialog");
     const feld = fenster.getByLabel("E-Mail-Adresse");
 
@@ -447,11 +309,11 @@ test.describe("Gemeinde-Abo", () => {
     // Ortsseite mit dem Merker, den die Bestätigung anhängt.
     await page.goto(`${ORT}?abo=1`);
 
-    const quittung = page.getByRole("status").filter({ hasText: "Angemeldet für Höchberg" });
+    const quittung = page.getByRole("status").filter({ hasText: "Angemeldet für Nidda" });
     await expect(quittung).toBeVisible();
 
     // Kein Anmeldeknopf mehr daneben — er böte an, was gerade geschehen ist.
-    await expect(page.getByRole("button", { name: /^Höchberg abonnieren$/ })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /^Nidda abonnieren$/ })).toHaveCount(0);
 
     // Der Merker verschwindet aus der Adresse. Sonst trägt jeder geteilte Link
     // und jedes Lesezeichen für immer eine Bestätigung, die dem nächsten Leser
@@ -460,13 +322,13 @@ test.describe("Gemeinde-Abo", () => {
 
     // Und ohne Merker steht wieder der Knopf da.
     await page.goto(ORT);
-    await expect(page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: /^Nidda abonnieren$/ }).first()).toBeVisible();
     await expect(page.getByRole("status").filter({ hasText: "Angemeldet für" })).toHaveCount(0);
   });
 
   test("eine unbrauchbare Adresse kommt nicht durch", async ({ page }) => {
     await page.goto(ORT);
-    await page.getByRole("button", { name: /^Höchberg abonnieren$/ }).first().click();
+    await page.getByRole("button", { name: /^Nidda abonnieren$/ }).first().click();
 
     const fenster = page.getByRole("dialog");
     const feld = fenster.getByLabel("E-Mail-Adresse");

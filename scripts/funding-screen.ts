@@ -1,3 +1,9 @@
+import { municipalReviewQueue, validateMunicipalReviews, type InquiryReceipt } from "../lib/funding-municipal-review";
+import municipalReviews from "../data/funding/municipal-reviews.json";
+import { ABSCHLIESSENDE_ERGEBNISSE, urteilPasstZurMessung, groupedPendingFundingSources, pendingFundingSources, type ReviewSource } from "../lib/funding-source-review";
+import { abschliessendesErgebnis, notizMitHerkunft } from "../lib/funding-altergebnis";
+import { liestDieAngefragteSeite, seitenAbrufAdressen, seitenSchluessel } from "../lib/funding-seiten";
+import { FundingSourceReader, FundingSourceUnreadable, recordStage } from "./lib/funding-source-reader";
 /**
  * Abdeckungs-Screening: alle Gemeinden mit Förderseite systematisch durchsehen.
  *
@@ -36,6 +42,7 @@
  */
 
 import { resolve } from "node:path";
+import { heuteInBerlin } from "../lib/zeit";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { FUNDING_PROGRAMS } from "../lib/funding-programs";
@@ -62,6 +69,7 @@ if (!url || !key) {
   process.exit(1);
 }
 const sb = createClient(url, key);
+const sources = new FundingSourceReader(sb, "screen", process.argv.includes("--dry"));
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
@@ -144,7 +152,8 @@ async function offeneKandidaten(limit: number) {
     return (z.screen_version ?? 1) >= SCREEN_VERSION;
   };
 
-  const rest = offenIds.filter((id) => !erledigt(id));
+  const byId = new Map(kk.map(k => [k.region_id, k.thema_foerderung_url!]));
+  const rest = offenIds.filter((id) => !erledigt(id) && sources.due(byId.get(id)!));
   const pop = new Map<string, number>();
   for (let i = 0; i < rest.length; i += 500) {
     const { data: reg } = await sb.from("mastr_regions").select("region_id, population, name").in("region_id", rest.slice(i, i + 500));
@@ -274,40 +283,246 @@ async function zeileVersion(regionId: string): Promise<number | null> {
   return (data?.screen_version as number | undefined) ?? null;
 }
 
+/** Every municipality/URL association, including additional sources hidden by coverage summaries. */
+async function quellen(): Promise<void> {
+  const rows = await alleZeilen<ReviewSource & { techniken: string | null; zustand: string }>(
+    "funding_seiten",
+    "region_id,url,techniken,zustand,gelesen_am,gelesen_ergebnis,gelesen_notiz,seite_geaendert_am",
+    (q) => q.order("region_id").order("url"),
+  );
+  if (process.argv.includes("--kommunen")) {
+    const receipts = await alleZeilen<InquiryReceipt>("funding_anfragen", "program_id,gesendet_am,beleg,antwort_am", q => q.order("id"));
+    console.log(JSON.stringify(municipalReviewQueue(rows, validateMunicipalReviews(municipalReviews), receipts, new Date().toISOString()), null, 2));
+    return;
+  }
+  const pending = pendingFundingSources(rows);
+  if (process.argv.includes("--gruppiert")) {
+    const groups = groupedPendingFundingSources(rows);
+    console.log(JSON.stringify({ totalSources: rows.length, pendingSources: pending.length, uniquePendingSources: groups.length, groups }, null, 2));
+    return;
+  }
+  console.log(JSON.stringify({ totalSources: rows.length, pendingSources: pending.length, sources: process.argv.includes("--alle") ? rows : pending }, null, 2));
+}
+
+/**
+ * Alte Freitext-Urteile in ein abschließendes Ergebnis umdeuten.
+ *
+ *   npm run foerder:screen -- --altergebnisse              # nur zeigen
+ *   npm run foerder:screen -- --altergebnisse --schreiben  # wirklich umdeuten
+ *
+ * Die Zuordnung steht in lib/funding-altergebnis.ts als exakte Tabelle und ist
+ * dort von Tests festgenagelt; hier wird nichts nachformuliert. Ohne `--schreiben`
+ * passiert nichts — ein versehentlicher Lauf soll nicht 267 fremde Urteile
+ * umdeuten.
+ */
+async function altergebnisse(): Promise<void> {
+  const rows = await alleZeilen<ReviewSource>(
+    "funding_seiten",
+    "region_id,url,gelesen_am,gelesen_ergebnis,gelesen_notiz,seite_geaendert_am",
+    (q) => q.order("region_id").order("url"),
+  );
+  const offen = pendingFundingSources(rows).filter((r) => r.gelesen_am);
+  const umzudeuten: { zeile: ReviewSource; neu: string }[] = [];
+  const vonHand = new Map<string, number>();
+  for (const zeile of offen) {
+    const neu = abschliessendesErgebnis({ ergebnis: zeile.gelesen_ergebnis, notiz: zeile.gelesen_notiz });
+    if (neu) umzudeuten.push({ zeile, neu });
+    else {
+      const wort = (zeile.gelesen_ergebnis ?? "").trim();
+      vonHand.set(wort, (vonHand.get(wort) ?? 0) + 1);
+    }
+  }
+  const schreiben = process.argv.includes("--schreiben");
+  console.log(`${offen.length} gelesene Zeilen liegen trotzdem im Vorrat.`);
+  console.log(`  ${umzudeuten.length} lassen sich nach der Tabelle abhaken, ${offen.length - umzudeuten.length} bleiben.\n`);
+  const nachWort = new Map<string, number>();
+  for (const { neu } of umzudeuten) nachWort.set(neu, (nachWort.get(neu) ?? 0) + 1);
+  for (const [wort, anzahl] of [...nachWort].sort((a, b) => b[1] - a[1])) console.log(`  → ${wort}: ${anzahl}`);
+  console.log("\nBleibt liegen (von Hand oder frisch messen):");
+  for (const [wort, anzahl] of [...vonHand].sort((a, b) => b[1] - a[1])) console.log(`  ${String(anzahl).padStart(4)}  ${wort}`);
+  if (!schreiben) {
+    console.log("\nProbelauf — nichts geschrieben. Mit --schreiben wird umgedeutet.");
+    return;
+  }
+  let geschrieben = 0;
+  for (const { zeile, neu } of umzudeuten) {
+    const { error } = await sb
+      .from("funding_seiten")
+      .update({ gelesen_ergebnis: neu, gelesen_notiz: notizMitHerkunft(zeile.gelesen_notiz, zeile.gelesen_ergebnis ?? "") })
+      .eq("region_id", zeile.region_id)
+      .eq("url", zeile.url);
+    if (error) throw new Error(`${zeile.region_id} ${zeile.url}: ${error.message}`);
+    geschrieben += 1;
+  }
+  console.log(`\n${geschrieben} Zeilen umgedeutet, der alte Wortlaut steht jeweils in der Notiz.`);
+}
+
 /**
  * Eine Fundstelle als gelesen abhaken.
  *
- *   npm run foerder:screen -- --gelesen 05370020 --ergebnis aufgenommen --notiz "150 € je Anlage"
- *   npm run foerder:screen -- --gelesen 05158016 --ergebnis verworfen --notiz "nur Beratung, keine Förderung"
+ *   npm run foerder:screen -- --gelesen 05370020 --url https://example.de/foerderung --ergebnis aufgenommen --beleg "150 € je Anlage"
+ *   npm run foerder:screen -- --gelesen 13074001 --url beispiel.de/weg --ergebnis quelle-entfernt --tot
+ *   Reviews require one municipality and one currently readable source.
  *
  * `ergebnis` ist bewusst frei und nicht auf eine Auswahl festgelegt: Was beim
  * Lesen herauskommt, ist mehr als aufgenommen/verworfen — „Betrag nur im PDF"
  * und „Träger antwortet nicht" sind eigene Zustände, und eine zu enge Liste
  * drängt sie in die falsche Schublade.
+ *
+ * ABGEHAKT WERDEN BEIDE TABELLEN — und dass das bis zum 09.09.2026 nicht so war,
+ * ist die Ursache des größten Rückstaus im Katalog. Die Seiten-Tabelle führt seit
+ * ihrer Einführung ein Feld „gelesen am"; geschrieben hat es kein einziges
+ * Werkzeug. Gemessen an diesem Tag: 275 als Treffer eingestufte Seiten, keine
+ * davon je abgehakt, 144 als Balkonkraftwerk eingeordnet. Konstanz lag drei
+ * Wochen darunter, während wir sein Programm über eine fremde Liste fanden.
+ *
+ * Ein Vorrat, aus dem nichts herausgenommen werden kann, wächst nur — und sieht
+ * dabei aus wie ein Vorrat, an dem gearbeitet wird.
+ *
+ * Each review identifies one municipality and one source with a current quote.
  */
 async function gelesen(): Promise<void> {
   const wert = (name: string) => {
     const i = process.argv.indexOf(`--${name}`);
     return i >= 0 ? process.argv[i + 1] : null;
   };
-  const regionId = wert("gelesen");
+  const roh = wert("gelesen");
   const ergebnis = wert("ergebnis");
-  if (!regionId || !ergebnis) {
-    console.error("Aufruf: --gelesen <region_id> --ergebnis <text> [--notiz <text>]");
+  if (!roh || !ergebnis) {
+    console.error(`Aufruf: --gelesen <region_id> --url <url> (--beleg <quote> | --tot) --ergebnis <${[...ABSCHLIESSENDE_ERGEBNISSE].join(" | ")}> [--notiz <text>]`);
     process.exit(1);
   }
-  const { error } = await sb
-    .from("funding_coverage")
-    .update({
-      gelesen_am: new Date().toISOString().slice(0, 10),
-      gelesen_ergebnis: ergebnis,
-      gelesen_notiz: wert("notiz"),
-    })
-    .eq("region_id", regionId);
-  console.log(error ? `FEHLER: ${error.message}` : `${regionId} als gelesen vermerkt (${ergebnis}).`);
+  // EIN FREITEXT-ERGEBNIS HAKT NICHTS AB — BLOCKER (20.09.2026).
+  // Eine Zeile verlässt den Vorrat nur, wenn ihr Ergebnis eines der
+  // abschließenden Wörter ist (`pendingFundingSources`). Jedes andere Wort
+  // schreibt zwar Datum und Beleg, lässt die Zeile aber stehen — von einer
+  // NIE gelesenen Zeile ist sie danach nicht zu unterscheiden, und genau so
+  // sinkt der Vorrat nicht, obwohl gearbeitet wurde.
+  //   Gemessen an diesem Tag: 625 der 2.375 gelesenen Zeilen (26 %) tragen
+  //   Freitext — „verworfen", „Adresse entfernt (404/410 beim Gegenlesen)" —
+  //   und liegen deshalb weiter im Vorrat von 13.905. Mir selbst ist es in
+  //   diesem Lauf mit drei Zeilen passiert, bevor ich es gemessen habe.
+  //   Dieselbe Fehlerklasse wie der Vorrat, aus dem nichts herausgenommen
+  //   werden konnte: von außen unsichtbar, weil die Zahl dabei genau so
+  //   aussieht wie bei ehrlicher Arbeit.
+  // Die Prosa gehört in `--notiz`; `--ergebnis` trägt das Urteil.
+  if (!ABSCHLIESSENDE_ERGEBNISSE.has(ergebnis.trim().toLowerCase())) {
+    console.error(
+      `„${ergebnis}" ist kein abschließendes Ergebnis — die Zeile bliebe im Vorrat stehen, als wäre sie nie gelesen worden.\n` +
+        `Erlaubt: ${[...ABSCHLIESSENDE_ERGEBNISSE].join(", ")}\n` +
+        `Die Begründung gehört in --notiz.`,
+    );
+    process.exit(1);
+  }
+  const ids = roh.split(",").map((x) => x.trim()).filter(Boolean);
+  const eintrag = {
+    gelesen_am: heuteInBerlin(),
+    gelesen_ergebnis: ergebnis,
+    gelesen_notiz: wert("notiz"),
+  };
+  const sourceUrl = wert("url");
+  const quote = wert("beleg");
+  // EINE TOTE ADRESSE IST EIN BEFUND, KEIN HINDERNIS (20.09.2026). Bis heute
+  // verlangte jedes Abhaken einen Beleg AUS der Seite — eine Adresse, die mit
+  // 404 antwortet, konnte deshalb nie aus dem Vorrat heraus. Gemessen an
+  // diesem Tag: 1.767 der 13.401 offenen Quellzeilen (13 %) stehen auf
+  // Adressen, die der Seiten-Wächter selbst als unerreichbar führt. Ein
+  // Vorrat, aus dem nichts herausgenommen werden kann, wächst nur.
+  //   GEMESSEN WIRD TROTZDEM, NIE GEGLAUBT: Der abgelegte Zustand taugt dafür
+  //   nicht. In einer Stichprobe von 14 solchen Adressen antworteten SECHS
+  //   heute mit HTTP 200 — darunter zwei, deren Name ein Förderprogramm
+  //   verspricht. Wer nach dem Zustandsfeld abhakt, wirft jede dritte lesbare
+  //   Förderseite weg, ohne sie gesehen zu haben.
+  //   Deshalb: `--tot` ersetzt den Beleg nicht durch eine Annahme, sondern
+  //   durch eine MESSUNG im selben Augenblick. Sie muss `missing` ergeben
+  //   (HTTP 404/410) — das ist die einzige Antwort, die etwas über die Quelle
+  //   sagt. `blocked`, `shell`, `network` und `server` sagen etwas über
+  //   unseren Versuch und lassen die Zeile stehen; antwortet die Adresse gar
+  //   normal, gilt wieder die Belegpflicht.
+  const tot = process.argv.includes("--tot");
+  if (ids.length !== 1 || !sourceUrl || (!quote && !tot)) throw new Error("Ein Ort, --url und --beleg sind für eine Quellenprüfung erforderlich (--tot statt --beleg nur für eine nachweislich entfernte Adresse).");
+  if (tot && quote) throw new Error("--tot und --beleg schließen einander aus: entweder steht der Beleg in der Seite oder die Seite ist weg.");
+  const normalized = seitenSchluessel(sourceUrl);
+  const { data: page, error: lookupError } = await sb.from("funding_seiten").select("url").eq("region_id", ids[0]).eq("url", normalized).maybeSingle();
+  if (lookupError || !page) throw new Error(lookupError?.message ?? "Die genaue Förderseite ist nicht erfasst.");
+  // Der Abgleich identifiziert sich wie der Screening-Lauf zehn Zeilen weiter
+  // unten — ohne die Kennung antwortet ein Teil der Amtsseiten mit 403, und
+  // ein Abhaken darf an der Kennung nicht scheitern. `verify` statt `fetch`:
+  // ein gescheiterter GEGENLESE-Versuch ist keine Beobachtung über die Quelle
+  // und sperrt sie deshalb nicht (siehe FundingSourceReader.verify).
+  // Abgerufen wird ueber DENSELBEN Adressweg wie in den Seiten-Laeufen
+  // (`seitenAbrufAdressen`): Der gespeicherte Schluessel traegt weder Schema
+  // noch „www." und bei rund jeder neunten Adresse eine HTML-Maskierung
+  // (`&amp;`), die ein Server als Parameter namens „amp;…" liest. Wer hier
+  // die Rohadresse nimmt, laesst ein Abhaken an der Schreibweise scheitern —
+  // dieselbe Klasse wie die fehlende Kennung eine Zeile weiter unten.
+  let response: Response | undefined;
+  let letzterFehler: unknown;
+  let gelandetAuf: string | undefined;
+  const gruende: (string | null)[] = [];
+  for (const adresse of seitenAbrufAdressen(sourceUrl)) {
+    try {
+      const antwort = await sources.verify(adresse, {
+        headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
+        redirect: "follow",
+        signal: AbortSignal.timeout(25000),
+      });
+      // EINE ANTWORT VON WOANDERS BEENDET DIE SUCHE NICHT — gemessen am
+      // 20.09.2026 an Albershausen: Die Form ohne „www." antwortet mit 200 und
+      // liefert die STARTSEITE; die Form mit „www." liefert die Förderseite und
+      // wurde nie probiert, weil die Schleife beim ersten Erfolg abbrach.
+      // Behalten wird die letzte Antwort trotzdem: Passt keine Schreibweise,
+      // soll die Fehlermeldung sagen, wo wir gelandet sind, statt nur „der
+      // Beleg steht nicht drin" — das ist derselbe Satz wie bei einem falschen
+      // Zitat und schickt die Suche in die falsche Richtung.
+      response = antwort;
+      gelandetAuf = antwort.url || adresse;
+      if (liestDieAngefragteSeite(sourceUrl, gelandetAuf)) break;
+    } catch (fehler) {
+      letzterFehler = fehler;
+      gruende.push(fehler instanceof FundingSourceUnreadable ? fehler.reason : null);
+    }
+  }
+  // JEDE Schreibweise muss „weg" ergeben, nicht irgendeine. `seitenAbrufAdressen`
+  // probiert mehrere Formen derselben Adresse; genügte eine 404 darunter, hakte
+  // ein Tippfehler in der Erfassung die Zeile ab, während die richtige Form
+  // die Förderseite ausliefert.
+  const entfernt = !response && gruende.length > 0 && gruende.every((g) => g === "missing");
+  if (tot) {
+    if (response) throw new Error("Die Adresse antwortet — kein Fall für --tot, sondern für --beleg.");
+    if (!entfernt) throw letzterFehler ?? new Error("Die Quelle war nicht lesbar.");
+  } else {
+    if (!response) throw letzterFehler ?? new Error("Die Quelle war nicht lesbar.");
+    const original = await response.text();
+    if (!sichtbarerText(quote!) || !sichtbarerText(original).includes(sichtbarerText(quote!))) {
+      const woanders = gelandetAuf && !liestDieAngefragteSeite(sourceUrl, gelandetAuf)
+        ? ` Gelesen wurde in Wahrheit ${gelandetAuf} — der Server leitet die angefragte Adresse dorthin um.`
+        : "";
+      throw new Error("Der Beleg steht nicht im aktuell gelesenen Original." + woanders);
+    }
+  }
+  // DAS URTEIL MUSS ZUR MESSUNG PASSEN — geprüft, NACHDEM gemessen wurde, weil
+  // erst dann feststeht, ob die Adresse wirklich weg ist. Die Regel selbst
+  // steht als eigene Funktion in lib/funding-source-review.
+  const unpassend = urteilPasstZurMessung(ergebnis, tot);
+  if (unpassend) throw new Error(unpassend);
+  const nachweis = tot ? "HTTP 404/410 beim Gegenlesen am " + heuteInBerlin() : quote!;
+  const { error } = await sb.from("funding_seiten").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote: nachweis, entfernt: tot || undefined, note: wert("notiz"), reviewed_at: new Date().toISOString() }) }).eq("region_id", ids[0]).eq("url", normalized);
+  if (error) throw new Error(error.message);
+  recordStage("review", { region_id: ids[0], url: sourceUrl, quote: nachweis, entfernt: tot, reviewed_at: new Date().toISOString(), result: ergebnis });
+  // Preserve the legacy one-page view only when it refers to this exact URL.
+  const { data: coverage } = await sb.from("funding_coverage").select("url").eq("region_id", ids[0]).maybeSingle();
+  if (coverage?.url && seitenSchluessel(coverage.url) === normalized) {
+    const { error: coverageError } = await sb.from("funding_coverage").update({ ...eintrag, gelesen_notiz: JSON.stringify({ url: sourceUrl, quote: nachweis, entfernt: tot || undefined }) }).eq("region_id", ids[0]).eq("url", coverage.url);
+    if (coverageError) throw new Error(coverageError.message);
+  }
+  console.log(tot ? "Eine entfernte Quelle als geprüft vermerkt (Adresse antwortet mit 404/410)." : "Eine konkrete Quelle als gelesen vermerkt.");
 }
 
 async function main(): Promise<void> {
+  if (process.argv.includes("--quellen") || process.argv.includes("--kommunen")) return quellen();
+  if (process.argv.includes("--altergebnisse")) return altergebnisse();
+  await sources.ready();
   if (process.argv.includes("--stand")) return stand();
   if (process.argv.includes("--gelesen")) return gelesen();
   if (process.argv.includes("--treffer")) return treffer();
@@ -325,7 +540,7 @@ async function main(): Promise<void> {
     let http = 0;
     for (const versuch of [0, 1]) {
       try {
-        const res = await fetch(k.url, {
+        const res = await sources.fetch(k.url, {
           headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
           redirect: "follow",
           signal: AbortSignal.timeout(15_000 + versuch * 10_000),
@@ -343,6 +558,7 @@ async function main(): Promise<void> {
     const befund = html
       ? einordnen(sichtbarerText(html))
       : { verdikt: "unerreichbar" as ScreenVerdikt, techniken: [] as ScreenTechnik[], beleg: "" };
+    recordStage("screen-result", { region_id: k.region_id, url: k.url, extracted: befund.techniken.length, verdict: befund.verdikt, evaluated_at: new Date().toISOString() });
     zaehler.set(befund.verdikt, (zaehler.get(befund.verdikt) ?? 0) + 1);
     for (const t of befund.techniken) jeTechnik.set(t, (jeTechnik.get(t) ?? 0) + 1);
 

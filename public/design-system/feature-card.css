@@ -1,0 +1,35 @@
+/* Reusable light feature card: visual + content, then centered full-width action row. */
+:root{--sc-surface-light:#e8ece3;--sc-surface-light-inset:#dce5db;--sc-illustration-circle-light:#c6d5cd;--sc-profit-fill:rgba(10,245,96,.21);--sc-profit-ink:#173b42;--sc-profit-outline:#00ff5e;--sc-profit-plus-opacity:.55}
+.sc-feature-card{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);align-items:start;column-gap:28px;row-gap:24px;padding:clamp(24px,4vw,40px)!important;background:var(--sc-surface-light-inset)!important;color:#173b42;border:0;border-radius:24px!important;overflow:visible}
+.sc-feature-card>solar-illustration.sc-feature-visual{display:block;align-self:start;min-width:0;width:120%;max-width:420px;aspect-ratio:1;margin:-18px 0 -18px -10%;--solar-circle:var(--sc-illustration-circle-light)}
+.sc-feature-card>.sc-feature-content{min-width:0}
+.sc-feature-card>.sc-feature-action{grid-column:1/-1;justify-self:center;display:inline-flex;align-items:center;justify-content:center;gap:12px;width:fit-content;max-width:100%;box-sizing:border-box;min-height:48px;margin:0!important;padding:12px 24px!important;border:1px solid #173b4266;border-radius:999px;background:transparent;color:#173b42!important;font:600 14px/1.4 Montserrat,DMSans,sans-serif;text-decoration:none;text-align:center}
+.sc-feature-action svg{flex:none;width:18px;height:18px}
+.sc-feature-card>.sc-feature-action:hover{background:#173b4209;border-color:#173b42}
+.sc-profit-amount{display:inline-flex;align-items:center;white-space:nowrap;gap:4px;padding:10px 16px;border:1px solid var(--sc-profit-outline);border-radius:12px;background:var(--sc-profit-fill);color:var(--sc-profit-ink)}
+
+
+.sc-profit-amount .v3-result-plus{opacity:var(--sc-profit-plus-opacity);margin-right:.22em}
+
+/* The existing brand splash follows the amount without affecting card spacing. */
+.sc-profit-splash{position:relative;isolation:isolate;border-color:transparent;background:transparent}
+.sc-profit-splash::before{content:"";position:absolute;z-index:-1;inset:-20px -30px;pointer-events:none;background:var(--sc-profit-fill);mask:url('/design-assets/design-lab/splash.svg') center/160% 200% no-repeat}
+
+.sc-profit-splash--1::before{mask-image:url('/design-assets/design-lab/splash-blue.svg');background:rgba(10,245,96,.44)}
+.sc-profit-splash--2::before{mask-image:url('/design-assets/design-lab/splash-sage.svg');background:rgba(10,245,96,.44)}
+.sc-profit-splash--3::before{mask-image:url('/design-assets/design-lab/splash-ochre.svg');background:rgba(10,245,96,.44)}
+
+/* Responsive feature layout follows its available section width, not the window. */
+.sc-feature-list{container:sc-features / inline-size}
+.sc-feature-card{--sc-feature-copy-size:var(--font-size-copy,1.125rem);--sc-feature-amount-size:clamp(2rem,3vw,2.375rem)}
+@container sc-features (max-width:42rem){
+ .sc-feature-card{grid-template-columns:minmax(0,.65fr) minmax(0,1.35fr);column-gap:24px;row-gap:20px;padding:24px!important;--sc-feature-copy-size:var(--font-size-body,1rem);--sc-feature-amount-size:2rem}
+ .sc-feature-card>solar-illustration.sc-feature-visual{width:120%;margin:0 0 0 -10%}
+ .sc-feature-card>.sc-feature-action{min-height:44px;padding:10px 20px!important}
+}
+@container sc-features (max-width:28rem){
+ .sc-feature-card{grid-template-columns:minmax(0,1fr);gap:20px;padding:24px!important;--sc-feature-amount-size:1.875rem}
+ .sc-feature-card>solar-illustration.sc-feature-visual{width:min(240px,85%);margin:-12px 0 -20px;justify-self:start}
+ .sc-feature-card>.sc-feature-action{justify-self:stretch;width:100%;padding:12px 16px!important}
+ .sc-profit-splash::before{inset:-12px -16px}
+}

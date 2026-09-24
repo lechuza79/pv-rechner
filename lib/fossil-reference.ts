@@ -1,3 +1,4 @@
+import { HEATING_INVESTMENT, gasInvestmentGross } from "./heating-investment";
 // ─── Fossile Referenzheizung — geteilte Annahmen (PV- UND Wärmepumpen-Rechner) ─
 //
 // EINE Stelle für die Frage: „Was kostet es, NICHT auf die Wärmepumpe zu wechseln?"
@@ -22,11 +23,12 @@
 //
 // Rechner-übergreifend festgenagelt von lib/__tests__/fossil-reference.test.ts.
 
-import { YEAR, type FuelKind } from "./constants";
+import { YEAR, FUEL, WP_FUEL_OPTIONS, type FuelKind } from "./constants";
 import { DEFAULT_HEATPUMP_CONFIG, type HeatPumpConfig } from "./heatpump-config";
 import { co2SurchargeOverToday } from "./calc";
 import { gasMixPriceEurForYear } from "./greengas";
 import type { GasScenario } from "./greengas-config";
+import { OIL_REFERENCE, oilPricePerKwh } from "./oil-reference";
 
 /** Vergleichshorizont jeder Heizungs-Rechnung, in Jahren.
  *  Kommt aus der WP-Config (20 J) und gilt bewusst AUCH im PV-Rechner: Der Block dort
@@ -58,7 +60,14 @@ export function greenGasApplies({ fuelKind, fossilInvest }: { fuelKind: FuelKind
  *  Der Grundpreis ist brennstoffabhängig: Gas kommt über einen Netzanschluss mit
  *  Zähler- und Netzgrundpreis, Heizöl aus einem Tank ohne laufende Anschlussgebühr. */
 export function fossilStandingCostPerYear(fuelKind: FuelKind, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG) {
-  return { fix: cfg.fixCostPerYear[fuelKind], wartung: cfg.gasMaintenance };
+  return { fix: cfg.fixCostPerYear[fuelKind], wartung: fuelKind === "oil" ? OIL_REFERENCE.upkeepPerYear : cfg.gasMaintenance };
+}
+
+/** Fuel-specific replacement estimate; a quote or zero still takes precedence. */
+export function fossilReplacementInvestment(fuelKind: FuelKind, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG, heatLoadKw: number = HEATING_INVESTMENT.gas.minKw): number {
+  if (fuelKind === "oil") return OIL_REFERENCE.investment;
+  const ratio = gasInvestmentGross(heatLoadKw) / gasInvestmentGross(HEATING_INVESTMENT.gas.minKw);
+  return Math.round(cfg.fossilErsatzInvest * ratio);
 }
 
 /** Laufende Nebenkosten der Wärmepumpe, €/a (Wartung + Grundpreis des Stromzählers).
@@ -76,7 +85,7 @@ export interface FossilReferenceInputs {
   /** €/kWh Brennstoff, heutiger All-in-Preis (CO₂-Abgabe des laufenden Jahres inklusive). */
   pricePerKwh: number;
   co2PerKwh: number;
-  /** Jährliche Brennstoff-Teuerung (ohne CO₂-Pfad, der kommt separat obendrauf). */
+  /** Gas-only annual escalation. Oil uses its own all-in UBA trajectory. */
   inflation?: number;
   /** Anschaffung einer neuen fossilen Heizung, € (0 = die vorhandene läuft weiter).
    *  Steuert zugleich, ob die Bio-Treppe greift — siehe greenGasApplies(). */
@@ -111,7 +120,11 @@ export function calcFossilReference(inp: FossilReferenceInputs, cfg: HeatPumpCon
 
   const fuelPerYear: number[] = [];
   for (let i = 0; i < years; i++) {
-    if (greenGasApplied) {
+    if (inp.fuelKind === "oil") {
+      // The UBA end-user price already contains CO2 and VAT. A second surcharge
+      // or a gas-network escalation here would count unrelated costs twice.
+      fuelPerYear.push(inp.fuelKwh * oilPricePerKwh(YEAR + i, YEAR, inp.pricePerKwh));
+    } else if (greenGasApplied) {
       // Zeitvariabler GModG-Gas-Mix-Endkundenpreis (€/kWh, brutto, CO₂ bereits
       // enthalten) — deshalb hier KEIN separater CO₂-Aufschlag (Doppelzählung).
       fuelPerYear.push(inp.fuelKwh * gasMixPriceEurForYear(YEAR + i, gasScenario));
@@ -142,4 +155,55 @@ export function calcFossilReference(inp: FossilReferenceInputs, cfg: HeatPumpCon
     total: fuel + fix + wartung + invest,
     greenGasApplied,
   };
+}
+
+// ─── Abgelesener Verbrauch → Heizwärme ───────────────────────────────────────
+//
+// Wer seine Abrechnung einträgt, nennt die Endenergie SEINER VORHANDENEN Heizung.
+// Die Heizwärme daraus hängt am Nutzungsgrad genau dieser Heizung — und die
+// Referenzrechnung teilt dieselbe Heizwärme danach wieder durch den Nutzungsgrad
+// der GEWÄHLTEN Referenz. Beides muss zusammenpassen, sonst verbrennt die
+// Rechnung mehr, als auf der Abrechnung steht.
+//
+// Bis 12.09.2026 rechnete die Umrechnung fest mit der vorhandenen Therme (90 %),
+// auch wenn im Ergebnis „Alter Gaskessel" (80 %) als vorhandene Heizung gewählt
+// war: aus 24.000 abgelesenen kWh wurden 27.000 gerechnete, rund 4.000 € mehr
+// Ersparnis für die Wärmepumpe (Rechenmodell-Council 12.09.2026). Und die
+// Einheit „Liter Heizöl" setzte den Energieträger der Referenz nicht — ein
+// Öl-Haushalt verglich gegen Gaspreis, Gas-CO₂ und Gas-Grundgebühr.
+
+export type AblesungsEinheit = "gas" | "oel";
+
+const kindDerEinheit = (einheit: AblesungsEinheit): FuelKind => (einheit === "oel" ? "oil" : "gas");
+
+/**
+ * Nutzungsgrad der Heizung, die den abgelesenen Verbrauch erzeugt hat.
+ *
+ * Ist die gewählte Referenz eine BESTANDSANLAGE desselben Energieträgers, IST sie
+ * die vorhandene Heizung — dann gilt ihr Nutzungsgrad. Sonst (Ersatz durch ein
+ * Neugerät, oder ein anderer Energieträger) wissen wir über die vorhandene Anlage
+ * nichts und nehmen die typische vorhandene Heizung aus FUEL. Pauschal den
+ * gewählten Nutzungsgrad zu nehmen wäre falsch: Beim Ersatz beschreibt er das
+ * NEUE Gerät, und der gewollte Effizienzgewinn verschwände.
+ */
+export function kesselDerAblesung(
+  einheit: AblesungsEinheit,
+  referenz: { kind: FuelKind; efficiency: number; bestandsanlage?: boolean } | undefined,
+): number {
+  const kind = kindDerEinheit(einheit);
+  if (referenz?.bestandsanlage && referenz.kind === kind) return referenz.efficiency;
+  return FUEL[kind].efficiency;
+}
+
+/**
+ * Referenzheizung, nachdem die Einheit der Ablesung gewechselt hat. Bleibt beim
+ * aktuellen Eintrag, wenn der Energieträger schon passt; sonst der Eintrag des
+ * neuen Energieträgers mit demselben Fall (Neueinbau bzw. Bestand).
+ */
+export function referenzFuerEinheit(aktuellId: string, einheit: AblesungsEinheit): string {
+  const kind = kindDerEinheit(einheit);
+  const aktuell = WP_FUEL_OPTIONS.find(f => f.id === aktuellId);
+  if (aktuell?.kind === kind) return aktuellId;
+  const gleicherFall = WP_FUEL_OPTIONS.find(f => f.kind === kind && !!f.bestandsanlage === !!aktuell?.bestandsanlage);
+  return (gleicherFall ?? WP_FUEL_OPTIONS.find(f => f.kind === kind) ?? WP_FUEL_OPTIONS[0]).id;
 }

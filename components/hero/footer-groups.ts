@@ -1,0 +1,7 @@
+// Ported from the current Hero Stage shared footer.
+export const footerGroups: [string, [string, string][]][] = [
+ ['Rechner', [['PV-Anlage planen','/pv-bedarf-berechnen'],['PV durchrechnen','/photovoltaik-rechner'],['Balkonkraftwerk','/balkonkraftwerk/rechner'],['Wärmepumpe','/waermepumpe-rechner'],['Klimaanlage','/klimaanlage-stromkosten'],['Einspeisevergütung','/einspeiseverguetung-rechner'],['Live-Simulation','/pv-simulation']]],
+ ['Themen & Förderung',[['Alle Ratgeber','/ratgeber'],['Balkonkraftwerk verstehen','/balkonkraftwerk'],['Balkonkraftwerk anmelden','/balkonkraftwerk/ratgeber/anmelden'],['Balkonkraftwerk mit Speicher','/balkonkraftwerk/ratgeber/mit-speicher'],['PV-Förderung','/photovoltaik-foerderung'],['Balkonkraftwerk-Förderung','/balkonkraftwerk/foerderung'],['Wärmepumpen-Förderung','/ratgeber/waermepumpe-foerderung'],['Glossar','/glossar']]],
+ ['Atlas & Energiemonitor',[['Solar-Atlas','/solar-atlas'],['Strommix Deutschland','/strommix-deutschland'],['Atomstrom-Import','/atomstrom-import'],['Solaranlagen in Deutschland','/photovoltaik-bestand-deutschland'],['Solar-Zubau','/photovoltaik-zubau-deutschland'],['Datenstand & Quellen','/datenstand']]],
+ ['Solar Check & Weiterverwenden',[['Über Solar Check','/ueber'],['So rechnen wir','/methodik'],['Kontakt','/kontakt'],['Medien & Creator','/presse'],['Widgets für deine Website','/energie-widgets'],['Nutzung & Lizenz','/lizenz']]]
+];

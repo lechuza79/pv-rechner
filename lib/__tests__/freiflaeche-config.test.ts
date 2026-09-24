@@ -14,6 +14,7 @@ import {
   freiflaecheZuschlagHerkunft,
 } from "../freiflaeche-config";
 import { PRUEFSTAND } from "../pruefstand";
+import { jahrInBerlin } from "../zeit";
 
 const ROOT = join(__dirname, "..", "..");
 
@@ -148,7 +149,7 @@ describe("Freifläche: Fenster und Jahresreihe stammen aus derselben Tabelle", (
     expect(
       FREIFLAECHE_AUSSCHREIBUNG_LETZTES_JAHR,
       "unvollständiges Ausschreibungsjahr in der Reihe"
-    ).toBeLessThan(new Date().getUTCFullYear());
+    ).toBeLessThan(jahrInBerlin());
   });
 
   it("die gesetzliche Ära endet, wo die Ausschreibung beginnt", () => {

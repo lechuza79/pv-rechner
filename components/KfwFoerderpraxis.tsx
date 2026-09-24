@@ -54,7 +54,7 @@ function Balken({ anteil }: { anteil: number }) {
         style={{
           width: `${Math.min(100, Math.round(anteil * 100))}%`,
           height: "100%",
-          background: v("--color-accent"),
+          background: v("--color-cta"),
         }}
       />
     </div>
@@ -177,7 +177,7 @@ export default function KfwFoerderpraxis({ daten, kreis, nackt }: KfwFoerderprax
         margin: `${space.xxl}px 0`,
       }}
     >
-      <h2 style={{ fontSize: v("--font-size-h2"), margin: `0 0 ${space.md}px` }}>Wer bekommt die Förderung wirklich?</h2>
+      <h2 style={{ margin: `0 0 ${space.md}px` }}>Wer bekommt die Förderung wirklich?</h2>
       {inhalt}
     </section>
   );

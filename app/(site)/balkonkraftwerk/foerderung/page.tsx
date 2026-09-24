@@ -6,6 +6,7 @@ import { FundingStatusBadge, FUNDING_STATUS_NOTE } from "../../../../components/
 import { IconArrowRight, IconExternal } from "../../../../components/Icons";
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import {
+  foerdergebiete,
   fundingAmount,
   fundingStandLabel,
   fundingZaehlt,
@@ -26,7 +27,7 @@ const JAHR = new Date().getFullYear();
 
 export const metadata: Metadata = pageMetadata({
   path: "/balkonkraftwerk/foerderung",
-  title: `Balkonkraftwerk-Förderung ${JAHR}: Welche Kommunen zahlen einen Zuschuss?`,
+  title: `Balkonkraftwerk-Förderung ${JAHR}: Welche Kommunen zahlen?`,
   description:
     "Kommunale Zuschüsse für Balkonkraftwerke, nach Bundesland sortiert: wer fördert, wie viel es für ein übliches Set gibt und wann zuletzt geprüft wurde. Vom Bund gibt es keine Förderung.",
   ogImageTitle: "Balkonkraftwerk-Förderung",
@@ -51,9 +52,9 @@ const S = {
   kopf: { display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: space.sm } as React.CSSProperties,
   traeger: { fontWeight: 700, fontSize: "var(--font-size-body)" } as React.CSSProperties,
   zeile: { fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), lineHeight: 1.6, marginTop: 2 } as React.CSSProperties,
-  betrag: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-positive") } as React.CSSProperties,
+  betrag: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-positive-text") } as React.CSSProperties,
   ortLink: { display: "inline-block", marginTop: space.xs, fontSize: "var(--font-size-small)", fontWeight: 600, color: v("--color-accent"), textDecoration: "none" } as React.CSSProperties,
-  cta: { display: "inline-block", marginTop: space.md, padding: pad("sm", "lg"), borderRadius: v("--radius-md"), fontSize: "var(--font-size-body)", fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent"), textDecoration: "none" } as React.CSSProperties,
+  cta: { display: "inline-block", marginTop: space.md, padding: pad("sm", "lg"), borderRadius: v("--radius-pill"), fontSize: "var(--font-size-body)", fontWeight: 700, background: v("--color-cta"), color: v("--color-text-on-accent"), textDecoration: "none" } as React.CSSProperties,
   hinweis: { background: v("--color-bg-muted"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: pad("md", "lg"), fontSize: "var(--font-size-small)", lineHeight: 1.6, color: v("--color-text-secondary") } as React.CSSProperties,
 };
 
@@ -67,7 +68,22 @@ const S = {
  * auszuwerten wäre die Sorte Kopie, an der im Projekt schon Einheiten und
  * Rechtssätze auseinandergelaufen sind.
  */
+/** Erster Buchstabe groß — die Phrasen des Status-Registers sind für die
+ *  Satzmitte geschrieben und beginnen hier einen Satz. */
+function grossAmAnfang(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 function betragText(p: FundingProgram): { zahl: string | null; text: string } {
+  // Programme, die den Speicher voraussetzen, zahlen für das Referenz-Set (ohne
+  // Speicher) nichts — und „0 €" wäre hier die falsche Auskunft, denn der Betrag
+  // ist ja bekannt, er hängt nur an einer anderen Anlage. Die Übersicht nennt
+  // deshalb die Bedingung statt einer Zahl. Dieselbe Unterscheidung wie bei der
+  // Kumulierungsgrenze im Wärmepumpen-Rechner: „lässt sich hier nicht berechnen"
+  // ist etwas anderes als „es gibt nichts".
+  if (p.balkonNurMitSpeicher) {
+    return { zahl: null, text: "nur zusammen mit einem Speicher — Satz siehe unten" };
+  }
   const a = fundingAmount(p, { technik: "balkon", wattPeak: REFERENZ.moduleWp, kosten: REFERENZ.price });
   if (!a.computable) {
     // Kein strukturierter Satz: Das Programm fördert Steckersolar, aber die Höhe
@@ -121,11 +137,15 @@ export default async function BalkonFoerderungPage() {
   // eine Postleitzahl zu setzen hieße, einen Standort zu erfinden.
   const plzFuer = new Map<string, string>();
   for (const p of programme) {
-    if (p.level !== "kommune" || !p.agsCode) continue;
-    const schluessel = p.agsCode.length === 5 ? `${p.agsCode}000` : p.agsCode;
-    if (schluessel.length !== 8) continue;
-    const geo = await gemeindeGeo(schluessel);
-    if (geo?.plz) plzFuer.set(p.id, geo.plz);
+    if (p.level !== "kommune") continue;
+    // Ein Verbandsgemeinde-Programm trägt mehrere Fördergebiete; für den
+    // Rechner-Link genügt der erste Ort, an dem es gilt.
+    for (const gebiet of foerdergebiete(p)) {
+      const schluessel = gebiet.length === 5 ? `${gebiet}000` : gebiet;
+      if (schluessel.length !== 8) continue;
+      const geo = await gemeindeGeo(schluessel);
+      if (geo?.plz) { plzFuer.set(p.id, geo.plz); break; }
+    }
   }
 
   return (
@@ -193,10 +213,18 @@ export default async function BalkonFoerderungPage() {
                           ) : zaehlt ? (
                             b.text
                           ) : (
-                            /* Der Baustein bringt sein „aktuell" selbst mit („aktuell ausgeschöpft
-                                 (Fördertopf leer)") und ist auf „… ist {phrase}" gebaut. Ein
-                                 eigenes „Aktuell" davor ergab „Aktuell aktuell ausgeschöpft". */
-                            <>Programm ist {FUNDING_STATUS_NOTE[p.status]} — die Konditionen stehen hier zum Nachschlagen.</>
+                            /* OHNE KOPULA — die Phrasen des Registers stehen in zwei
+                                 Formen nebeneinander: „nimmt aktuell Anträge an" ist ein
+                                 Prädikat, „aktuell ausgeschöpft (Fördertopf leer)" eine
+                                 Ergänzung. „Programm ist" davorzusetzen passte auf vier
+                                 von fünf und ergab beim fünften „Programm ist nimmt
+                                 aktuell Anträge an" — sichtbar bei jedem aktiven, aber
+                                 gerade unbestätigten Programm, also genau bei einem frisch
+                                 aufgenommenen. Ein zweites Register mit satzfähigen
+                                 Fassungen wäre die zweite Wahrheit, gegen die dieses
+                                 Projekt gebaut ist; der Satz beginnt deshalb mit der
+                                 Phrase selbst. Das „aktuell" bringt sie mit. */
+                            <>{grossAmAnfang(FUNDING_STATUS_NOTE[p.status])} — die Konditionen stehen hier zum Nachschlagen.</>
                           )}{" "}
                           <a
                             href={p.url}

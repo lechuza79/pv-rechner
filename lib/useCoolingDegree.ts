@@ -8,7 +8,7 @@ import { DEFAULT_AIRCON_CONFIG as CFG } from "./aircon-config";
 
 export type CdhMode = "avg5" | "lastSummer" | "projection";
 export type CdhModes = { avg5: number; lastSummer: number; projection: number };
-export type CdhSource = "fallback" | "open-meteo" | "cache";
+export type CdhSource = "fallback" | "era5";
 export type HeatwaveInfo = { maxTemp: number; hotDays: number; active: boolean } | null;
 
 /** PLZ → Koordinaten aus der geteilten Tabelle. Null, wenn unbekannt. */

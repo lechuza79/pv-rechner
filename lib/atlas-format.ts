@@ -1,4 +1,4 @@
-// Anzeige-Regeln des Solar-Atlas: Einheiten und Regionsnamen.
+// Anzeige-Regeln des Energie-Atlas: Einheiten und Regionsnamen.
 //
 // Bewusst ohne Datenbank- oder Next-Importe, damit Server-Seiten, Client-
 // Komponenten und Embed-Widgets dieselben Funktionen benutzen können. Genau das
@@ -27,6 +27,53 @@ export type Messwert = { value: string; unit: string };
 const zusammen = (m: Messwert) => `${m.value} ${m.unit}`;
 
 /**
+ * Die Staffelung je Größe — EINE Tabelle, aus der die Formatierer darunter
+ * ihre Schwellen nehmen.
+ *
+ * WARUM SIE EXPORTIERT IST (Betreiber, 23.09.2026): Die Rangliste der
+ * Ortsseite läuft als Browser-Skript und kann dieses Modul nicht importieren.
+ * Sie hatte deshalb eine eigene, kürzere Tabelle — und die kannte die Leistung
+ * eines Technologie-Mix nicht: „Windleistung 121.712" stand dort in kW, wo
+ * 121,7 MW hingehört, und Anlagenzahlen blieben ohne Staffelung. Statt einer
+ * zweiten Tabelle bekommt das Skript diese hier vom Server gereicht.
+ *
+ * Eine Stufe gilt ab `ab`; `stellen` ist die Zahl der Nachkommastellen in
+ * dieser Stufe. Die Grundeinheit steht zuletzt mit `ab: 0`.
+ */
+export type Stufe = { ab: number; teiler: number; unit: string; stellen: number };
+
+export const STUFEN: Record<string, Stufe[]> = {
+  pvLeistung: [
+    { ab: 1_000_000, teiler: 1_000_000, unit: "GWp", stellen: 1 },
+    { ab: 1000, teiler: 1000, unit: "MWp", stellen: 1 },
+    { ab: 0, teiler: 1, unit: "kWp", stellen: 0 },
+  ],
+  mixLeistung: [
+    { ab: 1_000_000, teiler: 1_000_000, unit: "GW", stellen: 1 },
+    { ab: 1000, teiler: 1000, unit: "MW", stellen: 1 },
+    { ab: 0, teiler: 1, unit: "kW", stellen: 0 },
+  ],
+  speicherKwh: [
+    { ab: 1_000_000, teiler: 1_000_000, unit: "GWh", stellen: 1 },
+    { ab: 1000, teiler: 1000, unit: "MWh", stellen: 1 },
+    { ab: 0, teiler: 1, unit: "kWh", stellen: 0 },
+  ],
+  // Anlagenzahlen: erst ab einer Million eine Stufe, und mit ZWEI Stellen —
+  // „1,2 Mio." verlöre zwischen 1,20 und 1,29 Mio. 90.000 Anlagen.
+  count: [
+    { ab: 1_000_000, teiler: 1_000_000, unit: "Mio. Anlagen", stellen: 2 },
+    { ab: 0, teiler: 1, unit: "Anlagen", stellen: 0 },
+  ],
+};
+
+/** Die Stufe, in der ein Wert liegt. Unbekannte Größe: keine Staffelung. */
+export function stufeFuer(format: string, max: number): Stufe {
+  const stufen = STUFEN[format];
+  if (!stufen) return { ab: 0, teiler: 1, unit: "", stellen: 0 };
+  return stufen.find((s) => max >= s.ab) ?? stufen[stufen.length - 1];
+}
+
+/**
  * Installierte Photovoltaik-Leistung.
  *
  * Einheit ist kWp/MWp/GWp ("Peak"), nicht kW: der Wert ist die Nennleistung der
@@ -38,10 +85,10 @@ const zusammen = (m: Messwert) => `${m.value} ${m.unit}`;
  * und Biomasse — dort ist die Nennleistung keine Peak-Leistung.
  */
 export function pvLeistungTeile(kwp: number): Messwert {
-  if (kwp >= 1_000_000) return { value: dez(kwp / 1_000_000, 1), unit: "GWp" };
-  if (kwp >= 1000) return { value: dez(kwp / 1000, 1), unit: "MWp" };
-  return { value: nf(kwp), unit: "kWp" };
+  const st = stufeFuer("pvLeistung", kwp);
+  return { value: st.teiler === 1 ? nf(kwp) : dez(kwp / st.teiler, st.stellen), unit: st.unit };
 }
+
 export const fmtPvLeistung = (kwp: number): string => zusammen(pvLeistungTeile(kwp));
 
 /**
@@ -55,10 +102,10 @@ export const fmtPvLeistung = (kwp: number): string => zusammen(pvLeistungTeile(k
  * NICHT für reine Solar-Summen nehmen (dort pvLeistungTeile).
  */
 export function mixLeistungTeile(kw: number): Messwert {
-  if (kw >= 1_000_000) return { value: dez(kw / 1_000_000, 1), unit: "GW" };
-  if (kw >= 1000) return { value: dez(kw / 1000, 1), unit: "MW" };
-  return { value: nf(kw), unit: "kW" };
+  const st = stufeFuer("mixLeistung", kw);
+  return { value: st.teiler === 1 ? nf(kw) : dez(kw / st.teiler, st.stellen), unit: st.unit };
 }
+
 export const fmtMixLeistung = (kw: number): string => zusammen(mixLeistungTeile(kw));
 
 /**
@@ -106,17 +153,19 @@ export const fmtWattProKopf = (w: number): string => zusammen(wattProKopfTeile(w
  * eine falsche Einheit, nur in Worten.
  */
 export function anlagenZahlTeile(n: number): Messwert {
-  if (n >= 1_000_000) return { value: dez(n / 1_000_000, 2), unit: "Mio. Anlagen" };
+  const st = stufeFuer("count", n);
+  if (st.teiler !== 1) return { value: dez(n / st.teiler, st.stellen), unit: st.unit };
   return { value: nf(n), unit: Math.round(n) === 1 ? "Anlage" : "Anlagen" };
 }
+
 export const fmtAnlagenZahl = (n: number): string => zusammen(anlagenZahlTeile(n));
 
 /** Speicherkapazität — kWh, ab vier Stellen MWh/GWh. */
 export function speicherKwhTeile(kwh: number): Messwert {
-  if (kwh >= 1_000_000) return { value: dez(kwh / 1_000_000, 1), unit: "GWh" };
-  if (kwh >= 1000) return { value: dez(kwh / 1000, 1), unit: "MWh" };
-  return { value: nf(kwh), unit: "kWh" };
+  const st = stufeFuer("speicherKwh", kwh);
+  return { value: st.teiler === 1 ? nf(kwh) : dez(kwh / st.teiler, st.stellen), unit: st.unit };
 }
+
 export const fmtSpeicherKwh = (kwh: number): string => zusammen(speicherKwhTeile(kwh));
 
 /**
@@ -128,6 +177,21 @@ export const fmtSpeicherKwh = (kwh: number): string => zusammen(speicherKwhTeile
  */
 export const batterieMittelTeile = (kwh: number): Messwert => ({ value: dez(kwh, 1), unit: "kWh" });
 export const fmtBatterieMittel = (kwh: number): string => zusammen(batterieMittelTeile(kwh));
+
+/**
+ * Die Speichergröße EINES KONKRETEN PRODUKTS — mit Nachkommastelle, weil sie
+ * Teil der Produktbezeichnung ist.
+ *
+ * `speicherKwhTeile` rundet auf ganze kWh; das ist für Regions-Summen richtig
+ * und für ein Kaufangebot falsch. Der Shop führt Stufen von 2,11 kWh: gerundet
+ * standen bei uns „2" und „4" — und aus 10,55 wurde „11", eine Größe, die es
+ * dort gar nicht gibt. Dieselbe Klasse wie ein gerundeter Kaufpreis: Der Leser
+ * findet die Zahl im Shop nicht wieder.
+ */
+export const produktSpeicherTeile = (kwh: number): Messwert => ({
+  value: Number.isInteger(kwh) ? nf(kwh) : dez(kwh, 2),
+  unit: "kWh",
+});
 
 /**
  * Speicherdichte: Batteriekapazität je installiertem kWp DACHLEISTUNG.
@@ -234,6 +298,52 @@ export const fmtEuro = (euro: number): string => zusammen(euroTeile(euro));
  * Bundesland zu einer zehnstelligen Zahl).
  */
 export const fmtEuroVoll = (euro: number): string => `${nf(euro)} €`;
+
+/**
+ * Ein zu ZAHLENDER Preis, als Zahl und Einheit getrennt — auf den Cent genau.
+ *
+ * Zwei Fehler, die beide am selben Tag live standen (09.09.2026) und beide
+ * denselben Kern haben: Ein Preis ist keine Größenangabe, sondern der Betrag,
+ * den jemand gleich an der Kasse sieht.
+ *
+ * 1. NIE STAFFELN. `euroTeile` macht aus 1.499,99 € ein „1,5 Tsd. €" — für eine
+ *    Regions-Summe richtig, hier eine Zahl, die im Shop niemand wiederfindet.
+ * 2. NIE AUF EURO RUNDEN. Alle 294 Preise des Shops enden auf ,99; gerundet
+ *    zeigten wir durchgehend einen Preis, den der Händler gar nicht verlangt —
+ *    und ausgerechnet nach oben. Cent stehen deshalb da, wo es welche gibt, und
+ *    fallen bei glatten Beträgen weg (also „950 €", nicht „950,00 €").
+ *
+ * Für gerundete Beispielrechnungen bleibt `fmtEuroVoll` zuständig; dort IST die
+ * Rundung die Aussage.
+ */
+export const preisTeile = (euro: number): Messwert => ({
+  value: euro.toLocaleString("de-DE", {
+    minimumFractionDigits: Number.isInteger(euro) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }),
+  unit: "€",
+});
+
+/**
+ * Eine Jahresangabe im Dativ, mit deutschem Dezimalkomma: „4,0 Jahren".
+ *
+ * Die Ersetzung stand im Balkon-Rechner dreimal handgeschrieben, im
+ * Angebotsblock fehlte sie — dort erschien „bezahlt nach 4.0 Jahre", also
+ * englischer Dezimalpunkt UND falscher Fall. Eine Zahl, die anders aussieht als
+ * die Zahl daneben, liest sich wie eine andere Größe.
+ */
+export const jahreDativ = (jahre: number): string =>
+  `${jahre.toFixed(1).replace(".", ",")} Jahren`;
+
+/**
+ * Euro in Tausend, eine Nachkommastelle — für dichte Achsen und Marken, wo
+ * „14.200 €" zu breit ist: 14.200 → „14,2 k€", 14.000 → „14 k€".
+ */
+export const euroKTeile = (euro: number): { value: string; unit: string } => ({
+  value: (euro / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 }),
+  unit: "k€",
+});
+export const fmtEuroK = (euro: number): string => zusammen(euroKTeile(euro));
 
 /**
  * Der gerundete Prozentwert als ZAHL — für Entscheidungen, die an der

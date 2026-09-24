@@ -35,6 +35,10 @@ import { tokens } from "./theme";
 // aus der einen Quelle gelesen statt hier getippt — dieselbe Bauform, mit der
 // die Abo-Mail und der Preisbericht ihre Farben holen.
 const F_SMALL = tokens["--font-size-small"];
+const C_TEXT = tokens["--color-text-primary"];
+const C_SECONDARY = tokens["--color-text-secondary"];
+const C_MUTED = tokens["--color-text-muted"];
+const C_LINK = tokens["--color-accent"];
 const F_BODY = tokens["--font-size-body"];
 const F_H3 = tokens["--font-size-h3"];
 
@@ -177,20 +181,20 @@ export function buildAlertMail(p: AlertPayload, opts: MailOptions = {}): { subje
   // solcher gekennzeichnet — sonst wirkt die lange Mail wie ein Rückfall.
   const detailsBlock = opts.reportUrl
     ? `<p style="margin-top:24px;font-size:${F_SMALL}">
-         <a href="${escapeHtml(opts.reportUrl)}" style="color:#1365EA">Ganzen Bericht dieses Laufs ansehen</a>
+         <a href="${escapeHtml(opts.reportUrl)}" style="color:${C_LINK}">Ganzen Bericht dieses Laufs ansehen</a>
        </p>`
     : details
-      ? `<p style="margin-top:24px;font-size:${F_SMALL};color:#949494">Der Bericht konnte nicht abgelegt werden und steht deshalb ausnahmsweise hier:</p>
-         <div style="font-size:${F_SMALL};line-height:1.7;color:#777">${escapeHtml(details).replace(/\n/g, "<br>")}</div>`
+      ? `<p style="margin-top:24px;font-size:${F_SMALL};color:${C_MUTED}">Der Bericht konnte nicht abgelegt werden und steht deshalb ausnahmsweise hier:</p>
+         <div style="font-size:${F_SMALL};line-height:1.7;color:${C_SECONDARY}">${escapeHtml(details).replace(/\n/g, "<br>")}</div>`
       : "";
 
-  const html = `<div style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;color:#3F3F3F">
+  const html = `<div style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;color:${C_TEXT}">
     <h2 style="margin:0 0 4px;font-size:${F_H3}">${escapeHtml(rawSubject)}</h2>
-    <p style="color:#777;margin:0 0 16px;font-size:${F_SMALL}">${kopf.map(escapeHtml).join(" · ")}${tag ? ` · ${escapeHtml(tag)}` : ""}</p>
+    <p style="color:${C_SECONDARY};margin:0 0 16px;font-size:${F_SMALL}">${kopf.map(escapeHtml).join(" · ")}${tag ? ` · ${escapeHtml(tag)}` : ""}</p>
     ${block("Deine Entscheidung", decisions, true)}
     ${block("Selbst erledigt (nichts zu tun)", done, false)}
     ${detailsBlock}
-    <p style="color:#949494;font-size:${F_SMALL};margin-top:24px">Automatisch erzeugt von einem solar-check.io-Wächter. Diese Mail kommt nur, wenn eine Entscheidung bei dir liegt. Alle Läufe — auch die ohne Mail — stehen unter solar-check.io/admin/waechter.</p>
+    <p style="color:${C_MUTED};font-size:${F_SMALL};margin-top:24px">Automatisch erzeugt von einem solar-check.io-Wächter. Diese Mail kommt nur, wenn eine Entscheidung bei dir liegt. Alle Läufe — auch die ohne Mail — stehen unter solar-check.io/admin/waechter.</p>
   </div>`;
 
   return { subject, html };

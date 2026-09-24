@@ -581,13 +581,45 @@ describe("Wohnform: wer zur Miete wohnt, bekommt eine andere Förderung", () => 
     // Die Einschränkung ist die Ausnahme. Ein Programm ohne Angabe darf durch
     // die neue Dimension nichts verlieren — sonst hätte sie 40 Programme still
     // abgeschaltet.
+    //
+    // `balkonNurMitSpeicher` bleibt hier AUSSEN VOR, und das ist keine
+    // Aufweichung, sondern die Trennung zweier Dimensionen: Dieser Test fragt
+    // nach der WOHNFORM. Ein Programm, das nur Sets mit Speicher fördert, ist
+    // für eine Anlage ohne bekannte Speichergröße absichtlich nicht rechenbar
+    // (der Rechner darf nicht raten, ob ein Speicher dabei ist) — das prüft
+    // `funding-mindestleistung.test.ts` in beide Richtungen. Bis Fritzlar am
+    // 20.09.2026 dazukam, fiel der Unterschied nicht auf: Der einzige andere
+    // Speicher-Pflicht-Fall rechnet anteilig statt pauschal und lief deshalb
+    // gar nicht erst durch diesen Filter. Der Gegenbeleg steht direkt darunter.
     const ohne = Object.values(FUNDING_PROGRAMS).filter(
-      (p) => !p.nurWohnform && (p.foerdert ?? ["pv"]).includes("balkon") && p.balkonPauschale,
+      (p) =>
+        !p.nurWohnform &&
+        !p.balkonNurMitSpeicher &&
+        (p.foerdert ?? ["pv"]).includes("balkon") &&
+        p.balkonPauschale,
     );
     expect(ohne.length).toBeGreaterThan(5);
     for (const p of ohne) {
       const a = { technik: "balkon", wattPeak: 960, kosten: 800 } as const;
       expect(fundingAmount(p, a).computable, p.id).toBe(true);
+    }
+  });
+
+  it("auch ein Speicher-Pflicht-Programm verliert durch die Wohnform nichts", () => {
+    // Die Gegenprobe zum Ausschluss oben: Liegt die Speichergröße vor, muss das
+    // Programm ganz normal rechnen. Ohne diesen Fall hätte der Ausschluss die
+    // Abdeckung gesenkt statt nur die Frage geschärft.
+    const mitSpeicherpflicht = Object.values(FUNDING_PROGRAMS).filter(
+      (p) => !p.nurWohnform && p.balkonNurMitSpeicher && p.balkonPauschale,
+    );
+    expect(mitSpeicherpflicht.length).toBeGreaterThan(0);
+    for (const p of mitSpeicherpflicht) {
+      const mit = { technik: "balkon", wattPeak: 960, kosten: 800, speicherKwh: 1.6 } as const;
+      const ohneSpeicher = { technik: "balkon", wattPeak: 960, kosten: 800, speicherKwh: 0 } as const;
+      expect(fundingAmount(p, mit).computable, p.id).toBe(true);
+      expect(fundingAmount(p, mit).total, p.id).toBeGreaterThan(0);
+      // Und der eigentliche Punkt des Feldes: ohne Speicher kein Geld.
+      expect(fundingAmount(p, ohneSpeicher).total, p.id).toBe(0);
     }
   });
 });

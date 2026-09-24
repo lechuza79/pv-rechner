@@ -131,7 +131,7 @@ export default function LaendervergleichClient() {
     // zu keiner anderen Seite passte: schmaler als die Kopfzeile, breiter als
     // die Lesespalte, und zu eng für das 900-px-Chart darin, das deshalb seinen
     // Kopf umbrach.
-    <div style={{ maxWidth: v("--chart-max-width"), margin: "0 auto" }}>
+    <div style={{ maxWidth: v("--chart-max-width"), containerType: "inline-size", margin: "0 auto" }}>
       <div
         style={{
           background: v("--color-bg"),
@@ -143,7 +143,7 @@ export default function LaendervergleichClient() {
         <div style={{ marginBottom: 4, fontSize: v("--font-size-small"), color: v("--color-text-muted"), fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>
           Energiewende im Ländervergleich
         </div>
-        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", margin: "0 0 6px", color: v("--color-text-primary") }}>
+        <h1 style={{ margin: "0 0 6px", color: v("--color-text-primary") }}>
           Geht Deutschland einen Sonderweg?
         </h1>
         <p style={{ fontSize: v("--font-size-body"), lineHeight: 1.5, color: v("--color-text-secondary"), margin: "0 0 2px" }}>

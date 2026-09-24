@@ -77,6 +77,7 @@ export interface WpZustand {
   plz: string;
   // Photovoltaik
   pvStatus: "nein" | "geplant" | "vorhanden";
+  pvConfirmed: boolean;
   pvKwp: number;
   pvSpeicher: number;
   // Von Hand gesetzte Werte — `null` heißt „aus der Rechnung", nicht „null".
@@ -119,6 +120,7 @@ export const WP_STANDARD: WpZustand = {
   foerderungAn: true,
   plz: "",
   pvStatus: "nein",
+  pvConfirmed: false,
   pvKwp: 10,
   pvSpeicher: 10,
   gaspreis: null,
@@ -159,6 +161,7 @@ const FELD = {
   foerderungAn: "fo",
   plz: "plz",
   pvStatus: "pv",
+  pvConfirmed: "pcf",
   pvKwp: "pk",
   pvSpeicher: "ps",
   gaspreis: "gp",
@@ -251,6 +254,7 @@ export function wpAusParametern(params: URLSearchParams): WpZustand {
     // ungeprüft in einer Abfrage.
     plz: /^\d{5}$/.test(g(FELD.plz) ?? "") ? g(FELD.plz)! : WP_STANDARD.plz,
     pvStatus: ausListe(g(FELD.pvStatus), ["nein", "geplant", "vorhanden"] as const, WP_STANDARD.pvStatus),
+    pvConfirmed: jaNein(g(FELD.pvConfirmed), false),
     pvKwp: zahl(g(FELD.pvKwp), WP_STANDARD.pvKwp),
     pvSpeicher: zahl(g(FELD.pvSpeicher), WP_STANDARD.pvSpeicher),
     gaspreis: zahlOderNull(g(FELD.gaspreis)),

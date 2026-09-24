@@ -1,27 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "../../../lib/rate-limit";
+import { modelHours, modelWeatherAt, shardKey } from "../../../lib/icon-d2";
+import { loadIconD2Shard } from "../../../lib/icon-d2-store";
+import { nearestPlz } from "../../../lib/plz-nearest";
+import { berlinTagesgrenzen } from "../../../lib/zeit";
+import { sunElevation } from "../../../lib/solar-tilt";
 
-// In-memory cache (warm Vercel function keeps this between requests)
-const cache = new Map<string, { data: WeatherResponse; ts: number }>();
-const TTL = 15 * 60 * 1000; // 15 minutes
-// CDN cache-control: 15 min fresh, 1 h stale-while-revalidate
+// Today's weather at a point: DWD ICON-D2 from the hourly snapshot of the
+// nearest postcode. No weather service is called per visitor; the answer is
+// only as fresh as the snapshot (hourly), which is what the CDN time says.
 const CDN_CACHE = "public, s-maxage=900, stale-while-revalidate=3600";
 
-interface WeatherResponse {
+export interface WeatherResponse {
   current: {
     temperature: number;
     irradiance: number;
     cloudCover: number;
     isDay: boolean;
+    /** German local time, "YYYY-MM-DDTHH:MM", floored to 15 minutes. */
     time: string;
   };
   hourly: {
+    /** German local hours of today, "YYYY-MM-DDTHH:00". */
     time: string[];
     irradiance: number[];
     temperature: number[];
   };
-  source: "open-meteo" | "error";
+  source: "dwd-icon-d2" | "error";
 }
+
+const LOCAL = new Intl.DateTimeFormat("sv-SE", {
+  timeZone: "Europe/Berlin",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+const localIso = (ms: number) => LOCAL.format(new Date(ms)).replace(" ", "T");
+
+const EMPTY: WeatherResponse = {
+  current: { temperature: 0, irradiance: 0, cloudCover: 0, isDay: false, time: "" },
+  hourly: { time: [], irradiance: [], temperature: [] },
+  source: "error",
+};
 
 export async function GET(req: NextRequest) {
   const limited = rateLimit(req, "weather");
@@ -29,73 +51,39 @@ export async function GET(req: NextRequest) {
 
   const lat = parseFloat(req.nextUrl.searchParams.get("lat") || "");
   const lon = parseFloat(req.nextUrl.searchParams.get("lon") || "");
-
-  // Validate DE bounds
   if (isNaN(lat) || isNaN(lon) || lat < 47 || lat > 55 || lon < 5 || lon > 16) {
     return NextResponse.json({ error: "Invalid coordinates" }, { status: 400 });
   }
 
-  // Round to 0.01° (≈1 km) for cache consistency
-  const rLat = Math.round(lat * 100) / 100;
-  const rLon = Math.round(lon * 100) / 100;
-  const key = `${rLat},${rLon}`;
+  const plz = nearestPlz(lat, lon);
+  const shard = plz ? await loadIconD2Shard(shardKey(plz)) : null;
+  const now = new Date();
+  const [dayStart, dayEnd] = berlinTagesgrenzen(now);
+  const day = shard && plz ? modelHours(shard, plz, dayStart, dayEnd) : null;
+  const model = shard && plz ? modelWeatherAt(shard, plz, now) : null;
 
-  // Check cache
-  const cached = cache.get(key);
-  if (cached && Date.now() - cached.ts < TTL) {
-    return NextResponse.json(cached.data, { headers: { "Cache-Control": CDN_CACHE } });
+  // A day with a hole would draw a flat line nobody measured or modelled; an
+  // explicit error lets the page say that the weather is missing instead.
+  if (!day || !model || day.shortwave.some((v) => v === null) || day.temperature.some((v) => v === null)
+    || model.temperature === null || model.shortwaveRadiation === null || model.cloudCover === null) {
+    return NextResponse.json(EMPTY, { headers: { "Cache-Control": "public, s-maxage=60" } });
   }
 
-  // Fetch from Open-Meteo
-  try {
-    const url = new URL("https://api.open-meteo.com/v1/forecast");
-    url.searchParams.set("latitude", String(rLat));
-    url.searchParams.set("longitude", String(rLon));
-    url.searchParams.set("current", "temperature_2m,shortwave_radiation,cloud_cover,is_day");
-    url.searchParams.set("hourly", "shortwave_radiation,temperature_2m");
-    url.searchParams.set("forecast_days", "1");
-    url.searchParams.set("timezone", "Europe/Berlin");
-
-    const res = await fetch(url.toString(), { signal: AbortSignal.timeout(5000) });
-    if (!res.ok) throw new Error(`Open-Meteo ${res.status}`);
-
-    const json = await res.json();
-
-    const data: WeatherResponse = {
-      current: {
-        temperature: json.current.temperature_2m,
-        irradiance: json.current.shortwave_radiation,
-        cloudCover: json.current.cloud_cover,
-        isDay: json.current.is_day === 1,
-        time: json.current.time,
-      },
-      hourly: {
-        time: json.hourly.time,
-        irradiance: json.hourly.shortwave_radiation,
-        temperature: json.hourly.temperature_2m,
-      },
-      source: "open-meteo",
-    };
-
-    // Cache result
-    cache.set(key, { data, ts: Date.now() });
-
-    // Evict old entries (prevent unbounded growth)
-    if (cache.size > 500) {
-      const now = Date.now();
-      const keys = Array.from(cache.keys());
-      keys.forEach(k => {
-        const entry = cache.get(k);
-        if (entry && now - entry.ts > TTL) cache.delete(k);
-      });
-    }
-
-    return NextResponse.json(data, { headers: { "Cache-Control": CDN_CACHE } });
-  } catch {
-    return NextResponse.json({
-      current: { temperature: 0, irradiance: 0, cloudCover: 0, isDay: false, time: "" },
-      hourly: { time: [], irradiance: [], temperature: [] },
-      source: "error",
-    } satisfies WeatherResponse);
-  }
+  const quarter = Math.floor(now.getTime() / 900000) * 900000;
+  const data: WeatherResponse = {
+    current: {
+      temperature: Math.round(model.temperature * 10) / 10,
+      irradiance: Math.round(model.shortwaveRadiation),
+      cloudCover: Math.round(model.cloudCover),
+      isDay: sunElevation(lat, lon, now.getTime()) > 0,
+      time: localIso(quarter),
+    },
+    hourly: {
+      time: day.times.map(localIso),
+      irradiance: day.shortwave.map((v) => Math.round(v as number)),
+      temperature: day.temperature.map((v) => Math.round((v as number) * 10) / 10),
+    },
+    source: "dwd-icon-d2",
+  };
+  return NextResponse.json(data, { headers: { "Cache-Control": CDN_CACHE } });
 }

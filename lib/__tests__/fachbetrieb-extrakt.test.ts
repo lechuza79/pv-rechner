@@ -464,8 +464,8 @@ describe("E-Mail: die Adresse des Betriebs, nicht die erste im Text", () => {
     ).toBe("info@elektro-mueller.de");
   });
 
-  it("nimmt eine fremde Adresse nur, wenn es keine eigene gibt", () => {
-    expect(besteMail(["buero@verband.de"], "elektro-mueller.de")).toBe("buero@verband.de");
+  it("keeps a foreign address out of the selected mailbox until ownership is confirmed", () => {
+    expect(besteMail(["buero@verband.de"], "elektro-mueller.de")).toBeNull();
   });
 
   it("liefert null, wenn nur Unbrauchbares dasteht", () => {

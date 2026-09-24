@@ -5,21 +5,75 @@
 // v2: Consolidated from Figma design (the previous v1 token set has been removed).
 
 export const tokens = {
+  '--color-pending-text': '#785600',
+  '--color-pending-bg': '#FFF0B3',
   // ─── Backgrounds (3) ────────────────────────────────────────────────────────
-  '--color-bg': '#FFFFFF',              // Page, cards, panels, chart
-  '--color-bg-muted': '#F8F8F8',        // Inputs, subtle areas, overlays
-  '--color-bg-accent': '#F1F6FE',       // Hero section, accent backgrounds
+  // v3 (20.09.2026): the surfaces of the new design. Measured off the design
+  // package's own content-page stylesheet (public/rechner-uebersicht/overview.css)
+  // and the released pages — NOT invented here. The neutral is a desaturated
+  // teal-green, not a cool grey, so a page body sits in the same family as the
+  // shared header and footer that every page has carried since 19.09.
+  //   card / panel   #F6F8F1  (overview.css .tool)
+  //   page ground    #E8ECE3  (overview.css body)
+  // The old system uses ONE token for page and card, and bg-muted for the tier
+  // below it. That relation is kept: bg is the card white, bg-muted one step
+  // down, bg-accent the package's page ground.
+  // Seitengrund. GLEICHER Wert wie die Fläche darüber, und das ist Absicht:
+  // Die Seiten malen ihren eigenen Container über die volle Breite mit
+  // --color-bg aus. Ein dunklerer Grund darunter ergibt deshalb keine Tiefe,
+  // sondern eine Kante quer durch die Seite — gemessen an einer 1840 px breiten
+  // Ansicht, wo der Balken unter der Kopfzeile endete. Zwei Flächen bekommt das
+  // Design erst, wenn die Seiten ihre Inhalte als Karten setzen statt als Band;
+  // das gehört ins Detail-Redesign.
+  '--color-bg-page': '#F6F8F1',         // Seitengrund, NUR am body
+  '--color-bg': '#F6F8F1',              // Page, cards, panels, chart
+  '--color-bg-muted': '#EDF0E8',        // Inputs, subtle areas, overlays
+  // The ACCENT surface, not a third neutral: it has always been the accent's
+  // own tint (a pale blue under the blue accent) and stays that under the green
+  // one — the olive at 10 % over the card. A plain neutral step here would sit
+  // inside the grey ramp, close enough to a card-over-border blend that
+  // anything identifying this surface BY ITS COLOUR starts matching the wrong
+  // pixels (the ranking table's placement box does exactly that).
+  '--color-bg-accent': '#E5EBDC',       // Hero section, accent backgrounds
 
   // ─── Borders (3) ───────────────────────────────────────────────────────────
-  '--color-border': '#E9E9E9',          // Default borders, cards, inputs
-  '--color-border-muted': '#E0E0E0',    // Muted/secondary borders, toggles
-  '--color-border-accent': '#BCD6FF',   // Accent borders, hero, icon buttons
+  // The package draws its rules as the ink at an alpha (#173b4218 / #173b4230).
+  // Flattened over the card surface here, because these tokens also land in SVG
+  // presentation attributes where a translucent value composites over whatever
+  // sits behind it rather than over the card.
+  '--color-border': '#DBE1DC',          // Default borders, cards, inputs
+  '--color-border-muted': '#CCD4D0',    // Muted/secondary borders, toggles
+  '--color-border-accent': '#CAD6BE',   // Accent borders, hero, icon buttons
 
-  // ─── Accent — Blue (5) ─────────────────────────────────────────────────────
-  '--color-accent': '#1365EA',          // CTAs, toggles, active states, hero number
-  '--color-accent-dim': 'rgba(19,101,234,0.08)',  // Selected card backgrounds
-  '--color-accent-dark': '#073C93',     // Hover, dark accent text
-  '--color-accent-light': '#6A9EF2',    // Light accent, secondary interactive
+  // ─── Accent — the package's ink (4) ────────────────────────────────────────
+  // v3 (20.09.2026). THE NEW DESIGN HAS NO COLOURED INTERACTIVE TEXT. Measured
+  // on the released pages: a filled action is the lime #D4FF24 under near-black
+  // ink, a second-level action is the dark petrol #163338 under light text, an
+  // outlined one is a 1 px ink border — and a link in running text is simply the
+  // ink with an underline. There is no third colour anywhere.
+  //
+  // This token is therefore the INK, because that is what more than two thirds
+  // of its call sites are: text, strokes and borders (231 text uses and 7
+  // strokes against 80 fills, counted 20.09.2026). The fills take --color-cta
+  // below instead.
+  //
+  // An earlier pass put #487123 here. That value is real but it is the LINK
+  // HOVER of one stylesheet — promoting a hover tint to the resting colour of
+  // every button, tab and toggle invented a colour the design does not have.
+  // Not again: if a role has no value in the package, the answer is to split
+  // the role, not to mix a new colour.
+  '--color-accent': '#173B42',          // Links, active states, lines, borders
+  '--color-accent-dim': 'rgba(23,59,66,0.08)',    // Selected card backgrounds
+  '--color-accent-dark': '#0E262B',     // Hover — a step deeper, as text gets darker
+  '--color-accent-light': '#4A675E',    // Light accent, secondary interactive
+
+  // ─── Call to action (2) ────────────────────────────────────────────────────
+  // The filled action: lime plate, near-black ink, measured on the homepage's
+  // primary button and the waiting-list form (#D4FF24 / #132527, pill).
+  // Ink on lime is 13,72:1 — the pair only works in this order, never inverted,
+  // and the lime is never text (1,03:1 on our own paper).
+  '--color-cta': '#D4FF24',
+  '--color-cta-ink': '#132527',
 
   // ─── Brand (2) ─────────────────────────────────────────────────────────────
   // The logo mark's two blues. Kept apart from --color-accent even where the
@@ -30,14 +84,22 @@ export const tokens = {
   // the pair must always stay in the same order (brand above brand-deep), or
   // the mark's layering inverts. That is why the deep one is NOT
   // --color-accent-dark: that token means "the accent variant that contrasts
-  // with the background" and therefore flips to a light blue in dark mode.
-  '--color-brand': '#1365EA',
-  '--color-brand-deep': '#073C93',
+  // with the background" and therefore flips to a light accent in dark mode.
+  //
+  // v3 (20.09.2026): the mark is the lime. These two values are not chosen
+  // here — public/shared-nav/header.css and public/shared-footer/footer.css
+  // have forced exactly them onto the mark on every page since 19.09.; the
+  // base now says the same, so a logo rendered OUTSIDE the header and footer
+  // stops being the only blue one left. brand-deep is the package's
+  // color-mix(lime 55%, #fff), resolved.
+  '--color-brand': '#D4FF24',
+  '--color-brand-deep': '#E7FF87',
 
   // ─── Semantic (5) ──────────────────────────────────────────────────────────
   '--color-positive': '#00D950',        // Positive values (Rendite, Ersparnis)
   '--color-highlight': '#3DFFC1',       // Highlight (Live-Indikator, jüngster Wert)
-  '--color-awareness': '#3DFFC1',       // Awareness/Aufmerksamkeit (Synonym fürs Highlight-Token, semantisch klarer für allgemeine Use-Cases ausserhalb Live-Daten)
+  '--color-awareness': '#562581',       // Purple attention cues; green is reserved for positive values.
+  '--color-awareness-dim': '#e8d5ff',   // Soft background for awareness notices.
   '--color-negative': '#EF4444',        // Negative values (Kosten, Verluste)
   '--color-negative-dim': 'rgba(239,68,68,0.06)',  // Negative background
   '--color-negative-border': 'rgba(239,68,68,0.2)', // Negative border
@@ -55,8 +117,8 @@ export const tokens = {
   // ─── Chart (4) ─────────────────────────────────────────────────────────────
   '--color-chart-positive-bg': 'rgba(0,217,80,0.08)',
   '--color-chart-negative-bg': 'rgba(239,68,68,0.05)',
-  '--color-chart-grid': '#E9E9E9',
-  '--color-chart-zero': '#BEBEBE',
+  '--color-chart-grid': '#DBE1DC',
+  '--color-chart-zero': '#ACBAB7',
 
   // ─── Energy — Renewables (green shades) ─────────────────────────────────────
   '--color-energy-solar': '#4CAF50',        // Strong green — Solar
@@ -90,28 +152,49 @@ export const tokens = {
   '--color-energy-cat-other': '#BDBDBD',     // Grey — Sonstige (summary)
 
   // ─── Text (5) ──────────────────────────────────────────────────────────────
-  '--color-text-primary': '#3F3F3F',    // Headings, strong text, values
+  // v3 (20.09.2026): the package's ink #173B42 (overview.css body colour, and
+  // the same value header.css paints the wordmark with) instead of the neutral
+  // grey. Contrast is unchanged in practice — 11,27:1 on the new --color-bg
+  // against the old pair's 10,53:1 on white.
+  '--color-text-primary': '#173B42',    // Headings, strong text, values
   // A11y (WCAG 2.1 AA, BFSG): body/label greys clear 4.5:1 on --color-bg AND on
   // --color-bg-muted (the tinted surfaces are the tighter constraint), while
   // keeping secondary/muted visibly apart as a hierarchy (14 hex steps — the
   // first AA fix had collapsed them to 3 steps). Ratios (WCAG 2.1 formula):
-  //   secondary #646464 → 5.92:1 on #FFFFFF, 5.57:1 on #F8F8F8
-  //   muted     #727272 → 4.81:1 on #FFFFFF, 4.53:1 on #F8F8F8
-  // faint is placeholder-only (not essential text), 3.45:1. See audit
+  //   secondary #4A675E → 5.78:1 on #F6F8F1, 5.37:1 on #EDF0E8
+  //   muted     #527268 → 4.95:1 on #F6F8F1, 4.60:1 on #EDF0E8
+  // faint is placeholder-only (not essential text), 3.47:1 on #EDF0E8. See audit
   // docs/audit-backlog-2026-07-19.md §4. Dark/Dusk/Overcast nachgezogen (N8).
-  '--color-text-secondary': '#646464',  // Body text, labels, descriptions
-  '--color-text-muted': '#727272',      // Dimmed text, hints
-  '--color-text-faint': '#8A8A8A',      // Very light text, placeholders
-  '--color-text-on-accent': '#FFFFFF',  // Text on accent-colored backgrounds
+  //
+  // v3 (20.09.2026): secondary is the package's own #4A675E (overview.css
+  // .crumb, .intro p, .tool p — and header.css --color-text-faint on the
+  // wordmark). muted and faint are derived on ITS hue (161°, sat .28) and
+  // re-measured against the new grounds, not carried over from the grey scale.
+  '--color-text-secondary': '#4A675E',  // Body text, labels, descriptions
+  '--color-text-muted': '#527268',      // Dimmed text, hints
+  '--color-text-faint': '#61877B',      // Very light text, placeholders
+  '--color-text-on-accent': '#132527',  // Text on accent-colored backgrounds (the lime plate)
+
+  // ─── Raised (1) ────────────────────────────────────────────────────────────
+  // Eine Flaeche, die ueber dem Seitengrund SCHWEBT — fuer die eine Zeile, die
+  // dem Leser gehoert (seine Gemeinde in der Rangliste), und fuer deren
+  // schwebende Kopie. Sie hebt sich durch Hoehe ab, nicht durch Farbe: Eine
+  // gefuellte Zeile faerbt jede Zahl darin mit und zwingt alles darauf in eine
+  // eigene Tinte — genau daran ist die Lime-Fassung am 23.09.2026 gescheitert.
+  //
+  // Sie liegt IMMER ueber dem Grund, auch nachts: Auf Dunkel ist eine
+  // angehobene Karte heller, nicht dunkler. --color-bg-muted taugt dafuer
+  // nicht, es kippt die Richtung (hell: dunkler als bg, dunkel: heller).
+  '--color-bg-raised': '#FFFFFF',
 
   // ─── Progress (1) ──────────────────────────────────────────────────────────
-  '--color-progress-inactive': '#E9E9E9',
+  '--color-progress-inactive': '#DBE1DC',
 
   // ─── Track (1) ─────────────────────────────────────────────────────────────
   // The unfilled part of a gauge/meter. Translucent so it composites over
   // whatever sits behind it, and flips ink per theme — "10 % white" only reads
   // on a dark ground, "10 % black" only on a light one.
-  '--color-track': 'rgba(0,0,0,0.10)',
+  '--color-track': 'rgba(23,59,66,0.12)',
 
   // ─── Shadows (3) ───────────────────────────────────────────────────────────
   // Tokenised so they invert for dark/dusk (black shadows vanish on dark grounds).
@@ -122,7 +205,12 @@ export const tokens = {
   // ─── Fonts (2) ─────────────────────────────────────────────────────────────
   // Font families resolve to the self-hosted next/font variables (set on <html>
   // in app/(site)/layout.tsx), with system fallbacks before they load.
+  '--font-heading': "var(--font-montserrat),'Montserrat',system-ui,sans-serif",
+  '--font-chart-number': "var(--font-montserrat),'Montserrat',system-ui,sans-serif",
   '--font-text': "var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
+  // Headings are Montserrat 700 in the new design — on the homepage, on the
+  // content template and in the shared footer, which every page already carries.
+  '--font-display': "var(--font-montserrat),Montserrat,var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
   '--font-mono': "var(--font-jetbrains-mono),'JetBrains Mono',monospace",
 
   // ─── Typografie-Skala (8) ──────────────────────────────────────────────────
@@ -147,9 +235,53 @@ export const tokens = {
   '--font-size-small': '12px',          // Sekundärtext, Chips, Tabellenzellen
   '--font-size-body': '14px',           // Basis: Fließtext, Nav, Fußzeile, Eingabefelder
   '--font-size-lead': '16px',           // Lead/Einleitung, Kartentitel
+  // v3 (20.09.2026): h1/h2 taken from the released homepage (48 / 34 px in
+  // Montserrat 700). The legacy 24/20 were sized for a 640 px column and read as
+  // bold body text next to the new pages.
   '--font-size-h3': '18px',             // Kleine Überschrift
-  '--font-size-h2': '20px',             // Sektions-Überschrift
-  '--font-size-h1': '24px',             // Seiten-Titel
+  // MITWACHSEND, nicht fest — und zwar IM TOKEN, nicht in einer Regel daneben:
+  // Die Seiten schreiben ihre Überschriftsgröße direkt ans Element
+  // (`fontSize: v("--font-size-h1")`), und eine Angabe am Element schlägt jede
+  // Regel im Stylesheet. Eine globale Regel hätte also genau nichts bewirkt.
+  // Zahlen abgelesen an der Startseite: 38,9 px bei 1024 und 48 px bei 1440
+  // (h1), 26,6 und 34 (h2) — daraus die 3,8 % bzw. 2,6 % der Fensterbreite.
+  // DIE ÜBERSCHRIFT BEMISST SICH AN IHRER SPALTE, NICHT AM FENSTER — das ist
+  // der Punkt, an dem zwei Anläufe gescheitert sind.
+  //
+  // Die Spalten dieser Seite sind verschieden breit: ein Rechner läuft in
+  // 480 px, eine Leseseite in 680. Eine Größe, die am Fenster hängt, ist damit
+  // zwangsläufig für eine der beiden falsch — bei 52 px brach „Photovoltaik" in
+  // der Rechner-Spalte mitten im Wort um, während dieselbe Größe auf der
+  // Leseseite gerade richtig war.
+  //
+  // `cqi` heißt „ein Prozent der Bezugsspalte". Bezugsrahmen ist jeder
+  // Container, der eine der Spaltenbreiten setzt; die Grenzen fangen den Fall
+  // ab, dass eine Überschrift einmal außerhalb einer solchen Spalte steht.
+  //
+  // Die Anteile sind BEWUSST KLEINER als im Paket: Dessen Inhaltsseite setzt
+  // 7,5 % der Spalte (51 px auf 680), und genau das war auf unseren Seiten zu
+  // groß — dort steht unter der Überschrift ein langer Fachtext, keine
+  // Anmeldemaske mit drei Zeilen. 5 % ergibt 34 px auf der Leseseite und 24 px
+  // in der Rechner-Spalte; letzteres ist der Wert, der dort vorher stand.
+  '--font-size-h2': 'clamp(16px,3.2cqi,24px)',  // Sektions-Überschrift
+  '--font-size-h1': 'clamp(22px,5cqi,38px)',    // Seiten-Titel
+  // Die UNTERE Stufe derselben Überschrift. h1 und h2 wachsen zwischen diesen
+  // beiden Werten mit dem Fenster (die globale Regel setzt das clamp() daraus
+  // zusammen) — genau so macht es das Original, dort steht an jeder Überschrift
+  // ein clamp().
+  //
+  // WARUM NICHT EIN FESTER WERT: Bei 48 px fest stand die Seitenüberschrift auf
+  // einem 1024er Schirm deutlich größer da als auf der Startseite, die dort
+  // 38,9 px zeigt — und auf dem Handy sprengte „Wärmepumpen-Förderung" die
+  // Spalte (17 Seiten liefen über, gemessen 20.09.2026).
+  //
+  // WARUM NICHT DAS clamp() IM TOKEN: Aus diesen Token wird auch eine ZAHL
+  // gelesen — die Video-Aufnahme des Rennens malt ihre Überschrift auf eine
+  // Leinwand und braucht px, kein CSS.
+  // Die untere Stufe derselben Überschrift, einzeln abrufbar — sie steckt zwar
+  // schon im clamp() oben, wird aber dort gebraucht, wo eine ZAHL nötig ist.
+  '--font-size-h1-eng': '22px',         // h1, untere Stufe
+  '--font-size-h2-eng': '16px',         // h2, untere Stufe
 
   // ─── Display-Stufen (2) ────────────────────────────────────────────────────
   // KEINE Textstufen. Sie stehen dort, wo eine große Zahl neben ihrer Einheit
@@ -163,20 +295,53 @@ export const tokens = {
   '--font-size-display-lg': '42px',     // Hero-Zahl der Rechner-Ergebnisse
   '--font-size-display-xl': '56px',     // Die eine große Zahl einer Seite
 
+  // ─── Laufweite und Zeilenabstand der Überschriften (5) ─────────────────────
+  // Als Token, nicht als Zahl in der globalen Regel: Wer die Display-Schrift
+  // austauscht, dreht hier — sonst steht der Ausgleich für genau eine Schrift
+  // in einer CSS-Zeile, die niemand als Design-Entscheidung liest.
+  // Gemessen am Original: Startseite -1,19px auf 34px = -0,035em, die
+  // Inhaltsvorlage des Pakets -0,04em auf der Seitenüberschrift; kleine
+  // Überschriften laufen dort normal.
+  '--tracking-display': '-0.035em',     // h1/h2 — große Grade in Montserrat
+  '--tracking-heading': '-0.01em',      // h3/h4 — fast normal
+  '--leading-display': '1.15',          // h1/h2
+  '--leading-heading': '1.35',          // h3/h4
+  '--underline-offset': '3px',          // Links im Fließtext
+
   // ─── Radii (3) ─────────────────────────────────────────────────────────────
-  '--radius-sm': '6px',                 // Small: inputs, checkboxes, pills
-  '--radius-md': '12px',                // Medium: buttons, cards, panels
-  '--radius-lg': '20px',                // Large: hero cards, outer containers
+  // v3 (20.09.2026): the package rounds harder — measured on the released
+  // pages: input 10px, panel 18px, .tool card 24px. The scale follows.
+  // Its PILL buttons (border-radius 999px) are deliberately NOT in here:
+  // --radius-md carries buttons and cards alike, so a pill value would round
+  // every card into a capsule. That shape is a separate decision.
+  // Die Pille: das Paket rundet JEDE Aktion voll aus (999 px, gemessen an der
+  // Startseite und der Warteliste-Seite). Eigenes Token, weil --radius-md
+  // Karten und Knöpfe zugleich trägt — als Pille geschrieben würde jede Karte
+  // zur Kapsel.
+  '--radius-pill': '999px',             // Knöpfe und Aktionen
+  '--radius-sm': '10px',                // Small: inputs, checkboxes, pills
+  '--radius-md': '16px',                // Medium: buttons, cards, panels
+  '--radius-lg': '24px',                // Large: hero cards, outer containers
 
   // ─── Layout (3) ────────────────────────────────────────────────────────────
+  // v3 (20.09.2026): measured on the released homepage at 1440 px — its frame,
+  // its footer and its trust grid all sit on 1000 px (--sc-layout-content), and
+  // the package's own content template gives running text a 680 px measure.
+  // The legacy pages ran a 640 px column inside a 1040 px frame; under a 1000 px
+  // footer that is a visible step at both edges, which is where this whole
+  // change started.
   '--page-max-width': '480px',       // Rechner/Tools — kompakte, fokussierte Spalte
-  '--content-max-width': '640px',    // Redaktionelle Lese-/Textseiten (Ratgeber, Methodik, …)
+  '--content-max-width': '680px',    // Redaktionelle Lese-/Textseiten (Ratgeber, Methodik, …)
   // Datenseiten mit breiten Charts (Zubau-Story, Ländervergleich): breiter als
   // die Lesespalte, damit eine Zeitreihe über 25 Jahre nicht zusammengedrückt
   // wird, aber schmaler als die Kopfzeile. Der Fließtext DARIN bleibt auf
   // --content-max-width — 880 px lange Zeilen liest niemand gern.
   '--chart-max-width': '880px',
-  '--header-max-width': '1040px',
+  // Der RAHMEN der Kopfzeile — nicht dasselbe wie die Inhaltsbreite darunter:
+  // die Kopfzeile läuft im Original über die volle Breite bis zu diesem Deckel,
+  // der Inhalt steht in der schmalen Spalte.
+  '--header-frame-max': '1600px',
+  '--header-frame-pad': '5%',
 
   // Redaktionelle Kopf-Luft NUR auf Lese-/Textseiten — zusätzlich zum zentralen
   // headerContentGap (48). Bewusst mehr als bei Tool-/Datenseiten, damit lange
@@ -273,7 +438,9 @@ export function pad(y: keyof typeof space, x?: keyof typeof space): string {
  * Durchsehen einer Seite fiel jedes Mal auf, dass Abschnitte zu dicht
  * aufeinandersitzen. Wer hier dreht, dreht überall.
  */
-export const sectionGap = 44;
+// v3 (20.09.2026): the homepage sets 72 px above and below a section (its big
+// panel 100). 44 was the legacy value and reads cramped beside it.
+export const sectionGap = 72;
 
 export const headerContentGap = space.huge; // 48
 
@@ -286,6 +453,20 @@ export const headerContentGap = space.huge; // 48
  * einer von beiden den Abstand — genau so stand es hier.
  */
 export const faqContentGap = space.huge * 2; // 96
+
+/**
+ * Wie viel Platz die klebende Aktionsleiste am unteren Rand gerade belegt.
+ *
+ * Kein Design-Token, sondern ein Layout-Zustand: `KlebenderKnopf` misst seine
+ * tatsächliche Höhe und schreibt sie ans Wurzelelement, eingefahren null. Wer
+ * sonst etwas unten festpinnt, rechnet sie auf seinen Abstand — der Toast tut
+ * das, weil die PLZ-Aufforderung sonst genau unter der Leiste lag und nicht
+ * mehr lesbar war.
+ *
+ * Der Name steht hier und nicht in einem der beiden Bausteine, damit keiner
+ * vom anderen abhängt: Sie kennen nur diese Variable, nicht einander.
+ */
+export const KLEBELEISTE_VAR = "--sc-klebeleiste";
 
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
 export const v = (name: TokenName): string => `var(${name})`;
@@ -301,7 +482,19 @@ export const v = (name: TokenName): string => `var(${name})`;
  * bleibt dieselbe; wer die Stufe ändert, ändert beides zugleich.
  */
 export type FontSizeName = Extract<TokenName, `--font-size-${string}`>;
-export const fsPx = (name: FontSizeName): number => parseFloat(tokens[name]);
+/**
+ * Eine Stufe der Skala steht seit 20.09.2026 teils als clamp() im Token, weil
+ * sie mit dem Fenster wächst. Wo eine ZAHL gebraucht wird, gibt es kein
+ * Fenster — die Leinwand der Video-Aufnahme hat feste Maße. Genommen wird
+ * deshalb der OBERE Wert des clamp(): Das Video wird in voller Breite
+ * aufgenommen, dort gilt ohnehin der Deckel.
+ */
+export const fsPx = (name: FontSizeName): number => {
+  const roh = tokens[name];
+  const zahlen = roh.match(/[\d.]+(?=px)/g);
+  if (!zahlen) return parseFloat(roh);
+  return Math.max(...zahlen.map(Number));
+};
 
 /** Generate :root CSS block from tokens */
 export function getCssVariables(): string {
@@ -320,20 +513,34 @@ export function getCssVariables(): string {
 // they are data, not chrome. Only chrome (surfaces, text, borders, shadows) and
 // the interactive accent shift, brightened for contrast on dark grounds.
 
-/** Nacht — cool dark slate. */
+/** Nacht — the package's dark teal. */
+// v3 (20.09.2026): the values are the shared footer's, which stands at the
+// bottom of EVERY page since 19.09. and does not follow the stage (its ground
+// is a fixed #08191C). A cool slate page above a dark teal footer was the one
+// seam visible at night; these tokens close it.
+// Ground and card are the package's OWN values, to the digit: #08191C is what
+// the footer paints on every page and what the municipal story cards use as
+// their dark surface. "Close enough" would have left a faint seam exactly where
+// the page meets the footer — the one place this whole change is about.
 const darkTokens: Partial<Record<TokenName, string>> = {
-  '--color-bg': '#12161C',
-  '--color-bg-muted': '#1B212A',
-  '--color-bg-accent': '#152238',
-  '--color-border': '#2A313C',
-  '--color-border-muted': '#232A34',
-  '--color-border-accent': '#31517F',
-  '--color-brand': '#4D8DF0',                       // mark, brightened for the dark ground
-  '--color-brand-deep': '#2D5FBF',                  // still a step below brand — layering holds
-  '--color-accent': '#4D8DF0',                      // brightened blue for dark contrast
-  '--color-accent-dim': 'rgba(77,141,240,0.16)',
-  '--color-accent-dark': '#8FBBF7',                 // "hover / accent text" → lighter on dark
-  '--color-accent-light': '#3E74CC',
+  '--color-bg-page': '#08191C',         // Grund und Karte fallen nachts zusammen
+  '--color-bg': '#08191C',
+  '--color-bg-raised': '#17383E',    // dunkel: die Karte liegt ueber dem Grund
+  '--color-bg-muted': '#163338',
+  '--color-bg-accent': '#12292E',
+  '--color-border': '#24413F',
+  '--color-border-muted': '#1C3539',
+  '--color-border-accent': '#3D5F3A',
+  '--color-brand': '#D4FF24',                       // the mark keeps its lime on dark
+  '--color-brand-deep': '#EAFFA0',                  // lighter, as header.css mixes it
+  '--color-accent': '#A8D96A',                      // the accent green, lifted for dark (10,56:1)
+  '--color-accent-dim': 'rgba(168,217,106,0.16)',
+  '--color-accent-dark': '#C6E89A',                 // "hover / accent text" → lighter on dark
+  '--color-accent-light': '#7FAF4F',
+  // On a light-green fill, white text reaches 1,7:1. The dark stage therefore
+  // sets its own ink for accent surfaces — the base's white would be unreadable.
+  // (It was already weak before this change: white on #4D8DF0 was 3,1:1.)
+  '--color-text-on-accent': '#08191C',
   '--color-positive': '#2BE06E',
   // Auf dunklem Grund sind die Markenfarben selbst schon kontraststark
   // (9,24:1 bzw. 5,6:1) — Text- und Flaechenfarbe fallen hier zusammen.
@@ -344,13 +551,16 @@ const darkTokens: Partial<Record<TokenName, string>> = {
   '--color-negative-border': 'rgba(242,109,109,0.32)',
   '--color-chart-positive-bg': 'rgba(43,224,110,0.13)',
   '--color-chart-negative-bg': 'rgba(242,109,109,0.10)',
-  '--color-chart-grid': '#2A313C',
-  '--color-chart-zero': '#4C5561',
-  '--color-text-primary': '#E7EBF1',
-  '--color-text-secondary': '#9AA6B4',
-  '--color-text-muted': '#838D9A',                 // A11y: 5.4:1 on dark bg (was 4.66)
-  '--color-text-faint': '#6C7683',                 // A11y: 3.9:1 placeholder tier (was 2.90)
-  '--color-progress-inactive': '#2A313C',
+  '--color-chart-grid': '#24413F',
+  '--color-chart-zero': '#47605D',
+  // The footer's own text scale (#E8EEE9 / #B6C9BE), continued downwards.
+  // Measured on --color-bg #08191C: primary 15,30:1 · secondary 10,37:1 ·
+  // muted 7,29:1 · faint 5,49:1 (on the card #163338: 11,40 / 7,72 / 5,44 / 4,09).
+  '--color-text-primary': '#E8EEE9',
+  '--color-text-secondary': '#B6C9BE',
+  '--color-text-muted': '#93AAA1',
+  '--color-text-faint': '#7C938B',
+  '--color-progress-inactive': '#24413F',
   '--color-track': 'rgba(255,255,255,0.10)',
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.45)',
   '--shadow-md': '0 4px 16px rgba(0,0,0,0.55)',
@@ -358,19 +568,27 @@ const darkTokens: Partial<Record<TokenName, string>> = {
 };
 
 /** Dämmerung — warm, dimmed twilight between day and night. */
+// v3 (20.09.2026): warm, dimmed — but in the new family, not the old plum.
+// The plum was chosen against a blue-accented, grey-texted base; carried
+// unchanged it would have left the one stage between day and night reading as
+// a different product. Warmth is kept by pulling the teal towards green and
+// stopping well above the night ground.
 const duskTokens: Partial<Record<TokenName, string>> = {
-  '--color-bg': '#26202B',                          // warm plum, dimmed (not deep dark)
-  '--color-bg-muted': '#302833',
-  '--color-bg-accent': '#342740',
-  '--color-border': '#3E3442',
-  '--color-border-muted': '#352C39',
-  '--color-border-accent': '#5A4A78',
-  '--color-brand': '#6E9CEE',
-  '--color-brand-deep': '#3F6BC4',
-  '--color-accent': '#6E9CEE',
-  '--color-accent-dim': 'rgba(110,156,238,0.16)',
-  '--color-accent-dark': '#A9C4F5',
-  '--color-accent-light': '#5A7FC8',
+  '--color-bg-page': '#1E2B26',
+  '--color-bg': '#1E2B26',                          // warm dim teal-green (not deep dark)
+  '--color-bg-raised': '#2C3B35',
+  '--color-bg-muted': '#27352E',
+  '--color-bg-accent': '#2A3B31',
+  '--color-border': '#374840',
+  '--color-border-muted': '#2E3D36',
+  '--color-border-accent': '#4C6647',
+  '--color-brand': '#D4FF24',
+  '--color-brand-deep': '#E7FF87',
+  '--color-accent': '#B6DE7C',
+  '--color-accent-dim': 'rgba(182,222,124,0.16)',
+  '--color-accent-dark': '#D1EDA6',
+  '--color-accent-light': '#8FB55E',
+  '--color-text-on-accent': '#1E2B26',              // see darkTokens — white fails on a light-green fill
   '--color-positive': '#3BD97A',
   '--color-positive-text': '#3BD97A',                // 7,71:1 auf dem Daemmerungs-Grund
   '--color-negative-text': '#F07D72',
@@ -379,13 +597,15 @@ const duskTokens: Partial<Record<TokenName, string>> = {
   '--color-negative-border': 'rgba(240,125,114,0.30)',
   '--color-chart-positive-bg': 'rgba(59,217,122,0.12)',
   '--color-chart-negative-bg': 'rgba(240,125,114,0.10)',
-  '--color-chart-grid': '#3E3442',
-  '--color-chart-zero': '#5E5566',
-  '--color-text-primary': '#F0E6EC',                // warm off-white
-  '--color-text-secondary': '#B7A6B4',
-  '--color-text-muted': '#9E8D9B',                 // A11y: 5.1:1 on dusk bg (was 4.20)
-  '--color-text-faint': '#7C6E7A',                 // A11y: 3.3:1 placeholder tier (was 2.62)
-  '--color-progress-inactive': '#3E3442',
+  '--color-chart-grid': '#374840',
+  '--color-chart-zero': '#566A60',
+  // Measured on --color-bg #1E2B26: primary 12,74:1 · secondary 8,69:1 ·
+  // muted 6,14:1 · faint 4,64:1.
+  '--color-text-primary': '#EDF0E6',                // warm off-white
+  '--color-text-secondary': '#BCCBBD',
+  '--color-text-muted': '#9AAC9F',
+  '--color-text-faint': '#83958A',
+  '--color-progress-inactive': '#374840',
   '--color-track': 'rgba(255,255,255,0.10)',
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.35)',
   '--shadow-md': '0 4px 16px rgba(0,0,0,0.45)',
@@ -395,34 +615,39 @@ const duskTokens: Partial<Record<TokenName, string>> = {
 // Overcast day — a genuine medium grey, dark enough to read clearly as "dimmed"
 // against white. Text is darkened to match (a light page's greys would vanish
 // on this ground); dark text on the grey still clears 4.5:1.
+// v3 (20.09.2026): the same grey, pulled into the new family (sage instead of
+// blue-grey) so the dim daytime stages interpolate towards a neighbour of the
+// base rather than away from it.
 const overcastTokens: Partial<Record<TokenName, string>> = {
-  '--color-bg': '#BFC4CC',
-  '--color-bg-muted': '#B4BAC3',
-  '--color-bg-accent': '#B8C0CE',
-  '--color-border': '#969CA6',
-  '--color-border-muted': '#9EA4AE',
-  '--color-border-accent': '#7FA0CE',
-  // The interactive accent: base #1365EA only reaches 2.94:1 on this grey — real
+  '--color-bg-page': '#C2C8BF',
+  '--color-bg': '#C2C8BF',
+  '--color-bg-raised': '#E2E6DE',
+  '--color-bg-muted': '#B7BEB4',
+  '--color-bg-accent': '#BBC3B8',
+  '--color-border': '#979E94',
+  '--color-border-muted': '#9FA69C',
+  '--color-border-accent': '#8CA47E',
+  // The interactive accent: the base green only reaches 3.0:1 on this grey — real
   // text (inline links, CTAs, accent spans) fails AA. Darkened until it clears
   // 4.5:1 on bg AND bg-muted; white text on accent surfaces gets even stronger.
-  //   accent #0A429D → 5.26:1 on #BFC4CC, 4.72:1 on #B4BAC3, white on it 9.21:1
-  // accent-dark (#073C93, hover) is darker still, so hover contrast only rises.
-  '--color-accent': '#0A429D',
-  '--color-text-primary': '#2C2F34',
+  //   accent #33530F → 5.16:1 on #C2C8BF, 4.63:1 on #B7BEB4, white on it 8.81:1
+  // accent-dark (#35561A, hover) is darker still, so hover contrast only rises.
+  '--color-accent': '#33530F',
+  '--color-text-primary': '#24312E',
   // A11y: both greys must clear 4.5:1 on bg #BFC4CC AND bg-muted #B4BAC3 — the
   // muted surface is the bottleneck, so "muted heller" is impossible here
   // (the old pair #494D53/#4C5056 sat at 4.35/4.15 on bg-muted = below AA and
   // only 3 steps apart). Spread restored by darkening both, secondary more
   // (14 hex steps apart, like light). Ratios (WCAG 2.1 formula):
-  //   secondary #383C41 → 6.34:1 on #BFC4CC, 5.69:1 on #B4BAC3
-  //   muted     #464A4F → 5.09:1 on #BFC4CC, 4.57:1 on #B4BAC3
-  '--color-text-secondary': '#383C41',
-  '--color-text-muted': '#464A4F',
-  '--color-text-faint': '#5E626A',                 // A11y: 3.5:1 placeholder tier (was 2.39)
-  '--color-chart-grid': '#969CA6',
-  '--color-chart-zero': '#7A7F87',
-  '--color-progress-inactive': '#969CA6',
-  '--color-track': 'rgba(0,0,0,0.18)',
+  //   secondary #313E38 → 6.56:1 on #C2C8BF, 5.88:1 on #B7BEB4
+  //   muted     #3F4C45 → 5.28:1 on #C2C8BF, 4.74:1 on #B7BEB4
+  '--color-text-secondary': '#313E38',
+  '--color-text-muted': '#3F4C45',
+  '--color-text-faint': '#56635B',                 // A11y: 3.3:1 placeholder tier
+  '--color-chart-grid': '#979E94',
+  '--color-chart-zero': '#7B8278',
+  '--color-progress-inactive': '#979E94',
+  '--color-track': 'rgba(23,59,66,0.20)',
   // Neon #00D950 (the brand green, kept everywhere else) sits at nearly the same
   // lightness as this medium grey, so it reads washed-out here. Only on s3 does
   // the positive green fall back a shade deeper. (Purely a look call — the
@@ -526,6 +751,44 @@ export function stageDefaults(i: number): Record<TokenName, string> {
 export const globalStyles = `
   html{scroll-behavior:smooth}
   *{box-sizing:border-box;margin:0;padding:0}
+  /* Überschriften tragen die Display-Schrift — EINE Regel statt einer
+     font-family an jeder Überschrift. Die enge Laufweite ist am Original
+     gemessen (Startseite: -1,19px auf 34px = -0,035em; die Inhaltsvorlage des
+     Pakets setzt -0,04em auf die Seitenüberschrift). Ohne sie wirkt Montserrat
+     in großen Graden auseinandergezogen. */
+  /* Schrift, Gewicht, Laufweite und Größe einer Überschrift stehen HIER und
+     nirgends sonst. Die Seiten trugen sie bis 20.09.2026 einzeln am Element
+     (meist 800 und -0.02em, dazu die Größe) — solange das so war, konnte kein
+     Token die Typografie regieren, und ein !important dagegen wäre die
+     Bekämpfung des Symptoms gewesen. Die Angaben sind an 98 Stellen entfernt;
+     kleine Labels, die bewusst eine Bildunterschrift-Größe tragen und nur
+     zufällig als Überschrift ausgezeichnet sind, behalten ihre.
+
+     KEINE automatische Silbentrennung: Sie hat aus „Photovoltaik" ein
+     „Photo-voltaik" über zwei Zeilen gemacht. In einer Überschrift ist ein
+     Trennstrich mitten im Wort immer falsch; umbrochen wird zwischen Wörtern,
+     und nur wenn ein einzelnes Wort wirklich breiter ist als die Spalte,
+     greift der harte Umbruch. */
+  h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;letter-spacing:var(--tracking-display);line-height:var(--leading-display);overflow-wrap:break-word}
+  h1{font-size:var(--font-size-h1)}
+  h2{font-size:var(--font-size-h2)}
+  h3,h4{font-size:var(--font-size-h3);letter-spacing:var(--tracking-heading);line-height:var(--leading-heading)}
+
+  /* Ein Link im Fließtext trägt im neuen Design KEINE eigene Farbe, sondern
+     eine Unterstreichung — die Interaktionsfarbe ist die Füllung eines Knopfes,
+     nicht die Farbe einer Textzeile. Ohne diese Regel wäre ein Link nach der
+     Umstellung von seinem Absatz nicht mehr zu unterscheiden. */
+  a[href]{text-underline-offset:var(--underline-offset)}
+  /* Kopfzeile wie im Original: voller Breite mit 5 % Seitenrand, nicht auf die
+     Inhaltsspalte eingezogen. Gemessen auf der Startseite bei 1024 px — Logo
+     bei x=51 (5 %), Deckel 1600. Unsere Seiten hatten 16 px festen Rand, das
+     Logo saß deshalb sichtbar weiter außen als auf den neuen Seiten. */
+  .sc-react-header{max-width:var(--header-frame-max)}
+  /* Das Logo auf hellem Grund ist NEUTRAL, nicht limette: Marke in gedecktem
+     Petrol, Wortmarke in der Textfarbe. Die drei Werte stehen so im Kopf der
+     neuen Seiten (components/DesignHeader.css) und sind von dort übernommen —
+     die Limette gehört auf den dunklen Grund von Startseite und Fußzeile. */
+  .sc-react-header .brand svg{--color-accent:var(--color-text-primary);--color-brand:color-mix(in srgb,var(--color-bg-accent) 45%,var(--color-text-primary));--color-brand-deep:color-mix(in srgb,var(--color-bg-accent) 70%,var(--color-text-primary))}
   /* Redaktionelle Kopf-Luft (Lese-Seiten) auf schmalen Schirmen zurücknehmen:
      60px über der Überschrift wirken auf dem Handy wie ein Fehler, auf dem
      Desktop wie gewollte Ruhe. Siehe --content-lede-top. */
@@ -634,129 +897,32 @@ export const globalStyles = `
   }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
-  /* Geräteempfehlung: Seitenspalte ab Tablet-Breite, darunter Wischleiste.
-
-     Die Rechner laufen in einer 480px-Spalte (--page-max-width). Das Ergebnis
-     bricht ab 1024px aus dieser Begrenzung aus und legt rechts eine 300er-Spalte
-     daneben; der negative Außenabstand zentriert den breiteren Block über der
-     schmalen Spalte, statt ihn nach rechts wandern zu lassen. Unterhalb bleibt
-     alles wie bisher — die Regel greift schlicht nicht.
-
-     WARUM 1024 UND NICHT DER KOPFZEILEN-PUNKT (1080): Das sind zwei verschiedene
-     Fragen. Dort geht es darum, ab wann die Navigationsleiste in eine Zeile
-     passt; hier darum, ab wann 480 + 24 + 300 = 804 px plus Ränder auf den
-     Schirm passen. Denselben Wert zu nehmen wäre eine Scheingemeinsamkeit.
-
-     Die Spalte scrollt mit (sticky), aber nur bis zur eigenen Höhe: Bei einer
-     Liste, die höher ist als das Fenster, wäre ein festes Mitlaufen ein Käfig —
-     man käme an die unterste Kachel nicht heran. */
+  /* Result surface follows the Atlas V3 paper, ink and blue palette. */
+  .wp-result-page{--font-size-small:14px;--font-size-caption:12px;--font-size-body:15px;--color-bg:#edf0ec;--color-surface:#fafbf8;--color-surface-hover:#e4ebe4;--color-text-primary:#18323e;--color-text-secondary:#52676f;--color-text-muted:#617279;--color-text-faint:#617279;--color-border:#cdd6d2;--color-accent:#2362df;--color-accent-dim:#e0e8f7;--color-positive:#287353;--color-positive-dim:#e1ebe3;--color-negative:#b53e38;padding:0 6% 60px!important}
+  body:has(.wp-result-page){background:#edf0ec}
+  .wp-section-nav{display:flex;gap:30px;margin-top:32px;padding-top:22px;border-top:1px solid var(--color-border);font-size:var(--font-size-body)}
+  .wp-section-nav a{color:var(--color-text-primary);text-decoration:none}
+  .wp-section-nav a:hover{color:var(--color-accent)}
+  .wp-result-page *{box-sizing:border-box}
+  .wp-result-page a,.wp-result-page button,.wp-result-page summary{scroll-margin-top:90px}
+  .wp-result-page :focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
+  .wp-result-heading{padding:50px 0 26px;text-align:left!important;margin-bottom:12px!important}
+  .wp-eyebrow{font-size:var(--font-size-caption);font-weight:700;letter-spacing:.04em;color:var(--color-accent);margin:0 0 12px}
+  .wp-result-heading h1{font-family:var(--font-heading);font-size:clamp(34px,4.4vw,58px)!important;font-weight:700!important;letter-spacing:normal!important;line-height:1.2!important;margin:0}
+  .wp-result-context{color:var(--color-text-secondary);font-size:var(--font-size-body);margin:12px 0 0}
   .wp-ergebnis{display:block}
-  .wp-geraete-spalte{margin-top:16px}
   /* Schmal: Kacheln nebeneinander im Sichtfenster, eine gut sichtbar plus ein
      angeschnittener Rand der nächsten — das ist der Hinweis, dass es weitergeht.
      Ohne den Anschnitt wischt niemand. */
-  .wp-geraete-kachel{flex:0 0 82%}
   @media (min-width:1024px){
     .wp-ergebnis{display:grid;grid-template-columns:minmax(0,480px) 300px;gap:24px;align-items:start;width:804px;margin-left:-162px}
-    /* KEIN position:sticky — gemessen am 05.09.2026 und bewusst entfernt.
-       Die Spalte klebte oben fest und war 2.853 px hoch bei 1.100 px
-       Fensterhöhe: Alles darunter war für den Nutzer NIE erreichbar, und das
-       traf ausgerechnet die fachlichen Hinweise unter der Geräteliste. Sticky
-       trägt nur Inhalte, die kürzer als der Bildschirm sind; seit die Liste
-       Hinweise trägt, ist sie das nie. Ein Innen-Scrollbereich wäre die
-       Alternative gewesen — zwei Scrollflächen nebeneinander bedient niemand. */
-    .wp-geraete-spalte{margin-top:0}
     /* In der Spalte gestapelt statt nebeneinander. */
-    .wp-geraete-reihe{flex-direction:column}
-    .wp-geraete-kachel{flex:1 1 auto}
   }
-  /* Kopfzeile: Welche Navigation sichtbar ist, entscheidet die Medienabfrage —
-     NICHT der Zustand der Komponente. Das isDesktop-Flag in Header.tsx startet
-     vor der Hydratation auf wahr; der Server lieferte damit auf jedem
-     Gerät die Desktop-Leiste, und auf 375 px riss die das Dokument über die
-     Fensterbreite hinaus. Sichtbar war das als kurzer seitlicher Scroll beim Laden.
-     DER UMSCHALTPUNKT STEHT HIER UND IN Header.tsx (matchMedia) — beide bei
-     1080px. Wer einen ändert, ändert beide, sonst zeigt die Seite für einen
-     Bereich beides oder nichts.
-
-     WARUM 1080 UND NICHT 1000: Bei 1000 px passte die Desktop-Kopfzeile noch
-     gar nicht. Sie braucht rund 1009 px (Logo, vier Menüpunkte, Sonnenanzeige,
-     Einloggen), bekommt bei 1000 px Fenster aber nur 968 px — das Dokument lief
-     auf 1025 px auf und die Seite scrollte seitlich. Betroffen war unter
-     anderem jedes iPad im Querformat (1024 px) und jedes 1280er-Notebook bei
-     125 % Skalierung. Gemessen am 18.08.2026; der Fehler lag schon vorher im
-     matchMedia-Wert, fiel aber erst auf, als die Breite zum geprüften Wert
-     wurde. 1080 lässt Luft für längere Ortsnamen in der Sonnenanzeige — die
-     Kopfzeile wächst mit ihnen. */
-  .hdr-nav{display:flex}
-  .hdr-auth{display:contents}
-  .hdr-burger{display:none}
-  .hdr-aktionen{gap:14px}
-  @media (max-width:1079px){
-    .hdr-nav{display:none}
-    .hdr-auth{display:none}
-    .hdr-burger{display:flex}
-    .hdr-aktionen{gap:8px}
-  }
-  @media (min-width:1080px){
-    .hdr-menu{display:none}
-  }
-  .footer-cols{display:grid;grid-template-columns:repeat(3,1fr);max-width:600px;margin:0 auto;gap:0}
-  .footer-cols>div{padding:0 22px}
-  .footer-cols>div+div{border-left:1px solid var(--color-border)}
-  @media (max-width:640px){.footer-cols{grid-template-columns:1fr;max-width:none;gap:20px}.footer-cols>div{padding:0}.footer-cols>div+div{border-left:none}}
-  /* Vertrauens-Leiste über dem Footer (components/TrustBar.tsx). Zwei Spalten
-     auf Desktop statt vier: Die Punkte sind ganze Sätze, und bei der 600px des
-     Footer-Rasters bliebe für vier Spalten je ~140px — zu schmal zum Lesen.
-     Der Abstand nach unten ist das Doppelte der größten Skalenstufe (96px) und
-     damit der einzige Wert hier außerhalb der Skala: Die Leiste ist Inhalt, die
-     Spalten darunter sind Navigation, und bei 48px lasen sich beide als ein
-     Block. Der Sprung muss größer sein als jeder Abstand INNERHALB der Leiste,
-     sonst trennt er nichts. */
-  .trust-bar{max-width:var(--content-max-width);margin:0 auto ${space.huge * 2}px;background:var(--color-bg-muted);border:1px solid var(--color-border);border-radius:14px;padding:${pad("xxl")}}
-  .trust-bar-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:${space.xxl}px}
-  /* Der Punkt ist ein Knopf, kein Link: Alle vier öffnen dasselbe Modal. Der
-     Knopf muss deshalb aussehen und sich anfühlen wie Fließtext, nicht wie ein
-     Formularelement — daher das Zurücksetzen der Browser-Vorgaben. */
-  .trust-item{display:flex;gap:${space.lg}px;align-items:flex-start}
-  .trust-item-icon{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:var(--color-bg);border:1px solid var(--color-border)}
-  .trust-item-title{display:block;font-size:var(--font-size-body);font-weight:700;color:var(--color-text-primary);line-height:1.35;margin-bottom:2px}
-  .trust-item-text{display:block;font-size:var(--font-size-body);line-height:1.5;color:var(--color-text-muted)}
-  .trust-item-betont{font-weight:700;color:var(--color-text-secondary)}
-  /* Quellenname im Satz: als Link erkennbar, aber leise — er soll den Satz
-     nicht in eine Linkliste verwandeln. Deshalb Unterstreichung statt Farbe;
-     die Akzentfarbe bleibt dem "Mehr erfahren" vorbehalten. */
-  .trust-item-quelle{color:inherit;text-decoration:underline;text-decoration-color:var(--color-border-accent);text-underline-offset:3px}
-  .trust-item-quelle:hover{color:var(--color-accent);text-decoration-color:currentColor}
-  .trust-item-quelle:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px;border-radius:3px}
-  /* "Mehr erfahren" sitzt AM PUNKT, nicht unter der Leiste: Es steht nur dort,
-     wo es hinter der Zusage auch etwas zu lesen gibt. Ein Punkt ohne den Hinweis
-     ist bewusst kein Knopf (.trust-item-still). */
-  .trust-item-mehr{display:inline-flex;align-items:center;gap:${space.xs}px;margin-top:${space.sm}px;background:none;border:0;padding:0;font:inherit;font-size:var(--font-size-small);font-weight:600;color:var(--color-accent);cursor:pointer}
-  .trust-item-mehr:hover{color:var(--color-accent-dark)}
-  .trust-item-mehr:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px;border-radius:6px}
-  /* Modal-Inhalt: je Punkt ein Abschnitt, darunter die Prüftermine. */
-  .trust-modal-punkt{padding-top:${space.xl}px;border-top:1px solid var(--color-border)}
-  .trust-modal-punkt:first-child{padding-top:0;border-top:0}
-  .trust-modal-punkt+.trust-modal-punkt{margin-top:${space.xl}px}
-  .trust-modal-h3{display:flex;align-items:center;gap:${space.md}px;font-size:var(--font-size-body);font-weight:700;color:var(--color-text-primary);margin:0 0 ${space.md}px}
-  .trust-modal-text{font-size:var(--font-size-body);line-height:1.6;color:var(--color-text-muted);margin:0 0 ${space.md}px}
-  .trust-modal-wege{font-size:var(--font-size-small);margin:0}
-  .trust-modal-wege a{color:var(--color-accent);text-decoration:none;font-weight:600}
-  .trust-modal-wege a:hover{text-decoration:underline}
-  .trust-modal-liste{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:${space.sm}px}
-  .trust-modal-liste li{display:flex;justify-content:space-between;gap:${space.lg}px;font-size:var(--font-size-small);color:var(--color-text-muted);line-height:1.5}
-  .trust-modal-rhythmus{flex:0 0 auto;text-align:right;color:var(--color-text-faint)}
-  @media (max-width:640px){
-    .trust-bar-grid{grid-template-columns:1fr;gap:${space.xl}px}
-    .trust-modal-liste li{flex-direction:column;gap:0}
-    .trust-modal-rhythmus{text-align:left}
-  }
-  /* KPI-Reihe des Solar-Atlas: sechs Kacheln nebeneinander, auf schmalen
+  /* KPI-Reihe des Energie-Atlas: sechs Kacheln nebeneinander, auf schmalen
      Schirmen ein Wisch-Slider (Embla). Der Umschaltpunkt steht hier UND als
      Embla-Breakpoint in AtlasKpiRow — beide bei 760px, sonst wischt der Desktop
      an einem Grid vorbei. */
-  /* KPI-Reihe des Solar-Atlas: sechs Kacheln nebeneinander, auf schmalen
+  /* KPI-Reihe des Energie-Atlas: sechs Kacheln nebeneinander, auf schmalen
      Schirmen eine wischbare Leiste (Bordmittel, keine Slider-Bibliothek). */
   /* Spaltenzahl als Variable: die Kennzahlen-Reihe hat sechs Kacheln, der
      Groessenklassen-Vergleich vier. Eine Regel mit --kpi-cols statt zwei
@@ -844,7 +1010,7 @@ export const globalStyles = `
      beschnitten. */
   .intro-clamp{margin:0 0 48px}
   .intro-text{font-size:var(--font-size-body);line-height:1.6;color:var(--color-text-secondary);margin:0}
-  .intro-more{display:none;background:none;border:none;padding:0;margin-top:10px;font-family:inherit;font-size:var(--font-size-body);font-weight:700;color:var(--color-accent);cursor:pointer}
+  .intro-more{display:none;background:none;border:none;padding:0;margin-top:10px;font-family:inherit;font-size:var(--font-size-body);font-weight:700;color:var(--color-cta);cursor:pointer}
   @media (max-width:640px){
     .intro-clamp:not(.intro-open) .intro-text{
       /* 5,5 Zeilen = 14px * 1.6 * 5.5. Partnerkonstante zu --font-size-body:
@@ -1115,3 +1281,15 @@ export const globalStyles = `
 
 
 `;
+
+/**
+ * Logo colours for the "result" lockup on exported story images: dark ink on
+ * the light result surface, independent of the page's daylight stage.
+ * Here, not in components/Logo.tsx — design colours have one source.
+ */
+export const RESULT_LOGO_COLORS = {
+  "--color-accent": "#173b42",
+  "--color-brand": "color-mix(in srgb,#e8ece3 45%,#173b42)",
+  "--color-brand-deep": "color-mix(in srgb,#e8ece3 70%,#173b42)",
+  "--color-text-faint": "#8A8A8A",
+} as const;

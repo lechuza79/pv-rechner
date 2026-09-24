@@ -181,7 +181,7 @@ async function AtlasBody({
   ]);
 
   const crumbs: Crumb[] = [
-    { label: "Solar-Atlas", href: "/solar-atlas" },
+    { label: "Energie-Atlas", href: "/solar-atlas" },
     ...ancestors
       .filter((a) => a.level !== "de")
       .map((a, i) => ({
@@ -591,7 +591,7 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: space.sm,
   },
   standDate: { fontWeight: 600, color: "inherit" },
-  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  h1: { margin: `0 0 ${space.md}px` },
   intro: { fontSize: v("--font-size-body"), lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xxl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
   metricsGrid: {

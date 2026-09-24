@@ -105,7 +105,7 @@ function DayChart({ day, scaleMax }: { day: ExampleDayResult; scaleMax: number }
       <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-secondary'), textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
         Erzeugung <strong style={{ fontFamily: v('--font-mono') }}>{day.prod.toLocaleString("de-DE")}</strong> kWh ·
         Verbrauch <strong style={{ fontFamily: v('--font-mono') }}>{day.cons.toLocaleString("de-DE")}</strong> kWh ·
-        davon <strong style={{ fontFamily: v('--font-mono'), color: day.grid > 0 ? v('--color-text-primary') : v('--color-positive') }}>{day.grid.toLocaleString("de-DE")}</strong> kWh aus dem Netz ·
+        davon <strong style={{ fontFamily: v('--font-mono'), color: day.grid > 0 ? v('--color-text-primary') : v('--color-positive-text') }}>{day.grid.toLocaleString("de-DE")}</strong> kWh aus dem Netz ·
         <strong style={{ fontFamily: v('--font-mono') }}> {day.feedIn.toLocaleString("de-DE")}</strong> kWh eingespeist
       </div>
     </div>
@@ -219,7 +219,7 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
                 onClick={() => setView(t.key)}
                 style={{
                   border: `1px solid ${on ? v('--color-accent') : v('--color-border')}`,
-                  background: on ? v('--color-accent') : "transparent",
+                  background: on ? v('--color-cta') : "transparent",
                   color: on ? v('--color-text-on-accent') : v('--color-text-secondary'),
                   fontSize: v("--font-size-caption"), fontWeight: 600, fontFamily: "inherit",
                   padding: "5px 10px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { RATGEBER } from "../ratgeber";
+import { heuteInBerlin } from "../zeit";
 
 /**
  * Jeder Ratgeber trägt zwei Daten, und sie bedeuten Verschiedenes.
@@ -33,7 +34,7 @@ describe("Ratgeber: Erscheinen und Überarbeitung", () => {
   it("nichts erscheint in der Zukunft", () => {
     // Ein Tippfehler im Jahr fällt sonst nur auf, wenn jemand den Kalender
     // aufmacht und sich wundert, warum dort nichts steht.
-    const heute = new Date().toISOString().slice(0, 10);
+    const heute = heuteInBerlin();
     for (const r of RATGEBER) {
       expect(r.live <= heute, `${r.slug} erscheint erst am ${r.live}`).toBe(true);
     }

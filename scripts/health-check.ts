@@ -26,13 +26,31 @@
  *   CRON_SECRET            für --alert
  */
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { collectColdProbes } from "../lib/health-cold-probe";
+import { atlasStichprobenPfade, istKreisfreieStadt } from "../lib/health-atlas-stichprobe";
+import { placementSnapshotProblems, readCoherentPlacementSnapshot, ortsseitenOhneRangliste } from "../lib/health-placement-snapshot";
+import { advanceIncidents, emptyState, readState, type Finding } from "../lib/health-incidents";
+import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs";
+import { heuteInBerlin } from "../lib/zeit";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
+import {
+  importPlanBefund,
+  importTageAusZeitplan,
+  importlaufMeldung,
+  type ImportPlanBefund,
+} from "../lib/mastr-import-plan";
+import {
+  type Auslieferung,
+  auslieferungsAlterText,
+  kaltaufbauHerkunft,
+  neuesteProduktionsAuslieferung,
+} from "../lib/auslieferungs-alter";
+import { SOLAR_CHECK_PROJEKT_ID } from "../lib/vercel-budget";
 import { PRUEFSTAND, faelligkeiten } from "../lib/pruefstand";
 import { RELEASE_PLAN, planMeldungen } from "../lib/release-plan";
-import { sollWarnen, warnstufe } from "../lib/social-ablauf";
+import { warnstufe } from "../lib/social-ablauf";
 import { paramsToRow } from "../lib/types";
 import {
   BASIS_TAGE,
@@ -98,6 +116,13 @@ const PAGES = [
  *  Drei Segmente, damit sie die Gemeinde-Route trifft (die tiefste und teuerste). */
 const SOFT_404_PFAD = "/solar-atlas/kein-land/kein-kreis/keine-gemeinde";
 
+/** Dieselbe Frage für eine Adresse, die auf GAR KEINE Route passt. Sie geht
+ *  einen anderen Weg als die oben (dort wirft eine echte Seite notFound(), hier
+ *  findet das Framework schon keine Route) und wird seit 20.09.2026 von
+ *  app/global-not-found.tsx beantwortet — einer eigenen Seite, die jemand
+ *  versehentlich auf 200 stellen kann, ohne dass sie kaputt aussieht. */
+const UNBEKANNTE_ADRESSE = "/gibt-es-nicht-und-wird-es-nie-geben";
+
 /** Notnagel, falls die DB gerade nicht erreichbar ist — echte, dauerhaft
  *  existierende Gemeinden. Bewusst klein: der Regelweg ist die Zufallsauswahl. */
 const FALLBACK_GEMEINDEN = [
@@ -115,6 +140,21 @@ const FALLBACK_KREISE = [
 ];
 
 type Probe = { label: string; url: string; status: number; seconds: number; cache: string; region: string };
+
+/** Track every page independently; failed responses cannot prove latency recovery. */
+export function pageLatencyAssessment(probes: Pick<Probe, "label" | "status" | "seconds">[]) {
+  const findings: Finding[] = [];
+  const unknown: string[] = [];
+  const warnings: string[] = [];
+  for (const p of probes) {
+    const key = `page-latency:${p.label}`;
+    if (![200, 301, 308].includes(p.status)) { unknown.push(key); continue; }
+    const result = verdict(p.seconds, SLOW.page);
+    if (result === "rot") findings.push({ key, text: `${p.label} braucht ${p.seconds.toFixed(2)} s — deutlich zu lang.` });
+    else if (result === "gelb") warnings.push(`${p.label} braucht ${p.seconds.toFixed(2)} s.`);
+  }
+  return { findings, unknown, warnings };
+}
 
 /** Ein Aufruf, gemessen wie ein Browser ihn erlebt (inkl. Verbindungsaufbau). */
 async function probe(label: string, path: string): Promise<Probe> {
@@ -144,6 +184,258 @@ async function probe(label: string, path: string): Promise<Probe> {
     cache = e instanceof Error ? e.name : "fetch failed";
   }
   return { label, url, status, seconds: (Date.now() - started) / 1000, cache, region };
+}
+
+export type FirewallBefund = {
+  /** Kommt unsere eigene Automatik durch? */
+  eigeneDurch: boolean;
+  /** Wird eine fremde Kennung abgewiesen? */
+  fremdeAbgewiesen: boolean;
+  /** Antworten Crawler-Anweisungen weiterhin jedem? */
+  anweisungenOffen: boolean;
+  statusEigen: number;
+  statusFremd: number;
+  statusRobots: number;
+};
+
+/**
+ * Steht der Bot-Schutz noch scharf — und kommen wir selbst noch durch?
+ *
+ * WARUM DAS HIER GEPRÜFT WIRD UND NICHT IN EINEM TEST: Die Firewall-Regeln
+ * liegen in der Vercel-Projektkonfiguration, nicht im Repo. Sie sind in keinem
+ * Vergleich der Änderungen sichtbar, und jeder mit Projektrechten kann sie
+ * still zurückstellen — dieselbe Klasse wie die Build-Maschine und die
+ * Function-Region. Ein Test im Code kann darüber gar nichts aussagen.
+ *
+ * GEMESSEN WIRD DIE WIRKUNG, NICHT DIE EINSTELLUNG: drei echte Abrufe gegen
+ * die Produktion. Eine Konfiguration zu lesen sagt nur, was dort steht; diese
+ * drei sagen, was ein Besucher, unsere Automatik und ein fremder Crawler
+ * tatsächlich bekommen.
+ *
+ * Scharf gestellt am 08.09.2026, nachdem ein Crawler seit dem 01.09. den
+ * Adressraum ablief und die Crawler-Anweisung ignorierte: 14.000 maschinelle
+ * Seitenaufbauten am Tag gegen rund 94 menschliche.
+ *
+ * DIE DRITTE PRÜFUNG IST DIE UNSCHEINBARSTE UND DIE WICHTIGSTE: Wer robots.txt
+ * und Sitemap nicht mehr lesen kann, crawlt gar nicht mehr richtig — eine
+ * Ausnahme, die dort wegfällt, kostet Sichtbarkeit statt Geld und fällt sonst
+ * erst Wochen später auf.
+ */
+async function messeFirewall(): Promise<FirewallBefund | null> {
+  const ziel = `${BASE_URL}/solar-atlas/hessen/landkreis-schwalm-eder-kreis/melsungen`;
+  const hole = async (url: string, ua: string): Promise<number> => {
+    try {
+      const res = await fetch(url, {
+        redirect: "manual",
+        headers: { "user-agent": ua },
+        signal: AbortSignal.timeout(30000),
+      });
+      await res.arrayBuffer();
+      return res.status;
+    } catch {
+      return 0;
+    }
+  };
+
+  const [statusEigen, statusFremd, statusRobots] = await Promise.all([
+    hole(ziel, "solar-check-health-check"),
+    // Eine Kennung, die weder verifiziert noch bei uns ausgenommen ist.
+    hole(ziel, "fremder-crawler-pruefung/1.0"),
+    hole(`${BASE_URL}/robots.txt`, "fremder-crawler-pruefung/1.0"),
+  ]);
+
+  return firewallUrteil(statusEigen, statusFremd, statusRobots);
+}
+
+/**
+ * Aus drei Antwortcodes wird der Befund. Bewusst als eigene Funktion, damit die
+ * ABLEITUNG prüfbar ist und nicht nur das fertige Ergebnis: Beim Bauen dieses
+ * Wächters (08.09.2026) hat eine Sabotage genau hier — „gilt immer als
+ * abgewiesen" — den Test unberührt gelassen, weil die Prüfungen den Befund
+ * fertig hereinreichten. Ein Wächter, der nichts sieht und trotzdem grün
+ * meldet, ist schlimmer als keiner.
+ */
+export function firewallUrteil(
+  statusEigen: number,
+  statusFremd: number,
+  statusRobots: number,
+): FirewallBefund | null {
+  // Kam gar nichts durch, ist die Produktion das Problem, nicht die Firewall —
+  // das meldet der übrige Gesundheitscheck, und ein Befund hier wäre erfunden.
+  if (statusEigen === 0 && statusFremd === 0 && statusRobots === 0) return null;
+
+  return {
+    statusEigen,
+    statusFremd,
+    statusRobots,
+    eigeneDurch: statusEigen === 200,
+    // 429 ist die Prüfaufgabe. 403 wäre eine harte Abweisung — beides zählt.
+    fremdeAbgewiesen: statusFremd === 429 || statusFremd === 403,
+    anweisungenOffen: statusRobots === 200,
+  };
+}
+
+/** Urteil über den Firewall-Befund. Leer heißt: alles wie gewollt. */
+export function firewallBefund(b: FirewallBefund | null): string[] {
+  if (!b) return [];
+  const raus: string[] = [];
+  if (!b.eigeneDurch) {
+    raus.push(
+      `Unsere eigene Automatik kommt nicht mehr durch die Firewall (Antwort ${b.statusEigen} statt 200). ` +
+        `Damit laufen Gesundheitscheck, Atlas-Aufwärmer und Wächter ins Leere. Ausnahmeregeln prüfen.`,
+    );
+  }
+  if (!b.anweisungenOffen) {
+    raus.push(
+      `Die Crawler-Anweisungen antworten nicht mehr jedem (Antwort ${b.statusRobots} statt 200). ` +
+        `Wer sie nicht lesen kann, crawlt gar nicht mehr richtig — das kostet Sichtbarkeit.`,
+    );
+  }
+  if (!b.fremdeAbgewiesen) {
+    raus.push(
+      `Der Bot-Schutz greift nicht mehr: eine fremde Kennung bekommt ${b.statusFremd} statt einer Prüfaufgabe. ` +
+        `Vermutlich steht er wieder auf Beobachten — die Einstellung liegt bei Vercel, nicht im Code.`,
+    );
+  }
+  return raus;
+}
+
+type VorschaubildBefund = { status: number; bytes: number; png: boolean; breite: number | null };
+
+/** Die ersten Bytes einer PNG-Datei — Signatur, dann Breite aus dem IHDR-Kopf. */
+export function pngMasse(bytes: Uint8Array): { png: boolean; breite: number | null } {
+  const sig = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+  const png = bytes.length >= 24 && sig.every((b, i) => bytes[i] === b);
+  if (!png) return { png: false, breite: null };
+  const breite = (bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19];
+  return { png: true, breite };
+}
+
+/**
+ * Kommt aus dem Vorschaubild wirklich ein BILD heraus?
+ *
+ * Der Statuscode beantwortet das nicht, und genau daran ist es am 08.09.2026
+ * durchgerutscht: Nach dem Scharfstellen des Bot-Schutzes holte sich die
+ * Bild-Funktion ihre Schrift nicht mehr (sie lag im öffentlichen Ordner und
+ * wurde über die eigene Adresse abgerufen, wo nun die Prüfaufgabe stand). Die
+ * Antwort blieb HTTP 200 mit Bildtyp — und war NULL Byte lang, ein Jahr lang
+ * zwischengespeichert. Vierzehn Stunden lang zeigte jede geteilte Adresse in
+ * Chat, Netzwerk und Vorschau eine leere Fläche, ohne dass irgendetwas rot war.
+ *
+ * Deshalb wird die WIRKUNG gemessen, nicht der Code: Signatur und Breite aus dem
+ * Dateikopf, wie es der Browser-Test für die herunterladbaren Widget-Bilder
+ * schon tut. Ein zusammengefallenes Bild ist wenige Byte groß und fällt sonst
+ * niemandem auf.
+ */
+async function messeVorschaubild(): Promise<VorschaubildBefund | null> {
+  try {
+    // Mit Zufallszahl, damit die Antwort nicht aus dem CDN kommt: Ein einmal
+    // zwischengespeichertes leeres Bild bliebe sonst ein Jahr lang „in Ordnung".
+    const res = await fetch(`${BASE_URL}/api/og?hc=${Date.now()}`, {
+      headers: { "user-agent": "solar-check-health-check" },
+      signal: AbortSignal.timeout(30000),
+    });
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    const { png, breite } = pngMasse(bytes);
+    return { status: res.status, bytes: bytes.length, png, breite };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Wie alt ist das Wetter, das die Seiten zeigen?
+ *
+ * Live-Wetter, Tageskurven, Sonnenanzeige und Hitzewelle lesen Dateien, die
+ * zwei geplante GitHub-Läufe schreiben (stündlich bzw. alle sechs Stunden).
+ * Ein Lauf, der ausfällt oder von GitHub nicht gestartet wird, meldet sich
+ * nicht — gemessen am Tag der Umstellung: fünf Stunden lang kein einziger
+ * planmäßiger Start. Die Seite zeigt dann ein immer älteres Modell, bis es
+ * aus dem Zeitfenster fällt. Deshalb die WIRKUNG: der Modelllauf, den die
+ * Seite gerade ausliefert, und ob die Vorhersage überhaupt antwortet.
+ */
+export type WetterFrische = { modellLauf: string | null; tageskurve: boolean; hitzewelle: boolean };
+/** Älter als das, und der stündliche Lauf ist mehrfach ausgefallen (ICON-D2 rechnet alle drei Stunden). */
+export const WETTER_MAX_ALTER_STUNDEN = 9;
+
+async function messeWetterFrische(): Promise<WetterFrische | null> {
+  const get = async (pfad: string) => {
+    const res = await fetch(`${BASE_URL}${pfad}`, {
+      headers: { "user-agent": "solar-check-health-check" },
+      signal: AbortSignal.timeout(30000),
+    });
+    return res.ok ? res.json() : null;
+  };
+  try {
+    const [jetzt, tag, hitze] = await Promise.all([
+      get("/api/weather-now?plz=10115"),
+      get("/api/weather?lat=52.53&lon=13.38"),
+      get("/api/heatwave?lat=52.53&lon=13.38"),
+    ]);
+    return {
+      modellLauf: jetzt?.weather?.sources?.sky?.runInit ?? null,
+      tageskurve: tag?.source === "dwd-icon-d2",
+      hitzewelle: Boolean(hitze?.heatwave),
+    };
+  } catch {
+    return null; // nicht nachsehen können ist kein Befund
+  }
+}
+
+/** Urteil über die Wetterdateien. Leer heißt: frisch genug. */
+export function wetterBefund(b: WetterFrische | null, jetzt: Date): string[] {
+  if (!b) return [];
+  const befunde: string[] = [];
+  if (!b.modellLauf) {
+    befunde.push(
+      "Das Live-Wetter liefert kein Modellwetter: Der stündliche Wetter-Schnappschuss fehlt oder reicht nicht bis jetzt. " +
+        "Läufe von wetter-schnappschuss.yml ansehen (auch: hat GitHub sie überhaupt gestartet?).",
+    );
+  } else {
+    const stunden = (jetzt.getTime() - Date.parse(b.modellLauf)) / 3600000;
+    if (stunden > WETTER_MAX_ALTER_STUNDEN) {
+      befunde.push(
+        `Das Live-Wetter zeigt einen Modelllauf von vor ${Math.round(stunden)} Stunden — der stündliche Schnappschuss ` +
+          "ist mehrfach ausgefallen oder nicht gestartet worden. Läufe von wetter-schnappschuss.yml ansehen.",
+      );
+    }
+  }
+  if (!b.tageskurve) {
+    befunde.push(
+      "Die Tageskurve (Live-Simulation, Solarleistung heute) liefert kein Wetter: Der Schnappschuss deckt den " +
+        "heutigen deutschen Tag nicht ab.",
+    );
+  }
+  if (!b.hitzewelle) {
+    befunde.push(
+      "Der Hitzewellen-Hinweis antwortet leer: Die 16-Tage-Vorhersage fehlt oder ist älter als ihr erster Tag. " +
+        "Läufe von wetter-vorhersage.yml ansehen.",
+    );
+  }
+  return befunde;
+}
+
+/** Urteil über das Vorschaubild. Leer heißt: es kommt ein Bild heraus. */
+export function vorschaubildBefund(b: VorschaubildBefund | null): string[] {
+  if (!b) return [];
+  if (b.status !== 200) {
+    return [
+      `Das Vorschaubild antwortet mit ${b.status} statt 200. Geteilte Adressen zeigen dann in Chat und ` +
+        `Netzwerken keine Vorschau.`,
+    ];
+  }
+  if (!b.png) {
+    return [
+      `Das Vorschaubild ist kein Bild: ${b.bytes} Byte, aber keine PNG-Signatur — bei HTTP 200 und Bildtyp. ` +
+        `Von außen sieht nichts kaputt aus, geteilte Adressen zeigen aber eine leere Fläche, und die Antwort ` +
+        `wird ein Jahr zwischengespeichert. Zuerst prüfen, ob die Bild-Funktion an eine eigene Datei kommt ` +
+        `(Schrift, Logo) — der bekannte Fall war der Bot-Schutz vor der eigenen Schrift.`,
+    ];
+  }
+  if (b.breite !== 1200) {
+    return [`Das Vorschaubild ist ${b.breite} statt 1200 Punkte breit — die Netzwerke schneiden es dann zu.`];
+  }
+  return [];
 }
 
 /** Zufällige Atlas-Pfade aus der DB — ein leichter Read, kein Aggregat.
@@ -190,19 +482,31 @@ async function randomAtlasPaths(count: number): Promise<{ gemeinde: string[]; kr
   const landIds = Array.from(new Set(kreise.map((k) => k.parent_region_id).filter(Boolean)));
   const laender = await q(`mastr_regions?select=region_id,slug&region_id=in.(${landIds.join(",")})`);
 
-  const kreisById = new Map(kreise.map((k) => [k.region_id!, k]));
-  const landById = new Map(laender.map((l) => [l.region_id!, l]));
-
-  const gemeindePfade: string[] = [];
-  const kreisPfade = new Set<string>();
-  for (const g of gem) {
-    const k = kreisById.get(g.parent_region_id ?? "");
-    const l = k ? landById.get(k.parent_region_id ?? "") : undefined;
-    if (!k?.slug || !l?.slug) continue;
-    if (g.slug) gemeindePfade.push(`/solar-atlas/${l.slug}/${k.slug}/${g.slug}`);
-    kreisPfade.add(`/solar-atlas/${l.slug}/${k.slug}`);
+  // KREISFREIE STÄDTE AUS DER KREIS-STICHPROBE NEHMEN. Sie stehen auf
+  // Kreis-Ebene, haben aber genau eine Gemeinde unter sich — sich selbst —, und
+  // ihre Kreis-Adresse leitet deshalb per Design auf diese eine Seite weiter
+  // (307). Gemessen am 19.09.2026: Die Ziehung erwischte Würzburg und meldete
+  // „Atlas-Seite antwortet mit 307" als Vorfall, während die Seite gesund war.
+  //
+  // Gefragt wird, was auch die Seite fragt: hat dieser Kreis mehr als ein Kind?
+  // NICHT über das Schlüsselformat geraten (Gemeinde = Kreis + „000") — das wäre
+  // eine zweite Wahrheit neben der Weiterleitung, die sie vorhersagen soll.
+  // `limit=2` je Kreis statt einer vollen Kinderliste: zwei Zeilen genügen als
+  // Beweis, und ein großer Landkreis schleppt sonst hundert Zeilen mit.
+  const einzelkind = new Set<string>();
+  for (const id of kreisIds) {
+    const kinder = await q(
+      `mastr_regions?select=region_id&level=eq.gemeinde&parent_region_id=eq.${id}&limit=2`,
+    );
+    if (istKreisfreieStadt(kinder.length)) einzelkind.add(String(id));
   }
-  return { gemeinde: gemeindePfade, kreis: Array.from(kreisPfade) };
+
+  return atlasStichprobenPfade({
+    gemeinden: gem,
+    kreisById: new Map(kreise.map((k) => [k.region_id!, k])),
+    landById: new Map(laender.map((l) => [l.region_id!, l])),
+    einzelkind,
+  });
 }
 
 /** Wie viele Gemeinden pro Lauf frisch aufgebaut werden.
@@ -407,24 +711,12 @@ async function measureAtlasQueries(): Promise<DbProbe[]> {
  * Rangliste aller ~52 Gemeinden des Kreises), also werden sie gemessen, BEVOR
  * die Welle kommt — nicht danach.
  */
-async function measureColdAtlas(): Promise<{ worst: Probe; all: Probe[] } | null> {
+async function measureColdAtlas(visited = new Set<string>(), excludedRegions = new Set<string>()): Promise<{ worst: Probe; all: Probe[] } | null> {
   const zufall = await randomAtlasPaths(COLD_SAMPLES + 2);
   const hits: Probe[] = [];
 
   const sammle = async (label: string, pfade: string[], ziel: number) => {
-    let gefunden = 0;
-    for (const path of pfade) {
-      if (gefunden >= ziel) break;
-      const p = await probe(label, path);
-      // NUR `MISS` ist ein echter Kaltaufbau. `HIT` und `STALE` liefern beide eine
-      // fertige Seite aus dem CDN aus (bei STALE wird nur im Hintergrund erneuert)
-      // — beides misst 0,05 s und sagt über den Aufbau nichts. Vorher zählte STALE
-      // mit und konnte einen Lauf grün melden, in dem gar nichts aufgebaut wurde.
-      if (p.cache === "MISS") {
-        hits.push(p);
-        gefunden++;
-      }
-    }
+    hits.push(...await collectColdProbes({label, paths: pfade, target: ziel, base: BASE_URL, visited, excludedRegions, measure: probe}));
   };
 
   await sammle("Atlas-Gemeinde (kalt)", [...zufall.gemeinde, ...FALLBACK_GEMEINDEN], COLD_SAMPLES);
@@ -484,33 +776,50 @@ export function healRegionConfig(
 // kostet einen Punkt-Zugriff, läuft alle drei Stunden in GitHub Actions mit,
 // braucht kein Modell und damit kein Geld.
 //
-// Die Schwellen kommen aus dem Rhythmus, nicht aus dem Bauch: Der Import läuft
-// monatlich. 45 Tage sind ein Zyklus plus Luft — darunter ist alles normal.
-// 70 Tage heißen, dass zwei Läufe ausgefallen sind; dann ist es kein Zufall
-// mehr, sondern eine stehengebliebene Pipeline.
-export const MASTR_FRISCHE_WARN_TAGE = 45;
-export const MASTR_FRISCHE_FAIL_TAGE = 70;
+/** Die Action, deren Zeitplan den Import-Rhythmus festlegt. */
+export const MASTR_WORKFLOW = "mastr-refresh.yml";
 
 /**
- * Wie alt darf der Anlagenbestand sein?
- *
- * Bewusst gegen einen HEREINGEREICHTEN Stichtag gerechnet, nicht gegen
- * `new Date()` — eine Bewertungsfunktion mit eigener Uhr lässt sich nicht
- * prüfen, und genau daran ist im Projekt schon ein Prüfdatum falsch geworden.
+ * Liest eine Workflow-Datei aus dem Arbeitsverzeichnis. Leerer String, wenn sie
+ * fehlt — die Aufrufer machen daraus „konnte nicht nachsehen", nie „in Ordnung".
  */
-export function mastrFrischeVerdict(alterTage: number): "gruen" | "gelb" | "rot" {
-  if (alterTage >= MASTR_FRISCHE_FAIL_TAGE) return "rot";
-  if (alterTage >= MASTR_FRISCHE_WARN_TAGE) return "gelb";
-  return "gruen";
+function leseWorkflow(datei: string): string {
+  const wurzel = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+  const pfad = resolve(wurzel, ".github", "workflows", datei);
+  return existsSync(pfad) ? readFileSync(pfad, "utf8") : "";
 }
 
-/** Ganze Tage zwischen dem Importzeitpunkt und dem Stichtag. */
+// GEURTEILT WIRD GEGEN DEN TERMIN, NICHT GEGEN EIN ALTER (09.09.2026).
+//
+// Hier standen bis dahin zwei Tagesschwellen: ab 45 Tagen gelb, ab 70 rot. Sie
+// haben den einzigen Ausfall, den es je gab, vollständig verschlafen. Der
+// Import vom 05.09.2026 schlug fehl (der Server der Behörde war vom Läufer aus
+// nicht erreichbar); der Bestand war an diesem Tag 31 Tage alt, also grün. Gelb
+// wäre er am 19.09. geworden — und Gelb erzeugt keine Nachricht —, rot am
+// 14.10., als der Oktober-Lauf die Lücke längst stillschweigend geschlossen
+// hätte. Bemerkt hat es am 09.09. ein Mensch, zufällig.
+//
+// Eine Tagesschwelle KANN das nicht: Sie misst den Abstand zum letzten Erfolg,
+// nicht den zum letzten Termin. „Ein Lauf ist ausgefallen" ist aber genau eine
+// Aussage über den Termin. Das Urteil kommt deshalb aus dem Zeitplan der Action
+// selbst (lib/mastr-import-plan.ts) — dieselbe Quelle, aus der auch der
+// Importlauf entscheidet, ob er noch etwas zu tun hat.
+//
+// Das ALTER in Tagen bleibt, aber nur noch als Auskunft in der Protokollzeile:
+// Es ist gut zu lesen und beurteilt nichts mehr.
+
+/** Ganze Tage zwischen dem Importzeitpunkt und dem Stichtag — reine Auskunft. */
 export function mastrAlterTage(importedAt: string, heute: Date): number {
   const ms = heute.getTime() - Date.parse(importedAt);
   return Math.floor(ms / (24 * 60 * 60 * 1000));
 }
 
-export type MastrFrische = { importedAt: string; alterTage: number; urteil: "gruen" | "gelb" | "rot" };
+export type MastrFrische = {
+  importedAt: string;
+  alterTage: number;
+  /** `null` = Zeitplan der Action nicht lesbar, also kein Urteil möglich. */
+  befund: ImportPlanBefund | null;
+};
 
 // ─── Schreibt der Code Felder, die die Tabelle gar nicht hat? ────────────────
 //
@@ -537,6 +846,51 @@ export type MastrFrische = { importedAt: string; alterTage: number; urteil: "gru
 //                   sichtbar geworden, also beim nächsten Lauf noch einmal.
 //
 // Reine Funktion mit hereingereichten Listen — sie soll ohne Netz prüfbar sein.
+
+/** Wie alt darf die vorberechnete Auszeichnungs-Liste sein? Der Datenlauf ist
+ *  monatlich; 45 Tage lassen einen verspäteten Lauf durch und schlagen an,
+ *  wenn zwei ausgefallen sind. */
+export const AUSZEICHNUNGEN_MAX_ALTER_TAGE = 45;
+
+/**
+ * Urteil über die vorberechnete Auszeichnungs-Liste.
+ *
+ * Sie ersetzt seit 09.09.2026 eine Berechnung, die 3,7 s im Seitenaufbau
+ * gekostet hat. Fällt sie aus, ist NICHTS kaputt — die Seiten funktionieren
+ * weiter, nur ohne Platzhalter für die Auszeichnungs-Kachel, und der Inhalt
+ * springt dann beim Nachladen. Genau deshalb muss jemand hinsehen: Ein Ausfall
+ * ist von außen unsichtbar.
+ */
+export function auszeichnungsUrteil(
+  stand: { orte: number; erneuertAm: string | null } | null,
+  jetzt: Date = new Date(),
+): { text: string; befund: string | null } {
+  if (!stand) return { text: "Auszeichnungen: nicht abrufbar.", befund: null };
+  if (stand.orte === 0) {
+    return {
+      text: "Auszeichnungen: Liste LEER.",
+      befund:
+        "Die vorberechnete Liste der ausgezeichneten Orte ist leer. Damit zeigt keine Gemeindeseite mehr einen " +
+        "Platzhalter für die Auszeichnungs-Kachel, und der Inhalt springt beim Nachladen. Von außen ist das " +
+        "unsichtbar — die Seiten antworten normal. Neu aufbauen lässt sie der Atlas-Datenlauf.",
+    };
+  }
+  const alterTage = stand.erneuertAm
+    ? Math.floor((jetzt.getTime() - Date.parse(stand.erneuertAm)) / 86400000)
+    : null;
+  const text = `Auszeichnungen: ${stand.orte} Orte vorberechnet${alterTage === null ? "" : `, ${alterTage} Tage alt`}.`;
+  if (alterTage !== null && alterTage > AUSZEICHNUNGEN_MAX_ALTER_TAGE) {
+    return {
+      text,
+      befund:
+        `Die vorberechnete Liste der ausgezeichneten Orte ist ${alterTage} Tage alt (erlaubt: ` +
+        `${AUSZEICHNUNGEN_MAX_ALTER_TAGE}). Der Atlas-Datenlauf baut sie monatlich neu — sind zwei ausgefallen, ` +
+        "stehen dort Auszeichnungen von vorletztem Monat. Nachsehen, ob der Datenlauf noch läuft.",
+    };
+  }
+  return { text, befund: null };
+}
+
 export function spaltenAbgleich(
   geschrieben: Record<string, unknown>,
   vorhandeneSpalten: readonly string[],
@@ -815,8 +1169,16 @@ async function messeMastrFrische(): Promise<MastrFrische | null> {
     const rows = (await r.json()) as { imported_at?: string }[];
     const importedAt = rows?.[0]?.imported_at;
     if (!importedAt || Number.isNaN(Date.parse(importedAt))) return null;
-    const alterTage = mastrAlterTage(importedAt, new Date());
-    return { importedAt, alterTage, urteil: mastrFrischeVerdict(alterTage) };
+    const jetzt = new Date();
+    const plan = importTageAusZeitplan(leseWorkflow(MASTR_WORKFLOW));
+    return {
+      importedAt,
+      alterTage: mastrAlterTage(importedAt, jetzt),
+      // Der Datenstand ist ein Kalendertag in Weltzeit (er kommt aus dem
+      // Tagesstempel im Dateinamen der Behörde), deshalb genügt hier das
+      // Abschneiden des hereingereichten Zeitstempels.
+      befund: plan ? importPlanBefund(importedAt.slice(0, 10), plan, jetzt) : null,
+    };
   } catch {
     return null;
   }
@@ -835,17 +1197,17 @@ async function messeMastrFrische(): Promise<MastrFrische | null> {
 
 type SocialAblauf = { plattform: string; tageBisAblauf: number; stufe: number; konto: string | null };
 
-async function messeSocialAblauf(): Promise<SocialAblauf[]> {
+export async function messeSocialAblauf(fetcher: typeof fetch = fetch): Promise<SocialAblauf[] | null> {
   const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
-  if (!url || !key) return [];
+  if (!url || !key) return null;
   const kopf = { apikey: key, Authorization: `Bearer ${key}` };
   try {
-    const r = await fetch(
+    const r = await fetcher(
       `${url}/rest/v1/social_konten?select=plattform,anzeigename,gueltig_bis,gewarnt_bei_stufe`,
       { headers: kopf, signal: AbortSignal.timeout(20000) },
     );
-    if (!r.ok) return [];
+    if (!r.ok) return null;
     const rows = (await r.json()) as {
       plattform: string;
       anzeigename: string | null;
@@ -856,24 +1218,16 @@ async function messeSocialAblauf(): Promise<SocialAblauf[]> {
     const faellig: SocialAblauf[] = [];
     for (const row of rows) {
       const tage = Math.floor((Date.parse(row.gueltig_bis) - Date.now()) / 86_400_000);
-      if (!sollWarnen(tage, row.gewarnt_bei_stufe)) continue;
+      if (!Number.isFinite(tage)) throw new Error("Invalid account expiry");
       const stufe = warnstufe(tage);
       if (stufe === null) continue;
-      // Die Stufe wird sofort quittiert, nicht erst nach erfolgreicher Zustellung:
-      // Ein fehlgeschlagener Mailversand darf nicht dazu führen, dass beim
-      // nächsten Lauf drei Stunden später dieselbe Meldung noch einmal ansetzt.
-      // Der Befund steht ohnehin im Protokoll des Laufs.
-      await fetch(`${url}/rest/v1/social_konten?plattform=eq.${encodeURIComponent(row.plattform)}`, {
-        method: "PATCH",
-        headers: { ...kopf, "Content-Type": "application/json", Prefer: "return=minimal" },
-        body: JSON.stringify({ gewarnt_bei_stufe: stufe }),
-        signal: AbortSignal.timeout(20000),
-      }).catch(() => {});
+      // Return the observed state on EVERY run. Delivery is acknowledged only
+      // by the persisted incident ledger after a successful alert request.
       faellig.push({ plattform: row.plattform, tageBisAblauf: tage, stufe, konto: row.anzeigename });
     }
     return faellig;
   } catch {
-    return [];
+    return null;
   }
 }
 
@@ -904,6 +1258,44 @@ function vercelToken(): string | null {
   try {
     const t = (JSON.parse(readFileSync(pfad, "utf8")) as { token?: string }).token;
     return typeof t === "string" && t ? t : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Alter der laufenden Produktions-Auslieferung in Minuten, oder `null`.
+ *
+ * Reiner Kontext fuer den Kaltaufbau-Befund (siehe lib/auslieferungs-alter.ts).
+ * Faellt der Abruf aus, wird das BENANNT statt auf einen Wert geraten — ein
+ * erfundenes Alter waere hier dieselbe Fehlerklasse wie ein erfundenes
+ * Pruefdatum. Kein Urteil haengt daran, der Lauf geht ohne weiter.
+ */
+async function auslieferungsAlterMinuten(): Promise<number | null> {
+  const token = vercelToken();
+  if (!token) return null;
+  try {
+    // Gefiltert wird IN DER ANTWORT, nicht ueber Suchparameter: Welche Filter
+    // die Plattform an diesem Endpunkt akzeptiert, ist nicht geprueft — ein
+    // abgewiesener Parameter wuerde hier zu „nicht abrufbar" fuehren, ohne dass
+    // jemand den Grund saehe. Die FORM der Antwort ist dagegen an echten Daten
+    // gesehen (10.09.2026): neueste zuerst, je Eintrag `state`, `target` und
+    // `created` als Millisekunden-Zeitstempel.
+    const url =
+      `https://api.vercel.com/v6/deployments?projectId=${SOLAR_CHECK_PROJEKT_ID}` +
+      `&teamId=${KOSTEN_TEAM_ID}`;
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) return null;
+    const daten = (await res.json()) as { deployments?: Auslieferung[] };
+    const erstellt = neuesteProduktionsAuslieferung(daten.deployments ?? []);
+    if (erstellt === null) return null;
+    const minuten = (Date.now() - erstellt) / 60000;
+    // Eine negative Spanne kann nur aus abweichenden Uhren kommen und ist keine
+    // Aussage — dann lieber „nicht abrufbar" als ein Alter, das es nicht gibt.
+    return minuten < 0 ? null : minuten;
   } catch {
     return null;
   }
@@ -1025,28 +1417,10 @@ async function kostenSchreiben(zeile: Record<string, unknown>): Promise<boolean>
   }
 }
 
-async function kostenGemeldet(projekt: string, tag: string): Promise<void> {
-  const z = supabaseZugang();
-  if (!z) return;
-  await fetch(
-    `${z.url}/rest/v1/kosten_tageswerte?projekt=eq.${encodeURIComponent(projekt)}&tag=eq.${tag}`,
-    {
-      method: "PATCH",
-      headers: {
-        apikey: z.key,
-        Authorization: `Bearer ${z.key}`,
-        "Content-Type": "application/json",
-        Prefer: "return=minimal",
-      },
-      body: JSON.stringify({ gemeldet_am: new Date().toISOString() }),
-      signal: AbortSignal.timeout(20000),
-    },
-  ).catch(() => {});
-}
-
 export type KostenBefund = {
   zeilen: string[];
   fuerClaude: string[];
+  incidents: Finding[];
   warnungen: string[];
 };
 
@@ -1055,7 +1429,7 @@ export type KostenBefund = {
  * denselben Tag beurteilen kann, ohne von einer Uhr abzuhängen.
  */
 export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
-  const b: KostenBefund = { zeilen: [], fuerClaude: [], warnungen: [] };
+  const b: KostenBefund = { zeilen: [], fuerClaude: [], incidents: [], warnungen: [] };
   const token = vercelToken();
   const tag = zuBeurteilenderTag(jetzt);
 
@@ -1177,7 +1551,7 @@ export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
     );
 
     if (urteil.art === "sprung") {
-      if (heute.gemeldet_am) continue; // schon gemeldet, nicht achtmal am Tag
+      // Incident history, not the cost table, deduplicates delivery.
       const details = urteil.groessen
         .filter((g) => g.gesprungen)
         .map((g) => `${g.name} liegt bei ${menge(g.wert)} statt der üblichen ${menge(Math.round(g.basis))} ` +
@@ -1190,7 +1564,7 @@ export async function messeKosten(jetzt: Date): Promise<KostenBefund> {
           `Nachsehen: welche Adressen dazugekommen sind, wer sie aufruft (Bot-Kennung, Netzbetreiber), ` +
           `und ob sie aus dem CDN kommen. Die Schwelle NICHT hochsetzen, damit der Befund verschwindet.`,
       );
-      await kostenGemeldet(p.schluessel, tag);
+      b.incidents.push({key: `cost:${p.schluessel}`, text: b.fuerClaude[b.fuerClaude.length - 1]});
     }
   }
 
@@ -1367,61 +1741,6 @@ async function pruefeCacheWirksamkeit(): Promise<CacheBefund[]> {
   return befunde;
 }
 
-/** Ab so vielen roten Läufen hintereinander kommt der Betreiber ins Spiel. */
-export const ESKALATION_AB_LAEUFEN = 3;
-
-/**
- * Kommt die automatische Reparatur nicht weiter?
- *
- * Ein roter Lauf ist KEINE Nachricht an den Betreiber: der Workflow wird rot,
- * die Autofix-Action springt an, und in aller Regel ist die Sache beim nächsten
- * Lauf erledigt. Erst wenn dieselbe Stelle mehrere Läufe hintereinander rot
- * bleibt, ist die Selbstheilung erkennbar gescheitert — und dann ist es eine
- * Entscheidung („soll ich das anders angehen?"), keine technische Aufgabe.
- *
- * Gezählt wird über die GitHub-API statt über eine Zustandsdatei: der Check
- * läuft in einer wegwerfbaren Umgebung, und eine Datei, die nur bei
- * Selbstheilung committet wird, würde genau im Fehlerfall nichts festhalten.
- *
- * Ohne Token (lokaler Lauf) wird NICHT eskaliert — im Zweifel keine Mail.
- *
- * EINMAL JE ROT-SERIE, NICHT JE LAUF (24.08.2026) — das ist der Kern dieser
- * Funktion, nicht die Schwelle. Die erste Fassung fragte nur „sind die letzten
- * zwei rot?", und das ist ab dem dritten roten Lauf für immer wahr: Der Check
- * läuft alle drei Stunden, also ging dieselbe Frage acht Mal am Tag hinaus.
- * Gemessen am 23./24.08.2026: sechs wortgleiche Mails in fünfzehn Stunden, alle
- * über denselben abgebrochenen Förder-Lauf — dessen Behebung schon gepusht war
- * und nur auf den nächsten Tageslauf wartete. Genau der Fall, der Teil 3 des
- * Wächter-Gates ausgelöst hat („sieben Mails in drei Tagen ... zu viel Text, zu
- * viel was irrelevant ist"): Ein Absender, der sich wiederholt, wird
- * weggefiltert — und dann fehlt die eine Mail, die zählt.
- *
- * Deshalb wird die FLANKE gemeldet, also nur der Lauf, mit dem die Serie die
- * Schwelle erreicht: davor muss ein Lauf stehen, der nicht rot war. Das ist
- * ausdrücklich kein Hochsetzen einer Schwelle, damit ein Befund verschwindet
- * (Gate, Teil 2) — der Befund bleibt unverändert sichtbar, der Workflow bleibt
- * rot, die Autofix-Action läuft weiter, und im Sonntagsbericht steht er auch.
- * Was wegfällt, ist allein die Wiederholung derselben Frage.
- *
- * Bekannte Grenze, bewusst nicht gelöst: Löst sich Befund A und tritt in
- * derselben Rot-Serie Befund B auf, meldet sich niemand ein zweites Mal. Dafür
- * müsste die Historie den Befundtext tragen, den die GitHub-API nicht kennt —
- * und der Preis wäre die Zustandsdatei, die oben aus gutem Grund verworfen ist.
- * Rot bleibt rot; gesehen wird B über den Workflow, nicht über das Postfach.
- */
-export function eskalationNoetig(vorherigeLaeufe: ("success" | "failure" | string)[]): boolean {
-  if (vorherigeLaeufe.length < ESKALATION_AB_LAEUFEN - 1) return false;
-  // -1, weil der laufende (rote) Durchgang selbst mitzählt.
-  const serie = vorherigeLaeufe.slice(0, ESKALATION_AB_LAEUFEN - 1);
-  if (!serie.every((c) => c === "failure")) return false;
-  // Der Lauf VOR der Serie entscheidet, ob wir gerade erst die Schwelle
-  // erreichen (melden) oder längst darüber hinaus sind (schweigen). Reicht die
-  // Historie nicht so weit zurück, fängt die Serie am Anfang des Bekannten an —
-  // dann ist es die Flanke.
-  const davor = vorherigeLaeufe[ESKALATION_AB_LAEUFEN - 1];
-  return davor === undefined || davor !== "failure";
-}
-
 /** Ein abgeschlossener Lauf, wie ihn die GitHub-API beschreibt. */
 export type LaufAkte = { conclusion: string; dauerMin: number | null };
 
@@ -1431,14 +1750,14 @@ async function letzteLaeufe(workflow = "health-check.yml"): Promise<LaufAkte[]> 
   if (!token || !repo) return [];
   try {
     const res = await fetch(
-      `https://api.github.com/repos/${repo}/actions/workflows/${workflow}/runs?status=completed&per_page=5`,
+      `https://api.github.com/repos/${repo}/actions/workflows/${workflow}/runs?status=completed&branch=main&per_page=20`,
       { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(10000) },
     );
-    if (!res.ok) return [];
+    if (!res.ok) throw new Error(`Workflow history unavailable: ${res.status}`);
     const data = (await res.json()) as {
       workflow_runs?: { conclusion: string; run_started_at?: string; created_at?: string; updated_at?: string }[];
     };
-    return (data.workflow_runs ?? []).map((r) => {
+    return (data.workflow_runs ?? []).filter(r => r.conclusion !== "skipped").sort((a,b) => Date.parse(b.created_at ?? "") - Date.parse(a.created_at ?? "")).slice(0, 5).map((r) => {
       // Gemessen wird ab `run_started_at`, nicht ab `created_at`: Sonst zählt die
       // Wartezeit auf einen freien Runner mit, und die hat mit dem Job-Zeitlimit
       // nichts zu tun. Bekannte Grenze der Näherung: Über den ganzen Lauf
@@ -1450,13 +1769,10 @@ async function letzteLaeufe(workflow = "health-check.yml"): Promise<LaufAkte[]> 
         start && ende ? Math.max(0, (new Date(ende).getTime() - new Date(start).getTime()) / 60000) : null;
       return { conclusion: r.conclusion, dauerMin: Number.isFinite(dauerMin) ? dauerMin : null };
     });
-  } catch {
+  } catch (error) {
+    if (process.env.HEALTH_INCIDENTS === "1") throw error;
     return [];
   }
-}
-
-async function letzteLaufErgebnisse(workflow = "health-check.yml"): Promise<string[]> {
-  return (await letzteLaeufe(workflow)).map((l) => l.conclusion);
 }
 
 /**
@@ -1528,6 +1844,19 @@ export function zeitreserveKnapp(
 export const GEPLANTE_LAEUFE: ReadonlyArray<{ datei: string; was: string }> = [
   { datei: "foerder-watch.yml", was: "Förder-Seiten-Wächter" },
   { datei: "flows-nightly.yml", was: "Nächtlicher Flow-Läufer" },
+  // Fällt dieser Lauf aus, kommt keine Rückmeldung mehr an — und das sieht von
+  // außen aus wie ein Postfach, in dem nichts passiert. Genau dieser Zustand
+  // hat den Lauf überhaupt erst nötig gemacht.
+  { datei: "kommunen-ruecklauf.yml", was: "Kommunen-Rücklauf" },
+  // Stündlich. Fällt er aus, zeigt die Startseite nach drei Stunden kein
+  // Modellwetter mehr — von außen sieht das aus wie ein ruhiger Himmel.
+  { datei: "wetter-schnappschuss.yml", was: "Live-Wetter-Schnappschuss" },
+  // Alle sechs Stunden. Fällt er aus, veraltet der Hitzewellen-Hinweis; nach
+  // gut zwei Wochen ohne Lauf verschwindet er, weil kein Tag mehr übrig ist.
+  { datei: "wetter-vorhersage.yml", was: "Wetter-Vorhersage 16 Tage" },
+  // Werktags dreimal. Fällt er aus, bleiben geprüfte Sachfragen an
+  // Förderstellen liegen — am 21.09.2026 zweimal rot, ohne dass es jemand sah.
+  { datei: "foerder-anfragen.yml", was: "Sachfragen an Förderstellen" },
 ];
 
 /** Ab so vielen Läufen ohne Erfolg in Folge ist ein geplanter Lauf auffällig. */
@@ -1571,6 +1900,11 @@ export function laufStumm(
 }
 
 async function main() {
+  if (process.env.HEALTH_INCIDENTS === "1") {
+    for (const name of ["SUPABASE_URL", "SUPABASE_SERVICE_KEY", "CRON_SECRET", "GITHUB_TOKEN", "GITHUB_REPOSITORY", "VERCEL_TOKEN"]) {
+      if (!process.env[name]) throw new Error(`Required monitoring credential missing: ${name}`);
+    }
+  }
   const lines: string[] = [];
   // Die drei Kategorien entscheiden, WER etwas tut — und der Betreiber ist
   // dabei ausdrücklich nicht vorgesehen. Er kann nicht programmieren; ihn auf
@@ -1580,7 +1914,7 @@ async function main() {
   // `selfHealed`  = hat sich schon repariert, reine Protokollzeile.
   // `warnings`    = auffällig, nichts zu tun, steht im Log.
   // `forClaude`   = braucht Analyse und einen Code-Fix → geht an Claude
-  //                 (Workflow rot + die Autofix-Action greift es auf).
+  //                 (structured report requests the autofix workflow).
   //                 SCHICKT KEINE MAIL. Bis zum 28.07.2026 tat es das doch, mit
   //                 dem Betreff „Handlungsbedarf" — sieben Mails in drei Tagen
   //                 über Dinge, die der Betreiber weder beheben kann noch soll.
@@ -1588,7 +1922,17 @@ async function main() {
   //                 nicht weiterkommt, wird daraus eine Frage an ihn.
   // `forOperator` = echte Entscheidung, die nur ihm gehört (Absicht ja/nein,
   //                 Geld, Produkt). Genau das und nur das rechtfertigt eine Mail.
+  const findings: Finding[] = [];
+  const unknown: string[] = [];
   const forClaude: string[] = [];
+  const technical = (key: string, urgent: boolean, ...texts: string[]) => {
+    forClaude.push(...texts);
+    findings.push(...texts.map(text => ({ key, urgent, text })));
+  };
+  const operator = (key: string, red: boolean, ...texts: string[]) => {
+    findings.push(...texts.map(text => ({ key, operator: true, text })));
+    (red ? forOperator : fuerBetreiberOhneRot).push(...texts);
+  };
   const forOperator: string[] = [];
   // Geht an den Betreiber wie `forOperator`, macht den Lauf aber NICHT rot:
   // für Dinge, die nur er erledigen kann und bei denen es nichts zu analysieren
@@ -1605,8 +1949,9 @@ async function main() {
     // einmal umgelegt).
     pageProbes.push(await probe(path, path));
   }
-  const coldResult = await measureColdAtlas();
-  const cold = coldResult?.worst ?? null;
+  const coldVisited = new Set<string>();
+  const coldResult = await measureColdAtlas(coldVisited);
+  const cold = coldResult?.all.filter(p => p.status === 200 && p.cache === "MISS").reduce<Probe | null>((worst, p) => !worst || p.seconds > worst.seconds ? p : worst, null) ?? null;
   const dbProbes = await measureAtlasQueries();
 
   // ── Function-Region ───────────────────────────────────────────────────────
@@ -1633,14 +1978,14 @@ async function main() {
     // Die einzige Frage im ganzen Check, die wirklich nur der Betreiber
     // beantworten kann: War das Absicht? Beide Antworten sind vertretbar, und
     // eine davon eigenmächtig zu wählen wäre gefährlicher als das Problem.
-    forOperator.push(
+    operator("region-intent", true,
       `Die Server sollen laut Einstellung nicht mehr in Frankfurt laufen, sondern woanders. War das Absicht? ` +
         `Wenn ja, ziehe ich die Zeitgrenze für Datenbank-Abfragen mit hoch (aus der Ferne dauert jeder Zugriff ` +
         `länger). Wenn nein, setze ich Frankfurt zurück. Meine Empfehlung: zurück nach Frankfurt — dort steht ` +
         `die Datenbank, und genau daran ist der Atlas im Juli 2026 ausgefallen.`,
     );
   } else if (configState === "nicht-lesbar") {
-    forClaude.push(`vercel.json ist nicht lesbar oder kein gültiges JSON — jeder Deploy scheitert damit.`);
+    technical("configuration-unreadable", true, `vercel.json ist nicht lesbar oder kein gültiges JSON — jeder Deploy scheitert damit.`);
   }
 
   const wrongRegion = regions.filter((r) => r !== EXPECTED_REGION);
@@ -1649,7 +1994,7 @@ async function main() {
       configState === "repariert"
         ? `Die Einstellung war aus vercel.json verschwunden und ist wieder drin — der nächste Deploy holt die Server zurück.`
         : `In vercel.json steht ${EXPECTED_REGION}, live greift es trotzdem nicht: das deutet auf eine Region-Einstellung im Vercel-Projekt selbst hin, die die Datei übersteuert.`;
-    forClaude.push(
+    technical("function-region", true,
       `Function-Region ist live ${wrongRegion.join("/")} statt ${EXPECTED_REGION}. Die Datenbank steht in Frankfurt — ` +
         `aus einer anderen Region kostet jeder Datenbank-Zugriff Latenz über den Atlantik, und genau daran ist ` +
         `der Atlas im Juli 2026 gestorben. ${nachwirkung}`,
@@ -1661,14 +2006,16 @@ async function main() {
       : `Server-Standort: nicht ermittelbar — alle Antworten kamen aus dem CDN, ohne dass eine Function lief.`,
   );
 
+  if (!regions.length) unknown.push("function-region");
+
   // ── Statuscodes ───────────────────────────────────────────────────────────
   for (const p of pageProbes) {
     if (![200, 301, 308].includes(p.status)) {
-      forClaude.push(`${p.label} antwortet mit ${p.status || "keiner Antwort"} (${p.cache || "—"}).`);
+      technical(`http:${p.label}`, true, `${p.label} antwortet mit ${p.status || "keiner Antwort"} (${p.cache || "—"}).`);
     }
   }
-  if (cold && cold.status !== 200) {
-    forClaude.push(`Atlas-Gemeindeseite antwortet mit ${cold.status || "keiner Antwort"} — ${cold.url}`);
+  for (const failed of coldResult?.all.filter(p => p.status !== 200) ?? []) {
+    technical(`atlas-http:${failed.label}`, true, `Atlas-Seite antwortet mit ${failed.status || "keiner Antwort"} — ${failed.url}`);
   }
 
   // ── Soft-404 im Atlas ─────────────────────────────────────────────────────
@@ -1687,7 +2034,7 @@ async function main() {
   const soft404 = await probe("Atlas-Fantasieadresse", SOFT_404_PFAD);
   lines.push(`Erfundene Atlas-Adresse: HTTP ${soft404.status || "keine Antwort"} (erwartet 404)`);
   if (soft404.status !== 404) {
-    forClaude.push(
+    technical("atlas-soft404", false,
       `Soft-404: ${SOFT_404_PFAD} antwortet mit ${soft404.status || "keiner Antwort"} statt 404. ` +
         `Google behandelt damit erfundene Adressen als gültige Seiten. Zuerst prüfen, ob wieder ein ` +
         `loading.tsx unter app/(site)/solar-atlas/ liegt oder die Routing-Entscheidung hinter das ` +
@@ -1695,15 +2042,30 @@ async function main() {
     );
   }
 
+  // Und die Adresse, die auf keine Route passt — der zweite Weg zu einer 404
+  // und der, der unsere eigene Seite rendert.
+  const unbekannt = await probe("Unbekannte Adresse", UNBEKANNTE_ADRESSE);
+  lines.push(`Unbekannte Adresse: HTTP ${unbekannt.status || "keine Antwort"} (erwartet 404)`);
+  if (unbekannt.status !== 404) {
+    technical("unbekannte-adresse-soft404", false,
+      `Soft-404: ${UNBEKANNTE_ADRESSE} antwortet mit ${unbekannt.status || "keiner Antwort"} statt 404. ` +
+        `Google behandelt damit jede erfundene Adresse als gültige Seite. Zuerst app/global-not-found.tsx ` +
+        `und den Schalter experimental.globalNotFound in next.config.js prüfen.`,
+    );
+  }
+
   // ── Zeiten ────────────────────────────────────────────────────────────────
+  const auslieferungsAlter = await auslieferungsAlterMinuten();
   const slowest = pageProbes.reduce((a, b) => (b.seconds > a.seconds ? b : a), pageProbes[0]);
   lines.push(
     `Normale Seiten: langsamste ${slowest.seconds.toFixed(2)} s (${slowest.label}), ` +
       `Rest ${pageProbes.map((p) => p.seconds.toFixed(1)).join(" / ")} s`,
   );
-  const pageVerdict = verdict(slowest.seconds, SLOW.page);
-  if (pageVerdict === "rot") forClaude.push(`${slowest.label} braucht ${slowest.seconds.toFixed(2)} s — deutlich zu lang.`);
-  else if (pageVerdict === "gelb") warnings.push(`${slowest.label} braucht ${slowest.seconds.toFixed(2)} s.`);
+  const pageLatency = pageLatencyAssessment(pageProbes);
+  unknown.push(...pageLatency.unknown);
+  warnings.push(...pageLatency.warnings);
+  for (const finding of pageLatency.findings) technical(finding.key, false, finding.text);
+  if (coldResult?.all.some(p => p.status !== 200)) unknown.push("atlas-cold-latency");
 
   if (cold && coldResult) {
     const luft = NOTBREMSE_S - cold.seconds;
@@ -1730,17 +2092,40 @@ async function main() {
         `${luft.toFixed(1)} s Luft bis zur Notbremse bei ${NOTBREMSE_S} s`,
     );
     lines.push(`Langsamste Seite: ${cold.url}`);
+    // Kontext, kein Urteil: Der Lauf startet nach JEDEM inhaltlichen Push, also
+    // regelmaessig Minuten nach einer neuen Auslieferung — und dann ist der
+    // erste Aufbau strukturell teurer. Ohne diese Zeile ist ein Kaltstart von
+    // einer langsam gewordenen Seite nicht zu unterscheiden; genau daran sind am
+    // 09.09.2026 drei Commits auf eine halb richtige Diagnose gelaufen.
+    lines.push(auslieferungsAlterText(auslieferungsAlter));
     const coldVerdict = verdict(cold.seconds, SLOW.atlasCold);
     if (coldVerdict === "rot") {
-      forClaude.push(
+      technical("atlas-cold-latency", false,
         `Eine frisch aufgebaute Atlas-Seite braucht ${cold.seconds.toFixed(2)} s. Nur noch ${luft.toFixed(1)} s ` +
           `bis zur Notbremse (${NOTBREMSE_S} s), ab der die Seite einen Fehler zeigt. Das ist die Vorstufe zum ` +
-          `Ausfall — auch wenn gerade noch alles mit 200 antwortet.`,
+          `Ausfall — auch wenn gerade noch alles mit 200 antwortet. ` +
+          kaltaufbauHerkunft(auslieferungsAlter),
       );
+      // Independent confirmation is outside the model budget. Never revisit
+      // the first URL or its district; HIT/STALE cannot clear a fresh slow build.
+      const excluded = new Set(coldResult.all.map(p => new URL(p.url).pathname.split("/").slice(0, 4).join("/")));
+      const confirmation = await measureColdAtlas(coldVisited, excluded);
+      const fresh = confirmation?.all.filter(p => p.cache === "MISS" && p.status === 200) ?? [];
+      lines.push(fresh.length
+        ? `Unabhängige Gegenprobe, andere Atlas-Regionen: ${fresh.map(p => p.seconds.toFixed(2)).join(" / ")} s. Der erste langsame Aufbau bleibt als Befund erhalten.`
+        : "Unabhängige Gegenprobe: kein frischer Aufbau messbar; keine Entwarnung.");
+      for (const failed of confirmation?.all.filter(p => p.status !== 200) ?? []) technical(`atlas-http:${failed.label}`, true, `Atlas-Gegenprobe: HTTP ${failed.status} — ${failed.url}`);
+      if (fresh.some(p => verdict(p.seconds, SLOW.atlasCold) === "rot")) {
+        const incident = findings.find(f => f.key === "atlas-cold-latency");
+        if (incident) incident.urgent = true;
+        lines.push("Langsamer frischer Aufbau unabhängig bestätigt: sofortige Eskalation.");
+      }
     } else if (coldVerdict === "gelb") {
       warnings.push(`Atlas-Kaltaufbau bei ${cold.seconds.toFixed(2)} s (Luft: ${luft.toFixed(1)} s).`);
     }
   } else {
+    unknown.push("atlas-cold-latency");
+    technical("atlas-cold-measurement", false, "Kein frischer Atlas-Aufbau messbar; keine Entwarnung möglich.");
     warnings.push("Kein echter Kaltaufbau messbar (alle geprüften Seiten lagen im Cache).");
   }
 
@@ -1756,9 +2141,10 @@ async function main() {
     );
     for (const d of dbProbes) {
       if (d.error) {
-        forClaude.push(`Die Atlas-Abfrage „${d.label}" antwortet nicht sauber: ${d.error}`);
+        unknown.push(`db-latency:${d.label}`);
+        technical(`db-error:${d.label}`, true, `Die Atlas-Abfrage „${d.label}" antwortet nicht sauber: ${d.error}`);
       } else if (dbProbeVerdictRelativ(d.ms, d.baselineMs) === "rot") {
-        forClaude.push(
+        technical(`db-latency:${d.label}`, false,
           `Die Atlas-Abfrage „${d.label}" braucht ${d.ms} ms bei einem Vergleichs-Read von ${d.baselineMs} ms — ` +
             `und zwar in ihrem SCHNELLSTEN von ${DB_PROBE_RUNS} Versuchen, es ist also kein Ausreißer. ` +
             `Die Differenz ist echte Datenbankarbeit und im gesunden Zustand nahe null. Sie heißt: die Abfrage läuft wieder über die ganze ` +
@@ -1772,6 +2158,8 @@ async function main() {
     }
   }
 
+  if (!dbProbes.length) { unknown.push("db-error:", "db-latency:"); technical("db-measurement", true, "Datenbank-Prüfung liefert keine Messung."); }
+
   // ── Frische der MaStR-Daten ───────────────────────────────────────────────
   // Weder Statuscode noch Antwortzeit beantworten die Frage, ob die Zahlen im
   // Atlas noch von diesem Monat sind. Eine stehengebliebene Import-Pipeline
@@ -1779,27 +2167,83 @@ async function main() {
   // bemerkt.
   const mastr = await messeMastrFrische();
   if (mastr) {
-    lines.push(`MaStR-Datenstand: ${mastr.importedAt.slice(0, 10)} (${mastr.alterTage} Tage alt).`);
-    if (mastr.urteil === "rot") {
-      forClaude.push(
-        `Der Anlagenbestand im Atlas ist ${mastr.alterTage} Tage alt (Stand ${mastr.importedAt.slice(0, 10)}), ` +
-          `damit sind mindestens zwei monatliche Importe ausgefallen. Über 11.000 Gemeindeseiten zeigen ` +
-          `Zahlen von vorletztem Monat — sichtbar am Datenstand, aber sonst völlig unauffällig. ` +
-          `Zu tun: den MaStR-Lauf lokal nachholen (scripts/mastr-refresh.ts, danach den Rollup auffrischen — ` +
-          `ohne das bleibt der Atlas auf den alten Aggregaten). Der Autofix in GitHub Actions kann das NICHT: ` +
-          `Er darf die Datenbank nicht anfassen, und der Gesamtdatenexport wird dort auch nicht geladen. ` +
-          `Er soll deshalb berichten statt es zu versuchen.`,
+    const stand = mastr.importedAt.slice(0, 10);
+    lines.push(`MaStR-Datenstand: ${stand} (${mastr.alterTage} Tage alt).`);
+    if (!mastr.befund) {
+      unknown.push("mastr-import");
+      // Kein Zeitplan, kein Termin, kein Urteil. Das MUSS auffallen: Eine
+      // Aufsicht, die sich bei einem unlesbaren Zeitplan lautlos abschaltet,
+      // ist von keiner Aufsicht nicht zu unterscheiden.
+      technical("mastr-schedule", true,
+        `MaStR-Import: Der Zeitplan der Action (${MASTR_WORKFLOW}) ist nicht lesbar — ohne Termin gibt es ` +
+          `kein Urteil darüber, ob ein Import ausgefallen ist. Nachsehen, ob die Datei noch existiert und ` +
+          `ihr Zeitplan noch als fester Tag des Monats geschrieben ist.`,
       );
-    } else if (mastr.urteil === "gelb") {
-      warnings.push(
-        `MaStR-Daten sind ${mastr.alterTage} Tage alt (Stand ${mastr.importedAt.slice(0, 10)}) — ` +
-          `ein monatlicher Import fehlt.`,
-      );
+    } else {
+      // Zwei Signale, eine Meldung: der Termin (spät, aber beweiskräftig) und
+      // der Ausgang des letzten Laufs (sofort, aber allein kein Beweis).
+      const akten = await letzteLaeufe(MASTR_WORKFLOW);
+      const meldung = importlaufMeldung(mastr.befund, akten[0]?.conclusion ?? null);
+      if (meldung?.stufe === "claude") {
+        technical("mastr-import", false,
+          `Der monatliche Import des Anlagenbestands ist ausgefallen (${meldung.text}); in der Datenbank ` +
+            `steht weiterhin ${stand}. Über 11.000 Gemeindeseiten zeigen damit die Zahlen des Vormonats — ` +
+            `sie antworten normal, sind schnell und sehen richtig aus. ` +
+            `Zu tun: den Lauf „MaStR Refresh" ansehen (gh run list --workflow=${MASTR_WORKFLOW}) und neu ` +
+            `anstoßen. Der Autofix in GitHub Actions soll das NICHT selbst versuchen: Er darf die Datenbank ` +
+            `nicht anfassen, und der Gesamtdatenexport wird dort auch nicht geladen — berichten genügt.`,
+        );
+      } else if (meldung) {
+        warnings.push(`MaStR-Import: ${meldung.text}`);
+      }
     }
   } else {
     // Kein Urteil über die Frische, sondern über den Abruf. Beides zu vermengen
     // hieße, eine Beobachtung zu behaupten, die es nicht gab.
+    unknown.push("mastr-import");
+    technical("mastr-measurement", false, "Anlagen-Datenstand nicht abrufbar.");
     warnings.push("MaStR-Datenstand nicht abrufbar — keine Aussage über die Frische der Atlas-Zahlen.");
+  }
+
+  // Verify the complete active generation; never infer it from one fast page.
+  try {
+    const access = supabaseZugang();
+    if (!access) throw new Error("Database access missing");
+    const read = async (path: string, count = false) => {
+      const response = await fetch(`${access.url}/rest/v1/${path}`, {
+        method: count ? "HEAD" : "GET",
+        headers: { apikey: access.key, Authorization: `Bearer ${access.key}`, ...(count ? { Prefer: "count=exact" } : {}) },
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!response.ok) throw new Error(`Snapshot check HTTP ${response.status}`);
+      return response;
+    };
+    const count = (response: Response) => Number(response.headers.get("content-range")?.split("/")[1] ?? NaN);
+    const snapshot = await readCoherentPlacementSnapshot({
+      active: async () => (await read("atlas_platzierung_aktiv?select=lauf_id")).json(),
+      metadata: async id => (await read(`atlas_platzierung_laeufe?id=eq.${encodeURIComponent(id)}&select=orte,erneuert_am`)).json(),
+      actual: async () => count(await read("atlas_platzierungen?select=region_id", true)),
+      expected: async () => count(await read("mastr_gemeinde_award?select=region_id", true)),
+    }, mastr?.importedAt ?? null);
+    const problems = placementSnapshotProblems(snapshot, new Date());
+    lines.push(`Vorbereitete Ranglisten: ${snapshot.actual}/${snapshot.expected} Gemeinden, ${problems.length ? "Prüfung fehlgeschlagen" : "vollständig und aktuell"}.`);
+    technical("placement-snapshot", true, ...problems);
+    // Und dieselbe Frage von der ANDEREN Seite: Die Prüfung oben hält die
+    // Platzierungen gegen die Tabelle, aus der sie gebaut werden — sie kann eine
+    // Ortsseite ohne Platzierung gar nicht sehen. Gezählt wird deshalb gegen die
+    // Zahl der Seiten. Auffällig, nicht rot: Die Lücke entsteht in den Daten,
+    // und daran kann der Autofix nichts reparieren — Rot würde ihn täglich ins
+    // Leere schicken. Zur Ursache siehe lib/health-placement-snapshot.ts; sie
+    // ist NICHT immer ein veralteter Schlüssel (so stand es hier bis zum
+    // 20.09.2026), sondern am 20.09. schlicht eine Gemeinde ohne eine einzige
+    // gemeldete Anlage — dauerhaft, kein Datenlauf behebt das.
+    const seiten = count(await read("mastr_regions?select=region_id&level=eq.gemeinde&slug=not.is.null", true));
+    const luecke = ortsseitenOhneRangliste(seiten, snapshot.actual);
+    lines.push(`Ortsseiten mit Rangliste: ${snapshot.actual} von ${seiten}.`);
+    warnings.push(...luecke);
+  } catch (error) {
+    unknown.push("placement-snapshot");
+    technical("placement-snapshot-measurement", true, `Ranglisten-Prüfung fehlgeschlagen: ${String(error)}`);
   }
 
   // ── Ist die Datenbank-Sicherheitsgrenze noch dicht? ───────────────────────
@@ -1811,7 +2255,38 @@ async function main() {
         ? "Sicherheitsgrenze: dicht (Zeilenschutz auf jeder Tabelle, SQL-Funktion nur fuer den Dienst)."
         : `Sicherheitsgrenze: ${posture.problems.length} Problem(e).`,
   );
-  forClaude.push(...sicherheitsBefund(posture));
+  if (posture && !posture.ok) {
+    for (const problem of posture.problems.length ? posture.problems : ["missing-details"]) {
+      technical(`security:${problem}`, true, ...sicherheitsBefund({ ok: false, problems: [problem] }));
+    }
+  }
+  if (posture === null) { unknown.push("security:"); technical("security-measurement", true, "Sicherheitsprüfung nicht erreichbar."); }
+
+  // ── Steht der Bot-Schutz noch scharf, und kommen wir selbst durch? ────────
+  const firewall = await messeFirewall();
+  lines.push(
+    firewall === null
+      ? "Firewall: nicht messbar (Produktion antwortete gar nicht)."
+      : `Firewall: eigene Abrufe ${firewall.statusEigen}, fremde Kennung ${firewall.statusFremd}, Crawler-Anweisungen ${firewall.statusRobots}.`,
+  );
+  if (firewall) {
+    for (const property of ["eigeneDurch", "anweisungenOffen", "fremdeAbgewiesen"] as const) {
+      if (!firewall[property]) technical(`firewall:${property}`, true, ...firewallBefund({ ...firewall, eigeneDurch: true, anweisungenOffen: true, fremdeAbgewiesen: true, [property]: false }));
+    }
+  } else { unknown.push("firewall:"); technical("firewall-measurement", true, "Firewall-Prüfung nicht erreichbar."); }
+
+  // ── Kommt aus dem Vorschaubild wirklich ein Bild heraus? ──────────────────
+  const vorschau = await messeVorschaubild();
+  lines.push(
+    vorschau === null
+      ? "Vorschaubild: nicht messbar (Produktion antwortete gar nicht)."
+      : vorschau.png
+        ? `Vorschaubild: echtes PNG, ${vorschau.breite} Punkte breit, ${Math.round(vorschau.bytes / 1024)} kB.`
+        : `Vorschaubild: kein Bild (HTTP ${vorschau.status}, ${vorschau.bytes} Byte).`,
+  );
+  technical("preview-image", false, ...vorschaubildBefund(vorschau));
+  technical("weather-freshness", false, ...wetterBefund(await messeWetterFrische(), new Date()));
+  if (!vorschau) { unknown.push("preview-image"); technical("preview-measurement", true, "Vorschaubild-Prüfung nicht erreichbar."); }
 
   // ── Kann die Produktion Abo-Mails verschicken? ────────────────────────────
   const aboBereit = await messeAboBereit();
@@ -1822,7 +2297,7 @@ async function main() {
         : `Gemeinde-Abo: ${aboBereit.fehlt.length} Punkt(e) hindern den Versand in der Produktion.`,
     );
     if (!aboBereit.bereit) {
-      forClaude.push(
+      technical("subscription-config", true,
         `Das Gemeinde-Abo kann in der PRODUKTION nicht arbeiten: ${aboBereit.fehlt.join(", ")}. ` +
           `Jede Anmeldung endet damit für den Nutzer bei „Die Bestätigungsmail konnte gerade nicht verschickt ` +
           `werden", und niemand kommt ins Abo. Von außen ist das unsichtbar: Die Seite lädt, der Knopf ` +
@@ -1831,6 +2306,7 @@ async function main() {
       );
     }
     // Und die zweite Hälfte: hat es auch gewirkt?
+    if (aboBereit.ohneBeleg === null || !aboBereit.bereit) unknown.push("subscription-delivery");
     if (aboBereit.ohneBeleg !== null && aboBereit.bereit) {
       lines.push(
         aboBereit.ohneBeleg === 0
@@ -1839,7 +2315,7 @@ async function main() {
       );
     }
     if (aboVersandStockt(aboBereit)) {
-      forClaude.push(
+      technical("subscription-delivery", true,
         `${aboBereit.ohneBeleg} frische Anmeldung(en) im Gemeinde-Abo tragen keinen Versandbeleg, während die ` +
           `Zugangsdaten des Postfachs vollständig gesetzt sind. Beides ist gemessen; der Schluss daraus nicht — ` +
           `deshalb steht hier keine Diagnose, sondern der nächste Schritt. Zwei Lesarten: entweder die Mail hat ` +
@@ -1852,6 +2328,47 @@ async function main() {
     }
   }
 
+  if (!aboBereit) { unknown.push("subscription-config", "subscription-delivery"); technical("subscription-measurement", true, "Abo-Prüfung nicht erreichbar."); }
+
+  // ── Steht die vorberechnete Auszeichnungs-Liste? ─────────────────────────
+  {
+    // ÜBER DIE SCHNITTSTELLE, NICHT ÜBER DAS MODUL. Der Lesecode trägt
+    // `server-only`, und das ist aus einem Kommandozeilen-Prozess nicht
+    // auflösbar — der erste Versuch scheiterte deshalb bei JEDEM Lauf und gab
+    // trotzdem eine beruhigende Zeile aus („nicht abrufbar"). Ein Prüfpunkt,
+    // der nichts sieht und nicht anschlägt, ist schlimmer als keiner; dieselbe
+    // Falle wie beim ersten Versandlauf der Umstellungs-Mail.
+    let stand: { orte: number; erneuertAm: string | null } | null = null;
+    const zugang = supabaseZugang();
+    if (zugang) {
+      try {
+        const r = await fetch(
+          `${zugang.url}/rest/v1/atlas_auszeichnungen?select=erneuert_am&order=erneuert_am.desc&limit=1`,
+          {
+            headers: {
+              apikey: zugang.key,
+              Authorization: `Bearer ${zugang.key}`,
+              Prefer: "count=exact",
+              Range: "0-0",
+            },
+            signal: AbortSignal.timeout(15000),
+          },
+        );
+        if (r.ok) {
+          const zeilen = (await r.json()) as { erneuert_am?: string }[];
+          const bereich = r.headers.get("content-range") ?? "";
+          const orte = Number(bereich.split("/")[1] ?? "0");
+          stand = { orte: Number.isFinite(orte) ? orte : 0, erneuertAm: zeilen[0]?.erneuert_am ?? null };
+        }
+      } catch {
+        stand = null;
+      }
+    }
+    const urteil = auszeichnungsUrteil(stand);
+    lines.push(urteil.text);
+    if (urteil.befund) technical("atlas-awards", false, urteil.befund);
+  }
+
   // ── Schreibt der Code in Spalten, die es gibt? ────────────────────────────
   const spalten = await messeSpaltenAbgleich();
   if (spalten) {
@@ -1862,7 +2379,7 @@ async function main() {
         : `Gespeicherte Berechnungen: ${summe} Abweichung(en) zwischen Code und Tabelle.`,
     );
     if (spalten.fehlend.length) {
-      forClaude.push(
+      technical("calculation-columns", true,
         `Beim Speichern einer Berechnung schreibt der Code ${spalten.fehlend.length === 1 ? "ein Feld" : "Felder"}, ` +
           `die es in der Tabelle nicht gibt: ${spalten.fehlend.join(", ")}. Damit scheitert JEDER Speicherversuch ` +
           `mit HTTP 500 — und zwar unsichtbar: kein Typfehler, kein roter Test, keine kaputte Seite, und bei drei ` +
@@ -1871,7 +2388,7 @@ async function main() {
       );
     }
     if (spalten.nullKollision.length) {
-      forClaude.push(
+      technical("calculation-nullability", true,
         `Beim Speichern einer Berechnung schreibt der Code NULL in Spalten, die einen Wert verlangen: ` +
           `${spalten.nullKollision.join(", ")}. Betroffen ist der Normalfall — der Nutzer hat dort nichts ` +
           `eigenes gesetzt. Auch das endet in HTTP 500 und ist von außen unsichtbar. Entweder darf die Spalte ` +
@@ -1881,8 +2398,12 @@ async function main() {
     }
   }
 
+  if (!spalten) { unknown.push("calculation-columns", "calculation-nullability"); technical("calculation-measurement", true, "Prüfung gespeicherter Berechnungen nicht erreichbar."); }
+
   // ── Ablauf der Social-Zugänge ─────────────────────────────────────────────
-  for (const s of await messeSocialAblauf()) {
+  const social = await messeSocialAblauf();
+  if (social === null) { unknown.push("social:"); technical("social-measurement", false, "Social-Zugänge konnten nicht geprüft werden."); }
+  for (const s of social ?? []) {
     const wer = s.konto ? ` (${s.konto})` : "";
     // DIE ADRESSE MUSS ZUR PLATTFORM PASSEN. Sie stand fest auf LinkedIn, weil
     // es lange nur die eine gab — mit einem zweiten Kanal wird daraus eine
@@ -1890,7 +2411,7 @@ async function main() {
     // an, und der Instagram-Zugang läuft weiter aus. Dieselbe Fehlerklasse wie
     // eine Beschriftung, die etwas anderes sagt, als die Zahl daneben misst.
     const start = `solar-check.io/api/${s.plattform}/start`;
-    fuerBetreiberOhneRot.push(
+    operator(`social:${s.plattform}:${s.konto ?? ""}`, false,
       s.tageBisAblauf < 0
         ? `Der ${s.plattform}-Zugang${wer} ist abgelaufen — seitdem wird nichts mehr veröffentlicht. ` +
           `Zum Erneuern einmal ${start} aufrufen (eingeloggt als Admin). ` +
@@ -1908,7 +2429,8 @@ async function main() {
   // angeschlagen hätte — es gab schlicht niemanden, der hinsah.
   const kosten = await messeKosten(new Date());
   lines.push(...kosten.zeilen);
-  forClaude.push(...kosten.fuerClaude);
+  for (const incident of kosten.incidents) technical(incident.key, false, incident.text);
+  if (kosten.warnungen.length) unknown.push("cost:");
   warnings.push(...kosten.warnungen);
 
   // ── Cache-Wirksamkeit ─────────────────────────────────────────────────────
@@ -1923,7 +2445,7 @@ async function main() {
       (ungecacht.length ? ` — daneben: ${ungecacht.map((c) => `${c.label} (${c.zweiterAbruf})`).join(", ")}` : ""),
   );
   for (const c of ungecacht) {
-    forClaude.push(
+    technical(`cache:${c.label}`, false,
       `„${c.label}" wird nicht mehr aus dem CDN ausgeliefert: der zweite Abruf derselben Adresse kam als ` +
         `${c.zweiterAbruf} zurück (erster: ${c.ersterAbruf}), müsste aber ein Cache-Treffer sein. ` +
         `Das heißt, JEDER Besucher zahlt den vollen Aufbau — die Seite ist dann noch schnell genug, kippt aber ` +
@@ -1938,7 +2460,7 @@ async function main() {
   const teilen = await pruefeGeteilteRechnungen();
   lines.push(`Geteilte Rechnungen: ${teilen.meldung}`);
   if (!teilen.ok) {
-    forClaude.push(
+    technical("shared-calculations", true,
       `Der Rechner trennt geteilte Ergebnisse nicht mehr sauber: ${teilen.meldung}. ` +
         `Das heisst im schlimmsten Fall, dass jemand mit seinem eigenen Link die Rechnung eines Fremden sieht — ` +
         `unter seiner Adresse, mit dem falschen Bild im Chat, und die Seite sieht dabei vollkommen normal aus. ` +
@@ -1965,7 +2487,7 @@ async function main() {
   //
   // Der Aufruf braucht weder Netz noch Datenbank — er liest nur Konstanten aus
   // dem Code. Er kann diesen Lauf also nicht zum Kippen bringen.
-  const heuteIso = new Date().toISOString().slice(0, 10);
+  const heuteIso = heuteInBerlin();
   const offen = faelligkeiten(heuteIso);
   lines.push(
     `Prüfstand: ${PRUEFSTAND.length} Werte, ${offen.length} überfällig` +
@@ -1978,7 +2500,7 @@ async function main() {
     // der LAUF selbst schweigt — und das ist der gefährlichere Fall, weil ein
     // Wächter, der nicht läuft, auch keinen Fehler meldet.
     if (f.grund === "stillstand" || f.grund === "beides") {
-      forClaude.push(
+      technical(`watcher-stalled:${f.feld}`, false,
         `Der Prüfwert „${f.was}" steht seit ${f.alterTage} Tagen unbewegt (erlaubt: ${f.maxAlterTage}). ` +
           `Zuständig ist der Wächter „${f.waechter}" (${f.rhythmus}), Runbook ${f.runbook}, Feld ${f.feld}. ` +
           `Das heißt NICHT, dass der Wert falsch ist — es heißt, dass niemand mehr nachsieht. ` +
@@ -1986,7 +2508,7 @@ async function main() {
           `Das Datum NICHT von Hand hochsetzen — das wäre eine behauptete Prüfung, die nie stattfand.`,
       );
     } else {
-      forClaude.push(
+      technical(`watcher-overdue:${f.feld}`, false,
         `Der Prüfwert „${f.was}" ist seit ${f.terminUeberzogen} Tagen über seinem Termin. ` +
           `Zuständig: „${f.waechter}" (${f.rhythmus}), Runbook ${f.runbook}. ` +
           `Der Wächter läuft, hat den Wert aber nicht nachgezogen.`,
@@ -2002,6 +2524,7 @@ async function main() {
   for (const lauf of GEPLANTE_LAEUFE) {
     const akten = await letzteLaeufe(lauf.datei);
     const ergebnisse = akten.map((a) => a.conclusion);
+    if (ergebnisse[0] === "success") lines.push(`Geplanter Lauf „${lauf.was}“: neuester abgeschlossener Lauf erfolgreich; ältere Fehlschläge sind überholt.`);
     if (!ergebnisse.length) continue; // kein Token / lokal — nichts behaupten
 
     // Frühindikator: nicht der Abbruch, sondern der Abstand zum Zeitlimit.
@@ -2028,7 +2551,7 @@ async function main() {
 
     const { stumm, wie } = laufStumm(ergebnisse);
     if (!stumm) continue;
-    forClaude.push(
+    technical(`workflow:${lauf.datei}`, false,
       `Der geplante Lauf „${lauf.was}" (${lauf.datei}) endete ${LAUF_STUMM_AB}× in Folge ohne Erfolg, zuletzt „${wie}". ` +
         (wie === "cancelled"
           ? `„Abgebrochen" heißt Zeitlimit, nicht Fehler — und es liest sich als „egal", ` +
@@ -2060,13 +2583,20 @@ async function main() {
   // Meldelogik in CLAUDE.md — die gelbe Schwelle sitzt aus demselben Grund bei
   // 4 s und nicht im Normalbereich.
   for (const p of planOffen) {
-    if (p.schwere === "fehler") forClaude.push(p.text);
+    if (p.schwere === "fehler") technical(`release-plan:${p.schub}`, false, p.text);
     else warnings.push(p.text);
   }
 
+  const managed = process.env.HEALTH_INCIDENTS === "1";
+  const previous = managed ? readState(JSON.parse(readFileSync(".health/previous.json", "utf8"))) : emptyState();
+  const incidents = advanceIncidents(previous, findings, new Date().toISOString(), unknown);
+  lines.push(...incidents.opened.map(i => `Neuer Vorfall: ${i.key}`));
+  lines.push(...Object.values(incidents.state.incidents).map(i => `Offener Vorfall (${i.count} Messungen${i.escalated ? ", bereits eskaliert" : ""}): ${i.text}`));
+  lines.push(...incidents.recovered.map(i => `Erholung: ${i.key} — in dieser Messung nicht mehr festgestellt.`));
+
   // ── Bericht ───────────────────────────────────────────────────────────────
   const ampel =
-    forOperator.length || forClaude.length
+    Object.keys(incidents.state.incidents).length || forOperator.length || forClaude.length
       ? "ROT"
       : selfHealed.length
         ? "REPARIERT"
@@ -2089,32 +2619,16 @@ async function main() {
 
   console.log(report);
 
-  // BENACHRICHTIGUNG NUR, WENN DER BETREIBER SELBST ETWAS ENTSCHEIDEN MUSS.
-  // Nicht bei Gelb, nicht bei Selbstheilung — und ausdrücklich auch nicht bei
-  // einem roten Lauf, der an Claude geht: dafür ist der Workflow-Fehlschlag da,
-  // der die Autofix-Action startet. Wer für jede Regung eine Mail bekommt,
-  // filtert den Absender weg und verpasst dann die eine, die zählt.
-  //
-  // Die eine Ausnahme ist der Fall, in dem die Automatik erkennbar nicht
-  // weiterkommt: bleibt es mehrere Läufe hintereinander rot, wird aus dem
-  // technischen Befund eine Frage an den Betreiber.
-  const vorlaeufe = forClaude.length ? await letzteLaufErgebnisse() : [];
-  const festgefahren = forClaude.length > 0 && eskalationNoetig(vorlaeufe);
-  const entscheidungen = [
-    ...forOperator,
-    ...fuerBetreiberOhneRot,
-    ...(festgefahren
-      ? [
-          `Seit ${ESKALATION_AB_LAEUFEN} Prüfläufen in Folge komme ich an derselben Stelle nicht weiter: ` +
-            `${forClaude[0]} Soll ich das größer angehen (mehr Zeit dafür einplanen), oder lässt du es vorerst so?`,
-        ]
-      : []),
-  ];
+  // Operator decisions use /api/alert. Technical escalation uses GitHub's
+  // failure notification only, avoiding two emails for the same incident.
+  const entscheidungen = managed
+    ? incidents.escalations.filter(i => i.operator).map(i => i.text)
+    : [...forOperator, ...fuerBetreiberOhneRot];
 
   if (ALERT) {
     const secret = process.env.CRON_SECRET;
     if (!secret) {
-      console.error("\n--alert gesetzt, aber CRON_SECRET fehlt — keine Meldung verschickt.");
+      throw new Error("--alert gesetzt, aber CRON_SECRET fehlt");
     } else {
       const res = await fetch(`${BASE_URL}/api/alert`, {
         method: "POST",
@@ -2130,6 +2644,7 @@ async function main() {
           tag: "health-check",
         }),
       });
+      if (!res.ok) throw new Error(`Alert delivery failed: ${res.status}`);
       const info = (await res.json().catch(() => ({}))) as { skipped?: boolean; reason?: string };
       console.log(
         res.ok
@@ -2141,10 +2656,15 @@ async function main() {
     }
   }
 
-  // Exit-Codes steuern, was die GitHub-Action als Nächstes tut:
-  //   2 = selbst repariert → die Action committet die Korrektur und deployt
-  //   1 = braucht Analyse → Workflow rot, Claude-Autofix springt an
-  //   0 = alles im Rahmen
+  if (managed) {
+    mkdirSync(".health", { recursive: true });
+    writeFileSync(".health/state.json", JSON.stringify(incidents.state, null, 2));
+    writeFileSync(".health/result.json", JSON.stringify({ version: 1, ampel, autofix: incidents.autofix, escalations: incidents.escalations, recovered: incidents.recovered, findings, report }, null, 2));
+    if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## Messbefund: ${ampel}\n\n${report}\n`);
+    if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `escalate=${incidents.escalations.some(i => !i.operator)}\nhealed=${selfHealed.length > 0}\n`);
+    return; // GitHub failure means NEW escalation, not every repeated finding.
+  }
+
   if (forClaude.length || forOperator.length) process.exit(1);
   if (selfHealed.length) process.exit(2);
 }

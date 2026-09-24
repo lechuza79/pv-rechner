@@ -1,3 +1,5 @@
+import { fundingReplyCandidates, type FundingReplyMail } from "../lib/funding-replies";
+import { readMail } from "./lib/read-mail";
 /**
  * Rückläufer aus dem Anschreiben-Postfach abholen und zuordnen.
  *
@@ -9,7 +11,11 @@
  * Nutzung:
  *   npm run kommunen:ruecklauf                 nur ansehen (schreibt nichts)
  *   npm run kommunen:ruecklauf -- --schreiben  Status nachtragen
+ *   npm run kommunen:ruecklauf -- --melden     Befund an die Ablage/Mail geben
  *   npm run kommunen:ruecklauf -- --tage=14    Zeitraum (Standard 7)
+ *
+ * Der tägliche Lauf in GitHub Actions setzt alle drei; von Hand gestartet
+ * meldet er nichts, damit ein Probelauf keine Mail auslöst.
  *
  * Env: OUTREACH_IMAP_HOST, OUTREACH_IMAP_PORT (Standard 993),
  *      OUTREACH_IMAP_USER, OUTREACH_IMAP_PASS — dasselbe Postfach wie der
@@ -30,7 +36,20 @@
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
-import { ordneEin, notizZeile, notizMitText, STATUS_ZU_ART, type Ruecklaufart, type RohMail } from "../lib/outreach-ruecklauf";
+import {
+  ordneEin,
+  notizZeile,
+  notizMitText,
+  ortAusAbsender,
+  nenntAngeschriebeneGemeinde,
+  STATUS_ZU_ART,
+  type Ruecklaufart,
+  type RohMail,
+} from "../lib/outreach-ruecklauf";
+import { berichtAblegen } from "../lib/alert-senden";
+import { ruecklaufBericht } from "../lib/outreach-ruecklauf-bericht";
+import { heuteInBerlin } from "../lib/zeit";
+import { istAntwortAufSachfrage } from "../lib/outreach-sachfrage";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -43,7 +62,15 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 //
 // ENG HALTEN: nur Absender-Domains, von denen sicher keine Gemeinde schreibt.
 // Eine großzügige Liste macht die Prüfung wertlos, ohne dass es auffällt.
-const FREMD_ABSENDER = ["awin.com", "mail.awin.com"];
+// Aufgenommen wird nur, was am echten Postfach als wiederkehrender Fehltreffer
+// GEMESSEN wurde (09.09.2026, 30-Tage-Abruf): die drei Affiliate-Plattformen,
+// bei denen das Projekt angemeldet ist. Sie schrieben zusammen neun Mails, jede
+// davon als „Antwort" eingestuft und keiner Gemeinde zuzuordnen.
+//
+// NICHT aufgenommen: Hersteller und Behörden (Solakon, IT.NRW). Von dort kann
+// etwas Inhaltliches kommen, und eine Ausblendung, die einmal zu weit ging,
+// merkt niemand mehr.
+const FREMD_ABSENDER = ["awin.com", "mail.awin.com", "adcell.de", "goaffpro.com"];
 
 function istFremdverkehr(von: string): boolean {
   const domain = von.split("@")[1]?.toLowerCase() ?? "";
@@ -85,17 +112,21 @@ async function angeschriebene(db: Awaited<ReturnType<typeof makeClient>>) {
   for (let from = 0; ; from += 1000) {
     const { data, error } = await db
       .from("kommunen_kontakt")
-      .select("region_id, rollen_email, mastr_regions!inner(name)")
+      .select("region_id, sent_to, rollen_email, presse_email, notes, mastr_regions!inner(name)")
       .not("contacted_at", "is", null)
-      .not("rollen_email", "is", null)
       .order("region_id")
       .range(from, from + 999);
     if (error) throw new Error(error.message);
     if (!data?.length) break;
-    for (const r of data as unknown as { region_id: string; rollen_email: string; mastr_regions: { name: string } | { name: string }[] }[]) {
+    for (const r of data as unknown as { region_id: string; sent_to: string | null; rollen_email: string | null; presse_email: string | null; notes: string | null; mastr_regions: { name: string } | { name: string }[] }[]) {
       const reg = Array.isArray(r.mastr_regions) ? r.mastr_regions[0] : r.mastr_regions;
-      const email = r.rollen_email.toLowerCase();
-      out.push({ region_id: r.region_id, name: reg?.name ?? r.region_id, email, domain: email.split("@")[1] ?? "" });
+      // New sends have an immutable recipient. Legacy notes can retain repaired bounce addresses.
+      const addresses = r.sent_to ? [r.sent_to] : [r.rollen_email, r.presse_email, ...((r.notes ?? "").match(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g) ?? [])];
+      for (const address of new Set(addresses.filter((x): x is string => !!x))) {
+        const email = address.toLowerCase();
+        if (email.endsWith("@solar-check.io")) continue;
+        out.push({ region_id: r.region_id, name: reg?.name ?? r.region_id, email, domain: email.split("@")[1] ?? "" });
+      }
     }
     if (data.length < 1000) break;
   }
@@ -128,6 +159,75 @@ type Befund = {
   text: string;
 };
 
+/**
+ * Antworten auf die Sachfragen an Förderstellen nachtragen.
+ *
+ * WARUM HIER UND NICHT IN EINEM EIGENEN LAUF: Es gibt genau ein Postfach und
+ * genau einen Weg, es zu lesen. Ein zweiter Abruf wäre eine zweite Fassung
+ * derselben Mechanik — und die läuft irgendwann auseinander, während beide
+ * behaupten, vollständig zu sein.
+ *
+ * Ohne diesen Schritt bliebe im Protokoll JEDE Anfrage für immer „ohne
+ * Antwort". Das ist schlimmer als keine Auswertung: Es sähe aus wie eine
+ * Messung und wäre eine Konstante.
+ */
+export async function foerderAnfragenZuordnen(
+  db: Awaited<ReturnType<typeof makeClient>>,
+  mails: FundingReplyMail[],
+  schreiben: boolean,
+): Promise<void> {
+  const data: { program_id: string; empfaenger: string; betreff: string; gesendet_am: string; antwort_am: string | null; antwort_art: string | null }[] = [];
+  for (let offset = 0; ; offset += 1000) {
+    const { data: page, error } = await db.from("funding_anfragen")
+      .select("program_id, empfaenger, betreff, gesendet_am, antwort_am, antwort_art")
+      .order("id").range(offset, offset + 999);
+    if (error) throw new Error(`Förder-Anfragen nicht lesbar: ${error.message}`);
+    data.push(...(page ?? []));
+    if ((page?.length ?? 0) < 1000) break;
+  }
+  const offene = data.map((z) => ({
+    programId: z.program_id as string,
+    empfaenger: z.empfaenger as string,
+    gesendetAm: z.gesendet_am as string,
+    antwortAm: z.antwort_am as string | null,
+    antwortArt: z.antwort_art as string | null,
+  }));
+  if (!offene.length) return;
+  const betreffe = new Map((data ?? []).map((z) => [z.program_id as string, z.betreff as string]));
+
+  const treffer = fundingReplyCandidates(mails, offene, betreffe);
+
+  log();
+  log(`Sachfragen an Förderstellen: ${offene.length}, neue Antworten zur fachlichen Prüfung: ${treffer.length}`);
+  for (const t of treffer) log(`${t.programId} — Antwort von ${t.von} am ${t.receivedAt}`);
+  if (!schreiben || !treffer.length) return;
+
+  let saved = 0;
+  const failures: string[] = [];
+  for (const t of treffer) {
+    let update = db
+      .from("funding_anfragen")
+      .update({
+        // Der Tag der ANTWORT, nicht der des Abrufs — dieselbe Trennung wie
+        // beim Kommunen-Rücklauf.
+        antwort_am: t.receivedAt,
+        antwort_art: "antwort",
+        // Der eigene Teil ohne Zitat: Was die Stelle wirklich geschrieben hat,
+        // ist die Auskunft, wegen der gefragt wurde. Sie später nur als „hat
+        // geantwortet" vorzufinden wäre derselbe Verlust wie bei Nidda.
+        antwort_notiz: t.text,
+      })
+      .eq("program_id", t.programId);
+    // Compare against the observed state; a concurrent newer reply must survive.
+    update = t.previousReplyAt ? update.eq("antwort_am", t.previousReplyAt) : update.is("antwort_am", null);
+    const { data: written, error: e } = await update.select("program_id");
+    if (e || !written?.length) failures.push(`${t.programId}: ${e?.message ?? "reply state changed concurrently"}`);
+    else saved++;
+  }
+  log(`${saved} Antworten an Förder-Anfragen nachgetragen`, "ok");
+  if (failures.length) throw new Error(`Förderantworten nicht vollständig gespeichert: ${failures.join("; ")}`);
+}
+
 async function main(): Promise<void> {
   loadEnvFile();
   const host = process.env.OUTREACH_IMAP_HOST;
@@ -151,7 +251,7 @@ async function main(): Promise<void> {
     if (arr) arr.push({ region_id: z.region_id, name: z.name });
     else perDomain.set(z.domain, [{ region_id: z.region_id, name: z.name }]);
   }
-  log(`${ziele.length} angeschriebene Gemeinden als Zuordnungsbasis`);
+  log(`${new Set(ziele.map(z => z.region_id)).size} angeschriebene Gemeinden als Zuordnungsbasis`);
 
   const { ImapFlow } = await import("imapflow");
   const client = new ImapFlow({ host, port, secure: port === 993, auth: { user, pass }, logger: false });
@@ -169,6 +269,10 @@ async function main(): Promise<void> {
   const befunde: Befund[] = [];
   const unklar: Befund[] = [];
   const fremd: Befund[] = [];
+  /** Antworten auf die Sachfragen an Förderstellen — nicht auf unseren Brief. */
+  const sachfragen: Befund[] = [];
+  /** Jede gelesene Mail — Grundlage für die Zuordnung zu Förder-Sachfragen. */
+  const alleMails: FundingReplyMail[] = [];
   for (const name of ordner) {
     let lock;
     try {
@@ -181,37 +285,62 @@ async function main(): Promise<void> {
       const roh = String(msg.source ?? "");
       const von = msg.envelope?.from?.[0]?.address?.toLowerCase() ?? "";
       const betreff = msg.envelope?.subject ?? "";
-      // Kopfzeilen und Text grob trennen — für die Einordnung reicht das; ein
-      // vollständiger MIME-Parser wäre eine zweite Abhängigkeit für nichts.
-      const trenner = roh.indexOf("\r\n\r\n");
-      const kopfRoh = trenner > 0 ? roh.slice(0, trenner) : roh.slice(0, 4000);
-      const text = trenner > 0 ? roh.slice(trenner + 4) : "";
-      const kopf: Record<string, string> = {};
-      for (const zeile of kopfRoh.split(/\r?\n/)) {
-        const m = zeile.match(/^([A-Za-z-]+):\s*(.*)$/);
-        if (m) kopf[m[1].toLowerCase()] = m[2];
-      }
-      const mail: RohMail = { von, betreff, text, kopf };
+      const parsed = await readMail(msg.source ?? Buffer.from(roh));
+      const text = parsed.text;
+      const mail: RohMail = { ...parsed, von, betreff };
       const art = ordneEin(mail);
 
       // Zuordnung: erst über die Absender-Domain, sonst über eine im Text
       // zitierte Empfängeradresse (Unzustellbarkeiten kommen vom eigenen
       // Mailserver, nicht von der Gemeinde).
-      let treffer = perDomain.get(von.split("@")[1] ?? "") ?? [];
+      let treffer = [...new Map((perDomain.get(von.split("@")[1] ?? "") ?? []).map(x => [x.region_id, x])).values()];
       if (treffer.length !== 1) {
-        const gefunden = ziele.filter((z) => roh.toLowerCase().includes(z.email));
-        treffer = gefunden.map((z) => ({ region_id: z.region_id, name: z.name }));
+        const gefunden = ziele.filter((z) => (roh + "\n" + text).toLowerCase().includes(z.email));
+        treffer = [...new Map(gefunden.map(z => [z.region_id, { region_id: z.region_id, name: z.name }])).values()];
       }
+      // Zuletzt der Ortsname im Absender — für Ämter und Verbünde, die unter
+      // einer anderen Domain antworten als der, an die wir geschrieben haben
+      // (siehe ortAusAbsender).
+      if (treffer.length !== 1) {
+        const ort = ortAusAbsender(von, [...new Map(ziele.map(z => [z.region_id, z])).values()]);
+        treffer = ort ? [{ region_id: ort.region_id, name: ort.name }] : [];
+      }
+      // DASSELBE POSTFACH TRÄGT ZWEI GESPRÄCHE: die Antworten auf den
+      // Kommunen-Brief und die auf die Sachfragen an Förderstellen
+      // (scripts/funding-anfrage.ts). Letztere kommen oft von Orten, die nie
+      // einen Brief bekommen haben — sie landen hier also in „nicht
+      // zuzuordnen", wenn niemand sie mitliest. Deshalb wird JEDE Mail
+      // aufgehoben, nicht nur die zuordenbaren.
+      alleMails.push({ ...mail, roh, receivedAt: msg.envelope?.date?.toISOString() ?? "" });
+
       const b: Befund = {
         art,
         von,
         betreff,
-        datum: (msg.envelope?.date ?? new Date()).toISOString().slice(0, 10),
+        // Deutscher Kalendertag — der Tag, an dem die Antwort hier ankam, wird
+        // von Menschen in Deutschland gelesen (siehe lib/zeit.ts).
+        datum: heuteInBerlin(msg.envelope?.date ?? new Date()),
         region_id: treffer.length === 1 ? treffer[0].region_id : null,
         name: treffer.length === 1 ? treffer[0].name : null,
         text,
       };
-      if (b.region_id) befunde.push(b);
+      // EINE ANTWORT AUF EINE SACHFRAGE IST KEINE ANTWORT AUF DEN BRIEF.
+      //
+      // Beide Gespräche laufen über dasselbe Postfach UND dieselben
+      // Amtsadressen: Gemessen am 10.09.2026 tragen 64 der 289 angeschriebenen
+      // Gemeinden ein Förderprogramm im Katalog, im offenen Topf 19 von 175.
+      // Ohne diese Weiche verbucht der Lauf die Antwort einer Förderstelle als
+      // Reaktion auf unser Anschreiben — setzt den Status, schreibt den
+      // Zeitstempel und meldet eine ENTSCHEIDUNG, die es nicht gibt. Damit wäre
+      // ausgerechnet die einzige Kennzahl verdorben, an der wir den Erfolg des
+      // Briefes ablesen.
+      //
+      // Sie fliegt NICHT aus der Liste, sondern wird eigens gezählt: Eine
+      // stumme Ausblendung wäre von einem leeren Postfach nicht zu
+      // unterscheiden. Der nachgelagerte Schritt trägt sie ihrer Sachfrage
+      // nach; ihm wird jede Mail gereicht, auch diese.
+      if (istAntwortAufSachfrage({ betreff, roh })) sachfragen.push(b);
+      else if (b.region_id) befunde.push(b);
       else if (istFremdverkehr(von)) fremd.push(b);
       else unklar.push(b);
     }
@@ -229,7 +358,19 @@ async function main(): Promise<void> {
   if (unklar.length) {
     log();
     log(`${unklar.length} nicht zuzuordnen — bitte selbst ansehen:`, "warn");
-    for (const b of unklar) log(`${b.art.padEnd(13)} ${b.von} — „${b.betreff}"`);
+    const zieleEindeutig = [...new Map(ziele.map((z) => [z.region_id, z])).values()];
+    for (const b of unklar) {
+      // Am Terminal steht, was der Bericht mit der Mail macht: Nur wer eine
+      // angeschriebene Gemeinde nennt, geht als Entscheidung hinaus.
+      const menschlich = b.art === "antwort" || b.art === "widerspruch";
+      const orte = menschlich ? nenntAngeschriebeneGemeinde(`${b.betreff} ${b.text}`, zieleEindeutig) : [];
+      const wohin = !menschlich
+        ? "→ nicht gemeldet (maschinell)"
+        : orte.length
+        ? `→ gemeldet (${orte.map((o) => o.name).join(", ")})`
+        : "→ nicht gemeldet (nennt keine angeschriebene Gemeinde)";
+      log(`${b.art.padEnd(13)} ${b.von} — „${b.betreff}" ${wohin}`);
+    }
   }
   // Gezählt, nicht verschwunden: Wer die Liste kürzt, muss sagen, um wie viel.
   // Sonst ist eine zu weit geratene Ausblendung von einem leeren Postfach nicht
@@ -237,6 +378,24 @@ async function main(): Promise<void> {
   if (fremd.length) {
     log();
     log(`${fremd.length} Mails gehören nicht zum Outreach (${FREMD_ABSENDER.join(", ")}) — ausgeblendet.`);
+  }
+  // Gezählt statt stumm übergangen: Eine ausgeblendete Antwort und ein leeres
+  // Postfach sähen sonst gleich aus. Der nachgelagerte Schritt trägt sie ihrer
+  // Sachfrage nach — hier steht nur, dass sie nicht zum Brief gehören.
+  if (sachfragen.length) {
+    log();
+    log(
+      `${sachfragen.length} ${sachfragen.length === 1 ? "Antwort" : "Antworten"} auf eine Sachfrage an eine Förderstelle — ` +
+        `nicht als Brief-Rückmeldung gewertet:`,
+    );
+    for (const b of sachfragen) log(`    ${b.name ?? b.von} — „${b.betreff}"`);
+  }
+
+  try {
+    await foerderAnfragenZuordnen(db, alleMails, hat("schreiben"));
+  } catch (error) {
+    log(String(error), "err");
+    process.exitCode = 1;
   }
 
   if (!hat("schreiben")) {
@@ -247,6 +406,9 @@ async function main(): Promise<void> {
 
   let geschrieben = 0;
   const geschriebeneOrte: string[] = [];
+  // Die BEFUNDE, nicht nur ihre Kennungen: Der Tagesbericht muss sagen, WER
+  // was geschrieben hat — eine Liste von Ortsschlüsseln liest niemand.
+  const neueBefunde: Befund[] = [];
   for (const b of befunde) {
     const status = STATUS_ZU_ART[b.art];
     if (!status || !b.region_id) continue;
@@ -299,6 +461,20 @@ async function main(): Promise<void> {
     // später eine Rückfrage → geantwortet, und die Gemeinde stünde beim nächsten
     // Schub wieder auf der Liste. Innerhalb eines Laufs hätte sogar die
     // Reihenfolge der Befunde entschieden.
+    // EINE VERÖFFENTLICHUNG IST MEHR ALS EINE ANTWORT — und wurde von ihr
+    // überschrieben (22.09.2026): Berkenthins Bürgermeister schickte seine
+    // fertige Pressemitteilung, der Lauf setzte den Status von
+    // „veröffentlicht" auf „geantwortet" zurück. Der Zeitstempel der Antwort
+    // wird trotzdem geschrieben — an ihm hängt jede Auswertung der Antwortzeit,
+    // und ohne ihn zählte eine Gemeinde, die geantwortet UND veröffentlicht
+    // hat, als eine, die nie geantwortet hat. Genau so kamen Wallertheim und
+    // Heringen nie in die Antwort-Zahl.
+    const { data: jetzt } = await db
+      .from("kommunen_kontakt")
+      .select("outreach_status")
+      .eq("region_id", b.region_id)
+      .maybeSingle();
+    if (jetzt?.outreach_status === "veroeffentlicht") delete patch.outreach_status;
     const { error } = await db
       .from("kommunen_kontakt")
       .update(patch)
@@ -308,6 +484,7 @@ async function main(): Promise<void> {
     else {
       geschrieben++;
       geschriebeneOrte.push(b.region_id);
+      neueBefunde.push(b);
     }
   }
   // Singular mitbauen: „1 Gemeinden nachgetragen" ist derselbe Fehler wie
@@ -320,9 +497,74 @@ async function main(): Promise<void> {
       `(${orte} ${orte === 1 ? "Gemeinde" : "Gemeinden"})`,
     "ok",
   );
+
+  // ─── Melden ────────────────────────────────────────────────────────────────
+  //
+  // OHNE DIESEN TEIL IST DER LAUF EIN SELBSTGESPRÄCH. Er trug den Status
+  // zuverlässig nach und endete im Protokoll eines Terminals; die eine Antwort
+  // aus Trier lag darin genauso unsichtbar wie vierzehn Urlaubsnotizen.
+  //
+  // Die Bremse ist ausdrücklich: Ohne `--melden` geht nichts an die Ablage. Ein
+  // Probelauf von Hand soll keine Mail auslösen — und eine Option, die man
+  // setzen MUSS, ist ehrlicher als eine Automatik, die am Vorhandensein eines
+  // Geheimnisses hängt und sich beim Fehlen stillschweigend abschaltet.
+  if (!hat("melden")) return;
+  const bericht = ruecklaufBericht({
+    neu: neueBefunde.map((b) => ({
+      art: b.art,
+      name: b.name,
+      betreff: b.betreff,
+      von: b.von,
+      datum: b.datum,
+    })),
+    unklar: unklar.length,
+    // Nur die, die nach einem Menschen aussehen: Unzustellbarkeiten und
+    // maschinelle Meldungen ohne Zuordnung ändern nichts und wären der Lärm,
+    // in dem die eine echte Antwort untergeht.
+    // NUR WAS NACH UNSEREM BRIEF KLINGT. Ein ungeordneter Rückläufer geht als
+    // Entscheidung hinaus; ohne diese zweite Bedingung ging auch jede
+    // geschäftliche Post an dasselbe Postfach mit (vier Mails eines
+    // Shop-Partners am 22.09.2026). Gemessen trennt der Gemeindename sauber:
+    // in keiner Partner-Mail steht einer, in jeder echten Rückmeldung schon.
+    unklareAntworten: unklar
+      .filter((b) => b.art === "antwort" || b.art === "widerspruch")
+      .map((b) => ({
+        b,
+        orte: nenntAngeschriebeneGemeinde(
+          `${b.betreff} ${b.text}`,
+          [...new Map(ziele.map((z) => [z.region_id, z])).values()],
+        ),
+      }))
+      .filter((x) => x.orte.length > 0)
+      .map(({ b, orte }) => ({
+        art: b.art,
+        // Der genannte Ort ist ein HINWEIS, keine Zuordnung: Er steht als
+        // Vermutung in der Meldung, nicht als Tatsache in der Datenbank.
+        name: orte.length === 1 ? `vermutlich ${orte[0].name}` : `nennt ${orte.map((o) => o.name).join(", ")}`,
+        betreff: b.betreff,
+        von: b.von,
+        datum: b.datum,
+      })),
+    tage,
+  });
+  log();
+  await berichtAblegen(
+    {
+      tag: "kommunen-ruecklauf",
+      subject: "Kommunen-Outreach: Rücklauf",
+      audience: bericht.audience,
+      decisions: bericht.decisions,
+      done: bericht.done,
+      details: bericht.details,
+    },
+    process.env.CRON_SECRET ?? "",
+    { basis: process.env.ALERT_BASE_URL, log: (z) => log(z) },
+  );
 }
 
-main().catch((e) => {
-  log((e as Error).message, "err");
-  process.exit(1);
-});
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((e) => {
+    log((e as Error).message, "err");
+    process.exit(1);
+  });
+}

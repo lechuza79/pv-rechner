@@ -176,7 +176,7 @@ function Ergebnis({
             marginBottom: space.md,
           }}
         >
-          <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-negative"), marginBottom: space.xs }}>
+          <div style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-negative-text"), marginBottom: space.xs }}>
             {durchBeauftragungVerloren.length === 1
               ? "Ein Programm ist nicht mehr möglich"
               : `${durchBeauftragungVerloren.length} Programme sind nicht mehr möglich`}
@@ -318,7 +318,7 @@ const zusammen: React.CSSProperties = {
 const neuKnopf: React.CSSProperties = {
   marginTop: space.md,
   padding: "10px 20px",
-  borderRadius: v("--radius-md"),
+  borderRadius: v("--radius-pill"),
   fontSize: v("--font-size-body"),
   fontWeight: 600,
   background: "transparent",

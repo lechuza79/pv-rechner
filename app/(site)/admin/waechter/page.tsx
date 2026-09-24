@@ -42,7 +42,7 @@ export default async function WaechterReportsPage() {
       />
 
       {problem && (
-        <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative") }}>{problem}</p>
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative-text") }}>{problem}</p>
       )}
 
       {!problem && reports.length === 0 && (
@@ -74,7 +74,7 @@ export default async function WaechterReportsPage() {
                   </span>
                 )}
                 {done > 0 && (
-                  <span style={{ fontSize: v("--font-size-small"), color: v("--color-positive") }}>
+                  <span style={{ fontSize: v("--font-size-small"), color: v("--color-positive-text") }}>
                     {done === 1 ? "1 selbst erledigt" : `${done} selbst erledigt`}
                   </span>
                 )}

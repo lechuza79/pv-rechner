@@ -1,0 +1,21 @@
+/* Result roles reuse the font families supplied by the site layout. */
+.wp-result-page{
+  --result-canvas:#08191c;
+  --result-panel:#102428;
+  --result-control:#1b363b;
+  --result-text:#e8eee9;
+  --result-muted:#b6c9be;
+  --result-rule:#b6c9be26;
+  --result-accent:#d4ff24;
+  --color-status-highlight:var(--color-awareness-dim);
+  --color-on-status-highlight:var(--color-awareness);
+  --result-font-body:var(--font-text);
+  --result-font-heading:var(--font-heading);
+  --result-type-value:clamp(32px,4vw,52px);
+  --result-type-stat:28px;
+  --result-type-body:16px;
+  --result-type-ui:14px;
+  --result-type-caption:12px;
+  --result-weight-normal:400;
+  --result-weight-strong:700;
+}

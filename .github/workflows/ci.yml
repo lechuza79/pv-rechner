@@ -131,10 +131,37 @@ jobs:
       #
       # Wird das wieder knapp, ist Anheben die FALSCHE Antwort — dann gehoert
       # das Vorwaermen aus dem Zeitbudget des Testschritts heraus.
+      #
+      # GEGEN EINEN FERTIGEN BUILD, NICHT GEGEN DEN DEV-SERVER (07.09.2026).
+      # Der Smoke-Lauf war der LETZTE der drei Playwright-Projekte, der noch
+      # gegen `next dev` lief; Flow-Laeufer und Telefonbreite tragen `E2E_BUILD`
+      # seit laengerem. Genau daran ist er am 07.09. zweimal hintereinander
+      # gescheitert, und das Urteil steht im selben Lauf: Die zwei Jobs GEGEN
+      # EINEN BUILD waren gruen, der eine gegen den Dev-Server rot — gleiche
+      # Maschine, gleicher Code, gleiche Minute.
+      #
+      # Die Fehlerbilder sind die des zusammengebrochenen Dev-Servers, nicht die
+      # kaputter Seiten: „__webpack_modules__[moduleId] is not a function", leere
+      # Antworten, Zeitueberschreitungen, eine Hydrations-Meldung. Gegengeprueft
+      # wurde jede beanstandete Aussage an der PRODUKTION — alle vier Adressen
+      # antworten 200, die vermisste Jahreszahl steht auf der Seite, und die
+      # Nachbarschafts-Liste wechselt im Browser auf die Landesgruppe. Kaputt war
+      # nichts ausser dem Testserver.
+      #
+      # Es ist auch nicht langsamer, sondern schneller: Der Dev-Lauf brauchte
+      # 16,5 min, der Flow-Laeufer INKLUSIVE vollem Build 12,4 min (Lauf
+      # 34095188354). Das Vorwaermen, das dort ein Fuenftel des Budgets frass,
+      # entfaellt gegen vorgerenderte Seiten — genau der Ausweg, den der Absatz
+      # darueber schon benannt hat.
+      #
+      # LOKAL bleibt es beim Dev-Server (`npm run test:e2e` unveraendert): Dort
+      # laeuft ohnehin nur der eine Test, an dem gerade gearbeitet wird, und ein
+      # voller Build je Durchlauf waere die falsche Rechnung.
       - name: E2E smoke tests (Playwright)
         timeout-minutes: 22
         run: npm run test:e2e
         env:
+          E2E_BUILD: "1"
           # Der Browser-seitige Client braucht nur irgendeine gültige Form —
           # er wird in den Tests nicht benutzt (kein Login, keine Schreibpfade).
           NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
@@ -372,5 +399,73 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-telefon
+          path: test-results/
+          retention-days: 7
+
+  # Eigener Job aus demselben Grund wie Telefonbreite und Flow-Läufer: Zeit.
+  # Der Test lädt jede Seite der Rundgangsliste auf Schreibtischbreite und misst
+  # für JEDEN sichtbaren Textknoten, wie stark er sich von seinem tatsächlichen
+  # Grund abhebt (e2e/kontrast.spec.ts).
+  #
+  # DER ANLASS steht im Test selbst: Die Design-Umstellung vom 20./21.09.2026
+  # hat die BEDEUTUNG der Farbtoken geändert, nicht ihre Verwendungsorte — „Text
+  # auf Akzent" war Weiß und ist seitdem eine fast schwarze Tinte. Am 23.09.2026
+  # standen daraufhin 164 Textstellen auf 10 Seiten unter 2:1, also praktisch
+  # unsichtbar. Kein Typfehler, kein roter Test, kein kaputtes Aussehen; gefunden
+  # hat es der Betreiber durch Zufall an einer Tabellenzeile.
+  kontrast:
+    name: Kontrast (kein Text verschwindet auf seinem Grund)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright browser
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        timeout-minutes: 10
+        run: npx playwright install chromium
+
+      # Absichtlich nicht fatal — siehe die Begründung im Telefonbreite-Job.
+      - name: Install Playwright system deps (best effort)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: npx playwright install-deps chromium
+
+      # 12 Minuten: Bau ~4 min plus 37 Seitenaufrufe mit 45-s-Grenze je Test.
+      # Summe der Schritt-Limits (12 + 10 + 5) unter dem Job-Limit von 30.
+      - name: Kontrast (production build)
+        timeout-minutes: 12
+        run: npm run test:kontrast
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-contrast-run
+          # Der Produktionsbau rendert die Seiten vor und liest dafür dieselben
+          # Daten wie der Gesundheitscheck — ohne echte Leserechte bricht schon
+          # der Build ab (Atlas, Förderseiten, Ratgeber).
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+
+      - name: Upload Playwright-Ablaufverfolgung
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-kontrast
           path: test-results/
           retention-days: 7

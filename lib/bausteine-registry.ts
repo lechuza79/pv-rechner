@@ -188,6 +188,20 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["SelectField"],
   },
   {
+    datei: "components/Auswahl.tsx",
+    name: "Auswahl",
+    zweck:
+      "Das Multitool: Pfeile zum Durchsteppen, Menü zum Springen — für Listen, die man sowohl durchgehen als auch anspringen will.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    // Im Aufbau, nicht verbindlich: Drei ältere Fassungen desselben Elements
+    // stehen noch in den öffentlichen Widgets (Länderwähler im Zubau, Zeitraum
+    // im Strommix als Embed und als Seite). Solange die nicht nachgezogen sind,
+    // wäre „verbindlich" eine Zusage, die das Repo nicht einhält.
+    stand: "im-aufbau",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/Switch.tsx",
     name: "Switch",
     zweck: "Ein/Aus für eine Annahme — „rechnet mit“ oder „rechnet nicht mit“.",
@@ -211,6 +225,30 @@ export const BAUSTEINE: Baustein[] = [
     ebene: "baustein",
     stand: "verbindlich",
     bestehtAus: ["Modal"],
+  },
+  {
+    datei: "components/PersonBox.tsx",
+    name: "PersonBox",
+    zweck:
+      "Die Kontakt-Box mit Portrait, Satz, Signatur und den beiden Knöpfen — dieselbe wie auf der Startseite. Ihr Stil kommt aus dem Design-Paket (scripts/person-box-stil.ts), nicht aus einer zweiten Fassung.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: [],
+    // Kein Beispiel in der Galerie: Die Box zeigt eine reale Person mit realen
+    // Wegen (Über uns, Kontakt) — eine Attrappe davon wäre ein zweiter
+    // Auftritt derselben Person.
+    keinBeispielWeil: "Zeigt eine reale Person mit echten Kontaktwegen; eine Attrappe wäre ein zweiter Auftritt derselben Person.",
+  },
+  {
+    datei: "components/FlowSchritte.tsx",
+    name: "FlowSchritte",
+    zweck:
+      "Die Schrittanzeige über jedem Frage-Flow: nummerierte Schritte mit Namen, erledigte abgehakt und anklickbar, der aktuelle trägt die Überschrift.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons"],
   },
   {
     datei: "components/DachField.tsx",
@@ -267,6 +305,30 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: [],
   },
   {
+    datei: "components/KlebenderKnopf.tsx",
+    name: "KlebenderKnopf",
+    zweck:
+      "Wiederholt den nächsten Schritt als klebende Leiste am unteren Rand — aber nur, solange der echte Knopf nicht im Bild ist.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: [],
+    keinBeispielWeil:
+      "Der Baustein zeigt sich erst, wenn der beobachtete Knopf aus dem Bild gescrollt ist. In einer Galerie mit vielen kleinen Beispielen nebeneinander ist er entweder immer sichtbar (dann ist es nicht dieser Baustein) oder nie — und eine klebende Leiste am Fenster­rand würde die übrigen Beispiele überdecken. Zu sehen ist er im Ergebnis jedes Rechners.",
+  },
+  {
+    datei: "components/ErgebnisAnBetrieb.tsx",
+    name: "ErgebnisAnBetrieb",
+    zweck:
+      "Der Rückkanal auf der betriebseigenen Rechner-Seite: Der Nutzer schickt sein fertiges Ergebnis an genau den Betrieb, von dessen Website er kam — nach dem Ergebnis, nie davor.",
+    gruppe: "eingabe",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons", "Modal", "FlowNav"],
+    keinBeispielWeil:
+      "Der Baustein schickt beim Absenden eine echte Mail an einen echten Handwerksbetrieb. Ein Beispiel in der Galerie wäre entweder eine Attrappe mit totem Knopf — genau die zweite Fassung, gegen die es dieses Register gibt — oder es verschickt bei jedem Klick eines Neugierigen Post an einen Fremden. Zu sehen ist er auf jeder betriebseigenen Rechner-Seite unter dem Ergebnis.",
+  },
+  {
     datei: "components/InfoTooltip.tsx",
     name: "InfoTooltip",
     zweck:
@@ -307,6 +369,61 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["Icons", "Switch"],
   },
   {
+    datei: "components/AngebotCheck.tsx",
+    name: "AngebotCheck",
+    zweck:
+      "Nimmt das Angebot des Handwerkers entgegen und hält es gegen drei Maßstäbe: die gerechnete Anlagengröße, die Positionen, die ein vollständiges Angebot nennen sollte, und die Preise vergleichbarer Anlagen. Ab dem zweiten Angebot stellt er sie nebeneinander.",
+    gruppe: "struktur",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: [],
+  },
+  {
+    datei: "components/NichtGefundenInhalt.tsx",
+    name: "NichtGefundenInhalt",
+    zweck:
+      "Alles, was ein Besucher auf einer 404 sieht — Überschrift, Satz und die vier Wege weiter. Next rendert eine 404 aus zwei Dateien (Adresse ohne Route, Seite ohne Inhalt dahinter), die sich nicht zusammenlegen lassen; dieser Baustein sorgt dafür, dass beide trotzdem dasselbe sagen und gleich aussehen. Die Worte kommen aus lib/nicht-gefunden.ts, das Aussehen aus einem verlinkten Stylesheet, dessen Regeln alle gekapselt sind.",
+    gruppe: "struktur",
+    ebene: "zusammensetzung",
+    stand: "verbindlich",
+    bestehtAus: [],
+  },
+  {
+    datei: "components/EinbettenDialog.tsx",
+    name: "EinbettenDialog",
+    zweck:
+      "Der fertige Einbettungs-Code für genau das, was gerade auf dem Schirm steht — statt eines Sprungs in die Widget-Galerie.",
+    gruppe: "widget",
+    ebene: "zusammensetzung",
+    stand: "im-aufbau",
+    bestehtAus: ["Modal"],
+  },
+  {
+    datei: "components/StorySlider.tsx",
+    name: "StorySlider",
+    zweck:
+      "Eine Reihe Teaser, die man wischt — mit Pfeilen, die nur erscheinen, wenn es etwas zu blättern gibt.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "verbindlich",
+    bestehtAus: ["Icons"],
+    gegenprobe: {
+      // Der Browser rastet selbst ein; wer das zweite Mal von Hand baut,
+      // entscheidet Wischverhalten, Schrittweite und Pfeil-Zustand neu — und
+      // dann sieht dieselbe Reihe auf zwei Seiten verschieden aus.
+      muster: "scrollSnapType",
+      bedeutet:
+        "Hier entsteht eine zweite Teaser-Reihe von Hand. Wischen, Einrasten, Schrittweite und der Zustand der Pfeile gehören an eine Stelle — sonst blättert dieselbe Reihe auf der Ortsseite anders als auf der Startseite.",
+      ausser: [
+        {
+          datei: "components/atlas/RankingTable.tsx",
+          grund:
+            "Dort rasten SPALTEN einer breiten Tabelle ein, keine Teaser — hinter einer festgehaltenen ersten Spalte, weshalb die Einrastkante um deren Breite verschoben ist. Eine Teaser-Reihe kennt weder feste Spalte noch verschobene Kante; die beiden zusammenzulegen hieße, einer von beiden ihr Verhalten zu nehmen.",
+        },
+      ],
+    },
+  },
+  {
     datei: "components/StickyCta.tsx",
     name: "StickyCta",
     zweck: "Die klebende Aktionsleiste am unteren Rand — erscheint beim Scrollen, verschwindet am Seitenende.",
@@ -318,37 +435,38 @@ export const BAUSTEINE: Baustein[] = [
       "Klebt am unteren Fensterrand. In einer Karte gezeigt läge sie über der ganzen Seite statt in ihr.",
   },
   {
-    datei: "components/Header.tsx",
-    name: "Header",
-    zweck: "Die Kopfzeile mit Navigation, Sonnenanzeige und Anmeldung.",
+    datei: "components/SharedSiteHeader.tsx",
+    name: "SharedSiteHeader",
+    zweck: "Die gemeinsame Navigation für Startseite, Rechner und Ortsseiten mit denselben Zielen und mobilem Menü.",
     gruppe: "struktur",
     ebene: "baustein",
-    stand: "verbindlich",
-    bestehtAus: ["Icons", "Logo", "ThemeController"],
-    keinBeispielWeil:
-      "Der Seitenrahmen selbst — auf dieser Seite steht er bereits oben. Ein zweiter darin wäre kein Beispiel, sondern ein Fehler.",
+    stand: "im-aufbau",
+    bestehtAus: ["Logo"],
+    keinBeispielWeil: "Der Seitenrahmen selbst; die lokale Startseitenvorschau zeigt seine Desktop- und Mobilansicht.",
   },
   {
-    datei: "components/Footer.tsx",
-    name: "Footer",
-    zweck: "Die Fußzeile — neben dem Themen-Einstieg der einzige Ort, an dem alle Bereiche verlinkt sind.",
+    datei: "components/DesignHeader.tsx",
+    name: "DesignHeader",
+    zweck:
+      "Die neutrale Kopfzeile der neuen Oberfläche aus der Heizungs-Sitzung: Logo und die vier Navigationsgruppen.",
     gruppe: "struktur",
     ebene: "baustein",
-    stand: "verbindlich",
-    bestehtAus: ["TrustBar"],
+    stand: "im-aufbau",
+    bestehtAus: ["Logo"],
     keinBeispielWeil:
-      "Wie die Kopfzeile ein Seitenrahmen; er steht auf jeder Seite genau einmal und enthielte sich hier selbst.",
+      "Ein Seitenrahmen — ein zweiter in der Galerie wäre kein Beispiel, sondern ein Fehler.",
   },
   {
-    datei: "components/TrustBar.tsx",
-    name: "TrustBar",
-    zweck: "Die vier Zusagen über der Fußzeile. Jede ist eine Werbeaussage und trägt ihren Beleg.",
+    datei: "components/SiteFuss.tsx",
+    name: "SiteFuss",
+    zweck:
+      "Vertrauensleiste und Fußzeile des neuen Designs auf jeder Seite — der einzige Ort, an dem alle Bereiche crawlbar verlinkt sind. Daten und Markup aus lib/site-fuss.ts, dieselbe Quelle wie Startseite und Simulation.",
     gruppe: "struktur",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: ["Icons", "Modal"],
+    bestehtAus: ["Logo"],
     keinBeispielWeil:
-      "Sitzt fest über der Fußzeile und trägt vier Werbeaussagen mit Belegen — ein Beispiel daneben ließe offen, welche der beiden Fassungen gilt.",
+      "Ein Seitenrahmen; er steht auf jeder Seite genau einmal und enthielte sich hier selbst.",
   },
   {
     datei: "components/Breadcrumb.tsx",
@@ -506,7 +624,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Icons"],
   },
   // ─── Weitere Bausteine ─────────────────────────────────────────────────────
   {
@@ -796,6 +914,16 @@ export const BAUSTEINE: Baustein[] = [
     bestehtAus: ["FundingProgramParts"],
   },
   {
+    datei: "components/BalkonAngebot.tsx",
+    name: "BalkonAngebot",
+    zweck:
+      "Kaufbare Balkonkraftwerk-Sets am Ende des Rechners, mit den Angaben des Nutzers durchgerechnet und nach seinem Gewinn sortiert.",
+    gruppe: "rueckmeldung",
+    ebene: "zusammensetzung",
+    stand: "im-aufbau",
+    bestehtAus: ["Icons"],
+  },
+  {
     datei: "components/ResultFunding.tsx",
     name: "ResultFunding",
     zweck:
@@ -814,6 +942,15 @@ export const BAUSTEINE: Baustein[] = [
     ebene: "zusammensetzung",
     stand: "im-aufbau",
     bestehtAus: [],
+  },
+  {
+    datei: "components/HeatPumpInvestmentAssumptions.tsx",
+    name: "HeatPumpInvestmentAssumptions",
+    zweck: "Zeigt und bearbeitet die Anschaffungskosten hinter dem Heizungsvergleich bei einem anderen Dämmzustand.",
+    gruppe: "rueckmeldung",
+    ebene: "zusammensetzung",
+    stand: "im-aufbau",
+    bestehtAus: ["InlineEdit"],
   },
   {
     datei: "components/MastrHeroSection.tsx",
@@ -931,11 +1068,15 @@ export const BAUSTEINE: Baustein[] = [
  * die Bausteine werden sukzessive entwickelt (Betreiber, 01.09.2026).
  */
 export const NOCH_NICHT_EINGEORDNET: string[] = [
+  "DesignFooterNavigation",
+  "HeatPumpDesignHeader",
+  "PvSystemQuestions",
   // Die Geräteempfehlung unter dem Wärmepumpen-Ergebnis (seit 05.09.2026).
   // Noch kein geteilter Baustein: Sie steht an genau einer Stelle und trägt
   // Affiliate-Kennzeichnung, Preisangaben und die fachlichen Hinweise, die nur
   // dort gelten. Ein Eintrag käme, sobald ein zweiter Rechner Geräte empfiehlt.
   "WpGeraeteEmpfehlung",
+  "WpPvFlow",
 ];
 
 /** Nachschlagen über den Anzeigenamen. */

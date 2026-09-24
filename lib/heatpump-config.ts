@@ -1,8 +1,10 @@
+import { HEATING_INVESTMENT, gasInvestmentGross } from "./heating-investment";
 // ─── Heat Pump Configuration ───────────────────────────────────────────────
 // All constants for the heat pump calculator, centralized for future admin UI.
 // Sources documented in-line so every number is defensible.
 
 import { FUEL_PRICE, INSULATION_BESTAND, INSULATION_NEUBAU, type KennwertArt } from "./constants";
+import { tagInBerlin } from "./zeit";
 
 export interface HeatPumpConfig {
   // Specific heating demand (kWh/m²·a) by insulation standard.
@@ -35,12 +37,10 @@ export interface HeatPumpConfig {
   flowTempFbh: number;     // underfloor heating
   flowTempHkNeu: number;   // modern radiators
   flowTempHkAlt: number;   // old radiators
-  // Investment: Bruttopreis (inkl. MwSt.) = base + perKw × Heizlast.
-  // Quelle LWWP: Verbraucherzentrale Rheinland-Pfalz, „Luft-Wasser-Wärmepumpen:
-  // Eine Auswertung von 160 Angeboten aus Rheinland-Pfalz" (Juni 2025) — echte
-  // Angebote an Ein-/Zweifamilienhäuser im Bestand, siehe Kalibrierung unten.
+  // LWWP: fixed calibrated remainder plus KWW core cost ratio at 10 kW.
+  // These are gross costs; the core includes its associated installation.
   investLwwpBase: number;
-  investLwwpPerKw: number;
+  investLwwpCoreAt10Kw: number;
   investSwwpBase: number;
   investSwwpPerKw: number;
   // Radiator replacement cost (triggered when old radiators selected)
@@ -128,6 +128,7 @@ export interface HeatPumpConfig {
   // auch der Ölheizung aufgeschlagen — 3.600 € über 20 Jahre zugunsten der Wärmepumpe.
   fixCostPerYear: Record<"gas" | "oil", number>;
   gasMaintenance: number;        // €/a
+  // Gross reference price for a new 10-kW gas heating system.
   // € für eine neue fossile Heizung — die Anschaffung, die man sich mit der
   // Wärmepumpe spart. Gilt im Neubau UND im Bestand: Die Alternative zur
   // Wärmepumpe ist nicht eine unsterbliche Altanlage, sondern ein Kessel, der im
@@ -209,28 +210,15 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   flowTempFbh: 35,
   flowTempHkNeu: 45,
   flowTempHkAlt: 55,
-  // LWWP-Investition, kalibriert an echten Angeboten statt an Portal-Kostenseiten.
-  // Quelle: Verbraucherzentrale RLP, Auswertung von 160 Luft-Wasser-Angeboten
-  // (Angebote 01.10.2024–09.05.2025, Bruttopreise inkl. MwSt.; Volltext in
-  // docs/quellen/VZ-RLP_Auswertung-160-Waermepumpen-Angebote_2025-06.pdf):
-  //   Gesamtkosten  Median 34.979 € · Mittelwert 36.279 € (Min 20.228, Max 63.061), S. 4
-  //   Leistung      4–18 kW, Median 10 kW, S. 4
-  //   Kostenkategorien (Mittelwerte, S. 9): Montage/Lohn 6.997 + Elektro 3.032 +
-  //   Fundament 1.507 + hydraulischer Abgleich 1.159 + Warmwasser 2.589 +
-  //   Puffer 1.368 = 16.652 € — allesamt NICHT leistungsabhängig.
-  // Daraus: Basis 16.500 € (der größenunabhängige Block) und Steigung 1.850 €/kW,
-  // so dass der Median-Fall (10 kW) auf den Median-Preis 35.000 € trifft. Der Rest
-  // (Aggregat, Material, Marge) skaliert mit der Leistung.
-  // Die Nachfolge-Auswertung (VZ RLP, PM vom 02.07.2026, 160 Angebote) bestätigt das
-  // Niveau: 21.099–54.168 €, Ø ~36.400 €.
-  // WARUM nicht mehr gescrapt: Die frühere Basis (9.500 €) kam aus der
-  // taptaphome-Kostenübersicht und ergab für ein kleines Haus ~15.000 € — unter dem
-  // GÜNSTIGSTEN von 160 realen Angeboten. Die Quelle beziffert den Einbau mit
-  // 3.000–7.500 €, während allein Montage/Elektro/Fundament/Abgleich real ~12.700 €
-  // kosten. Ein Korrekturfaktor darauf wäre geraten — deshalb Config + Wächter
-  // (scripts/waermepumpe-verify.md), analog zu Sole/Wasser.
-  investLwwpBase: 16500,
-  investLwwpPerKw: 1850,
+  // KWW Tab 10 core (plant + associated installation) varies with capacity.
+  // Calibrate the rest to VZ 2025 Table 3 pp.7–8: median EUR 36,011 for 42
+  // offers including DHW/balancing/foundation/electrical, excluding radiators.
+  // 10 kW is OUR reference class, not the median capacity of that subgroup.
+  // VZ's 2026 national average of EUR 36,000 (excluding heating surfaces)
+  // supports retaining this price level, not an exact price prediction.
+  // docs/lehren/heating-investment-model.md distinguishes data and assumptions.
+  investLwwpBase: HEATING_INVESTMENT.lwwp.fixedGross,
+  investLwwpCoreAt10Kw: HEATING_INVESTMENT.lwwp.referenceCoreGross,
   // Sole/Wasser = LWWP-Niveau + Erschließung (Bohrung), abzüglich Außeneinheit/Fundament.
   // Ergibt bei 10 kW 46.000 € (LWWP 35.000 + ~11.000 € Bohrung) — im Marktband für
   // Erdwärme-EFH. Nicht scrapebar (Bohrkosten hängen an Bohrmetern, nicht an kW).
@@ -276,10 +264,7 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // 150-m²-EFH; Volltext docs/quellen/). Öl: 0 — es gibt keinen Anschluss, an dem eine
   // laufende Gebühr hängen könnte (Strukturfrage, kein Preis: der Wert bleibt 0, auch
   // wenn der Gas-Grundpreis steigt).
-  // Die WARTUNG bleibt für Gas und Öl gleich: dass eine Ölheizung mit Tankprüfung real
-  // teurer ist, ist plausibel, aber unbelegt — beide zitierten Quellen führen Heizöl
-  // nicht getrennt. OFFEN (bis 01/2027): Öl-Wartungswert beschaffen oder die
-  // Gleichsetzung bestätigen (scripts/waermepumpe-verify.md).
+  // Oil upkeep is independently sourced from KWW in oil-reference.ts.
   fixCostPerYear: { gas: 165, oil: 0 },
   // Wartung + Schornsteinfeger der fossilen Heizung, 300 €/a (VZ RLP, ebd.).
   // Fraunhofer ISE setzt in der Kurzstudie zur Bio-Treppe (23.06.2026, S. 15, Quelle
@@ -287,21 +272,11 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // differenzierten VZ-Rechnung, die Gas und Wärmepumpe unterscheidet, und liegen
   // damit konservativ unter dem höheren Ansatz.
   gasMaintenance: 300,
-  // Komplette neue fossile Heizung inkl. Einbau, brutto. Zwei unabhängige
-  // Trägerquellen, die denselben Fall rechnen wie wir (alte Heizung wird ersetzt):
-  //   · Fraunhofer ISE, Kurzstudie „Vergleich Wärmeversorgung / Auswirkungen der
-  //     Biotreppe in § 43" (23.06.2026, S. 14): Gaskessel EFH 11.400–20.400 €
-  //     brutto bei 10 kW (Bandbreite aus dem KWW-Technikkatalog, Q4/2025).
-  //     → Mittelwert 15.900 €.
-  //   · Verbraucherzentrale RLP, „Gasheizung oder Wärmepumpe – Ein Vergleich"
-  //     (02.06.2025): 16.000 € für die neue Gasheizung im 150-m²-EFH.
-  // Beide treffen sich bei rund 16.000 €; wir nehmen den Fraunhofer-Mittelwert.
-  // Der frühere Wert (12.000 €) stammte aus einer breiten Portal-Spanne und lag am
-  // unteren Rand — also zulasten der Wärmepumpe. Für Heizöl setzen wir denselben
-  // Betrag an: dass ein Ölkessel mit Tank und Abgasweg teurer ist, ist plausibel,
-  // aber keine der beiden Quellen weist Öl getrennt aus.
-  // Im Ergebnis editierbar (0 = die vorhandene Heizung hält die Laufzeit durch).
-  fossilErsatzInvest: 15900,
+  // Gas cost reference at 10 kW, calibrated by the published KWW Tab 5
+  // total-cost curve. fossilReplacementInvestment scales it with BUILDING
+  // heat load, with a 10-kW minimum cost class (explicit model assumption).
+  // Oil retains its independently sourced complete-system reference.
+  fossilErsatzInvest: gasInvestmentGross(HEATING_INVESTMENT.gas.minKw),
   years: 20,
   // Der MITTLERE Preispfad. Herleitung, Quellen und die beiden Ränder stehen
   // am Kopf von `heatPumpScenarioAdj` (lib/heatpump.ts) — dort steht auch,
@@ -520,9 +495,19 @@ export const BEG_WERTSCHOEPFUNGS_BONUS = { abIso: "2027-01-01", satz: 0.15 } as 
 /** Welche Stufe des Fahrplans gerechnet wird. */
 export type BegStand = "jetzt" | "naechste";
 
-/** Die Stufe, die an einem gegebenen Tag gilt. */
-export function begStufeAm(datum: Date, fahrplan: BegStufe[] = BEG_FAHRPLAN): BegStufe {
-  const iso = datum.toISOString().slice(0, 10);
+/**
+ * Die Stufe, die an einem gegebenen Tag gilt.
+ *
+ * Das Argument ist entweder ein ZEITPUNKT (`new Date()` — „jetzt", wird in den
+ * deutschen Kalendertag umgerechnet) oder ein gemeinter TAG als ISO-String
+ * (gilt unverändert). Die Stichtage der Richtlinie sind deutsche Kalendertage;
+ * gegen die Weltzeit gehalten galt am Stichtag selbst zwischen 00:00 und 02:00
+ * noch der alte Fördersatz und der alte Höchstbetrag. Das gilt auch im Browser:
+ * Dort ist `new Date()` die Uhr des Besuchers, und wo er sitzt, ändert am
+ * deutschen Stichtag nichts. Siehe `tagInBerlin` in lib/zeit.ts.
+ */
+export function begStufeAm(datum: Date | string, fahrplan: BegStufe[] = BEG_FAHRPLAN): BegStufe {
+  const iso = tagInBerlin(datum);
   let treffer = fahrplan[0];
   for (const stufe of fahrplan) {
     if (stufe.abIso <= iso) treffer = stufe;
@@ -540,7 +525,7 @@ export function begStufeAm(datum: Date, fahrplan: BegStufe[] = BEG_FAHRPLAN): Be
  * anbietet, sieht kaputt aus. So wandert die Frage mit — sie lautet immer „was
  * ändert sich, wenn ich erst nach dem nächsten Stichtag beantrage?".
  */
-export function begNaechsteStufe(datum: Date, fahrplan: BegStufe[] = BEG_FAHRPLAN): BegStufe | undefined {
-  const iso = datum.toISOString().slice(0, 10);
+export function begNaechsteStufe(datum: Date | string, fahrplan: BegStufe[] = BEG_FAHRPLAN): BegStufe | undefined {
+  const iso = tagInBerlin(datum);
   return fahrplan.find((stufe) => stufe.abIso > iso);
 }

@@ -112,6 +112,7 @@ export function ChoiceButtons<T>({
   onSelect,
   columns,
   render,
+  sub,
 }: {
   options: readonly T[];
   /** Index der aktiven Wahl, oder null wenn noch nichts gewählt wurde. */
@@ -120,6 +121,10 @@ export function ChoiceButtons<T>({
   /** Anzahl Grid-Spalten. Ohne Angabe: Flex-Reihe. */
   columns?: number;
   render: (option: T, i: number) => ReactNode;
+  /** Unterzeile je Option. Gesetzt → die Knöpfe stehen als Karten da (Name
+   *  fett, Erklärung darunter), im selben Bild wie die Auswahlkarten der
+   *  Schritt-Flows. Für die Hauptfragen eines Flows, nicht für Detailfragen. */
+  sub?: (option: T, i: number) => ReactNode;
 }) {
   const flowWahl = useFlowWahl();
   return (
@@ -132,6 +137,24 @@ export function ChoiceButtons<T>({
     >
       {options.map((o, i) => {
         const active = selected === i;
+        if (sub) {
+          return (
+            <button
+              key={i}
+              onClick={() => onSelect(i)}
+              {...flowWahl(i, active)}
+              style={{
+                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                padding: "12px 8px", borderRadius: v("--radius-md"), cursor: "pointer", textAlign: "center", minHeight: 68,
+                background: active ? v("--color-accent-dim") : v("--color-bg-muted"),
+                border: active ? `2px solid ${v("--color-accent")}` : `2px solid ${v("--color-border")}`,
+              }}
+            >
+              <span style={{ fontSize: v("--font-size-body"), fontWeight: 700, color: v("--color-text-primary") }}>{render(o, i)}</span>
+              <span style={{ fontSize: v("--font-size-caption"), color: v("--color-text-secondary"), marginTop: 2, lineHeight: 1.3 }}>{sub(o, i)}</span>
+            </button>
+          );
+        }
         return (
           <button
             key={i}

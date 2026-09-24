@@ -32,6 +32,7 @@ import {
 import { eegDatum, eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import { MARKTWERT_SOLAR_HISTORIE } from "../../../lib/marktwert-config";
 import { fetchMarketPrices } from "../../../lib/prices-server";
+import { heuteInBerlin } from "../../../lib/zeit";
 import { verlaufJahre } from "./VerlaufsChart";
 import VerlaufMitMeilensteinen from "./VerlaufMitMeilensteinen";
 import ArchivTabelle from "./ArchivTabellen";
@@ -63,35 +64,16 @@ const S = {
     minHeight: "100vh",
     padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: v("--color-text-primary"),
-    lineHeight: 1.25,
-    marginBottom: 10,
-  },
+  wrap: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  h1: { color: v("--color-text-primary"), marginBottom: 10 },
   subtitle: {
     fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
     marginBottom: 24,
     lineHeight: 1.6,
   },
-  h2: {
-    fontSize: v("--font-size-h2"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-    marginTop: 32,
-    marginBottom: 10,
-  },
-  h3: {
-    fontSize: v("--font-size-h3"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-    marginTop: 20,
-    marginBottom: 8,
-  },
+  h2: { color: v("--color-text-primary"), marginTop: 32, marginBottom: 10 },
+  h3: { color: v("--color-text-primary"), marginTop: 20, marginBottom: 8 },
   p: {
     fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
@@ -132,10 +114,10 @@ const S = {
   ctaButton: {
     display: "inline-block",
     padding: "10px 18px",
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     fontSize: v("--font-size-body"),
     fontWeight: 700,
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     color: v("--color-text-on-accent"),
     textDecoration: "none",
   },
@@ -201,14 +183,17 @@ const dd = (iso: string) => iso.split("-").reverse().join(".");
 
 export default async function EinspeiseverguetungTabellePage() {
   const now = new Date();
-  const todayIso = now.toISOString().slice(0, 10);
-  const year = now.getFullYear();
+  // Deutscher Kalendertag, nicht Weltzeit: Die Stichtage der Vergütung sind
+  // deutsche Daten, und am Stichtag selbst zeigte die Tabelle zwischen 00:00 und
+  // 02:00 sonst noch die alten Sätze (siehe tagInBerlin in lib/zeit.ts).
+  const todayIso = heuteInBerlin(now);
+  const year = Number(todayIso.slice(0, 4));
   // Aktuelle Sätze aus der GERECHNETEN Kette — derselben Quelle wie die
   // Perioden-Tabelle darunter. Der Stichtags-Plan (feedInRatesFor) bleibt
   // Fallback; mit zwei Quellen widersprächen sich Kurzantwort und erste
   // Tabellenzeile am ersten Stichtag nach dem letzten Schedule-Eintrag
   // (Fakten-Check 06.08.2026, Befund 4).
-  const rates = feedInRatesForCommissioning(todayIso) ?? feedInRatesFor(now);
+  const rates = feedInRatesForCommissioning(todayIso) ?? feedInRatesFor(todayIso);
   const prices = await fetchMarketPrices();
   const strompreisCt = (prices.electricityPrice * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 });
   const priceRatio = Math.round((prices.electricityPrice * 100) / rates.teilUnder10);
@@ -221,7 +206,7 @@ export default async function EinspeiseverguetungTabellePage() {
 
   // Halbjahres-Perioden seit dem 30.07.2022 — Grenzen und Sätze aus der
   // geprüften Kette (feedInPeriodsSince2022, Anker-Test in feedin-config.test).
-  const perioden = feedInPeriodsSince2022(now);
+  const perioden = feedInPeriodsSince2022(todayIso);
 
   // Jahreswerte vor 2012 (SFV-Reihe) + Spitzenwert für den Einstieg.
   const vor2012 = FEEDIN_HISTORY_YEARS

@@ -1,0 +1,79 @@
+import { describe, it, expect } from "vitest";
+import { contactCandidates, observedFields, chooseOwnedMailbox, confirmedContactPage } from "../contact-evidence";
+import { personenAus } from "../personen-fund";
+import { fetchContactPage } from "../../scripts/lib/contact-fetch";
+import { readMail } from "../../scripts/lib/read-mail";
+import { ordneEin } from "../outreach-ruecklauf";
+
+describe("contact evidence counterexamples", () => {
+  it("reads character-code mail links and never the shuffled link text", () => {
+    // Real markup from a craft business imprint (21.09.2026).
+    const html = '<p>E-Mail: <a title="E-Mail" data-q-trigger="ieQ.system.helper.uncrypt" data-q-uncrypt="105:110:102:111:64:101:108:101:107:116:114:111:45:105:108:103:46:100:101">e-eeiol@dnkor.ifgtl</a></p>';
+    expect(contactCandidates(html, 'https://www.elektro-ilg.de/impressum', 'elektro-ilg.de').map(r => r.email)).toEqual(['info@elektro-ilg.de']);
+    const kaputt = '<p><a data-q-uncrypt="1:2">e-eeiol@dnkor.ifgtl</a></p>';
+    expect(contactCandidates(kaputt, 'https://www.elektro-ilg.de/impressum', 'elektro-ilg.de')).toEqual([]);
+  });
+
+  it("reads GIPS-encrypted mail links of municipal utilities, and nothing that does not decode to an address", () => {
+    // Real markup from the Erlanger Stadtwerke press page (21.09.2026).
+    const html = '<h3>Ihr Ansprechpartner für Presse</h3><p>Claus Göbel<br>Pressesprecher<br><a data-encrypted href="mailto:mpvRiIuMmr+Tmp2akJjRjIqek5w=">E-Mail</a></p>';
+    const mails = contactCandidates(html, 'https://www.estw.de/presse', 'estw.de').map(r => r.email);
+    expect(mails).toEqual(['claus.goebel@estw.de']);
+    expect(contactCandidates('<a data-encrypted href="mailto:bm90LWEtbWFpbA==">E-Mail</a>', 'https://www.estw.de/', 'estw.de')).toEqual([]);
+  });
+
+  it("reads published TYPO3 mail links and keeps responsibility within their table row", () => {
+    const html = '<h1>Kontakt</h1><table><tr><td>Klimaschutzmanagement Yunus Göksen</td><td><a href="#" data-mailto-token="ocknvq,awpwu0iqgmugpBpgwowgpuvgt0fg" data-mailto-vector="2">E-Mail</a></td></tr><tr><td>Stabsstellenleitung Julia Schirrmacher</td><td><a href="#" data-mailto-token="ocknvq,lwnkc0uejkttocejgtBpgwowgpuvgt0fg" data-mailto-vector="2">E-Mail</a></td></tr></table>';
+    expect(confirmedContactPage(html)).toBe(true);
+    const rows = contactCandidates(html, 'https://www.neumuenster.de/kontakt', 'neumuenster.de');
+    expect(rows.map(r => r.email)).toEqual(['yunus.goeksen@neumuenster.de', 'julia.schirrmacher@neumuenster.de']);
+    expect(rows[0].roleEvidence?.text).toContain('Klimaschutzmanagement Yunus Göksen');
+    expect(rows[0].roleEvidence?.text).not.toContain('Julia');
+    expect(contactCandidates('<a data-mailto-token="not-a-mail-link" data-mailto-vector="2">Mail</a><a data-mailto-token="ocknvq,awpwu0iqgmugpBpgwowgpuvgt0fg" data-mailto-vector="oops">Mail</a>', 'https://ort.de', 'ort.de')).toEqual([]);
+  });
+  it("rejects a navigation-only contact hit and accepts an actual contact destination", () => {
+    expect(confirmedContactPage('<title>Startseite</title><nav>Kontakt</nav><footer><a href="mailto:info@ort.de">Mail</a></footer>')).toBe(false);
+    expect(confirmedContactPage('<title>Kontakt</title><h1>404 nicht gefunden</h1><a href="mailto:info@ort.de">Mail</a>')).toBe(false);
+    expect(confirmedContactPage('<main><h1>Kontakt</h1><p><a href="mailto:info@ort.de">Rathaus</a></p></main>')).toBe(true);
+  });
+  it("keeps every address with a source and does not attribute foreign organizations", () => {
+    const rows = contactCandidates('<p>Rathaus <a href="mailto:info@ort.de">Mail</a></p><p>Agentur <a href="mailto:info@agentur.de">Mail</a></p>', 'https://ort.de/kontakt', 'ort.de');
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toMatchObject({email:'info@ort.de', relation:'same-domain', sourceUrl:'https://ort.de/kontakt'});
+    expect(rows[1]).toMatchObject({email:'info@agentur.de', relation:'unconfirmed'});
+  });
+  it("does not choose foreign, lookalike or privacy addresses", () => {
+    expect(chooseOwnedMailbox(['info@agentur.de','info@betrieb-agentur.de'], 'betrieb.de')).toBeNull();
+    expect(chooseOwnedMailbox(['datenschutz@betrieb.de','info@betrieb.de'], 'betrieb.de')).toBe('info@betrieb.de');
+  });
+  it("does not confirm a different organization after a redirect", async () => {
+    const response = new Response('<p>info@parking.de</p>', { headers: { 'content-type': 'text/html' } });
+    Object.defineProperty(response, 'url', {value:'https://parking.de/'});
+    const r = await fetchContactPage('https://ort.de/', {fetcher:async()=>response});
+    expect(r.observation.candidates[0].relation).toBe('unconfirmed');
+  });
+  it("preserves old facts on empty observations", () => {
+    expect({...{email:'info@ort.de', notes:'keep'}, ...observedFields({email:null, notes:undefined})}).toEqual({email:'info@ort.de',notes:'keep'});
+  });
+  it("finds the same person with reversed fields and a mailto-only address", () => {
+    for (const html of ['<div>Anna Müller Geschäftsführerin anna.mueller@ort.de</div>', '<div>anna.mueller@ort.de Anna Müller Geschäftsführerin</div>', '<div>Anna Müller Geschäftsführerin <a href="mailto:anna.mueller@ort.de">Mail</a></div>']) {
+      expect(personenAus(html)).toEqual(expect.arrayContaining([expect.objectContaining({name:'Anna Müller',mail:'anna.mueller@ort.de'})]));
+    }
+    expect(personenAus('<div><p>Anna Müller</p><p>Max Meyer max.meyer@ort.de</p></div>').some(p=>p.name==='Anna Müller')).toBe(false);
+  });
+  it("distinguishes blocked responses, failures and actual pages", async () => {
+    for (const status of [403,429,503]) {
+      const r = await fetchContactPage('https://ort.de', {fetcher:async()=>new Response('',{status})});
+      expect(r.html).toBeNull(); expect(r.observation.status).toBe(status===503?'failed':'blocked');
+    }
+    const r = await fetchContactPage('https://ort.de', {fetcher:async()=>new Response('<title>Just a moment</title>',{headers:{'content-type':'text/html'}})});
+    expect(r.observation.status).toBe('blocked');
+  });
+  it("decodes base64 replies and quoted-printable automatic messages", async () => {
+    const base = 'From: rathaus@ort.de\r\nSubject: Antwort\r\nContent-Type: text/plain; charset=utf-8\r\n';
+    const answer = await readMail(base+'Content-Transfer-Encoding: base64\r\n\r\n'+Buffer.from('Vielen Dank, wir veröffentlichen die Meldung.').toString('base64'));
+    expect(answer.text).toContain('veröffentlichen'); expect(ordneEin(answer)).toBe('antwort');
+    const auto = await readMail(base+'Content-Transfer-Encoding: quoted-printable\r\n\r\nBitte antworten Sie nicht auf diese E-Mail');
+    expect(ordneEin(auto)).not.toBe('antwort');
+  });
+});

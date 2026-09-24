@@ -150,9 +150,12 @@ export function MastrLiveRadial({
   unit = "GW",
   injected = null,
   highlightTs,
+  secondaryBars = false,
   bare = false,
   fuelltBreite = false,
+  kopfKachel = false,
   exportFooter = null,
+  className,
 }: {
   energietraeger: Energietraeger;
   installedKwp: number | null;
@@ -165,6 +168,8 @@ export function MastrLiveRadial({
   injected?: { ts: string; mw: number }[] | null;
   /** Welcher Balken „jetzt" ist (Mitte + Highlight). Standard: der letzte. */
   highlightTs?: string;
+  /** Use widget-muted bars with the current reading in the widget accent color. */
+  secondaryBars?: boolean;
   /** Chromeless: kein eigener Rahmen/Kopf/Branding-Footer — für die Einbettung
    *  in eine geteilte Widget-Hülle (Gemeinde-Seite), die den Rahmen zeichnet. */
   bare?: boolean;
@@ -179,6 +184,14 @@ export function MastrLiveRadial({
    */
   fuelltBreite?: boolean;
   /**
+   * Die Fassung für die Kopf-Kachel der Ortsseite: Der Wert steht in der
+   * Aktionsfarbe und trägt „jetzt" statt nur seiner Einheit, die Stunden am
+   * Ring sind kleiner und unterbrechen die Ringlinie mit ihrem eigenen Grund.
+   * Betreiber-Vorgabe 23.09.2026; die öffentlichen Erzeugungs-Widgets bleiben
+   * unverändert.
+   */
+  kopfKachel?: boolean;
+  /**
    * Image-only footer (legend, help texts, source, brand). Belongs INSIDE the
    * card so it sits on the card background — a footer added around the radial by
    * the caller would land on the transparent area outside it. Passing one also
@@ -187,6 +200,8 @@ export function MastrLiveRadial({
    * kind-dependent invitation (see WidgetExportFooter).
    */
   exportFooter?: React.ReactNode;
+  /** Optional hook for the host widget to provide shared sizing/layout rules. */
+  className?: string;
   /**
    * Sichtbare Fußzeile der Karte — der geteilte Baustein `WidgetFooter`
    * (nächster Schritt · Aktionen · Marke). Sie steht INNERHALB der Karte, damit
@@ -467,8 +482,12 @@ export function MastrLiveRadial({
     return bestD <= 2.6 ? best : null;
   };
 
-  const accentBars = v("--color-accent");
-  const accentLatest = v("--color-highlight");
+  const accentBars = secondaryBars
+    ? "var(--widget-muted, var(--color-text-secondary))"
+    : v("--color-accent");
+  const accentLatest = secondaryBars
+    ? "var(--widget-accent, var(--color-highlight))"
+    : v("--color-highlight");
   // Muted text token instead of fixed black so the unit label stays legible on
   // a dark widget background (where it resolves to a light tone).
   const labelColor = v("--color-text-muted");
@@ -486,6 +505,7 @@ export function MastrLiveRadial({
 
   return (
     <div
+      className={className}
       style={{
         perspective: "1200px",
         display: isCompact && !fuelltBreite ? "inline-block" : "block",
@@ -511,7 +531,7 @@ export function MastrLiveRadial({
             transition: "opacity 0.12s ease 0.22s",
           }}
         >
-          <div style={cardStyle}>
+          <div className="sc-mastr-live-radial-card" style={{...cardStyle, display: "flex", flexDirection: "column"}}>
       {!bare && (traegerNav ? (
         <div
           style={{
@@ -679,6 +699,23 @@ export function MastrLiveRadial({
             </filter>
           </defs>
 
+          <g aria-hidden="true" className="sc-mastr-live-radial-clock">
+            {([['12', 12], ['18', 18], ['00', 0], ['06', 6]] as const).map(([label, hour]) => {
+              const [x, y] = pointAt(CX, CY, visualAngleFromHour(hour), OUTER_R + (isCompact ? 1 : 8));
+              const fontSize = kopfKachel ? 7 : isCompact ? 8 : 10;
+              // Die Beschriftung liegt HINTER dem Chart (Betreiber,
+              // 23.09.2026): Sie steht vor den Ringen und Balken im Markup,
+              // also zeichnet der Browser sie zuerst und alles Weitere
+              // darüber. Vorher lag sie obenauf und brauchte einen
+              // deckenden Fleck, damit die Ringlinie nicht durch die Ziffern
+              // lief — ein Fleck, der auf jedem anderen Grund auffällt.
+              return (
+                <text key={label} x={x} y={y} textAnchor="middle" dominantBaseline="middle" fill={labelColor} fontSize={fontSize}>
+                  {label}
+                </text>
+              );
+            })}
+          </g>
           {/* 4 Section-Kreise (25/50/75/100% der Bar-Länge), alternierende Deckkraft */}
           {sectionRings.map((s) => (
             <circle
@@ -857,7 +894,7 @@ export function MastrLiveRadial({
             style={{
               fontSize: dim.centerBig,
               fontWeight: 700,
-              color: v("--color-text-primary"),
+              color: kopfKachel ? v("--color-cta") : v("--color-text-primary"),
               fontVariantNumeric: "tabular-nums",
               fontFamily: v("--font-mono"),
               letterSpacing: -0.3,
@@ -874,7 +911,7 @@ export function MastrLiveRadial({
               letterSpacing: 0.5,
             }}
           >
-            {unit}
+            {kopfKachel ? `${unit} jetzt` : unit}
           </div>
         </div>
       </div>
@@ -897,7 +934,7 @@ export function MastrLiveRadial({
       {!isCompact && displayPct !== null && (
         <div
           style={{
-            marginTop: 10,
+            marginTop: "auto",
             paddingTop: 8,
             borderTop: `1px solid ${v("--color-border")}`,
             fontSize: 12,

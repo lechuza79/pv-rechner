@@ -1,8 +1,8 @@
 "use client";
 import { useState, useMemo, useCallback, useEffect, useRef, Fragment } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import FlowNav from "../../../../components/FlowNav";
+import FlowSchritte from "../../../../components/FlowSchritte";
 import OptionCard from "../../../../components/OptionCard";
 import InlineEdit from "../../../../components/InlineEdit";
 import InfoTooltip from "../../../../components/InfoTooltip";
@@ -18,12 +18,15 @@ import { referenceYearKwh } from "../../../../lib/solar-year";
 import { trackFunnelStep, type Funnel } from "../../../../lib/analytics";
 import { useSharedPlz, readLocation } from "../../../../lib/location";
 import ResultFunding from "../../../../components/ResultFunding";
+import BalkonAngebot from "../../../../components/BalkonAngebot";
 import { useFoerderung } from "../../../../lib/use-foerderung";
 import { stackFunding, type Wohnform } from "../../../../lib/funding-programs";
 import { DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 
 const STEPS = ["Haushalt & Standort", "Ausrichtung"];
+// One word each for the step indicator; the current one is the step heading.
+const SCHRITT_NAMEN = ["Haushalt", "Ausrichtung"];
 
 // Klartext-Beschreibung einer Konfiguration (Set + Speicher-Entscheidung).
 function storageName(id: BalkonStorageId): string {
@@ -39,7 +42,6 @@ function configLabel(setId: BalkonSetId, storageId: BalkonStorageId): string {
 }
 
 export default function Balkon() {
-  const router = useRouter();
   const [step, setStep] = useState(0);
   // Welche Fragen wirklich beantwortet sind. Die Werte behalten ihre Startwerte
   // (die Rechnung braucht sie), geben sich aber nicht mehr als Auswahl aus —
@@ -189,11 +191,44 @@ export default function Balkon() {
   useEffect(() => {
     if (adresseGelesen.current) return;
     adresseGelesen.current = true;
-    const ausAdresse = new URLSearchParams(window.location.search).get("plz");
+    const q = new URLSearchParams(window.location.search);
+
+    const ausAdresse = q.get("plz");
     if (ausAdresse && /^\d{5}$/.test(ausAdresse)) {
       setPlz(ausAdresse);
       fetchPvgis(ausAdresse);
     }
+
+    // Die drei Antworten der Fragestrecke — damit ein Ergebnis teilbar ist,
+    // statt dass der Empfänger dreimal klickt. Angenommen wird nur, was es
+    // wirklich gibt: eine unbekannte Kennung wird ignoriert, nie geraten.
+    const gesetzt: string[] = [];
+
+    const pe = Number(q.get("pe"));
+    if (Number.isInteger(pe) && pe >= 0 && pe < PERSONEN.length) {
+      setPersonen(pe);
+      gesetzt.push("personen");
+    }
+
+    const an = q.get("an");
+    if (an && CFG.presence.some(p => p.id === an)) {
+      setPresenceId(an as BalkonInputs["presenceId"]);
+      gesetzt.push("anwesenheit");
+    }
+
+    const au = q.get("au");
+    if (au && CFG.orientations.some(o => o.id === au)) {
+      setOrientationId(au as BalkonInputs["orientationId"]);
+      gesetzt.push("ausrichtung");
+    }
+
+    if (gesetzt.length > 0) {
+      setBeantwortet(prev => new Set([...prev, ...gesetzt]));
+    }
+    // Nur ein VOLLSTÄNDIGER Satz springt ins Ergebnis. Mit einer halben Angabe
+    // stünde der Empfänger vor einem Ergebnis, das zur Hälfte auf unseren
+    // Startwerten beruht, ohne dass er es sieht.
+    if (gesetzt.length === 3) setStep(STEPS.length);
   }, [fetchPvgis]);
 
   // Gemerkten Standort übernehmen und direkt anwenden — sonst stünde die PLZ
@@ -215,6 +250,15 @@ export default function Balkon() {
   // Aktive Konfiguration: gewählte Alternative oder — Default — die Empfehlung.
   const active = override ?? { setId: recommendation.best.setId, storageId: recommendation.best.storageId };
   const activeIsBest = active.setId === recommendation.best.setId && active.storageId === recommendation.best.storageId;
+
+  // Dieselben Haushaltsangaben, mit denen die Empfehlung oben gerechnet wurde —
+  // damit ein Kaufangebot nie auf anderen Annahmen steht als das Ergebnis, über
+  // dem es erscheint. Der Speicherpreis steckt beim Angebot im Setpreis, deshalb
+  // wird `invest` bewusst NICHT durchgereicht.
+  const angebotBasis = useMemo(
+    () => ({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease }),
+    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, priceIncrease],
+  );
 
   // Kartenzahlen im gewählten Szenario (die Empfehlung oben bleibt am Basiswert).
   const scenarioRec = useMemo(
@@ -250,8 +294,15 @@ export default function Balkon() {
     () => stackFunding(fundingPrograms, {
       technik: "balkon", wattPeak: CFG.sets.find(x => x.id === active.setId)?.moduleWp ?? 0,
       kosten: bruttoInvest, wohnform: wohnform ?? undefined,
+      // Die gewählte Speichergröße gehört in die Förderrechnung: Der Landkreis
+      // Oldenburg zahlt seinen Zuschuss ausschließlich für Balkonkraftwerk UND
+      // Speicher zusammen. Ohne diese Angabe zöge das Programm auch dem Set
+      // ohne Speicher Geld ab, das dafür niemand bekommt. Immer gesetzt, auch
+      // als 0 — das heißt „ohne Speicher"; fehlt der Wert, rechnet das Modell
+      // eine solche Bedingung bewusst gar nicht.
+      speicherKwh: CFG.storage.find(x => x.id === active.storageId)?.kwh ?? 0,
     }),
-    [fundingPrograms, active.setId, bruttoInvest, wohnform],
+    [fundingPrograms, active.setId, active.storageId, bruttoInvest, wohnform],
   );
   const foerderung = fundingEnabled ? fundingStack.total : 0;
 
@@ -319,31 +370,26 @@ export default function Balkon() {
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: v("--font-size-h2"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
-            {isResult ? "Deine Empfehlung" : "Lohnt sich ein Balkonkraftwerk?"}
+      <div style={{ maxWidth: v('--page-max-width'), containerType: "inline-size", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: isResult ? 24 : 16 }}>
+          {/* In the question steps as small as the PV calculator's head: the focus
+              belongs to the first question, not the title. */}
+          <h1 style={isResult ? {} : { fontSize: v('--font-size-h2') }}>
+            {isResult ? "Deine Empfehlung" : "Balkonkraftwerk-Rechner"}
           </h1>
           {!isResult && (
             <p style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6 }}>
-              Für Miete und Eigentum ohne eigenes Dach. Wir empfehlen dir die passende Größe — mit oder ohne Speicher.
+              Lohnt sich ein Balkonkraftwerk für dich? Für Miete und Eigentum ohne eigenes Dach — wir empfehlen dir die passende Größe, mit oder ohne Speicher.
             </p>
           )}
         </div>
 
         {/* Progress */}
-        {!isResult && (
-          <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
-            {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? v('--color-accent') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
-            ))}
-          </div>
-        )}
+        {!isResult && <FlowSchritte schritte={SCHRITT_NAMEN} aktiv={step} onSprung={setStep} />}
 
         {/* ── STEPS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: v("--font-size-h3"), fontWeight: 700, marginBottom: 18 }}>{STEPS[step]}</h2>
 
             {/* 0: Haushalt & Standort */}
             {step === 0 && (
@@ -386,15 +432,28 @@ export default function Balkon() {
                     value={plz}
                     onChange={e => onPlzChange(e.target.value)}
                     style={{
-                      flex: 1, padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
+                      // `minWidth: 0` ist hier kein Feinschliff, sondern das,
+                      // was die Zeile überhaupt schmaler werden lässt: Ein
+                      // Flex-Kind schrumpft von sich aus nicht unter seine
+                      // Eigenbreite, und ein Eingabefeld bringt die aus seiner
+                      // voreingestellten Zeichenzahl mit — rund 20 Zeichen,
+                      // egal wie schmal das Fenster ist. Zusammen mit dem
+                      // Knopf daneben („Übernehmen", umbruchfrei) brauchte die
+                      // Zeile dadurch 339 px. Auf einem 320-px-Telefon zieht
+                      // der Browser daraufhin die ganze Seite auf 339 px auf,
+                      // und jede Seite des Rechners lässt sich seitwärts
+                      // schieben (gemessen 23.09.2026 auf der Produktion, am
+                      // iPhone-SE-Profil und bei 320 px im Fenster).
+                      flex: 1, minWidth: 0,
+                      padding: "12px 14px", fontSize: v("--font-size-body"), fontFamily: v('--font-mono'),
                       borderRadius: v('--radius-md'), border: `2px solid ${plzConfirmed ? v('--color-positive') : v('--color-border')}`,
                       background: v('--color-bg-muted'), color: v('--color-text-primary'), outline: "none", textAlign: "center", letterSpacing: "0.08em",
                     }}
                   />
                   <button type="submit" disabled={plz.length !== 5 || plzLoading || plzConfirmed} style={{
-                    padding: "0 18px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
+                    padding: "0 18px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap",
                     border: "none", cursor: plz.length === 5 && !plzConfirmed ? "pointer" : "default",
-                    background: plzConfirmed ? v('--color-positive') : plz.length === 5 ? v('--color-accent') : v('--color-bg-muted'),
+                    background: plzConfirmed ? v('--color-positive') : plz.length === 5 ? v('--color-cta') : v('--color-bg-muted'),
                     color: plzConfirmed || plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
                   }}>
                     {plzLoading ? "…" : plzConfirmed
@@ -402,7 +461,7 @@ export default function Balkon() {
                       : "Übernehmen"}
                   </button>
                 </form>
-                <div style={{ fontSize: v("--font-size-small"), color: plzConfirmed ? v('--color-positive') : v('--color-text-muted'), marginTop: 8, lineHeight: 1.5, fontWeight: plzConfirmed ? 600 : 400 }}>
+                <div style={{ fontSize: v("--font-size-small"), color: plzConfirmed ? v('--color-positive-text') : v('--color-text-muted'), marginTop: 8, lineHeight: 1.5, fontWeight: plzConfirmed ? 600 : 400 }}>
                   {plzConfirmed
                     ? `Standort übernommen: ${specificYield} kWh je kWp und Jahr.`
                     : "Optional. Ohne PLZ rechnen wir mit einem deutschen Durchschnitt."}
@@ -432,9 +491,9 @@ export default function Balkon() {
                 weiterAktiv={stepBeantwortet}
                 weiterLabel={step === STEPS.length - 1 ? "Empfehlung anzeigen" : "Weiter"}
                 onWeiter={next}
-                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
-                // Startseite — wie vorher, nur im gemeinsamen Baustein.
-                onZurueck={step > 0 ? back : () => router.push("/")}
+                // No Zurück in the first step — the same in every calculator.
+                onZurueck={back}
+                zurueckSichtbar={step > 0}
                 inaktivHinweis={stepHinweis}
               />
             </div>
@@ -453,8 +512,8 @@ export default function Balkon() {
             style={{
               position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
               zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)", cursor: "pointer",
-              background: v('--color-accent'), color: v('--color-text-on-accent'),
-              borderRadius: v('--radius-md'), padding: "12px 16px",
+              background: v('--color-cta'), color: v('--color-text-on-accent'),
+              borderRadius: v("--radius-pill"), padding: "12px 16px",
               boxShadow: "0 6px 24px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 10,
               fontSize: v("--font-size-small"), fontWeight: 600, lineHeight: 1.4,
             }}
@@ -496,7 +555,7 @@ export default function Balkon() {
                     boxShadow: isRec ? "0 4px 14px -4px rgba(19,101,234,0.30)" : "none",
                   }}>
                     <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, whiteSpace: "nowrap", color: selected ? v('--color-accent') : v('--color-text-primary') }}>{setShort(o.setId)}</span>
-                    <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>~{o.result.savingPerYear.toLocaleString("de-DE")} €/J</span>
+                    <span style={{ fontSize: v("--font-size-small"), fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive-text') }}>~{o.result.savingPerYear.toLocaleString("de-DE")} €/J</span>
                     {isRec && <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: v("--font-size-micro"), fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent') }}><IconCheck size={iconSizes.xs} /> Empf.</span>}
                   </button>
                 );
@@ -506,14 +565,22 @@ export default function Balkon() {
             {/* 2. Speicher — Schalter links, Größen rechts daneben, eine Zeile, ohne Box.
                 Der Tooltip steht bewusst NEBEN dem Schalter (Button im Button wäre
                 ungültiges HTML und würde den Schalter mit auslösen). */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {/* UMBRECHEN ERLAUBT: Schalter, Hinweis und die beiden Größen stehen
+                alle auf „nicht umbrechen" und brauchten zusammen 353 px. Auf
+                einem 320-px-Telefon zieht der Browser daraufhin die ganze Seite
+                auf, und jede Seite des Rechners lässt sich seitwärts schieben
+                (gemessen 23.09.2026). Die Höhe bleibt dabei ruhig: Die Größen
+                stehen ohnehin dauerhaft im Baum und werden nur ein- und
+                ausgeblendet, die zweite Zeile entsteht also nicht erst beim
+                Einschalten. */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", rowGap: 8 }}>
               <button onClick={toggleStorage} aria-pressed={storageOn} style={{
                 background: "none", border: "none", padding: 0, cursor: "pointer", flexShrink: 0,
                 display: "inline-flex", alignItems: "center", gap: 6,
               }}>
                 <span aria-hidden style={{
-                  width: 38, height: 22, borderRadius: 11, flexShrink: 0, position: "relative", display: "inline-block",
-                  background: storageOn ? v('--color-accent') : v('--color-border-muted'), transition: "background 0.2s",
+                  width: 38, height: 22, borderRadius: v("--radius-pill"), flexShrink: 0, position: "relative", display: "inline-block",
+                  background: storageOn ? v('--color-cta') : v('--color-border-muted'), transition: "background 0.2s",
                 }}>
                   <span style={{
                     position: "absolute", top: 3, left: storageOn ? 19 : 3, width: 16, height: 16, borderRadius: "50%",
@@ -586,7 +653,7 @@ export default function Balkon() {
               <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
                 Ersparnis in {CFG.lifetimeYears} Jahren
               </div>
-              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-positive'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
+              <div style={{ fontSize: v("--font-size-display-lg"), fontWeight: 800, color: v('--color-positive-text'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
                 {(r.lifetimeSaving + r.invest).toLocaleString("de-DE")} €
               </div>
               <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 6, textAlign: "center" }}>
@@ -628,7 +695,7 @@ export default function Balkon() {
                         aria-pressed={wohnform === id}
                         onClick={() => setWohnform(wohnform === id ? null : id)}
                         style={{
-                          padding: "6px 12px", borderRadius: v("--radius-md"), cursor: "pointer", fontSize: v("--font-size-small"),
+                          padding: "6px 12px", borderRadius: v("--radius-pill"), cursor: "pointer", fontSize: v("--font-size-small"),
                           border: `1px solid ${wohnform === id ? v("--color-accent") : v("--color-border")}`,
                           background: wohnform === id ? v("--color-bg-accent") : v("--color-bg"),
                           color: v("--color-text-primary"),
@@ -641,6 +708,11 @@ export default function Balkon() {
                 </div>
               ) : undefined}
             />
+
+            {/* Kaufbare Sets, mit denselben Angaben durchgerechnet.
+                Sitzt direkt unter dem Fördercheck: erst was es kostet und was
+                davon der Staat trägt, dann wo man es bekommt. */}
+            <BalkonAngebot basis={angebotBasis} foerderungEuro={foerderung} />
 
             {/* Stats 2×2 */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
@@ -673,8 +745,8 @@ export default function Balkon() {
                   </div>
                   <div>
                     Der Speicher nutzt rund <strong style={{ color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{r.storageAddedKwh.toLocaleString("de-DE")} kWh</strong> Überschuss
-                    zusätzlich selbst — das bringt <strong style={{ color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{extraSaving.toLocaleString("de-DE")} €/Jahr</strong> mehr,
-                    kostet aber <strong style={{ color: v('--color-negative'), fontFamily: v('--font-mono') }}>+{r.storagePrice.toLocaleString("de-DE")} €</strong> Aufpreis.
+                    zusätzlich selbst — das bringt <strong style={{ color: v('--color-positive-text'), fontFamily: v('--font-mono') }}>~{extraSaving.toLocaleString("de-DE")} €/Jahr</strong> mehr,
+                    kostet aber <strong style={{ color: v('--color-negative-text'), fontFamily: v('--font-mono') }}>+{r.storagePrice.toLocaleString("de-DE")} €</strong> Aufpreis.
                   </div>
                   <div style={{ fontSize: v("--font-size-small"), color: v('--color-text-muted'), marginTop: 8 }}>
                     {paysOff ? (
@@ -734,7 +806,7 @@ export default function Balkon() {
 
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-              <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
+              <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 700, background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Eigenes Dach? Große Anlage rechnen <IconArrowRight size={iconSizes.sm} /></span>
               </Link>
               <button onClick={resetAll} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>

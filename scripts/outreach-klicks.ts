@@ -1,3 +1,6 @@
+import { liesNotiz } from "../lib/outreach-ruecklauf";
+import { hinweisBericht, neueHinweise, type Hinweis } from "../lib/kommunen-hinweise";
+import { berichtAblegen } from "../lib/alert-senden";
 /**
  * Was ist aus den angeschriebenen Gemeinden geworden?
  *
@@ -5,16 +8,9 @@
  * sehen. Lägerdorf kam nur ans Licht, weil der Betreiber zufällig in die
  * Besucherstatistik sah.
  *
- * ZWEI SCHLÜSSEL, BEIDE OHNE ZUTUN AM BRIEF:
- *   · Die ADRESSE sagt, WELCHE Gemeinde — jede hat ihre eigene Seite.
- *   · Der VERWEIS sagt, WAS passiert ist — ein Besucher von Facebook oder von
- *     der Website der Gemeinde bedeutet, dass jemand dort etwas veröffentlicht
- *     hat.
- *
- * DER VERWEIS SCHLÄGT DIE BACKLINK-SUCHE. Sie kannte zwei Veröffentlichungen;
- * gemessen sind vier — Aue-Bad Schlema und Urmitz haben in sozialen Netzen
- * gepostet, und ein Beitrag dort ist kein Backlink, den ein Verzeichnis
- * crawlt. Die Einordnung selbst steht in `lib/outreach-herkunft.ts`.
+ * A referrer identifies a possible publication, not its content or author.
+ * Verify the actual page or post before recording a publication. Historical
+ * bounces remain failed original sends after an address has been repaired.
  *
  *   npm run kommunen:klicks
  *   npm run kommunen:klicks -- --seit=2026-08-19
@@ -29,13 +25,13 @@
  */
 
 import { resolve, dirname } from "node:path";
+import { heuteInBerlin } from "../lib/zeit";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync } from "node:fs";
 import { aggregat, herkunftJeSeite, ereignisseJeName, ANALYTICS_SEIT } from "../lib/web-analytics";
 import {
   ordneHerkunft,
   kanalName,
-  veroeffentlichungsNotiz,
   HERKUNFT_TEXT,
   type Herkunft,
 } from "../lib/outreach-herkunft";
@@ -89,12 +85,22 @@ function adressen(regionen: Map<string, RegionZeile>, ids: string[]): Map<string
 async function main() {
   loadEnvFile();
   const args = process.argv.slice(2);
-  const seit = args.find((a) => a.startsWith("--seit="))?.split("=")[1] ?? ANALYTICS_SEIT;
+  // Die Schnittstelle nimmt höchstens 62 Tage je Abfrage (gemessen 22.09.2026:
+  // mit dem Messbeginn als Vorgabe antwortete sie nur noch mit HTTP 400 — der
+  // Befehl lief also ohne Angabe gar nicht mehr). Vorgabe sind deshalb die
+  // letzten 60 Tage, nie früher als der Messbeginn.
+  const sechzigTage = heuteInBerlin(new Date(Date.now() - 60 * 86_400_000));
+  const seit =
+    args.find((a) => a.startsWith("--seit="))?.split("=")[1] ??
+    (sechzigTage > ANALYTICS_SEIT ? sechzigTage : ANALYTICS_SEIT);
   // MORGEN, NICHT HEUTE: Vercel liest ein Datum als Tagesgrenze, „bis heute"
   // schneidet den heutigen Tag also vollständig ab. Gemessen am 02.09.2026 —
   // mit „bis heute" fehlte ein Ereignis, das es an diesem Tag gab, und das sah
   // aus wie „gab es nicht" statt wie „nicht gefragt".
-  const morgen = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
+  // Deutscher Kalendertag: Zwischen 00:00 und 02:00 deutscher Zeit läge „morgen"
+  // in der Weltzeit auf HEUTE — also genau auf der Grenze, die der Absatz
+  // darüber vermeiden soll (siehe lib/zeit.ts).
+  const morgen = heuteInBerlin(new Date(Date.now() + 86_400_000));
   const bis = args.find((a) => a.startsWith("--bis="))?.split("=")[1] ?? morgen;
   const schreiben = args.includes("--schreiben");
 
@@ -195,7 +201,7 @@ async function main() {
     }
   }
 
-  const zugestellt = zeilen.filter((z) => z.outreach_status !== "bounce");
+  const zugestellt = zeilen.filter((z) => z.outreach_status !== "bounce" && !liesNotiz(z.notes).verlauf.some(v => v.art === "unzustellbar"));
   const unzustellbar = zeilen.length - zugestellt.length;
   console.log(`Zeitraum ${seit} bis ${bis} · ${zeilen.length} angeschrieben, davon ${unzustellbar} unzustellbar\n`);
 
@@ -213,7 +219,7 @@ async function main() {
   // an dem ein Verweis dieser Art kam. Das ist der Tag, an dem WIR es gesehen
   // haben — die Veröffentlichung selbst kann früher liegen, und genau so steht
   // es auch im Vermerk.
-  console.log(`Veröffentlicht: ${veroeffentlicht.length} von ${zugestellt.length} zugestellten Briefen`);
+  console.log(`Veröffentlichungshinweise: ${veroeffentlicht.length}; ${zugestellt.length} Briefe ohne bekannten Zustellfehler (Zustellung nicht bestätigt)`);
   const belege: { name: string; regionId: string; kanaele: string; erstTag: string; status: string; notes: string | null }[] = [];
   for (const [pfad, s] of veroeffentlicht) {
     const g = gemeindeJePfad.get(pfad)!;
@@ -260,39 +266,8 @@ async function main() {
   // GESPERRT BLEIBT GESPERRT — dieselbe Einbahnstraße wie bei den Rückläufern:
   // Wer widersprochen hat, wird durch einen Besucher aus einem sozialen Netz
   // nicht wieder zum offenen Kontakt.
-  if (belege.length) {
-    if (!schreiben) {
-      const offen = belege.filter((b) => b.status !== "veroeffentlicht");
-      if (offen.length) {
-        console.log(`\n${offen.length} davon noch nicht als veröffentlicht vermerkt. Zum Nachtragen: --schreiben`);
-      }
-    } else {
-      let n = 0;
-      for (const b of belege) {
-        const notiz = veroeffentlichungsNotiz({
-          datum: b.erstTag || new Date().toISOString().slice(0, 10),
-          kanal: b.kanaele,
-        });
-        const zeilenBisher = (b.notes ?? "").split("\n");
-        if (b.status === "veroeffentlicht" && zeilenBisher.includes(notiz)) continue;
-        const { error: e } = await db
-          .from("kommunen_kontakt")
-          .update({
-            outreach_status: "veroeffentlicht",
-            notes: b.notes ? `${b.notes}\n${notiz}` : notiz,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("region_id", b.regionId)
-          .neq("outreach_status", "gesperrt");
-        if (e) {
-          console.log(`  ! ${b.name}: ${e.message}`);
-          continue;
-        }
-        console.log(`  ✓ ${b.name}: ${notiz}`);
-        n++;
-      }
-      console.log(n ? `\n${n} nachgetragen.` : "\nNichts nachzutragen — alles schon vermerkt.");
-    }
+  if (schreiben) {
+    console.log("Herkunftsaufrufe werden nicht als Veröffentlichung gespeichert. Zuerst den konkreten Beitrag und seinen Herausgeber prüfen.");
   }
 
   // WAS DIESE MESSUNG NICHT SIEHT, wird benannt statt weggelassen. Eine
@@ -332,6 +307,35 @@ async function main() {
     for (const [k, n] of [...fremde].sort((a, b) => b[1] - a[1])) console.log(`  ${n}  ${k}`);
   }
 
+  // ─── Melden ─────────────────────────────────────────────────────────────────
+  //
+  // Nur mit `--melden` (der wöchentliche Lauf setzt es). Gemeldet wird, was
+  // noch nirgends in der Notiz der Gemeinde steht — beide Sorten: Besucher über
+  // eine bekannte Veröffentlichungs-Art und Besucher von einer Seite, die wir
+  // noch nicht einordnen können. Genau die zweite Sorte hat am 22.09.2026
+  // Berkenthin enthalten und lag trotzdem liegen.
+  if (args.includes("--melden")) {
+    const notizen = new Map([...gemeindeJePfad.values()].map((g) => [g.name, g.notes] as const));
+    const roh: Hinweis[] = [];
+    for (const [pfad, s] of seiten) {
+      const g = gemeindeJePfad.get(pfad)!;
+      for (const [h, n] of s.verweise) {
+        const art = ordneHerkunft(h, g.website);
+        if (art !== "veroeffentlichung" && art !== "andere") continue;
+        roh.push({ gemeinde: g.name, fundstelle: h, quelle: `${n} Besucher von dort, seit ${seit}` });
+      }
+    }
+    const neu = neueHinweise(roh, notizen);
+    const bericht = hinweisBericht(neu, "Besucherherkunft");
+    console.log(`
+${bericht.done[0]}`);
+    await berichtAblegen(
+      { tag: "kommunen-hinweise", subject: "Kommunen: Hinweise auf Veröffentlichungen (Besucherherkunft)", audience: "claude", ...bericht },
+      process.env.CRON_SECRET ?? "",
+      { basis: process.env.ALERT_BASE_URL },
+    );
+  }
+
   // ─── Je Schub ───────────────────────────────────────────────────────────────
   const jeSchub = new Map<string, { verschickt: number; gesehen: number; veroeffentlicht: number; ohneAdresse: number }>();
   for (const z of zugestellt) {
@@ -347,7 +351,7 @@ async function main() {
     }
     jeSchub.set(schub, s);
   }
-  console.log("\nJe Schub (zugestellt / Seite überhaupt aufgerufen / veröffentlicht):");
+  console.log("\nJe Schub (ohne bekannten Zustellfehler / Seite aufgerufen / Veröffentlichungshinweis):");
   for (const [schub, s] of [...jeSchub].sort((a, b) => b[1].verschickt - a[1].verschickt)) {
     const fehlt = s.ohneAdresse ? ` · ${s.ohneAdresse} ohne Atlas-Adresse` : "";
     console.log(`  ${schub}: ${s.verschickt} / ${s.gesehen} / ${s.veroeffentlicht}${fehlt}`);

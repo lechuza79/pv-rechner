@@ -36,12 +36,14 @@ export const FLOWS: FlowUnterTest[] = [
   },
   {
     name: "PV-Rechner",
-    pfad: "/photovoltaik-rechner",
+    // Die nackte Adresse zeigt seit 21.09.2026 den Empfehlungsweg (Eintrag
+    // darunter); die Direkteingabe erreicht man über ?direkt=1.
+    pfad: "/photovoltaik-rechner?direkt=1",
     ergebnisEnthaelt: "amortisiert sich in",
   },
   {
     name: "PV-Bedarf / Empfehlung",
-    pfad: "/pv-bedarf-berechnen",
+    pfad: "/photovoltaik-rechner",
     ergebnisEnthaelt: "Die Empfehlung basiert auf",
   },
   {
@@ -128,11 +130,14 @@ export const SCHRITTE_OHNE_AUSWAHL: { flow: string; tiefe: number; grund: string
  *   Standard (jeder Push)         — jede OPTION jedes Schritts und jeder
  *     Zweig, nicht jede Kombination. Schnell und auf dem CI-Runner stabil.
  *   FLOW_ALLE_KOMBINATIONEN=1     — wirklich jede Kombination, ohne die
- *     Erschöpft-Abkürzung. Läuft nächtlich (flows-nightly.yml), wo eine lange
- *     Laufzeit niemanden aufhält: gemessen in der Nacht zum 25.08.2026 sind es
- *     3.440 Wege in 4 h 20 bei 5 Stunden erlaubter Zeit. Wer hier eine
- *     Bedienfamilie ergänzt, vervielfacht diese Zahl — der Gesundheitscheck
- *     warnt deshalb, sobald weniger als ein Viertel der Zeit frei bleibt.
+ *     Erschöpft-Abkürzung. Läuft nächtlich (flows-nightly.yml), und dort seit
+ *     dem 07.09.2026 mit einem eigenen JOB je Flow: 3.462 Wege über sieben
+ *     Flows, der längste davon der PV-Rechner mit 1.728 Wegen in 174 bis 182
+ *     Minuten. Wer hier eine Bedienfamilie ergänzt, vervielfacht diese Zahl —
+ *     der Gesundheitscheck warnt deshalb, sobald weniger als ein Viertel der
+ *     Zeit frei bleibt. Die frühere Angabe „3.440 Wege in 4 h 20 bei 5 Stunden
+ *     erlaubter Zeit" stammte aus der Zeit des EINEN gemeinsamen Jobs und
+ *     beschreibt keinen Lauf mehr, den es gibt.
  */
 export const ALLE_KOMBINATIONEN = !!process.env.FLOW_ALLE_KOMBINATIONEN;
 
@@ -158,6 +163,96 @@ export const ALLE_KOMBINATIONEN = !!process.env.FLOW_ALLE_KOMBINATIONEN;
  * wird das gemeldet, nicht verschwiegen.
  */
 export const MAX_WEGE_JE_FLOW = ALLE_KOMBINATIONEN ? 2500 : 150;
+
+/**
+ * Das Zeitlimit EINES Flow-Tests — und die innerste von drei Grenzen.
+ *
+ * WARUM ES HIER STEHT UND NICHT IM LÄUFER (gemessen 24.09.2026): Der
+ * nächtliche Lauf war vom 21. bis 23.09.2026 drei Nächte rot, jedes Mal im
+ * PV-Rechner, jedes Mal an einer ANDEREN Stelle des Baums und keine davon
+ * nachstellbar. Der Grund war keine dieser Stellen: Der Fehler wurde in allen
+ * drei Nächten exakt 3 h 0 m nach dem Start des Tests geworfen (10:57:05 auf
+ * 07:57:02, 10:54:40 auf 07:54:39, 11:10:00 auf 08:09:58) — das ist dieses
+ * Limit, nicht der Rechner. Läuft es ab, bricht Playwright die gerade
+ * laufende Wiederhol-Schleife ab; `weiterKlicken` und `waehle` fangen das in
+ * ihrem `catch` und werfen ihre eigene Meldung. Aus einem Zeitablauf wird so
+ * ein „Weiter kam nicht durch", das auf einen Produktfehler zeigt, den es
+ * nicht gibt.
+ *
+ * DREI GRENZEN, UND DIE INNERSTE WAR DIE ENGSTE — das war der eigentliche
+ * Fehler. Die 3 Stunden stammen vom 18.08.2026, als der ganze nächtliche Lauf
+ * EIN Test über alle sieben Flows war und die Verteilung noch niemand kannte.
+ * Am 07.09.2026 bekam jeder Flow einen eigenen Job, und weil der PV-Rechner
+ * dabei mit 174–182 Minuten gemessen wurde, bekam sein SCHRITT 200 Minuten und
+ * sein JOB 220. Dieses Limit hier blieb bei 180 — die äußeren Grenzen trugen
+ * also 10 % Luft, die innere 0 bis 3 %, und sie greift zuerst. Sechs grüne
+ * Nächte lagen bei 174–178 Minuten, drei rote darüber; das ist kein Wachstum,
+ * sondern ein Münzwurf.
+ *
+ * 195 MINUTEN SIND KEIN ANGEHOBENES LIMIT IM SINNE DES WÄCHTER-GATES: Es wird
+ * nicht mehr Zeit verbraucht (eine gute Nacht endet weiter nach 175 Minuten),
+ * sondern eine Grenze an das Budget angeglichen, das am 07.09. für genau diese
+ * Laufzeit bereitgestellt wurde. Gewachsen ist nichts — nachgezählt sind es
+ * unverändert 1.728 Wege wie am 16.09.
+ *
+ * Die Reihenfolge muss bleiben: dieses Limit < Schritt-Limit < Job-Limit.
+ * Reißt das Schritt-Limit zuerst, heißt der Ausgang „failure" ohne Hinweis
+ * darauf, WO der Läufer stand; reißt das Job-Limit zuerst, heißt er
+ * „cancelled" und fällt erst nach drei stummen Nächten auf. Festgenagelt von
+ * lib/__tests__/workflow-schritt-zeitlimits.test.ts.
+ */
+export const FLOW_TEST_ZEITLIMIT_MIN = { alleKombinationen: 195, jedeOption: 10 } as const;
+
+/** Dasselbe in Millisekunden für `test.setTimeout` — je nach Betriebsart. */
+export const FLOW_TEST_ZEITLIMIT_MS =
+  (ALLE_KOMBINATIONEN ? FLOW_TEST_ZEITLIMIT_MIN.alleKombinationen : FLOW_TEST_ZEITLIMIT_MIN.jedeOption) * 60_000;
+
+/**
+ * Der Titel, unter dem ein Flow im Läufer steht — EINE Quelle für den Test
+ * selbst UND für die Aufteilung des nächtlichen Laufs auf mehrere Jobs.
+ *
+ * Der Titel stand bis zum 07.09.2026 nur als Vorlage im Läufer. Das trug,
+ * solange ihn niemand sonst brauchte; seit die Nacht je Flow einen eigenen Job
+ * startet und ihren Test über `--grep` auswählt, hätte er ein zweites Mal
+ * dagestanden — und eine umbenannte Zeile hätte den Job auf NULL Tests laufen
+ * lassen. Ein Lauf ohne Tests ist grün, und ein grüner Lauf, der nichts sieht,
+ * ist schlimmer als gar keiner (dieselbe Lehre wie bei den Wächtern, die ihre
+ * eigene Gegenprobe bestehen müssen).
+ */
+export function flowTestTitel(name: string): string {
+  return `Flow „${name}": jede Option führt zu einem Ergebnis`;
+}
+
+/**
+ * Derselbe Titel als Ausdruck für `--grep`, mit maskierten Sonderzeichen.
+ *
+ * Playwright liest `--grep` als regulären Ausdruck. Heute trägt kein Flow-Name
+ * ein Sonderzeichen; ein künftiger mit Klammer oder Punkt würde ohne Maskierung
+ * entweder zu viel treffen oder gar nichts — und „gar nichts" ist der teure
+ * Fall, siehe oben.
+ */
+export function flowGrep(name: string): string {
+  return flowTestTitel(name).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Woran ein Flow-Test zu erkennen ist. Der nächtliche Sammel-Job nimmt mit
+ * `--grep-invert` alles, was das NICHT enthält — damit läuft ein künftiger
+ * Buchhaltungs-Test automatisch mit, statt still liegenzubleiben.
+ *
+ * ABGELEITET, nicht getippt: Es ist genau das Stück, das `flowTestTitel` VOR
+ * den Namen setzt. Als eigene Zeichenkette wäre es die letzte verbliebene
+ * zweite Fassung des Titels — und beim ersten Umformulieren („Flow" → „Ablauf")
+ * schlösse der Sammel-Job nichts mehr aus und liefe den ganzen Bestand doppelt.
+ *
+ * OHNE ANKER, und das ist kein Versehen: Playwright vergleicht `--grep` nicht
+ * mit dem Testtitel, sondern mit dem ganzen Pfad davor — „[flows] ›
+ * e2e/flows.spec.ts:358:7 › Flow „…"". Ein `^` traf deshalb NIE, der Sammel-Job
+ * hätte alle neun Tests ein zweites Mal gelaufen. Gefunden von `--pruefen` im
+ * Matrix-Skript, bevor die Nacht es getan hätte.
+ */
+const NAMENS_PLATZHALTER = "\u0000";
+export const FLOW_TITEL_MARKE = flowTestTitel(NAMENS_PLATZHALTER).split(NAMENS_PLATZHALTER)[0];
 
 
 // ─── Geteilte Schritte durch einen Flow ──────────────────────────────────────
@@ -477,7 +572,48 @@ async function akkordeonFragePruefen(page: Page, frage: string, fehler: string[]
  * keine). Verschwindet die Navigation ganz, ist das Ergebnis erreicht — auch
  * ein Wechsel.
  */
-export async function weiterKlicken(page: Page) {
+/**
+ * Der WEG gehört in jede geworfene Meldung — BLOCKER für den Kombinations-Läufer.
+ *
+ * Der nächtliche Lauf geht für den PV-Rechner rund 1.700 Kombinationen in gut
+ * drei Stunden. Gesammelte Befunde (`erg.fehler`) tragen ihren Weg längst; die
+ * beiden Helfer hier WERFEN aber, und eine geworfene Meldung reißt den Test ab,
+ * ohne zu sagen, WO. Gemessen an den Läufen vom 21. und 22.09.2026: Zweimal
+ * dieselbe Meldung „Weiter kam nicht durch (Weiter-Knopf frei)", beide Male
+ * ohne einen einzigen Hinweis auf die Kombination — nicht nachstellbar, also
+ * auch nicht behebbar. Der Kommentar in `waehle` benannte die Lücke bereits
+ * („noch auf welchem Weg"), geschlossen war sie nie.
+ *
+ * Optional, weil die übrigen Aufrufer feste, kurze Wege gehen: Dort sagt die
+ * Datei-und-Zeile-Angabe von Playwright bereits alles.
+ */
+function wegPraefix(weg?: string) {
+  return weg ? `[${weg}] ` : "";
+}
+
+/**
+ * Die beiden Meldungen stehen als eigene Funktionen da, damit der Wächter sie
+ * AUFRUFEN kann statt den Quelltext nach ihrem Wortlaut zu durchsuchen. Eine
+ * Textsuche bliebe grün, sobald jemand den Parameter entgegennimmt und in der
+ * Meldung vergisst — genau die Fehlerklasse, gegen die es diesen Fix gibt.
+ */
+export function weiterMeldung(weg: string | undefined, gesperrt: boolean) {
+  return (
+    `${wegPraefix(weg)}Weiter kam nicht durch: Der Schritt wechselte 20 s lang nicht ` +
+    `(Weiter-Knopf ${gesperrt ? "gesperrt (aria-disabled)" : "frei"}).`
+  );
+}
+
+export function wahlMeldung(weg: string | undefined, label: string, zustand: unknown) {
+  return (
+    `${wegPraefix(weg)}Option „${label}" ließ sich nicht wählen (20 s lang kein aria-pressed=true). ` +
+    `Zustand: ${JSON.stringify(zustand)}. ` +
+    `Steht dort sichtbar=true und deaktiviert=false, kam der Klick nicht an — ` +
+    `dann liegt etwas darüber oder die Seite ist nicht interaktiv geworden.`
+  );
+}
+
+export async function weiterKlicken(page: Page, weg?: string) {
   const fingerabdruck = () =>
     page.evaluate(() => {
       const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
@@ -499,14 +635,11 @@ export async function weiterKlicken(page: Page) {
     }).toPass({ timeout: 20_000 });
   } catch {
     const gesperrt = (await weiter.getAttribute("aria-disabled").catch(() => null)) === "true";
-    throw new Error(
-      `Weiter kam nicht durch: Der Schritt wechselte 20 s lang nicht ` +
-        `(Weiter-Knopf ${gesperrt ? "gesperrt (aria-disabled)" : "frei"}).`,
-    );
+    throw new Error(weiterMeldung(weg, gesperrt));
   }
 }
 
-export async function waehle(page: Page, label: string) {
+export async function waehle(page: Page, label: string, weg?: string) {
   const option = page.locator(`[data-flow-option="${label.replace(/"/g, '\\"')}"]:visible`).first();
   await expect(option).toBeEnabled({ timeout: 15_000 });
   // Wiederholen, nicht warten: Der Knopf ist ab dem servergerenderten HTML da
@@ -542,11 +675,6 @@ export async function waehle(page: Page, label: string) {
       sichtbar: (e as HTMLElement).offsetParent !== null,
       deaktiviert: (e as HTMLButtonElement).disabled,
     })).catch(() => null);
-    throw new Error(
-      `Option „${label}" ließ sich nicht wählen (20 s lang kein aria-pressed=true). ` +
-        `Zustand: ${JSON.stringify(zustand)}. ` +
-        `Steht dort sichtbar=true und deaktiviert=false, kam der Klick nicht an — ` +
-        `dann liegt etwas darüber oder die Seite ist nicht interaktiv geworden.`,
-    );
+    throw new Error(wahlMeldung(weg, label, zustand));
   }
 }

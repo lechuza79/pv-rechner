@@ -45,7 +45,7 @@ export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: space.lg }}>
       <header>
-        <h1 style={{ fontSize: v("--font-size-h1"), fontWeight: 800, color: v("--color-text-primary"), margin: 0 }}>
+        <h1 style={{ color: v("--color-text-primary"), margin: 0 }}>
           Kommunen-Solar-Awards
         </h1>
         <p style={{ fontSize: v("--font-size-body"), color: v("--color-text-secondary"), marginTop: space.xs, maxWidth: 640, lineHeight: 1.5 }}>

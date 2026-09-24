@@ -180,7 +180,10 @@ describe("Der Katalog bleibt mit der Wärmepumpen-Rechnung verträglich", () => 
     // aber die Erdwärmequelle, nicht der Tausch. Ein `percentOfCost` darf im
     // Wärmepumpen-Zweig deshalb NICHTS ergeben, sonst verspräche der Rechner
     // 10 % auch dem, der eine Luftwärmepumpe plant.
-    const roth = FUNDING_PROGRAMS["roth-klimaschutz"];
+    // Since 17.09.2026 Roth's catalogue entry carries no PV percentage any more
+    // (tenant-power only). The guard itself stays: the fixture sets the
+    // percentage explicitly on a program that also names the heat pump.
+    const roth = { ...FUNDING_PROGRAMS["roth-klimaschutz"], percentOfCost: 0.1, pvCap: 1000 };
     expect(roth.percentOfCost).toBeGreaterThan(0);
     expect(technikenVon(roth)).toContain("waermepumpe");
     const belegt = { ...roth, lastVerified: "2026-08-18", pageSeenAt: "2026-08-19" };
@@ -263,10 +266,16 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
   it("stellt sicher, dass der Zweig im Katalog gar nicht erst greift", () => {
     // Solange jedes Programm das Feld trägt, ist die Frage oben theoretisch.
     // Dieser Test hält sie theoretisch.
-    const ohneFeld = Object.values(FUNDING_PROGRAMS).filter(p => !Array.isArray(p.combinableWith));
+    const ohneFeld = Object.values(FUNDING_PROGRAMS).filter(p => p.combinableWith !== null && !Array.isArray(p.combinableWith));
     expect(ohneFeld.map(p => p.id)).toEqual([]);
   });
 
+
+  it("keeps unverified combinations explicit and out of the federal grant stack", () => {
+    const unknown = Object.values(FUNDING_PROGRAMS).filter(p => p.combinableWith === null);
+    expect(unknown.map(p => p.id).sort()).toEqual(["altenkirchen-balkonkraftwerke", "altenkirchen-solarspeicher", "bad-marienberg-erneuerbare-energien", "bruehl-baden-umweltschutz", "bubenreuth-co2-einsparung", "burbach-klimaschutz-privat", "cochem-zell-solarstromspeicher", "delmenhorst-balkon-solar", "ehningen-steckerfertige-pv", "ekm-altenkirchen", "eppelheim-balkonkraftwerke", "floersheim-photovoltaik", "florstadt-photovoltaik", "fritzlar-balkonkraftwerke-speicher", "gaildorf-balkonkraftwerke", "havelland-stecker-solar", "holzminden-solarfair", "kaufungen-sondervermoegen", "kirchlengern-pv-kleinanlagen", "leverkusen-photovoltaik", "mauer-balkonkraftwerke", "mutterstadt-balkonkraftwerke", "pfaffenhofen-balkon", "radolfzell-sonnige-zukunft", "rheinisch-bergisch-balkonsolar", "schwarzenfeld-balkon-pv", "sh-balkon-klimaschutz-bub", "sh-speicher-klimaschutz-bub", "sh-waermepumpe-klimaschutz-bub", "wendelstein-pv", "wendlingen-energie", "wertingen-photovoltaik"]);
+    expect(programmeNebenBundesfoerderung(unknown)).toEqual([]);
+  });
   it("führt jeden Ausschluss ausdrücklich", () => {
     // Kein Schnappschuss, sondern eine Quittung: Wer ein Programm aufnimmt, das
     // Bundesmittel ausschließt, trägt es hier ein und bestätigt damit, dass die
@@ -282,8 +291,9 @@ describe("Leere Liste, fehlendes Feld — zwei verschiedene Fragen", () => {
     //   kumuliert werden" (Nr. 1 der Richtlinie 2026, am 29.08.2026 im
     //   Volltext gelesen). Der Ausschluss gilt allen fremden Mitteln, also
     //   auch den Bundesmitteln.
-    const BELEGTE_AUSSCHLUESSE = ["gaiberg-steckersolar", "tegernheim-stecker-pv", "weyhe-klimaschutz"];
-    const ausschluss = Object.values(FUNDING_PROGRAMS).filter(schliesstBundesfoerderungAus);
+    // Official combination clauses reviewed on 2026-09-16; unknown is distinct from prohibition.
+    const BELEGTE_AUSSCHLUESSE = ["adendorf-steckersolar" /* guideline no. 3.3: "Die Förderung nach dieser Richtlinie schließt eine Förderung mit anderen öffentlichen Mitteln aus (Ausschluss einer Doppelförderung)." */, "gaiberg-steckersolar", "garching-energiespar" /* Richtlinie Nr. 5.2: „Weitere Zuwendungen der öffentlichen Hand (in der Bundes- oder Landesebene, wie KfW, Bafa, usw.) sind mit dem Garchinger Förderprogramm nicht kombinierbar." Volltext am 23.09.2026 gelesen. */, "gifhorn-kreis-balkonkraftwerke" /* Richtlinie Nr. 6: „Eine Kombination der Förderung nach dieser Richtlinie mit anderen Fördermitteln ist grundsätzlich ausgeschlossen." Volltext am 23.09.2026 gelesen. */, "herzberg-balkonkraftwerke", "herzebrock-clarholz-batteriespeicher", "luedinghausen-klimaschutzfonds", "mainz-bingen-balkonkraftwerke" /* guideline 5.6.5: no cumulation with federal, state or municipal funds */, "mayen-koblenz-balkonkraftwerke" /* guideline no. 7: "Kumulierung … grundsätzlich nicht zulässig" */, "meschede-balkon-speicher", "mueden-aller-balkonsolar" /* Richtlinie Nr. 6: „Die Förderung nach dieser Richtlinie schließt eine Finanzierung mit anderen öffentlichen Mitteln aus." Volltext am 23.09.2026 gelesen. */, "neuwied-balkonkraftwerke", "rauschenberg-balkon-solaranlagen" /* guideline sec. 3: "Die kommunalen Fördermittel können nicht mit anderen Fördermitteln kumuliert werden" */, "ransbach-baumbach-balkonkraftwerke" /* guideline § 3 (1): "Eine Doppelförderung ist ausgeschlossen." — read cautiously as excluding other public money */, "scharnebeck-steckersolar" /* guideline § 5 (3): "schließt eine Förderung mit anderen öffentlichen Mitteln aus (Ausschluss einer Doppelförderung)" */, "tegernheim-stecker-pv", "vaterstetten-pv-begleitung", "vg-bad-kreuznach-balkonkraftwerke" /* Richtlinie Nr. 4 Abs. 4: „Für die Anlage dürfen keine anderen Förderprogramme in Anspruch genommen sein oder werden, eine Mehrfachförderung ist unzulässig." Scan der Richtlinie vom 26.06.2024 am 24.09.2026 im Archiv gelesen; Programm beendet, zieht nichts ab. */, "vg-leiningerland-balkonkraftwerke" /* Richtlinie Nr. 9: „Eine Doppelförderung ist unzulässig. Antragsteller, die bereits einen Förderantrag über ein anderes Förderprogramm gestellt haben, werden bei der Förderung der Verbandsgemeinde Leiningerland nicht berücksichtigt." Volltext am 23.09.2026 gelesen, Beleg in docs/quellen/vg-leiningerland/. Wie bei ransbach-baumbach vorsichtig als Ausschluss auch fremder öffentlicher Mittel gelesen; das Programm ist ohnehin eingestellt und zieht nichts ab. */, "weyhe-klimaschutz", "wolfratshausen-pv"];
+    const ausschluss = Object.values(FUNDING_PROGRAMS).filter(p => Array.isArray(p.combinableWith) && p.combinableWith.length === 0);
     expect(
       ausschluss.map(p => p.id).sort(),
       "Neuer Ausschluss im Katalog — Fundstelle prüfen und hier eintragen, oder das fehlende combinableWith nachtragen",

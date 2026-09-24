@@ -265,7 +265,7 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
             {ex.foerderung > 0 && (
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span style={{ color: v("--color-text-secondary") }}>Förderung</span>
-                <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
+                <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive-text"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
               </div>
             )}
             <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 6 }}>
@@ -274,7 +274,7 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: v("--color-text-secondary") }}>Gewinn 25 J.</span>
-              <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: ex.total > 0 ? v("--color-positive") : v("--color-negative") }}>{ex.total > 0 ? "+" : ""}{nf(ex.total)} €</span>
+              <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: ex.total > 0 ? v("--color-positive-text") : v("--color-negative-text") }}>{ex.total > 0 ? "+" : ""}{nf(ex.total)} €</span>
             </div>
           </div>
         </div>

@@ -261,7 +261,7 @@ export default function VersorgerCockpit() {
 
           <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.sm }}>
             {loading ? "Lädt…" : `${total.toLocaleString("de-DE")} Versorger`}
-            {error && <span style={{ color: v("--color-negative"), marginLeft: space.sm }}>Fehler: {error}</span>}
+            {error && <span style={{ color: v("--color-negative-text"), marginLeft: space.sm }}>Fehler: {error}</span>}
           </div>
 
           <div style={{ overflowX: "auto", border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md") }}>
@@ -452,7 +452,7 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
 
 /** Eine Kennzahl mit ihrer Einordnung.
  *
- *  Die Tendenz zeigt der BESTEHENDE Badge des Solar-Atlas (`TendTag`) — dort ist
+ *  Die Tendenz zeigt der BESTEHENDE Badge des Energie-Atlas (`TendTag`) — dort ist
  *  bereits entschieden, wie eine Abweichung aussieht: Vorzeichen statt Pfeil
  *  (der Knick der Pfeil-Icons wirkte unruhig), ein Ton je Richtung, Farben aus
  *  den semantischen Tokens. Ein eigenes Zeichen hier wäre eine zweite Antwort
@@ -551,7 +551,7 @@ function Detail({
               <span style={{ color: v("--color-text-muted") }}>— {u.kontakt.art}</span>
             </div>
           ) : (
-            <div style={{ color: v("--color-negative") }}>
+            <div style={{ color: v("--color-negative-text") }}>
               {u.kontakt.adresse ? (
                 <>
                   <span style={{ textDecoration: "line-through" }}>{u.kontakt.adresse}</span> — {u.kontakt.art}
@@ -737,7 +737,7 @@ function Detail({
               )}
               <span style={{ color: v("--color-text-muted") }}>{ZUORDNUNG_ROLLE_LABEL[g.rolle]}</span>
               <span style={quelleBadge(g.quelle)}>{ZUORDNUNG_QUELLE_LABEL[g.quelle]}</span>
-              {!g.hatDaten && <span style={{ color: v("--color-negative") }}>keine Anlagendaten</span>}
+              {!g.hatDaten && <span style={{ color: v("--color-negative-text") }}>keine Anlagendaten</span>}
               <button style={miniBtn} onClick={() => entfernen(g.regionId)} aria-label={`${g.name} entfernen`}>
                 ✕
               </button>
@@ -1046,7 +1046,7 @@ function NeuModal({
         <Feld label="Kontaktseite">
           <input value={kontaktseite} onChange={(e) => setKontaktseite(e.target.value)} placeholder="https://…/kontakt" style={{ ...inputStyle, width: "100%" }} />
         </Feld>
-        {fehler && <div style={{ color: v("--color-negative"), fontSize: v("--font-size-small") }}>{fehler}</div>}
+        {fehler && <div style={{ color: v("--color-negative-text"), fontSize: v("--font-size-small") }}>{fehler}</div>}
         <button style={primaryBtn} disabled={busy || !name.trim()} onClick={speichern}>
           {busy ? "Speichert…" : "Anlegen"}
         </button>
@@ -1072,7 +1072,7 @@ function Tab({ active, label, onClick }: { active: boolean; label: string; onCli
         ...secondaryBtn,
         fontWeight: 700,
         color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
-        background: active ? v("--color-accent") : v("--color-bg-muted"),
+        background: active ? v("--color-cta") : v("--color-bg-muted"),
         borderColor: active ? v("--color-accent") : v("--color-border"),
       }}
     >
@@ -1108,7 +1108,7 @@ const primaryBtn: React.CSSProperties = {
   cursor: "pointer",
   fontWeight: 700,
   color: v("--color-text-on-accent"),
-  background: v("--color-accent"),
+  background: v("--color-cta"),
   borderColor: v("--color-accent"),
 };
 
@@ -1154,7 +1154,7 @@ function themaChip(thema: string): React.CSSProperties {
     textDecoration: "none",
     whiteSpace: "nowrap",
     color: foerder ? v("--color-text-on-accent") : v("--color-text-secondary"),
-    background: foerder ? v("--color-accent") : v("--color-bg"),
+    background: foerder ? v("--color-cta") : v("--color-bg"),
     border: `1px solid ${foerder ? v("--color-accent") : v("--color-border")}`,
   };
 }

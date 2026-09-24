@@ -109,7 +109,7 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
   };
   const knopf = (aktiv: boolean): React.CSSProperties => ({
     padding: "6px 12px",
-    borderRadius: v("--radius-sm"),
+    borderRadius: v("--radius-pill"),
     border: `1px solid ${aktiv ? v("--color-accent") : v("--color-border")}`,
     background: aktiv ? v("--color-bg-accent") : "transparent",
     color: aktiv ? v("--color-accent-dark") : v("--color-text-secondary"),

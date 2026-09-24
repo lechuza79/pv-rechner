@@ -27,7 +27,28 @@ export default defineConfig({
   globalSetup: "./e2e/global-setup.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
+  // KEINE WIEDERHOLUNG IM ALLE-KOMBINATIONEN-LAUF — BLOCKER (gemessen 16.09.2026).
+  //
+  // Eine Wiederholung ist gegen Flattern gebaut: Ein Test von Sekunden läuft
+  // ein zweites Mal, und der Lauf bleibt trotzdem kurz. Beim nächtlichen
+  // Läufer kehrt sich das um. Er trägt EINEN Test je Flow, und der dauert
+  // Stunden — der PV-Rechner geht 1.728 Wege in 174 bis 182 Minuten, die
+  // Wärmepumpe 1.120 in rund 100. Eine Wiederholung verdoppelt das und kann
+  // das 200-Minuten-Schrittlimit deshalb PER BAUART nie einhalten.
+  //
+  // Die Folge war nicht nur ein roter Lauf, sondern ein VERLORENES URTEIL: In
+  // allen fünf roten Nächten vom 09. bis 15.09.2026 stand im Protokoll
+  // „(retry #1)" und danach „timed out after 200 minutes" — der echte
+  // Fehlschlag des ersten Versuchs, also der gebrochene Weg, um den es geht,
+  // wurde vom Zeitlimit überschrieben und war nirgends mehr zu lesen. Am
+  // 13.09. meldete die Wärmepumpe um 09:24 ihre 1.120 Wege und scheiterte an
+  // einer Prüfung; der Wiederholungslauf lief danach 98 Minuten ins Limit.
+  //
+  // Die Diagnose lautete deshalb dreimal „das Zeitlimit ist zu knapp, etwas
+  // ist gewachsen". Nichts ist gewachsen: Die Wegezahlen sind seit der
+  // Aufteilung am 07.09.2026 unverändert. Das Limit anzuheben hätte die
+  // Wiederholung bezahlt und den gebrochenen Weg weiter verdeckt.
+  retries: process.env.CI && !process.env.FLOW_ALLE_KOMBINATIONEN ? 1 : 0,
   workers: process.env.CI ? 2 : undefined,
   reporter: process.env.CI ? "github" : "list",
 
@@ -54,12 +75,17 @@ export default defineConfig({
   // ihr eigenes Zeitmass bekommen, und ein langer Flow-Lauf hält die schnellen
   // Prüfungen nicht mehr auf.
   projects: [
-    { name: "smoke", use: { ...devices["Desktop Chrome"] }, testIgnore: /(flows|kein-ueberlauf)\.spec\.ts/ },
+    { name: "smoke", use: { ...devices["Desktop Chrome"] }, testIgnore: /(flows|kein-ueberlauf|kontrast)\.spec\.ts/ },
     { name: "flows", use: { ...devices["Desktop Chrome"] }, testMatch: /flows\.spec\.ts/ },
     // Telefonbreite: 33 Seitenaufrufe mehr. Im Smoke-Job hätten sie dessen
     // 16-Minuten-Grenze gerissen (der stand am 05.09.2026 bei 14,5–15,5 min) —
     // ein Lauf ohne Urteil. Deshalb eigener Job mit Produktionsbau, wie die Flows.
     { name: "telefon", use: { ...devices["Desktop Chrome"] }, testMatch: /kein-ueberlauf\.spec\.ts/ },
+    // Kontrast: noch einmal jede Seite, diesmal auf Schreibtischbreite, und je
+    // Seite jeder sichtbare Textknoten. Aus demselben Grund ein eigener Job wie
+    // die Telefonbreite — nicht weil er anders wäre, sondern weil der
+    // Smoke-Schritt keine 37 Seitenaufrufe mehr trägt.
+    { name: "kontrast", use: { ...devices["Desktop Chrome"] }, testMatch: /kontrast\.spec\.ts/ },
   ],
 
   webServer: {

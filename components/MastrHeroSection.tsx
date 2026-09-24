@@ -335,9 +335,9 @@ function TraegerSwitch({
           fontWeight: active ? 600 : 400,
           whiteSpace: "nowrap",
           color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
-          background: active ? v("--color-accent") : "transparent",
+          background: active ? v("--color-cta") : "transparent",
           border: "none",
-          borderRadius: 7,
+          borderRadius: v("--radius-pill"),
           cursor: "pointer",
           transition: "background 120ms, color 120ms",
         }}
@@ -801,7 +801,7 @@ function StaleBanner({
       style={{
         marginTop: 8,
         fontSize: v("--font-size-small"),
-        color: error ? v("--color-negative") : v("--color-text-muted"),
+        color: error ? v("--color-negative-text") : v("--color-text-muted"),
         background: error ? v("--color-negative-dim") : v("--color-bg-muted"),
         border: `1px solid ${error ? v("--color-negative-border") : v("--color-border")}`,
         borderRadius: 8,
@@ -820,9 +820,9 @@ function StaleBanner({
             fontSize: v("--font-size-small"),
             fontWeight: 600,
             color: v("--color-text-on-accent"),
-            background: v("--color-accent"),
+            background: v("--color-cta"),
             border: "none",
-            borderRadius: 6,
+            borderRadius: v("--radius-pill"),
             cursor: "pointer",
           }}
         >
@@ -842,7 +842,7 @@ function ErrorKachel({ message, onRetry }: { message: string; onRetry: () => voi
         borderRadius: 12,
         padding: 12,
         fontSize: v("--font-size-small"),
-        color: v("--color-negative"),
+        color: v("--color-negative-text"),
         display: "grid",
         gap: 8,
       }}
@@ -855,9 +855,9 @@ function ErrorKachel({ message, onRetry }: { message: string; onRetry: () => voi
           fontSize: v("--font-size-small"),
           fontWeight: 600,
           color: v("--color-text-on-accent"),
-          background: v("--color-accent"),
+          background: v("--color-cta"),
           border: "none",
-          borderRadius: 8,
+          borderRadius: v("--radius-pill"),
           cursor: "pointer",
           justifySelf: "start",
         }}

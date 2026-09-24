@@ -25,6 +25,8 @@ import { join } from "node:path";
 // statt sich auf Aufmerksamkeit zu verlassen.
 
 const ERLAUBT: Record<string, string> = {
+  "lib/outreach-subscriptions.ts": "Suppresses administration counts below five confirmed subscriptions per municipality before returning feedback; tested with small cohorts.",
+  "scripts/outreach-evaluation.ts": "Private read-only evaluation; receives only suppressed administration counts, minimum five confirmed subscriptions per municipality. No addresses.",
   "app/api/admin/kommunen/route.ts":
     "Liefert die Zahl an das Cockpit. Liest die Adressen nicht mit und gibt sie nicht aus.",
   "app/(site)/admin/kommunen/client.tsx":

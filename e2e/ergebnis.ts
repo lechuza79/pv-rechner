@@ -55,7 +55,7 @@ export const ERGEBNISSE: ErgebnisUnterTest[] = [
   },
   {
     name: "PV-Bedarf / Empfehlung",
-    pfad: "/pv-bedarf-berechnen?view=ergebnis&haus=efh&dach=satteldach&az=sued&personen=4",
+    pfad: "/photovoltaik-rechner?view=ergebnis&haus=efh&dach=satteldach&az=sued&personen=4",
     enthaelt: "Die Empfehlung basiert auf",
     kernzahlen: [/([\d.,]+)\s*kWp/, /Amortisation in ca\.\s*([\d.,]+)/, /Gewinn nach 25 Jahren:\s*\+?([\d.,]+)/],
   },
@@ -193,10 +193,16 @@ export async function reiter(page: Page) {
  * 13%" — das war die Sonnenleistung in der Kopfzeile. Ein Läufer, der die
  * Navigation für Ergebnis-Inhalt hält, produziert Befunde über sich selbst.
  */
+/** Section toggles of the CONTENT — the one selector both the list and the
+ *  clicks use. Listing filtered but clicking by index on the unfiltered set
+ *  hit the site menu's toggle and then clicked into the open menu. */
+export function abschnittKoepfe(page: Page) {
+  return page.locator("button[aria-expanded]:visible:not(header *):not(footer *):not(nav *)");
+}
+
 export async function abschnitte(page: Page) {
-  return page.locator("button[aria-expanded]:visible").evaluateAll((els) =>
+  return abschnittKoepfe(page).evaluateAll((els) =>
     els
-      .filter((e) => !e.closest("header, footer, nav"))
       .map((e) => ({
         titel: (e as HTMLElement).innerText.trim().split("\n")[0],
         offen: e.getAttribute("aria-expanded") === "true",

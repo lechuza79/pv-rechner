@@ -53,7 +53,7 @@ export async function generateMetadata(props: {
   // die interne Umschreib-Adresse tauchte in Suchergebnissen auf.
   return pageMetadata({
     path: "/photovoltaik-rechner",
-    title: "Photovoltaik-Rechner – Amortisation & Rendite sofort berechnen",
+    title: "Photovoltaik-Rechner: Amortisation & Rendite berechnen",
     description:
       "Kostenloser Photovoltaik-Rechner: Amortisation, Rendite und Eigenverbrauch sofort berechnen — ohne Anmeldung, ohne Verkaufsanrufe. Alle Annahmen transparent editierbar.",
     ogTitle: "Photovoltaik-Rechner – Lohnt sich PV?",
@@ -69,7 +69,7 @@ export default async function RechnerErgebnisPage(props: {
   return (
     <ErrorBoundary>
       <PVRechner initialParams={searchParams} />
-      <div style={{ maxWidth: v("--page-max-width"), margin: "0 auto", padding: "0 16px 32px" }}>
+      <div style={{ maxWidth: v("--page-max-width"), containerType: "inline-size", margin: "0 auto", padding: "0 16px 32px" }}>
         <Faq items={pvRechnerFaq()} currentPath="/photovoltaik-rechner" />
         <StandNote pfad="/photovoltaik-rechner" />
       </div>

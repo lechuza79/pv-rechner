@@ -38,7 +38,9 @@ const tokenGroups: { label: string; prefix: string }[] = [
  */
 const TEXTSTUFEN = [
   { token: "--font-size-h1" as const, weight: 800, label: "Seitentitel" },
+  { token: "--font-size-h1-eng" as const, weight: 800, label: "Seitentitel, untere Stufe (schmaler Schirm)" },
   { token: "--font-size-h2" as const, weight: 800, label: "Abschnitts-Überschrift" },
+  { token: "--font-size-h2-eng" as const, weight: 800, label: "Abschnitts-Überschrift, untere Stufe" },
   { token: "--font-size-h3" as const, weight: 700, label: "Kleine Überschrift" },
   { token: "--font-size-lead" as const, weight: 700, label: "Lead, Kartentitel" },
   { token: "--font-size-body" as const, weight: 400, label: "Fließtext, Navigation, Fußzeile, Eingabefelder" },
@@ -56,8 +58,8 @@ const TEXTSTUFEN = [
 const ZAHLENSTUFEN = [
   { token: "--font-size-display-xl" as const, weight: 800, label: "Die eine große Zahl einer Seite", color: v("--color-accent") },
   { token: "--font-size-display-lg" as const, weight: 800, label: "Hero-Zahl eines Rechner-Ergebnisses", color: v("--color-accent") },
-  { token: "--font-size-display-md" as const, weight: 800, label: "Mitte eines Rings, mittlere Kennzahl", color: v("--color-positive") },
-  { token: "--font-size-display-sm" as const, weight: 800, label: "Kennzahl in einer Kachel", color: v("--color-positive") },
+  { token: "--font-size-display-md" as const, weight: 800, label: "Mitte eines Rings, mittlere Kennzahl", color: v("--color-positive-text") },
+  { token: "--font-size-display-sm" as const, weight: 800, label: "Kennzahl in einer Kachel", color: v("--color-positive-text") },
   { token: "--font-size-body" as const, weight: 700, label: "Zahl im Fließtext, editierbarer Wert", color: v("--color-text-primary") },
   { token: "--font-size-micro" as const, weight: 500, label: "Zahl an einer Diagramm-Achse", color: v("--color-text-muted") },
 ];
@@ -74,14 +76,14 @@ function isColor(value: string) {
 // Sample chart data for demo
 const sampleScenarios = [
   {
-    id: "pessimistic", color: v("--color-negative"),
+    id: "pessimistic", color: v("--color-negative-text"),
     data: {
       years: Array.from({ length: 26 }, (_, i) => ({ i, kum: -15000 + i * 700 })),
       be: { i: 21, kum: 0 },
     },
   },
   {
-    id: "realistic", color: v("--color-positive"),
+    id: "realistic", color: v("--color-positive-text"),
     data: {
       years: Array.from({ length: 26 }, (_, i) => ({ i, kum: -15000 + i * 1100 })),
       be: { i: 14, kum: 0 },
@@ -268,35 +270,35 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <button style={{
-              padding: "14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
-              background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
+              padding: "14px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700,
+              background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               fontFamily: v('--font-text'), width: "100%",
             }}>
               Primary CTA — Ergebnis anzeigen →
             </button>
             <div style={{ display: "flex", gap: 8 }}>
               <button style={{
-                flex: 1, padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 600,
+                flex: 1, padding: "10px 20px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 600,
                 background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
               }}>
                 Secondary — Zurück
               </button>
               <button style={{
-                flex: 1, padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: v("--font-size-body"), fontWeight: 700,
-                background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
+                flex: 1, padding: "10px 32px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-body"), fontWeight: 700,
+                background: v('--color-cta'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               }}>
                 Weiter →
               </button>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button style={{
-                padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
+                padding: "8px 14px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                 background: v('--color-accent-dim'), border: `1.5px solid ${v('--color-accent')}`, color: v('--color-accent'),
               }}>
                 Quick Setting aktiv
               </button>
               <button style={{
-                padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
+                padding: "8px 14px", borderRadius: v("--radius-pill"), fontSize: v("--font-size-small"), fontWeight: 600, cursor: "pointer",
                 background: v('--color-bg'), border: `1.5px solid ${v('--color-border')}`, color: v('--color-text-secondary'),
               }}>
                 Quick Setting inaktiv
@@ -313,7 +315,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: 16, border: `1px solid ${v('--color-border')}` }}>
               <div style={{ fontSize: v("--font-size-caption"), color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</div>
-              <div style={{ fontSize: v("--font-size-display-sm"), fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 4 }}>+18.450 €</div>
+              <div style={{ fontSize: v("--font-size-display-sm"), fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive-text'), marginTop: 4 }}>+18.450 €</div>
             </div>
             <div style={{
               textAlign: "center", padding: "24px 20px", background: v('--color-bg-accent'),

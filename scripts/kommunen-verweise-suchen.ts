@@ -25,13 +25,14 @@
  * nicht am Nachweis. Er beantwortet die andere Frage: Wirkt der Outreach?
  */
 import { envLaden } from "./env-laden";
+import { heuteInBerlin } from "../lib/zeit";
 envLaden();
 import { createClient } from "@supabase/supabase-js";
 
 const trocken = process.argv.includes("--trocken");
 const schreiben = process.argv.includes("--schreiben");
 /** Der Tag wird EINMAL genommen und durchgereicht — kein zweiter Aufruf mitten im Lauf. */
-const heute = new Date().toISOString().slice(0, 10);
+const heute = heuteInBerlin();
 const LOGIN = process.env.DATAFORSEO_LOGIN;
 const PASSWORT = process.env.DATAFORSEO_PASSWORD;
 const PREIS_JE_ABRUF = 0.002;
@@ -54,6 +55,9 @@ async function serp(frage: string): Promise<{ adressen: string[]; fehler: string
       method: "POST",
       headers: { Authorization: `Basic ${auth}`, "Content-Type": "application/json" },
       body: JSON.stringify([{ keyword: frage, location_code: 2276, language_code: "de", depth: 10 }]),
+      // Without a limit one stalled call held the whole run: on 22.09.2026 it
+      // sat for an hour without a single line of output.
+      signal: AbortSignal.timeout(90_000),
     });
     ausgegeben += PREIS_JE_ABRUF;
     if (!res.ok) return { adressen: [], fehler: `HTTP ${res.status}` };
@@ -143,7 +147,10 @@ async function main() {
   const treffer: { name: string; ags: string; url: string; status: string; art: Befund }[] = [];
   const fehlgeschlagen: string[] = [];
 
-  for (const g of gemeinden) {
+  // Eight municipalities at a time: strictly one after another, 578 live
+  // searches took well over an hour and gave no sign of progress.
+  let fertig = 0;
+  const pruefeGemeinde = async (g: (typeof gemeinden)[number]) => {
     // Auch die App-Subdomain fragen: Wallertheims Verweis lag unter app.<domain>,
     // und die site:-Abfrage auf die Hauptdomain fand ihn nicht.
     const fragen = [`site:${g.domain} solar-check`, `site:app.${g.domain} solar-check`];
@@ -159,12 +166,20 @@ async function main() {
     }
     if (gescheitert === fragen.length) {
       fehlgeschlagen.push(`${g.name}: Abruf kam nicht durch`);
-      continue;
+    } else {
+      for (const u of gesehen) {
+        treffer.push({ name: g.name, ags: g.ags, url: u, status: g.status, art: await pruefeSeite(u) });
+      }
     }
-    for (const u of gesehen) {
-      treffer.push({ name: g.name, ags: g.ags, url: u, status: g.status, art: await pruefeSeite(u) });
-    }
-  }
+    fertig++;
+    if (fertig % 25 === 0) console.error(`  … ${fertig} von ${gemeinden.length} geprüft`);
+  };
+  const warteschlange = [...gemeinden];
+  await Promise.all(
+    Array.from({ length: 8 }, async () => {
+      for (let g = warteschlange.shift(); g; g = warteschlange.shift()) await pruefeGemeinde(g);
+    }),
+  );
 
   // NACH ART GETRENNT AUSWEISEN. Die Suchmaschine liefert auch Seiten, auf denen
   // unser Name gar nicht vorkommt (gemessen 29.08.2026: von acht Treffern waren

@@ -47,8 +47,8 @@ export default function StandortField({
         {plz.length === 5 && !loading && !confirmed && (
           <button type="submit" aria-label="Standort übernehmen" style={{
             padding: "3px 6px", fontSize: v("--font-size-caption"), fontWeight: 700, lineHeight: 1,
-            background: v('--color-accent'), color: v('--color-text-on-accent'),
-            border: "none", borderRadius: v('--radius-sm'), cursor: "pointer",
+            background: v('--color-cta'), color: v('--color-text-on-accent'),
+            border: "none", borderRadius: v("--radius-pill"), cursor: "pointer",
           }}><IconArrowRight size={iconSizes.sm} color={v('--color-text-on-accent')} /></button>
         )}
         {loading && <span style={{ color: v('--color-accent'), fontSize: v("--font-size-micro") }}>…</span>}

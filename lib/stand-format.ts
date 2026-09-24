@@ -33,6 +33,19 @@ export interface StandEintrag {
    * (siehe `standLastModIso`).
    */
   wertIso?: string;
+  /** Name des Prüfdatums im Prüfstand (`lib/pruefstand.ts`), an dem Rhythmus
+   *  und Frist dieser Zeile hängen. */
+  feld?: string;
+  /** Letzter Tag, an dem die Prüfung noch als aktuell gilt — Prüftag plus die
+   *  erlaubte Frist aus dem Prüfstand. Wird aufgelöst, nie getippt. */
+  gueltigBisIso?: string;
+}
+
+/** Trägt diese Zeile die Auszeichnung „aktuell"? Nur mit einer echten Frist aus
+ *  dem Prüfstand, und nur solange sie nicht verstrichen ist — sonst behauptete
+ *  die Seite eine Aktualität, die niemand mehr bestätigt. */
+export function istAktuell(e: StandEintrag, heuteIso: string): boolean {
+  return e.praezision === "tag" && !!e.gueltigBisIso && heuteIso <= e.gueltigBisIso;
 }
 
 export interface StandSeite {
@@ -49,3 +62,14 @@ export const monatJahr = (ym: string) =>
 /** „16. August 2026" aus „2026-08-16". */
 export const tagMonatJahr = (iso: string) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
+
+/** „Wetterdaten und Standort-Ertrag kommen bei jedem Aufruf live dazu.“ — one
+ *  wording for the React stand line and the document pages (lib/neon-seite.ts). */
+export function liveSatz(live: string[]): string | null {
+  if (!live.length) return null;
+  const liste =
+    live.length === 1
+      ? live[0]
+      : `${live.slice(0, -1).join(", ")} und ${live[live.length - 1]}`;
+  return `${liste} ${live.length === 1 ? "kommt" : "kommen"} bei jedem Aufruf live dazu.`;
+}

@@ -51,8 +51,11 @@ describe("First-Party-Embed: was das iframe von der Seite braucht", () => {
     // Fremde Einbettungen dürfen das nichts kosten: ohne Vorabladen holt der
     // Browser die Dateien nur, wo eine Regel sie wirklich verlangt.
     expect(layout.match(/^\s+preload: false,$/gm) ?? []).toHaveLength(2);
-    // Und sie bleiben dort auf der neutralen System-Schrift.
-    expect(layout).toMatch(/--widget-font-family:\s*system-ui/);
+    // Und sie bleiben dort auf der neutralen System-Schrift. Die Grundregeln
+    // stehen seit 09/2026 in einer gemeinsamen Quelle (auch für die neue
+    // Gemeindeseite, die die Widgets direkt einbindet).
+    expect(lies("lib/widget-basis-css.ts")).toMatch(/--widget-font-family:\s*system-ui/);
+    expect(layout).toContain("widgetBasisCss()");
   });
 
   it("die Tinte folgt dem Hintergrund, nicht der Textfarbe", () => {

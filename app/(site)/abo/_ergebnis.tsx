@@ -14,6 +14,20 @@ import { v, space } from "../../../lib/theme";
 // `--content-lede-top`. Wer hier eigene Luft setzt, ist die nächste
 // Drift-Quelle.
 
+export const ABO_KNOPF_STIL: React.CSSProperties = {
+  display: "inline-block",
+  background: v("--color-cta"),
+  color: v("--color-cta-ink"),
+  border: "none",
+  padding: "12px 20px",
+  borderRadius: v("--radius-pill"),
+  fontWeight: 600,
+  fontSize: v("--font-size-body"),
+  fontFamily: "inherit",
+  cursor: "pointer",
+  marginTop: space.lg,
+};
+
 const S: Record<string, React.CSSProperties> = {
   page: {
     background: v("--color-bg"),
@@ -23,17 +37,11 @@ const S: Record<string, React.CSSProperties> = {
     padding: "0 16px 20px",
   },
   wrap: {
-    maxWidth: v("--content-max-width"),
+    maxWidth: v("--content-max-width"), containerType: "inline-size",
     margin: "0 auto",
     paddingTop: "var(--content-lede-top)",
   },
-  h1: {
-    fontSize: v("--font-size-h1"),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    lineHeight: 1.2,
-    marginBottom: space.lg,
-  },
+  h1: { marginBottom: space.lg },
   p: {
     fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
@@ -43,11 +51,11 @@ const S: Record<string, React.CSSProperties> = {
   aktionen: { marginTop: space.xxl, display: "flex", gap: space.md, flexWrap: "wrap" },
   cta: {
     display: "inline-block",
-    background: v("--color-accent"),
-    color: "#fff",
+    background: v("--color-cta"),
+    color: v("--color-cta-ink"),
     textDecoration: "none",
     padding: "12px 20px",
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     fontWeight: 600,
   },
   leise: {
@@ -64,6 +72,12 @@ export default function AboErgebnis(o: {
   /** Zurück zum Ort — nur wenn wir wissen, um welchen es ging. */
   ortHref?: string;
   ortName?: string;
+  /**
+   * A form with the one action of the page (confirm, unsubscribe). Opening a
+   * mail link only shows it; the step happens on the press, because mail
+   * scanners open links on their own (legal review 18.09.).
+   */
+  aktion?: React.ReactNode;
 }) {
   return (
     <main style={S.page}>
@@ -74,6 +88,7 @@ export default function AboErgebnis(o: {
             {s}
           </p>
         ))}
+        {o.aktion}
         <div style={S.aktionen}>
           {o.ortHref && o.ortName ? (
             <Link href={o.ortHref} style={S.cta}>
@@ -81,7 +96,7 @@ export default function AboErgebnis(o: {
             </Link>
           ) : (
             <Link href="/solar-atlas" style={S.cta}>
-              Zum Solar-Atlas
+              Zum Energie-Atlas
             </Link>
           )}
           <Link href="/" style={S.leise}>

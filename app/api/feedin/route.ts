@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabase-server";
 import { feedInRatesFor, type FeedInRates } from "../../../lib/feedin-config";
+import { heuteInBerlin } from "../../../lib/zeit";
 
 let cached: { data: FeedInRates; ts: number } | null = null;
 const TTL = 60 * 60 * 1000; // 1 hour
@@ -33,7 +34,7 @@ export async function GET() {
     const { data, error } = await supabase
       .from("feed_in_rates")
       .select("*")
-      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .lte("valid_from", heuteInBerlin())
       .order("valid_from", { ascending: false })
       .limit(1)
       .single();

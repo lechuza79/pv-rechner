@@ -44,8 +44,15 @@ import { EEG_REFORM_STAND } from "./eeg-reform-config";
 /** Die Periode, die AM PRÜFTAG galt — nicht die von heute. `feedInRatesFor()`
  *  ohne Argument fragt die Uhr; damit käme das sichtbare „Werte von …" aus der
  *  Laufzeit, und am 01.02.2027 stünde ein Wertstand da, der jünger ist als sein
- *  eigenes Prüfdatum. */
-const FEED_IN_WERTSTAND = feedInRatesFor(new Date(`${FEED_IN_GEPRUEFT_ISO}T00:00:00`)).validFrom;
+ *  eigenes Prüfdatum.
+ *
+ *  Der Prüftag wird als TAG übergeben, nicht als Zeitpunkt. Bis 08.09.2026 stand
+ *  hier `new Date(`${FEED_IN_GEPRUEFT_ISO}T00:00:00`)` — ein String ohne
+ *  Zeitzone, also in Ortszeit gelesen: In Deutschland kam dabei der 31.07.2026
+ *  heraus und damit die VORIGE Vergütungsperiode (Februar statt August), auf
+ *  einem UTC-Server der 01.08. und die richtige. Dieselbe Datei zeigte lokal und
+ *  in der Produktion einen anderen Wertstand. */
+const FEED_IN_WERTSTAND = feedInRatesFor(FEED_IN_GEPRUEFT_ISO).validFrom;
 
 // Typen und Datums-Wortlaut liegen in `stand-format.ts` (config-frei, damit die
 // Client-Seite sie mitnehmen kann) und werden hier weitergereicht — für alle
@@ -59,6 +66,7 @@ export {
 } from "./stand-format";
 import type { StandSeite } from "./stand-format";
 import { KFW_REPORT_STAND } from "./kfw-format";
+import { PRUEFSTAND } from "./pruefstand";
 
 export const STAND: Record<string, StandSeite> = {
   // Marktpreise kommen hier live aus der Preis-Pipeline (monatlicher Scrape in
@@ -66,21 +74,17 @@ export const STAND: Record<string, StandSeite> = {
   // Stichtagsdatum, sondern stehen bei den Live-Werten.
   "/photovoltaik-rechner": {
     eintraege: [
-      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: FEED_IN_WERTSTAND },
-      { was: "Sachstand der EEG-Reform 2027", iso: EEG_REFORM_STAND.geprueftIso, praezision: "tag", wertIso: EEG_REFORM_STAND.kabinettBeschlussIso },
+      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, feld: "FEED_IN_GEPRUEFT_ISO", praezision: "tag", wertIso: FEED_IN_WERTSTAND },
+      { was: "Sachstand der EEG-Reform 2027", iso: EEG_REFORM_STAND.geprueftIso, feld: "EEG_REFORM_STAND.geprueftIso", praezision: "tag", wertIso: EEG_REFORM_STAND.kabinettBeschlussIso },
     ],
     live: ["Anlagen- und Speicherpreise (monatlich neu erhoben)", "Strompreis", "Standort-Ertrag"],
   },
 
-  // Der Empfehlungs-Flow rechnet mit denselben Preisen und Sätzen wie der
-  // Rechner, aber ohne Standort und ohne den Reform-Umschalter — deshalb ein
-  // Eintrag weniger statt derselben Zeile.
-  "/pv-bedarf-berechnen": {
-    eintraege: [
-      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: FEED_IN_WERTSTAND },
-    ],
-    live: ["Anlagen- und Speicherpreise (monatlich neu erhoben)", "Strompreis"],
-  },
+  // Der Empfehlungsweg hatte hier bis 21.09.2026 einen eigenen Eintrag unter
+  // /pv-bedarf-berechnen. Seit dem Umzug läuft er unter /photovoltaik-rechner
+  // und endet auf derselben Seite im Ergebnis — die Zeile beschreibt die SEITE,
+  // und die rechnet am Ende mit allem, was oben steht, Reform-Umschalter und
+  // Standort eingeschlossen.
 
   // Investition, Tarife, BEG, Gaspreis und CO₂-Pfad stehen in Configs — deshalb
   // ist das Prüfdatum hier die wichtigste Auskunft über das Alter der Zahlen.
@@ -92,47 +96,39 @@ export const STAND: Record<string, StandSeite> = {
   // dahinter steht als eigener Posten im Prüfstand (lib/pruefstand.ts).
   "/waermepumpe-rechner": {
     eintraege: [
-      { was: "Anschaffung und Tarife", iso: DEFAULT_HEATPUMP_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_HEATPUMP_CONFIG.validFrom },
+      { was: "Anschaffung und Tarife", iso: DEFAULT_HEATPUMP_CONFIG.geprueftIso, feld: "DEFAULT_HEATPUMP_CONFIG.geprueftIso", praezision: "tag", wertIso: DEFAULT_HEATPUMP_CONFIG.validFrom },
       // Die Förderung hat einen eigenen Prüftag, weil sie an einer eigenen
       // Quelle hängt (KfW-Merkblatt) und außer der Reihe geprüft wird. Sie mit
       // den Marktwerten unter ein Datum zu stellen hieße, das ältere von beiden
       // auf die Förderung zu übertragen — und damit eine Prüfung zu
       // verschweigen, die stattgefunden hat.
-      { was: "BEG-Förderung", iso: DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso, praezision: "tag", wertIso: DEFAULT_HEATPUMP_CONFIG.validFrom },
+      { was: "BEG-Förderung", iso: DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso, feld: "DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso", praezision: "tag", wertIso: DEFAULT_HEATPUMP_CONFIG.validFrom },
       // Kein Wertstand: „Grüngas-Pflicht" ist eine Rechtsaussage. `validFrom`
       // wäre hier der Stand der IW-Report-PREISE — ein fremdes Datum an einer
       // Rechtszeile (dieselbe Begründung wie beim Balkon-Rechner unten).
-      { was: "Grüngas-Pflicht", iso: GREEN_GAS_CONFIG.geprueftRechtIso, praezision: "tag" },
-      { was: "Gaspreis-Bestandteile", iso: GREEN_GAS_CONFIG.geprueftIso, praezision: "tag", wertIso: GREEN_GAS_CONFIG.validFrom },
-      { was: "CO₂-Preispfad", iso: CO2_PRICE.geprueftIso, praezision: "tag", wertIso: CO2_PRICE.validFrom },
-      // Eigener Eintrag seit 05.09.2026: Die Strom- und Gaspreispfade standen
-      // bis dahin ohne Quelle im Code — die oberste (+5 % Strom im Jahr) ist in
-      // 19 Jahren nie vorgekommen. Seit dem 06.09.2026 ist jede der sechs
-      // Zahlen ein Studienwert aus zwei Quellen: der amtlichen Projektion
-      // (Prognos/UBA) und der Fraunhofer-ISE-Kurzstudie zur Bio-Treppe.
-      // Der Wertstand nennt die ÄLTERE von beiden — die jüngere zu nennen
-      // behauptete Aktualität für Zahlen, die sie nicht haben.
-      { was: "Strom- und Gaspreispfade", iso: DEFAULT_HEATPUMP_CONFIG.geprueftPreispfadeIso, praezision: "tag", wertIso: DEFAULT_HEATPUMP_CONFIG.preispfadeValidFrom },
+      { was: "Grüngas-Pflicht", iso: GREEN_GAS_CONFIG.geprueftRechtIso, feld: "GREEN_GAS_CONFIG.geprueftRechtIso", praezision: "tag" },
+      { was: "Gaspreis-Bestandteile", iso: GREEN_GAS_CONFIG.geprueftIso, feld: "GREEN_GAS_CONFIG.geprueftIso", praezision: "tag", wertIso: GREEN_GAS_CONFIG.validFrom },
+      { was: "CO₂-Preispfad", iso: CO2_PRICE.geprueftIso, feld: "CO2_PRICE.geprueftIso", praezision: "tag", wertIso: CO2_PRICE.validFrom },
       // Eigener Wertstand, weil er ein STICHTAG ist und keine Monatsangabe: Der
       // Förderreport zählt bis zu einem Tag, und jeder Jahrgang hat seinen
       // eigenen. Ihn mit den Marktwerten unter ein Datum zu stellen hieße, den
       // Zeitraum falsch zu behaupten.
-      { was: "Zusagen der Bundesförderung", iso: KFW_REPORT_STAND.geprueftIso, praezision: "tag", wertIso: KFW_REPORT_STAND.wertIso },
+      { was: "Zusagen der Bundesförderung", iso: KFW_REPORT_STAND.geprueftIso, feld: "KFW_REPORT_STAND.geprueftIso", praezision: "tag", wertIso: KFW_REPORT_STAND.wertIso },
     ],
     live: ["Kommunale Förderprogramme (mit Postleitzahl, je Programm eigenes Prüfdatum)"],
   },
 
   "/klimaanlage-stromkosten": {
     eintraege: [
-      { was: "Gerätepreise und Effizienzen", iso: DEFAULT_AIRCON_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_AIRCON_CONFIG.validFrom },
+      { was: "Gerätepreise und Effizienzen", iso: DEFAULT_AIRCON_CONFIG.geprueftIso, feld: "DEFAULT_AIRCON_CONFIG.geprueftIso", praezision: "tag", wertIso: DEFAULT_AIRCON_CONFIG.validFrom },
     ],
     live: ["Kühlbedarf aus dem Wetterarchiv deines Standorts", "Strompreis"],
   },
 
   "/einspeiseverguetung-rechner": {
     eintraege: [
-      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: FEED_IN_WERTSTAND },
-      { was: "Sachstand der EEG-Reform 2027", iso: EEG_REFORM_STAND.geprueftIso, praezision: "tag", wertIso: EEG_REFORM_STAND.kabinettBeschlussIso },
+      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, feld: "FEED_IN_GEPRUEFT_ISO", praezision: "tag", wertIso: FEED_IN_WERTSTAND },
+      { was: "Sachstand der EEG-Reform 2027", iso: EEG_REFORM_STAND.geprueftIso, feld: "EEG_REFORM_STAND.geprueftIso", praezision: "tag", wertIso: EEG_REFORM_STAND.kabinettBeschlussIso },
     ],
     live: ["Standort-Ertrag"],
   },
@@ -143,20 +139,20 @@ export const STAND: Record<string, StandSeite> = {
   // der Wächter die Config nach, wandert beides gemeinsam.
   "/balkonkraftwerk": {
     eintraege: [
-      { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
-      { was: "rechtliche Angaben", iso: BALKON_RECHT.geprueftIso, praezision: "tag" },
+      { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, feld: "DEFAULT_BALKON_CONFIG.geprueftIso", praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
+      { was: "rechtliche Angaben", iso: BALKON_RECHT.geprueftIso, feld: "BALKON_RECHT.geprueftIso", praezision: "tag" },
     ],
     live: ["Strompreis"],
   },
 
   "/balkonkraftwerk/rechner": {
     eintraege: [
-      { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
+      { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, feld: "DEFAULT_BALKON_CONFIG.geprueftIso", praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
       // Rechtsaussagen tragen bewusst KEINEN Wertstand: Sie sind entweder
       // geltendes Recht oder nicht — was altert, ist allein die Prüfung. Ein
       // zweites Datum müsste man erfinden (welches der drei beteiligten
       // Gesetze?), und ein erfundenes Datum ist schlechter als keins.
-      { was: "rechtliche Angaben", iso: BALKON_RECHT.geprueftIso, praezision: "tag" },
+      { was: "rechtliche Angaben", iso: BALKON_RECHT.geprueftIso, feld: "BALKON_RECHT.geprueftIso", praezision: "tag" },
     ],
     live: ["Strompreis", "Standort-Ertrag"],
   },
@@ -168,8 +164,8 @@ export const STAND: Record<string, StandSeite> = {
   // und rechnet durchgehend mit dem Bundesschnitt, was sie auch dazuschreibt.
   "/balkonkraftwerk/ratgeber/mit-speicher": {
     eintraege: [
-      { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
-      { was: "rechtliche Angaben", iso: BALKON_RECHT.geprueftIso, praezision: "tag" },
+      { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, feld: "DEFAULT_BALKON_CONFIG.geprueftIso", praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
+      { was: "rechtliche Angaben", iso: BALKON_RECHT.geprueftIso, feld: "BALKON_RECHT.geprueftIso", praezision: "tag" },
     ],
     live: ["Strompreis"],
   },
@@ -208,7 +204,24 @@ export const STAND: Record<string, StandSeite> = {
  * hat — und jeder Eintrag eine Seite.
  */
 export function standSeite(pfad: string): StandSeite | undefined {
-  return STAND[pfad];
+  const seite = STAND[pfad];
+  if (!seite) return undefined;
+  // Bis wann die Prüfung als aktuell gilt, steht im Prüfstand (derselbe
+  // Rhythmus, gegen den `npm run stand:faellig` meldet) — hier nur übertragen,
+  // damit die Anzeige „aktuell" nie eine eigene, zweite Frist erfindet.
+  return {
+    ...seite,
+    eintraege: seite.eintraege.map(e => {
+      const pruef = e.feld ? PRUEFSTAND.find(p => p.feld === e.feld) : undefined;
+      return pruef ? { ...e, gueltigBisIso: isoPlusTage(e.iso, pruef.maxAlterTage) } : e;
+    }),
+  };
+}
+
+function isoPlusTage(iso: string, tage: number): string {
+  const d = new Date(`${iso}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + tage);
+  return d.toISOString().slice(0, 10);
 }
 
 /**

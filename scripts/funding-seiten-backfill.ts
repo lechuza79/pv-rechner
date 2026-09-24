@@ -21,7 +21,7 @@ import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import {
-  seitenSchluessel, istInterneRoute, technikenSchreiben, technikenLesen, fundEinfuegen,
+  seitenSchluessel, istInterneRoute, istVorlagenRest, technikenSchreiben, technikenLesen, fundEinfuegen,
   type FoerderSeite, type LeseErgebnis, type SeitenQuelle,
 } from "../lib/funding-seiten";
 
@@ -83,7 +83,7 @@ async function normalisieren(): Promise<void> {
   const behalten = new Map<string, string>();   // schluessel -> url
   const weg: { region_id: string; url: string }[] = [];
   for (const s of seiten) {
-    if (istInterneRoute(s.url)) { weg.push(s); continue; }
+    if (istInterneRoute(s.url) || istVorlagenRest(s.url)) { weg.push(s); continue; }
     const k = `${s.region_id}|${seitenSchluessel(s.url)}`;
     const schon = behalten.get(k);
     if (schon === undefined) { behalten.set(k, s.url); continue; }
@@ -92,7 +92,7 @@ async function normalisieren(): Promise<void> {
     else weg.push(s);
   }
   console.log(`Seiten im Bestand:   ${seiten.length}`);
-  console.log(`  interne Routen und Dubletten: ${weg.length}`);
+  console.log(`  interne Routen, Vorlagen-Reste und Dubletten: ${weg.length}`);
   if (dry || !weg.length) return;
   for (const w of weg) {
     const { error } = await sb.from("funding_seiten").delete().eq("region_id", w.region_id).eq("url", w.url);

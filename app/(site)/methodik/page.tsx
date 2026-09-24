@@ -13,6 +13,7 @@ import { DEFAULT_AIRCON_CONFIG } from "../../../lib/aircon-config";
 import { FUEL } from "../../../lib/constants";
 import { eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import { pageMetadata } from "../../../lib/seo";
+import { heuteInBerlin } from "../../../lib/zeit";
 
 export const metadata: Metadata = pageMetadata({
   path: "/methodik",
@@ -30,7 +31,7 @@ const S = {
     minHeight: "100vh",
     padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  wrap: { maxWidth: v('--content-max-width'), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   back: {
     fontSize: v('--font-size-small'),
     color: v('--color-text-secondary'),
@@ -38,27 +39,14 @@ const S = {
     display: "inline-block",
     marginBottom: 24,
   },
-  h1: {
-    fontSize: v('--font-size-h1'),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: v('--color-text-primary'),
-    lineHeight: 1.2,
-    marginBottom: 10,
-  },
+  h1: { color: v('--color-text-primary'), marginBottom: 10 },
   subtitle: {
     fontSize: v('--font-size-lead'),
     color: v('--color-text-muted'),
     marginBottom: 28,
     lineHeight: 1.6,
   },
-  h2: {
-    fontSize: v('--font-size-h2'),
-    fontWeight: 700,
-    color: v('--color-text-primary'),
-    marginTop: 32,
-    marginBottom: 10,
-  },
+  h2: { color: v('--color-text-primary'), marginTop: 32, marginBottom: 10 },
   p: {
     fontSize: v('--font-size-body'),
     color: v('--color-text-muted'),
@@ -103,7 +91,7 @@ async function fetchPrices(): Promise<PriceConfig> {
       .select("*")
       .neq("source", "SCRAPE_ERROR")
       .gt("pv_price_small", 0)
-      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .lte("valid_from", heuteInBerlin())
       .order("valid_from", { ascending: false })
       .limit(1)
       .single();
@@ -405,7 +393,9 @@ export default async function MethodikPage() {
               Modellzahl veraltet lautlos. */}
           {SCENARIOS.map(s => (
             <span key={s.id}>
-              <span style={{ color: s.color, fontWeight: 600 }}>{s.label}:</span>{" "}
+              {/* textColor, nicht color: hier steht der Name als Text, nicht als
+                  Kurve — die Kurvenfarbe kommt auf diesem Grund auf 1,9:1. */}
+              <span style={{ color: s.textColor, fontWeight: 600 }}>{s.label}:</span>{" "}
               Strom +{(s.strom * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %/Jahr
               <br />
             </span>
@@ -457,12 +447,12 @@ export default async function MethodikPage() {
         </p>
         <p style={S.p}>
           Den Kühlbedarf leiten wir aus echten <strong>Kühlgradstunden</strong> ab: Wir zählen für deinen Standort,
-          wie viele Stunden es im Sommer wie weit über der Kühlschwelle lag (Open-Meteo-Wetterhistorie, ohne PLZ
-          ein deutscher Durchschnitt). Wunschtemperatur, Zeitfenster und die Lage zur Sonne skalieren diesen Wert —
+          wie viele Stunden es im Sommer wie weit über der Kühlschwelle lag (ERA5-Reanalyse von Copernicus, einmal im Jahr
+          für jede Postleitzahl vorgerechnet; ohne PLZ ein deutscher Durchschnitt). Wunschtemperatur, Zeitfenster und die Lage zur Sonne skalieren diesen Wert —
           beim Kühlen kommt der größte Wärmeeintrag durch die Fenster, deshalb fragen wir nach Sonne und Dachgeschoss,
           nicht nach dem Dämmstandard. Umschaltbar sind drei <strong>Klimadaten-Modi</strong>: der Durchschnitt der
           letzten {DEFAULT_AIRCON_CONFIG.avgYears} Sommer (Standard), der letzte Sommer (oft heißer) und eine
-          Projektion in ~20 Jahre auf Basis eines Klimamodells (CMIP6) — eine Modellrechnung, kein exakter Wert.
+          Projektion in ~20 Jahre: unser heutiger Wert, hochgerechnet mit der Zunahme, die acht Klimamodelle (CMIP6, mittleres Szenario) für den Ort erwarten — eine Modellrechnung, kein exakter Wert.
         </p>
         <p style={S.p}>
           <strong>Warum die Zahl oft niedriger wirkt als erwartet:</strong> Der Wert ist ein <em>Jahres</em>betrag,

@@ -586,7 +586,7 @@ export default function GemeindeHero({
             onClick={() => setOwner(o.key)}
             style={{
               ...S.chip,
-              background: owner === o.key ? v("--color-accent") : "transparent",
+              background: owner === o.key ? v("--color-cta") : "transparent",
               color: owner === o.key ? v("--color-text-on-accent") : v("--color-text-secondary"),
             }}
           >
@@ -796,7 +796,7 @@ function PeerZeile({
             style={{
               ...S.fill,
               width: `${Math.min(100, Math.max(2, Math.round((row.value / scale) * 100)))}%`,
-              background: row.isSelf ? v("--color-accent") : v("--color-accent-light"),
+              background: row.isSelf ? v("--color-cta") : v("--color-accent-light"),
             }}
           />
         </span>
@@ -959,7 +959,11 @@ const S: Record<string, React.CSSProperties> = {
   // abgerundet; die Oberkante ist eine gestrichelte BLAUE Linie (Abriss-
   // Perforation → „nicht der 5. Platz"). Seiten/Boden dezent grau.
   peerFloat: {
-    background: `color-mix(in srgb, ${v("--color-bg")}, #fff 45%)`,
+    // Die angehobene Fläche aus dem Theme, nicht eine Aufhellung mit getipptem
+    // Weiß: Die wirkt nur auf hellem Grund. Auf der Nachtstufe machte sie aus
+    // der Karte ein mittleres Grau, auf dem der gedämpfte Text der Stufe stand
+    // — Platzziffer und Abweichung kamen dort auf 1,5:1 (gemessen 23.09.2026).
+    background: v("--color-bg-raised"),
     borderTop: `1px dashed ${v("--color-accent")}`,
     borderRight: `1px solid ${v("--color-border")}`,
     borderBottom: `1px solid ${v("--color-border")}`,

@@ -89,12 +89,12 @@ const S: Record<string, React.CSSProperties> = {
   },
   cta: {
     display: "inline-block",
-    background: v("--color-accent"),
+    background: v("--color-cta"),
     color: v("--color-text-on-accent"),
     fontSize: v("--font-size-body"),
     fontWeight: 700,
     padding: pad("lg", "xl"),
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     textDecoration: "none",
   },
 };

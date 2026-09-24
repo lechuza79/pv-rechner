@@ -5,6 +5,9 @@ import { v, space, pad } from "../../../../../lib/theme";
 import { adminTabelle, adminTh, adminTd, adminZeile } from "../../../../../lib/admin-tabelle";
 import type { Auswertung, Versandtag } from "../../../../../lib/kommunen-auswertung";
 import AdminSeitenkopf from "../../../../../components/admin/AdminSeitenkopf";
+import InfoTooltip from "../../../../../components/InfoTooltip";
+import { DatenTabelle } from "../../../../../components/admin/DatenTabelle";
+import { KANAELE, KANAL_TEXT, quoteText, type Bilanz, type Veroeffentlichung } from "../../../../../lib/kommunen-veroeffentlichung";
 
 // Auswertung des Kommunen-Outreach.
 //
@@ -19,16 +22,26 @@ import AdminSeitenkopf from "../../../../../components/admin/AdminSeitenkopf";
 // Fußnote im Code.
 
 type Wirkung = { gesamt: Auswertung; jeKampagne: Auswertung[]; jeTag: Versandtag[] };
+type Veroeffentlichungen = {
+  bilanz: Bilanz;
+  liste: Veroeffentlichung[];
+  namen: Record<string, string>;
+  jeSchub: { kampagne: string; angeschrieben: number; gemeinden: number }[];
+};
 
 export default function VersandAuswertung() {
   const [wirkung, setWirkung] = useState<Wirkung | null>(null);
   const [fehler, setFehler] = useState<string | null>(null);
+  const [pubs, setPubs] = useState<Veroeffentlichungen | null | undefined>(undefined);
   const offeneSchuebe = (wirkung?.jeKampagne ?? []).filter((k) => k.offen > 0);
 
   useEffect(() => {
     fetch("/api/admin/kommunen/bilanz")
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`Antwort ${r.status}`))))
-      .then((j) => setWirkung(j.wirkung ?? null))
+      .then((j) => {
+        setWirkung(j.wirkung ?? null);
+        setPubs(j.veroeffentlichungen ?? null);
+      })
       .catch((e) => setFehler(e instanceof Error ? e.message : String(e)));
   }, []);
 
@@ -37,7 +50,7 @@ export default function VersandAuswertung() {
       <AdminSeitenkopf titel="Übersicht" />
 
       {fehler && (
-        <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative") }}>
+        <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative-text") }}>
           Die Auswertung konnte nicht geladen werden ({fehler}).
         </p>
       )}
@@ -65,6 +78,13 @@ export default function VersandAuswertung() {
             Untergrenzen: Eine Veröffentlichung ohne Link auf uns wird nicht gefunden, und wer sich einträgt, ohne
             das Kästchen „Ich arbeite für die Verwaltung" anzukreuzen, zählt hier als Bürger.
           </p>
+
+          {pubs === null && (
+            <p style={{ fontSize: v("--font-size-small"), color: v("--color-negative-text"), marginBottom: space.lg }}>
+              Die Liste der Veröffentlichungen konnte nicht geladen werden.
+            </p>
+          )}
+          {pubs && <VeroeffentlichungsBilanz daten={pubs} />}
 
           {/* NUR EINE TABELLE. Es waren zwei, und sie sagten fast dasselbe:
               Ein Schub IST eine Menge von Versandtagen, also stand jede Zahl
@@ -131,8 +151,8 @@ export default function VersandAuswertung() {
                               height: 8,
                               width: `${Math.round((100 * t.verschickt) / (groesster || 1))}%`,
                               minWidth: 3,
-                              background: v("--color-accent"),
-                              borderRadius: v("--radius-sm"),
+                              background: v("--color-cta"),
+                              borderRadius: v("--radius-pill"),
                             }}
                           />
                         </td>
@@ -168,6 +188,83 @@ export default function VersandAuswertung() {
         </>
       )}
     </div>
+  );
+}
+
+/**
+ * Die belegten Veröffentlichungen: Quote, Beiträge, Links, wo sie stehen.
+ *
+ * Eine Zeile je BEITRAG, nicht je Gemeinde — Nidda steht in drei Medien, und
+ * „wie viele Links haben wir" beantwortet nur die Beitragsliste. Jede Zeile
+ * ist belegt: Jemand hat den Beitrag gesehen (lib/kommunen-veroeffentlichung.ts).
+ */
+function VeroeffentlichungsBilanz({ daten }: { daten: Veroeffentlichungen }) {
+  const b = daten.bilanz;
+  return (
+    <section style={{ marginBottom: space.xl }}>
+      <h2 style={ueberschrift}>
+        Veröffentlichungen{" "}
+        <InfoTooltip ariaLabel="Was hier zählt" exportNote={false}>
+          Nur belegte Beiträge: Jeder wurde selbst angesehen. Die Quote rechnet mit den Briefen ohne bekannten
+          Zustellfehler. Gedrucktes und geschlossene Gruppen sieht keine unserer Quellen — alle Zahlen sind
+          Untergrenzen.
+        </InfoTooltip>
+      </h2>
+      <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.md }}>
+        <Kennzahl label="Gemeinden mit Veröffentlichung" wert={b.gemeinden} unten={`${quoteText(b.quote)} von ${b.angeschrieben} angeschriebenen`} gut />
+        <Kennzahl label="Beiträge" wert={b.beitraege} />
+        <Kennzahl label="davon mit Link" wert={b.mitLink} unten={b.mitLinkOnline < b.mitLink ? `${b.mitLinkOnline} noch erreichbar` : undefined} gut />
+        <Kennzahl label="woanders als auf der Gemeindeseite" wert={b.woanders} />
+      </div>
+      <p style={{ fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginBottom: space.md }}>
+        {KANAELE.map((k) => `${KANAL_TEXT[k]} ${b.jeKanal[k]}`).join(" · ")}
+        <br />
+        {daten.jeSchub.map((s) => `${s.kampagne}: ${s.gemeinden} von ${s.angeschrieben} (${quoteText(s.angeschrieben ? s.gemeinden / s.angeschrieben : 0)})`).join(" · ")}
+      </p>
+      <DatenTabelle<Veroeffentlichung>
+        zeilen={daten.liste}
+        schluessel={(p) => `${p.region_id} ${p.url}`}
+        nummeriert
+        minBreite={640}
+        startSortierung={[{ key: "gemeinde", richtung: "auf" }]}
+        spalten={[
+          {
+            key: "gemeinde",
+            kopf: "Gemeinde",
+            zelle: (p) => daten.namen[p.region_id] ?? p.region_id,
+            sortWert: (p) => daten.namen[p.region_id] ?? p.region_id,
+          },
+          { key: "wo", kopf: "Wo", zelle: (p) => KANAL_TEXT[p.kanal], sortWert: (p) => KANAL_TEXT[p.kanal] },
+          {
+            key: "link",
+            kopf: "Link",
+            zelle: (p) => (p.mit_link ? (p.noch_online ? "ja" : "ja, Seite weg") : "nein"),
+            sortWert: (p) => (p.mit_link ? (p.noch_online ? 0 : 1) : 2),
+          },
+          {
+            key: "belegt",
+            kopf: "belegt ab",
+            zelle: (p) => (p.gesehen_ab ? datum(p.gesehen_ab) : "–"),
+            sortWert: (p) => p.gesehen_ab ?? "",
+          },
+          {
+            key: "beitrag",
+            kopf: "Beitrag",
+            zelle: (p) => (
+              <a
+                href={p.url}
+                target="_blank"
+                rel="noopener"
+                style={{ color: v("--color-accent"), display: "inline-block", maxWidth: 320, overflow: "hidden", textOverflow: "ellipsis", verticalAlign: "bottom" }}
+              >
+                {p.url.replace(/^https?:\/\/(www\.)?/, "")}
+              </a>
+            ),
+            sortWert: (p) => p.url.replace(/^https?:\/\/(www\.)?/, ""),
+          },
+        ]}
+      />
+    </section>
   );
 }
 
@@ -213,7 +310,7 @@ function Kennzahl({ label, wert, unten, gut }: { label: string; wert: number; un
           fontSize: v("--font-size-h1"),
           fontWeight: 800,
           fontFamily: v("--font-mono"),
-          color: gut && wert > 0 ? v("--color-positive") : v("--color-text-primary"),
+          color: gut && wert > 0 ? v("--color-positive-text") : v("--color-text-primary"),
         }}
       >
         {wert.toLocaleString("de-DE")}

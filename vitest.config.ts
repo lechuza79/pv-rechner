@@ -11,6 +11,11 @@ export default defineConfig({
     include: ["lib/**/*.test.ts", "lib/**/*.test.tsx"],
     exclude: ["e2e/**", "node_modules/**", ".next/**", ".next-dev/**"],
   },
+  // Die Karten-Tests rendern echte Komponenten über `renderToStaticMarkup` —
+  // vier Fehler der Quadrat-Stufe waren nur am gerenderten Bild sichtbar, und
+  // was sich davon in einer Zeichenkette festhalten lässt, gehört in einen
+  // Test. Ohne die automatische JSX-Auflösung fehlt dort `React`.
+  esbuild: { jsx: "automatic" },
   resolve: {
     alias: {
       "@": path.resolve(__dirname),

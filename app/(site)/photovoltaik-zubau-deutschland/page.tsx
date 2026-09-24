@@ -33,8 +33,8 @@ const S = {
   // Äußerer Rahmen etwas breiter als die Lesespalte, damit das Chart-Widget
   // bewusst über die Textbreite hinausragen darf (Breakout). Kein eigenes
   // Top-Padding — der Kopf-Abstand kommt zentral aus dem Layout (32 px).
-  wrap: { maxWidth: v("--chart-max-width"), margin: "0 auto" },
-  textCol: { maxWidth: v("--content-max-width"), margin: "0 auto" },
+  wrap: { maxWidth: v("--chart-max-width"), containerType: "inline-size", margin: "0 auto" },
+  textCol: { maxWidth: v("--content-max-width"), containerType: "inline-size", margin: "0 auto" },
 };
 
 export default async function ZubauDeutschlandPage() {

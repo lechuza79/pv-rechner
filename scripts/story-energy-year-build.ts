@@ -1,0 +1,12 @@
+throw new Error('Veralteter Wetterabruf gesperrt. Story-Vorbereitung auf aktuellem main mit ERA5-Archiv verwenden; siehe docs/codex-update-wetter-2026-09-19.md.');
+import {readFileSync,writeFileSync,readdirSync} from 'node:fs';
+import {energyYear} from '../lib/story-energy-year';
+const root='scripts/.cache/story-ranking-month/sources';
+const raw=JSON.parse(readFileSync(`${root}/${readdirSync(root).filter(f=>f.endsWith('.json'))[0]}`,'utf8'));
+const city=(Array.isArray(raw)?raw:raw.stats).find((r:{regionId:string})=>r.regionId==='06440016');
+if(!city||!Number.isFinite(city.windKwpLy))throw Error('No wind baseline');
+const detail=JSON.parse(readFileSync('scripts/.cache/bnetza/story-history-2026-09-10/cities/06440016.json','utf8'));
+const solarKwp=detail.daily.filter((r:{day:string})=>r.day<'2026-01-01').reduce((sum:number,r:{kwp:number})=>sum+r.kwp,0);
+const data=energyYear(JSON.parse(readFileSync('scripts/.cache/story-energy-year/nidda-2025-weather.json','utf8')),{town:'Nidda',year:2025,solarKwp,windKw:city.windKwpLy,sourceDate:'2026-09-10',retrievedAt:new Date().toISOString(),sourceUrl:'https://open-meteo.com/en/docs/historical-weather-api'});
+writeFileSync('lib/story-energy-year-data.json',JSON.stringify(data));
+console.log({days:data.days.length,solarKwp,windKw:data.windKw,solarGwh:data.days.reduce((s,d)=>s+d.solarMwh,0)/1000,windGwh:data.days.reduce((s,d)=>s+d.windMwh,0)/1000});

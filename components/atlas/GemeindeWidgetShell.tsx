@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { v } from "../../lib/theme";
+import { v, space } from "../../lib/theme";
 import {
   ExportBox,
   ExportNotesProvider,
@@ -14,6 +14,11 @@ import {
 import { sourceLabel } from "../../lib/data-sources";
 import { useChartExport } from "../../lib/useChartExport";
 import { WIDGET_MAX_WIDTH_COMPACT, type WidgetDef } from "../../lib/widget-registry";
+import EinbettenDialog from "../EinbettenDialog";
+
+/** Basis-Adresse für den Einbett-Code. Der Code landet auf einer FREMDEN
+ *  Website; eine relative Adresse zeigte dort ins Leere. */
+const SITE_URL = "https://solar-check.io";
 
 // Shared shell for the place-based widgets (municipality and state): renewable
 // mix, installed capacity by plant type, simulated solar output, the plain
@@ -47,7 +52,11 @@ export default function GemeindeWidgetShell({
   share = true,
   showCta,
   showEmbed = true,
+  nackt = false,
+  einbetten,
   sourceBottomInset = 0,
+  showSourceEdge = true,
+  footerSource,
   children,
 }: {
   /** Registry entry, already resolved to this place via `widgetForPlace`. */
@@ -73,13 +82,39 @@ export default function GemeindeWidgetShell({
    */
   showCta?: boolean;
   showEmbed?: boolean;
+  /**
+   * Der Inhalt bringt Überschrift und Rahmen selbst mit.
+   *
+   * Ohne das stehen drei Rahmen ineinander: das Fenster, die Karte mit ihrer
+   * Überschrift, und darin noch einmal die Bildkarte mit ihrer eigenen. Die
+   * Hülle liefert dann nur noch, was der Inhalt NICHT hat — die Aktionen, die
+   * Quellenkante und den Bild-Fuß.
+   */
+  nackt?: boolean;
+  /**
+   * Der fertige Einbett-Code für DIESEN Ort, hinter dem Knopf der Karte.
+   *
+   * Ohne diese Angabe springt der Knopf in die Widget-Galerie — dort steht der
+   * Ort dann in einem Abfrageteil, die Seite ist in Du-Form geschrieben, und
+   * die kommunalen Widgets stehen hinter acht Deutschland-Widgets. Gemessen am
+   * 05.09.2026: 289 Briefe an Kommunen, vier Veröffentlichungen, null
+   * Einbettungen. Wer auf der Ortsseite einbetten will, bekommt den Code dort.
+   *
+   * `params` trägt den Ort (und was das Widget sonst braucht), `height` die
+   * Höhe des Rahmens; alles Übrige kommt aus dem Register.
+   */
+  einbetten?: { params: Record<string, string>; height: number; width?: number };
   /** Shorten the vertical source label at the bottom, so it ends above a footer
    *  row inside the widget body instead of running to the floor. */
   sourceBottomInset?: number;
+  /** Disable when the content already includes its source credit. */
+  showSourceEdge?: boolean;
+  footerSource?: string;
   children: React.ReactNode;
 }) {
   // On our own pages the credit is quiet until someone looks at the card.
   const [showCredit, setShowCredit] = useState(false);
+  const [einbettenOffen, setEinbettenOffen] = useState(false);
 
   const chartExport = useChartExport({
     context: {
@@ -103,19 +138,22 @@ export default function GemeindeWidgetShell({
         onMouseLeave={() => setShowCredit(false)}
         onFocusCapture={() => setShowCredit(true)}
       >
-        <div>
-          <div style={S.title}>{widget.title}</div>
-          <div style={S.sub}>{subline}</div>
-        </div>
+        {!nackt && (
+          <div>
+            <div style={S.title}>{widget.title}</div>
+            <div style={S.sub}>{subline}</div>
+          </div>
+        )}
 
         {/* Body grows, so two cards side by side end at the same height. */}
         <div style={S.body}>
           <div style={S.bodyInner}>
-            <ExportBox style={S.box}>{children}</ExportBox>
+            {nackt ? children : <ExportBox style={S.box}>{children}</ExportBox>}
           </div>
         </div>
 
-        <div style={S.footer}>
+        <div style={{ ...S.footer, ...(footerSource ? { display: "flex", alignItems: "center", gap: space.xl, flexWrap: "wrap" } : {}) }}>
+          {footerSource && <p style={{ flex: "1 1 180px", margin: 0, fontSize: v("--font-size-micro"), lineHeight: 1.5, color: v("--color-text-muted") }}>{footerSource}</p>}
           <WidgetFooter
             widget={widget}
             chartExport={chartExport}
@@ -123,7 +161,8 @@ export default function GemeindeWidgetShell({
             branding={branding}
             share={share}
             showCta={showCta ?? !onsite}
-            showEmbed={showEmbed}
+            showEmbed={showEmbed || !!einbetten}
+            onEmbed={einbetten ? () => setEinbettenOffen(true) : undefined}
             narrow
           />
         </div>
@@ -133,16 +172,41 @@ export default function GemeindeWidgetShell({
             Inhaltsbereich: In einer Karte mit einer kurzen Kachelreihe reichte
             dessen Höhe nicht für eine Zeile, der Vermerk brach in mehrere
             Spalten um und lief quer über die Kennzahlen. */}
-        <div style={{ ...S.sourceLane, bottom: 8 + sourceBottomInset }}>
+        {showSourceEdge && <div style={{ ...S.sourceLane, bottom: 8 + sourceBottomInset }}>
           <WidgetSourceEdge
             widget={widget}
             visible={!onsite || showCredit}
             stand={dataAsOf}
           />
-        </div>
+        </div>}
 
         {/* Image only: legend, the texts behind the "?", brand. */}
         <WidgetExportFooter widget={widget} legend={legend} note={note} branding={branding} />
+
+        {/* Bleibt gemountet, damit das Fenster sanft aus- statt wegblendet —
+            und ausdrücklich MIT `data-sc-export-ignore`: Ein geschlossener
+            Dialog steht sonst als leerer Kasten im heruntergeladenen Bild. */}
+        {einbetten && (
+          <div data-sc-export-ignore>
+            <EinbettenDialog
+              open={einbettenOffen}
+              onClose={() => setEinbettenOffen(false)}
+              titel={widget.title}
+              src={`/embed/${widget.id}`}
+              params={einbetten.params}
+              width={einbetten.width ?? WIDGET_MAX_WIDTH_COMPACT}
+              height={einbetten.height}
+              attribution={{
+                // Der Textlink zeigt auf die Ortsseite selbst — sie ist die
+                // Quelle der Zahlen und zugleich der Rückverweis, um den es
+                // geht. `shareUrl` trägt sie bereits (widgetForPlace setzt sie).
+                path: widget.shareUrl.replace(SITE_URL, ""),
+                text: `Datenquelle: ${widget.title} — Solar Check`,
+              }}
+              siteUrl={SITE_URL}
+            />
+          </div>
+        )}
       </div>
     </ExportNotesProvider>
   );

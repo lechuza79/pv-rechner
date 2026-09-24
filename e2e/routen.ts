@@ -10,6 +10,7 @@ export type Seite = { pfad: string; erwartet: RegExp };
 /** Seiten, die kein Flow-Test abdeckt. */
 export const SEITEN: Seite[] = [
   // Rechner
+  { pfad: "/suche?q=W%C3%A4rmepumpe", erwartet: /wärmepumpe/i },
   { pfad: "/klimaanlage-stromkosten", erwartet: /klima|kühl/i },
   { pfad: "/balkonkraftwerk", erwartet: /balkonkraftwerk/i },
   { pfad: "/balkonkraftwerk/rechner", erwartet: /balkon/i },
@@ -89,18 +90,12 @@ export const EMBEDS: string[] = [
   "/embed/karte",
   "/embed/foerder-check",
   "/embed/gruengas-heizkosten",
+  "/embed/heizkostenrennen",
+  "/embed/pv-kostenrennen",
   "/embed/zubau-erneuerbare-atom",
   "/embed/strommix",
 ];
 
-/** Die Gemeindeseite, an der `gemeinde-bestand-anker.spec.ts` die Mechanik
- *  „Adresse stellt den Umschalter" prüft. Sie steht NICHT in `SEITEN`: Der
- *  Rundgang hat mit Höchberg bereits eine Gemeindeseite, eine zweite prüfte
- *  dieselbe Route ein zweites Mal. Gewärmt gehört sie trotzdem — ohne sie zahlt
- *  der erste Aufruf im Test den Serverabruf, den jede andere Adresse längst
- *  hinter sich hat. Das behebt das Flattern nicht (das saß in der Hydratation,
- *  siehe den Spec-Kopf), es nimmt ihm nur eine Verzögerung ab. */
-export const GEMEINDE_ANKER_ORT = "/solar-atlas/hessen/landkreis-schwalm-eder-kreis/melsungen";
 
 /** Adressen, die die vier Flow-Tests anlaufen. Sie werden mitgewärmt, weil das
  *  Wettrennen beim Übersetzen sie genauso trifft — es hat sie sogar zuerst
@@ -108,10 +103,11 @@ export const GEMEINDE_ANKER_ORT = "/solar-atlas/hessen/landkreis-schwalm-eder-kr
 export const FLOW_PFADE: string[] = [
   "/photovoltaik-rechner",
   "/photovoltaik-rechner?a=2&s=2&p=2&n=1&wp=nein&ea=nein",
-  "/pv-bedarf-berechnen",
+  "/photovoltaik-rechner?direkt=1",
   "/pv-simulation",
   "/strommix-deutschland",
   "/waermepumpe-rechner",
+  "/angebot-pruefen",
 ];
 
 /** Alles, was vor dem ersten Test einmal übersetzt sein muss. */
@@ -119,6 +115,5 @@ export const ALLE_PFADE: string[] = [
   ...SEITEN.map((s) => s.pfad),
   ...EMBEDS,
   ...FLOW_PFADE,
-  GEMEINDE_ANKER_ORT,
   "/api/atlas/gemeinde?plz=97204", // Fühler für die Datenbank-Erkennung
 ];

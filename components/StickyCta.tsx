@@ -68,12 +68,30 @@ export default function StickyCta({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const sentinel = document.getElementById("sc-cta-sentinel");
-    if (!sentinel) return;
-    const io = new IntersectionObserver(([entry]) => setHidden(entry.isIntersecting), {
-      rootMargin: "0px 0px -40px 0px",
-    });
-    io.observe(sentinel);
+    // ZWEI Halte-Marken, und die zweite ist die verlässliche.
+    //
+    // Der Merker, den der Aufrufer selbst rendert, steht dort, wo die Seite
+    // inhaltlich endet — gibt es ihn nicht oder sitzt er zu früh, läuft die
+    // Leiste bis zuletzt mit und liegt auf dem dunklen Fuß. Der Vertrauensblock
+    // ist dagegen auf JEDER Seite der Anfang des dunklen Bereichs; sobald er
+    // ins Bild kommt, gehört die Leiste weg. Zusammen: Sie verschwindet beim
+    // Ersten von beidem.
+    const marken = [document.getElementById("sc-cta-sentinel"), document.querySelector(".sc-trust")].filter(
+      (n): n is Element => n != null,
+    );
+    if (!marken.length) return;
+    const sichtbare = new Set<Element>();
+    const io = new IntersectionObserver(
+      (eintraege) => {
+        for (const e of eintraege) {
+          if (e.isIntersecting) sichtbare.add(e.target);
+          else sichtbare.delete(e.target);
+        }
+        setHidden(sichtbare.size > 0);
+      },
+      { rootMargin: "0px 0px -40px 0px" },
+    );
+    marken.forEach((m) => io.observe(m));
     return () => io.disconnect();
   }, []);
 
@@ -96,7 +114,7 @@ export default function StickyCta({
     minWidth: 0,
     textAlign: "center",
     padding: "12px 10px",
-    borderRadius: v("--radius-md"),
+    borderRadius: v("--radius-pill"),
     fontSize: v("--font-size-body"),
     fontWeight: 700,
     textDecoration: "none",
@@ -142,7 +160,7 @@ export default function StickyCta({
           href={primaer.href}
           style={{
             ...base,
-            background: v("--color-accent"),
+            background: v("--color-cta"),
             color: v("--color-text-on-accent"),
           }}
         >

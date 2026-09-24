@@ -20,7 +20,7 @@ const S = {
     minHeight: "100vh",
     padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
+  wrap: { maxWidth: v('--content-max-width'), containerType: "inline-size", margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   back: {
     fontSize: v('--font-size-small'),
     color: v('--color-text-secondary'),
@@ -28,21 +28,8 @@ const S = {
     display: "inline-block",
     marginBottom: 24,
   },
-  h1: {
-    fontSize: v('--font-size-h1'),
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    color: v('--color-text-primary'),
-    lineHeight: 1.2,
-    marginBottom: 24,
-  },
-  h2: {
-    fontSize: v('--font-size-h2'),
-    fontWeight: 700,
-    color: v('--color-text-primary'),
-    marginTop: 28,
-    marginBottom: 10,
-  },
+  h1: { color: v('--color-text-primary'), marginBottom: 24 },
+  h2: { color: v('--color-text-primary'), marginTop: 28, marginBottom: 10 },
   p: {
     fontSize: v('--font-size-body'),
     color: v('--color-text-muted'),
@@ -243,7 +230,7 @@ export default function DatenschutzPage() {
           Gerät abgelegt und von dort gelesen. Eine Einwilligung ist dafür
           trotzdem nicht nötig, weil die Messung auf das beschränkt bleibt, was
           zum Betrieb dieses Angebots nötig ist (§ 25 Abs. 2 Nr. 2 TDDDG): Wir
-          verkaufen keine Werbeplätze und keine Kontaktdaten, wir verfolgen dich
+          vermarkten keine Werbeflächen und verkaufen keine Kontaktdaten, wir verfolgen dich
           nicht über andere Websites hinweg, die Ereignisse sind bloße Zähler
           ohne Begleitangaben, und die Kennung, die einen Besuch zusammenfasst,
           lebt einen Tag. Ein Cookie-Banner wird daher nicht benötigt.
@@ -329,7 +316,7 @@ export default function DatenschutzPage() {
         </p>
 
         <p style={S.p}>
-          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong> und, falls du im Solar-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Dazu kommt das <strong>Farbschema</strong> (hell, dunkel oder automatisch) — dieser Eintrag entsteht bei jedem Besuch, auch wenn du nie eines ausgewählt hast, und hält dann schlicht die automatische Voreinstellung fest. Klickst du im Ergebnis auf „Speichern“, ohne angemeldet zu sein, wird die Berechnung außerdem vorgemerkt, bis du dem Anmeldelink folgst; folgst du ihm nie, bleibt sie liegen, bis du den Browser-Speicher löschst. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird für ortsbezogene Abfragen verwendet — Standort-Ertrag, Wetter- und Klimadaten, die Sonnenanzeige und die Suche nach Förderprogrammen für deinen Ort (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Solar-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
+          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong> und, falls du im Energie-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Dazu kommt das <strong>Farbschema</strong> (hell, dunkel oder automatisch) — dieser Eintrag entsteht bei jedem Besuch, auch wenn du nie eines ausgewählt hast, und hält dann schlicht die automatische Voreinstellung fest. Klickst du im Ergebnis auf „Speichern“, ohne angemeldet zu sein, wird die Berechnung außerdem vorgemerkt, bis du dem Anmeldelink folgst; folgst du ihm nie, bleibt sie liegen, bis du den Browser-Speicher löschst. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird für ortsbezogene Abfragen verwendet — Standort-Ertrag, Wetter- und Klimadaten, die Sonnenanzeige und die Suche nach Förderprogrammen für deinen Ort (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Energie-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
         </p>
 
         <h2 style={S.h2}>8. Standortgenaue Ertragsprognose</h2>
@@ -338,11 +325,12 @@ export default function DatenschutzPage() {
           standortabhängigen Solarertrag. Dazu wird die von dir eingegebene
           Postleitzahl bzw. die daraus abgeleiteten Koordinaten an unseren Server
           und von dort an den Photovoltaik-Ertragsdienst PVGIS der Europäischen
-          Kommission (Joint Research Centre) übermittelt. Für die
-          Live-Simulation, die Sonnenanzeige, den Klimaanlagen-Rechner und die
-          Hitzewellen-Vorschau werden die Koordinaten zusätzlich an den
-          Wetterdienst Open-Meteo gesendet. Dabei wird technisch bedingt die IP-Adresse unseres Servers,
-          nicht deine eigene, an diese Dienste übertragen. Es werden keine
+          Kommission (Joint Research Centre) übermittelt. Dabei wird technisch
+          bedingt die IP-Adresse unseres Servers, nicht deine eigene, an diesen
+          Dienst übertragen. Für die Live-Simulation, die Sonnenanzeige, den
+          Klimaanlagen-Rechner und die Hitzewellen-Vorschau lesen wir Wetterdaten
+          aus eigenen, regelmäßig aktualisierten Dateien; dafür werden keine
+          Koordinaten an einen Wetterdienst übermittelt. Es werden keine
           Berechnungs-Eingaben darüber hinaus weitergegeben. Rechtsgrundlage ist
           Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer
           standortgenauen Berechnung). Abgefragte Ertragsdaten werden zur
@@ -607,7 +595,7 @@ export default function DatenschutzPage() {
         <p style={S.p}>
           Dieselbe Abwehr läuft auf allen Schnittstellen, über die unsere Rechner
           Daten nachladen — Standort-Ertrag, Wetter- und Klimadaten, Förderprogramme,
-          Strommix und die Karten des Solar-Atlas. Auch dort merkt sich unser Server
+          Strommix und die Karten des Energie-Atlas. Auch dort merkt sich unser Server
           die IP-Adresse der anfragenden Verbindung kurzzeitig im Arbeitsspeicher,
           um die Zahl der Abrufe je Verbindung zu begrenzen. Das betrifft jeden
           Aufruf einer Seite mit nachgeladenen Daten, also auch dann, wenn du kein
@@ -800,7 +788,7 @@ export default function DatenschutzPage() {
             darzustellen. */}
         <h2 style={S.h2}>16. Meldungen zu einer Gemeinde (Abo)</h2>
         <p style={S.p}>
-          Auf den Gemeindeseiten im Solar-Atlas und auf den Förderseiten zu einer
+          Auf den Gemeindeseiten im Energie-Atlas und auf den Förderseiten zu einer
           Stadt oder Gemeinde kannst du dich für Meldungen zu einem Ort
           eintragen. Wir verarbeiten dafür deine{" "}
           <strong>E-Mail-Adresse</strong> und den <strong>Ort</strong>, den du
@@ -837,7 +825,7 @@ export default function DatenschutzPage() {
           betreffen.
         </p>
         <p style={S.p}>
-          Trägst du dich auf einer Ortsseite im Solar-Atlas ein, kannst du
+          Trägst du dich auf einer Ortsseite im Energie-Atlas ein, kannst du
           angeben, dass du{" "}
           <strong>für die Stadt- oder Gemeindeverwaltung arbeitest</strong>. Die
           Angabe ist freiwillig, wir prüfen sie nicht nach, und sie entscheidet
@@ -918,12 +906,73 @@ export default function DatenschutzPage() {
           vollständig lesbar.
         </p>
 
+        {/* Own section, not part of 16: a waitlist has no town, promises
+            exactly one message (the launch) and lives in its own table. Its
+            consent wording is archived in lib/warteliste-einwilligung.ts. */}
+        <h2 style={S.h2}>17. Warteliste für kommende Funktionen</h2>
+        <p style={S.p}>
+          Für Funktionen, die noch nicht fertig sind (derzeit der Angebotscheck
+          für Photovoltaik und Wärmepumpe), kannst du dich auf der Seite „Angebot prüfen“ auf
+          eine <strong>Warteliste</strong> setzen. Wir verarbeiten dafür deine{" "}
+          <strong>E-Mail-Adresse</strong>, die Warteliste, auf die du dich
+          eingetragen hast, und die Zeitpunkte deiner Eintragung, deiner
+          Bestätigung und einer etwaigen Austragung. Einen Namen fragen wir
+          nicht ab.
+        </p>
+        <p style={S.p}>
+          Die Anmeldung läuft im <strong>Bestätigungsverfahren</strong>: Nach dem
+          Eintragen schicken wir eine E-Mail mit einem Bestätigungslink. Erst
+          wenn du ihn anklickst, stehst du auf der Liste. Klickst du nicht, wird
+          die Eintragung nach sieben Tagen gelöscht und es folgt keine weitere
+          E-Mail. Nach deiner Bestätigung schreiben wir dir{" "}
+          <strong>eine Nachricht, wenn die Funktion startet</strong> — keinen
+          Newsletter. Rechtsgrundlage ist deine <strong>Einwilligung</strong>{" "}
+          (Art. 6 Abs. 1 lit. a DSGVO). Nach der Nachricht zum Start nehmen wir
+          dich von der Liste; danach gilt für den Nachweis dieselbe Frist wie
+          nach einer Austragung. Startet die Funktion nicht, schreiben wir dir
+          das und löschen die Liste.
+        </p>
+        <p style={S.p}>
+          <strong>Du kannst dich jederzeit austragen</strong> — über den Link in
+          der Bestätigungsmail und in der Nachricht zum Start, ohne Anmeldung und
+          ohne Angabe von Gründen. Der Widerruf wirkt für die Zukunft und lässt
+          die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung unberührt.
+        </p>
+        <p style={S.p}>
+          Zum <strong>Nachweis deiner Einwilligung</strong> halten wir die
+          Fassung des Textes fest, den du beim Eintragen gelesen hast, und die
+          Kennung, unter der unser Mailserver die Bestätigungsmail angenommen
+          hat. Nach einer Austragung bleiben diese Angaben ausschließlich als
+          Nachweis bestehen — auf Grundlage unserer Rechenschaftspflicht und
+          unseres berechtigten Interesses an der Abwehr von Ansprüchen (Art. 6
+          Abs. 1 lit. c in Verbindung mit Art. 5 Abs. 2 und Art. 7 Abs. 1 sowie
+          lit. f DSGVO). Gelöscht werden sie zum 31. Dezember des dritten Jahres
+          nach dem Jahr, in dem wir dir zuletzt geschrieben haben; hast du nie
+          bestätigt, beim nächsten täglichen Aufräumen.
+        </p>
+        <p style={S.p}>
+          <strong>Deine IP-Adresse speichern wir nicht an der Eintragung.</strong>{" "}
+          Beim Absenden hält unser Server sie kurz im Arbeitsspeicher, um
+          automatisierte Masseneintragungen abzuwehren (bis zu fünf Versuche je
+          Stunde und Serverinstanz); sie wird nicht in die Datenbank übernommen.
+          Rechtsgrundlage ist unser berechtigtes Interesse an einem vor
+          automatisierten Eintragungen geschützten Formular (Art. 6 Abs. 1
+          lit. f DSGVO); du kannst dieser Verarbeitung nach Art. 21 DSGVO
+          widersprechen.
+        </p>
+        <p style={S.p}>
+          Versand und Speicherung laufen über dieselben Dienste wie bei den
+          Meldungen zu einer Gemeinde (Abschnitt 16): das E-Mail-Postfach unserer
+          Domain bei der ALL-INKL.COM – Neue Medien Münnich und unsere Datenbank
+          bei Supabase (Abschnitt 9).
+        </p>
+
         {/* Nur ein Verweis, kein eigener Abschnitt: Die LinkedIn-Angaben
             betreffen Besucher unserer LinkedIn-Seite, nicht die dieser Website.
             Sie hier auszubreiten verlängerte die Erklärung für alle, die sie
             nichts angeht. Ohne diesen Satz wäre die Unterseite allerdings eine
             Waise — erreichbar nur über LinkedIn selbst. */}
-        <h2 style={S.h2}>17. Unsere Präsenz auf LinkedIn</h2>
+        <h2 style={S.h2}>18. Unsere Präsenz auf LinkedIn</h2>
         <p style={S.p}>
           Wir betreiben eine Unternehmensseite auf LinkedIn. Was dort verarbeitet
           wird, findet auf den Systemen von LinkedIn statt und nicht auf dieser
@@ -936,7 +985,108 @@ export default function DatenschutzPage() {
           .
         </p>
 
-        <p style={S.muted}>Stand: August 2026</p>
+        {/* Angelegt am 01.09.2026. Die Erhebung lief vom 27. bis 29.08.2026 —
+            die Frist des Art. 14 Abs. 3 lit. a DSGVO (ein Monat ab Erlangung)
+            läuft ab dem Tag der Erhebung, NICHT ab dem ersten Anschreiben. Zwei
+            Legal-Judges haben unabhängig festgestellt, dass die Erhebung hier
+            bis dahin mit keinem Wort vorkam.
+
+            Beschrieben wird ausschließlich, was es GIBT: die Erhebung. Der
+            Versand, die betriebseigene Rechner-Seite und der Anfrage-Knopf sind
+            geplant, aber nicht gebaut — sie kommen in diesen Abschnitt, wenn sie
+            existieren. Eine Erklärung, die Verarbeitungen beschreibt, die es
+            nicht gibt, ist derselbe Fehler wie eine, die vorhandene verschweigt. */}
+        <h2 style={S.h2}>19. Verzeichnis von PV-Fachbetrieben</h2>
+        <p style={S.p}>
+          Wir haben ein internes Verzeichnis von Photovoltaik-Fachbetrieben und
+          Elektrohandwerksbetrieben in Deutschland angelegt. Erhoben wurden{" "}
+          <strong>öffentlich zugängliche Angaben</strong>, überwiegend von den
+          Websites der Betriebe selbst — aus dem Impressum, der Kontaktseite und
+          den Leistungsseiten: Firmenname, Rechtsform, Anschrift, Telefonnummer,
+          E-Mail-Adresse, Handelsregister- und Umsatzsteuernummer, angebotene
+          Leistungen und Gewerk, Angaben, die der Betrieb dort über sich selbst
+          macht (etwa Meisterbetrieb, Handwerkskammer, Innung, Gründungsjahr,
+          Zertifikate), sowie eine Bewertungszahl, sofern der Betrieb sie auf
+          seiner eigenen Website angibt.
+        </p>
+        <p style={S.p}>
+          Zu jeder dieser Angaben halten wir zusätzlich einen{" "}
+          <strong>Beleg</strong> fest: die Adresse der Seite, auf der wir sie
+          gefunden haben, die betreffende Textstelle und das Datum des Abrufs.
+          Dazu kommen zwei Angaben, die nicht vom Betrieb stammen, sondern von
+          uns: unsere <strong>Einordnung</strong> (ob es sich um einen regionalen
+          Fachbetrieb handelt) und der <strong>Bearbeitungsstand</strong>.
+        </p>
+        <p style={S.p}>
+          <strong>Herkunft.</strong> Welche Websites wir überhaupt angesehen
+          haben, stammt aus einer Suchmaschinen-Abfrage je Landkreis über den
+          Dienstleister <strong>DataForSEO OÜ</strong>, Vesivärava tn 50-201,
+          10152 Tallinn, Estland. Aus dessen Antwort übernehmen wir die Adresse
+          der Website und den Seitentitel; der Seitentitel ist in einigen Fällen
+          die Grundlage des erfassten Firmennamens. An den Dienstleister
+          übermitteln wir dabei keine personenbezogenen Daten — unsere Anfrage
+          besteht aus einem Suchbegriff und einem Landkreis. Das Unternehmen hat
+          seinen Sitz in der Europäischen Union. Ein Drittlandbezug entsteht durch
+          diese Abfrage nicht, weil wir dorthin keine personenbezogenen Daten
+          übermitteln.
+        </p>
+        <p style={S.p}>
+          Bei Einzelunternehmen und Betrieben, die den Namen ihrer Inhaberinnen
+          oder Inhaber führen, sind diese Angaben{" "}
+          <strong>personenbezogene Daten</strong>. Deshalb steht dieser Abschnitt
+          hier.
+        </p>
+        <p style={S.p}>
+          <strong>Zweck.</strong> Wir möchten diesen Betrieben unser Angebot
+          unterbreiten — einen unabhängigen Rechner, den sie ihren Kunden zur
+          Verfügung stellen können — und ihnen künftig Anfragen weiterleiten, die
+          Nutzerinnen und Nutzer von sich aus an sie richten. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO; unsere berechtigten Interessen sind die
+          Ansprache möglicher Partnerbetriebe und die Vermittlung von Anfragen,
+          die Nutzerinnen und Nutzer von sich aus stellen. Ein Verzeichnis dieser
+          Betriebe ist auf unserer Website{" "}
+          <strong>nicht veröffentlicht</strong>, und wir verkaufen keine
+          Kontaktdaten.
+        </p>
+        <p style={S.p}>
+          <strong>Wie wir informieren.</strong> Nach Art. 14 DSGVO informieren wir
+          über eine Erhebung, die nicht bei der betroffenen Person selbst erfolgt
+          ist. Jeder Betrieb, den wir ansprechen, erhält diese Information{" "}
+          <strong>unmittelbar in unserem Anschreiben</strong> (Art. 14 Abs. 3
+          lit. b DSGVO). Für alle übrigen erfassten Betriebe stellen wir sie an
+          dieser Stelle öffentlich bereit.
+        </p>
+        <p style={S.p}>
+          <strong>Speicherort und Dauer.</strong> Die Angaben liegen in unserer
+          Datenbank bei Supabase (Einzelheiten und Drittlandbezug in Abschnitt 9);
+          außer uns haben nur Supabase als unser Auftragsverarbeiter und die dort
+          eingesetzten Unterauftragsverarbeiter technisch Zugriff darauf. Wir
+          überprüfen den Bestand <strong>jährlich</strong>. Gelöscht wird der
+          Eintrag eines Betriebs, sobald feststeht, dass wir ihn nicht ansprechen
+          werden, und spätestens bei der Überprüfung, die auf den Abschluss des
+          Vorhabens folgt.
+        </p>
+        <p style={S.p}>
+          <strong>Widerspruch.</strong> Ein Widerspruch gegen die Speicherung oder
+          gegen eine Ansprache genügt formlos an die in Abschnitt 1 genannte
+          Adresse. Wir löschen den Datensatz daraufhin. Erhalten bleibt nur, was
+          nötig ist, um den Widerspruch dauerhaft beachten zu können: die Adresse
+          der Website und das Datum des Widerspruchs. Nur so lässt sich
+          verhindern, dass derselbe Betrieb bei einer späteren Erhebung erneut
+          erfasst und angeschrieben wird; von der Löschung ist dieser Vermerk
+          deshalb ausgenommen (Art. 6 Abs. 1 lit. c DSGVO in Verbindung mit
+          Art. 21 Abs. 3 DSGVO, Art. 17 Abs. 3 lit. b DSGVO). Zu einem anderen
+          Zweck wird er nicht verwendet. Gegen eine Ansprache kannst du{" "}
+          <strong>ohne Begründung und jederzeit</strong> widersprechen (Art. 21
+          Abs. 2 DSGVO); gegen die Speicherung selbst besteht das Widerspruchsrecht
+          nach Art. 21 Abs. 1 DSGVO aus Gründen, die sich aus deiner besonderen
+          Situation ergeben. <strong>Wir behandeln beide gleich</strong> und
+          verlangen auch für den zweiten Fall keine Begründung. Die übrigen Rechte —
+          Auskunft, Berichtigung, Löschung, Einschränkung und Beschwerde bei einer
+          Aufsichtsbehörde — stehen in Abschnitt 12.
+        </p>
+
+        <p style={S.muted}>Stand: September 2026</p>
       </div>
     </div>
   );

@@ -135,6 +135,67 @@ describe("Eingangsbestätigung ist keine Antwort", () => {
     ).toBe("antwort");
   });
 
+  // PORTA WESTFALICA, 03.09.2026 — dieselbe Sorte Quittung, zwei neue Wege
+  // daran vorbei: kein Abwesenheitswort, kein maschineller Kopf, Absender das
+  // gewöhnliche Amtspostfach. Sie stand deshalb monatelang als echte Antwort in
+  // der Auswertung, und der Betreiber musste sie wieder und wieder erklären.
+  const porta = {
+    von: "info@portawestfalica.de",
+    betreff: "noreply",
+    text: [
+      "Guten Tag,",
+      "",
+      "vielen Dank für Ihre E-Mail.",
+      "",
+      "Gerne klären wir Ihr Anliegen.",
+      "Wir werden Ihre Nachricht an die zuständige Stelle im Hause weiterleiten,",
+      "damit Sie schnellstmöglich von dort eine Rückmeldung erhalten.",
+      "",
+      "Mit freundlichen Grüßen",
+      "Ihre Stadtverwaltung",
+    ].join("\n"),
+    datum: "2026-09-03T09:00:00Z",
+  };
+
+  // JEDES SIGNAL WIRD EINZELN GEPRÜFT, sonst prüft der Test keines.
+  // Die echte Mail trägt beide (Betreff „noreply" UND die Bausteinformel); mit
+  // ihr als Vorlage blieb der Lauf beim absichtlichen Ausbau des Betreff-Zweigs
+  // GRÜN — die Textformel fing ihn auf, und der Test hätte den Rückbau nie
+  // gemeldet. Dieselbe Klasse wie eine Prüfung, die sich selbst belegt.
+  it("erkennt sie am Betreff noreply, den kein Mensch tippt", () => {
+    expect(
+      ordneEin({ ...porta, text: "Guten Tag, vielen Dank für Ihre Nachricht.\n\nIhre Stadtverwaltung" }),
+    ).toBe("abwesenheit");
+  });
+
+  it("erkennt sie ohne den Betreff an der Bausteinformel", () => {
+    expect(ordneEin({ ...porta, betreff: "Ihre Anfrage" })).toBe("abwesenheit");
+  });
+
+  // DIE GEGENRICHTUNG, und sie ist hier besonders eng: Ein Mensch, der dasselbe
+  // TUT, ist trotzdem eine Reaktion — und genau die will der Outreach messen.
+  it("hält die Weiterleitung durch einen Menschen für eine Antwort", () => {
+    expect(
+      ordneEin({
+        ...porta,
+        betreff: "AW: Porta Westfalica bei Balkonkraftwerken auf Platz 1",
+        text: "Guten Tag Herr Schäder,\n\nvielen Dank! Ich leite das an unsere Pressestelle weiter.\n\nS. Meier",
+      }),
+    ).toBe("antwort");
+  });
+
+  it("greift nicht bei noreply bloß im Absender", () => {
+    // Dort steht es auch über Systemmails, die inhaltlich etwas Neues sagen —
+    // als Signal taugt allein die Betreffzeile.
+    expect(
+      ordneEin({
+        von: "noreply@stadt-beispiel.de",
+        betreff: "AW: Ihre Anfrage zur Förderung",
+        text: "Guten Tag, das Programm läuft seit gestern wieder. Viele Grüße, A. Weber",
+      }),
+    ).toBe("antwort");
+  });
+
   it("lässt sich nicht von unserem eigenen zitierten Brief täuschen", () => {
     // Steht der Satz nur im ZITAT, ist es trotzdem eine Antwort.
     expect(
