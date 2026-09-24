@@ -58,6 +58,13 @@ test('painted-background policy covers the full brightness range and replaces un
  assert.equal(chooseTone(Array.from({length:100},()=>[20,25,30]),'dark').tone,'light');
  assert.equal(chooseTone(Array.from({length:100},()=>[220,225,230]),'light').tone,'dark');
 });
+test('a mid-dark dusk sky gets white, not black, when both reach the ratio',()=>{
+ // Measured 24.09.2026 on the live homepage: black at 4.51 against white at
+ // about 4.6 — equal on paper, and black read far worse next to a white headline.
+ const dusk=Array.from({length:100},()=>[118,118,118]);
+ const r=chooseTone(dusk,'strong-dark');
+ assert.equal(r.tone,'light');assert.ok(r.ratio>=4.5);
+});
 test('isolated particles do not flip a dark scene but a broad light region does',()=>{
  const dark=Array.from({length:98},()=>[20,20,20]);
  assert.equal(chooseTone([...dark,[255,255,255],[255,255,255]]).tone,'light');
