@@ -55735,5 +55735,785 @@
         "reason": "Am 24.09.2026 live gelesen: Liste der Landesmittel, die das Amt selbst erhalten hat — kein Zuschuss an Haushalte. Druckansicht derselben Seite."
       }
     ]
+  },
+  {
+    "regionId": "01061006",
+    "name": "Bahrenfleth",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Bahrenfleth 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger.",
+    "searches": [
+      "Fundstelle auf foerderverein-regionale-entwicklung.de am 24.09.2026 live geprüft (Bahrenfleth)"
+    ],
+    "evidence": [
+      {
+        "url": "https://foerderverein-regionale-entwicklung.de",
+        "finding": "Am 24.09.2026 live gelesen: Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger."
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderverein-regionale-entwicklung.de",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://foerderverein-regionale-entwicklung.de",
+        "reason": "Am 24.09.2026 live gelesen: Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger."
+      }
+    ]
+  },
+  {
+    "regionId": "01061026",
+    "name": "Elskop",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Elskop 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger.",
+    "searches": [
+      "Fundstelle auf foerderverein-regionale-entwicklung.de am 24.09.2026 live geprüft (Elskop)"
+    ],
+    "evidence": [
+      {
+        "url": "https://foerderverein-regionale-entwicklung.de",
+        "finding": "Am 24.09.2026 live gelesen: Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger."
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderverein-regionale-entwicklung.de",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://foerderverein-regionale-entwicklung.de",
+        "reason": "Am 24.09.2026 live gelesen: Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger."
+      }
+    ]
+  },
+  {
+    "regionId": "01061030",
+    "name": "Grevenkop",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Grevenkop 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger.",
+    "searches": [
+      "Fundstelle auf foerderverein-regionale-entwicklung.de am 24.09.2026 live geprüft (Grevenkop)"
+    ],
+    "evidence": [
+      {
+        "url": "https://foerderverein-regionale-entwicklung.de",
+        "finding": "Am 24.09.2026 live gelesen: Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger."
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderverein-regionale-entwicklung.de",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://foerderverein-regionale-entwicklung.de",
+        "reason": "Am 24.09.2026 live gelesen: Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger."
+      }
+    ]
+  },
+  {
+    "regionId": "01061092",
+    "name": "Rethwisch",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Rethwisch 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger.",
+    "searches": [
+      "Fundstelle auf foerderverein-regionale-entwicklung.de am 24.09.2026 live geprüft (Rethwisch)"
+    ],
+    "evidence": [
+      {
+        "url": "https://foerderverein-regionale-entwicklung.de",
+        "finding": "Am 24.09.2026 live gelesen: Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger."
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderverein-regionale-entwicklung.de",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://foerderverein-regionale-entwicklung.de",
+        "reason": "Am 24.09.2026 live gelesen: Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger."
+      }
+    ]
+  },
+  {
+    "regionId": "01061104",
+    "name": "Süderau",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Süderau 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger.",
+    "searches": [
+      "Fundstelle auf foerderverein-regionale-entwicklung.de am 24.09.2026 live geprüft (Süderau)"
+    ],
+    "evidence": [
+      {
+        "url": "https://foerderverein-regionale-entwicklung.de",
+        "finding": "Am 24.09.2026 live gelesen: Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger."
+      }
+    ],
+    "sources": [
+      {
+        "url": "foerderverein-regionale-entwicklung.de",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://foerderverein-regionale-entwicklung.de",
+        "reason": "Am 24.09.2026 live gelesen: Der Verein betreibt kommunale Websites, Intranet, Sitzungsdienst und Apps — die Adresse ist gar keine Amtsseite und führt kein Förderprogramm für Bürger."
+      }
+    ]
+  },
+  {
+    "regionId": "06437002",
+    "name": "Beerfelden",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Beerfelden 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Dorferneuerung im Rahmen des integrierten kommunalen Entwicklungskonzepts, gefördert wurden ortsbildprägende Gebäude und Ortskern-Maßnahmen. Die Seite sagt selbst: „Seit 2025 können keine neuen Anträge mehr eingereicht werden.“ Keine Technik unseres Katalogs.",
+    "searches": [
+      "Fundstelle auf stadt-oberzent.de am 24.09.2026 live geprüft (Beerfelden)"
+    ],
+    "evidence": [
+      {
+        "url": "https://stadt-oberzent.de/stadtleben/bauen-wohnen/foerderungen",
+        "finding": "Am 24.09.2026 live gelesen: Dorferneuerung im Rahmen des integrierten kommunalen Entwicklungskonzepts, gefördert wurden ortsbildprägende Gebäude und Ortskern-Maßnahmen. Die Seite sagt selbst: „Seit 2025 können keine neuen Anträge mehr eingereicht werden.“ Keine Technik unseres Katalogs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-oberzent.de/stadtleben/bauen-wohnen/foerderungen",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://stadt-oberzent.de/stadtleben/bauen-wohnen/foerderungen",
+        "reason": "Am 24.09.2026 live gelesen: Dorferneuerung im Rahmen des integrierten kommunalen Entwicklungskonzepts, gefördert wurden ortsbildprägende Gebäude und Ortskern-Maßnahmen. Die Seite sagt selbst: „Seit 2025 können keine neuen Anträge mehr eingereicht werden.“ Keine Technik unseres Katalogs."
+      }
+    ]
+  },
+  {
+    "regionId": "06437014",
+    "name": "Rothenberg",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Rothenberg 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Dorferneuerung im Rahmen des integrierten kommunalen Entwicklungskonzepts, gefördert wurden ortsbildprägende Gebäude und Ortskern-Maßnahmen. Die Seite sagt selbst: „Seit 2025 können keine neuen Anträge mehr eingereicht werden.“ Keine Technik unseres Katalogs.",
+    "searches": [
+      "Fundstelle auf stadt-oberzent.de am 24.09.2026 live geprüft (Rothenberg)"
+    ],
+    "evidence": [
+      {
+        "url": "https://stadt-oberzent.de/stadtleben/bauen-wohnen/foerderungen",
+        "finding": "Am 24.09.2026 live gelesen: Dorferneuerung im Rahmen des integrierten kommunalen Entwicklungskonzepts, gefördert wurden ortsbildprägende Gebäude und Ortskern-Maßnahmen. Die Seite sagt selbst: „Seit 2025 können keine neuen Anträge mehr eingereicht werden.“ Keine Technik unseres Katalogs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-oberzent.de/stadtleben/bauen-wohnen/foerderungen",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://stadt-oberzent.de/stadtleben/bauen-wohnen/foerderungen",
+        "reason": "Am 24.09.2026 live gelesen: Dorferneuerung im Rahmen des integrierten kommunalen Entwicklungskonzepts, gefördert wurden ortsbildprägende Gebäude und Ortskern-Maßnahmen. Die Seite sagt selbst: „Seit 2025 können keine neuen Anträge mehr eingereicht werden.“ Keine Technik unseres Katalogs."
+      }
+    ]
+  },
+  {
+    "regionId": "06437016",
+    "name": "Oberzent",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Oberzent 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Dorferneuerung im Rahmen des integrierten kommunalen Entwicklungskonzepts, gefördert wurden ortsbildprägende Gebäude und Ortskern-Maßnahmen. Die Seite sagt selbst: „Seit 2025 können keine neuen Anträge mehr eingereicht werden.“ Keine Technik unseres Katalogs.",
+    "searches": [
+      "Fundstelle auf stadt-oberzent.de am 24.09.2026 live geprüft (Oberzent)"
+    ],
+    "evidence": [
+      {
+        "url": "https://stadt-oberzent.de/stadtleben/bauen-wohnen/foerderungen",
+        "finding": "Am 24.09.2026 live gelesen: Dorferneuerung im Rahmen des integrierten kommunalen Entwicklungskonzepts, gefördert wurden ortsbildprägende Gebäude und Ortskern-Maßnahmen. Die Seite sagt selbst: „Seit 2025 können keine neuen Anträge mehr eingereicht werden.“ Keine Technik unseres Katalogs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-oberzent.de/stadtleben/bauen-wohnen/foerderungen",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://stadt-oberzent.de/stadtleben/bauen-wohnen/foerderungen",
+        "reason": "Am 24.09.2026 live gelesen: Dorferneuerung im Rahmen des integrierten kommunalen Entwicklungskonzepts, gefördert wurden ortsbildprägende Gebäude und Ortskern-Maßnahmen. Die Seite sagt selbst: „Seit 2025 können keine neuen Anträge mehr eingereicht werden.“ Keine Technik unseres Katalogs."
+      }
+    ]
+  },
+  {
+    "regionId": "07135005",
+    "name": "Auderath",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Auderath 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs.",
+    "searches": [
+      "Fundstelle auf ulmen.de am 24.09.2026 live geprüft (Auderath)"
+    ],
+    "evidence": [
+      {
+        "url": "https://ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "finding": "Am 24.09.2026 live gelesen: Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "reason": "Am 24.09.2026 live gelesen: Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs."
+      }
+    ]
+  },
+  {
+    "regionId": "07135008",
+    "name": "Beuren",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Beuren 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs.",
+    "searches": [
+      "Fundstelle auf ulmen.de am 24.09.2026 live geprüft (Beuren)"
+    ],
+    "evidence": [
+      {
+        "url": "https://ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "finding": "Am 24.09.2026 live gelesen: Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "reason": "Am 24.09.2026 live gelesen: Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs."
+      }
+    ]
+  },
+  {
+    "regionId": "07135030",
+    "name": "Filz",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Filz 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs.",
+    "searches": [
+      "Fundstelle auf ulmen.de am 24.09.2026 live geprüft (Filz)"
+    ],
+    "evidence": [
+      {
+        "url": "https://ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "finding": "Am 24.09.2026 live gelesen: Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "reason": "Am 24.09.2026 live gelesen: Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs."
+      }
+    ]
+  },
+  {
+    "regionId": "07135087",
+    "name": "Wagenhausen",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Wagenhausen 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs.",
+    "searches": [
+      "Fundstelle auf ulmen.de am 24.09.2026 live geprüft (Wagenhausen)"
+    ],
+    "evidence": [
+      {
+        "url": "https://ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "finding": "Am 24.09.2026 live gelesen: Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://ulmen.de/buergerservice/zuschuesse-fuer-investitionen",
+        "reason": "Am 24.09.2026 live gelesen: Gemeinschaftsaufgabe „Förderung der regionalen Wirtschaftsstruktur“ für kleine und mittlere Unternehmen und Beherbergungsbetriebe über die Investitions- und Strukturbank Rheinland-Pfalz. Keine Privathaushalte, keine Technik unseres Katalogs."
+      }
+    ]
+  },
+  {
+    "regionId": "12065100",
+    "name": "Gransee",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Gransee 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort.",
+    "searches": [
+      "Fundstelle auf gransee.de am 24.09.2026 live geprüft (Gransee)"
+    ],
+    "evidence": [
+      {
+        "url": "https://gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "finding": "Am 24.09.2026 live gelesen: Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "reason": "Am 24.09.2026 live gelesen: Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ]
+  },
+  {
+    "regionId": "12065117",
+    "name": "Großwoltersdorf",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Großwoltersdorf 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort.",
+    "searches": [
+      "Fundstelle auf gransee.de am 24.09.2026 live geprüft (Großwoltersdorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "finding": "Am 24.09.2026 live gelesen: Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "reason": "Am 24.09.2026 live gelesen: Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ]
+  },
+  {
+    "regionId": "12065276",
+    "name": "Schönermark",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Schönermark 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort.",
+    "searches": [
+      "Fundstelle auf gransee.de am 24.09.2026 live geprüft (Schönermark)"
+    ],
+    "evidence": [
+      {
+        "url": "https://gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "finding": "Am 24.09.2026 live gelesen: Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "reason": "Am 24.09.2026 live gelesen: Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ]
+  },
+  {
+    "regionId": "12065301",
+    "name": "Sonnenberg",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Sonnenberg 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort.",
+    "searches": [
+      "Fundstelle auf gransee.de am 24.09.2026 live geprüft (Sonnenberg)"
+    ],
+    "evidence": [
+      {
+        "url": "https://gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "finding": "Am 24.09.2026 live gelesen: Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://gransee.de/politik-verwaltung/verwaltung/foerdermittel",
+        "reason": "Am 24.09.2026 live gelesen: Pflichtveröffentlichung der Fördervorhaben des Amtes selbst (Spielplätze, Dorfgemeinschaftshaus, Trauerhalle, Waldwege). Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ]
+  },
+  {
+    "regionId": "13072057",
+    "name": "Kritzmow",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Kritzmow 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger.",
+    "searches": [
+      "Fundstelle auf amt-warnow-west.de am 24.09.2026 live geprüft (Kritzmow)"
+    ],
+    "evidence": [
+      {
+        "url": "https://amt-warnow-west.de/foerderungen",
+        "finding": "Am 24.09.2026 live gelesen: EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-warnow-west.de/foerderungen",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://amt-warnow-west.de/foerderungen",
+        "reason": "Am 24.09.2026 live gelesen: EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger."
+      }
+    ]
+  },
+  {
+    "regionId": "13072080",
+    "name": "Pölchow",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Pölchow 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger.",
+    "searches": [
+      "Fundstelle auf amt-warnow-west.de am 24.09.2026 live geprüft (Pölchow)"
+    ],
+    "evidence": [
+      {
+        "url": "https://amt-warnow-west.de/foerderungen",
+        "finding": "Am 24.09.2026 live gelesen: EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-warnow-west.de/foerderungen",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://amt-warnow-west.de/foerderungen",
+        "reason": "Am 24.09.2026 live gelesen: EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger."
+      }
+    ]
+  },
+  {
+    "regionId": "13072098",
+    "name": "Stäbelow",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Stäbelow 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger.",
+    "searches": [
+      "Fundstelle auf amt-warnow-west.de am 24.09.2026 live geprüft (Stäbelow)"
+    ],
+    "evidence": [
+      {
+        "url": "https://amt-warnow-west.de/foerderungen",
+        "finding": "Am 24.09.2026 live gelesen: EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-warnow-west.de/foerderungen",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://amt-warnow-west.de/foerderungen",
+        "reason": "Am 24.09.2026 live gelesen: EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger."
+      }
+    ]
+  },
+  {
+    "regionId": "13072121",
+    "name": "Ziesendorf",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Ziesendorf 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger.",
+    "searches": [
+      "Fundstelle auf amt-warnow-west.de am 24.09.2026 live geprüft (Ziesendorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://amt-warnow-west.de/foerderungen",
+        "finding": "Am 24.09.2026 live gelesen: EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger."
+      }
+    ],
+    "sources": [
+      {
+        "url": "amt-warnow-west.de/foerderungen",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://amt-warnow-west.de/foerderungen",
+        "reason": "Am 24.09.2026 live gelesen: EU- und Landesmittel für LED-Straßenbeleuchtung, Bushaltestellen und Schulsozialarbeit sowie die Klimaschutzrichtlinie Kommunen MV. Empfänger sind die Gemeinden des Amtes, nicht ihre Bürger."
+      }
+    ]
+  },
+  {
+    "regionId": "15085125",
+    "name": "Groß Quenstedt",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Groß Quenstedt 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite.",
+    "searches": [
+      "Fundstelle auf vorharz.net am 24.09.2026 live geprüft (Groß Quenstedt)"
+    ],
+    "evidence": [
+      {
+        "url": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "finding": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vorharz.net/de/gefoerderte_projekte.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ]
+  },
+  {
+    "regionId": "15085140",
+    "name": "Harsleben / Harschlewe",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Harsleben / Harschlewe 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite.",
+    "searches": [
+      "Fundstelle auf vorharz.net am 24.09.2026 live geprüft (Harsleben / Harschlewe)"
+    ],
+    "evidence": [
+      {
+        "url": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "finding": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vorharz.net/de/gefoerderte_projekte.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ]
+  },
+  {
+    "regionId": "15085160",
+    "name": "Hedersleben",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Hedersleben 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite.",
+    "searches": [
+      "Fundstelle auf vorharz.net am 24.09.2026 live geprüft (Hedersleben)"
+    ],
+    "evidence": [
+      {
+        "url": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "finding": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vorharz.net/de/gefoerderte_projekte.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ]
+  },
+  {
+    "regionId": "15085285",
+    "name": "Schwanebeck",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Schwanebeck 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite.",
+    "searches": [
+      "Fundstelle auf vorharz.net am 24.09.2026 live geprüft (Schwanebeck)"
+    ],
+    "evidence": [
+      {
+        "url": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "finding": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vorharz.net/de/gefoerderte_projekte.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ]
+  },
+  {
+    "regionId": "15085287",
+    "name": "Selke-Aue",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Selke-Aue 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite.",
+    "searches": [
+      "Fundstelle auf vorharz.net am 24.09.2026 live geprüft (Selke-Aue)"
+    ],
+    "evidence": [
+      {
+        "url": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "finding": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vorharz.net/de/gefoerderte_projekte.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ]
+  },
+  {
+    "regionId": "15085365",
+    "name": "Wegeleben",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Wegeleben 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite.",
+    "searches": [
+      "Fundstelle auf vorharz.net am 24.09.2026 live geprüft (Wegeleben)"
+    ],
+    "evidence": [
+      {
+        "url": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "finding": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vorharz.net/de/gefoerderte_projekte.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://vorharz.net/de/gefoerderte_projekte.html",
+        "reason": "Am 24.09.2026 live gelesen: Liste der von der Verbandsgemeinde und ihren Mitgliedsgemeinden selbst realisierten Vorhaben (Löschwasserzisterne, Park-and-Ride-Anlage, Brücke, Spielplätze) aus Landes-, Bundes- und EU-Mitteln — die bekannte Umkehrung, kein Zuschuss an Haushalte. Kein Technikwort auf der Seite."
+      }
+    ]
+  },
+  {
+    "regionId": "15088030",
+    "name": "Barnstädt",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Barnstädt 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort.",
+    "searches": [
+      "Fundstelle auf weida-land.de am 24.09.2026 live geprüft (Barnstädt)"
+    ],
+    "evidence": [
+      {
+        "url": "https://weida-land.de/de/foerderprojekte.html",
+        "finding": "Am 24.09.2026 live gelesen: Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "weida-land.de/de/foerderprojekte.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://weida-land.de/de/foerderprojekte.html",
+        "reason": "Am 24.09.2026 live gelesen: Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ]
+  },
+  {
+    "regionId": "15088100",
+    "name": "Farnstädt",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Farnstädt 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort.",
+    "searches": [
+      "Fundstelle auf weida-land.de am 24.09.2026 live geprüft (Farnstädt)"
+    ],
+    "evidence": [
+      {
+        "url": "https://weida-land.de/de/foerderprojekte.html",
+        "finding": "Am 24.09.2026 live gelesen: Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "weida-land.de/de/foerderprojekte.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://weida-land.de/de/foerderprojekte.html",
+        "reason": "Am 24.09.2026 live gelesen: Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ]
+  },
+  {
+    "regionId": "15088250",
+    "name": "Nemsdorf-Göhrendorf",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Nemsdorf-Göhrendorf 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort.",
+    "searches": [
+      "Fundstelle auf weida-land.de am 24.09.2026 live geprüft (Nemsdorf-Göhrendorf)"
+    ],
+    "evidence": [
+      {
+        "url": "https://weida-land.de/de/foerderprojekte.html",
+        "finding": "Am 24.09.2026 live gelesen: Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "weida-land.de/de/foerderprojekte.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://weida-land.de/de/foerderprojekte.html",
+        "reason": "Am 24.09.2026 live gelesen: Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ]
+  },
+  {
+    "regionId": "15088355",
+    "name": "Steigra",
+    "checkedAt": "2026-09-24T00:27:41Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für Steigra 1 Fundstelle(n).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort.",
+    "searches": [
+      "Fundstelle auf weida-land.de am 24.09.2026 live geprüft (Steigra)"
+    ],
+    "evidence": [
+      {
+        "url": "https://weida-land.de/de/foerderprojekte.html",
+        "finding": "Am 24.09.2026 live gelesen: Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ],
+    "sources": [
+      {
+        "url": "weida-land.de/de/foerderprojekte.html",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://weida-land.de/de/foerderprojekte.html",
+        "reason": "Am 24.09.2026 live gelesen: Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort."
+      }
+    ]
   }
 ]
