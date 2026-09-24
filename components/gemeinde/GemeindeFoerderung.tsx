@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Modal from "../Modal";
+import ContactForm from "../ContactForm";
 import { FundingStatusBadge, FundingRates, FundingConditions, istDachSicht } from "../FundingProgramParts";
 import { saetzeFuer, technikenVon, type FundingProgram, type FundingTechnik } from "../../lib/funding-programs";
 
@@ -60,6 +62,7 @@ export default function GemeindeFoerderung({
 }) {
   const [offen, setOffen] = useState<FoerderProgrammAnsicht | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const [meldung, setMeldung] = useState<FoerderProgrammAnsicht | null>(null);
 
   useEffect(() => {
     if (offen) dialog.current?.showModal();
@@ -89,9 +92,15 @@ export default function GemeindeFoerderung({
                   <h3>{p.programm.name}</h3>
                   <p>{satz ? `${satz.value}${satz.label ? ` · ${satz.label}` : ""}` : p.programm.coveredCosts}</p>
                   <p className="gemeinde-foerder-ebene"><a href={p.programm.url} target="_blank" rel="noopener noreferrer">{p.programm.traeger} ↗</a></p>
+                <div className="gemeinde-foerder-aktionen">
                 <button type="button" className="v3-example-cta sc-feature-action" onClick={() => setOffen(p)}>
                   Einzelheiten {pfeil}
                 </button>
+                <button type="button" className="v3-example-cta sc-feature-action gemeinde-foerder-melden" onClick={() => setMeldung(p)}>
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 21V4m0 0c5-4 9 4 14 0v10c-5 4-9-4-14 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  Änderung melden
+                </button>
+                </div>
                 </div>
               </article>
             );
@@ -118,6 +127,14 @@ export default function GemeindeFoerderung({
         <summary>Archiv: derzeit nicht verfügbare Förderprogramme ({archiv.length})</summary>
         {karten(archiv)}
       </details>}
+
+      <Modal open={meldung !== null} onClose={() => setMeldung(null)} title="Änderung melden" maxWidth={600}>
+        {meldung && <>
+          <p>{meldung.programm.name} · {ort}</p>
+          <p>Was hat sich geändert? Ein Hinweis oder ein Link zur aktuellen Information hilft uns bei der Prüfung.</p>
+          <ContactForm key={meldung.programm.id} initialTopic="Fehler melden" initialMessage={`Änderung zum Förderprogramm: ${meldung.programm.name}\nOrt: ${ort}\nFördergeber: ${meldung.programm.traeger}\nQuelle: ${meldung.programm.url}\n\nDas hat sich geändert:\n`} />
+        </>}
+      </Modal>
 
       {/* aria-modal, damit die Farbtoken der Site in diesem Fenster gelten —
           die Sätze und Bedingungen kommen aus den geteilten Bausteinen. */}

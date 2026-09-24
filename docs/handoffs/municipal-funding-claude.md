@@ -39,3 +39,7 @@ Die Richtlinie allein belegt nicht den aktuellen Mittelstand. Für dessen Bewert
 ## Abnahme bei Integration
 
 Meinersen: aktives PV-Programm oben; ausgeschöpfter Kreis-Balkonzuschuss im geschlossenen Archiv; beide offizielle Quellenlinks korrekt; Einzelheiten weiterhin erreichbar; am Balkon-Beispiel kein Hinweis „Förderung verfügbar“ wegen des ausgeschöpften Programms. Desktop und mobil visuell prüfen. Keine Tests abschwächen und keine parallele Statusquelle anlegen.
+
+## Ergänzung: Änderung melden
+
+Jede Förderkarte hat neben Einzelheiten einen Button mit Flaggen-Icon. Er öffnet den bestehenden Modal-Baustein (mobil Bottomsheet) mit ContactForm, Thema Fehler melden und vorbelegtem Programm, Ort, Fördergeber und Quellenlink. Versand ausschließlich über den bestehenden Kontakt-Endpunkt; keine neue Route, Datenablage oder automatische Statusänderung. Desktop und Mobilansicht geprüft, keine Testnachricht verschickt. Weitere Backend-Integration bleibt bei Claude.
