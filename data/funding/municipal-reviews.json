@@ -60245,5 +60245,480 @@
         "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj"
       }
     ]
+  },
+  {
+    "regionId": "16077009",
+    "name": "Göllnitz",
+    "checkedAt": "2026-09-24T12:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Göllnitz gehört zur Verwaltungsgemeinschaft Rositz (Landkreis Altenburger Land, Thüringen). Kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die einzige Förderseite der VG listet ausschließlich geförderte Bauvorhaben der Gemeinde Starkenberg (Spielplatz, Kegelbahn, Sportlerheim, Fenster, Heizung der Begegnungsstätte, Abbruch Feuerwehrgebäude). Die Website-Suche der VG liefert für Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz keinen Treffer, für „Solar\" nur die Bauleitpläne. Der Landkreis nennt als Fördermöglichkeiten nur Wirtschafts-, Gründer- und Arbeitsförderung (GFAW, TAB, IHK), kein Programm für Privathaushalte; der Katalog führt kein Landesprogramm für Thüringen.",
+    "searches": [
+      "Förderseite der VG Rositz gelesen (24.09.2026)",
+      "Website-Suche der VG: Photovoltaik, Solar, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Fördermöglichkeiten des Landratsamts Altenburger Land gelesen",
+      "Websuche nach Programmen im Altenburger Land und in den Mitgliedsgemeinden (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html",
+        "finding": "„Aktuelle Fördermaßnahmen — GEMEINDE STARKENBERG: Erweiterung Spielplatz Neuposa, Kegelbahn Kleinröda, Sportlerheim Starkenberg, Erneuerung Fenster Saalgebäude Naundorf, Modernisierung Wärmeerzeugungsanlage Begegnungsstätte Neuposa, Abbruch altes Feuerwehrgebäude\" — geförderte Bauvorhaben der Gemeinde, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.vg-rositz.de/suche/index.php",
+        "finding": "Suche nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz: „Leider keine Treffer gefunden\"; Solar: nur „Bauleitpläne der Mitgliedsgemeinden mit Bestandskraft\"."
+      },
+      {
+        "url": "https://www.altenburgerland.de/de/landkreis/wirtschaft-verkehr/foerdermoeglichkeiten",
+        "finding": "Fördermöglichkeiten des Landkreises: Fachdienst Wirtschaft, GFAW-Beratertage, Thüringer Aufbaubank, IHK — kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-rositz.de/contact/index/link",
+        "finding": "Kontaktformular-Link der VG, antwortet am 24.09.2026 mit HTTP 404; kein Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: nur geförderte Bauvorhaben der Gemeinde Starkenberg.",
+        "evidenceUrl": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html"
+      },
+      {
+        "url": "vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Förderseite; durch das gelesene Original erledigt.",
+        "evidenceUrl": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html"
+      },
+      {
+        "url": "vg-rositz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular-Link, HTTP 404, kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-rositz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16077022",
+    "name": "Kriebitzsch",
+    "checkedAt": "2026-09-24T12:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kriebitzsch gehört zur Verwaltungsgemeinschaft Rositz (Landkreis Altenburger Land, Thüringen). Kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die einzige Förderseite der VG listet ausschließlich geförderte Bauvorhaben der Gemeinde Starkenberg (Spielplatz, Kegelbahn, Sportlerheim, Fenster, Heizung der Begegnungsstätte, Abbruch Feuerwehrgebäude). Die Website-Suche der VG liefert für Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz keinen Treffer, für „Solar\" nur die Bauleitpläne. Der Landkreis nennt als Fördermöglichkeiten nur Wirtschafts-, Gründer- und Arbeitsförderung (GFAW, TAB, IHK), kein Programm für Privathaushalte; der Katalog führt kein Landesprogramm für Thüringen.",
+    "searches": [
+      "Förderseite der VG Rositz gelesen (24.09.2026)",
+      "Website-Suche der VG: Photovoltaik, Solar, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Fördermöglichkeiten des Landratsamts Altenburger Land gelesen",
+      "Websuche nach Programmen im Altenburger Land und in den Mitgliedsgemeinden (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html",
+        "finding": "„Aktuelle Fördermaßnahmen — GEMEINDE STARKENBERG: Erweiterung Spielplatz Neuposa, Kegelbahn Kleinröda, Sportlerheim Starkenberg, Erneuerung Fenster Saalgebäude Naundorf, Modernisierung Wärmeerzeugungsanlage Begegnungsstätte Neuposa, Abbruch altes Feuerwehrgebäude\" — geförderte Bauvorhaben der Gemeinde, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.vg-rositz.de/suche/index.php",
+        "finding": "Suche nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz: „Leider keine Treffer gefunden\"; Solar: nur „Bauleitpläne der Mitgliedsgemeinden mit Bestandskraft\"."
+      },
+      {
+        "url": "https://www.altenburgerland.de/de/landkreis/wirtschaft-verkehr/foerdermoeglichkeiten",
+        "finding": "Fördermöglichkeiten des Landkreises: Fachdienst Wirtschaft, GFAW-Beratertage, Thüringer Aufbaubank, IHK — kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-rositz.de/contact/index/link",
+        "finding": "Kontaktformular-Link der VG, antwortet am 24.09.2026 mit HTTP 404; kein Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: nur geförderte Bauvorhaben der Gemeinde Starkenberg.",
+        "evidenceUrl": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html"
+      },
+      {
+        "url": "vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Förderseite; durch das gelesene Original erledigt.",
+        "evidenceUrl": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html"
+      },
+      {
+        "url": "vg-rositz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular-Link, HTTP 404, kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-rositz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16077027",
+    "name": "Lödla",
+    "checkedAt": "2026-09-24T12:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Lödla gehört zur Verwaltungsgemeinschaft Rositz (Landkreis Altenburger Land, Thüringen). Kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die einzige Förderseite der VG listet ausschließlich geförderte Bauvorhaben der Gemeinde Starkenberg (Spielplatz, Kegelbahn, Sportlerheim, Fenster, Heizung der Begegnungsstätte, Abbruch Feuerwehrgebäude). Die Website-Suche der VG liefert für Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz keinen Treffer, für „Solar\" nur die Bauleitpläne. Der Landkreis nennt als Fördermöglichkeiten nur Wirtschafts-, Gründer- und Arbeitsförderung (GFAW, TAB, IHK), kein Programm für Privathaushalte; der Katalog führt kein Landesprogramm für Thüringen.",
+    "searches": [
+      "Förderseite der VG Rositz gelesen (24.09.2026)",
+      "Website-Suche der VG: Photovoltaik, Solar, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Fördermöglichkeiten des Landratsamts Altenburger Land gelesen",
+      "Websuche nach Programmen im Altenburger Land und in den Mitgliedsgemeinden (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html",
+        "finding": "„Aktuelle Fördermaßnahmen — GEMEINDE STARKENBERG: Erweiterung Spielplatz Neuposa, Kegelbahn Kleinröda, Sportlerheim Starkenberg, Erneuerung Fenster Saalgebäude Naundorf, Modernisierung Wärmeerzeugungsanlage Begegnungsstätte Neuposa, Abbruch altes Feuerwehrgebäude\" — geförderte Bauvorhaben der Gemeinde, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.vg-rositz.de/suche/index.php",
+        "finding": "Suche nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz: „Leider keine Treffer gefunden\"; Solar: nur „Bauleitpläne der Mitgliedsgemeinden mit Bestandskraft\"."
+      },
+      {
+        "url": "https://www.altenburgerland.de/de/landkreis/wirtschaft-verkehr/foerdermoeglichkeiten",
+        "finding": "Fördermöglichkeiten des Landkreises: Fachdienst Wirtschaft, GFAW-Beratertage, Thüringer Aufbaubank, IHK — kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-rositz.de/contact/index/link",
+        "finding": "Kontaktformular-Link der VG, antwortet am 24.09.2026 mit HTTP 404; kein Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: nur geförderte Bauvorhaben der Gemeinde Starkenberg.",
+        "evidenceUrl": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html"
+      },
+      {
+        "url": "vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Förderseite; durch das gelesene Original erledigt.",
+        "evidenceUrl": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html"
+      },
+      {
+        "url": "vg-rositz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular-Link, HTTP 404, kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-rositz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16077031",
+    "name": "Mehna",
+    "checkedAt": "2026-09-24T12:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mehna gehört zur Verwaltungsgemeinschaft Rositz (Landkreis Altenburger Land, Thüringen). Kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die einzige Förderseite der VG listet ausschließlich geförderte Bauvorhaben der Gemeinde Starkenberg (Spielplatz, Kegelbahn, Sportlerheim, Fenster, Heizung der Begegnungsstätte, Abbruch Feuerwehrgebäude). Die Website-Suche der VG liefert für Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz keinen Treffer, für „Solar\" nur die Bauleitpläne. Der Landkreis nennt als Fördermöglichkeiten nur Wirtschafts-, Gründer- und Arbeitsförderung (GFAW, TAB, IHK), kein Programm für Privathaushalte; der Katalog führt kein Landesprogramm für Thüringen.",
+    "searches": [
+      "Förderseite der VG Rositz gelesen (24.09.2026)",
+      "Website-Suche der VG: Photovoltaik, Solar, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Fördermöglichkeiten des Landratsamts Altenburger Land gelesen",
+      "Websuche nach Programmen im Altenburger Land und in den Mitgliedsgemeinden (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html",
+        "finding": "„Aktuelle Fördermaßnahmen — GEMEINDE STARKENBERG: Erweiterung Spielplatz Neuposa, Kegelbahn Kleinröda, Sportlerheim Starkenberg, Erneuerung Fenster Saalgebäude Naundorf, Modernisierung Wärmeerzeugungsanlage Begegnungsstätte Neuposa, Abbruch altes Feuerwehrgebäude\" — geförderte Bauvorhaben der Gemeinde, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.vg-rositz.de/suche/index.php",
+        "finding": "Suche nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz: „Leider keine Treffer gefunden\"; Solar: nur „Bauleitpläne der Mitgliedsgemeinden mit Bestandskraft\"."
+      },
+      {
+        "url": "https://www.altenburgerland.de/de/landkreis/wirtschaft-verkehr/foerdermoeglichkeiten",
+        "finding": "Fördermöglichkeiten des Landkreises: Fachdienst Wirtschaft, GFAW-Beratertage, Thüringer Aufbaubank, IHK — kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-rositz.de/contact/index/link",
+        "finding": "Kontaktformular-Link der VG, antwortet am 24.09.2026 mit HTTP 404; kein Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: nur geförderte Bauvorhaben der Gemeinde Starkenberg.",
+        "evidenceUrl": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html"
+      },
+      {
+        "url": "vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Förderseite; durch das gelesene Original erledigt.",
+        "evidenceUrl": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html"
+      },
+      {
+        "url": "vg-rositz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular-Link, HTTP 404, kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-rositz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "16077034",
+    "name": "Monstab",
+    "checkedAt": "2026-09-24T12:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Monstab gehört zur Verwaltungsgemeinschaft Rositz (Landkreis Altenburger Land, Thüringen). Kein Zuschussprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die einzige Förderseite der VG listet ausschließlich geförderte Bauvorhaben der Gemeinde Starkenberg (Spielplatz, Kegelbahn, Sportlerheim, Fenster, Heizung der Begegnungsstätte, Abbruch Feuerwehrgebäude). Die Website-Suche der VG liefert für Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz keinen Treffer, für „Solar\" nur die Bauleitpläne. Der Landkreis nennt als Fördermöglichkeiten nur Wirtschafts-, Gründer- und Arbeitsförderung (GFAW, TAB, IHK), kein Programm für Privathaushalte; der Katalog führt kein Landesprogramm für Thüringen.",
+    "searches": [
+      "Förderseite der VG Rositz gelesen (24.09.2026)",
+      "Website-Suche der VG: Photovoltaik, Solar, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Fördermöglichkeiten des Landratsamts Altenburger Land gelesen",
+      "Websuche nach Programmen im Altenburger Land und in den Mitgliedsgemeinden (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html",
+        "finding": "„Aktuelle Fördermaßnahmen — GEMEINDE STARKENBERG: Erweiterung Spielplatz Neuposa, Kegelbahn Kleinröda, Sportlerheim Starkenberg, Erneuerung Fenster Saalgebäude Naundorf, Modernisierung Wärmeerzeugungsanlage Begegnungsstätte Neuposa, Abbruch altes Feuerwehrgebäude\" — geförderte Bauvorhaben der Gemeinde, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.vg-rositz.de/suche/index.php",
+        "finding": "Suche nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz: „Leider keine Treffer gefunden\"; Solar: nur „Bauleitpläne der Mitgliedsgemeinden mit Bestandskraft\"."
+      },
+      {
+        "url": "https://www.altenburgerland.de/de/landkreis/wirtschaft-verkehr/foerdermoeglichkeiten",
+        "finding": "Fördermöglichkeiten des Landkreises: Fachdienst Wirtschaft, GFAW-Beratertage, Thüringer Aufbaubank, IHK — kein Zuschuss für private PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.vg-rositz.de/contact/index/link",
+        "finding": "Kontaktformular-Link der VG, antwortet am 24.09.2026 mit HTTP 404; kein Förderinhalt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html",
+        "disposition": "reviewed",
+        "reason": "Förderseite der VG gelesen: nur geförderte Bauvorhaben der Gemeinde Starkenberg.",
+        "evidenceUrl": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html"
+      },
+      {
+        "url": "vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html?modus=drucken",
+        "disposition": "replaced",
+        "reason": "Druckansicht derselben Förderseite; durch das gelesene Original erledigt.",
+        "evidenceUrl": "https://www.vg-rositz.de/seite/712160/aktuelle-f%C3%B6rderma%C3%9Fnahmen-publikationen.html"
+      },
+      {
+        "url": "vg-rositz.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular-Link, HTTP 404, kein Förderinhalt.",
+        "evidenceUrl": "https://www.vg-rositz.de/contact/index/link"
+      }
+    ]
+  },
+  {
+    "regionId": "12073032",
+    "name": "Berkholz-Meyenburg",
+    "checkedAt": "2026-09-24T12:50:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Berkholz-Meyenburg (Landkreis Uckermark, früher Amt Oder-Welse; die Stadt Schwedt/Oder ist Rechtsnachfolgerin des Amtes und führt den Ort heute als Ortsteil). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Beide erfassten Adressen beschreiben Projekte, die die Stadt selbst gefördert bekam (INTERREG-Kulturprojekt mit der Universität Szczecin; Liste der Förderprojekte von Feuerwehr bis Schulhof). Die Volltextsuche der Stadt (24.09.2026) liefert für „Balkonkraftwerk\" keinen Treffer, für Photovoltaik und Solar nur Bebauungspläne für Freiflächen- und Solarparks und eine Ausschreibung für das eigene TRAVIS-Gebäude, für Förderprogramm und Zuschuss nur Unternehmens-, Kultur- und Ortsteilförderung, für Wärmepumpe nur eine Info-Veranstaltung 2023 und einen Hinweis auf die Bundesförderung.",
+    "searches": [
+      "Beide erfassten Förderseiten der Stadt Schwedt/Oder gelesen (24.09.2026)",
+      "Volltextsuche schwedt.eu: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen der Stadt und der Stadtwerke Schwedt (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620",
+        "finding": "INTERREG-Förderung: „Die Projekte werden durch die Europäische Union aus Mitteln des Fonds für Regionale Entwicklung (EFRE) kofinanziert … Bei diesem Projekt ist die Stadt Schwedt/Oder Leadpartner und die Universität Szczecin Projektpartner.\" Kulturprojekt, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402",
+        "finding": "Förderprojekte: Löschgruppenfahrzeug, Sprachprojekt, Wasserwanderrastplatz, Schulumbau, Fahrradboxen u. a. — geförderte Vorhaben der Stadt, kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.schwedt.eu/de/suchergebnisse/mais2_int.c.23555.de",
+        "finding": "Volltextsuche (POST) am 24.09.2026: „Balkonkraftwerk ergab 0 Treffer\"; Photovoltaik 38 und Solar 39 Treffer nur Bebauungspläne für Freiflächen-/Solarparks und eine Ausschreibung; Förderprogramm/Zuschuss nur JTF-Unternehmensförderung, Kultur- und Ortsteilförderung; Wärmepumpe 3 Treffer, darunter nur eine Veranstaltung 2023 und ein BAFA-Hinweis."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620",
+        "disposition": "reviewed",
+        "reason": "INTERREG-Kulturprojekt der Stadt, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620"
+      },
+      {
+        "url": "schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Vorhaben der Stadt, kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402"
+      }
+    ]
+  },
+  {
+    "regionId": "12073440",
+    "name": "Pinnow",
+    "checkedAt": "2026-09-24T12:50:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Pinnow (Landkreis Uckermark, von der Stadt Schwedt/Oder verwaltet (Gemeindeportal unter schwedt.eu/pinnow)). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Beide erfassten Adressen beschreiben Projekte, die die Stadt selbst gefördert bekam (INTERREG-Kulturprojekt mit der Universität Szczecin; Liste der Förderprojekte von Feuerwehr bis Schulhof). Die Volltextsuche der Stadt (24.09.2026) liefert für „Balkonkraftwerk\" keinen Treffer, für Photovoltaik und Solar nur Bebauungspläne für Freiflächen- und Solarparks und eine Ausschreibung für das eigene TRAVIS-Gebäude, für Förderprogramm und Zuschuss nur Unternehmens-, Kultur- und Ortsteilförderung, für Wärmepumpe nur eine Info-Veranstaltung 2023 und einen Hinweis auf die Bundesförderung.",
+    "searches": [
+      "Beide erfassten Förderseiten der Stadt Schwedt/Oder gelesen (24.09.2026)",
+      "Volltextsuche schwedt.eu: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen der Stadt und der Stadtwerke Schwedt (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620",
+        "finding": "INTERREG-Förderung: „Die Projekte werden durch die Europäische Union aus Mitteln des Fonds für Regionale Entwicklung (EFRE) kofinanziert … Bei diesem Projekt ist die Stadt Schwedt/Oder Leadpartner und die Universität Szczecin Projektpartner.\" Kulturprojekt, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402",
+        "finding": "Förderprojekte: Löschgruppenfahrzeug, Sprachprojekt, Wasserwanderrastplatz, Schulumbau, Fahrradboxen u. a. — geförderte Vorhaben der Stadt, kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.schwedt.eu/de/suchergebnisse/mais2_int.c.23555.de",
+        "finding": "Volltextsuche (POST) am 24.09.2026: „Balkonkraftwerk ergab 0 Treffer\"; Photovoltaik 38 und Solar 39 Treffer nur Bebauungspläne für Freiflächen-/Solarparks und eine Ausschreibung; Förderprogramm/Zuschuss nur JTF-Unternehmensförderung, Kultur- und Ortsteilförderung; Wärmepumpe 3 Treffer, darunter nur eine Veranstaltung 2023 und ein BAFA-Hinweis."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620",
+        "disposition": "reviewed",
+        "reason": "INTERREG-Kulturprojekt der Stadt, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620"
+      },
+      {
+        "url": "schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Vorhaben der Stadt, kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402"
+      }
+    ]
+  },
+  {
+    "regionId": "12073505",
+    "name": "Schöneberg",
+    "checkedAt": "2026-09-24T12:50:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schöneberg (Landkreis Uckermark, früher Amt Oder-Welse; die Stadt Schwedt/Oder ist Rechtsnachfolgerin des Amtes und führt den Ort heute als Ortsteil). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Beide erfassten Adressen beschreiben Projekte, die die Stadt selbst gefördert bekam (INTERREG-Kulturprojekt mit der Universität Szczecin; Liste der Förderprojekte von Feuerwehr bis Schulhof). Die Volltextsuche der Stadt (24.09.2026) liefert für „Balkonkraftwerk\" keinen Treffer, für Photovoltaik und Solar nur Bebauungspläne für Freiflächen- und Solarparks und eine Ausschreibung für das eigene TRAVIS-Gebäude, für Förderprogramm und Zuschuss nur Unternehmens-, Kultur- und Ortsteilförderung, für Wärmepumpe nur eine Info-Veranstaltung 2023 und einen Hinweis auf die Bundesförderung.",
+    "searches": [
+      "Beide erfassten Förderseiten der Stadt Schwedt/Oder gelesen (24.09.2026)",
+      "Volltextsuche schwedt.eu: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen der Stadt und der Stadtwerke Schwedt (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620",
+        "finding": "INTERREG-Förderung: „Die Projekte werden durch die Europäische Union aus Mitteln des Fonds für Regionale Entwicklung (EFRE) kofinanziert … Bei diesem Projekt ist die Stadt Schwedt/Oder Leadpartner und die Universität Szczecin Projektpartner.\" Kulturprojekt, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402",
+        "finding": "Förderprojekte: Löschgruppenfahrzeug, Sprachprojekt, Wasserwanderrastplatz, Schulumbau, Fahrradboxen u. a. — geförderte Vorhaben der Stadt, kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.schwedt.eu/de/suchergebnisse/mais2_int.c.23555.de",
+        "finding": "Volltextsuche (POST) am 24.09.2026: „Balkonkraftwerk ergab 0 Treffer\"; Photovoltaik 38 und Solar 39 Treffer nur Bebauungspläne für Freiflächen-/Solarparks und eine Ausschreibung; Förderprogramm/Zuschuss nur JTF-Unternehmensförderung, Kultur- und Ortsteilförderung; Wärmepumpe 3 Treffer, darunter nur eine Veranstaltung 2023 und ein BAFA-Hinweis."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620",
+        "disposition": "reviewed",
+        "reason": "INTERREG-Kulturprojekt der Stadt, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620"
+      },
+      {
+        "url": "schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Vorhaben der Stadt, kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402"
+      }
+    ]
+  },
+  {
+    "regionId": "12073532",
+    "name": "Schwedt/Oder",
+    "checkedAt": "2026-09-24T12:50:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Schwedt/Oder (Landkreis Uckermark, Stadt Schwedt/Oder). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Beide erfassten Adressen beschreiben Projekte, die die Stadt selbst gefördert bekam (INTERREG-Kulturprojekt mit der Universität Szczecin; Liste der Förderprojekte von Feuerwehr bis Schulhof). Die Volltextsuche der Stadt (24.09.2026) liefert für „Balkonkraftwerk\" keinen Treffer, für Photovoltaik und Solar nur Bebauungspläne für Freiflächen- und Solarparks und eine Ausschreibung für das eigene TRAVIS-Gebäude, für Förderprogramm und Zuschuss nur Unternehmens-, Kultur- und Ortsteilförderung, für Wärmepumpe nur eine Info-Veranstaltung 2023 und einen Hinweis auf die Bundesförderung.",
+    "searches": [
+      "Beide erfassten Förderseiten der Stadt Schwedt/Oder gelesen (24.09.2026)",
+      "Volltextsuche schwedt.eu: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen der Stadt und der Stadtwerke Schwedt (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620",
+        "finding": "INTERREG-Förderung: „Die Projekte werden durch die Europäische Union aus Mitteln des Fonds für Regionale Entwicklung (EFRE) kofinanziert … Bei diesem Projekt ist die Stadt Schwedt/Oder Leadpartner und die Universität Szczecin Projektpartner.\" Kulturprojekt, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402",
+        "finding": "Förderprojekte: Löschgruppenfahrzeug, Sprachprojekt, Wasserwanderrastplatz, Schulumbau, Fahrradboxen u. a. — geförderte Vorhaben der Stadt, kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.schwedt.eu/de/suchergebnisse/mais2_int.c.23555.de",
+        "finding": "Volltextsuche (POST) am 24.09.2026: „Balkonkraftwerk ergab 0 Treffer\"; Photovoltaik 38 und Solar 39 Treffer nur Bebauungspläne für Freiflächen-/Solarparks und eine Ausschreibung; Förderprogramm/Zuschuss nur JTF-Unternehmensförderung, Kultur- und Ortsteilförderung; Wärmepumpe 3 Treffer, darunter nur eine Veranstaltung 2023 und ein BAFA-Hinweis."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620",
+        "disposition": "reviewed",
+        "reason": "INTERREG-Kulturprojekt der Stadt, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620"
+      },
+      {
+        "url": "schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Vorhaben der Stadt, kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402"
+      }
+    ]
+  },
+  {
+    "regionId": "12073603",
+    "name": "Passow",
+    "checkedAt": "2026-09-24T12:50:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Passow (Landkreis Uckermark, früher Amt Oder-Welse; die Stadt Schwedt/Oder ist Rechtsnachfolgerin des Amtes und führt den Ort heute als Ortsteil). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Beide erfassten Adressen beschreiben Projekte, die die Stadt selbst gefördert bekam (INTERREG-Kulturprojekt mit der Universität Szczecin; Liste der Förderprojekte von Feuerwehr bis Schulhof). Die Volltextsuche der Stadt (24.09.2026) liefert für „Balkonkraftwerk\" keinen Treffer, für Photovoltaik und Solar nur Bebauungspläne für Freiflächen- und Solarparks und eine Ausschreibung für das eigene TRAVIS-Gebäude, für Förderprogramm und Zuschuss nur Unternehmens-, Kultur- und Ortsteilförderung, für Wärmepumpe nur eine Info-Veranstaltung 2023 und einen Hinweis auf die Bundesförderung.",
+    "searches": [
+      "Beide erfassten Förderseiten der Stadt Schwedt/Oder gelesen (24.09.2026)",
+      "Volltextsuche schwedt.eu: Balkonkraftwerk, Photovoltaik, Solar, Förderprogramm, Zuschuss, Wärmepumpe, Klimaschutz",
+      "Websuche nach Programmen der Stadt und der Stadtwerke Schwedt (24.09.2026): keine"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620",
+        "finding": "INTERREG-Förderung: „Die Projekte werden durch die Europäische Union aus Mitteln des Fonds für Regionale Entwicklung (EFRE) kofinanziert … Bei diesem Projekt ist die Stadt Schwedt/Oder Leadpartner und die Universität Szczecin Projektpartner.\" Kulturprojekt, kein Programm für Privathaushalte."
+      },
+      {
+        "url": "https://www.schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402",
+        "finding": "Förderprojekte: Löschgruppenfahrzeug, Sprachprojekt, Wasserwanderrastplatz, Schulumbau, Fahrradboxen u. a. — geförderte Vorhaben der Stadt, kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.schwedt.eu/de/suchergebnisse/mais2_int.c.23555.de",
+        "finding": "Volltextsuche (POST) am 24.09.2026: „Balkonkraftwerk ergab 0 Treffer\"; Photovoltaik 38 und Solar 39 Treffer nur Bebauungspläne für Freiflächen-/Solarparks und eine Ausschreibung; Förderprogramm/Zuschuss nur JTF-Unternehmensförderung, Kultur- und Ortsteilförderung; Wärmepumpe 3 Treffer, darunter nur eine Veranstaltung 2023 und ein BAFA-Hinweis."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620",
+        "disposition": "reviewed",
+        "reason": "INTERREG-Kulturprojekt der Stadt, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.schwedt.eu/de/bauen-und-wohnen/stadtentwicklung/derzeitige-projekte/interregfoerderung/31620"
+      },
+      {
+        "url": "schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402",
+        "disposition": "reviewed",
+        "reason": "Liste geförderter Vorhaben der Stadt, kein Programm für Privathaushalte.",
+        "evidenceUrl": "https://www.schwedt.eu/de/politik-und-verwaltung/stadt-und-ihre-partner/foerderprojekte/73402"
+      }
+    ]
   }
 ]
