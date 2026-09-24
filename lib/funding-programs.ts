@@ -13695,6 +13695,58 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     foerdert: ["balkon"],
   },
+
+  // ─── Aufgenommen am 24.09.2026: Stadt Bad Kreuznach, Balkonkraftwerke ──────
+  //
+  // Gefunden als Nebenbefund beim Abschluss der VG Rüdesheim (Suche nach
+  // Programmen im Landkreis Bad Kreuznach). Programmseite, Richtlinie und
+  // Pressemitteilung vom 17.09.2026 am 24.09.2026 an der Quelle gelesen.
+  // Council aus drei Prüfern, einer davon adversarial und zugleich
+  // Legal-Judge.
+  //
+  // Die Datei der Richtlinie heißt „…entwurf…", ist aber unterschrieben
+  // (26.06.2025) und nach Nr. 10 seit 27.06.2025 in Kraft — sie ist die
+  // geltende Fassung. IHRE FRIST IST ÜBERHOLT, und das steht nur außerhalb
+  // der Richtlinie: Nr. 9 nennt Anträge „bis maximal 31.03.2026" und behält
+  // eine Verlängerung vor; verlängert bis 31.03.2027 hat die Stadt laut
+  // Programmseite (Stand 14.08.2026) und Pressemitteilung vom 17.09.2026
+  // („ausreichend Mittel"). Eine neu datierte Richtlinie oder ein
+  // Ratsbeschluss dazu wurde nicht gefunden; ob das Kontingent von 250.000 €
+  // aufgestockt wurde, sagt keine Quelle. Deshalb `endetIso` NICHT gesetzt —
+  // die Frist steht als Bedingung da, samt ihrer Herkunft.
+  //
+  // „Keine anderen Förderprogramme" (Nr. 5.4) schließt den Nullsteuersatz NICHT
+  // aus: der ist eine Steuerregel, kein Programm, das man in Anspruch nimmt
+  // (Legal-Judge). Deshalb nur `bund-nullsteuer` als kombinierbar.
+  //
+  // Der Antrag kommt NACH dem Kauf (Nachweise: Rechnung, Registrierung, Foto
+  // der installierten Anlage) und spätestens sechs Monate danach.
+  "bad-kreuznach-balkonkraftwerke": {
+    id: "bad-kreuznach-balkonkraftwerke", name: "Balkonkraftwerke für Privathaushalte",
+    traeger: "Stadt Bad Kreuznach", level: "kommune", region: "Bad Kreuznach",
+    bundesland: "Rheinland-Pfalz", agsCode: "07133006",
+    url: "https://www.bad-kreuznach.de/wirtschaft-bauen-wohnen/stadtentwicklung-und-umwelt/klima-und-umweltschutz/foerderprogramm-fuer-balkonkraftwerke-steckersolargeraete/",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2025-07-01",
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Balkonkraftwerk",
+    maxFoerderung: "250 €",
+    rates: [{ label: "Balkonkraftwerk", value: "250 € pauschal, höchstens der Kaufpreis" }],
+    conditions: [
+      "Anträge laut Stadt bis 31. März 2027 — verlängert per Mitteilung der Stadt; die Richtlinie selbst nennt noch den 31. März 2026",
+      "Der Antrag kommt nach dem Kauf, spätestens sechs Monate danach, mit Rechnung, Registrierung im Marktstammdatenregister und Foto der installierten Anlage",
+      "Antragsberechtigt sind Eigentümer, die ihre Wohnung selbst bewohnen und dort mit Hauptwohnsitz gemeldet sind, sowie Mieter einer Wohnung in der Stadt",
+      "Vermieter und juristische Personen sind nicht antragsberechtigt",
+      "Gefördert werden neu gekaufte Geräte ab dem 27. Juni 2025 (Rechnungsdatum), bis 2.000 W Modulleistung und 800 W Wechselrichterleistung",
+      "Gebrauchte Geräte, Eigenbauten und Inselanlagen werden nicht gefördert",
+      "Ein Gerät je Wohneinheit und Antragsteller; für das Gerät darf keine andere Förderung in Anspruch genommen werden",
+      "Fünf Jahre Haltedauer in der Stadt; für den Strom des Geräts keine EEG-Vergütung",
+      "Kein Rechtsanspruch; vollständige Anträge werden in der Reihenfolge des Eingangs bearbeitet",
+    ],
+    combinableWith: ["bund-nullsteuer"],
+    foerdert: ["balkon"],
+    balkonPauschale: 250,
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

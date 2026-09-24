@@ -156,6 +156,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // VG Rüdesheim, aufgenommen am 24.09.2026 als BEENDETES Programm; es gibt
   // nichts mehr zu beantragen und damit nichts zu prüfen.
   "vg-ruedesheim-balkonkraftwerke",
+  // Stadt Bad Kreuznach, aufgenommen am 24.09.2026. Das Verfahren ist das
+  // umgekehrte (Antrag NACH Kauf und Installation, binnen sechs Monaten) —
+  // dieselbe Lage wie bei Kandel und Langenlonsheim-Stromberg: Die vorhandenen
+  // Prüfformen bilden „Antrag vor Kauf" ab. Alle Bedingungen stehen auf der Karte.
+  "bad-kreuznach-balkonkraftwerke",
   "vg-langenlonsheim-stromberg-balkonkraftwerke",
   "vg-hoehr-grenzhausen-balkonkraftwerke",
   "vg-kandel-balkonkraftwerke",
