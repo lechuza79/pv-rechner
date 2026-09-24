@@ -1,11 +1,10 @@
 .chart{position:relative;isolation:isolate;width:100%;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) 128px;align-items:center;gap:32px;padding:76px 24px 20px;overflow:visible}
-.background,.splashes{position:absolute;z-index:-1;inset:0;width:100%;height:100%;object-fit:contain;filter:grayscale(1);opacity:.16;pointer-events:none;user-select:none}.splashes{opacity:.1;mask-image:linear-gradient(#000 35%,transparent);}.chart{min-height:320px;}
+.background{position:absolute;z-index:-1;inset:0;width:100%;height:100%;object-fit:contain;filter:grayscale(1);opacity:.16;pointer-events:none;user-select:none}.chart{min-height:320px;}
 .top{grid-column:2;grid-row:1;align-self:stretch;position:relative}
 .gridArea{grid-column:1;grid-row:1;position:relative;min-width:0}
 .power{width:112px;position:relative;text-align:center}
 .power svg{display:block;width:100%}
 .powerTrack{stroke:var(--atlas-border)}
-.powerValue{stroke:var(--atlas-action)}
 .power b{position:absolute;top:0;left:0;right:0;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--atlas-display);font-size:36px;line-height:1;color:var(--atlas-text)}
 .power small{display:block;margin-top:5px;font-family:var(--atlas-number-unit-font);font-weight:var(--atlas-number-unit-weight);font-size:var(--atlas-number-unit-scale);color:var(--atlas-number-unit-color)}
 .power>span{font-size:var(--atlas-caption-size);color:var(--atlas-secondary)}
@@ -22,4 +21,3 @@
 /* Deliberately oversized editorial artwork, clipped by the composition card. */
 .chart{overflow:hidden;}
 .chart .background{inset:-24% -20%;width:140%;height:148%;object-fit:contain;max-width:none;opacity:.16;}
-.chart .splashes{inset:-15%;width:130%;height:130%;}

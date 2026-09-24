@@ -21,17 +21,23 @@ export function MonitorComposition({story}: {story: CompositionStory}) {
   const {cells, perCell} = storyCountGrid(counts.total, counts.selected);
   const gradientId = useId();
   const isBalcony = /balkon|stecker/i.test(counts.label);
-  const image = isBalcony ? '/brand/rank-balcony-modern.webp' : '/brand/rank-house.webp';
+  const image = isBalcony ? '/shared-nav/illustrations/balcony-modern-neon.webp' : '/shared-nav/illustrations/house-neon.webp';
   const powerLabel = `${powerShare.toLocaleString('de-DE')} Prozent der Solarleistung`;
 
+  // Use a filled annular sector: tiny shares must not depend on dash rendering.
+  const share = Math.max(0, Math.min(100, powerShare));
+  const angle = share / 100 * Math.PI * 2 - Math.PI / 2;
+  const outerX = 50 + 45 * Math.cos(angle), outerY = 50 + 45 * Math.sin(angle);
+  const innerX = 50 + 35 * Math.cos(angle), innerY = 50 + 35 * Math.sin(angle);
+  const largeArc = share > 50 ? 1 : 0;
+  const sector = `M50 5 A45 45 0 ${largeArc} 1 ${outerX} ${outerY} L${innerX} ${innerY} A35 35 0 ${largeArc} 0 50 15 Z`;
   return <div className={styles.chart}>
-    <img className={styles.splashes} src="/brand/feed-in-v4-splashes.svg" alt="" aria-hidden="true"/>
     <img className={styles.background} src={image} alt="" aria-hidden="true" />
     <div className={styles.top}>
       <div className={styles.power}>
         <svg viewBox="0 0 100 100" role="img" aria-label={powerLabel}>
           <circle cx="50" cy="50" r="40" fill="none" className={styles.powerTrack} strokeWidth="10" />
-          <circle cx="50" cy="50" r="40" fill="none" className={styles.powerValue} strokeWidth="10" strokeLinecap="butt" pathLength="100" strokeDasharray={`${powerShare} ${100 - powerShare}`} transform="rotate(-90 50 50)" />
+          {share === 100 ? <circle cx="50" cy="50" r="40" fill="none" stroke="var(--atlas-action)" strokeWidth="10" /> : share > 0 ? <path d={sector} fill="var(--atlas-action)" /> : null}
         </svg>
         <b>{Math.round(powerShare)}<small> %</small></b>
         <span>der Solarleistung</span>
