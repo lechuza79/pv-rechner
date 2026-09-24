@@ -396,7 +396,7 @@
 .sc-search-field input{flex:1;min-width:0;border:0;background:none;color:inherit;font:600 22px/1.3 Montserrat,'DM Sans',sans-serif;padding:4px 0;outline:none}
 .sc-search-field input::placeholder{color:var(--sc-nav-muted,#3d5b60);opacity:1;font-weight:500}
 .sc-search-field input::-webkit-search-cancel-button{display:none}
-.sc-search-field:focus-within{border-bottom-color:var(--sc-nav-ink,#153740)}
+
 .sc-search-close{position:absolute;top:28px;right:28px;display:grid;place-items:center;width:40px;height:40px;border:0;background:none;color:inherit;cursor:pointer;border-radius:50%}
 .sc-search-close:hover{background:#dce8e2}
 .sc-search-results:not(:empty){margin-top:24px;display:grid;gap:32px}
@@ -430,7 +430,7 @@
 .sc-search-page .sc-search-panel{position:static;display:block;width:auto;max-height:none;overflow:visible;box-shadow:none;border:1px solid var(--sc-nav-line,#15374026)}
 .sc-search-page .sc-search-field{padding-right:0}
 /* The underline of the field shows focus; the header's outline would box it in. */
-.sc-search-field input:focus-visible{outline:none}
+.sc-search-panel .sc-search-field input,.sc-search-panel .sc-search-field input:focus,.sc-search-panel .sc-search-field input:focus-visible{outline:none;box-shadow:none;border:0}
 /* Host pages style bare headings (the homepage sets its h2 white for the sky).
    Inside the panel every heading takes the panel's ink — measured: "Ort" stood
    white on the light panel at 1.1:1 on the homepage and the simulation. */

@@ -165,7 +165,9 @@ function mountSearch(header,closeMenu,setPanelTop){
  });
  function open(){
   if(isOpen)return;isOpen=true;closeMenu();setPanelTop();
-  const bounds=header.getBoundingClientRect();panel.style.setProperty('--search-top',Math.max(56,bounds.bottom)+'px');
+  // On the phone the panel hangs just below the magnifier, not below the
+  // header box: the homepage header carries 32 px of bottom padding.
+  panel.style.setProperty('--search-top',Math.round(button.getBoundingClientRect().bottom+12)+'px');
   panel.hidden=false;button.setAttribute('aria-expanded','true');button.setAttribute('aria-label','Suche schließen');header.classList.add('sc-search-open');
   if(!reduced.matches)panel.animate([{opacity:0,transform:'translateY(-8px)'},{opacity:1,transform:'none'}],{duration:240,easing:'cubic-bezier(.16,1,.3,1)'});
   input.focus();input.select();
