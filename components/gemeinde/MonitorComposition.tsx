@@ -24,10 +24,6 @@ export function MonitorComposition({story}: {story: CompositionStory}) {
   const image = isBalcony ? '/brand/rank-balcony-modern.webp' : '/brand/rank-house.webp';
   const powerLabel = `${powerShare.toLocaleString('de-DE')} Prozent der Solarleistung`;
 
-  const capRadius=Math.min(5,40*Math.sin(Math.PI*Math.min(powerShare,50)/100));
-  const capAngle=Math.asin(capRadius/40);
-  const arcShare=Math.max(0,powerShare-capAngle/(Math.PI*2)*100);
-  const endAngle=-Math.PI/2+arcShare/100*Math.PI*2;
   return <div className={styles.chart}>
     <img className={styles.splashes} src="/brand/feed-in-v4-splashes.svg" alt="" aria-hidden="true"/>
     <img className={styles.background} src={image} alt="" aria-hidden="true" />
@@ -35,8 +31,7 @@ export function MonitorComposition({story}: {story: CompositionStory}) {
       <div className={styles.power}>
         <svg viewBox="0 0 100 100" role="img" aria-label={powerLabel}>
           <circle cx="50" cy="50" r="40" fill="none" className={styles.powerTrack} strokeWidth="10" />
-          <circle cx="50" cy="50" r="40" fill="none" className={styles.powerValue} strokeWidth="10" strokeLinecap="butt" pathLength="100" strokeDasharray={`${powerShare===100?100:arcShare} ${100 - (powerShare===100?100:arcShare)}`} transform="rotate(-90 50 50)" />
-          {powerShare > 0 && powerShare < 100 && <circle cx={50+40*Math.cos(endAngle)} cy={50+40*Math.sin(endAngle)} r={capRadius} fill="var(--atlas-action)" />}
+          <circle cx="50" cy="50" r="40" fill="none" className={styles.powerValue} strokeWidth="10" strokeLinecap="butt" pathLength="100" strokeDasharray={`${powerShare} ${100 - powerShare}`} transform="rotate(-90 50 50)" />
         </svg>
         <b>{Math.round(powerShare)}<small> %</small></b>
         <span>der Solarleistung</span>
