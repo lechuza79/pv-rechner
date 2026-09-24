@@ -13391,6 +13391,134 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: ["bund-nullsteuer"],
   },
+
+  // ─── Aufgenommen am 24.09.2026: VG Langenlonsheim-Stromberg ───────────────
+  //
+  // Gefunden über den Quellen-Vorrat: die Förderseite deckte VIER Quellzeilen
+  // auf einmal. Seite und verlinkte Richtlinie am 24.09.2026 live im Volltext
+  // gelesen; das abgerufene PDF ist byte-identisch mit dem in der Akte
+  // (SHA-256 9d34c27b…2770), es gibt keine neuere Fassung. Council aus drei
+  // Prüfern samt adversarialem Prüfer und Legal-Judge, 24.09.2026.
+  //
+  // STATUS „ausgeschöpft" IST EINE ABLEITUNG, und sie muss benannt werden. Die
+  // Seite sagt nicht „Mittel aufgebraucht", sondern trägt als Warnhinweis
+  // „NUR NOCH WARTELISTE". Was das heißt, wurde am Antragsportal selbst
+  // gemessen: Das Formular ist offen, ohne Sperre, und sagt „Ihr Antrag wird
+  // definitiv bearbeitet." Vergeben ist also das JAHRESkontingent von 125
+  // Anträgen für 2026, nicht das Programm. Dieselbe Einordnung wie bei
+  // `wenden-heizungstausch`, `sprendlingen-gensingen-balkonsolar` und
+  // `vg-hachenburg-erneuerbare-energien`.
+  //   DESHALB STEHT DIE FORTSETZUNG ALS BEDINGUNG DA. Ein nacktes
+  //   „ausgeschöpft" liest sich wie „beendet"; wer das im Dezember liest,
+  //   kauft nicht, obwohl im Januar nach demselben Muster ein neuer Topf
+  //   kommt. Genau dieser Fehler wurde am 07.09.2026 am Wenden-Programm
+  //   korrigiert. Belegt ist die Wiederholung doppelt: Seite „2026 werden
+  //   WIEDER 125 Anträge … unterstützt", Richtlinie Nr. 5 „Finanzielle Mittel
+  //   des Fördergebers müssen IM ANTRAGSJAHR noch ausreichend zur Verfügung
+  //   stehen."
+  //
+  // DIE 800 WATT SIND KEINE MODULGRENZE — BLOCKER. Nr. 2 der Richtlinie
+  // schreibt „Solarmodule mit bis zu 800 Watt Leistung und einem
+  // Wechselrichter". Als Modulgrenze übernommen wäre das eine Verschärfung
+  // ohne Fundstelle, und eine folgenreiche: Unser Balkon-Rechner empfiehlt
+  // Sets mit zwei bis vier Modulen (900–1.800 Wp) und zöge daneben 120 € ab —
+  // Widerspruch auf derselben Seite. Vier Belege dagegen, alle im Dokument
+  // selbst oder an der Praxis gemessen: die PRÄAMBEL derselben Richtlinie
+  // nennt die 800 W ausdrücklich als „EINSPEISEleistung"; Nr. 2 ist eine
+  // Begriffsbestimmung („Darunter werden ZURZEIT … verstanden"), kein
+  // Ausschlusstatbestand, und die Ausschlüsse stehen abschließend in Nr. 6
+  // ganz ohne Leistungsgrenze; Nr. 3 zahlt „unabhängig davon wie viele Module
+  // betrieben werden"; und das Antragsformular fragt die Leistung des Geräts
+  // KEIN EINZIGES MAL ab — die Verbandsgemeinde könnte eine Modulgrenze gar
+  // nicht prüfen. Gesetzlich gilt seit dem 16.05.2024, also drei Monate vor
+  // dieser Richtlinie, § 8 Abs. 5a EEG mit 2 kW Modulen und 800 VA
+  // Wechselrichter. Dieselbe Auflösung wie bei `potsdam-klimaschutz` und
+  // Wittlich. Eine 2.000-Wp-Grenze dürfen wir ebenso wenig behaupten, die
+  // Richtlinie nennt sie nicht.
+  //
+  // KEINE EEG-VERGÜTUNG — NUR FÜR DEN STROM DIESES GERÄTS. Nr. 5 sagt „Für den
+  // MIT DEM GERÄT ERZEUGTEN Strom darf keine EEG-Vergütung in Anspruch
+  // genommen werden." Ohne diesen Bezug schlösse der Satz jeden aus, der für
+  // eine bestehende Dachanlage Einspeisevergütung bekommt.
+  //
+  // DIE ANMELDUNG BEIM NETZBETREIBER STEHT BEWUSST NICHT IN DEN BEDINGUNGEN.
+  // Nr. 5 verlangt sie noch, aber sie ist für Geräte nach § 8 Abs. 5a EEG mit
+  // dem Solarpaket I zum 16.05.2024 entfallen; seitdem genügt das
+  // Marktstammdatenregister. Die Richtlinienfassung 08/2024 hat den Satz nicht
+  // nachgezogen — die Präambel derselben Richtlinie spricht bereits von
+  // „vereinfachten Anmelde- … vorgaben", und die Programmseite nennt
+  // folgerichtig nur noch Installation und Registrierung. Ihn wiederzugeben
+  // hieße, eine abgeschaffte Pflicht zu behaupten (Legal-Judge, 24.09.2026).
+  //
+  // KEIN PAUSCHALER VERMIETER-AUSSCHLUSS. Nr. 4 verbietet „wirtschaftliche
+  // Tätigkeit IM ZUSAMMENHANG MIT DEN GEFÖRDERTEN GEGENSTÄNDEN (Keine
+  // Vermieter/in)", Nr. 2 stellt klar, dass ein Vermieter nicht für ALLE
+  // seine Mieter beantragen kann. Ob ein Eigentümer, der eine Wohnung seines
+  // Zweifamilienhauses vermietet und in der anderen wohnt, für die EIGENE
+  // Wohnung berechtigt ist, sagt die Richtlinie nicht. Ein Blankosatz
+  // „Vermieter ausgeschlossen" hielte ihn ab, obwohl er berechtigt sein
+  // könnte; „gewerblich" wäre zusätzlich enger als „wirtschaftlich".
+  //
+  // FÖRDERGEBIET: 16 ORTSGEMEINDEN UND DIE STADT STROMBERG — nicht „17
+  // Ortsgemeinden". Nr. 1, 2 und 4 machen das „Gebiet der Verbandsgemeinde
+  // Langenlonsheim-Stromberg" zum Fördergebiet. Die Mitgliederliste stammt
+  // von der Verbandsgemeinde selbst (unsere-gemeinden, 24.09.2026) und wird
+  // unabhängig durch Wikipedia und, für Roth, durch das Statistische
+  // Landesamt Rheinland-Pfalz mit derselben Zahl 17 bestätigt.
+  //   ZWEI SCHLÜSSEL SIND FALLEN, beide einzeln gegen das Melderegister
+  //   geholt: `foerder:ags --suche Roth` liefert Roth bei Stromberg
+  //   (07133085, 285 Einw.) ÜBERHAUPT NICHT — die Suche sortiert nach
+  //   Einwohnern und kappt bei 25 Treffern, oben steht Roth im Kreis
+  //   Altenkirchen (07132096). Schöneberg gibt es zweimal in Rheinland-Pfalz:
+  //   07133091 (Bad Kreuznach) und 07132099 (Altenkirchen). Wer den
+  //   vorgeschriebenen Weg geht, holt sich hier zuverlässig den falschen
+  //   Schlüssel — genau die Fehlerklasse, gegen die das Werkzeug gebaut ist.
+  //   Der fünfstellige 07133 darf NIE stehen: Das ist der Landkreis Bad
+  //   Kreuznach mit 118 Gemeinden, 17 davon zahlen dieses Programm.
+  //
+  // DIE ADRESSE IST DIE PROGRAMMSEITE, nicht das Antragsportal aus Nr. 7 der
+  // Richtlinie: Das dort genannte `balkonkraftwerk.vg-klimaschutz.de` ist eine
+  // leere Parkseite, das echte Portal liegt woanders. Die Richtlinie wird in
+  // diesem Punkt seit zwei Jahren nicht gepflegt — ein Grund mehr, ihre
+  // Detailangaben (siehe die 800 Watt) nicht wörtlich zu übernehmen.
+  "vg-langenlonsheim-stromberg-balkonkraftwerke": {
+    id: "vg-langenlonsheim-stromberg-balkonkraftwerke",
+    name: "Förderung von Balkonkraftwerken",
+    traeger: "Verbandsgemeinde Langenlonsheim-Stromberg", level: "kommune",
+    region: "Verbandsgemeinde Langenlonsheim-Stromberg",
+    bundesland: "Rheinland-Pfalz",
+    agsCodes: [
+      "07133018", "07133023", "07133025", "07133026", "07133028", "07133035",
+      "07133054", "07133056", "07133085", "07133087", "07133091", "07133093",
+      "07133095", "07133103", "07133108", "07133110", "07133114",
+    ],
+    url: "https://www.langenlonsheim-stromberg.de/verbandsgemeinde-langenlonsheim-stromberg/umwelt-klimaschutz/foerderprogramme",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anschaffung eines Balkonkraftwerks",
+    maxFoerderung: "120 €",
+    rates: [
+      { label: "Balkonkraftwerk", value: "120 € pauschal je Haushalt" },
+    ],
+    conditions: [
+      "Das Kontingent von 125 Anträgen für 2026 ist vergeben; es wird weiter angenommen und auf eine Warteliste gesetzt, und das Kontingent wurde bisher jedes Jahr neu aufgelegt",
+      "120 € je Haushalt, unabhängig davon wie viele Module betrieben werden",
+      "Ein Gerät je Haushalt beziehungsweise Wohneinheit",
+      "Antragsberechtigt sind Mieter mit Hauptwohnsitz und Eigentümer einer Wohnung eines Mehrfamilienhauses oder eines Einfamilienhauses im Gebiet der Verbandsgemeinde",
+      "Mit dem geförderten Gerät darf keine wirtschaftliche Tätigkeit ausgeübt werden; ein Vermieter kann nicht für die Wohnungen seiner Mieter beantragen",
+      "Mieter brauchen das Einverständnis des Vermieters",
+      "Gefördert werden nur Geräte, die ab dem 15. April 2024 angeschafft wurden (Rechnungsdatum)",
+      "Der Antrag wird erst nach Installation und Registrierung im Marktstammdatenregister gestellt",
+      "Für den mit dem Gerät erzeugten Strom darf keine Einspeisevergütung nach dem EEG in Anspruch genommen werden",
+      "Bei einem Kulturdenkmal ist die denkmalschutzrechtliche Genehmigung nachzuweisen; stehen Denkmalschutz oder planungs- und baurechtliche Belange entgegen, wird nicht gefördert",
+      "Zwei Jahre Zweckbindung; ein Weiterverkauf innerhalb dieser Frist führt zur Rückforderung",
+      "Nach Nr. 7 der Richtlinie besteht kein Rechtsanspruch; entschieden wird in der Reihenfolge des Antragseingangs im Rahmen der verfügbaren Mittel",
+      "Mit dem Absenden des Antrags stimmt man zu, dass die Verbandsgemeinde das eingereichte Bildmaterial verwenden darf",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 120,
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

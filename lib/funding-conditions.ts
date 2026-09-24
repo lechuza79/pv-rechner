@@ -134,6 +134,18 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Gegenteil dessen, was die Richtlinie verlangt, und verschwiege zugleich
   // die Frist, die ihn wirklich die Förderung kostet. Halb erfasst gibt es
   // hier nicht; bis dahin steht die Frist als erste Bedingung auf der Karte.
+  // VG Langenlonsheim-Stromberg, aufgenommen am 24.09.2026. Dieselbe Lage wie
+  // bei Kandel und Höhr-Grenzhausen: Das Verfahren ist das UMGEKEHRTE. Die
+  // Programmseite sagt „Eine Beantragung der Fördermittel vor Kauf,
+  // Installation und Registrierung des Balkonkraftwerks ist NICHT möglich";
+  // die vorhandenen Prüfformen bilden die übliche Regel „Antrag vor Kauf" ab
+  // und verlangten vom Nutzer damit das Gegenteil dessen, was die
+  // Verbandsgemeinde verlangt. Dazu kommt, dass das Kontingent für 2026
+  // vergeben ist und neue Anträge nur auf die Warteliste gehen. Alle
+  // Bedingungen stehen vollständig auf der Karte, der Kontingent-Hinweis als
+  // erste Zeile und die Antragsreihenfolge weiter oben. Prüfform, sobald es
+  // eine Prüfform für „Antrag NACH Kauf" gibt.
+  "vg-langenlonsheim-stromberg-balkonkraftwerke",
   "vg-hoehr-grenzhausen-balkonkraftwerke",
   "vg-kandel-balkonkraftwerke",
   // VG Leiningerland, aufgenommen am 23.09.2026. Dasselbe wie bei Bremen: Das
