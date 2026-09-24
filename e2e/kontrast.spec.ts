@@ -66,20 +66,29 @@ const EIGENER_ORT = {
 const STUFEN: Tagesstufe[] = ["light", "dark"];
 
 /**
- * Seiten, über die dieser Wächter (noch) kein Urteil fällen kann.
+ * Seiten, über die dieser Wächter kein Urteil fällen kann.
  *
- * Die Ortsseite färbt ihre Überschrift und ihren Einleitungssatz nach dem
- * HIMMEL dahinter — ein Skript tastet den gemalten Grund ab und setzt die
- * Tinte danach. Bis dahin tragen beide die Anfangsfarbe Schwarz, und wann der
- * Abtastvorgang durch ist, hängt an Bildern und Last: Der eigene Browser-Test
- * dieser Seite wartet dafür rund zehn Sekunden und wurde unter zwei parallelen
- * Arbeitern trotzdem rot. Auch mit „messen, bis sich nichts mehr ändert" fiel
- * hier mal ein Befund an und mal nicht — ein Wächter, der zufällig rot wird,
- * wird abgeschaltet, und dann fängt er auch die echten Fälle nicht mehr.
+ * Die Ortsseite färbt ihre Überschrift nach dem HIMMEL dahinter: Ein Skript
+ * tastet den gemalten Grund ab und setzt die Tinte danach — hell auf der
+ * Nachtseite, dunkel über dem Tageshimmel. Das Abtasten hängt an gezeichneten
+ * Bildern, und genau die bekommt ein Browser ohne sichtbares Fenster nur
+ * unzuverlässig: Im Prüflauf bleibt die Tinte deshalb auf ihrem Anfangswert
+ * Schwarz stehen, und der Wächter meldet Schwarz auf Nachthimmel.
  *
- * OFFEN (bis 11/2026): Sobald die Tinte deterministisch feststeht (oder als
- * Anfangswert nicht mehr Schwarz trägt), fällt diese Zeile weg. Die Sitzung,
- * die die Ortsseite baut, ist am 23.09.2026 informiert.
+ * NACHGEMESSEN IM ECHTEN BROWSER (23.09.2026), weil die Frage sonst offen
+ * geblieben wäre: In einem sichtbaren Fenster gibt es diesen Zustand NICHT.
+ * Vierzig Messpunkte über acht Sekunden ab dem Seitenaufruf zeigen durchgehend
+ * die abgetastete Tinte, kein einziges Mal Schwarz; die Überschrift steht hell
+ * auf dem Nachthimmel und ist einwandfrei zu lesen. Im Prüflauf dagegen
+ * kippte die Messung von Lauf zu Lauf — mal die Überschrift, mal der
+ * Einleitungssatz, mal nichts.
+ *
+ * Es ist also kein Befund, den wir wegdrücken, sondern eine Grenze des
+ * Messplatzes: Was an Bildfrequenz hängt, lässt sich dort nicht beurteilen.
+ *
+ * OFFEN (bis 11/2026): Fällt weg, sobald die Tinte nicht mehr mit Schwarz
+ * startet — dann ist auch im Prüflauf nichts mehr zu melden. Die Sitzung, die
+ * die Seite baut, hat die Messung am 23.09.2026 bekommen.
  */
 const NOCH_KEIN_URTEIL: string[] = ["/solar-atlas/bayern/landkreis-wuerzburg/hoechberg"];
 

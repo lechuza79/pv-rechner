@@ -91,6 +91,35 @@ export const VORBEHALT_WOERTER = [
  * steht für einen Originaltext, den ein Prüfer an diesem Tag selbst gelesen hat.
  */
 export const RECHTSBELEGE: Rechtsbeleg[] = [
+  // ── Stuhr: die Vorschrift, die die Förderrichtlinie im Zitat nennt ───────
+  //
+  // Der Eintrag `stuhr-klimaschutz-speicher` gibt den Wortlaut der Richtlinie
+  // wieder („Batteriespeichersystem gemäß § 14a EnWG") und sagt dem Nutzer
+  // daneben, was die Vorschrift wirklich regelt. Genau deshalb steht sie hier:
+  // § 14a beschreibt KEINE Bauart und keine Gerätekategorie, sondern die
+  // netzorientierte Steuerung im Tausch gegen ein reduziertes Netzentgelt.
+  // Wer daraus eine technische Anforderung an den Speicher ableitet, liest die
+  // Vorschrift falsch — der Legal-Judge hat genau diesen Fehler am ersten
+  // Entwurf des Eintrags beanstandet.
+  {
+    norm: "EnWG §14a",
+    gesetz: "Energiewirtschaftsgesetz",
+    traegt:
+      "Amtliche Überschrift: „Netzorientierte Steuerung von steuerbaren " +
+      "Verbrauchseinrichtungen und steuerbaren Netzanschlüssen; " +
+      "Festlegungskompetenzen\". Abs. 1 ermächtigt die Bundesnetzagentur zu " +
+      "bundeseinheitlichen Regelungen über die netzorientierte Steuerung „im " +
+      "Gegenzug für Netzentgeltreduzierungen\"; Abs. 3 zählt als steuerbare " +
+      "Verbrauchseinrichtungen „insbesondere Wärmepumpen, nicht " +
+      "öffentlich-zugängliche Ladepunkte für Elektromobile, Anlagen zur " +
+      "Erzeugung von Kälte oder zur Speicherung elektrischer Energie und " +
+      "Nachtstromspeicherheizungen\" auf. Die Norm enthält keine Bauart-, " +
+      "Kapazitäts- oder Zertifizierungsanforderung an einen Speicher.",
+    fundstelle: "§ 14a Abs. 1 Satz 1 und Abs. 3",
+    quelle: "gesetze-im-internet.de/enwg_2005/__14a.html",
+    geprueftIso: "2026-09-23",
+    zustand: "gesetz",
+  },
   // ── Verjährung: wie lange der Einwilligungsnachweis aufbewahrt wird ───────
   //
   // Beide Fristen bestimmen zusammen, wann der Nachweis eines abgemeldeten

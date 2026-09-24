@@ -134,6 +134,18 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Gegenteil dessen, was die Richtlinie verlangt, und verschwiege zugleich
   // die Frist, die ihn wirklich die Förderung kostet. Halb erfasst gibt es
   // hier nicht; bis dahin steht die Frist als erste Bedingung auf der Karte.
+  // VG Langenlonsheim-Stromberg, aufgenommen am 24.09.2026. Dieselbe Lage wie
+  // bei Kandel und Höhr-Grenzhausen: Das Verfahren ist das UMGEKEHRTE. Die
+  // Programmseite sagt „Eine Beantragung der Fördermittel vor Kauf,
+  // Installation und Registrierung des Balkonkraftwerks ist NICHT möglich";
+  // die vorhandenen Prüfformen bilden die übliche Regel „Antrag vor Kauf" ab
+  // und verlangten vom Nutzer damit das Gegenteil dessen, was die
+  // Verbandsgemeinde verlangt. Dazu kommt, dass das Kontingent für 2026
+  // vergeben ist und neue Anträge nur auf die Warteliste gehen. Alle
+  // Bedingungen stehen vollständig auf der Karte, der Kontingent-Hinweis als
+  // erste Zeile und die Antragsreihenfolge weiter oben. Prüfform, sobald es
+  // eine Prüfform für „Antrag NACH Kauf" gibt.
+  "vg-langenlonsheim-stromberg-balkonkraftwerke",
   "vg-hoehr-grenzhausen-balkonkraftwerke",
   "vg-kandel-balkonkraftwerke",
   // VG Leiningerland, aufgenommen am 23.09.2026. Dasselbe wie bei Bremen: Das
@@ -157,6 +169,15 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // vollständig auf der Karte, in der Vergangenheitsform und mit dem Ende als
   // erster Zeile. Prüfform mit einer Neuauflage -- dann aber an der dann
   // geltenden Richtlinie, nicht an dieser von 2024.
+  // Stuhr Solarstromspeicher, aufgenommen am 23.09.2026. Der Jahrestopf 2026 ist
+  // seit Ende Juli leer; eine Prüfform hielte das Vorhaben eines Nutzers gegen ein
+  // Verfahren, in das er dieses Jahr nicht mehr hineinkommt. Die Bedingungen
+  // stehen vollständig auf der Karte. Mit der Neuauflage 2027 gehört die Prüfform
+  // dazu — dann aber an der dann geltenden Fassung: Die Untergrenze stieg zum
+  // Jahr 2026 von 2,5 auf 5 kWh, und die Erstinstallations-Bedingung ist ebenso
+  // neu. Wer die Form aus einer älteren Richtlinie übernimmt, prüft zwei
+  // Bedingungen falsch.
+  "stuhr-klimaschutz-speicher",
   "germersheim-balkonkraftwerke",
   // Bremen Heizungstausch, aufgenommen am 23.09.2026. Das Programm nimmt seit
   // dem 31.08.2025 keine Anträge mehr an — eine Prüfform hielte das Vorhaben
@@ -389,6 +410,11 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "bad-rothenfelde-klima", "vilshofen-steckersolar",
   // Erste Städte, die überhaupt erst die URL-Suche gefunden hat.
   "neuwied-balkonkraftwerke", "rodgau-balkonsolar", "tuebingen-balkon-pv",
+  // Neu aufgenommen am 24.09.2026 (Council 3/3, adversarialer Prüfer und
+  // Legal-Judge eingeschlossen). Sätze, Status und Bedingungen sind an der
+  // Trägerseite im Volltext gelesen und belegt; die Zuordnung zu den Prüfformen
+  // steht noch aus — der Eintrag zieht ohnehin kein Geld ab.
+  "tuebingen-pv-speicher",
   "zweibruecken-balkonkraftwerke", "unterhaching-energiesparen",
   "hueckelhoven-balkonkraftwerke", "weinheim-effizienz", "ottobrunn-foerderprogramme",
   "feucht-klimaschutz",
@@ -581,6 +607,74 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
   // Geräteeigenschaften (Kältemittel, Effizienzstufe, BAFA-Listung, Heizkreis),
   // die der Rechner nicht kennt — deshalb Hinweis, nicht Prüfung, und deshalb
   // trägt das Programm auch keinen Abzug.
+  // Universitätsstadt Tübingen, Sanierungsprämie Modul B II (aufgenommen
+  // 24.09.2026). Prüfbar ist auch hier genau EINES: der Antragszeitpunkt. Die
+  // eigentliche Hürde — der individuelle Sanierungsfahrplan — ist keine
+  // Eigenschaft des Vorhabens, sondern eine bepreiste Vorstufe, die der
+  // Rechner nicht erhebt; deshalb Hinweis, nicht Prüfung, und deshalb trägt
+  // das Programm auch keinen Abzug.
+  "tuebingen-sanierungspraemie-wp": {
+    pruefungen: [
+      {
+        ausBedingung: "Die eingereichte Rechnung darf höchstens sechs Monate alt sein, frühestes Rechnungsdatum ist der 1. Januar 2026; der Antrag wird also nach der Installation gestellt, nicht vorher",
+        // Die sechs Monate stehen bewusst NICHT als `fristMonate`: Sie laufen
+        // ab dem RECHNUNGSDATUM, nicht ab Inbetriebnahme. Der Zeitpunkt hier,
+        // die Frist im Text daneben — dieselbe Trennung wie bei
+        // Erlangen-Höchstadt.
+        pruefung: { art: "antrag-zeitpunkt", zeitpunkt: "nach-inbetriebnahme" },
+      },
+    ],
+    durchRegion: [
+      "Das Gebäude muss im Siedlungsgebiet des Gemeindegebietes Tübingen liegen",
+    ],
+    hinweise: [
+      {
+        ausBedingung: "Zwingende Voraussetzung ist ein individueller Sanierungsfahrplan nach der Bundesförderung Energieberatung für Wohngebäude, der höchstens fünf Jahre alt ist und in dem die Wärmepumpe als Maßnahme empfohlen wird — ohne ihn gibt es nichts",
+        warum: "Der Rechner erhebt nicht, ob jemand eine geförderte Energieberatung hinter sich hat. Die Bedingung steht als erste auf der Karte, weil sie für den Regelnutzer die praktisch wirksamste ist — und weil sie zugleich der Grund ist, warum dieses Programm nichts abzieht.",
+      },
+      {
+        ausBedingung: "Gefördert wird der Austausch einer fossil betriebenen Heizung (Erdgas, Flüssiggas, Heizöl); hybride Anlagen, die weiterhin mit fossilen Anteilen heizen, werden nicht gefördert",
+        warum: "Der Rechner kennt zwar Gas und Öl als alte Heizung, aber keine Prüfform für den Brennstoff der Altanlage — und ob jemand hybrid weiterheizt, weiß er ohnehin nicht.",
+      },
+      {
+        ausBedingung: "Die Anlage muss auf der BAFA-Liste der förderfähigen Wärmepumpen mit Prüf- und Effizienznachweis stehen",
+        warum: "Geräteeigenschaft aus einer fremden Liste — der Rechner kennt das Modell nicht.",
+      },
+      {
+        ausBedingung: "Geplante oder erhaltene Mittel aus dem KfW-Zuschuss 458 und der städtische Zuschuss dürfen zusammen 60 % der Investitionskosten für die Wärmepumpe nicht übersteigen; sonst entfällt die städtische Förderung. Achtung: Wer beim Bund über 60 % liegt, kann durch den städtischen Zuschuss dort mehr verlieren, als er hier gewinnt",
+        warum: "Zwei verschiedene 60-%-Grenzen mit verschiedenen Bezugsgrößen und verschiedener Rechtsfolge — die der Stadt ist eine Fördervoraussetzung, die des Bundes kürzt im Überschreitungsfall die Bundesmittel. Verrechnen darf man sie nicht, und weil hier nichts abgezogen wird, muss der Satz beim Nutzer stehen.",
+      },
+      {
+        ausBedingung: "Antragsberechtigt sind Privatpersonen, Wohnungseigentümergemeinschaften, Projekte des Mietshäuser Syndikates sowie Mieterinnen und Mieter für ihr Mietobjekt; Mieter brauchen die Zustimmung der Eigentümerseite oder der Eigentümergemeinschaft",
+        warum: "Der Wärmepumpen-Rechner erhebt die Wohnform nicht; ausgeschlossen ist hier ohnehin niemand, es geht nur um eine zusätzliche Zustimmung.",
+      },
+      {
+        ausBedingung: "Keine Antragsberechtigung besteht für Sanierungsmaßnahmen, die zur Anrechnung für das Erneuerbare-Wärme-Gesetz des Landes genutzt werden oder anderen gesetzlichen Vorgaben unterliegen",
+        warum: "Die schärfste Klausel des Programms und zugleich die, deren Reichweite aus dem Text NICHT zu entscheiden ist: Sie hängt an der tatsächlichen Anrechnung, nicht an der Eignung. Deshalb steht hier der Wortlaut der Stadt und kein Urteil von uns.",
+      },
+      {
+        ausBedingung: "Je Gebäude wird in einem Fünf-Jahres-Zeitraum höchstens einmal eine Sanierungsprämie ausgezahlt; je Gebäude ist nur eines der Module A oder B möglich, die Module B I (Gebäudehülle) und B II (Wärmepumpe) lassen sich kombinieren",
+        warum: "Der Rechner kennt die Förderhistorie des Gebäudes nicht und rechnet ohnehin nur die Wärmepumpe.",
+      },
+      {
+        ausBedingung: "Eine Kombination dieses Förderprogramms mit anderen Förderprogrammen der Universitätsstadt Tübingen ist nicht zulässig",
+        warum: "Betrifft die beiden anderen Tübinger Einträge. Heute kollidiert nichts, weil keines der drei einen Rechenwert trägt und PV- und Wärmepumpen-Rechner getrennt fragen — der Satz ist die Warnung für den Tag, an dem sich das ändert.",
+      },
+      {
+        ausBedingung: "Der ausgezahlte Betrag kann die tatsächlichen Kosten der Maßnahme nicht übersteigen",
+        warum: "Bei einer Pauschale von 500 € theoretisch; der Rechner rechnet ohnehin mit realen Anlagenkosten weit darüber.",
+      },
+      {
+        ausBedingung: "Es handelt sich um eine Freiwilligkeitsleistung: vergeben wird im Windhundprinzip nach Eingang vollständiger Unterlagen und nur, solange Haushaltsmittel da sind; ein Rechtsanspruch besteht nicht, unvollständige Anträge werden abgelehnt und Unterlagen nicht nachgefordert",
+        warum: "Haushaltsvorbehalt des Trägers — nicht am Vorhaben des Nutzers prüfbar.",
+      },
+      {
+        ausBedingung: "Die Förderung ist zurückzuzahlen, wenn sie durch unrichtige oder unvollständige Angaben erwirkt wurde",
+        warum: "Nachträgliche Rechtsfolge, keine Eigenschaft des Vorhabens.",
+      },
+    ],
+  },
+
   "erlangen-hoechstadt-waermepumpe": {
     pruefungen: [
       {

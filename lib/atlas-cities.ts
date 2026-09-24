@@ -490,7 +490,15 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "rietheim-weilheim", name: "Rietheim-Weilheim", ags: "08327056", kreis: "Landkreis Tuttlingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1122 },
   { slug: "gailingen", name: "Gailingen am Hochrhein", ags: "08335026", kreis: "Landkreis Konstanz", bundesland: "Baden-Württemberg", yieldKwhKwp: 1167 },
   { slug: "walddorfhaeslach", name: "Walddorfhäslach", ags: "08415087", kreis: "Landkreis Reutlingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1147 },
-  { slug: "tuebingen", name: "Tübingen", ags: "08416041", kreis: "Landkreis Tübingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1149 },
+  // ZWEI Programme auf demselben Gemeindeschlüssel (Dach-PV samt Speicher und
+  // das Balkon-Programm für Inhaber der KreisBonusCard), seit dem 24.09.2026.
+  // Bei gleich spezifischen Treffern gibt die Zuordnung bewusst `undefined`
+  // zurück — ohne diese Angabe fiele die Stadtseite still auf 404. Gezeigt wird
+  // das Dach-Programm: Die Seite heißt „Photovoltaik-Förderung in Tübingen",
+  // und nur dieses Programm fördert eine Dachanlage. Das Balkon-Programm bleibt
+  // über die Postleitzahl im Rechner und über die Balkon-Förderübersicht
+  // erreichbar.
+  { slug: "tuebingen", name: "Tübingen", ags: "08416041", kreis: "Landkreis Tübingen", bundesland: "Baden-Württemberg", yieldKwhKwp: 1149, fundingId: "tuebingen-pv-speicher" },
   { slug: "forstinning", name: "Forstinning", ags: "09175118", kreis: "Landkreis Ebersberg", bundesland: "Bayern", yieldKwhKwp: 1128 },
   { slug: "poing", name: "Poing", ags: "09175135", kreis: "Landkreis Ebersberg", bundesland: "Bayern", yieldKwhKwp: 1137 },
   { slug: "gaimersheim", name: "Gaimersheim", ags: "09176126", kreis: "Landkreis Eichstätt", bundesland: "Bayern", yieldKwhKwp: 1122 },

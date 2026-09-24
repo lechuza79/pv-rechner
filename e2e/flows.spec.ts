@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, SCHRITTE_OHNE_AUSWAHL, MAX_WEGE_JE_FLOW, ALLE_KOMBINATIONEN, flowTestTitel, uebrigeFragenBeantworten, akkordeonWahlenPruefen, akkordeonFragen, waehle, weiterKlicken } from "./flows";
+import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, SCHRITTE_OHNE_AUSWAHL, MAX_WEGE_JE_FLOW, ALLE_KOMBINATIONEN, FLOW_TEST_ZEITLIMIT_MS, flowTestTitel, uebrigeFragenBeantworten, akkordeonWahlenPruefen, akkordeonFragen, waehle, weiterKlicken } from "./flows";
 import { meldungstext } from "./konsole";
 
 /**
@@ -380,8 +380,12 @@ for (const flow of FLOWS) {
     // an dem etwas kaputtgeht.
     //
     // Der nächtliche Alle-Kombinationen-Lauf braucht ein Vielfaches: Die
-    // Wärmepumpe allein hat ~1600 Kombinationen à ~3 s Seitenaufbau.
-    test.setTimeout(ALLE_KOMBINATIONEN ? 10_800_000 : 600_000);
+    // Wärmepumpe allein hat ~1600 Kombinationen à ~3 s Seitenaufbau. Die Zahl
+    // steht in flows.ts — sie muss unter dem Schritt-Limit des Workflows
+    // liegen, und diese Beziehung prüft ein Test. Drei Nächte rot, weil sie
+    // hier als nackte Zahl stand und beim Aufteilen der Jobs niemand sie
+    // mitgezogen hat; die Begründung im Kommentar dort.
+    test.setTimeout(FLOW_TEST_ZEITLIMIT_MS);
     const konsolenFehler: string[] = [];
     page.on("console", (m) => {
       if (m.type() !== "error") return;
