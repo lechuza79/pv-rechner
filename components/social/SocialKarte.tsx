@@ -757,7 +757,7 @@ export function SaeulenTeil({ bild, skala, palette, stufe, growthToRight=false, 
       <div style={{position:'absolute',left:0,bottom:currentHeight*.35*skala,width:170*skala}}>{block(previous,false)}</div>
       {/* The higher previous-year column is wide; the current-year column is narrow. */}
       <div style={{position:'absolute',left:chartOffset*skala,bottom:GRUNDLINIE,width:BREITE*skala,height:HOEHE*skala,background:toene.gedaempft,borderRadius:`${ecke}px ${ecke}px 0 0`}}/>
-      <div style={{position:'absolute',left:chartOffset*skala,top:0,width:BREITE*skala,height:differenceHeight,background:toene.hervorgehoben,borderRadius:`${Math.min(ecke,differenceHeight/2)}px ${Math.min(ecke,differenceHeight/2)}px 0 0`}}/>
+      <div style={{position:'absolute',left:chartOffset*skala,top:0,width:BREITE*skala,height:Math.max(0,differenceHeight-2),background:toene.hervorgehoben,borderRadius:`${Math.min(ecke,differenceHeight/2)}px ${Math.min(ecke,differenceHeight/2)}px 0 0`}}/>
       <div style={{position:'absolute',left:chartOffset*skala,top:differenceHeight,width:BREITE*skala,height:2,background:v('--color-bg')}}/>
       <div style={{position:'absolute',left:(chartOffset+BREITE)*skala,bottom:GRUNDLINIE,width:AUSLEGER*skala,height:currentHeight*skala,background:toene.gedaempft,opacity:.4,borderLeft:`2px solid ${v('--color-bg')}`,boxSizing:'border-box',borderRadius:`0 ${ecke}px 0 0`}}/>
       <div style={{position:'absolute',left:(chartOffset+AUSLEGER+BREITE+30)*skala,top:differenceHeight/2-26*skala,width:comparisonLabelWidth*skala}}>{block(current,true)}</div>
@@ -798,6 +798,8 @@ export function SaeulenTeil({ bild, skala, palette, stufe, growthToRight=false, 
             bottom: GRUNDLINIE,
             width: BREITE * skala,
             height: HOEHE * skala,
+            // A real gap also works when the surrounding card is transparent.
+            clipPath: comparisonFlag ? `inset(0 0 ${sockel * skala}px 0)` : undefined,
             background: toene.hervorgehoben,
             borderRadius: `${ecke}px ${ecke}px 0 0`,
           }}
@@ -810,9 +812,10 @@ export function SaeulenTeil({ bild, skala, palette, stufe, growthToRight=false, 
             bottom: GRUNDLINIE,
             width: BREITE * skala,
             height: sockel * skala,
-            borderTop: comparisonFlag ? `2px solid ${v("--color-bg")}` : undefined,
+            borderTop: comparisonFlag ? "2px solid transparent" : undefined,
             boxSizing: "border-box",
             background: toene.gedaempft,
+            backgroundClip: "padding-box",
           }}
         />
         {/* Der Ausleger ist ein eigener Körper daneben, deshalb trennt ihn eine
@@ -827,6 +830,7 @@ export function SaeulenTeil({ bild, skala, palette, stufe, growthToRight=false, 
             height: sockel * skala,
             background: toene.gedaempft,
             opacity: 0.4,
+            backgroundClip: "padding-box",
             borderLeft: growthToRight ? undefined : `${Math.max(2, 4 * skala)}px solid ${v("--color-bg")}`,
             borderRight: growthToRight ? `${Math.max(2, 4 * skala)}px solid ${v("--color-bg")}` : undefined,
             boxSizing: "border-box",

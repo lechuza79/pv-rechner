@@ -280,6 +280,24 @@ export const BAUSTEINE: Baustein[] = [
 
   // ─── Rückmeldung ───────────────────────────────────────────────────────────
   {
+    datei: "components/StatusBadge.tsx",
+    name: "StatusBadge",
+    zweck: "Compact status label with semantic colors and an optional active pulse.",
+    gruppe: "rueckmeldung",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: [],
+  },
+  {
+    datei: "components/FormError.tsx",
+    name: "FormError",
+    zweck: "Accessible validation or submission feedback above form fields.",
+    gruppe: "rueckmeldung",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: [],
+  },
+  {
     datei: "components/Modal.tsx",
     name: "Modal",
     zweck:
@@ -287,7 +305,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "baustein",
     stand: "verbindlich",
-    bestehtAus: [],
+    bestehtAus: ["Icons"],
     gegenprobe: {
       muster: 'role="dialog"',
       bedeutet:
@@ -801,7 +819,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "rueckmeldung",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["Icons", "Modal", "SelectField"],
+    bestehtAus: ["FormError", "Icons", "Modal", "SelectField"],
   },
   {
     datei: "components/KontaktTeaser.tsx",
@@ -901,7 +919,7 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "struktur",
     ebene: "zusammensetzung",
     stand: "im-aufbau",
-    bestehtAus: ["InfoTooltip"],
+    bestehtAus: ["InfoTooltip", "StatusBadge"],
   },
   {
     datei: "components/FundingTechnikTabs.tsx",

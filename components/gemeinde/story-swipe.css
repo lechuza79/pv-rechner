@@ -92,11 +92,15 @@
 .story-caption-overlay .story-reader-context{width:100%;flex:1;min-height:0;margin-top:12px}
 .story-visible-widget{width:100%;aspect-ratio:1;display:flex;align-items:center;overflow:hidden;pointer-events:none}
 .story-visible-widget>div{width:100%}
-/* Die Ranglisten-Karte trägt ihr Motiv als Hintergrund über die ganze
-   Bildfläche. Ohne diese Zeilen ist ihr Kasten nur so hoch wie seine Zeilen,
-   und das Bild endete mitten in der Karte mit einer geraden Kante. */
+/* Artwork uses the square preview slot, not the text's intrinsic height.
+   Keep other charts' intrinsic geometry (axes, rings and timelines). */
 .story-visible-widget>div:has([class*="RankStoryChart_chart"]),
-.story-visible-widget>div:has([class*="RankStoryChart_chart"])>div{align-self:stretch;height:100%}
+.story-visible-widget>div:has([data-approved-template="kennzahl"]){
+  align-self:stretch;
+  height:100%;
+}
+.story-visible-widget>div:has([class*="RankStoryChart_chart"])>div,
+.story-visible-widget [data-approved-template="kennzahl"]{height:100%}
 .story-reader-dialog>div:first-child>div:has(.story-progress-row){flex:1;min-width:0;margin-left:12px!important}
 
 .story-artwork-stage{margin-bottom:88px}
@@ -114,6 +118,8 @@
 .story-artwork-stage{margin:0;height:100%}
 .story-export-card{width:100%;height:auto;display:flex;align-items:flex-start;background:var(--atlas-card);border-radius:16px;overflow:hidden}
 .story-export-card>div:not(.story-export-credit){width:100%}
+/* Clip ranking artwork at the outer card, including its text padding. */
+.story-export-card [class*="RankStoryChart_chart"]{overflow:visible}
 .story-caption-overlay,.story-caption-overlay.is-open{bottom:0;height:70%;max-height:none;padding:20px 20px 0;display:flex;flex-direction:column;border:0;border-radius:16px 16px 0 0;background:var(--atlas-surface);box-shadow:none;transform:translateY(calc(100% - 72px));transition:transform 320ms cubic-bezier(.22,.8,.25,1);overflow:hidden}
 .story-caption-overlay.is-open{transform:translateY(0);box-shadow:0 -20px 40px #0003}
 .story-caption-overlay .story-reader-context{width:min(100%,46ch);margin:0 auto;padding:0 0 24px;flex:1;overflow:hidden;mask-image:linear-gradient(#000 28px,transparent 58px)}

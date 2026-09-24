@@ -24,7 +24,7 @@ export function MonitorAnnualEnergyChart({data:initialData, datasets=[initialDat
  const segment=(i:number,a:number,b:number)=>{const p=point(i,a),q=point(i,b);return `M${p.join(',')} L${q.join(',')}`;};
  const controls=<div className={styles.settings}>
   <WidgetSetting hideLabel label="Jahr" value={String(data.year)} onChange={value=>{setYear(Number(value));setSelected(null);setHover(null);}} stepper options={datasets.map(item=>({value:String(item.year),label:String(item.year)}))}/>
-  <WidgetSetting hideLabel label="Energieart" value={mode} onChange={value=>setMode(value as typeof mode)} options={[{value:'both',label:'Solar und Wind'},{value:'solar',label:'Solar'},{value:'wind',label:'Wind'}]}/>
+  <WidgetSetting hideLabel label="Energieart" value={mode} onChange={value=>setMode(value as typeof mode)} options={[{value:'both',label:'Solar + Wind'},{value:'solar',label:'Solar'},{value:'wind',label:'Wind'}]}/>
  </div>;
  return <div className={`${styles.chart} ${compact?styles.compact:''}`} data-legend-visible={selected!==null||hover!==null}>
   {!compact&&controls}

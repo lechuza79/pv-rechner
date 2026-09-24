@@ -370,9 +370,10 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
   gap: 10px !important;
   margin: 24px 0 0 !important;
   max-width: none !important;
-  color: inherit;
+  color: var(--atlas-ink);
 }
 .solar-page .sc-feature-card .gemeinde-foerder-hinweis > span:not(.sc-nav-notice-icon) {
+  color: var(--atlas-ink) !important;
   display: block;
   min-width: 0;
 }
@@ -384,9 +385,10 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
   margin: 2px 0 0 !important;
   border: 0 !important;
   background: none !important;
-  color: inherit !important;
+  color: var(--atlas-muted) !important;
   font: inherit !important;
   text-decoration: underline;
+  text-decoration-color: var(--atlas-action, #d4ff24);
   text-underline-offset: 3px;
 }
 /* „Details" steht auf einer eigenen Zeile unter dem Satz, aber linksbuendig
@@ -482,3 +484,26 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
 }
 /* Der Erklärtext hat seine eigene Zeilenhöhe wieder. */
 #atlas-ranking .ranking-ratio-help p { line-height: 1.5 }
+
+/* Actions belong to their copy block, independent of illustration height. */
+.solar-page :is(.sc-feature-content,.gemeinde-foerder-aktionen) > .sc-feature-action{display:inline-flex;align-items:center;justify-content:center;gap:12px;width:fit-content;max-width:100%;box-sizing:border-box;min-height:48px;margin:24px 0 0!important;padding:12px 24px!important;border:1px solid var(--atlas-border,#adc2c466);border-radius:999px;background:transparent;color:var(--atlas-ink)!important;font:600 14px/1.4 var(--atlas-display,Montserrat),sans-serif;text-decoration:none;text-align:center}
+.solar-page :is(.sc-feature-content,.gemeinde-foerder-aktionen) > .sc-feature-action:hover{background:color-mix(in srgb,var(--atlas-ink) 6%,transparent)}
+.gemeinde-foerder-kopf{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:8px}
+.gemeinde-foerder-kopf .atlas-kicker{margin:0}
+.gemeinde-foerder-ebene a{color:inherit;text-decoration:underline;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-decoration-thickness:1px;text-underline-offset:3px}
+.gemeinde-foerder-archiv{margin-top:24px;border-top:1px solid var(--atlas-border,#adc2c433);padding-top:20px}
+.gemeinde-foerder-archiv>summary{cursor:pointer;color:var(--atlas-muted);font-weight:600}
+@container sc-features (max-width:28rem){.solar-page :is(.sc-feature-content,.gemeinde-foerder-aktionen) > .sc-feature-action{width:100%}}
+
+/* Map the shared funding badge onto the municipality page's color tokens. */
+#atlas-foerderung{--color-positive-text:var(--sc-profit-outline);--color-chart-positive-bg:var(--sc-profit-fill);--color-text-muted:var(--atlas-muted)}
+
+.gemeinde-foerder-aktionen{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:24px}
+.solar-page .gemeinde-foerder-aktionen>.sc-feature-action{margin:0!important}
+.solar-page .gemeinde-foerder-aktionen>.gemeinde-foerder-melden{border-color:transparent;color:var(--atlas-muted)!important;padding-inline:12px!important}
+
+.solar-page .gemeinde-foerder-aktionen>.gemeinde-foerder-melden{gap:6px}
+.gemeinde-foerder-melden svg{opacity:.55}
+.gemeinde-meldung .gemeinde-meldung-programm{font-weight:600;margin:12px 0 8px;line-height:1.4}
+.gemeinde-meldung p{font-size:14px;line-height:1.5}
+.gemeinde-meldung form{margin-top:20px!important;gap:16px!important}

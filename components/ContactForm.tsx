@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { v, iconSizes, space, pad } from "../lib/theme";
-import { IconCheck, IconClose } from "./Icons";
+import { IconCheck } from "./Icons";
 import { ModalSticky } from "./Modal";
 import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../lib/contact-topics";
+import FormError from "./FormError";
 import SelectField from "./SelectField";
 
 const S = {
@@ -119,6 +120,13 @@ export default function ContactForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const form = e.currentTarget as HTMLFormElement;
+    if (!form.checkValidity()) {
+      setStatus("error");
+      setErrorText(!email.trim() ? "Bitte gib deine E-Mail-Adresse ein, damit wir bei Rückfragen antworten können." : !form.querySelector<HTMLInputElement>('input[type="email"]')?.validity.valid ? "Bitte prüfe deine E-Mail-Adresse, zum Beispiel name@beispiel.de." : "Bitte beschreibe deine Nachricht mit mindestens 10 Zeichen.");
+      form.querySelector<HTMLElement>(":invalid")?.focus();
+      return;
+    }
     setStatus("sending");
     setErrorText("");
 
@@ -156,7 +164,10 @@ export default function ContactForm({
   }
 
   return (
-    <form style={S.form} onSubmit={handleSubmit}>
+    <form style={S.form} onSubmit={handleSubmit} noValidate>
+      {status === "error" && (
+        <FormError>{errorText}</FormError>
+      )}
       <div style={S.field}>
         <label style={S.label} htmlFor="contact-name">Name (optional)</label>
         <input
@@ -224,12 +235,7 @@ export default function ContactForm({
         />
       </div>
 
-      {status === "error" && (
-        <div style={{ ...S.message, ...S.error }}>
-          <IconClose size={iconSizes.md} />
-          <span>{errorText}</span>
-        </div>
-      )}
+
 
       {/* Datenschutz-Hinweis UND Knopf gemeinsam im klebenden Bereich.
 

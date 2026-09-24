@@ -23,17 +23,10 @@
 .rankLink{margin-top:0;font-size:var(--atlas-body-size)}
 
 .chart{position:relative;isolation:isolate;overflow:hidden;border-radius:var(--atlas-card-radius)}
-/* Das Motiv DECKT die Karte und läuft über alle vier Kanten hinaus, wie in
-   den Monitor-Kacheln: groß, entsättigt, sehr schwach, mit einem
-   Aquarell-Klecks dahinter.
-
-   Zwei Fehlgriffe davor, beide mit sichtbarer Kante IM Bild: erst verkleinert
-   (dann endete das Bild mitten in der Karte), dann nur in der Breite über die
-   Kante gezogen — bei automatischer Höhe deckt es aber nur ein waagerechtes
-   Band, und oben wie unten stand wieder eine gerade Kante. Deckend heißt:
-   Breite UND Höhe über die Karte hinaus. */
-.backdrop{position:absolute;z-index:-1;pointer-events:none;inset:-12%;width:124%;max-width:none;height:124%;object-fit:cover;object-position:center 58%;filter:grayscale(1);opacity:.12}
+/* The artwork files include transparent margins. Scale the painted motif,
+   not just the image box, beyond the card; preserve its aspect ratio. */
+.backdrop{position:absolute;z-index:-1;pointer-events:none;left:50%;top:50%;width:200%;max-width:none;height:200%;transform:translate(-50%,-50%);object-fit:cover;object-position:center;filter:grayscale(1);opacity:.12}
 .splash{position:absolute;inset:-28%;z-index:-2;pointer-events:none;background:var(--atlas-action);opacity:.07;mask-size:contain;mask-position:center;mask-repeat:no-repeat;-webkit-mask-size:contain;-webkit-mask-position:center;-webkit-mask-repeat:no-repeat}
 .chart[data-compact=true]{height:100%;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box}
-.chart[data-compact=true] .backdrop{inset:-14%;width:128%;height:128%;opacity:.14}
+.chart[data-compact=true] .backdrop{opacity:.14}
 .chart[data-compact=true] .splash{inset:-34%;opacity:.08}
