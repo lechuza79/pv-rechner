@@ -103,11 +103,66 @@ for (const g of GROESSEN) {
   }
 }
 
-test("ohne Vorschau-Marke gibt es keine Lupe (der Schalter ist aus)", async ({ page, context }) => {
-  await context.clearCookies();
+test("die Lupe steht ohne Vorschau-Marke im Menü, und ohne JavaScript führt ein Link zur Suche", async ({ page, browser }) => {
   await page.goto("/ratgeber", { waitUntil: "domcontentloaded" });
-  await expect(page.locator(".sc-nav-login").first()).toBeAttached({ timeout: 30_000 });
-  await expect(page.locator(".sc-search-toggle")).toHaveCount(0);
+  await expect(page.locator("header > .sc-search-toggle")).toBeVisible({ timeout: 30_000 });
+  const ctx = await browser.newContext({ javaScriptEnabled: false });
+  const ohneJs = await ctx.newPage();
+  await ohneJs.goto("/ratgeber");
+  await expect(ohneJs.locator('.sc-react-fallback a[href="/suche"]')).toHaveCount(1);
+  await ctx.close();
+});
+
+// Ein Menü steht einen festen Abstand unter der Menüzeile, egal wie viel
+// Innenabstand die Seite ihrer Kopfzeile gibt: gemessen 6 px auf den
+// React-Seiten, aber 38 px auf Startseite und Gemeindeseite.
+for (const pfad of ["/ratgeber", "/", "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg"]) {
+  test(`${pfad}: Menü und Suche hängen gleich dicht unter der Menüzeile`, async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(pfad, { waitUntil: "domcontentloaded" });
+    const summary = page.locator('header nav.sc-global-nav [data-section="tools"] > summary');
+    await expect(summary).toBeVisible({ timeout: 30_000 });
+    const panel = page.locator('header nav.sc-global-nav [data-section="tools"] > .sc-nav-panel');
+    await klickBisWirkung(summary, panel, "Tools öffnen");
+    // Gemessen wird die ruhende Lage, nicht ein Bild aus der Einblend-Bewegung.
+    await expect.poll(() => panel.evaluate((el) => getComputedStyle(el).transform), { timeout: 10_000 }).toBe("none");
+    const menuAbstand = await page.evaluate(() => {
+      const g = document.querySelector('header nav.sc-global-nav [data-section="tools"]')!;
+      return g.querySelector(".sc-nav-panel")!.getBoundingClientRect().top - g.querySelector("summary")!.getBoundingClientRect().bottom;
+    });
+    expect(menuAbstand).toBeGreaterThanOrEqual(0);
+    expect(menuAbstand).toBeLessThanOrEqual(12);
+    await page.keyboard.press("Escape");
+    const { feld } = await oeffneSuche(page);
+    await expect(feld).toBeVisible();
+    await expect
+      .poll(() => page.locator("#sc-search-panel").evaluate((el) => el.getAnimations().length), { timeout: 10_000 })
+      .toBe(0);
+    const suchAbstand = await page.evaluate(() => {
+      const s = document.querySelector('header nav.sc-global-nav [data-section="tools"] > summary')!;
+      return document.querySelector("#sc-search-panel")!.getBoundingClientRect().top - s.getBoundingClientRect().bottom;
+    });
+    expect(Math.abs(suchAbstand - menuAbstand)).toBeLessThanOrEqual(1);
+  });
+}
+
+// Ein Klick auf einen Link zu einer anderen Seite lässt das Menü stehen, bis die
+// neue Seite da ist — sofort zu schließen sah aus wie ein verlorener Klick.
+test("das Menü bleibt beim Klick auf einen Link offen, bis die nächste Seite kommt", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/ratgeber", { waitUntil: "domcontentloaded" });
+  await page.route("**/waermepumpe-rechner", async (route) => {
+    await new Promise((r) => setTimeout(r, 1500));
+    await route.continue();
+  });
+  const summary = page.locator('header nav.sc-global-nav [data-section="tools"] > summary');
+  const panel = page.locator('header nav.sc-global-nav [data-section="tools"] > .sc-nav-panel');
+  await expect(summary).toBeVisible({ timeout: 30_000 });
+  await klickBisWirkung(summary, panel, "Tools öffnen");
+  await panel.locator('a[href="/waermepumpe-rechner"]').click({ noWaitAfter: true });
+  await page.waitForTimeout(500);
+  await expect(panel).toBeVisible();
+  await page.waitForURL("**/waermepumpe-rechner", { timeout: 30_000 });
 });
 
 test("die Suchseite funktioniert ohne JavaScript und steht nicht im Index", async ({ browser }) => {
