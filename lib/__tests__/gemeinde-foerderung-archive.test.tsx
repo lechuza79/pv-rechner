@@ -18,8 +18,8 @@ describe('municipal funding archive', () => {
     expect(html).not.toMatch(/<details[^>]*\bopen/);
     expect(html).toContain('ausgeschöpft');
     expect(html).toContain('>aktiv</span>');
-    expect(html).toContain('Gemeinde Meinersen ↗');
-    expect(html).toContain('Landkreis Gifhorn ↗');
+    expect(html).toContain('Gemeinde Meinersen');
+    expect(html).toContain('Landkreis Gifhorn');
     expect(html).toContain(active.url);
   });
 });

@@ -35,6 +35,7 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
+import { IconClose } from "./Icons";
 import { v, space } from "../lib/theme";
 
 const DURATION_MS = 220;
@@ -403,7 +404,7 @@ export default function Modal({
           <h2 style={S.h2}>{title}</h2>
           <div ref={setHeader} style={{ marginLeft: "auto" }} />
           <button onClick={onClose} aria-label="Schließen" style={S.close}>
-            ×
+            <IconClose size={20} />
           </button>
         </div>
         {intro && <p style={S.intro}>{intro}</p>}
@@ -422,7 +423,7 @@ const S: Record<string, React.CSSProperties> = {
     gap: space.lg,
     marginBottom: space.xs,
   },
-  h2: {},
+  h2: {fontFamily: "var(--font-display, Montserrat, sans-serif)", letterSpacing: "-.02em", fontWeight: 700, fontSize: "clamp(20px, 3vw, 24px)", lineHeight: 1.25, margin: 0},
   close: {
     border: "none",
     background: "transparent",
@@ -430,7 +431,11 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: v("--font-size-h1"),
     lineHeight: 0.8,
     cursor: "pointer",
-    padding: 0,
+    padding: 8,
+    display: "grid",
+    placeItems: "center",
+    minWidth: 40,
+    minHeight: 40,
     flexShrink: 0,
   },
   // BASIS-GROESSE, nicht Bildunterschrift: Der Intro eines Fensters ist der

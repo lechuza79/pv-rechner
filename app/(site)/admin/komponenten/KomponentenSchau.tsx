@@ -7,6 +7,8 @@ import Breadcrumb from "../../../../components/Breadcrumb";
 import InfoTooltip from "../../../../components/InfoTooltip";
 import InlineEdit from "../../../../components/InlineEdit";
 import { LoadingDots } from "../../../../components/LoadingDots";
+import StatusBadge from "../../../../components/StatusBadge";
+import FormError from "../../../../components/FormError";
 import Modal from "../../../../components/Modal";
 import OptionCard from "../../../../components/OptionCard";
 import PresetNumberInput from "../../../../components/PresetNumberInput";
@@ -678,6 +680,13 @@ const BEISPIELE: Record<string, Beispiel> = {
   PresetNumberInput: ZahlenfeldBeispiel,
   InlineEdit: ZahlBeispiel,
   AccordionField: AkkordeonBeispiel,
+  StatusBadge: () => (
+    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+      <StatusBadge tone="positive" pulse>aktiv</StatusBadge>
+      <StatusBadge tone="negative">ausgeschöpft</StatusBadge>
+    </div>
+  ),
+  FormError: () => <FormError>Bitte prüfe deine E-Mail-Adresse.</FormError>,
   Modal: DialogBeispiel,
   Toast: ToastBeispiel,
   ResultSection: AbschnittBeispiel,

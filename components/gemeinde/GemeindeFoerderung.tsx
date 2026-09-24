@@ -88,10 +88,10 @@ export default function GemeindeFoerderung({
                   loading="lazy"
                 />
                 <div className="v3-example-copy sc-feature-content">
-                  <div className="gemeinde-foerder-kopf" data-status={p.programm.status}><p className="atlas-kicker">{techniken.map((t) => TECHNIK_WORT[t]).join(" · ")}</p><FundingStatusBadge status={p.programm.status} /></div>
+                  <div className="gemeinde-foerder-kopf" data-status={p.programm.status}><p className="atlas-kicker">{techniken.map((t) => TECHNIK_WORT[t]).join(" · ")}</p><FundingStatusBadge status={p.programm.status} compact /></div>
                   <h3>{p.programm.name}</h3>
                   <p>{satz ? `${satz.value}${satz.label ? ` · ${satz.label}` : ""}` : p.programm.coveredCosts}</p>
-                  <p className="gemeinde-foerder-ebene"><a href={p.programm.url} target="_blank" rel="noopener noreferrer">{p.programm.traeger} ↗</a></p>
+                  <p className="gemeinde-foerder-ebene"><a href={p.programm.url} target="_blank" rel="noopener noreferrer">{p.programm.traeger}</a></p>
                 <div className="gemeinde-foerder-aktionen">
                 <button type="button" className="v3-example-cta sc-feature-action" onClick={() => setOffen(p)}>
                   Einzelheiten {pfeil}
@@ -128,9 +128,9 @@ export default function GemeindeFoerderung({
         {karten(archiv)}
       </details>}
 
-      <Modal open={meldung !== null} onClose={() => setMeldung(null)} title="Änderung melden" maxWidth={600}>
+      <Modal open={meldung !== null} onClose={() => setMeldung(null)} title="Änderung melden" maxWidth={560} className="gemeinde-meldung">
         {meldung && <>
-          <p>{meldung.programm.name} · {ort}</p>
+          <p className="gemeinde-meldung-programm">{meldung.programm.name} · {ort}</p>
           <p>Was hat sich geändert? Ein Hinweis oder ein Link zur aktuellen Information hilft uns bei der Prüfung.</p>
           <ContactForm key={meldung.programm.id} initialTopic="Fehler melden" initialMessage={`Änderung zum Förderprogramm: ${meldung.programm.name}\nOrt: ${ort}\nFördergeber: ${meldung.programm.traeger}\nQuelle: ${meldung.programm.url}\n\nDas hat sich geändert:\n`} />
         </>}
