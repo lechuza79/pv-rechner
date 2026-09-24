@@ -132,7 +132,9 @@ for (const pfad of ["/ratgeber", "/", "/solar-atlas/bayern/landkreis-wuerzburg/h
     });
     expect(menuAbstand).toBeGreaterThanOrEqual(0);
     expect(menuAbstand).toBeLessThanOrEqual(12);
-    await page.keyboard.press("Escape");
+    // The search is measured on a fresh page: it should not depend on how the
+    // menu was closed before.
+    await page.reload({ waitUntil: "domcontentloaded" });
     const { feld } = await oeffneSuche(page);
     await expect(feld).toBeVisible();
     await expect
@@ -151,18 +153,23 @@ for (const pfad of ["/ratgeber", "/", "/solar-atlas/bayern/landkreis-wuerzburg/h
 test("das Menü bleibt beim Klick auf einen Link offen, bis die nächste Seite kommt", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/ratgeber", { waitUntil: "domcontentloaded" });
-  await page.route("**/waermepumpe-rechner", async (route) => {
-    await new Promise((r) => setTimeout(r, 1500));
-    await route.continue();
-  });
   const summary = page.locator('header nav.sc-global-nav [data-section="tools"] > summary');
   const panel = page.locator('header nav.sc-global-nav [data-section="tools"] > .sc-nav-panel');
   await expect(summary).toBeVisible({ timeout: 30_000 });
   await klickBisWirkung(summary, panel, "Tools öffnen");
-  await panel.locator('a[href="/waermepumpe-rechner"]').click({ noWaitAfter: true });
+  // Stand in for the slow next page: the navigation is stopped AFTER the menu
+  // has handled the click (document listeners run after the menu's own). A
+  // delayed route does not work here — the test browser drops the old page at
+  // once, so the check would read the next page's closed menu.
+  await page.evaluate(() =>
+    document.addEventListener("click", (e) => {
+      if ((e.target as Element).closest("a")) e.preventDefault();
+    }),
+  );
+  await panel.locator('a[href="/waermepumpe-rechner"]').click();
   await page.waitForTimeout(500);
   await expect(panel).toBeVisible();
-  await page.waitForURL("**/waermepumpe-rechner", { timeout: 30_000 });
+  expect(page.url()).toContain("/ratgeber");
 });
 
 test("die Suchseite funktioniert ohne JavaScript und steht nicht im Index", async ({ browser }) => {
