@@ -1,4 +1,6 @@
 import "server-only";
+import type { StoryConcept } from "./story-konzepte";
+import { energyYearTitle } from "./story-energy-year-labels";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { brotliDecompressSync } from "node:zlib";
@@ -30,13 +32,22 @@ function gueltig(p: unknown, ags: string): p is GemeindePaket {
   return !!x && x.version === GEMEINDE_PAKET_VERSION && x.ags === ags && Array.isArray(x.missing);
 }
 
+/** Keep stored annual story titles consistent with their actual energy mix. */
+function mitJahrestiteln(data: GemeindePaket): GemeindePaket {
+  if (!Array.isArray(data.stories)) return data;
+  return {...data, stories: data.stories.map(raw => {
+    const story = raw as StoryConcept;
+    return story.energyYear ? {...story, title: energyYearTitle(story.energyYear)} : story;
+  })};
+}
+
 export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | null> {
   if (!/^\d{8}$/.test(ags)) return null;
   const lokal = process.env.GEMEINDE_PAKET_LOKAL;
   if (lokal) {
     try {
       const data = JSON.parse(await readFile(path.join(lokal, `${ags}.json`), "utf8"));
-      return gueltig(data, ags) ? data : null;
+      return gueltig(data, ags) ? mitJahrestiteln(data) : null;
     } catch {
       return null;
     }
@@ -61,7 +72,7 @@ export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | nu
     if (res.status === 400 || res.status === 404) return null;
     if (!res.ok) throw new Error(`gemeinde-paket/${ags}: HTTP ${res.status}`);
     const data = JSON.parse(brotliDecompressSync(Buffer.from(await res.arrayBuffer())).toString("utf8"));
-    return gueltig(data, ags) ? data : null;
+    return gueltig(data, ags) ? mitJahrestiteln(data) : null;
   } catch (e) {
     throw e instanceof Error ? e : new Error(`gemeinde-paket/${ags}: ${String(e)}`);
   }

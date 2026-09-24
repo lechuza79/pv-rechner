@@ -47,3 +47,6 @@
 :global([data-story-scheme="dark"]) .splash{opacity:.06}
 :global([data-story-scheme="dark"]) .splash[data-layer="1"]{opacity:.05}
 :global([data-story-scheme="dark"]) .splash[data-layer="2"]{opacity:.045}
+
+/* Carry the backdrop through the preview padding to the outer card edge. */
+.compact .splashes{left:-24px;right:-24px}
