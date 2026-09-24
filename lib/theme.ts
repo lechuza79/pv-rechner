@@ -897,27 +897,6 @@ export const globalStyles = `
   }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
-  /* Result surface follows the Atlas V3 paper, ink and blue palette. */
-  .wp-result-page{--font-size-small:14px;--font-size-caption:12px;--font-size-body:15px;--color-bg:#edf0ec;--color-surface:#fafbf8;--color-surface-hover:#e4ebe4;--color-text-primary:#18323e;--color-text-secondary:#52676f;--color-text-muted:#617279;--color-text-faint:#617279;--color-border:#cdd6d2;--color-accent:#2362df;--color-accent-dim:#e0e8f7;--color-positive:#287353;--color-positive-dim:#e1ebe3;--color-negative:#b53e38;padding:0 6% 60px!important}
-  body:has(.wp-result-page){background:#edf0ec}
-  .wp-section-nav{display:flex;gap:30px;margin-top:32px;padding-top:22px;border-top:1px solid var(--color-border);font-size:var(--font-size-body)}
-  .wp-section-nav a{color:var(--color-text-primary);text-decoration:none}
-  .wp-section-nav a:hover{color:var(--color-accent)}
-  .wp-result-page *{box-sizing:border-box}
-  .wp-result-page a,.wp-result-page button,.wp-result-page summary{scroll-margin-top:90px}
-  .wp-result-page :focus-visible{outline:2px solid var(--color-accent);outline-offset:4px}
-  .wp-result-heading{padding:50px 0 26px;text-align:left!important;margin-bottom:12px!important}
-  .wp-eyebrow{font-size:var(--font-size-caption);font-weight:700;letter-spacing:.04em;color:var(--color-accent);margin:0 0 12px}
-  .wp-result-heading h1{font-family:var(--font-heading);font-size:clamp(34px,4.4vw,58px)!important;font-weight:700!important;letter-spacing:normal!important;line-height:1.2!important;margin:0}
-  .wp-result-context{color:var(--color-text-secondary);font-size:var(--font-size-body);margin:12px 0 0}
-  .wp-ergebnis{display:block}
-  /* Schmal: Kacheln nebeneinander im Sichtfenster, eine gut sichtbar plus ein
-     angeschnittener Rand der nächsten — das ist der Hinweis, dass es weitergeht.
-     Ohne den Anschnitt wischt niemand. */
-  @media (min-width:1024px){
-    .wp-ergebnis{display:grid;grid-template-columns:minmax(0,480px) 300px;gap:24px;align-items:start;width:804px;margin-left:-162px}
-    /* In der Spalte gestapelt statt nebeneinander. */
-  }
   /* KPI-Reihe des Energie-Atlas: sechs Kacheln nebeneinander, auf schmalen
      Schirmen ein Wisch-Slider (Embla). Der Umschaltpunkt steht hier UND als
      Embla-Breakpoint in AtlasKpiRow — beide bei 760px, sonst wischt der Desktop
