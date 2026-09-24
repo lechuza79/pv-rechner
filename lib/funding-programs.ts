@@ -6649,7 +6649,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Gemeinde Poing", level: "kommune", region: "Poing",
     bundesland: "Bayern", agsCode: "09175135",
     url: "https://www.poing.de/bauen-umwelt/energie-klima/foerderrichtlinien",
-    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Anteil der Kosten für Balkonkraftwerk und Dachanlage, dazu Pauschalen für Wärmepumpen",
     maxFoerderung: "max. 2.000 € für die Dachanlage, 250 € fürs Balkonkraftwerk",
@@ -6668,8 +6668,18 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Die Anlage muss der BAFA-Förderrichtlinie entsprechen und der hydraulische Abgleich durchgeführt sein",
       "Gerechnet wird der Satz der Luft-Wasser-Pumpe; für Erdwärme oder Grundwasser sind es 200 € mehr",
       "Gefördert werden nur Gebäude im Gemeindegebiet Poing",
+      { text: "Photovoltaik und Balkonkraftwerk: „Eine Kombination mit anderen staatlichen Fördermitteln ist nicht gestattet.“ (Förderrichtlinie zur Energieerzeugung, Stand Februar 2026, Nr. 3.5, gilt für Anträge ab 1. April 2026)", nur: ["pv", "balkon"] },
+      { text: "Photovoltaik und Balkonkraftwerk: Zwischen Bewilligung und Fertigmeldung mit Fotobeweis dürfen höchstens sechs Monate liegen, sonst entfällt die Förderung", nur: ["pv", "balkon"] },
     ],
-    combinableWith: BUND,
+    // KfW 270 REMOVED 24.09.2026: the PV/Mini-PV guideline (Stand Februar 2026,
+    // in force 01.04.2026, Nr. 3.5) forbids combining with "anderen staatlichen
+    // Fördermitteln"; a KfW promotional loan is one (Council + Legal-Judge).
+    // The list must NOT become empty: the heat-pump grant comes from the older
+    // Energie-Richtlinie (Juni 2021), whose Nr. 3.4 allows KfW/BAFA and whose
+    // Nr. 5.2 even requires the BEG; an empty list means "excludes federal aid"
+    // and would drop Poing from the heat-pump calculator. The 0 % VAT rate is a
+    // tax rule applying by law, not a grant, so it stays.
+    combinableWith: ["bund-nullsteuer"],
     foerdert: ["pv", "balkon", "waermepumpe"],
     percentOfCost: 0.1, pvCap: 2000,
     balkonPercentOfCost: 0.25, balkonCap: 250,
@@ -7821,7 +7831,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     traeger: "Ortsgemeinde Neustadt (Wied)", level: "kommune", region: "Neustadt (Wied)",
     bundesland: "Rheinland-Pfalz", agsCode: "07138044",
     url: "https://www.vg-asbach.de/klima-umweltschutz/foerderungen/pv-foerderprogramm-der-ortsgemeinde-neustadt-wied/",
-    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
     beschlossenIso: "2025-12-18", endetIso: "2026-12-31",
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp und je kWh Speicher — Dachanlage nur zusammen mit einem Speicher",
@@ -7831,6 +7841,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "Batteriespeicher", value: "130 €/kWh nutzbare Kapazität, max. 1.950 €" },
     ],
     conditions: [
+      "Die Fördermittel sind ausgeschöpft; es können keine weiteren Förderanträge mehr gestellt werden (Hinweis der Verbandsgemeinde Asbach, Stand 23.09.2026)",
       "Die Dachanlage wird nur zusammen mit einem Batteriespeicher gefördert, der zugleich errichtet, erweitert oder nachgerüstet wird",
       "Gefördert werden höchstens 15 kWp und 15 kWh; Anlagen bis 30 kWp bzw. Speicher bis 30 kWh erhalten den Höchstbetrag, größere gar nichts",
       "Leistung, die die Ortsgemeinde schon früher gefördert hat, wird auf die Grenzen von 15 kWp und 15 kWh angerechnet — gefördert wird dann nur noch der Rest",
