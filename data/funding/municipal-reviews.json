@@ -56515,5 +56515,277 @@
         "reason": "Am 24.09.2026 live gelesen: Investitionsvorhaben der Verbandsgemeinde aus STARK V und der Agrarstrukturförderung, Auskunft über das Bauamt. Kein Zuschuss an Haushalte, kein Technikwort."
       }
     ]
+  },
+  {
+    "regionId": "07334014",
+    "name": "Knittelsheim",
+    "checkedAt": "2026-09-24T02:35:00Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Knittelsheim 1 Fundstelle.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein Zuschuss an Haushalte dieser Ortsgemeinde. Die Förderübersicht der Verbandsgemeinde Bellheim überschreibt jedes ihrer drei Programme mit dem Träger; die beiden Energie-Programme (500 € je Photovoltaikanlage, 100 € je Stecker-Solargerät) gehören der ORTSGEMEINDE Bellheim und verlangen, dass das Anwesen auf deren Gebiet liegt. Die KIPKI-Seite derselben Verwaltung schlüsselt auf, wofür jede Ortsgemeinde ihre Landesmittel verwendet: Knittelsheim und Ottersheim in die Sanierung der Grundschule, Zeiskam in Beleuchtung und eine PV-Anlage der Fuchsbachhalle — eine Förderung für private Haushalte nennt sie ausdrücklich nur für Bellheim. Council mit drei Prüfern am 24.09.2026.",
+    "searches": [
+      "Förderübersicht und KIPKI-Seite der VG Bellheim am 24.09.2026 live im Volltext gelesen (Knittelsheim)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bellheim.de/vg_bellheim/Wirtschaft/F%C3%B6rdermittel%20(Angebote)/",
+        "finding": "Am 24.09.2026 gelesen: „2. ORTSGEMEINDE BELLHEIM – Maßnahmen zur Nutzung erneuerbarer Energien … Für jede Solarthermie-, Photovoltaik- und Holzpelletanlage wird ein Zuschuss in Höhe von 500,00 € gewährt.“ Träger ist die Ortsgemeinde Bellheim, nicht die Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.bellheim.de/vg_bellheim/Klimaschutz%20und%20Umwelt/Projekte%20und%20Ma%C3%9Fnahmen/KIPKI%20-%20Kommunales%20Investitionsprogramm%20Klimaschutz%20und%20Innovation/",
+        "finding": "Am 24.09.2026 gelesen: „Knittelsheim und Ottersheim haben sich entschlossen die KIPKI-Mittel bei der Sanierung der Grundschule einzusetzen.“ / „In Zeiskam wird die komplette Beleuchtung der Grundschule auf energiesparende LED-Leuchten umgestellt … Schließlich ist noch eine kleine PV-Anlage mit einem Stromspeicher für die Fuchsbachhalle geplant.“ / „Darüber hinaus wird in Bellheim eine Förderung für private Haushalte … angeboten.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "bellheim.de/vg_bellheim/Wirtschaft/F%C3%B6rdermittel%20(Angebote)",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.bellheim.de/vg_bellheim/Wirtschaft/F%C3%B6rdermittel%20(Angebote)/",
+        "reason": "Am 24.09.2026 live gelesen: Die Förderübersicht führt drei Programme, jedes mit seinem Träger überschrieben; die Energie-Zuschüsse gehören der ORTSGEMEINDE Bellheim und gelten nur dort. Kein Zuschuss für Knittelsheim."
+      }
+    ]
+  },
+  {
+    "regionId": "07334023",
+    "name": "Ottersheim bei Landau",
+    "checkedAt": "2026-09-24T02:35:00Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Ottersheim bei Landau 1 Fundstelle.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein Zuschuss an Haushalte dieser Ortsgemeinde. Die Förderübersicht der Verbandsgemeinde Bellheim überschreibt jedes ihrer drei Programme mit dem Träger; die beiden Energie-Programme (500 € je Photovoltaikanlage, 100 € je Stecker-Solargerät) gehören der ORTSGEMEINDE Bellheim und verlangen, dass das Anwesen auf deren Gebiet liegt. Die KIPKI-Seite derselben Verwaltung schlüsselt auf, wofür jede Ortsgemeinde ihre Landesmittel verwendet: Knittelsheim und Ottersheim in die Sanierung der Grundschule, Zeiskam in Beleuchtung und eine PV-Anlage der Fuchsbachhalle — eine Förderung für private Haushalte nennt sie ausdrücklich nur für Bellheim. Council mit drei Prüfern am 24.09.2026.",
+    "searches": [
+      "Förderübersicht und KIPKI-Seite der VG Bellheim am 24.09.2026 live im Volltext gelesen (Ottersheim bei Landau)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bellheim.de/vg_bellheim/Wirtschaft/F%C3%B6rdermittel%20(Angebote)/",
+        "finding": "Am 24.09.2026 gelesen: „2. ORTSGEMEINDE BELLHEIM – Maßnahmen zur Nutzung erneuerbarer Energien … Für jede Solarthermie-, Photovoltaik- und Holzpelletanlage wird ein Zuschuss in Höhe von 500,00 € gewährt.“ Träger ist die Ortsgemeinde Bellheim, nicht die Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.bellheim.de/vg_bellheim/Klimaschutz%20und%20Umwelt/Projekte%20und%20Ma%C3%9Fnahmen/KIPKI%20-%20Kommunales%20Investitionsprogramm%20Klimaschutz%20und%20Innovation/",
+        "finding": "Am 24.09.2026 gelesen: „Knittelsheim und Ottersheim haben sich entschlossen die KIPKI-Mittel bei der Sanierung der Grundschule einzusetzen.“ / „In Zeiskam wird die komplette Beleuchtung der Grundschule auf energiesparende LED-Leuchten umgestellt … Schließlich ist noch eine kleine PV-Anlage mit einem Stromspeicher für die Fuchsbachhalle geplant.“ / „Darüber hinaus wird in Bellheim eine Förderung für private Haushalte … angeboten.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "bellheim.de/vg_bellheim/Wirtschaft/F%C3%B6rdermittel%20(Angebote)",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.bellheim.de/vg_bellheim/Wirtschaft/F%C3%B6rdermittel%20(Angebote)/",
+        "reason": "Am 24.09.2026 live gelesen: Die Förderübersicht führt drei Programme, jedes mit seinem Träger überschrieben; die Energie-Zuschüsse gehören der ORTSGEMEINDE Bellheim und gelten nur dort. Kein Zuschuss für Ottersheim bei Landau."
+      }
+    ]
+  },
+  {
+    "regionId": "07334036",
+    "name": "Zeiskam",
+    "checkedAt": "2026-09-24T02:35:00Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Zeiskam 1 Fundstelle.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein Zuschuss an Haushalte dieser Ortsgemeinde. Die Förderübersicht der Verbandsgemeinde Bellheim überschreibt jedes ihrer drei Programme mit dem Träger; die beiden Energie-Programme (500 € je Photovoltaikanlage, 100 € je Stecker-Solargerät) gehören der ORTSGEMEINDE Bellheim und verlangen, dass das Anwesen auf deren Gebiet liegt. Die KIPKI-Seite derselben Verwaltung schlüsselt auf, wofür jede Ortsgemeinde ihre Landesmittel verwendet: Knittelsheim und Ottersheim in die Sanierung der Grundschule, Zeiskam in Beleuchtung und eine PV-Anlage der Fuchsbachhalle — eine Förderung für private Haushalte nennt sie ausdrücklich nur für Bellheim. Council mit drei Prüfern am 24.09.2026.",
+    "searches": [
+      "Förderübersicht und KIPKI-Seite der VG Bellheim am 24.09.2026 live im Volltext gelesen (Zeiskam)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bellheim.de/vg_bellheim/Wirtschaft/F%C3%B6rdermittel%20(Angebote)/",
+        "finding": "Am 24.09.2026 gelesen: „2. ORTSGEMEINDE BELLHEIM – Maßnahmen zur Nutzung erneuerbarer Energien … Für jede Solarthermie-, Photovoltaik- und Holzpelletanlage wird ein Zuschuss in Höhe von 500,00 € gewährt.“ Träger ist die Ortsgemeinde Bellheim, nicht die Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.bellheim.de/vg_bellheim/Klimaschutz%20und%20Umwelt/Projekte%20und%20Ma%C3%9Fnahmen/KIPKI%20-%20Kommunales%20Investitionsprogramm%20Klimaschutz%20und%20Innovation/",
+        "finding": "Am 24.09.2026 gelesen: „Knittelsheim und Ottersheim haben sich entschlossen die KIPKI-Mittel bei der Sanierung der Grundschule einzusetzen.“ / „In Zeiskam wird die komplette Beleuchtung der Grundschule auf energiesparende LED-Leuchten umgestellt … Schließlich ist noch eine kleine PV-Anlage mit einem Stromspeicher für die Fuchsbachhalle geplant.“ / „Darüber hinaus wird in Bellheim eine Förderung für private Haushalte … angeboten.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "bellheim.de/vg_bellheim/Wirtschaft/F%C3%B6rdermittel%20(Angebote)",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.bellheim.de/vg_bellheim/Wirtschaft/F%C3%B6rdermittel%20(Angebote)/",
+        "reason": "Am 24.09.2026 live gelesen: Die Förderübersicht führt drei Programme, jedes mit seinem Träger überschrieben; die Energie-Zuschüsse gehören der ORTSGEMEINDE Bellheim und gelten nur dort. Kein Zuschuss für Zeiskam."
+      }
+    ]
+  },
+  {
+    "regionId": "07335003",
+    "name": "Bruchmühlbach-Miesau",
+    "checkedAt": "2026-09-24T02:35:00Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Bruchmühlbach-Miesau 1 Fundstelle.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss belegt. Die Energiespar-Seite der Verbandsgemeinde Bruchmühlbach-Miesau nennt ausschließlich Beratungsangebote — die Verbraucherzentrale Rheinland-Pfalz und die kostenlose Energieberatung von Stadt und Landkreis Kaiserslautern — und verweist im Übrigen auf Bund und Land. Kein eigenes Programm für Photovoltaik, Balkonkraftwerke oder Wärmepumpen.",
+    "searches": [
+      "Energiespar-Seite der VG Bruchmühlbach-Miesau am 24.09.2026 live im Volltext gelesen (Bruchmühlbach-Miesau)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bruchmuehlbach-miesau.de/ver-entsorgung/umwelt/energiesparen/foerderprogramme-fuer-energiesparmassnahmen-und-erneuerbare-energien",
+        "finding": "Am 24.09.2026 gelesen: „Informationen über Förderprogramme für Energiesparmaßnahmen erhalten Sie bei der Verbraucherzentrale Rheinland-Pfalz“ und „Die Stadt und der Landkreis Kaiserslautern kooperieren in Sachen Energieberatung.“ Nur Beratung, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bruchmuehlbach-miesau.de/ver-entsorgung/umwelt/energiesparen/foerderprogramme-fuer-energiesparmassnahmen-und-erneuerbare-energien",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.bruchmuehlbach-miesau.de/ver-entsorgung/umwelt/energiesparen/foerderprogramme-fuer-energiesparmassnahmen-und-erneuerbare-energien",
+        "reason": "Am 24.09.2026 live gelesen: nur Beratungsangebote (Verbraucherzentrale Rheinland-Pfalz, kostenlose Energieberatung von Stadt und Landkreis Kaiserslautern) und Verweise auf Bund und Land. Kein eigener Zuschuss."
+      }
+    ]
+  },
+  {
+    "regionId": "07335201",
+    "name": "Gerhardsbrunn",
+    "checkedAt": "2026-09-24T02:35:00Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Gerhardsbrunn 1 Fundstelle.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss belegt. Die Energiespar-Seite der Verbandsgemeinde Bruchmühlbach-Miesau nennt ausschließlich Beratungsangebote — die Verbraucherzentrale Rheinland-Pfalz und die kostenlose Energieberatung von Stadt und Landkreis Kaiserslautern — und verweist im Übrigen auf Bund und Land. Kein eigenes Programm für Photovoltaik, Balkonkraftwerke oder Wärmepumpen.",
+    "searches": [
+      "Energiespar-Seite der VG Bruchmühlbach-Miesau am 24.09.2026 live im Volltext gelesen (Gerhardsbrunn)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bruchmuehlbach-miesau.de/ver-entsorgung/umwelt/energiesparen/foerderprogramme-fuer-energiesparmassnahmen-und-erneuerbare-energien",
+        "finding": "Am 24.09.2026 gelesen: „Informationen über Förderprogramme für Energiesparmaßnahmen erhalten Sie bei der Verbraucherzentrale Rheinland-Pfalz“ und „Die Stadt und der Landkreis Kaiserslautern kooperieren in Sachen Energieberatung.“ Nur Beratung, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bruchmuehlbach-miesau.de/ver-entsorgung/umwelt/energiesparen/foerderprogramme-fuer-energiesparmassnahmen-und-erneuerbare-energien",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.bruchmuehlbach-miesau.de/ver-entsorgung/umwelt/energiesparen/foerderprogramme-fuer-energiesparmassnahmen-und-erneuerbare-energien",
+        "reason": "Am 24.09.2026 live gelesen: nur Beratungsangebote (Verbraucherzentrale Rheinland-Pfalz, kostenlose Energieberatung von Stadt und Landkreis Kaiserslautern) und Verweise auf Bund und Land. Kein eigener Zuschuss."
+      }
+    ]
+  },
+  {
+    "regionId": "07335202",
+    "name": "Lambsborn",
+    "checkedAt": "2026-09-24T02:35:00Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Lambsborn 1 Fundstelle.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein kommunaler Zuschuss belegt. Die Energiespar-Seite der Verbandsgemeinde Bruchmühlbach-Miesau nennt ausschließlich Beratungsangebote — die Verbraucherzentrale Rheinland-Pfalz und die kostenlose Energieberatung von Stadt und Landkreis Kaiserslautern — und verweist im Übrigen auf Bund und Land. Kein eigenes Programm für Photovoltaik, Balkonkraftwerke oder Wärmepumpen.",
+    "searches": [
+      "Energiespar-Seite der VG Bruchmühlbach-Miesau am 24.09.2026 live im Volltext gelesen (Lambsborn)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.bruchmuehlbach-miesau.de/ver-entsorgung/umwelt/energiesparen/foerderprogramme-fuer-energiesparmassnahmen-und-erneuerbare-energien",
+        "finding": "Am 24.09.2026 gelesen: „Informationen über Förderprogramme für Energiesparmaßnahmen erhalten Sie bei der Verbraucherzentrale Rheinland-Pfalz“ und „Die Stadt und der Landkreis Kaiserslautern kooperieren in Sachen Energieberatung.“ Nur Beratung, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bruchmuehlbach-miesau.de/ver-entsorgung/umwelt/energiesparen/foerderprogramme-fuer-energiesparmassnahmen-und-erneuerbare-energien",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.bruchmuehlbach-miesau.de/ver-entsorgung/umwelt/energiesparen/foerderprogramme-fuer-energiesparmassnahmen-und-erneuerbare-energien",
+        "reason": "Am 24.09.2026 live gelesen: nur Beratungsangebote (Verbraucherzentrale Rheinland-Pfalz, kostenlose Energieberatung von Stadt und Landkreis Kaiserslautern) und Verweise auf Bund und Land. Kein eigener Zuschuss."
+      }
+    ]
+  },
+  {
+    "regionId": "07340025",
+    "name": "Höheinöd",
+    "checkedAt": "2026-09-24T02:35:00Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Höheinöd 1 Fundstelle.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein Zuschuss an Haushalte. Die erfasste Fundstelle dokumentiert ein abgeschlossenes Vorhaben der Verbandsgemeinde an einer eigenen Liegenschaft: die Umstellung der Hallenbeleuchtung im Hallenbad auf LED aus der Nationalen Klimaschutzinitiative, Laufzeit bis 30.04.2021, Kostenträger die Verbandsgemeinde selbst. Ein Förderprogramm für private Haushalte ist das nicht.",
+    "searches": [
+      "Projektseite der VG Waldfischbach-Burgalben am 24.09.2026 live im Volltext gelesen (Höheinöd)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "finding": "Am 24.09.2026 gelesen: „Im Hallenbad in Waldfischbach-Burgalben soll zur energetischen Sanierung die Hallenbeleuchtung … von Leuchtstoffröhren auf LED umgestellt werden. Die Laufzeit des Vorhabens endet am 30.04.2021.“ / „Kostenträger ist die Verbandsgemeinde Waldfischbach-Burgalben.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "reason": "Am 24.09.2026 live gelesen: abgeschlossenes Vorhaben der Verbandsgemeinde an einer eigenen Liegenschaft (LED im Hallenbad, Laufzeit bis 30.04.2021, Kostenträger die Verbandsgemeinde). Kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "07340044",
+    "name": "Schmalenberg",
+    "checkedAt": "2026-09-24T02:35:00Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Schmalenberg 1 Fundstelle.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein Zuschuss an Haushalte. Die erfasste Fundstelle dokumentiert ein abgeschlossenes Vorhaben der Verbandsgemeinde an einer eigenen Liegenschaft: die Umstellung der Hallenbeleuchtung im Hallenbad auf LED aus der Nationalen Klimaschutzinitiative, Laufzeit bis 30.04.2021, Kostenträger die Verbandsgemeinde selbst. Ein Förderprogramm für private Haushalte ist das nicht.",
+    "searches": [
+      "Projektseite der VG Waldfischbach-Burgalben am 24.09.2026 live im Volltext gelesen (Schmalenberg)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "finding": "Am 24.09.2026 gelesen: „Im Hallenbad in Waldfischbach-Burgalben soll zur energetischen Sanierung die Hallenbeleuchtung … von Leuchtstoffröhren auf LED umgestellt werden. Die Laufzeit des Vorhabens endet am 30.04.2021.“ / „Kostenträger ist die Verbandsgemeinde Waldfischbach-Burgalben.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "reason": "Am 24.09.2026 live gelesen: abgeschlossenes Vorhaben der Verbandsgemeinde an einer eigenen Liegenschaft (LED im Hallenbad, Laufzeit bis 30.04.2021, Kostenträger die Verbandsgemeinde). Kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "07340050",
+    "name": "Steinalben",
+    "checkedAt": "2026-09-24T02:35:00Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Steinalben 1 Fundstelle.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein Zuschuss an Haushalte. Die erfasste Fundstelle dokumentiert ein abgeschlossenes Vorhaben der Verbandsgemeinde an einer eigenen Liegenschaft: die Umstellung der Hallenbeleuchtung im Hallenbad auf LED aus der Nationalen Klimaschutzinitiative, Laufzeit bis 30.04.2021, Kostenträger die Verbandsgemeinde selbst. Ein Förderprogramm für private Haushalte ist das nicht.",
+    "searches": [
+      "Projektseite der VG Waldfischbach-Burgalben am 24.09.2026 live im Volltext gelesen (Steinalben)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "finding": "Am 24.09.2026 gelesen: „Im Hallenbad in Waldfischbach-Burgalben soll zur energetischen Sanierung die Hallenbeleuchtung … von Leuchtstoffröhren auf LED umgestellt werden. Die Laufzeit des Vorhabens endet am 30.04.2021.“ / „Kostenträger ist die Verbandsgemeinde Waldfischbach-Burgalben.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "reason": "Am 24.09.2026 live gelesen: abgeschlossenes Vorhaben der Verbandsgemeinde an einer eigenen Liegenschaft (LED im Hallenbad, Laufzeit bis 30.04.2021, Kostenträger die Verbandsgemeinde). Kein Zuschuss an Haushalte."
+      }
+    ]
+  },
+  {
+    "regionId": "07340054",
+    "name": "Waldfischbach-Burgalben",
+    "checkedAt": "2026-09-24T02:35:00Z",
+    "recheckAt": "2026-12-25T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für Waldfischbach-Burgalben 1 Fundstelle.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kein Zuschuss an Haushalte. Die erfasste Fundstelle dokumentiert ein abgeschlossenes Vorhaben der Verbandsgemeinde an einer eigenen Liegenschaft: die Umstellung der Hallenbeleuchtung im Hallenbad auf LED aus der Nationalen Klimaschutzinitiative, Laufzeit bis 30.04.2021, Kostenträger die Verbandsgemeinde selbst. Ein Förderprogramm für private Haushalte ist das nicht.",
+    "searches": [
+      "Projektseite der VG Waldfischbach-Burgalben am 24.09.2026 live im Volltext gelesen (Waldfischbach-Burgalben)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "finding": "Am 24.09.2026 gelesen: „Im Hallenbad in Waldfischbach-Burgalben soll zur energetischen Sanierung die Hallenbeleuchtung … von Leuchtstoffröhren auf LED umgestellt werden. Die Laufzeit des Vorhabens endet am 30.04.2021.“ / „Kostenträger ist die Verbandsgemeinde Waldfischbach-Burgalben.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "disposition": "reviewed",
+        "evidenceUrl": "https://www.vgwaldfischbach-burgalben.de/wirtschaft/gefoerderte-projekte/sanierung-der-hallenbeleuchtung-im-hallenbad-waldfischbach-burgalben",
+        "reason": "Am 24.09.2026 live gelesen: abgeschlossenes Vorhaben der Verbandsgemeinde an einer eigenen Liegenschaft (LED im Hallenbad, Laufzeit bis 30.04.2021, Kostenträger die Verbandsgemeinde). Kein Zuschuss an Haushalte."
+      }
+    ]
   }
 ]
