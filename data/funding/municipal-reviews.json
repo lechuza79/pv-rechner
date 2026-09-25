@@ -59994,7 +59994,7 @@
   {
     "regionId": "07133002",
     "name": "Allenfeld",
-    "checkedAt": "2026-09-24T08:12:00Z",
+    "checkedAt": "2026-09-25T10:45:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -60003,7 +60003,8 @@
       "Klimaschutz-Seite und Förderangebote der VG Rüdesheim gelesen",
       "Beendigungsmeldung samt Mitteilungsblatt-PDF gelesen",
       "Ortsgemeinden-Liste der VG gelesen (32 Gemeinden)",
-      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach"
+      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach",
+      "Mitteilungsblatt-PDF vom 24.03.2026 am 25.09.2026 erneut gelesen (neu zugeordnete Fundstelle): Programm eingestellt, kein Nachfolger"
     ],
     "evidence": [
       {
@@ -60021,6 +60022,10 @@
       {
         "url": "https://www.vg-ruedesheim.de/klimaschutz",
         "finding": "Klimaschutz-Seite der VG: Förderangebote nur „Förderung von Balkonkraftwerken“ (beendet) und Klimaschutzprojekte für Ortsgemeinden; Beratung über die Verbraucherzentrale."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "finding": "Am 25.09.2026 gelesen: „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“"
       }
     ],
     "sources": [
@@ -60035,6 +60040,12 @@
         "disposition": "reviewed",
         "reason": "Geförderte Kläranlagen-Studien der VG-Werke, außerhalb des Umfangs.",
         "evidenceUrl": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien"
+      },
+      {
+        "url": "vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "disposition": "reviewed",
+        "reason": "Mitteilungsblatt vom 24.03.2026 am 25.09.2026 gelesen: Balkon-Programm der VG ausgeschöpft und planmäßig eingestellt — bereits als beendetes Programm katalogisiert (vg-ruedesheim-balkonkraftwerke).",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj"
       }
     ]
   },
@@ -60088,7 +60099,7 @@
   {
     "regionId": "07133075",
     "name": "Oberstreit",
-    "checkedAt": "2026-09-24T08:12:00Z",
+    "checkedAt": "2026-09-25T10:45:00Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -60097,7 +60108,8 @@
       "Klimaschutz-Seite und Förderangebote der VG Rüdesheim gelesen",
       "Beendigungsmeldung samt Mitteilungsblatt-PDF gelesen",
       "Ortsgemeinden-Liste der VG gelesen (32 Gemeinden)",
-      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach"
+      "Websuche nach Programmen im Landkreis Bad Kreuznach (24.09.2026): nur Stadt und VG Bad Kreuznach",
+      "Mitteilungsblatt-PDF vom 24.03.2026 am 25.09.2026 erneut gelesen (neu zugeordnete Fundstelle): Programm eingestellt, kein Nachfolger"
     ],
     "evidence": [
       {
@@ -60115,6 +60127,10 @@
       {
         "url": "https://www.vg-ruedesheim.de/klimaschutz",
         "finding": "Klimaschutz-Seite der VG: Förderangebote nur „Förderung von Balkonkraftwerken“ (beendet) und Klimaschutzprojekte für Ortsgemeinden; Beratung über die Verbraucherzentrale."
+      },
+      {
+        "url": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "finding": "Am 25.09.2026 gelesen: „Da nun die zur Verfügung stehenden Fördermittel vollständig ausgeschöpft sind, wird das Programm planmäßig eingestellt.“"
       }
     ],
     "sources": [
@@ -60129,6 +60145,12 @@
         "disposition": "reviewed",
         "reason": "Geförderte Kläranlagen-Studien der VG-Werke, außerhalb des Umfangs.",
         "evidenceUrl": "https://www.vg-ruedesheim.de/ihre-verbandsgemeinde/verbandsgemeindewerke/abwasserbeseitigung/foerderung-von-drei-potenzialstudien"
+      },
+      {
+        "url": "vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj",
+        "disposition": "reviewed",
+        "reason": "Mitteilungsblatt vom 24.03.2026 am 25.09.2026 gelesen: Balkon-Programm der VG ausgeschöpft und planmäßig eingestellt — bereits als beendetes Programm katalogisiert (vg-ruedesheim-balkonkraftwerke).",
+        "evidenceUrl": "https://www.vg-ruedesheim.de/klimaschutz/aktuelles/energiewende-vor-ort-erfolgreiches-foerderprogramm-fuer-balkonkraftwerke-planmaessig-beendet/mitteilungsblatt-2026-03-24.pdf?cid=26uj"
       }
     ]
   },
@@ -62316,6 +62338,90 @@
         "disposition": "reviewed",
         "reason": "Nahwärme-Planung der Ortsgemeinde — kein Zuschuss.",
         "evidenceUrl": "https://www.ulmet.de/nahwaerme-fragebogen"
+      }
+    ]
+  },
+  {
+    "regionId": "07340206",
+    "name": "Contwig",
+    "checkedAt": "2026-09-25T10:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Contwig gehört zur Verbandsgemeinde Zweibrücken-Land (Landkreis Südwestpfalz). Kein Zuschuss im Umfang: Die Gemeindesuche findet zu „Förderprogramm“ nur einen Bericht über die Freibadsanierung, zu Photovoltaik, Solar, Zuschuss, Klimaschutz und Wärmepumpe nichts. Die Ratsberichte 2023–2026 der Ortsgemeinde nennen nur Vereinszuschüsse, eine PV-Anlage für die eigene KiTa und einen Freiflächen-Solarpark. Die Verbandsgemeinde führt keine Förderseite, der Kreis hat sein Speicherprogramm 2021 beendet.",
+    "searches": [
+      "Suche gemeinde-contwig.de am 25.09.2026 nach förderprogramm (1 Treffer: Freibadsanierung), photovoltaik, solar, zuschuss, klimaschutz, wärmepumpe, balkonkraftwerk (jeweils 0)",
+      "Ratsberichte der Ortsgemeinde Contwig 2023–2026 (vgzwland.de, 20 PDFs) nach balkon/photovolt/förderprogramm/zuschuss/kipki/solar durchsucht: nur Vereinszuschüsse, PV für KiTa Contwig-Stambach, Solarpark Truppacherhöhe",
+      "Seitenverzeichnis vgzwland.de (25.09.2026, 1.019 Adressen, Website der VG Zweibrücken-Land für alle Ortsgemeinden) nach klima/förder/energie/solar/photovolt/balkon/kipki/umwelt/zuschuss gefiltert: nur Wirtschaftsförderung für Gewerbe, keine Förderseite für Haushalte",
+      "Landkreis Südwestpfalz: Seite „Förderung von PV-Batteriespeichern“ am 25.09.2026 gelesen — Antragstellung seit November 2021 nicht mehr möglich; kein laufendes Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://gemeinde-contwig.de/index.php/component/finder/search?q=f%C3%B6rderprogramm",
+        "finding": "Am 25.09.2026: einziger Treffer „Neun Millionen Euro für Freibadsanierung“ — Bundesförderung für das Freibad, kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://gemeinde-contwig.de/index.php/component/finder/search?q=photovoltaik",
+        "finding": "Am 25.09.2026: „Es konnten keine Suchergebnisse für „photovoltaik“ gefunden werden.“"
+      },
+      {
+        "url": "https://www.vgzwland.de/sitemap.xml",
+        "finding": "Am 25.09.2026: 1.019 Adressen, keine Seite zu einem Förderprogramm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe für Haushalte."
+      },
+      {
+        "url": "https://www.lksuedwestpfalz.de/buergerservice/abteilungen/bauen-und-umwelt/umwelt/klimaschutz-und-erneuerbare-energien/foerderung-von-pv-batteriespeichern/",
+        "finding": "Am 25.09.2026 gelesen: „Die Antragstellung im Solar-Speicher-Programm ist seit November 2021 nicht mehr möglich!“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-contwig.de/index.php/component/finder/search?q=f%C3%B6rderprogramm&amp;rCH=-2",
+        "disposition": "reviewed",
+        "reason": "Suchseite der Gemeinde; einziger Treffer ist die Freibadsanierung (Bundesförderung für ein kommunales Bad), kein Zuschuss an Haushalte.",
+        "evidenceUrl": "https://gemeinde-contwig.de/index.php/component/finder/search?q=f%C3%B6rderprogramm"
+      },
+      {
+        "url": "gemeinde-contwig.de/index.php/component/finder/search?q=f%C3%B6rderprogramm&amp;rCH=2",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Suchanfrage mit anderem Sortierparameter; gleicher einziger Treffer Freibadsanierung.",
+        "evidenceUrl": "https://gemeinde-contwig.de/index.php/component/finder/search?q=f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "07340214",
+    "name": "Kleinsteinhausen",
+    "checkedAt": "2026-09-25T10:40:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Kleinsteinhausen gehört zur Verbandsgemeinde Zweibrücken-Land (Landkreis Südwestpfalz). Kein Zuschuss im Umfang: Die einzige Fundstelle weist auf die Dorferneuerungsförderung für private Sanierung ortsprägender Gebäude (vor 1945, landwirtschaftliche Gebäude, Leerstand) hin — ein Landesprogramm über die Kreisverwaltung, keine Förderung von PV, Speicher, Balkonkraftwerk oder Wärmepumpe. Die 22 Ratsberichte der Ortsgemeinde nennen nur Solarpark-Bebauungspläne und Zuschüsse an die Gemeinde selbst.",
+    "searches": [
+      "Seite „Fördermöglichkeiten Dorferneuerung“ auf kleinsteinhausen.eu am 25.09.2026 gelesen",
+      "Alle 22 Ratsberichte der Ortsgemeinde Kleinsteinhausen 2020–2026 (vgzwland.de) nach balkon/photovolt/förderprogramm/zuschuss/kipki/solar/wärmepumpe durchsucht: Solarparks Am Gemehr/Am Eichwäldchen/Auf dem Kopf, Zuschüsse an die Ortsgemeinde",
+      "Seitenverzeichnis vgzwland.de (25.09.2026, 1.019 Adressen, Website der VG Zweibrücken-Land für alle Ortsgemeinden) nach klima/förder/energie/solar/photovolt/balkon/kipki/umwelt/zuschuss gefiltert: nur Wirtschaftsförderung für Gewerbe, keine Förderseite für Haushalte",
+      "Landkreis Südwestpfalz: Seite „Förderung von PV-Batteriespeichern“ am 25.09.2026 gelesen — Antragstellung seit November 2021 nicht mehr möglich; kein laufendes Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://kleinsteinhausen.eu/Foerdermoeglichkeiten-Dorferneuerung",
+        "finding": "Am 25.09.2026 gelesen: „Fördermöglichkeiten für private Sanierung“ im Rahmen der Dorferneuerung — bauliche Erneuerung ortsprägender Gebäude vor 1945, Auskunft Kreisverwaltung Südwestpfalz; kein Energiezuschuss."
+      },
+      {
+        "url": "https://www.vgzwland.de/sitemap.xml",
+        "finding": "Am 25.09.2026: 1.019 Adressen, keine Seite zu einem Förderprogramm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe für Haushalte."
+      },
+      {
+        "url": "https://www.lksuedwestpfalz.de/buergerservice/abteilungen/bauen-und-umwelt/umwelt/klimaschutz-und-erneuerbare-energien/foerderung-von-pv-batteriespeichern/",
+        "finding": "Am 25.09.2026 gelesen: „Die Antragstellung im Solar-Speicher-Programm ist seit November 2021 nicht mehr möglich!“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "kleinsteinhausen.eu/Foerdermoeglichkeiten-Dorferneuerung",
+        "disposition": "reviewed",
+        "reason": "Hinweis auf Dorferneuerungsförderung des Landes für ortsprägende Altbauten — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://kleinsteinhausen.eu/Foerdermoeglichkeiten-Dorferneuerung"
       }
     ]
   }
