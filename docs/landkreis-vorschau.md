@@ -288,3 +288,32 @@ itself was 3.5–5.9 MB of HTML. Three duplications removed, nothing visible cha
 Eifelkreis: markup 3.46 → 0.98 MB, total HTML 5.87 → 3.22 MB, 233 town links kept;
 visible text identical except the corrected municipality count. Remaining payload
 is the serialized map geometry for the 3D scene and the ranking table's data.
+
+### Evidence and open limits (25 September 2026, after release)
+
+- **Old vs prepared, real data:** 20 of 20 districts identical (monitor, energy,
+  stories, site list by AGS), including Eifelkreis (233 towns), Dithmarschen (116),
+  Altenkirchen (118). Eifelkreis visible page text identical except the corrected
+  municipality count. Monitor totals from summed cells: unit test over 233 × 5 × 27
+  rows. Fallback map with WebGL blocked: browser test, counter-checked red.
+- **Generation:** 294 districts, 0 missing town packages, compressed 15–94 KB
+  (largest uncompressed 323 KB); build 11–13 min; a no-op daily run 8 s.
+  Size classes: 95 ≤20 towns, 149 21–50, 30 51–100, 19 101–200, 1 above 200.
+- **Monitor honestly unavailable in 3 districts** (one member without any month
+  history): Nordfriesland (Gröde), Bernkastel-Wittlich (Dierfeld), Eifelkreis
+  Bitburg-Prüm (Sengerich). 291 districts show the full monitor.
+- **Lease against the real database:** two runs started 3 s apart — the second was
+  refused and wrote nothing.
+- **Live cold renders (MISS, new release):** independent European measurement
+  0.82–1.31 s for four districts; own measurement 0.75–2.95 s for seven untouched
+  districts (Bad Kreuznach 2.95, Nordfriesland 2.20); health check from the US
+  runner 3.4 / 2.5 s (Mayen-Koblenz, Oberspreewald-Lausitz) with platform server
+  time 1.87 / 1.03 s — Mayen-Koblenz was the first render on a fresh instance.
+  Server time of district renders in the logs: 0.5–2.1 s.
+- **Stormarn 17.9 s (health check before this release):** platform logs show a
+  2.1 s server render; the remaining ~16 s passed after the function ended, and a
+  town page in the same run (0.54 s server) measured 21.9 s. The delay lies between
+  function and client (delivery layer); the cause is not proven.
+- **Remaining limit:** pages are still 2.4–3.2 MB of HTML, mostly the serialized
+  geometry of the 3D map and the ranking table's data. Below 2 s is reached for
+  most, not all, cold renders.
