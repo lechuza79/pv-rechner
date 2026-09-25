@@ -45,10 +45,10 @@ export function mountHeroStage({root,stage,scene,state,quality='auto',motion=tru
   root.dataset.moving=String(active);if(active)clock+=dt;
   let settling=false;
   for(const key of ['cloud','rain','wind','sunX','sunY','daylight']){const delta=target[key]-current[key];if(!media.matches&&Math.abs(delta)>.002){current[key]+=delta*(1-Math.exp(-dt*1.4));settling=true;}else current[key]=target[key];}
-  current.solarElevation=target.solarElevation;current.phase=target.phase;current.season=target.season;current.direction=target.direction;
+  current.fog=target.fog;current.cloudLow=target.cloudLow;current.cloudMid=target.cloudMid;current.cloudHigh=target.cloudHigh;current.solarElevation=target.solarElevation;current.phase=target.phase;current.season=target.season;current.direction=target.direction;
   if(now-lastDraw>=1000/30-1||dirty){
    const w=stage.clientWidth,h=stage.clientHeight;
-   for(const [key,value] of Object.entries({'--sun-offset-x':w*current.sunX/100+'px','--sun-offset-y':h*current.sunY/100+'px','--sun-x':current.sunX+'%','--sun-y':current.sunY+'%','--sun-alpha':solarLight(current).sun*(1-current.cloud)**2,'--sky-brightness':solarLight(current).sky,'--night-visibility':1-current.cloud*.92}))root.style.setProperty(key,String(value));
+   for(const [key,value] of Object.entries({'--sun-offset-x':w*current.sunX/100+'px','--sun-offset-y':h*current.sunY/100+'px','--sun-x':current.sunX+'%','--sun-y':current.sunY+'%','--sun-alpha':solarLight(current).sun*(1-current.cloud)**2,'--sky-brightness':solarLight(current).sky,'--sky-twilight':solarLight(current).twilight,'--sky-night':solarLight(current).night,'--sky-overcast':current.cloud*.85,'--scene-fog':current.fog||0,'--cloud-low':current.cloudLow??current.cloud,'--cloud-mid':current.cloudMid??current.cloud*.5,'--cloud-high':current.cloudHigh??current.cloud*.25,'--night-visibility':1-current.cloud*.92}))root.style.setProperty(key,String(value));
    sun.update(current,sunStyle);
    const wind=(current.wind*(1+Math.sin(clock*.27)*.25)+(clock<gustEnd?Math.sin((gustEnd-clock)/5*Math.PI)*1.2:0))*current.direction;
    if(quality!=='static'&&!failed){const stats=renderer?.render(clock,current,wind);if(stats){frames++;cpu+=stats.cpu;scene.dataset.drawCalls=String(stats.calls);}}
@@ -76,7 +76,7 @@ export function mountHeroStage({root,stage,scene,state,quality='auto',motion=tru
   root.dataset.weather=target.rain>.01?'rain':target.cloud>.6?'cloud':'sun';
   root.dataset.rainStudy=target.phase==='night'?'night':target.rain>.01?'rain':'dry';
   root.dataset.phase=target.phase;root.dataset.dark=String(solarLight(target).daylight<.25);
-  night.setActive(target.phase==='night');root.dataset.moving=String(moving()&&canRun());
+  night.setActive(solarLight(target).night>0);root.dataset.moving=String(moving()&&canRun());
   scene.classList.toggle('static-scene',quality==='static'||failed);
   if(quality==='static')scene.dataset.unifiedReady='false';
   if(quality!=='static')scheduleBoot();wake();

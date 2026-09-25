@@ -8,6 +8,9 @@ export type WeatherNow = {
     time?: string | null;
     weatherCode?: number | null;
     cloudCover?: number | null;
+    cloudCoverLow?: number | null;
+    cloudCoverMid?: number | null;
+    cloudCoverHigh?: number | null;
     temperature?: number | null;
     windSpeed?: number | null;
     windDirection?: number | null;
@@ -28,6 +31,9 @@ export function szeneWetter(w: WeatherNow["weather"]) {
       time: Math.round(zeit / 1000),
       temperature_2m: w.temperature,
       cloud_cover: w.cloudCover,
+      cloud_cover_low: zahl(w.cloudCoverLow) ? w.cloudCoverLow : null,
+      cloud_cover_mid: zahl(w.cloudCoverMid) ? w.cloudCoverMid : null,
+      cloud_cover_high: zahl(w.cloudCoverHigh) ? w.cloudCoverHigh : null,
       // m/s, as the stage requested it from its old source (wind_speed_unit=ms).
       wind_speed_10m: w.windSpeed,
       wind_direction_10m: w.windDirection,

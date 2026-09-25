@@ -71,7 +71,8 @@ test('isolated particles do not flip a dark scene but a broad light region does'
  assert.equal(chooseTone(Array.from({length:100},()=>[235,235,235])).tone,'dark');
 });
 test('both rendering hosts measure after paint and can wake a paused scene',()=>{
- for(const path of ['public/dynamic-hero/dist/test.js','public/hero-system/dist/hero-stage.js','public/hero-system/source/hero-stage.js']){
+ assert.match(read('public/dynamic-hero/dist/test.js'),/import \{mountHeroStage as \w+\} from '\/hero-system\/dist\/hero-stage.js'/);
+ for(const path of ['public/hero-system/source/hero-stage.js']){
   const source=read(path);assert.match(source,/SolarSceneContrast\?\.afterFrame/);assert.match(source,/sc-contrast-request/);
  }
  assert.match(samplerSource,/version!==revision/);

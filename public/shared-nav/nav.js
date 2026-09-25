@@ -137,7 +137,7 @@ function staysOpenFor(a,e){
 }
 
 function mountSearch(header,closeMenu,setPanelTop){
- const button=document.createElement('button');button.type='button';button.className='sc-search-toggle';
+ const button=document.createElement('button');button.type='button';button.className='sc-search-toggle';button.setAttribute('data-sc-contrast','');
  button.setAttribute('aria-label','Suche öffnen');button.setAttribute('aria-expanded','false');button.setAttribute('aria-controls','sc-search-panel');
  button.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>';
  const panel=document.createElement('div');panel.id='sc-search-panel';panel.className='sc-search-panel';panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Suche');panel.hidden=true;
