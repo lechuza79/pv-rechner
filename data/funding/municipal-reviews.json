@@ -61608,5 +61608,93 @@
         "evidenceUrl": "https://munningen.de/mitgliedsgemeinden/hainsfarth/foerderprogramme"
       }
     ]
+  },
+  {
+    "regionId": "09779115",
+    "name": "Asbach-Bäumenheim",
+    "checkedAt": "2026-09-25T05:10:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Ein Programm im Umfang, neu aufgenommen: „Förderprogramm erneuerbare Energien, Energieeffizienz und Ressourceneinsparung“ (asbach-baeumenheim-foerderprogramm) — Dachanlage 10 % der Anschaffungskosten, höchstens 500 €; Speicher 250 € pauschal nur für die erstmalige Nachrüstung (nicht gerechnet); Balkonkraftwerke ausgeschlossen, keine Wärmepumpenförderung. Förderzeitraum 01.08.–31.12.2026, Antrag mit Rechnung bis 31.03.2027.",
+    "searches": [
+      "Förder-Menü der Gemeinde vollständig durchgesehen: „Regenerative Energien“ und „Fassadenprogramm“ (25.09.2026)",
+      "Antragsformular 2026 mit Richtlinie im Volltext gelesen (24.09.2026) und adversarial gegen das Original geprüft (25.09.2026)",
+      "Übrige Quellen-Adressen einzeln aufgerufen (25.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.asbach-baeumenheim.de/fileadmin/Dateien/Bilder/Asbach-Baeumenheim/Antragsformular_2026_Gemeindefoerderung_ab_01.08.2026.pdf",
+        "finding": "„Der Förderbetrag beträgt 10 % der Anschaffungskosten, maximal 500,00 €“ (PV auf Dachflächen); „Balkonkraftwerke sind von der Förderung ausgeschlossen“; „Der Förderzeitraum beginnt am 01.08.2026 und endet am 31.12.2026“."
+      },
+      {
+        "url": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/regenerative-energien",
+        "finding": "Programmseite, nennt noch den Beschluss vom 16.01.2024 und verweist für die Sätze auf das Antragsformular 2026; keine Wärmepumpe, kein Balkonkraftwerk."
+      },
+      {
+        "url": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme-1/fassadenprogramm",
+        "finding": "Fassaden-, Dach- und Einfriedungsgestaltung — außerhalb des Umfangs."
+      },
+      {
+        "url": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=3",
+        "finding": "Am 25.09.2026 aufgerufen: Führt am 25.09.2026 auf die Startseite der Gemeinde — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=328&no_cache=1",
+        "finding": "Am 25.09.2026 aufgerufen: Seite „Mitarbeiter“ (Verwaltung) — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=360&no_cache=1",
+        "finding": "Am 25.09.2026 aufgerufen: Seite „Kindertagesstätten“ — kein Förderinhalt."
+      },
+      {
+        "url": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=529",
+        "finding": "Am 25.09.2026 aufgerufen: Am 25.09.2026 „404 - Diese Seite konnte leider nicht gefunden werden“ — keine Quelle."
+      }
+    ],
+    "sources": [
+      {
+        "url": "asbach-baeumenheim.de/fileadmin/Dateien/Bilder/Asbach-Baeumenheim/Antragsformular_2026_Gemeindefoerderung_ab_01.08.2026.pdf",
+        "disposition": "reviewed",
+        "reason": "Richtlinie/Antragsformular 2026 — als Programm aufgenommen.",
+        "evidenceUrl": "https://www.asbach-baeumenheim.de/fileadmin/Dateien/Bilder/Asbach-Baeumenheim/Antragsformular_2026_Gemeindefoerderung_ab_01.08.2026.pdf"
+      },
+      {
+        "url": "asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/regenerative-energien",
+        "disposition": "reviewed",
+        "reason": "Programmseite zum aufgenommenen Programm; Sätze nur im Formular.",
+        "evidenceUrl": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/regenerative-energien"
+      },
+      {
+        "url": "asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme-1/fassadenprogramm",
+        "disposition": "reviewed",
+        "reason": "Fassadenprogramm — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme-1/fassadenprogramm"
+      },
+      {
+        "url": "asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=3",
+        "disposition": "reviewed",
+        "reason": "Führt am 25.09.2026 auf die Startseite der Gemeinde — kein Förderinhalt.",
+        "evidenceUrl": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=3"
+      },
+      {
+        "url": "asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=328&amp;no_cache=1",
+        "disposition": "reviewed",
+        "reason": "Seite „Mitarbeiter“ (Verwaltung) — kein Förderinhalt.",
+        "evidenceUrl": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=328&no_cache=1"
+      },
+      {
+        "url": "asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=360&amp;no_cache=1",
+        "disposition": "reviewed",
+        "reason": "Seite „Kindertagesstätten“ — kein Förderinhalt.",
+        "evidenceUrl": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=360&no_cache=1"
+      },
+      {
+        "url": "asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=529",
+        "disposition": "reviewed",
+        "reason": "Am 25.09.2026 „404 - Diese Seite konnte leider nicht gefunden werden“ — keine Quelle.",
+        "evidenceUrl": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=529"
+      }
+    ]
   }
 ]
