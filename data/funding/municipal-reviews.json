@@ -63544,5 +63544,617 @@
         "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
       }
     ]
+  },
+  {
+    "regionId": "03357006",
+    "name": "Bothel",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Bothel wird von der Samtgemeinde Bothel verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Bothel noch die Samtgemeinde Bothel noch der Landkreis Rotenburg (Wümme) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseite der Samtgemeinde Bothel am 25.09.2026 gelesen",
+      "Volltextsuche bothel.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Rotenburg (Wümme): Fördermittel- und Klimaschutzseite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Bothel Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "finding": "Am 25.09.2026 abgerufen: HTTP 404, Seite entfernt (Ausschussseite des Gemeinderats Bothel, kein Förderangebot erkennbar)."
+      },
+      {
+        "url": "https://www.bothel.de/stichwortverzeichnis-116/klimaschutzmanagement.html",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzmanagement der Samtgemeinde, Energieberatung der Verbraucherzentrale, Wärmepumpen-Vortrag und Wärmepumpenparty (Oktober 2026) — kein Zuschuss."
+      },
+      {
+        "url": "https://www.bothel.de/suche.html?keywords=Zuschuss",
+        "finding": "Volltextsuche 25.09.2026: „Zuschuss“, „Balkonkraftwerk“, „Förderprogramm“ ohne Ergebnis; „Photovoltaik“ nur Ausschreibung PV-Anlage Grundschule und Flächennutzungsplan Freiflächen-PV."
+      },
+      {
+        "url": "https://www.lk-row.de/portal/seiten/foerdermittel-1350-23700.html",
+        "finding": "Kreisseite Fördermittel am 25.09.2026 gelesen: Wirtschafts- und Innovationsförderung für Unternehmen; Klimaschutzseite des Kreises nennt nur Energieberatung — kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "disposition": "reviewed",
+        "reason": "Ausschussseite antwortet mit HTTP 404; Förderangebote der Samtgemeinde über Klimaschutzseite und Volltextsuche geprüft.",
+        "evidenceUrl": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03357009",
+    "name": "Brockel",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Brockel wird von der Samtgemeinde Bothel verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Brockel noch die Samtgemeinde Bothel noch der Landkreis Rotenburg (Wümme) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseite der Samtgemeinde Bothel am 25.09.2026 gelesen",
+      "Volltextsuche bothel.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Rotenburg (Wümme): Fördermittel- und Klimaschutzseite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Bothel Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "finding": "Am 25.09.2026 abgerufen: HTTP 404, Seite entfernt (Ausschussseite des Gemeinderats Bothel, kein Förderangebot erkennbar)."
+      },
+      {
+        "url": "https://www.bothel.de/stichwortverzeichnis-116/klimaschutzmanagement.html",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzmanagement der Samtgemeinde, Energieberatung der Verbraucherzentrale, Wärmepumpen-Vortrag und Wärmepumpenparty (Oktober 2026) — kein Zuschuss."
+      },
+      {
+        "url": "https://www.bothel.de/suche.html?keywords=Zuschuss",
+        "finding": "Volltextsuche 25.09.2026: „Zuschuss“, „Balkonkraftwerk“, „Förderprogramm“ ohne Ergebnis; „Photovoltaik“ nur Ausschreibung PV-Anlage Grundschule und Flächennutzungsplan Freiflächen-PV."
+      },
+      {
+        "url": "https://www.lk-row.de/portal/seiten/foerdermittel-1350-23700.html",
+        "finding": "Kreisseite Fördermittel am 25.09.2026 gelesen: Wirtschafts- und Innovationsförderung für Unternehmen; Klimaschutzseite des Kreises nennt nur Energieberatung — kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "disposition": "reviewed",
+        "reason": "Ausschussseite antwortet mit HTTP 404; Förderangebote der Samtgemeinde über Klimaschutzseite und Volltextsuche geprüft.",
+        "evidenceUrl": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03357024",
+    "name": "Hemsbünde",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Hemsbünde wird von der Samtgemeinde Bothel verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Hemsbünde noch die Samtgemeinde Bothel noch der Landkreis Rotenburg (Wümme) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseite der Samtgemeinde Bothel am 25.09.2026 gelesen",
+      "Volltextsuche bothel.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Rotenburg (Wümme): Fördermittel- und Klimaschutzseite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Bothel Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "finding": "Am 25.09.2026 abgerufen: HTTP 404, Seite entfernt (Ausschussseite des Gemeinderats Bothel, kein Förderangebot erkennbar)."
+      },
+      {
+        "url": "https://www.bothel.de/stichwortverzeichnis-116/klimaschutzmanagement.html",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzmanagement der Samtgemeinde, Energieberatung der Verbraucherzentrale, Wärmepumpen-Vortrag und Wärmepumpenparty (Oktober 2026) — kein Zuschuss."
+      },
+      {
+        "url": "https://www.bothel.de/suche.html?keywords=Zuschuss",
+        "finding": "Volltextsuche 25.09.2026: „Zuschuss“, „Balkonkraftwerk“, „Förderprogramm“ ohne Ergebnis; „Photovoltaik“ nur Ausschreibung PV-Anlage Grundschule und Flächennutzungsplan Freiflächen-PV."
+      },
+      {
+        "url": "https://www.lk-row.de/portal/seiten/foerdermittel-1350-23700.html",
+        "finding": "Kreisseite Fördermittel am 25.09.2026 gelesen: Wirtschafts- und Innovationsförderung für Unternehmen; Klimaschutzseite des Kreises nennt nur Energieberatung — kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "disposition": "reviewed",
+        "reason": "Ausschussseite antwortet mit HTTP 404; Förderangebote der Samtgemeinde über Klimaschutzseite und Volltextsuche geprüft.",
+        "evidenceUrl": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03357025",
+    "name": "Hemslingen",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Hemslingen wird von der Samtgemeinde Bothel verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Hemslingen noch die Samtgemeinde Bothel noch der Landkreis Rotenburg (Wümme) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseite der Samtgemeinde Bothel am 25.09.2026 gelesen",
+      "Volltextsuche bothel.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Rotenburg (Wümme): Fördermittel- und Klimaschutzseite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Bothel Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "finding": "Am 25.09.2026 abgerufen: HTTP 404, Seite entfernt (Ausschussseite des Gemeinderats Bothel, kein Förderangebot erkennbar)."
+      },
+      {
+        "url": "https://www.bothel.de/stichwortverzeichnis-116/klimaschutzmanagement.html",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzmanagement der Samtgemeinde, Energieberatung der Verbraucherzentrale, Wärmepumpen-Vortrag und Wärmepumpenparty (Oktober 2026) — kein Zuschuss."
+      },
+      {
+        "url": "https://www.bothel.de/suche.html?keywords=Zuschuss",
+        "finding": "Volltextsuche 25.09.2026: „Zuschuss“, „Balkonkraftwerk“, „Förderprogramm“ ohne Ergebnis; „Photovoltaik“ nur Ausschreibung PV-Anlage Grundschule und Flächennutzungsplan Freiflächen-PV."
+      },
+      {
+        "url": "https://www.lk-row.de/portal/seiten/foerdermittel-1350-23700.html",
+        "finding": "Kreisseite Fördermittel am 25.09.2026 gelesen: Wirtschafts- und Innovationsförderung für Unternehmen; Klimaschutzseite des Kreises nennt nur Energieberatung — kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "disposition": "reviewed",
+        "reason": "Ausschussseite antwortet mit HTTP 404; Förderangebote der Samtgemeinde über Klimaschutzseite und Volltextsuche geprüft.",
+        "evidenceUrl": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03357031",
+    "name": "Kirchwalsede",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Kirchwalsede wird von der Samtgemeinde Bothel verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Kirchwalsede noch die Samtgemeinde Bothel noch der Landkreis Rotenburg (Wümme) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseite der Samtgemeinde Bothel am 25.09.2026 gelesen",
+      "Volltextsuche bothel.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Rotenburg (Wümme): Fördermittel- und Klimaschutzseite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Bothel Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "finding": "Am 25.09.2026 abgerufen: HTTP 404, Seite entfernt (Ausschussseite des Gemeinderats Bothel, kein Förderangebot erkennbar)."
+      },
+      {
+        "url": "https://www.bothel.de/stichwortverzeichnis-116/klimaschutzmanagement.html",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzmanagement der Samtgemeinde, Energieberatung der Verbraucherzentrale, Wärmepumpen-Vortrag und Wärmepumpenparty (Oktober 2026) — kein Zuschuss."
+      },
+      {
+        "url": "https://www.bothel.de/suche.html?keywords=Zuschuss",
+        "finding": "Volltextsuche 25.09.2026: „Zuschuss“, „Balkonkraftwerk“, „Förderprogramm“ ohne Ergebnis; „Photovoltaik“ nur Ausschreibung PV-Anlage Grundschule und Flächennutzungsplan Freiflächen-PV."
+      },
+      {
+        "url": "https://www.lk-row.de/portal/seiten/foerdermittel-1350-23700.html",
+        "finding": "Kreisseite Fördermittel am 25.09.2026 gelesen: Wirtschafts- und Innovationsförderung für Unternehmen; Klimaschutzseite des Kreises nennt nur Energieberatung — kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "disposition": "reviewed",
+        "reason": "Ausschussseite antwortet mit HTTP 404; Förderangebote der Samtgemeinde über Klimaschutzseite und Volltextsuche geprüft.",
+        "evidenceUrl": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03357054",
+    "name": "Westerwalsede",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Westerwalsede wird von der Samtgemeinde Bothel verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Westerwalsede noch die Samtgemeinde Bothel noch der Landkreis Rotenburg (Wümme) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseite der Samtgemeinde Bothel am 25.09.2026 gelesen",
+      "Volltextsuche bothel.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Rotenburg (Wümme): Fördermittel- und Klimaschutzseite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Bothel Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "finding": "Am 25.09.2026 abgerufen: HTTP 404, Seite entfernt (Ausschussseite des Gemeinderats Bothel, kein Förderangebot erkennbar)."
+      },
+      {
+        "url": "https://www.bothel.de/stichwortverzeichnis-116/klimaschutzmanagement.html",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzmanagement der Samtgemeinde, Energieberatung der Verbraucherzentrale, Wärmepumpen-Vortrag und Wärmepumpenparty (Oktober 2026) — kein Zuschuss."
+      },
+      {
+        "url": "https://www.bothel.de/suche.html?keywords=Zuschuss",
+        "finding": "Volltextsuche 25.09.2026: „Zuschuss“, „Balkonkraftwerk“, „Förderprogramm“ ohne Ergebnis; „Photovoltaik“ nur Ausschreibung PV-Anlage Grundschule und Flächennutzungsplan Freiflächen-PV."
+      },
+      {
+        "url": "https://www.lk-row.de/portal/seiten/foerdermittel-1350-23700.html",
+        "finding": "Kreisseite Fördermittel am 25.09.2026 gelesen: Wirtschafts- und Innovationsförderung für Unternehmen; Klimaschutzseite des Kreises nennt nur Energieberatung — kein Haushaltsprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html",
+        "disposition": "reviewed",
+        "reason": "Ausschussseite antwortet mit HTTP 404; Förderangebote der Samtgemeinde über Klimaschutzseite und Volltextsuche geprüft.",
+        "evidenceUrl": "https://bothel.de/mitgliedsgemeinden/mitgliedsgemeinden/bothel/der-gemeinderat-kopie/finanzausschuss.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03251020",
+    "name": "Hüde",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Hüde wird von der Samtgemeinde Altes Amt Lemförde verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Hüde noch die Samtgemeinde Altes Amt Lemförde noch der Landkreis Diepholz führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseiten der Samtgemeinde Altes Amt Lemförde am 25.09.2026 gelesen",
+      "Portalsuche lemfoerde.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Diepholz: Förderprogramm-Seite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Altes Amt Lemförde Förderung Zuschuss Photovoltaik Balkonkraftwerk“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "finding": "Am 25.09.2026 gelesen: Barriere-Meldeformular, verweist auf die Meldung „Acht weitere Projekte erhalten eine LEADER-Förderung“ (Vereine, Kirchplatz, Tierpark) — keine Förderung für private Haushalte."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/klimaschutz/anschlussvorhaben/",
+        "finding": "Klimaschutzseiten (Übersicht, Erst- und Anschlussvorhaben) am 25.09.2026 gelesen: Klimaschutzmanagerin, NKI-geförderte Stelle; einziger Zuschuss für Bürger: Regenwassernutzungsanlagen (Zisternen) — kein PV-, Speicher-, Balkon- oder Wärmepumpenzuschuss."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Portalsuche 25.09.2026: „Balkonkraftwerk“ nur Klimaschutzkonzept; „Zuschuss“ nur Wohngeld/Lastenzuschuss; „Photovoltaik“/„Wärmepumpe“ nur Solarkataster und Energieberatung des Landkreises."
+      },
+      {
+        "url": "https://www.diepholz.de/portal/seiten/foerderprogramm-des-landkreises-diepholz-1000197-21750.html",
+        "finding": "Förderprogramm des Landkreises am 25.09.2026 gelesen: betriebsbezogene Wirtschaftsförderung (Neuansiedlung, Erweiterung) — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&amp;url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular zu einer LEADER-Projektmeldung; kein Haushaltsprogramm.",
+        "evidenceUrl": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F"
+      },
+      {
+        "url": "lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/"
+      },
+      {
+        "url": "lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&amp;brotID=900000268&amp;rubrik=10000006",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006"
+      }
+    ]
+  },
+  {
+    "regionId": "03251022",
+    "name": "Lembruch",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Lembruch wird von der Samtgemeinde Altes Amt Lemförde verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Lembruch noch die Samtgemeinde Altes Amt Lemförde noch der Landkreis Diepholz führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseiten der Samtgemeinde Altes Amt Lemförde am 25.09.2026 gelesen",
+      "Portalsuche lemfoerde.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Diepholz: Förderprogramm-Seite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Altes Amt Lemförde Förderung Zuschuss Photovoltaik Balkonkraftwerk“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "finding": "Am 25.09.2026 gelesen: Barriere-Meldeformular, verweist auf die Meldung „Acht weitere Projekte erhalten eine LEADER-Förderung“ (Vereine, Kirchplatz, Tierpark) — keine Förderung für private Haushalte."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/klimaschutz/anschlussvorhaben/",
+        "finding": "Klimaschutzseiten (Übersicht, Erst- und Anschlussvorhaben) am 25.09.2026 gelesen: Klimaschutzmanagerin, NKI-geförderte Stelle; einziger Zuschuss für Bürger: Regenwassernutzungsanlagen (Zisternen) — kein PV-, Speicher-, Balkon- oder Wärmepumpenzuschuss."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Portalsuche 25.09.2026: „Balkonkraftwerk“ nur Klimaschutzkonzept; „Zuschuss“ nur Wohngeld/Lastenzuschuss; „Photovoltaik“/„Wärmepumpe“ nur Solarkataster und Energieberatung des Landkreises."
+      },
+      {
+        "url": "https://www.diepholz.de/portal/seiten/foerderprogramm-des-landkreises-diepholz-1000197-21750.html",
+        "finding": "Förderprogramm des Landkreises am 25.09.2026 gelesen: betriebsbezogene Wirtschaftsförderung (Neuansiedlung, Erweiterung) — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&amp;url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular zu einer LEADER-Projektmeldung; kein Haushaltsprogramm.",
+        "evidenceUrl": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F"
+      },
+      {
+        "url": "lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/"
+      },
+      {
+        "url": "lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&amp;brotID=900000268&amp;rubrik=10000006",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006"
+      }
+    ]
+  },
+  {
+    "regionId": "03251023",
+    "name": "Lemförde",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Lemförde wird von der Samtgemeinde Altes Amt Lemförde verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Lemförde noch die Samtgemeinde Altes Amt Lemförde noch der Landkreis Diepholz führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseiten der Samtgemeinde Altes Amt Lemförde am 25.09.2026 gelesen",
+      "Portalsuche lemfoerde.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Diepholz: Förderprogramm-Seite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Altes Amt Lemförde Förderung Zuschuss Photovoltaik Balkonkraftwerk“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "finding": "Am 25.09.2026 gelesen: Barriere-Meldeformular, verweist auf die Meldung „Acht weitere Projekte erhalten eine LEADER-Förderung“ (Vereine, Kirchplatz, Tierpark) — keine Förderung für private Haushalte."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/klimaschutz/anschlussvorhaben/",
+        "finding": "Klimaschutzseiten (Übersicht, Erst- und Anschlussvorhaben) am 25.09.2026 gelesen: Klimaschutzmanagerin, NKI-geförderte Stelle; einziger Zuschuss für Bürger: Regenwassernutzungsanlagen (Zisternen) — kein PV-, Speicher-, Balkon- oder Wärmepumpenzuschuss."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Portalsuche 25.09.2026: „Balkonkraftwerk“ nur Klimaschutzkonzept; „Zuschuss“ nur Wohngeld/Lastenzuschuss; „Photovoltaik“/„Wärmepumpe“ nur Solarkataster und Energieberatung des Landkreises."
+      },
+      {
+        "url": "https://www.diepholz.de/portal/seiten/foerderprogramm-des-landkreises-diepholz-1000197-21750.html",
+        "finding": "Förderprogramm des Landkreises am 25.09.2026 gelesen: betriebsbezogene Wirtschaftsförderung (Neuansiedlung, Erweiterung) — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&amp;url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular zu einer LEADER-Projektmeldung; kein Haushaltsprogramm.",
+        "evidenceUrl": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F"
+      },
+      {
+        "url": "lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/"
+      },
+      {
+        "url": "lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&amp;brotID=900000268&amp;rubrik=10000006",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006"
+      }
+    ]
+  },
+  {
+    "regionId": "03251025",
+    "name": "Marl",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Marl wird von der Samtgemeinde Altes Amt Lemförde verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Marl noch die Samtgemeinde Altes Amt Lemförde noch der Landkreis Diepholz führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseiten der Samtgemeinde Altes Amt Lemförde am 25.09.2026 gelesen",
+      "Portalsuche lemfoerde.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Diepholz: Förderprogramm-Seite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Altes Amt Lemförde Förderung Zuschuss Photovoltaik Balkonkraftwerk“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "finding": "Am 25.09.2026 gelesen: Barriere-Meldeformular, verweist auf die Meldung „Acht weitere Projekte erhalten eine LEADER-Förderung“ (Vereine, Kirchplatz, Tierpark) — keine Förderung für private Haushalte."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/klimaschutz/anschlussvorhaben/",
+        "finding": "Klimaschutzseiten (Übersicht, Erst- und Anschlussvorhaben) am 25.09.2026 gelesen: Klimaschutzmanagerin, NKI-geförderte Stelle; einziger Zuschuss für Bürger: Regenwassernutzungsanlagen (Zisternen) — kein PV-, Speicher-, Balkon- oder Wärmepumpenzuschuss."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Portalsuche 25.09.2026: „Balkonkraftwerk“ nur Klimaschutzkonzept; „Zuschuss“ nur Wohngeld/Lastenzuschuss; „Photovoltaik“/„Wärmepumpe“ nur Solarkataster und Energieberatung des Landkreises."
+      },
+      {
+        "url": "https://www.diepholz.de/portal/seiten/foerderprogramm-des-landkreises-diepholz-1000197-21750.html",
+        "finding": "Förderprogramm des Landkreises am 25.09.2026 gelesen: betriebsbezogene Wirtschaftsförderung (Neuansiedlung, Erweiterung) — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&amp;url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular zu einer LEADER-Projektmeldung; kein Haushaltsprogramm.",
+        "evidenceUrl": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F"
+      },
+      {
+        "url": "lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/"
+      },
+      {
+        "url": "lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&amp;brotID=900000268&amp;rubrik=10000006",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006"
+      }
+    ]
+  },
+  {
+    "regionId": "03251029",
+    "name": "Quernheim",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Quernheim wird von der Samtgemeinde Altes Amt Lemförde verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Quernheim noch die Samtgemeinde Altes Amt Lemförde noch der Landkreis Diepholz führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseiten der Samtgemeinde Altes Amt Lemförde am 25.09.2026 gelesen",
+      "Portalsuche lemfoerde.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Diepholz: Förderprogramm-Seite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Altes Amt Lemförde Förderung Zuschuss Photovoltaik Balkonkraftwerk“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "finding": "Am 25.09.2026 gelesen: Barriere-Meldeformular, verweist auf die Meldung „Acht weitere Projekte erhalten eine LEADER-Förderung“ (Vereine, Kirchplatz, Tierpark) — keine Förderung für private Haushalte."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/klimaschutz/anschlussvorhaben/",
+        "finding": "Klimaschutzseiten (Übersicht, Erst- und Anschlussvorhaben) am 25.09.2026 gelesen: Klimaschutzmanagerin, NKI-geförderte Stelle; einziger Zuschuss für Bürger: Regenwassernutzungsanlagen (Zisternen) — kein PV-, Speicher-, Balkon- oder Wärmepumpenzuschuss."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Portalsuche 25.09.2026: „Balkonkraftwerk“ nur Klimaschutzkonzept; „Zuschuss“ nur Wohngeld/Lastenzuschuss; „Photovoltaik“/„Wärmepumpe“ nur Solarkataster und Energieberatung des Landkreises."
+      },
+      {
+        "url": "https://www.diepholz.de/portal/seiten/foerderprogramm-des-landkreises-diepholz-1000197-21750.html",
+        "finding": "Förderprogramm des Landkreises am 25.09.2026 gelesen: betriebsbezogene Wirtschaftsförderung (Neuansiedlung, Erweiterung) — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&amp;url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular zu einer LEADER-Projektmeldung; kein Haushaltsprogramm.",
+        "evidenceUrl": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F"
+      },
+      {
+        "url": "lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/"
+      },
+      {
+        "url": "lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&amp;brotID=900000268&amp;rubrik=10000006",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006"
+      }
+    ]
+  },
+  {
+    "regionId": "03251036",
+    "name": "Stemshorn",
+    "checkedAt": "2026-09-25T16:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Stemshorn wird von der Samtgemeinde Altes Amt Lemförde verwaltet; deren Website trägt Ortsseite und Klimabereich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Stemshorn noch die Samtgemeinde Altes Amt Lemförde noch der Landkreis Diepholz führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Klimaschutzseiten und Volltextsuche der Samtgemeinde sowie die Förderseite des Kreises nennen kein solches Programm. Stand 25.09.2026.",
+    "searches": [
+      "Klimaschutzseiten der Samtgemeinde Altes Amt Lemförde am 25.09.2026 gelesen",
+      "Portalsuche lemfoerde.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe",
+      "Landkreis Diepholz: Förderprogramm-Seite am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Altes Amt Lemförde Förderung Zuschuss Photovoltaik Balkonkraftwerk“ und Kreis-Suche (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "finding": "Am 25.09.2026 gelesen: Barriere-Meldeformular, verweist auf die Meldung „Acht weitere Projekte erhalten eine LEADER-Förderung“ (Vereine, Kirchplatz, Tierpark) — keine Förderung für private Haushalte."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/klimaschutz/anschlussvorhaben/",
+        "finding": "Klimaschutzseiten (Übersicht, Erst- und Anschlussvorhaben) am 25.09.2026 gelesen: Klimaschutzmanagerin, NKI-geförderte Stelle; einziger Zuschuss für Bürger: Regenwassernutzungsanlagen (Zisternen) — kein PV-, Speicher-, Balkon- oder Wärmepumpenzuschuss."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/suche.html?suchbegriff=Balkonkraftwerk",
+        "finding": "Portalsuche 25.09.2026: „Balkonkraftwerk“ nur Klimaschutzkonzept; „Zuschuss“ nur Wohngeld/Lastenzuschuss; „Photovoltaik“/„Wärmepumpe“ nur Solarkataster und Energieberatung des Landkreises."
+      },
+      {
+        "url": "https://www.diepholz.de/portal/seiten/foerderprogramm-des-landkreises-diepholz-1000197-21750.html",
+        "finding": "Förderprogramm des Landkreises am 25.09.2026 gelesen: betriebsbezogene Wirtschaftsförderung (Neuansiedlung, Erweiterung) — kein Haushaltsprogramm."
+      },
+      {
+        "url": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      },
+      {
+        "url": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006",
+        "finding": "Am 25.09.2026 gelesen: LEADER-Region Diepholzer Land genehmigt acht Projekte (Mehrgenerationen-Schulgarten, Theaterkulisse, Tierpark, Moorpflege, Kirchplatz Lemförde; 1,7 Mio. € EU-Mittel bis 2027) — keine Förderung für private Haushalte, kein PV/Balkon/Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&amp;url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F",
+        "disposition": "reviewed",
+        "reason": "Barriere-Meldeformular zu einer LEADER-Projektmeldung; kein Haushaltsprogramm.",
+        "evidenceUrl": "https://lemfoerde.de/barrierefreiheit/barriere_melden.html?titel=Barriere+melden&url=https%3A%2F%2Fwww.lemfoerde.de%2Fbauen%2Fleader-diepholzer-land%2Facht-weitere-projekte-erhalten-eine-leader-foerderung%2F"
+      },
+      {
+        "url": "lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/bauen/leader-diepholzer-land/acht-weitere-projekte-erhalten-eine-leader-foerderung/"
+      },
+      {
+        "url": "lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&amp;brotID=900000268&amp;rubrik=10000006",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projektmeldung (Vereine, Kirche, Tierpark), kein Haushaltsprogramm.",
+        "evidenceUrl": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006"
+      }
+    ]
   }
 ]
