@@ -62520,7 +62520,7 @@
   {
     "regionId": "03255",
     "name": "Landkreis Holzminden",
-    "checkedAt": "2026-09-25T12:20:43Z",
+    "checkedAt": "2026-09-25T12:31:37Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
@@ -62545,6 +62545,10 @@
       {
         "url": "https://www.landkreis-holzminden.de/buergerservice/dienstleistungen/gruendungszuschuss-beantragen-900002065-0.html?myMedium=1&auswahl=0",
         "finding": "Am 25.09.2026 gelesen: Gründungszuschuss der Bundesagentur für Arbeit für Existenzgründer; kein Energie-Zuschuss."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-900002032-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 25.09.2026 gelesen: Leistungsbeschreibung „Förderung der Energieberatung für Wohngebäude beantragen“ — Bundesförderung (80 %), beantragt durch zugelassene Energieberater; kein Kreiszuschuss für Anlagen."
       }
     ],
     "sources": [
@@ -62571,6 +62575,12 @@
         "disposition": "reviewed",
         "reason": "Gründungszuschuss der Arbeitsagentur.",
         "evidenceUrl": "https://www.landkreis-holzminden.de/buergerservice/dienstleistungen/gruendungszuschuss-beantragen-900002065-0.html?myMedium=1&auswahl=0"
+      },
+      {
+        "url": "landkreis-holzminden.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-900002032-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Bundesförderung der Energieberatung, kein Kreiszuschuss.",
+        "evidenceUrl": "https://www.landkreis-holzminden.de/buergerservice/dienstleistungen/foerderung-der-energieberatung-fuer-wohngebaeude-beantragen-900002032-0.html?myMedium=1&auswahl=0"
       }
     ]
   },
