@@ -62516,5 +62516,553 @@
         "evidenceUrl": "https://www.ludwigswinkel.de/veranstaltung/pfingstfest-mit-pfingstquackpraemierung"
       }
     ]
+  },
+  {
+    "regionId": "03255",
+    "name": "Landkreis Holzminden",
+    "checkedAt": "2026-09-25T12:20:43Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Landkreis Holzminden führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Seine Seite „Fördermöglichkeiten“ betrifft ausschließlich Naturschutz (Naturschutzstiftung, Bingostiftung, Landesprogramme), die „Fördermittelberatung“ Unternehmen (NBank/GRW), die Klima-Fördermittelberatung richtet sich an Kommunen, und der Gründungszuschuss ist eine Leistung der Bundesagentur für Arbeit. Das einzige Balkonprogramm im Kreis ist das der Stadt Holzminden (SolarFair, im Katalog).",
+    "searches": [
+      "landkreis-holzminden.de: alle vier erfassten Förderseiten am 25.09.2026 gelesen",
+      "Bereits am 19.09.2026 bei der Prüfung der Samtgemeinde Eschershausen-Stadtoldendorf und der Stadt Holzminden: Websuche „Landkreis Holzminden Förderung Balkonkraftwerk Photovoltaik Zuschuss Privathaushalte“ ohne Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermoeglichkeiten-900001775-25600.html",
+        "finding": "Am 25.09.2026 gelesen: Naturschutzprogramme und Fördermöglichkeiten (Naturschutzstiftung des Landkreises, Bingostiftung, MU-Programme, Agrarumweltmaßnahmen) in Gebietskulissen; kein Energie-Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "finding": "Am 25.09.2026 gelesen: Fördermittelberatung für Unternehmen (u. a. NBank-Zuschuss im GRW-Zielgebiet); nicht für private Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/portal/seiten/klima-foerdermittelberatung-fuer-kommunen-900002577-25600.html",
+        "finding": "Am 25.09.2026 gelesen: Beratung für Kommunen zu investiven Klimaschutzmaßnahmen an Liegenschaften (u. a. Photovoltaik) und Strategien; kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.landkreis-holzminden.de/buergerservice/dienstleistungen/gruendungszuschuss-beantragen-900002065-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 25.09.2026 gelesen: Gründungszuschuss der Bundesagentur für Arbeit für Existenzgründer; kein Energie-Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landkreis-holzminden.de/portal/seiten/foerdermoeglichkeiten-900001775-25600.html",
+        "disposition": "reviewed",
+        "reason": "Naturschutz-Fördermöglichkeiten, kein Energie-Zuschuss für Haushalte.",
+        "evidenceUrl": "https://www.landkreis-holzminden.de/portal/seiten/foerdermoeglichkeiten-900001775-25600.html"
+      },
+      {
+        "url": "landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html",
+        "disposition": "reviewed",
+        "reason": "Fördermittelberatung für Unternehmen.",
+        "evidenceUrl": "https://www.landkreis-holzminden.de/portal/seiten/foerdermittelberatung-900002602-25600.html"
+      },
+      {
+        "url": "landkreis-holzminden.de/portal/seiten/klima-foerdermittelberatung-fuer-kommunen-900002577-25600.html",
+        "disposition": "reviewed",
+        "reason": "Beratung für Kommunen, kein Zuschuss an Haushalte.",
+        "evidenceUrl": "https://www.landkreis-holzminden.de/portal/seiten/klima-foerdermittelberatung-fuer-kommunen-900002577-25600.html"
+      },
+      {
+        "url": "landkreis-holzminden.de/buergerservice/dienstleistungen/gruendungszuschuss-beantragen-900002065-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gründungszuschuss der Arbeitsagentur.",
+        "evidenceUrl": "https://www.landkreis-holzminden.de/buergerservice/dienstleistungen/gruendungszuschuss-beantragen-900002065-0.html?myMedium=1&auswahl=0"
+      }
+    ]
+  },
+  {
+    "regionId": "03255020",
+    "name": "Heyen",
+    "checkedAt": "2026-09-25T12:20:43Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Heyen gehört zur Samtgemeinde Bodenwerder-Polle (Landkreis Holzminden). Kein Zuschuss im Umfang: Die Website der Gemeinde nennt nur die eigene PV-Anlage der Gemeinde (Ertragsanzeige) und Bauplätze ab 35 €/m²; die Satzungsliste enthält keine Förderrichtlinie. Die Samtgemeinde führt nur ein Energiesparprojekt für ihre Schulen und Kitas. Der Landkreis Holzminden führt keinen eigenen Zuschuss (siehe Kreisdatensatz 03255).",
+    "searches": [
+      "gemeinde-heyen.de am 25.09.2026: Startseite, Bauplätze, PV-Anlage und Satzungen/Gemeinderecht gelesen",
+      "Websuche 25.09.2026: Samtgemeinde Bodenwerder-Polle Förderung Balkonkraftwerk Photovoltaik Zuschuss — kein kommunales Programm",
+      "muenchhausenland.de (Samtgemeinde Bodenwerder-Polle) am 25.09.2026: Menü nach Förder/Klima/Energie durchsucht; Klimaschutz, Formulare und Satzungen gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-heyen.de/bauplaetze.php",
+        "finding": "Am 25.09.2026 gelesen: Bauplätze ca. 760 m² ab 35 €/m², Verkauf über die Gemeinde; kein Energie-Zuschuss."
+      },
+      {
+        "url": "https://www.gemeinde-heyen.de/pvanlage.php",
+        "finding": "Am 25.09.2026 gelesen: „Unsere PV-Anlage“ — Ertragsanzeige der gemeindeeigenen Anlage; kein Zuschuss."
+      },
+      {
+        "url": "https://www.gemeinde-heyen.de/satzungen.php",
+        "finding": "Am 25.09.2026 gelesen: Hauptsatzung, Haushalt, KiTa, DGH, Geräte, Straßenausbau, Hundesteuer u. a.; keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.muenchhausenland.de/familie-soziales/bildung/klimaschutz/",
+        "finding": "Klimaschutzseite der Samtgemeinde Bodenwerder-Polle am 25.09.2026 gelesen: einziges Thema ist das NKI-Förderprojekt „Energiesparmodelle“ für Schulen, Kitas und Jugendzentrum; kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.muenchhausenland.de/portal/seiten/formulare-antraege-900000162-25640.html",
+        "finding": "Alle Formulare der Samtgemeinde am 25.09.2026 gelesen (Melde-, Hunde-, Friedhofs-, Gewerbeformulare); kein Förderantrag."
+      },
+      {
+        "url": "https://www.muenchhausenland.de/verwaltung-politik/satzungen-verordnungen/",
+        "finding": "Satzungsübersicht der Samtgemeinde am 25.09.2026 gelesen: nur Satzungen der Samtgemeinde und der Stadt Bodenwerder; das Menü führt keine Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-heyen.de/bauplaetze.php",
+        "disposition": "reviewed",
+        "reason": "Bauplatzangebot der Gemeinde, kein Energie-Zuschuss.",
+        "evidenceUrl": "https://www.gemeinde-heyen.de/bauplaetze.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03255031",
+    "name": "Ottenstein",
+    "checkedAt": "2026-09-25T12:20:43Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ottenstein (Flecken, Samtgemeinde Bodenwerder-Polle, Landkreis Holzminden) führt keinen Zuschuss im Umfang. Die erfasste Seite „Geförderte Maßnahmen“ berichtet über Straßensanierungen der Dorferneuerung; die Suche der Website findet zu Balkonkraftwerk nichts, zu Photovoltaik und Zuschuss nur das Solardach der Kirchengemeinde auf der Pfarrscheune (Förderanträge der Kirchengemeinde bei Stiftungen) und die Dorferneuerung; die Satzungsliste enthält keine Förderrichtlinie. Der Landkreis Holzminden führt keinen eigenen Zuschuss (siehe Kreisdatensatz 03255).",
+    "searches": [
+      "Suche ottensteiner-hochebene.de am 25.09.2026: Balkonkraftwerk 0 Treffer; Photovoltaik → Solardach, Dorferneuerung; Zuschuss → Solardach; Förderung 2 Meldungen, 1 Foto, 9 Seiten (Liste nur per Skript)",
+      "Websuche 25.09.2026: Samtgemeinde Bodenwerder-Polle Förderung Balkonkraftwerk Photovoltaik Zuschuss — kein kommunales Programm",
+      "muenchhausenland.de (Samtgemeinde Bodenwerder-Polle) am 25.09.2026: Menü nach Förder/Klima/Energie durchsucht; Klimaschutz, Formulare und Satzungen gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ottensteiner-hochebene.de/seite/726913/gef%C3%B6rderte-ma%C3%9Fnahmen.html",
+        "finding": "Am 25.09.2026 gelesen: Dorferneuerungsmaßnahmen Schneidertrift (2024) und Untere Breite Straße (2024); kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.ottensteiner-hochebene.de/seite/366941/solardach.html",
+        "finding": "Am 25.09.2026 gelesen: PV-Aufdachanlage der Kirchengemeinde auf der Pfarrscheune, finanziert über Anträge der Kirchengemeinde (DBU, Bingo, Wesertal-Stiftung, Kirchenkreis); kein kommunaler Zuschuss."
+      },
+      {
+        "url": "https://www.ottensteiner-hochebene.de/seite/557752/satzungen.html",
+        "finding": "Am 25.09.2026 gelesen: Haupt-, Vergnügungssteuer-, Kindergarten-, Gebühren- und Hundesteuersatzung, Gebührenordnung Turnhalle; keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.muenchhausenland.de/familie-soziales/bildung/klimaschutz/",
+        "finding": "Klimaschutzseite der Samtgemeinde Bodenwerder-Polle am 25.09.2026 gelesen: einziges Thema ist das NKI-Förderprojekt „Energiesparmodelle“ für Schulen, Kitas und Jugendzentrum; kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.muenchhausenland.de/portal/seiten/formulare-antraege-900000162-25640.html",
+        "finding": "Alle Formulare der Samtgemeinde am 25.09.2026 gelesen (Melde-, Hunde-, Friedhofs-, Gewerbeformulare); kein Förderantrag."
+      },
+      {
+        "url": "https://www.muenchhausenland.de/verwaltung-politik/satzungen-verordnungen/",
+        "finding": "Satzungsübersicht der Samtgemeinde am 25.09.2026 gelesen: nur Satzungen der Samtgemeinde und der Stadt Bodenwerder; das Menü führt keine Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ottensteiner-hochebene.de/seite/726913/gef%C3%B6rderte-ma%C3%9Fnahmen.html",
+        "disposition": "reviewed",
+        "reason": "Berichte über Straßensanierungen der Dorferneuerung, kein Zuschuss an Haushalte.",
+        "evidenceUrl": "https://www.ottensteiner-hochebene.de/seite/726913/gef%C3%B6rderte-ma%C3%9Fnahmen.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03255033",
+    "name": "Polle",
+    "checkedAt": "2026-09-25T12:20:43Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Polle (Flecken, Samtgemeinde Bodenwerder-Polle, Landkreis Holzminden) führt keinen Zuschuss im Umfang. Die erfasste Seite betrifft die Aktion „Ideen werden Wirklichkeit“ von Westfalen Weser (Förderpakete für Vereine, 2023); die Suche der Website findet zu Balkonkraftwerk, Photovoltaik, Zuschuss und Förderprogramm keinen Beitrag. Der Landkreis Holzminden führt keinen eigenen Zuschuss (siehe Kreisdatensatz 03255).",
+    "searches": [
+      "Suche polle-weser.de am 25.09.2026 nach Balkonkraftwerk, Photovoltaik, Zuschuss, Förderprogramm: jeweils keine Beiträge",
+      "Websuche 25.09.2026: Samtgemeinde Bodenwerder-Polle Förderung Balkonkraftwerk Photovoltaik Zuschuss — kein kommunales Programm",
+      "muenchhausenland.de (Samtgemeinde Bodenwerder-Polle) am 25.09.2026: Menü nach Förder/Klima/Energie durchsucht; Klimaschutz, Formulare und Satzungen gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.polle-weser.de/flecken-polle-in-eiliger-sache-foerderpakete-warten-auf-empfaenger",
+        "finding": "Am 25.09.2026 gelesen: Aktion „Ideen werden Wirklichkeit“ des Versorgers Westfalen Weser, 100 Förderpakete für bürgerschaftliches Engagement, Bewerbung bis 31.08.2023; keine Energie-Förderung für Haushalte."
+      },
+      {
+        "url": "https://www.polle-weser.de/?s=Zuschuss",
+        "finding": "Am 25.09.2026: Suchergebnisse für Balkonkraftwerk, Photovoltaik, Zuschuss und Förderprogramm ohne Beiträge (nur Seitenrahmen)."
+      },
+      {
+        "url": "https://www.muenchhausenland.de/familie-soziales/bildung/klimaschutz/",
+        "finding": "Klimaschutzseite der Samtgemeinde Bodenwerder-Polle am 25.09.2026 gelesen: einziges Thema ist das NKI-Förderprojekt „Energiesparmodelle“ für Schulen, Kitas und Jugendzentrum; kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.muenchhausenland.de/portal/seiten/formulare-antraege-900000162-25640.html",
+        "finding": "Alle Formulare der Samtgemeinde am 25.09.2026 gelesen (Melde-, Hunde-, Friedhofs-, Gewerbeformulare); kein Förderantrag."
+      },
+      {
+        "url": "https://www.muenchhausenland.de/verwaltung-politik/satzungen-verordnungen/",
+        "finding": "Satzungsübersicht der Samtgemeinde am 25.09.2026 gelesen: nur Satzungen der Samtgemeinde und der Stadt Bodenwerder; das Menü führt keine Förderrichtlinie."
+      }
+    ],
+    "sources": [
+      {
+        "url": "polle-weser.de/flecken-polle-in-eiliger-sache-foerderpakete-warten-auf-empfaenger",
+        "disposition": "reviewed",
+        "reason": "Vereinsförderung eines Versorgers (2023), kein Energie-Zuschuss.",
+        "evidenceUrl": "https://www.polle-weser.de/flecken-polle-in-eiliger-sache-foerderpakete-warten-auf-empfaenger"
+      }
+    ]
+  },
+  {
+    "regionId": "03360",
+    "name": "Landkreis Uelzen",
+    "checkedAt": "2026-09-25T12:24:49Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Der Landkreis Uelzen führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Seine Förderseite nennt ausschließlich die Wohnraumförderung des Landes Niedersachsen über die NBank, bei der der Landkreis nur Wohnraumförderstelle ist.",
+    "searches": [
+      "landkreis-uelzen.de: beide erfassten Adressen der Förderseite am 25.09.2026 gelesen",
+      "Websuche 25.09.2026 zu Uelzen Förderprogramm Balkonkraftwerk Photovoltaik Zuschuss: kein Kreisprogramm (Treffer: Klimaschutzkonzept des Landkreises)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landkreis-uelzen.de/desktopdefault.aspx/tabid-1295/home/bauen-umwelt-tiere-und-lebensmittel/bauen/foerderprogramme.aspx",
+        "finding": "Förderseite des Landkreises Uelzen am 25.09.2026 gelesen: ausschließlich Wohnraumförderung des Landes über die NBank (Eigentums-, Mietwohnraum- und Modernisierungsförderung, Wohnberechtigungsschein); kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.landkreis-uelzen.de/desktopdefault.aspx/tabid-1295",
+        "finding": "Dieselbe Förderseite unter Kurzadresse, am 25.09.2026 gelesen: Wohnraumförderung NBank."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landkreis-uelzen.de/desktopdefault.aspx/tabid-1295",
+        "disposition": "reviewed",
+        "reason": "Förderseite (Kurzadresse): nur Wohnraumförderung des Landes.",
+        "evidenceUrl": "https://www.landkreis-uelzen.de/desktopdefault.aspx/tabid-1295"
+      },
+      {
+        "url": "landkreis-uelzen.de/desktopdefault.aspx/tabid-1295/home/bauen-umwelt-tiere-und-lebensmittel/bauen/foerderprogramme.aspx",
+        "disposition": "reviewed",
+        "reason": "Förderseite: nur Wohnraumförderung des Landes über die NBank.",
+        "evidenceUrl": "https://www.landkreis-uelzen.de/desktopdefault.aspx/tabid-1295/home/bauen-umwelt-tiere-und-lebensmittel/bauen/foerderprogramme.aspx"
+      }
+    ]
+  },
+  {
+    "regionId": "03360011",
+    "name": "Himbergen",
+    "checkedAt": "2026-09-25T12:24:49Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Himbergen gehört zur Samtgemeinde Bevensen-Ebstorf (Landkreis Uelzen). Die erfassten Seiten gehören zur Website der Dorfentwicklung Himbergen: Sie bieten Zuwendungen für private Bauvorhaben aus der Dorfentwicklung des Landes Niedersachsen an, keinen kommunalen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen. Die Samtgemeinde Bevensen-Ebstorf führt kein solches Programm (am 24.09.2026 bei Bad Bevensen, Hanstedt, Römstedt, Schwienau und Weste vollständig belegt: Klimaschutzseite, Volltextsuche, Ortsrecht). Der Landkreis ebenso wenig (siehe 03360).",
+    "searches": [
+      "gemeinde-himbergen.de (nur per http erreichbar) am 25.09.2026: Startseite und Seite „Private Fördermöglichkeiten“ gelesen",
+      "Die Samtgemeinde Bevensen-Ebstorf führt kein solches Programm (am 24.09.2026 bei Bad Bevensen, Hanstedt, Römstedt, Schwienau und Weste vollständig belegt: Klimaschutzseite, Volltextsuche, Ortsrecht)."
+    ],
+    "evidence": [
+      {
+        "url": "http://gemeinde-himbergen.de/DE_Private.html",
+        "finding": "Am 25.09.2026 gelesen: „Private Fördermöglichkeiten“ der Dorfentwicklung — Voranfrage, Zuwendungen für private Antragsteller im Rahmen der Dorfentwicklung (Merkblätter Stand 01/2024 und 01/2025); Landesförderung für Bausanierung, kein kommunaler Energie-Zuschuss."
+      },
+      {
+        "url": "http://gemeinde-himbergen.de/DE_Start.html",
+        "finding": "Am 25.09.2026 gelesen: Start der Dorfentwicklung Himbergen, Fördergelder für private Sanierungsmaßnahmen und öffentliche Projekte in der Dorfregion; kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.landkreis-uelzen.de/desktopdefault.aspx/tabid-1295/home/bauen-umwelt-tiere-und-lebensmittel/bauen/foerderprogramme.aspx",
+        "finding": "Förderseite des Landkreises Uelzen am 25.09.2026 gelesen: ausschließlich Wohnraumförderung des Landes über die NBank (Eigentums-, Mietwohnraum- und Modernisierungsförderung, Wohnberechtigungsschein); kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-himbergen.de/DE_Private.html",
+        "disposition": "reviewed",
+        "reason": "Private Förderung der Dorfentwicklung (Land), kein kommunaler Energie-Zuschuss; die Adresse antwortet nur ohne Verschlüsselung.",
+        "evidenceUrl": "http://gemeinde-himbergen.de/DE_Private.html"
+      },
+      {
+        "url": "gemeinde-himbergen.de/DE_Start.html",
+        "disposition": "reviewed",
+        "reason": "Startseite der Dorfentwicklung, kein Energie-Zuschuss.",
+        "evidenceUrl": "http://gemeinde-himbergen.de/DE_Start.html"
+      }
+    ]
+  },
+  {
+    "regionId": "03360012",
+    "name": "Jelmstorf",
+    "checkedAt": "2026-09-25T12:24:49Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Jelmstorf gehört zur Samtgemeinde Bevensen-Ebstorf (Landkreis Uelzen). Die Suche der Gemeindeseite findet zu Förderprogramm nur die geförderte Straßenbeleuchtung (Nationale Klimaschutzinitiative), zu Photovoltaik nur eine Informationsveranstaltung zu Agri-PV und Windkraft, zu Balkonkraftwerk und Zuschuss nichts. Die Samtgemeinde Bevensen-Ebstorf führt kein solches Programm (am 24.09.2026 bei Bad Bevensen, Hanstedt, Römstedt, Schwienau und Weste vollständig belegt: Klimaschutzseite, Volltextsuche, Ortsrecht). Der Landkreis ebenso wenig (siehe 03360).",
+    "searches": [
+      "Suche gemeinde-jelmstorf.de am 25.09.2026: Förderprogramm → Straßenbeleuchtung NKI; Photovoltaik → Energie-Info-Veranstaltung 29.04.2026; Balkonkraftwerk und Zuschuss → Nichts gefunden",
+      "Die Samtgemeinde Bevensen-Ebstorf führt kein solches Programm (am 24.09.2026 bei Bad Bevensen, Hanstedt, Römstedt, Schwienau und Weste vollständig belegt: Klimaschutzseite, Volltextsuche, Ortsrecht)."
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-jelmstorf.de/?s=F%C3%B6rderprogramm",
+        "finding": "Am 25.09.2026: einziger Treffer „Straßenbeleuchtung – Nationale Klimaschutzinitiative“ (kommunales Vorhaben); Suche Balkonkraftwerk und Zuschuss: „Nichts gefunden“; Photovoltaik: Informationsveranstaltung zu Agri-PV und Windkraft am 29.04.2026."
+      },
+      {
+        "url": "https://www.landkreis-uelzen.de/desktopdefault.aspx/tabid-1295/home/bauen-umwelt-tiere-und-lebensmittel/bauen/foerderprogramme.aspx",
+        "finding": "Förderseite des Landkreises Uelzen am 25.09.2026 gelesen: ausschließlich Wohnraumförderung des Landes über die NBank (Eigentums-, Mietwohnraum- und Modernisierungsförderung, Wohnberechtigungsschein); kein Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-jelmstorf.de/search/f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Suchadresse der Gemeindeseite; dieselbe Suche als ?s=Förderprogramm liefert nur die geförderte Straßenbeleuchtung.",
+        "evidenceUrl": "https://www.gemeinde-jelmstorf.de/?s=F%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "03360025",
+    "name": "Uelzen",
+    "checkedAt": "2026-09-25T12:24:49Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Hansestadt Uelzen führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Ihre Klimaschutzseiten verweisen für Geld ausschließlich auf die Bundesförderung und auf Beratung; der Haushaltsplan 2025 sieht im Klimaschutz nur Konzeptfortschreibung und eine Carsharing-Station vor. Alle sechs erfassten Adressen sind alte Pfade ohne Inhalt (Fehlerseite bzw. Umleitung auf die Startseite); ihre heutigen Entsprechungen wurden gelesen. Eine gefundene Pressemeldung über ein Steckersolar-Programm von 2022 betrifft Lüneburg, nicht Uelzen. Der Landkreis führt ebenfalls kein Programm (siehe 03360).",
+    "searches": [
+      "hansestadt-uelzen.de am 25.09.2026 im echten Browser: Startseitenmenü nach Förder/Klima/Energie, Klimaschutz-Themenseite samt Infothek, Energieeffizient bauen und sanieren",
+      "site:hansestadt-uelzen.de Förderprogramm erneuerbare Energien Zuschuss (25.09.2026): nur Bundesförderung, KfW-Wallbox-Meldung 2020, Klimaschutzkonzept, Haushaltsplan",
+      "Haushaltsplan 2025 der Hansestadt nach erneuerbar/Photovoltaik/Balkon/Solar/Förderprogramm/Klimaschutz durchsucht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.hansestadt-uelzen.de/home/themenseite/klimaschutz-in-uelzen.aspx",
+        "finding": "Klimaschutz-Themenseite der Hansestadt am 25.09.2026 im echten Browser gelesen: Meldungen (Wärmepumpen-Infotag, Grüne Hausnummer des Landkreises, Carsharing, Solardachkataster, Energieberatung) und Infothek; kein städtisches Zuschussprogramm."
+      },
+      {
+        "url": "https://www.hansestadt-uelzen.de/home/themenseite/klimaschutz-in-uelzen/energieeffizient-bauen-und-sanieren.aspx",
+        "finding": "Am 25.09.2026 gelesen: verweist für Zuschüsse ausschließlich auf die Bundesförderung (BEG, KfW, BAFA) und Beratungsangebote; kein städtischer Zuschuss."
+      },
+      {
+        "url": "https://www.hansestadt-uelzen.de/Portaldata/1/Resources/hansestadt/dokumente/haushalt/Haushaltsplan_2025.pdf",
+        "finding": "Haushaltsplan 2025 am 25.09.2026 durchsucht: Klimaschutzmanagement mit Fortschreibung Klimaschutzkonzept (45.000 €) und Carsharing-Station (6.000 €); kein Zuschusstopf für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.hansestadt-uelzen.de/home/uelzen-aktuell/pressemitteilungen/elektro-tankstelle-fuer-zuhause-jetzt-zuschuss-beantragen.aspx",
+        "finding": "Pressemitteilung 26.11.2020 am 25.09.2026 gelesen: 900 € je Ladepunkt sind der KfW-Zuschuss 440 des Bundes, kein städtisches Programm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hansestadt-uelzen.de/home/buerger-service/desktopdefault.aspx/tabid-497/723_read-10470",
+        "disposition": "replaced",
+        "reason": "Alte Meldungsadresse liefert am 25.09.2026 keinen Inhalt mehr (Fehlerseite bzw. Umleitung auf die Startseite); die aktuelle Klimaschutz-Themenseite mit allen Meldungen wurde stattdessen gelesen und nennt kein städtisches Zuschussprogramm.",
+        "evidenceUrl": "https://www.hansestadt-uelzen.de/home/themenseite/klimaschutz-in-uelzen.aspx"
+      },
+      {
+        "url": "hansestadt-uelzen.de/home/buerger-service/desktopdefault.aspx/tabid-497/723_read-16220",
+        "disposition": "replaced",
+        "reason": "Alte Meldungsadresse liefert am 25.09.2026 keinen Inhalt mehr (Fehlerseite bzw. Umleitung auf die Startseite); die aktuelle Klimaschutz-Themenseite mit allen Meldungen wurde stattdessen gelesen und nennt kein städtisches Zuschussprogramm.",
+        "evidenceUrl": "https://www.hansestadt-uelzen.de/home/themenseite/klimaschutz-in-uelzen.aspx"
+      },
+      {
+        "url": "hansestadt-uelzen.de/home/buerger-service/desktopdefault.aspx/tabid-497/723_read-17383",
+        "disposition": "replaced",
+        "reason": "Alte Meldungsadresse liefert am 25.09.2026 keinen Inhalt mehr (Fehlerseite bzw. Umleitung auf die Startseite); die aktuelle Klimaschutz-Themenseite mit allen Meldungen wurde stattdessen gelesen und nennt kein städtisches Zuschussprogramm.",
+        "evidenceUrl": "https://www.hansestadt-uelzen.de/home/themenseite/klimaschutz-in-uelzen.aspx"
+      },
+      {
+        "url": "hansestadt-uelzen.de/home/buerger-service/desktopdefault.aspx/tabid-497/723_read-17555",
+        "disposition": "replaced",
+        "reason": "Alte Meldungsadresse liefert am 25.09.2026 keinen Inhalt mehr (Fehlerseite bzw. Umleitung auf die Startseite); die aktuelle Klimaschutz-Themenseite mit allen Meldungen wurde stattdessen gelesen und nennt kein städtisches Zuschussprogramm.",
+        "evidenceUrl": "https://www.hansestadt-uelzen.de/home/themenseite/klimaschutz-in-uelzen.aspx"
+      },
+      {
+        "url": "hansestadt-uelzen.de/home/buerger-service/home/themenseite/klimaschutz-in-uelzen/energieeffizient-bauen-und-sanieren.aspx",
+        "disposition": "replaced",
+        "reason": "Alter Pfad liefert keinen Inhalt mehr (Fehlerseite bzw. Umleitung auf die Startseite); dieselbe Seite unter /home/themenseite/klimaschutz-in-uelzen/energieeffizient-bauen-und-sanieren.aspx gelesen: nur Bundesförderung.",
+        "evidenceUrl": "https://www.hansestadt-uelzen.de/home/themenseite/klimaschutz-in-uelzen/energieeffizient-bauen-und-sanieren.aspx"
+      },
+      {
+        "url": "hansestadt-uelzen.de/home/buerger-service/home/themenseite/klimaschutz-in-uelzen/in-unternehmen.aspx",
+        "disposition": "replaced",
+        "reason": "Alter Pfad liefert keinen Inhalt mehr (Fehlerseite bzw. Umleitung auf die Startseite); Seite betrifft laut aktuellem Menü Unternehmen, nicht private Haushalte. Die aktuelle Klimaschutz-Themenseite nennt kein Zuschussprogramm.",
+        "evidenceUrl": "https://www.hansestadt-uelzen.de/home/themenseite/klimaschutz-in-uelzen.aspx"
+      }
+    ]
+  },
+  {
+    "regionId": "16076003",
+    "name": "Bad Köstritz",
+    "checkedAt": "2026-09-25T12:28:41Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Bad Köstritz (Landkreis Greiz) führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten betreffen ELER-geförderte städtische Baumaßnahmen und das Nachhaltigkeitsprojekt „Dahliengewächshaus“ in der Partnerstadt Huamantla. Die Suche der Stadtseite findet zu Balkonkraftwerk nichts, zu Photovoltaik nur die Anlage auf den Freibaddächern und die Partnerschaftsprojekte, zu Zuschuss und Förderprogramm nur Vereins-, Senioren-, Breitband- und Freibadthemen.",
+    "searches": [
+      "Suche stadtbadkoestritz.de am 25.09.2026: Balkonkraftwerk (kein Treffer), Photovoltaik (Freibaddächer 2021, Huamantla), Zuschuss (Seniorenzentrum, Vereinshaus, ASA-Programm, Freibadpumpen), Förderprogramm (Vereinsförderprogramm 2021, Breitband, Huamantla)"
+    ],
+    "evidence": [
+      {
+        "url": "https://stadtbadkoestritz.de/eler-foerderinitiative-laendliche-entwicklung-in-thueringen",
+        "finding": "Am 25.09.2026 gelesen: Hinweis auf mit EU-Mitteln (ELER) geförderte Baumaßnahmen der Stadt; kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://stadtbadkoestritz.de/global-nachhaltig/foerderprojekt-dahliengewaechshaus-in-huamantla-mx-feierlich-eingeweiht",
+        "finding": "Am 25.09.2026 gelesen: Einweihung eines geförderten Gewächshauses in der mexikanischen Partnerstadt Huamantla; kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://stadtbadkoestritz.de/?s=Photovoltaik",
+        "finding": "Am 25.09.2026: Suchtreffer Photovoltaikanlage auf Freibaddächern (08.06.2021) und Huamantla-Projekte; Suche Balkonkraftwerk ohne Treffer; Zuschuss und Förderprogramm nur Vereins-, Senioren-, Breitband- und Freibadthemen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadtbadkoestritz.de/12-12-23-foerderprojekt-dahliengewaechshaus-in-huamantla-mx-feierlich-eingeweiht",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Meldung zum Gewächshausprojekt in Huamantla unter Datumsadresse; kein Zuschuss an Haushalte.",
+        "evidenceUrl": "https://stadtbadkoestritz.de/global-nachhaltig/foerderprojekt-dahliengewaechshaus-in-huamantla-mx-feierlich-eingeweiht"
+      },
+      {
+        "url": "stadtbadkoestritz.de/eler-foerderinitiative-laendliche-entwicklung-in-thueringen",
+        "disposition": "reviewed",
+        "reason": "ELER-geförderte städtische Baumaßnahmen.",
+        "evidenceUrl": "https://stadtbadkoestritz.de/eler-foerderinitiative-laendliche-entwicklung-in-thueringen"
+      },
+      {
+        "url": "stadtbadkoestritz.de/global-nachhaltig/foerderprojekt-dahliengewaechshaus-in-huamantla-mx-feierlich-eingeweiht",
+        "disposition": "reviewed",
+        "reason": "Partnerschaftsprojekt in Huamantla.",
+        "evidenceUrl": "https://stadtbadkoestritz.de/global-nachhaltig/foerderprojekt-dahliengewaechshaus-in-huamantla-mx-feierlich-eingeweiht"
+      },
+      {
+        "url": "stadtbadkoestritz.de/page/2/?s=f%C3%B6rderprogramm",
+        "disposition": "reviewed",
+        "reason": "Zweite Seite der Stadtsuche nach Förderprogramm; Treffer nur Vereinsförderung, Breitband, Huamantla.",
+        "evidenceUrl": "https://stadtbadkoestritz.de/?s=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "16076061",
+    "name": "Ronneburg",
+    "checkedAt": "2026-09-25T12:28:41Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Ronneburg (Landkreis Greiz) führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfassten Seiten betreffen die Fördermitgliederkampagne des DRK-Kreisverbands. Die Suche der Stadtseite findet zu Balkonkraftwerk, Photovoltaik und Zuschuss nichts, zu Förderprogramm nur „Zahlen und Fakten“ und „Wohnen in Ronneburg“ (Landesförderung für Wohnumfeldgestaltung).",
+    "searches": [
+      "Suche ronneburg.de am 25.09.2026: Balkonkraftwerk, Photovoltaik, Zuschuss — Nothing Found; Förderprogramm — Zahlen und Fakten, Wohnen in Ronneburg"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ronneburg.de/drk-kreisverband-landkreis-greiz-e-v-startet-foerdermitgliederkampagne",
+        "finding": "Am 25.09.2026 gelesen: Pressemitteilung des DRK-Kreisverbands zur Gewinnung von Fördermitgliedern; kein Zuschuss."
+      },
+      {
+        "url": "https://www.ronneburg.de/?s=Zuschuss",
+        "finding": "Am 25.09.2026: Suchen nach Balkonkraftwerk, Photovoltaik und Zuschuss ohne Treffer („Nothing Found“); Förderprogramm nur Zahlen und Fakten sowie Wohnen in Ronneburg (Landesförderprogramm für eine Wohnumfeld-Freifläche)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ronneburg.de/drk-kreisverband-landkreis-greiz-e-v-startet-foerdermitgliederkampagne",
+        "disposition": "reviewed",
+        "reason": "DRK-Fördermitgliederkampagne, kein Zuschuss.",
+        "evidenceUrl": "https://www.ronneburg.de/drk-kreisverband-landkreis-greiz-e-v-startet-foerdermitgliederkampagne"
+      },
+      {
+        "url": "ronneburg.de/tag/foerdermitglieder",
+        "disposition": "reviewed",
+        "reason": "Schlagwortseite zu derselben DRK-Meldung.",
+        "evidenceUrl": "https://www.ronneburg.de/drk-kreisverband-landkreis-greiz-e-v-startet-foerdermitgliederkampagne"
+      }
+    ]
+  },
+  {
+    "regionId": "16076087",
+    "name": "Zeulenroda-Triebes",
+    "checkedAt": "2026-09-25T12:28:41Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Zeulenroda-Triebes (Landkreis Greiz) führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Seite listet EFRE-geförderte Vorhaben der Stadt (Stadthalle, Stadtarchiv, Rathaus). Die Suche der Stadtseite findet zu Balkonkraftwerk, Photovoltaik und Wärmepumpe nichts, zu Solar nur die SHK-Innung, zu Zuschuss nur Wohngeld, zu Förderprogramm nur Verwaltungs-IT und Breitbandausbau.",
+    "searches": [
+      "Suche zeulenroda-triebes.de am 25.09.2026: Balkonkraftwerk, Photovoltaik, Wärmepumpe — keine Treffer; Solar → SHK-Innung; Zuschuss → Wohngeld; Förderprogramm → „Stadtverwaltung vernetzt“, Breitbandausbau"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.zeulenroda-triebes.de/seite/880507/efre-f%C3%B6rderma%C3%9Fnahmen.html",
+        "finding": "Am 25.09.2026 gelesen: EFRE-Fördermaßnahmen der Stadt 2014–2027 (Stadthalle, Stadtarchiv, energetische Sanierung Rathaus); kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.zeulenroda-triebes.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Am 25.09.2026: „Leider keine Treffer gefunden“ für Photovoltaik, Balkonkraftwerk und Wärmepumpe; Zuschuss nur Wohngeld, Förderprogramm nur Verwaltungs-IT und Breitband."
+      }
+    ],
+    "sources": [
+      {
+        "url": "zeulenroda-triebes.de/seite/880507/efre-f%C3%B6rderma%C3%9Fnahmen.html",
+        "disposition": "reviewed",
+        "reason": "EFRE-geförderte städtische Vorhaben.",
+        "evidenceUrl": "https://www.zeulenroda-triebes.de/seite/880507/efre-f%C3%B6rderma%C3%9Fnahmen.html"
+      },
+      {
+        "url": "zeulenroda-triebes.de/seite/880507/efre-f%C3%B6rderma%C3%9Fnahmen.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite.",
+        "evidenceUrl": "https://www.zeulenroda-triebes.de/seite/880507/efre-f%C3%B6rderma%C3%9Fnahmen.html"
+      },
+      {
+        "url": "zeulenroda-triebes.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Formular „Link verschicken“ des Seitenrahmens, keine Inhaltsseite; der Inhalt der Stadtseite wurde über ihre Suche vollständig abgedeckt.",
+        "evidenceUrl": "https://www.zeulenroda-triebes.de/suche/index.php?suchbegriff=Photovoltaik"
+      }
+    ]
+  },
+  {
+    "regionId": "16076092",
+    "name": "Auma-Weidatal",
+    "checkedAt": "2026-09-25T12:28:41Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Auma-Weidatal (Landkreis Greiz) führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Seite „Förderprogramme“ listet Förderprojekte der Stadt (Breitbandausbau, Gewässerentwicklung an der Auma, Vereinshaus Muntscha). Die Suche findet zu Balkonkraftwerk, Photovoltaik, Wärmepumpe und Solar nichts Eigenes, zu Zuschuss nur den Heizkostenzuschuss aus dem Härtefallfonds, die Dorfentwicklung und Fördervereine.",
+    "searches": [
+      "Suche rathaus-auma.de am 25.09.2026: Balkonkraftwerk, Photovoltaik — keine Treffer; Wärmepumpe, Solar — nur Firmeneintrag; Zuschuss → Heizkostenzuschuss Härtefallfonds, GEK Dorfentwicklung, Fördervereine; Förderprogramm → Förderprojekte, Breitband, kostenlose Webseiten für Einrichtungen"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rathaus-auma.de/seite/405095/f%C3%B6rderprogramme.html",
+        "finding": "Am 25.09.2026 gelesen: Förderprojekte der Stadt (Breitbandausbau mit Bundes- und Landesmitteln, Aktion Fluss an der Auma, Vitalisierung Vereinshaus Muntscha aus ELER); kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.rathaus-auma.de/suche/index.php?suchbegriff=Photovoltaik",
+        "finding": "Am 25.09.2026: „Leider keine Treffer gefunden“ für Photovoltaik und Balkonkraftwerk; Zuschuss nur Heizkostenzuschuss Härtefallfonds, Dorfentwicklung, Fördervereine."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rathaus-auma.de/seite/405095/f%C3%B6rderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Förderprojekte der Stadt, kein Zuschuss an Haushalte.",
+        "evidenceUrl": "https://www.rathaus-auma.de/seite/405095/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "rathaus-auma.de/seite/405095/f%C3%B6rderprogramme.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckansicht derselben Seite.",
+        "evidenceUrl": "https://www.rathaus-auma.de/seite/405095/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "rathaus-auma.de/contact/index/link",
+        "disposition": "replaced",
+        "reason": "Formular „Link verschicken“ des Seitenrahmens, keine Inhaltsseite; Inhalt über die Stadtsuche abgedeckt.",
+        "evidenceUrl": "https://www.rathaus-auma.de/suche/index.php?suchbegriff=Photovoltaik"
+      }
+    ]
   }
 ]
