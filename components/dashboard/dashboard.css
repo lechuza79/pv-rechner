@@ -151,3 +151,6 @@
 .sc-kpi-plot .sc-kpi-flag:after{left:clamp(6px,calc(var(--kpi-anchor) - 6px),calc(100% - 18px));}
 
 @container(min-width:851px){.sc-widget-grid>.sc-widget:has(.sc-share-donut){grid-column:span 2;}}
+/* Footer rows of an exportable widget (ExportableWidgetFrame). */
+.sc-widget-actions{padding:0 var(--widget-padding) var(--widget-padding);}
+.sc-widget-actions>div{margin-top:4px!important;}

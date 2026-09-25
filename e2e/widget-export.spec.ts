@@ -162,3 +162,38 @@ test.describe("Heizkosten-Rennen", () => {
     if (OUT_DIR) await download.saveAs(`${OUT_DIR}/heizkostenrennen-export.png`);
   });
 });
+
+// First visual of the central Atlas pipeline (template "anlagenraster"): the
+// monitor widget exports through the same registry footer, source edge and
+// capture as every other widget. Needs the prepared municipality package.
+test.describe("Gemeinde-Monitor: Anlagenraster", () => {
+  test("Download liefert ein Bild mit Zustand, Ort, Quelle und Marke, ohne Bedienung", async ({ page }) => {
+    await page.goto("/embed/gemeinde/09679202/monitor");
+    const widget = page.locator("article.sc-widget", { has: page.locator('svg[aria-label*="Ein Rechteck steht für"]') }).first();
+    await expect(widget).toBeVisible({ timeout: 60_000 });
+
+    // The period selector and the action row stay out of the image; the chosen state is text in it.
+    await expect(widget.locator("[data-sc-export-ignore]").first()).toBeAttached();
+    const exportOnly = widget.locator("[data-sc-export-only]");
+    await expect(exportOnly.filter({ hasText: "Anlagenbestand: Heute" })).toHaveCount(1);
+    // Nested export-only wrappers (padding frame + footer) both contain the note.
+    await expect(exportOnly.filter({ hasText: "Ort: Veitshöchheim" }).first()).toBeAttached();
+    await expect(exportOnly.first()).toBeHidden();
+
+    // Full attribution at the edge: provider, licence, change note, data date.
+    const kante = widget.locator('[title^="Quelle:"]');
+    await expect(kante).toContainText("Bundesnetzagentur");
+    await expect(kante).toContainText("dl-de/by-2-0");
+    await expect(kante).toContainText("Stand:");
+    // Default export palette: the widget opts into the brightest-stage rule.
+    await expect(widget).toHaveAttribute("data-sc-export-brightest", "");
+
+    const downloadPromise = page.waitForEvent("download");
+    await widget.getByTitle("Als Bild herunterladen").click();
+    const buf = await readFile((await (await downloadPromise).path())!);
+    expect(buf.byteLength).toBeGreaterThan(30_000);
+    expect(buf.subarray(1, 4).toString("ascii")).toBe("PNG");
+    expect(buf.readUInt32BE(16)).toBeGreaterThan(600);
+    if (OUT_DIR) await import("fs/promises").then((fs) => fs.writeFile(`${OUT_DIR}/gemeinde-anlagenraster.png`, buf));
+  });
+});

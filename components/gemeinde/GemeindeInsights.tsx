@@ -1,7 +1,8 @@
 'use client';
 import {IconChevronLeft,IconChevronRight,IconShare,IconPlay,IconPause,IconCopy,IconDownload,IconClose} from '../Icons';
-import {mitLizenzangaben,type DataSource} from '../../lib/data-sources';
-import {WIDGETS,widgetFuerMeldung} from '../../lib/widget-registry';
+import {mitLizenzangaben} from '../../lib/data-sources';
+import {EXPORT_BRIGHTEST_ATTR} from '../../lib/export-markers';
+import {WIDGETS,widgetFuerMeldung,type WidgetDef} from '../../lib/widget-registry';
 import {WidgetExportFooter,WidgetSourceEdge,SOURCE_EDGE_WIDTH} from '../WidgetExport';
 import {storyVisualTemplate,storyVisualTemplateDef} from '../../lib/story-approved-visual';
 import {useState,useEffect,useRef} from 'react';
@@ -146,16 +147,15 @@ function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose
 
 // Fit the whole original widget uniformly; its internal proportions stay untouched.
 /** Templates migrated to the shared export footer declare their sources in the template catalog. */
-function sharedExportSources(story:StoryConcept):DataSource[]|null{return storyVisualTemplateDef(storyVisualTemplate(story))?.sources??null;}
+/** Registry identity for templates migrated to the shared export pipeline; null keeps the legacy credit. */
+function storyExportWidget(story:StoryConcept):WidgetDef|null{const key=storyVisualTemplateDef(storyVisualTemplate(story))?.widget;return key?widgetFuerMeldung(WIDGETS[key],story.town,story.title):null;}
 /**
  * Image-only footer from the shared export pipeline: brand line + own licence
  * (WidgetExportFooter) and the vertical source edge with licence and data date
- * (WidgetSourceEdge), identity from the registry entry for municipal stories.
- * The place is the story's own municipality, not the hosting page.
+ * (WidgetSourceEdge). The place is the story's own municipality, not the host page.
  */
-function StoryExportFooter({story,sources}:{story:StoryConcept;sources:DataSource[]}){
- const widget={...widgetFuerMeldung(WIDGETS.gemeindeMeldung,story.town,story.title),sources};
- return <div className="story-export-shared" data-sc-export-only="block"><WidgetSourceEdge widget={widget} visible={false} stand={formatStoryDate(story.sourceDate??story.period)}/><WidgetExportFooter widget={widget} note={`Ort: ${story.town}`}/></div>;
+function StoryExportFooter({story,widget}:{story:StoryConcept;widget:WidgetDef}){
+ return <div className="story-export-shared" data-sc-export-only="block"><WidgetSourceEdge widget={widget} stand={formatStoryDate(story.sourceDate??story.period)}/><WidgetExportFooter widget={widget} note={`Ort: ${story.town}`}/></div>;
 }
 function StoryArtwork({story,visual,name,active}:any){
  const stage=useRef<HTMLDivElement>(null),canvas=useRef<HTMLDivElement>(null);
@@ -167,9 +167,12 @@ function StoryArtwork({story,visual,name,active}:any){
  // dann in einem Kasten, der für den Tagesverlauf gebaut war.
  const fit=()=>{const card=inner;if(!card)return;card.style.height='auto';const breite=outer.clientWidth,hoehe=outer.clientHeight;const eigen=card.firstElementChild as HTMLElement|null;const natur=eigen?.offsetHeight||card.offsetHeight||1;const faktor=Math.min(1,breite/(card.offsetWidth||breite),hoehe/natur);card.style.transform=`translate(-50%,-50%) scale(${faktor})`;};
  const observer=new ResizeObserver(fit);observer.observe(outer);if(inner.firstElementChild)observer.observe(inner.firstElementChild);fit();return()=>observer.disconnect();},[]);
- const shared=sharedExportSources(story);
- return <div className="story-artwork-stage" ref={stage}><div ref={canvas} className="story-export-card" data-sc-export-css={`position:${shared?'relative':'static'};transform:none;height:auto;min-height:0;background:#08191c;border-radius:12px;display:block;${shared?`padding-right:${SOURCE_EDGE_WIDTH+8}px;`:''}`} data-export-edge={shared?SOURCE_EDGE_WIDTH+8:undefined}>
- {visual(story,false,active&&foreground)}{shared?<StoryExportFooter story={story} sources={shared}/>:<div className="story-export-credit" data-sc-export-only="block">Solar Check · {name} · {formatStoryDate(story.sourceDate??story.period)}<br/>{mitLizenzangaben(story.sourceCaption??'Marktstammdatenregister · eigene Auswertung')}</div>}
+ const shared=storyExportWidget(story);
+ return <div className="story-artwork-stage" ref={stage}><div ref={canvas} className="story-export-card" data-sc-export-css={shared
+  // Migrated: default export palette (brightest stage; light Atlas scheme via EXPORT_BRIGHTEST_ATTR), source edge outside the story width.
+  ?`position:relative;transform:none;height:auto;min-height:0;background:var(--color-bg-page);border-radius:12px;display:block;padding-right:${SOURCE_EDGE_WIDTH+8}px;`
+  :'position:static;transform:none;height:auto;min-height:0;background:#08191c;border-radius:12px;display:block;'} data-export-edge={shared?SOURCE_EDGE_WIDTH+8:undefined} {...(shared?{[EXPORT_BRIGHTEST_ATTR]:''}:{})}>
+ {visual(story,false,active&&foreground)}{shared?<StoryExportFooter story={story} widget={shared}/>:<div className="story-export-credit" data-sc-export-only="block">Solar Check · {name} · {formatStoryDate(story.sourceDate??story.period)}<br/>{mitLizenzangaben(story.sourceCaption??'Marktstammdatenregister · eigene Auswertung')}</div>}
  </div></div>;
 }
 function VisibleWidget({story,visual,enabled}:any){

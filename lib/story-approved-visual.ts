@@ -2,7 +2,7 @@ import type {StoryConcept} from './story-konzepte';
 import type {PostBild} from './social-posts';
 import {BILDFORMEN,TEMPLATES} from './social-bildformen';
 import type {WidgetKind} from './dashboard/model';
-import {DATA_SOURCES,type DataSource} from './data-sources';
+import {WIDGETS} from './widget-registry';
 
 /** Reuse approved forms only when the original form rules accept the data. */
 export function approvedStoryVisual(story:StoryConcept):PostBild|null {
@@ -35,17 +35,17 @@ export function approvedStoryVisual(story:StoryConcept):PostBild|null {
 /**
  * One catalog of visual templates: gallery choices, readiness, and the monitor
  * role (widget title + layout kind) for templates that appear as monitor widgets.
- * `sources` marks templates whose exported image uses the shared export footer
- * (registry brand, own licence, vertical source edge); the rest still carry the
- * story reader's legacy credit line until they are migrated.
+ * `widget` names the widget-registry entry (identity, sources, share target) and
+ * marks templates migrated to the shared export pipeline; the rest still carry
+ * the story reader's legacy credit line until they are migrated.
  */
-export type StoryVisualTemplate={id:string;name:string;monitor?:{title?:string;kind:WidgetKind};sources?:DataSource[]};
+export type StoryVisualTemplate={id:string;name:string;monitor?:{title?:string;kind:WidgetKind};widget?:keyof typeof WIDGETS};
 export const STORY_VISUAL_TEMPLATES:StoryVisualTemplate[]=[
  {id:'verlauf',name:'Monatlicher Zubau · Verlauf',monitor:{title:'Zubau pro Monat',kind:'time-series'}},
  {id:'electricity-value',name:'Kennzahl · Stromwert',monitor:{title:'Wert des Solarstroms',kind:'number'}},
  {id:'feed-in-value',name:'Kennzahl · Einspeisevergütung',monitor:{title:'Einspeisevergütung',kind:'number'}},
  // Monitor title derives from the selected category (see monitorWidgetRole).
- {id:'anlagenraster',name:'Anlagenraster + Leistungsanteil',monitor:{kind:'composition'},sources:[DATA_SOURCES.mastr]},
+ {id:'anlagenraster',name:'Anlagenraster + Leistungsanteil',monitor:{kind:'composition'},widget:'gemeindeAnlagenraster'},
  {id:'saeule',name:'Säulen'},
  {id:'umriss',name:'Gefüllte Umrisse'},
  {id:'anteilsdonut',name:'Anteilsdonut',monitor:{title:'Installierte Solarleistung nach Anlagentyp',kind:'donut'}},

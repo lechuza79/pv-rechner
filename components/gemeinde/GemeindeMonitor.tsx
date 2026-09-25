@@ -10,7 +10,9 @@
 import ZubauChart from "../atlas/ZubauChart";
 import { useEffect, useRef, useState } from "react";
 import {MonitorCompositionChart} from "../charts/CompositionChart";
-import { monitorWidgetRole } from "../../lib/story-approved-visual";
+import { monitorWidgetRole, storyVisualTemplateDef } from "../../lib/story-approved-visual";
+import { WIDGETS } from "../../lib/widget-registry";
+import { ExportableWidgetFrame } from "../dashboard/ExportableWidgetFrame";
 import { MonitorAnnualEnergyChart } from "./MonitorAnnualEnergyChart";
 import { MonitorMonthlySolarChart } from "./MonitorMonthlySolarChart";
 import { MunicipalChart } from "../social/MunicipalChart";
@@ -206,8 +208,16 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
         }
       : item.story;
   const assumptionDate = periods.valuationAssumptionDate ? formatDate(periods.valuationAssumptionDate) : null;
+  // Visuals migrated to the shared export pipeline name their registry entry in the template catalog.
+  const exportKey = storyVisualTemplateDef(item.template)?.widget;
+  const periodLabel = period === "current" ? "Heute" : new Date(period + "T12:00:00").toLocaleDateString("de-DE", { month: "long", year: "numeric" });
+  const Frame = (exportKey ? ExportableWidgetFrame : WidgetFrame) as typeof WidgetFrame;
+  const exportProps = exportKey
+    ? { widget: WIDGETS[exportKey], place: paket.name, stand: formatDate(selected?.end ?? paket.registerStand), stateLabel: `Anlagenbestand: ${periodLabel}`, filename: `solar-check-${item.template}-${paket.ags}` }
+    : {};
   return (
-    <WidgetFrame
+    <Frame
+      {...exportProps}
       title={role.title}
       kind={role.kind}
       className={chart.visualTheme}
@@ -282,7 +292,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
           )}
         </div>
       )}
-    </WidgetFrame>
+    </Frame>
   );
 }
 

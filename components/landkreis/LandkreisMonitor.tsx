@@ -9,13 +9,15 @@ import {CurrentPower,AnnualGrowth} from "../gemeinde/GemeindeMonitor";
 import {MonitorCompositionChart} from "../charts/CompositionChart";
 import {ShareDonut} from "../charts/ShareDonut";
 import {WidgetFrame} from "../dashboard/WidgetFrame";
+import {ExportableWidgetFrame} from "../dashboard/ExportableWidgetFrame";
+import {WIDGETS} from "../../lib/widget-registry";
 import styles from "./landkreis.module.css";
 import foundation from "../social/atlas-foundations.module.css";
 import {SEGMENT_OWNER, type ChildYearRow} from "../../lib/atlas";
 import {dashboardDate} from "../../lib/dashboard/format";
 
 /** District register totals, using the municipality monitor's existing widgets. */
-export default function LandkreisMonitor({cells,stand,monitor,population,populationStand,regionId}:{regionId:string;cells:ChildYearRow[];stand:string;monitor:DistrictMonitorResult & {energy:DistrictEnergy|null};population:number|null;populationStand:string|null}) {
+export default function LandkreisMonitor({cells,stand,monitor,population,populationStand,regionId,name}:{regionId:string;name:string;cells:ChildYearRow[];stand:string;monitor:DistrictMonitorResult & {energy:DistrictEnergy|null};population:number|null;populationStand:string|null}) {
   const weatherSource=useMemo(()=>({load:async()=>{const response=await fetch(`/api/landkreis/solartag?ags=${encodeURIComponent(regionId)}`);if(!response.ok)throw new Error('District weather unavailable');return response.json();}}),[regionId]);
   const solar=cells.filter(row=>SEGMENT_OWNER[row.segment]!=null&&!row.segment.startsWith("batterie"));
   const years=[...new Set(solar.map(row=>row.year))].sort((a,b)=>a-b).map(year=>({year,count:solar.filter(row=>row.year===year).reduce((sum,row)=>sum+row.count,0)}));
@@ -32,7 +34,7 @@ export default function LandkreisMonitor({cells,stand,monitor,population,populat
       <AnnualGrowth years={years} stand={stand}/>
       <DistrictEnergyWidgets data={monitor.energy}/>
       <WidgetFrame title="Installierte Solarleistung nach Anlagentyp" kind="donut" help={<p>Summe der heute im Landkreis erfassten Solaranlagen. Batteriespeicher zählen nicht zur Solarleistung. Registerstand: {dashboardDate(stand)}.</p>}><ShareDonut values={groups}/></WidgetFrame>
-      {groups.map(group=><WidgetFrame key={group.label} title={group.label} kind="composition"><div className="monitor-widget-body"><MonitorCompositionChart story={{countComparison:{total,selected:group.count,label:group.label},values:[{label:group.label,value:group.count},{label:"Anteil an der Solarleistung",value:power?group.value/power*100:0}]}}/></div></WidgetFrame>)}
+      {groups.map(group=><ExportableWidgetFrame key={group.label} title={group.label} kind="composition" data-story-scheme="dark" widget={WIDGETS.gemeindeAnlagenraster} place={name} stand={dashboardDate(stand)} filename={`solar-check-anlagenraster-${regionId}`}><div className="monitor-widget-body"><MonitorCompositionChart story={{countComparison:{total,selected:group.count,label:group.label},values:[{label:group.label,value:group.count},{label:"Anteil an der Solarleistung",value:power?group.value/power*100:0}]}}/></div></ExportableWidgetFrame>)}
     </div>
   </div>;
 }

@@ -117,33 +117,33 @@ Steps:
 Ownership: Claude implements and verifies (tests, rendered comparisons); Codex/root
 reviews visual fidelity against the approved design; operator decides design questions only.
 
-## 4b. Slice result: `anlagenraster` (25.09.2026)
+## 4b. Slice result: `anlagenraster` (25.09.2026, second round)
 
 - One renderer `components/charts/CompositionChart.tsx`, layouts `monitor` and `story`
-  (+`compact`), each with its own accepted stylesheet. Monitor and story now draw the
-  same cells and the same arc for the same data (test).
-- Monitor title/kind come from `STORY_VISUAL_TEMPLATES` (`monitorWidgetRole`); the
-  separate map in the monitor is gone. `sources` on a template = migrated to the shared
-  export footer.
-- Story reader PNG for migrated templates: `WidgetExportFooter` (brand line, CC BY 4.0,
-  note "Ort: <municipality>") + `WidgetSourceEdge` (full attribution incl.
-  Bundesnetzagentur, licence, data date) via registry entry `gemeindeMeldung`. Legacy
-  credit stays for not yet migrated templates. The old credit named the HOST page
-  (e.g. "Landkreis Würzburg" on a Bütthard story); the footer names the story's town.
-- Rendered comparison (frozen live packages, before = b156cfbe): municipality monitor
-  1440/375, district monitor 1440/375, story reader and teasers pixel-identical
-  (≤4 px / carousel motion); only the exported PNG changes (footer + edge added,
-  story width unchanged).
-- Not covered: editorial V2 page could not be rendered (admin session needs the
-  service key; reading `.env*` is blocked in this session). Code path is the same
-  (`StoryConceptLab → MunicipalChart → ApprovedStoryVisual → CompositionChart`).
-- Found, not changed: the homepage story strip loads a prebuilt bundle
-  (`public/homepage-study/story-dist`) with its own compiled copy of these charts —
-  a further duplicate for stage 6; district composition widget titles use the bare
-  category label, municipality adds ": Anteil an Anzahl und Leistung".
-- Story PNG remains dark, as before this slice (hard-coded card background): the
-  brightest-stage default is not applied to atlas story images today. Unchanged here;
-  needs a user decision if it should change.
+  (+`compact`), each with its own accepted stylesheet; same cells and arc for the same data.
+- One identity: widget-registry entry `gemeindeAnlagenraster`; the template catalog
+  (`STORY_VISUAL_TEMPLATES`) names it (`widget`) and carries the monitor title/kind.
+  A template with `widget` is migrated; others keep the story reader's legacy credit.
+- Monitor share/download: `components/dashboard/ExportableWidgetFrame.tsx` wraps the
+  existing `WidgetFrame` with the existing `WidgetFooter` (on-site, no CTA),
+  `ExportNotesProvider`, `WidgetSourceEdge`, `WidgetExportFooter` and `useChartExport`
+  (mode node). Selector ExportIgnore'd, chosen state printed as text. Municipality and
+  district monitors.
+- Export palette: default = brightest (rule unchanged). Atlas tokens have their own
+  light scheme; `EXPORT_BRIGHTEST_ATTR` on the exported widget + `EXPORT_CAPTURE_ATTR`
+  on the capture wrapper make the dark Atlas rule yield inside captures only
+  (`:where(:not(...))`, specificity unchanged — a bare `:not` changed the live story
+  teaser). Story card export background uses the stage token `--color-bg-page`.
+- Evidence: `/tmp/atlas-regions-evidence/` (capture-script.mjs, slice-before = b156cfbe,
+  slice-after = this state, same packages, same dev server). Live: reader and teasers
+  pixel-identical; monitors identical above the new action row. Exports: four light PNGs.
+- Tests: composition-arc (layouts, identical data), export-brightest-scheme (specificity +
+  capture marker; two sabotages red), e2e widget-export "Gemeinde-Monitor: Anlagenraster"
+  (sabotage without the brightest marker red), landkreis-vorschau arc assertion updated
+  (it asserted the pre-arc round-cap circle).
+- Not covered: editorial V2 page not rendered (admin session needed; see status file).
+- Found for later stages: homepage story strip uses a prebuilt bundle with its own chart
+  copies; legacy (not yet migrated) story PNGs stay dark until migrated.
 
 ## 5. Open decisions for root / operator
 

@@ -205,7 +205,5 @@
    Maus und Tastatur nicht erreichbar. */
 .story-strip-verdeckt { visibility: hidden }
 
-/* Shared export footer on the dark story card: the export wrapper sets the
-   brightest-stage site tokens; map the ones the footer reads to the colours of
-   the legacy credit line so the text stays readable on this card. */
-.story-export-shared{display:none;box-sizing:border-box;padding:0 20px 20px;--color-text-muted:#a7bcbb;--color-text-faint:#a7bcbb;--color-text-secondary:#dfe8e6;--color-bg-muted:#123034;--color-accent:#d4ff24}
+/* Shared export footer (migrated templates): hidden on the page, spacing only; colours come from the export palette. */
+.story-export-shared{display:none;box-sizing:border-box;padding:0 20px 20px}

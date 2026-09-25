@@ -225,7 +225,8 @@ test('district chart proportions and source footer remain responsive',async({pag
   await legend.scrollIntoViewIfNeeded();
   await expect.poll(()=>legend.evaluate(e=>getComputedStyle(e).gridTemplateColumns.split(' ').length)).toBe(3);
   const composition=page.locator('#atlas-data [data-widget-kind="composition"]');
-  await expect(composition.locator('circle[stroke-linecap="round"]')).toHaveCount(3);
+  // One shared arc per composition (flat start, rounded end; components/charts/CompositionArc).
+  await expect(composition.locator('[data-composition-arc]')).toHaveCount(3);
   const art=page.locator('#atlas-foerderung solar-illustration');
   await art.scrollIntoViewIfNeeded();
   await expect.poll(()=>art.evaluate(e=>!!e.shadowRoot?.querySelector('svg'))).toBe(true);

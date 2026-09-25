@@ -15,7 +15,7 @@
 //    dropped from the snapshot.
 
 import { domToBlob } from 'modern-screenshot';
-import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from './export-markers';
+import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR, EXPORT_CAPTURE_ATTR, EXPORT_BRIGHTEST_ATTR } from './export-markers';
 import { tokens, TokenName, stageDefaults, STAGE_COUNT } from './theme';
 import { brandLabel, type WidgetKind } from './widget-registry';
 import { widgetVarsAusTokens } from './widget-theme';
@@ -23,7 +23,7 @@ import { widgetVarsAusTokens } from './widget-theme';
 // Die Marker-Konstanten leben in lib/export-markers.ts (ohne Abhängigkeiten) und
 // werden hier nur weitergereicht: Wer nur einen Marker braucht, soll nicht
 // modern-screenshot mitladen müssen.
-export { EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR, EXPORT_CSS_ATTR };
+export { EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR, EXPORT_CSS_ATTR, EXPORT_CAPTURE_ATTR, EXPORT_BRIGHTEST_ATTR };
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -532,6 +532,7 @@ export async function captureNodeToBlob(
   wrapper.style.cssText =
     'position:fixed;top:0;left:-100000px;pointer-events:none;opacity:1;';
   applyBrightestStage(wrapper);
+  wrapper.setAttribute(EXPORT_CAPTURE_ATTR, '');
   const clone = node.cloneNode(true) as HTMLElement;
   applyExportMarkers(clone);
   // Links aren't clickable in a PNG — drop underlines so credits read as plain

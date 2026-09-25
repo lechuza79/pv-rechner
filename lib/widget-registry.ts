@@ -335,6 +335,26 @@ export const WIDGETS = {
     // Fällt weg, sobald die Route steht.
     embeddable: false,
   },
+  gemeindeAnlagenraster: {
+    // Template "anlagenraster" (lib/story-approved-visual.ts): count grid plus
+    // capacity share of one installation category, in the municipality and
+    // district monitor and in stories. One identity for monitor export, story
+    // export and later embeds.
+    id: "gemeinde-anlagenraster",
+    title: "Anteil einer Anlagenart an Anzahl und Solarleistung",
+    kind: "chart",
+    exampleParams: { ags: BEISPIEL_GEMEINDE },
+    place: {
+      title: "Anteil an Anzahl und Solarleistung in {ort}",
+      shareText: "Wie viele Anlagen, wie viel Leistung: Solaranlagen nach Art in {ort} – Solar Check",
+    },
+    shareUrl: `${SITE}/solar-atlas`,
+    shareText: "Solaranlagen nach Art: Anteil an Anzahl und Leistung – Solar Check",
+    sources: [DATA_SOURCES.mastr],
+    cta: { label: "Eigenes Dach durchrechnen", href: "/photovoltaik-rechner" },
+    // No /embed route yet; the entry carries the export footer of monitor and story.
+    embeddable: false,
+  },
   regionAnlagentyp: {
     id: "region-anlagentyp",
     title: "Solarleistung eines Bundeslands nach Anlagentyp",
