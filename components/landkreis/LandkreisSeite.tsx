@@ -4,6 +4,7 @@ import DataSourcesSection from '../DataSourcesSection';
 import Script from 'next/script';
 import DistrictRaceWidget from "./DistrictRaceWidget";
 import {loadDistrictContent,type DistrictContent} from "../../lib/district-monitor-server";
+import {districtSolarCells} from "../../lib/district-monitor";
 import {isDistrictMember} from "../../lib/district-package";
 import LandkreisMonitor from "./LandkreisMonitor";
 import Header from "../SharedSiteHeader";
@@ -13,6 +14,7 @@ import foundation from "../social/atlas-foundations.module.css";
 import type { Crumb } from "../Breadcrumb";
 import AtlasBreadcrumb from "../gemeinde/AtlasBreadcrumb";
 import RankingTable from "../atlas/RankingTable";
+import LazyDisclosure from "./LazyDisclosure";
 import { DataSourceNote } from "../PoweredBy";
 import { DATA_SOURCES } from "../../lib/data-sources";
 import { foldSiblings, lastFullYear, type AtlasRegion, type AtlasChild, type RankingRegion, type ChildYearRow } from "../../lib/atlas";
@@ -69,6 +71,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     const year = 2000 + index;
     return {year, sums: Object.fromEntries(foldSiblings(ranking.regions, ranking.cells.filter(cell => cell.year <= year)).map(row => [row.region_id, row.sums]))};
   });
+  const townIds = new Set(towns.map(t => t.region_id));
   const missingGeometry = places.filter(p => !shapes.some(s => s.id === p.id));
   const content=loadDistrictContent(region.region_id,towns.map(t=>t.region_id),stand);
   return <><main className={`solar-page ${variant === "dark" ? foundation.foundation : ""} ${styles.page} ${variant ? styles.cutVariant : ""} ${variant === "dark" ? styles.darkVariant : ""}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
@@ -110,11 +113,12 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
         rows={towns.map(town=>({id:town.region_id,name:town.name,href:town.slug?`${basePath}/${town.slug}`:null,value:sums.get(town.region_id)?.count??0}))}
         history={rankingHistory.map(frame=>({year:frame.year,rows:towns.map(town=>({id:town.region_id,value:frame.sums[town.region_id]?.alle.count??0}))}))}/>
     </section>
-    <details className={`${styles.section} ${styles.tableDisclosure}`}><summary>Alle Gemeinden in der ausführlichen Tabelle</summary>
+    <LazyDisclosure className={`${styles.section} ${styles.tableDisclosure}`} summary="Alle Gemeinden in der ausführlichen Tabelle"
+      closed={<ul>{places.filter(p=>p.href).map(p=><li key={p.id}><a href={p.href!}>{p.name}</a></li>)}</ul>}>
       <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Im Vergleich</p><h2>Die Gemeinden im Ranking</h2></div></div>
       <RankingTable regions={ranking.regions} cells={ranking.cells} basePath={basePath} lastFullYear={lastFullYear()} popInMillions={false} />
-    </details>
-    <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2><Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><DistrictMonitorSection content={content} regionId={region.region_id} population={region.population} populationStand={region.population_as_of} cells={ranking.cells.filter(c=>towns.some(t=>t.region_id===c.region_id))} stand={stand}/></Suspense></section>
+    </LazyDisclosure>
+    <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2><Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><DistrictMonitorSection content={content} regionId={region.region_id} population={region.population} populationStand={region.population_as_of} cells={districtSolarCells(ranking.cells.filter(c=>townIds.has(c.region_id)))} stand={stand}/></Suspense></section>
     <section className={`${styles.fundingSection} ${foundation.foundation}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
       <GemeindeFoerderung praeposition={ortPraeposition(region.name)} ort={region.name} programme={foerderProgramme}/>
     </section>

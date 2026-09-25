@@ -270,3 +270,21 @@ generations referenced by the current and the previous pointer are kept.
 the running deployment keeps reading its generation while the push-triggered run
 builds the new one; the new deployment shows "being recalculated" until that run
 invalidates the district pages.
+
+### Page weight (25 September 2026)
+
+After the package change, cold renders were still 1.5–3.3 s live because the page
+itself was 3.5–5.9 MB of HTML. Three duplications removed, nothing visible changed:
+- The full ranking table inside the CLOSED disclosure is rendered only once opened
+  (`LazyDisclosure`, the mount-on-open pattern of the result sections). Closed, the
+  server sends a plain list of the municipality links, so every town page stays
+  linked for crawlers and readers without JavaScript. Opened before hydration is
+  caught on mount.
+- The drawn fallback map is rendered only when the 3D scene fails; before, it was
+  server-rendered and hidden on every page (0.9 MB for the Eifelkreis). A browser
+  test forces the WebGL failure.
+- The monitor receives district totals per year and segment
+  (`districtSolarCells`) instead of every municipality's cells.
+Eifelkreis: markup 3.46 → 0.98 MB, total HTML 5.87 → 3.22 MB, 233 town links kept;
+visible text identical except the corrected municipality count. Remaining payload
+is the serialized map geometry for the 3D scene and the ranking table's data.

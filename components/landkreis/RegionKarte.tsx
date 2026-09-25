@@ -82,7 +82,10 @@ export default function RegionKarte({ shapes, metrics }: {
       <WidgetSetting label="Kennzahl der Karte" hideLabel size="md" stepper loop stepLabels={{previous:"Vorheriger Eintrag",next:"Nächster Eintrag"}} options={metrics.map(m=>({value:m.id,label:m.label}))} value={metricId} onChange={setMetricId}/>
     </div>
     <div className={styles.mapCanvas} data-map-canvas onPointerMove={event=>setPointer({x:event.clientX,y:event.clientY})} onPointerLeave={() => setHovered(null)}>
-    <div className={styles.mapFallback} hidden={!sceneFailed}>
+    {/* Drawn only when the 3D scene fails. It used to be server-rendered and
+        hidden on every page: 0.9 MB of duplicated boundary paths for the
+        Eifelkreis, never shown while the scene works. */}
+    {sceneFailed && <div className={styles.mapFallback}>
     <svg viewBox={shapes.length ? `${left} ${top} ${right-left} ${bottom-top}` : "0 0 1000 660"} role="img" aria-label={`${metric} auf der Karte. Gebiete und Werte stehen auch in der Gemeindeübersicht.`}>
       <g className={styles.mapBase}>
         {shapes.map(s => <path key={s.id} d={s.sidePath} fillRule="nonzero" data-forest={s.kind === "Gemeindefreies Gebiet"} />)}
@@ -118,7 +121,7 @@ export default function RegionKarte({ shapes, metrics }: {
         </g>)}
       </g>
     </svg>
-    </div>
+    </div>}
     <RegionScene heightEnvelope={heightEnvelope} shapes={shapes} values={values} selected={selected} hovered={hovered} onHover={setHovered} onSelect={openPlace} onReady={ready=>setSceneFailed(!ready)} />
     {hoverShape && createPortal(<div ref={tooltip} role="tooltip" className={styles.mapTooltip} style={flagPosition}>
       <strong>{hoverShape.name}</strong>

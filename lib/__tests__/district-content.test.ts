@@ -15,6 +15,7 @@ const fetchMock=vi.hoisted(()=>vi.fn(async(url:string)=>{
 vi.stubGlobal('fetch',fetchMock);
 process.env.SUPABASE_URL='https://x.supabase.co';process.env.SUPABASE_SERVICE_KEY='k';
 import {loadDistrictContent,preparedState} from '../district-monitor-server';
+import {districtSolarCells} from '../district-monitor';
 
 const packet=(ags:string,stand='2026-09-10')=>({ags,name:ags,registerStand:stand,district:{peers:[],districtPeers:[]},stories:[{kind:'bar',label:'L'+ags,town:ags,title:'T'}],register:{own:{sums:{alle:{kwp:100}}}},monitorHistory:null,monitorPeriods:null}) as unknown as GemeindePaket;
 const members=['07339001','07339002'];
@@ -96,5 +97,20 @@ describe('page reader',()=>{
   it('propagates storage failures instead of answering "unavailable"',async()=>{
     objects.set(DISTRICT_POINTER_PATH,new Error('down'));
     await expect(loadDistrictContent('07339',members,'2026-09-09')).rejects.toThrow('HTTP 503');
+  });
+});
+
+describe('monitor totals summed on the server',()=>{
+  it('yield the same year and segment totals as the raw municipality cells',()=>{
+    const segs=['privat_dach','gewerbe_dach','steckersolar','freiflaeche','batterie_privat'];
+    const raw=Array.from({length:233},(_,t)=>segs.flatMap((segment,si)=>Array.from({length:27},(_,y)=>({region_id:`07232${String(t).padStart(3,'0')}`,segment,year:2000+y,count:(t*7+si*3+y)%11,kwp:((t+1)*(si+2)*(y+3))%97/7,kwh:(t*si+y)%13/3})))).flat();
+    const summed=districtSolarCells(raw);
+    expect(summed.length).toBe(segs.length*27);
+    const by=(rows:typeof raw,f:(r:typeof raw[number])=>string)=>{const m=new Map<string,{c:number;k:number;h:number}>();for(const r of rows){const x=m.get(f(r))??{c:0,k:0,h:0};x.c+=r.count;x.k+=r.kwp;x.h+=r.kwh;m.set(f(r),x);}return m;};
+    for(const key of [(r:typeof raw[number])=>String(r.year),(r:typeof raw[number])=>r.segment,(r:typeof raw[number])=>`${r.year}|${r.segment}`]){
+      const a=by(raw,key),b=by(summed,key);
+      expect([...b.keys()].sort()).toEqual([...a.keys()].sort());
+      for(const [k,v] of a){expect(b.get(k)!.c).toBe(v.c);expect(b.get(k)!.k).toBeCloseTo(v.k,6);expect(b.get(k)!.h).toBeCloseTo(v.h,6);}
+    }
   });
 });

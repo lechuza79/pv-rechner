@@ -237,3 +237,23 @@ test('district chart proportions and source footer remain responsive',async({pag
   await expect(art).toBeHidden();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(451);
 });
+
+test('without WebGL the district map falls back to the drawn map with every municipality',async({page})=>{
+  test.setTimeout(120000);
+  // The fallback is no longer server-rendered (it was 0.9 MB of hidden paths on every
+  // page); it must still appear when the 3D scene cannot start.
+  await page.addInitScript(()=>{
+    const original=HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext=function(this:HTMLCanvasElement,type:string,...rest:unknown[]){
+      if(/webgl/i.test(type))return null;
+      return (original as (...a:unknown[])=>unknown).call(this,type,...rest);
+    } as typeof original;
+  });
+  await page.goto(route,{waitUntil:'domcontentloaded'});
+  const fallback=page.locator('[data-map-canvas] svg[role="img"]');
+  await expect(fallback).toBeVisible({timeout:30000});
+  await expect(fallback.locator('path[data-region]')).not.toHaveCount(0);
+  const regions=await fallback.locator('path[data-region]').count();
+  expect(regions).toBeGreaterThanOrEqual(52); // Landkreis Würzburg: 52 municipalities plus context areas
+  await expect(page.locator('[data-region-scene]')).toBeHidden();
+});

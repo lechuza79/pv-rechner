@@ -40,3 +40,21 @@ export function aggregateDistrictMonitor(ids:string[],packets:(DistrictMonitorPa
   }
   return {status:'ready',registerStand:stand,history:{method,observations}};
 }
+
+type YearCell = {region_id:string;segment:string;year:number;count:number;kwp:number;kwh:number};
+/**
+ * The district monitor only needs totals per year and segment. Sending every
+ * municipality's cells to the client doubled the ranking table's data in the
+ * page payload (0.23 MB for the Eifelkreis). Same rows, summed server-side;
+ * lib/__tests__/district-content.test.ts checks every derived total is unchanged.
+ */
+export function districtSolarCells<T extends YearCell>(cells:T[]):YearCell[] {
+  const sum=new Map<string,YearCell>();
+  for(const c of cells){
+    const key=`${c.year}|${c.segment}`;
+    const row=sum.get(key)??{region_id:'',segment:c.segment,year:c.year,count:0,kwp:0,kwh:0};
+    row.count+=c.count;row.kwp+=c.kwp;row.kwh+=c.kwh;
+    sum.set(key,row);
+  }
+  return [...sum.values()];
+}
