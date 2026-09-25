@@ -13719,6 +13719,37 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // ─── Aufgenommen am 25.09.2026: Donauwörth, beendetes Programm ─────────────
+  //
+  // Found in the source queue (document page "Förderung Kleinstphotovoltaik –
+  // Antrag"). Ended — added anyway, "existed, has ended" is real information
+  // (operator, 17.08.2026). Evidence, read at the source: the application
+  // form behind the document page is filed as "Programm_abgelaufen" (24.09.
+  // and 25.09.2026), and the city's funding overview (read 25.09.2026) lists
+  // only cargo bikes, green roofs, cisterns and unsealing — no small PV. The
+  // amounts are those of that form (37.50 € for one module, 75 € for two);
+  // local press once reported 100/200 €, which is not the form we read and
+  // does not stand here. The END DATE is not published, so no endetIso.
+  "donauwoerth-kleinst-pv": {
+    id: "donauwoerth-kleinst-pv", name: "Förderung Kleinst-Photovoltaikanlage",
+    traeger: "Große Kreisstadt Donauwörth", level: "kommune", region: "Donauwörth",
+    bundesland: "Bayern", agsCode: "09779131",
+    url: "https://www.donauwoerth.de/dokumente/foerderung-kleinstphotovoltaik-antrag",
+    stand: "September 2026", status: "eingestellt", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschaler Zuschuss je Balkonkraftwerk — Programm beendet",
+    rates: [
+      { label: "Balkonkraftwerk mit einem Modul (ca. 300 W)", value: "37,50 € — Programm beendet" },
+      { label: "Balkonkraftwerk mit zwei Modulen (bis 600 W)", value: "75 € — Programm beendet" },
+    ],
+    conditions: [
+      "Die Stadt führt das Antragsformular als abgelaufen; in ihrer Förderübersicht steht die Förderung nicht mehr",
+      "Gefördert wurden Anlagen, die nach dem 22. Juli 2022 gekauft wurden, auf Antrag vor der Bestellung; berechtigt waren Eigenheimbesitzer und Mieter, nicht institutionelle Vermieter",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+  },
+
   // ─── Aufgenommen am 24.09.2026: VG Bad Kreuznach, beendetes Programm ───────
   //
   // Gefunden als Nebenbefund beim Abschluss der VG Rüdesheim (Websuche nach

@@ -61696,5 +61696,94 @@
         "evidenceUrl": "https://www.asbach-baeumenheim.de/de/rund-um-asbach-baeumenheim/foerderprogramme/index.php?id=529"
       }
     ]
+  },
+  {
+    "regionId": "09779131",
+    "name": "Donauwörth",
+    "checkedAt": "2026-09-25T05:20:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Ein Programm im Umfang, als beendet aufgenommen: „Förderung Kleinst-Photovoltaikanlage“ (donauwoerth-kleinst-pv) — 37,50 € (ein Modul) bzw. 75 € (zwei Module) für Balkonkraftwerke; Formular als abgelaufen geführt, in der städtischen Förderübersicht nicht mehr enthalten. Kein laufender Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen; der Landkreis hat kein eigenes Programm.",
+    "searches": [
+      "Antragsformular Kleinst-PV im Volltext gelesen (24.09.2026, Datei „Programm_abgelaufen“)",
+      "Förderübersicht „Umwelt & Energie – Förderungen“ der Stadt gelesen (25.09.2026)",
+      "Websuche nach Laufzeit und Beträgen (25.09.2026): Presse nennt andere Beträge früherer Runden, kein Enddatum veröffentlicht"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.donauwoerth.de/dokumente/foerderung-kleinstphotovoltaik-antrag",
+        "finding": "Formular als „Programm_abgelaufen“ verlinkt: „Kleinst-PV-Anlage mit 1 Modul, ca. 300 W (AC), 37,50 € … mit 2 Modulen, ≤ 600 W (AC), 75 €“."
+      },
+      {
+        "url": "https://www.donauwoerth.de/museen/kaethe-kruse-puppen-museum/foerderungen-patenprojekt",
+        "finding": "Patenschaften für das Käthe-Kruse-Puppenmuseum, kein Energiebezug."
+      },
+      {
+        "url": "https://www.donauwoerth.de/stadtbibliothek/lesefoerderung",
+        "finding": "Leseförderung, kein Energiebezug."
+      },
+      {
+        "url": "https://www.donauwoerth.de/leben-in-donauwoerth/umwelt-und-energie/foerderungen/antrag-und-infos-kleinst-photovoltaik",
+        "finding": "Am 25.09.2026 gelesen: städtische Förderungen nur noch Lastenräder, Gründach/Fassadenbegrünung, Zisternen, Entsiegelung; Balkonkraftwerke nur als allgemeiner Tipp ohne Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "donauwoerth.de/dokumente/foerderung-kleinstphotovoltaik-antrag",
+        "disposition": "reviewed",
+        "reason": "Antragsformular Kleinst-PV — als beendetes Programm aufgenommen.",
+        "evidenceUrl": "https://www.donauwoerth.de/dokumente/foerderung-kleinstphotovoltaik-antrag"
+      },
+      {
+        "url": "donauwoerth.de/museen/kaethe-kruse-puppen-museum/foerderungen-patenprojekt",
+        "disposition": "reviewed",
+        "reason": "Patenprojekt des Puppenmuseums — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.donauwoerth.de/museen/kaethe-kruse-puppen-museum/foerderungen-patenprojekt"
+      },
+      {
+        "url": "donauwoerth.de/stadtbibliothek/lesefoerderung",
+        "disposition": "reviewed",
+        "reason": "Leseförderung der Stadtbibliothek — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.donauwoerth.de/stadtbibliothek/lesefoerderung"
+      }
+    ]
+  },
+  {
+    "regionId": "09779186",
+    "name": "Monheim",
+    "checkedAt": "2026-09-25T05:20:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Monheim (Landkreis Donau-Ries). Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte: Die Förderseite der Stadt führt Regenwasserzisternen, Fassaden in der Altstadt, Gebäudeabbruch sowie Landes- und KfW-Programme; der Landkreis hat kein eigenes Programm.",
+    "searches": [
+      "Förderübersicht der Stadt gelesen (25.09.2026)",
+      "Meldung zum städtischen Förderprogramm gelesen (25.09.2026)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.monheim-bayern.de/foerderprogramme",
+        "finding": "Am 25.09.2026 gelesen: Regenwasserzisternen, Fassadeninstandsetzung Altstadt, Gebäudeabbruch, Denkmalpflege, Wohnraumförderung Bayern, KfW — keine Förderung für PV, Speicher, Balkonkraftwerke oder Wärmepumpen."
+      },
+      {
+        "url": "https://www.monheim-bayern.de/aktuelles/foerderprogramm_der_stadt_monh-1079",
+        "finding": "Am 25.09.2026 gelesen: „Bau von Regenwasserzisternen zur Nutzung des Regenwassers“, Meldung vom 09.03.2022."
+      }
+    ],
+    "sources": [
+      {
+        "url": "monheim-bayern.de/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht — Zisternen, Fassaden, Abbruch, Landes-/KfW-Programme; nichts im Umfang.",
+        "evidenceUrl": "https://www.monheim-bayern.de/foerderprogramme"
+      },
+      {
+        "url": "monheim-bayern.de/aktuelles/foerderprogramm_der_stadt_monh-1079",
+        "disposition": "reviewed",
+        "reason": "Meldung vom 09.03.2022 zum Zisternen-Förderprogramm — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.monheim-bayern.de/aktuelles/foerderprogramm_der_stadt_monh-1079"
+      }
+    ]
   }
 ]
