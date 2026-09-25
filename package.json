@@ -107,7 +107,9 @@
     "rueckblick:vorbereiten": "tsx scripts/solar-rueckblick-vorbereiten.ts",
     "stories:refresh": "node scripts/story-refresh.mjs --fetch",
     "stories:prepare": "node --import tsx scripts/story-prepare.ts",
-    "stories:rangsnapshot": "node --conditions=react-server --import tsx scripts/story-ranking-month.ts"
+    "stories:rangsnapshot": "node --conditions=react-server --import tsx scripts/story-ranking-month.ts",
+    "kreise:pakete": "tsx --conditions=react-server scripts/kreis-paket.ts",
+    "kreise:vergleich": "tsx --conditions=react-server scripts/kreis-paket-vergleich.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",

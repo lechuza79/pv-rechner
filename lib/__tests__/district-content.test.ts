@@ -1,31 +1,100 @@
 import {beforeEach,describe,expect,it,vi} from 'vitest';
+import {brotliCompressSync} from 'node:zlib';
 import type {GemeindePaket} from '../gemeinde-paket';
-const read=vi.hoisted(()=>vi.fn());
-vi.mock('next/cache',()=>({unstable_cache:(fn:unknown)=>fn}));
-vi.mock('../gemeinde-paket-server',()=>({ladeGemeindePaket:read}));
-import {loadDistrictContent} from '../district-monitor-server';
+import {GEMEINDE_PAKET_VERSION} from '../gemeinde-paket';
+import {DISTRICT_PACKAGE_VERSION,DISTRICT_POINTER_PATH,buildDistrictPackage,checkDistrictPackage,computeDistrictContent,districtsFromRegister,type DistrictManifest} from '../district-package';
 
-const packet=(ags:string)=>({ags,name:ags,registerStand:'2026-09-09',district:{peers:[],districtPeers:[]},stories:[],register:{own:{sums:{alle:{kwp:100}}}},monitorHistory:null,monitorPeriods:null}) as unknown as GemeindePaket;
-describe('shared district content',()=>{
- beforeEach(()=>{read.mockReset();});
- it('reads every town once, bounds concurrency and preserves complete capacity coverage',async()=>{
-  let active=0,peak=0;
-  read.mockImplementation(async(id:string)=>{active++;peak=Math.max(peak,active);await new Promise(r=>setTimeout(r,1));active--;return packet(id)});
-  const ids=Array.from({length:19},(_,i)=>String(i));
-  const result=await loadDistrictContent(ids,'Test district');
-  expect(read.mock.calls.map(([id])=>id).sort()).toEqual([...ids].sort());
-  expect(peak).toBeLessThanOrEqual(8);
-  expect(result.monitor.sites).toHaveLength(ids.length);
-  expect(result.monitor.status).toBe('unavailable'); // No invented month history.
- });
- it('never turns missing or mixed-edition towns into complete totals',async()=>{
-  read.mockImplementation(async(id:string)=>id==='missing'?null:packet(id));
-  expect((await loadDistrictContent(['a','missing'],'Test')).monitor.sites).toBeNull();
-  read.mockImplementation(async(id:string)=>({...packet(id),registerStand:id==='a'?'2026-09-09':'2026-08-09'}));
-  expect((await loadDistrictContent(['a','b'],'Test')).monitor.sites).toBeNull();
- });
- it('propagates storage failures rather than caching partial data',async()=>{
-  read.mockRejectedValue(new Error('storage unavailable'));
-  await expect(loadDistrictContent(['a'],'Test')).rejects.toThrow('storage unavailable');
- });
+vi.mock('server-only',()=>({}));
+const objects=vi.hoisted(()=>new Map<string,Buffer|Error>());
+const fetchMock=vi.hoisted(()=>vi.fn(async(url:string)=>{
+  const path=url.split('/gemeinde-pakete/')[1];
+  const hit=objects.get(path);
+  if(hit instanceof Error)return new Response('boom',{status:503});
+  return hit?new Response(new Uint8Array(hit)):new Response('not found',{status:404});
+}));
+vi.stubGlobal('fetch',fetchMock);
+process.env.SUPABASE_URL='https://x.supabase.co';process.env.SUPABASE_SERVICE_KEY='k';
+import {loadDistrictContent,preparedState} from '../district-monitor-server';
+
+const packet=(ags:string,stand='2026-09-10')=>({ags,name:ags,registerStand:stand,district:{peers:[],districtPeers:[]},stories:[{kind:'bar',label:'L'+ags,town:ags,title:'T'}],register:{own:{sums:{alle:{kwp:100}}}},monitorHistory:null,monitorPeriods:null}) as unknown as GemeindePaket;
+const members=['07339001','07339002'];
+function publish(pkg:object,regionId='07339'){
+  const path=`kreise/v${DISTRICT_PACKAGE_VERSION}/g1/${regionId}.json.br`;
+  objects.set(path,brotliCompressSync(Buffer.from(JSON.stringify(pkg))));
+  const m:DistrictManifest={version:DISTRICT_PACKAGE_VERSION,townPackageVersion:GEMEINDE_PAKET_VERSION,generation:'g1',publishedAt:'',previousGeneration:null,districts:{[regionId]:{path,fingerprint:'f',members:2,editions:[],missing:0,bytes:1}}};
+  objects.set(DISTRICT_POINTER_PATH,Buffer.from(JSON.stringify(m)));
+}
+
+describe('district aggregation (former request-time loader)',()=>{
+  it('keeps complete capacity coverage only when every town is present on one edition',()=>{
+    const ok=computeDistrictContent(members,members.map(a=>packet(a)),'K');
+    expect(ok.monitor.sites).toEqual([{ags:'07339001',kwp:100},{ags:'07339002',kwp:100}]);
+    expect(ok.monitor.status).toBe('unavailable'); // no month history: never invented
+    expect(computeDistrictContent(members,[packet(members[0]),null],'K').monitor.sites).toBeNull();
+    const mixed=computeDistrictContent(members,[packet(members[0]),packet(members[1],'2026-08-09')],'K');
+    expect(mixed.monitor.sites).toBeNull();
+    expect(mixed.monitor.energy).toBeNull();
+  });
+  it('selects at most one story per town, as before',()=>{
+    expect(computeDistrictContent(members,members.map(a=>packet(a)),'K').stories.map(s=>s.town).sort()).toEqual(members);
+  });
+  it('records missing towns and editions without inventing values',()=>{
+    const pkg=buildDistrictPackage({regionId:'07339',name:'K',members},[packet(members[0]),null],'fp','now');
+    expect(pkg.missing).toEqual([members[1]]);
+    expect(pkg.editions).toEqual(['2026-09-10']);
+    expect(pkg.content.monitor.sites).toBeNull();
+  });
+  it('refuses a package for another membership, region or version',()=>{
+    const pkg=buildDistrictPackage({regionId:'07339',name:'K',members},members.map(a=>packet(a)),'fp','now');
+    expect(checkDistrictPackage(pkg,'07339',members).ok).toBe(true);
+    expect(checkDistrictPackage(pkg,'07339',[...members,'07339003'])).toEqual({ok:false,reason:'membership'});
+    expect(checkDistrictPackage(pkg,'07339',[members[0]])).toEqual({ok:false,reason:'membership'});
+    expect(checkDistrictPackage(pkg,'07340',members)).toEqual({ok:false,reason:'region'});
+    expect(checkDistrictPackage({...pkg,version:DISTRICT_PACKAGE_VERSION+1},'07339',members)).toEqual({ok:false,reason:'version'});
+  });
+});
+
+describe('register membership',()=>{
+  it('excludes unincorporated areas, retired keys and independent cities',()=>{
+    const rows=[
+      {region_id:'07339',name:'Mainz-Bingen',level:'landkreis',bezeichnung:'Landkreis',parent_region_id:'07'},
+      {region_id:'07339001',name:'A',level:'gemeinde',bezeichnung:'Gemeinde',parent_region_id:'07339'},
+      {region_id:'07339002',name:'B',level:'gemeinde',bezeichnung:'Stadt',parent_region_id:'07339'},
+      // Dissolved into Ingelheim am Rhein in 2019 (Destatis change list): the register keeps the row.
+      {region_id:'07339027',name:'Heidesheim am Rhein',level:'gemeinde',bezeichnung:null,parent_region_id:'07339'},
+      {region_id:'07339099',name:'Forst',level:'gemeinde',bezeichnung:'Gemeindefreies Gebiet',parent_region_id:'07339'},
+      {region_id:'07315',name:'Mainz',level:'landkreis',bezeichnung:'Kreisfreie Stadt',parent_region_id:'07'},
+      {region_id:'07315000',name:'Mainz',level:'gemeinde',bezeichnung:'Stadt',parent_region_id:'07315'},
+    ];
+    expect(districtsFromRegister(rows)).toEqual([{regionId:'07339',name:'Mainz-Bingen',members:['07339001','07339002']}]);
+  });
+});
+
+describe('page reader',()=>{
+  beforeEach(()=>{objects.clear();fetchMock.mockClear();});
+  it('reads the pointer and ONE package, never a town',async()=>{
+    publish(buildDistrictPackage({regionId:'07339',name:'K',members},members.map(a=>packet(a)),'fp','now'));
+    const c=await loadDistrictContent('07339',members,'2026-09-09');
+    expect(c.prepared.state).toBe('current');
+    expect(c.monitor.sites).toHaveLength(2);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock.mock.calls.every(([u])=>!/\d{8}\.json\.br$/.test(String(u)))).toBe(true);
+  });
+  it('names an older town edition instead of calling it current',async()=>{
+    publish(buildDistrictPackage({regionId:'07339',name:'K',members},members.map(a=>packet(a,'2026-09-10')),'fp','now'));
+    expect((await loadDistrictContent('07339',members,'2026-10-01')).prepared.state).toBe('older-edition');
+    expect(preparedState(['2026-09-10'],'2026-09-09')).toBe('current');
+  });
+  it('shows no data — not stale totals — when membership changed or nothing is published',async()=>{
+    expect((await loadDistrictContent('07339',members,'2026-09-09')).prepared).toEqual({state:'unavailable',reason:'not-published'});
+    publish(buildDistrictPackage({regionId:'07339',name:'K',members},members.map(a=>packet(a)),'fp','now'));
+    const c=await loadDistrictContent('07339',[...members,'07339003'],'2026-09-09');
+    expect(c.prepared).toEqual({state:'unavailable',reason:'membership'});
+    expect(c.monitor).toMatchObject({status:'unavailable',reason:'not-prepared',sites:null,energy:null});
+    expect(c.stories).toEqual([]);
+  });
+  it('propagates storage failures instead of answering "unavailable"',async()=>{
+    objects.set(DISTRICT_POINTER_PATH,new Error('down'));
+    await expect(loadDistrictContent('07339',members,'2026-09-09')).rejects.toThrow('HTTP 503');
+  });
 });

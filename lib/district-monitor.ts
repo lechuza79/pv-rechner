@@ -3,7 +3,7 @@ import type {GemeindePaket, MonitorObservation} from './gemeinde-paket';
 export type DistrictMonitorPacket = Pick<GemeindePaket,'ags'|'registerStand'|'monitorHistory'>;
 export type DistrictMonitorResult =
   | {status:'ready';registerStand:string;history:NonNullable<GemeindePaket['monitorHistory']>}
-  | {status:'unavailable';reason:'missing-town'|'edition'|'history'};
+  | {status:'unavailable';reason:'missing-town'|'edition'|'history'|'not-prepared'};
 
 /** Only complete, same-edition month-end snapshots may become district totals. */
 export function aggregateDistrictMonitor(ids:string[],packets:(DistrictMonitorPacket|null)[],stand:string):DistrictMonitorResult {

@@ -1,0 +1,75 @@
+name: Kreispakete
+
+# Hält die vorberechneten Landkreis-Pakete (lib/district-package.ts) aktuell.
+#
+# DIE LANDKREISSEITE LIEST NUR NOCH EIN PAKET JE KREIS, nicht mehr alle
+# Gemeindepakete (gemessen live 25.09.2026: 3,5 s normal, 12 s Eifelkreis).
+# Gebaut wird es im Monatslauf der Gemeindepakete direkt nach deren Upload
+# (scripts/gemeinde-monatslauf.ts, Schritt "kreise"). Dieser Lauf ist das
+# Sicherheitsnetz dafür:
+#   - der Monatsschritt ist ausgefallen oder abgebrochen,
+#   - das Register hat Gemeinden umgehängt (Fusion, Kreiswechsel; der
+#     Datenbank-Import läuft hier in CI am 1./3./5.),
+#   - das Paketformat hat sich mit einem Push geändert (neue Version → eigener
+#     Zeigerpfad, die alte Auslieferung liest ihre Generation weiter).
+# Er baut nur, was sich geändert hat (Fingerabdruck aus Mitgliedern und den
+# Prüfsummen der veröffentlichten Gemeindepakete). Ist nichts zu tun, kostet
+# er eine Registerabfrage und zwei Speicher-Listings, keinen Paket-Download.
+#
+# Deterministisch, keine Modellaufrufe. Schlägt er fehl, bleibt die letzte
+# vollständige Generation live, und der Lauf ist rot (der Gesundheitscheck
+# führt ihn in GEPLANTE_LAEUFE).
+
+on:
+  schedule:
+    # Täglich 06:40 UTC: nach dem MaStR-Import (04:00 UTC am 1./3./5.) und
+    # außerhalb der Stunden, in denen der Förder-Wächter die Datenbank belastet.
+    - cron: "40 6 * * *"
+  push:
+    branches: [main]
+    paths:
+      - "lib/district-package.ts"
+      - "lib/district-package-publish.ts"
+      - "lib/district-monitor.ts"
+      - "lib/district-energy.ts"
+      - "lib/district-stories.ts"
+      - "lib/gemeinde-paket.ts"
+      - "scripts/kreis-paket.ts"
+  workflow_dispatch:
+    inputs:
+      alle:
+        description: "Alle Kreise neu bauen (sonst nur veraltete)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  # Nie zwei Läufe gleichzeitig; ein laufender Veröffentlichungslauf wird nicht
+  # abgebrochen. Gegen den lokalen Monatslauf schützt der Zeigerabgleich im Code.
+  group: kreis-pakete
+  cancel-in-progress: false
+
+jobs:
+  pakete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - run: npm ci
+      # Ein Push mit neuem Paketformat baut, bevor die neue Auslieferung live
+      # ist. Die alte liest ihren eigenen Zeigerpfad weiter; die neue findet
+      # ihre Generation vor oder zeigt "wird berechnet", bis die Invalidierung
+      # am Ende dieses Laufs die Seiten neu aufbauen lässt.
+      - name: Kreispakete prüfen und nachbauen
+        timeout-minutes: 50
+        run: npm run kreise:pakete -- ${{ inputs.alle && '--alle' || '' }}

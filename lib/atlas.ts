@@ -310,7 +310,8 @@ export function childLevelOf(region: AtlasRegion): Exclude<Level, "de"> | null {
  * roll into the parent by prefix, so a Kreis total can exceed the sum of its
  * listed Gemeinden — getRegionUnassigned() reports that gap.
  */
-async function getChildrenUncached(region: AtlasRegion, energietraeger = "solar"): Promise<AtlasChild[]> {
+/** Exported for scripts/kreis-paket.ts, which needs the page's member order outside Next's cache. */
+export async function getChildrenUncached(region: AtlasRegion, energietraeger = "solar"): Promise<AtlasChild[]> {
   const childLevel = childLevelOf(region);
   if (!childLevel) return [];
 

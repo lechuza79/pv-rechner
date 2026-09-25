@@ -137,6 +137,8 @@ fixed rank circles, artwork loading and the established content-width guard.
 
 ### District basics and monthly history (25 September 2026)
 
+(Superseded 25.09.2026: the page now reads one precomputed district package,
+see "Precomputed district packages" below; the aggregation rules are unchanged.)
 `loadDistrictMonitor` reads the existing municipality packages with bounded
 concurrency, caches only the compact aggregate, and uses the Atlas invalidation
 tag. No fixture, browser-side data fetch or local-only source is required.
@@ -179,6 +181,8 @@ Boundaries are loaded by district identifier from the existing 400 checked-in ge
 
 ## District performance follow-up (25 September 2026)
 
+(Intermediate step; replaced the same day by precomputed packages, below.)
+
 The monitor and story strip now receive one shared promise from `LandkreisSeite`.
 `loadDistrictContent` reads each municipality package once, derives both existing
 projections and caches only the compact result under the existing Atlas data tag.
@@ -207,3 +211,62 @@ production build made 11,477 draw calls and zero layout reads. This measures wor
 not physical-phone frame rate. Both browser runs had no script errors. All nine
 existing district browser checks passed against the production build, including
 map navigation, metric changes, narrow layouts, monitor controls and source footer.
+
+## Precomputed district packages (25 September 2026)
+
+**Why.** Even with one shared read per town, a cold district render fetched and
+decoded every member package: live 3.5–3.6 s (Mainz-Bingen, Plön), 12 s
+(Eifelkreis Bitburg-Prüm). The district result depends only on the published
+town packages and the region register, so it is now computed when those change
+and the page reads ONE object.
+
+**What the page reads.** `loadDistrictContent(regionId, members, stand)` reads the
+pointer `kreise/v<N>/aktuell.json` and the district object it names (bucket
+`gemeinde-pakete`, Brotli), both fetch-cached with `ATLAS_DATEN_TAG` and
+`KREIS_PAKET_TAG`. Three states, each named on the page: *current*; *older
+edition* (the town packages predate the page's register month — shown with their
+own register date, never called current); *unavailable* (no package, another
+version, or the register membership changed — monitor and stories say the
+evaluation is being recalculated). There is no request-time fallback to reading
+all towns: that was the slow path, and a silent one would hide a broken refresh.
+A failed read throws, like the town reader.
+
+**Membership** is one rule for page and build (`isDistrictMember`): register rows
+whose parent is the district, without unincorporated areas and without retired
+keys. The register keeps 304 municipalities dissolved by mergers as rows without
+designation, population or page; all 304 are in the Destatis change list
+(`lib/ags-nachfolger.ts`). Counted as members they made the monitor unavailable —
+Mainz-Bingen showed no monitor and "map outline missing" for Heidesheim and
+Wackernheim (part of Ingelheim since 2019). Membership is never derived from the
+map; absent geometry is still disclosed.
+
+**Build and publication** (`lib/district-package.ts`, `lib/district-package-publish.ts`,
+`scripts/kreis-paket.ts`). The aggregation is the former request-time loader
+(`computeDistrictContent`), fed through the page's own town reader. Each run
+writes a new generation folder, reads every new object back, and only then moves
+the pointer; kept districts reference their previous objects. A run aborts —
+pointer untouched, last complete generation live — on any failed town read, a
+district with no town package at all, more than 2 % towns missing overall, a
+package above 1.5 MB, or a pointer another run moved meanwhile. A single missing
+town is published honestly (monitor unavailable, no partial site list). Only
+generations referenced by the current and the previous pointer are kept.
+
+**Refresh path.**
+1. Monthly: `scripts/gemeinde-monatslauf.ts` step `kreise` right after `upload`
+   (`--alle`), before `frisch` invalidates the whole Atlas.
+2. Daily safety run `.github/workflows/kreis-pakete.yml` (06:40 UTC, also on push
+   of the aggregation code, and by hand with "alle"). It rebuilds a district only
+   when its fingerprint changed (member list, name, versions, ETag of each member's
+   published town package) or its object is missing; nothing to do costs one
+   register query and two storage listings. After publishing it calls
+   `POST /api/atlas/revalidate?umfang=kreise`, which drops only what reads the
+   district packages. Failure makes the run red; the health check watches it
+   (`GEPLANTE_LAEUFE`).
+3. Recovery by hand: `npm run kreise:pakete -- --trocken` (plan), then
+   `npm run kreise:pakete` (or `-- --alle`). `npm run kreise:vergleich -- --kreise=…`
+   compares published packages with the former request-time computation.
+
+**Format change.** Bump `DISTRICT_PACKAGE_VERSION`: the pointer path carries it, so
+the running deployment keeps reading its generation while the push-triggered run
+builds the new one; the new deployment shows "being recalculated" until that run
+invalidates the district pages.

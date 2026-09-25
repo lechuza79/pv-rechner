@@ -42,6 +42,16 @@ export const ATLAS_REVALIDATE_ROUTEN = [
 export const ATLAS_DATEN_TAG = "atlas-daten";
 
 /**
+ * The narrow marker of the precomputed district packages (lib/district-package.ts).
+ * The daily recovery run publishes a new district generation without new town
+ * data; invalidating ATLAS_DATEN_TAG for that would rebuild 11,000 pages and
+ * the ranking snapshot. `POST /api/atlas/revalidate?umfang=kreise` drops only
+ * what reads the district packages. The monthly full invalidation still covers
+ * them, because their reads carry both tags.
+ */
+export const KREIS_PAKET_TAG = "kreis-pakete";
+
+/**
  * Ab welcher Haltbarkeit eine Seite zwingend in die Liste oben gehört.
  *
  * Bis zu einem Tag verfällt eine Seite von selbst schnell genug, dass der

@@ -4,6 +4,7 @@ import DataSourcesSection from '../DataSourcesSection';
 import Script from 'next/script';
 import DistrictRaceWidget from "./DistrictRaceWidget";
 import {loadDistrictContent,type DistrictContent} from "../../lib/district-monitor-server";
+import {isDistrictMember} from "../../lib/district-package";
 import LandkreisMonitor from "./LandkreisMonitor";
 import Header from "../SharedSiteHeader";
 import { Suspense, type ReactNode, type ComponentProps } from "react";
@@ -34,9 +35,10 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
   region: AtlasRegion; children: AtlasChild[]; ranking: { regions: RankingRegion[]; cells: ChildYearRow[] };
   state: {id:string;name:string}; basePath: string; crumbs: Crumb[]; stand: string; intro: ReactNode; variant?: boolean | "dark";
 }) {
-  // The authoritative municipality list is the region register. Geometry also
-  // contains forests and the enclosed independent city; neither becomes a card.
-  const towns = children.filter(c => c.bezeichnung !== "Gemeindefreies Gebiet" && c.parent_region_id === region.region_id);
+  // The authoritative municipality list is the region register (one rule with
+  // the district package build). Geometry also contains forests and the
+  // enclosed independent city; neither becomes a card, nor do retired keys.
+  const towns = children.filter(c => isDistrictMember(c, region.region_id));
   const sums = new Map(foldSiblings(ranking.regions, ranking.cells).map(r => [r.region_id, r.sums.alle]));
   const places: MapValue[] = towns.map(town => {
     const value = sums.get(town.region_id)?.kwp ?? null;
@@ -68,7 +70,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     return {year, sums: Object.fromEntries(foldSiblings(ranking.regions, ranking.cells.filter(cell => cell.year <= year)).map(row => [row.region_id, row.sums]))};
   });
   const missingGeometry = places.filter(p => !shapes.some(s => s.id === p.id));
-  const content=loadDistrictContent(towns.map(t=>t.region_id),region.name);
+  const content=loadDistrictContent(region.region_id,towns.map(t=>t.region_id),stand);
   return <><main className={`solar-page ${variant === "dark" ? foundation.foundation : ""} ${styles.page} ${variant ? styles.cutVariant : ""} ${variant === "dark" ? styles.darkVariant : ""}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
     <link rel="stylesheet" href="/gemeinde/region-sections.css" precedence="default"/>
     <link rel="stylesheet" href="/design-system/feature-card.css" precedence="default"/>
@@ -124,6 +126,10 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
 
 /** The map and introduction must not wait for all municipality monitor packages. */
 async function DistrictMonitorSection({content,...props}:Omit<ComponentProps<typeof LandkreisMonitor>,"monitor"> & {content:Promise<DistrictContent>}) {
-  const {monitor}=await content;
-  return <LandkreisMonitor {...props} monitor={monitor}/>;
+  const {monitor,prepared}=await content;
+  // Never present an older district evaluation as current, never hide a missing one.
+  const note=prepared.state==='older-edition'
+    ?<p role="status">Diese Auswertung beruht auf den Gemeindedaten mit Registerstand {dashboardDate(prepared.editions.at(-1)!)}. Die neueren Registerzahlen werden gerade eingearbeitet.</p>
+    :prepared.state==='unavailable'?<p role="status">Die Auswertung für diesen Landkreis wird gerade neu berechnet. Bestand, Entwicklung und Energiedaten erscheinen hier, sobald sie für alle Gemeinden vollständig vorliegt.</p>:null;
+  return <>{note}<LandkreisMonitor {...props} monitor={monitor}/></>;
 }
