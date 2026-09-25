@@ -1,3 +1,4 @@
+import { createFramePacer } from "../../public/hero-system/source/frame-pacer.js";
 import * as THREE from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
@@ -23,10 +24,14 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = true;
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const canvas = renderer.domElement;
   let enteredAt: number | null = null;
   let manual = false, lastFrame = performance.now();
+  const pace = createFramePacer(30);
+  let lastPin: {x:number;y:number}|null=null;
   canvas.setAttribute("aria-hidden", "true");
   host.append(canvas);
   const scene = new THREE.Scene();
@@ -141,13 +146,16 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     queued = 0;
     if (dead || !visible || document.hidden) return;
     const now = performance.now();
+    if (!manual && !reducedMotion.matches && !pace.shouldDraw(now)) { invalidate(); return; }
     if(enteredAt===null){enteredAt=now;if(transition)transition.start=now+180;}
     const elapsed = now-enteredAt;
-    canvas.style.opacity = reducedMotion.matches ? "1" : String(Math.min(1,elapsed/240));
+    const opacity = reducedMotion.matches ? "1" : String(Math.min(1,elapsed/240));
+    if (canvas.style.opacity !== opacity) canvas.style.opacity = opacity;
     controls.autoRotate = !manual && !reducedMotion.matches && elapsed>950;
     if(controls.autoRotate)controls.update(Math.min(.05,(now-lastFrame)/1000));
     lastFrame=now;
     if (transition) {
+      renderer.shadowMap.needsUpdate = true;
       let complete=true;
       for (const [id, height] of transition.heights) {
         const t=reducedMotion.matches?1:Math.max(0,Math.min(1,(now-transition.start-height.delay)/transition.duration));
@@ -161,7 +169,8 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     if (transition || (!manual && !reducedMotion.matches) || elapsed<240) invalidate();
     if (city) {
       const point = new THREE.Vector3(city.groundAnchor[0],DEPTH+1,city.groundAnchor[1]).project(camera);
-      events.pin({ x:(point.x+1)*host.clientWidth/2, y:(1-point.y)*host.clientHeight/2 });
+      const next={x:(point.x+1)*renderWidth/2,y:(1-point.y)*renderHeight/2};
+      if (!lastPin || Math.abs(next.x-lastPin.x)>.1 || Math.abs(next.y-lastPin.y)>.1) {lastPin=next;events.pin(next);}
     }
   }
   function invalidate() { if (!dead && !queued) queued = requestAnimationFrame(render); }
@@ -173,20 +182,20 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     if(w!==renderWidth || h!==renderHeight){renderer.setSize(w,h,false);renderWidth=w;renderHeight=h;}
     for(const material of outlines)material.resolution.set(w,h);
     // Fixed envelope across metrics: only bars move when the metric changes.
-    camera.updateMatrixWorld();
-    const xs:number[]=[],ys:number[]=[];
-    const fitPoint = (x:number,y:number,z:number) => {
-      const point=new THREE.Vector3(x,y,z).applyMatrix4(camera.matrixWorldInverse);
-      xs.push(point.x);ys.push(point.y);
-    };
-    for (const region of shapes) {
-      for (const poly of region.ground) for (const ring of poly) for (const [x,z] of ring) {fitPoint(x,0,z);fitPoint(x,DEPTH,z);}
-      const bar=bars.get(region.id)!;
-      if(!region.kind || !["Gemeindefreies Gebiet", "Kreisfreie Stadt"].includes(region.kind)) fitPoint(bar.position.x,DEPTH+BAR_MAX*(heightEnvelope[region.id]??1),bar.position.z);
-      for(const [x,z] of region.groundTrees)fitPoint(x,DEPTH+28,z);
-    }
-    // Frame the initial composition once: rotation retains a fixed geographic pivot.
-    if(!framing){
+    if (!framing) {
+      camera.updateMatrixWorld();
+      const xs:number[]=[],ys:number[]=[];
+      const fitPoint = (x:number,y:number,z:number) => {
+        const point=new THREE.Vector3(x,y,z).applyMatrix4(camera.matrixWorldInverse);
+        xs.push(point.x);ys.push(point.y);
+      };
+      for (const region of shapes) {
+        for (const poly of region.ground) for (const ring of poly) for (const [x,z] of ring) {fitPoint(x,0,z);fitPoint(x,DEPTH,z);}
+        const bar=bars.get(region.id)!;
+        if(!region.kind || !["Gemeindefreies Gebiet", "Kreisfreie Stadt"].includes(region.kind)) fitPoint(bar.position.x,DEPTH+BAR_MAX*(heightEnvelope[region.id]??1),bar.position.z);
+        for(const [x,z] of region.groundTrees)fitPoint(x,DEPTH+28,z);
+      }
+      // Frame the initial composition once: rotation retains a fixed geographic pivot.
       const left=Math.min(...xs),right=Math.max(...xs),bottom=Math.min(...ys),top=Math.max(...ys);
       framing={cx:(left+right)/2,cy:(bottom+top)/2,halfW:(right-left)/2,halfH:(top-bottom)/2};
     }
@@ -215,7 +224,8 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
   const observer = new ResizeObserver(resize);observer.observe(host);
   const intersection = new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)invalidate();});intersection.observe(host);
   const visibility = () => invalidate(); document.addEventListener("visibilitychange",visibility);
-  controls.addEventListener("change",resize);
+  // Orbiting changes the view, not the fixed composition or DOM dimensions.
+  controls.addEventListener("change",invalidate);
   const ray = new THREE.Raycaster();
   function hit(event: PointerEvent) {
     const rect=canvas.getBoundingClientRect();
@@ -284,6 +294,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
         tree.position.set(x,DEPTH,z);tree.rotation.y=i*2.39996;scene.add(tree);trees.push(tree);
         tree.traverse(o=>{if(o instanceof THREE.Mesh&&o.geometry===template.leavesMesh.geometry){o.userData.evergreen=seed===1;leaves.push(o);}});
       }
+      renderer.shadowMap.needsUpdate=true;
       invalidate();
     }
     await Promise.all([...textures].map(t => {
@@ -291,6 +302,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
       return image instanceof HTMLImageElement ? image.decode().catch(()=>undefined) : Promise.resolve();
     }));
     if(dead)return;
+    renderer.shadowMap.needsUpdate=true;
     invalidate();
     canvas.dataset.trees="ready";
   }
@@ -312,6 +324,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
           transition=null;
           for(const [id,height] of heights)placeBar(bars.get(id)!,height.to);
         } else transition={start:performance.now()+(previousValues?0:180),duration:previousValues?550:420,heights};
+        renderer.shadowMap.needsUpdate=true;
         previousValues=values;
       }
       selected=chosen;hovered=over;highlight();
@@ -319,8 +332,9 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     async season(season:Season) {
       await planting;if(dead)return;
       for(const leaf of leaves){leaf.visible=season!=="winter"||leaf.userData.evergreen===true;(leaf.material as THREE.MeshStandardMaterial).color.copy(side.color);}
+      renderer.shadowMap.needsUpdate=true;
       invalidate();
     },
-    dispose(){dead=true;cancelAnimationFrame(queued);observer.disconnect();intersection.disconnect();controls.removeEventListener("start",startDrag);controls.removeEventListener("end",endDrag);controls.dispose();document.removeEventListener("visibilitychange",visibility);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerleave",leave);canvas.removeEventListener("pointerdown",press);canvas.removeEventListener("pointerup",release);canvas.removeEventListener("pointercancel",cancel);canvas.removeEventListener("webglcontextlost",lost);for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures)t.dispose();key.shadow.map?.dispose();renderer.dispose();canvas.remove();},
+    dispose(){dead=true;cancelAnimationFrame(queued);observer.disconnect();intersection.disconnect();controls.removeEventListener("change",invalidate);controls.removeEventListener("start",startDrag);controls.removeEventListener("end",endDrag);controls.dispose();document.removeEventListener("visibilitychange",visibility);canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerleave",leave);canvas.removeEventListener("pointerdown",press);canvas.removeEventListener("pointerup",release);canvas.removeEventListener("pointercancel",cancel);canvas.removeEventListener("webglcontextlost",lost);for(const g of geometries)g.dispose();for(const m of materials)m.dispose();for(const t of textures)t.dispose();key.shadow.map?.dispose();renderer.dispose();canvas.remove();},
   };
 }

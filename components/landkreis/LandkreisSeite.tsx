@@ -3,7 +3,7 @@ import {ortPhrase,ortPraeposition} from '../../lib/atlas-orte';
 import DataSourcesSection from '../DataSourcesSection';
 import Script from 'next/script';
 import DistrictRaceWidget from "./DistrictRaceWidget";
-import {loadDistrictMonitor} from "../../lib/district-monitor-server";
+import {loadDistrictContent,type DistrictContent} from "../../lib/district-monitor-server";
 import LandkreisMonitor from "./LandkreisMonitor";
 import Header from "../SharedSiteHeader";
 import { Suspense, type ReactNode, type ComponentProps } from "react";
@@ -68,6 +68,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
     return {year, sums: Object.fromEntries(foldSiblings(ranking.regions, ranking.cells.filter(cell => cell.year <= year)).map(row => [row.region_id, row.sums]))};
   });
   const missingGeometry = places.filter(p => !shapes.some(s => s.id === p.id));
+  const content=loadDistrictContent(towns.map(t=>t.region_id),region.name);
   return <><main className={`solar-page ${variant === "dark" ? foundation.foundation : ""} ${styles.page} ${variant ? styles.cutVariant : ""} ${variant === "dark" ? styles.darkVariant : ""}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
     <link rel="stylesheet" href="/gemeinde/region-sections.css" precedence="default"/>
     <link rel="stylesheet" href="/design-system/feature-card.css" precedence="default"/>
@@ -98,7 +99,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
       </section>
       <section id="atlas-stories" className={styles.districtStories} aria-label="Geschichten aus dem Landkreis">
         <h2>Insights {ortPhrase(region)}</h2>
-        <Suspense fallback={<p>Geschichten werden geladen …</p>}><LandkreisStories ids={towns.map(t=>t.region_id)} name={region.name}/></Suspense>
+        <Suspense fallback={<p>Geschichten werden geladen …</p>}><LandkreisStories content={content} name={region.name}/></Suspense>
       </section>
     </div>
     {missingGeometry.length > 0 && <p>Für {missingGeometry.map(p => p.name).join(", ")} fehlt der Kartenumriss. Die Werte stehen in der Übersicht.</p>}
@@ -111,7 +112,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
       <div className={styles.sectionHeading}><div><p className={styles.eyebrow}>Im Vergleich</p><h2>Die Gemeinden im Ranking</h2></div></div>
       <RankingTable regions={ranking.regions} cells={ranking.cells} basePath={basePath} lastFullYear={lastFullYear()} popInMillions={false} />
     </details>
-    <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2><Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><DistrictMonitorSection ids={towns.map(t=>t.region_id)} name={region.name} regionId={region.region_id} population={region.population} populationStand={region.population_as_of} cells={ranking.cells.filter(c=>towns.some(t=>t.region_id===c.region_id))} stand={stand}/></Suspense></section>
+    <section id="atlas-data" className={`${styles.section} sc-dashboard-section`}><h2>Energiemonitor {ortPhrase(region)}</h2><Suspense fallback={<p role="status">Energiemonitor wird geladen …</p>}><DistrictMonitorSection content={content} regionId={region.region_id} population={region.population} populationStand={region.population_as_of} cells={ranking.cells.filter(c=>towns.some(t=>t.region_id===c.region_id))} stand={stand}/></Suspense></section>
     <section className={`${styles.fundingSection} ${foundation.foundation}`} data-story-scheme={variant === "dark" ? "dark" : "light"}>
       <GemeindeFoerderung praeposition={ortPraeposition(region.name)} ort={region.name} programme={foerderProgramme}/>
     </section>
@@ -122,7 +123,7 @@ export default async function LandkreisSeite({ region, children, ranking, basePa
 }
 
 /** The map and introduction must not wait for all municipality monitor packages. */
-async function DistrictMonitorSection({ids,name,...props}:Omit<ComponentProps<typeof LandkreisMonitor>,"monitor"> & {ids:string[];name:string}) {
-  const monitor=await loadDistrictMonitor(ids,name);
+async function DistrictMonitorSection({content,...props}:Omit<ComponentProps<typeof LandkreisMonitor>,"monitor"> & {content:Promise<DistrictContent>}) {
+  const {monitor}=await content;
   return <LandkreisMonitor {...props} monitor={monitor}/>;
 }

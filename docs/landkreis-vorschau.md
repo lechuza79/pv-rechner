@@ -176,3 +176,34 @@ once rather than generating the full preset and immediately discarding it.
 ## District coverage
 
 Boundaries are loaded by district identifier from the existing 400 checked-in geometry files; all 10,971 features were checked for finite coordinates and interior anchors. State labels come from the region ancestry. Independent cities retain the existing redirect to their municipality page. Missing monthly data is disclosed rather than replaced with partial totals.
+
+## District performance follow-up (25 September 2026)
+
+The monitor and story strip now receive one shared promise from `LandkreisSeite`.
+`loadDistrictContent` reads each municipality package once, derives both existing
+projections and caches only the compact result under the existing Atlas data tag.
+Eight distinct reads can run concurrently, matching the previous combined limit
+of two independent four-worker consumers. Storage failures still reject the render;
+missing packages and mismatched editions never become complete totals. The daily
+power endpoint uses the same projection through `loadDistrictMonitor`.
+
+An isolated uncached data-path comparison with the 64 Mainz-Bingen packages made
+128 reads / 7,866,476 bytes before and 64 reads / 3,933,238 bytes after. Elapsed time
+was 6,318 ms versus 1,977 ms on the local host; these are not production latency
+claims. A complete deep comparison confirmed identical monitor data and selected
+stories (capacity sites compared by municipality, since read completion order is
+not meaningful). The compact cached output was 297,853 characters, below the
+2 MB cache limit for this measured district.
+
+The map reuses `public/hero-system/source/frame-pacer.js` from the homepage. Only
+automatic motion is paced at 30 fps; pointer manipulation remains immediate.
+Camera orbit changes no longer recompute static boundary extents or read DOM
+layout. Shadows update when bars, trees or seasons change, not when the camera
+moves; size observation still reframes the map on actual viewport changes.
+
+In the same 390 px software-rendered Chromium measurement window (three seconds),
+the previous live map made 35,892 WebGL draw calls and 144 layout reads; the local
+production build made 11,477 draw calls and zero layout reads. This measures work,
+not physical-phone frame rate. Both browser runs had no script errors. All nine
+existing district browser checks passed against the production build, including
+map navigation, metric changes, narrow layouts, monitor controls and source footer.
