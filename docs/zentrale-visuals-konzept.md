@@ -117,6 +117,34 @@ Steps:
 Ownership: Claude implements and verifies (tests, rendered comparisons); Codex/root
 reviews visual fidelity against the approved design; operator decides design questions only.
 
+## 4b. Slice result: `anlagenraster` (25.09.2026)
+
+- One renderer `components/charts/CompositionChart.tsx`, layouts `monitor` and `story`
+  (+`compact`), each with its own accepted stylesheet. Monitor and story now draw the
+  same cells and the same arc for the same data (test).
+- Monitor title/kind come from `STORY_VISUAL_TEMPLATES` (`monitorWidgetRole`); the
+  separate map in the monitor is gone. `sources` on a template = migrated to the shared
+  export footer.
+- Story reader PNG for migrated templates: `WidgetExportFooter` (brand line, CC BY 4.0,
+  note "Ort: <municipality>") + `WidgetSourceEdge` (full attribution incl.
+  Bundesnetzagentur, licence, data date) via registry entry `gemeindeMeldung`. Legacy
+  credit stays for not yet migrated templates. The old credit named the HOST page
+  (e.g. "Landkreis Würzburg" on a Bütthard story); the footer names the story's town.
+- Rendered comparison (frozen live packages, before = b156cfbe): municipality monitor
+  1440/375, district monitor 1440/375, story reader and teasers pixel-identical
+  (≤4 px / carousel motion); only the exported PNG changes (footer + edge added,
+  story width unchanged).
+- Not covered: editorial V2 page could not be rendered (admin session needs the
+  service key; reading `.env*` is blocked in this session). Code path is the same
+  (`StoryConceptLab → MunicipalChart → ApprovedStoryVisual → CompositionChart`).
+- Found, not changed: the homepage story strip loads a prebuilt bundle
+  (`public/homepage-study/story-dist`) with its own compiled copy of these charts —
+  a further duplicate for stage 6; district composition widget titles use the bare
+  category label, municipality adds ": Anteil an Anzahl und Leistung".
+- Story PNG remains dark, as before this slice (hard-coded card background): the
+  brightest-stage default is not applied to atlas story images today. Unchanged here;
+  needs a user decision if it should change.
+
 ## 5. Open decisions for root / operator
 
 1. **Export colour scheme**: existing rule renders images on the brightest day stage; the

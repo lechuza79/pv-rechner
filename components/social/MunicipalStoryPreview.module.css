@@ -14,7 +14,7 @@
 .card>.visual{padding:0}.card>.visual:has(svg[role=img]){background:var(--atlas-card)}
 .card>.visual:has([class*="yieldChart"]){padding:24px}
 @media(max-width:800px){.grid{grid-template-columns:repeat(3,minmax(280px,1fr));overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px}.grid>.card:last-child{display:flex}.grid>.card{scroll-snap-align:start}}
-.card>.visual:has([class*="InstallationCountChart_chart"])>div{max-width:250px;margin:auto}
+.card>.visual:has([data-visual="anlagenraster"])>div{max-width:250px;margin:auto}
 .visual{max-width:640px;margin-inline:auto}
 .card>.visual{height:340px;flex-shrink:0}
 

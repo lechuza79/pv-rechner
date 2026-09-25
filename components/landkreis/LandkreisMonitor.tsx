@@ -6,7 +6,7 @@ import {monitorKpiGroups} from "../../lib/dashboard/monitor-kpis";
 import type {DistrictMonitorResult} from "../../lib/district-monitor";
 import {useMemo} from 'react';
 import {CurrentPower,AnnualGrowth} from "../gemeinde/GemeindeMonitor";
-import MonitorComposition from "../gemeinde/MonitorComposition";
+import {MonitorCompositionChart} from "../charts/CompositionChart";
 import {ShareDonut} from "../charts/ShareDonut";
 import {WidgetFrame} from "../dashboard/WidgetFrame";
 import styles from "./landkreis.module.css";
@@ -32,7 +32,7 @@ export default function LandkreisMonitor({cells,stand,monitor,population,populat
       <AnnualGrowth years={years} stand={stand}/>
       <DistrictEnergyWidgets data={monitor.energy}/>
       <WidgetFrame title="Installierte Solarleistung nach Anlagentyp" kind="donut" help={<p>Summe der heute im Landkreis erfassten Solaranlagen. Batteriespeicher zählen nicht zur Solarleistung. Registerstand: {dashboardDate(stand)}.</p>}><ShareDonut values={groups}/></WidgetFrame>
-      {groups.map(group=><WidgetFrame key={group.label} title={group.label} kind="composition"><div className="monitor-widget-body"><MonitorComposition story={{countComparison:{total,selected:group.count,label:group.label},values:[{label:group.label,value:group.count},{label:"Anteil an der Solarleistung",value:power?group.value/power*100:0}]}}/></div></WidgetFrame>)}
+      {groups.map(group=><WidgetFrame key={group.label} title={group.label} kind="composition"><div className="monitor-widget-body"><MonitorCompositionChart story={{countComparison:{total,selected:group.count,label:group.label},values:[{label:group.label,value:group.count},{label:"Anteil an der Solarleistung",value:power?group.value/power*100:0}]}}/></div></WidgetFrame>)}
     </div>
   </div>;
 }

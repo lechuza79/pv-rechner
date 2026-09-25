@@ -2,8 +2,7 @@ import React from 'react';
 import {describe, it, expect} from 'vitest';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {CompositionArc} from '../../components/charts/CompositionArc';
-import {MonitorComposition} from '../../components/gemeinde/MonitorComposition';
-import {InstallationCountChart} from '../../components/social/InstallationCountChart';
+import {CompositionChart, MonitorCompositionChart} from '../../components/charts/CompositionChart';
 
 const nums = (d: string) => (d.match(/-?\d+(?:\.\d+)?(?:e-?\d+)?/g) ?? []).map(Number);
 
@@ -45,12 +44,45 @@ describe('CompositionArc', () => {
 
   it('is the one drawing used by the monitor and the story chart', () => {
     const counts = {total: 120, selected: 3, label: 'Freiflächenanlagen'};
-    const monitor = renderToStaticMarkup(<MonitorComposition story={{countComparison: counts, values: [{label: 'Anlagen', value: 3}, {label: 'Leistung', value: 1}]}} />);
-    const story = renderToStaticMarkup(<InstallationCountChart counts={counts} powerShare={1} />);
+    const monitor = renderToStaticMarkup(<MonitorCompositionChart story={{countComparison: counts, values: [{value: 3}, {value: 1}]}} />);
+    const story = renderToStaticMarkup(<CompositionChart counts={counts} powerShare={1} layout="story" />);
     for (const markup of [monitor, story]) {
       expect(markup).toContain('M 50 5 A 45 45');
       expect(markup).not.toContain('stroke-dasharray');
       expect(capReach(markup)).toBeGreaterThanOrEqual(50 - 1e-9);
     }
+  });
+
+});
+
+describe('CompositionChart layouts', () => {
+  const counts = {total: 349, selected: 2, label: 'Freiflächenanlagen'};
+  const grid = (m: string) => [...m.matchAll(/<rect x="(\d+)" y="(\d+)" width="([\d.]+)"/g)].map(r => r.slice(1).join(','));
+  const monitor = renderToStaticMarkup(<CompositionChart counts={counts} powerShare={68.6} layout="monitor" />);
+  const story = renderToStaticMarkup(<CompositionChart counts={counts} powerShare={68.6} layout="story" />);
+  const teaser = renderToStaticMarkup(<CompositionChart counts={counts} powerShare={68.6} layout="story" compact />);
+
+  it('keeps each accepted geometry as an explicit layout with its own stylesheet', () => {
+    const cls = (m: string) => m.match(/class="([^"]+)"/)![1];
+    expect(monitor).toContain('data-visual-layout="monitor"');
+    expect(story).toContain('data-visual-layout="story"');
+    expect(cls(monitor)).not.toBe(cls(story));
+    // Monitor: value as HTML beside the ring, total on two lines. Story: value inside the SVG.
+    expect(monitor).toMatch(/<b>69<small> %<\/small><\/b>/);
+    expect(monitor).not.toContain('<text');
+    expect(story).toMatch(/<text[^>]*>69<\/text>/);
+    expect(story).toContain('349 Solaranlagen insgesamt');
+    expect(teaser).toMatch(/class="[^"]*compact/);
+  });
+
+  it('draws identical data: same cells and same arc for monitor and story (16 columns before resize)', () => {
+    expect(grid(monitor)).toEqual(grid(story));
+    const arc = (m: string) => m.match(/<path d="([^"]+)"[^>]*data-composition-arc/)![1];
+    expect(arc(monitor)).toBe(arc(story));
+    expect(monitor).toContain('Ein Rechteck steht für');
+  });
+
+  it('renders nothing on the monitor without a comparison', () => {
+    expect(renderToStaticMarkup(<MonitorCompositionChart story={{values: [{value: 1}, {value: 2}]}} />)).toBe('');
   });
 });

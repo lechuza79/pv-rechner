@@ -9,7 +9,8 @@
  */
 import ZubauChart from "../atlas/ZubauChart";
 import { useEffect, useRef, useState } from "react";
-import MonitorComposition from "./MonitorComposition";
+import {MonitorCompositionChart} from "../charts/CompositionChart";
+import { monitorWidgetRole } from "../../lib/story-approved-visual";
 import { MonitorAnnualEnergyChart } from "./MonitorAnnualEnergyChart";
 import { MonitorMonthlySolarChart } from "./MonitorMonthlySolarChart";
 import { MunicipalChart } from "../social/MunicipalChart";
@@ -23,7 +24,6 @@ import { ShareDonut, solarCategoryVisual } from "../charts/ShareDonut";
 import { WidgetSetting } from "../dashboard/WidgetSetting";
 import { WidgetFrame } from "../dashboard/WidgetFrame";
 import { KpiOverview } from "../dashboard/KpiOverview";
-import type { WidgetKind } from "../../lib/dashboard/model";
 import { MastrLiveRadial } from "../MastrLiveRadial";
 import { MastrMap } from "../MastrMap";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
@@ -166,25 +166,7 @@ function LocalMap({ paket }: { paket: GemeindePaket }) {
   );
 }
 
-const widgetRole = (item: Any) => {
-  const titles: Record<string, string> = {
-    anteilsdonut: "Installierte Solarleistung nach Anlagentyp",
-    "electricity-value": "Wert des Solarstroms",
-    "feed-in-value": "Einspeisevergütung",
-    verlauf: "Zubau pro Monat",
-    radial: "Solarerzeugung im Tagesverlauf",
-    "energy-year": "Solar- und Windpotenzial im Jahresverlauf",
-  };
-  return {
-    title:
-      titles[item.template] ??
-      (item.story.countComparison?.label ? item.story.countComparison.label + ": Anteil an Anzahl und Leistung" : "Anlagenbestand"),
-    kind:
-      ({ anteilsdonut: "donut", anlagenraster: "composition", verlauf: "time-series", "energy-year": "radial", radial: "radial" } as Record<string, WidgetKind>)[
-        item.template
-      ] ?? "number",
-  };
-};
+const widgetRole = (item: Any) => monitorWidgetRole(item.template, item.story);
 
 export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket }) {
   const history = paket.monitorHistory as Any;
@@ -287,7 +269,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
         <ShareDonut values={values} />
       ) : isComposition ? (
         <div className="monitor-widget-body">
-          <MonitorComposition story={compositionStory} />
+          <MonitorCompositionChart story={compositionStory} />
         </div>
       ) : (
         <div className="monitor-widget-body">
