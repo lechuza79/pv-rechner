@@ -149,9 +149,13 @@ for (const [name, viewport] of [
      * Daten, nicht aus dem Code, und niemand wird an sie denken.
      */
     test("keine Zahl läuft aus ihrer eigenen Spalte heraus", async ({ page }) => {
+      test.setTimeout(90_000); // Includes a cold district render with over 200 municipalities.
       // Der Eifelkreis führt die beiden extremsten Pro-Kopf-Werte des Landes
       // (Herbstmühle 1.395.922 Wp, Scheitenkorb 876.886 Wp) in EINER Liste.
-      await page.goto("/solar-atlas/rheinland-pfalz/landkreis-eifelkreis-bitburg-pruem");
+      // The district table is now a disclosure below the animated ranking.
+      // Do not wait for the unrelated monitor packages or map assets.
+      await page.goto("/solar-atlas/rheinland-pfalz/landkreis-eifelkreis-bitburg-pruem", {waitUntil:"commit"});
+      await page.getByText("Alle Gemeinden in der ausführlichen Tabelle", {exact:true}).click();
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
 
       const funde = await page.evaluate(() => {
@@ -1088,7 +1092,9 @@ test.describe("Rangliste: die Rangbewegung steht auf jeder Ebene da", () => {
 
   for (const ebene of EBENEN) {
     test(`${ebene.name}: hinter jeder Platzziffer steht eine Bewegung`, async ({ page }) => {
-      await page.goto(ebene.url);
+      if(ebene.name==="Gemeinden")test.setTimeout(90_000);
+      await page.goto(ebene.url, {waitUntil:"commit"});
+      if(ebene.name==="Gemeinden")await page.getByText("Alle Gemeinden in der ausführlichen Tabelle", {exact:true}).click();
       await page.waitForSelector(".atlas-tabelle-scroller .atlas-rank-row", { timeout: 60_000 });
 
       const befund = await page.evaluate(() => {
