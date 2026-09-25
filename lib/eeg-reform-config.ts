@@ -632,7 +632,15 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   allein die Grunddrucksache; die Plenarsitzung des Bundesrates ist heute
   //   und hat zum Zeitpunkt der Prüfung noch nicht begonnen. Zustand
   //   unverändert: Regierungsentwurf, eingebracht, jetzt im Ausschuss.
-  geprueftIso: "2026-09-25",
+  // 26.09.2026, 00:10 Uhr: Der Bundesrat hat in seiner 1068. Sitzung am
+  //   25.09.2026 zu 470/26 Stellung genommen (Beschlussdrucksache 470/26(B),
+  //   Volltext docs/quellen/EEG-2027_Bundesrat-Stellungnahme-470-26-B_2026-09-25.pdf).
+  //   Ziffer 1 c fordert, „Anpassungen bei der Vergütung kleiner PV-Anlagen"
+  //   im laufenden Verfahren zurückzustellen. Eine Stellungnahme im ersten
+  //   Durchgang ändert den Entwurf nicht; sie geht mit der Gegenäußerung der
+  //   Bundesregierung an den Bundestag. Zustand und Werte unverändert:
+  //   Regierungsentwurf, im Ausschuss für Wirtschaft und Energie.
+  geprueftIso: "2026-09-26",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

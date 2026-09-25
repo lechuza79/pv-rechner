@@ -64837,5 +64837,361 @@
       }
     ],
     "sources": []
+  },
+  {
+    "regionId": "03151009",
+    "name": "Gifhorn",
+    "checkedAt": "2026-09-25T22:05:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen der Stadt Gifhorn.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Stadt Gifhorn führt keinen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Ihre Rubrik „Förderprojekte“ listet ausschließlich Fördermittel, die die Stadt selbst erhalten hat (Kommunalrichtlinie, LEADER, Innenstadt, KfW-Neubau). Der Hinweis der Klimaschutzseite auf die „Wohnraumförderung der Stadt“ führt auf die Landes-Wohnraumförderung Niedersachsen (NBank, Darlehen mit Zuschuss für klimagerechte Gesamtmodernisierung um mindestens zwei Effizienzklassen), die die Stadt nur vorprüft — kein kommunales Programm. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche stadt-gifhorn.de 25.09.2026: Balkonkraftwerk (0 Treffer), Photovoltaik/Solar (Kommunaler Wärmeplan, Haushaltsplan 2026, Klimaschutzseite), Zuschuss (Wohngeld, Kindertagespflege, Jugendarbeit, Sportförderung, Energieeffizienter Neubau), Speicher und Wärmepumpe (Wärmeplan, Literaturlisten), Förderprogramm (ISEK, Innenstadt, Sportförderung, LEADER)",
+      "Seiten „Förderprojekte“ mit allen fünf Unterseiten, „Klimaschutz“ und „Klima-Taler“ am 25.09.2026 im Original gelesen",
+      "Serviceportal „Wohnraumförderung – Wohneigentum“ und Produktinformation der NBank (Stand 10.07.2026) gelesen",
+      "Websuche „Stadt Gifhorn Förderung Photovoltaik Balkonkraftwerk Zuschuss“ (25.09.2026): nur Landkreis-Programm, kein städtisches",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte",
+        "finding": "Übersicht „Hier finden Sie Informationen über geförderte Projekte der Stadt Gifhorn“: Anpassung urbaner Räume, LEADER, Klimaschutzmaßnahmen (Kommunalrichtlinie), Energieeffizienter Neubau (KfW 499), Perspektive Innenstadt — alle fünf Unterseiten am 25.09.2026 gelesen, jeweils städtische Vorhaben (Sportplatzbeleuchtung, Klimaschutzmanagement, Kirchgarten, Hauptschule, Fußgängerzone), keine Förderung für Private."
+      },
+      {
+        "url": "https://www.stadt-gifhorn.de/leben-in-gifhorn/nachhaltigkeit/klimaschutz",
+        "finding": "Abschnitt Photovoltaik: PV nur auf stadteigenen Liegenschaften; „Maßnahmen zur Nutzung erneuerbarer Energien und energetische Sanierung können über die Wohnraumförderung der Stadt gefördert werden“ mit Link ins Serviceportal."
+      },
+      {
+        "url": "https://service.stadt-gifhorn.de/dienstleistungen/-/egov-bis-detail/dienstleistung/19529/show",
+        "finding": "Wohnraumförderung – Wohneigentum: Anträge prüft die Wohnraumförderstelle der Stadt und leitet sie an die NBank Hannover als Bewilligungsstelle weiter; Produktinformation „Eine Förderung des Landes Niedersachsen“, klimagerechte Gesamtmodernisierung mit Verbesserung um mindestens zwei Effizienzklassen — kein kommunales Programm und kein Zuschuss für eine einzelne PV-, Speicher- oder Wärmepumpenanlage."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Übersicht städtischer Förderprojekte gelesen; keine Förderung für Private.",
+        "evidenceUrl": "https://www.stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte"
+      },
+      {
+        "url": "stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte/anpassung-urbaner-raeume-an-den-klimawandel",
+        "disposition": "reviewed",
+        "reason": "Bundesmittel für Kirchgarten und Mühlenaller der Stadt; keine Förderung für Private.",
+        "evidenceUrl": "https://www.stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte"
+      },
+      {
+        "url": "stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte/energieeffizienter-neubau",
+        "disposition": "reviewed",
+        "reason": "KfW-Zuschuss 1 Mio. € an die Stadt für den Hauptschul-Neubau; keine Förderung für Private.",
+        "evidenceUrl": "https://www.stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte"
+      },
+      {
+        "url": "stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte/foerderung-von-klimaschutzmassnahmen",
+        "disposition": "reviewed",
+        "reason": "Kommunalrichtlinie-Mittel für Sportplatzbeleuchtung, Klimaschutzmanagement, Lüftung, Straßenbeleuchtung der Stadt; keine Förderung für Private.",
+        "evidenceUrl": "https://www.stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte"
+      },
+      {
+        "url": "stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte/leader",
+        "disposition": "reviewed",
+        "reason": "LEADER-Projekte (Multifunktionsfeld Gamsen); keine Energieförderung für Private.",
+        "evidenceUrl": "https://www.stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte"
+      },
+      {
+        "url": "stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte/sofortprogramm-perspektive-innenstadt",
+        "disposition": "reviewed",
+        "reason": "Landesmittel für die Fußgängerzone; keine Förderung für Private.",
+        "evidenceUrl": "https://www.stadt-gifhorn.de/leben-in-gifhorn/foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "03151005",
+    "name": "Brome",
+    "checkedAt": "2026-09-25T22:08:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Der Flecken Brome gehört zur Samtgemeinde Brome.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder der Flecken Brome noch die Samtgemeinde Brome führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Seite „Maßnahmen und Förderprojekte“ enthält Vergabebekanntmachungen gemeindlicher Bauvorhaben; Photovoltaik kommt nur als Freiflächen-Planung vor. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche samtgemeinde-brome.de 25.09.2026: Balkonkraftwerk (0), Photovoltaik (5, nur F-Plan Freiflächen-PV), Wärmepumpe (0), Förderprogramm (2, Dorfregion), Zuschuss (4, Jugend/Formulare), Klimaschutz (2, Windplanung/Nachhaltigkeit)",
+      "Websuche „Samtgemeinde Brome Förderung Balkonkraftwerk Photovoltaik Zuschuss“ (25.09.2026): nur Freiflächen-PV-Planung, kein Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)",
+      "Volltextsuche brome.de 25.09.2026: Photovoltaik (Windpark-Infomarkt, Bebauungspläne), Zuschuss (Breitband), Klimaschutz (Bürgermeisterbericht, Maßnahmenseite), Balkonkraftwerk/Förderprogramm/Wärmepumpe (0)"
+    ],
+    "evidence": [
+      {
+        "url": "https://brome.de/massnahmen-und-foerderprojekte",
+        "finding": "Am 25.09.2026 gelesen: Ex-ante-Bekanntmachungen und vergebene Aufträge des Flecken Brome (Mehrzweckhalle, DGH Altendorf) — keine Förderung für Private."
+      },
+      {
+        "url": "https://www.samtgemeinde-brome.de/?s=Photovoltaik",
+        "finding": "Volltextsuche der Samtgemeinde Brome am 25.09.2026: Photovoltaik (5 Treffer, nur Flächennutzungsplan Freiflächen-PV), Balkonkraftwerk (0), Wärmepumpe (0), Förderprogramm (Dorfregion „Dörfer am Drömling“), Zuschuss (Jugendfahrten, Formulare, Ortsrecht), Klimaschutz (Windplanung, Nachhaltigkeitslabel) — kein Zuschuss für Private im Energiebereich. Seite „Nachhaltigkeit“ (Zielvereinbarung UAN) ebenfalls ohne Förderangebot."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "brome.de/massnahmen-und-foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Vergabebekanntmachungen gemeindlicher Bauvorhaben; keine Förderung für Private.",
+        "evidenceUrl": "https://brome.de/massnahmen-und-foerderprojekte"
+      },
+      {
+        "url": "brome.de/wp-content/uploads/2025/02/4_Umweltbericht_PV-FFA_Zicherie_Anlage_1_Artenschutz.pdf",
+        "disposition": "reviewed",
+        "reason": "Artenschutzrechtlicher Fachbeitrag zur Freiflächen-PV Zicherie (RWE, 14.01.2025) aus der Bauleitplanung; keine Förderung für Private.",
+        "evidenceUrl": "https://brome.de/massnahmen-und-foerderprojekte"
+      }
+    ]
+  },
+  {
+    "regionId": "03151021",
+    "name": "Parsau",
+    "checkedAt": "2026-09-25T22:08:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Parsau gehört zur Samtgemeinde Brome.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Parsau noch die Samtgemeinde Brome führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die Seite „Maßnahmen + Förderprojekte“ listet Fördermaßnahmen der Gemeinde selbst (Dorfregion/KLARA, Außenanlage Bürgerzentrum, Vergaben). Förderung für Private dort nur über die Dorfentwicklung des Landes. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche samtgemeinde-brome.de 25.09.2026: Balkonkraftwerk (0), Photovoltaik (5, nur F-Plan Freiflächen-PV), Wärmepumpe (0), Förderprogramm (2, Dorfregion), Zuschuss (4, Jugend/Formulare), Klimaschutz (2, Windplanung/Nachhaltigkeit)",
+      "Websuche „Samtgemeinde Brome Förderung Balkonkraftwerk Photovoltaik Zuschuss“ (25.09.2026): nur Freiflächen-PV-Planung, kein Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)",
+      "Seite „Maßnahmen + Förderprojekte“ parsau.de am 25.09.2026 vollständig gelesen, Stichwortprüfung auf Photovoltaik/Solar/Balkon/Wärmepumpe/Speicher/Zuschuss ohne Treffer zu einem Programm für Private"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.parsau.de/massnahmen-foerderprojekte.cfm",
+        "finding": "Am 25.09.2026 gelesen: „Bewilligte Fördermaßnahmen in der Gemeinde Parsau“ (KLARA 2023–2027, Dorfregion) und Vergabebekanntmachungen der Gemeinde — keine Förderung für Private im Energiebereich."
+      },
+      {
+        "url": "https://www.samtgemeinde-brome.de/?s=Photovoltaik",
+        "finding": "Volltextsuche der Samtgemeinde Brome am 25.09.2026: Photovoltaik (5 Treffer, nur Flächennutzungsplan Freiflächen-PV), Balkonkraftwerk (0), Wärmepumpe (0), Förderprogramm (Dorfregion „Dörfer am Drömling“), Zuschuss (Jugendfahrten, Formulare, Ortsrecht), Klimaschutz (Windplanung, Nachhaltigkeitslabel) — kein Zuschuss für Private im Energiebereich. Seite „Nachhaltigkeit“ (Zielvereinbarung UAN) ebenfalls ohne Förderangebot."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "parsau.de/massnahmen-foerderprojekte.cfm",
+        "disposition": "reviewed",
+        "reason": "Fördermaßnahmen und Vergaben der Gemeinde selbst; keine Förderung für Private.",
+        "evidenceUrl": "https://www.parsau.de/massnahmen-foerderprojekte.cfm"
+      }
+    ]
+  },
+  {
+    "regionId": "03151027",
+    "name": "Schwülper",
+    "checkedAt": "2026-09-25T22:10:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen der Gemeinde Schwülper (Einheitsgemeinde).",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Gemeinde Schwülper führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. „Förderprojekte“ nennt nur den NBank-geförderten KiTa-Umbau; die Klimapaten-Seiten informieren und verweisen auf Bundesprogramme. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche gemeinde-schwuelper.de 25.09.2026: Balkonkraftwerk und Wärmepumpe (je 1 Treffer: Klimapaten-Infoseite), Photovoltaik (B-Plan Freiflächen-PV, Klimapaten-Infoseite), Zuschuss (Rats- und Ausschusssitzungen 2014–2022), Förderung (Kitas, Dorfentwicklung, Förderprojekte, Klimapaten)",
+      "Seiten „Förderprojekte“, „Klimapaten“ und „Energetische Gebäude-Optimierung“ sowie die Broschüre Klimaclever-Kompass am 25.09.2026 gelesen",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-schwuelper.de/foerderprojekte",
+        "finding": "Am 25.09.2026 gelesen: einziger Eintrag „Förderung Umbau KiTa Walle durch NBank“ mit Vorhabenbeschreibung — Förderung an die Gemeinde, keine Förderung für Private. Die Varianten ?rCH=2 und ?rCH=-2 sind dieselbe Seite mit anderer Schriftgröße (Joomla-Schriftgrößenschalter)."
+      },
+      {
+        "url": "https://www.gemeinde-schwuelper.de/klimapaten/energetische-gebaeude-optimierung",
+        "finding": "Klimapaten-Seite am 25.09.2026 gelesen: Informationsmaterial zu Photovoltaik, Balkonkraftwerk und Wärmepumpen mit Verweisen auf KfW, BAFA (iSFP) und BEG — kein Zuschuss der Gemeinde."
+      },
+      {
+        "url": "https://www.gemeinde-schwuelper.de/attachments/article/285/Klimacleverkompass_Web.pdf",
+        "finding": "Broschüre „Klimaclever-Kompass“ (Landkreis Gifhorn) am 25.09.2026 gelesen: Förderhinweise nur auf KfW-Kredit, KfW-Ladestation 900 € und das frühere Landes-Batteriespeicherprogramm Niedersachsen — kein Programm der Gemeinde."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-schwuelper.de/foerderprojekte",
+        "disposition": "reviewed",
+        "reason": "Nur NBank-Förderung des KiTa-Umbaus an die Gemeinde.",
+        "evidenceUrl": "https://www.gemeinde-schwuelper.de/foerderprojekte"
+      },
+      {
+        "url": "gemeinde-schwuelper.de/foerderprojekte?rCH=-2",
+        "disposition": "replaced",
+        "reason": "Dieselbe Seite wie /foerderprojekte, nur mit Schriftgrößen-Parameter; durch das gelesene Original erledigt.",
+        "evidenceUrl": "https://www.gemeinde-schwuelper.de/foerderprojekte"
+      },
+      {
+        "url": "gemeinde-schwuelper.de/foerderprojekte?rCH=2",
+        "disposition": "replaced",
+        "reason": "Dieselbe Seite wie /foerderprojekte, nur mit Schriftgrößen-Parameter; durch das gelesene Original erledigt.",
+        "evidenceUrl": "https://www.gemeinde-schwuelper.de/foerderprojekte"
+      },
+      {
+        "url": "gemeinde-schwuelper.de/attachments/article/285/Klimacleverkompass_Web.pdf",
+        "disposition": "reviewed",
+        "reason": "Informationsbroschüre des Landkreises mit Hinweisen auf Bundes- und frühere Landesprogramme; kein Gemeindeprogramm.",
+        "evidenceUrl": "https://www.gemeinde-schwuelper.de/attachments/article/285/Klimacleverkompass_Web.pdf"
+      }
+    ]
+  },
+  {
+    "regionId": "03151034",
+    "name": "Vordorf",
+    "checkedAt": "2026-09-25T22:13:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Vordorf gehört zur Samtgemeinde Papenteich.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Vordorf noch die Samtgemeinde Papenteich führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die einzige Vordorfer Fundstelle ist eine reine Logo-Seite; die Balkonkraftwerk-Treffer der Samtgemeinde betreffen gemeindeeigene Anlagen in Didderse. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche papenteich.de 25.09.2026: Balkonkraftwerk (3: Haushaltspläne Didderse 2024–2026, gelesen), Photovoltaik (Haushaltspläne, F-Pläne, Schul-PV), Zuschuss (Abfall, Wohngeld, Schwimmkurse, Sommerticket, Fahrten/Lager)",
+      "Seite vordorf.de/texte/seite.php?id=596643 und Navigation der Gemeinde Vordorf am 25.09.2026 gelesen",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vordorf.de/texte/seite.php?id=596643",
+        "finding": "Am 25.09.2026 gelesen: Seite „Förderprogramm Logo – Gemeinde Vordorf“ zeigt nur das Logo eines Förderprogramms (Bildseite ohne Text); die Navigation der Gemeinde hat keine Rubrik Klimaschutz/Energie/Förderung."
+      },
+      {
+        "url": "https://www.papenteich.de/?ffmod=suche&NavID=3716.341&such=Balkonkraftwerk",
+        "finding": "Volltextsuche der Samtgemeinde Papenteich am 25.09.2026: Balkonkraftwerk nur in den Haushaltsplänen 2024–2026 der Gemeinde Didderse — dort die Anschaffung eigener Balkonkraftwerke für Bürgerbüro und BBS (INV 200136/200152), kein Zuschuss für Private. Photovoltaik: Haushaltspläne, F-Pläne, PV auf einer Schule; Zuschuss: Abfallentsorgung, Wohngeld, Schwimmkurse, Fahrten/Lager — kein Programm für Private im Energiebereich."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vordorf.de/texte/seite.php?id=596643",
+        "disposition": "reviewed",
+        "reason": "Reine Logo-Seite eines Förderprogramms ohne Inhalt; kein Programm für Private.",
+        "evidenceUrl": "https://www.vordorf.de/texte/seite.php?id=596643"
+      }
+    ]
+  },
+  {
+    "regionId": "03151006",
+    "name": "Calberlah",
+    "checkedAt": "2026-09-25T22:14:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Calberlah gehört zur Samtgemeinde Isenbüttel; das isi-Programm der Gemeinde Isenbüttel gilt nur dort.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Calberlah noch die Samtgemeinde Isenbüttel führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die gespeicherten Fundstellen sind die Förderprojekte-Seite der Samtgemeinde (Mittel an die Samtgemeinde) und eine Adresse, die auf deren Kontaktseite umleitet. Das isi-Klimaschutzprogramm trägt die Gemeinde Isenbüttel für ihr eigenes Gebiet. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche isenbuettel.de 25.09.2026: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Wärmepumpe, Förderprogramm",
+      "Websuche „Gemeinde Calberlah Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss“ (25.09.2026): kein Gemeindeprogramm",
+      "Katalogeintrag isi-Programm (Gemeinde Isenbüttel, 03151013) am 25.09.2026 gegengelesen: Gebiet nur Isenbüttel",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.isenbuettel.de/Rathaus-und-Politik/F%C3%B6rderprojekte-",
+        "finding": "Seite „Förderprojekte“ der Samtgemeinde am 25.09.2026 gelesen: Ganztagsausbau Grundschule Ribbesbüttel, Bingo-Umweltstiftung (Plapperkiste), NKI-Energiemanagement der Samtgemeinde — Fördermittel an die Samtgemeinde, keine Förderung für Private."
+      },
+      {
+        "url": "https://www.isenbuettel.de/?qs=Photovoltaik",
+        "finding": "Volltextsuche der Samtgemeinde Isenbüttel am 25.09.2026: Balkonkraftwerk (0), Photovoltaik (33, Bauleitplanung Freiflächen-PV, Entwicklungskonzept), Solar (11, Bebauungspläne), Zuschuss (26, Jugendfahrten, Partnerstadtfahrten, Vereine), Wärmepumpe (3, Wärmeplanung), Förderprogramm (5, Freibad, Ganztagsschule) — kein Zuschuss der Samtgemeinde für Private im Energiebereich."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "isenbuettel.de/Rathaus-und-Politik/F%C3%B6rderprojekte-",
+        "disposition": "reviewed",
+        "reason": "Förderprojekte der Samtgemeinde selbst; keine Förderung für Private.",
+        "evidenceUrl": "https://www.isenbuettel.de/Rathaus-und-Politik/F%C3%B6rderprojekte-"
+      },
+      {
+        "url": "isenbuettel.de/Rathaus-und-Politik/F%C3%B6rderprojekte-/index.php?object=tx,4131.1.1&amp;ModID=9&amp;FID=4131.1.1&amp;NavID=4131.510",
+        "disposition": "reviewed",
+        "reason": "Leitet am 25.09.2026 auf die Kontaktseite der Samtgemeinde (Ansprechpersonen) um; kein Programm.",
+        "evidenceUrl": "https://www.isenbuettel.de/Rathaus-und-Politik/F%C3%B6rderprojekte-"
+      }
+    ]
+  },
+  {
+    "regionId": "03151037",
+    "name": "Wasbüttel",
+    "checkedAt": "2026-09-25T22:14:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Wasbüttel gehört zur Samtgemeinde Isenbüttel.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Wasbüttel noch die Samtgemeinde Isenbüttel führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Energiethemen erscheinen nur als Gemeindeprojekte und Informationsabende (Stammtisch Energiesparen). Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche wasbuettel.de 25.09.2026: förderprogramm, balkonkraftwerk, photovoltaik, zuschuss, solar",
+      "Volltextsuche isenbuettel.de 25.09.2026 (Samtgemeinde)",
+      "Websuche „Gemeinde Wasbüttel Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss“ (25.09.2026): kein Gemeindeprogramm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wasbuettel.de/index.php/component/finder/search?f=2&q=f%C3%B6rderprogramm&Itemid=301",
+        "finding": "Volltextsuche der Gemeinde Wasbüttel am 25.09.2026: Förderprogramm (5: Freibad, Dorfregion Alte Schule, Veranstaltungen), Balkonkraftwerk (1: Stammtisch Energiesparen 2022), Photovoltaik (19: Gemeindeprojekte, Ratsberichte, „Wasbütteler steigen ins Solarstrom-Geschäft ein“), Zuschuss (78: Vereine, Haushalt), Solar (13) — kein Zuschuss der Gemeinde für Private im Energiebereich. Die gespeicherten Varianten mit Kalenderparametern liefern dieselbe Trefferliste."
+      },
+      {
+        "url": "https://www.isenbuettel.de/?qs=Photovoltaik",
+        "finding": "Volltextsuche der Samtgemeinde Isenbüttel am 25.09.2026: Balkonkraftwerk (0), Photovoltaik (33, Bauleitplanung Freiflächen-PV, Entwicklungskonzept), Solar (11, Bebauungspläne), Zuschuss (26, Jugendfahrten, Partnerstadtfahrten, Vereine), Wärmepumpe (3, Wärmeplanung), Förderprogramm (5, Freibad, Ganztagsschule) — kein Zuschuss der Samtgemeinde für Private im Energiebereich."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wasbuettel.de/index.php/component/finder/search?f=2&amp;Itemid=301&amp;q=f%C3%B6rderprogramm&amp;modjemcal_id=294&amp;modjemcal_month=08&amp;modjemcal_year=2025",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisseite der Gemeinde zu „förderprogramm“ (Kalenderparameter ändern nur das Seitenmodul): nur Gemeindeprojekte und Dorfregion.",
+        "evidenceUrl": "https://www.wasbuettel.de/index.php/component/finder/search?f=2&q=f%C3%B6rderprogramm&Itemid=301"
+      },
+      {
+        "url": "wasbuettel.de/index.php/component/finder/search?f=2&amp;Itemid=301&amp;q=f%C3%B6rderprogramm&amp;modjemcal_id=294&amp;modjemcal_month=08&amp;modjemcal_year=2026",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisseite der Gemeinde zu „förderprogramm“ (Kalenderparameter ändern nur das Seitenmodul): nur Gemeindeprojekte und Dorfregion.",
+        "evidenceUrl": "https://www.wasbuettel.de/index.php/component/finder/search?f=2&q=f%C3%B6rderprogramm&Itemid=301"
+      },
+      {
+        "url": "wasbuettel.de/index.php/component/finder/search?f=2&amp;Itemid=301&amp;q=f%C3%B6rderprogramm&amp;modjemcal_id=294&amp;modjemcal_month=08&amp;modjemcal_year=2027",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisseite der Gemeinde zu „förderprogramm“ (Kalenderparameter ändern nur das Seitenmodul): nur Gemeindeprojekte und Dorfregion.",
+        "evidenceUrl": "https://www.wasbuettel.de/index.php/component/finder/search?f=2&q=f%C3%B6rderprogramm&Itemid=301"
+      },
+      {
+        "url": "wasbuettel.de/index.php/component/finder/search?f=2&amp;Itemid=301&amp;q=f%C3%B6rderprogramm&amp;modjemcal_id=294&amp;modjemcal_month=7&amp;modjemcal_year=2026",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisseite der Gemeinde zu „förderprogramm“ (Kalenderparameter ändern nur das Seitenmodul): nur Gemeindeprojekte und Dorfregion.",
+        "evidenceUrl": "https://www.wasbuettel.de/index.php/component/finder/search?f=2&q=f%C3%B6rderprogramm&Itemid=301"
+      },
+      {
+        "url": "wasbuettel.de/index.php/component/finder/search?f=2&amp;Itemid=301&amp;q=f%C3%B6rderprogramm&amp;modjemcal_id=294&amp;modjemcal_month=9&amp;modjemcal_year=2026",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisseite der Gemeinde zu „förderprogramm“ (Kalenderparameter ändern nur das Seitenmodul): nur Gemeindeprojekte und Dorfregion.",
+        "evidenceUrl": "https://www.wasbuettel.de/index.php/component/finder/search?f=2&q=f%C3%B6rderprogramm&Itemid=301"
+      },
+      {
+        "url": "wasbuettel.de/index.php/component/finder/search?f=2&amp;q=f%C3%B6rderprogramm&amp;Itemid=301",
+        "disposition": "reviewed",
+        "reason": "Suchergebnisseite der Gemeinde zu „förderprogramm“ (Kalenderparameter ändern nur das Seitenmodul): nur Gemeindeprojekte und Dorfregion.",
+        "evidenceUrl": "https://www.wasbuettel.de/index.php/component/finder/search?f=2&q=f%C3%B6rderprogramm&Itemid=301"
+      }
+    ]
   }
 ]
