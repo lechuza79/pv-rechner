@@ -49,6 +49,7 @@ async function oeffneSuche(page: Page) {
 for (const g of GROESSEN) {
   for (const { art, pfad } of SEITENARTEN) {
     test(`${art} (${g.name}): Suche öffnet, findet, passt und schließt`, async ({ page }) => {
+      await page.addInitScript({ content: MESSKOPF });
       await page.setViewportSize({ width: g.width, height: g.height });
       const sep = pfad.includes("?") ? "&" : "?";
       await page.goto(`${pfad}${sep}suchvorschau=1`, { waitUntil: "domcontentloaded" });
@@ -84,15 +85,13 @@ for (const g of GROESSEN) {
       // Lesbar: derselbe Messkopf wie der Kontrast-Wächter der ganzen Site,
       // beschränkt auf das Suchfenster. Das Fenster hat einen vollen, festen
       // Grund; die Messung am Baum ist hier also die Messung am Bild.
-      await page.addScriptTag({ content: MESSKOPF });
-      const befunde = (await page.evaluate(() =>
-        (window as unknown as { __kontrastMessen: () => Kontrastbefund[] }).__kontrastMessen(),
-      )) as Kontrastbefund[];
-      const imFenster: Kontrastbefund[] = [];
-      for (const b of befunde) {
-        if (b.kontrast >= grenzeFuer(b)) continue;
-        if (await page.locator(`#sc-search-panel [data-kontrast="${b.marke}"]`).count()) imFenster.push(b);
-      }
+      // Measure the complete flyout in one browser call; scanning the entire
+      // animated hero and filtering via one round-trip per label stalls CI.
+      const befunde = await page.evaluate(() =>
+        (window as unknown as { __kontrastMessen: (root: Element) => Kontrastbefund[] })
+          .__kontrastMessen(document.querySelector("#sc-search-panel")!),
+      );
+      const imFenster = befunde.filter((b) => b.kontrast < grenzeFuer(b));
       expect(imFenster, imFenster.map(zeile).join("\n")).toEqual([]);
 
       // Escape schließt und gibt den Fokus an den Knopf zurück.
@@ -198,7 +197,7 @@ test("Pfeiltasten führen vom Feld durch die Treffer", async ({ page }) => {
 // Die Lupe macht die Kopfzeile breiter. Knapp über der Umschaltbreite zum
 // Burger ist dort am wenigsten Platz, und genau da lief die Kopfzeile schon
 // einmal über (ein einziger neuer Menüpunkt, 1162 px Inhalt in 1040 px).
-for (const width of [375, 1024, 1280, 1281, 1300, 1366, 1440]) {
+for (const width of [320, 375, 1024, 1280, 1281, 1300, 1366, 1440]) {
   test(`Kopfzeile mit Lupe passt auf ${width}px, eine Zeile, nichts überlappt`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/impressum?suchvorschau=1", { waitUntil: "domcontentloaded" });

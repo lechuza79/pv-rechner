@@ -423,10 +423,10 @@
 .sc-search-pages{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
 .sc-search-pages small{display:block;margin-top:4px;font-weight:400;color:var(--sc-nav-muted,#3d5b60)}
 @media(max-width:1280px){
- html[data-sc-shell] .site-header.sc-global-header{gap:8px}
+ .site-header.sc-global-header,html[data-sc-shell] .site-header.sc-global-header{gap:8px}
  .sc-global-header>.sc-search-toggle{margin-left:auto;margin-right:0;width:48px;height:48px;flex-basis:48px;border:0}
  .sc-global-header>.sc-search-toggle svg{width:28px;height:28px}
- html[data-sc-shell] .sc-global-header>.sc-nav-toggle{display:grid;place-items:center;width:48px;height:48px;flex:0 0 48px;padding:10px}
+ .sc-global-header>.sc-nav-toggle,html[data-sc-shell] .sc-global-header>.sc-nav-toggle{display:grid;place-items:center;width:48px;height:48px;flex:0 0 48px;padding:10px}
  .sc-search-panel{position:fixed;top:var(--search-top,72px);left:12px;right:12px;width:auto;padding:20px;max-height:calc(100dvh - var(--search-top,72px) - 12px);border-radius:16px}
  .sc-search-close{top:14px;right:12px}
  .sc-search-field input{font-size:18px}

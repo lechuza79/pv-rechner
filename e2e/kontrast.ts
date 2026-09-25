@@ -61,7 +61,7 @@ export type Kontrastbefund = {
  * anders in der Datei.
  */
 export const MESSKOPF = String.raw`
-window.__kontrastMessen = function () {
+window.__kontrastMessen = function (root = document.body) {
   // FARBEN WERDEN NICHT VON HAND ZERLEGT. getComputedStyle liefert je nach
   // Browser und Eingabe rgb(), rgba(), color(srgb …) und color(display-p3 …);
   // color() trägt Anteile von 0..1, rgb() Werte von 0..255. Ein gemeinsamer
@@ -117,7 +117,7 @@ window.__kontrastMessen = function () {
   var befunde = [];
   var lfd = 0;
   var gesehen = new Set();
-  var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   var n;
   while ((n = walker.nextNode())) {
     if (!(n.nodeValue || "").trim()) continue;
