@@ -160,6 +160,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "vg-bad-kreuznach-balkonkraftwerke",
   // Donauwörth, aufgenommen am 25.09.2026 als beendetes Programm.
   "donauwoerth-kleinst-pv",
+  // Isenbüttel, aufgenommen am 25.09.2026; für 2026 ausgeschöpft, die
+  // vollständigen Bedingungen sind nicht veröffentlicht.
+  "isenbuettel-isi-pv",
   // Stadt Bad Kreuznach, aufgenommen am 24.09.2026. Das Verfahren ist das
   // umgekehrte (Antrag NACH Kauf und Installation, binnen sechs Monaten) —
   // dieselbe Lage wie bei Kandel und Langenlonsheim-Stromberg: Die vorhandenen

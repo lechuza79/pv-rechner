@@ -64156,5 +64156,252 @@
         "evidenceUrl": "https://www.lemfoerde.de/portal/seiten/acht-weitere-projekte-erhalten-eine-leader-foerderung-900000199-21870.html?naviID=900000268&brotID=900000268&rubrik=10000006"
       }
     ]
+  },
+  {
+    "regionId": "03151007",
+    "name": "Dedelstorf",
+    "checkedAt": "2026-09-25T18:04:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Dedelstorf wird von der Samtgemeinde Hankensbüttel verwaltet; deren Website trägt die Gemeindeseiten.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Dedelstorf noch die Samtgemeinde Hankensbüttel führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; private Förderung dort nur über die Dorfentwicklung des Landes. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche sg-hankensbuettel.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe, Klimaschutz",
+      "Seite „Information für private Antragsteller“ (Dorfentwicklung) am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Hankensbüttel Förderung Balkonkraftwerk Photovoltaik Zuschuss“ (25.09.2026): kein Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&brotID=904000292&rubrik=4000001",
+        "finding": "Erfasste Fundstelle ist die Seite zur Schülerbeförderung der Samtgemeinde (Treffer auf „Beförderung“), am 25.09.2026 gelesen — kein Förderangebot für Energie."
+      },
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/suche.html?suchbegriff=Photovoltaik&suche=1",
+        "finding": "Volltextsuche der Samtgemeinde am 25.09.2026: „Photovoltaik“ nur Windenergie/Freiflächen-PV und Flächennutzungsplan; „Balkonkraftwerk“ und „Wärmepumpe“ 0 Treffer; „Zuschuss“ nur Jugendfahrten und eine Meldung von 2023, dass Kommunen zur Heizungsförderung keine Auskunft geben können; „Förderprogramm“ nur „Kurze Wege für den Klimaschutz“ (Regionalverband, 2018, für Kommunen und Vereine) und Dorfentwicklung."
+      },
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/seiten/information-fuer-private-antragsteller-904000387-20751.html",
+        "finding": "Am 25.09.2026 gelesen: private Förderung nur über die Dorfentwicklung des Landes (Antrag beim Amt für regionale Landesentwicklung bis 15.09., Beratung durch Planungsbüro) — Landesprogramm für Bausubstanz, kein kommunaler Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises (200 €, einkommensgebunden) ist ausgeschöpft, Haushaltsansatz ab 2025 null; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&amp;brotID=904000292&amp;rubrik=4000001",
+        "disposition": "reviewed",
+        "reason": "Seite zur Schülerbeförderung, Stichworttreffer ohne Förderbezug; Förderangebot der Samtgemeinde über Volltextsuche und Dorfentwicklungsseite geprüft.",
+        "evidenceUrl": "https://www.sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&brotID=904000292&rubrik=4000001"
+      }
+    ]
+  },
+  {
+    "regionId": "03151011",
+    "name": "Hankensbüttel",
+    "checkedAt": "2026-09-25T18:04:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Hankensbüttel wird von der Samtgemeinde Hankensbüttel verwaltet; deren Website trägt die Gemeindeseiten.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Hankensbüttel noch die Samtgemeinde Hankensbüttel führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; private Förderung dort nur über die Dorfentwicklung des Landes. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche sg-hankensbuettel.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe, Klimaschutz",
+      "Seite „Information für private Antragsteller“ (Dorfentwicklung) am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Hankensbüttel Förderung Balkonkraftwerk Photovoltaik Zuschuss“ (25.09.2026): kein Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&brotID=904000292&rubrik=4000001",
+        "finding": "Erfasste Fundstelle ist die Seite zur Schülerbeförderung der Samtgemeinde (Treffer auf „Beförderung“), am 25.09.2026 gelesen — kein Förderangebot für Energie."
+      },
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/suche.html?suchbegriff=Photovoltaik&suche=1",
+        "finding": "Volltextsuche der Samtgemeinde am 25.09.2026: „Photovoltaik“ nur Windenergie/Freiflächen-PV und Flächennutzungsplan; „Balkonkraftwerk“ und „Wärmepumpe“ 0 Treffer; „Zuschuss“ nur Jugendfahrten und eine Meldung von 2023, dass Kommunen zur Heizungsförderung keine Auskunft geben können; „Förderprogramm“ nur „Kurze Wege für den Klimaschutz“ (Regionalverband, 2018, für Kommunen und Vereine) und Dorfentwicklung."
+      },
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/seiten/information-fuer-private-antragsteller-904000387-20751.html",
+        "finding": "Am 25.09.2026 gelesen: private Förderung nur über die Dorfentwicklung des Landes (Antrag beim Amt für regionale Landesentwicklung bis 15.09., Beratung durch Planungsbüro) — Landesprogramm für Bausubstanz, kein kommunaler Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises (200 €, einkommensgebunden) ist ausgeschöpft, Haushaltsansatz ab 2025 null; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&amp;brotID=904000292&amp;rubrik=4000001",
+        "disposition": "reviewed",
+        "reason": "Seite zur Schülerbeförderung, Stichworttreffer ohne Förderbezug; Förderangebot der Samtgemeinde über Volltextsuche und Dorfentwicklungsseite geprüft.",
+        "evidenceUrl": "https://www.sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&brotID=904000292&rubrik=4000001"
+      }
+    ]
+  },
+  {
+    "regionId": "03151019",
+    "name": "Obernholz",
+    "checkedAt": "2026-09-25T18:04:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Obernholz wird von der Samtgemeinde Hankensbüttel verwaltet; deren Website trägt die Gemeindeseiten.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Obernholz noch die Samtgemeinde Hankensbüttel führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; private Förderung dort nur über die Dorfentwicklung des Landes. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche sg-hankensbuettel.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe, Klimaschutz",
+      "Seite „Information für private Antragsteller“ (Dorfentwicklung) am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Hankensbüttel Förderung Balkonkraftwerk Photovoltaik Zuschuss“ (25.09.2026): kein Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&brotID=904000292&rubrik=4000001",
+        "finding": "Erfasste Fundstelle ist die Seite zur Schülerbeförderung der Samtgemeinde (Treffer auf „Beförderung“), am 25.09.2026 gelesen — kein Förderangebot für Energie."
+      },
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/suche.html?suchbegriff=Photovoltaik&suche=1",
+        "finding": "Volltextsuche der Samtgemeinde am 25.09.2026: „Photovoltaik“ nur Windenergie/Freiflächen-PV und Flächennutzungsplan; „Balkonkraftwerk“ und „Wärmepumpe“ 0 Treffer; „Zuschuss“ nur Jugendfahrten und eine Meldung von 2023, dass Kommunen zur Heizungsförderung keine Auskunft geben können; „Förderprogramm“ nur „Kurze Wege für den Klimaschutz“ (Regionalverband, 2018, für Kommunen und Vereine) und Dorfentwicklung."
+      },
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/seiten/information-fuer-private-antragsteller-904000387-20751.html",
+        "finding": "Am 25.09.2026 gelesen: private Förderung nur über die Dorfentwicklung des Landes (Antrag beim Amt für regionale Landesentwicklung bis 15.09., Beratung durch Planungsbüro) — Landesprogramm für Bausubstanz, kein kommunaler Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises (200 €, einkommensgebunden) ist ausgeschöpft, Haushaltsansatz ab 2025 null; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&amp;brotID=904000292&amp;rubrik=4000001",
+        "disposition": "reviewed",
+        "reason": "Seite zur Schülerbeförderung, Stichworttreffer ohne Förderbezug; Förderangebot der Samtgemeinde über Volltextsuche und Dorfentwicklungsseite geprüft.",
+        "evidenceUrl": "https://www.sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&brotID=904000292&rubrik=4000001"
+      }
+    ]
+  },
+  {
+    "regionId": "03151028",
+    "name": "Sprakensehl",
+    "checkedAt": "2026-09-25T18:04:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Sprakensehl wird von der Samtgemeinde Hankensbüttel verwaltet; deren Website trägt die Gemeindeseiten.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Sprakensehl noch die Samtgemeinde Hankensbüttel führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; private Förderung dort nur über die Dorfentwicklung des Landes. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche sg-hankensbuettel.de 25.09.2026: Photovoltaik, Balkonkraftwerk, Zuschuss, Förderprogramm, Wärmepumpe, Klimaschutz",
+      "Seite „Information für private Antragsteller“ (Dorfentwicklung) am 25.09.2026 gelesen",
+      "Websuche „Samtgemeinde Hankensbüttel Förderung Balkonkraftwerk Photovoltaik Zuschuss“ (25.09.2026): kein Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&brotID=904000292&rubrik=4000001",
+        "finding": "Erfasste Fundstelle ist die Seite zur Schülerbeförderung der Samtgemeinde (Treffer auf „Beförderung“), am 25.09.2026 gelesen — kein Förderangebot für Energie."
+      },
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/suche.html?suchbegriff=Photovoltaik&suche=1",
+        "finding": "Volltextsuche der Samtgemeinde am 25.09.2026: „Photovoltaik“ nur Windenergie/Freiflächen-PV und Flächennutzungsplan; „Balkonkraftwerk“ und „Wärmepumpe“ 0 Treffer; „Zuschuss“ nur Jugendfahrten und eine Meldung von 2023, dass Kommunen zur Heizungsförderung keine Auskunft geben können; „Förderprogramm“ nur „Kurze Wege für den Klimaschutz“ (Regionalverband, 2018, für Kommunen und Vereine) und Dorfentwicklung."
+      },
+      {
+        "url": "https://www.sg-hankensbuettel.de/portal/seiten/information-fuer-private-antragsteller-904000387-20751.html",
+        "finding": "Am 25.09.2026 gelesen: private Förderung nur über die Dorfentwicklung des Landes (Antrag beim Amt für regionale Landesentwicklung bis 15.09., Beratung durch Planungsbüro) — Landesprogramm für Bausubstanz, kein kommunaler Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises (200 €, einkommensgebunden) ist ausgeschöpft, Haushaltsansatz ab 2025 null; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&amp;brotID=904000292&amp;rubrik=4000001",
+        "disposition": "reviewed",
+        "reason": "Seite zur Schülerbeförderung, Stichworttreffer ohne Förderbezug; Förderangebot der Samtgemeinde über Volltextsuche und Dorfentwicklungsseite geprüft.",
+        "evidenceUrl": "https://www.sg-hankensbuettel.de/portal/seiten/schuelerbefoerderung-904000389-20751.html?naviID=904000292&brotID=904000292&rubrik=4000001"
+      }
+    ]
+  },
+  {
+    "regionId": "03151013",
+    "name": "Isenbüttel",
+    "checkedAt": "2026-09-25T18:04:00Z",
+    "recheckAt": "2027-01-15T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Kreisebene Gifhorn.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Isenbüttel fördert im isi Klimaschutz-Förderprogramm Solarstrom-Anlagen auf West-/Ostdächern und an Fassaden mit 300 €/kWp; die Mittel für 2026 sind laut Gemeinde ausgeschöpft. Im Katalog als ausgeschöpft aufgenommen, ohne Rechenwert (vollständige Bedingungen unveröffentlicht). Heizung nur im energiebedarfsabhängigen Gebäudezuschuss, kein Wärmepumpen-Pauschalzuschuss; kein Balkon- oder Speicherzuschuss. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft (am 23.09.2026 geklärt). Adversarial gegengeprüft am 25.09.2026. Wiederprüfung nach Beginn des Haushaltsjahres 2027.",
+    "searches": [
+      "Programmseite isi Klimaschutz-Förderprogramm und alle 17 verlinkten PDFs am 25.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 25.09.2026",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)",
+      "Unabhängige Zweitprüfung am 25.09.2026 fand die vollständigen Förderbedingungen unter FID 4149.72.1"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-isenbuettel.de/Rat-Verwaltung/isi-Klimaschutz-F%C3%B6rderprogramm/isi-Klimaschutz-F%C3%B6rderprogramm.php",
+        "finding": "Programmseite am 25.09.2026 gelesen: „Bitte beachten Sie, dass die Fördermittel für das Haushaltsjahr 2026 ausgeschöpft sind.“ Photovoltaik wird gefördert, „wenn sie in West-Ost-Richtung ausgerichtet oder auf Fassaden installiert werden“; „richtet sich nur an Isenbütteler Einwohnerinnen und Einwohner“."
+      },
+      {
+        "url": "https://www.gemeinde-isenbuettel.de/loadDocument.phtml?FID=4149.84.1&Ext=PDF",
+        "finding": "PV-Antragsformular am 25.09.2026 gelesen: „Der Zuschuss beträgt 300 €/kWp.“ Nr. 4.1.9: Ausrichtung „zwischen 45° und 150° West bzw. - 45° und - 150° Ost“; Nr. 6.1.5a: Beginn erst nach Bewilligung; Antragsteller Eigentümer oder WEG aus natürlichen Personen. Vollständige Förderbedingungen nur bei der Gemeinde."
+      },
+      {
+        "url": "https://www.gemeinde-isenbuettel.de/loadDocument.phtml?FID=4149.72.1&Ext=PDF",
+        "finding": "Vollständige Förderbedingungen (geändert mit Beschluss vom 22.05.2019, auf der Programmseite nicht verlinkt) am 25.09.2026 gelesen: Nr. 3.1.7 „Aufdach-Solarstrom-Anlagen in Ost- oder Westrichtung und Solarstrom-Anlagen an Fassaden werden mit einem Zuschuss von 300 Euro/kWp gefördert“ — kein Höchstbetrag; Nr. 2a natürliche Personen als Eigentümer, Eigentümer- bzw. Erbengemeinschaften, Mieter mit Modernisierungsvereinbarung; Nr. 1.2 im Rahmen der verfügbaren Haushaltsmittel."
+      },
+      {
+        "url": "https://www.gemeinde-isenbuettel.de/loadDocument.phtml?FID=4149.80.1&Ext=PDF",
+        "finding": "Antrag Investition Gebäude am 25.09.2026 gelesen: Zuschuss nach Reduzierung des Energiebedarfs, „max. 50 % der Investitionssumme“; Heizungsinvestitionen nur, wenn das Gebäude danach den EnEV-Altbaustandard einhält (Nr. 4.1.4), Initialberatung vorab — kein Pauschalzuschuss für Wärmepumpen, im Katalog nicht als Rechenwert geführt."
+      },
+      {
+        "url": "https://www.gemeinde-isenbuettel.de/loadDocument.phtml?FID=4149.88.1&Ext=PDF",
+        "finding": "Flyer Gebäude (Stand Juni 2025) am 25.09.2026 gelesen: „Solarstrom-Anlagen auf West-Ost-Dächern und an Fassaden werden mit 300 €/kWp bezuschusst.“ Kein Zuschuss für Balkonkraftwerke oder Batteriespeicher."
+      },
+      {
+        "url": "https://www.gemeinde-isenbuettel.de/loadDocument.phtml?FID=4149.71.1&Ext=PDF",
+        "finding": "Flyer Mobilität am 25.09.2026 gelesen: Zuschuss bei Abschaffung eines Verbrenner-Pkw (E-Fahrzeug, Pedelec, Tickets) — außerhalb des Prüfbereichs."
+      },
+      {
+        "url": "https://www.gemeinde-isenbuettel.de/Rat-Verwaltung/Wissenswertes/Richtlinie-zur-F%C3%B6rderung-der-Ansiedlung-von-%C3%84rztinnen-und-%C3%84rzten.php?object=tx,4149.587.1",
+        "finding": "Richtlinie zur Ansiedlung von Ärztinnen und Ärzten; Abruf am 25.09.2026 endet in einer Weiterleitungsschleife, der Titel belegt den fachfremden Gegenstand."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-isenbuettel.de/Rat-Verwaltung/isi-Klimaschutz-F%C3%B6rderprogramm/isi-Klimaschutz-F%C3%B6rderprogramm.php",
+        "disposition": "reviewed",
+        "reason": "Programmseite vollständig gelesen; Programm aufgenommen (isenbuettel-isi-pv).",
+        "evidenceUrl": "https://www.gemeinde-isenbuettel.de/Rat-Verwaltung/isi-Klimaschutz-F%C3%B6rderprogramm/isi-Klimaschutz-F%C3%B6rderprogramm.php"
+      },
+      {
+        "url": "gemeinde-isenbuettel.de/Rat-Verwaltung/isi-Klimaschutz-F%C3%B6rderprogramm",
+        "disposition": "replaced",
+        "reason": "Ordneradresse derselben Programmseite; Abruf liefert denselben Text einschließlich Ausschöpfungshinweis.",
+        "evidenceUrl": "https://www.gemeinde-isenbuettel.de/Rat-Verwaltung/isi-Klimaschutz-F%C3%B6rderprogramm/isi-Klimaschutz-F%C3%B6rderprogramm.php"
+      },
+      {
+        "url": "gemeinde-isenbuettel.de/Rat-Verwaltung/isi-Klimaschutz-F%C3%B6rderprogramm/index.php?object=tx,4149.1.1&amp;ModID=9&amp;FID=4149.4.1&amp;NavID=4149.510",
+        "disposition": "replaced",
+        "reason": "Objektadresse der Rubrik; Abruf am 25.09.2026 liefert nur Navigation und Ortsinfo ohne eigenen Förderinhalt, maßgeblich ist die Programmseite.",
+        "evidenceUrl": "https://www.gemeinde-isenbuettel.de/Rat-Verwaltung/isi-Klimaschutz-F%C3%B6rderprogramm/isi-Klimaschutz-F%C3%B6rderprogramm.php"
+      },
+      {
+        "url": "gemeinde-isenbuettel.de/loadDocument.phtml?FID=4149.88.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Flyer Gebäude gelesen; bestätigt 300 €/kWp.",
+        "evidenceUrl": "https://www.gemeinde-isenbuettel.de/loadDocument.phtml?FID=4149.88.1&Ext=PDF"
+      },
+      {
+        "url": "gemeinde-isenbuettel.de/loadDocument.phtml?FID=4149.71.1&amp;Ext=PDF",
+        "disposition": "reviewed",
+        "reason": "Flyer Mobilität gelesen; außerhalb des Prüfbereichs.",
+        "evidenceUrl": "https://www.gemeinde-isenbuettel.de/loadDocument.phtml?FID=4149.71.1&Ext=PDF"
+      },
+      {
+        "url": "gemeinde-isenbuettel.de/Startseite/Richtlinie-zur-F%C3%B6rderung-der-Ansiedlung-von-%C3%84rztinnen-und-%C3%84rzten.php?object=tx,4149.587.1&amp;NavID=4149.1",
+        "disposition": "reviewed",
+        "reason": "Ärzteansiedlung, fachfremd; Weiterleitungsschleife beim Abruf.",
+        "evidenceUrl": "https://www.gemeinde-isenbuettel.de/Rat-Verwaltung/Wissenswertes/Richtlinie-zur-F%C3%B6rderung-der-Ansiedlung-von-%C3%84rztinnen-und-%C3%84rzten.php?object=tx,4149.587.1"
+      }
+    ]
   }
 ]

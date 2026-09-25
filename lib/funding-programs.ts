@@ -13719,6 +13719,44 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // ─── Aufgenommen am 25.09.2026: Isenbüttel, für 2026 ausgeschöpft ──────────
+  //
+  // Found in the source queue (programme page of the "isi" climate programme).
+  // Read at the source on 25.09.2026: programme page, PV application form
+  // (FID 4149.84), flyer (4149.88, "Stand: Juni 2025") and the full funding
+  // terms (4149.72, "geändert mit Beschluss vom 22.05.2019" — online but not
+  // linked from the page). The page says the funds for budget year 2026 are
+  // exhausted and no funding is possible in 2026; it does not say the
+  // programme has ended. The 2019 terms name no cap per PV system (no. 3.1.7);
+  // the page mentions an updated version that is not published — no
+  // calculation value, and none needed while the budget is exhausted. Heating is funded only inside a separate savings-based
+  // building grant (up to 50 % of the investment, energy advice first), not as
+  // a heat-pump lump sum; that part is not modelled here, hence foerdert pv only.
+  // Adversarial counter-check 25.09.2026: rate, angles, 2026 exhaustion and
+  // procedure confirmed; tenant eligibility for PV unclear (flyer yes, form no).
+  "isenbuettel-isi-pv": {
+    id: "isenbuettel-isi-pv", name: "isi Klimaschutz-Förderprogramm: Solarstrom auf West-/Ostdächern und Fassaden",
+    traeger: "Gemeinde Isenbüttel", level: "kommune", region: "Isenbüttel",
+    bundesland: "Niedersachsen", agsCode: "03151013",
+    url: "https://www.gemeinde-isenbuettel.de/Rat-Verwaltung/isi-Klimaschutz-F%C3%B6rderprogramm/isi-Klimaschutz-F%C3%B6rderprogramm.php",
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp für Aufdach-Anlagen in West- oder Ostrichtung und für Fassadenanlagen",
+    rates: [
+      { label: "Aufdach-Anlage in West- oder Ostrichtung, Fassadenanlage", value: "300 €/kWp — Mittel für 2026 ausgeschöpft" },
+    ],
+    conditions: [
+      "Die Gemeinde meldet die Fördermittel für das Haushaltsjahr 2026 als ausgeschöpft; in 2026 ist keine Förderung mehr möglich",
+      "Nur für Einwohnerinnen und Einwohner von Isenbüttel; bei Wohngebäuden natürliche Personen als Eigentümer, Eigentümer- oder Erbengemeinschaften, Mieter nur mit Modernisierungsvereinbarung mit dem Vermieter",
+      "Aufdach-Anlagen müssen zwischen 45° und 150° West bzw. −45° und −150° Ost ausgerichtet sein; der Installateur bestätigt die Ausrichtung",
+      "Antrag mit Kostenvoranschlag vor Beginn; mit der Installation darf erst nach Bewilligung begonnen werden, Auszahlung nach Abschluss gegen Rechnung",
+      "Nur marktfähige, neue Anlagen; Eigenbau, Prototypen und Gebrauchtanlagen sind ausgeschlossen",
+      "Die veröffentlichten Förderbedingungen (Fassung vom 22.05.2019) nennen keinen Höchstbetrag je Anlage; die Gemeinde spricht von einer aktualisierten Fassung, die nicht online steht",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv"],
+  },
+
   // ─── Aufgenommen am 25.09.2026: Donauwörth, beendetes Programm ─────────────
   //
   // Found in the source queue (document page "Förderung Kleinstphotovoltaik –
