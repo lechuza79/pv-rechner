@@ -21,6 +21,9 @@ import { MESSKOPF, grenzeFuer, zeile, type Kontrastbefund } from "./kontrast";
 // Datenbank im Prüflauf.
 
 test.describe.configure({ timeout: 60_000 });
+// Search interaction does not depend on animated weather; keep software WebGL
+// from starving input and DOM measurements on CI. The scene still mounts.
+test.use({ contextOptions: { reducedMotion: "reduce" } });
 
 const SEITENARTEN = [
   { art: "React-Seite", pfad: "/ratgeber" },
