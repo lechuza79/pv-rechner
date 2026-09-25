@@ -14,8 +14,12 @@
  *     reports the monitor as unavailable instead of summing the rest.
  *   - A district whose towns are ALL missing, or more than 2 % missing
  *     overall, is a systemic fault (wrong version, half an upload) — abort.
- *   - Two runs may overlap (local monthly run, CI recovery): the pointer is
- *     re-read right before the switch; if another run moved it, this one stops.
+ *   - Two runs may overlap (local monthly run, CI recovery). A writing run
+ *     holds the database lease (lib/district-package-lock.ts) from before it
+ *     reads the pointer until after cleanup, and renews it before building each
+ *     district, before the pointer switch and before cleanup; a lost lease
+ *     stops the run before its next write. The pointer is additionally re-read
+ *     before the switch (second line of defence, not the lock).
  */
 import { brotliCompressSync, brotliDecompressSync, constants } from "node:zlib";
 import type { GemeindePaket } from "./gemeinde-paket";
@@ -34,6 +38,7 @@ import {
   type DistrictManifestEntry,
   type DistrictMembership,
 } from "./district-package";
+import type { DistrictLock } from "./district-package-lock";
 
 export type DistrictStore = {
   /** Parsed JSON, or null when the object does not exist. Throws on read failure. */
@@ -48,6 +53,7 @@ export type DistrictStore = {
 export const MAX_MISSING_TOWN_SHARE = 0.02;
 
 export type RefreshResult =
+  | { status: "gesperrt" }
   | { status: "aktuell"; generation: string; districts: number }
   | { status: "plan"; rebuild: { id: string; why: string }[]; drop: string[]; generation: string | null }
   | { status: "veröffentlicht"; generation: string; previous: string | null; rebuilt: number; kept: number; dropped: string[]; missingTowns: number; bytes: number; warnings: string[] };
@@ -78,7 +84,26 @@ export async function refreshDistricts(opts: {
   now?: () => Date;
   concurrency?: number;
   log?: (line: string) => void;
+  /** Required for writing runs; a dry run only reads. */
+  lock?: DistrictLock;
 }): Promise<RefreshResult> {
+  if (opts.dryRun || !opts.lock) {
+    if (!opts.dryRun) throw new Error("Schreibender Lauf ohne Sperre — Abbruch");
+    return run(opts);
+  }
+  const lock = opts.lock;
+  if (!(await lock.hold())) return { status: "gesperrt" };
+  try {
+    return await run({ ...opts, keep: async (step: string) => {
+      if (!(await lock.hold())) throw new Error(`Sperre verloren vor „${step}" — ein anderer Lauf hat übernommen, dieser schreibt nichts mehr`);
+    } });
+  } finally {
+    await lock.release().catch(() => {});
+  }
+}
+
+async function run(opts: Parameters<typeof refreshDistricts>[0] & { keep?: (step: string) => Promise<void> }): Promise<RefreshResult> {
+  const keep = opts.keep ?? (async () => {});
   const { store, readTown, districts, townTags } = opts;
   const now = opts.now ?? (() => new Date());
   const log = opts.log ?? (() => {});
@@ -102,6 +127,7 @@ export async function refreshDistricts(opts: {
   let missingTowns = 0, towns = 0, bytes = 0;
   const started = Date.now();
   for (const [n, { d: registered, fingerprint }] of plan.rebuild.entries()) {
+    await keep(`Kreis ${registered.regionId}`);
     const order = opts.orderMembers ? await opts.orderMembers(registered) : registered.members;
     if (order.length !== registered.members.length || [...order].sort().some((a, i) => a !== [...registered.members].sort()[i]))
       throw new Error(`${registered.regionId}: Reihenfolge der Seite nennt andere Gemeinden als das Register (${order.length}/${registered.members.length}) — Abbruch`);
@@ -149,7 +175,8 @@ export async function refreshDistricts(opts: {
     next.districts[d.regionId] = entry;
   }
 
-  // Overlap protection: publish only onto the generation this run started from.
+  // Overlap protection: the lease first, then the pointer this run started from.
+  await keep("Zeigerwechsel");
   const again = await store.getJson(DISTRICT_POINTER_PATH);
   const againGen = again && checkManifest(again) ? again.generation : null;
   if (againGen !== (manifest?.generation ?? null))
@@ -161,6 +188,7 @@ export async function refreshDistricts(opts: {
   // the pointer has already moved.
   const warnings: string[] = [];
   try {
+    await keep("Aufräumen");
     const keepGens = new Set([...Object.values(next.districts), ...Object.values(manifest?.districts ?? {})].map((e) => genOf(e.path)));
     for (const name of await store.list(DISTRICT_PACKAGE_PREFIX)) {
       if (name === "aktuell.json" || keepGens.has(name)) continue;

@@ -247,7 +247,7 @@ writes a new generation folder, reads every new object back, and only then moves
 the pointer; kept districts reference their previous objects. A run aborts —
 pointer untouched, last complete generation live — on any failed town read, a
 district with no town package at all, more than 2 % towns missing overall, a
-package above 1.5 MB, or a pointer another run moved meanwhile. A single missing
+package above 1.5 MB, or a pointer another run moved meanwhile. **Overlapping runs** (monthly run and CI) are excluded by a lease in the database (`lib/district-package-lock.ts`, table `kreis_paket_sperre`, taken and renewed atomically under an advisory transaction lock, 20 min, renewed before every district, the pointer switch and cleanup). A run that cannot take it writes nothing (`--alle` then fails, the daily check exits quietly); a run that loses it stops before its next write, so neither a pointer switch nor a cleanup can act on another run's generation. Checked against the real database: of two runs started three seconds apart, the second was refused. A single missing
 town is published honestly (monitor unavailable, no partial site list). Only
 generations referenced by the current and the previous pointer are kept.
 

@@ -3,7 +3,19 @@ import {brotliDecompressSync} from 'node:zlib';
 import type {GemeindePaket} from '../gemeinde-paket';
 import {GEMEINDE_PAKET_VERSION} from '../gemeinde-paket';
 import {DISTRICT_PACKAGE_VERSION,DISTRICT_PACKAGE_PREFIX,DISTRICT_POINTER_PATH,type DistrictManifest,type DistrictMembership} from '../district-package';
-import {refreshDistricts,type DistrictStore} from '../district-package-publish';
+import {refreshDistricts as refreshRaw,type DistrictStore} from '../district-package-publish';
+import type {DistrictLock} from '../district-package-lock';
+
+/** One lease shared by all runs of a test, like the database row. */
+function memoryLease(){
+  let holder:string|null=null;
+  return (name=Math.random().toString(36))=>({
+    lost:()=>{holder='someone-else';},
+    lock:{hold:async()=>{if(holder===null||holder===name){holder=name;return true;}return false;},release:async()=>{if(holder===name)holder=null;}} as DistrictLock & {},
+  });
+}
+const lease=memoryLease();
+const refreshDistricts=(o:Parameters<typeof refreshRaw>[0])=>refreshRaw({lock:o.dryRun?undefined:lease().lock,...o});
 
 const packet=(ags:string,stand='2026-09-10')=>({ags,name:ags,registerStand:stand,district:{peers:[],districtPeers:[]},stories:[],register:{own:{sums:{alle:{kwp:1}}}},monitorHistory:null,monitorPeriods:null}) as unknown as GemeindePaket;
 const D:DistrictMembership[]=[
@@ -134,5 +146,40 @@ describe('district generations',()=>{
     await refreshDistricts({store:m.store,readTown:readAll,districts:D,townTags:tags(),now,registerEdition:'a'});
     expect((await refreshDistricts({store:m.store,readTown:readAll,districts:D,townTags:tags(),now,registerEdition:'a'})).status).toBe('aktuell');
     expect(await refreshDistricts({store:m.store,readTown:readAll,districts:D,townTags:tags(),now,registerEdition:'b'})).toMatchObject({status:'veröffentlicht',rebuilt:2});
+  });
+
+  it('refuses to write without a lease',async()=>{
+    await expect(refreshRaw({store:memoryStore().store,readTown:readAll,districts:D,townTags:tags(),now})).rejects.toThrow('ohne Sperre');
+  });
+
+  it('lets only one of two overlapping runs publish; the other writes nothing',async()=>{
+    const shared=memoryLease();
+    const m=memoryStore();
+    let release!:()=>void;
+    const gate=new Promise<void>(r=>{release=r;});
+    const slow=refreshRaw({store:m.store,readTown:async a=>{await gate;return packet(a);},districts:D,townTags:tags(),now,lock:shared('A').lock});
+    await new Promise(r=>setTimeout(r,5));
+    const second=await refreshRaw({store:m.store,readTown:readAll,districts:D,townTags:tags(),now,lock:shared('B').lock});
+    expect(second).toEqual({status:'gesperrt'});
+    expect(m.pointer()).toBeNull();
+    release();
+    expect(await slow).toMatchObject({status:'veröffentlicht'});
+    for(const e of Object.values(m.pointer()!.districts))expect(m.files.has(e.path)).toBe(true);
+    // After the first run the lease is free again.
+    expect((await refreshRaw({store:m.store,readTown:readAll,districts:D,townTags:tags(),now,lock:shared('B').lock})).status).toBe('aktuell');
+  });
+
+  it('stops before the pointer switch and before cleanup when the lease was lost',async()=>{
+    const shared=memoryLease();
+    const m=memoryStore();
+    await refreshRaw({store:m.store,readTown:readAll,districts:D,townTags:tags(),now,lock:shared('A').lock});
+    const before=m.pointer()!;
+    const filesBefore=[...m.files.keys()].sort();
+    const run=shared('B');
+    let reads=0;
+    await expect(refreshRaw({store:m.store,readTown:async a=>{if(++reads===D[1].members.length)run.lost();return packet(a);},districts:D,townTags:tags({'01001001':'n','01002001':'n'}),now,lock:run.lock,concurrency:1})).rejects.toThrow('Sperre verloren');
+    expect(m.pointer()).toEqual(before);
+    // Nothing of the live generation was removed.
+    for(const f of filesBefore)expect(m.files.has(f)).toBe(true);
   });
 });

@@ -54,6 +54,28 @@ async function main() {
   const { districtsFromRegister, isDistrictMember } = await import("../lib/district-package");
   const { getChildrenUncached } = await import("../lib/atlas");
   const { refreshDistricts } = await import("../lib/district-package-publish");
+  const { DISTRICT_LEASE_DDL, DISTRICT_LEASE_SECONDS } = await import("../lib/district-package-lock");
+  const { randomUUID } = await import("node:crypto");
+  const rpc = (fn: string, body: unknown) =>
+    mitWiederholung(fn, async () => {
+      const r = await fetch(`${url}/rest/v1/rpc/${fn}`, { method: "POST", headers: { ...kopf, "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      if (!r.ok) throw new Error(`${fn}: HTTP ${r.status} ${await r.text()}`);
+      const t = await r.text();
+      return t ? JSON.parse(t) : null;
+    });
+  // The lease lives in the database both runs share (see lib/district-package-lock.ts).
+  const holder = randomUUID();
+  const lock = {
+    hold: async () => (await rpc("kreis_paket_sperre_nehmen", { wer: holder, sekunden: DISTRICT_LEASE_SECONDS })) === true,
+    release: async () => void (await rpc("kreis_paket_sperre_freigeben", { wer: holder })),
+  };
+  if (!flag("trocken")) {
+    await rpc("exec_sql", { sql: DISTRICT_LEASE_DDL });
+    // A fresh function may need a moment until the REST layer knows it.
+    for (let i = 0; ; i++) {
+      try { await lock.release(); break; } catch (e) { if (i >= 5) throw e; await warte(1500); }
+    }
+  }
   const B = GEMEINDE_PAKET_BUCKET;
 
   const store = {
@@ -155,11 +177,17 @@ async function main() {
         .map((c) => c.region_id),
     dryRun: flag("trocken"),
     log: (l) => console.log(l),
+    lock: flag("trocken") ? undefined : lock,
   });
   const dauer = ((Date.now() - t0) / 1000).toFixed(0);
 
   let zeile: string;
-  if (result.status === "aktuell") zeile = `Alle ${result.districts} Kreispakete aktuell (Generation ${result.generation}); nichts neu gebaut.`;
+  if (result.status === "gesperrt") {
+    // Another run is publishing. The monthly full rebuild must not pass silently;
+    // the daily check simply defers to the running one.
+    zeile = "Ein anderer Lauf veröffentlicht gerade Kreispakete — dieser schreibt nichts.";
+    if (flag("alle")) throw new Error(zeile + " Nach dessen Ende erneut starten.");
+  } else if (result.status === "aktuell") zeile = `Alle ${result.districts} Kreispakete aktuell (Generation ${result.generation}); nichts neu gebaut.`;
   else if (result.status === "plan") {
     const why = result.rebuild.reduce<Record<string, number>>((a, r) => ({ ...a, [r.why]: (a[r.why] ?? 0) + 1 }), {});
     zeile = `Plan: ${result.rebuild.length} Kreise bauen (${Object.entries(why).map(([k, v]) => `${k} ${v}`).join(", ")}), ${result.drop.length} entfallen. Nichts geschrieben.`;

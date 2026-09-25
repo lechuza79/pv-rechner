@@ -35,6 +35,8 @@ import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 import LandkreisSeite from "../../../../components/landkreis/LandkreisSeite";
+// One membership rule for the district intro, hero, map and district package.
+import { isDistrictMember } from "../../../../lib/district-package";
 
 // Sieben Tage statt einem (26.08.2026) — Begruendung ausfuehrlich in
 // app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx: Die Zahlen
@@ -278,7 +280,12 @@ async function AtlasBody({
   const defaultRefKey = kpiRefs[0]?.key ?? "";
 
   const kindWort = childNoun(childLevel);
-  const kindWortGezaehlt = childNoun(childLevel, children.length);
+  // Districts count their current municipalities (one rule with hero and map);
+  // other levels as before, without unincorporated areas.
+  const gezaehlteKinder = region.level === "landkreis"
+    ? children.filter(child => isDistrictMember(child, region.region_id)).length
+    : children.filter(child => child.bezeichnung !== "Gemeindefreies Gebiet").length;
+  const kindWortGezaehlt = childNoun(childLevel, gezaehlteKinder);
   const einordnung = buildRegionHighlight({
     level: region.level as "de" | "bundesland" | "landkreis",
     name: region.name,
@@ -342,7 +349,7 @@ async function AtlasBody({
           </strong>{" "}
           installierter Leistung
           sind {ortPhrase(region)} in Betrieb
-          {hatVergleichsgruppe ? `, verteilt auf ${nf(children.filter(child => child.bezeichnung !== "Gemeindefreies Gebiet").length)} ${kindWortGezaehlt}.` : "."}
+          {hatVergleichsgruppe ? `, verteilt auf ${nf(gezaehlteKinder)} ${kindWortGezaehlt}.` : "."}
           {wPerCapita !== null && (
             <>
               {" "}
