@@ -63074,5 +63074,115 @@
         "evidenceUrl": "https://www.rathaus-auma.de/suche/index.php?suchbegriff=Photovoltaik"
       }
     ]
+  },
+  {
+    "regionId": "07132",
+    "name": "Landkreis Altenkirchen (Westerwald)",
+    "checkedAt": "2026-09-25T14:04:06Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "searches": [
+      "Volltextsuche kreis-altenkirchen.de am 25.09.2026: Photovoltaik, Wärmepumpe, Balkonkraftwerk, Solar, Förderprogramm — eigene Programme nur Balkonkraftwerke und Solarspeicher; sonst Pressemeldungen (KIPKI-Mittel, Web-Seminare, Firmenbesuche), Wohnraumförderung der ISB, Agrar- und Wirtschaftsförderung"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "finding": "Am 25.09.2026 gelesen: „Das Förderprogramm für private Balkonkraftwerke im Kreis Altenkirchen ist beendet, da die zur Verfügung stehenden Fördermittel in Höhe von insgesamt 120.000 Euro vollständig ausgeschöpft sind.“ Im Katalog als altenkirchen-balkonkraftwerke (eingestellt)."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-privaten-Solarspeichern.php?ModID=10&FID=2333.196.1",
+        "finding": "Am 25.09.2026 gelesen: „Der Fördertopf für private Solarspeicher im Kreis Altenkirchen ist ausgeschöpft“ (260.000 €, KIPKI); bereits eingereichte Anträge werden weiter bearbeitet. Im Katalog als altenkirchen-solarspeicher (ausgeschöpft)."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/?ffmod=suche&NavID=2154.13&such=Photovoltaik",
+        "finding": "Kreissuche am 25.09.2026 (fünf Begriffe): kein weiteres Kreisprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte."
+      },
+      {
+        "url": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/Agrarf%C3%B6rderung.php",
+        "finding": "Am 25.09.2026 gelesen: Flächenprämien der EU-Agrarpolitik über die Untere Landwirtschaftsbehörde — kein Energiezuschuss für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php",
+        "disposition": "reviewed",
+        "reason": "Balkonkraftwerk-Programm des Kreises, beendet (120.000 € ausgeschöpft).",
+        "evidenceUrl": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1"
+      },
+      {
+        "url": "kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?FID=2333.197.1&ModID=10",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Seite mit vertauschten Parametern.",
+        "evidenceUrl": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1"
+      },
+      {
+        "url": "kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1",
+        "disposition": "reviewed",
+        "reason": "Balkonkraftwerk-Programm des Kreises, beendet.",
+        "evidenceUrl": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-Balkonkraftwerken-im-Privatbereich.php?ModID=10&FID=2333.197.1"
+      },
+      {
+        "url": "kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-privaten-Solarspeichern.php",
+        "disposition": "reviewed",
+        "reason": "Solarspeicher-Programm des Kreises, Topf ausgeschöpft.",
+        "evidenceUrl": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/F%C3%B6rderprogramm-zur-Anschaffung-von-privaten-Solarspeichern.php?ModID=10&FID=2333.196.1"
+      },
+      {
+        "url": "kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/%C3%84rztenachwuchs-Landkreis-Altenkirchen-startet-Famulaturf%C3%B6rderung-f%C3%BCr-Praxisnachwuchs-ab-01-Januar-2018.php",
+        "disposition": "reviewed",
+        "reason": "Am 25.09.2026 abgerufen: Die alte Pressemeldung ist entfernt, die Adresse liefert nur noch die allgemeine Einstiegsseite „Bürgerservice“. Thema laut Adresse Ärztenachwuchs/Hausarztförderung — kein Energiezuschuss für Haushalte.",
+        "evidenceUrl": "https://www.kreis-altenkirchen.de/?ffmod=suche&NavID=2154.13&such=Photovoltaik"
+      },
+      {
+        "url": "kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Keine-F%C3%B6rderung-f%C3%BCr-Haus%C3%A4rzte-im-Jahr-2017.php",
+        "disposition": "reviewed",
+        "reason": "Am 25.09.2026 abgerufen: Die alte Pressemeldung ist entfernt, die Adresse liefert nur noch die allgemeine Einstiegsseite „Bürgerservice“. Thema laut Adresse Ärztenachwuchs/Hausarztförderung — kein Energiezuschuss für Haushalte.",
+        "evidenceUrl": "https://www.kreis-altenkirchen.de/?ffmod=suche&NavID=2154.13&such=Photovoltaik"
+      },
+      {
+        "url": "kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/%C3%84rztenachwuchs-im-Landkreis-Altenkirchen-Famulaturf%C3%B6rderung-ist-gestartet.php",
+        "disposition": "reviewed",
+        "reason": "Am 25.09.2026 abgerufen: Die alte Pressemeldung ist entfernt, die Adresse liefert nur noch die allgemeine Einstiegsseite „Bürgerservice“. Thema laut Adresse Ärztenachwuchs/Hausarztförderung — kein Energiezuschuss für Haushalte.",
+        "evidenceUrl": "https://www.kreis-altenkirchen.de/?ffmod=suche&NavID=2154.13&such=Photovoltaik"
+      },
+      {
+        "url": "kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/Agrarf%C3%B6rderung.php",
+        "disposition": "reviewed",
+        "reason": "Agrarförderung der EU (Flächenprämien), kein Energiezuschuss.",
+        "evidenceUrl": "https://www.kreis-altenkirchen.de/INTERNET/B%C3%BCrgerservice/Was-erledige-ich-wo-/Agrarf%C3%B6rderung.php"
+      }
+    ],
+    "outcome": "programme-geprueft",
+    "conclusion": "Der Landkreis Altenkirchen hatte zwei KIPKI-finanzierte Programme für Privathaushalte: Balkonkraftwerke (beendet, 120.000 € ausgeschöpft) und Solarspeicher (Topf von 260.000 € ausgeschöpft, eingereichte Anträge werden noch bearbeitet). Beide stehen als historische Programme im Katalog. Ein laufendes Kreisprogramm für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen gibt es nicht. Stand 25.09.2026."
+  },
+  {
+    "regionId": "16076093",
+    "name": "Mohlsdorf-Teichwolframsdorf",
+    "checkedAt": "2026-09-25T14:04:06Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Die Landgemeinde Mohlsdorf-Teichwolframsdorf (Landkreis Greiz) führt keinen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Seite „Ausschreibungen / Förderprogramme“ dokumentiert ein gefördertes Projekt der Gemeinde (Außenanlagen Kita „Regenbogen“) und Vergaben (Photovoltaikanlage und Dachsanierung am gemeindeeigenen Freibad). Die Suche der Gemeinde findet zu Photovoltaik, Wärmepumpe und Solar nur einen Veranstaltungshinweis der Landesenergieagentur, zu Balkonkraftwerk und Zuschuss nichts.",
+    "searches": [
+      "Suche mohlsdorf-teichwolframsdorf.de am 25.09.2026: Photovoltaik → ThEGA-Feierabendtalks, Ausschreibungen & Förderprogramme; Wärmepumpe, Solar → nur ThEGA-Feierabendtalks; Balkonkraftwerk, Zuschuss → keine Treffer; Förderung → Volkssolidarität, Kitas, Unternehmensliste, Wahlen, Satzungen, Ortschaften"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.mohlsdorf-teichwolframsdorf.de/verwaltung/ausschreibungen",
+        "finding": "Am 25.09.2026 gelesen: „Dokumentationen von Förderprogrammen — Projekt: Umgestaltung der Außenanlagen Kita „Regenbogen““; Vergabeinformationen u. a. „Photovoltaikanlage Freibad Teichwolfamsdorf“ — Vorhaben der Gemeinde, kein Zuschuss an Haushalte."
+      },
+      {
+        "url": "https://www.mohlsdorf-teichwolframsdorf.de/?s=Balkonkraftwerk",
+        "finding": "Am 25.09.2026: keine Treffer für Balkonkraftwerk und Zuschuss; Photovoltaik/Wärmepumpe/Solar nur Veranstaltungshinweis der Landesenergieagentur Thüringen."
+      }
+    ],
+    "sources": [
+      {
+        "url": "mohlsdorf-teichwolframsdorf.de/verwaltung/ausschreibungen",
+        "disposition": "reviewed",
+        "reason": "Gefördertes Gemeindeprojekt und Vergaben (PV am Freibad), kein Zuschuss an Haushalte.",
+        "evidenceUrl": "https://www.mohlsdorf-teichwolframsdorf.de/verwaltung/ausschreibungen"
+      }
+    ]
   }
 ]
