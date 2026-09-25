@@ -624,7 +624,15 @@ export const EEG_REFORM_STAND: EegReformStand = {
   //   zwanzig Stunden in der Zukunft lag. Nur der Abgleich mit der Uhr deckt es
   //   auf; eine Zusammenfassung kennt den Unterschied zwischen angekündigt und
   //   erledigt nicht.
-  geprueftIso: "2026-09-24",
+  // 25.09.2026, 06:55 Uhr: Die erste Lesung hat am 24.09.2026 stattgefunden.
+  //   Textarchiv des Bundestages (kw39-de-energie-stromsektor-1211294) im
+  //   Original: Der Entwurf wurde „dem federführenden Ausschuss für Wirtschaft
+  //   und Energie zur weiteren Beratung überwiesen"; beschlossen wurde nur die
+  //   Überweisung. Die Vorgangsseite des Bundesrates zu 470/26 führt weiter
+  //   allein die Grunddrucksache; die Plenarsitzung des Bundesrates ist heute
+  //   und hat zum Zeitpunkt der Prüfung noch nicht begonnen. Zustand
+  //   unverändert: Regierungsentwurf, eingebracht, jetzt im Ausschuss.
+  geprueftIso: "2026-09-25",
   // Seit dem 19.08.2026 die Bundesrats-Drucksache statt des Ministeriums-PDF:
   // dieselbe Kabinettsfassung, aber die amtlich gedruckte und dauerhaft
   // zitierfähige Ausgabe. Das BMWE-PDF bleibt daneben liegen.

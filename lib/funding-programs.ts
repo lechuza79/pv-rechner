@@ -4317,19 +4317,31 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "rhein-erft-energieoffensive", name: "Energieoffensive Rhein-Erft-Kreis",
     traeger: "Rhein-Erft-Kreis", level: "landkreis", region: "Rhein-Erft-Kreis", bundesland: "Nordrhein-Westfalen", agsCode: "05362",
     url: "https://www.rhein-erft-kreis.de/infrastruktur/energieoffensive.php",
-    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
+    // Programme page read in a real browser on 24.09.2026 (kdvz computes a
+    // proof-of-work, nothing clicked): still "Fördermittel ausgeschöpft",
+    // closed since 18 March. The page lists five modules; the catalogue only
+    // carried two, so the balcony line and the two modules without a
+    // technique of their own are added as information. The guideline PDF was
+    // not retrievable (redirect on fetch, 403 on navigation) and is not read;
+    // the rates come from the county's own summary ("Förderhöhen im Überblick").
+    stand: "September 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Pauschale für PV + Speicher (Jahresprogramm)",
+    coveredCosts: "Pauschalen je Baustein (Jahresprogramm)",
     maxFoerderung: "max. 1.500 € je Haushalt",
     rates: [
-      { label: "PV-Anlage (ab 5 kWp)", value: "1.000 €" },
-      { label: "Batteriespeicher", value: "500 €" },
+      { label: "PV-Anlage (ab 5 kWp)", value: "1.000 €", nur: ["pv"] },
+      { label: "Batteriespeicher (ab 5 kWh)", value: "500 €", nur: ["pv"] },
+      { label: "Balkonkraftwerk (ab 150 VA)", value: "bis zu 200 €", nur: ["balkon"] },
+      { label: "Solarthermie", value: "500 €", nur: ["pv"] },
+      { label: "Wallbox", value: "200 €", nur: ["pv"] },
     ],
     conditions: [
       "Jahresprogramm — Budget 2026 (1 Mio. €) seit 18.03.2026 erschöpft (Förderampel rot)",
       "Antrag vor Maßnahmenbeginn; Neuauflage üblicherweise zum Jahresbeginn",
+      "Das Angebot darf bei Antragstellung höchstens sechs Monate alt sein; nach dem Bescheid ist die Anlage binnen eines Jahres fertigzustellen",
     ],
     combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
   },
   "rheinisch-bergisch-balkonsolar": {
     id: "rheinisch-bergisch-balkonsolar", name: "Förderprogramm Balkonsolaranlagen",
@@ -13737,6 +13749,68 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   // Schlüssel im Melderegister nachgeschlagen (foerder:ags, 24.09.2026).
   // Council 3/3 am 24.09.2026, ein Prüfer adversarial und als Legal-Judge;
   // freigegeben mit den hier eingearbeiteten Änderungen.
+  // ─── Aufgenommen am 24.09.2026: Asbach-Bäumenheim (Landkreis Donau-Ries) ────
+  //
+  // Found while closing the Donau-Ries municipalities from the source queue:
+  // the municipality's own page "Regenerative Energien" and the 2026
+  // application form, which carries the full guideline, read at the source on
+  // 24.09.2026 (copies in the watcher's file). The page text is stale (it
+  // names the council decision of 16.01.2024); the form carries the current
+  // rules: "Mit Beschluss des Bau- und Umweltausschusses vom 30.07.2026".
+  "asbach-baeumenheim-foerderprogramm": {
+    id: "asbach-baeumenheim-foerderprogramm",
+    name: "Förderprogramm erneuerbare Energien, Energieeffizienz und Ressourceneinsparung",
+    traeger: "Gemeinde Asbach-Bäumenheim", level: "kommune", region: "Asbach-Bäumenheim",
+    bundesland: "Bayern", agsCode: "09779115",
+    // THE FORM IS THE SOURCE, NOT THE PAGE: only the form carries the rates,
+    // and a fingerprint on the page would never notice a change in them. The
+    // file name carries the start date; a new round will most likely replace
+    // it, and a dead address stops the deduction within two weeks — the safe
+    // direction.
+    url: "https://www.asbach-baeumenheim.de/fileadmin/Dateien/Bilder/Asbach-Baeumenheim/Antragsformular_2026_Gemeindefoerderung_ab_01.08.2026.pdf",
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beschlossenIso: "2026-07-30",
+    beginntIso: "2026-08-01",
+    // endetIso = the END OF THE MEASURE WINDOW, not the application deadline,
+    // and that deviates on purpose from the field's usual meaning: "Der
+    // Förderzeitraum beginnt am 01.08.2026 und endet am 31.12.2026"; the
+    // application with the invoice may still come until 31.03.2027. A plant
+    // planned from January 2027 gets nothing from this round, so the
+    // calculator must stop deducting then (adversarial review, 24.09.2026).
+    endetIso: "2026-12-31",
+    eligibility: ["privat"],
+    coveredCosts: "Photovoltaikanlage auf dem Dach eines Wohnhauses, dazu ein Batteriespeicher als Pauschale",
+    maxFoerderung: "500 € für die Dachanlage, 250 € für den Speicher",
+    rates: [
+      { label: "Photovoltaikanlage auf Dachflächen", value: "10 % der Anschaffungskosten, höchstens 500 €", nur: ["pv"] },
+      { label: "Batteriespeicher (bis 10 kW, erstmalige Nachrüstung)", value: "250 € pauschal", nur: ["pv"] },
+    ],
+    conditions: [
+      "Das Formular verlangt keinen Antrag vor Beginn: Der Antrag geht mit der Schlussrechnung eines Handwerks- oder Dienstleistungsbetriebs (bzw. dem Kaufvertrag) an die Gemeinde, für Maßnahmen vom 01.08.2026 bis 31.12.2026 spätestens bis 31.03.2027",
+      "Gefördert werden nur Module samt Wechselrichter auf Dachflächen von Wohnhäusern im geschlossenen Ortsgebiet; je Flurstück ist ein Antrag möglich; bei Mietgebäuden ist die Genehmigung des Eigentümers vorzulegen",
+      "Mit dem Antrag sind die Anmeldebestätigungen des Netzbetreibers und der Bundesnetzagentur vorzulegen",
+      "Balkonkraftwerke sind ausgeschlossen, ebenso gebrauchte Anlagen und Eigenbauanlagen",
+      "Beim Speicher wird nur die erstmalige Nachrüstung gefördert, Ersatzbeschaffungen nicht",
+      "Die Richtlinie nennt als antragsberechtigt Eigentümer, Wohnungseigentümergemeinschaften und Mieter mit schriftlicher Erlaubnis des Eigentümers — und weiter unten nur Eigentümer bzw. deren Bevollmächtigte; Mieter klären das vorab mit der Gemeinde",
+      "Das Programm ist auf 50.000 € im Jahr gedeckelt; nicht mehr berücksichtigte Anträge können im Folgejahr erneut gestellt werden",
+    ],
+    // null = "not established". The form only says the rules of other funders
+    // apply and that breaching a cumulation rule can mean partial repayment;
+    // it neither allows nor excludes federal funding. An empty list would be
+    // the catalogue's explicit "only alone", BUND a conclusion from silence.
+    combinableWith: null,
+    foerdert: ["pv"],
+    // THE ROOF RATE COMPUTES, THE STORAGE RATE DOES NOT. "Nur die erstmalige
+    // Nachrüstung eines Speichers" can be read as "storage added to an
+    // existing plant" — a storage bought together with a new roof plant would
+    // then get nothing. Deducting 250 € for every storage would be a guess;
+    // it stands as a rate line only.
+    // percentOfCost works on the calculator's total cost, which includes the
+    // storage. With a 500 € cap that only matters for plants whose PV part
+    // costs less than 5,000 €, i.e. barely any roof plant.
+    percentOfCost: 0.10, pvCap: 500,
+  },
+
   "vg-bad-kreuznach-balkonkraftwerke": {
     id: "vg-bad-kreuznach-balkonkraftwerke", name: "Balkonkraftwerke für Privathaushalte",
     traeger: "Verbandsgemeinde Bad Kreuznach", level: "kommune", region: "Verbandsgemeinde Bad Kreuznach",
@@ -13967,10 +14041,26 @@ export function fundingBelegAktuell(
  * fragen sie, statt `status === "aktiv"` selbst zu prüfen.
  */
 export function fundingZaehlt(
-  f: Pick<FundingProgram, "status" | "lastVerified" | "pageSeenAt" | "changedSinceIso"> | undefined,
+  f: Pick<FundingProgram, "status" | "lastVerified" | "pageSeenAt" | "changedSinceIso" | "endetIso"> | undefined,
   heute: string = heuteIso(),
 ): boolean {
-  return !!f && f.status === "aktiv" && fundingBelegAktuell(f, heute);
+  return !!f && f.status === "aktiv" && !fundingVorbei(f.endetIso, heute) && fundingBelegAktuell(f, heute);
+}
+
+/**
+ * Has the programme's end date passed?
+ *
+ * WHY (24.09.2026): The catalogue carried 27 active programmes with an end
+ * date, and a note in lib/funding-conditions.ts claimed the end date "switches
+ * the deduction off". It did not — nothing read it; the deduction ran until a
+ * watcher happened to flip the status. Haltern's balcony fund ends on
+ * 30.09.2026 and would have kept deducting from 1 October. The status still
+ * says what the municipality says; this only stops the money on the day after,
+ * in the safe direction. A month ("2025-12") counts up to its last day.
+ */
+export function fundingVorbei(endetIso: string | undefined, heute: string): boolean {
+  if (!endetIso) return false;
+  return endetIso.length <= 7 ? heute.slice(0, 7) > endetIso : heute.slice(0, 10) > endetIso.slice(0, 10);
 }
 
 export type FundingAmount = {

@@ -570,6 +570,12 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // the roof rate starts. Both stand in full on the card, and the threshold is
   // the reason the roof part carries no calculation field.
   "bruehl-baden-umweltschutz",
+  // Added 24 Sep 2026: Asbach-Baeumenheim. Guideline read in full (the 2026
+  // application form). No test form in this run: the application comes AFTER
+  // the installation with the invoice, which the existing forms do not model,
+  // and the eligibility is contradictory in the guideline itself (owners and
+  // tenants, then owners only) — both stand in full on the card.
+  "asbach-baeumenheim-foerderprogramm",
   // Added 23 Sep 2026: Wertingen. Exhausted programme, no published guideline;
   // the only figures the town names stand in a retrospective list inside its
   // 2023 climate concept, which is not a rule anyone could be held to. There

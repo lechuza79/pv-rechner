@@ -548,6 +548,7 @@ export const ATLAS_CITIES: AtlasCity[] = [
   {"slug": "floersheim-am-main", "name": "Flörsheim am Main", "ags": "06436004", "bundesland": "Hessen", "kreis": "06436", "yieldKwhKwp": 1089},
   {"slug": "eppelheim", "name": "Eppelheim", "ags": "08226018", "bundesland": "Baden-Württemberg", "kreis": "08226", "yieldKwhKwp": 1100},
   {"slug": "bruehl-baden", "name": "Brühl (Baden)", "ags": "08226009", "bundesland": "Baden-Württemberg", "kreis": "08226", "yieldKwhKwp": 1115},
+  {"slug": "asbach-baeumenheim", "name": "Asbach-Bäumenheim", "ags": "09779115", "bundesland": "Bayern", "kreis": "09779", "yieldKwhKwp": 1118},
   {"slug": "radolfzell-am-bodensee", "name": "Radolfzell am Bodensee", "ags": "08335063", "bundesland": "Baden-Württemberg", "kreis": "08335", "yieldKwhKwp": 1135},
   {"slug": "meschede", "name": "Meschede", "ags": "05958032", "bundesland": "Nordrhein-Westfalen", "kreis": "05958", "yieldKwhKwp": 969},
   {"slug": "ingelheim-am-rhein", "name": "Ingelheim am Rhein", "ags": "07339030", "bundesland": "Rheinland-Pfalz", "kreis": "07339", "yieldKwhKwp": 1113},
