@@ -197,7 +197,7 @@ export function createRegionScene(host: HTMLElement, shapes: ProjectedRegion[], 
     const heading = stage?.querySelector<HTMLElement>("[data-map-hero-heading]");
     const stageRect = stage?.getBoundingClientRect();
     const headingBottom = heading?.getBoundingClientRect().bottom ?? hostRect.top;
-    const topInset = Math.max(0, headingBottom - hostRect.top - (w < 600 ? 90 : 200));
+    const topInset = Math.max(0, headingBottom - hostRect.top + (w < 600 ? 12 : -200));
     const canvasRect = host.closest<HTMLElement>("[data-map-canvas]")?.getBoundingClientRect();
     const bottomEdge = canvasRect ? canvasRect.bottom - hostRect.top : stageRect ? stageRect.bottom - hostRect.top : h;
     const fittedHeight = Math.max(200, bottomEdge - topInset);
