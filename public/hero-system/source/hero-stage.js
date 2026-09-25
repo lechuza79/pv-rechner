@@ -1,4 +1,5 @@
 import {bindStageButtons} from '../contrast-sampler.js';
+import {createFramePacer} from './frame-pacer.js';
 import {solarLight} from './solar-light.js';
 import {createSunOptics} from './sun-optics.js';
 import {createNightSky} from './night-sky.js';
@@ -14,16 +15,18 @@ export function mountHeroStage({root,stage,scene,state,quality='auto',motion=tru
  const events=new AbortController();
  const disposeContrast=bindStageButtons(stage,scene);
  let renderer=null,disposed=false,booting=false,failed=false,visible=false,paused=false;
- let raf=0,bootFrame=0,scrollTimer=0,scrolling=false,clock=0,gustEnd=0,last=performance.now(),lastDraw=0,dirty=true;
+ let raf=0,bootFrame=0,scrollTimer=0,scrolling=false,clock=0,gustEnd=0,last=performance.now(),dirty=true;
  let tier=quality==='low'||(quality==='auto'&&stage.clientWidth<700)?'low':'high';
  let frames=0,cpu=0,slowWindows=0,reportAt=performance.now(),current={...state},target={...state};
  root.dataset.heroSystem='';root.dataset.sceneBoot='pending';root.classList.add('unified-sun-motion');
  const halo=scene.querySelector('.sun-halo');
  if(halo){halo.style.left='0';halo.style.top='0';halo.style.transform='translate(calc(var(--sun-offset-x, 0px) - 50%),calc(var(--sun-offset-y, 0px) - 50%))';}
+ const pace=createFramePacer(30),styleValues=new Map();
+ let width=stage.clientWidth,height=stage.clientHeight;
  const canRun=()=>!disposed&&visible&&!document.hidden&&!scrolling;
  const moving=()=>motion&&!paused&&!media.matches&&quality!=='static'&&!failed;
  function stop(){cancelAnimationFrame(raf);raf=0;}
- function wake(){dirty=true;if(canRun()&&!raf){last=performance.now();raf=requestAnimationFrame(tick);}}
+ function wake(){dirty=true;if(canRun()&&!raf){last=performance.now();pace.reset();raf=requestAnimationFrame(tick);}}
  function fallback(){failed=true;root.dataset.sceneBoot='failed';scene.dataset.unifiedReady='false';scene.classList.add('static-scene');stop();wake();}
  async function boot(){
   if(booting||renderer||failed||disposed||quality==='static'||!canRun())return;
@@ -38,24 +41,24 @@ export function mountHeroStage({root,stage,scene,state,quality='auto',motion=tru
   finally{booting=false;}
  }
  function scheduleBoot(){cancelAnimationFrame(bootFrame);bootFrame=requestAnimationFrame(()=>{bootFrame=requestAnimationFrame(boot);});}
- function resize(){if(disposed)return;const w=stage.clientWidth,h=stage.clientHeight;renderer?.resize(w,h,tier);night.resize(w,h);dust.resize(w,h);wake();}
+ function resize(){if(disposed)return;const w=width=stage.clientWidth,h=height=stage.clientHeight;renderer?.resize(w,h,tier);night.resize(w,h);dust.resize(w,h);wake();}
  function tick(now){
   raf=0;if(!canRun())return;
   const dt=Math.min((now-last)/1000,.1);last=now;const active=moving();
-  root.dataset.moving=String(active);if(active)clock+=dt;
+  if(root.dataset.moving!==String(active))root.dataset.moving=String(active);if(active)clock+=dt;
   let settling=false;
   for(const key of ['cloud','rain','wind','sunX','sunY','daylight']){const delta=target[key]-current[key];if(!media.matches&&Math.abs(delta)>.002){current[key]+=delta*(1-Math.exp(-dt*1.4));settling=true;}else current[key]=target[key];}
   current.fog=target.fog;current.cloudLow=target.cloudLow;current.cloudMid=target.cloudMid;current.cloudHigh=target.cloudHigh;current.solarElevation=target.solarElevation;current.phase=target.phase;current.season=target.season;current.direction=target.direction;
-  if(now-lastDraw>=1000/30-1||dirty){
-   const w=stage.clientWidth,h=stage.clientHeight;
-   for(const [key,value] of Object.entries({'--sun-offset-x':w*current.sunX/100+'px','--sun-offset-y':h*current.sunY/100+'px','--sun-x':current.sunX+'%','--sun-y':current.sunY+'%','--sun-alpha':solarLight(current).sun*(1-current.cloud)**2,'--sky-brightness':solarLight(current).sky,'--sky-twilight':solarLight(current).twilight,'--sky-night':solarLight(current).night,'--sky-overcast':current.cloud*.85,'--scene-fog':current.fog||0,'--cloud-low':current.cloudLow??current.cloud,'--cloud-mid':current.cloudMid??current.cloud*.5,'--cloud-high':current.cloudHigh??current.cloud*.25,'--night-visibility':1-current.cloud*.92}))root.style.setProperty(key,String(value));
+  if(pace.shouldDraw(now,dirty)){
+   const w=width,h=height,light=solarLight(current);
+   for(const [key,value] of Object.entries({'--sun-offset-x':w*current.sunX/100+'px','--sun-offset-y':h*current.sunY/100+'px','--sun-x':current.sunX+'%','--sun-y':current.sunY+'%','--sun-alpha':light.sun*(1-current.cloud)**2,'--sky-brightness':light.sky,'--sky-twilight':light.twilight,'--sky-night':light.night,'--sky-overcast':current.cloud*.85,'--scene-fog':current.fog||0,'--cloud-low':current.cloudLow??current.cloud,'--cloud-mid':current.cloudMid??current.cloud*.5,'--cloud-high':current.cloudHigh??current.cloud*.25,'--night-visibility':1-current.cloud*.92})){const text=String(value);if(styleValues.get(key)!==text){root.style.setProperty(key,text);styleValues.set(key,text);}}
    sun.update(current,sunStyle);
    const wind=(current.wind*(1+Math.sin(clock*.27)*.25)+(clock<gustEnd?Math.sin((gustEnd-clock)/5*Math.PI)*1.2:0))*current.direction;
    if(quality!=='static'&&!failed){const stats=renderer?.render(clock,current,wind);if(stats){frames++;cpu+=stats.cpu;scene.dataset.drawCalls=String(stats.calls);}}
    dust.render(clock,Math.abs(wind),quality!=='static'&&!failed,current.phase!=='night'&&current.rain<.01&&current.cloud<.6);
    life.render(clock,active&&current.phase!=='night'&&current.rain<.01&&current.cloud<.6);
    window.SolarSceneContrast?.afterFrame(scene);
-   lastDraw=now;dirty=false;scene.dataset.renderCount=String(Number(scene.dataset.renderCount||0)+1);
+   dirty=false;scene.dataset.renderCount=String(Number(scene.dataset.renderCount||0)+1);
   }
   if(now-reportAt>2500){
    const fps=frames*1000/(now-reportAt);scene.dataset.fps=String(Math.round(fps));scene.dataset.cpuMs=frames?(cpu/frames).toFixed(1):'0';
