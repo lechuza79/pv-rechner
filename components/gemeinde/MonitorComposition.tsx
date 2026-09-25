@@ -3,6 +3,7 @@ import React, {useId,useRef,useState,useEffect} from 'react';
 import {storyCountGrid} from '../../lib/story-count-grid';
 import styles from './MonitorComposition.module.css';
 import {CompositionBackdrop} from '../social/CompositionBackdrop';
+import {CompositionArc} from '../charts/CompositionArc';
 
 type CompositionStory = {
   countComparison?: {total: number; selected: number; label: string};
@@ -27,15 +28,13 @@ export function MonitorComposition({story}: {story: CompositionStory}) {
   const {cells, perCell} = storyCountGrid(counts.total, counts.selected);
   const powerLabel = `${powerShare.toLocaleString('de-DE')} Prozent der Solarleistung`;
 
-  // Rounded caps are shared by every monitor composition ring.
-  const share = Math.max(0, Math.min(100, powerShare));
   return <div ref={host} className={styles.chart}>
     <CompositionBackdrop label={counts.label} />
     <div className={styles.top}>
       <div className={styles.power}>
         <svg viewBox="0 0 100 100" role="img" aria-label={powerLabel}>
           <circle cx="50" cy="50" r="40" fill="none" className={styles.powerTrack} strokeWidth="10" />
-          {share === 100 ? <circle cx="50" cy="50" r="40" fill="none" stroke="var(--atlas-action)" strokeWidth="10" /> : share > 0 ? <circle cx="50" cy="50" r="40" fill="none" stroke="var(--atlas-action)" strokeWidth="10" strokeLinecap="round" pathLength="100" strokeDasharray={`${share} ${100-share}`} transform="rotate(-90 50 50)" /> : null}
+          <CompositionArc value={powerShare} />
         </svg>
         <b>{Math.round(powerShare)}<small> %</small></b>
         <span>der Solarleistung</span>

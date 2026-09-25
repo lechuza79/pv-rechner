@@ -114,6 +114,8 @@
 .heroStage{position:relative;isolation:isolate}
 .heroHeading{position:absolute;top:0;left:0;z-index:2;max-width:900px;text-shadow:0 2px 18px var(--atlas-surface)}
 .heroHeading h1{margin:0 0 22px;font-size:clamp(32px,4vw,56px);line-height:1.12}
+/* Desktop hero title shares the municipality/homepage hero role (capped at 48px), same 851px switch. */
+@media(min-width:851px){.heroHeading h1{font-size:var(--sc-type-hero-size)}}
 .heroHeading .lede{margin:0}
 .heroStage .mapTools{position:absolute;top:220px;left:0;z-index:3;margin:0}
 .heroStage .mapCanvas{height:720px}
