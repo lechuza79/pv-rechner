@@ -61785,5 +61785,538 @@
         "evidenceUrl": "https://www.monheim-bayern.de/aktuelles/foerderprogramm_der_stadt_monh-1079"
       }
     ]
+  },
+  {
+    "regionId": "09779148",
+    "name": "Fünfstetten",
+    "checkedAt": "2026-09-25T06:35:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Fünfstetten (Landkreis Donau-Ries). Kein kommunaler Zuschuss für PV, Speicher, Balkonkraftwerke oder Wärmepumpen: Die einzige Förderseite der Gemeinde betrifft Regenwasserzisternen (verlängert bis 2032).",
+    "searches": [
+      "Förderseite der Gemeinde gelesen (25.09.2026)",
+      "Links der Seite geprüft: nur Zisternen-Richtlinie und Antragsformulare",
+      "Websuche nach Ort + Förderprogramm/Photovoltaik/Balkonkraftwerk/Speicher (25.09.2026): kein Treffer auf ein kommunales Programm",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.fuenfstetten.de/Zisternen-Foerderprogramm",
+        "finding": "Am 25.09.2026 gelesen: „Förderprogramm Regenwasserzisterne Fünfstetten“ samt Antrag Teil 1/2 — sonst keine Förderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "fuenfstetten.de/Zisternen-Foerderprogramm",
+        "disposition": "reviewed",
+        "reason": "Zisternen-Förderprogramm — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.fuenfstetten.de/Zisternen-Foerderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "09779162",
+    "name": "Hohenaltheim",
+    "checkedAt": "2026-09-25T06:35:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Hohenaltheim (Landkreis Donau-Ries). Kein kommunaler Zuschuss im Umfang: Die Suche der Gemeindeseite findet weder „förderprogramm“ noch „photovoltaik“, und keine Quelle nennt ein Gemeindeprogramm.",
+    "searches": [
+      "Suche der Gemeindeseite nach „förderprogramm“ (25.09.2026): keine Ergebnisse",
+      "Suche der Gemeindeseite nach „photovoltaik“ (25.09.2026): keine Ergebnisse",
+      "Websuche nach Ort + Förderprogramm/Photovoltaik/Balkonkraftwerk/Speicher (25.09.2026): kein Treffer auf ein kommunales Programm",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://hohenaltheim.hosting.idd-net.de/index.php/smart-search?q=f%C3%B6rderprogramm",
+        "finding": "Am 25.09.2026: „Es konnten keine Suchergebnisse für „förderprogramm“ gefunden werden.“"
+      },
+      {
+        "url": "https://hohenaltheim.hosting.idd-net.de/index.php/smart-search?q=photovoltaik",
+        "finding": "Am 25.09.2026: keine Suchergebnisse für „photovoltaik“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "hohenaltheim.hosting.idd-net.de/index.php/smart-search?q=f%C3%B6rderprogramm&amp;rCH=-2",
+        "disposition": "reviewed",
+        "reason": "Suchseite der Gemeinde — ohne Ergebnis, am Original gelesen.",
+        "evidenceUrl": "https://hohenaltheim.hosting.idd-net.de/index.php/smart-search?q=f%C3%B6rderprogramm"
+      },
+      {
+        "url": "hohenaltheim.hosting.idd-net.de/index.php/smart-search?q=f%C3%B6rderprogramm&amp;rCH=2",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Suchseite mit anderem Sortierparameter — ohne Ergebnis.",
+        "evidenceUrl": "https://hohenaltheim.hosting.idd-net.de/index.php/smart-search?q=f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "09779178",
+    "name": "Marxheim",
+    "checkedAt": "2026-09-25T06:35:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Marxheim (Landkreis Donau-Ries). Kein kommunaler Zuschuss im Umfang: Die Seite zur Freiflächen-Photovoltaik regelt die Ansiedlung von Solarparks (Nachweise, Bürgerbeteiligung, Abgabe an die Gemeinde); das Menü führt sonst Altortbelebung und Wohnbauförderung.",
+    "searches": [
+      "Seite Freiflächenphotovoltaik gelesen (25.09.2026)",
+      "Menü der Gemeindeseite auf Förderangebote durchgesehen",
+      "Websuche nach Ort + Förderprogramm/Photovoltaik/Balkonkraftwerk/Speicher (25.09.2026): kein Treffer auf ein kommunales Programm",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.gemeinde-marxheim.de/leben-wohnen/freiflaechenphotovoltaikanlagen",
+        "finding": "Am 25.09.2026 gelesen: Voraussetzungen des Gemeinderats für Freiflächenanlagen (u. a. „Rückbauverpflichtung“, 0,2 ct/kWh an die Gemeinde) — kein Zuschuss für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "gemeinde-marxheim.de/leben-wohnen/freiflaechenphotovoltaikanlagen",
+        "disposition": "reviewed",
+        "reason": "Ansiedlungsregeln für Solarparks — kein Zuschuss für private Haushalte.",
+        "evidenceUrl": "https://www.gemeinde-marxheim.de/leben-wohnen/freiflaechenphotovoltaikanlagen"
+      }
+    ]
+  },
+  {
+    "regionId": "09779184",
+    "name": "Mönchsdeggingen",
+    "checkedAt": "2026-09-25T06:35:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mönchsdeggingen (Landkreis Donau-Ries). Kein kommunaler Zuschuss im Umfang: Die Suche nach „förderprogramm“ findet nur das Regionalbudget der ILE Südries-Kesseltal (Kleinprojekte), die Suche nach „photovoltaik“ nichts.",
+    "searches": [
+      "Suche der Gemeindeseite nach „förderprogramm“ (25.09.2026)",
+      "Suche der Gemeindeseite nach „photovoltaik“ (25.09.2026): keine Ergebnisse",
+      "Websuche nach Ort + Förderprogramm/Photovoltaik/Balkonkraftwerk/Speicher (25.09.2026): kein Treffer auf ein kommunales Programm",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.moenchsdeggingen.de/index.php/component/finder/search?Itemid=101&q=f%C3%B6rderprogramm",
+        "finding": "Am 25.09.2026: einzige Treffer „ILE Regionalbudget … reichen Sie ab 01.09.2026 Ihre Projektanträge ein“ — Kleinprojekte der Region, kein Haushaltszuschuss für PV."
+      },
+      {
+        "url": "https://www.moenchsdeggingen.de/index.php/component/finder/search?Itemid=101&q=photovoltaik",
+        "finding": "Am 25.09.2026: „Es konnten keine Suchergebnisse für „photovoltaik“ gefunden werden.“"
+      }
+    ],
+    "sources": [
+      {
+        "url": "moenchsdeggingen.de/index.php/component/finder/search?Itemid=101&amp;q=f%C3%B6rderprogramm&amp;rCH=-2",
+        "disposition": "reviewed",
+        "reason": "Suchseite der Gemeinde — nur ILE-Regionalbudget, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.moenchsdeggingen.de/index.php/component/finder/search?Itemid=101&q=f%C3%B6rderprogramm"
+      },
+      {
+        "url": "moenchsdeggingen.de/index.php/component/finder/search?Itemid=101&amp;q=f%C3%B6rderprogramm&amp;rCH=2",
+        "disposition": "reviewed",
+        "reason": "Dieselbe Suchseite mit anderem Sortierparameter.",
+        "evidenceUrl": "https://www.moenchsdeggingen.de/index.php/component/finder/search?Itemid=101&q=f%C3%B6rderprogramm"
+      }
+    ]
+  },
+  {
+    "regionId": "09779185",
+    "name": "Möttingen",
+    "checkedAt": "2026-09-25T06:35:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Möttingen (Landkreis Donau-Ries). Kein kommunaler Zuschuss im Umfang: Das kommunale Förderprogramm gilt der Ortsbildgestaltung im Sanierungsgebiet „Ortsmitte“ (Städtebauförderung).",
+    "searches": [
+      "Seite zum kommunalen Förderprogramm gelesen (25.09.2026)",
+      "Websuche nach Ort + Förderprogramm/Photovoltaik/Balkonkraftwerk/Speicher (25.09.2026): kein Treffer auf ein kommunales Programm",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.moettingen.de/in-moettingen-zuhause/wirtschaft-und-bauen/staedtebau-2",
+        "finding": "Am 25.09.2026 gelesen: „Kommunales Förderprogramm für die Ortsmitte Möttingen“ — Erhaltungs-, Sanierungs- und Gestaltungsmaßnahmen, keine Energieförderung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "moettingen.de/in-moettingen-zuhause/wirtschaft-und-bauen/staedtebau-2",
+        "disposition": "reviewed",
+        "reason": "Ortsbild-/Fassadenförderung im Sanierungsgebiet — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.moettingen.de/in-moettingen-zuhause/wirtschaft-und-bauen/staedtebau-2"
+      }
+    ]
+  },
+  {
+    "regionId": "09779197",
+    "name": "Oettingen i. Bay.",
+    "checkedAt": "2026-09-25T06:35:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Oettingen (Landkreis Donau-Ries). Kein kommunaler Zuschuss im Umfang: Die Förderseite führt das Fassadenprogramm (Sanierungsgebiet Altstadt) und die Belebung leerstehender Gebäude; dazu zwei Stiftungen (Stipendien, Naturwissenschaft) und das Stadtentwicklungskonzept.",
+    "searches": [
+      "Förderübersicht der Stadt gelesen (25.09.2026)",
+      "Stiftungsseiten und ISEK-Seite gelesen (25.09.2026)",
+      "Websuche nach Ort + Förderprogramm/Photovoltaik/Balkonkraftwerk/Speicher (25.09.2026): kein Treffer auf ein kommunales Programm",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.oettingen.de/buergerservice-politik/projekte/foerderprogramme-1",
+        "finding": "Am 25.09.2026 gelesen: „Richtlinien für ein kommunales Förderprogramm (Fassadenprogramm)“, „Förderprogramm zur Belebung der Stadt Oettingen und der Stadtteile“ — nichts zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.oettingen.de/buergerservice-politik/foerderungen/isek",
+        "finding": "Am 25.09.2026 gelesen: Fortschreibung des Integrierten Handlungskonzepts zum ISEK für die Städtebauförderung — kein Zuschuss für Haushalte."
+      },
+      {
+        "url": "https://www.oettingen.de/buergerservice-politik/foerderungen/kollmar-stiftung",
+        "finding": "Am 25.09.2026 gelesen: „Dann bewerben Sie sich um ein Stipendium bei der Günther und Ingrid Kollmar Förderstiftung.“"
+      },
+      {
+        "url": "https://www.oettingen.de/buergerservice-politik/foerderungen/magdalene-armin-richters-stiftung",
+        "finding": "Am 25.09.2026 gelesen: Spenden „für die Förderung von Projekten im Bereich der Naturwissenschaften vor Ort“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "oettingen.de/buergerservice-politik/projekte/foerderprogramme-1",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht — Fassaden und Leerstand, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.oettingen.de/buergerservice-politik/projekte/foerderprogramme-1"
+      },
+      {
+        "url": "oettingen.de/buergerservice-politik/foerderungen/isek",
+        "disposition": "reviewed",
+        "reason": "Städtebauliches Entwicklungskonzept — kein Zuschuss.",
+        "evidenceUrl": "https://www.oettingen.de/buergerservice-politik/foerderungen/isek"
+      },
+      {
+        "url": "oettingen.de/buergerservice-politik/foerderungen/kollmar-stiftung",
+        "disposition": "reviewed",
+        "reason": "Förderstiftung für Stipendien — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.oettingen.de/buergerservice-politik/foerderungen/kollmar-stiftung"
+      },
+      {
+        "url": "oettingen.de/buergerservice-politik/foerderungen/magdalene-armin-richters-stiftung",
+        "disposition": "reviewed",
+        "reason": "Stiftung zur Förderung der Naturwissenschaft — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.oettingen.de/buergerservice-politik/foerderungen/magdalene-armin-richters-stiftung"
+      }
+    ]
+  },
+  {
+    "regionId": "09779203",
+    "name": "Reimlingen",
+    "checkedAt": "2026-09-25T06:35:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Reimlingen (Landkreis Donau-Ries). Kein kommunaler Zuschuss im Umfang: Die Klimaschutzseite beschreibt eine bundesgeförderte Einstiegsberatung der Gemeinde und als beschlossene Maßnahme ein Nahwärmekonzept „Schlossberg“.",
+    "searches": [
+      "Klimaschutzseite der Gemeinde gelesen (25.09.2026)",
+      "Websuche nach Ort + Förderprogramm/Photovoltaik/Balkonkraftwerk/Speicher (25.09.2026): kein Treffer auf ein kommunales Programm",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.reimlingen.de/klimaschutz-mit-konzept-2/",
+        "finding": "Am 25.09.2026 gelesen: Einstiegsberatung aus der Nationalen Klimaschutzinitiative; „Konzept für eine mögliche Nahwärmeinsel „Schlossberg““ — kein Zuschuss für Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "reimlingen.de/klimaschutz-mit-konzept-2/bmukn_nki_gefoerdert_grb_de_2025_quer4x-100",
+        "disposition": "reviewed",
+        "reason": "Förderlogo des Bundes auf der Klimaschutzseite — durch die gelesene Seite erledigt.",
+        "evidenceUrl": "https://www.reimlingen.de/klimaschutz-mit-konzept-2/"
+      },
+      {
+        "url": "reimlingen.de/wp-content/uploads/2025/09/Abschlussbericht_EB_Reimlingen.pdf",
+        "disposition": "reviewed",
+        "reason": "Abschlussbericht der Einstiegsberatung zum kommunalen Klimaschutz — Konzept der Gemeinde, kein Förderprogramm; die zugehörige Seite nennt die beschlossene Maßnahme.",
+        "evidenceUrl": "https://www.reimlingen.de/klimaschutz-mit-konzept-2/"
+      }
+    ]
+  },
+  {
+    "regionId": "09779218",
+    "name": "Tapfheim",
+    "checkedAt": "2026-09-25T06:35:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Tapfheim (Landkreis Donau-Ries). Kein kommunaler Zuschuss im Umfang: Die Übersicht der gemeindlichen Förderprogramme nennt Hausbaumprojekt, Altortbelebung, Versickerungsanlagen und Fassadensanierung; neu ist eine Förderung von Baumpflanzungen (23.09.2026).",
+    "searches": [
+      "Übersicht der gemeindlichen Förderprogramme gelesen (25.09.2026)",
+      "Websuche nach Ort + Förderprogramm/Photovoltaik/Balkonkraftwerk/Speicher (25.09.2026): kein Treffer auf ein kommunales Programm",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.tapfheim.de/seite/491386/f%C3%B6rderprogramme.html",
+        "finding": "Am 25.09.2026 gelesen: „Hausbaumprojekt · Altortbelebung · Förderung von Versickerungsanlagen zur Reduzierung von Dachflächenwasser · Kommunales Förderprogramm und Gestaltungshandbuch für private Fassadensanierungen“."
+      }
+    ],
+    "sources": [
+      {
+        "url": "tapfheim.de/seite/491386/f%C3%B6rderprogramme.html",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht — nichts im Umfang.",
+        "evidenceUrl": "https://www.tapfheim.de/seite/491386/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "tapfheim.de/seite/491406/kommunales-f%C3%B6rderprogramm-und-gestaltungshandbuch-f%C3%BCr-private-fassadensanierungen.html",
+        "disposition": "reviewed",
+        "reason": "Fassadenprogramm — in der Übersicht gelesen, außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.tapfheim.de/seite/491386/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "tapfheim.de/seite/491406/kommunales-f%C3%B6rderprogramm-und-gestaltungshandbuch-f%C3%BCr-private-fassadensanierungen.html?modus=drucken",
+        "disposition": "reviewed",
+        "reason": "Druckfassung derselben Fassadenseite.",
+        "evidenceUrl": "https://www.tapfheim.de/seite/491386/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "tapfheim.de/seite/508709/breitband-f%C3%B6rderverfahren-nach-der-baygibitr.html",
+        "disposition": "reviewed",
+        "reason": "Breitband-Förderverfahren der Gemeinde — außerhalb des Umfangs.",
+        "evidenceUrl": "https://www.tapfheim.de/seite/491386/f%C3%B6rderprogramme.html"
+      },
+      {
+        "url": "tapfheim.de/contact/index/link",
+        "disposition": "reviewed",
+        "reason": "Kontaktformular-Link, kein Inhalt — die Förderübersicht erledigt die Gemeinde.",
+        "evidenceUrl": "https://www.tapfheim.de/seite/491386/f%C3%B6rderprogramme.html"
+      }
+    ]
+  },
+  {
+    "regionId": "09779228",
+    "name": "Wemding",
+    "checkedAt": "2026-09-25T06:35:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Wemding (Landkreis Donau-Ries). Kein städtischer Zuschuss im Umfang: Die Übersicht der Fördermöglichkeiten nennt „Wohnen in der Altstadt“, Fassadensanierung, Städtebauförderung und „Stadtgrün“.",
+    "searches": [
+      "Seite „Fördermöglichkeiten“ der Stadt gelesen (25.09.2026)",
+      "Websuche nach Ort + Förderprogramm/Photovoltaik/Balkonkraftwerk/Speicher (25.09.2026): kein Treffer auf ein kommunales Programm",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wemding.de/flaechenmanagement/foerdermoeglichkeiten",
+        "finding": "Am 25.09.2026 gelesen: Förderprogramm „Wohnen in der Altstadt“, „Zuschuss Fassadensanierung in der Altstadt“, Förderprogramm „Stadtgrün“ — nichts zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wemding.de/flaechenmanagement/foerdermoeglichkeiten",
+        "disposition": "reviewed",
+        "reason": "Förderübersicht — nichts im Umfang.",
+        "evidenceUrl": "https://www.wemding.de/flaechenmanagement/foerdermoeglichkeiten"
+      }
+    ]
+  },
+  {
+    "regionId": "09779201",
+    "name": "Rain",
+    "checkedAt": "2026-09-25T08:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Rain (Landkreis Donau-Ries). Kein städtischer Zuschuss im Umfang: Die Seite zu freiwilligen kommunalen Leistungen nennt als verwandte Förderungen nur Vereine und Wohnraum (Bau/Erwerb); die Seitensuche findet zu Photovoltaik nur Freiflächen-Bauleitplanung, zu Balkonkraftwerk nichts, zu Förderprogramm nur Energieberatungstermine des Landkreises.",
+    "searches": [
+      "Seitensuche rain.de (25.09.2026): Photovoltaik (Freiflächenanlagen-Antrag Stadtrat 2023, Bebauungsplan Wächtering 3, Elektrobetrieb), Balkonkraftwerk (0), Förderprogramm (nur Energieberatungstermine Landkreis), Förderung (Städtebauförderung Vereine/Bürger, Kitas), Wärmepumpe (nur kommunale Wärmeplanung), Speicher, Energie",
+      "Seite „Freiwillige kommunale Leistung; Beantragung“ gelesen (25.09.2026): verwandte Leistungen Vereine und Wohnraumförderung",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.rain.de/verwaltung-buerger/rathaus-und-behoerden/freiwillige-kommunale-leistung-beantragung_id17032",
+        "finding": "Am 25.09.2026 gelesen: „Verwandte Leistungen Vereine; Beantragung einer kommunalen Förderung / Wohnraum; Beantragung einer kommunalen Förderung für den Bau oder Erwerb“ — nichts zu PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.rain.de/suche?SearchText=Photovoltaik",
+        "finding": "Am 25.09.2026: Treffer nur „Nachhaltiger und zielführender Ausbau von Photovoltaik-Freiflächenanlagen“ (Stadtratsantrag) und Bebauungsplan Solarpark — kein Förderprogramm."
+      },
+      {
+        "url": "https://www.rain.de/verwaltung-buerger/staedtische-betriebe/wasserwerk-der-stadt-rain/wasserwerk-rain-technische-daten-und-foerderschema",
+        "finding": "Am 25.09.2026 gelesen: „Förderschema der Brunnen V bis VIII und Schema der Pumpstation“ — technisches Schema der Wasserförderung, kein Zuschuss."
+      }
+    ],
+    "sources": [
+      {
+        "url": "rain.de/verwaltung-buerger/staedtische-betriebe/wasserwerk-der-stadt-rain/wasserwerk-rain-technische-daten-und-foerderschema",
+        "disposition": "reviewed",
+        "reason": "„Förderschema“ meint das Pumpschema der Trinkwasserbrunnen — kein Zuschuss.",
+        "evidenceUrl": "https://www.rain.de/verwaltung-buerger/staedtische-betriebe/wasserwerk-der-stadt-rain/wasserwerk-rain-technische-daten-und-foerderschema"
+      }
+    ]
+  },
+  {
+    "regionId": "09779181",
+    "name": "Mertingen",
+    "checkedAt": "2026-09-25T08:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Mertingen (Landkreis Donau-Ries). Kein gemeindlicher Zuschuss im Umfang: Die Seitensuche findet zu Photovoltaik, Balkonkraftwerk, Wärmepumpe und Solar keinen Treffer; „Förderung“ und „Zuschuss“ betreffen Schule, Musikunterricht und Vereine. Die LEW-Klimaschutzprämie ist eine Prämie AN die Gemeinde, ProTherm Mertingen GmbH ist der Fernwärmebetrieb.",
+    "searches": [
+      "Seitensuche mertingen.de (25.09.2026): Photovoltaik 0, Balkonkraftwerk 0, Wärmepumpe 0, Solar 0, Förderprogramm 1 (Kommunale Partnerschaften), Förderung 52 (Schule/Musik/Leseförderung), Zuschuss 11 (Geigenunterricht u. ä.), Speicher 18 (Datenschutz), Energie 14 (LEW-Kinderuni)",
+      "Meldung „LEW Klimaschutzprämie 2025“ gelesen (25.09.2026): Prämie an die Gemeinde für eigene Klimaprojekte",
+      "Seite ProTherm Mertingen GmbH gelesen (25.09.2026): gemeindliches Versorgungsunternehmen (Fernwärme), kein Zuschussprogramm",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.mertingen.de/suchergebnisse?s=Photovoltaik",
+        "finding": "Am 25.09.2026: „Ihre Suche nach \"Photovoltaik\" ergab folgende Treffer (0)“; ebenso Balkonkraftwerk, Wärmepumpe, Solar."
+      },
+      {
+        "url": "https://www.mertingen.de/rathaus-service/verwaltung/aktuelles/aenderung-der-foerderrichtlinie-fuer-die-vereine",
+        "finding": "Am 25.09.2026 gelesen: Förderrichtlinien für Investitionen von Vereinen und Organisationen, Beschluss 23.06.2026 — keine Förderung privater Haushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "mertingen.de/rathaus-service/verwaltung/aktuelles/aenderung-der-foerderrichtlinie-fuer-die-vereine",
+        "disposition": "reviewed",
+        "reason": "Vereinsförderung — nicht im Umfang.",
+        "evidenceUrl": "https://www.mertingen.de/rathaus-service/verwaltung/aktuelles/aenderung-der-foerderrichtlinie-fuer-die-vereine"
+      }
+    ]
+  },
+  {
+    "regionId": "09779",
+    "name": "Landkreis Donau-Ries",
+    "checkedAt": "2026-09-25T08:05:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Landkreis Donau-Ries. Kein Kreisprogramm im Umfang: Der Energiebereich des Landratsamts bietet Energieberatung, Energiedaten, Solarpotenzialkataster, Broschüren, Energienutzungsplan und LED — keinen Zuschuss. Die Förderseiten des Kreises betreffen Naturschutz, Schwimmförderung, Radverkehr, Denkmalpflege, Sport und Innenentwicklung.",
+    "searches": [
+      "Seitensuche donau-ries.de (25.09.2026): Photovoltaik (nur Projektkarte kommunaler Anlagen), Balkonkraftwerk (0), Förderprogramm (Projektkarte kommunaler Projekte), Zuschuss (Schwimmen, Sport, Denkmal, Jugend, Wohnraumförderung)",
+      "Energieseite und Energieberatung des Landratsamts gelesen (25.09.2026)",
+      "Förderprogramme Innenentwicklung gelesen (25.09.2026)",
+      "Landkreis Donau-Ries; laut Hinweisliste pv-navi (25.09.2026) im Kreis nur das beendete Donauwörther Kleinst-PV-Programm, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.donau-ries.de/nachhaltigkeit/energie",
+        "finding": "Am 25.09.2026 gelesen: Unterseiten Energieberatung, Energiedaten Landkreis Donau-Ries, Solarpotenzialkataster, Broschüren, Energienutzungsplan, LED-Beleuchtung — kein Förderprogramm."
+      },
+      {
+        "url": "https://www.donau-ries.de/themen/nachhaltigkeit/energie/energieberatung",
+        "finding": "Am 25.09.2026 gelesen: Beratung erläutert „Förderprogramme (staatliche und andere)“ — kein eigener Kreiszuschuss."
+      },
+      {
+        "url": "https://www.donau-ries.de/nachhaltigkeit/nachhaltigkeit/projektkarte-nachhaltigkeit/details/foerderung-des-radverkehrs",
+        "finding": "Am 25.09.2026 gelesen: Projektkarte eines kommunalen Radverkehrsprojekts (Dienst-E-Bike, Radverkehrskonzept) — kein Zuschuss für Privathaushalte."
+      },
+      {
+        "url": "https://www.donau-ries.de/schwimmen",
+        "finding": "Am 25.09.2026 gelesen: „Förderung des Frühschwimmerabzeichens (Seepferdchen) – „Mach mit – Tauch auf!““ — nicht im Umfang."
+      },
+      {
+        "url": "https://www.donau-ries.de/themen/nachhaltigkeit/naturschutz/foerderprogramme",
+        "finding": "Am 25.09.2026 gelesen: Landschaftspflegemaßnahmen und Vertragsnaturschutzprogramm — nicht im Umfang."
+      }
+    ],
+    "sources": [
+      {
+        "url": "donau-ries.de/nachhaltigkeit/nachhaltigkeit/projektkarte-nachhaltigkeit/details/foerderung-des-radverkehrs",
+        "disposition": "reviewed",
+        "reason": "Projektkarte eines kommunalen Radverkehrsprojekts — nicht im Umfang.",
+        "evidenceUrl": "https://www.donau-ries.de/nachhaltigkeit/nachhaltigkeit/projektkarte-nachhaltigkeit/details/foerderung-des-radverkehrs"
+      },
+      {
+        "url": "donau-ries.de/schwimmen",
+        "disposition": "reviewed",
+        "reason": "Förderung des Frühschwimmerabzeichens — nicht im Umfang.",
+        "evidenceUrl": "https://www.donau-ries.de/schwimmen"
+      },
+      {
+        "url": "donau-ries.de/themen/nachhaltigkeit/naturschutz/foerderprogramme",
+        "disposition": "reviewed",
+        "reason": "Landschaftspflege- und Vertragsnaturschutzprogramm — nicht im Umfang.",
+        "evidenceUrl": "https://www.donau-ries.de/themen/nachhaltigkeit/naturschutz/foerderprogramme"
+      }
+    ]
+  },
+  {
+    "regionId": "07336",
+    "name": "Landkreis Kusel",
+    "checkedAt": "2026-09-25T08:15:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Landkreis Kusel. Kein Kreisprogramm im Umfang: Der Förderratgeber der Kreisverwaltung verweist nur auf den Fördermittelkompass der Energieagentur, die Bundesförderung (BAFA) und die Verbraucherzentrale; der dort verlinkte Unterpunkt Photovoltaik antwortet mit 404. Die KIPKI-Mittel des Kreises (rund 1,02 Mio €) gingen laut Land in die zentrale Wärmeversorgung der Kreisverwaltung, eine PV-Anlage mit Speicher und Sonnensegel an Schulen — kein Bürgerprogramm.",
+    "searches": [
+      "Förderratgeber der Kreisverwaltung gelesen (25.09.2026)",
+      "Verlinkte Unterseite Photovoltaik: HTTP 404 (25.09.2026)",
+      "Websuche Landkreis Kusel Balkonkraftwerk/Photovoltaik Zuschuss KIPKI (25.09.2026): nur Pressemitteilung des Landes zur Verwendung der KIPKI-Mittel und Zeitungsbericht RHEINPFALZ 01.09.2025 hinter Bezahlschranke (einzelne Kommunen fördern — für die VG-Gebiete gesondert geprüft)",
+      "Katalog ohne Programm mit Schlüssel 07336"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.landkreis-kusel.de/buergerservice-und-verwaltung/themen/umwelt-bauen/klimaschutz-klimawandel/foerderratgeber",
+        "finding": "Am 25.09.2026 gelesen: „Eine Übersicht über verfügbare Fördermittel finden Sie auf der Seite der Energieagentur im Fördermittelkompass“; im privaten Bereich nur BEG/BAFA und Verbraucherzentrale — kein Kreiszuschuss."
+      },
+      {
+        "url": "https://mkuem.rlp.de/service/pressemitteilungen/detail/mehr-als-eine-million-euro-kipki-foerderung-fuer-klimaschutz-im-landkreis-kusel",
+        "finding": "Am 25.09.2026 gelesen: „Landkreis finanziert aus dem KIPKI eine zentrale Wärmeversorgung, eine PV-Anlage mit Stromspeichern und Verschattungsmaßnahmen für Schulen“ — kein Förderprogramm für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "landkreis-kusel.de/buergerservice-und-verwaltung/themen/umwelt-bauen/klimaschutz-klimawandel/foerderratgeber",
+        "disposition": "reviewed",
+        "reason": "Verweisseite auf Bundes- und Beratungsangebote — kein Kreisprogramm.",
+        "evidenceUrl": "https://www.landkreis-kusel.de/buergerservice-und-verwaltung/themen/umwelt-bauen/klimaschutz-klimawandel/foerderratgeber"
+      }
+    ]
+  },
+  {
+    "regionId": "07336099",
+    "name": "Ulmet",
+    "checkedAt": "2026-09-25T08:15:00Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ulmet gehört zur Verbandsgemeinde Kusel-Altenglan (Landkreis Kusel). Kein Zuschuss im Umfang: Die einzige Fundstelle ist der Fragebogen zum geplanten Nahwärmenetz der Ortsgemeinde; das Seitenverzeichnis der Verbandsgemeinde (2.690 Adressen, auch für alle Ortsgemeinden) enthält keine Förder-, Klima- oder Balkonseite, nur Solarpark-Bebauungspläne und eine Fernwärmesatzung (Konken). Der Kreis hat kein eigenes Programm.",
+    "searches": [
+      "Seitenverzeichnis vgka.de (25.09.2026, 2.690 Adressen) nach klima/förder/energie/balkon/solar/zuschuss/photovolt/wärme/kipki/umwelt gefiltert: nur Solarpark-Bebauungspläne, Umweltberichte, Fernwärmesatzung Konken, Kalendereinträge von Fördervereinen",
+      "Nahwärme-Fragebogen der Ortsgemeinde gelesen (25.09.2026)",
+      "Websuche VG Kusel-Altenglan Balkonkraftwerk/Photovoltaik Zuschuss (25.09.2026): kein Programm; Zeitungsbericht RHEINPFALZ 01.09.2025 hinter Bezahlschranke, durch das VG-Verzeichnis für dieses Gebiet ausgeräumt",
+      "Landkreis Kusel: Förderratgeber gelesen, kein Kreisprogramm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgka.de/sitemap.xml",
+        "finding": "Am 25.09.2026: 2.690 Adressen, keine Seite zu einem Förderprogramm für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.ulmet.de/nahwaerme-fragebogen",
+        "finding": "Am 25.09.2026 gelesen: Fragebogen zur Auslegung eines Nahwärmenetzes („Warum sollten Sie auf Nahwärme umsteigen?“) — kein Zuschussprogramm."
+      },
+      {
+        "url": "https://www.landkreis-kusel.de/buergerservice-und-verwaltung/themen/umwelt-bauen/klimaschutz-klimawandel/foerderratgeber",
+        "finding": "Am 25.09.2026 gelesen: kein Kreiszuschuss, nur Verweise auf Bund und Beratung."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ulmet.de/nahwaerme-fragebogen",
+        "disposition": "reviewed",
+        "reason": "Nahwärme-Planung der Ortsgemeinde — kein Zuschuss.",
+        "evidenceUrl": "https://www.ulmet.de/nahwaerme-fragebogen"
+      }
+    ]
   }
 ]
