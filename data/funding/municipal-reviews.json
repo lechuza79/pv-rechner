@@ -5355,11 +5355,11 @@
   {
     "regionId": "01059067",
     "name": "Oersberg",
-    "checkedAt": "2026-09-20T04:20:00Z",
+    "checkedAt": "2026-09-25T12:06:50Z",
     "recheckAt": "2027-09-20T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich drei Fundstellen auf kappeln.de.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Alle drei erfassten Fundstellen tragen keinen Förderinhalt: zwei sind Bebauungsplan-Adressen (B-Plan Nr. 43, Östlich der Eckernförder Straße), die nur den Navigationsrahmen ohne Seiteninhalt ausliefern, die dritte ist eine Weiterleitung der Stadtseite, deren Ziel tot ist. Kein Wort zu Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Weiterleitungs-Adresse ist im Bestand HTML-maskiert erfasst (Und-Zeichen als Entität); der Abruf entmaskiert sie über den Adressweg.",
+    "conclusion": "Alle drei erfassten Fundstellen tragen keinen Förderinhalt: zwei sind Bebauungsplan-Adressen (B-Plan Nr. 43, Östlich der Eckernförder Straße), die nur den Navigationsrahmen ohne Seiteninhalt ausliefern, die dritte ist eine Weiterleitung der Stadtseite, deren Ziel tot ist. Kein Wort zu Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Weiterleitungs-Adresse ist im Bestand HTML-maskiert erfasst (Und-Zeichen als Entität); der Abruf entmaskiert sie über den Adressweg. Weitere Fundstelle (Ausschussvorlage 2023 zum Landesprogramm) am 25.09.2026 gelesen: kein städtisches Programm.",
     "searches": [
       "kappeln.de Förderung Photovoltaik Balkonkraftwerk Zuschuss"
     ],
@@ -5375,6 +5375,10 @@
       {
         "url": "https://www.kappeln.de/redirect.phtml?extlink=1&La=1&url_fid=2989.174.1",
         "finding": "„Dieser Link ist zur Zeit nicht erreichbar. Eine Meldung an den Administratior wurde versendet.“"
+      },
+      {
+        "url": "https://www.kappeln.de/media/custom/2989_966_1.PDF?1676982869=",
+        "finding": "Am 25.09.2026 gelesen: Informationsvorlage für den Bauausschuss der Stadt Kappeln (2023) zur Landesrichtlinie Schleswig-Holstein für PV-Balkonanlagen (bis 200 €, max. 50 %, ab 16.01.2023, Antrag im Serviceportal des Landes); ausdrücklich ohne Relevanz für Beschlüsse der Stadt. Kein Programm der Stadt; das Landesprogramm steht als sh-balkon-klimaschutz-bub im Katalog."
       }
     ],
     "sources": [
@@ -5395,6 +5399,12 @@
         "disposition": "reviewed",
         "reason": "Weiterleitung mit totem Ziel.",
         "evidenceUrl": "https://www.kappeln.de/redirect.phtml?extlink=1&La=1&url_fid=2989.174.1"
+      },
+      {
+        "url": "kappeln.de/media/custom/2989_966_1.PDF?1676982869=",
+        "disposition": "reviewed",
+        "reason": "Am 25.09.2026 gelesen: Informationsvorlage für den Bauausschuss der Stadt Kappeln (2023) zur Landesrichtlinie Schleswig-Holstein für PV-Balkonanlagen (bis 200 €, max. 50 %, ab 16.01.2023, Antrag im Serviceportal des Landes); ausdrücklich ohne Relevanz für Beschlüsse der Stadt. Kein Programm der Stadt; das Landesprogramm steht als sh-balkon-klimaschutz-bub im Katalog.",
+        "evidenceUrl": "https://www.kappeln.de/media/custom/2989_966_1.PDF?1676982869="
       }
     ]
   },
@@ -15505,11 +15515,11 @@
   {
     "regionId": "05570",
     "name": "Kreis Warendorf",
-    "checkedAt": "2026-09-18T00:27:29Z",
+    "checkedAt": "2026-09-25T12:06:50Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Die Förderseite des Kreises Warendorf verweist ausschließlich auf fremde Förderdatenbanken — Fördernavi der NRW.Energy4Climate, Förderdatenbank des Bundes, ALTBAUNEU, KfW, BAFA und progres.NRW — sowie auf Energieberatung und den Stromspar-Check. Ein eigenes Kreisprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe gibt es dort nicht.",
+    "conclusion": "Die Förderseite des Kreises Warendorf verweist ausschließlich auf fremde Förderdatenbanken — Fördernavi der NRW.Energy4Climate, Förderdatenbank des Bundes, ALTBAUNEU, KfW, BAFA und progres.NRW — sowie auf Energieberatung und den Stromspar-Check. Ein eigenes Kreisprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe gibt es dort nicht. Energiebericht 2026 am 25.09.2026 gelesen: nur kreiseigene Liegenschaften.",
     "searches": [
       "kreis-warendorf.de Energie Klimaschutz Förderungen",
       "kreis-warendorf Förderprogramm Photovoltaik Balkonkraftwerk Zuschuss"
@@ -15518,6 +15528,10 @@
       {
         "url": "https://www.kreis-warendorf.de/unsere-themen/umwelt/energie-und-klimaschutz/foerderungen",
         "finding": "„Die Fördermöglichkeiten sind groß und häufig recht komplex. Unternehmen und Privatpersonen können sich auf folgenden Seiten einen Überblick über Förder- und Finanzierungsmöglichkeiten verschaffen“ — es folgen ausschließlich Verweise auf Fördernavi, Förderdatenbank des Bundes, ALTBAUNEU, KfW, BAFA und progres.NRW."
+      },
+      {
+        "url": "https://www.kreis-warendorf.de/fileadmin/publikationen/serviceportal/23/energiebericht/Energiebericht_2026.pdf",
+        "finding": "Energiebericht für die Liegenschaften des Kreises Warendorf 2010–2025 (zehnte Fassung, Februar 2026) am 25.09.2026 vollständig durchsucht: behandelt ausschließlich PV-Anlagen und Wärmepumpen auf kreiseigenen Gebäuden; kein Zuschuss für private Haushalte."
       }
     ],
     "sources": [
@@ -15526,6 +15540,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: reine Verweisseite auf Bundes- und Landesprogramme, kein eigenes Kreisprogramm.",
         "evidenceUrl": "https://www.kreis-warendorf.de/unsere-themen/umwelt/energie-und-klimaschutz/foerderungen"
+      },
+      {
+        "url": "kreis-warendorf.de/fileadmin/publikationen/serviceportal/23/energiebericht/Energiebericht_2026.pdf",
+        "disposition": "reviewed",
+        "reason": "Energiebericht für die Liegenschaften des Kreises Warendorf 2010–2025 (zehnte Fassung, Februar 2026) am 25.09.2026 vollständig durchsucht: behandelt ausschließlich PV-Anlagen und Wärmepumpen auf kreiseigenen Gebäuden; kein Zuschuss für private Haushalte.",
+        "evidenceUrl": "https://www.kreis-warendorf.de/fileadmin/publikationen/serviceportal/23/energiebericht/Energiebericht_2026.pdf"
       }
     ]
   },
@@ -27252,11 +27272,11 @@
   {
     "regionId": "07143040",
     "name": "Kammerforst",
-    "checkedAt": "2026-09-23T14:25:00Z",
+    "checkedAt": "2026-09-25T12:06:50Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich Fundstellen auf hoehr-grenzhausen.de, der Seite der Verbandsgemeinde.",
     "outcome": "programme-geprueft",
-    "conclusion": "Die Verbandsgemeinde Höhr-Grenzhausen zahlt für ein Balkonkraftwerk 200 € pauschal je Wohneinheit, einmalig — gefördert wird nur ab 800 Wp Modulleistung und 600 W Wechselrichterleistung, gekauft nach dem 01.01.2024, Antrag binnen drei Monaten nach dem Kauf. Das Programm steht als vg-hoehr-grenzhausen-balkonkraftwerke im Katalog, mit allen vier Ortsgemeinden als Fördergebiet; es nimmt am 23.09.2026 Anträge an. Getragen wird es aus KIPKI-Mitteln des Landes mit einem im Januar 2024 angekündigten Kontingent von 500 Anlagen. Wärmepumpen fördert die Verbandsgemeinde nicht. Ein eigenes Programm dieser Ortsgemeinde gibt es nicht: Die Rubrik der Verbandsgemeinde führt Richtlinien nur für die Stadt Höhr-Grenzhausen und die Ortsgemeinde Hillscheid.",
+    "conclusion": "Die Verbandsgemeinde Höhr-Grenzhausen zahlt für ein Balkonkraftwerk 200 € pauschal je Wohneinheit, einmalig — gefördert wird nur ab 800 Wp Modulleistung und 600 W Wechselrichterleistung, gekauft nach dem 01.01.2024, Antrag binnen drei Monaten nach dem Kauf. Das Programm steht als vg-hoehr-grenzhausen-balkonkraftwerke im Katalog, mit allen vier Ortsgemeinden als Fördergebiet; es nimmt am 23.09.2026 Anträge an. Getragen wird es aus KIPKI-Mitteln des Landes mit einem im Januar 2024 angekündigten Kontingent von 500 Anlagen. Wärmepumpen fördert die Verbandsgemeinde nicht. Ein eigenes Programm dieser Ortsgemeinde gibt es nicht: Die Rubrik der Verbandsgemeinde führt Richtlinien nur für die Stadt Höhr-Grenzhausen und die Ortsgemeinde Hillscheid. Richtlinien-PDF am 25.09.2026 als eigene Quelle gelesen; deckungsgleich mit dem Katalog.",
     "searches": [
       "Programmseite und Förderrichtlinie der Verbandsgemeinde Höhr-Grenzhausen am 23.09.2026 im Volltext gelesen",
       "Rubrik „Förderung privater Energiegewinnung\" vollständig durchgesehen: sie führt genau drei Seiten (Balkon-Antrag der Verbandsgemeinde, Richtlinie der Stadt, Richtlinie der Ortsgemeinde Hillscheid)",
@@ -27269,7 +27289,7 @@
       },
       {
         "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p",
-        "finding": "„Richtlinie der Verbandsgemeinde Höhr-Grenzhausen über die Förderung von Balkonkraftwerken\", beschlossen vom Verbandsgemeinderat am 26.02.2024, unterzeichnet am 27.02.2024. Nr. I: Neuerrichtung, Wechselrichter mindestens 0,6 kWp, Module mindestens 0,8 kWp. Nr. II: „Je Wohneinheit wird ein Balkonkraftwerk mit einem Pauschalbetrag in Höhe von 200 € einmalig gefördert.\" Nr. III: Eigentümer und Mieter von Wohngebäuden und Wohnungen, Mieter mit Einverständnis des Vermieters; ausgeschlossen sind Wohneinheiten, für die bereits eine Photovoltaikanlage betrieben wird. Nr. IV: Kauf nach dem 01.01.2024, Antrag binnen drei Monaten nach Erwerb, Rechnung (kein Kassenbon), Zahlungsnachweis, Registrierungsnachweis, Foto; kein Rechtsanspruch, Ermessen im Rahmen der Haushaltsmittel, Ortstermin möglich. Nr. V: Inkrafttreten am Tag nach der Bekanntmachung, deren Datum die Richtlinie nicht nennt. Keine Behaltefrist, keine Rückforderungsklausel, keine Obergrenze für die Modulleistung."
+        "finding": "„Richtlinie der Verbandsgemeinde Höhr-Grenzhausen über die Förderung von Balkonkraftwerken\", beschlossen vom Verbandsgemeinderat am 26.02.2024, unterzeichnet am 27.02.2024. Nr. I: Neuerrichtung, Wechselrichter mindestens 0,6 kWp, Module mindestens 0,8 kWp. Nr. II: „Je Wohneinheit wird ein Balkonkraftwerk mit einem Pauschalbetrag in Höhe von 200 € einmalig gefördert.\" Nr. III: Eigentümer und Mieter von Wohngebäuden und Wohnungen, Mieter mit Einverständnis des Vermieters; ausgeschlossen sind Wohneinheiten, für die bereits eine Photovoltaikanlage betrieben wird. Nr. IV: Kauf nach dem 01.01.2024, Antrag binnen drei Monaten nach Erwerb, Rechnung (kein Kassenbon), Zahlungsnachweis, Registrierungsnachweis, Foto; kein Rechtsanspruch, Ermessen im Rahmen der Haushaltsmittel, Ortstermin möglich. Nr. V: Inkrafttreten am Tag nach der Bekanntmachung, deren Datum die Richtlinie nicht nennt. Keine Behaltefrist, keine Rückforderungsklausel, keine Obergrenze für die Modulleistung. Richtlinie der Verbandsgemeinde über die Förderung von Balkonkraftwerken (Ratsbeschluss 26.02.2024, gez. 27.02.2024) am 25.09.2026 vollständig gelesen: 200 € pauschal je Wohneinheit einmalig, Wechselrichter mind. 0,6 kWp und Module mind. 0,8 kWp, Kauf nach 01.01.2024, Antrag binnen 3 Monaten, Eigentümer und Mieter (mit Einverständnis), Wohneinheiten mit bestehender PV ausgeschlossen, kein Rechtsanspruch — deckungsgleich mit vg-hoehr-grenzhausen-balkonkraftwerke."
       },
       {
         "url": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-ortsgemeinde-hillscheid/",
@@ -27298,6 +27318,12 @@
         "disposition": "reviewed",
         "reason": "Richtlinie der Stadt Höhr-Grenzhausen gelesen; steht als hoehr-grenzhausen-energie im Katalog, für 2026 ausgeschöpft.",
         "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-stadt-hoehr-grenzhausen/"
+      },
+      {
+        "url": "hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Verbandsgemeinde über die Förderung von Balkonkraftwerken (Ratsbeschluss 26.02.2024, gez. 27.02.2024) am 25.09.2026 vollständig gelesen: 200 € pauschal je Wohneinheit einmalig, Wechselrichter mind. 0,6 kWp und Module mind. 0,8 kWp, Kauf nach 01.01.2024, Antrag binnen 3 Monaten, Eigentümer und Mieter (mit Einverständnis), Wohneinheiten mit bestehender PV ausgeschlossen, kein Rechtsanspruch — deckungsgleich mit vg-hoehr-grenzhausen-balkonkraftwerke.",
+        "evidenceUrl": "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderantrag-balkonkraftwerke/foerderrichtlinie-balkonkraftwerke.pdf?cid=147p"
       }
     ]
   },
@@ -28693,11 +28719,11 @@
   {
     "regionId": "07143211",
     "name": "Bölsberg",
-    "checkedAt": "2026-09-17T08:17:21.948987+00:00",
+    "checkedAt": "2026-09-25T12:06:50Z",
     "recheckAt": "2026-12-01T08:00:00Z",
     "scope": "Private Haushalte: kommunale Kaufzuschüsse für PV, Speicher, Balkonkraftwerke und Wärmepumpen einschließlich des VG-Programms; Beratung und steuerliche Sanierungsvorteile getrennt eingeordnet. Kein Audit sämtlicher Haushalts-/Ratsunterlagen oder Landes-/Bundesprogramme.",
     "outcome": "programme-geprueft",
-    "conclusion": "Ortsgemeindeseite und bekannte Quellen gelesen, gezielte Suche ohne eigenes Programm von Bölsberg. Anwendbar ist das VG-Programm, das 2026 ausgeschöpft und so veröffentlicht ist. Kein weiteres kommunales Geräte-Kaufzuschussprogramm belegt; kein pauschaler Förderausschluss. Gespeicherte Such-Vorlagen als Extraktionsartefakte geklärt.",
+    "conclusion": "Ortsgemeindeseite und bekannte Quellen gelesen, gezielte Suche ohne eigenes Programm von Bölsberg. Anwendbar ist das VG-Programm, das 2026 ausgeschöpft und so veröffentlicht ist. Kein weiteres kommunales Geräte-Kaufzuschussprogramm belegt; kein pauschaler Förderausschluss. Gespeicherte Such-Vorlagen als Extraktionsartefakte geklärt. Richtlinien-PDF am 25.09.2026 als eigene Quelle gelesen; deckungsgleich mit dem Katalog, Mittel 2026 weiter ausgeschöpft.",
     "searches": [
       "\"Bölsberg\" Westerwald Förderung Photovoltaik Balkonkraftwerk Zuschuss Ortsgemeinde",
       "site:bad-marienberg.de Balkonkraftwerk Förderung Ortsgemeinde",
@@ -28746,7 +28772,7 @@
       },
       {
         "url": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
-        "finding": "Seitenlinks der Programmseite am Ursprungs-HTML geprüft: die gespeicherten {{ … }}-Adressen stehen wörtlich als data-ng-href-Vorlagen der Suchmaske im HTML; keine eigenständigen Dokumente."
+        "finding": "Seitenlinks der Programmseite am Ursprungs-HTML geprüft: die gespeicherten {{ … }}-Adressen stehen wörtlich als data-ng-href-Vorlagen der Suchmaske im HTML; keine eigenständigen Dokumente. Richtlinie der Verbandsgemeinde vom 26.01.2026 (22 Seiten) am 25.09.2026 erneut vollständig abgerufen: Geltung für alle Grundstücke der Verbandsgemeinde (Nr. 1 Abs. 2); Positionen 3.5 Wärmepumpe 1.000 EUR, 3.6 Brauchwasserwärmepumpe 500 EUR, 3.8 Stromspeicher für PV sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckungsgleich mit dem Katalogeintrag bad-marienberg-erneuerbare-energien. Budgetmeldung vom 16.09.2026 am 25.09.2026 unverändert live: 2026 keine weiteren Anträge."
       }
     ],
     "sources": [
@@ -28785,6 +28811,12 @@
         "disposition": "replaced",
         "reason": "Extraktionsartefakt der Suchmaske im vollständig gelesenen Ursprungs-HTML: data-ng-href enthält wörtlich ozgleistung mit {{ item | generateUrl:… }} und tatsächlichem href=\"#\". Keine reale Zielseite und keine Weiterleitung; durch Prüfung des Originalattributs geklärt, nie als Zielseite gelesen oder negativ gestempelt.",
         "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/"
+      },
+      {
+        "url": "bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev",
+        "disposition": "reviewed",
+        "reason": "Richtlinie der Verbandsgemeinde vom 26.01.2026 (22 Seiten) am 25.09.2026 erneut vollständig abgerufen: Geltung für alle Grundstücke der Verbandsgemeinde (Nr. 1 Abs. 2); Positionen 3.5 Wärmepumpe 1.000 EUR, 3.6 Brauchwasserwärmepumpe 500 EUR, 3.8 Stromspeicher für PV sowie Balkonkraftwerke 100 EUR/Kilowatt, max. 600 EUR — deckungsgleich mit dem Katalogeintrag bad-marienberg-erneuerbare-energien. Budgetmeldung vom 16.09.2026 am 25.09.2026 unverändert live: 2026 keine weiteren Anträge.",
+        "evidenceUrl": "https://www.bad-marienberg.de/bauen-gewerbe-umwelt/sanierung-lohnt-sich/foerderprogramm-zur-ortskernvitalisierung-klimaanpassung-und-nutzung-erneuerbarer-energien/2026-01-26-foerderrichtlinie.pdf?cid=2xev"
       }
     ]
   },
@@ -37566,11 +37598,11 @@
   {
     "regionId": "07334031",
     "name": "Vollmersweiler",
-    "checkedAt": "2026-09-23T12:10:00Z",
+    "checkedAt": "2026-09-25T12:06:50Z",
     "recheckAt": "2026-12-23T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst sind für diesen Ort ausschließlich Fundstellen auf vg-kandel.de, der Seite der Verbandsgemeinde.",
     "outcome": "programme-geprueft",
-    "conclusion": "Die Verbandsgemeinde Kandel zahlt aus KIPKI-Mitteln des Landes einen Zuschuss für Balkonkraftwerke — bis zu 200 € je Haushalt, einmalig, bei geringeren Kosten nur diese. Das Programm steht als vg-kandel-balkonkraftwerke im Katalog, mit allen sieben Ortsgemeinden der Verbandsgemeinde als Fördergebiet. Derzeit sind die Mittel ausgeschöpft und es werden keine Anträge mehr angenommen; der Eintrag informiert deshalb und zieht nichts ab. Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht. Ein eigenes Programm dieser Ortsgemeinde ist auf keiner erfassten Fundstelle belegt.",
+    "conclusion": "Die Verbandsgemeinde Kandel zahlt aus KIPKI-Mitteln des Landes einen Zuschuss für Balkonkraftwerke — bis zu 200 € je Haushalt, einmalig, bei geringeren Kosten nur diese. Das Programm steht als vg-kandel-balkonkraftwerke im Katalog, mit allen sieben Ortsgemeinden der Verbandsgemeinde als Fördergebiet. Derzeit sind die Mittel ausgeschöpft und es werden keine Anträge mehr angenommen; der Eintrag informiert deshalb und zieht nichts ab. Dachanlagen, Speicher und Wärmepumpen fördert die Verbandsgemeinde nicht. Ein eigenes Programm dieser Ortsgemeinde ist auf keiner erfassten Fundstelle belegt. Richtlinien-PDF am 25.09.2026 als eigene Quelle gelesen; dieselbe Fassung 1.04 wie im Katalog.",
     "searches": [
       "Programmseite der Verbandsgemeinde Kandel und die dort verlinkte Förderrichtlinie am 23.09.2026 im Volltext gelesen",
       "Council mit drei unabhängigen Prüfern und einem Legal-Judge zu Betrag, Fördergebiet, Status und den vier Rechtsaussagen"
@@ -37582,7 +37614,7 @@
       },
       {
         "url": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/F%C3%B6rderrichtlinie%20Balkonkraftwerke%20f%C3%BCr%20Privathaushalte%20VG%20Kandel_4%20.pdf",
-        "finding": "„Förderrichtlinie der Verbandsgemeinde Kandel zum kommunalen Förderprogramm ‚Energiewende für jeden! Balkonkraftwerke für Privathaushalte‘, Gültig ab 01.01.2025“, Version 1.04 vom 21.08.2025. § 1: Weitergabe eines Teils der KIPKI-Mittel des Landes Rheinland-Pfalz. § 5: höchstens 800 W Wechselrichter- und 2.000 W Modulleistung, errichtet ab 01.01.2025, „Entscheidend hier ist das Registrierungsdatum“. § 6: „Die Höhe der Fördersumme beträgt maximal 200€. Sollten die eingereichten Kosten unter 200€ liegen, gelten diese als Fördersumme“, dazu der Kumulierungsausschluss. § 7: kein Rechtsanspruch, Reihenfolge des Eingangs. § 11: fünf Jahre Haltedauer. § 12: Ausschluss der Einspeisevergütung. § 13: Rückforderung bei Verstößen."
+        "finding": "„Förderrichtlinie der Verbandsgemeinde Kandel zum kommunalen Förderprogramm ‚Energiewende für jeden! Balkonkraftwerke für Privathaushalte‘, Gültig ab 01.01.2025“, Version 1.04 vom 21.08.2025. § 1: Weitergabe eines Teils der KIPKI-Mittel des Landes Rheinland-Pfalz. § 5: höchstens 800 W Wechselrichter- und 2.000 W Modulleistung, errichtet ab 01.01.2025, „Entscheidend hier ist das Registrierungsdatum“. § 6: „Die Höhe der Fördersumme beträgt maximal 200€. Sollten die eingereichten Kosten unter 200€ liegen, gelten diese als Fördersumme“, dazu der Kumulierungsausschluss. § 7: kein Rechtsanspruch, Reihenfolge des Eingangs. § 11: fünf Jahre Haltedauer. § 12: Ausschluss der Einspeisevergütung. § 13: Rückforderung bei Verstößen. Förderrichtlinie der Verbandsgemeinde Kandel am 25.09.2026 abgerufen: Version 1.04 vom 21.08.2025, gültig ab 01.01.2025, Fördersumme maximal 200 €, bei geringeren Kosten diese — dieselbe Fassung, die dem Katalogeintrag vg-kandel-balkonkraftwerke zugrunde liegt."
       }
     ],
     "sources": [
@@ -37597,6 +37629,12 @@
         "disposition": "replaced",
         "reason": "Kurzform ohne den Pfadteil /vg_kandel/ — der Server antwortet darauf mit HTTP 403; derselbe Inhalt steht unter der vollständigen Adresse.",
         "evidenceUrl": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/"
+      },
+      {
+        "url": "vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/F%C3%B6rderrichtlinie%20Balkonkraftwerke%20f%C3%BCr%20Privathaushalte%20VG%20Kandel_4%20.pdf",
+        "disposition": "reviewed",
+        "reason": "Förderrichtlinie der Verbandsgemeinde Kandel am 25.09.2026 abgerufen: Version 1.04 vom 21.08.2025, gültig ab 01.01.2025, Fördersumme maximal 200 €, bei geringeren Kosten diese — dieselbe Fassung, die dem Katalogeintrag vg-kandel-balkonkraftwerke zugrunde liegt.",
+        "evidenceUrl": "https://www.vg-kandel.de/vg_kandel/Wirtschaft%20&%20Umwelt/Klimaschutz%20&%20Energie/F%C3%B6rderung%20Balkonkraftwerke/F%C3%B6rderrichtlinie%20Balkonkraftwerke%20f%C3%BCr%20Privathaushalte%20VG%20Kandel_4%20.pdf"
       }
     ]
   },
@@ -49916,11 +49954,11 @@
   {
     "regionId": "13076023",
     "name": "Bülow",
-    "checkedAt": "2026-09-18T06:15:00Z",
+    "checkedAt": "2026-09-25T12:06:50Z",
     "recheckAt": "2026-12-17T08:00:00Z",
     "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
     "outcome": "keine-passende-foerderung",
-    "conclusion": "Bülow gehört zum Amt Crivitz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seiten, die der Suchlauf gefunden hat, sind Listen von Projekten, für die die Gemeinden selbst gefördert wurden (LED-Straßenbeleuchtung, Schulsozialarbeit). Die Infosammlung und das Klimaschutzkonzept 2026 des Amtes nennen für Balkonkraftwerke ausschließlich das Landesprogramm des LFI M-V und schlagen keinen eigenen Zuschuss vor.",
+    "conclusion": "Bülow gehört zum Amt Crivitz. Weder das Amt noch die Gemeinde führen ein eigenes Förderprogramm für Photovoltaik, Speicher, Balkonkraftwerk oder Wärmepumpe. Die Seiten, die der Suchlauf gefunden hat, sind Listen von Projekten, für die die Gemeinden selbst gefördert wurden (LED-Straßenbeleuchtung, Schulsozialarbeit). Die Infosammlung und das Klimaschutzkonzept 2026 des Amtes nennen für Balkonkraftwerke ausschließlich das Landesprogramm des LFI M-V und schlagen keinen eigenen Zuschuss vor. Weitere Fundstelle (Firmeneintrag Solartec Luma) am 25.09.2026 gelesen: kein kommunales Programm.",
     "searches": [
       "amt-crivitz.de Volltextsuche: Balkonkraftwerk, Photovoltaik, Solar, Zuschuss, Förderrichtlinie, Wärmepumpe, Klimaschutz, Stromspeicher",
       "Amt Crivitz Gemeinde Zuschuss Balkonkraftwerk Photovoltaik Förderung (Websuche)"
@@ -49965,6 +50003,10 @@
       {
         "url": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union",
         "finding": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte."
+      },
+      {
+        "url": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "finding": "Am 25.09.2026 gelesen: Selbsteintrag des Unternehmens Solartec Luma (Banzkow) im Verzeichnis 'Externe Nutzer' des Amtes, mit Hinweis, dass das Unternehmen selbst verantwortlich ist; die genannten 400 € sind eine Werbeprämie der Firma, kein kommunaler Zuschuss."
       }
     ],
     "sources": [
@@ -50003,6 +50045,12 @@
         "disposition": "reviewed",
         "reason": "Im Original gelesen: Seite ohne Inhalt außer der Überschrift — kein Förderprogramm für Privathaushalte.",
         "evidenceUrl": "https://www.amt-crivitz.de/unsere-gemeinden/gneven/foerderprojekte-der-europaeischen-union"
+      },
+      {
+        "url": "amt-crivitz.de/service/externenutzer/Solartec-Luma",
+        "disposition": "reviewed",
+        "reason": "Am 25.09.2026 gelesen: Selbsteintrag des Unternehmens Solartec Luma (Banzkow) im Verzeichnis 'Externe Nutzer' des Amtes, mit Hinweis, dass das Unternehmen selbst verantwortlich ist; die genannten 400 € sind eine Werbeprämie der Firma, kein kommunaler Zuschuss.",
+        "evidenceUrl": "https://www.amt-crivitz.de/service/externenutzer/Solartec-Luma"
       }
     ]
   },
@@ -62422,6 +62470,50 @@
         "disposition": "reviewed",
         "reason": "Hinweis auf Dorferneuerungsförderung des Landes für ortsprägende Altbauten — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
         "evidenceUrl": "https://kleinsteinhausen.eu/Foerdermoeglichkeiten-Dorferneuerung"
+      }
+    ]
+  },
+  {
+    "regionId": "07340029",
+    "name": "Ludwigswinkel",
+    "checkedAt": "2026-09-25T12:12:21Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Ludwigswinkel gehört zur Verbandsgemeinde Dahner Felsenland (Landkreis Südwestpfalz). Kein Zuschuss im Umfang: Die Website der Ortsgemeinde findet zu Förderung, Zuschuss, Photovoltaik und Balkonkraftwerk nichts; die einzige erfasste Fundstelle ist eine Veranstaltungsseite. Die Verbandsgemeinde führt in ihrem gesamten Menü keine Klimaschutz- oder Förderrubrik, weder die Satzungsliste der Ortsgemeinde noch die der Verbandsgemeinde enthält eine Förderrichtlinie, und unter den Formularen steht kein Förderantrag. Der Kreis hat sein Speicherprogramm 2021 beendet (siehe Contwig/Kreis Südwestpfalz).",
+    "searches": [
+      "Suche ludwigswinkel.de am 25.09.2026 nach Förderung, Zuschuss, Photovoltaik, Balkonkraftwerk: jeweils keine Beiträge",
+      "Vollständiges Menü dahner-felsenland.net (291 Verweise) am 25.09.2026 im echten Browser gelesen: Tourismus, Verwaltung, Satzungen, Amtsblatt, Ortsgemeinden, Werke — keine Klimaschutz-, Energie- oder Förderrubrik",
+      "Websuche 25.09.2026: Ludwigswinkel OR \"Dahner Felsenland\" Zuschuss Balkonkraftwerk Photovoltaik Förderprogramm — kein kommunales Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.ludwigswinkel.de/veranstaltung/pfingstfest-mit-pfingstquackpraemierung",
+        "finding": "Am 25.09.2026 gelesen: Veranstaltungsseite zum Pfingstfest mit Pfingstquackprämierung; kein Förderinhalt."
+      },
+      {
+        "url": "https://www.ludwigswinkel.de/?s=Zuschuss",
+        "finding": "Am 25.09.2026: Suchergebnisseiten der Ortsgemeinde für Förderung, Zuschuss, Photovoltaik und Balkonkraftwerk enthalten keinen einzigen Beitrag."
+      },
+      {
+        "url": "https://www.dahner-felsenland.net/vg_dahner_felsenland/Verwaltung/Satzungen/Ortsgemeinde%20Ludwigswinkel/",
+        "finding": "Am 25.09.2026 im echten Browser gelesen: 25 Satzungen der Ortsgemeinde (Haupt-, Beitrags-, Steuer-, Friedhofs-, Sanierungssatzung Ortskern u. a.); keine Förderrichtlinie."
+      },
+      {
+        "url": "https://www.dahner-felsenland.net/vg_dahner_felsenland/Verwaltung/Satzungen/Verbandsgemeinde%20Dahner%20Felsenland/",
+        "finding": "Am 25.09.2026 gelesen: Satzungen der Verbandsgemeinde (Entwässerung, Wasser, Badeparadies, E-Werk, Gebühren, Ehrenamtskarte); keine Förderrichtlinie für Haushalte."
+      },
+      {
+        "url": "https://www.dahner-felsenland.net/vg_dahner_felsenland/Verwaltung/Formulare/",
+        "finding": "Am 25.09.2026 gelesen: alle Formulare der Verbandsgemeinde; kein Förderantrag."
+      }
+    ],
+    "sources": [
+      {
+        "url": "ludwigswinkel.de/veranstaltung/pfingstfest-mit-pfingstquackpraemierung",
+        "disposition": "reviewed",
+        "reason": "Veranstaltungsseite (Pfingstfest), kein Förderinhalt.",
+        "evidenceUrl": "https://www.ludwigswinkel.de/veranstaltung/pfingstfest-mit-pfingstquackpraemierung"
       }
     ]
   }
