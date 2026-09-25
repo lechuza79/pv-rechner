@@ -2,12 +2,12 @@
 .chart{min-height:320px;}
 .top{grid-column:2;grid-row:1;align-self:stretch;position:relative}
 .gridArea{grid-column:1;grid-row:1;position:relative;min-width:0}
-.power{width:112px;position:relative;text-align:center}
+.power{width:112px;position:relative;text-align:center;container-type:inline-size}
 .power svg{display:block;width:100%}
 .powerTrack{stroke:var(--atlas-border)}
-.power b{position:absolute;top:0;left:0;right:0;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--atlas-display);font-size:36px;line-height:1;color:var(--atlas-text)}
-.power small{display:block;margin-top:5px;font-family:var(--atlas-number-unit-font);font-weight:var(--atlas-number-unit-weight);font-size:var(--atlas-number-unit-scale);color:var(--atlas-number-unit-color)}
-.power>span{font-size:var(--atlas-caption-size);color:var(--atlas-secondary)}
+.power b{position:absolute;top:0;left:0;right:0;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--atlas-display);font-size:28cqw;line-height:1;color:var(--atlas-text)}
+.power small{display:block;margin-top:4px;font-family:var(--atlas-number-unit-font);font-weight:var(--atlas-number-unit-weight);font-size:14cqw;color:var(--atlas-number-unit-color)}
+.power>span{display:block;margin-top:8px;line-height:1.25;font-size:var(--atlas-caption-size);color:var(--atlas-secondary)}
 .grid{width:100%;height:auto;display:block}
 .gridBaseTop{stop-color:var(--atlas-secondary);stop-opacity:.38}
 .gridBaseBottom{stop-color:var(--atlas-secondary);stop-opacity:.18}
@@ -20,3 +20,15 @@
 
 /* Deliberately oversized editorial artwork, clipped by the composition card. */
 .chart{overflow:hidden;}
+
+.chart{grid-template-columns:minmax(0,1fr) 88px;gap:20px;padding:76px 16px 24px;min-height:0;align-items:center;}
+.top{align-self:center;}
+.power{width:80px;}
+.power b{font-size:27px;}
+.power small{margin-top:2px;}
+.power>span{display:block;line-height:1.25;margin-top:8px;}
+.total{padding:0;margin:12px 0 0;line-height:1.25;}
+.total strong{color:var(--atlas-text);font-weight:600;}
+.callout{max-width:calc(100% + 108px);}
+.callout span{line-height:1.2;}
+@media(max-width:450px){.chart{grid-template-columns:minmax(0,1fr) 80px;gap:16px}.power{width:76px}}

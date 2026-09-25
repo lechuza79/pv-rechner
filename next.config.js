@@ -1,5 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  outputFileTracingIncludes: {
+    "/solar-atlas/*": ["./public/geo/gemeinden/*.geo.json"],
+  },
+  webpack(config, {webpack}) {
+    const path = require('node:path');
+    config.resolve.alias['@dgreenheck/ez-tree$'] = path.join(__dirname, 'node_modules/@dgreenheck/ez-tree/src/lib/index.js');
+    config.plugins.push(new webpack.NormalModuleReplacementPlugin(/^\.\/textures$/, resource => {
+      if (resource.context.includes('@dgreenheck/ez-tree/src/lib')) resource.request = path.join(__dirname, 'components/landkreis/tree-textures.js');
+    }));
+    return config;
+  },
   experimental: {
     // Lets app/global-not-found.tsx replace Next's bare default 404. Needed
     // because this app has no app/layout.tsx — every route group brings its own

@@ -1,7 +1,7 @@
 /* Interaction shell; visuals and dialog behaviour use the shared components. */
 .story-strip,.story-reader-viewport{overflow:hidden;touch-action:pan-y pinch-zoom}
 .story-strip-track,.story-reader-track{display:flex;align-items:stretch;gap:24px}
-.story-strip-slide{flex:0 0 clamp(260px,32%,360px);min-width:0}
+.story-strip-slide{flex:0 0 clamp(240px,28%,300px);min-width:0}
 .story-feed-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;grid-column:1/-1}
 .story-reader-dialog{display:flex;flex-direction:column;height:90dvh;max-height:900px!important;overflow:hidden!important;border:1px solid var(--atlas-border);border-radius:28px!important;padding:0!important;margin:12px;isolation:isolate}
 .story-reader-dialog>div:first-child{flex:none;background:var(--atlas-card);padding:16px 24px;margin:0!important;border-bottom:1px solid var(--atlas-border);gap:12px!important}
@@ -21,7 +21,7 @@
 .story-reader-controls button:focus-visible{outline:2px solid var(--atlas-action);outline-offset:3px}
 .story-all-link{display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .story-all-link svg,.story-reader-controls svg{flex-shrink:0}
-@media(max-width:540px){.story-strip-slide{flex-basis:86%}.story-strip-track{gap:16px}.story-feed-grid{grid-template-columns:1fr}.story-reader-dialog{height:calc(100dvh - 32px);max-height:calc(100dvh - 32px)!important;margin:16px 12px;border-radius:24px!important}.story-reader-dialog>div:first-child{padding:12px 16px}.story-reader-body{padding:0 16px}.story-reader-bottom{padding:12px 16px calc(12px + env(safe-area-inset-bottom))}.story-reader-controls{gap:12px}.story-reader-pagination{gap:4px}.story-reader-controls .story-reader-share{padding:0 20px}}
+@media(max-width:540px){.story-strip-slide{flex-basis:clamp(220px,68vw,260px)}.story-strip-track{gap:16px}.story-feed-grid{grid-template-columns:1fr}.story-reader-dialog{height:calc(100dvh - 32px);max-height:calc(100dvh - 32px)!important;margin:16px 12px;border-radius:24px!important}.story-reader-dialog>div:first-child{padding:12px 16px}.story-reader-body{padding:0 16px}.story-reader-bottom{padding:12px 16px calc(12px + env(safe-area-inset-bottom))}.story-reader-controls{gap:12px}.story-reader-pagination{gap:4px}.story-reader-controls .story-reader-share{padding:0 20px}}
 @media(prefers-reduced-motion:reduce){.story-reader-controls button{transition:none}}
 
 .story-strip-actions{display:flex;align-items:center;gap:18px}

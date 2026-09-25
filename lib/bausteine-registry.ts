@@ -463,6 +463,16 @@ export const BAUSTEINE: Baustein[] = [
     keinBeispielWeil: "Der Seitenrahmen selbst; die lokale Startseitenvorschau zeigt seine Desktop- und Mobilansicht.",
   },
   {
+    datei: "components/SiteHeaderFrame.tsx",
+    name: "SiteHeaderFrame",
+    zweck: "Platziert die gemeinsame Navigation im Seitenrahmen; besitzt der Hero selbst den Header, bleibt der äußere Rahmen frei.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "im-aufbau",
+    bestehtAus: ["SharedSiteHeader"],
+    keinBeispielWeil: "Steuert den Seitenrahmen anhand der aktuellen Route und enthält keine eigene Navigation. Sichtbar auf den Seiten selbst.",
+  },
+  {
     datei: "components/DesignHeader.tsx",
     name: "DesignHeader",
     zweck:
@@ -579,6 +589,15 @@ export const BAUSTEINE: Baustein[] = [
     gruppe: "widget",
     ebene: "baustein",
     stand: "verbindlich",
+    bestehtAus: [],
+  },
+  {
+    datei: "components/DataSourcesSection.tsx",
+    name: "DataSourcesSection",
+    zweck: "Gemeinsamer Quellenabschnitt unter dem Vertrauensbereich auf Orts- und Landkreis-Seiten.",
+    gruppe: "struktur",
+    ebene: "baustein",
+    stand: "im-aufbau",
     bestehtAus: [],
   },
   {

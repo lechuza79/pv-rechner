@@ -54,7 +54,7 @@
     border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
     transform:translateY(-2px) rotate(45deg)}
   .solar-page .v3-section-nav .v3-nav-menu[open]>summary::after{transform:translateY(1px) rotate(225deg)}
-  .solar-page .v3-section-nav .v3-nav-aktiv{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .solar-page .v3-section-nav .v3-nav-aktiv{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .solar-page .v3-section-nav .v3-nav-links{
     display:block;position:absolute;z-index:60;top:calc(100% + 8px);left:0;min-width:200px;
     padding:6px;background:var(--atlas-paper);border:1px solid var(--atlas-line);
@@ -87,16 +87,26 @@
   .solar-page .v3-section-nav [data-page-subscribe] .sc-abo-lang{display:none}
   .solar-page .v3-section-nav [data-page-subscribe] .sc-abo-kurz{display:inline}
 }
-/* AUF DEM TELEFON BRICHT DIE ZEILE UM — BLOCKER (23.09.2026, an der
-   Produktion gemessen): Die Reihe stand auf "nicht umbrechen". Mit dem Datum
-   daneben brauchte sie 307 px in einem 246 px breiten Platz, und die Seite war
-   bei 375 px Fenster 416 px breit — seitlicher Ueberlauf auf JEDER Ortsseite.
-   Nicht das Datum wieder wegnehmen: Es ist die einzige Stelle in dieser Leiste,
-   die sagt, wann neue Zahlen kommen. Es bekommt eine eigene Zeile, die Knoepfe
-   bleiben zusammen. */
-@media(max-width:700px){
-  .solar-page .v3-section-nav .atlas-page-actions{flex-wrap:wrap;justify-content:flex-end;row-gap:6px}
-  .solar-page .v3-section-nav .atlas-page-update{flex-basis:100%;justify-content:flex-end;margin-right:0}
+/* Keep the update label and date stacked beside the subscribe action.
+   Reset the prototype's full-width actions row rather than stacking overrides. */
+@media(max-width:860px){
+  .solar-page .v3-section-nav{width:calc(100% - 24px);max-width:calc(100% - 24px);gap:8px;padding:6px;border-radius:26px}
+  .solar-page .v3-section-nav .v3-nav-menu{flex:1 1 auto;min-width:0}
+  .solar-page .v3-section-nav .atlas-page-actions{position:static;flex:0 0 auto;flex-wrap:nowrap;gap:6px;margin:0 0 0 auto;padding:0 0 0 8px;border-top:0;border-left:1px solid var(--atlas-line)}
+  .solar-page .v3-section-nav .atlas-page-update{position:static;flex:none;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;margin:0 3px 0 0;font-size:10px;line-height:14px}
+  .solar-page .v3-section-nav .atlas-page-actions button[data-page-subscribe]{padding-inline:10px;gap:5px}
+}
+
+@media(max-width:480px){
+  .solar-page .v3-section-nav .atlas-page-actions{gap:4px;padding-left:6px}
+}
+@media(max-width:400px){
+  .solar-page .v3-section-nav .atlas-page-actions button[data-page-subscribe] svg{display:none}
+}
+/* Keep copy available before shortening the section label; hide only when
+   even the compact action row leaves no usable section selector. */
+@media(max-width:360px){
+  .solar-page .v3-section-nav .atlas-page-actions button[data-page-copy]{display:none}
 }
 
 /* ── Die „?"-Erklärungen sehen aus wie überall sonst ─────────────────────────
@@ -498,12 +508,107 @@ dialog.atlas-dialog[open]::backdrop { opacity: 1; }
 /* Map the shared funding badge onto the municipality page's color tokens. */
 #atlas-foerderung{--color-positive-text:var(--sc-profit-outline);--color-chart-positive-bg:var(--sc-profit-fill);--color-text-muted:var(--atlas-muted)}
 
-.gemeinde-foerder-aktionen{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:24px}
-.solar-page .gemeinde-foerder-aktionen>.sc-feature-action{margin:0!important}
-.solar-page .gemeinde-foerder-aktionen>.gemeinde-foerder-melden{border-color:transparent;color:var(--atlas-muted)!important;padding-inline:12px!important}
-
-.solar-page .gemeinde-foerder-aktionen>.gemeinde-foerder-melden{gap:6px}
-.gemeinde-foerder-melden svg{opacity:.55}
+/* Preserve comfortable button padding; the secondary action can wrap its label. */
+.gemeinde-foerder-aktionen{display:flex;align-items:center;gap:16px;margin-top:24px}
+.solar-page .gemeinde-foerder-aktionen>.sc-feature-action{width:auto;min-width:0;margin:0!important}
+.solar-page .gemeinde-foerder-aktionen>.sc-feature-action:first-child{flex:none;white-space:nowrap}
+.solar-page .gemeinde-foerder-aktionen>.gemeinde-foerder-melden{gap:6px;border:0;border-radius:0;color:var(--atlas-muted)!important;padding:12px 0!important;text-align:left;justify-content:flex-start;font-family:var(--atlas-font,DM Sans),sans-serif}
+.gemeinde-foerder-melden svg{flex:none;opacity:.55}
+.gemeinde-foerder-melden span{min-width:0}
+@container sc-features (max-width:20rem){.solar-page .gemeinde-foerder-aktionen{gap:16px}.solar-page .gemeinde-foerder-aktionen>.sc-feature-action:first-child{padding-inline:16px!important}}
 .gemeinde-meldung .gemeinde-meldung-programm{font-weight:600;margin:12px 0 8px;line-height:1.4}
 .gemeinde-meldung p{font-size:14px;line-height:1.5}
 .gemeinde-meldung form{margin-top:20px!important;gap:16px!important}
+
+/* Shared municipality share sheet: one spacing and typography scale. */
+dialog.gemeinde-share-dialog{box-sizing:border-box;width:min(560px,calc(100% - 32px));padding:24px;color:var(--atlas-ink,#173b42)}
+.gemeinde-share-dialog .gemeinde-share-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 20px;padding-bottom:16px;border-bottom:1px solid var(--atlas-line,#cbd7d5)}
+.gemeinde-share-dialog .gemeinde-share-header h2{font-family:Montserrat,sans-serif;font-weight:700;font-size:22px;line-height:1.3;letter-spacing:-.02em;margin:0}
+.gemeinde-share-dialog .atlas-close{position:static;display:grid;place-items:center;flex:none;width:40px;height:40px;padding:10px;border:1px solid var(--atlas-line,#cbd7d5);border-radius:50%;background:transparent;color:inherit}
+.gemeinde-share-dialog .atlas-paper{padding:20px;margin:0;border:1px solid var(--atlas-line,#cbd7d5);border-radius:16px;box-shadow:none}
+.gemeinde-share-dialog .atlas-paper h3{font-family:Montserrat,sans-serif;font-size:17px;line-height:1.4;letter-spacing:-.01em;margin:0 0 12px}
+.gemeinde-share-dialog p{font-size:14px;line-height:1.6;margin:0}
+.gemeinde-share-dialog .atlas-paper a{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:14px;text-decoration:underline;text-underline-offset:4px;text-decoration-color:color-mix(in srgb,currentColor 30%,transparent)}
+.gemeinde-share-dialog .gemeinde-share-note{margin-top:16px;color:var(--atlas-muted,#617778)}
+.gemeinde-share-dialog .ranking-share-buttons{display:flex;flex-direction:column;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--atlas-line,#cbd7d5)}
+.gemeinde-share-dialog .ranking-share-buttons button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;margin:0;padding:12px 16px;font-size:14px;line-height:1.4;font-weight:600}
+.gemeinde-share-dialog .sc-live-icon{flex:none;width:18px;height:18px}
+.gemeinde-share-dialog [role=status]:not(:empty){margin-top:12px;font-size:13px}
+@media(max-width:600px){dialog.gemeinde-share-dialog{width:100%;max-width:100%;padding:20px 20px calc(20px + env(safe-area-inset-bottom))}.gemeinde-share-dialog .gemeinde-share-header h2{font-size:20px}}
+
+/* Citizen examples: heading, artwork and savings form one visual group. */
+.solar-page .v3-conclusion .gemeinde-buerger-card{row-gap:20px;column-gap:12px;}
+.solar-page .gemeinde-buerger-card>.gemeinde-buerger-title{grid-column:1/-1;margin:0;font:700 22px/1.3 var(--atlas-display,Montserrat),sans-serif;color:var(--atlas-ink);}
+.solar-page .gemeinde-buerger-card>.sc-feature-visual{position:relative;z-index:0;}
+.solar-page .gemeinde-buerger-card>.sc-feature-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:24px;}
+.solar-page .gemeinde-buerger-value{margin:0;font:700 var(--sc-feature-amount-size,32px)/1.15 var(--atlas-display,Montserrat),sans-serif;}
+.solar-page .sc-feature-card .gemeinde-foerder-hinweis{box-sizing:border-box;padding:14px 16px!important;border-radius:12px;background:color-mix(in srgb,var(--atlas-ink) 5%,transparent);border:1px solid color-mix(in srgb,var(--atlas-ink) 9%,transparent);}
+@media(max-width:560px){
+ .solar-page .v3-conclusion .gemeinde-buerger-card{gap:16px;}
+ .solar-page .v3-conclusion .gemeinde-buerger-card>.sc-feature-visual{margin:-36px 0 -88px!important;width:min(260px,90%);max-width:260px;}
+ .solar-page .gemeinde-buerger-card>.gemeinde-buerger-title{font-size:20px;}
+}
+
+.solar-page .gemeinde-buerger-value .sc-delta>small{font:400 12px/1.2 var(--atlas-body,"DM Sans"),sans-serif;}
+
+/* One spacing rhythm for the copy, notice and action. */
+.solar-page .gemeinde-buerger-card>.sc-feature-content>p,
+.solar-page .gemeinde-buerger-card>.sc-feature-content>.gemeinde-foerder-hinweis,
+.solar-page .gemeinde-buerger-card>.sc-feature-content>.sc-feature-action{margin:0!important;}
+.solar-page .gemeinde-buerger-card .gemeinde-foerder-hinweis{align-self:stretch;}
+@media(max-width:560px){
+ .solar-page .gemeinde-foerder-liste .sc-feature-card>.sc-feature-visual{display:none!important;}
+ .solar-page .gemeinde-foerder-liste .sc-feature-card{grid-template-columns:minmax(0,1fr);padding-top:16px!important;padding-bottom:24px!important;}
+}
+
+.solar-page .gemeinde-foerder-liste .sc-feature-content{overflow-wrap:anywhere;}
+
+/* Funding entries remain grouped even without their mobile illustration. */
+.solar-page .v3-conclusion .gemeinde-foerder-liste .sc-feature-card{border:1px solid var(--atlas-line,#adc2c433)!important;padding:24px!important;border-radius:20px!important;}
+@media(max-width:560px){
+ .solar-page .v3-conclusion .gemeinde-foerder-liste .sc-feature-card{padding:20px!important;}
+ .solar-page .gemeinde-foerder-aktionen{flex-wrap:wrap;row-gap:8px;}
+}
+
+/* Keep the mobile ranking focused on the selected category. */
+@media (max-width: 600px) {
+  #atlas-ranking .ranking-stage {
+    height: 380px;
+    padding: 20px 18px;
+  }
+  #atlas-ranking .ranking-stage.is-snapshot {
+    height: auto;
+    gap: 16px;
+  }
+  #atlas-ranking .ranking-stage.is-snapshot .ranking-snapshot-result {
+    margin: 4px 0 !important;
+  }
+  #atlas-ranking .ranking-category-panel {
+    height: auto !important;
+  }
+  #atlas-ranking .ranking-choices {
+    flex: none;
+    flex-direction: row;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 4px;
+    scrollbar-width: none;
+    scrollbar-gutter: auto;
+  }
+  #atlas-ranking .ranking-choices::-webkit-scrollbar { display: none; }
+  #atlas-ranking .ranking-choice {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    cursor: pointer;
+  }
+  #atlas-ranking .ranking-navigation { display: none; }
+}
+
+/* Text keeps its intrinsic height while the podium uses the remaining stage. */
+.ranking-stage > h3, .ranking-stage > .ranking-stage-subline, .ranking-stage > .ranking-detail { flex-shrink: 0; }
+@media(max-width:600px){
+ .solar-page #atlas-ranking:not([data-widget-ranking]) .ranking-podium{flex:1;min-height:0!important;height:auto!important;}
+}

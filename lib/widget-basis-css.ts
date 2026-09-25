@@ -189,7 +189,7 @@ ${fontSizeVars}
      oder mit der Tastatur. Dauerhaft stand er neben dem Größenverhältnis eine
      Zeile tiefer und sagte dasselbe zweimal; im geteilten Bild bleibt damit das
      Verhältnis („12× weniger") die Aussage — die greifbarere von beiden. */
-  .sc-delta { opacity:0; font-weight:700; color:var(--widget-muted); transition:opacity .18s ease }
+  .sc-deltahost .sc-delta { opacity:0; font-weight:700; color:var(--widget-muted); transition:opacity .18s ease }
   .sc-deltahost:hover .sc-delta,
   .sc-deltahost:focus-visible .sc-delta,
   .sc-deltahost:focus .sc-delta { opacity:1 }

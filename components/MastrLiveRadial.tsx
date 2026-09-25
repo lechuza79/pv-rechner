@@ -154,6 +154,7 @@ export function MastrLiveRadial({
   bare = false,
   fuelltBreite = false,
   kopfKachel = false,
+  overview = false,
   exportFooter = null,
   className,
 }: {
@@ -191,6 +192,8 @@ export function MastrLiveRadial({
    * unverändert.
    */
   kopfKachel?: boolean;
+  /** Dense district overview: no hour/unit labels and only two guide rings. */
+  overview?: boolean;
   /**
    * Image-only footer (legend, help texts, source, brand). Belongs INSIDE the
    * card so it sits on the card background — a footer added around the radial by
@@ -493,7 +496,7 @@ export function MastrLiveRadial({
   const labelColor = v("--color-text-muted");
 
   // 4 alternating section rings (25/50/75/100% of bar length)
-  const sectionRings = [0.25, 0.5, 0.75, 1].map((q, i) => ({
+  const sectionRings = (overview ? [0.5, 1] : [0.25, 0.5, 0.75, 1]).map((q, i) => ({
     r: INNER_R + q * (OUTER_R - INNER_R),
     opacity: i % 2 === 0 ? 0.06 : 0.14,
   }));
@@ -699,7 +702,7 @@ export function MastrLiveRadial({
             </filter>
           </defs>
 
-          <g aria-hidden="true" className="sc-mastr-live-radial-clock">
+          <g aria-hidden="true" className="sc-mastr-live-radial-clock" style={overview ? {display:"none"} : undefined}>
             {([['12', 12], ['18', 18], ['00', 0], ['06', 6]] as const).map(([label, hour]) => {
               const [x, y] = pointAt(CX, CY, visualAngleFromHour(hour), OUTER_R + (isCompact ? 1 : 8));
               const fontSize = kopfKachel ? 7 : isCompact ? 8 : 10;
@@ -892,7 +895,7 @@ export function MastrLiveRadial({
         >
           <div
             style={{
-              fontSize: dim.centerBig,
+              fontSize: `var(--radial-center-size, ${dim.centerBig}px)`,
               fontWeight: 700,
               color: kopfKachel ? v("--color-cta") : v("--color-text-primary"),
               fontVariantNumeric: "tabular-nums",
@@ -905,7 +908,8 @@ export function MastrLiveRadial({
           </div>
           <div
             style={{
-              fontSize: dim.centerLabel,
+              fontSize: `var(--radial-unit-size, ${dim.centerLabel}px)`,
+              display: overview ? "none" : undefined,
               color: labelColor,
               marginTop: 3,
               letterSpacing: 0.5,

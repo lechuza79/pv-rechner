@@ -1,3 +1,4 @@
+import AtlasBreadcrumb from "./AtlasBreadcrumb";
 import { HERO_SZENE_INNER_HTML } from "./hero-szene";
 import SharedSiteHeader from "../SharedSiteHeader";
 import { anlagenZahlTeile, fmtPvLeistung } from "../../lib/atlas-format";
@@ -12,10 +13,11 @@ import GemeindeRahmen from "./GemeindeRahmen";
 import { ranglistenDaten, kopfPlatzierung } from "./rangliste-daten";
 import GemeindeKopfKacheln, { type KopfRang } from "./GemeindeKopfKacheln";
 import GemeindeBeispiele from "./GemeindeBeispiele";
-import GemeindeAboKnopf from "./GemeindeAboKnopf";
+import GemeindeAbschnittNav from "./GemeindeAbschnittNav";
 import GemeindeAboDialog from "./GemeindeAboDialog";
 import { ABO_SOFORT_SKRIPT } from "../../lib/abo-sofort";
 import SiteFuss from "../SiteFuss";
+import DataSourcesSection from "../DataSourcesSection";
 import PersonBox from "../PersonBox";
 import GemeindeFoerderung from "./GemeindeFoerderung";
 import { getFundingPrograms } from "../../lib/funding-data";
@@ -50,13 +52,6 @@ export type Ortsangaben = {
 };
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
-
-// The approved design's breadcrumb arrow (live-icons.js, ArrowLongRight).
-const pfeil = (
-  <svg className="sc-live-icon" aria-hidden="true" focusable="false" height="16" viewBox="0 0 28 14" fill="none">
-    <path d="M1 7h25m0 0-5-5m5 5-5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
 
 /** Numbers of the intro, exactly as the prototype derived them. */
 export function bestandsZahlen(p: GemeindePaket) {
@@ -197,15 +192,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
             </a>
           </div>
           <div className="atlas-hero-local-nav" data-sc-contrast="">
-            <nav aria-label="Brotkrümel" className="atlas-breadcrumb">
-              {ort.pfad.map((p) => (
-                <span key={p.href} style={{ display: "contents" }}>
-                  <a href={p.href}>{p.name}</a>
-                  {pfeil}
-                </span>
-              ))}
-              <span aria-current="page">{ort.name}</span>
-            </nav>
+            <AtlasBreadcrumb parents={ort.pfad} name={ort.name} />
           </div>
           <GemeindeKopfKacheln ags={ort.ags} name={ort.name} rang={kopfRang(paket)} />
           <GemeindeSzene plz={ort.plz} />
@@ -223,45 +210,10 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
               JavaScript bedienbar, und auf dem Schreibtisch löst „display:
               contents" ihn wieder auf, sodass dort genau die Reihe des
               Entwurfs steht. */}
-          <nav className="v3-section-nav" aria-label="Auf dieser Seite">
-            {/* OFFEN ausgeliefert: Ein zugeklappter Block versteckt seinen
-                Inhalt auch dann, wenn seine Box per „display: contents"
-                aufgelöst ist — gemessen, die vier Marken standen dann
-                untereinander statt in der Reihe. Breit bleibt er offen und
-                löst sich auf, schmal klappt ankernav.js ihn zu. Ohne
-                JavaScript steht die Liste da, statt zu fehlen. */}
-            <details className="v3-nav-menu" open>
-              <summary aria-label="Abschnitt wählen">
-                <span className="v3-nav-aktiv">Insights</span>
-              </summary>
-              <div className="v3-nav-links">
-                <a href="#atlas-stories">Insights</a>
-                <a href="#atlas-ranking">Ranking</a>
-                <a href="#atlas-data">Energiemonitor</a>
-                <a href="#atlas-foerderung">Förderung</a>
-              </div>
-            </details>
-            <div className="atlas-page-actions">
-              {/* Wann die Seite das NÄCHSTE Mal neue Zahlen bekommt — direkt
-                  am Abo-Knopf, weil er genau das anbietet: Bescheid bekommen,
-                  wenn hier wieder etwas steht (Betreiber, 23.09.2026; zuerst
-                  stand hier das letzte Update, das beantwortet die Frage
-                  daneben nicht). Termin ist der nächste geplante Lauf des
-                  Anlagenregisters — aus derselben Liste, gegen die die
-                  Aufsicht einen ausgefallenen Lauf meldet. Gerechnet vom
-                  jüngeren der beiden Zeitpunkte: Bleibt ein Lauf aus, wandert
-                  der Termin mit, statt einen vergangenen Tag zu versprechen.
-                  Sobald die Datengeschichten in eigenem Takt nachwachsen,
-                  tritt deren Termin an diese Stelle. */}
-              <span className="atlas-page-update">
-                <b>Nächstes Update</b> <time dateTime={naechstesUpdate}>{formatStoryDate(naechstesUpdate)}</time>
-              </span>
-              <GemeindeAboKnopf name={ort.name} />
-              <button type="button" data-page-copy aria-label="Link zur Seite kopieren" title="Link kopieren" />
-              <button type="button" data-page-share aria-label="Seite teilen" title="Seite teilen" />
-              <span className="atlas-page-status" role="status" />
-            </div>
-          </nav>
+          <GemeindeAbschnittNav name={ort.name} naechstesUpdate={naechstesUpdate} links={[
+            {href:"#atlas-stories",label:"Insights"},{href:"#atlas-ranking",label:"Ranking"},
+            {href:"#atlas-data",label:"Energiemonitor"},{href:"#atlas-foerderung",label:"Förderung"},
+          ]}/>
 
           <section className="v3-intro atlas-wrap">
             <div className="v3-intro-grid">
@@ -413,8 +365,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
         </main>
       </div>
       <SiteFuss zwischen={
-          <section id="atlas-sources" className="atlas-wrap atlas-sources" aria-labelledby="atlas-sources-title">
-          <h2 id="atlas-sources-title">Daten &amp; Quellen</h2>
+          <DataSourcesSection>
           <p>
             <strong>Anlagen, Leistung, Speicher und Zubau:</strong>{" "}
             <a href={quellen.mastr.url} target="_blank" rel="noopener">{quellen.mastr.name}</a>.{" "}
@@ -444,7 +395,7 @@ export default async function GemeindeSeite({ paket, ort }: { paket: GemeindePak
             {paket.einwohnerStand && <> Einwohnerstand: {datumLang(paket.einwohnerStand)}.</>}{" "}
             <a href="/datenstand">Mehr zu Datenstand und Quellen</a> · <a href="/methodik">So rechnen wir</a>
           </p>
-        </section>
+        </DataSourcesSection>
       } />
       {/* The sign-up dialog in the approved design; the section bar's
           subscribe button opens it. */}

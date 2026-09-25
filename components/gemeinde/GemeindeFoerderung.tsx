@@ -1,5 +1,6 @@
 "use client";
 
+import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import Modal from "../Modal";
 import ContactForm from "../ContactForm";
@@ -45,6 +46,7 @@ const pfeil = (
 
 export type FoerderProgrammAnsicht = {
   programm: FundingProgram;
+  geltungsbereich?: string;
   /** „Zuletzt geprüft am …" oder der redaktionelle Stand — serverseitig
    *  gebildet, damit die Regel dafür an einer Stelle bleibt. */
   standLabel: string;
@@ -56,8 +58,10 @@ export type FoerderProgrammAnsicht = {
 export default function GemeindeFoerderung({
   ort,
   programme,
+  praeposition="in",
 }: {
   ort: string;
+  praeposition?: string;
   programme: FoerderProgrammAnsicht[];
 }) {
   const [offen, setOffen] = useState<FoerderProgrammAnsicht | null>(null);
@@ -92,13 +96,14 @@ export default function GemeindeFoerderung({
                   <h3>{p.programm.name}</h3>
                   <p>{satz ? `${satz.value}${satz.label ? ` · ${satz.label}` : ""}` : p.programm.coveredCosts}</p>
                   <p className="gemeinde-foerder-ebene"><a href={p.programm.url} target="_blank" rel="noopener noreferrer">{p.programm.traeger}</a></p>
+                {p.geltungsbereich && <p className="gemeinde-foerder-ebene">{p.geltungsbereich}</p>}
                 <div className="gemeinde-foerder-aktionen">
                 <button type="button" className="v3-example-cta sc-feature-action" onClick={() => setOffen(p)}>
-                  Einzelheiten {pfeil}
+                  Einzelheiten
                 </button>
                 <button type="button" className="v3-example-cta sc-feature-action gemeinde-foerder-melden" onClick={() => setMeldung(p)}>
                   <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 21V4m0 0c5-4 9 4 14 0v10c-5 4-9-4-14 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  Änderung melden
+                  <span>Änderung melden</span>
                 </button>
                 </div>
                 </div>
@@ -109,7 +114,8 @@ export default function GemeindeFoerderung({
   );
   return (
     <div className="v3-examples-foerderung" id="atlas-foerderung">
-      <h3>Förderung in {ort}</h3>
+      <Script src="/illustrations-motion/solar-illustrations.js" strategy="afterInteractive"/>
+      <h3>Förderung {praeposition} {ort}</h3>
       <p>
         {aktive.length > 0
           ? `Diese Zuschüsse gelten hier zusätzlich zur bundesweiten Förderung.`

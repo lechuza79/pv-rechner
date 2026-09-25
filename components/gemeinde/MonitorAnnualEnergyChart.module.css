@@ -6,13 +6,4 @@
 
 /* Keep both labels readable; wrap controls instead of shrinking their text. */
 .settings>div{flex:0 0 auto;}
-.settings :global(.sc-setting-stepper){width:140px;box-sizing:border-box;}
-.settings :global(.sc-setting-stepper>button){width:24px;min-width:24px;}
-.settings :global(.sc-setting-select){width:132px;}
-.settings :global(.sc-setting-select select){
- background:color-mix(in srgb,var(--widget-ink) 5%,var(--widget-surface))!important;
- border-color:color-mix(in srgb,var(--widget-muted) 45%,transparent)!important;
- color:var(--widget-ink)!important;
- font-family:inherit!important;
- font-weight:600!important;
-}
+.settings :global(.sc-setting-select){min-width:132px;}

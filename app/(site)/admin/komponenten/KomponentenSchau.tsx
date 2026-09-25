@@ -23,6 +23,7 @@ import Toast from "../../../../components/Toast";
 import TriToggle from "../../../../components/TriToggle";
 import Logo from "../../../../components/Logo";
 import ChartActionBar from "../../../../components/ChartActionBar";
+import DataSourcesSection from "../../../../components/DataSourcesSection";
 import DataSourceList from "../../../../components/DataSourceList";
 import FlowNav from "../../../../components/FlowNav";
 import FlowSchritte from "../../../../components/FlowSchritte";
@@ -840,6 +841,9 @@ const BEISPIELE: Record<string, Beispiel> = {
         <DataSourceNote source={[DATA_SOURCES.energyCharts, DATA_SOURCES.ember]} />
       </Zustand>
     </Reihe>
+  ),
+  DataSourcesSection: () => (
+    <DataSourcesSection><DataSourceNote source={DATA_SOURCES.mastr}/></DataSourcesSection>
   ),
   DataSourceList: () => (
     <div style={{ maxHeight: 260, overflow: "auto" }}>

@@ -16,7 +16,7 @@ import { trackEvent } from "../../lib/analytics";
  * typed here: the stored version must name the text the person actually saw.
  * "Für die Gemeinde" is the old sign-up's "arbeite für die Verwaltung".
  */
-export default function GemeindeAboDialog({ name, ags }: { name: string; ags: string }) {
+export default function GemeindeAboDialog({ name, ags, verwaltungLabel="Für die Gemeinde" }: { name: string; ags: string; verwaltungLabel?:string }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [verwaltung, setVerwaltung] = useState(false);
   const [email, setEmail] = useState("");
@@ -64,7 +64,7 @@ export default function GemeindeAboDialog({ name, ags }: { name: string; ags: st
 
   const rolle = (gemeinde: boolean) => (
     <button type="button" aria-pressed={verwaltung === gemeinde} onClick={() => setVerwaltung(gemeinde)}>
-      {gemeinde ? "Für die Gemeinde" : "Als Bürger:in"}
+      {gemeinde ? verwaltungLabel : "Als Bürger:in"}
     </button>
   );
 
@@ -81,9 +81,9 @@ export default function GemeindeAboDialog({ name, ags }: { name: string; ags: st
         if (e.target === ref.current) ref.current?.close();
       }}
     >
-      <button className="atlas-close" aria-label="Schließen" onClick={() => ref.current?.close()}>
-        ×
-      </button>
+      <form method="dialog">
+        <button type="submit" className="atlas-close" aria-label="Schließen">×</button>
+      </form>
       <h2 id="atlas-abo-titel">{name} abonnieren</h2>
       <div className="atlas-dialog-body">
         {status === "fertig" ? (

@@ -790,6 +790,8 @@ Umgesetzt als geteilte Feld-Bausteine: **`components/DachField.tsx`** (Dachform 
 
 ## Design-System
 
+**Landkreis-Seiten (Release für alle Landkreise freigegeben 25.09.2026):** Die abgenommene dunkle Landkreis-Seite wird unter ihrer bestehenden kanonischen Adresse ausgeliefert. Die beiden Vorschau-Adressen leiten dauerhaft dorthin um. Deutschland und Bundesländer bleiben unverändert; kreisfreie Städte leiten weiterhin auf ihre Ortsseite. Gemeinsame Monitor-Komponenten, vollständige Gemeinde-Aggregation und 3D-Karte sind in `docs/landkreis-vorschau.md` dokumentiert.
+
 **Mobile-first.** Farben, Maße, Ecken, Schriften und Keyframes stehen ausschließlich als Tokens in `lib/theme.ts` — hier bewusst keine Zweitfassung: Die frühere Tabelle an dieser Stelle war zuletzt in sechs von zehn Zeilen falsch (Kopfzeilen-Breite, Umschaltpunkt, Ecken, zwei Textfarben, ein Keyframe-Name) und war zugleich die einzige Stelle im Projekt, an der Hex-Werte außerhalb des Themes standen. Zwei Spalten sind je Seitenart verschieden: 480 px für Rechner, 640 px für Leseseiten. Das Theme hat sieben Tagesstufen mit je eigenen Textfarben — ein einzelner Hex je Rolle kann gar nicht stimmen.
 
 **Semantisches Farbsystem:** Blau (`--color-accent`) = interaktive Elemente · Grün (`--color-positive`) = positive Werte (Rendite, Ersparnis) · Rot (`--color-negative`) = negative Werte (Kosten, Verluste) · Grau = neutrale Dimensionen (kWh, kWp, %, Labels).

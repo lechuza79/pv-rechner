@@ -6,7 +6,7 @@ import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
 import { jsonLdHtml } from "../../lib/json-ld";
 import { organizationJsonLd, softwareAppJsonLd } from "../../lib/site-json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
-import Header from "../../components/SharedSiteHeader";
+import SiteHeaderFrame from "../../components/SiteHeaderFrame";
 import SiteFuss from "../../components/SiteFuss";
 import { WebAnalytics } from "../../components/WebAnalytics";
 import { HerkunftsMelder } from "../../components/HerkunftsMelder";
@@ -147,11 +147,11 @@ export default async function RootLayout({
               Seite selbst als Top-Padding mit (plus Header-marginBottom), was
               projektweit driftete. Keine Seite setzt jetzt noch eigenes
               Top-Padding. */}
-          <div style={{ padding: `28px var(--header-frame-pad) ${headerContentGap}px` }}><Header /></div>
+          <SiteHeaderFrame bottomGap={headerContentGap} />
           {children}
           {/* Trust section + footer of the new design, full width, one source
               with the document pages (lib/site-fuss.ts). */}
-          <div style={{ marginTop: 64 }}><SiteFuss /></div>
+          <div className="site-footer-slot" style={{ marginTop: 64 }}><SiteFuss /></div>
         </GlossaryProvider>
         {/* Reichweitenmessung ohne Cookies. Nur im (site)-Layout, nicht in den
             Embed-Widgets. Siehe /datenschutz.

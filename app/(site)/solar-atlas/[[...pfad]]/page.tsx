@@ -34,6 +34,7 @@ import { buildRegionHighlight } from "../../../../lib/region-highlight";
 import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
+import LandkreisSeite from "../../../../components/landkreis/LandkreisSeite";
 
 // Sieben Tage statt einem (26.08.2026) — Begruendung ausfuehrlich in
 // app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx: Die Zahlen
@@ -326,6 +327,51 @@ async function AtlasBody({
     baseUrl: BASE_URL,
   });
 
+  const intro = <>
+          <strong style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</strong> mit zusammen{" "}
+          {/* Die EINHEIT trägt den Glossarbegriff, nicht die Zahl: „34" ist kein Begriff,
+              und ein Link um den Zahlenwert sieht aus wie ein Klickziel für die Zahl.
+              Möglich wird die Trennung durch pvLeistungTeile() — dieselbe Quelle wie
+              fmtPvLeistung, nur getrennt abrufbar (CLAUDE.md: „Zahl und Einheit: eine
+              Quelle, aber getrennt abrufbar"). Hier ist die erste Nennung einer
+              Peak-Einheit auf der Seite, deshalb hängt der Begriff hier und nicht
+              weiter unten am Watt Peak je Einwohner. */}
+          <strong style={S.strong}>
+            {leistungTeile.value}{" "}
+            <GlossaryTerm id="kwp">{leistungTeile.unit}</GlossaryTerm>
+          </strong>{" "}
+          installierter Leistung
+          sind {ortPhrase(region)} in Betrieb
+          {hatVergleichsgruppe ? `, verteilt auf ${nf(children.filter(child => child.bezeichnung !== "Gemeindefreies Gebiet").length)} ${kindWortGezaehlt}.` : "."}
+          {wPerCapita !== null && (
+            <>
+              {" "}
+              {/* Zweite Nennung derselben Größe — der Baustein stellt sie von selbst
+                  als reinen Text dar (Erstnennung oben an der Einheit). Deshalb steht
+                  hier bewusst KEIN zweiter Begriff. */}
+              Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.
+            </>
+          )}{" "}
+          {/* „Photovoltaik" stand bis 18.08.2026 in keinem sichtbaren Satz dieser Seite —
+              nur „Solaranlagen". Beide Wörter werden gesucht („photovoltaik bayern" 110
+              Suchen/Monat, „solaranlagen bayern" 50), und das Wort gehört hier ohnehin
+              hin: Der Satz sagt, woher die Zahlen kommen. Kein zweiter Satz nur für ein
+              Wort — er trägt die Herkunftsangabe, die vorher gar nicht dastand. */}
+          Alle Bestandszahlen stammen aus dem Marktstammdatenregister, in dem jede
+          Photovoltaik-Anlage in Deutschland gemeldet sein muss.
+
+  </>;
+
+  // First local design reference only; metadata, structured data and index
+  // policy remain on the existing route and share the existing sources.
+  if (region.level === "landkreis") {
+    return <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
+      <LandkreisSeite state={{id:region.region_id.slice(0,2),name:ancestors.find(a=>a.level==="bundesland")?.name??""}} variant="dark" region={region} children={children} ranking={ranking} basePath={basePath} crumbs={crumbs} stand={atlas.data_as_of} intro={intro} />
+    </>;
+  }
+
   return (
     <div style={S.page}>
       {crumbs.length > 1 && (
@@ -344,39 +390,7 @@ async function AtlasBody({
         </div>
 
         <h1 style={S.h1}>{headline(region)}</h1>
-        <p style={S.intro}>
-          <strong style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</strong> mit zusammen{" "}
-          {/* Die EINHEIT trägt den Glossarbegriff, nicht die Zahl: „34" ist kein Begriff,
-              und ein Link um den Zahlenwert sieht aus wie ein Klickziel für die Zahl.
-              Möglich wird die Trennung durch pvLeistungTeile() — dieselbe Quelle wie
-              fmtPvLeistung, nur getrennt abrufbar (CLAUDE.md: „Zahl und Einheit: eine
-              Quelle, aber getrennt abrufbar"). Hier ist die erste Nennung einer
-              Peak-Einheit auf der Seite, deshalb hängt der Begriff hier und nicht
-              weiter unten am Watt Peak je Einwohner. */}
-          <strong style={S.strong}>
-            {leistungTeile.value}{" "}
-            <GlossaryTerm id="kwp">{leistungTeile.unit}</GlossaryTerm>
-          </strong>{" "}
-          installierter Leistung
-          sind {ortPhrase(region)} in Betrieb
-          {hatVergleichsgruppe ? `, verteilt auf ${nf(children.length)} ${kindWortGezaehlt}.` : "."}
-          {wPerCapita !== null && (
-            <>
-              {" "}
-              {/* Zweite Nennung derselben Größe — der Baustein stellt sie von selbst
-                  als reinen Text dar (Erstnennung oben an der Einheit). Deshalb steht
-                  hier bewusst KEIN zweiter Begriff. */}
-              Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.
-            </>
-          )}{" "}
-          {/* „Photovoltaik" stand bis 18.08.2026 in keinem sichtbaren Satz dieser Seite —
-              nur „Solaranlagen". Beide Wörter werden gesucht („photovoltaik bayern" 110
-              Suchen/Monat, „solaranlagen bayern" 50), und das Wort gehört hier ohnehin
-              hin: Der Satz sagt, woher die Zahlen kommen. Kein zweiter Satz nur für ein
-              Wort — er trägt die Herkunftsangabe, die vorher gar nicht dastand. */}
-          Alle Bestandszahlen stammen aus dem Marktstammdatenregister, in dem jede
-          Photovoltaik-Anlage in Deutschland gemeldet sein muss.
-        </p>
+        <p style={S.intro}>{intro}</p>
 
         {/* Der Einordnungs-Absatz: Platz unter den Geschwistern, stärkstes
             Untergebiet mit Namen, Zubau als Anteil am Bestand. Je Region andere

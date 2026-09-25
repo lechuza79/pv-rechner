@@ -147,14 +147,14 @@ export default function GemeindeBeispiele({
         </div>
         <div className="v3-examples sc-feature-list">
           {karten.map((k) => (
-            <article key={k.titel} className="sc-feature-card">
+            <article key={k.titel} className="sc-feature-card gemeinde-buerger-card">
+              <h3 className="gemeinde-buerger-title">{k.titel}</h3>
               {/* @ts-expect-error — web component from /illustrations-motion/solar-illustrations.js */}
-              <solar-illustration class="v3-example-art sc-feature-visual" motif={k.motif} label={k.titel} circle="" loading="lazy" />
+              <solar-illustration class="v3-example-art sc-feature-visual" motif={k.motif} label={k.titel} circle="" loading="lazy" loading-margin="1200" />
               <div className="v3-example-copy sc-feature-content">
-                <p className="atlas-kicker">{k.titel}</p>
-                <h3>
+                <div className="gemeinde-buerger-value">
                   <span className="v3-result-amount sc-delta">{betrag(k.wert, k.zeitraum)}</span>
-                </h3>
+                </div>
                 <p>{k.text}</p>
                 {/* Gibt es für DIESE Technik hier einen Zuschuss, steht es an
                     der Rechnung, die er verändert — nicht nur unten im

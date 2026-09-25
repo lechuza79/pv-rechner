@@ -84,15 +84,15 @@
   // Eine Wahl schließt die Liste. Ohne das bleibt sie über dem Ziel stehen,
   // auf das sie gerade gesprungen ist.
   menue.addEventListener("click", (e) => {
-    if (e.target.closest("a")) menue.open = false;
+    if (schmal.matches && e.target.closest("a")) menue.open = false;
   });
   // Daneben getippt: zu. Ein Aufklappblock schließt sich sonst nur über
   // seinen eigenen Kopf, und auf dem Telefon sucht das niemand.
   document.addEventListener("pointerdown", (e) => {
-    if (menue.open && !menue.contains(e.target)) menue.open = false;
+    if (schmal.matches && menue.open && !menue.contains(e.target)) menue.open = false;
   });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && menue.open) {
+    if (schmal.matches && e.key === "Escape" && menue.open) {
       menue.open = false;
       menue.querySelector("summary")?.focus();
     }

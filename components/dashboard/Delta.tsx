@@ -13,7 +13,7 @@ function splitValue(value: string) {
   const suffixMatch = value.match(/(\s*(?:%|Stk\.))$/);
   const withoutSuffix = suffixMatch ? value.slice(0, -suffixMatch[1].length) : value;
   const sign = withoutSuffix.match(/^[+-]/)?.[0] ?? '';
-  return {sign, number: withoutSuffix.slice(sign.length), suffix: suffixMatch?.[1] ?? ''};
+  return {sign, number: withoutSuffix.slice(sign.length), suffix: suffixMatch?.[1]?.trim() ?? ''};
 }
 
 export function Delta({value, alternative, expanded = false, onToggle, onBlur, ariaLabel}: DeltaProps) {

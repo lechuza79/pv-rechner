@@ -1,0 +1,38 @@
+"use client";
+import DistrictEnergyWidgets from './DistrictEnergyWidgets';
+import type {DistrictEnergy} from '../../lib/district-energy';
+import {KpiOverview} from "../dashboard/KpiOverview";
+import {monitorKpiGroups} from "../../lib/dashboard/monitor-kpis";
+import type {DistrictMonitorResult} from "../../lib/district-monitor";
+import {useMemo} from 'react';
+import {CurrentPower,AnnualGrowth} from "../gemeinde/GemeindeMonitor";
+import MonitorComposition from "../gemeinde/MonitorComposition";
+import {ShareDonut} from "../charts/ShareDonut";
+import {WidgetFrame} from "../dashboard/WidgetFrame";
+import styles from "./landkreis.module.css";
+import foundation from "../social/atlas-foundations.module.css";
+import {SEGMENT_OWNER, type ChildYearRow} from "../../lib/atlas";
+import {dashboardDate} from "../../lib/dashboard/format";
+
+/** District register totals, using the municipality monitor's existing widgets. */
+export default function LandkreisMonitor({cells,stand,monitor,population,populationStand,regionId}:{regionId:string;cells:ChildYearRow[];stand:string;monitor:DistrictMonitorResult & {energy:DistrictEnergy|null};population:number|null;populationStand:string|null}) {
+  const weatherSource=useMemo(()=>({load:async()=>{const response=await fetch(`/api/landkreis/solartag?ags=${encodeURIComponent(regionId)}`);if(!response.ok)throw new Error('District weather unavailable');return response.json();}}),[regionId]);
+  const solar=cells.filter(row=>SEGMENT_OWNER[row.segment]!=null&&!row.segment.startsWith("batterie"));
+  const years=[...new Set(solar.map(row=>row.year))].sort((a,b)=>a-b).map(year=>({year,count:solar.filter(row=>row.year===year).reduce((sum,row)=>sum+row.count,0)}));
+  const groups=[
+    {label:"Gebäudeanlagen",segments:["privat_dach","gewerbe_dach"]},
+    {label:"Balkonkraftwerke",segments:["steckersolar"]},
+    {label:"Freiflächenanlagen",segments:["freiflaeche"]},
+  ].map(group=>({...group,value:solar.filter(row=>group.segments.includes(row.segment)).reduce((sum,row)=>sum+row.kwp,0),count:solar.filter(row=>group.segments.includes(row.segment)).reduce((sum,row)=>sum+row.count,0)}));
+  const total=groups.reduce((sum,row)=>sum+row.count,0),power=groups.reduce((sum,row)=>sum+row.value,0);
+  return <div className={`${foundation.foundation} ${styles.districtMonitor} municipal-data sc-dashboard`} data-story-scheme="dark">
+    {monitor.status==='ready'?<KpiOverview groups={monitorKpiGroups({history:monitor.history,population:population??0,registerStand:monitor.registerStand,populationStand})} help={<><p>Vollständige Summe aller Gemeinden im Landkreis bis zum {dashboardDate(monitor.history.observations[0].end)}. Registerstand: {dashboardDate(monitor.registerStand)}. Gezählt werden heute erfasste Anlagen nach Inbetriebnahmedatum; stillgelegte Anlagen fehlen, Nachmeldungen können frühere Werte verändern.</p>{populationStand&&<p>Die Leistung je Einwohner bezieht sich durchgehend auf die Einwohnerzahl vom {dashboardDate(populationStand)}.</p>}</>}/>:<p role="status">Für Bestand und Entwicklung liegt derzeit keine vollständige, einheitliche Monatshistorie aller Gemeinden vor.</p>}
+    <div className="sc-widget-grid">
+      <WidgetFrame title="Solarleistung heute" kind="radial" help={<p>Aus dem DWD-Wettermodell für die einzelnen Gemeinden simuliert und mit ihrer installierten Solarleistung gewichtet. Nur eine vollständige Kurve aller Gemeinden wird angezeigt. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={power} weatherSource={weatherSource} frameless/></WidgetFrame>
+      <AnnualGrowth years={years} stand={stand}/>
+      <DistrictEnergyWidgets data={monitor.energy}/>
+      <WidgetFrame title="Installierte Solarleistung nach Anlagentyp" kind="donut" help={<p>Summe der heute im Landkreis erfassten Solaranlagen. Batteriespeicher zählen nicht zur Solarleistung. Registerstand: {dashboardDate(stand)}.</p>}><ShareDonut values={groups}/></WidgetFrame>
+      {groups.map(group=><WidgetFrame key={group.label} title={group.label} kind="composition"><div className="monitor-widget-body"><MonitorComposition story={{countComparison:{total,selected:group.count,label:group.label},values:[{label:group.label,value:group.count},{label:"Anteil an der Solarleistung",value:power?group.value/power*100:0}]}}/></div></WidgetFrame>)}
+    </div>
+  </div>;
+}

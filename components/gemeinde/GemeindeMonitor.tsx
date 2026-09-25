@@ -7,6 +7,7 @@
  * the live solar output reads the weather the parent page already loads
  * (window.atlasWeather, set by GemeindeSzene) — no second weather request.
  */
+import ZubauChart from "../atlas/ZubauChart";
 import { useEffect, useRef, useState } from "react";
 import MonitorComposition from "./MonitorComposition";
 import { MonitorAnnualEnergyChart } from "./MonitorAnnualEnergyChart";
@@ -18,16 +19,15 @@ import type { StoryConcept } from "../../lib/story-konzepte";
 import "./municipal-data.css";
 import "../dashboard/dashboard.css";
 import { dashboardDate } from "../../lib/dashboard/format";
-import { ShareDonut } from "../charts/ShareDonut";
+import { ShareDonut, solarCategoryVisual } from "../charts/ShareDonut";
 import { WidgetSetting } from "../dashboard/WidgetSetting";
 import { WidgetFrame } from "../dashboard/WidgetFrame";
 import { KpiOverview } from "../dashboard/KpiOverview";
-import type { KpiDefinition, WidgetKind } from "../../lib/dashboard/model";
+import type { WidgetKind } from "../../lib/dashboard/model";
 import { MastrLiveRadial } from "../MastrLiveRadial";
 import { MastrMap } from "../MastrMap";
-import ZubauChart from "../atlas/ZubauChart";
 import type { GemeindePaket } from "../../lib/gemeinde-paket";
-import { reihenMassstab } from "../../lib/gemeinde-einheiten";
+import {monitorKpiGroups} from "../../lib/dashboard/monitor-kpis";
 
 /* The package keeps prototype data loosely typed (lib/gemeinde-paket.ts). */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -37,65 +37,17 @@ const formatDate = dashboardDate;
 const monthLabel = (month: string) =>
   new Date(month + "-15T12:00:00").toLocaleDateString("de-DE", { month: "long", year: "numeric" });
 
-function kpiGroups(paket: GemeindePaket) {
-  const history = paket.monitorHistory as Any;
-  const observations: Any[] = history.observations;
-  const current = observations[0];
-  const population = paket.register?.own.population ?? 0;
-  const metric = (
-    id: string,
-    label: string,
-    value: (row: Any) => number,
-    unit?: string,
-    digits = 0,
-    kind: KpiDefinition["kind"] = "stock",
-  ): KpiDefinition => {
-    const basis = `${history.method}:${paket.registerStand}:${id}:population-${paket.einwohnerStand ?? ""}`;
-    const observation = (row: Any) => ({
-      end: row.end,
-      value: value(row),
-      basis,
-      ...(kind === "period-total" ? { start: row.end.slice(0, 4) + "-01-01" } : {}),
-    });
-    return { id, label, unit, digits, kind, cadence: "month-end", current: observation(current), history: observations.slice(1).map(observation) };
-  };
-  return [
-    {
-      title: "Solaranlagen",
-      items: [
-        metric("solar-count", "Anlagen", (r) => r.solarCount, "Stk.", 0),
-        // Einheit nach der Größe des Orts: ein Dorf mit einem Balkonkraftwerk
-        // zeigte sonst „0,0 MWp" — eine Null, wo eine Anlage steht.
-        (() => {
-          const m = reihenMassstab(current.solarKwp, "kWp", "MWp");
-          return metric("solar-power", "Installierte Leistung", (r) => r.solarKwp / m.teiler, m.unit, m.digits);
-        })(),
-        // Without a population figure a per-resident value would be invented.
-        ...(population > 0 ? [metric("solar-per-resident", "Leistung je Einwohner", (r) => (r.solarKwp * 1000) / population, "Wp")] : []),
-        metric("solar-additions", "Neue Anlagen dieses Jahr", (r) => r.solarAdditions, "Stk.", 0, "period-total"),
-      ],
-    },
-    {
-      title: "Batteriespeicher",
-      items: [
-        metric("battery-count", "Speicher", (r) => r.batteryCount, "Stk.", 0),
-        (() => {
-          const m = reihenMassstab(current.batteryKwh, "kWh", "MWh");
-          return metric("battery-capacity", "Kapazität", (r) => r.batteryKwh / m.teiler, m.unit, m.digits);
-        })(),
-      ],
-    },
-  ];
-}
 
-export function CurrentPower({ installedKwp, compact = false }: { installedKwp: number; compact?: boolean }) {
+export type SolarWeatherSource = { load: () => Promise<unknown>; tag?: () => Promise<unknown> };
+
+export function CurrentPower({ installedKwp, compact = false, weatherSource, frameless = false, overview = false }: { installedKwp: number; compact?: boolean; weatherSource?: SolarWeatherSource; frameless?: boolean; overview?: boolean }) {
   const [reading, setReading] = useState<Any>(null);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
     let active = true;
     let versuche = 0;
     const load = () => {
-      const source = (parent as Any).atlasWeather;
+      const source = weatherSource ?? (parent as Any).atlasWeather;
       if (!source) {
         // The frame can be up before the page has set its weather source;
         // ask again shortly instead of waiting for the five-minute refresh.
@@ -129,14 +81,13 @@ export function CurrentPower({ installedKwp, compact = false }: { installedKwp: 
       active = false;
       clearInterval(timer);
     };
-  }, []);
-  const points = reading?.points?.map((point: Any) => ({ ts: point.time, mw: (installedKwp * point.powerPct) / 100000 })) ?? [];
+  }, [weatherSource]);
+  const points = reading?.points?.map((point: Any) => ({ ts: point.time, mw: ((reading.installedKwp ?? installedKwp) * point.powerPct) / 100000 })) ?? [];
   const current = points.filter((point: Any) => Date.parse(point.ts) <= Date.now()).at(-1);
   const asOf = reading?.power?.asOf
     ? " · Stand " + new Date(reading.power.asOf).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Berlin" }) + " Uhr"
     : "";
-  return (
-    <WidgetFrame title="Solarleistung heute" kind="radial" context={compact ? undefined : <>Aus dem Wetter am Standort simuliert{asOf}</>}>
+  const content = (
       <div className="monitor-native-chart monitor-current-power">
         {failed ? (
           <p>Der Tagesverlauf ist gerade nicht verfügbar.</p>
@@ -145,7 +96,7 @@ export function CurrentPower({ installedKwp, compact = false }: { installedKwp: 
         ) : (
           <MastrLiveRadial
             energietraeger="solar"
-            installedKwp={installedKwp}
+            installedKwp={reading.installedKwp ?? installedKwp}
             injected={points}
             highlightTs={current?.ts}
             secondaryBars
@@ -154,17 +105,19 @@ export function CurrentPower({ installedKwp, compact = false }: { installedKwp: 
             className="monitor-live-radial"
             bare
             fuelltBreite
-            kopfKachel={compact}
+            kopfKachel={compact && !frameless}
+            overview={overview}
           />
         )}
       </div>
-    </WidgetFrame>
   );
+  return frameless ? content : <WidgetFrame title="Solarleistung heute" kind="radial" context={compact ? undefined : <>Aus dem Wetter am Standort simuliert{asOf}</>}>{content}</WidgetFrame>;
 }
 
 /** Mounts its children only once the placeholder comes within reach of the
  *  viewport — the district map brings ≈170 KB of geometry nobody at the top
  *  of the page needs. */
+
 function WennNah({ children, hoehe }: { children: React.ReactNode; hoehe: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const [nah, setNah] = useState(false);
@@ -257,7 +210,7 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
   const values = isDonut
     ? (selected?.solarMix ?? item.story.values).map((row: Any) => ({
         ...row,
-        visual: row.label === "Gebäudeanlagen" ? "/brand/rank-house.webp" : "/brand/rank-balcony-modern.webp",
+        visual: solarCategoryVisual(row.label),
       }))
     : [];
   const segment = /balkon|stecker/i.test(item.story.countComparison?.label ?? "") ? "steckersolar" : "gebaeude";
@@ -351,14 +304,14 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
   );
 }
 
-function AnnualGrowth({ years, stand }: { years: { year: number; count: number }[]; stand: string }) {
+export function AnnualGrowth({ years, stand }: { years: { year: number; count: number }[]; stand: string }) {
   const [range, setRange] = useState("all");
   const end = Number(stand.slice(0, 4));
   return (
     <WidgetFrame
       title="Zubau pro Jahr"
       kind="time-series"
-      context={<>Letztes Update: {formatDate(stand)}</>}
+      help={<p>Solaranlagen nach Inbetriebnahmejahr. Das laufende Jahr ist noch nicht vollständig. Registerstand: {formatDate(stand)}.</p>}
       settings={
         <WidgetSetting
           label="Zeitraum des Zubaus"
@@ -407,11 +360,6 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
   const register = paket.register;
   const charts = paket.charts as Any;
   const installedKwp = ((register?.chartMix as Any)?.values ?? []).reduce((sum: number, row: Any) => sum + row.value, 0);
-  const perYear: Record<number, number> = {};
-  for (const row of (register?.series ?? []) as Any[]) if (row.energietraeger === "solar") perYear[row.year] = (perYear[row.year] ?? 0) + row.count;
-  const years = Object.entries(perYear)
-    .map(([year, count]) => ({ year: Number(year), count }))
-    .sort((a, b) => a.year - b.year);
   const hasHistory = ((paket.monitorHistory as Any)?.observations ?? []).length > 0;
   const sections = ["Anlagenbestand", "Strom und Wert"];
   const population = paket.einwohnerStand ? formatDate(paket.einwohnerStand) : null;
@@ -420,7 +368,7 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
     <div ref={root} className={`${foundation.foundation} municipal-data sc-dashboard`} data-story-scheme="dark">
       {hasHistory && (
         <KpiOverview
-          groups={kpiGroups(paket)}
+          groups={monitorKpiGroups({history:paket.monitorHistory!,population:paket.register?.own.population??0,registerStand:paket.registerStand,populationStand:paket.einwohnerStand})}
           help={
             <>
               <p>Gezählt werden heute erfasste Anlagen nach ihrem Inbetriebnahmedatum. Stillgelegte Anlagen fehlen; Nachmeldungen können frühere Werte verändern.</p>
@@ -429,10 +377,9 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
           }
         />
       )}
-      <section aria-label="Aktuelle Solarleistung und Ausbau">
+      <section aria-label="Aktuelle Solarleistung">
         <div className="sc-widget-grid">
           {installedKwp > 0 && <CurrentPower installedKwp={installedKwp} />}
-          {years.length > 0 && <AnnualGrowth years={years} stand={paket.registerStand} />}
         </div>
       </section>
       {sections.map((section) => {
@@ -470,7 +417,7 @@ export default function GemeindeMonitor({ paket }: { paket: GemeindePaket }) {
  * monitor readings, chosen by the hero stack. Rendered inline on the page,
  * not in a frame, so it shows as soon as the page is interactive.
  */
-export function GemeindeKopfMonitor({ paket, widget, paused, onFertig }: { paket: GemeindePaket; widget: string; paused: boolean; onFertig?: () => void }) {
+export function GemeindeKopfMonitor({ paket, widget, paused, onFertig, weatherSource }: { paket: GemeindePaket; widget: string; paused: boolean; onFertig?: () => void; weatherSource?: SolarWeatherSource }) {
   // Welcher Tag gerade gezeichnet wird — steht als zweite Zeile im Kopf.
   const [tag, setTag] = useState<string | null>(null);
   const charts = paket.charts as Any;
@@ -487,7 +434,7 @@ export function GemeindeKopfMonitor({ paket, widget, paused, onFertig }: { paket
   return (
     <div className={`${foundation.foundation} municipal-data sc-dashboard monitor-hero`} data-story-scheme="dark">
       {widget === "live" ? (
-        installedKwp > 0 ? <CurrentPower installedKwp={installedKwp} compact /> : null
+        installedKwp > 0 ? <CurrentPower installedKwp={installedKwp} compact weatherSource={weatherSource} /> : null
       ) : item ? (
         <article className="hero-story">
           <h3>{(widget === "radial" ? "Solarerzeugung " : "Einspeisevergütung ") + month}</h3>
