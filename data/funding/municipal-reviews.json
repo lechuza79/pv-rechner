@@ -63184,5 +63184,365 @@
         "evidenceUrl": "https://www.mohlsdorf-teichwolframsdorf.de/verwaltung/ausschreibungen"
       }
     ]
+  },
+  {
+    "regionId": "07141027",
+    "name": "Dienethal",
+    "checkedAt": "2026-09-25T14:08:53Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Die Ortsgemeinde hat keine eigene Website; ihre Seite und der Klimabereich liegen bei der Verbandsgemeinde Bad Ems-Nassau.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder die Ortsgemeinde Dienethal noch die Verbandsgemeinde Bad Ems-Nassau (Rhein-Lahn-Kreis) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Fundstelle ist ein gespiegelter Fachartikel über Steckersolar ohne eigenes Förderangebot; die Ortsseite und die Klima-, Solar- und PV-Seiten der Verbandsgemeinde nennen kein Programm. Stand 25.09.2026.",
+    "searches": [
+      "Ortsseite https://www.vgben.de/gemeinden/dienethal/ am 25.09.2026 vollständig gelesen (Förder, Zuschuss, Photovoltaik, Solar, Balkon, Wärmepumpe, €)",
+      "vgben.de: Energie & Klima, Klimaschutz/Solar und Meldung „Photovoltaikanlagen in der Verbandsgemeinde“ am 25.09.2026 gelesen",
+      "Websuche „Verbandsgemeinde Bad Ems-Nassau Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Am 25.09.2026 gelesen: Fachartikel des Magazins „Klimaschutz Kommune“ vom 25.09.2023 über Steckersolar, nennt Förderung nur allgemein („Viele Kommunen, Landkreise, Bundesländer und Verbände fördern …“) — kein Programm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/gemeinden/dienethal/",
+        "finding": "Ortsseite Dienethal am 25.09.2026 gelesen: Ortsporträt, Vereine, Einrichtungen — kein Förderangebot."
+      },
+      {
+        "url": "https://www.vgben.de/klimaschutz/solar/",
+        "finding": "Am 25.09.2026 gelesen: Vortragsreihe mit dem Solarenergie-Förderverein, Solarkataster — kein Zuschuss der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzkonzept, Solarkataster, Wärmeplanung, Meldungen — kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141058",
+    "name": "Hömberg",
+    "checkedAt": "2026-09-25T14:08:53Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Die Ortsgemeinde hat keine eigene Website; ihre Seite und der Klimabereich liegen bei der Verbandsgemeinde Bad Ems-Nassau.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder die Ortsgemeinde Hömberg noch die Verbandsgemeinde Bad Ems-Nassau (Rhein-Lahn-Kreis) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Fundstelle ist ein gespiegelter Fachartikel über Steckersolar ohne eigenes Förderangebot; die Ortsseite und die Klima-, Solar- und PV-Seiten der Verbandsgemeinde nennen kein Programm. Stand 25.09.2026.",
+    "searches": [
+      "Ortsseite https://www.vgben.de/gemeinden/hoemberg/ am 25.09.2026 vollständig gelesen (Förder, Zuschuss, Photovoltaik, Solar, Balkon, Wärmepumpe, €)",
+      "vgben.de: Energie & Klima, Klimaschutz/Solar und Meldung „Photovoltaikanlagen in der Verbandsgemeinde“ am 25.09.2026 gelesen",
+      "Websuche „Verbandsgemeinde Bad Ems-Nassau Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Am 25.09.2026 gelesen: Fachartikel des Magazins „Klimaschutz Kommune“ vom 25.09.2023 über Steckersolar, nennt Förderung nur allgemein („Viele Kommunen, Landkreise, Bundesländer und Verbände fördern …“) — kein Programm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/gemeinden/hoemberg/",
+        "finding": "Ortsseite Hömberg am 25.09.2026 gelesen: Ortsporträt, Vereine, Einrichtungen — kein Förderangebot."
+      },
+      {
+        "url": "https://www.vgben.de/klimaschutz/solar/",
+        "finding": "Am 25.09.2026 gelesen: Vortragsreihe mit dem Solarenergie-Förderverein, Solarkataster — kein Zuschuss der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzkonzept, Solarkataster, Wärmeplanung, Meldungen — kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141071",
+    "name": "Kemmenau",
+    "checkedAt": "2026-09-25T14:08:53Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Die Ortsgemeinde hat keine eigene Website; ihre Seite und der Klimabereich liegen bei der Verbandsgemeinde Bad Ems-Nassau.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder die Ortsgemeinde Kemmenau noch die Verbandsgemeinde Bad Ems-Nassau (Rhein-Lahn-Kreis) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Fundstelle ist ein gespiegelter Fachartikel über Steckersolar ohne eigenes Förderangebot; die Ortsseite und die Klima-, Solar- und PV-Seiten der Verbandsgemeinde nennen kein Programm. Stand 25.09.2026.",
+    "searches": [
+      "Ortsseite https://www.vgben.de/gemeinden/kemmenau/ am 25.09.2026 vollständig gelesen (Förder, Zuschuss, Photovoltaik, Solar, Balkon, Wärmepumpe, €)",
+      "vgben.de: Energie & Klima, Klimaschutz/Solar und Meldung „Photovoltaikanlagen in der Verbandsgemeinde“ am 25.09.2026 gelesen",
+      "Websuche „Verbandsgemeinde Bad Ems-Nassau Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Am 25.09.2026 gelesen: Fachartikel des Magazins „Klimaschutz Kommune“ vom 25.09.2023 über Steckersolar, nennt Förderung nur allgemein („Viele Kommunen, Landkreise, Bundesländer und Verbände fördern …“) — kein Programm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/gemeinden/kemmenau/",
+        "finding": "Ortsseite Kemmenau am 25.09.2026 gelesen: Ortsporträt, Vereine, Einrichtungen — kein Förderangebot."
+      },
+      {
+        "url": "https://www.vgben.de/klimaschutz/solar/",
+        "finding": "Am 25.09.2026 gelesen: Vortragsreihe mit dem Solarenergie-Förderverein, Solarkataster — kein Zuschuss der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzkonzept, Solarkataster, Wärmeplanung, Meldungen — kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141086",
+    "name": "Miellen",
+    "checkedAt": "2026-09-25T14:08:53Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Die Ortsgemeinde hat keine eigene Website; ihre Seite und der Klimabereich liegen bei der Verbandsgemeinde Bad Ems-Nassau.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder die Ortsgemeinde Miellen noch die Verbandsgemeinde Bad Ems-Nassau (Rhein-Lahn-Kreis) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Fundstelle ist ein gespiegelter Fachartikel über Steckersolar ohne eigenes Förderangebot; die Ortsseite und die Klima-, Solar- und PV-Seiten der Verbandsgemeinde nennen kein Programm. Stand 25.09.2026.",
+    "searches": [
+      "Ortsseite https://www.vgben.de/gemeinden/miellen/ am 25.09.2026 vollständig gelesen (Förder, Zuschuss, Photovoltaik, Solar, Balkon, Wärmepumpe, €)",
+      "vgben.de: Energie & Klima, Klimaschutz/Solar und Meldung „Photovoltaikanlagen in der Verbandsgemeinde“ am 25.09.2026 gelesen",
+      "Websuche „Verbandsgemeinde Bad Ems-Nassau Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Am 25.09.2026 gelesen: Fachartikel des Magazins „Klimaschutz Kommune“ vom 25.09.2023 über Steckersolar, nennt Förderung nur allgemein („Viele Kommunen, Landkreise, Bundesländer und Verbände fördern …“) — kein Programm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/gemeinden/miellen/",
+        "finding": "Ortsseite Miellen am 25.09.2026 gelesen: Ortsporträt, Vereine, Einrichtungen — kein Förderangebot."
+      },
+      {
+        "url": "https://www.vgben.de/klimaschutz/solar/",
+        "finding": "Am 25.09.2026 gelesen: Vortragsreihe mit dem Solarenergie-Förderverein, Solarkataster — kein Zuschuss der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzkonzept, Solarkataster, Wärmeplanung, Meldungen — kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141103",
+    "name": "Obernhof",
+    "checkedAt": "2026-09-25T14:08:53Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Die Ortsgemeinde hat keine eigene Website; ihre Seite und der Klimabereich liegen bei der Verbandsgemeinde Bad Ems-Nassau.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder die Ortsgemeinde Obernhof noch die Verbandsgemeinde Bad Ems-Nassau (Rhein-Lahn-Kreis) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Fundstelle ist ein gespiegelter Fachartikel über Steckersolar ohne eigenes Förderangebot; die Ortsseite und die Klima-, Solar- und PV-Seiten der Verbandsgemeinde nennen kein Programm. Stand 25.09.2026.",
+    "searches": [
+      "Ortsseite https://www.vgben.de/gemeinden/obernhof/ am 25.09.2026 vollständig gelesen (Förder, Zuschuss, Photovoltaik, Solar, Balkon, Wärmepumpe, €)",
+      "vgben.de: Energie & Klima, Klimaschutz/Solar und Meldung „Photovoltaikanlagen in der Verbandsgemeinde“ am 25.09.2026 gelesen",
+      "Websuche „Verbandsgemeinde Bad Ems-Nassau Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Am 25.09.2026 gelesen: Fachartikel des Magazins „Klimaschutz Kommune“ vom 25.09.2023 über Steckersolar, nennt Förderung nur allgemein („Viele Kommunen, Landkreise, Bundesländer und Verbände fördern …“) — kein Programm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/gemeinden/obernhof/",
+        "finding": "Ortsseite Obernhof am 25.09.2026 gelesen: Ortsporträt, Vereine, Einrichtungen — kein Förderangebot."
+      },
+      {
+        "url": "https://www.vgben.de/klimaschutz/solar/",
+        "finding": "Am 25.09.2026 gelesen: Vortragsreihe mit dem Solarenergie-Förderverein, Solarkataster — kein Zuschuss der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzkonzept, Solarkataster, Wärmeplanung, Meldungen — kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141106",
+    "name": "Oberwies",
+    "checkedAt": "2026-09-25T14:08:53Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Die Ortsgemeinde hat keine eigene Website; ihre Seite und der Klimabereich liegen bei der Verbandsgemeinde Bad Ems-Nassau.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder die Ortsgemeinde Oberwies noch die Verbandsgemeinde Bad Ems-Nassau (Rhein-Lahn-Kreis) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Fundstelle ist ein gespiegelter Fachartikel über Steckersolar ohne eigenes Förderangebot; die Ortsseite und die Klima-, Solar- und PV-Seiten der Verbandsgemeinde nennen kein Programm. Stand 25.09.2026.",
+    "searches": [
+      "Ortsseite https://www.vgben.de/gemeinden/oberwies/ am 25.09.2026 vollständig gelesen (Förder, Zuschuss, Photovoltaik, Solar, Balkon, Wärmepumpe, €)",
+      "vgben.de: Energie & Klima, Klimaschutz/Solar und Meldung „Photovoltaikanlagen in der Verbandsgemeinde“ am 25.09.2026 gelesen",
+      "Websuche „Verbandsgemeinde Bad Ems-Nassau Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Am 25.09.2026 gelesen: Fachartikel des Magazins „Klimaschutz Kommune“ vom 25.09.2023 über Steckersolar, nennt Förderung nur allgemein („Viele Kommunen, Landkreise, Bundesländer und Verbände fördern …“) — kein Programm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/gemeinden/oberwies/",
+        "finding": "Ortsseite Oberwies am 25.09.2026 gelesen: Ortsporträt, Vereine, Einrichtungen — kein Förderangebot."
+      },
+      {
+        "url": "https://www.vgben.de/klimaschutz/solar/",
+        "finding": "Am 25.09.2026 gelesen: Vortragsreihe mit dem Solarenergie-Förderverein, Solarkataster — kein Zuschuss der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzkonzept, Solarkataster, Wärmeplanung, Meldungen — kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141127",
+    "name": "Schweighausen",
+    "checkedAt": "2026-09-25T14:08:53Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Die Ortsgemeinde hat keine eigene Website; ihre Seite und der Klimabereich liegen bei der Verbandsgemeinde Bad Ems-Nassau.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder die Ortsgemeinde Schweighausen noch die Verbandsgemeinde Bad Ems-Nassau (Rhein-Lahn-Kreis) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Fundstelle ist ein gespiegelter Fachartikel über Steckersolar ohne eigenes Förderangebot; die Ortsseite und die Klima-, Solar- und PV-Seiten der Verbandsgemeinde nennen kein Programm. Stand 25.09.2026.",
+    "searches": [
+      "Ortsseite https://www.vgben.de/gemeinden/schweighausen/ am 25.09.2026 vollständig gelesen (Förder, Zuschuss, Photovoltaik, Solar, Balkon, Wärmepumpe, €)",
+      "vgben.de: Energie & Klima, Klimaschutz/Solar und Meldung „Photovoltaikanlagen in der Verbandsgemeinde“ am 25.09.2026 gelesen",
+      "Websuche „Verbandsgemeinde Bad Ems-Nassau Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Am 25.09.2026 gelesen: Fachartikel des Magazins „Klimaschutz Kommune“ vom 25.09.2023 über Steckersolar, nennt Förderung nur allgemein („Viele Kommunen, Landkreise, Bundesländer und Verbände fördern …“) — kein Programm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/gemeinden/schweighausen/",
+        "finding": "Ortsseite Schweighausen am 25.09.2026 gelesen: Ortsporträt, Vereine, Einrichtungen — kein Förderangebot."
+      },
+      {
+        "url": "https://www.vgben.de/klimaschutz/solar/",
+        "finding": "Am 25.09.2026 gelesen: Vortragsreihe mit dem Solarenergie-Förderverein, Solarkataster — kein Zuschuss der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzkonzept, Solarkataster, Wärmeplanung, Meldungen — kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141128",
+    "name": "Seelbach",
+    "checkedAt": "2026-09-25T14:08:53Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Die Ortsgemeinde hat keine eigene Website; ihre Seite und der Klimabereich liegen bei der Verbandsgemeinde Bad Ems-Nassau.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder die Ortsgemeinde Seelbach noch die Verbandsgemeinde Bad Ems-Nassau (Rhein-Lahn-Kreis) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Fundstelle ist ein gespiegelter Fachartikel über Steckersolar ohne eigenes Förderangebot; die Ortsseite und die Klima-, Solar- und PV-Seiten der Verbandsgemeinde nennen kein Programm. Stand 25.09.2026.",
+    "searches": [
+      "Ortsseite https://www.vgben.de/gemeinden/seelbach/ am 25.09.2026 vollständig gelesen (Förder, Zuschuss, Photovoltaik, Solar, Balkon, Wärmepumpe, €)",
+      "vgben.de: Energie & Klima, Klimaschutz/Solar und Meldung „Photovoltaikanlagen in der Verbandsgemeinde“ am 25.09.2026 gelesen",
+      "Websuche „Verbandsgemeinde Bad Ems-Nassau Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Am 25.09.2026 gelesen: Fachartikel des Magazins „Klimaschutz Kommune“ vom 25.09.2023 über Steckersolar, nennt Förderung nur allgemein („Viele Kommunen, Landkreise, Bundesländer und Verbände fördern …“) — kein Programm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/gemeinden/seelbach/",
+        "finding": "Ortsseite Seelbach am 25.09.2026 gelesen: Ortsporträt, Vereine, Einrichtungen — kein Förderangebot."
+      },
+      {
+        "url": "https://www.vgben.de/klimaschutz/solar/",
+        "finding": "Am 25.09.2026 gelesen: Vortragsreihe mit dem Solarenergie-Förderverein, Solarkataster — kein Zuschuss der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzkonzept, Solarkataster, Wärmeplanung, Meldungen — kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
+  },
+  {
+    "regionId": "07141132",
+    "name": "Sulzbach",
+    "checkedAt": "2026-09-25T14:08:53Z",
+    "recheckAt": "2026-12-23T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Die Ortsgemeinde hat keine eigene Website; ihre Seite und der Klimabereich liegen bei der Verbandsgemeinde Bad Ems-Nassau.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder die Ortsgemeinde Sulzbach noch die Verbandsgemeinde Bad Ems-Nassau (Rhein-Lahn-Kreis) führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte. Die erfasste Fundstelle ist ein gespiegelter Fachartikel über Steckersolar ohne eigenes Förderangebot; die Ortsseite und die Klima-, Solar- und PV-Seiten der Verbandsgemeinde nennen kein Programm. Stand 25.09.2026.",
+    "searches": [
+      "Ortsseite https://www.vgben.de/gemeinden/sulzbach/ am 25.09.2026 vollständig gelesen (Förder, Zuschuss, Photovoltaik, Solar, Balkon, Wärmepumpe, €)",
+      "vgben.de: Energie & Klima, Klimaschutz/Solar und Meldung „Photovoltaikanlagen in der Verbandsgemeinde“ am 25.09.2026 gelesen",
+      "Websuche „Verbandsgemeinde Bad Ems-Nassau Förderprogramm Zuschuss Photovoltaik Balkonkraftwerk Wärmepumpe“ (25.09.2026): kein Programm"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "finding": "Am 25.09.2026 gelesen: Fachartikel des Magazins „Klimaschutz Kommune“ vom 25.09.2023 über Steckersolar, nennt Förderung nur allgemein („Viele Kommunen, Landkreise, Bundesländer und Verbände fördern …“) — kein Programm der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/gemeinden/sulzbach/",
+        "finding": "Ortsseite Sulzbach am 25.09.2026 gelesen: Ortsporträt, Vereine, Einrichtungen — kein Förderangebot."
+      },
+      {
+        "url": "https://www.vgben.de/klimaschutz/solar/",
+        "finding": "Am 25.09.2026 gelesen: Vortragsreihe mit dem Solarenergie-Förderverein, Solarkataster — kein Zuschuss der Verbandsgemeinde."
+      },
+      {
+        "url": "https://www.vgben.de/energie-klima",
+        "finding": "Am 25.09.2026 gelesen: Klimaschutzkonzept, Solarkataster, Wärmeplanung, Meldungen — kein Zuschussprogramm."
+      }
+    ],
+    "sources": [
+      {
+        "url": "vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd",
+        "disposition": "reviewed",
+        "reason": "Gespiegelter Fachartikel über Steckersolar, kein Programm der Verbandsgemeinde.",
+        "evidenceUrl": "https://www.vgben.de/energie-klima/aktuelles/230925-klimaschutz-kommune-burgerinformation-solarstrom-fur-die-steckdose.pdf?cid=14yd"
+      }
+    ]
   }
 ]
