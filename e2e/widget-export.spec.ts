@@ -197,3 +197,25 @@ test.describe("Gemeinde-Monitor: Anlagenraster", () => {
     if (OUT_DIR) await import("fs/promises").then((fs) => fs.writeFile(`${OUT_DIR}/gemeinde-anlagenraster.png`, buf));
   });
 });
+
+test.describe("Gemeinde-Monitor: Jahresprofil", () => {
+  test("Download liefert ein Bild mit Jahr, Energieart, Legende, beiden Quellen und Marke", async ({ page }) => {
+    await page.goto("/embed/gemeinde/09679202/monitor");
+    const widget = page.locator("article.sc-widget", { has: page.locator('svg[aria-label*="Modellierte Tageserträge"]') }).first();
+    await expect(widget).toBeVisible({ timeout: 60_000 });
+    await expect(widget.locator("[data-sc-export-only]").filter({ hasText: /^2025 · Solar \+ Wind$/ })).toHaveCount(1);
+    // Legend hidden until hover on the page, forced into the image.
+    await expect(widget.locator('[data-sc-export-css*="visibility:visible"]')).toContainText("Solar");
+    const kante = widget.locator('[title^="Quelle:"]');
+    await expect(kante).toContainText("ERA5");
+    await expect(kante).toContainText("Bundesnetzagentur");
+    await expect(widget).toHaveAttribute("data-sc-export-brightest", "");
+
+    const downloadPromise = page.waitForEvent("download");
+    await widget.getByTitle("Als Bild herunterladen").click();
+    const buf = await readFile((await (await downloadPromise).path())!);
+    expect(buf.byteLength).toBeGreaterThan(30_000);
+    expect(buf.subarray(1, 4).toString("ascii")).toBe("PNG");
+    if (OUT_DIR) await import("fs/promises").then((fs) => fs.writeFile(`${OUT_DIR}/gemeinde-energie-jahr.png`, buf));
+  });
+});

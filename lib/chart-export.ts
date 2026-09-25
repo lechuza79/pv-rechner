@@ -74,7 +74,10 @@ export function applyExportMarkers(root: Element): void {
   root.querySelectorAll<HTMLElement>(`[${EXPORT_ONLY_ATTR}]`).forEach((el) => {
     el.style.display = el.getAttribute(EXPORT_ONLY_ATTR) || 'block';
   });
-  root.querySelectorAll<HTMLElement>(`[${EXPORT_CSS_ATTR}]`).forEach((el) => {
+  // The captured node itself may carry image-only CSS too (a card that needs
+  // room for its source edge); querySelectorAll never returns the root.
+  const targets = root.querySelectorAll<HTMLElement>(`[${EXPORT_CSS_ATTR}]`);
+  [...(root instanceof HTMLElement && root.hasAttribute(EXPORT_CSS_ATTR) ? [root] : []), ...targets].forEach((el) => {
     el.style.cssText += ';' + (el.getAttribute(EXPORT_CSS_ATTR) || '');
   });
 }

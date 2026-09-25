@@ -2,6 +2,9 @@
 import {useState} from 'react';
 import type {DistrictEnergy} from '../../lib/district-energy';
 import {WidgetFrame} from '../dashboard/WidgetFrame';
+import {ExportableWidgetFrame} from '../dashboard/ExportableWidgetFrame';
+import {WIDGETS} from '../../lib/widget-registry';
+import {formatStoryDate} from '../../lib/story-format';
 import {WidgetSetting} from '../dashboard/WidgetSetting';
 import {MonitorMonthlySolarChart} from '../gemeinde/MonitorMonthlySolarChart';
 import {MonitorAnnualEnergyChart} from '../gemeinde/MonitorAnnualEnergyChart';
@@ -19,12 +22,12 @@ function ValueWidget({data,feedIn=false}:{data:DistrictEnergy;feedIn?:boolean}) 
   <div className="monitor-widget-body"><ApprovedStoryVisual bild={{art:'kennzahl',stil:'hell',aussage:title,gemessen:'Modellrechnung',quelle:'Summe der Gemeindeberechnungen',serien:[{label:feedIn?'Einspeisevergütung':'Stromwert',wert:feedIn?selected.value.feedInEuro:selected.value.euro,einheit:'€'}]}}/></div>
  </WidgetFrame>;
 }
-export default function DistrictEnergyWidgets({data}:{data:DistrictEnergy|null}) {
+export default function DistrictEnergyWidgets({data,name,regionId}:{data:DistrictEnergy|null;name:string;regionId:string}) {
  if(!data)return <p role="status">Die Erzeugungsdaten aller Gemeinden sind derzeit nicht vollständig verfügbar.</p>;
  const help=<p>Summe aller Gemeinden. Die Auswahl enthält nur vollständige gemeinsame Wetterzeiträume. Modellierte Erzeugung, keine Messung. Jahresprofile verwenden den zum Jahresende rekonstruierten heutigen Anlagenbestand; stillgelegte Anlagen fehlen.</p>;
  return <>
   {data.monthly.length>0?<WidgetFrame title="Solarerzeugung im Tagesverlauf" kind="radial" className={chart.visualTheme} data-story-scheme="dark" help={help}><div className="monitor-widget-body"><MonitorMonthlySolarChart data={data.monthly[0].solar} datasets={data.monthly.map(row=>row.solar)}/></div></WidgetFrame>:<p role="status">Für die Solarerzeugung liegt noch kein vollständiger gemeinsamer Monat vor.</p>}
-  {data.annual.length>0?<WidgetFrame title={data.annual.some(y=>y.windKw>0)?'Solar- und Windpotenzial im Jahresverlauf':'Solarpotenzial im Jahresverlauf'} kind="radial" className={chart.visualTheme} data-story-scheme="dark" help={help}><div className="monitor-widget-body"><MonitorAnnualEnergyChart data={data.annual[0]} datasets={data.annual}/></div></WidgetFrame>:<p role="status">Für das Jahresprofil liegt noch kein vollständiges gemeinsames Wetterjahr vor.</p>}
+  {data.annual.length>0?<ExportableWidgetFrame title={data.annual.some(y=>y.windKw>0)?'Solar- und Windpotenzial im Jahresverlauf':'Solarpotenzial im Jahresverlauf'} kind="radial" className={chart.visualTheme} data-story-scheme="dark" help={help} widget={WIDGETS.gemeindeEnergieJahr} place={name} stand={formatStoryDate(data.annual[0].sourceDate)} filename={`solar-check-energy-year-${regionId}`}><div className="monitor-widget-body"><MonitorAnnualEnergyChart data={data.annual[0]} datasets={data.annual}/></div></ExportableWidgetFrame>:<p role="status">Für das Jahresprofil liegt noch kein vollständiges gemeinsames Wetterjahr vor.</p>}
   <ValueWidget data={data}/><ValueWidget data={data} feedIn/>
   {!data.monthly.some(row=>row.value)&&<p role="status">Stromwert und Einspeisevergütung sind noch nicht für alle Gemeinden auf gemeinsamer Grundlage berechenbar.</p>}
  </>;

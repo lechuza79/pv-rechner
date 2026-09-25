@@ -32,7 +32,7 @@ export default function LandkreisMonitor({cells,stand,monitor,population,populat
     <div className="sc-widget-grid">
       <WidgetFrame title="Solarleistung heute" kind="radial" help={<p>Aus dem DWD-Wettermodell für die einzelnen Gemeinden simuliert und mit ihrer installierten Solarleistung gewichtet. Nur eine vollständige Kurve aller Gemeinden wird angezeigt. Keine gemessene Einspeisung.</p>}><CurrentPower installedKwp={power} weatherSource={weatherSource} frameless/></WidgetFrame>
       <AnnualGrowth years={years} stand={stand}/>
-      <DistrictEnergyWidgets data={monitor.energy}/>
+      <DistrictEnergyWidgets data={monitor.energy} name={name} regionId={regionId}/>
       <WidgetFrame title="Installierte Solarleistung nach Anlagentyp" kind="donut" help={<p>Summe der heute im Landkreis erfassten Solaranlagen. Batteriespeicher zählen nicht zur Solarleistung. Registerstand: {dashboardDate(stand)}.</p>}><ShareDonut values={groups}/></WidgetFrame>
       {groups.map(group=><ExportableWidgetFrame key={group.label} title={group.label} kind="composition" data-story-scheme="dark" widget={WIDGETS.gemeindeAnlagenraster} place={name} stand={dashboardDate(stand)} filename={`solar-check-anlagenraster-${regionId}`}><div className="monitor-widget-body"><MonitorCompositionChart story={{countComparison:{total,selected:group.count,label:group.label},values:[{label:group.label,value:group.count},{label:"Anteil an der Solarleistung",value:power?group.value/power*100:0}]}}/></div></ExportableWidgetFrame>)}
     </div>

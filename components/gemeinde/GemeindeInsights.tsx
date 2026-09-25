@@ -148,14 +148,14 @@ function StoryReader({name,stories,initial,visual,styles,onSelect,isOpen,onClose
 // Fit the whole original widget uniformly; its internal proportions stay untouched.
 /** Templates migrated to the shared export footer declare their sources in the template catalog. */
 /** Registry identity for templates migrated to the shared export pipeline; null keeps the legacy credit. */
-function storyExportWidget(story:StoryConcept):WidgetDef|null{const key=storyVisualTemplateDef(storyVisualTemplate(story))?.widget;return key?widgetFuerMeldung(WIDGETS[key],story.town,story.title):null;}
+function storyExportWidget(story:StoryConcept):WidgetDef|null{const def=storyVisualTemplateDef(storyVisualTemplate(story));if(!def?.widget||(def.exportProvenance&&!def.exportProvenance(story)))return null;return widgetFuerMeldung(WIDGETS[def.widget],story.town,story.title);}
 /**
  * Image-only footer from the shared export pipeline: brand line + own licence
  * (WidgetExportFooter) and the vertical source edge with licence and data date
  * (WidgetSourceEdge). The place is the story's own municipality, not the host page.
  */
 function StoryExportFooter({story,widget}:{story:StoryConcept;widget:WidgetDef}){
- return <div className="story-export-shared" data-sc-export-only="block"><WidgetSourceEdge widget={widget} stand={formatStoryDate(story.sourceDate??story.period)}/><WidgetExportFooter widget={widget} note={`Ort: ${story.town}`}/></div>;
+ return <><WidgetSourceEdge widget={widget} visible={false} spalten={widget.sources.length>1?2:1} stand={formatStoryDate(story.sourceDate??story.period)}/><div className="story-export-shared" data-sc-export-only="block"><WidgetExportFooter widget={widget} note={`Ort: ${story.town}`}/></div></>;
 }
 function StoryArtwork({story,visual,name,active}:any){
  const stage=useRef<HTMLDivElement>(null),canvas=useRef<HTMLDivElement>(null);
@@ -168,10 +168,12 @@ function StoryArtwork({story,visual,name,active}:any){
  const fit=()=>{const card=inner;if(!card)return;card.style.height='auto';const breite=outer.clientWidth,hoehe=outer.clientHeight;const eigen=card.firstElementChild as HTMLElement|null;const natur=eigen?.offsetHeight||card.offsetHeight||1;const faktor=Math.min(1,breite/(card.offsetWidth||breite),hoehe/natur);card.style.transform=`translate(-50%,-50%) scale(${faktor})`;};
  const observer=new ResizeObserver(fit);observer.observe(outer);if(inner.firstElementChild)observer.observe(inner.firstElementChild);fit();return()=>observer.disconnect();},[]);
  const shared=storyExportWidget(story);
+ // Room for the source edge outside the story width: one column per source, at most two.
+ const edge=shared?SOURCE_EDGE_WIDTH*(shared.sources.length>1?2:1)+8:0;
  return <div className="story-artwork-stage" ref={stage}><div ref={canvas} className="story-export-card" data-sc-export-css={shared
   // Migrated: default export palette (brightest stage; light Atlas scheme via EXPORT_BRIGHTEST_ATTR), source edge outside the story width.
-  ?`position:relative;transform:none;height:auto;min-height:0;background:var(--color-bg-page);border-radius:12px;display:block;padding-right:${SOURCE_EDGE_WIDTH+8}px;`
-  :'position:static;transform:none;height:auto;min-height:0;background:#08191c;border-radius:12px;display:block;'} data-export-edge={shared?SOURCE_EDGE_WIDTH+8:undefined} {...(shared?{[EXPORT_BRIGHTEST_ATTR]:''}:{})}>
+  ?`position:relative;transform:none;height:auto;min-height:0;background:var(--color-bg-page);border-radius:12px;display:block;padding-right:${edge}px;`
+  :'position:static;transform:none;height:auto;min-height:0;background:#08191c;border-radius:12px;display:block;'} data-export-edge={shared?edge:undefined} {...(shared?{[EXPORT_BRIGHTEST_ATTR]:''}:{})}>
  {visual(story,false,active&&foreground)}{shared?<StoryExportFooter story={story} widget={shared}/>:<div className="story-export-credit" data-sc-export-only="block">Solar Check · {name} · {formatStoryDate(story.sourceDate??story.period)}<br/>{mitLizenzangaben(story.sourceCaption??'Marktstammdatenregister · eigene Auswertung')}</div>}
  </div></div>;
 }

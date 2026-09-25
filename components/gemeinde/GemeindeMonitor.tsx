@@ -213,7 +213,15 @@ export function MonitorWidget({ item, paket }: { item: Any; paket: GemeindePaket
   const periodLabel = period === "current" ? "Heute" : new Date(period + "T12:00:00").toLocaleDateString("de-DE", { month: "long", year: "numeric" });
   const Frame = (exportKey ? ExportableWidgetFrame : WidgetFrame) as typeof WidgetFrame;
   const exportProps = exportKey
-    ? { widget: WIDGETS[exportKey], place: paket.name, stand: formatDate(selected?.end ?? paket.registerStand), stateLabel: `Anlagenbestand: ${periodLabel}`, filename: `solar-check-${item.template}-${paket.ags}` }
+    ? {
+        widget: WIDGETS[exportKey],
+        place: paket.name,
+        // Stock widgets: the chosen month end; others: the story's own data date.
+        stand: formatDate(hasStockPeriod ? (selected?.end ?? paket.registerStand) : (item.story.sourceDate ?? paket.registerStand)),
+        // Charts with their own selectors print their state themselves.
+        stateLabel: hasStockPeriod ? `Anlagenbestand: ${periodLabel}` : undefined,
+        filename: `solar-check-${item.template}-${paket.ags}`,
+      }
     : {};
   return (
     <Frame

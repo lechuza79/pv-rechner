@@ -39,7 +39,9 @@ export function approvedStoryVisual(story:StoryConcept):PostBild|null {
  * marks templates migrated to the shared export pipeline; the rest still carry
  * the story reader's legacy credit line until they are migrated.
  */
-export type StoryVisualTemplate={id:string;name:string;monitor?:{title?:string;kind:WidgetKind};widget?:keyof typeof WIDGETS};
+export type StoryVisualTemplate={id:string;name:string;monitor?:{title?:string;kind:WidgetKind};widget?:keyof typeof WIDGETS;
+ /** Only stories whose data really stems from the registry entry's sources use its footer; others keep the legacy credit. */
+ exportProvenance?:(story:StoryConcept)=>boolean};
 export const STORY_VISUAL_TEMPLATES:StoryVisualTemplate[]=[
  {id:'verlauf',name:'Monatlicher Zubau · Verlauf',monitor:{title:'Zubau pro Monat',kind:'time-series'}},
  {id:'electricity-value',name:'Kennzahl · Stromwert',monitor:{title:'Wert des Solarstroms',kind:'number'}},
@@ -50,7 +52,9 @@ export const STORY_VISUAL_TEMPLATES:StoryVisualTemplate[]=[
  {id:'umriss',name:'Gefüllte Umrisse'},
  {id:'anteilsdonut',name:'Anteilsdonut',monitor:{title:'Installierte Solarleistung nach Anlagentyp',kind:'donut'}},
  {id:'yield',name:'Ertragsvergleich'},
- {id:'energy-year',name:'Solar + Wind · Jahresprofil',monitor:{title:'Solar- und Windpotenzial im Jahresverlauf',kind:'radial'}},
+ {id:'energy-year',name:'Solar + Wind · Jahresprofil',monitor:{title:'Solar- und Windpotenzial im Jahresverlauf',kind:'radial'},widget:'gemeindeEnergieJahr',
+  // Older packages name the free Open-Meteo archive; the registry entry claims our ERA5 archive.
+  exportProvenance:story=>Boolean(story.energyYear?.sourceUrl?.startsWith('era5-archive:'))},
  {id:'radial',name:'Solar-Monatsrecap',monitor:{title:'Solarerzeugung im Tagesverlauf',kind:'radial'}},
  {id:'rank-month',name:'Monatliche Rangübersicht'},
 ];

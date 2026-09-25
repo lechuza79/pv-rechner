@@ -355,6 +355,25 @@ export const WIDGETS = {
     // No /embed route yet; the entry carries the export footer of monitor and story.
     embeddable: false,
   },
+  gemeindeEnergieJahr: {
+    // Template "energy-year": modelled solar (and wind) per day over one year,
+    // municipality and district monitor and stories. Weather from our ERA5
+    // archive, capacity from the register.
+    id: "gemeinde-energie-jahr",
+    title: "Solar- und Windpotenzial im Jahresverlauf",
+    kind: "chart",
+    exampleParams: { ags: BEISPIEL_GEMEINDE },
+    place: {
+      title: "Solar- und Windpotenzial in {ort} im Jahresverlauf",
+      shareText: "Solar und Wind in {ort}: jeder Tag eines Jahres, modelliert aus Wetter und Anlagenbestand – Solar Check",
+    },
+    shareUrl: `${SITE}/solar-atlas`,
+    shareText: "Solar und Wind über ein Jahr, Tag für Tag modelliert – Solar Check",
+    sources: [DATA_SOURCES.era5Archive, DATA_SOURCES.mastr],
+    cta: { label: "Eigene Anlage simulieren", href: "/pv-simulation" },
+    // No /embed route yet; the entry carries the export footer of monitor and story.
+    embeddable: false,
+  },
   regionAnlagentyp: {
     id: "region-anlagentyp",
     title: "Solarleistung eines Bundeslands nach Anlagentyp",

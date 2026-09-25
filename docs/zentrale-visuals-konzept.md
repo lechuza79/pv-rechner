@@ -145,6 +145,27 @@ reviews visual fidelity against the approved design; operator decides design que
 - Found for later stages: homepage story strip uses a prebuilt bundle with its own chart
   copies; legacy (not yet migrated) story PNGs stay dark until migrated.
 
+## 4c. Stage 2: `energy-year` (26.09.2026)
+
+- One drawing `components/charts/EnergyYearRadial.tsx`; the monitor (year + energy
+  selectors) and the story (header, day selector, footer) keep their wrappers and
+  their accepted geometry as explicit layouts (viewBox, 20 MWh scale floor, figure
+  formats, tooltips). Identical day bars for identical data (test).
+- Registry entry `gemeindeEnergieJahr` (ERA5 archive + MaStR), referenced by the
+  template; story export uses it only for data from our ERA5 archive
+  (`exportProvenance`), older Open-Meteo packages keep the legacy credit.
+- Monitor (municipality + district) through `ExportableWidgetFrame`; selectors
+  ExportIgnore'd, year/energy type printed, hover-only legend forced into the image.
+- Shared pipeline fixes found on the way: the source edge was hidden on the page and
+  could not fit its type (two sources were cut at both ends) → laid out invisibly on
+  the page, two columns for two sources; export CSS on the CAPTURED node itself was
+  never applied (`applyExportMarkers` only saw descendants) → root included. No
+  other widget carries export CSS on its root (checked all `chartRef` hosts).
+- Known, not changed: the district year profile draws some wind days beyond the outer
+  ring (also live); in the image they reach the source column.
+- Pre-existing, noted: story layout writes MWh/GWh by hand (not the unit formatter);
+  share text of the registry entry says "Solar und Wind" also for towns without wind.
+
 ## 5. Open decisions for root / operator
 
 1. **Export colour scheme**: existing rule renders images on the brightest day stage; the

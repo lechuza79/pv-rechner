@@ -1,7 +1,7 @@
 "use client";
 import {useEffect, useState, type ComponentProps, type ReactNode, type Ref} from 'react';
 import {WidgetFrame} from './WidgetFrame';
-import {ExportIgnore, ExportOnly, WidgetExportFooter, WidgetFooter, WidgetSourceEdge} from '../WidgetExport';
+import {ExportIgnore, ExportOnly, SOURCE_EDGE_WIDTH, WidgetExportFooter, WidgetFooter, WidgetSourceEdge} from '../WidgetExport';
 import {ExportNotesProvider} from '../export-notes';
 import {useChartExport} from '../../lib/useChartExport';
 import {widgetForPlace, type WidgetDef} from '../../lib/widget-registry';
@@ -48,7 +48,9 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
     shareUrl: def.shareUrl,
     mode: 'node',
   });
-  const exportCss = 'position:relative;';
+  // Image only: room for the source edge, so it never overlaps chart labels at the card edge.
+  const edgeColumns = def.sources.length > 1 ? 2 : 1;
+  const exportCss = `position:relative;padding-right:${SOURCE_EDGE_WIDTH * edgeColumns + 6}px;box-sizing:border-box;`;
   return <ExportNotesProvider>
     <WidgetFrame
       {...frame}
@@ -61,7 +63,9 @@ export function ExportableWidgetFrame({widget, place, stand, stateLabel, setting
       </>}
       footer={<>
         <div className="sc-widget-actions"><WidgetFooter widget={def} chartExport={chartExport} onsite showCta={false} /></div>
-        <ExportOnly><WidgetSourceEdge widget={def} stand={stand} /></ExportOnly>
+        {/* Laid out (invisible) on the page so it can fit its type to the card height;
+            the article is the containing block (container-type). Two sources → two columns. */}
+        <WidgetSourceEdge widget={def} stand={stand} visible={false} spalten={edgeColumns} />
         <ExportOnly style={{padding: "0 var(--widget-padding) var(--widget-padding)"}}><WidgetExportFooter widget={def} note={`Ort: ${place}`} /></ExportOnly>
       </>}
     >{children}</WidgetFrame>
