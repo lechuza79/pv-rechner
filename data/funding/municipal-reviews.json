@@ -64403,5 +64403,439 @@
         "evidenceUrl": "https://www.gemeinde-isenbuettel.de/Rat-Verwaltung/Wissenswertes/Richtlinie-zur-F%C3%B6rderung-der-Ansiedlung-von-%C3%84rztinnen-und-%C3%84rzten.php?object=tx,4149.587.1"
       }
     ]
+  },
+  {
+    "regionId": "03151010",
+    "name": "Groß Oesingen",
+    "checkedAt": "2026-09-25T20:25:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Groß Oesingen gehört zur Samtgemeinde Wesendorf; deren Website trägt die Gemeindeseiten.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Groß Oesingen noch die Samtgemeinde Wesendorf führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; Förderung für Private dort nur über die Dorferneuerung/Dorfentwicklung des Landes. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche wesendorf.de 25.09.2026: Photovoltaik (56 Treffer, nur Bauleitplanung/Solarparks und Mitteilungsblätter), Balkonkraftwerk (2 Treffer: Erfahrungsbericht im Mitteilungsblatt 06/2023, kein Zuschuss), Förderprogramm (6 Treffer: Dorferneuerung, ÖPNV-Haltestellen), Zuschuss Solar (Solar-Straßenleuchten der Gemeinde Ummern), Wärmepumpe (Feuerwehrhaus Betzhorn), Stromspeicher (0)",
+      "Navigation der Samtgemeinde und aller Gemeindeseiten am 25.09.2026 durchgesehen: keine Rubrik Klimaschutz/Energie, nur Jugendförderung und Dorferneuerung",
+      "Websuche „Samtgemeinde Wesendorf Förderung Photovoltaik Balkonkraftwerk Zuschuss“ (25.09.2026): kein kommunales Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wesendorf.de/?qs=Photovoltaik",
+        "finding": "Volltextsuche der Samtgemeinde am 25.09.2026: kein Treffer zu einem Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; einziger Balkonkraftwerk-Text ist ein Erfahrungsbericht eines Bürgers in der „Umweltecke“ des Mitteilungsblatts 06/2023."
+      },
+      {
+        "url": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/",
+        "finding": "Übersicht der sechs Mitgliedsgemeinden am 25.09.2026 gelesen: Unterseiten zu Geschichte, Satzungen, Dorferneuerung, Wärmeversorgung Dorfmitte Wahrenholz (Gemeindeprojekt) — kein Förderangebot für Private im Energiebereich."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft, Haushaltsansatz ab 2025 null; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03151026",
+    "name": "Schönewörde",
+    "checkedAt": "2026-09-25T20:25:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Schönewörde gehört zur Samtgemeinde Wesendorf; deren Website trägt die Gemeindeseiten.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Schönewörde noch die Samtgemeinde Wesendorf führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; Förderung für Private dort nur über die Dorferneuerung/Dorfentwicklung des Landes. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche wesendorf.de 25.09.2026: Photovoltaik (56 Treffer, nur Bauleitplanung/Solarparks und Mitteilungsblätter), Balkonkraftwerk (2 Treffer: Erfahrungsbericht im Mitteilungsblatt 06/2023, kein Zuschuss), Förderprogramm (6 Treffer: Dorferneuerung, ÖPNV-Haltestellen), Zuschuss Solar (Solar-Straßenleuchten der Gemeinde Ummern), Wärmepumpe (Feuerwehrhaus Betzhorn), Stromspeicher (0)",
+      "Navigation der Samtgemeinde und aller Gemeindeseiten am 25.09.2026 durchgesehen: keine Rubrik Klimaschutz/Energie, nur Jugendförderung und Dorferneuerung",
+      "Websuche „Samtgemeinde Wesendorf Förderung Photovoltaik Balkonkraftwerk Zuschuss“ (25.09.2026): kein kommunales Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wesendorf.de/?qs=Photovoltaik",
+        "finding": "Volltextsuche der Samtgemeinde am 25.09.2026: kein Treffer zu einem Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; einziger Balkonkraftwerk-Text ist ein Erfahrungsbericht eines Bürgers in der „Umweltecke“ des Mitteilungsblatts 06/2023."
+      },
+      {
+        "url": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/",
+        "finding": "Übersicht der sechs Mitgliedsgemeinden am 25.09.2026 gelesen: Unterseiten zu Geschichte, Satzungen, Dorferneuerung, Wärmeversorgung Dorfmitte Wahrenholz (Gemeindeprojekt) — kein Förderangebot für Private im Energiebereich."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft, Haushaltsansatz ab 2025 null; im Katalog als ausgeschöpft geführt."
+      },
+      {
+        "url": "https://www.wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/Gemeinde-Sch%C3%B6new%C3%B6rde/F%C3%B6rderprojekte.php?object=tx,4096.16900.1&NavID=4096.604",
+        "finding": "Am 25.09.2026 abgerufen: Seite „Dorferneuerung Schönewörde“ am 25.09.2026 gelesen: geförderte öffentliche Projekte (ELER/ZILE) und Anträge von Privatpersonen zur Wiederherstellung ortsbildprägender Bausubstanz — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe."
+      },
+      {
+        "url": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/Dorfentwicklung-Gro%C3%9F-Oesingen-und-Ummern/",
+        "finding": "Am 25.09.2026 abgerufen: Adresse leitet am 25.09.2026 auf die Startseite der Samtgemeinde um; die Dorfentwicklung Groß Oesingen/Ummern ist ein Landesprogramm für Bausubstanz, kein kommunaler Energiezuschuss."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse"
+      },
+      {
+        "url": "wesendorf.de/Rathaus-Verwaltung/Gemeinden/Gemeinde-Sch%C3%B6new%C3%B6rde/F%C3%B6rderprojekte.php?object=tx,4096.16900.1&amp;NavID=4096.604",
+        "disposition": "reviewed",
+        "reason": "Seite „Dorferneuerung Schönewörde“ am 25.09.2026 gelesen: geförderte öffentliche Projekte (ELER/ZILE) und Anträge von Privatpersonen zur Wiederherstellung ortsbildprägender Bausubstanz — kein Zuschuss für PV, Speicher, Balkonkraftwerk oder Wärmepumpe.",
+        "evidenceUrl": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/Gemeinde-Sch%C3%B6new%C3%B6rde/F%C3%B6rderprojekte.php?object=tx,4096.16900.1&NavID=4096.604"
+      },
+      {
+        "url": "wesendorf.de/Service/Dorfregion-Gro%C3%9F-Oesingen-und-Ummern-F%C3%B6rdermittel-f%C3%BCr-Ihr-Haus.php",
+        "disposition": "reviewed",
+        "reason": "Adresse leitet am 25.09.2026 auf die Startseite der Samtgemeinde um; die Dorfentwicklung Groß Oesingen/Ummern ist ein Landesprogramm für Bausubstanz, kein kommunaler Energiezuschuss.",
+        "evidenceUrl": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/Dorfentwicklung-Gro%C3%9F-Oesingen-und-Ummern/"
+      },
+      {
+        "url": "wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03151033",
+    "name": "Ummern",
+    "checkedAt": "2026-09-25T20:25:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Ummern gehört zur Samtgemeinde Wesendorf; deren Website trägt die Gemeindeseiten.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Ummern noch die Samtgemeinde Wesendorf führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; Förderung für Private dort nur über die Dorferneuerung/Dorfentwicklung des Landes. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche wesendorf.de 25.09.2026: Photovoltaik (56 Treffer, nur Bauleitplanung/Solarparks und Mitteilungsblätter), Balkonkraftwerk (2 Treffer: Erfahrungsbericht im Mitteilungsblatt 06/2023, kein Zuschuss), Förderprogramm (6 Treffer: Dorferneuerung, ÖPNV-Haltestellen), Zuschuss Solar (Solar-Straßenleuchten der Gemeinde Ummern), Wärmepumpe (Feuerwehrhaus Betzhorn), Stromspeicher (0)",
+      "Navigation der Samtgemeinde und aller Gemeindeseiten am 25.09.2026 durchgesehen: keine Rubrik Klimaschutz/Energie, nur Jugendförderung und Dorferneuerung",
+      "Websuche „Samtgemeinde Wesendorf Förderung Photovoltaik Balkonkraftwerk Zuschuss“ (25.09.2026): kein kommunales Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wesendorf.de/?qs=Photovoltaik",
+        "finding": "Volltextsuche der Samtgemeinde am 25.09.2026: kein Treffer zu einem Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; einziger Balkonkraftwerk-Text ist ein Erfahrungsbericht eines Bürgers in der „Umweltecke“ des Mitteilungsblatts 06/2023."
+      },
+      {
+        "url": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/",
+        "finding": "Übersicht der sechs Mitgliedsgemeinden am 25.09.2026 gelesen: Unterseiten zu Geschichte, Satzungen, Dorferneuerung, Wärmeversorgung Dorfmitte Wahrenholz (Gemeindeprojekt) — kein Förderangebot für Private im Energiebereich."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft, Haushaltsansatz ab 2025 null; im Katalog als ausgeschöpft geführt."
+      },
+      {
+        "url": "https://www.wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/Dorfentwicklung-Gro%C3%9F-Oesingen-und-Ummern/",
+        "finding": "Am 25.09.2026 abgerufen: Adresse leitet am 25.09.2026 auf die Startseite der Samtgemeinde um; die Dorfentwicklung Groß Oesingen/Ummern ist ein Landesprogramm für Bausubstanz, kein kommunaler Energiezuschuss."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse"
+      },
+      {
+        "url": "wesendorf.de/Service/Dorfregion-Gro%C3%9F-Oesingen-und-Ummern-F%C3%B6rdermittel-f%C3%BCr-Ihr-Haus.php",
+        "disposition": "reviewed",
+        "reason": "Adresse leitet am 25.09.2026 auf die Startseite der Samtgemeinde um; die Dorfentwicklung Groß Oesingen/Ummern ist ein Landesprogramm für Bausubstanz, kein kommunaler Energiezuschuss.",
+        "evidenceUrl": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/Dorfentwicklung-Gro%C3%9F-Oesingen-und-Ummern/"
+      },
+      {
+        "url": "wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03151035",
+    "name": "Wagenhoff",
+    "checkedAt": "2026-09-25T20:25:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Wagenhoff gehört zur Samtgemeinde Wesendorf; deren Website trägt die Gemeindeseiten.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Wagenhoff noch die Samtgemeinde Wesendorf führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; Förderung für Private dort nur über die Dorferneuerung/Dorfentwicklung des Landes. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche wesendorf.de 25.09.2026: Photovoltaik (56 Treffer, nur Bauleitplanung/Solarparks und Mitteilungsblätter), Balkonkraftwerk (2 Treffer: Erfahrungsbericht im Mitteilungsblatt 06/2023, kein Zuschuss), Förderprogramm (6 Treffer: Dorferneuerung, ÖPNV-Haltestellen), Zuschuss Solar (Solar-Straßenleuchten der Gemeinde Ummern), Wärmepumpe (Feuerwehrhaus Betzhorn), Stromspeicher (0)",
+      "Navigation der Samtgemeinde und aller Gemeindeseiten am 25.09.2026 durchgesehen: keine Rubrik Klimaschutz/Energie, nur Jugendförderung und Dorferneuerung",
+      "Websuche „Samtgemeinde Wesendorf Förderung Photovoltaik Balkonkraftwerk Zuschuss“ (25.09.2026): kein kommunales Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wesendorf.de/?qs=Photovoltaik",
+        "finding": "Volltextsuche der Samtgemeinde am 25.09.2026: kein Treffer zu einem Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; einziger Balkonkraftwerk-Text ist ein Erfahrungsbericht eines Bürgers in der „Umweltecke“ des Mitteilungsblatts 06/2023."
+      },
+      {
+        "url": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/",
+        "finding": "Übersicht der sechs Mitgliedsgemeinden am 25.09.2026 gelesen: Unterseiten zu Geschichte, Satzungen, Dorferneuerung, Wärmeversorgung Dorfmitte Wahrenholz (Gemeindeprojekt) — kein Förderangebot für Private im Energiebereich."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft, Haushaltsansatz ab 2025 null; im Katalog als ausgeschöpft geführt."
+      },
+      {
+        "url": "https://www.wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/Dorfentwicklung-Gro%C3%9F-Oesingen-und-Ummern/",
+        "finding": "Am 25.09.2026 abgerufen: Adresse leitet am 25.09.2026 auf die Startseite der Samtgemeinde um; die Dorfentwicklung Groß Oesingen/Ummern ist ein Landesprogramm für Bausubstanz, kein kommunaler Energiezuschuss."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse"
+      },
+      {
+        "url": "wesendorf.de/Service/Dorfregion-Gro%C3%9F-Oesingen-und-Ummern-F%C3%B6rdermittel-f%C3%BCr-Ihr-Haus.php",
+        "disposition": "reviewed",
+        "reason": "Adresse leitet am 25.09.2026 auf die Startseite der Samtgemeinde um; die Dorfentwicklung Groß Oesingen/Ummern ist ein Landesprogramm für Bausubstanz, kein kommunaler Energiezuschuss.",
+        "evidenceUrl": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/Dorfentwicklung-Gro%C3%9F-Oesingen-und-Ummern/"
+      },
+      {
+        "url": "wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03151036",
+    "name": "Wahrenholz",
+    "checkedAt": "2026-09-25T20:25:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Wahrenholz gehört zur Samtgemeinde Wesendorf; deren Website trägt die Gemeindeseiten.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Wahrenholz noch die Samtgemeinde Wesendorf führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; Förderung für Private dort nur über die Dorferneuerung/Dorfentwicklung des Landes. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche wesendorf.de 25.09.2026: Photovoltaik (56 Treffer, nur Bauleitplanung/Solarparks und Mitteilungsblätter), Balkonkraftwerk (2 Treffer: Erfahrungsbericht im Mitteilungsblatt 06/2023, kein Zuschuss), Förderprogramm (6 Treffer: Dorferneuerung, ÖPNV-Haltestellen), Zuschuss Solar (Solar-Straßenleuchten der Gemeinde Ummern), Wärmepumpe (Feuerwehrhaus Betzhorn), Stromspeicher (0)",
+      "Navigation der Samtgemeinde und aller Gemeindeseiten am 25.09.2026 durchgesehen: keine Rubrik Klimaschutz/Energie, nur Jugendförderung und Dorferneuerung",
+      "Websuche „Samtgemeinde Wesendorf Förderung Photovoltaik Balkonkraftwerk Zuschuss“ (25.09.2026): kein kommunales Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wesendorf.de/?qs=Photovoltaik",
+        "finding": "Volltextsuche der Samtgemeinde am 25.09.2026: kein Treffer zu einem Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; einziger Balkonkraftwerk-Text ist ein Erfahrungsbericht eines Bürgers in der „Umweltecke“ des Mitteilungsblatts 06/2023."
+      },
+      {
+        "url": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/",
+        "finding": "Übersicht der sechs Mitgliedsgemeinden am 25.09.2026 gelesen: Unterseiten zu Geschichte, Satzungen, Dorferneuerung, Wärmeversorgung Dorfmitte Wahrenholz (Gemeindeprojekt) — kein Förderangebot für Private im Energiebereich."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft, Haushaltsansatz ab 2025 null; im Katalog als ausgeschöpft geführt."
+      },
+      {
+        "url": "https://www.wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/Dorfentwicklung-Gro%C3%9F-Oesingen-und-Ummern/",
+        "finding": "Am 25.09.2026 abgerufen: Adresse leitet am 25.09.2026 auf die Startseite der Samtgemeinde um; die Dorfentwicklung Groß Oesingen/Ummern ist ein Landesprogramm für Bausubstanz, kein kommunaler Energiezuschuss."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      },
+      {
+        "url": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "finding": "Am 25.09.2026 abgerufen: Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug."
+      }
+    ],
+    "sources": [
+      {
+        "url": "wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Familie/Jugendf%C3%B6rderung/Zuschuss-f%C3%BCr-Schwimmkurse"
+      },
+      {
+        "url": "wesendorf.de/Service/Dorfregion-Gro%C3%9F-Oesingen-und-Ummern-F%C3%B6rdermittel-f%C3%BCr-Ihr-Haus.php",
+        "disposition": "reviewed",
+        "reason": "Adresse leitet am 25.09.2026 auf die Startseite der Samtgemeinde um; die Dorfentwicklung Groß Oesingen/Ummern ist ein Landesprogramm für Bausubstanz, kein kommunaler Energiezuschuss.",
+        "evidenceUrl": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/Dorfentwicklung-Gro%C3%9F-Oesingen-und-Ummern/"
+      },
+      {
+        "url": "wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Richtlinie-%C3%BCber-die-Gew%C3%A4hrung-eines-Zuschusses-an-Mitglieder-des-aktiven-Feuer-wehrdienstes-f%C3%BCr-den-Erwerb-der-erforderlichen-Fahrerlaubnis-zum-Zwecke-des-F%C3%BCh-rens-von-Feuerwehreinsatzfahrzeuge-der-Samtgemeinde-Wesendorf-vom-12-12-2024.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Richtlinien-der-Samtgemeinde-Wesendorf-%C3%BCber-die-Gew%C3%A4hrung-von-Zusch%C3%BCssen-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse-noch-bis-Ende-des-Jahres-einreichen-.php"
+      },
+      {
+        "url": "wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php",
+        "disposition": "reviewed",
+        "reason": "Fachfremde Förderung der Samtgemeinde (Schwimmkurse bzw. Führerschein für Feuerwehrleute), kein Energiebezug.",
+        "evidenceUrl": "https://www.wesendorf.de/Service/Zusch%C3%BCsse-f%C3%BCr-Anf%C3%A4nger-Schwimmkurse.php"
+      }
+    ]
+  },
+  {
+    "regionId": "03151038",
+    "name": "Wesendorf",
+    "checkedAt": "2026-09-25T20:25:00Z",
+    "recheckAt": "2026-12-24T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Wesendorf gehört zur Samtgemeinde Wesendorf; deren Website trägt die Gemeindeseiten.",
+    "outcome": "keine-passende-foerderung",
+    "conclusion": "Weder Wesendorf noch die Samtgemeinde Wesendorf führt einen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; Förderung für Private dort nur über die Dorferneuerung/Dorfentwicklung des Landes. Der Balkonkraftwerk-Zuschuss des Landkreises Gifhorn ist ausgeschöpft und im Katalog so geführt. Stand 25.09.2026.",
+    "searches": [
+      "Volltextsuche wesendorf.de 25.09.2026: Photovoltaik (56 Treffer, nur Bauleitplanung/Solarparks und Mitteilungsblätter), Balkonkraftwerk (2 Treffer: Erfahrungsbericht im Mitteilungsblatt 06/2023, kein Zuschuss), Förderprogramm (6 Treffer: Dorferneuerung, ÖPNV-Haltestellen), Zuschuss Solar (Solar-Straßenleuchten der Gemeinde Ummern), Wärmepumpe (Feuerwehrhaus Betzhorn), Stromspeicher (0)",
+      "Navigation der Samtgemeinde und aller Gemeindeseiten am 25.09.2026 durchgesehen: keine Rubrik Klimaschutz/Energie, nur Jugendförderung und Dorferneuerung",
+      "Websuche „Samtgemeinde Wesendorf Förderung Photovoltaik Balkonkraftwerk Zuschuss“ (25.09.2026): kein kommunales Programm",
+      "Landkreis Gifhorn: Richtlinie und Haushaltsplan am 23.09.2026 gelesen (Leiferde-Prüfung)"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.wesendorf.de/?qs=Photovoltaik",
+        "finding": "Volltextsuche der Samtgemeinde am 25.09.2026: kein Treffer zu einem Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen privater Haushalte; einziger Balkonkraftwerk-Text ist ein Erfahrungsbericht eines Bürgers in der „Umweltecke“ des Mitteilungsblatts 06/2023."
+      },
+      {
+        "url": "https://www.wesendorf.de/Rathaus-Verwaltung/Gemeinden/",
+        "finding": "Übersicht der sechs Mitgliedsgemeinden am 25.09.2026 gelesen: Unterseiten zu Geschichte, Satzungen, Dorferneuerung, Wärmeversorgung Dorfmitte Wahrenholz (Gemeindeprojekt) — kein Förderangebot für Private im Energiebereich."
+      },
+      {
+        "url": "https://openrathaus.gifhorn.de/dienstleistungen/-/egov-bis-detail/dokument/55840/download?_9_WAR_vrportlet_priv_r_p_action=bisview-dienstleistung-show",
+        "finding": "Kreisebene Gifhorn am 23.09.2026 im Volltext geklärt (siehe Leiferde): Balkonkraftwerk-Zuschuss des Landkreises ist ausgeschöpft, Haushaltsansatz ab 2025 null; im Katalog als ausgeschöpft geführt."
+      }
+    ],
+    "sources": []
   }
 ]
