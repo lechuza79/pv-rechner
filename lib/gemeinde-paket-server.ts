@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { brotliDecompressSync } from "node:zlib";
 import { GEMEINDE_PAKET_VERSION, type GemeindePaket } from "./gemeinde-paket";
-import { DB_SOFT_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
+import { DB_READ_TIMEOUT_MS, withDbTimeout } from "./db-timeout";
 import { ATLAS_DATEN_TAG } from "./atlas-revalidate-routen";
 
 /**
@@ -66,7 +66,11 @@ export async function ladeGemeindePaket(ags: string): Promise<GemeindePaket | nu
         next: { revalidate: 86400, tags: [ATLAS_DATEN_TAG] },
       }),
       `gemeinde-paket/${ags}`,
-      DB_SOFT_READ_TIMEOUT_MS,
+      // The full budget, not the soft one: this read has no fallback — a
+      // timeout fails the render, and on a first render (nothing in the CDN
+      // yet) the visitor gets a 500. Five such 500s in 24 h on 24.09.2026,
+      // each a cold render of a different town, none a storage outage.
+      DB_READ_TIMEOUT_MS,
     );
     // Supabase Storage answers a missing object with 400 or 404.
     if (res.status === 400 || res.status === 404) return null;
