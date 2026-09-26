@@ -400,6 +400,7 @@ body .wp-product-funded-price strong small{font-family:var(--result-font-body);f
 body .wp-product-package-note{margin:0 0 12px;font:400 var(--result-type-ui)/1.6 var(--result-font-body);color:var(--color-text-secondary)}
 body .wp-product-trust{margin-top:20px}
 body .wp-reference-picker{display:inline-flex;position:relative;max-width:calc(100% - 30px);min-width:0}
+body .wp-reference-picker>span{min-width:0;max-width:100%}
 body .wp-reference-picker>[data-icon="chevron-down"]{position:absolute;right:8px;top:50%;transform:translateY(-50%);pointer-events:none}
 body .wp-reference-inline .wp-reference-picker select{max-width:100%;padding-right:26px;box-sizing:border-box}
 body .wp-result-page .wp-result-hero>.wp-profit-comparison{width:100%;max-width:none;box-sizing:border-box}
