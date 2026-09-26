@@ -141,7 +141,10 @@ reviews visual fidelity against the approved design; operator decides design que
   capture marker; two sabotages red), e2e widget-export "Gemeinde-Monitor: Anlagenraster"
   (sabotage without the brightest marker red), landkreis-vorschau arc assertion updated
   (it asserted the pre-arc round-cap circle).
-- Not covered: editorial V2 page not rendered (admin session needed; see status file).
+- Editorial V2: checked visually by the Codex coordinator in its logged-in in-app
+  browser (Höchberg, composition, year profile, month recap incl. day change,
+  play, pause, reset); nothing saved or published. No frozen before-state exists
+  for the editorial, so no pixel-equality claim there.
 - Found for later stages: homepage story strip uses a prebuilt bundle with its own chart
   copies; legacy (not yet migrated) story PNGs stay dark until migrated.
 
@@ -161,8 +164,10 @@ reviews visual fidelity against the approved design; operator decides design que
   the page, two columns for two sources; export CSS on the CAPTURED node itself was
   never applied (`applyExportMarkers` only saw descendants) → root included. No
   other widget carries export CSS on its root (checked all `chartRef` hosts).
-- Known, not changed: the district year profile draws some wind days beyond the outer
-  ring (also live); in the image they reach the source column.
+- Corrected finding: an earlier note said district wind days pass the outer ring and
+  reach the source column. Wrong — the scale is ceil(peak/20)*20, the drawing stays
+  within radius 247 of the 284 half-viewBox; the reserved source lane is never
+  reached (checked in the district 2025 PNG).
 - Pre-existing, noted: story layout writes MWh/GWh by hand (not the unit formatter);
   share text of the registry entry says "Solar und Wind" also for towns without wind.
 
@@ -181,9 +186,22 @@ reviews visual fidelity against the approved design; operator decides design que
   district) via `ExportableWidgetFrame`; month selector and day/playback controls
   ExportIgnore'd, month (and chosen day) printed.
 
+## 4e. Header tile (compact month recap) and remaining visible deviations (26.09.2026)
+
+- Header tile `/embed/gemeinde/<ags>/kopf?widget=radial`: rendered before (9276c7c3
+  wrappers, verified the shared renderer was NOT in the served code) and after
+  (verified it WAS), desktop 1440 and mobile 375, four identical phases (reduced
+  motion; page clock frozen and advanced 100 / 2300 / 4900 ms; CSS animations
+  settled): 0 px difference in all 8; repeat capture also 0 px.
+  Captured as the tile page itself (white, without the host page's dark hero).
+- Remaining visible deviation (intended, not pixel-identical): on the district page
+  at desktop width the month recap card is stretched to its row; the new export
+  action row now uses its former empty space, so the day controls sit higher.
+- Decided (not open anymore): exports use the brightest stage by default (Atlas
+  visuals via the light Atlas scheme); the story credit is replaced by the shared
+  export footer for migrated templates.
+
 ## 5. Open decisions for root / operator
 
-1. **Export colour scheme**: existing rule renders images on the brightest day stage; the
-   atlas visuals are designed dark. Keep dark as the defined identity for atlas visuals
-   (recommended — the approved design is dark) or force light?
-2. Story-reader credit line → replace by the shared footer (recommended; slight visual change in the PNG only).
+- None technical. Visible user acceptance of the local result is pending before merge.
+  (Export palette and story credit were decided by root on 25.09.2026; see 4e.)
