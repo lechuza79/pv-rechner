@@ -1,15 +1,14 @@
 'use client';
-import {useEffect,useId,useState} from 'react';
+import {useEffect,useState} from 'react';
 import {IconChevronLeft,IconChevronRight,IconPause,IconPlay,IconRefresh} from '../Icons';
 import type {SolarMonth} from '../../lib/story-monthly-solar';
-import {radialPreviewViewBox} from '../../lib/story-radial-viewbox';
+import {MonthlySolarRadial} from '../charts/MonthlySolarRadial';
+import {EXPORT_IGNORE_ATTR,EXPORT_ONLY_ATTR} from '../../lib/export-markers';
 import {formatStoryDate} from '../../lib/story-format';
 import {WidgetSetting} from '../dashboard/WidgetSetting';
 import styles from './MonitorMonthlySolarChart.module.css';
-import {energieTeile,leistungTeile} from '../../lib/gemeinde-einheiten';
 
 function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=false,paused=false,startDelayMs=0,onFinished,onTag}:{data:SolarMonth;months:SolarMonth[];onMonthChange:(value:string)=>void;compact?:boolean;autoPlay?:boolean;paused?:boolean;startDelayMs?:number;onFinished?:()=>void;onTag?:(datum:string|null)=>void}) {
- const gradientId=useId();
  const [selected,setSelected]=useState(data.peakDay),[focused,setFocused]=useState(false),[hovered,setHovered]=useState<string|null>(null),[playing,setPlaying]=useState(false),[frame,setFrame]=useState<number|null>(null);
  const firstDate=data.days[0]?.date;
  // Der Lauf beginnt mit einer kurzen Ruhe: Ohne sie steht die Kachel im
@@ -19,40 +18,18 @@ function MonthlySolarProfile({data,months,onMonthChange,compact=false,autoPlay=f
  useEffect(()=>{if(!autoPlay||!firstDate){setPlaying(false);return;}const motion=window.matchMedia('(prefers-reduced-motion: reduce)');if(motion.matches){setPlaying(false);onFinished?.();return;}setHovered(null);setFrame(null);setSelected(firstDate);setFocused(true);const start=window.setTimeout(()=>{setFrame(0);setPlaying(true)},startDelayMs);const stop=()=>{if(motion.matches)setPlaying(false)};motion.addEventListener('change',stop);return()=>{window.clearTimeout(start);motion.removeEventListener('change',stop)}},[autoPlay,firstDate,startDelayMs,onFinished]);
  const displayDate=focused?selected:hovered,active=data.days.find(day=>day.date===displayDate)??data.days[0],hasActive=displayDate!==null;
  const gezeigterTag=hasActive?active:null;
- const mitte=gezeigterTag?energieTeile(gezeigterTag.mwh):energieTeile(data.totalMwh);
  // Der Kopf der Kachel nennt den Tag, der gerade gezeichnet wird.
  useEffect(()=>{onTag?.(gezeigterTag?.date??null)},[gezeigterTag?.date,onTag]);
  const chooseDay=(date:string)=>{setPlaying(false);setFrame(null);setHovered(null);setSelected(date);setFocused(true)};
  const clearDay=()=>{setPlaying(false);setFrame(null);setHovered(null);setFocused(false)};
  useEffect(()=>{if(!playing||paused||frame===null)return;const timer=window.setTimeout(()=>{if(frame>=data.days.length-1){setPlaying(false);setFrame(null);setFocused(false);onFinished?.();return;}setFrame(frame+1);setSelected(data.days[frame+1].date)},650);return()=>window.clearTimeout(timer)},[playing,paused,frame,data.days,onFinished]);
  const togglePlayback=()=>{if(playing){setPlaying(false);return;}const nextFrame=frame??0;setHovered(null);setFrame(nextFrame);setSelected(data.days[nextFrame].date);setFocused(true);setPlaying(true)};
- const max=Math.max(...data.days.flatMap(day=>day.mw),Number.EPSILON);
- const point=(hour:number,value:number)=>{const angle=hour/24*Math.PI*2+Math.PI/2,r=90+value/max*150;return [280+Math.cos(angle)*r,280+Math.sin(angle)*r]};
- const path=(values:number[])=>{const points=values.map((value,i)=>point(i+.5,value));const coordinate=(p:number[])=>`${p[0].toFixed(2)},${p[1].toFixed(2)}`;const corners=points.map((current,i)=>{const previous=points[(i+points.length-1)%points.length],next=points[(i+1)%points.length];const toward=(neighbor:number[])=>{const distance=Math.hypot(neighbor[0]-current[0],neighbor[1]-current[1]),fraction=distance===0?0:Math.min(2/distance,.25);return current.map((value,axis)=>value+(neighbor[axis]-value)*fraction)};return {current,entry:toward(previous),exit:toward(next)}});return corners.map((corner,i)=>`${i?'L':'M'}${coordinate(corner.entry)} Q${coordinate(corner.current)} ${coordinate(corner.exit)}`).join(' ')+' Z'};
- const chartViewBox=compact?radialPreviewViewBox(data.days.flatMap(day=>day.mw.map((value,i)=>point(i+.5,value))),280,90):'0 0 560 560';const [viewX,viewY,viewSize]=chartViewBox.split(' ').map(Number);const backdropX=compact?280-viewSize:viewX,backdropY=compact?280-viewSize:viewY,backdropSize=compact?viewSize*2:viewSize;
  const selectedIndex=data.days.findIndex(day=>day.date===selected);
  const shiftDay=(direction:number)=>{const index=selectedIndex>=0?selectedIndex:data.days.findIndex(day=>day.date===data.peakDay);const next=Math.max(0,Math.min(data.days.length-1,index+direction));if(data.days[next])chooseDay(data.days[next].date)};
- const controls=<div className={styles.settings}><WidgetSetting hideLabel label="Monat" value={data.month} onChange={onMonthChange} stepper options={months.map(item=>({value:item.month,label:formatStoryDate(item.month)}))}/></div>;
- const footer=<div className={styles.footer}><div className={styles.dayControls}><button type="button" aria-label="Vorheriger Tag" onClick={()=>shiftDay(-1)} disabled={selectedIndex<=0}><IconChevronLeft size={16}/></button><button type="button" className={styles.bestDay} data-selected={focused||undefined} onClick={()=>chooseDay(data.peakDay)}>{focused&&active?<><span>Bester Tag</span><small>{formatStoryDate(active.date)}</small></>:<span>Bester Tag</span>}</button><button type="button" aria-label="Nächster Tag" onClick={()=>shiftDay(1)} disabled={selectedIndex<0||selectedIndex>=data.days.length-1}><IconChevronRight size={16}/></button></div><div className={styles.transport}><button type="button" aria-label={playing?'Wiedergabe pausieren':'Monat abspielen'} aria-pressed={playing} onClick={togglePlayback}>{playing?<IconPause size={14}/>:<IconPlay size={14}/>}</button><button type="button" aria-label="Zurücksetzen" onClick={clearDay}><IconRefresh size={14}/></button></div></div>;
- return <div data-solar-month-preview={compact?true:undefined} className={`${styles.chart} ${compact?styles.compact:''}`}>{!compact&&<>{controls}</>}
-  <svg viewBox={chartViewBox} role={compact?'img':'group'} aria-label={`Solarleistung in ${data.town??'der Gemeinde'}, ${formatStoryDate(data.month)}. ${data.days.length} Tageslinien, 24 Stunden. Modellierter Monatsertrag ${energieTeile(data.totalMwh).value} ${energieTeile(data.totalMwh).unit}.`}><defs><filter id={`${gradientId}-mono`} colorInterpolationFilters="sRGB"><feColorMatrix type="saturate" values="0"/></filter><linearGradient id={`${gradientId}-fade`} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="white"/><stop offset="35%" stopColor="white"/><stop offset="100%" stopColor="black"/></linearGradient><mask id={`${gradientId}-backdrop`} maskUnits="userSpaceOnUse" x={backdropX} y={backdropY} width={backdropSize} height={backdropSize}><rect x={backdropX} y={backdropY} width={backdropSize} height={backdropSize} fill={`url(#${gradientId}-fade)`}/></mask></defs>
-   <g mask={`url(#${gradientId}-backdrop)`} opacity=".16" pointerEvents="none" aria-hidden="true"><image href="/brand/feed-in-v4-splashes.svg" x={compact?280-viewSize*.8:viewX-viewSize*.3} y={compact?280-viewSize*.8:viewY-viewSize*.2} width={viewSize*1.6} height={viewSize*1.6} filter={`url(#${gradientId}-mono)`}/><image href="/brand/pv-modules-mono-contained.svg" x={viewX+viewSize*.06} y={viewY+viewSize*.06} width={viewSize*.88} height={viewSize*.88}/></g>
-   <defs><radialGradient id={gradientId} gradientUnits="userSpaceOnUse" cx="280" cy="280" r="240"><stop offset="37.5%" stopColor={hasActive?'var(--atlas-text)':'var(--atlas-action)'} stopOpacity={hasActive?.06:.12}/><stop offset="100%" stopColor={hasActive?'var(--atlas-text)':'var(--atlas-action)'} stopOpacity={hasActive?.3:.75}/></radialGradient></defs>
-   {(compact?[0]:[0,max/3,max*2/3,max]).map((value,i)=><g key={i}><circle cx="280" cy="280" r={90+value/max*150} fill="none" stroke="var(--atlas-text)" strokeOpacity={i===0?.22:.1} strokeDasharray={i%2===0?'2 6':undefined}/>{!compact&&i===2&&<g transform={`translate(280,${280-90-value/max*150})`}><rect x="-22" y="-15" width="44" height="40" rx="2" fill="var(--atlas-card)"/><text textAnchor="middle" dominantBaseline="middle" className={styles.scale}><tspan x="0" y="-3">{leistungTeile(value).value}</tspan><tspan x="0" y="15">{leistungTeile(max).unit}</tspan></text></g>}</g>)}
-   {!compact&&[0,6,12,18].map(hour=>{const angle=hour/24*Math.PI*2+Math.PI/2;return <text key={hour} x={280+Math.cos(angle)*260} y={280+Math.sin(angle)*260+5} textAnchor="middle" className={styles.hour}>{String(hour).padStart(2,'0')}{hour===0?' Uhr':''}</text>})}
-   {data.days.map((day,index)=>{const isActive=hasActive&&day.date===displayDate,hidden=frame!==null&&index>frame;return <g key={day.date} opacity={hidden?0:1} className={styles.dayLine}><path d={path(day.mw)} fill="none" stroke={`url(#${gradientId})`} strokeOpacity={playing&&index===frame?0:1} strokeWidth="1" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round"/><path d={path(day.mw)} pathLength="1" className={`${styles.activeLine} ${playing&&index===frame?styles.drawing:''}`} fill="none" stroke="var(--atlas-action)" strokeOpacity={isActive?1:0} strokeWidth="2" vectorEffect="non-scaling-stroke" strokeLinejoin="round" strokeLinecap="round"/>{!compact&&!hidden&&!playing&&<path d={path(day.mw)} fill="none" stroke="transparent" strokeWidth="10" className={styles.hitLine} onPointerEnter={()=>{if(!focused&&!playing)setHovered(day.date)}} onPointerLeave={()=>setHovered(null)} onClick={()=>chooseDay(day.date)}><title>{`${formatStoryDate(day.date)}: ${energieTeile(day.mwh).value} ${energieTeile(day.mwh).unit}`}</title></path>}</g>})}
-   {/* In der Mitte steht, was gerade gezeigt wird: der laufende Tag, sonst der
-       Monat. Vorher stand dort immer die Monatssumme, während die Linie Tag
-       für Tag weiterzog (Betreiber, 23.09.2026). */}
-   {/* Die Zahl blendet bei jedem Tageswechsel kurz ein, statt umzuspringen:
-      Die Linie daneben zeichnet sich über 600 ms, und eine Zahl, die
-      schlagartig wechselt, läuft ihr sichtbar davon (Betreiber, 23.09.2026).
-      Der Schlüssel am Element sorgt dafür, dass die Einblendung bei jedem
-      neuen Tag von vorn läuft. */}
-   <g key={gezeigterTag?.date??'summe'} className={styles.wertWechsel}>
-   <text x="280" y="275" textAnchor="middle" className={`${styles.total} ${compact?styles.totalAkzent:''}`}>{mitte.value}</text><text x="280" y="300" textAnchor="middle" className={styles.unit}>{mitte.unit}</text>
-   </g>
-  </svg>
+ const controls=<div className={styles.settings} {...{[EXPORT_IGNORE_ATTR]:''}}><WidgetSetting hideLabel label="Monat" value={data.month} onChange={onMonthChange} stepper options={months.map(item=>({value:item.month,label:formatStoryDate(item.month)}))}/></div>;
+ const footer=<div className={styles.footer} {...{[EXPORT_IGNORE_ATTR]:''}}><div className={styles.dayControls}><button type="button" aria-label="Vorheriger Tag" onClick={()=>shiftDay(-1)} disabled={selectedIndex<=0}><IconChevronLeft size={16}/></button><button type="button" className={styles.bestDay} data-selected={focused||undefined} onClick={()=>chooseDay(data.peakDay)}>{focused&&active?<><span>Bester Tag</span><small>{formatStoryDate(active.date)}</small></>:<span>Bester Tag</span>}</button><button type="button" aria-label="Nächster Tag" onClick={()=>shiftDay(1)} disabled={selectedIndex<0||selectedIndex>=data.days.length-1}><IconChevronRight size={16}/></button></div><div className={styles.transport}><button type="button" aria-label={playing?'Wiedergabe pausieren':'Monat abspielen'} aria-pressed={playing} onClick={togglePlayback}>{playing?<IconPause size={14}/>:<IconPlay size={14}/>}</button><button type="button" aria-label="Zurücksetzen" onClick={clearDay}><IconRefresh size={14}/></button></div></div>;
+ return <div data-solar-month-preview={compact?true:undefined} className={`${styles.chart} ${compact?styles.compact:''}`}>{!compact&&<>{controls}<p className={styles.exportState} {...{[EXPORT_ONLY_ATTR]:'block'}} style={{display:'none'}}>{formatStoryDate(data.month)}{focused&&gezeigterTag?` · ${formatStoryDate(gezeigterTag.date)}`:''}</p></>}
+  <MonthlySolarRadial data={data} layout="monitor" compact={compact} displayDate={displayDate} frame={frame} playing={playing} focused={focused} onHover={setHovered} onChoose={chooseDay} classes={styles}/>
   {!compact&&footer}
  </div>;
 }

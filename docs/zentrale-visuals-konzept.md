@@ -166,6 +166,21 @@ reviews visual fidelity against the approved design; operator decides design que
 - Pre-existing, noted: story layout writes MWh/GWh by hand (not the unit formatter);
   share text of the registry entry says "Solar und Wind" also for towns without wind.
 
+## 4d. Stage 3: `radial` solar month recap (26.09.2026)
+
+- One drawing `components/charts/MonthlySolarRadial.tsx`; monitor and story keep
+  state, playback, controls and wrappers. Explicit layouts: monitor midnight at
+  the bottom, unit formatters, centre follows the shown day (fading), accent total
+  in the compact tile; story midnight at the top, MW/GWh as printed before, centre
+  = month total, larger backdrop modules in the compact card.
+- Equivalence against the old code (9276c7c3) with identical data: monitor
+  full/compact, story full/compact/reader render the same markup; only change:
+  the story's day tooltip was empty before (multi-child <title>), now filled.
+- Registry entry `gemeindeSolarMonat` (ERA5 archive + MaStR) referenced by the
+  template; story export only for ERA5-archive data. Monitor (municipality +
+  district) via `ExportableWidgetFrame`; month selector and day/playback controls
+  ExportIgnore'd, month (and chosen day) printed.
+
 ## 5. Open decisions for root / operator
 
 1. **Export colour scheme**: existing rule renders images on the brightest day stage; the

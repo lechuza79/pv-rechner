@@ -374,6 +374,24 @@ export const WIDGETS = {
     // No /embed route yet; the entry carries the export footer of monitor and story.
     embeddable: false,
   },
+  gemeindeSolarMonat: {
+    // Template "radial": modelled solar output over 24 hours for every day of
+    // one month, municipality and district monitor and stories.
+    id: "gemeinde-solar-monat",
+    title: "Solarerzeugung im Tagesverlauf",
+    kind: "chart",
+    exampleParams: { ags: BEISPIEL_GEMEINDE },
+    place: {
+      title: "Solarerzeugung in {ort} im Tagesverlauf",
+      shareText: "Solar in {ort}: jeder Tag eines Monats über 24 Stunden, modelliert aus Wetter und Anlagenbestand – Solar Check",
+    },
+    shareUrl: `${SITE}/solar-atlas`,
+    shareText: "Solarerzeugung über 24 Stunden, jeder Tag eines Monats modelliert – Solar Check",
+    sources: [DATA_SOURCES.era5Archive, DATA_SOURCES.mastr],
+    cta: { label: "Eigene Anlage simulieren", href: "/pv-simulation" },
+    // No /embed route yet; the entry carries the export footer of monitor and story.
+    embeddable: false,
+  },
   regionAnlagentyp: {
     id: "region-anlagentyp",
     title: "Solarleistung eines Bundeslands nach Anlagentyp",

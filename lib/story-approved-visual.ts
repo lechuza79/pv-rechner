@@ -55,7 +55,8 @@ export const STORY_VISUAL_TEMPLATES:StoryVisualTemplate[]=[
  {id:'energy-year',name:'Solar + Wind · Jahresprofil',monitor:{title:'Solar- und Windpotenzial im Jahresverlauf',kind:'radial'},widget:'gemeindeEnergieJahr',
   // Older packages name the free Open-Meteo archive; the registry entry claims our ERA5 archive.
   exportProvenance:story=>Boolean(story.energyYear?.sourceUrl?.startsWith('era5-archive:'))},
- {id:'radial',name:'Solar-Monatsrecap',monitor:{title:'Solarerzeugung im Tagesverlauf',kind:'radial'}},
+ {id:'radial',name:'Solar-Monatsrecap',monitor:{title:'Solarerzeugung im Tagesverlauf',kind:'radial'},widget:'gemeindeSolarMonat',
+  exportProvenance:story=>Boolean(story.solarMonth?.sourceUrl?.startsWith('era5-archive:'))},
  {id:'rank-month',name:'Monatliche Rangübersicht'},
 ];
 export function storyVisualTemplateDef(id:string|null|undefined):StoryVisualTemplate|undefined{return id?STORY_VISUAL_TEMPLATES.find(t=>t.id===id):undefined;}

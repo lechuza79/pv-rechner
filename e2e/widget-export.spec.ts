@@ -219,3 +219,25 @@ test.describe("Gemeinde-Monitor: Jahresprofil", () => {
     if (OUT_DIR) await import("fs/promises").then((fs) => fs.writeFile(`${OUT_DIR}/gemeinde-energie-jahr.png`, buf));
   });
 });
+
+test.describe("Gemeinde-Monitor: Monatsrückblick", () => {
+  test("Download liefert ein Bild mit Monat, beiden Quellen und Marke, ohne Tagesbedienung", async ({ page }) => {
+    await page.goto("/embed/gemeinde/09679202/monitor");
+    const widget = page.locator("article.sc-widget", { has: page.locator('svg[aria-label*="Tageslinien"]') }).first();
+    await expect(widget).toBeVisible({ timeout: 60_000 });
+    await expect(widget.locator("[data-sc-export-only]").filter({ hasText: /^[A-Z][a-zä]+\.? 20\d\d/ }).first()).toBeAttached();
+    // Month stepper, day navigation and playback stay out of the image.
+    await expect(widget.locator('[data-sc-export-ignore] button[aria-label="Monat abspielen"]')).toHaveCount(1);
+    const kante = widget.locator('[title^="Quelle:"]');
+    await expect(kante).toContainText("ERA5");
+    await expect(kante).toContainText("Bundesnetzagentur");
+    await expect(widget).toHaveAttribute("data-sc-export-brightest", "");
+
+    const downloadPromise = page.waitForEvent("download");
+    await widget.getByTitle("Als Bild herunterladen").click();
+    const buf = await readFile((await (await downloadPromise).path())!);
+    expect(buf.byteLength).toBeGreaterThan(30_000);
+    expect(buf.subarray(1, 4).toString("ascii")).toBe("PNG");
+    if (OUT_DIR) await import("fs/promises").then((fs) => fs.writeFile(`${OUT_DIR}/gemeinde-solar-monat.png`, buf));
+  });
+});
