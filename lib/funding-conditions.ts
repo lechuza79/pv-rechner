@@ -607,6 +607,10 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Added 19 Sep 2026: income condition (Wohngeld/Bürgergeld), green tariff,
   // one-per-meter and the 3-year operating duty have no test form.
   "holzminden-solarfair",
+  // Added 26 Sep 2026: county programme, same shape as Holzminden — income
+  // condition, approval before purchase, one-per-meter and the 3-year operating
+  // duty have no test form.
+  "schaumburg-solarfair",
   // Added 18 Sep 2026: exhausted VG programme, guideline read in full; the
   // test forms (application before contract, 3-/12-month deadlines) are missing.
   "vg-hachenburg-erneuerbare-energien",

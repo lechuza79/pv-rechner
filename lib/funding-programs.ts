@@ -4744,6 +4744,56 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // no combination rule is stated, so none is assumed.
     combinableWith: null,
   },
+  "schaumburg-solarfair": {
+    id: "schaumburg-solarfair", name: "Schaumburg SolarFair – Gemeinsam klimafreundlich leben!",
+    traeger: "Energieagentur Schaumburg gGmbH (aus Mitteln des Landkreises Schaumburg)", level: "landkreis",
+    region: "Landkreis Schaumburg", bundesland: "Niedersachsen", agsCode: "03257",
+    url: "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+    // NEU AUFGENOMMEN 26.09.2026. Found while closing SG Sachsenhagen and SG
+    // Niedernwöhren: the county site search led to the committee agenda of
+    // 15.06.2026, the programme itself sits with the county's energy agency.
+    // Programme page and guideline ("Richtlinie der Energieagentur Schaumburg
+    // zur Förderung von Balkonkraftwerken", Foerderrichtlinie_SolarFair_2026_
+    // final_.pdf) read in full on 26.09.2026, FAQ (Stand 04.08.2026) read.
+    // Nr. 4: "Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk."
+    // Nr. 2: natural persons currently receiving Grundsicherung für
+    // Arbeitssuchende, Wohngeld, Grundsicherung für Nichterwerbsfähige or
+    // Kinderzuschlag, main residence in the county. The programme page also
+    // lists Sozialhilfe and Arbeitslosengeld I; the guideline and the FAQ do
+    // not, and the guideline governs — so they are not named here.
+    // Nr. 5: up to 130 systems in 2026 and possibly 2027, "aus dem Budget des
+    // Landkreises Schaumburg finanziert", first come first served (Nr. 6.3).
+    // Nr. 6.1: purchase only after the confirmation with a funding number.
+    // Nr. 7: payout application by 01.12.2027. Nr. 11: in force 01.09.2026 to
+    // 31.12.2027. FAQ Nr. 11: at most 800 W inverter output.
+    // Adversarial review 26.09.2026: all conditions confirmed; the application
+    // form showed "8 von 130 ausgefüllt" (form submissions, not approvals).
+    // An earlier 2024 round (150 EUR, county + Stadthagen + Westfalen-Weser)
+    // is known only from press so far and is NOT recorded here.
+    // NO STRUCTURED RATE: the grant depends on an income condition the
+    // calculator cannot know (same treatment as holzminden-solarfair).
+    // Key: Landkreis Schaumburg 03257, checked in the register.
+    stand: "September 2026", status: "aktiv", capped: true, verified: true,
+    beginntIso: "2026-09-01", endetIso: "2027-12-31",
+    eligibility: ["privat"],
+    foerdert: ["balkon"],
+    coveredCosts: "Zuschuss zum Kauf eines neuen Balkonkraftwerks — nur für Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag",
+    maxFoerderung: "150 € je Balkonkraftwerk",
+    rates: [
+      { label: "Balkonkraftwerk (nur mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag)", value: "150 € je Anlage" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind nur Personen, die Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag beziehen und ihren Erstwohnsitz im Landkreis Schaumburg haben",
+      "Erst den Zuschuss beantragen und die Bestätigung mit Fördernummer abwarten — wer das Balkonkraftwerk vorher kauft, bekommt nichts",
+      "Die Anlage muss neu gekauft, an der Adresse des Erstwohnsitzes installiert und im Marktstammdatenregister angemeldet sein; Wechselrichter höchstens 800 W",
+      "Höchstens eine Förderung je Stromzähler; die Anlage muss mindestens drei Jahre betrieben werden",
+      "Gefördert werden insgesamt bis zu 130 Anlagen in den Jahren 2026 und 2027, in der Reihenfolge der Anträge; kein Rechtsanspruch",
+      "Der Antrag auf Auszahlung muss bis zum 01.12.2027 gestellt sein; die Richtlinie tritt zum 31.12.2027 außer Kraft",
+    ],
+    // Neither guideline nor FAQ says anything about combining with other
+    // funding, so no rule is assumed.
+    combinableWith: null,
+  },
   "cochem-zell-solarstromspeicher": {
     id: "cochem-zell-solarstromspeicher", name: "Förderprogramm Solarstromspeicher",
     traeger: "Landkreis Cochem-Zell", level: "landkreis", region: "Landkreis Cochem-Zell", bundesland: "Rheinland-Pfalz", agsCode: "07135",

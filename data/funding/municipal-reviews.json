@@ -11741,18 +11741,29 @@
   {
     "regionId": "03257008",
     "name": "Buchholz",
-    "checkedAt": "2026-09-23T21:05:00Z",
-    "recheckAt": "2026-12-23T08:00:00Z",
-    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf buchholz-schaumburg.de.",
-    "outcome": "keine-passende-foerderung",
-    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Antragsformular „Förderung von energetischen Dienstleistungen\" nach Gemeinderatsbeschluss vom 21.06.2011: bezuschusst werden Energieberatung und Energieausweis mit 50 % und höchstens 150 €. Gefördert wird die BERATUNG, nicht die Anlage.",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen. Erfasst ist für diesen Ort eine Fundstelle auf buchholz-schaumburg.de. Einschließlich Kreisebene Schaumburg (am 26.09.2026 ergänzt).",
+    "outcome": "programme-geprueft",
+    "conclusion": "Kein kommunaler Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen belegt. Die einzige erfasste Fundstelle ist das Antragsformular „Förderung von energetischen Dienstleistungen\" nach Gemeinderatsbeschluss vom 21.06.2011: bezuschusst werden Energieberatung und Energieausweis mit 50 % und höchstens 150 €. Gefördert wird die BERATUNG, nicht die Anlage. NACHTRAG 26.09.2026: Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung.",
     "searches": [
-      "Antragsformular der Gemeinde am 23.09.2026 als PDF geholt und gelesen"
+      "Antragsformular der Gemeinde am 23.09.2026 als PDF geholt und gelesen",
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026"
     ],
     "evidence": [
       {
         "url": "https://www.buchholz-schaumburg.de/assets/downloads/56049454/antrag-bezuschussung-energiegutachten-s2.pdf",
         "finding": "Formularkopf: „Förderung von energetischen Dienstleistungen gem. Beschluss vom 21.06.2011\", Fördergegenstände Energieberatung und Energieausweis, „Modernisierung/ Sanierung 50% max. 150,00 €\". Keine Anlagenförderung."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
       }
     ],
     "sources": [
@@ -65191,6 +65202,439 @@
         "disposition": "reviewed",
         "reason": "Suchergebnisseite der Gemeinde zu „förderprogramm“ (Kalenderparameter ändern nur das Seitenmodul): nur Gemeindeprojekte und Dorfregion.",
         "evidenceUrl": "https://www.wasbuettel.de/index.php/component/finder/search?f=2&q=f%C3%B6rderprogramm&Itemid=301"
+      }
+    ]
+  },
+  {
+    "regionId": "03257004",
+    "name": "Auhagen",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde Sachsenhagen und Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Auhagen gehört zur Samtgemeinde Sachsenhagen. Weder Samtgemeinde noch Mitgliedsgemeinde führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzige erfasste Fundstelle ist die allgemeine Dienstleistungsbeschreibung „EU-Förderung“. Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche sachsenhagen.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz am 26.09.2026 — Treffer nur Haushalts- und Bebauungspläne, Wohngeld-, Denkmal- und Wirtschaftsförderungs-Dienstleistungen, Vereins- und Bürgerberatungs-Meldungen",
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 26.09.2026 gelesen: „Wenn Sie zur Verwirklichung eines privaten oder gewerblichen Vorhabens EU-Fördermittel in Anspruch nehmen möchten, erhalten Sie …“ — Zuständigkeitsbeschreibung, kein Programm. Die Suche nach „Förderkatalog“ führt auf den Sanierungsgebietsplan Hagenburg (2019)."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen: allgemeine Dienstleistungsbeschreibung zu EU-Fördermitteln (Verweis auf Beratungsstellen), kein kommunales Förderprogramm.",
+        "evidenceUrl": "https://www.sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0"
+      }
+    ]
+  },
+  {
+    "regionId": "03257010",
+    "name": "Hagenburg",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde Sachsenhagen und Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Hagenburg gehört zur Samtgemeinde Sachsenhagen. Weder Samtgemeinde noch Mitgliedsgemeinde führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzige erfasste Fundstelle ist die allgemeine Dienstleistungsbeschreibung „EU-Förderung“. Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche sachsenhagen.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz am 26.09.2026 — Treffer nur Haushalts- und Bebauungspläne, Wohngeld-, Denkmal- und Wirtschaftsförderungs-Dienstleistungen, Vereins- und Bürgerberatungs-Meldungen",
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 26.09.2026 gelesen: „Wenn Sie zur Verwirklichung eines privaten oder gewerblichen Vorhabens EU-Fördermittel in Anspruch nehmen möchten, erhalten Sie …“ — Zuständigkeitsbeschreibung, kein Programm. Die Suche nach „Förderkatalog“ führt auf den Sanierungsgebietsplan Hagenburg (2019)."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen: allgemeine Dienstleistungsbeschreibung zu EU-Fördermitteln (Verweis auf Beratungsstellen), kein kommunales Förderprogramm.",
+        "evidenceUrl": "https://www.sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0"
+      }
+    ]
+  },
+  {
+    "regionId": "03257033",
+    "name": "Sachsenhagen",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde Sachsenhagen und Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Sachsenhagen gehört zur Samtgemeinde Sachsenhagen. Weder Samtgemeinde noch Mitgliedsgemeinde führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzige erfasste Fundstelle ist die allgemeine Dienstleistungsbeschreibung „EU-Förderung“. Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche sachsenhagen.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz am 26.09.2026 — Treffer nur Haushalts- und Bebauungspläne, Wohngeld-, Denkmal- und Wirtschaftsförderungs-Dienstleistungen, Vereins- und Bürgerberatungs-Meldungen",
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 26.09.2026 gelesen: „Wenn Sie zur Verwirklichung eines privaten oder gewerblichen Vorhabens EU-Fördermittel in Anspruch nehmen möchten, erhalten Sie …“ — Zuständigkeitsbeschreibung, kein Programm. Die Suche nach „Förderkatalog“ führt auf den Sanierungsgebietsplan Hagenburg (2019)."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen: allgemeine Dienstleistungsbeschreibung zu EU-Fördermitteln (Verweis auf Beratungsstellen), kein kommunales Förderprogramm.",
+        "evidenceUrl": "https://www.sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0"
+      }
+    ]
+  },
+  {
+    "regionId": "03257038",
+    "name": "Wölpinghausen",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde Sachsenhagen und Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Wölpinghausen gehört zur Samtgemeinde Sachsenhagen. Weder Samtgemeinde noch Mitgliedsgemeinde führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzige erfasste Fundstelle ist die allgemeine Dienstleistungsbeschreibung „EU-Förderung“. Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche sachsenhagen.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz am 26.09.2026 — Treffer nur Haushalts- und Bebauungspläne, Wohngeld-, Denkmal- und Wirtschaftsförderungs-Dienstleistungen, Vereins- und Bürgerberatungs-Meldungen",
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 26.09.2026 gelesen: „Wenn Sie zur Verwirklichung eines privaten oder gewerblichen Vorhabens EU-Fördermittel in Anspruch nehmen möchten, erhalten Sie …“ — Zuständigkeitsbeschreibung, kein Programm. Die Suche nach „Förderkatalog“ führt auf den Sanierungsgebietsplan Hagenburg (2019)."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen: allgemeine Dienstleistungsbeschreibung zu EU-Fördermitteln (Verweis auf Beratungsstellen), kein kommunales Förderprogramm.",
+        "evidenceUrl": "https://www.sachsenhagen.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0"
+      }
+    ]
+  },
+  {
+    "regionId": "03257019",
+    "name": "Lauenhagen",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde Niedernwöhren und Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Lauenhagen gehört zur Samtgemeinde Niedernwöhren. Weder Samtgemeinde noch Mitgliedsgemeinde führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzige erfasste Fundstelle ist die allgemeine Dienstleistungsbeschreibung „EU-Förderung“. Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche sg-niedernwoehren.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz am 26.09.2026 — Treffer nur Haushalts- und Bebauungspläne, Wohngeld-, Denkmal- und Wirtschaftsförderungs-Dienstleistungen, Vereins- und Bürgerberatungs-Meldungen",
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 26.09.2026 über die Portalsuche der Samtgemeinde erreicht (Startseite zeigt zuvor einen Wahl-Hinweis): allgemeine Dienstleistung „EU-Förderung“, kein Programm. Einziger Photovoltaik-Treffer der Suche ist ein Bild „Bürgerberatung Photovoltaik“."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen: allgemeine Dienstleistungsbeschreibung zu EU-Fördermitteln (Verweis auf Beratungsstellen), kein kommunales Förderprogramm.",
+        "evidenceUrl": "https://www.sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0"
+      }
+    ]
+  },
+  {
+    "regionId": "03257023",
+    "name": "Meerbeck",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde Niedernwöhren und Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Meerbeck gehört zur Samtgemeinde Niedernwöhren. Weder Samtgemeinde noch Mitgliedsgemeinde führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzige erfasste Fundstelle ist die allgemeine Dienstleistungsbeschreibung „EU-Förderung“. Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche sg-niedernwoehren.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz am 26.09.2026 — Treffer nur Haushalts- und Bebauungspläne, Wohngeld-, Denkmal- und Wirtschaftsförderungs-Dienstleistungen, Vereins- und Bürgerberatungs-Meldungen",
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 26.09.2026 über die Portalsuche der Samtgemeinde erreicht (Startseite zeigt zuvor einen Wahl-Hinweis): allgemeine Dienstleistung „EU-Förderung“, kein Programm. Einziger Photovoltaik-Treffer der Suche ist ein Bild „Bürgerberatung Photovoltaik“."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen: allgemeine Dienstleistungsbeschreibung zu EU-Fördermitteln (Verweis auf Beratungsstellen), kein kommunales Förderprogramm.",
+        "evidenceUrl": "https://www.sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0"
+      }
+    ]
+  },
+  {
+    "regionId": "03257025",
+    "name": "Niedernwöhren",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde Niedernwöhren und Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Niedernwöhren gehört zur Samtgemeinde Niedernwöhren. Weder Samtgemeinde noch Mitgliedsgemeinde führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzige erfasste Fundstelle ist die allgemeine Dienstleistungsbeschreibung „EU-Förderung“. Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche sg-niedernwoehren.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz am 26.09.2026 — Treffer nur Haushalts- und Bebauungspläne, Wohngeld-, Denkmal- und Wirtschaftsförderungs-Dienstleistungen, Vereins- und Bürgerberatungs-Meldungen",
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 26.09.2026 über die Portalsuche der Samtgemeinde erreicht (Startseite zeigt zuvor einen Wahl-Hinweis): allgemeine Dienstleistung „EU-Förderung“, kein Programm. Einziger Photovoltaik-Treffer der Suche ist ein Bild „Bürgerberatung Photovoltaik“."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen: allgemeine Dienstleistungsbeschreibung zu EU-Fördermitteln (Verweis auf Beratungsstellen), kein kommunales Förderprogramm.",
+        "evidenceUrl": "https://www.sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0"
+      }
+    ]
+  },
+  {
+    "regionId": "03257030",
+    "name": "Pollhagen",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde Niedernwöhren und Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Pollhagen gehört zur Samtgemeinde Niedernwöhren. Weder Samtgemeinde noch Mitgliedsgemeinde führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzige erfasste Fundstelle ist die allgemeine Dienstleistungsbeschreibung „EU-Förderung“. Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche sg-niedernwoehren.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz am 26.09.2026 — Treffer nur Haushalts- und Bebauungspläne, Wohngeld-, Denkmal- und Wirtschaftsförderungs-Dienstleistungen, Vereins- und Bürgerberatungs-Meldungen",
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 26.09.2026 über die Portalsuche der Samtgemeinde erreicht (Startseite zeigt zuvor einen Wahl-Hinweis): allgemeine Dienstleistung „EU-Förderung“, kein Programm. Einziger Photovoltaik-Treffer der Suche ist ein Bild „Bürgerberatung Photovoltaik“."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      }
+    ],
+    "sources": [
+      {
+        "url": "sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&amp;auswahl=0",
+        "disposition": "reviewed",
+        "reason": "Gelesen: allgemeine Dienstleistungsbeschreibung zu EU-Fördermitteln (Verweis auf Beratungsstellen), kein kommunales Förderprogramm.",
+        "evidenceUrl": "https://www.sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0"
+      }
+    ]
+  },
+  {
+    "regionId": "03257027",
+    "name": "Nordsehl",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde Niedernwöhren und Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Nordsehl gehört zur Samtgemeinde Niedernwöhren. Weder Samtgemeinde noch Mitgliedsgemeinde führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzige erfasste Fundstelle ist die allgemeine Dienstleistungsbeschreibung „EU-Förderung“. Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche sg-niedernwoehren.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz am 26.09.2026 — Treffer nur Haushalts- und Bebauungspläne, Wohngeld-, Denkmal- und Wirtschaftsförderungs-Dienstleistungen, Vereins- und Bürgerberatungs-Meldungen",
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 26.09.2026 über die Portalsuche der Samtgemeinde erreicht (Startseite zeigt zuvor einen Wahl-Hinweis): allgemeine Dienstleistung „EU-Förderung“, kein Programm. Einziger Photovoltaik-Treffer der Suche ist ein Bild „Bürgerberatung Photovoltaik“."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03257037",
+    "name": "Wiedensahl",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: kommunale Zuschüsse für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen, einschließlich Samtgemeinde Niedernwöhren und Landkreis Schaumburg.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Wiedensahl gehört zur Samtgemeinde Niedernwöhren. Weder Samtgemeinde noch Mitgliedsgemeinde führen einen eigenen Zuschuss für Photovoltaik, Speicher, Balkonkraftwerke oder Wärmepumpen; die einzige erfasste Fundstelle ist die allgemeine Dienstleistungsbeschreibung „EU-Förderung“. Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung. Wiederprüfung vor Jahresende (130 Plätze).",
+    "searches": [
+      "Volltextsuche sg-niedernwoehren.de nach Photovoltaik, Balkonkraftwerk, Solar, Förderprogramm, Zuschuss, Wärmepumpe und Klimaschutz am 26.09.2026 — Treffer nur Haushalts- und Bebauungspläne, Wohngeld-, Denkmal- und Wirtschaftsförderungs-Dienstleistungen, Vereins- und Bürgerberatungs-Meldungen",
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026"
+    ],
+    "evidence": [
+      {
+        "url": "https://www.sg-niedernwoehren.de/buergerservice/dienstleistungen/eu-foerderung-900000583-0.html?myMedium=1&auswahl=0",
+        "finding": "Am 26.09.2026 über die Portalsuche der Samtgemeinde erreicht (Startseite zeigt zuvor einen Wahl-Hinweis): allgemeine Dienstleistung „EU-Förderung“, kein Programm. Einziger Photovoltaik-Treffer der Suche ist ein Bild „Bürgerberatung Photovoltaik“."
+      },
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      }
+    ],
+    "sources": []
+  },
+  {
+    "regionId": "03257",
+    "name": "Landkreis Schaumburg",
+    "checkedAt": "2026-09-26T00:09:37Z",
+    "recheckAt": "2026-12-26T08:00:00Z",
+    "scope": "Private Haushalte: Zuschüsse des Landkreises Schaumburg und seiner Energieagentur für Photovoltaik, Speicher, Balkonkraftwerke und Wärmepumpen.",
+    "outcome": "programme-geprueft",
+    "conclusion": "Landkreis Schaumburg: „Schaumburg SolarFair“ (Energieagentur Schaumburg, aus Kreismitteln) zahlt seit 01.09.2026 150 € je Balkonkraftwerk, nur an Haushalte mit Bürgergeld, Wohngeld, Grundsicherung oder Kinderzuschlag, 130 Plätze bis Ende 2027 — im Katalog aufgenommen, ohne Rechenwert wegen der Einkommensbedingung. Weitere Kreisprogramme für Privathaushalte nicht gefunden: die Seite „Fördermaßnahmen“ listet nur vom Kreis empfangene Förderungen, das Klimaschutzkonzept 2025 betrifft die eigene Verwaltung. Eine frühere Runde 2024 (150 €) ist nur aus der Presse bekannt und nicht aufgenommen.",
+    "searches": [
+      "Volltextsuche schaumburg.de nach Photovoltaik, Balkonkraftwerk, Förderprogramm, Wärmepumpe und SolarFair am 26.09.2026",
+      "Programmseite, Richtlinie und FAQ „Schaumburg SolarFair“ der Energieagentur Schaumburg am 26.09.2026 gelesen",
+      "Adversariale Gegenprüfung der Programmangaben am 26.09.2026",
+      "Seiten Leitstelle Klimaschutz und Fördermaßnahmen des Landkreises am 26.09.2026 gelesen"
+    ],
+    "evidence": [
+      {
+        "url": "https://energieagentur-shg.de/privathaushalte/foerderprogramme/schaumburg-solarfair-foerderprogramm-balkonkraftwerke/",
+        "finding": "Programmseite am 26.09.2026 gelesen: „Mit dem Förderprogramm „Schaumburg SolarFair“ unterstützt die Energieagentur Schaumburg Empfänger*innen von Bürgergeld, Wohngeld, Grundsicherung oder Kindergeldzuschlag beim Erwerb eines Balkonkraftwerks.“ „Sie bekommen 150 Euro.“ „Es gibt nur 130 Plätze.“ Antrag ab 01.09.2026, kein Ausschöpfungshinweis."
+      },
+      {
+        "url": "https://energieagentur-shg.de/wp-content/uploads/2026/08/Foerderrichtlinie_SolarFair_2026_final_.pdf",
+        "finding": "Richtlinie am 26.09.2026 vollständig gelesen: Nr. 4 „Die Höhe der Zuwendung beträgt 150 Euro pro Balkonkraftwerk.“ Nr. 5 bis zu 130 Anlagen 2026/2027 „aus dem Budget des Landkreises Schaumburg finanziert“; Nr. 6.1 Kauf erst nach Bestätigung mit Fördernummer; Nr. 11 gültig 01.09.2026 bis 31.12.2027. Adversarial gegengeprüft am 26.09.2026 (Antragsformular: „8 von 130 ausgefüllt“)."
+      },
+      {
+        "url": "https://www.schaumburg.de/Aktuelles/F%C3%B6rderma%C3%9Fnahmen/",
+        "finding": "Am 26.09.2026 gelesen: Liste der vom Landkreis EMPFANGENEN Förderungen (Klimaschutzinitiative für Schulbeleuchtung, Wärmeverteilung Bad Nenndorf u. a.), kein Programm für Privathaushalte. Die erfassten Adressen unter „Kurzmenü“ liefern inzwischen nur noch eine allgemeine Kurzmenü-Seite ohne Inhalt."
+      },
+      {
+        "url": "https://www.schaumburg.de/media/custom/3020_4714_1.PDF?1764328772=",
+        "finding": "Am 26.09.2026 gelesen: „Erstes Klimaschutzkonzept der Verwaltung des Landkreises Schaumburg“ (2025) nach § 18 NKlimaG — betrifft die eigene Verwaltung (PV auf Kreisliegenschaften), keine Förderung für Privathaushalte."
+      }
+    ],
+    "sources": [
+      {
+        "url": "schaumburg.de/Kurzmen%C3%BC/Besondere-F%C3%B6rderangebote.php",
+        "disposition": "replaced",
+        "reason": "Adresse liefert nur noch eine inhaltsleere Kurzmenü-Seite; der Förderstand des Kreises ist über die Seite „Fördermaßnahmen“, die Volltextsuche und das SolarFair-Programm der Energieagentur abschließend geklärt.",
+        "evidenceUrl": "https://www.schaumburg.de/Aktuelles/F%C3%B6rderma%C3%9Fnahmen/"
+      },
+      {
+        "url": "schaumburg.de/Kurzmen%C3%BC/F%C3%B6rderprogramme-der-EU-des-Bundes-der-L%C3%A4nder-Stiftungen-und-Initiativen.php",
+        "disposition": "replaced",
+        "reason": "Adresse liefert nur noch eine inhaltsleere Kurzmenü-Seite; der Förderstand des Kreises ist über die Seite „Fördermaßnahmen“, die Volltextsuche und das SolarFair-Programm der Energieagentur abschließend geklärt.",
+        "evidenceUrl": "https://www.schaumburg.de/Aktuelles/F%C3%B6rderma%C3%9Fnahmen/"
+      },
+      {
+        "url": "schaumburg.de/Kurzmen%C3%BC/F%C3%B6rderprogramme-Naturschutz.php",
+        "disposition": "replaced",
+        "reason": "Adresse liefert nur noch eine inhaltsleere Kurzmenü-Seite; der Förderstand des Kreises ist über die Seite „Fördermaßnahmen“, die Volltextsuche und das SolarFair-Programm der Energieagentur abschließend geklärt.",
+        "evidenceUrl": "https://www.schaumburg.de/Aktuelles/F%C3%B6rderma%C3%9Fnahmen/"
+      },
+      {
+        "url": "schaumburg.de/Kurzmen%C3%BC/Finanzielle-F%C3%B6rderm%C3%B6glichkeiten.php",
+        "disposition": "replaced",
+        "reason": "Adresse liefert nur noch eine inhaltsleere Kurzmenü-Seite; der Förderstand des Kreises ist über die Seite „Fördermaßnahmen“, die Volltextsuche und das SolarFair-Programm der Energieagentur abschließend geklärt.",
+        "evidenceUrl": "https://www.schaumburg.de/Aktuelles/F%C3%B6rderma%C3%9Fnahmen/"
+      },
+      {
+        "url": "schaumburg.de/Kurzmen%C3%BC/Von-der-EU-gef%C3%B6rderte-Projekte.php",
+        "disposition": "replaced",
+        "reason": "Adresse liefert nur noch eine inhaltsleere Kurzmenü-Seite; der Förderstand des Kreises ist über die Seite „Fördermaßnahmen“, die Volltextsuche und das SolarFair-Programm der Energieagentur abschließend geklärt.",
+        "evidenceUrl": "https://www.schaumburg.de/Aktuelles/F%C3%B6rderma%C3%9Fnahmen/"
+      },
+      {
+        "url": "schaumburg.de/Kurzmen%C3%BC/Zusch%C3%BCsse-f%C3%BCr-Freizeitma%C3%9Fnahmen.php",
+        "disposition": "replaced",
+        "reason": "Adresse liefert nur noch eine inhaltsleere Kurzmenü-Seite; der Förderstand des Kreises ist über die Seite „Fördermaßnahmen“, die Volltextsuche und das SolarFair-Programm der Energieagentur abschließend geklärt.",
+        "evidenceUrl": "https://www.schaumburg.de/Aktuelles/F%C3%B6rderma%C3%9Fnahmen/"
+      },
+      {
+        "url": "schaumburg.de/media/custom/3020_4714_1.PDF?1764328772=",
+        "disposition": "reviewed",
+        "reason": "Gelesen: Klimaschutzkonzept der Kreisverwaltung, keine Privatförderung.",
+        "evidenceUrl": "https://www.schaumburg.de/media/custom/3020_4714_1.PDF?1764328772="
       }
     ]
   }
